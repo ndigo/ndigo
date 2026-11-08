@@ -16,11 +16,15 @@ up-down-counters; `gauge`; `histogram`).
 
 > `readonly` **description**: `string`
 
+The metric description.
+
 ***
 
 ### name
 
 > `readonly` **name**: `string`
+
+The metric name.
 
 ***
 
@@ -28,11 +32,15 @@ up-down-counters; `gauge`; `histogram`).
 
 > `readonly` **points**: readonly [`MetricPoint`](MetricPoint.md)[]
 
+The aggregated points.
+
 ***
 
 ### type
 
 > `readonly` **type**: `"sum"` \| `"gauge"` \| `"histogram"`
+
+The aggregation kind.
 
 ***
 
@@ -40,3 +48,4 @@ up-down-counters; `gauge`; `histogram`).
 
 > `readonly` **unit**: `string`
 
+The metric unit.

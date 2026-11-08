@@ -30,6 +30,8 @@ adapter finalizes the response, so denied requests never stay open.
 
 > **new AuthRouteGuard**(`authServer`, `tokenExtractor`, `adapterId`, `denialOptions?`): `AuthRouteGuard`
 
+Creates the guard with the given token extraction and denial policy.
+
 #### Parameters
 
 ##### authServer
@@ -66,23 +68,33 @@ Denial status overrides.
 
 > **completeHandle**(`_route`, `_handler`, `_error`): `Promise`\<`void`\>
 
+No-op completion hook.
+
 #### Parameters
 
 ##### \_route
 
 [`Route`](#)
 
+The dispatched route.
+
 ##### \_handler
 
 `object` \| `undefined`
+
+The handler that ran.
 
 ##### \_error
 
 `Error` \| `null`
 
+The error raised, if any.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves immediately.
 
 #### Implementation of
 
@@ -94,23 +106,33 @@ Denial status overrides.
 
 > **postHandle**(`_route`, `_handler`, `_modelAndView`): `Promise`\<`void`\>
 
+No-op post-handle hook.
+
 #### Parameters
 
 ##### \_route
 
 [`Route`](#)
 
+The dispatched route.
+
 ##### \_handler
 
 `object` \| `undefined`
+
+The handler that ran.
 
 ##### \_modelAndView
 
 [`ModelAndView`](#)
 
+The produced model and view.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves immediately.
 
 #### Implementation of
 
@@ -131,13 +153,19 @@ allowing execution to proceed.
 
 [`Route`](#)
 
+The route being dispatched.
+
 ##### handler
 
 `object` \| `undefined`
 
+The route handler carrying decorator metadata.
+
 #### Returns
 
 `Promise`\<`boolean` \| [`InterceptorDenial`](#)\>
+
+`true` to proceed, or a denial response.
 
 #### Implementation of
 

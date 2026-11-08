@@ -7,7 +7,9 @@ import { context, trace } from '@opentelemetry/api';
 
 /** The active trace context as plain ids, for stamping anything. */
 export interface TraceCorrelation {
+    /** The active trace id. */
     traceId: string;
+    /** The active span id. */
     spanId: string;
 }
 
@@ -20,6 +22,8 @@ export interface TraceCorrelation {
  * const correlation = currentTraceContext();
  * await queue.push({ ...payload, traceparent: correlation ? `${correlation.traceId}/${correlation.spanId}` : undefined });
  * ```
+ *
+ * @returns The active trace ids, or `undefined` outside a span.
  */
 export function currentTraceContext(): TraceCorrelation | undefined {
     const span = trace.getSpan(context.active());

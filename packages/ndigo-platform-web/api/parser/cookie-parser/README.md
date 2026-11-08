@@ -6,6 +6,8 @@
 
 # parser/cookie-parser
 
+Parses `document.cookie` header strings.
+
 ## Functions
 
 - [parseCookieHeader](functions/parseCookieHeader.md)

@@ -6,6 +6,8 @@
 
 # session
 
+The auth-session contract and default implementation.
+
 ## Classes
 
 - [DefaultAuthSession](classes/DefaultAuthSession.md)

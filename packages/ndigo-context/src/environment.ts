@@ -229,12 +229,20 @@ export abstract class AbstractEnvironment extends AsEventEmitter(Null) implement
         this.#propertyResolver = PrototypalPropertyResolver.create(sources, options);
     }
 
-    /** {@inheritDoc Environment#addActiveProfile} @param profile - The profile. */
+    /**
+     * Adds a profile to the active set.
+     *
+     * @param profile - The profile name.
+     */
     addActiveProfile(profile: string): void {
         this.#activeProfiles.add(profile);
     }
 
-    /** {@inheritDoc Environment#addDefaultProfile} @param profile - The profile. */
+    /**
+     * Adds a profile to the default set.
+     *
+     * @param profile - The profile name.
+     */
     addDefaultProfile(profile: string): void {
         this.#defaultProfiles.add(profile);
     }
@@ -247,27 +255,56 @@ export abstract class AbstractEnvironment extends AsEventEmitter(Null) implement
         return this.#activeProfiles.size ? [...this.#activeProfiles] : [...this.#defaultProfiles];
     }
 
-    /** {@inheritDoc Environment#acceptsProfiles} @param expression - The expression. */
+    /**
+     * Evaluates a profile expression against the active/default set.
+     *
+     * @param expression - The profile expression.
+     * @returns Whether the expression matches.
+     */
     acceptsProfiles(expression: string | ProfileTerm): boolean {
         return evaluateProfileExpression(String(expression), new Set(this.activeProfilesOrDefaults));
     }
 
-    /** {@inheritDoc property-resolver.PropertyResolver#hasProperty} @param key - The key. */
+    /**
+     * Whether the environment resolves `key`.
+     *
+     * @param key - The property key.
+     * @returns Whether a value exists.
+     */
     hasProperty(key: string): boolean {
         return this.#propertyResolver.hasProperty(key);
     }
 
-    /** {@inheritDoc property-resolver.PropertyResolver#getProperty} @param key - The key. @param defaultValue - Default value. */
+    /**
+     * Resolves a property value.
+     *
+     * @param key - The property key.
+     * @param defaultValue - Value returned when the key is absent.
+     * @returns The resolved value, or `defaultValue`.
+     */
     getProperty(key: string, defaultValue?: JSONValue): JSONValue | undefined {
         return this.#propertyResolver.getProperty(key, defaultValue);
     }
 
-    /** {@inheritDoc property-resolver.PropertyResolver#getRequiredProperty} @param key - The key. */
+    /**
+     * Resolves a property, throwing when absent.
+     *
+     * @param key - The property key.
+     * @returns The resolved value.
+     * @throws When the key has no value.
+     */
     getRequiredProperty(key: string): JSONValue {
         return this.#propertyResolver.getRequiredProperty(key);
     }
 
-    /** {@inheritDoc property-resolver.PropertyResolver#getPropertyAs} @param key - The key. @param targetType - Target type. @param defaultValue - Default. */
+    /**
+     * Resolves and converts a property value.
+     *
+     * @param key - The property key.
+     * @param targetType - The conversion target type.
+     * @param defaultValue - Value returned when the key is absent.
+     * @returns The converted value, or `defaultValue`.
+     */
     getPropertyAs<T>(
         key: string,
         targetType: (new (...args: never[]) => T) | (() => T) | T,
@@ -276,27 +313,54 @@ export abstract class AbstractEnvironment extends AsEventEmitter(Null) implement
         return this.#propertyResolver.getPropertyAs(key, targetType, defaultValue);
     }
 
-    /** {@inheritDoc property-resolver.PropertyResolver#getRequiredPropertyAs} @param key - The key. @param targetType - Target type. */
+    /**
+     * Resolves and converts a property, throwing when absent.
+     *
+     * @param key - The property key.
+     * @param targetType - The conversion target type.
+     * @returns The converted value.
+     * @throws When the key has no value or conversion fails.
+     */
     getRequiredPropertyAs<T>(key: string, targetType: (new (...args: never[]) => T) | (() => T) | T): T {
         return this.#propertyResolver.getRequiredPropertyAs(key, targetType);
     }
 
-    /** {@inheritDoc Environment#typedConfig} @param prefix - The prefix. @param schema - The schema. */
+    /**
+     * Resolves a Zod-schema configuration subtree.
+     *
+     * @param prefix - The property prefix.
+     * @param schema - The Zod schema to validate against.
+     * @returns The validated configuration, or `undefined` when absent.
+     */
     typedConfig<S extends z.ZodType>(prefix: string, schema: S): z.infer<S> | undefined {
         return resolveSchemaConfig(schema, prefix, this);
     }
 
-    /** {@inheritDoc property-resolver.PropertyResolver#getRawProperty} @param key - The key. */
+    /**
+     * Resolves the raw stored value of a property.
+     *
+     * @param key - The property key.
+     * @returns The raw value, or `undefined`.
+     */
     getRawProperty(key: string): JSONValue | undefined {
         return this.#propertyResolver.getRawProperty(key);
     }
 
-    /** {@inheritDoc Environment#originOf} @param key - The key. */
+    /**
+     * Returns the source name that last set `key`.
+     *
+     * @param key - The property key.
+     * @returns The origin source name, or `null`.
+     */
     originOf(key: string): string | null {
         return this.#propertyResolver.originOf(key);
     }
 
-    /** {@inheritDoc Environment#refresh} */
+    /**
+     * Rebuilds the resolver and emits the refresh event.
+     *
+     * @returns Nothing; listeners are notified as a side effect.
+     */
     refresh(): void {
         this.#propertyResolver.refresh();
         // AD-29 D-1: emit AFTER the rebuild so listeners read fresh state.
@@ -321,7 +385,12 @@ export abstract class AbstractEnvironment extends AsEventEmitter(Null) implement
         });
     }
 
-    /** {@inheritDoc ConfigurableEnvironment#merge} @param environment - The environment to merge. */
+    /**
+     * Merges another environment's property sources, preserving precedence.
+     *
+     * @param environment - The environment to merge.
+     * @returns Nothing; sources are appended.
+     */
     merge(environment: ConfigurableEnvironment): void {
         const sources = this.getPropertySources();
         for (const source of environment.getPropertySources()) {

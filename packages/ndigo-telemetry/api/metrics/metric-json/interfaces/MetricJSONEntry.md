@@ -14,11 +14,15 @@ The JSON form of one snapshot.
 
 > `readonly` `optional` **description?**: `string`
 
+Optional metric description.
+
 ***
 
 ### points
 
 > `readonly` **points**: readonly [`MetricJSONPoint`](MetricJSONPoint.md)[]
+
+The aggregated points.
 
 ***
 
@@ -26,9 +30,12 @@ The JSON form of one snapshot.
 
 > `readonly` **type**: `"sum"` \| `"gauge"` \| `"histogram"`
 
+The metric type.
+
 ***
 
 ### unit
 
 > `readonly` **unit**: `string`
 
+The metric unit.

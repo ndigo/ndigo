@@ -47,6 +47,8 @@ Clears all values from the store.
 
 `Promise`\<`void`\>
 
+A promise that resolves once cleared.
+
 ***
 
 ### close()
@@ -100,6 +102,8 @@ Returns all keys in the store.
 
 `Promise`\<`string`[]\>
 
+The stored keys.
+
 ***
 
 ### removeItem()
@@ -119,6 +123,8 @@ The storage key to remove.
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once removed.
 
 ***
 
@@ -145,3 +151,5 @@ The value to store.
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once written.

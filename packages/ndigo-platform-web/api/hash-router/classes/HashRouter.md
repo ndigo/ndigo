@@ -51,6 +51,8 @@ Router options, e.g. the navigation-error hook.
 
 > `readonly` **callback**: `RouterCallback`
 
+The callback invoked with the current route after a navigation.
+
 #### Overrides
 
 `AbstractRouter.callback`

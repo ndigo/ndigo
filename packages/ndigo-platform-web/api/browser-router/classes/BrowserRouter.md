@@ -60,6 +60,8 @@ Router options, e.g. the navigation-error hook.
 
 > `readonly` **callback**: `RouterCallback`
 
+The callback invoked with the current route after a navigation.
+
 #### Overrides
 
 `AbstractRouter.callback`
@@ -70,6 +72,8 @@ Router options, e.g. the navigation-error hook.
 
 > **destroyed**: `boolean`
 
+Whether the router has been destroyed.
+
 ## Accessors
 
 ### history
@@ -77,6 +81,8 @@ Router options, e.g. the navigation-error hook.
 #### Get Signature
 
 > **get** **history**(): `RingBuffer`\<[`RouteTransaction`](#)\>
+
+Navigation history, newest first.
 
 ##### Returns
 
@@ -89,6 +95,8 @@ Router options, e.g. the navigation-error hook.
 #### Get Signature
 
 > **get** **route**(): `string`
+
+The current route's string form.
 
 ##### Returns
 

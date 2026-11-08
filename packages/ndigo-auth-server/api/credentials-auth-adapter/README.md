@@ -6,6 +6,8 @@
 
 # credentials-auth-adapter
 
+First-party username/password authentication adapter.
+
 ## Classes
 
 - [CredentialsAuthAdapter](classes/CredentialsAuthAdapter.md)

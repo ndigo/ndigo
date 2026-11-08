@@ -6,6 +6,8 @@
 
 # browser-storage-argument-resolver
 
+Argument resolver that reads browser storage values.
+
 ## Classes
 
 - [BrowserStorageValueMethodArgumentResolver](classes/BrowserStorageValueMethodArgumentResolver.md)

@@ -6,6 +6,8 @@
 
 # instrumentation/context/context
 
+OpenTelemetry instrumentation for application contexts.
+
 ## Classes
 
 - [ContextInstrumentation](classes/ContextInstrumentation.md)

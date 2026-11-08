@@ -72,6 +72,8 @@ only in-flight requests.
 
 `Request`
 
+The completed request.
+
 #### Returns
 
 `void`

@@ -1,4 +1,5 @@
 /**
+ * Browser theme bootstrap and cookie-backed resolution.
  */
 import { ConfigurableApplicationContext } from '@ndigo/context';
 import { CookieThemeResolver, configureCookieThemeResolver } from './cookie-theme-resolver';

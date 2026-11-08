@@ -1,4 +1,5 @@
 /**
+ * HTTP interceptor that retries once the browser is online.
  */
 import {
     HTTPInit,
@@ -230,6 +231,8 @@ export class RetryOnOfflineInterceptor
     /**
      * Releases the method+url clone for a completed request so the map tracks
      * only in-flight requests.
+     *
+     * @param request - The completed request.
      */
     postComplete(request: Request): void {
         this.#pristineByKey.delete(requestKey(request));

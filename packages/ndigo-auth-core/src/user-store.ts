@@ -1,4 +1,5 @@
 /**
+ * The user-account lookup contract.
  */
 
 /**
@@ -38,9 +39,9 @@ export interface UserRecord {
  * completion plan; consumed by the credentials adapter in Wave 2).
  */
 export interface UserStore {
-    /** Returns the account for `username`, or `null` when unknown. */
+    /** Returns the account for `username`, or `null` when unknown. @param username - The account username. */
     findByUsername(username: string): Promise<UserRecord | null>;
-    /** Returns the account for `id`, or `null` when unknown. */
+    /** Returns the account for `id`, or `null` when unknown. @param id - The account id. */
     findById(id: string): Promise<UserRecord | null>;
     /**
      * Advances the account's `tokenVersion` by one and returns the new
@@ -49,6 +50,9 @@ export interface UserStore {
      * outstanding token for the account. Stores should implement this as
      * a single atomic write (UPDATE ... SET token_version = token_version + 1) — the read-modify-write must not race.
      * Throws when `id` is unknown (fail closed).
+     *
+     * @param id - The account id.
+     * @returns The new token version.
      */
     incrementTokenVersion(id: string): Promise<number>;
 
@@ -63,6 +67,10 @@ export interface UserStore {
      * (UPDATE ... SET token_version = token_version + 1 WHERE id = $1 AND token_version = $2) and the affected-rows count. Must be atomic under
      * concurrent callers.
      * Throws when `id` is unknown (fail closed).
+     *
+     * @param id - The account id.
+     * @param expected - The token version the caller observed.
+     * @returns The new token version, or `null` when the expectation lost.
      */
     incrementTokenVersionIfCurrent(id: string, expected: number): Promise<number | null>;
 }

@@ -14,11 +14,15 @@ One aggregated histogram bucket: `count` occurrences in `[low, high)`.
 
 > `readonly` **count**: `number`
 
+Bucket occurrence count.
+
 ***
 
 ### high
 
 > `readonly` **high**: `number`
+
+Exclusive upper bound.
 
 ***
 
@@ -26,3 +30,4 @@ One aggregated histogram bucket: `count` occurrences in `[low, high)`.
 
 > `readonly` **low**: `number`
 
+Inclusive lower bound.

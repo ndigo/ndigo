@@ -6,6 +6,8 @@
 
 # jwt-adapter
 
+JWT authentication adapter: issuance, validation, refresh, and revocation.
+
 ## Classes
 
 - [JWTAdapter](classes/JWTAdapter.md)

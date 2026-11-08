@@ -6,6 +6,8 @@
 
 # configure-argument-resolvers
 
+Registers the browser argument resolvers.
+
 ## Functions
 
 - [configureBrowserArgumentResolvers](functions/configureBrowserArgumentResolvers.md)

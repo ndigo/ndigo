@@ -1,14 +1,14 @@
 /**
+ * Theme resolver backed by a cookie.
  */
 import { AbstractThemeResolver } from '@ndigo/dispatcher';
 import { ApplicationContext } from '@ndigo/context';
 import { Route } from '@ndigo/router';
 import Cookies from './cookies';
 
-/**
- */
 export class CookieThemeResolver extends AbstractThemeResolver {
     #fallbackThemeName: string;
+    /** The cookie name that stores the theme. */
     readonly cookieName: string;
 
     get [Symbol.toStringTag](): string {
@@ -27,7 +27,12 @@ export class CookieThemeResolver extends AbstractThemeResolver {
         this.cookieName = cookieName;
     }
 
-    /** Resolves the current theme from cookies or the fallback value. */
+    /**
+     * Resolves the current theme from cookies or the fallback value.
+     *
+     * @param route - The current route (unused).
+     * @returns The resolved theme name.
+     */
     resolveTheme(route: Route): string {
         const themeName = Cookies.get(this.cookieName);
         if (typeof themeName === 'string') {

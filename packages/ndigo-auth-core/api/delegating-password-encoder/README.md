@@ -6,6 +6,8 @@
 
 # delegating-password-encoder
 
+Multi-scheme password encoder with a default scheme.
+
 ## Classes
 
 - [DelegatingPasswordEncoder](classes/DelegatingPasswordEncoder.md)

@@ -14,11 +14,15 @@ Represents a statistical summary of recorded durations.
 
 > `readonly` **count**: `number`
 
+Number of retained samples.
+
 ***
 
 ### max
 
 > `readonly` **max**: `number`
+
+Largest sample.
 
 ***
 
@@ -26,11 +30,15 @@ Represents a statistical summary of recorded durations.
 
 > `readonly` **mean**: `number`
 
+Arithmetic mean.
+
 ***
 
 ### min
 
 > `readonly` **min**: `number`
+
+Smallest sample.
 
 ***
 
@@ -38,3 +46,4 @@ Represents a statistical summary of recorded durations.
 
 > `readonly` **p50**: `number`
 
+Median sample.

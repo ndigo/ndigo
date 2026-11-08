@@ -35,7 +35,7 @@ providing visibility into application context teardown processes.
 
 > **disable**(): `void`
 
-Hook for subclasses to wire up `_unwrap` calls.
+Restores the original `destroy` method.
 
 #### Returns
 
@@ -51,7 +51,7 @@ Hook for subclasses to wire up `_unwrap` calls.
 
 > **enable**(): `void`
 
-Hook for subclasses to wire up `_wrap` calls.
+Patches `GenericApplicationContext#destroy` to record teardown spans.
 
 #### Returns
 

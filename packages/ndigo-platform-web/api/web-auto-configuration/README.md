@@ -6,6 +6,8 @@
 
 # web-auto-configuration
 
+Auto-configuration for the browser platform.
+
 ## Classes
 
 - [WebAutoConfiguration](classes/WebAutoConfiguration.md)

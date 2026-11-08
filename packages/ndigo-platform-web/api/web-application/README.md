@@ -6,6 +6,8 @@
 
 # web-application
 
+Browser application bootstrap.
+
 ## Interfaces
 
 - [CreateWebApplicationOptions](interfaces/CreateWebApplicationOptions.md)

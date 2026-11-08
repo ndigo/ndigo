@@ -1,4 +1,5 @@
 /**
+ * OpenTelemetry instrumentation for application contexts.
  */
 import { SpanKind } from '@opentelemetry/api';
 import { GenericApplicationContext } from '@ndigo/context';
@@ -15,6 +16,9 @@ export class ContextInstrumentation extends AbstractBaseInstrumentation {
         super('context');
     }
 
+    /**
+     * Patches `GenericApplicationContext#destroy` to record teardown spans.
+     */
     enable(): void {
         this._wrap(
             GenericApplicationContext.prototype,
@@ -36,6 +40,9 @@ export class ContextInstrumentation extends AbstractBaseInstrumentation {
         );
     }
 
+    /**
+     * Restores the original `destroy` method.
+     */
     disable(): void {
         this._unwrap(GenericApplicationContext.prototype, 'destroy');
     }

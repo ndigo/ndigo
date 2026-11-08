@@ -6,6 +6,8 @@
 
 # scrypt-password-encoder
 
+scrypt password encoder with PHC-style hashes.
+
 ## Classes
 
 - [ScryptPasswordEncoder](classes/ScryptPasswordEncoder.md)

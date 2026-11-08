@@ -63,6 +63,8 @@ Resolver options (index strategy).
 
 > **get** **\[toStringTag\]**(): `string`
 
+String tag for this environment.
+
 ##### Returns
 
 `string`
@@ -89,7 +91,7 @@ The explicitly active profiles.
 
 > **set** **activeProfiles**(`profiles`): `void`
 
-The explicitly active profiles.
+Sets the active profiles.
 
 ##### Parameters
 
@@ -132,7 +134,7 @@ defaults (reference parity — defaults gate only when nothing is explicit).
 
 > **get** **defaultProfiles**(): `string`[]
 
-The default profiles used when no active profile is configured.
+The default profiles.
 
 ##### Returns
 
@@ -142,7 +144,7 @@ The default profiles used when no active profile is configured.
 
 > **set** **defaultProfiles**(`profiles`): `void`
 
-The default profiles used when no active profile is configured.
+Sets the default profiles.
 
 ##### Parameters
 
@@ -164,8 +166,7 @@ The default profiles used when no active profile is configured.
 
 > **acceptsProfiles**(`expression`): `boolean`
 
-Evaluates a profile expression against the effective active set
-(explicit profiles, or defaults when none are explicit).
+Evaluates a profile expression against the active/default set.
 
 #### Parameters
 
@@ -173,18 +174,13 @@ Evaluates a profile expression against the effective active set
 
 `string` \| [`ProfileTerm`](#)
 
-The profile expression (`dev`, `!prod`, `a & b`,
-  `(a | b) & c`) or a composed [ProfileTerm](#) (AD-34 D5).
+The profile expression.
 
 #### Returns
 
 `boolean`
 
-`true` when the expression matches.
-
-#### Throws
-
-On malformed expressions.
+Whether the expression matches.
 
 #### Inherited from
 
@@ -322,7 +318,7 @@ The registered event types.
 
 > **getProperty**(`key`, `defaultValue?`): `JSONValue` \| `undefined`
 
-Resolves a property value, falling back to a default when missing.
+Resolves a property value.
 
 #### Parameters
 
@@ -330,19 +326,19 @@ Resolves a property value, falling back to a default when missing.
 
 `string`
 
-The property name to resolve.
+The property key.
 
 ##### defaultValue?
 
 `JSONValue`
 
-The value to return when no property is found.
+Value returned when the key is absent.
 
 #### Returns
 
 `JSONValue` \| `undefined`
 
-The resolved property value or the default value.
+The resolved value, or `defaultValue`.
 
 #### Inherited from
 
@@ -354,7 +350,7 @@ The resolved property value or the default value.
 
 > **getPropertyAs**\<`T`\>(`key`, `targetType`, `defaultValue?`): `T` \| `undefined`
 
-Resolves a property as a typed value, converting when needed.
+Resolves and converts a property value.
 
 #### Type Parameters
 
@@ -368,29 +364,25 @@ Resolves a property as a typed value, converting when needed.
 
 `string`
 
-The property name to resolve.
+The property key.
 
 ##### targetType
 
 `T` \| (new (...`args`) => `T`) \| (() => `T`)
 
-The target constructor or primitive (`Number`, `Boolean`, `Date`, ...).
+The conversion target type.
 
 ##### defaultValue?
 
 `T`
 
-The value to return when the property is missing.
+Value returned when the key is absent.
 
 #### Returns
 
 `T` \| `undefined`
 
-The typed value or the default.
-
-#### Throws
-
-When a present value cannot be converted.
+The converted value, or `defaultValue`.
 
 #### Inherited from
 
@@ -423,8 +415,7 @@ The live registry.
 
 > **getRawProperty**(`key`): `JSONValue` \| `undefined`
 
-Raw index lookup, bypassing placeholder resolution (internal use by the
-placeholder resolver; consumers should use [getProperty](#getproperty)).
+Resolves the raw stored value of a property.
 
 #### Parameters
 
@@ -432,13 +423,13 @@ placeholder resolver; consumers should use [getProperty](#getproperty)).
 
 `string`
 
-The property name to resolve.
+The property key.
 
 #### Returns
 
 `JSONValue` \| `undefined`
 
-The raw value or `undefined`.
+The raw value, or `undefined`.
 
 #### Inherited from
 
@@ -450,7 +441,7 @@ The raw value or `undefined`.
 
 > **getRequiredProperty**(`key`): `JSONValue`
 
-Returns the resolved property value or throws when missing.
+Resolves a property, throwing when absent.
 
 #### Parameters
 
@@ -458,17 +449,17 @@ Returns the resolved property value or throws when missing.
 
 `string`
 
-The property name to resolve.
+The property key.
 
 #### Returns
 
 `JSONValue`
 
-The resolved property value.
+The resolved value.
 
 #### Throws
 
-When the property cannot be resolved.
+When the key has no value.
 
 #### Inherited from
 
@@ -480,7 +471,7 @@ When the property cannot be resolved.
 
 > **getRequiredPropertyAs**\<`T`\>(`key`, `targetType`): `T`
 
-Returns a typed property or throws when missing or unconvertible.
+Resolves and converts a property, throwing when absent.
 
 #### Type Parameters
 
@@ -494,23 +485,23 @@ Returns a typed property or throws when missing or unconvertible.
 
 `string`
 
-The property name to resolve.
+The property key.
 
 ##### targetType
 
 `T` \| (new (...`args`) => `T`) \| (() => `T`)
 
-The target constructor or primitive.
+The conversion target type.
 
 #### Returns
 
 `T`
 
-The typed value.
+The converted value.
 
 #### Throws
 
-When missing, unresolved, or unconvertible.
+When the key has no value or conversion fails.
 
 #### Inherited from
 
@@ -522,7 +513,7 @@ When missing, unresolved, or unconvertible.
 
 > **hasProperty**(`key`): `boolean`
 
-Returns whether a property key can be resolved.
+Whether the environment resolves `key`.
 
 #### Parameters
 
@@ -530,13 +521,13 @@ Returns whether a property key can be resolved.
 
 `string`
 
-The property name to resolve.
+The property key.
 
 #### Returns
 
 `boolean`
 
-`true` when the property exists.
+Whether a value exists.
 
 #### Inherited from
 
@@ -600,7 +591,7 @@ The registered listeners.
 
 > **merge**(`environment`): `void`
 
-Merges property sources and profiles from another configurable environment.
+Merges another environment's property sources, preserving precedence.
 
 #### Parameters
 
@@ -608,9 +599,13 @@ Merges property sources and profiles from another configurable environment.
 
 `ConfigurableEnvironment`
 
+The environment to merge.
+
 #### Returns
 
 `void`
+
+Nothing; sources are appended.
 
 #### Inherited from
 
@@ -686,8 +681,7 @@ This emitter.
 
 > **originOf**(`key`): `string` \| `null`
 
-Returns the name of the source that won the given property key, or
-`null` when unknown or the active index retains no origins.
+Returns the source name that last set `key`.
 
 #### Parameters
 
@@ -695,13 +689,13 @@ Returns the name of the source that won the given property key, or
 
 `string`
 
-The property key (top-level granularity).
+The property key.
 
 #### Returns
 
 `string` \| `null`
 
-The winning source name, or `null`.
+The origin source name, or `null`.
 
 #### Inherited from
 
@@ -737,12 +731,7 @@ observable through this environment.
 
 > **typedConfig**\<`S`\>(`prefix`, `schema`): `output`\<`S`\> \| `undefined`
 
-Resolves a schema-typed configuration value from this environment
-(AD-34 D3): object-shaped schemas read each key under `prefix`
-(`server.port` for `('server', z.object({ port: ... }))`); coercion,
-defaults and required checks follow the schema. A missing required key
-throws the zod error; an absent value with no default yields
-`undefined`.
+Resolves a Zod-schema configuration subtree.
 
 #### Type Parameters
 
@@ -756,20 +745,19 @@ throws the zod error; an absent value with no default yields
 
 `string`
 
-Property prefix (the keypath when the schema is a
-  top-level scalar).
+The property prefix.
 
 ##### schema
 
 `S`
 
-The zod schema describing the value.
+The Zod schema to validate against.
 
 #### Returns
 
 `output`\<`S`\> \| `undefined`
 
-The parsed typed value, or `undefined` when absent.
+The validated configuration, or `undefined` when absent.
 
 #### Inherited from
 

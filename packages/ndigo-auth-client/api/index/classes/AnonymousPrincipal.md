@@ -28,7 +28,7 @@ Sentinel principal representing an unauthenticated user.
 
 > `readonly` **id**: `"anonymous"` = `"anonymous"`
 
-Unique identifier for this principal.
+The sentinel id (`'anonymous'`).
 
 #### Implementation of
 
@@ -40,7 +40,7 @@ Unique identifier for this principal.
 
 > `readonly` **name**: `"Anonymous"` = `"Anonymous"`
 
-Human-readable display name.
+The display name (`'Anonymous'`).
 
 #### Implementation of
 
@@ -52,7 +52,7 @@ Human-readable display name.
 
 > `readonly` **roles**: readonly `string`[]
 
-Roles assigned to this principal.
+The empty role set.
 
 #### Implementation of
 
@@ -64,7 +64,7 @@ Roles assigned to this principal.
 
 > **hasAnyRole**(...`_roles`): `boolean`
 
-Returns `true` if this principal has **at least one** of the given roles.
+Always `false` for the anonymous sentinel.
 
 #### Parameters
 
@@ -72,9 +72,13 @@ Returns `true` if this principal has **at least one** of the given roles.
 
 ...`string`[]
 
+Ignored.
+
 #### Returns
 
 `boolean`
+
+Always `false`.
 
 #### Implementation of
 
@@ -86,7 +90,7 @@ Returns `true` if this principal has **at least one** of the given roles.
 
 > **hasRole**(`_role`): `boolean`
 
-Returns `true` if this principal has the given role.
+Always `false` for the anonymous sentinel.
 
 #### Parameters
 
@@ -94,9 +98,13 @@ Returns `true` if this principal has the given role.
 
 `string`
 
+Ignored.
+
 #### Returns
 
 `boolean`
+
+Always `false`.
 
 #### Implementation of
 

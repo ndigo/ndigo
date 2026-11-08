@@ -1,4 +1,5 @@
 /**
+ * Registry of authentication adapters.
  */
 import { type AuthAdapter } from './adapter';
 
@@ -30,6 +31,8 @@ export class AuthRegistry {
 
     /**
      * Returns all registered adapters.
+     *
+     * @returns The registered adapters, in registration order.
      */
     static getAllAdapters(): AuthAdapter[] {
         return Array.from(this.adapters.values());

@@ -14,11 +14,15 @@ Represents an alert triggered when a counter's rate per second exceeds a defined
 
 > `readonly` **counterKey**: `string`
 
+The counter's map key.
+
 ***
 
 ### feature
 
 > `readonly` **feature**: `string`
+
+The feature the counter belongs to.
 
 ***
 
@@ -26,9 +30,12 @@ Represents an alert triggered when a counter's rate per second exceeds a defined
 
 > `readonly` **ratePerSecond**: `number`
 
+The observed rate per second.
+
 ***
 
 ### threshold
 
 > `readonly` **threshold**: `number`
 
+The threshold that was exceeded.

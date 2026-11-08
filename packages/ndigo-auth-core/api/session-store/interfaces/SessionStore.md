@@ -40,13 +40,19 @@ Persists `record` for `ttlMs` and returns the new opaque session id.
 
 [`SessionRecord`](SessionRecord.md)
 
+The session record to store.
+
 ##### ttlMs
 
 `number`
 
+The session lifetime in milliseconds.
+
 #### Returns
 
 `Promise`\<`string`\>
+
+The generated session id.
 
 ***
 
@@ -62,9 +68,13 @@ Terminates the session. Unknown ids are a no-op.
 
 `string`
 
+The session id.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once deleted.
 
 ***
 
@@ -87,9 +97,13 @@ Idempotent: an account with no live sessions returns `0`.
 
 `string`
 
+The account id.
+
 #### Returns
 
 `Promise`\<`number`\>
+
+The number of live sessions removed.
 
 ***
 
@@ -106,9 +120,13 @@ Returns the session record, or `null` when unknown or expired
 
 `string`
 
+The session id.
+
 #### Returns
 
 `Promise`\<[`SessionRecord`](SessionRecord.md) \| `null`\>
+
+The record, or `null`.
 
 ***
 
@@ -135,10 +153,16 @@ window).
 
 `string`
 
+The current session id.
+
 ##### record
 
 [`SessionRecord`](SessionRecord.md)
 
+The record to store under the new id.
+
 #### Returns
 
 `Promise`\<\{ `expiresAt`: `number`; `id`: `string`; \}\>
+
+The new session id and its effective expiry.

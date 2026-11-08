@@ -16,3 +16,5 @@ so the two lists can never drift (HG-7).
 ## Returns
 
 `HandlerMethodArgumentResolver`[]
+
+The browser argument resolvers, in registration order.

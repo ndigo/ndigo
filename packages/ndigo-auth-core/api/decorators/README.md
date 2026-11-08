@@ -6,6 +6,8 @@
 
 # decorators
 
+`@authenticated` / `@authorized` metadata decorators.
+
 ## Variables
 
 - [AUTH\_REQUIRED\_KEY](variables/AUTH_REQUIRED_KEY.md)

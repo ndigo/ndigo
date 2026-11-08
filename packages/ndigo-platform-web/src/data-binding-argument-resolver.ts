@@ -1,4 +1,5 @@
 /**
+ * Argument resolver that reads data-binding sources.
  */
 import { AbstractDataBindingArgumentResolver, type DataBindingSource } from '@ndigo/dispatcher';
 import { Route } from '@ndigo/router';
@@ -24,13 +25,20 @@ const BROWSER_BINDABLE_SOURCES: readonly DataBindingSource[] = ['query', 'cookie
  * → `DataBinder` → conversion → Zod hook.
  */
 export class BrowserDataBindingMethodArgumentResolver extends AbstractDataBindingArgumentResolver {
+    /** The browser data sources this resolver binds. */
     protected readonly bindableSources = BROWSER_BINDABLE_SOURCES;
 
     get [Symbol.toStringTag](): string {
         return 'BrowserDataBindingMethodArgumentResolver';
     }
 
-    /** Retrieves the browser data source identified by the source name. */
+    /**
+     * Retrieves the browser data source identified by the source name.
+     *
+     * @param source - The data-source name.
+     * @param route - The current route.
+     * @returns The source's data, or `undefined` when unavailable.
+     */
     protected getSourceData(source: string, route: Route): Record<string, unknown> | undefined {
         switch (source) {
             case 'query':

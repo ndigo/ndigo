@@ -23,6 +23,8 @@ Returns the account for `id`, or `null` when unknown.
 
 `string`
 
+The account id.
+
 #### Returns
 
 `Promise`\<[`UserRecord`](UserRecord.md) \| `null`\>
@@ -40,6 +42,8 @@ Returns the account for `username`, or `null` when unknown.
 ##### username
 
 `string`
+
+The account username.
 
 #### Returns
 
@@ -64,9 +68,13 @@ Throws when `id` is unknown (fail closed).
 
 `string`
 
+The account id.
+
 #### Returns
 
 `Promise`\<`number`\>
+
+The new token version.
 
 ***
 
@@ -91,10 +99,16 @@ Throws when `id` is unknown (fail closed).
 
 `string`
 
+The account id.
+
 ##### expected
 
 `number`
 
+The token version the caller observed.
+
 #### Returns
 
 `Promise`\<`number` \| `null`\>
+
+The new token version, or `null` when the expectation lost.

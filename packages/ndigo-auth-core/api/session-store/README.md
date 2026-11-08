@@ -6,6 +6,8 @@
 
 # session-store
 
+The server-session store contract.
+
 ## Interfaces
 
 - [SessionRecord](interfaces/SessionRecord.md)

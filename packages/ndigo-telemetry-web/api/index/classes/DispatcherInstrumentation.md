@@ -35,7 +35,7 @@ providing visibility into route dispatching processes.
 
 > **disable**(): `void`
 
-Hook for subclasses to wire up `_unwrap` calls.
+Restores the original dispatcher methods.
 
 #### Returns
 
@@ -51,7 +51,7 @@ Hook for subclasses to wire up `_unwrap` calls.
 
 > **enable**(): `void`
 
-Hook for subclasses to wire up `_wrap` calls.
+Patches `dispatch` and `_resolveViewName` to record dispatch spans.
 
 #### Returns
 

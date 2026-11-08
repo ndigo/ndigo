@@ -1,4 +1,5 @@
 /**
+ * Browser locale signal and helpers.
  */
 import { Signal, signal } from '@ndigo/signals';
 import { normalizeLocale } from '@ndigo/content';

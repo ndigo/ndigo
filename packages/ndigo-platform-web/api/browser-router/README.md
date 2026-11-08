@@ -6,6 +6,8 @@
 
 # browser-router
 
+History-API router implementation for browser applications.
+
 ## Classes
 
 - [BrowserRouter](classes/BrowserRouter.md)

@@ -165,8 +165,7 @@ The default profiles used when no active profile is configured.
 
 > **acceptsProfiles**(`expression`): `boolean`
 
-Evaluates a profile expression against the effective active set
-(explicit profiles, or defaults when none are explicit).
+Evaluates a profile expression against the active/default set.
 
 #### Parameters
 
@@ -174,14 +173,13 @@ Evaluates a profile expression against the effective active set
 
 `string` \| [`ProfileTerm`](#)
 
-The profile expression (`dev`, `!prod`, `a & b`,
-  `(a | b) & c`) or a composed [ProfileTerm](#) (AD-34 D5).
+The profile expression.
 
 #### Returns
 
 `boolean`
 
-`true` when the expression matches.
+Whether the expression matches.
 
 #### Implementation of
 
@@ -327,7 +325,7 @@ The registered event types.
 
 > **getProperty**(`key`, `defaultValue?`): `JSONValue` \| `undefined`
 
-Resolves a property value, falling back to a default when missing.
+Resolves a property value.
 
 #### Parameters
 
@@ -335,19 +333,19 @@ Resolves a property value, falling back to a default when missing.
 
 `string`
 
-The property name to resolve.
+The property key.
 
 ##### defaultValue?
 
 `JSONValue`
 
-The value to return when no property is found.
+Value returned when the key is absent.
 
 #### Returns
 
 `JSONValue` \| `undefined`
 
-The resolved property value or the default value.
+The resolved value, or `defaultValue`.
 
 #### Implementation of
 
@@ -359,7 +357,7 @@ The resolved property value or the default value.
 
 > **getPropertyAs**\<`T`\>(`key`, `targetType`, `defaultValue?`): `T` \| `undefined`
 
-Resolves a property as a typed value, converting when needed.
+Resolves and converts a property value.
 
 #### Type Parameters
 
@@ -373,25 +371,25 @@ Resolves a property as a typed value, converting when needed.
 
 `string`
 
-The property name to resolve.
+The property key.
 
 ##### targetType
 
 `T` \| (new (...`args`) => `T`) \| (() => `T`)
 
-The target constructor or primitive (`Number`, `Boolean`, `Date`, ...).
+The conversion target type.
 
 ##### defaultValue?
 
 `T`
 
-The value to return when the property is missing.
+Value returned when the key is absent.
 
 #### Returns
 
 `T` \| `undefined`
 
-The typed value or the default.
+The converted value, or `defaultValue`.
 
 #### Implementation of
 
@@ -424,8 +422,7 @@ The live registry.
 
 > **getRawProperty**(`key`): `JSONValue` \| `undefined`
 
-Raw index lookup, bypassing placeholder resolution (internal use by the
-placeholder resolver; consumers should use [getProperty](../../property-resolver/interfaces/PropertyResolver.md#getproperty)).
+Resolves the raw stored value of a property.
 
 #### Parameters
 
@@ -433,13 +430,13 @@ placeholder resolver; consumers should use [getProperty](../../property-resolver
 
 `string`
 
-The property name to resolve.
+The property key.
 
 #### Returns
 
 `JSONValue` \| `undefined`
 
-The raw value or `undefined`.
+The raw value, or `undefined`.
 
 #### Implementation of
 
@@ -451,7 +448,7 @@ The raw value or `undefined`.
 
 > **getRequiredProperty**(`key`): `JSONValue`
 
-Returns the resolved property value or throws when missing.
+Resolves a property, throwing when absent.
 
 #### Parameters
 
@@ -459,13 +456,17 @@ Returns the resolved property value or throws when missing.
 
 `string`
 
-The property name to resolve.
+The property key.
 
 #### Returns
 
 `JSONValue`
 
-The resolved property value.
+The resolved value.
+
+#### Throws
+
+When the key has no value.
 
 #### Implementation of
 
@@ -477,7 +478,7 @@ The resolved property value.
 
 > **getRequiredPropertyAs**\<`T`\>(`key`, `targetType`): `T`
 
-Returns a typed property or throws when missing or unconvertible.
+Resolves and converts a property, throwing when absent.
 
 #### Type Parameters
 
@@ -491,19 +492,23 @@ Returns a typed property or throws when missing or unconvertible.
 
 `string`
 
-The property name to resolve.
+The property key.
 
 ##### targetType
 
 `T` \| (new (...`args`) => `T`) \| (() => `T`)
 
-The target constructor or primitive.
+The conversion target type.
 
 #### Returns
 
 `T`
 
-The typed value.
+The converted value.
+
+#### Throws
+
+When the key has no value or conversion fails.
 
 #### Implementation of
 
@@ -515,7 +520,7 @@ The typed value.
 
 > **hasProperty**(`key`): `boolean`
 
-Returns whether a property key can be resolved.
+Whether the environment resolves `key`.
 
 #### Parameters
 
@@ -523,13 +528,13 @@ Returns whether a property key can be resolved.
 
 `string`
 
-The property name to resolve.
+The property key.
 
 #### Returns
 
 `boolean`
 
-`true` when the property exists.
+Whether a value exists.
 
 #### Implementation of
 
@@ -601,7 +606,7 @@ The registered listeners.
 
 > **merge**(`environment`): `void`
 
-Merges property sources and profiles from another configurable environment.
+Merges another environment's property sources, preserving precedence.
 
 #### Parameters
 
@@ -609,11 +614,13 @@ Merges property sources and profiles from another configurable environment.
 
 [`ConfigurableEnvironment`](../interfaces/ConfigurableEnvironment.md)
 
-The other environment.
+The environment to merge.
 
 #### Returns
 
 `void`
+
+Nothing; sources are appended.
 
 #### Implementation of
 
@@ -697,8 +704,7 @@ This emitter.
 
 > **originOf**(`key`): `string` \| `null`
 
-Returns the name of the source that won the given property key, or
-`null` when unknown or the active index retains no origins.
+Returns the source name that last set `key`.
 
 #### Parameters
 
@@ -706,13 +712,13 @@ Returns the name of the source that won the given property key, or
 
 `string`
 
-The property key (top-level granularity).
+The property key.
 
 #### Returns
 
 `string` \| `null`
 
-The winning source name, or `null`.
+The origin source name, or `null`.
 
 #### Implementation of
 
@@ -724,12 +730,13 @@ The winning source name, or `null`.
 
 > **refresh**(): `void`
 
-Recomputes the environment from its current sources: rebuilds the
-lookup index and clears caches. Environment-scope only (AD-16 D3).
+Rebuilds the resolver and emits the refresh event.
 
 #### Returns
 
 `void`
+
+Nothing; listeners are notified as a side effect.
 
 #### Implementation of
 
@@ -741,12 +748,7 @@ lookup index and clears caches. Environment-scope only (AD-16 D3).
 
 > **typedConfig**\<`S`\>(`prefix`, `schema`): `output`\<`S`\> \| `undefined`
 
-Resolves a schema-typed configuration value from this environment
-(AD-34 D3): object-shaped schemas read each key under `prefix`
-(`server.port` for `('server', z.object({ port: ... }))`); coercion,
-defaults and required checks follow the schema. A missing required key
-throws the zod error; an absent value with no default yields
-`undefined`.
+Resolves a Zod-schema configuration subtree.
 
 #### Type Parameters
 
@@ -760,20 +762,19 @@ throws the zod error; an absent value with no default yields
 
 `string`
 
-Property prefix (the keypath when the schema is a
-  top-level scalar).
+The property prefix.
 
 ##### schema
 
 `S`
 
-The zod schema describing the value.
+The Zod schema to validate against.
 
 #### Returns
 
 `output`\<`S`\> \| `undefined`
 
-The parsed typed value, or `undefined` when absent.
+The validated configuration, or `undefined` when absent.
 
 #### Implementation of
 

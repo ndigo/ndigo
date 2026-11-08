@@ -6,6 +6,8 @@
 
 # route-guard
 
+Route interceptor enforcing `@authenticated` / `@authorized` metadata.
+
 ## Classes
 
 - [AuthRouteGuard](classes/AuthRouteGuard.md)

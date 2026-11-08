@@ -166,7 +166,11 @@ export abstract class AbstractBaseInstrumentation extends InstrumentationBase {
         };
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Returns the instrumentation module definitions.
+     *
+     * @returns The module definitions (empty for this base).
+     */
     protected init(): InstrumentationModuleDefinition[] {
         return [];
     }
@@ -179,6 +183,8 @@ export abstract class AbstractBaseInstrumentation extends InstrumentationBase {
 
     /**
      * Returns a synchronous patch function that increments a counter.
+     *
+     * @param config - The metric configuration.
      */
     protected _patchCount(config: CountConfig) {
         // Lazily resolved on first patched call: `InstrumentationBase` runs
@@ -201,6 +207,8 @@ export abstract class AbstractBaseInstrumentation extends InstrumentationBase {
     /**
      * Returns a synchronous patch function that wraps the original method
      * in a span with the given configuration.
+     *
+     * @param config - The span configuration.
      */
     protected _patchSync(config: SpanConfig) {
         return <This, Args extends unknown[], Return>(
@@ -232,6 +240,8 @@ export abstract class AbstractBaseInstrumentation extends InstrumentationBase {
      * Returns a patch function that wraps the original method in an active
      * span with the given configuration. Async by convention; the sync
      * variant is the explicitly-named `_patchSync`.
+     *
+     * @param config - The span configuration.
      */
     protected _patch(config: SpanConfig) {
         return <This, Args extends unknown[], Return>(

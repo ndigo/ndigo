@@ -14,11 +14,15 @@ Represents a snapshot of a counter's rate per second for a specific feature.
 
 > `readonly` **counterKey**: `string`
 
+The counter's map key.
+
 ***
 
 ### feature
 
 > `readonly` **feature**: `string`
+
+The feature the counter belongs to.
 
 ***
 
@@ -26,3 +30,4 @@ Represents a snapshot of a counter's rate per second for a specific feature.
 
 > `readonly` **ratePerSecond**: `number`
 
+The observed rate per second.

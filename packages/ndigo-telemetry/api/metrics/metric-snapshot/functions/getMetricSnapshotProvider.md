@@ -16,3 +16,5 @@ source" document).
 ## Returns
 
 [`MetricSnapshotProvider`](../interfaces/MetricSnapshotProvider.md) \| `undefined`
+
+The active snapshot provider, or `undefined`.

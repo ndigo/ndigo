@@ -1,4 +1,5 @@
 /**
+ * History-API router implementation for browser applications.
  */
 /* eslint-disable internal/no-browser-globals-in-isomorphic -- BrowserRouter is a browser-only implementation; browser globals are intentional and expected here */
 
@@ -72,14 +73,18 @@ export class BrowserRouter extends AbstractRouter {
      */
     #navigation: Promise<unknown>;
 
+    /** The callback invoked with the current route after a navigation. */
     readonly callback!: RouterCallback;
 
+    /** The current route's string form. */
     get route(): string {
         return this.#route?.toString() || '';
     }
 
+    /** Whether the router has been destroyed. */
     destroyed!: boolean;
 
+    /** Navigation history, newest first. */
     get history(): RingBuffer<RouteTransaction> {
         return this.#history;
     }
@@ -173,6 +178,8 @@ export class BrowserRouter extends AbstractRouter {
 
     /**
      * Handles the native `popstate` event (back/forward navigation).
+     *
+     * @param _event - The popstate event (unused; the URL is read directly).
      */
     protected _onPopState(_event: PopStateEvent): void {
         const newRoute = window.location.pathname + window.location.search || '/';
@@ -223,6 +230,10 @@ export class BrowserRouter extends AbstractRouter {
      * `afterCompletion`); the route is only committed once `preHandle` accepts
      * it and is restored to the pre-call route when the route change is
      * rejected or fails.
+     *
+     * @param newRoute - The target path.
+     * @param _syncHash - Accepted for API parity; the browser router owns the URL.
+     * @returns Whether the route was committed.
      */
     protected async _setRoute(newRoute: string, _syncHash = true): Promise<boolean> {
         const route = new PathRoute(newRoute),
@@ -247,6 +258,9 @@ export class BrowserRouter extends AbstractRouter {
      *
      * Mapped interceptors are matched with named-parameter support, and their
      * parameters are bound onto the route before any phase runs.
+     *
+     * @param route - The route being navigated to.
+     * @returns The interceptors that apply to the route.
      */
     protected _resolveInterceptors(route: PathRoute): RouterInterceptor[] {
         return this.interceptors.filter((interceptor) => {

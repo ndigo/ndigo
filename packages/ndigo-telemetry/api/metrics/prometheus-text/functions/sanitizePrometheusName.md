@@ -18,6 +18,10 @@ leading digit gains an `_` prefix (a name may not start with a digit).
 
 `string`
 
+The instrument or attribute name.
+
 ## Returns
 
 `string`
+
+The Prometheus-safe name.

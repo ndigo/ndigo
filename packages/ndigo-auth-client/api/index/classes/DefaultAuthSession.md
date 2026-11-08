@@ -33,9 +33,13 @@ unauthenticated state with no principal or token.
 
 > **get** **isAuthenticated**(): `boolean`
 
+Whether both a principal and token are set.
+
 ##### Returns
 
 `boolean`
+
+Whether both a principal and token are set.
 
 #### Implementation of
 
@@ -49,9 +53,13 @@ unauthenticated state with no principal or token.
 
 > **get** **principal**(): [`Principal`](../interfaces/Principal.md) \| `null`
 
+The authenticated principal, or `null`.
+
 ##### Returns
 
 [`Principal`](../interfaces/Principal.md) \| `null`
+
+The authenticated principal, or `null`.
 
 #### Implementation of
 
@@ -65,9 +73,13 @@ unauthenticated state with no principal or token.
 
 > **get** **token**(): `string` \| `null`
 
+The session/access token, or `null`.
+
 ##### Returns
 
 `string` \| `null`
+
+The session/access token, or `null`.
 
 #### Implementation of
 
@@ -79,7 +91,7 @@ unauthenticated state with no principal or token.
 
 > **clear**(): `void`
 
-Clears the session, resetting to an unauthenticated state.
+Clears the session.
 
 #### Returns
 
@@ -95,7 +107,7 @@ Clears the session, resetting to an unauthenticated state.
 
 > **setPrincipal**(`principal`, `token`): `void`
 
-Sets the principal and token, marking the session as authenticated.
+Sets the principal and token, marking the session authenticated.
 
 #### Parameters
 

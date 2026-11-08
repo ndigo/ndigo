@@ -1,4 +1,5 @@
 /**
+ * First-party username/password authentication adapter.
  */
 import {
     type AuthAdapter,
@@ -15,7 +16,9 @@ import { ApplicationError } from '@ndigo/core';
  * Credential shape the adapter authenticates: `{ username, password }`.
  */
 export interface Credentials {
+    /** The account username. */
     readonly username: string;
+    /** The account password. */
     readonly password: string;
 }
 
@@ -78,6 +81,7 @@ export class InvalidCredentialsError extends ApplicationError {
  * v1 — see the auth completion plan, Wave 5 hardening).
  */
 export class CredentialsAuthAdapter implements AuthAdapter {
+    /** Adapter identifier (`'credentials'`). */
     readonly id = 'credentials';
 
     readonly #userStore: UserStore;
@@ -86,6 +90,11 @@ export class CredentialsAuthAdapter implements AuthAdapter {
     readonly #sessionTtlMs: number;
     #dummyHash: string | null = null;
 
+    /**
+     * Creates the adapter over the given stores.
+     *
+     * @param options - User store, password encoder, session store, and TTL.
+     */
     constructor(options: CredentialsAuthAdapterOptions) {
         this.#userStore = options.userStore;
         this.#passwordEncoder = options.passwordEncoder;
@@ -93,6 +102,13 @@ export class CredentialsAuthAdapter implements AuthAdapter {
         this.#sessionTtlMs = options.sessionTtlMs ?? DEFAULT_SESSION_TTL_MS;
     }
 
+    /**
+     * Authenticates a username/password pair and issues an opaque session.
+     *
+     * @param credentials - The `{ username, password }` credentials.
+     * @returns The authenticated principal, session token, and expiry.
+     * @throws `InvalidCredentialsError` for every failure mode.
+     */
     async authenticate(credentials: unknown): Promise<AuthResult> {
         if (!isCredentials(credentials)) {
             throw new InvalidCredentialsError();
@@ -120,6 +136,12 @@ export class CredentialsAuthAdapter implements AuthAdapter {
         return { principal, token, expiresAt: issuedAt + this.#sessionTtlMs };
     }
 
+    /**
+     * Validates an opaque session token and its live account state.
+     *
+     * @param token - The session token.
+     * @returns The authenticated principal, or `null` when invalid/revoked.
+     */
     async validate(token: string): Promise<Principal | null> {
         const record = await this.#sessionStore.get(token);
         if (!record) {
@@ -135,6 +157,13 @@ export class CredentialsAuthAdapter implements AuthAdapter {
         return record.principal;
     }
 
+    /**
+     * Rotates a session token (fixation-safe: the old token dies).
+     *
+     * @param token - The current session token.
+     * @returns The principal and the rotated session token/expiry.
+     * @throws `InvalidCredentialsError` when the session or account is invalid.
+     */
     async refresh(token: string): Promise<AuthResult> {
         const record = await this.#sessionStore.get(token);
         if (!record) {
@@ -154,6 +183,12 @@ export class CredentialsAuthAdapter implements AuthAdapter {
         return { principal: record.principal, token: next.id, expiresAt: next.expiresAt };
     }
 
+    /**
+     * Deletes one session.
+     *
+     * @param token - The session token to revoke.
+     * @returns A promise that resolves once deleted.
+     */
     async logout(token: string): Promise<void> {
         await this.#sessionStore.delete(token);
     }

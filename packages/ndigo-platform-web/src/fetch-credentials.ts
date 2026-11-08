@@ -1,4 +1,5 @@
 /**
+ * HTTP interceptor that sends fetch credentials.
  */
 import { HTTP, RequestAwareHTTPInterceptor } from '@ndigo/http';
 
@@ -47,6 +48,7 @@ export class FetchCredentialsInterceptor implements RequestAwareHTTPInterceptor 
      * cache, integrity and keepalive are preserved, overriding only `credentials`.
      *
      * @param request - The outgoing request.
+     * @param _http - The HTTP client executing the request (unused).
      * @returns A clone of the request carrying the credentials mode.
      */
     async preRequest(request: Request, _http: HTTP): Promise<Request | void> {

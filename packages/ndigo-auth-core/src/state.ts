@@ -1,4 +1,5 @@
 /**
+ * The authentication-state type.
  */
 import { type Principal } from './principal';
 

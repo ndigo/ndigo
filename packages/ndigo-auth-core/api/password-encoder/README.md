@@ -6,6 +6,8 @@
 
 # password-encoder
 
+The password-encoder contract and scheme errors.
+
 ## Classes
 
 - [UnknownPasswordSchemeError](classes/UnknownPasswordSchemeError.md)

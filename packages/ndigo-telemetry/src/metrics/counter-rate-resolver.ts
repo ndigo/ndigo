@@ -1,4 +1,5 @@
 /**
+ * Counter rate-of-change sampling and threshold alerts.
  */
 import { IllegalStateError } from '@ndigo/core';
 import { FeatureMetricAggregator } from './feature-metric-aggregator';
@@ -7,8 +8,11 @@ import { FeatureMetricAggregator } from './feature-metric-aggregator';
  * Represents a snapshot of a counter's rate per second for a specific feature.
  */
 export interface CounterRateSnapshot {
+    /** The counter's map key. */
     readonly counterKey: string;
+    /** The feature the counter belongs to. */
     readonly feature: string;
+    /** The observed rate per second. */
     readonly ratePerSecond: number;
 }
 
@@ -16,9 +20,13 @@ export interface CounterRateSnapshot {
  * Represents an alert triggered when a counter's rate per second exceeds a defined threshold.
  */
 export interface CounterRateAlert {
+    /** The counter's map key. */
     readonly counterKey: string;
+    /** The feature the counter belongs to. */
     readonly feature: string;
+    /** The observed rate per second. */
     readonly ratePerSecond: number;
+    /** The threshold that was exceeded. */
     readonly threshold: number;
 }
 
@@ -26,8 +34,11 @@ export interface CounterRateAlert {
  * Options for configuring the `CounterRateResolver`.
  */
 export interface CounterRateResolverOptions {
+    /** The aggregator whose counters are sampled. */
     readonly aggregator: FeatureMetricAggregator;
+    /** Per-counter alert thresholds. */
     readonly thresholds?: ReadonlyMap<string, number>;
+    /** Sampling window size in entries. */
     readonly windowSize?: number;
 }
 

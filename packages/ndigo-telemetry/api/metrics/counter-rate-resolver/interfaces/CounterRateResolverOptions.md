@@ -14,11 +14,15 @@ Options for configuring the `CounterRateResolver`.
 
 > `readonly` **aggregator**: [`FeatureMetricAggregator`](../../feature-metric-aggregator/classes/FeatureMetricAggregator.md)
 
+The aggregator whose counters are sampled.
+
 ***
 
 ### thresholds?
 
 > `readonly` `optional` **thresholds?**: `ReadonlyMap`\<`string`, `number`\>
+
+Per-counter alert thresholds.
 
 ***
 
@@ -26,3 +30,4 @@ Options for configuring the `CounterRateResolver`.
 
 > `readonly` `optional` **windowSize?**: `number`
 
+Sampling window size in entries.

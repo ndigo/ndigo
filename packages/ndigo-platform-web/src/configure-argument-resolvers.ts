@@ -1,4 +1,5 @@
 /**
+ * Registers the browser argument resolvers.
  */
 import { ApplicationContext } from '@ndigo/context';
 import { HandlerMethodArgumentResolver, MethodParameterType, registerArgumentResolvers } from '@ndigo/dispatcher';
@@ -12,6 +13,8 @@ import { BrowserStorageValueMethodArgumentResolver } from './browser-storage-arg
  * match wins). Single source of truth shared by
  * {@link configureBrowserArgumentResolvers} and the auto-configuration entry,
  * so the two lists can never drift (HG-7).
+ *
+ * @returns The browser argument resolvers, in registration order.
  */
 export function createBrowserArgumentResolvers(): HandlerMethodArgumentResolver[] {
     return [
@@ -33,6 +36,10 @@ export function createBrowserArgumentResolvers(): HandlerMethodArgumentResolver[
 
 /**
  * Registers browser-specific argument resolvers into the application context.
+ *
+ * @param applicationContext - The application context to configure.
+ * @param _options - Reserved options (unused).
+ * @returns The registered argument resolvers.
  */
 export function configureBrowserArgumentResolvers(
     applicationContext: ApplicationContext,

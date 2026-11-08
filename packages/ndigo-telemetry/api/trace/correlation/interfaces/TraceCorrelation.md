@@ -14,9 +14,12 @@ The active trace context as plain ids, for stamping anything.
 
 > **spanId**: `string`
 
+The active span id.
+
 ***
 
 ### traceId
 
 > **traceId**: `string`
 
+The active trace id.

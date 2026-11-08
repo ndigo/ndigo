@@ -6,6 +6,8 @@
 
 # metrics/counter-rate-resolver
 
+Counter rate-of-change sampling and threshold alerts.
+
 ## Classes
 
 - [CounterRateResolver](classes/CounterRateResolver.md)

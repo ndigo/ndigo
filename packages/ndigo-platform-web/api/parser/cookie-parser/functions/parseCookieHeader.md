@@ -8,7 +8,8 @@
 
 > **parseCookieHeader**(`input`): `Record`\<`string`, `string`\>
 
-Parses a Cookie header string into a name→value record, percent-decoding both keys and values.
+Parses a `Cookie` header string into a name→value record, percent-decoding
+both keys and values.
 
 ## Parameters
 
@@ -16,6 +17,10 @@ Parses a Cookie header string into a name→value record, percent-decoding both 
 
 `string`
 
+The raw `Cookie` header.
+
 ## Returns
 
 `Record`\<`string`, `string`\>
+
+The percent-decoded cookie record.

@@ -16,10 +16,16 @@ Registers browser-specific argument resolvers into the application context.
 
 `ApplicationContext`
 
+The application context to configure.
+
 ### \_options?
 
 `unknown`
 
+Reserved options (unused).
+
 ## Returns
 
 `HandlerMethodArgumentResolver`[]
+
+The registered argument resolvers.

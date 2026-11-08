@@ -61,6 +61,8 @@ The outgoing request.
 
 `HTTP`
 
+The HTTP client executing the request (unused).
+
 #### Returns
 
 `Promise`\<`void` \| `Request`\>

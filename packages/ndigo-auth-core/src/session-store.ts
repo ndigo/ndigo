@@ -1,4 +1,5 @@
 /**
+ * The server-session store contract.
  */
 import { type Principal } from './principal';
 
@@ -48,12 +49,19 @@ export interface SessionStore {
 
     /**
      * Persists `record` for `ttlMs` and returns the new opaque session id.
+     *
+     * @param record - The session record to store.
+     * @param ttlMs - The session lifetime in milliseconds.
+     * @returns The generated session id.
      */
     create(record: SessionRecord, ttlMs: number): Promise<string>;
 
     /**
      * Returns the session record, or `null` when unknown or expired
      * (expired sessions are also purged).
+     *
+     * @param sessionId - The session id.
+     * @returns The record, or `null`.
      */
     get(sessionId: string): Promise<SessionRecord | null>;
 
@@ -70,11 +78,18 @@ export interface SessionStore {
      * preserves the **remaining** TTL, so a refresh near expiry yields a
      * short-lived session; a sliding-window store would reset to a full
      * window).
+     *
+     * @param sessionId - The current session id.
+     * @param record - The record to store under the new id.
+     * @returns The new session id and its effective expiry.
      */
     rotate(sessionId: string, record: SessionRecord): Promise<{ id: string; expiresAt: number }>;
 
     /**
      * Terminates the session. Unknown ids are a no-op.
+     *
+     * @param sessionId - The session id.
+     * @returns A promise that resolves once deleted.
      */
     delete(sessionId: string): Promise<void>;
 
@@ -87,6 +102,9 @@ export interface SessionStore {
      * `CredentialsAuthAdapter.logoutAll`.
      *
      * Idempotent: an account with no live sessions returns `0`.
+     *
+     * @param userId - The account id.
+     * @returns The number of live sessions removed.
      */
     deleteForUser(userId: string): Promise<number>;
 }

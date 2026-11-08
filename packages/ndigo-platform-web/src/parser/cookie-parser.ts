@@ -1,4 +1,5 @@
 /**
+ * Parses `document.cookie` header strings.
  */
 import { decodeURIComponent as decode } from '@ndigo/util/string';
 
@@ -6,7 +7,13 @@ const cookieValueRule = /^[^;,\s]*/,
     percentEncodedRule = /(%[0-9A-Za-z]{2})+/g,
     percentDecode = (value: string): string => value.replace(percentEncodedRule, decode);
 
-/** Parses a Cookie header string into a name→value record, percent-decoding both keys and values. */
+/**
+ * Parses a `Cookie` header string into a name→value record, percent-decoding
+ * both keys and values.
+ *
+ * @param input - The raw `Cookie` header.
+ * @returns The percent-decoded cookie record.
+ */
 export function parseCookieHeader(input: string): Record<string, string> {
     const result = Object.create(null) as Record<string, string>;
     let pos = 0;

@@ -6,6 +6,8 @@
 
 # cookie-theme-resolver
 
+Theme resolver backed by a cookie.
+
 ## Classes
 
 - [CookieThemeResolver](classes/CookieThemeResolver.md)

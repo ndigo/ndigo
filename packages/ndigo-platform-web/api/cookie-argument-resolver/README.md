@@ -6,6 +6,8 @@
 
 # cookie-argument-resolver
 
+Argument resolver that reads cookies.
+
 ## Classes
 
 - [BrowserCookieValueMethodArgumentResolver](classes/BrowserCookieValueMethodArgumentResolver.md)

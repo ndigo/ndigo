@@ -121,9 +121,13 @@ Returns whether this resolver supports history-state parameters.
 
 `MethodParameter`
 
+The method parameter to test.
+
 #### Returns
 
 `boolean`
+
+Whether the parameter type matches.
 
 #### Overrides
 

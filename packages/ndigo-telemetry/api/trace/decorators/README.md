@@ -6,6 +6,8 @@
 
 # trace/decorators
 
+`@traced` decorator and trace metadata readers.
+
 ## Functions
 
 - [getTraced](functions/getTraced.md)

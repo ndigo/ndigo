@@ -33,11 +33,15 @@ cap bounds the live-session map (SEC-4, 2026-09-27 review).
 
 > **new InMemorySessionStore**(`options?`): `InMemorySessionStore`
 
+Creates a store with the given capacity.
+
 #### Parameters
 
 ##### options?
 
 [`InMemorySessionStoreOptions`](../interfaces/InMemorySessionStoreOptions.md) = `{}`
+
+Store options (maximum live sessions).
 
 #### Returns
 
@@ -49,8 +53,7 @@ cap bounds the live-session map (SEC-4, 2026-09-27 review).
 
 > `readonly` **kind**: `"in-memory"` = `'in-memory'`
 
-Backend identifier for observability/diagnostics
-(e.g. `'in-memory'`, `'redis'`).
+Store identifier (`'in-memory'`).
 
 #### Implementation of
 
@@ -62,7 +65,7 @@ Backend identifier for observability/diagnostics
 
 > **create**(`record`, `ttlMs`): `Promise`\<`string`\>
 
-Persists `record` for `ttlMs` and returns the new opaque session id.
+Creates a session record.
 
 #### Parameters
 
@@ -70,13 +73,19 @@ Persists `record` for `ttlMs` and returns the new opaque session id.
 
 `SessionRecord`
 
+The session record to store.
+
 ##### ttlMs
 
 `number`
 
+The session lifetime in milliseconds.
+
 #### Returns
 
 `Promise`\<`string`\>
+
+The generated session id.
 
 #### Implementation of
 
@@ -88,7 +97,7 @@ Persists `record` for `ttlMs` and returns the new opaque session id.
 
 > **delete**(`sessionId`): `Promise`\<`void`\>
 
-Terminates the session. Unknown ids are a no-op.
+Deletes one session.
 
 #### Parameters
 
@@ -96,9 +105,13 @@ Terminates the session. Unknown ids are a no-op.
 
 `string`
 
+The session id.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once deleted.
 
 #### Implementation of
 
@@ -110,14 +123,7 @@ Terminates the session. Unknown ids are a no-op.
 
 > **deleteForUser**(`userId`): `Promise`\<`number`\>
 
-Terminates every **live** session belonging to `userId` and returns
-how many were removed (expired-but-unswept entries are purged without
-being counted as live). This is the user-wide revocation primitive:
-the two shipped stores implement it as an indexed sweep (DELETE ... WHERE principal_id = ?); callers that also want outstanding JWTs of
-the account revoked should bump the account's `tokenVersion` — see
-`CredentialsAuthAdapter.logoutAll`.
-
-Idempotent: an account with no live sessions returns `0`.
+Deletes every live session belonging to a user.
 
 #### Parameters
 
@@ -125,9 +131,13 @@ Idempotent: an account with no live sessions returns `0`.
 
 `string`
 
+The account id.
+
 #### Returns
 
 `Promise`\<`number`\>
+
+The number of live sessions removed.
 
 #### Implementation of
 
@@ -139,8 +149,7 @@ Idempotent: an account with no live sessions returns `0`.
 
 > **get**(`sessionId`): `Promise`\<`SessionRecord` \| `null`\>
 
-Returns the session record, or `null` when unknown or expired
-(expired sessions are also purged).
+Returns the live session record for an id.
 
 #### Parameters
 
@@ -148,9 +157,13 @@ Returns the session record, or `null` when unknown or expired
 
 `string`
 
+The session id.
+
 #### Returns
 
 `Promise`\<`SessionRecord` \| `null`\>
+
+The record, or `null` when missing or expired.
 
 #### Implementation of
 
@@ -162,18 +175,7 @@ Returns the session record, or `null` when unknown or expired
 
 > **rotate**(`sessionId`, `record`): `Promise`\<\{ `expiresAt`: `number`; `id`: `string`; \}\>
 
-Replaces `sessionId` with a new id carrying `record` (session
-fixation protection: login rotates the id so an attacker-chosen id
-can never be adopted). The old id must stop working immediately.
-Throws when `sessionId` is unknown (fail closed).
-
-Returns the new session's id together with its **effective absolute
-expiry** (COR-13): the caller must report this exact timestamp rather
-than derive one from `issuedAt` + TTL — TTL semantics are
-implementation-documented (the reference `InMemorySessionStore`
-preserves the **remaining** TTL, so a refresh near expiry yields a
-short-lived session; a sliding-window store would reset to a full
-window).
+Rotates a session, preserving its remaining TTL.
 
 #### Parameters
 
@@ -181,13 +183,19 @@ window).
 
 `string`
 
+The current session id.
+
 ##### record
 
 `SessionRecord`
 
+The record to store under the new id.
+
 #### Returns
 
 `Promise`\<\{ `expiresAt`: `number`; `id`: `string`; \}\>
+
+The new session id and its effective expiry.
 
 #### Implementation of
 

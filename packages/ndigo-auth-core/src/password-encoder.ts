@@ -1,4 +1,5 @@
 /**
+ * The password-encoder contract and scheme errors.
  */
 
 /**
@@ -38,6 +39,9 @@ export class UnknownPasswordSchemeError extends Error {
 export interface PasswordEncoder {
     /**
      * Hashes a raw password into a self-describing string.
+     *
+     * @param rawPassword - The plaintext password.
+     * @returns The self-describing hash.
      */
     encode(rawPassword: string): string;
 
@@ -45,6 +49,10 @@ export interface PasswordEncoder {
      * Returns `true` only when `rawPassword` derives to `encodedPassword`.
      * Never throws for a mismatch; fails loud (`UnknownPasswordSchemeError`)
      * on an unrecognized scheme.
+     *
+     * @param rawPassword - The plaintext password to verify.
+     * @param encodedPassword - The stored self-describing hash.
+     * @returns Whether the password matches.
      */
     verify(rawPassword: string, encodedPassword: string): boolean;
 
@@ -53,6 +61,9 @@ export interface PasswordEncoder {
      * current configuration — a different scheme, or outdated cost
      * parameters/key length. Login flows rehash on `true` to migrate
      * stored hashes forward.
+     *
+     * @param encodedPassword - The stored hash to inspect.
+     * @returns Whether a rehash is recommended.
      */
     needsRehash(encodedPassword: string): boolean;
 }

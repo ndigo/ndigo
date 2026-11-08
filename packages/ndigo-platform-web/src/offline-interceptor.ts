@@ -1,4 +1,5 @@
 /**
+ * HTTP interceptor that applies offline responses.
  */
 import { EventEmitter } from '@ndigo/context';
 import { HTTPInit, ResponseAwareHTTPInterceptor } from '@ndigo/http';

@@ -25,4 +25,15 @@ The role name that the principal must possess.
 
 ## Returns
 
+The class/method decorator.
+
 (`target`, `context`) => `void`
+
+## Example
+
+```ts
+class AdminController {
+    @authorized('admin')
+    deleteAll(): void {}
+}
+```

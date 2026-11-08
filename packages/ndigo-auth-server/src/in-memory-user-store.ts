@@ -16,18 +16,42 @@ export class InMemoryUserStore implements UserStore {
     readonly #byUsername = new Map<string, UserRecord>();
     readonly #byId = new Map<string, UserRecord>();
 
+    /**
+     * Creates the store, optionally seeding it.
+     *
+     * @param records - Initial user records.
+     */
     constructor(records: readonly UserRecord[] = []) {
         for (const record of records) this.upsert(record);
     }
 
+    /**
+     * Finds a user by username.
+     *
+     * @param username - The account username.
+     * @returns The user record, or `null`.
+     */
     findByUsername(username: string): Promise<UserRecord | null> {
         return Promise.resolve(this.#byUsername.get(username) ?? null);
     }
 
+    /**
+     * Finds a user by id.
+     *
+     * @param id - The account id.
+     * @returns The user record, or `null`.
+     */
     findById(id: string): Promise<UserRecord | null> {
         return Promise.resolve(this.#byId.get(id) ?? null);
     }
 
+    /**
+     * Advances a user's token version.
+     *
+     * @param id - The account id.
+     * @returns The new token version.
+     * @throws When the account is unknown.
+     */
     async incrementTokenVersion(id: string): Promise<number> {
         const record = this.#byId.get(id);
         if (!record) {
@@ -38,6 +62,14 @@ export class InMemoryUserStore implements UserStore {
         return next;
     }
 
+    /**
+     * Advances a user's token version only when it still matches `expected`.
+     *
+     * @param id - The account id.
+     * @param expected - The token version the caller observed.
+     * @returns The new token version, or `null` when the expectation lost.
+     * @throws When the account is unknown.
+     */
     async incrementTokenVersionIfCurrent(id: string, expected: number): Promise<number | null> {
         const record = this.#byId.get(id);
         if (!record) {
@@ -60,7 +92,12 @@ export class InMemoryUserStore implements UserStore {
         this.#byUsername.set(record.username, updated);
     }
 
-    /** Adds or replaces a record (test/demo setup helper). */
+    /**
+     * Adds or replaces a record (test/demo setup helper).
+     *
+     * @param record - The user record to store.
+     * @returns This store.
+     */
     upsert(record: UserRecord): this {
         this.#byUsername.set(record.username, record);
         this.#byId.set(record.id, record);

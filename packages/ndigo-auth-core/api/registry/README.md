@@ -6,6 +6,8 @@
 
 # registry
 
+Registry of authentication adapters.
+
 ## Classes
 
 - [AuthRegistry](classes/AuthRegistry.md)

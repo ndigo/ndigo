@@ -1,4 +1,5 @@
 /**
+ * Hash-based router implementation for browser applications.
  */
 /* eslint-disable internal/no-browser-globals-in-isomorphic -- HashRouter is a browser-only implementation; browser globals are intentional and expected here */
 
@@ -101,6 +102,7 @@ export class HashRouter extends AbstractRouter {
      */
     #navigation: Promise<unknown>;
 
+    /** The callback invoked with the current route after a navigation. */
     readonly callback!: RouterCallback;
 
     /**

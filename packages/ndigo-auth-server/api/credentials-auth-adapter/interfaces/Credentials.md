@@ -14,9 +14,12 @@ Credential shape the adapter authenticates: `{ username, password }`.
 
 > `readonly` **password**: `string`
 
+The account password.
+
 ***
 
 ### username
 
 > `readonly` **username**: `string`
 
+The account username.

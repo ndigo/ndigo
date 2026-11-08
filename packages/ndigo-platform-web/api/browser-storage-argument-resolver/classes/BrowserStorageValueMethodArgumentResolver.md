@@ -149,9 +149,13 @@ Returns whether this resolver supports the configured storage parameter type.
 
 `MethodParameter`
 
+The method parameter to test.
+
 #### Returns
 
 `boolean`
+
+Whether the parameter type matches.
 
 #### Overrides
 

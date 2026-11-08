@@ -20,6 +20,10 @@ sanitized collision within one set keeps the first key.
 
 `Readonly`\<`Record`\<`string`, `AttributeValue`\>\>
 
+The point's attribute set.
+
 ## Returns
 
 `string`
+
+The rendered `{k="v",...}` attribute block.

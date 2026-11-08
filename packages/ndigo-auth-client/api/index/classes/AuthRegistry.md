@@ -67,6 +67,8 @@ Returns all registered adapters.
 
 [`AuthAdapter`](../interfaces/AuthAdapter.md)[]
 
+The registered adapters, in registration order.
+
 ***
 
 ### register()

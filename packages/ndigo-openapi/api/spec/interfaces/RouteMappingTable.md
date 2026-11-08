@@ -16,6 +16,10 @@ table. `RadixMetadataHandlerMapping` (and any
 
 > **getHandlerMethods**(): `Map`\<`RouteMappingInfo`, `RouteHandlerMethod`\>
 
+The registered route table: route info → handler method.
+
 #### Returns
 
 `Map`\<`RouteMappingInfo`, `RouteHandlerMethod`\>
+
+The mapping's handler methods.

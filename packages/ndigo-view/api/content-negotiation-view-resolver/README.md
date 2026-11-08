@@ -6,6 +6,8 @@
 
 # content-negotiation-view-resolver
 
+Media-type negotiation and extension mapping for view resolvers.
+
 ## Classes
 
 - [AbstractMappingContentNegotiationStrategy](classes/AbstractMappingContentNegotiationStrategy.md)

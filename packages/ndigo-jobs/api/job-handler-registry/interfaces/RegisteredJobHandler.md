@@ -14,6 +14,8 @@ One registered handler, ready to execute.
 
 > `optional` **maxAttempts?**: `number`
 
+Attempts allowed before terminal failure, when declared.
+
 ***
 
 ### name
@@ -28,11 +30,15 @@ One registered handler, ready to execute.
 
 > **run**: [`JobHandler`](../../job-handler/type-aliases/JobHandler.md)
 
+The handler function.
+
 ***
 
 ### timeoutMs?
 
 > `optional` **timeoutMs?**: `number`
+
+Per-execution timeout, when declared.
 
 ***
 

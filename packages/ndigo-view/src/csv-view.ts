@@ -1,4 +1,5 @@
 /**
+ * CSV view that serializes models to comma-separated values.
  */
 import { MediaTypes } from '@ndigo/core';
 import { AbstractSerializingView } from './abstract-serializing-view.js';
@@ -45,7 +46,12 @@ export class CSVView extends AbstractSerializingView {
         this.#records = options.records;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Serializes the model's records (or the configured `records` field) to CSV.
+     *
+     * @param model - The data model to serialize.
+     * @returns The CSV body.
+     */
     protected serialize(model: unknown): string {
         const data = this.#records ? (model as Record<string, unknown> | null | undefined)?.[this.#records] : model;
         const records = Array.isArray(data) ? data : [];

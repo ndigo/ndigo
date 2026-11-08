@@ -14,9 +14,12 @@ An OpenAPI request body.
 
 > **content**: `Record`\<`string`, \{ `schema?`: [`OpenAPISchemaObject`](OpenAPISchemaObject.md); \}\>
 
+Media types and their schemas.
+
 ***
 
 ### required
 
 > **required**: `boolean`
 
+Whether a body is required.

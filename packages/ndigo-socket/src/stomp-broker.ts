@@ -454,6 +454,8 @@ export class StompBroker {
     #closed = false;
 
     /**
+     * Creates a broker with the given routing seams and hooks.
+     *
      * @param options - Routing seam and test hooks.
      */
     constructor(options: StompBrokerOptions = {}) {
@@ -520,7 +522,11 @@ export class StompBroker {
                   }));
     }
 
-    /** Await live topic subscription readiness before accepting traffic. */
+    /**
+     * Await live topic subscription readiness before accepting traffic.
+     *
+     * @returns A promise that resolves once the fan-out subscription is ready.
+     */
     connect(): Promise<void> {
         if (this.#closed) return Promise.reject(new Error('StompBroker is closed'));
         this.#fanoutConnecting ??= (async () => {
@@ -536,7 +542,11 @@ export class StompBroker {
         return this.#fanoutConnecting;
     }
 
-    /** Close sessions and unsubscribe; the application owns transport shutdown. */
+    /**
+     * Close sessions and unsubscribe; the application owns transport shutdown.
+     *
+     * @returns A promise that resolves once the broker is closed.
+     */
     close(): Promise<void> {
         if (this.#fanoutClosing) return this.#fanoutClosing;
         this.#closed = true;
@@ -676,6 +686,7 @@ export class StompBroker {
      * subscriptions are dropped when the stream ends.
      *
      * @param session - The socket session (any transport).
+     * @returns A promise that resolves when the session stream ends.
      */
     async handleSocket(session: SocketSession): Promise<void> {
         if (this.#closed || (this.#fanout && !this.#fanoutReady)) {

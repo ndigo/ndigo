@@ -1,4 +1,5 @@
 /**
+ * Public API of `@ndigo/cache` — cache stores, managers, and `@cached`.
  */
 export * from './cache';
 export * from './cache-name';

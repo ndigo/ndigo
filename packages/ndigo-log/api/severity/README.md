@@ -6,6 +6,8 @@
 
 # severity
 
+Severity mapping utilities.
+
 ## References
 
 ### detectSeverityScheme

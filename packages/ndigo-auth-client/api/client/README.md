@@ -6,6 +6,8 @@
 
 # client
 
+Client-side authentication manager.
+
 ## Classes
 
 - [AuthClient](classes/AuthClient.md)

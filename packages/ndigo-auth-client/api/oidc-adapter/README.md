@@ -6,6 +6,8 @@
 
 # oidc-adapter
 
+OIDC authorization-code adapter with PKCE, refresh, and validation.
+
 ## Classes
 
 - [InMemoryPendingAuthorizationStore](classes/InMemoryPendingAuthorizationStore.md)

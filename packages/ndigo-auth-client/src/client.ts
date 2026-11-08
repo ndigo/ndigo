@@ -1,4 +1,5 @@
 /**
+ * Client-side authentication manager.
  */
 import { type Principal } from '@ndigo/auth-core';
 import { type AuthenticationState, type AuthResult } from '@ndigo/auth-core';
@@ -25,14 +26,17 @@ export class AuthClient {
     /** In-flight refresh promise, so concurrent refresh() calls share one exchange. */
     #refreshPromise: Promise<AuthResult> | null = null;
 
+    /** A snapshot of the current authentication state. */
     get state(): AuthenticationState {
         return { ...this.#state };
     }
 
+    /** The authenticated principal, or `null`. */
     get principal(): Principal | null {
         return this.#state.principal;
     }
 
+    /** Whether a principal is currently authenticated. */
     get isAuthenticated(): boolean {
         return this.#state.isAuthenticated;
     }

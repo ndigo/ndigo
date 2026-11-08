@@ -57,6 +57,8 @@ this so callers can distinguish provider errors from programming errors.
 
 > `readonly` **code**: [`OIDCErrorCode`](../type-aliases/OIDCErrorCode.md)
 
+The failure code.
+
 ***
 
 ### httpStatus

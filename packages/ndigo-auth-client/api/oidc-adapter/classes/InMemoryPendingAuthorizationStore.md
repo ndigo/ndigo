@@ -33,8 +33,7 @@ grow the map without limit. Entries persist until redeemed or evicted.
 
 > `readonly` **kind**: `"in-memory"` = `'in-memory'`
 
-Backend identifier for observability/diagnostics
-(e.g. `'in-memory'`, `'session-storage'`, `'redis'`).
+Store identifier (`'in-memory'`).
 
 #### Implementation of
 
@@ -46,7 +45,7 @@ Backend identifier for observability/diagnostics
 
 > **delete**(`state`): `Promise`\<`void`\>
 
-Removes the entry for `state`; unknown keys are a no-op.
+Removes the entry for `state`.
 
 #### Parameters
 
@@ -54,9 +53,13 @@ Removes the entry for `state`; unknown keys are a no-op.
 
 `string`
 
+The authorization-state value.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once removed.
 
 #### Implementation of
 
@@ -76,9 +79,13 @@ Returns the pending request for `state`, or `null` when unknown.
 
 `string`
 
+The authorization-state value.
+
 #### Returns
 
 `Promise`\<[`PendingAuthorization`](../interfaces/PendingAuthorization.md) \| `null`\>
+
+The pending request, or `null`.
 
 #### Implementation of
 
@@ -90,7 +97,7 @@ Returns the pending request for `state`, or `null` when unknown.
 
 > **set**(`state`, `pending`): `Promise`\<`void`\>
 
-Stores `pending` under `state`, replacing any existing entry.
+Stores `pending` under `state`, evicting the oldest entry at the cap.
 
 #### Parameters
 
@@ -98,13 +105,19 @@ Stores `pending` under `state`, replacing any existing entry.
 
 `string`
 
+The authorization-state value.
+
 ##### pending
 
 [`PendingAuthorization`](../interfaces/PendingAuthorization.md)
 
+The pending request to store.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once stored.
 
 #### Implementation of
 

@@ -122,6 +122,8 @@ export class RedisLockDriver implements LockDriver {
     #closed = false;
 
     /**
+     * Creates a driver over the given connection and namespace.
+     *
      * @param options - Borrowed connection and namespace.
      */
     constructor(options: RedisLockDriverOptions) {
@@ -137,7 +139,13 @@ export class RedisLockDriver implements LockDriver {
         this.#prefix = `ndigo:locks:${options.namespace}:`;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Acquires a lease for `key`, returning `null` when it is already held.
+     *
+     * @param key - The lock key.
+     * @param options - The lease duration.
+     * @returns The held handle, or `null` when another holder owns the lease.
+     */
     async acquire(key: string, options: { ttlMs: number }): Promise<LockHandle | null> {
         this.#assertOpen();
         requireTtl(options.ttlMs);
@@ -215,6 +223,8 @@ export class RedisLockDriver implements LockDriver {
      * Releases this driver's own leases (token-checked — a successor's
      * lease is never touched) and seals the handle. The borrowed connection
      * is untouched; idempotent.
+     *
+     * @returns A promise that resolves once the leases are released.
      */
     async close(): Promise<void> {
         if (this.#closed) {

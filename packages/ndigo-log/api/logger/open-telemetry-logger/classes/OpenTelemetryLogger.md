@@ -6,10 +6,7 @@
 
 # Class: OpenTelemetryLogger
 
-Defines the interface for a logger that supports different severity levels and structured logging.
-
-Implementations of this interface are responsible for processing and emitting log entries,
-potentially integrating with OpenTelemetry logging systems.
+Logger that emits records through the OpenTelemetry logs API.
 
 ## Implements
 
@@ -43,8 +40,7 @@ potentially integrating with OpenTelemetry logging systems.
 
 > **get** **threshold**(): `SeverityNumber`
 
-The minimum severity level for log messages to be processed by this logger.
-Messages with a severity lower than this threshold will be ignored.
+The current minimum severity.
 
 ##### Returns
 
@@ -63,7 +59,7 @@ Messages with a severity lower than this threshold will be ignored.
 
 > **debug**(`message`, `attributes?`): `void`
 
-Logs a message with `DEBUG` severity.
+Logs a debug message.
 
 #### Parameters
 
@@ -71,13 +67,13 @@ Logs a message with `DEBUG` severity.
 
 `string`
 
-The log message.
+The message body.
 
 ##### attributes?
 
 `Attributes`
 
-Optional attributes to associate with the log entry.
+Optional structured attributes.
 
 #### Returns
 
@@ -93,7 +89,7 @@ Optional attributes to associate with the log entry.
 
 > **error**(`message`, `error?`, `attributes?`): `void`
 
-Logs a message with `ERROR` severity.
+Logs an error message and records the exception on the active span.
 
 #### Parameters
 
@@ -101,19 +97,19 @@ Logs a message with `ERROR` severity.
 
 `string`
 
-The log message.
+The message body.
 
 ##### error?
 
 `Exception`
 
-Optional. An `Exception` object to associate with the log entry.
+Optional exception attached to the log.
 
 ##### attributes?
 
 `Attributes`
 
-Optional attributes to associate with the log entry.
+Optional structured attributes.
 
 #### Returns
 
@@ -129,7 +125,7 @@ Optional attributes to associate with the log entry.
 
 > **info**(`message`, `attributes?`): `void`
 
-Logs a message with `INFO` severity.
+Logs an info message.
 
 #### Parameters
 
@@ -137,13 +133,13 @@ Logs a message with `INFO` severity.
 
 `string`
 
-The log message.
+The message body.
 
 ##### attributes?
 
 `Attributes`
 
-Optional attributes to associate with the log entry.
+Optional structured attributes.
 
 #### Returns
 
@@ -159,7 +155,7 @@ Optional attributes to associate with the log entry.
 
 > **isEnabled**(`severityNumber`): `boolean`
 
-Checks if logging is enabled for a given severity number.
+Whether a severity passes the current threshold.
 
 #### Parameters
 
@@ -167,13 +163,13 @@ Checks if logging is enabled for a given severity number.
 
 `SeverityNumber`
 
-The `SeverityNumber` to check.
+The severity to test.
 
 #### Returns
 
 `boolean`
 
-`true` if logging is enabled for the specified severity, `false` otherwise.
+`true` when the severity is enabled.
 
 #### Implementation of
 
@@ -185,7 +181,7 @@ The `SeverityNumber` to check.
 
 > **setThreshold**(`threshold`): `void`
 
-Sets the minimum severity level for log messages.
+Sets the minimum severity.
 
 #### Parameters
 
@@ -193,7 +189,7 @@ Sets the minimum severity level for log messages.
 
 `SeverityNumber`
 
-The new minimum `SeverityNumber`.
+The new minimum severity.
 
 #### Returns
 
@@ -209,7 +205,7 @@ The new minimum `SeverityNumber`.
 
 > **warn**(`message`, `attributes?`): `void`
 
-Logs a message with `WARN` severity.
+Logs a warning message.
 
 #### Parameters
 
@@ -217,13 +213,13 @@ Logs a message with `WARN` severity.
 
 `string`
 
-The log message.
+The message body.
 
 ##### attributes?
 
 `Attributes`
 
-Optional attributes to associate with the log entry.
+Optional structured attributes.
 
 #### Returns
 

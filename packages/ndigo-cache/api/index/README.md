@@ -6,6 +6,8 @@
 
 # index
 
+Public API of `@ndigo/cache` — cache stores, managers, and `@cached`.
+
 ## References
 
 ### Cache

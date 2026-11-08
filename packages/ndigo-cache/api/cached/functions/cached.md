@@ -41,3 +41,14 @@ Cache selection/key/TTL (see [CachedSpec](../interfaces/CachedSpec.md)).
 The class method decorator.
 
 \<`This`, `Args`, `Return`\>(`value`, `context`) => (`this`, ...`args`) => `Promise`\<`Return`\>
+
+## Example
+
+```ts
+class CatalogService {
+    @cached({ cacheName: 'catalog', ttl: 30_000 })
+    async load(id: string): Promise<unknown> {
+        return id;
+    }
+}
+```

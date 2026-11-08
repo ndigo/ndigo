@@ -1,4 +1,5 @@
 /**
+ * Owned or borrowed node-redis connection with tracked operations.
  */
 import { IllegalStateError } from '@ndigo/core';
 import { createClient, type RedisClientType } from '@redis/client';
@@ -32,6 +33,11 @@ export class RedisConnection implements AsyncCloseable {
         this.#lastErrorAt = Date.now();
     };
 
+    /**
+     * Creates a connection from a URL or an already-ready client.
+     *
+     * @param options - URL or borrowed client configuration.
+     */
     constructor(options: RedisConnectionOptions) {
         if (options.client !== undefined) {
             if (options.url !== undefined || !options.client.isReady) {
@@ -83,7 +89,11 @@ export class RedisConnection implements AsyncCloseable {
         return this.#lastErrorAt;
     }
 
-    /** Idempotent explicit connection; failed startup remains a rejected promise. */
+    /**
+     * Idempotent explicit connection; failed startup remains a rejected promise.
+     *
+     * @returns A promise that resolves once the client is ready.
+     */
     connect(): Promise<void> {
         if (this.#closed) return Promise.reject(new Error('RedisConnection is closed'));
         this.#connecting ??= this.#owned ? this.#client.connect().then(() => undefined) : Promise.resolve();
@@ -94,6 +104,9 @@ export class RedisConnection implements AsyncCloseable {
      * Executes one adapter operation and tracks its entire lifetime for close.
      * Borrowed client reconnect/queue policy remains the application's policy;
      * new operations require readiness and never become cache misses on failure.
+     *
+     * @param operation - The adapter operation to execute with the ready client.
+     * @returns The operation's result.
      */
     async run<T>(operation: (client: RedisClient) => Promise<T>): Promise<T> {
         if (this.#closed) throw new IllegalStateError('RedisConnection is closed');
@@ -107,7 +120,11 @@ export class RedisConnection implements AsyncCloseable {
         }
     }
 
-    /** Rejects new work, drains tracked operations, then closes only owned clients. */
+    /**
+     * Rejects new work, drains tracked operations, then closes only owned clients.
+     *
+     * @returns A promise that resolves once the connection is closed.
+     */
     close(): Promise<void> {
         if (this.#closing !== undefined) return this.#closing;
         this.#closed = true;

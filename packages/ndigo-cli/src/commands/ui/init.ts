@@ -24,7 +24,7 @@ export const initUiCommand = buildCommand({
             registry: {
                 kind: 'parsed',
                 parse: (value: string) => value,
-                brief: 'Registry file, directory, or URL (default: the GitHub repository registry).',
+                brief: 'Registry file, directory, or URL (default: the ndigo.dev registry).',
                 optional: true,
             },
             force: { kind: 'boolean', brief: 'Overwrite an existing ndigo.ui.json.', optional: true },

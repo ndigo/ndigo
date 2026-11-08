@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Ndigo UI lab</title>
+        <link rel="stylesheet" href="/styles/ndigo-tokens.css" />
+        <link rel="stylesheet" href="/styles/ndigo-base.css" />
+        <link rel="stylesheet" href="/src/styles/lab.css" />
+        <link rel="stylesheet" href="/src/components/app-shell/app-shell.css" />
+        <link rel="stylesheet" href="/src/ui/nd-button/nd-button.css" />
+        <link rel="stylesheet" href="/src/ui/nd-dialog/nd-dialog.css" />
+        <link rel="stylesheet" href="/src/ui/nd-menu/nd-menu.css" />
+        <script type="module" src="/src/main.ts"></script>
+    </head>
+    <body>
+        <div class="nd-app-shell">
+            <a class="nd-skip-link" href="#nd-main">Skip to content</a>
+
+            <header class="nd-app-shell__banner">
+                <a class="nd-app-shell__brand" href="/">
+                    <span class="nd-mark">Ndigo UI</span>
+                </a>
+
+                <nav class="nd-app-shell__nav" aria-label="Primary">
+                    <a href="#buttons">Buttons</a>
+                    <a href="#dialog">Dialog</a>
+                    <a href="#menu">Menu</a>
+                    <a href="#tokens">Tokens</a>
+                </nav>
+
+                <div class="nd-app-shell__actions">
+                    <button class="nd-button" data-variant="ghost" data-size="sm" type="button">Sign in</button>
+                    <button class="nd-button" data-variant="primary" data-size="sm" type="button">Get started</button>
+                </div>
+            </header>
+
+            <div class="nd-app-shell__body">
+                <aside class="nd-app-shell__sidebar" aria-label="Section navigation">
+                    <nav aria-label="Sections">
+                        <a href="#buttons">Buttons</a>
+                        <a href="#dialog">Dialog</a>
+                        <a href="#menu">Menu</a>
+                        <a href="#tokens">Tokens</a>
+                    </nav>
+                </aside>
+
+                <main id="nd-main" class="nd-app-shell__main" tabindex="-1">
+                    <h1>Ndigo UI lab</h1>
+                    <p class="lab-lede">
+                        This app installs the registry items with <code>ndigo ui add</code>, loads the copied
+                        <code>&lt;nd-*&gt;</code> elements, and reads the typed token catalog from
+                        <code>@ndigo/ui</code>. No framework, no Tailwind.
+                    </p>
+
+                    <section id="buttons" class="lab-section" aria-labelledby="buttons-heading">
+                        <h2 id="buttons-heading">Buttons</h2>
+                        <p>Native buttons styled by the registry-installed stylesheet.</p>
+                        <div class="lab-row">
+                            <button class="nd-button" data-variant="primary" type="button">Primary</button>
+                            <button class="nd-button" data-variant="secondary" type="button">Secondary</button>
+                            <button class="nd-button" data-variant="ghost" type="button">Ghost</button>
+                            <button class="nd-button" data-variant="danger" type="button">Delete</button>
+                        </div>
+                        <div class="lab-row">
+                            <button class="nd-button" data-size="sm" type="button">Small</button>
+                            <button class="nd-button" type="button">Medium</button>
+                            <button class="nd-button" data-size="lg" type="button">Large</button>
+                            <button class="nd-button" disabled type="button">Disabled</button>
+                        </div>
+                    </section>
+
+                    <section id="dialog" class="lab-section" aria-labelledby="dialog-heading">
+                        <h2 id="dialog-heading">Dialog</h2>
+                        <p>The modal, focus trap, and dismissal come from the Zag.js dialog machine.</p>
+                        <nd-dialog>
+                            <button class="nd-button" data-variant="secondary" data-part="trigger" type="button">
+                                Open dialog
+                            </button>
+                            <div data-part="content">
+                                <h2 data-part="title">Invite a teammate</h2>
+                                <p data-part="description">
+                                    This dialog is registry-installed source. The element owns focus, Escape, and the
+                                    backdrop; the stylesheet owns the surface.
+                                </p>
+                                <button
+                                    class="nd-button"
+                                    data-variant="ghost"
+                                    data-size="sm"
+                                    data-part="close-trigger"
+                                    type="button"
+                                >
+                                    Close
+                                </button>
+                            </div>
+                        </nd-dialog>
+                    </section>
+
+                    <section id="menu" class="lab-section" aria-labelledby="menu-heading">
+                        <h2 id="menu-heading">Menu</h2>
+                        <p>Arrow keys, Home/End, typeahead, and Enter selection are handled by the menu machine.</p>
+                        <nd-menu id="lab-menu">
+                            <button class="nd-button" data-variant="secondary" data-part="trigger" type="button">
+                                Actions
+                            </button>
+                            <div data-part="content">
+                                <div data-part="item" data-value="edit">Edit</div>
+                                <div data-part="item" data-value="archive">Archive</div>
+                                <div data-part="separator"></div>
+                                <div data-part="item" data-value="delete">Delete</div>
+                            </div>
+                        </nd-menu>
+                        <p id="menu-status" class="lab-status" role="status">No action selected</p>
+                    </section>
+
+                    <section id="tokens" class="lab-section" aria-labelledby="tokens-heading">
+                        <h2 id="tokens-heading">Tokens</h2>
+                        <p>
+                            <strong id="token-count">0</strong> tokens are exposed by the typed
+                            <code>@ndigo/ui</code> catalog; the registry-installed stylesheet defines the same names.
+                        </p>
+                        <div class="lab-swatches">
+                            <span class="lab-swatch lab-swatch--bg">Background</span>
+                            <span class="lab-swatch lab-swatch--surface">Surface</span>
+                            <span class="lab-swatch lab-swatch--accent">Accent</span>
+                            <span class="lab-swatch lab-swatch--accent-strong">Accent strong</span>
+                            <span class="lab-swatch lab-swatch--success">Success</span>
+                            <span class="lab-swatch lab-swatch--warning">Warning</span>
+                            <span class="lab-swatch lab-swatch--danger">Danger</span>
+                            <span class="lab-swatch lab-swatch--info">Info</span>
+                        </div>
+                    </section>
+                </main>
+            </div>
+
+            <footer class="nd-app-shell__footer">
+                <p>Ndigo UI lab — registry-installed source, owned tokens, native first.</p>
+            </footer>
+        </div>
+    </body>
+</html>

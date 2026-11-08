@@ -432,8 +432,10 @@ for (const dir of readdirSync(APPS)) {
     const used = new Set([...runtime, ...dev]);
 
     // Undeclared: every app-source import must resolve from the manifest.
+    // `@/` is the app-local alias the registry installs target (see
+    // `ndigo ui add`); it is never an npm package.
     for (const spec of used) {
-        if (APP_TOOLING.has(spec) || spec.startsWith('@types/')) continue;
+        if (APP_TOOLING.has(spec) || spec.startsWith('@types/') || spec.startsWith('@/')) continue;
         if (!dependencies[spec] && !devDependencies[spec]) {
             fail(name, `app import "${spec}" is not declared in dependencies or devDependencies`);
         }

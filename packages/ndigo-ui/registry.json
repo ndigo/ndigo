@@ -91,6 +91,22 @@
         }
       ],
       "docs": "`<nd-menu>` with `trigger`, `content`, `item`, and `separator` parts. Emits `nd-select` and `nd-open-change`."
+    },
+    {
+      "name": "button",
+      "type": "registry:ui",
+      "title": "Button",
+      "description": "Native-first button styles with variants and sizes; no runtime and no custom element.",
+      "author": "Ndigo <https://ndigo.dev>",
+      "categories": ["ui", "form"],
+      "files": [
+        {
+          "path": "registry/ui/button/nd-button.css",
+          "type": "registry:file",
+          "target": "@ui/nd-button/nd-button.css"
+        }
+      ],
+      "docs": "Apply `nd-button` to a native `<button>` (or `<a href>` for navigation). Variants: primary, secondary, ghost, danger; sizes: sm, md, lg."
     }
   ]
 }

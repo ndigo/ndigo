@@ -60,7 +60,7 @@ adapter under `'argon2id'`; old scrypt hashes keep verifying and
 
 > **encode**(`rawPassword`): `string`
 
-Hashes a raw password into a self-describing string.
+Hashes with the default scheme, prefixing its id.
 
 #### Parameters
 
@@ -68,9 +68,13 @@ Hashes a raw password into a self-describing string.
 
 `string`
 
+The plaintext password.
+
 #### Returns
 
 `string`
+
+The `{scheme}`-prefixed hash.
 
 #### Implementation of
 
@@ -82,10 +86,7 @@ Hashes a raw password into a self-describing string.
 
 > **needsRehash**(`encodedPassword`): `boolean`
 
-Returns `true` when the stored hash would not be produced by the
-current configuration — a different scheme, or outdated cost
-parameters/key length. Login flows rehash on `true` to migrate
-stored hashes forward.
+Whether the hash's scheme or parameters are outdated.
 
 #### Parameters
 
@@ -93,9 +94,13 @@ stored hashes forward.
 
 `string`
 
+The `{scheme}`-prefixed hash.
+
 #### Returns
 
 `boolean`
+
+Whether a rehash is recommended.
 
 #### Implementation of
 
@@ -107,9 +112,7 @@ stored hashes forward.
 
 > **verify**(`rawPassword`, `encodedPassword`): `boolean`
 
-Returns `true` only when `rawPassword` derives to `encodedPassword`.
-Never throws for a mismatch; fails loud (`UnknownPasswordSchemeError`)
-on an unrecognized scheme.
+Verifies against the hash's declared scheme.
 
 #### Parameters
 
@@ -117,13 +120,19 @@ on an unrecognized scheme.
 
 `string`
 
+The plaintext password.
+
 ##### encodedPassword
 
 `string`
 
+The `{scheme}`-prefixed hash.
+
 #### Returns
 
 `boolean`
+
+Whether the password matches.
 
 #### Implementation of
 

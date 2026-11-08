@@ -40,9 +40,13 @@ Hashes a raw password into a self-describing string.
 
 `string`
 
+The plaintext password.
+
 #### Returns
 
 `string`
+
+The self-describing hash.
 
 ***
 
@@ -61,9 +65,13 @@ stored hashes forward.
 
 `string`
 
+The stored hash to inspect.
+
 #### Returns
 
 `boolean`
+
+Whether a rehash is recommended.
 
 ***
 
@@ -81,10 +89,16 @@ on an unrecognized scheme.
 
 `string`
 
+The plaintext password to verify.
+
 ##### encodedPassword
 
 `string`
 
+The stored self-describing hash.
+
 #### Returns
 
 `boolean`
+
+Whether the password matches.

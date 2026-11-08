@@ -167,9 +167,9 @@ export abstract class AbstractBaseInstrumentation extends InstrumentationBase {
     }
 
     /**
-     * {@inheritDoc}
+     * Returns the instrumentation module definitions.
      *
-     * @returns The instrumentation module definitions (empty for this base).
+     * @returns The module definitions (empty for this base).
      */
     protected init(): InstrumentationModuleDefinition[] {
         return [];

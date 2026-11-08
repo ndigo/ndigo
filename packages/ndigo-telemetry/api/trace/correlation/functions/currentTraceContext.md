@@ -15,6 +15,8 @@ active (no provider, or outside any span) — safe in pure-logging mode.
 
 [`TraceCorrelation`](../interfaces/TraceCorrelation.md) \| `undefined`
 
+The active trace ids, or `undefined` outside a span.
+
 ## Example
 
 **Stamping an outbound queue message with the current trace:**

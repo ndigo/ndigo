@@ -6,6 +6,8 @@
 
 # metrics/decorators
 
+Metric decorators and their metadata readers.
+
 ## Interfaces
 
 - [CountedMethodConfig](interfaces/CountedMethodConfig.md)

@@ -52,5 +52,12 @@ solid fill so the label keeps its contrast in both themes.
 
 ## Styling
 
+Import `nd-button.css` once in the application stylesheet, after the design
+tokens:
+
+```css
+@import './nd-button.css';
+```
+
 Every value comes from a `--nd-*` token. Override the tokens or the
 `--nd-button-*` locals; do not fork the selectors.

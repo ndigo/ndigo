@@ -39,6 +39,8 @@ This typically indicates a misconfiguration or an unhandled route.
 
 > **route**: [`Route`](#)
 
+The route with no handler.
+
 ## Accessors
 
 ### \[toStringTag\]

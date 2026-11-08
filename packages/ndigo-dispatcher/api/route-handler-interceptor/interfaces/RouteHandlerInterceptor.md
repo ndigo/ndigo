@@ -17,19 +17,27 @@ path. Every hook may be async; the chain awaits each in turn.
 
 > **completeHandle**(`route`, `handler`, `error`): `void` \| `Promise`\<`void`\>
 
+Callback after the request completes, including the error path.
+
 #### Parameters
 
 ##### route
 
 [`Route`](#)
 
+The completed route.
+
 ##### handler
 
 `object` \| `undefined`
 
+The handler instance, when known.
+
 ##### error
 
 `Error`
+
+The error raised during handling, if any.
 
 #### Returns
 
@@ -41,19 +49,27 @@ path. Every hook may be async; the chain awaits each in turn.
 
 > **postHandle**(`route`, `handler`, `modelAndView`): `void` \| `Promise`\<`void`\>
 
+Callback after the handler returns successfully but before the view renders.
+
 #### Parameters
 
 ##### route
 
 [`Route`](#)
 
+The resolved route.
+
 ##### handler
 
 `object` \| `undefined`
 
+The handler instance, when known.
+
 ##### modelAndView
 
 [`ModelAndView`](../../model-and-view/classes/ModelAndView.md)
+
+The handler's result.
 
 #### Returns
 
@@ -65,16 +81,24 @@ path. Every hook may be async; the chain awaits each in turn.
 
 > **preHandle**(`route`, `handler`): [`PreHandleOutcome`](../type-aliases/PreHandleOutcome.md) \| `Promise`\<[`PreHandleOutcome`](../type-aliases/PreHandleOutcome.md)\>
 
+Callback after the handler is resolved but before it is invoked.
+
 #### Parameters
 
 ##### route
 
 [`Route`](#)
 
+The resolved route.
+
 ##### handler
 
 `object` \| `undefined`
 
+The handler instance, when known.
+
 #### Returns
 
 [`PreHandleOutcome`](../type-aliases/PreHandleOutcome.md) \| `Promise`\<[`PreHandleOutcome`](../type-aliases/PreHandleOutcome.md)\>
+
+`true` to continue, or a denial outcome.

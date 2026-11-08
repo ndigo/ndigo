@@ -17,13 +17,19 @@ Reads `request.session` on the Node platform (nested-capable).
 
 `string`
 
+The session value path, or `''` for the whole session.
+
 ### options?
 
 [`ParameterExtractorOptions`](../../parameter-types/interfaces/ParameterExtractorOptions.md) = `{}`
 
+Required/default/conversion options.
+
 ## Returns
 
 [`ParameterExtractor`](../../parameter-types/type-aliases/ParameterExtractor.md)
+
+The parameter extractor.
 
 ## Example
 

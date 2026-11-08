@@ -6,6 +6,8 @@
 
 # language-resolver
 
+Language resolution contracts.
+
 ## Classes
 
 - [AbstractLanguageResolver](classes/AbstractLanguageResolver.md)

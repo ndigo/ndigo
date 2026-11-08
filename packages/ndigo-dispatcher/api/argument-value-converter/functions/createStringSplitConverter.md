@@ -16,6 +16,10 @@ Creates a converter that splits a string into list items.
 
 `string` \| `RegExp` = `','`
 
+The separator to split on (default `,`).
+
 ## Returns
 
 [`ArgumentValueConverter`](../type-aliases/ArgumentValueConverter.md)
+
+The split converter.

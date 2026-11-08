@@ -6,6 +6,8 @@
 
 # strategies/theme-resolver-strategy
 
+Theme-resolver strategy.
+
 ## Interfaces
 
 - [ThemeResolverStrategy](interfaces/ThemeResolverStrategy.md)

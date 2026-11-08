@@ -16,6 +16,10 @@ Converts common string and boolean inputs into a boolean value.
 
 `unknown`
 
+The value to convert.
+
 ## Returns
 
 `boolean`
+
+The converted boolean.

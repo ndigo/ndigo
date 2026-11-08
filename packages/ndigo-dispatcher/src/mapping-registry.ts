@@ -1,4 +1,5 @@
 /**
+ * Handler-mapping registry.
  */
 
 import { MultiValueMap } from '@ndigo/core';

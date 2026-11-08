@@ -6,6 +6,8 @@
 
 # radix-metadata-handler-mapping
 
+Radix-tree metadata handler mapping.
+
 ## Classes
 
 - [RadixMetadataHandlerMapping](classes/RadixMetadataHandlerMapping.md)

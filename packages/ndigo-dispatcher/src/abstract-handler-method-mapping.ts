@@ -1,4 +1,5 @@
 /**
+ * Abstract method-level handler mapping.
  */
 
 import { Comparator, IllegalStateError } from '@ndigo/core';
@@ -355,7 +356,19 @@ export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo>
         }
     }
 
+    /**
+     * Whether a value is a route-mapping handler.
+     *
+     * @param value - The value to inspect.
+     * @returns `true` when the value is a handler.
+     */
     protected abstract _isHandler(value: unknown): boolean;
+    /**
+     * Builds the comparator used to rank mappings for a route.
+     *
+     * @param route - The route being resolved.
+     * @returns The comparator for this mapping type.
+     */
     protected abstract _getMappingComparator(route: Route): Comparator<T>;
     /**
      * Build a {@link RouteMappingInfo} for the given handler method.
@@ -414,5 +427,12 @@ export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo>
         }
         return methodInfo as T;
     }
+    /**
+     * Narrows a mapping to the part that matches a route.
+     *
+     * @param mapping - The mapping to test.
+     * @param route - The route being resolved.
+     * @returns The matching mapping, or `null`.
+     */
     protected abstract _getMatchingMapping(mapping: T, route: Route): T | null;
 }

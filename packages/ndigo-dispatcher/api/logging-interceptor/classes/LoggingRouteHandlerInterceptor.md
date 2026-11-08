@@ -65,6 +65,8 @@ The error thrown during execution.
 
 `Promise`\<`void`\>
 
+A promise that resolves when cleanup completes.
+
 #### Implementation of
 
 [`RouteHandlerInterceptor`](../../route-handler-interceptor/interfaces/RouteHandlerInterceptor.md).[`completeHandle`](../../route-handler-interceptor/interfaces/RouteHandlerInterceptor.md#completehandle)
@@ -100,6 +102,8 @@ The model and view returned by the handler.
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves when the log entry is written.
 
 #### Implementation of
 

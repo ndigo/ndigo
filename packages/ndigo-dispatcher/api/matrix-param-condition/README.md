@@ -6,6 +6,8 @@
 
 # matrix-param-condition
 
+Matrix-parameter route conditions.
+
 ## Classes
 
 - [MatrixParamCondition](classes/MatrixParamCondition.md)

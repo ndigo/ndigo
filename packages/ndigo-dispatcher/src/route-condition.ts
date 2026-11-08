@@ -1,4 +1,5 @@
 /**
+ * Route-condition contracts.
  */
 
 import { Serializable, Equatable, JSONValue, Matchable, ResultMatcher } from '@ndigo/core';
@@ -9,8 +10,11 @@ import { Route } from '@ndigo/router';
  * Describes a parsed name/value expression.
  */
 export interface NameValueExpression<T> {
+    /** Whether the expression is negated (`!`). */
     isNegated: boolean;
+    /** The expression name. */
     name: string;
+    /** The parsed value, when the expression has `=`. */
     value?: T;
 }
 
@@ -60,10 +64,14 @@ export const likeRouteCondition = like({ merge: Function, match: Function }) as 
  * Base class for parsed name/value expressions.
  */
 export abstract class AbstractNameValueExpression<T> implements NameValueExpression<T>, Serializable, Matchable<Route> {
+    /** Whether the expression is negated (`!`). */
     readonly isNegated!: boolean;
+    /** The expression name. */
     readonly name!: string;
+    /** The parsed value, when present. */
     readonly value?: T;
 
+    /** Whether the name comparison is case-sensitive. */
     abstract readonly isCaseSensitiveName: boolean;
 
     /**
@@ -156,8 +164,26 @@ export abstract class AbstractNameValueExpression<T> implements NameValueExpress
         return this.value !== void 0 ? `${this.name}${negate}=${this.value}` : `${negate}${this.name}`;
     }
 
+    /**
+     * Whether the route matches the expression name.
+     *
+     * @param route - The current route.
+     * @returns Whether the name matches.
+     */
     abstract matchName(route: Route): boolean;
+    /**
+     * Whether the route matches the expression value.
+     *
+     * @param route - The current route.
+     * @returns Whether the value matches.
+     */
     abstract matchValue(route: Route): boolean;
+    /**
+     * Parses the value side of the expression.
+     *
+     * @param valueExpression - The raw value text.
+     * @returns The parsed value.
+     */
     abstract parseValue(valueExpression: string): T;
 }
 
@@ -171,7 +197,9 @@ export abstract class AbstractRouteCondition<T extends AbstractRouteCondition<T>
         return this.content.length === 0;
     }
 
+    /** The condition's constituent parts. */
     abstract content: unknown[];
+    /** The separator used when rendering the parts. */
     abstract infix: string;
 
     /**
@@ -208,10 +236,29 @@ export abstract class AbstractRouteCondition<T extends AbstractRouteCondition<T>
         return `[${this.content.join(this.infix)}]`;
     }
 
+    /**
+     * Merges this condition with another.
+     *
+     * @param other - The condition to merge with.
+     * @returns The merged condition.
+     */
     abstract merge(other: T): T;
 
+    /**
+     * Matches the condition against a route.
+     *
+     * @param route - The route to match.
+     * @returns The matching condition, or `null`.
+     */
     abstract match(route: Route): T | null;
 
+    /**
+     * Compares this condition with another.
+     *
+     * @param value - The condition to compare.
+     * @param route - Optional tie-breaking route.
+     * @returns The comparison result.
+     */
     abstract compareTo(value: T, route?: Route): number;
 }
 
@@ -235,10 +282,12 @@ export class RouteConditionHolder extends AbstractRouteCondition<RouteConditionH
      */
     readonly condition!: RouteCondition;
 
+    /** The wrapped condition parts. */
     get content(): RouteCondition[] {
         return this.condition ? [this.condition] : [];
     }
 
+    /** The separator used when rendering. */
     get infix(): string {
         return ' ';
     }
@@ -324,26 +373,32 @@ export class RouteConditionHolder extends AbstractRouteCondition<RouteConditionH
  * When `CompositeRouteCondition` instances are combined or compared they are expected to (a) contain the same number of conditions and (b) that conditions in the respective index are of the same type. It is acceptable to provide `null` conditions or no conditions at all to the constructor.
  */
 export class CompositeRouteCondition extends AbstractRouteCondition<CompositeRouteCondition> {
+    /** The conjunction separator. */
     get infix(): string {
         return ' && ';
     }
 
+    /** Whether the composite has no conditions. */
     get isEmpty(): boolean {
         return this.length === 0;
     }
 
+    /** The number of conditions. */
     get length(): number {
         return this.routeConditions.length;
     }
 
+    /** The unwrapped conditions. */
     get conditions(): RouteCondition[] {
         return this._unwrap(...this.routeConditions);
     }
 
+    /** The content parts (empty when no conditions). */
     get content(): RouteCondition[] {
         return !this.isEmpty ? this.conditions : [];
     }
 
+    /** The condition holders. */
     readonly routeConditions!: RouteConditionHolder[];
 
     /**

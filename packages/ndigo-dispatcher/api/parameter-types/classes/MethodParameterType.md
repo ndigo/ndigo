@@ -35,11 +35,15 @@ Method parameter type enum
 
 > `readonly` **type**: `string`
 
+The serialized type string (e.g. `query:value`).
+
 ***
 
 ### ATTRIBUTE
 
 > `static` **ATTRIBUTE**: `MethodParameterType`
+
+Route-attribute parameter type.
 
 ***
 
@@ -47,11 +51,15 @@ Method parameter type enum
 
 > `static` **BODY**: `MethodParameterType`
 
+Body parameter type.
+
 ***
 
 ### COOKIE
 
 > `static` **COOKIE**: `MethodParameterType`
+
+Cookie parameter type.
 
 ***
 
@@ -59,11 +67,15 @@ Method parameter type enum
 
 > `static` **HEADER**: `MethodParameterType`
 
+Header parameter type.
+
 ***
 
 ### HISTORY\_STATE
 
 > `static` **HISTORY\_STATE**: `MethodParameterType`
+
+History-state parameter type.
 
 ***
 
@@ -71,11 +83,15 @@ Method parameter type enum
 
 > `static` **LOCAL\_STORAGE**: `MethodParameterType`
 
+Local-storage parameter type.
+
 ***
 
 ### MATRIX
 
 > `static` **MATRIX**: `MethodParameterType`
+
+Matrix parameter type.
 
 ***
 
@@ -83,11 +99,15 @@ Method parameter type enum
 
 > `static` **MULTIPART\_FILE**: `MethodParameterType`
 
+Multipart-file parameter type.
+
 ***
 
 ### PATH
 
 > `static` **PATH**: `MethodParameterType`
+
+Path-variable parameter type.
 
 ***
 
@@ -95,11 +115,15 @@ Method parameter type enum
 
 > `static` **QUERY**: `MethodParameterType`
 
+Query parameter type.
+
 ***
 
 ### REQUEST\_PART
 
 > `static` **REQUEST\_PART**: `MethodParameterType`
+
+Request-part parameter type.
 
 ***
 
@@ -107,11 +131,15 @@ Method parameter type enum
 
 > `static` **REQUEST\_SESSION**: `MethodParameterType`
 
+Request-session parameter type.
+
 ***
 
 ### ROUTE
 
 > `static` **ROUTE**: `MethodParameterType`
+
+Route-object parameter type.
 
 ***
 
@@ -119,11 +147,15 @@ Method parameter type enum
 
 > `static` **SESSION\_STORAGE**: `MethodParameterType`
 
+Session-storage parameter type.
+
 ***
 
 ### SOCKET\_SESSION
 
 > `static` **SOCKET\_SESSION**: `MethodParameterType`
+
+Socket-session parameter type.
 
 ## Accessors
 
@@ -143,7 +175,7 @@ Method parameter type enum
 
 > **equals**(`value`): `boolean`
 
-Determines if this object is equal to the specified value.
+Compares this type with another value by serialized form.
 
 #### Parameters
 
@@ -151,13 +183,13 @@ Determines if this object is equal to the specified value.
 
 `unknown`
 
-The value to compare with this object.
+The value to compare.
 
 #### Returns
 
 `boolean`
 
-`true` if the objects are equal, `false` otherwise.
+Whether both are the same parameter type.
 
 #### Implementation of
 
@@ -169,11 +201,13 @@ The value to compare with this object.
 
 > **toJSON**(): `string`
 
-Returns a JSON-safe representation of the value.
+Serializes the type.
 
 #### Returns
 
 `string`
+
+The serialized type string.
 
 #### Implementation of
 
@@ -185,11 +219,13 @@ Returns a JSON-safe representation of the value.
 
 > **toString**(): `string`
 
-Returns a string representation of an object.
+Returns the serialized type string.
 
 #### Returns
 
 `string`
+
+The type string.
 
 #### Implementation of
 
@@ -228,12 +264,18 @@ The cached type instance for `data-{source}:value`.
 
 > `static` **fromType**(`type`): `MethodParameterType` \| `null`
 
+Resolves a serialized type string to its cached instance.
+
 #### Parameters
 
 ##### type
 
 `string`
 
+The serialized type string.
+
 #### Returns
 
 `MethodParameterType` \| `null`
+
+The matching type, or `null`.

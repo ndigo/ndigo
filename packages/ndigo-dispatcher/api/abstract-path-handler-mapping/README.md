@@ -6,6 +6,8 @@
 
 # abstract-path-handler-mapping
 
+Abstract path-based handler mapping.
+
 ## Classes
 
 - [AbstractDetectingPathHandlerMapping](classes/AbstractDetectingPathHandlerMapping.md)

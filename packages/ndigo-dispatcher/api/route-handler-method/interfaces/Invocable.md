@@ -20,6 +20,8 @@ implement it without the route plumbing below.
 
 > **invoke**\<`T`\>(...`args`): `T`
 
+Invokes the target with positional arguments.
+
 #### Type Parameters
 
 ##### T
@@ -32,6 +34,10 @@ implement it without the route plumbing below.
 
 ...`unknown`[]
 
+The positional arguments.
+
 #### Returns
 
 `T`
+
+The invocation result.

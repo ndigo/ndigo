@@ -109,17 +109,25 @@ extending this base — only the BIND path invoked it.
 
 [`MethodParameter`](../../parameter-types/classes/MethodParameter.md)
 
+The method parameter being resolved.
+
 ##### route
 
 [`Route`](#)
+
+The current route.
 
 ##### mapping
 
 `unknown`
 
+The route handler mapping.
+
 #### Returns
 
 `unknown`
+
+The resolved and converted value.
 
 #### Overrides
 

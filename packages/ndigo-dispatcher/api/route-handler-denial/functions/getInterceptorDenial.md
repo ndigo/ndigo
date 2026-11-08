@@ -16,6 +16,10 @@ Reads the denial stored on the route, if any.
 
 [`Route`](#)
 
+The route being processed.
+
 ## Returns
 
 [`InterceptorDenial`](../interfaces/InterceptorDenial.md) \| `null`
+
+The stored denial, or `null`.

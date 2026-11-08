@@ -76,6 +76,25 @@ commands front the app's declared `db:*` scripts.
 | `ndigo db seed`          | Runs the app's seed routine.                             |
 | `ndigo db rollback [n]`  | Rolls back the last (or N) applied migrations.           |
 
+### UI registry
+
+The `ui` family reads a shadcn-compatible registry (local file or HTTP URL),
+resolves item dependencies, and installs the files into the aliases from
+`ndigo.ui.json` (`src/ui`, `src/lib`, `src/components`, `src/hooks`).
+
+| Command                  | What it does                                                                                                   |
+| :----------------------- | :------------------------------------------------------------------------------------------------------------- |
+| `ndigo ui init [dir]`    | Writes `ndigo.ui.json` with the registry and alias defaults (`--force` overwrites).                            |
+| `ndigo ui list`          | Lists registry items (`--registry`, `--json`).                                                                 |
+| `ndigo ui view <item>`   | Shows one item's type, dependencies, and files (`--registry`, `--json`).                                       |
+| `ndigo ui validate`      | Validates item shape, targets, and local file existence (`--registry`).                                        |
+| `ndigo ui add <item...>` | Installs items and `registryDependencies` (`--dir`, `--registry`, `--dryRun`, `--overwrite`, `--skipInstall`). |
+
+`ui add` writes `ui.lock.json` with a SHA-256 per installed file and installs
+the item's npm dependencies with the application's package manager (detected
+from its lockfile). Use `--skipInstall` when the dependencies are managed
+separately.
+
 ### Maintenance and DX
 
 | Command               | What it does                                                                              |

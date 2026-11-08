@@ -14,6 +14,16 @@ ecosystem standard, and uses platform standard APIs directly** —
 | Date/number/list formatting | `Intl.*` formatters, cached, explicit locale/time zone               | `@ndigo/core` wrappers (framework facade, Intl engine) |
 | Locale resolution           | per-request language: header/cookie/navigator/fixed                  | `@ndigo/dispatcher` + platform packages                |
 
+**Audience:** Node and browser application developers · **Prerequisites:** Guide 01 or guide 02 · **Reference app:** `apps/12-ndigo-petclinic`, `apps/07-ndigo-island`
+
+## What you'll learn
+
+- Implement or compose a message source.
+- Load i18next resources and format messages.
+- Negotiate the locale from the request or cookie.
+- Use `t()` and formatters in templates.
+- Propagate locale into islands and client components.
+
 ## 1. The pipeline
 
 ```

@@ -10,6 +10,16 @@ The environment is a pipeline: **sources** provide raw values →
 (`@environment` zod schemas). It is the reference framework's environment model, ported to
 JavaScript-native structures with fail-loud semantics throughout.
 
+**Audience:** Node and browser application developers · **Prerequisites:** Guide 01 (Node) or guide 02 (browser) · **Reference app:** `apps/05-ndigo-api`
+
+## What you'll learn
+
+- Order property sources and activate profiles correctly.
+- Bind external values to typed `@configurationProperties` classes.
+- Resolve placeholders and validate the environment at boot.
+- Refresh live configuration and keep secrets out of artifacts.
+- Pull remote configuration through the config server.
+
 ## The pipeline
 
 ```
@@ -142,9 +152,13 @@ and fold into one canonical expression at decoration time
 ```ts
 import { Profile, whenProfile } from '@ndigo/core';
 
-@whenProfile(Profile.and('dev', Profile.not('ci'))) // 'dev & !ci'
-@entry
-devTools() { … }
+class DevToolsConfiguration {
+    @whenProfile(Profile.and('dev', Profile.not('ci'))) // 'dev & !ci'
+    @entry
+    devTools() {
+        /* … */
+    }
+}
 
 env.acceptsProfiles(Profile.and(Profile.or('a', 'b'), 'c')); // '(a | b) & c'
 ```
@@ -375,12 +389,13 @@ This defends read-only access to stored artifacts (repo leak, backup, paste)
 — it does NOT defend against full host compromise (documented threat model,
 AD-29 D-4).
 
-```ts
-// application.json (ciphertext is safe to commit)
+```json
 { "db": { "password": "{cipher:v1:…}" } }
+```
 
+```ts
 // Node bootstrap: key + decryptor wiring
-const app = new ApplicationBuilder([...]);
+const app = new ApplicationBuilder([/* configurations */]);
 app.secrets(AESGCMCipher.fromEnvironment()); // reads NDIGO_SECRET_KEY
 ```
 
@@ -487,8 +502,8 @@ annotated `"x-ndigo-read-from-config": false`; `management.*` is read by
 | `management.endpoints.env.showValues`   | boolean                              | `false`                | `@ndigo/management` `readManagementSettings` (config read)  | When true, `/env` emits the raw stored config text; decrypted plaintext is never served (AD-76).                                  |
 | `management.health.groups`              | `{ <name>: { include: string[] } }`  | —                      | `@ndigo/management` `readManagementSettings` (config read)  | Health groups served at `/health/<name>` aggregating the listed components (AD-76).                                               |
 
-## Recommended reading
+## See also
 
-- Guide 01 (building a node API) for the surrounding bootstrap
-- Reference: Environment API for the full surface
-- Environment decisions: precedence chain, profiles, configuration binding, origins & refresh, validation, secrets, config server, live rebind (AD-29)
+- [Guide 01 — Building a Node API](01-building-a-node-api.md) for the surrounding bootstrap
+- [Environment API](../reference/2026-09-08_ENVIRONMENT_API.md) for the full surface
+- [AD-29](../decisions/2026-09-25_AD29_CONFIGURATION_REFRESH_SECRETS_CONFIG_SERVER.md) for the precedence, refresh, secrets, and config-server decisions

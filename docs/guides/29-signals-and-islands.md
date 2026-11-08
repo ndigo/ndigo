@@ -12,6 +12,16 @@ The architecture map for the island model itself lives in
 [Micro Frontends](../architecture/micro-frontends.md); this guide is the
 how-to.
 
+**Audience:** Browser application developers · **Prerequisites:** Guide 02 · **Reference app:** `apps/07-ndigo-island`, `apps/08-ndigo-views`
+
+## What you'll learn
+
+- Use `signal`, `computed`, `effect`, and batching.
+- Apply the `@reactive` decorators to classes and elements.
+- Bridge streams and emitter events into signals.
+- Render an `IslandView` and hydrate it.
+- Push live updates over SSE into signals.
+
 ## 1. When to reach for signals
 
 Signals are for **local, synchronous, derived state** within one component or
@@ -189,24 +199,26 @@ class IslandPushAPI {
     }
 }
 
-connectedCallback(): void {
-    super.connectedCallback();
-    const modelSignal = signal({ model: this.#model });
-    effect(() => {
-        const next = modelSignal.value.model;
-        if (next !== this.#model) {
-            this.#model = next;
-            this.render();
-        }
-    });
-    streamToSignal(serviceClient(IslandPushAPI, new HTTP()).modelUpdates(), modelSignal);
+class IslandElement {
+    connectedCallback(): void {
+        super.connectedCallback();
+        const modelSignal = signal({ model: this.#model });
+        effect(() => {
+            const next = modelSignal.value.model;
+            if (next !== this.#model) {
+                this.#model = next;
+                this.render();
+            }
+        });
+        streamToSignal(serviceClient(IslandPushAPI, new HTTP()).modelUpdates(), modelSignal);
+    }
 }
 ```
 
 Each SSE event is validated by the response schema before it reaches the
 signal, so the island renders only well-formed models.
 
-## References
+## See also
 
 - Decisions: [AD-09](../decisions/2026-09-05_AD09_SERVER_PUSH.md) (SSE server
   push), [AD-65](../decisions/2026-09-06_AD65_VIEW_RESOLUTION_STRATEGY.md)

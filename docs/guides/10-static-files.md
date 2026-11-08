@@ -7,6 +7,16 @@ control (AD-28). One class owns the whole decision flow — `StaticResourceHandl
 — and two thin entry points mount it: the ready-made `/static/{*file}`
 controller, or a `StaticFileView` on any route you choose.
 
+**Audience:** Node application developers · **Prerequisites:** Guide 01 · **Reference app:** `apps/05-ndigo-api`, `apps/12-ndigo-petclinic`
+
+## What you'll learn
+
+- Mount the static controller and choose a root.
+- Serve ETag/conditional GET and single-range requests.
+- Use precompressed variants and cache headers.
+- Enable SPA history fallback and directory control.
+- Apply the containment and method-safety rules.
+
 ## 1. Mount the controller
 
 `StaticController` maps `GET`/`HEAD` on `/static/{*file}` — a greedy route
@@ -112,7 +122,7 @@ exported for tools that need the pieces separately.
   conditional GETs/HEAD read `stat` metadata only.
 - **Size cap:** optional and enforced before any open.
 
-## References
+## See also
 
 - Decision: [AD-28](../decisions/2026-09-24_AD28_STATIC_FILES.md) — ETag/Range,
   precompressed variants, SPA fallback, directory control (D-1..D-9).

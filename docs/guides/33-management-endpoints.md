@@ -10,6 +10,16 @@ applies to everything below.
 
 Reference application: `apps/05-ndigo-api` (the demo exposes the full surface).
 
+**Audience:** Node application developers and operators · **Prerequisites:** Guide 01 · **Reference app:** `apps/05-ndigo-api`
+
+## What you'll learn
+
+- Enable and expose the management surface.
+- Read health groups and component checks.
+- Scrape the metrics snapshot.
+- Inspect and change logger levels live.
+- Read env/configprops without leaking values.
+
 ## 1. Enabling the endpoints
 
 `@ndigo/management`'s `ManagementAutoConfiguration` ships with the framework
@@ -183,3 +193,9 @@ prefix (`ROOT` for prefix-less classes).
   knobs), guide 12 (OpenAPI — the same management guard pattern in
   `OpenAPIDocsAutoConfiguration`), guide 03 (the config-file convention the
   `management.*` keys follow).
+
+## See also
+
+- [Guide 32 — Telemetry](32-telemetry.md) — the metrics behind `/metrics`
+- [Guide 26 — Authentication & Sessions](26-authentication-and-sessions.md) — protecting the surface
+- [`@ndigo/management`](../../packages/ndigo-management/README.md) — the endpoint contracts

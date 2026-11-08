@@ -49,3 +49,9 @@ jobs:
 
       - name: Docs relative-link integrity
         run: pnpm docs:links
+
+      - name: Guide contract
+        # Every published guide: numbered title, audience/prerequisites/
+        # reference block, "What you'll learn", "See also", index coverage,
+        # existing reference paths, and parseable TypeScript fences.
+        run: pnpm guides:check

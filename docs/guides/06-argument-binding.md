@@ -7,6 +7,16 @@ resolver architecture — each parameter source is one resolver, first match
 wins — and the binding machinery reuses `DataBinder` (keypath-aware,
 core/isomorphic), `ConversionService`, and the Zod `convert` hook (guide 07).
 
+**Audience:** Node and browser application developers · **Prerequisites:** Guide 01 (Node) or guide 02 (browser); guide 07 for validation · **Reference app:** `apps/05-ndigo-api`
+
+## What you'll learn
+
+- Pick the right extractor for each request source.
+- Bind a whole source into a nested object with `dataBinderValue`.
+- Read multipart JSON parts and matrix parameters.
+- Turn missing required values into a 400 problem document.
+- Register custom argument resolvers.
+
 ## 1. The binding surface
 
 One coherent set of bindings, all read from the Route/dispatch context. Source
@@ -56,29 +66,31 @@ sources are an explicit per-platform allow-list:
 
 ```ts
 import { z } from 'zod';
-import { parameters, dataBinderValue, validatedBy } from '@ndigo/dispatcher';
+import { parameters, dataBinderValue, validatedBy, postMapping } from '@ndigo/dispatcher';
 
 class ProfileForm {
     email = '';
-    age = 0;                                  // coerced by the schema; binding is string-typed
-    address = { street: '', city: '' };       // client sends "address.street" / "address.city"
+    age = 0; // coerced by the schema; binding is string-typed
+    address = { street: '', city: '' }; // client sends "address.street" / "address.city"
 }
 
-@postMapping('/profile')
-@parameters({
-    profile: validatedBy(
-        z.object({
-            email: z.string().email(),
-            age: z.coerce.number(),
-            address: z.object({ street: z.string(), city: z.string() }),
-            // unknown keys are STRIPPED by default (zod ^4.5.4)
-        }),
-        dataBinderValue('body')               // source in the type
-    )
-})
-async updateProfile(profile: ProfileForm) {
-    // profile is a validated ProfileForm instance — not a Record
-    return { ok: true, email: profile.email };
+class ProfileController {
+    @postMapping('/profile')
+    @parameters({
+        profile: validatedBy(
+            z.object({
+                email: z.string().email(),
+                age: z.coerce.number(),
+                address: z.object({ street: z.string(), city: z.string() }),
+                // unknown keys are STRIPPED by default (zod ^4.5.4)
+            }),
+            dataBinderValue('body') // source in the type
+        ),
+    })
+    async updateProfile(profile: ProfileForm) {
+        // profile is a validated ProfileForm instance — not a Record
+        return { ok: true, email: profile.email };
+    }
 }
 ```
 
@@ -232,3 +244,9 @@ class UploadArgumentResolver extends AbstractPlatformArgumentResolver {
 
 See [AD-27](../decisions/2026-09-24_AD27_ARGUMENT_BINDING.md) for the full
 decision record and non-goals.
+
+## See also
+
+- [Guide 07 — Request Validation](07-request-validation.md) — schemas on top of the extractors
+- [Guide 14 — Multipart & File Upload](14-multipart-and-file-upload.md) — `fileValue()` and request parts
+- [`@ndigo/dispatcher`](../../packages/ndigo-dispatcher/README.md) — resolvers and parameter types

@@ -14,11 +14,15 @@ Options for defining a column in an entity.
 
 > `optional` **name?**: `string`
 
+Column name override.
+
 ***
 
 ### nullable?
 
 > `optional` **nullable?**: `boolean`
+
+Whether the column allows nulls.
 
 ***
 
@@ -36,3 +40,4 @@ with this type instead of an untyped passthrough.
 
 > `optional` **type?**: `string`
 
+Column type override.

@@ -1,4 +1,5 @@
 /**
+ * Serializes the `data` request option.
  */
 import { is, isString } from '@ndigo/util/types';
 import QueryString from '../query-string';

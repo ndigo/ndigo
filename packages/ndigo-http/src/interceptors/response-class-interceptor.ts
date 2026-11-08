@@ -1,4 +1,5 @@
 /**
+ * Dispatches by response class (1xx/2xx/…).
  */
 import { JSONObject } from '@ndigo/core';
 import { like } from '@ndigo/util/types';
@@ -14,6 +15,13 @@ import ResponseStatus from '../response-status';
  * Handles informational responses.
  */
 export interface InformationAwareHTTPInterceptor {
+    /**
+     * Handles informational responses.
+     *
+     * @param response - The response.
+     * @param settings - The request settings.
+     * @returns Optional model data.
+     */
     postInformationalResponse(response: Response, settings: HTTPInit): Promise<JSONObject | void>;
 }
 
@@ -21,6 +29,13 @@ export interface InformationAwareHTTPInterceptor {
  * Handles successful responses.
  */
 export interface SuccessAwareHTTPInterceptor {
+    /**
+     * Handles successful responses.
+     *
+     * @param response - The response.
+     * @param settings - The request settings.
+     * @returns Optional model data.
+     */
     postSuccessfulResponse(response: Response, settings: HTTPInit): Promise<JSONObject | void>;
 }
 
@@ -28,6 +43,13 @@ export interface SuccessAwareHTTPInterceptor {
  * Handles redirect responses.
  */
 export interface RedirectAwareHTTPInterceptor {
+    /**
+     * Handles redirect responses.
+     *
+     * @param response - The response.
+     * @param settings - The request settings.
+     * @returns Optional model data.
+     */
     postRedirectResponse(response: Response, settings: HTTPInit): Promise<JSONObject | void>;
 }
 
@@ -35,6 +57,13 @@ export interface RedirectAwareHTTPInterceptor {
  * Handles client error responses.
  */
 export interface ClientErrorAwareHTTPInterceptor {
+    /**
+     * Handles client error responses.
+     *
+     * @param response - The response.
+     * @param settings - The request settings.
+     * @returns Optional model data.
+     */
     postClientErrorResponse(response: Response, settings: HTTPInit): Promise<JSONObject | void>;
 }
 
@@ -42,6 +71,13 @@ export interface ClientErrorAwareHTTPInterceptor {
  * Handles server error responses.
  */
 export interface ServerErrorAwareHTTPInterceptor {
+    /**
+     * Handles server error responses.
+     *
+     * @param response - The response.
+     * @param settings - The request settings.
+     * @returns Optional model data.
+     */
     postServerErrorResponse(response: Response, settings: HTTPInit): Promise<JSONObject | void>;
 }
 

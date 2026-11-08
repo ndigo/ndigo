@@ -15,6 +15,8 @@ as a single async batch.
 
 > **new DrizzleUnitOfWork**(`entityManager`): `DrizzleUnitOfWork`
 
+Creates a unit of work over the given entity manager.
+
 #### Parameters
 
 ##### entityManager
@@ -74,6 +76,8 @@ Gets the current tracked state of an entity.
 
 `T`
 
+The entity to inspect.
+
 #### Returns
 
 `EntityState` \| `undefined`
@@ -102,6 +106,8 @@ entity is not also marked dirty.
 
 `T`
 
+The changed entity.
+
 #### Returns
 
 `void`
@@ -127,6 +133,8 @@ Clears any prior removed/dirty registrations for the same entity.
 
 `T`
 
+The new entity.
+
 #### Returns
 
 `void`
@@ -151,6 +159,8 @@ Clears any prior new/dirty registrations for the same entity.
 ##### entity
 
 `T`
+
+The entity to remove.
 
 #### Returns
 

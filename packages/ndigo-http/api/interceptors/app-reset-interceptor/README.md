@@ -6,6 +6,8 @@
 
 # interceptors/app-reset-interceptor
 
+Resets browser application state from a response header.
+
 ## Classes
 
 - [AppResetInterceptor](classes/AppResetInterceptor.md)

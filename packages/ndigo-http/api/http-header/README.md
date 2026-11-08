@@ -6,6 +6,8 @@
 
 # http-header
 
+HTTP header value objects and header-name helpers.
+
 ## Classes
 
 - [HTTPHeader](classes/HTTPHeader.md)

@@ -1,4 +1,5 @@
 /**
+ * Interceptor execution chain for route navigation.
  */
 import { RouterInterceptor } from './router-interceptor';
 import { Route } from './route';
@@ -11,12 +12,14 @@ import { Route } from './route';
 export default class RouterExecutionChain {
     #interceptors: RouterInterceptor[];
 
+    /** Index of the last interceptor whose `preHandle` ran. */
     interceptorIndex: number;
 
     get [Symbol.toStringTag](): string {
         return 'RouterExecutionChain';
     }
 
+    /** The chain's interceptors, in registration order. */
     get interceptors(): RouterInterceptor[] {
         return this.#interceptors;
     }
@@ -36,6 +39,8 @@ export default class RouterExecutionChain {
     }
 
     /**
+     * Adds one interceptor.
+     *
      * @param interceptor - The interceptor to add.
      */
     addInterceptor(interceptor: RouterInterceptor): void {
@@ -45,6 +50,8 @@ export default class RouterExecutionChain {
     }
 
     /**
+     * Adds several interceptors.
+     *
      * @param interceptors - The interceptors to add.
      */
     addInterceptors(interceptors: RouterInterceptor[]): void {
@@ -57,6 +64,8 @@ export default class RouterExecutionChain {
     }
 
     /**
+     * Runs `postHandle` in reverse registration order.
+     *
      * @param route - The route to process.
      */
     async applyPostHandle(route: Route): Promise<void> {
@@ -75,6 +84,8 @@ export default class RouterExecutionChain {
     }
 
     /**
+     * Runs `afterCompletion` in reverse registration order.
+     *
      * @param route - The route to process.
      */
     async applyAfterCompletion(route: Route): Promise<void> {
@@ -93,7 +104,10 @@ export default class RouterExecutionChain {
     }
 
     /**
+     * Runs `preHandle` in registration order until one rejects.
+     *
      * @param route - The route to process.
+     * @returns Whether navigation may proceed.
      */
     async applyPreHandle(route: Route): Promise<boolean> {
         const interceptors = this.#interceptors,

@@ -14,11 +14,15 @@ Defines the structure for registering a feature with the `FeatureRoutingRegistry
 
 > **name**: `string`
 
+The feature name.
+
 ***
 
 ### onActivate?
 
 > `optional` **onActivate?**: () => `void`
+
+Invoked after the feature activates.
 
 #### Returns
 
@@ -30,6 +34,8 @@ Defines the structure for registering a feature with the `FeatureRoutingRegistry
 
 > `optional` **onDeactivate?**: () => `void`
 
+Invoked after the feature deactivates.
+
 #### Returns
 
 `void`
@@ -39,6 +45,8 @@ Defines the structure for registering a feature with the `FeatureRoutingRegistry
 ### onRoute
 
 > **onRoute**: (`route`) => `void`
+
+Receives the feature-local route.
 
 #### Parameters
 
@@ -56,3 +64,4 @@ Defines the structure for registering a feature with the `FeatureRoutingRegistry
 
 > **prefix**: `string`
 
+The URL prefix that activates the feature.

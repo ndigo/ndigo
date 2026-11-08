@@ -15,6 +15,8 @@ export class DrizzleUnitOfWork {
     #removedEntities: Set<object>;
 
     /**
+     * Creates a unit of work over the given entity manager.
+     *
      * @param entityManager - The Drizzle entity manager used to persist.
      */
     constructor(entityManager: DrizzleEntityManager) {
@@ -27,6 +29,8 @@ export class DrizzleUnitOfWork {
     /**
      * Registers a new entity to be persisted on the next flush.
      * Clears any prior removed/dirty registrations for the same entity.
+     *
+     * @param entity - The new entity.
      */
     registerNew<T extends object>(entity: T): void {
         this.#removedEntities.delete(entity);
@@ -37,6 +41,8 @@ export class DrizzleUnitOfWork {
     /**
      * Registers an existing entity whose state has changed. A new or removed
      * entity is not also marked dirty.
+     *
+     * @param entity - The changed entity.
      */
     registerDirty<T extends object>(entity: T): void {
         if (this.#newEntities.has(entity) || this.#removedEntities.has(entity)) {
@@ -48,6 +54,8 @@ export class DrizzleUnitOfWork {
     /**
      * Registers an entity to be removed on the next flush.
      * Clears any prior new/dirty registrations for the same entity.
+     *
+     * @param entity - The entity to remove.
      */
     registerRemoved<T extends object>(entity: T): void {
         this.#newEntities.delete(entity);
@@ -58,6 +66,7 @@ export class DrizzleUnitOfWork {
     /**
      * Gets the current tracked state of an entity.
      *
+     * @param entity - The entity to inspect.
      * @returns `'new'`, `'managed'` (dirty), `'removed'`, or `undefined` when
      *   the entity is not tracked.
      */

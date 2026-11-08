@@ -1,4 +1,5 @@
 /**
+ * Synchronous and asynchronous repository contracts.
  */
 import { Constructable } from '@ndigo/core';
 import { EntityManager } from './entity-manager';
@@ -80,13 +81,21 @@ export interface Repository<T extends object, ID> {
  * Missing entities resolve to `undefined`; operation failures reject the promise.
  */
 export interface AsyncRepository<T extends object, ID> {
+    /** Persists an entity. @param entity - The entity to save. */
     save(entity: T): Promise<T>;
+    /** Finds an entity by id. @param id - The entity id. @param options - Optional relation loading. */
     findById(id: ID, options?: RelationFetchOptions): Promise<T | undefined>;
+    /** Returns all entities. @param options - Optional relation loading. */
     findAll(options?: RelationFetchOptions): Promise<T[]>;
+    /** Loads one relation onto an entity. @param entity - The entity. @param relationName - The relation field. */
     loadRelation(entity: T, relationName: string): Promise<unknown>;
+    /** Returns one page of results. @param request - The page request. */
     findPage(request: PageRequest): Promise<Page<T>>;
+    /** Deletes an entity by id. @param id - The entity id. */
     deleteById(id: ID): Promise<boolean>;
+    /** Counts all entities. @returns The entity count. */
     count(): Promise<number>;
+    /** Whether an entity exists. @param id - The entity id. */
     existsById(id: ID): Promise<boolean>;
 }
 
@@ -94,6 +103,9 @@ export interface AsyncRepository<T extends object, ID> {
  * Adapts a synchronous repository to {@link AsyncRepository} without changing its
  * behavior. Calls retain the repository receiver, and synchronous exceptions
  * become promise rejections. Async repositories cannot be adapted back to sync.
+ *
+ * @param repository - The synchronous repository to adapt.
+ * @returns Its promise-based counterpart.
  */
 export function toAsyncRepository<T extends object, ID>(repository: Repository<T, ID>): AsyncRepository<T, ID> {
     return {
@@ -146,6 +158,8 @@ export abstract class AbstractRepository<T extends object, ID> implements Reposi
 
     /**
      * The entity class this repository manages.
+     *
+     * @returns The entity constructor.
      */
     protected getEntityClass(): Constructable<T> {
         return this.#entityClass;
@@ -182,7 +196,11 @@ export abstract class AbstractRepository<T extends object, ID> implements Reposi
     }
 
     /**
-     * {@inheritDoc}
+     * Loads one relation onto an entity.
+     *
+     * @param entity - The entity to update.
+     * @param relationName - The relation field to load.
+     * @returns The loaded relation value.
      */
     loadRelation(entity: T, relationName: string): unknown {
         const value = this.#entityManager.fetchRelation(entity, relationName);

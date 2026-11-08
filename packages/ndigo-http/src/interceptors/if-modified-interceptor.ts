@@ -1,4 +1,5 @@
 /**
+ * Sends and honors `If-Modified-Since`.
  */
 import { HTTPInit, InitializationAwareHTTPInterceptor, ResponseAwareHTTPInterceptor } from '../http';
 import { ETAG, IF_MODIFIED_SINCE, IF_NONE_MATCH, LAST_MODIFIED } from '../http-headers';

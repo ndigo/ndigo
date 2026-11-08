@@ -1,4 +1,5 @@
 /**
+ * Transaction contracts and the in-memory snapshot manager.
  */
 import { IllegalStateError } from '@ndigo/core';
 import { InMemoryDataSource } from './data-source';
@@ -66,18 +67,29 @@ export class InMemoryTransactionManager implements TransactionManager {
     #dataSource: InMemoryDataSource;
 
     /**
+     * Creates the manager over an in-memory data source.
+     *
      * @param dataSource - The in-memory data source to snapshot/roll back.
      */
     constructor(dataSource: InMemoryDataSource) {
         this.#dataSource = dataSource;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Whether a transaction is currently active.
+     *
+     * @returns Whether a run is in progress.
+     */
     isActive(): boolean {
         return this.#active;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Runs `fn` in a transaction, rolling the snapshot back on failure.
+     *
+     * @param fn - The work to run.
+     * @returns The work's result.
+     */
     async run<T>(fn: () => T | Promise<T>): Promise<T> {
         if (this.#active) {
             throw new IllegalStateError('InMemoryTransactionManager: a transaction is already active');

@@ -1,4 +1,5 @@
 /**
+ * The data-source contract and in-memory implementation.
  */
 import { IllegalStateError } from '@ndigo/core';
 import { Destroyable, Initializable } from '@ndigo/factory';
@@ -70,6 +71,7 @@ export interface DataSource extends Initializable, Destroyable {
  * It stores entity data in JavaScript Maps.
  */
 export class InMemoryDataSource implements DataSource {
+    /** Whether the data source has been destroyed. */
     destroyed: boolean;
     #stores: Map<string, Map<unknown, unknown>>;
 

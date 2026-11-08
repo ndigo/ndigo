@@ -14,16 +14,24 @@ Handles client error responses.
 
 > **postClientErrorResponse**(`response`, `settings`): `Promise`\<`void` \| `JSONObject`\>
 
+Handles client error responses.
+
 #### Parameters
 
 ##### response
 
 `Response`
 
+The response.
+
 ##### settings
 
 [`HTTPInit`](../../../http-types/type-aliases/HTTPInit.md)
 
+The request settings.
+
 #### Returns
 
 `Promise`\<`void` \| `JSONObject`\>
+
+Optional model data.

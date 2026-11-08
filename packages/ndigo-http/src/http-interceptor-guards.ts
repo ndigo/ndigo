@@ -1,4 +1,5 @@
 /**
+ * Structural guards for HTTP interceptor shapes.
  */
 /// <reference lib="dom" />
 // TypeScript 6.0 declaration generation fix

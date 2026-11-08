@@ -25,9 +25,13 @@ Missing entities resolve to `undefined`; operation failures reject the promise.
 
 > **count**(): `Promise`\<`number`\>
 
+Counts all entities.
+
 #### Returns
 
 `Promise`\<`number`\>
+
+The entity count.
 
 ***
 
@@ -35,11 +39,15 @@ Missing entities resolve to `undefined`; operation failures reject the promise.
 
 > **deleteById**(`id`): `Promise`\<`boolean`\>
 
+Deletes an entity by id.
+
 #### Parameters
 
 ##### id
 
 `ID`
+
+The entity id.
 
 #### Returns
 
@@ -51,11 +59,15 @@ Missing entities resolve to `undefined`; operation failures reject the promise.
 
 > **existsById**(`id`): `Promise`\<`boolean`\>
 
+Whether an entity exists.
+
 #### Parameters
 
 ##### id
 
 `ID`
+
+The entity id.
 
 #### Returns
 
@@ -67,11 +79,15 @@ Missing entities resolve to `undefined`; operation failures reject the promise.
 
 > **findAll**(`options?`): `Promise`\<`T`[]\>
 
+Returns all entities.
+
 #### Parameters
 
 ##### options?
 
 [`RelationFetchOptions`](RelationFetchOptions.md)
+
+Optional relation loading.
 
 #### Returns
 
@@ -83,15 +99,21 @@ Missing entities resolve to `undefined`; operation failures reject the promise.
 
 > **findById**(`id`, `options?`): `Promise`\<`T` \| `undefined`\>
 
+Finds an entity by id.
+
 #### Parameters
 
 ##### id
 
 `ID`
 
+The entity id.
+
 ##### options?
 
 [`RelationFetchOptions`](RelationFetchOptions.md)
+
+Optional relation loading.
 
 #### Returns
 
@@ -103,11 +125,15 @@ Missing entities resolve to `undefined`; operation failures reject the promise.
 
 > **findPage**(`request`): `Promise`\<[`Page`](../../page/interfaces/Page.md)\<`T`\>\>
 
+Returns one page of results.
+
 #### Parameters
 
 ##### request
 
 [`PageRequest`](../../page/interfaces/PageRequest.md)
+
+The page request.
 
 #### Returns
 
@@ -119,15 +145,21 @@ Missing entities resolve to `undefined`; operation failures reject the promise.
 
 > **loadRelation**(`entity`, `relationName`): `Promise`\<`unknown`\>
 
+Loads one relation onto an entity.
+
 #### Parameters
 
 ##### entity
 
 `T`
 
+The entity.
+
 ##### relationName
 
 `string`
+
+The relation field.
 
 #### Returns
 
@@ -139,11 +171,15 @@ Missing entities resolve to `undefined`; operation failures reject the promise.
 
 > **save**(`entity`): `Promise`\<`T`\>
 
+Persists an entity.
+
 #### Parameters
 
 ##### entity
 
 `T`
+
+The entity to save.
 
 #### Returns
 

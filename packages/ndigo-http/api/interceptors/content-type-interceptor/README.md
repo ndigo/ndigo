@@ -6,6 +6,8 @@
 
 # interceptors/content-type-interceptor
 
+Applies a content type to request bodies.
+
 ## Classes
 
 - [ContentTypeInterceptor](classes/ContentTypeInterceptor.md)

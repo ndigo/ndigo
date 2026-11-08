@@ -14,9 +14,12 @@ One table's projection.
 
 > **columns**: [`ColumnProjection`](ColumnProjection.md)[]
 
+The table's columns.
+
 ***
 
 ### name
 
 > **name**: `string`
 
+The table name.

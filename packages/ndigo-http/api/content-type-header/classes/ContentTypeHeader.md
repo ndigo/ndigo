@@ -84,9 +84,13 @@ The bare media type of a `Content-Type` value (see
 
 `string` \| `null` \| `undefined`
 
+The content-type header value.
+
 #### Returns
 
 `string` \| `null`
+
+The bare media type, or `null`.
 
 ***
 
@@ -103,9 +107,13 @@ The multipart boundary of a `Content-Type` value (see
 
 `string` \| `null` \| `undefined`
 
+The content-type header value.
+
 #### Returns
 
 `string` \| `null`
+
+The boundary, or `null`.
 
 ***
 
@@ -256,11 +264,13 @@ When `headers` is not provided.
 
 > **toJSON**(): `JSONValue`
 
+Serializes the header to its name.
+
 #### Returns
 
 `JSONValue`
 
-A JSON representation of the HTTP header
+A JSON representation of the HTTP header.
 
 #### Inherited from
 
@@ -272,11 +282,13 @@ A JSON representation of the HTTP header
 
 > **toString**(): `string`
 
+Returns the header name.
+
 #### Returns
 
 `string`
 
-A string representation of the HTTP header
+A string representation of the HTTP header.
 
 #### Inherited from
 

@@ -1,4 +1,5 @@
 /**
+ * Drizzle/libSQL data source and table bootstrap.
  */
 import { createClient, Client } from '@libsql/client';
 import { drizzle as createDrizzle, LibSQLDatabase } from 'drizzle-orm/libsql';
@@ -13,7 +14,9 @@ export type { LibSQLDatabase } from 'drizzle-orm/libsql';
  * Options for configuring the Drizzle data source.
  */
 export interface DrizzleDataSourceOptions {
+    /** libSQL connection URL; defaults to `:memory:`. */
     url?: string;
+    /** Optional libSQL auth token. */
     authToken?: string;
 }
 
@@ -36,22 +39,32 @@ export class DrizzleDataSource {
         this.#db = createDrizzle(this.#client);
     }
 
+    /** The Drizzle database. */
     get db(): LibSQLDatabase {
         return this.#db;
     }
 
+    /** The underlying scoped libSQL client. */
     get client(): Client {
         return this.#client;
     }
 
+    /** The configured connection URL. */
     get url(): string {
         return this.#url;
     }
 
+    /** Whether the schema has been initialized. */
     get initialized(): boolean {
         return this.#initialized;
     }
 
+    /**
+     * Creates the tables for the given entities (idempotent).
+     *
+     * @param entities - The entity classes to provision.
+     * @returns A promise that resolves once the tables exist.
+     */
     async init(entities: Constructable[]): Promise<void> {
         if (this.#initialized) return;
 

@@ -1,4 +1,5 @@
 /**
+ * Drizzle-backed entity persistence and relation loading.
  */
 import type { InValue } from '@libsql/client';
 import { Constructable, FrameworkError } from '@ndigo/core';
@@ -24,6 +25,12 @@ export class DrizzleEntityManager {
         return this.#dataSource.client;
     }
 
+    /**
+     * Persists (inserts or updates) the entity.
+     *
+     * @param entity - The entity to persist.
+     * @returns A promise that resolves once persisted.
+     */
     async persist<T extends object>(entity: T): Promise<void> {
         const entityClass = entity.constructor as Constructable<T>;
         if (!isEntity(entityClass)) {
@@ -89,6 +96,13 @@ export class DrizzleEntityManager {
         }
     }
 
+    /**
+     * Finds an entity by its primary identifier.
+     *
+     * @param entityClass - The entity class.
+     * @param id - The primary identifier.
+     * @returns The entity, or `undefined` when absent.
+     */
     async find<T extends object>(entityClass: Constructable<T>, id: unknown): Promise<T | undefined> {
         if (!isEntity(entityClass)) {
             throw new FrameworkError(`Class '${entityClass.name}' is not decorated with @entity.`);
@@ -105,6 +119,12 @@ export class DrizzleEntityManager {
         return this.#mapRowToEntity(entityClass, result.rows[0] as Record<string, unknown>);
     }
 
+    /**
+     * Returns all entities of a class.
+     *
+     * @param entityClass - The entity class.
+     * @returns All entities.
+     */
     async findAll<T extends object>(entityClass: Constructable<T>): Promise<T[]> {
         if (!isEntity(entityClass)) {
             throw new FrameworkError(`Class '${entityClass.name}' is not decorated with @entity.`);
@@ -121,6 +141,10 @@ export class DrizzleEntityManager {
      * Sort properties must name declared entity fields (validated before any
      * SQL runs); column and direction fragments are allowlisted and quoted,
      * so the request can never inject SQL.
+     *
+     * @param entityClass - The entity class to page.
+     * @param request - The page index (1-based), size, and sort orders.
+     * @returns The requested page with totals.
      */
     async findPage<T extends object>(entityClass: Constructable<T>, request: PageRequest): Promise<Page<T>> {
         if (!isEntity(entityClass)) {
@@ -158,6 +182,11 @@ export class DrizzleEntityManager {
      * limit — the building block for derived-query repositories. Sort
      * properties must name declared entity fields (validated before any SQL
      * runs); unlike `findPage`, no total counts are computed.
+     *
+     * @param entityClass - The entity class to query.
+     * @param conditions - Equality conditions as column/value pairs.
+     * @param options - Optional ordering and limit.
+     * @returns The matching entities.
      */
     async findAllWhere<T extends object>(
         entityClass: Constructable<T>,
@@ -208,6 +237,10 @@ export class DrizzleEntityManager {
      * @throws When the relation, its join column, or the
      *   target class is not declared, or for many-to-many relations
      *   (join-table semantics not implemented).
+     *
+     * @param entity - The entity whose relation is loaded.
+     * @param relationName - The declared relation field name.
+     * @returns The loaded relation value.
      */
     async fetchRelation(entity: object, relationName: string): Promise<unknown> {
         const entityClass = entity.constructor as Constructable<object>;
@@ -383,6 +416,12 @@ export class DrizzleEntityManager {
         }
     }
 
+    /**
+     * Removes an entity row.
+     *
+     * @param entity - The entity to remove.
+     * @returns A promise that resolves once removed.
+     */
     async remove<T extends object>(entity: T): Promise<void> {
         const entityClass = entity.constructor as Constructable<T>;
         if (!isEntity(entityClass)) return;

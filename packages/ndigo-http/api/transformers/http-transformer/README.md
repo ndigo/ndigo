@@ -6,6 +6,8 @@
 
 # transformers/http-transformer
 
+The HTTP transformer contract.
+
 ## Interfaces
 
 - [HTTPTransformer](interfaces/HTTPTransformer.md)

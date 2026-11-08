@@ -54,9 +54,13 @@ Access a route definition by dotted path.
 
 `string`
 
+The dotted definition path.
+
 #### Returns
 
 [`RouteDefinition`](../../route-definition/classes/RouteDefinition.md)\<`T`\> \| `undefined`
+
+The definition, or `undefined` when unknown.
 
 ***
 

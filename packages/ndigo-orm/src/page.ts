@@ -8,23 +8,33 @@ export type SortDirection = 'asc' | 'desc';
 
 /** A single sort clause: an entity field name plus a direction (default `asc`). */
 export interface SortOrder {
+    /** The entity field to sort by. */
     property: string;
+    /** Sort direction; defaults to `asc`. */
     direction?: SortDirection;
 }
 
 /** A page request: 1-based page index, positive size, optional multi-key sort. */
 export interface PageRequest {
+    /** 1-based page index. */
     page: number;
+    /** Positive page size. */
     size: number;
+    /** Multi-key sort clauses. */
     sort?: SortOrder[];
 }
 
 /** A page of results with its totals. Pages beyond the last one yield empty content. */
 export interface Page<T> {
+    /** The page content. */
     content: T[];
+    /** The 1-based page index. */
     page: number;
+    /** The page size. */
     size: number;
+    /** Total matching elements. */
     totalElements: number;
+    /** Total page count. */
     totalPages: number;
 }
 
@@ -57,6 +67,11 @@ export function validatePageRequest(request: PageRequest, allowedProperties: Set
 /**
  * Sorts and slices a full result set into a page (in-memory backends).
  * Multi-key sort is stable per clause; ties keep their input order.
+ *
+ * @param all - The full result set.
+ * @param request - The page request.
+ * @param allowedProperties - The entity field names sort properties may name.
+ * @returns The requested page and totals.
  */
 export function pageFromAll<T>(all: T[], request: PageRequest, allowedProperties: Set<string>): Page<T> {
     validatePageRequest(request, allowedProperties);
@@ -77,6 +92,9 @@ export function pageFromAll<T>(all: T[], request: PageRequest, allowedProperties
  * Builds a multi-key comparator for the given sort clauses. Clauses apply
  * in order; ties keep their input order. Used by `pageFromAll` and the
  * derived-query repositories.
+ *
+ * @param sort - The sort clauses.
+ * @returns The comparator.
  */
 export function sortComparator<T>(sort: SortOrder[]): (left: T, right: T) => number {
     return (left, right) => {

@@ -6,6 +6,8 @@
 
 # path-route
 
+Path-based route value object.
+
 ## Classes
 
 - [PathRoute](classes/PathRoute.md)

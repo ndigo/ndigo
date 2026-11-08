@@ -24,6 +24,7 @@ import { DrizzleDataSource } from './drizzle-data-source';
  * migration fails partway.
  */
 export interface Migration {
+    /** Unique positive version. */
     version: number;
     /** Human-readable summary recorded in the journal. */
     description: string;
@@ -36,9 +37,9 @@ export interface Migration {
  * libSQL client.
  */
 export interface MigrationContext {
-    /** Executes a single statement (DDL or DML) with optional positional args. */
+    /** Executes a single statement (DDL or DML) with optional positional args. @param sql - The SQL. @param args - Positional arguments. */
     execute(sql: string, args?: unknown[]): Promise<unknown>;
-    /** Executes multiple statements in one round trip (schema DDL batches). */
+    /** Executes multiple statements in one round trip (schema DDL batches). @param statements - The statements. */
     batch(statements: string[]): Promise<unknown>;
 }
 
@@ -54,7 +55,9 @@ export type MigrationState = 'applied' | 'pending';
  * the ISO-8601 timestamp recorded at apply time.
  */
 export interface MigrationStatus {
+    /** The migration version. */
     version: number;
+    /** The migration description. */
     description: string;
     /** Whether the journal records this version as applied. */
     state: MigrationState;
@@ -105,6 +108,7 @@ export class DrizzleMigrator {
      * @param migrations - The full migration history; input order is
      *   irrelevant. Duplicate or invalid versions fail loud before any SQL
      *   runs.
+     * @returns A promise that resolves once all pending migrations apply.
      */
     async migrate(migrations: Migration[]): Promise<void> {
         const ordered = orderedMigrations(migrations);
@@ -124,6 +128,9 @@ export class DrizzleMigrator {
     /**
      * Reports the applied/pending state of each migration, with the apply
      * timestamp when recorded. Ensures the journal exists.
+     *
+     * @param migrations - The full migration history.
+     * @returns The status of every migration.
      */
     async status(migrations: Migration[]): Promise<MigrationStatus[]> {
         const ordered = orderedMigrations(migrations);

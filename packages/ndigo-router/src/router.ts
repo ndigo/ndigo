@@ -1,4 +1,5 @@
 /**
+ * The router contract and abstract base.
  */
 import {
     RouterInterceptorRegistry,
@@ -43,8 +44,11 @@ export interface RouterOptions {
  * Defines the core interface for a router, providing access to the current route and a mechanism to refresh it.
  */
 export interface Router {
+    /** The current route path. */
     readonly route: string;
+    /** Invoked when the route changes. */
     readonly callback: RouterCallback;
+    /** Re-evaluates the current route. */
     refresh(): void;
     /**
      * Programmatically navigates the router to the given path.
@@ -79,7 +83,9 @@ export abstract class AbstractRouter implements Router, RouterInterceptorRegistr
             });
     }
 
+    /** The current route path. */
     abstract get route(): string;
+    /** Invoked when the route changes. */
     abstract readonly callback: RouterCallback;
 
     /**
@@ -171,6 +177,3 @@ export abstract class AbstractRouter implements Router, RouterInterceptorRegistr
         }
     }
 }
-
-/**
- */

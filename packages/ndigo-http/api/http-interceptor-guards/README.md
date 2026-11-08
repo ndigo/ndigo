@@ -6,6 +6,8 @@
 
 # http-interceptor-guards
 
+Structural guards for HTTP interceptor shapes.
+
 ## Functions
 
 - [likeCompletionAwareHTTPInterceptor](functions/likeCompletionAwareHTTPInterceptor.md)

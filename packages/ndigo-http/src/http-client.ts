@@ -130,6 +130,13 @@ export class HTTP {
         this.settings = init === defaults ? assign({}, init) : assign({}, defaults, init);
     }
 
+    /**
+     * Sends an HTTP request through the interceptor chain.
+     *
+     * @param input - The request URL.
+     * @param init - Request options.
+     * @returns The final response.
+     */
     async request(input: string, init: HTTPInit | null = null): Promise<Response> {
         const settings = init === null ? assign({}, this.settings) : assign({}, this.settings, init);
 
@@ -257,60 +264,131 @@ export class HTTP {
         }
     }
 
+    /**
+     * Sends a CONNECT request.
+     *
+     * @param input - The request URL.
+     * @param init - Request options.
+     * @returns The final response.
+     */
     async connect(input: string, init: HTTPInit = {}): Promise<Response> {
         init ??= {};
         init.method = 'CONNECT';
         return this.request(input, init);
     }
 
+    /**
+     * Sends a DELETE request.
+     *
+     * @param input - The request URL.
+     * @param init - Request options.
+     * @returns The final response.
+     */
     async delete(input: string, init: HTTPInit = {}): Promise<Response> {
         init ??= {};
         init.method = 'DELETE';
         return this.request(input, init);
     }
 
+    /**
+     * Sends a GET request.
+     *
+     * @param input - The request URL.
+     * @param init - Request options.
+     * @returns The final response.
+     */
     async get(input: string, init: HTTPInit = {}): Promise<Response> {
         init ??= {};
         init.method = 'GET';
         return this.request(input, init);
     }
 
+    /**
+     * Sends a HEAD request.
+     *
+     * @param input - The request URL.
+     * @param init - Request options.
+     * @returns The final response.
+     */
     async head(input: string, init: HTTPInit = {}): Promise<Response> {
         init ??= {};
         init.method = 'HEAD';
         return this.request(input, init);
     }
 
+    /**
+     * Sends an OPTIONS request.
+     *
+     * @param input - The request URL.
+     * @param init - Request options.
+     * @returns The final response.
+     */
     async options(input: string, init: HTTPInit = {}): Promise<Response> {
         init ??= {};
         init.method = 'OPTIONS';
         return this.request(input, init);
     }
 
+    /**
+     * Sends a PATCH request.
+     *
+     * @param input - The request URL.
+     * @param init - Request options.
+     * @returns The final response.
+     */
     async patch(input: string, init: HTTPInit = {}): Promise<Response> {
         init ??= {};
         init.method = 'PATCH';
         return this.request(input, init);
     }
 
+    /**
+     * Sends a POST request.
+     *
+     * @param input - The request URL.
+     * @param init - Request options.
+     * @returns The final response.
+     */
     async post(input: string, init: HTTPInit = {}): Promise<Response> {
         init ??= {};
         init.method = 'POST';
         return this.request(input, init);
     }
 
+    /**
+     * Sends a PUT request.
+     *
+     * @param input - The request URL.
+     * @param init - Request options.
+     * @returns The final response.
+     */
     async put(input: string, init: HTTPInit = {}): Promise<Response> {
         init ??= {};
         init.method = 'PUT';
         return this.request(input, init);
     }
 
+    /**
+     * Sends a TRACE request.
+     *
+     * @param input - The request URL.
+     * @param init - Request options.
+     * @returns The final response.
+     */
     async trace(input: string, init: HTTPInit = {}): Promise<Response> {
         init ??= {};
         init.method = 'TRACE';
         return this.request(input, init);
     }
 
+    /**
+     * Builds the interceptor chain for one request, filtering path-mapped
+     * interceptors by URL.
+     *
+     * @param http - The client or an existing chain.
+     * @param url - The request URL used for include/exclude matching.
+     * @returns The execution chain.
+     */
     protected _getHTTPExecutionChain(http: HTTP | HTTPExecutionChain, url: string): HTTPExecutionChain {
         const chain = isHTTPExecutionChain(http) ? http : new HTTPExecutionChain(http),
             interceptors = this.#interceptors,

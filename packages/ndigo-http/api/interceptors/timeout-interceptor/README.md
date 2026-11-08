@@ -6,6 +6,8 @@
 
 # interceptors/timeout-interceptor
 
+Applies request timeouts.
+
 ## Classes
 
 - [TimeoutInterceptor](classes/TimeoutInterceptor.md)

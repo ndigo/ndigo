@@ -84,7 +84,7 @@ The original error.
 
 > **body**: `ReadableStream`\<`Uint8Array`\<`ArrayBuffer`\>\>
 
-[MDN Reference](https://developer.mozilla.org/docs/Web/API/Request/body)
+The response body stream.
 
 #### Implementation of
 
@@ -96,7 +96,7 @@ The original error.
 
 > **bodyUsed**: `boolean`
 
-[MDN Reference](https://developer.mozilla.org/docs/Web/API/Request/bodyUsed)
+Whether the body has been read.
 
 #### Implementation of
 
@@ -108,9 +108,7 @@ The original error.
 
 > **headers**: `Headers`
 
-The **`headers`** read-only property of the Response interface contains the Headers object associated with the response.
-
-[MDN Reference](https://developer.mozilla.org/docs/Web/API/Response/headers)
+The response headers.
 
 #### Implementation of
 
@@ -121,6 +119,8 @@ The **`headers`** read-only property of the Response interface contains the Head
 ### message
 
 > **message**: `string`
+
+The error message.
 
 #### Implementation of
 
@@ -136,6 +136,8 @@ The **`headers`** read-only property of the Response interface contains the Head
 
 > **name**: `string`
 
+The error name.
+
 #### Implementation of
 
 `Error.name`
@@ -150,9 +152,7 @@ The **`headers`** read-only property of the Response interface contains the Head
 
 > **ok**: `boolean`
 
-The **`ok`** read-only property of the Response interface contains a Boolean stating whether the response was successful (status in the range 200-299) or not.
-
-[MDN Reference](https://developer.mozilla.org/docs/Web/API/Response/ok)
+Whether the response was successful.
 
 #### Implementation of
 
@@ -164,9 +164,7 @@ The **`ok`** read-only property of the Response interface contains a Boolean sta
 
 > **redirected**: `boolean`
 
-The **`redirected`** read-only property of the Response interface indicates whether or not the response is the result of a request you made which was redirected.
-
-[MDN Reference](https://developer.mozilla.org/docs/Web/API/Response/redirected)
+Whether the response was redirected.
 
 #### Implementation of
 
@@ -177,6 +175,8 @@ The **`redirected`** read-only property of the Response interface indicates whet
 ### stack?
 
 > `optional` **stack?**: `string`
+
+The error stack.
 
 #### Implementation of
 
@@ -192,9 +192,7 @@ The **`redirected`** read-only property of the Response interface indicates whet
 
 > **status**: `number`
 
-The **`status`** read-only property of the Response interface contains the HTTP status codes of the response.
-
-[MDN Reference](https://developer.mozilla.org/docs/Web/API/Response/status)
+The HTTP status code.
 
 #### Implementation of
 
@@ -206,9 +204,7 @@ The **`status`** read-only property of the Response interface contains the HTTP 
 
 > **statusText**: `string`
 
-The **`statusText`** read-only property of the Response interface contains the status message corresponding to the HTTP status code in Response.status.
-
-[MDN Reference](https://developer.mozilla.org/docs/Web/API/Response/statusText)
+The HTTP status text.
 
 #### Implementation of
 
@@ -220,9 +216,7 @@ The **`statusText`** read-only property of the Response interface contains the s
 
 > **type**: `ResponseType`
 
-The **`type`** read-only property of the Response interface contains the type of the response. The type determines whether scripts are able to access the response body and headers.
-
-[MDN Reference](https://developer.mozilla.org/docs/Web/API/Response/type)
+The response type.
 
 #### Implementation of
 
@@ -234,9 +228,7 @@ The **`type`** read-only property of the Response interface contains the type of
 
 > **url**: `string`
 
-The **`url`** read-only property of the Response interface contains the URL of the response. The value of the url property will be the final URL obtained after any redirects.
-
-[MDN Reference](https://developer.mozilla.org/docs/Web/API/Response/url)
+The response URL.
 
 #### Implementation of
 

@@ -1,4 +1,5 @@
 /**
+ * Caches HTTP responses.
  */
 import { HTTP, HTTPInit, RequestAwareHTTPInterceptor, ResponseAwareHTTPInterceptor } from '../http';
 

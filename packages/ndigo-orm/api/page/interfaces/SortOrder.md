@@ -14,9 +14,12 @@ A single sort clause: an entity field name plus a direction (default `asc`).
 
 > `optional` **direction?**: [`SortDirection`](../type-aliases/SortDirection.md)
 
+Sort direction; defaults to `asc`.
+
 ***
 
 ### property
 
 > **property**: `string`
 
+The entity field to sort by.

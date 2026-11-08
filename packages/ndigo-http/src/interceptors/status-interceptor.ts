@@ -1,4 +1,5 @@
 /**
+ * Dispatches by response status.
  */
 import { HTTPInit, ResponseAwareHTTPInterceptor, rebuildResponse } from '../http';
 

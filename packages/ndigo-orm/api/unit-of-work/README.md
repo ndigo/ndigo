@@ -6,6 +6,8 @@
 
 # unit-of-work
 
+Unit-of-work tracking for pending entity changes.
+
 ## Classes
 
 - [InMemoryUnitOfWork](classes/InMemoryUnitOfWork.md)

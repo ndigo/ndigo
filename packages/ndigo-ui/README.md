@@ -72,8 +72,8 @@ have their own base styles can import only the token stylesheet.
 The package directory is a shadcn-compatible registry chunk included by the
 repository root `registry.json`. The `theme` item distributes the token and
 base stylesheets; `lib` carries the copy-in custom-element foundation,
-`dialog` and `menu` are the first behaviour items built on Zag.js, and
-`button` is the native-first CSS item.
+`dialog` and `menu` are the first behaviour items built on Zag.js, `button`
+is the native-first CSS item, and `app-shell` is the first block.
 
 ## API
 

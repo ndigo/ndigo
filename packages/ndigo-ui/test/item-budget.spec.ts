@@ -23,6 +23,10 @@ if (!PACKAGE_ROOT) {
 const ITEMS: readonly ItemBudget[] = [
     { meta: 'registry/base/meta.json', files: ['registry/base/base-element.ts', 'registry/base/zag-element.ts'] },
     {
+        meta: 'registry/blocks/app-shell/meta.json',
+        files: ['registry/blocks/app-shell/app-shell.html', 'registry/blocks/app-shell/app-shell.css'],
+    },
+    {
         meta: 'registry/ui/button/meta.json',
         files: ['registry/ui/button/nd-button.css'],
     },

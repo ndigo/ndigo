@@ -107,6 +107,28 @@
         }
       ],
       "docs": "Apply `nd-button` to a native `<button>` (or `<a href>` for navigation). Variants: primary, secondary, ghost, danger; sizes: sm, md, lg."
+    },
+    {
+      "name": "app-shell",
+      "type": "registry:block",
+      "title": "App shell",
+      "description": "Responsive application frame with a skip link, banner, primary nav, sidebar, main landmark, and footer.",
+      "author": "Ndigo <https://ndigo.dev>",
+      "categories": ["block", "layout"],
+      "registryDependencies": ["theme", "button"],
+      "files": [
+        {
+          "path": "registry/blocks/app-shell/app-shell.html",
+          "type": "registry:block",
+          "target": "@components/app-shell/app-shell.html"
+        },
+        {
+          "path": "registry/blocks/app-shell/app-shell.css",
+          "type": "registry:file",
+          "target": "@components/app-shell/app-shell.css"
+        }
+      ],
+      "docs": "Copy the markup into a layout and replace the `<main>` contents; keep the skip link first and the landmarks unique."
     }
   ]
 }

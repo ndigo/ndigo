@@ -41,6 +41,8 @@ The raw string representation of the route segment.
 
 > `readonly` **data**: `JSONObject`
 
+The parsed matrix-parameter data.
+
 #### Implementation of
 
 [`RouteSegment`](../../route/interfaces/RouteSegment.md).[`data`](../../route/interfaces/RouteSegment.md#data)
@@ -50,6 +52,8 @@ The raw string representation of the route segment.
 ### dataString?
 
 > `readonly` `optional` **dataString?**: `string`
+
+The raw matrix-parameter string.
 
 #### Implementation of
 
@@ -61,6 +65,8 @@ The raw string representation of the route segment.
 
 > `readonly` **name**: `string`
 
+The segment name (before matrix parameters).
+
 #### Implementation of
 
 [`RouteSegment`](../../route/interfaces/RouteSegment.md).[`name`](../../route/interfaces/RouteSegment.md#name)
@@ -70,6 +76,8 @@ The raw string representation of the route segment.
 ### raw
 
 > `readonly` **raw**: `string`
+
+The raw segment text.
 
 #### Implementation of
 

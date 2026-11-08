@@ -16,6 +16,8 @@ side of the relation.
 
 > **fieldName**: `string`
 
+The field that holds the relation.
+
 ***
 
 ### inverseJoinColumn?
@@ -40,11 +42,15 @@ entity that holds the target entity's primary key.
 
 > **kind**: [`RelationKind`](../type-aliases/RelationKind.md)
 
+The relation shape.
+
 ***
 
 ### targetEntity
 
 > **targetEntity**: () => [`ClassType`](../type-aliases/ClassType.md)
+
+Lazily resolves the target entity class.
 
 #### Returns
 

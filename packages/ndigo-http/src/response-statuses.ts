@@ -1,9 +1,7 @@
 /**
+ * Standard HTTP status constants.
  */
 import ResponseStatus from './response-status';
-
-/**
- */
 
 /**
  * Information Response

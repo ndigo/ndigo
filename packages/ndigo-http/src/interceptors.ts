@@ -1,4 +1,5 @@
 /**
+ * Built-in HTTP interceptors.
  */
 export * from './interceptors/response-class-interceptor';
 export * from './interceptors/response-code-interceptor';

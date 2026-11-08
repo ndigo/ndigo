@@ -6,6 +6,8 @@
 
 # interceptors/response-class-interceptor
 
+Dispatches by response class (1xx/2xx/…).
+
 ## Classes
 
 - [MappedResponseClassHTTPInterceptor](classes/MappedResponseClassHTTPInterceptor.md)

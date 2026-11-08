@@ -1,4 +1,5 @@
 /**
+ * Applies a content type to request bodies.
  */
 import { MediaType } from '@ndigo/core';
 import { HTTPInit, InitializationAwareHTTPInterceptor } from '../http';

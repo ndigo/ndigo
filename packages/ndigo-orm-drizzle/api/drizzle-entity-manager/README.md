@@ -6,6 +6,8 @@
 
 # drizzle-entity-manager
 
+Drizzle-backed entity persistence and relation loading.
+
 ## Classes
 
 - [DrizzleEntityManager](classes/DrizzleEntityManager.md)

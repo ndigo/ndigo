@@ -279,6 +279,20 @@ The formatted status string.
 
 ### for()
 
+Resolves a status for a code or response.
+
+#### Param
+
+**codeOrResponse**
+
+The numeric code or response.
+
+#### Param
+
+**text**
+
+Optional reason phrase.
+
 #### Call Signature
 
 > `static` **for**(`response`): `ResponseStatus`

@@ -14,11 +14,15 @@ A page request: 1-based page index, positive size, optional multi-key sort.
 
 > **page**: `number`
 
+1-based page index.
+
 ***
 
 ### size
 
 > **size**: `number`
+
+Positive page size.
 
 ***
 
@@ -26,3 +30,4 @@ A page request: 1-based page index, positive size, optional multi-key sort.
 
 > `optional` **sort?**: [`SortOrder`](SortOrder.md)[]
 
+Multi-key sort clauses.

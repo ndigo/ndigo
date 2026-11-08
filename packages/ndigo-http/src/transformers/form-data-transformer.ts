@@ -1,4 +1,5 @@
 /**
+ * Transforms `FormData` entries.
  */
 import { HTTPTransformer, TransformContext } from './http-transformer';
 

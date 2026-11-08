@@ -46,8 +46,7 @@ Stop/drain consumers before close/dispose; pending operations are not drained.
 
 > `readonly` **kind**: `"libsql"` = `'libsql'`
 
-Backend identifier for observability/diagnostics
-(e.g. `'in-memory'`, `'redis'`).
+Store identifier (`'libsql'`).
 
 #### Implementation of
 
@@ -75,7 +74,7 @@ Supported Closeable bridge used by application-context shutdown.
 
 > **create**(`record`, `ttlMs`): `Promise`\<`string`\>
 
-Persists `record` for `ttlMs` and returns the new opaque session id.
+Creates a session record.
 
 #### Parameters
 
@@ -107,7 +106,7 @@ The generated session id.
 
 > **delete**(`sessionId`): `Promise`\<`void`\>
 
-Terminates the session. Unknown ids are a no-op.
+Deletes one session.
 
 #### Parameters
 
@@ -133,14 +132,7 @@ A promise that resolves once deleted.
 
 > **deleteForUser**(`userId`): `Promise`\<`number`\>
 
-Terminates every **live** session belonging to `userId` and returns
-how many were removed (expired-but-unswept entries are purged without
-being counted as live). This is the user-wide revocation primitive:
-the two shipped stores implement it as an indexed sweep (DELETE ... WHERE principal_id = ?); callers that also want outstanding JWTs of
-the account revoked should bump the account's `tokenVersion` — see
-`CredentialsAuthAdapter.logoutAll`.
-
-Idempotent: an account with no live sessions returns `0`.
+Deletes every live session belonging to a user.
 
 #### Parameters
 
@@ -178,8 +170,7 @@ Idempotent: only owned clients close; all later store operations reject.
 
 > **get**(`sessionId`): `Promise`\<`SessionRecord` \| `null`\>
 
-Returns the session record, or `null` when unknown or expired
-(expired sessions are also purged).
+Returns the live session record for an id.
 
 #### Parameters
 
@@ -193,7 +184,7 @@ The session id.
 
 `Promise`\<`SessionRecord` \| `null`\>
 
-The record, or `null`.
+The record, or `null` when missing or expired.
 
 #### Implementation of
 
@@ -211,24 +202,15 @@ Explicit, idempotent provisioning of this store's table/index only.
 
 `Promise`\<`void`\>
 
+A promise that resolves once provisioned.
+
 ***
 
 ### rotate()
 
 > **rotate**(`sessionId`, `record`): `Promise`\<\{ `expiresAt`: `number`; `id`: `string`; \}\>
 
-Replaces `sessionId` with a new id carrying `record` (session
-fixation protection: login rotates the id so an attacker-chosen id
-can never be adopted). The old id must stop working immediately.
-Throws when `sessionId` is unknown (fail closed).
-
-Returns the new session's id together with its **effective absolute
-expiry** (COR-13): the caller must report this exact timestamp rather
-than derive one from `issuedAt` + TTL — TTL semantics are
-implementation-documented (the reference `InMemorySessionStore`
-preserves the **remaining** TTL, so a refresh near expiry yields a
-short-lived session; a sliding-window store would reset to a full
-window).
+Rotates a session, preserving its absolute expiry.
 
 #### Parameters
 

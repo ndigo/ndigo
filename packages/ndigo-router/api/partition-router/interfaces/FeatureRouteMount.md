@@ -14,9 +14,12 @@ Represents a mounted feature route, associating a callback with a URL prefix.
 
 > **callback**: [`FeatureRouteCallback`](../type-aliases/FeatureRouteCallback.md)
 
+The feature's route callback.
+
 ***
 
 ### prefix
 
 > **prefix**: `string`
 
+The URL prefix that activates the feature.

@@ -44,6 +44,8 @@ propagate to the caller.
 
 > `readonly` **timeout**: `number`
 
+The timeout duration in milliseconds.
+
 ## Methods
 
 ### postComplete()

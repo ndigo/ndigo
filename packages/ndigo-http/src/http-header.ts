@@ -1,4 +1,5 @@
 /**
+ * HTTP header value objects and header-name helpers.
  */
 import { isEntries, isJSONObject, JSONValue, Serializable } from '@ndigo/core';
 import { is } from '@ndigo/util/types';
@@ -206,9 +207,6 @@ export class HTTPHeader implements Serializable {
      * @param name - The header name to target.
      */
     constructor(name: string) {
-        /**
-         * @readonly
-         */
         defineProperty(this, 'name', {
             value: name,
             configurable: true,
@@ -279,14 +277,18 @@ export class HTTPHeader implements Serializable {
     }
 
     /**
-     * @returns A JSON representation of the HTTP header
+     * Serializes the header to its name.
+     *
+     * @returns A JSON representation of the HTTP header.
      */
     toJSON(): JSONValue {
         return this.name;
     }
 
     /**
-     * @returns A string representation of the HTTP header
+     * Returns the header name.
+     *
+     * @returns A string representation of the HTTP header.
      */
     toString(): string {
         return this.name;

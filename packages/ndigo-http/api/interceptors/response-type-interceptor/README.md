@@ -6,6 +6,8 @@
 
 # interceptors/response-type-interceptor
 
+Parses response bodies by type.
+
 ## Classes
 
 - [ResponseTypeInterceptor](classes/ResponseTypeInterceptor.md)

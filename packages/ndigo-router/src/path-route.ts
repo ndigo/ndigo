@@ -1,4 +1,5 @@
 /**
+ * Path-based route value object.
  */
 import { RouteSegment, Route } from './route';
 import { JSONValue, Serializable, JSONObject, createNull, type Matchable } from '@ndigo/core';
@@ -26,22 +27,26 @@ const questionMark = '?',
 let routeId = 0;
 
 /**
- * @returns The next route id
+ * Allocates the next route id.
+ *
+ * @returns The next route id.
  */
 function nextRouteId(): number {
     return ++routeId;
 }
 
 /**
- */
-/**
  * Represents a single segment of a `PathRoute`, including its name, matrix parameters, and raw string value.
  * It implements `RouteSegment` and `Serializable`.
  */
 export class PathRouteSegment implements RouteSegment, Serializable {
+    /** The segment name (before matrix parameters). */
     readonly name!: string;
+    /** The parsed matrix-parameter data. */
     readonly data!: JSONObject;
+    /** The raw matrix-parameter string. */
     readonly dataString?: string;
+    /** The raw segment text. */
     readonly raw!: string;
 
     /**
@@ -142,13 +147,21 @@ export class PathRouteSegment implements RouteSegment, Serializable {
 export class PathRoute implements Route<Record<string, string>>, Serializable, Matchable<string> {
     [n: number]: RouteSegment;
 
+    /** The query/matrix data. */
     readonly data!: JSONObject;
+    /** The raw query string. */
     readonly dataString?: string;
+    /** The unique route id. */
     readonly id!: string;
+    /** The HTTP method, when known. */
     method?: HTTPMethod;
+    /** The parsed route parameters. */
     params!: Record<string, string> | null;
+    /** The route path. */
     readonly path!: string;
+    /** The raw route text. */
     readonly raw!: string;
+    /** Additional route attributes. */
     readonly attributes!: Record<string, unknown>;
 
     /**

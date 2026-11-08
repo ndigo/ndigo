@@ -1,4 +1,5 @@
 /**
+ * Transforms JSON payloads.
  */
 import { JSONObject } from '@ndigo/core';
 import { HTTPTransformer, TransformContext } from './http-transformer';

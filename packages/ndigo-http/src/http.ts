@@ -1,4 +1,5 @@
 /**
+ * HTTP request and response type exports.
  */
 /// <reference lib="dom" />
 // TypeScript 6.0 declaration generation fix

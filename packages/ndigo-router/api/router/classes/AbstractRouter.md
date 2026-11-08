@@ -40,6 +40,8 @@ It includes mechanisms for managing route interceptors.
 
 > `abstract` `readonly` **callback**: [`RouterCallback`](../type-aliases/RouterCallback.md)
 
+Invoked when the route changes.
+
 #### Implementation of
 
 [`Router`](../interfaces/Router.md).[`callback`](../interfaces/Router.md#callback)
@@ -52,9 +54,13 @@ It includes mechanisms for managing route interceptors.
 
 > **get** `abstract` **route**(): `string`
 
+The current route path.
+
 ##### Returns
 
 `string`
+
+The current route path.
 
 #### Implementation of
 

@@ -1,4 +1,5 @@
 /**
+ * Parses response bodies by type.
  */
 import { entriesIterator, JSONObject, MediaType, MediaTypes } from '@ndigo/core';
 import { is, isString } from '@ndigo/util/types';
@@ -41,9 +42,6 @@ export type ResponseTypeInit = HTTPInit & {
  * Normalized request settings used after initialization.
  */
 export type ResponseTypeSettings = HTTPInit & { responseParsers: ResponseParserMap; responseType: MediaType | true };
-
-/**
- */
 
 const { defineProperty } = Reflect,
     domParser = typeof DOMParser !== 'undefined' ? new DOMParser() : null,

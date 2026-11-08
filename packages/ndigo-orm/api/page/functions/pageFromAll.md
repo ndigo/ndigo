@@ -23,14 +23,22 @@ Multi-key sort is stable per clause; ties keep their input order.
 
 `T`[]
 
+The full result set.
+
 ### request
 
 [`PageRequest`](../interfaces/PageRequest.md)
+
+The page request.
 
 ### allowedProperties
 
 `Set`\<`string`\>
 
+The entity field names sort properties may name.
+
 ## Returns
 
 [`Page`](../interfaces/Page.md)\<`T`\>
+
+The requested page and totals.

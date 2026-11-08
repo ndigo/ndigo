@@ -23,14 +23,22 @@ Selection rules:
 
 `Record`\<`string`, [`NdigoDatabaseAdapter`](../interfaces/NdigoDatabaseAdapter.md)\>
 
+Registered adapters keyed by name.
+
 ### defaultName
 
 `string` \| `undefined`
+
+The configured default adapter.
 
 ### argv
 
 `string`[]
 
+The CLI argv after `db`.
+
 ## Returns
 
 `Promise`\<`number`\>
+
+The process exit code.

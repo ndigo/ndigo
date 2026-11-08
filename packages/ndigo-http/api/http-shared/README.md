@@ -6,6 +6,8 @@
 
 # http-shared
 
+Shared HTTP helpers and response reconstruction.
+
 ## Variables
 
 - [defaults](variables/defaults.md)

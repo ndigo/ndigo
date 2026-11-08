@@ -6,6 +6,8 @@
 
 # router
 
+The router contract and abstract base.
+
 ## Classes
 
 - [AbstractRouter](classes/AbstractRouter.md)

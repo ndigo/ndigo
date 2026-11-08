@@ -6,6 +6,8 @@
 
 # entity-manager
 
+Entity persistence, lookup, and relation loading.
+
 ## Classes
 
 - [InMemoryEntityManager](classes/InMemoryEntityManager.md)

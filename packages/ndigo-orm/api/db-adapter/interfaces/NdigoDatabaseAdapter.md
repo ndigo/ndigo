@@ -98,6 +98,8 @@ Roll back the last (or N) applied migration.
 
 `number`
 
+Number of migrations to roll back.
+
 #### Returns
 
 `Promise`\<`void`\>

@@ -14,9 +14,12 @@ The committed, normalized metadata projection (`db/schema.json`).
 
 > **predicate**: `1`
 
+The snapshot predicate version and capabilities.
+
 ***
 
 ### tables
 
 > **tables**: [`TableProjection`](TableProjection.md)[]
 
+The projected tables.

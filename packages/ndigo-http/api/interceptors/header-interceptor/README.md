@@ -6,6 +6,8 @@
 
 # interceptors/header-interceptor
 
+Applies configured request headers.
+
 ## Classes
 
 - [HeaderInterceptor](classes/HeaderInterceptor.md)

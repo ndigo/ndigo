@@ -6,6 +6,8 @@
 
 # http-mapped-interceptor
 
+Path-pattern-mapped HTTP interceptors.
+
 ## Classes
 
 - [MappedHTTPInterceptor](classes/MappedHTTPInterceptor.md)

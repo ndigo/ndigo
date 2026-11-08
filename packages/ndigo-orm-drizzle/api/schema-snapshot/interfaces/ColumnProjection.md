@@ -16,11 +16,15 @@ or a non-PK generated column, which `persist()` skips while undefined).
 
 > **generated**: `boolean`
 
+Whether the column is generated.
+
 ***
 
 ### name
 
 > **name**: `string`
+
+The column name.
 
 ***
 
@@ -28,11 +32,15 @@ or a non-PK generated column, which `persist()` skips while undefined).
 
 > **nullable**: `boolean`
 
+Whether the column allows nulls.
+
 ***
 
 ### primaryKey
 
 > **primaryKey**: `boolean`
+
+Whether the column is the primary key.
 
 ***
 
@@ -40,3 +48,4 @@ or a non-PK generated column, which `persist()` skips while undefined).
 
 > **type**: [`SqliteStorageType`](../type-aliases/SqliteStorageType.md)
 
+The SQLite storage class.

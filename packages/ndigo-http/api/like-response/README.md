@@ -6,6 +6,8 @@
 
 # like-response
 
+Structural guard for `Response`-like values.
+
 ## Functions
 
 - [likeResponse](functions/likeResponse.md)

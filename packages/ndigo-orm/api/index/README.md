@@ -6,6 +6,8 @@
 
 # index
 
+Public API of `@ndigo/orm` — entities, repositories, and pagination.
+
 ## References
 
 ### AbstractRepository

@@ -1,4 +1,5 @@
 /**
+ * Built-in HTTP interceptors.
  */
 export * from './app-reset-interceptor';
 export * from './cache-interceptor';

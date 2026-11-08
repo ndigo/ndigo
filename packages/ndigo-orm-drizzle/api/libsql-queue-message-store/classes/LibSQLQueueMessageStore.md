@@ -40,8 +40,7 @@ A borrowed client, or url/authToken to create an owned
 
 > `readonly` **kind**: `"libsql"` = `'libsql'`
 
-Backend identifier for observability/diagnostics
-(e.g. `'in-memory'`, `'libsql'`, `'redis'`).
+Store identifier (`'libsql'`).
 
 #### Implementation of
 
@@ -53,9 +52,7 @@ Backend identifier for observability/diagnostics
 
 > **append**(`message`): `Promise`\<`StoredQueueMessage`\>
 
-Persist one message and return it with the store-issued `seq` and
-`storedAt`. Applied in call order per destination. Rejects when the
-message cannot be stored (the caller owns fail-closed behavior).
+Appends one message to its destination.
 
 #### Parameters
 
@@ -63,7 +60,7 @@ message cannot be stored (the caller owns fail-closed behavior).
 
 `Omit`\<`StoredQueueMessage`, `"seq"` \| `"storedAt"`\>
 
-The message without store-issued fields.
+The message payload (sequence and stored time are assigned here).
 
 #### Returns
 
@@ -100,7 +97,7 @@ stop and drain the broker first.
 
 > **has**(`destination`): `Promise`\<`boolean`\>
 
-Whether a destination exists (has live or retained messages).
+Whether a destination currently retains messages.
 
 #### Parameters
 
@@ -108,13 +105,13 @@ Whether a destination exists (has live or retained messages).
 
 `string`
 
-The `/queue/<name>` destination.
+The destination to check.
 
 #### Returns
 
 `Promise`\<`boolean`\>
 
-Whether the destination is known to the store.
+`true` when the destination has retained messages.
 
 #### Implementation of
 
@@ -126,10 +123,7 @@ Whether the destination is known to the store.
 
 > **prune**(`destination`, `retention`): `Promise`\<`number`\>
 
-Enforce retention on one destination, dropping the oldest messages
-past the TTL and/or count bound. The TTL boundary is inclusive: a
-message whose age is exactly `ttlMs` is expired. Idempotent; safe to
-call on any cadence.
+Applies a retention policy to one destination.
 
 #### Parameters
 
@@ -137,11 +131,11 @@ call on any cadence.
 
 `string`
 
-The `/queue/<name>` destination.
+The destination to prune.
 
 ##### retention
 
-The policy to enforce.
+TTL and count bounds.
 
 ###### maxMessages?
 
@@ -155,7 +149,7 @@ The policy to enforce.
 
 `Promise`\<`number`\>
 
-How many messages were pruned.
+The number of pruned messages.
 
 #### Implementation of
 
@@ -167,11 +161,7 @@ How many messages were pruned.
 
 > **replay**(`destination`, `options?`): `Promise`\<`StoredQueueMessage`[]\>
 
-Replay a destination's messages, oldest first (ascending `seq`,
-newest last). `afterSeq` resumes after a gap (crash recovery);
-`limit` bounds the window to the newest `limit` messages (history
-length) — absent, `NaN` or `+Infinity` means the whole window, and
-negative values clamp to `0` (empty).
+Replays retained messages after a sequence cursor.
 
 #### Parameters
 
@@ -179,11 +169,11 @@ negative values clamp to `0` (empty).
 
 `string`
 
-The `/queue/<name>` destination.
+The destination to replay.
 
 ##### options?
 
-Replay window.
+Sequence cursor and result limit.
 
 ###### afterSeq?
 
@@ -197,7 +187,7 @@ Replay window.
 
 `Promise`\<`StoredQueueMessage`[]\>
 
-The matching messages, append-ordered.
+The retained messages in sequence order.
 
 #### Implementation of
 

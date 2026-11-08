@@ -6,6 +6,8 @@
 
 # data-source
 
+The data-source contract and in-memory implementation.
+
 ## Classes
 
 - [InMemoryDataSource](classes/InMemoryDataSource.md)

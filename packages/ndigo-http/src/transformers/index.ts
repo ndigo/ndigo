@@ -1,4 +1,5 @@
 /**
+ * HTTP transformers.
  */
 export * from './http-transformer';
 export * from './json-transformer';

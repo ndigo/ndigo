@@ -6,6 +6,8 @@
 
 # query-string
 
+Query-string parsing and serialization.
+
 ## Variables
 
 - [default](variables/default.md)

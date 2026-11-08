@@ -1,4 +1,5 @@
 /**
+ * Route partition definitions.
  */
 const normalizePath = (path: string): string => {
     if (!path || path === '/') {

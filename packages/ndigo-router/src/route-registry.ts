@@ -129,6 +129,9 @@ export class RouteRegistry {
 
     /**
      * Access a route definition by dotted path.
+     *
+     * @param path - The dotted definition path.
+     * @returns The definition, or `undefined` when unknown.
      */
     get<T extends string>(path: string): RouteDefinition<T> | undefined {
         return this.#defs.get(path) as RouteDefinition<T> | undefined;

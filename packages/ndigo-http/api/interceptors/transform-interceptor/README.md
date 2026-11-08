@@ -6,6 +6,8 @@
 
 # interceptors/transform-interceptor
 
+Transforms request and response payloads.
+
 ## Classes
 
 - [TransformInterceptor](classes/TransformInterceptor.md)

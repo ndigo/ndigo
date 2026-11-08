@@ -1,4 +1,5 @@
 /**
+ * Composes HTTP transformers.
  */
 import { HTTPTransformer, TransformContext } from './http-transformer';
 

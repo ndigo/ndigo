@@ -32,11 +32,15 @@ A type representing the route parameters, defaulting to `Record<string, string>`
 
 > **attributes**: `Record`\<`string`, `unknown`\>
 
+Additional route attributes.
+
 ***
 
 ### data
 
 > **data**: `JSONObject`
+
+The query/matrix data.
 
 ***
 
@@ -44,11 +48,15 @@ A type representing the route parameters, defaulting to `Record<string, string>`
 
 > `optional` **dataString?**: `string`
 
+The raw query string.
+
 ***
 
 ### id
 
 > **id**: `string`
+
+The unique route id.
 
 ***
 
@@ -56,11 +64,15 @@ A type representing the route parameters, defaulting to `Record<string, string>`
 
 > `optional` **method?**: `HTTPMethod`
 
+The HTTP method, when known.
+
 ***
 
 ### params
 
 > **params**: `TParams` \| `null`
+
+The parsed route parameters.
 
 ***
 
@@ -68,11 +80,15 @@ A type representing the route parameters, defaulting to `Record<string, string>`
 
 > **path**: `string`
 
+The route path.
+
 ***
 
 ### raw
 
 > **raw**: `string`
+
+The raw route text.
 
 ## Methods
 

@@ -20,11 +20,15 @@ A page of results with its totals. Pages beyond the last one yield empty content
 
 > **content**: `T`[]
 
+The page content.
+
 ***
 
 ### page
 
 > **page**: `number`
+
+The 1-based page index.
 
 ***
 
@@ -32,11 +36,15 @@ A page of results with its totals. Pages beyond the last one yield empty content
 
 > **size**: `number`
 
+The page size.
+
 ***
 
 ### totalElements
 
 > **totalElements**: `number`
+
+Total matching elements.
 
 ***
 
@@ -44,3 +52,4 @@ A page of results with its totals. Pages beyond the last one yield empty content
 
 > **totalPages**: `number`
 
+Total page count.

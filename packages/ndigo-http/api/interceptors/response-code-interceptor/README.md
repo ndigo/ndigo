@@ -6,6 +6,8 @@
 
 # interceptors/response-code-interceptor
 
+Dispatches by response status code.
+
 ## Classes
 
 - [MappedResponseCodeHTTPInterceptor](classes/MappedResponseCodeHTTPInterceptor.md)

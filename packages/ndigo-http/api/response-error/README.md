@@ -6,6 +6,8 @@
 
 # response-error
 
+Response-shaped error for failed HTTP calls.
+
 ## Classes
 
 - [ResponseError](classes/ResponseError.md)

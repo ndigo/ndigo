@@ -94,6 +94,7 @@ export interface LibSQLJobStoreOptions {
  * owned; injected clients are borrowed by default.
  */
 export class LibSQLJobStore implements JobDriver {
+    /** Backend identifier (`'libsql'`). */
     readonly kind = 'libsql';
     readonly #client: Client;
     readonly #ready: Promise<void>;
@@ -115,7 +116,12 @@ export class LibSQLJobStore implements JobDriver {
         void this.#ready.catch(() => undefined);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Stores one job and makes it eligible at its resolved `runAt`.
+     *
+     * @param request - The producer-supplied job request.
+     * @returns The stored record.
+     */
     async enqueue(request: JobRequest): Promise<JobRecord> {
         await this.#ready;
         this.#assertOpen();
@@ -147,7 +153,12 @@ export class LibSQLJobStore implements JobDriver {
         return record;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Atomically leases up to `limit` eligible jobs.
+     *
+     * @param options - Claim window.
+     * @returns The claimed records (possibly empty).
+     */
     async claim(options: ClaimOptions): Promise<JobRecord[]> {
         await this.#ready;
         this.#assertOpen();
@@ -172,14 +183,26 @@ export class LibSQLJobStore implements JobDriver {
         return result.rows.map((row) => decodeRow(row as unknown as Row));
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Removes a finished job.
+     *
+     * @param id - The job identifier.
+     * @returns A promise that resolves once removed.
+     */
     async complete(id: JobId): Promise<void> {
         await this.#ready;
         this.#assertOpen();
         await this.#client.execute({ sql: `DELETE FROM ${TABLE} WHERE id = ?`, args: [id] });
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Returns a job to the queue at `runAt` with the failure recorded.
+     *
+     * @param id - The job identifier.
+     * @param runAt - Next eligible time (epoch milliseconds).
+     * @param lastError - Message from the failed attempt.
+     * @returns A promise that resolves once requeued.
+     */
     async retry(id: JobId, runAt: number, lastError: string): Promise<void> {
         await this.#ready;
         this.#assertOpen();
@@ -191,7 +214,13 @@ export class LibSQLJobStore implements JobDriver {
         });
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Terminally fails a job, removing it from the queue.
+     *
+     * @param id - The job identifier.
+     * @param lastError - Message from the final failed attempt.
+     * @returns A promise that resolves once removed.
+     */
     async fail(id: JobId, lastError: string): Promise<void> {
         await this.#ready;
         this.#assertOpen();
@@ -199,7 +228,13 @@ export class LibSQLJobStore implements JobDriver {
         await this.#client.execute({ sql: `DELETE FROM ${TABLE} WHERE id = ?`, args: [id] });
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Extends the lease of a running job.
+     *
+     * @param id - The job identifier.
+     * @param leaseMs - New lease duration from now.
+     * @returns A promise that resolves once extended.
+     */
     async heartbeat(id: JobId, leaseMs: number): Promise<void> {
         await this.#ready;
         this.#assertOpen();
@@ -209,7 +244,11 @@ export class LibSQLJobStore implements JobDriver {
         });
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Number of jobs pending delivery.
+     *
+     * @returns The pending count.
+     */
     async size(): Promise<number> {
         await this.#ready;
         this.#assertOpen();

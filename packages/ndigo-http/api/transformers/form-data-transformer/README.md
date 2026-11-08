@@ -6,6 +6,8 @@
 
 # transformers/form-data-transformer
 
+Transforms `FormData` entries.
+
 ## Classes
 
 - [FormDataTransformer](classes/FormDataTransformer.md)

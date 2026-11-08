@@ -1,4 +1,5 @@
 /**
+ * Response-shaped error for failed HTTP calls.
  */
 import { FrameworkError } from '@ndigo/core';
 import { IM_A_TEAPOT } from './response-statuses';
@@ -20,17 +21,29 @@ export class ResponseError extends FrameworkError implements Error, Response {
     /** Cached buffer for multiple body reads (body can only be read once). */
     #bodyBuffer: ArrayBuffer | null = null;
 
+    /** The response body stream. */
     declare body: ReadableStream<Uint8Array<ArrayBuffer>>;
+    /** Whether the body has been read. */
     declare bodyUsed: boolean;
+    /** The response headers. */
     declare headers: Headers;
+    /** The error name. */
     declare name: string;
+    /** The error message. */
     declare message: string;
+    /** Whether the response was successful. */
     declare ok: boolean;
+    /** Whether the response was redirected. */
     declare redirected: boolean;
+    /** The error stack. */
     declare stack?: string;
+    /** The HTTP status code. */
     declare status: number;
+    /** The HTTP status text. */
     declare statusText: string;
+    /** The response type. */
     declare type: ResponseType;
+    /** The response URL. */
     declare url: string;
 
     get [Symbol.toStringTag](): string {

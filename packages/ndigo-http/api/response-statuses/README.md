@@ -6,6 +6,8 @@
 
 # response-statuses
 
+Standard HTTP status constants.
+
 ## Variables
 
 - [ACCEPTED](variables/ACCEPTED.md)

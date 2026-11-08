@@ -15,11 +15,15 @@ It provides methods to add interceptors and middleware, with support for path-ba
 
 > **addInterceptor**(`interceptor`): `void`
 
+Adds one interceptor.
+
 #### Parameters
 
 ##### interceptor
 
 [`RouterInterceptor`](RouterInterceptor.md)
+
+The interceptor.
 
 #### Returns
 
@@ -33,11 +37,15 @@ It provides methods to add interceptors and middleware, with support for path-ba
 
 > **use**(`interceptor`): `void`
 
+Adds a global interceptor or middleware.
+
 ##### Parameters
 
 ###### interceptor
 
 [`RouterInterceptor`](RouterInterceptor.md) \| [`RouterMiddleware`](../type-aliases/RouterMiddleware.md)
+
+The interceptor/middleware.
 
 ##### Returns
 
@@ -47,15 +55,21 @@ It provides methods to add interceptors and middleware, with support for path-ba
 
 > **use**(`includePattern`, `interceptor`): `void`
 
+Adds an interceptor for one path pattern.
+
 ##### Parameters
 
 ###### includePattern
 
 `string`
 
+The include glob.
+
 ###### interceptor
 
 [`RouterInterceptor`](RouterInterceptor.md) \| [`RouterMiddleware`](../type-aliases/RouterMiddleware.md)
+
+The interceptor/middleware.
 
 ##### Returns
 
@@ -65,19 +79,27 @@ It provides methods to add interceptors and middleware, with support for path-ba
 
 > **use**(`includePatterns`, `interceptor`, `excludePatterns?`): `void`
 
+Adds an interceptor for path patterns.
+
 ##### Parameters
 
 ###### includePatterns
 
 `string`[]
 
+Include globs.
+
 ###### interceptor
 
 [`RouterInterceptor`](RouterInterceptor.md) \| [`RouterMiddleware`](../type-aliases/RouterMiddleware.md)
 
+The interceptor/middleware.
+
 ###### excludePatterns?
 
 `string`[]
+
+Exclude globs.
 
 ##### Returns
 

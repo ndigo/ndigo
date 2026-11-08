@@ -14,11 +14,15 @@ Represents the metadata for an entity, including its name, columns, primary key,
 
 > **columns**: [`ColumnDefinition`](ColumnDefinition.md)[]
 
+Column definitions.
+
 ***
 
 ### entityName
 
 > **entityName**: `string`
+
+The entity name.
 
 ***
 
@@ -26,11 +30,15 @@ Represents the metadata for an entity, including its name, columns, primary key,
 
 > **generatedColumns**: `string`[]
 
+Generated column names.
+
 ***
 
 ### lifecycleHooks
 
 > **lifecycleHooks**: [`LifecycleHookDefinition`](LifecycleHookDefinition.md)[]
+
+Lifecycle hooks.
 
 ***
 
@@ -38,9 +46,12 @@ Represents the metadata for an entity, including its name, columns, primary key,
 
 > **primaryColumn**: `string`
 
+The primary-key field name.
+
 ***
 
 ### relations
 
 > **relations**: [`RelationDefinition`](RelationDefinition.md)[]
 
+Relation definitions.

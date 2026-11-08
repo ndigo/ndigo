@@ -18,11 +18,15 @@ Represents a single segment within a route, including its name, associated data,
 
 > **data**: `JSONObject`
 
+The parsed matrix-parameter data.
+
 ***
 
 ### dataString?
 
 > `optional` **dataString?**: `string`
+
+The raw matrix-parameter string.
 
 ***
 
@@ -30,11 +34,15 @@ Represents a single segment within a route, including its name, associated data,
 
 > **name**: `string`
 
+The segment name.
+
 ***
 
 ### raw
 
 > **raw**: `string`
+
+The raw segment text.
 
 ## Methods
 

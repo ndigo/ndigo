@@ -6,6 +6,8 @@
 
 # metadata
 
+Entity metadata recorded by the ORM decorators.
+
 ## Interfaces
 
 - [ColumnDefinition](interfaces/ColumnDefinition.md)

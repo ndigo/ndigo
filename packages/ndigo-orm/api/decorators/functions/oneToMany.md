@@ -23,6 +23,8 @@ A zero-argument thunk returning the related entity class.
 
 [`RelationOptions`](../interfaces/RelationOptions.md) = `{}`
 
+Optional join-column overrides.
+
 ## Returns
 
 (`_value`, `context`) => `void`

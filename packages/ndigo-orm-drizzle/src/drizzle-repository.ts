@@ -16,6 +16,8 @@ export class DrizzleRepository<T extends object, ID> implements AsyncRepository<
     readonly #entityManager: DrizzleEntityManager;
 
     /**
+     * Creates a repository for an entity class.
+     *
      * @param entityClass - The entity class this repository manages.
      * @param entityManager - The Drizzle entity manager used for data access.
      */
@@ -26,6 +28,8 @@ export class DrizzleRepository<T extends object, ID> implements AsyncRepository<
 
     /**
      * The entity class this repository manages.
+     *
+     * @returns The entity constructor.
      */
     protected getEntityClass(): Constructable<T> {
         return this.#entityClass;
@@ -33,6 +37,8 @@ export class DrizzleRepository<T extends object, ID> implements AsyncRepository<
 
     /**
      * The entity manager used for data access (subclass extension point).
+     *
+     * @returns The Drizzle entity manager.
      */
     protected getEntityManager(): DrizzleEntityManager {
         return this.#entityManager;
@@ -67,6 +73,7 @@ export class DrizzleRepository<T extends object, ID> implements AsyncRepository<
      * Retrieves all entities of the managed type.
      *
      * @param options - Optional relation loading (eager fetch).
+     * @returns All entities.
      */
     async findAll(options: RelationFetchOptions = {}): Promise<T[]> {
         const all = await this.#entityManager.findAll(this.#entityClass);
@@ -113,6 +120,8 @@ export class DrizzleRepository<T extends object, ID> implements AsyncRepository<
 
     /**
      * Returns the number of entities of the managed type.
+     *
+     * @returns The entity count.
      */
     async count(): Promise<number> {
         return this.#entityManager.count(this.#entityClass);
@@ -120,6 +129,9 @@ export class DrizzleRepository<T extends object, ID> implements AsyncRepository<
 
     /**
      * Checks whether an entity with the given primary identifier exists.
+     *
+     * @param id - The entity's primary identifier.
+     * @returns Whether the entity exists.
      */
     async existsById(id: ID): Promise<boolean> {
         return this.#entityManager.existsById(this.#entityClass, id);

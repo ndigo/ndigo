@@ -6,6 +6,8 @@
 
 # interceptors/trace-header-interceptor
 
+Injects W3C trace headers.
+
 ## Classes
 
 - [TraceHeaderInterceptor](classes/TraceHeaderInterceptor.md)

@@ -52,6 +52,8 @@ The raw string representation of the route (e.g., `/foo;a=b/bar?c=d`).
 
 > `readonly` **attributes**: `Record`\<`string`, `unknown`\>
 
+Additional route attributes.
+
 #### Implementation of
 
 [`Route`](../../route/interfaces/Route.md).[`attributes`](../../route/interfaces/Route.md#attributes)
@@ -61,6 +63,8 @@ The raw string representation of the route (e.g., `/foo;a=b/bar?c=d`).
 ### data
 
 > `readonly` **data**: `JSONObject`
+
+The query/matrix data.
 
 #### Implementation of
 
@@ -72,6 +76,8 @@ The raw string representation of the route (e.g., `/foo;a=b/bar?c=d`).
 
 > `readonly` `optional` **dataString?**: `string`
 
+The raw query string.
+
 #### Implementation of
 
 [`Route`](../../route/interfaces/Route.md).[`dataString`](../../route/interfaces/Route.md#datastring)
@@ -81,6 +87,8 @@ The raw string representation of the route (e.g., `/foo;a=b/bar?c=d`).
 ### id
 
 > `readonly` **id**: `string`
+
+The unique route id.
 
 #### Implementation of
 
@@ -92,6 +100,8 @@ The raw string representation of the route (e.g., `/foo;a=b/bar?c=d`).
 
 > `optional` **method?**: `HTTPMethod`
 
+The HTTP method, when known.
+
 #### Implementation of
 
 [`Route`](../../route/interfaces/Route.md).[`method`](../../route/interfaces/Route.md#method)
@@ -101,6 +111,8 @@ The raw string representation of the route (e.g., `/foo;a=b/bar?c=d`).
 ### params
 
 > **params**: `Record`\<`string`, `string`\> \| `null`
+
+The parsed route parameters.
 
 #### Implementation of
 
@@ -112,6 +124,8 @@ The raw string representation of the route (e.g., `/foo;a=b/bar?c=d`).
 
 > `readonly` **path**: `string`
 
+The route path.
+
 #### Implementation of
 
 [`Route`](../../route/interfaces/Route.md).[`path`](../../route/interfaces/Route.md#path)
@@ -121,6 +135,8 @@ The raw string representation of the route (e.g., `/foo;a=b/bar?c=d`).
 ### raw
 
 > `readonly` **raw**: `string`
+
+The raw route text.
 
 #### Implementation of
 

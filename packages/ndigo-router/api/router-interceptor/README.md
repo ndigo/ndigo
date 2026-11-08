@@ -6,6 +6,8 @@
 
 # router-interceptor
 
+Router interceptor contracts and mapper.
+
 ## Classes
 
 - [MappedRouterInterceptor](classes/MappedRouterInterceptor.md)

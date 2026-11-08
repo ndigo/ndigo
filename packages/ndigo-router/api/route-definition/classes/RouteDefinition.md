@@ -46,11 +46,15 @@ unknown parameter instead of emitting a broken URL.
 
 > `readonly` **pattern**: `TPattern`
 
+The route pattern this definition is bound to.
+
 ## Methods
 
 ### href()
 
 > **href**(`params?`): `string`
+
+Interpolates parameters into a fragment link.
 
 #### Parameters
 
@@ -58,9 +62,13 @@ unknown parameter instead of emitting a broken URL.
 
 [`RouteParams`](../type-aliases/RouteParams.md)\<`TPattern`\>
 
+The path parameters.
+
 #### Returns
 
 `string`
+
+The fragment href.
 
 ***
 
@@ -68,7 +76,7 @@ unknown parameter instead of emitting a broken URL.
 
 > **matches**(`path`): `boolean`
 
-Determines if this object matches the specified value.
+Whether a path matches this definition.
 
 #### Parameters
 
@@ -76,11 +84,13 @@ Determines if this object matches the specified value.
 
 `string`
 
+The path to test.
+
 #### Returns
 
 `boolean`
 
-`true` if the object matches the value, `false` otherwise.
+Whether the path matches.
 
 #### Implementation of
 
@@ -92,15 +102,21 @@ Determines if this object matches the specified value.
 
 > **navigate**(`params`): `void`
 
+Navigates the registered router to the interpolated path.
+
 #### Parameters
 
 ##### params
 
 [`RouteParams`](../type-aliases/RouteParams.md)\<`TPattern`\>
 
+The path parameters.
+
 #### Returns
 
 `void`
+
+Nothing; navigation is fire-and-forget.
 
 ***
 
@@ -108,15 +124,21 @@ Determines if this object matches the specified value.
 
 > **parse**(`path`): [`Route`](../../route/interfaces/Route.md)\<[`RouteParams`](../type-aliases/RouteParams.md)\<`TPattern`\>\> \| `null`
 
+Parses a path against this definition.
+
 #### Parameters
 
 ##### path
 
 `string`
 
+The path to parse.
+
 #### Returns
 
 [`Route`](../../route/interfaces/Route.md)\<[`RouteParams`](../type-aliases/RouteParams.md)\<`TPattern`\>\> \| `null`
+
+The bound route, or `null` when it does not match.
 
 ***
 
@@ -124,12 +146,18 @@ Determines if this object matches the specified value.
 
 > **url**(`params`): `string`
 
+Interpolates parameters into an absolute path.
+
 #### Parameters
 
 ##### params
 
 [`RouteParams`](../type-aliases/RouteParams.md)\<`TPattern`\>
 
+The path parameters.
+
 #### Returns
 
 `string`
+
+The absolute path.

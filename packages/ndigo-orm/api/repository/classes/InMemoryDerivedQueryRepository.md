@@ -263,19 +263,27 @@ The requested page with totals. Pages beyond the last are empty.
 
 > **loadRelation**(`entity`, `relationName`): `unknown`
 
+Loads one relation onto an entity.
+
 #### Parameters
 
 ##### entity
 
 `T`
 
+The entity to update.
+
 ##### relationName
 
 `string`
 
+The relation field to load.
+
 #### Returns
 
 `unknown`
+
+The loaded relation value.
 
 #### Inherited from
 

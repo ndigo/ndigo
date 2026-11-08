@@ -6,6 +6,8 @@
 
 # interceptors/retry-interceptor
 
+Retries failed requests.
+
 ## Classes
 
 - [RetryInterceptor](classes/RetryInterceptor.md)

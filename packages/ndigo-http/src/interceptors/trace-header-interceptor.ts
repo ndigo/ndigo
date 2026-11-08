@@ -1,4 +1,5 @@
 /**
+ * Injects W3C trace headers.
  */
 import { context as otelContext, propagation, trace, type Context } from '@opentelemetry/api';
 import { HTTP, RequestAwareHTTPInterceptor } from '../http';

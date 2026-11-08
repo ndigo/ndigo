@@ -1,4 +1,5 @@
 /**
+ * Transforms request and response payloads.
  */
 import { Transform, TransformContext } from '../transformers/http-transformer';
 import { MediaType } from '@ndigo/core';

@@ -16,6 +16,8 @@ store owns, plus the shared-table `maxSessions` cap.
 
 > `optional` **authToken?**: `string`
 
+libSQL auth token for an owned client.
+
 ***
 
 ### client?
@@ -41,6 +43,8 @@ over-admit by one.
 ### ownsClient?
 
 > `optional` **ownsClient?**: `boolean`
+
+Whether an injected client's ownership is transferred to the store.
 
 ***
 

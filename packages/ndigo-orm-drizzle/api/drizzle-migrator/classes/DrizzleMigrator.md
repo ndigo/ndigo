@@ -65,6 +65,8 @@ The full migration history; input order is
 
 `Promise`\<`void`\>
 
+A promise that resolves once all pending migrations apply.
+
 ***
 
 ### status()
@@ -80,6 +82,10 @@ timestamp when recorded. Ensures the journal exists.
 
 [`Migration`](../interfaces/Migration.md)[]
 
+The full migration history.
+
 #### Returns
 
 `Promise`\<[`MigrationStatus`](../interfaces/MigrationStatus.md)[]\>
+
+The status of every migration.

@@ -14,9 +14,12 @@ Options for configuring the `FeatureRoutingRegistry`.
 
 > `optional` **activationPolicy?**: [`FeatureActivationPolicy`](../type-aliases/FeatureActivationPolicy.md)
 
+Feature activation policy; defaults to `'tracked'`.
+
 ***
 
 ### metricRecorder?
 
 > `optional` **metricRecorder?**: [`FeatureMetricRecorder`](FeatureMetricRecorder.md)
 
+Records feature activation metrics.

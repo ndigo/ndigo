@@ -34,6 +34,8 @@ Nested calls throw: `@transactional` already serializes the boundary
 
 > **new DrizzleTransactionManager**(`dataSource`): `DrizzleTransactionManager`
 
+Creates the manager over a Drizzle data source.
+
 #### Parameters
 
 ##### dataSource
@@ -53,9 +55,13 @@ The Drizzle data source whose connection is
 
 > **isActive**(): `boolean`
 
+Whether a transaction is currently active.
+
 #### Returns
 
 `boolean`
+
+Whether a run is in progress.
 
 #### Implementation of
 
@@ -66,6 +72,8 @@ The Drizzle data source whose connection is
 ### run()
 
 > **run**\<`T`\>(`fn`): `Promise`\<`T`\>
+
+Runs `fn` inside an interactive libSQL transaction.
 
 #### Type Parameters
 
@@ -79,9 +87,13 @@ The Drizzle data source whose connection is
 
 () => `T` \| `Promise`\<`T`\>
 
+The work to run.
+
 #### Returns
 
 `Promise`\<`T`\>
+
+The work's result.
 
 #### Implementation of
 

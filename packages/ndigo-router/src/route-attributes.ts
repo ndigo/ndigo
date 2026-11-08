@@ -1,4 +1,5 @@
 /**
+ * Route attribute keys and helpers.
  */
 import type { Route } from './route';
 

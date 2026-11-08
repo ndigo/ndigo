@@ -32,6 +32,8 @@ post/complete hooks for whichever navigation actually ran.
 
 > **interceptorIndex**: `number`
 
+Index of the last interceptor whose `preHandle` ran.
+
 ## Accessors
 
 ### \[toStringTag\]
@@ -52,6 +54,8 @@ post/complete hooks for whichever navigation actually ran.
 
 > **get** **interceptors**(): [`RouterInterceptor`](../../router-interceptor/interfaces/RouterInterceptor.md)[]
 
+The chain's interceptors, in registration order.
+
 ##### Returns
 
 [`RouterInterceptor`](../../router-interceptor/interfaces/RouterInterceptor.md)[]
@@ -61,6 +65,8 @@ post/complete hooks for whichever navigation actually ran.
 ### addInterceptor()
 
 > **addInterceptor**(`interceptor`): `void`
+
+Adds one interceptor.
 
 #### Parameters
 
@@ -80,6 +86,8 @@ The interceptor to add.
 
 > **addInterceptors**(`interceptors`): `void`
 
+Adds several interceptors.
+
 #### Parameters
 
 ##### interceptors
@@ -97,6 +105,8 @@ The interceptors to add.
 ### applyAfterCompletion()
 
 > **applyAfterCompletion**(`route`): `Promise`\<`void`\>
+
+Runs `afterCompletion` in reverse registration order.
 
 #### Parameters
 
@@ -116,6 +126,8 @@ The route to process.
 
 > **applyPostHandle**(`route`): `Promise`\<`void`\>
 
+Runs `postHandle` in reverse registration order.
+
 #### Parameters
 
 ##### route
@@ -134,6 +146,8 @@ The route to process.
 
 > **applyPreHandle**(`route`): `Promise`\<`boolean`\>
 
+Runs `preHandle` in registration order until one rejects.
+
 #### Parameters
 
 ##### route
@@ -145,3 +159,5 @@ The route to process.
 #### Returns
 
 `Promise`\<`boolean`\>
+
+Whether navigation may proceed.

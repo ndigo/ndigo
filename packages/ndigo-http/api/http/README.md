@@ -6,6 +6,8 @@
 
 # http
 
+HTTP request and response type exports.
+
 ## References
 
 ### assign

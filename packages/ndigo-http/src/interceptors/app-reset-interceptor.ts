@@ -1,4 +1,5 @@
 /**
+ * Resets browser application state from a response header.
  */
 import { HTTPInit, ResponseAwareHTTPInterceptor } from '../http';
 

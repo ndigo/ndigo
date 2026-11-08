@@ -1,4 +1,5 @@
 /**
+ * Matrix-string parsing and serialization.
  */
 import { JSONObject, Parser, Stringifier, stringComparator } from '@ndigo/core';
 import { decodeURIComponent as decode, encodeURIComponent as encodeValue } from '@ndigo/util/string';

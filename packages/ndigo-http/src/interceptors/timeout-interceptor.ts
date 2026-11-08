@@ -1,4 +1,5 @@
 /**
+ * Applies request timeouts.
  */
 import ResponseError from '../response-error';
 import { isNumber } from '@ndigo/util/types';
@@ -88,6 +89,7 @@ export class TimeoutInterceptor
      */
     #timeouts = new WeakMap<HTTPInit, TimeoutEntry>();
 
+    /** The timeout duration in milliseconds. */
     readonly timeout!: number;
 
     constructor(timeout: number) {

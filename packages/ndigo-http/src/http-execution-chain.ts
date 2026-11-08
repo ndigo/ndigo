@@ -1,4 +1,5 @@
 /**
+ * Interceptor execution chain for HTTP requests.
  */
 /// <reference lib="dom" />
 // TypeScript 6.0 declaration generation fix
@@ -297,6 +298,8 @@ export class HTTPExecutionChain {
     }
 
     /**
+     * Checks one interceptor's shape and updates the chain's capability flags.
+     *
      * @param interceptor - The interceptor to check.
      */
     _checkInterceptorType(interceptor: HTTPInterceptor): void {

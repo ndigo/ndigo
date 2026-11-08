@@ -6,6 +6,8 @@
 
 # repository
 
+Synchronous and asynchronous repository contracts.
+
 ## Classes
 
 - [AbstractRepository](classes/AbstractRepository.md)

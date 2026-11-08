@@ -28,6 +28,10 @@ become promise rejections. Async repositories cannot be adapted back to sync.
 
 [`Repository`](../interfaces/Repository.md)\<`T`, `ID`\>
 
+The synchronous repository to adapt.
+
 ## Returns
 
 [`AsyncRepository`](../interfaces/AsyncRepository.md)\<`T`, `ID`\>
+
+Its promise-based counterpart.

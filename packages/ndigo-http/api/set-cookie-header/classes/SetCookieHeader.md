@@ -252,11 +252,13 @@ When `headers` is not provided.
 
 > **toJSON**(): `JSONValue`
 
+Serializes the header to its name.
+
 #### Returns
 
 `JSONValue`
 
-A JSON representation of the HTTP header
+A JSON representation of the HTTP header.
 
 #### Inherited from
 
@@ -268,11 +270,13 @@ A JSON representation of the HTTP header
 
 > **toString**(): `string`
 
+Returns the header name.
+
 #### Returns
 
 `string`
 
-A string representation of the HTTP header
+A string representation of the HTTP header.
 
 #### Inherited from
 

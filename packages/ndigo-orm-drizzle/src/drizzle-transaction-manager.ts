@@ -30,6 +30,8 @@ export class DrizzleTransactionManager implements TransactionManager {
     #active = false;
 
     /**
+     * Creates the manager over a Drizzle data source.
+     *
      * @param dataSource - The Drizzle data source whose connection is
      *   bracketed by the transaction.
      */
@@ -37,12 +39,21 @@ export class DrizzleTransactionManager implements TransactionManager {
         this.#dataSource = dataSource;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Whether a transaction is currently active.
+     *
+     * @returns Whether a run is in progress.
+     */
     isActive(): boolean {
         return this.#active;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Runs `fn` inside an interactive libSQL transaction.
+     *
+     * @param fn - The work to run.
+     * @returns The work's result.
+     */
     async run<T>(fn: () => T | Promise<T>): Promise<T> {
         if (this.#active) {
             throw new IllegalStateError('DrizzleTransactionManager: a transaction is already active');

@@ -1,4 +1,5 @@
 /**
+ * The HTTP transformer contract.
  */
 import { MediaType } from '@ndigo/core';
 

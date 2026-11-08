@@ -32,6 +32,8 @@ silently discarding the first run's commits on rollback (DAT-F2).
 
 > **new InMemoryTransactionManager**(`dataSource`): `InMemoryTransactionManager`
 
+Creates the manager over an in-memory data source.
+
 #### Parameters
 
 ##### dataSource
@@ -50,9 +52,13 @@ The in-memory data source to snapshot/roll back.
 
 > **isActive**(): `boolean`
 
+Whether a transaction is currently active.
+
 #### Returns
 
 `boolean`
+
+Whether a run is in progress.
 
 #### Implementation of
 
@@ -63,6 +69,8 @@ The in-memory data source to snapshot/roll back.
 ### run()
 
 > **run**\<`T`\>(`fn`): `Promise`\<`T`\>
+
+Runs `fn` in a transaction, rolling the snapshot back on failure.
 
 #### Type Parameters
 
@@ -76,9 +84,13 @@ The in-memory data source to snapshot/roll back.
 
 () => `T` \| `Promise`\<`T`\>
 
+The work to run.
+
 #### Returns
 
 `Promise`\<`T`\>
+
+The work's result.
 
 #### Implementation of
 

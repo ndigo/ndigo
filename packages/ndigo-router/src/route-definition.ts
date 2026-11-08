@@ -27,6 +27,7 @@ export type RouteParams<T extends string> = T extends `${string}{${infer P}}${in
  * unknown parameter instead of emitting a broken URL.
  */
 export class RouteDefinition<TPattern extends string = string> implements Matchable<string> {
+    /** The route pattern this definition is bound to. */
     readonly pattern: TPattern;
     readonly #context: Registry;
 
@@ -35,14 +36,32 @@ export class RouteDefinition<TPattern extends string = string> implements Matcha
         this.#context = context;
     }
 
+    /**
+     * Interpolates parameters into an absolute path.
+     *
+     * @param params - The path parameters.
+     * @returns The absolute path.
+     */
     url(params: RouteParams<TPattern>): string {
         return this.#interpolate(params);
     }
 
+    /**
+     * Interpolates parameters into a fragment link.
+     *
+     * @param params - The path parameters.
+     * @returns The fragment href.
+     */
     href(params?: RouteParams<TPattern>): string {
         return `#${this.#interpolate(params ?? ({} as RouteParams<TPattern>))}`;
     }
 
+    /**
+     * Navigates the registered router to the interpolated path.
+     *
+     * @param params - The path parameters.
+     * @returns Nothing; navigation is fire-and-forget.
+     */
     navigate(params: RouteParams<TPattern>): void {
         const router = this.#context.getValue<Router | undefined>(ROUTER) as Router | undefined;
         if (!router) {
@@ -56,6 +75,12 @@ export class RouteDefinition<TPattern extends string = string> implements Matcha
         }
     }
 
+    /**
+     * Parses a path against this definition.
+     *
+     * @param path - The path to parse.
+     * @returns The bound route, or `null` when it does not match.
+     */
     parse(path: string): Route<RouteParams<TPattern>> | null {
         const route = new PathRoute(path);
 
@@ -69,6 +94,12 @@ export class RouteDefinition<TPattern extends string = string> implements Matcha
         return route as Route<RouteParams<TPattern>>;
     }
 
+    /**
+     * Whether a path matches this definition.
+     *
+     * @param path - The path to test.
+     * @returns Whether the path matches.
+     */
     matches(path: string): boolean {
         return this.parse(path) !== null;
     }

@@ -6,6 +6,8 @@
 
 # drizzle-data-source
 
+Drizzle/libSQL data source and table bootstrap.
+
 ## Classes
 
 - [DrizzleDataSource](classes/DrizzleDataSource.md)

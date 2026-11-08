@@ -6,6 +6,8 @@
 
 # router-execution-chain
 
+Interceptor execution chain for route navigation.
+
 ## Classes
 
 - [default](classes/default.md)

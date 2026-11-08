@@ -40,6 +40,8 @@ A router implementation for Node.js that resolves routes based on the file syste
 
 > **get** **callback**(): `RouterCallback`
 
+Invoked when the route changes.
+
 ##### Returns
 
 `RouterCallback`
@@ -55,6 +57,8 @@ A router implementation for Node.js that resolves routes based on the file syste
 #### Get Signature
 
 > **get** **route**(): `string`
+
+The current route path.
 
 ##### Returns
 

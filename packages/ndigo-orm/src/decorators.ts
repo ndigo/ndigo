@@ -1,4 +1,5 @@
 /**
+ * Entity, column, and relation decorators.
  */
 import '@tsmetadata/polyfill';
 import {
@@ -150,6 +151,7 @@ function relationDecorator(kind: RelationKind, targetEntity: () => ClassType, op
  *
  * @param targetEntity - A zero-argument thunk returning the related entity class.
  *   Using a thunk avoids circular-reference issues with forward-declared classes.
+ * @param options - Optional join-column overrides.
  *
  * @example
  * ```typescript
@@ -171,6 +173,7 @@ export function oneToMany(targetEntity: () => ClassType, options: RelationOption
  * Marks a class field as the "many" side of a many-to-one relation.
  *
  * @param targetEntity - A zero-argument thunk returning the related entity class.
+ * @param options - Optional join-column overrides.
  *
  * @example
  * ```typescript
@@ -189,6 +192,7 @@ export function manyToOne(targetEntity: () => ClassType, options: RelationOption
  * Marks a class field as a many-to-many relation.
  *
  * @param targetEntity - A zero-argument thunk returning the related entity class.
+ * @param options - Optional join-column overrides.
  *
  * @example
  * ```typescript
@@ -207,6 +211,7 @@ export function manyToMany(targetEntity: () => ClassType, options: RelationOptio
  * Marks a class field as a one-to-one relation.
  *
  * @param targetEntity - A zero-argument thunk returning the related entity class.
+ * @param options - Optional join-column overrides.
  *
  * @example
  * ```typescript

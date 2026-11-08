@@ -31,6 +31,8 @@ Creates an instance of `InMemoryDataSource`.
 
 > **destroyed**: `boolean`
 
+Whether the data source has been destroyed.
+
 #### Implementation of
 
 [`DataSource`](../interfaces/DataSource.md).[`destroyed`](../interfaces/DataSource.md#destroyed)

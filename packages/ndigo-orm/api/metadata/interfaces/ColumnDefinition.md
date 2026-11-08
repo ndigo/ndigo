@@ -14,11 +14,15 @@ Defines a column's properties within an entity.
 
 > **columnName**: `string`
 
+The database column name.
+
 ***
 
 ### fieldName
 
 > **fieldName**: `string`
+
+The entity field name.
 
 ***
 
@@ -26,11 +30,15 @@ Defines a column's properties within an entity.
 
 > `optional` **nullable?**: `boolean`
 
+Whether nulls are allowed.
+
 ***
 
 ### schema?
 
 > `optional` **schema?**: `ZodType`\<`unknown`, `unknown`, `$ZodTypeInternals`\<`unknown`, `unknown`\>\>
+
+Optional Zod schema for the column.
 
 ***
 
@@ -38,3 +46,4 @@ Defines a column's properties within an entity.
 
 > `optional` **type?**: `string`
 
+The column type.

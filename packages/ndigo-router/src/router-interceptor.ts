@@ -1,4 +1,5 @@
 /**
+ * Router interceptor contracts and mapper.
  */
 import { Route } from './route';
 import {
@@ -22,30 +23,41 @@ export type RouterMiddleware = (route: Route) => boolean | void | Promise<boolea
  * Interceptors can perform actions before (`preRoute`) or after (`postRoute`) a route is handled.
  */
 export interface RouterInterceptor {
+    /**
+     * Runs before navigation; `false` aborts it.
+     *
+     * @param route - The route being navigated.
+     * @returns Whether navigation may proceed.
+     */
     preHandle?(route: Route): boolean | Promise<boolean>;
+    /**
+     * Runs after the route is committed.
+     *
+     * @param route - The route being navigated.
+     * @returns A promise that resolves once the hook completes.
+     */
     postHandle?(route: Route): void | Promise<void>;
+    /**
+     * Runs after completion, regardless of outcome.
+     *
+     * @param route - The route being navigated.
+     * @returns A promise that resolves once the hook completes.
+     */
     afterCompletion?(route: Route): void | Promise<void>;
 }
-
-/**
- */
-
-/**
- * @param route - The route being navigated.
- */
-
-/**
- * @param route - The route being navigated.
- */
 
 /**
  * Defines the interface for a registry that manages `RouterInterceptor` instances.
  * It provides methods to add interceptors and middleware, with support for path-based matching.
  */
 export interface RouterInterceptorRegistry {
+    /** Adds one interceptor. @param interceptor - The interceptor. */
     addInterceptor(interceptor: RouterInterceptor): void;
+    /** Adds a global interceptor or middleware. @param interceptor - The interceptor/middleware. */
     use(interceptor: RouterInterceptor | RouterMiddleware): void;
+    /** Adds an interceptor for one path pattern. @param includePattern - The include glob. @param interceptor - The interceptor/middleware. */
     use(includePattern: string, interceptor: RouterInterceptor | RouterMiddleware): void;
+    /** Adds an interceptor for path patterns. @param includePatterns - Include globs. @param interceptor - The interceptor/middleware. @param excludePatterns - Exclude globs. */
     use(includePatterns: string[], interceptor: RouterInterceptor | RouterMiddleware, excludePatterns?: string[]): void;
 }
 
@@ -58,6 +70,7 @@ export class MappedRouterInterceptor extends AsPathMatcherFilter(Null) implement
     #includePatterns: string[];
     #interceptor: RouterInterceptor;
 
+    /** The path matcher used for include/exclude filtering. */
     pathMatcher: PathMatcher;
 
     /**

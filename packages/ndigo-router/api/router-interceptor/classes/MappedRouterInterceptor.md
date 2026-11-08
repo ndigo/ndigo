@@ -60,7 +60,7 @@ An optional array of patterns that define when the interceptor should be inactiv
 
 > **pathMatcher**: `PathMatcher`
 
-The `PathMatcher` instance used for matching patterns.
+The path matcher used for include/exclude filtering.
 
 #### Implementation of
 

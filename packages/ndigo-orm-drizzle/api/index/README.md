@@ -6,6 +6,8 @@
 
 # index
 
+Public API of `@ndigo/orm-drizzle` — Drizzle adapters and LibSQL stores.
+
 ## References
 
 ### ColumnProjection

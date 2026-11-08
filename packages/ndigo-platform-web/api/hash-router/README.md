@@ -6,6 +6,8 @@
 
 # hash-router
 
+Hash-based router implementation for browser applications.
+
 ## Classes
 
 - [HashRouter](classes/HashRouter.md)

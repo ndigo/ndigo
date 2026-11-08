@@ -1,4 +1,5 @@
 /**
+ * JWT authentication adapter: issuance, validation, refresh, and revocation.
  */
 import {
     jwtVerify,
@@ -144,6 +145,7 @@ const MAX_REVOCATION_CACHE_ENTRIES = 10_000;
  * moves forward); `logout` advances the version outright.
  */
 export class JWTAdapter implements AuthAdapter {
+    /** Adapter identifier (`'jwt'`). */
     readonly id = 'jwt';
     #config: JWTAdapterConfig;
     #localJwks: JWTVerifyGetKey | null = null;
@@ -285,6 +287,13 @@ export class JWTAdapter implements AuthAdapter {
         return this.#getLocalJwks();
     }
 
+    /**
+     * Rejects direct credential authentication; JWT issuance is separate.
+     *
+     * @param _credentials - Ignored; direct credentials are unsupported.
+     * @returns Never — this method always throws.
+     * @throws Always, directing callers to an identity provider or auth flow.
+     */
     async authenticate(_credentials: unknown): Promise<AuthResult> {
         // Credential validation is outside the scope of a JWT adapter.
         // Use an identity provider or database-backed auth flow.
@@ -299,6 +308,9 @@ export class JWTAdapter implements AuthAdapter {
      * there. With a user store wired, the account must exist, be enabled,
      * and the `ver` claim snapshots the store's CURRENT `tokenVersion`
      * (never a caller-supplied value).
+     *
+     * @param subject - The account to issue tokens for.
+     * @returns The access and refresh tokens with the access expiry.
      */
     async issueTokens(
         subject: TokenSubject
@@ -338,6 +350,10 @@ export class JWTAdapter implements AuthAdapter {
      * token (access and refresh alike) is dead the moment a refresh lands,
      * so replaying a rotated-out refresh token is rejected by the version
      * comparison. No rotation ledger needed: the family moves forward.
+     *
+     * @param token - The refresh token to rotate.
+     * @returns The principal and the new access/refresh pair.
+     * @throws `JWTTokenError` when the token is invalid or superseded.
      */
     async refresh(token: string): Promise<JWTRefreshResult> {
         const store = this.#userStoreOrThrow('refresh');
@@ -380,6 +396,9 @@ export class JWTAdapter implements AuthAdapter {
      * advancing `tokenVersion` (AD-33 D-7). The presented token (access
      * or refresh) must verify — an unverifiable token revokes nothing and
      * throws (fail closed).
+     *
+     * @param token - The access or refresh token to revoke.
+     * @returns A promise that resolves once the account version advances.
      */
     async logout(token: string): Promise<void> {
         const store = this.#userStoreOrThrow('logout');

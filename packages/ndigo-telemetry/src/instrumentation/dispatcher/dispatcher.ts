@@ -1,4 +1,5 @@
 /**
+ * OpenTelemetry instrumentation for route dispatch.
  */
 import { SpanKind } from '@opentelemetry/api';
 import { AbstractDispatcher } from '@ndigo/dispatcher';
@@ -29,6 +30,9 @@ export class DispatcherInstrumentation extends AbstractBaseInstrumentation {
         super('dispatcher');
     }
 
+    /**
+     * Patches `dispatch` and `_resolveViewName` to record dispatch spans.
+     */
     enable(): void {
         // Patch slots live on the mixin-built prototype; the declared class
         // type hides `_resolveViewName` (protected) and the runtime chain shape.
@@ -94,6 +98,9 @@ export class DispatcherInstrumentation extends AbstractBaseInstrumentation {
         );
     }
 
+    /**
+     * Restores the original dispatcher methods.
+     */
     disable(): void {
         const target = AbstractDispatcher.prototype as unknown as DispatcherPatchTarget;
         this._unwrap(target, 'dispatch');

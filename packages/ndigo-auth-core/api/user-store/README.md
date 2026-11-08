@@ -6,6 +6,8 @@
 
 # user-store
 
+The user-account lookup contract.
+
 ## Interfaces
 
 - [UserRecord](interfaces/UserRecord.md)

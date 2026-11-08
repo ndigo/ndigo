@@ -1,4 +1,5 @@
 /**
+ * Route interceptor that tries multiple auth schemes in order.
  */
 import {
     type RouteHandlerInterceptor,
@@ -61,6 +62,8 @@ export class AuthMatrixGuard implements RouteHandlerInterceptor {
     #onAuthenticated?: (route: Route, principal: Principal, token: string) => void;
 
     /**
+     * Creates the guard with the explicit scheme list.
+     *
      * @param authServer - The server-side auth coordinator (adapter resolution).
      * @param options - The explicit scheme list and optional principal sink.
      */
@@ -79,6 +82,10 @@ export class AuthMatrixGuard implements RouteHandlerInterceptor {
     /**
      * Checks authentication and authorization metadata on the handler before
      * allowing execution to proceed.
+     *
+     * @param route - The route being dispatched.
+     * @param handler - The route handler carrying decorator metadata.
+     * @returns `true` to proceed, or a denial response.
      */
     async preHandle(route: Route, handler: object | undefined): Promise<boolean | InterceptorDenial> {
         const methodHandler = handler as RouteHandlerMethod | undefined;
@@ -136,10 +143,26 @@ export class AuthMatrixGuard implements RouteHandlerInterceptor {
         return true;
     }
 
+    /**
+     * No-op post-handle hook.
+     *
+     * @param _route - The dispatched route.
+     * @param _handler - The handler that ran.
+     * @param _modelAndView - The produced model and view.
+     * @returns A promise that resolves immediately.
+     */
     async postHandle(_route: Route, _handler: object | undefined, _modelAndView: ModelAndView): Promise<void> {
         // no-op
     }
 
+    /**
+     * No-op completion hook.
+     *
+     * @param _route - The dispatched route.
+     * @param _handler - The handler that ran.
+     * @param _error - The error raised, if any.
+     * @returns A promise that resolves immediately.
+     */
     async completeHandle(_route: Route, _handler: object | undefined, _error: Error | null): Promise<void> {
         // no-op
     }

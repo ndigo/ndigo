@@ -34,6 +34,8 @@ export interface OnlineReconnectTrigger extends ReconnectTrigger {
  * // …later, on teardown:
  * trigger.dispose();
  * ```
+ *
+ * @returns The online/offline reconnect trigger.
  */
 export function createOnlineReconnectTrigger(): OnlineReconnectTrigger {
     const online = signal<boolean>(navigator.onLine);

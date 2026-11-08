@@ -6,6 +6,8 @@
 
 # offline-interceptor
 
+HTTP interceptor that applies offline responses.
+
 ## Classes
 
 - [OfflineInterceptor](classes/OfflineInterceptor.md)

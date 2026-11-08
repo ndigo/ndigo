@@ -6,6 +6,8 @@
 
 # cookie-language-resolver
 
+Language resolver backed by a cookie.
+
 ## Classes
 
 - [CookieLanguageResolver](classes/CookieLanguageResolver.md)

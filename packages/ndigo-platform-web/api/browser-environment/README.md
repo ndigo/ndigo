@@ -6,6 +6,8 @@
 
 # browser-environment
 
+Browser environment backed by `window`/`import.meta` sources.
+
 ## Classes
 
 - [BrowserEnvironment](classes/BrowserEnvironment.md)

@@ -6,6 +6,8 @@
 
 # history-state-argument-resolver
 
+Argument resolver that reads history state.
+
 ## Classes
 
 - [BrowserHistoryStateValueMethodArgumentResolver](classes/BrowserHistoryStateValueMethodArgumentResolver.md)

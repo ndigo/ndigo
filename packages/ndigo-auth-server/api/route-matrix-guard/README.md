@@ -6,6 +6,8 @@
 
 # route-matrix-guard
 
+Route interceptor that tries multiple auth schemes in order.
+
 ## Classes
 
 - [AuthMatrixGuard](classes/AuthMatrixGuard.md)

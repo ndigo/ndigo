@@ -6,6 +6,8 @@
 
 # index
 
+Public API of `@ndigo/auth-core` — principals, sessions, and adapters.
+
 ## References
 
 ### AnonymousPrincipal

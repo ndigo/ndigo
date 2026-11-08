@@ -1,4 +1,5 @@
 /**
+ * Public API of `@ndigo/auth-core` — principals, sessions, and adapters.
  */
 export * from './principal';
 export * from './state';

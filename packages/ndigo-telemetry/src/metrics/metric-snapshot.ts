@@ -13,8 +13,11 @@ import type { AttributeValue } from '@opentelemetry/api';
  * One aggregated histogram bucket: `count` occurrences in `[low, high)`.
  */
 export interface MetricHistogramBucket {
+    /** Bucket occurrence count. */
     readonly count: number;
+    /** Inclusive lower bound. */
     readonly low: number;
+    /** Exclusive upper bound. */
     readonly high: number;
 }
 
@@ -36,7 +39,9 @@ export type MetricPointValue =
  * One aggregated point: the attribute set plus the aggregated value.
  */
 export interface MetricPoint {
+    /** The point's attribute set. */
     readonly attributes: Record<string, AttributeValue>;
+    /** The aggregated value. */
     readonly value: MetricPointValue;
 }
 
@@ -46,10 +51,15 @@ export interface MetricPoint {
  * up-down-counters; `gauge`; `histogram`).
  */
 export interface MetricSnapshot {
+    /** The metric name. */
     readonly name: string;
+    /** The metric description. */
     readonly description: string;
+    /** The metric unit. */
     readonly unit: string;
+    /** The aggregation kind. */
     readonly type: 'sum' | 'gauge' | 'histogram';
+    /** The aggregated points. */
     readonly points: readonly MetricPoint[];
 }
 
@@ -112,6 +122,8 @@ export function setFallbackMetricSnapshotProvider(provider: MetricSnapshotProvid
  * present, else the fallback, else `undefined` (no telemetry configured and
  * no auto-configuration — the `/metrics` endpoint answers its "no metric
  * source" document).
+ *
+ * @returns The active snapshot provider, or `undefined`.
  */
 export function getMetricSnapshotProvider(): MetricSnapshotProvider | undefined {
     return current ?? fallback;

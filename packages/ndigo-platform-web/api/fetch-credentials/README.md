@@ -6,6 +6,8 @@
 
 # fetch-credentials
 
+HTTP interceptor that sends fetch credentials.
+
 ## Classes
 
 - [FetchCredentialsInterceptor](classes/FetchCredentialsInterceptor.md)

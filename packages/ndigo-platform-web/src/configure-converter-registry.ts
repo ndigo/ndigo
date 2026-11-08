@@ -1,4 +1,5 @@
 /**
+ * Configures the browser argument value converter registry.
  */
 import { ApplicationContext } from '@ndigo/context';
 import { ArgumentValueConverterRegistry } from '@ndigo/dispatcher';

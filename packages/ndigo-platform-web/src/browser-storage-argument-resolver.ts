@@ -1,4 +1,5 @@
 /**
+ * Argument resolver that reads browser storage values.
  */
 import {
     MethodParameter,
@@ -68,7 +69,15 @@ export class BrowserStorageValueMethodArgumentResolver extends AbstractPlatformA
         return this.#tag;
     }
 
-    /** Retrieves a value from the storage, or the whole jar when no name is given (scalar-only, D-2). */
+    /**
+     * Retrieves a value from the storage, or the whole jar when no name is given (scalar-only, D-2).
+     *
+     * @param name - The storage key, or `''` for the whole jar.
+     * @param _parameter - The method parameter (unused).
+     * @param _route - The current route (unused).
+     * @param _mapping - The route mapping (unused).
+     * @returns The stored value, or the whole jar.
+     */
     protected resolveName(name: string, _parameter: MethodParameter, _route: Route, _mapping: unknown): unknown {
         const storage = this.#storage();
 
@@ -84,7 +93,12 @@ export class BrowserStorageValueMethodArgumentResolver extends AbstractPlatformA
         return storage.getItem(name);
     }
 
-    /** Returns whether this resolver supports the configured storage parameter type. */
+    /**
+     * Returns whether this resolver supports the configured storage parameter type.
+     *
+     * @param parameter - The method parameter to test.
+     * @returns Whether the parameter type matches.
+     */
     supportsParameter(parameter: MethodParameter): boolean {
         return this.#type.equals(parameter.type);
     }

@@ -1,4 +1,5 @@
 /**
+ * Metric decorators and their metadata readers.
  */
 import '@tsmetadata/polyfill';
 import { getSymbolMetadata } from '@ndigo/core';

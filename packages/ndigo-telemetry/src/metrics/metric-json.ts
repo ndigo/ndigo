@@ -12,6 +12,7 @@ import { MetricHistogramBucket, MetricSnapshot } from './metric-snapshot';
  * The JSON form of one aggregated point.
  */
 export interface MetricJSONPoint {
+    /** The point's attribute set. */
     readonly attributes: Record<string, AttributeValue>;
     /** The aggregated value — present for `sum`/`gauge` snapshots. */
     readonly value?: number;
@@ -29,9 +30,13 @@ export interface MetricJSONPoint {
  * The JSON form of one snapshot.
  */
 export interface MetricJSONEntry {
+    /** The metric type. */
     readonly type: 'sum' | 'gauge' | 'histogram';
+    /** The metric unit. */
     readonly unit: string;
+    /** Optional metric description. */
     readonly description?: string;
+    /** The aggregated points. */
     readonly points: readonly MetricJSONPoint[];
 }
 
@@ -39,6 +44,7 @@ export interface MetricJSONEntry {
  * The complete JSON projection: `{ metrics: { <name>: MetricJSONEntry } }`.
  */
 export interface MetricJSONView {
+    /** Snapshots keyed by metric name. */
     readonly metrics: Readonly<Record<string, MetricJSONEntry>>;
 }
 

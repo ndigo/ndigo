@@ -48,7 +48,7 @@ moves forward); `logout` advances the version outright.
 
 > `readonly` **id**: `"jwt"` = `'jwt'`
 
-The unique identifier for this adapter (e.g., 'oidc', 'saml').
+Adapter identifier (`'jwt'`).
 
 #### Implementation of
 
@@ -60,7 +60,7 @@ The unique identifier for this adapter (e.g., 'oidc', 'saml').
 
 > **authenticate**(`_credentials`): `Promise`\<[`AuthResult`](#)\>
 
-Performs the primary authentication flow.
+Rejects direct credential authentication; JWT issuance is separate.
 
 #### Parameters
 
@@ -68,11 +68,17 @@ Performs the primary authentication flow.
 
 `unknown`
 
+Ignored; direct credentials are unsupported.
+
 #### Returns
 
 `Promise`\<[`AuthResult`](#)\>
 
-An [AuthResult](#) containing the principal and session token.
+Never — this method always throws.
+
+#### Throws
+
+Always, directing callers to an identity provider or auth flow.
 
 #### Implementation of
 
@@ -98,9 +104,13 @@ and the `ver` claim snapshots the store's CURRENT `tokenVersion`
 
 [`TokenSubject`](../interfaces/TokenSubject.md)
 
+The account to issue tokens for.
+
 #### Returns
 
 `Promise`\<\{ `accessToken`: `string`; `expiresAt`: `number`; `refreshToken`: `string`; \}\>
+
+The access and refresh tokens with the access expiry.
 
 ***
 
@@ -119,9 +129,13 @@ throws (fail closed).
 
 `string`
 
+The access or refresh token to revoke.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once the account version advances.
 
 #### Implementation of
 
@@ -145,9 +159,17 @@ comparison. No rotation ledger needed: the family moves forward.
 
 `string`
 
+The refresh token to rotate.
+
 #### Returns
 
 `Promise`\<[`JWTRefreshResult`](../interfaces/JWTRefreshResult.md)\>
+
+The principal and the new access/refresh pair.
+
+#### Throws
+
+`JWTTokenError` when the token is invalid or superseded.
 
 #### Implementation of
 

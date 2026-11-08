@@ -1,4 +1,5 @@
 /**
+ * Browser application bootstrap.
  */
 import { ApplicationBuilder } from '@ndigo/boot';
 import type { ConfigurableApplicationContext } from '@ndigo/context';

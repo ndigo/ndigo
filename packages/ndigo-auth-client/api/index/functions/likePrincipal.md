@@ -18,6 +18,10 @@ prefix (`is*` is reserved for `instanceof`/`typeof` checks).
 
 `unknown`
 
+The candidate value to inspect.
+
 ## Returns
 
 `value is Principal`
+
+`true` when the value has the principal shape.

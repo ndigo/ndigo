@@ -17,17 +17,23 @@ principal, authentication token, and session lifecycle methods.
 
 > `readonly` **isAuthenticated**: `boolean`
 
+Whether both a principal and token are set.
+
 ***
 
 ### principal
 
 > `readonly` **principal**: [`Principal`](../../principal/interfaces/Principal.md) \| `null`
 
+The authenticated principal, or `null`.
+
 ***
 
 ### token
 
 > `readonly` **token**: `string` \| `null`
+
+The session/access token, or `null`.
 
 ## Methods
 

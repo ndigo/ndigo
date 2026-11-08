@@ -6,6 +6,8 @@
 
 # instrumentation/dispatcher/dispatcher
 
+OpenTelemetry instrumentation for route dispatch.
+
 ## Classes
 
 - [DispatcherInstrumentation](classes/DispatcherInstrumentation.md)

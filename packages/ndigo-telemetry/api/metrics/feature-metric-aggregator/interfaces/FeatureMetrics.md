@@ -14,11 +14,15 @@ Represents a collection of metrics for a specific feature.
 
 > `readonly` **counters**: `ReadonlyMap`\<`string`, `number`\>
 
+Counter totals by name.
+
 ***
 
 ### durations
 
 > `readonly` **durations**: `ReadonlyMap`\<`string`, [`DurationSummary`](DurationSummary.md)\>
+
+Duration summaries by name.
 
 ***
 
@@ -26,11 +30,15 @@ Represents a collection of metrics for a specific feature.
 
 > `readonly` **feature**: `string`
 
+The feature name.
+
 ***
 
 ### gauges
 
 > `readonly` **gauges**: `ReadonlyMap`\<`string`, `number`\>
+
+Gauge values by name.
 
 ***
 
@@ -38,3 +46,4 @@ Represents a collection of metrics for a specific feature.
 
 > `readonly` **updatedAt**: `Date`
 
+Last update time.

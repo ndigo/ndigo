@@ -1,4 +1,5 @@
 /**
+ * Browser environment backed by `window`/`import.meta` sources.
  */
 import { StandardEnvironment } from '@ndigo/context';
 import type { ResolverOptions } from '@ndigo/context';

@@ -101,6 +101,7 @@ export class IndexedDBResourceLoader {
      *
      * @param key - The storage key.
      * @param value - The value to store.
+     * @returns A promise that resolves once written.
      */
     async setItem(key: string, value: unknown): Promise<void> {
         const db = await this.#openDB();
@@ -138,6 +139,7 @@ export class IndexedDBResourceLoader {
      * Removes a value from IndexedDB.
      *
      * @param key - The storage key to remove.
+     * @returns A promise that resolves once removed.
      */
     async removeItem(key: string): Promise<void> {
         const db = await this.#openDB();
@@ -152,6 +154,8 @@ export class IndexedDBResourceLoader {
 
     /**
      * Clears all values from the store.
+     *
+     * @returns A promise that resolves once cleared.
      */
     async clear(): Promise<void> {
         const db = await this.#openDB();
@@ -166,6 +170,8 @@ export class IndexedDBResourceLoader {
 
     /**
      * Returns all keys in the store.
+     *
+     * @returns The stored keys.
      */
     async keys(): Promise<string[]> {
         const db = await this.#openDB();

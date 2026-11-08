@@ -19,10 +19,16 @@ by the `AuthRouteGuard` (server-side) or `ClientAuthGuard` (client-side).
 
 `unknown`
 
+The decorated class or method.
+
 ### context
 
 `ClassDecoratorContext`\<new (...`args`) => `any`\> \| `ClassMethodDecoratorContext`\<`unknown`, (`this`, ...`args`) => `any`\>
 
+The decorator context.
+
 ## Returns
 
 `void`
+
+Nothing; metadata is recorded on the context.

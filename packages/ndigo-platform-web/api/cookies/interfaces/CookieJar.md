@@ -14,11 +14,15 @@ Minimal cookie-jar API exposed by the platform-web package.
 
 > **get**(`key`): `JSONValue` \| `undefined`
 
+Reads a cookie value.
+
 #### Parameters
 
 ##### key
 
 `string`
+
+The cookie name.
 
 #### Returns
 
@@ -30,11 +34,15 @@ Minimal cookie-jar API exposed by the platform-web package.
 
 > **getJSON**(`key`): `JSONValue` \| `undefined`
 
+Reads and parses a JSON cookie.
+
 #### Parameters
 
 ##### key
 
 `string`
+
+The cookie name.
 
 #### Returns
 
@@ -46,15 +54,21 @@ Minimal cookie-jar API exposed by the platform-web package.
 
 > **remove**(`key`, `attributes?`): `string`
 
+Removes a cookie.
+
 #### Parameters
 
 ##### key
 
 `string`
 
+The cookie name.
+
 ##### attributes?
 
 [`CookieAttributes`](../type-aliases/CookieAttributes.md)
+
+Optional attributes.
 
 #### Returns
 
@@ -66,11 +80,15 @@ Minimal cookie-jar API exposed by the platform-web package.
 
 > **run**(`input`): [`CookieParseResult`](../type-aliases/CookieParseResult.md)
 
+Parses a cookie header string.
+
 #### Parameters
 
 ##### input
 
 `string`
+
+The raw header.
 
 #### Returns
 
@@ -82,19 +100,27 @@ Minimal cookie-jar API exposed by the platform-web package.
 
 > **set**(`key`, `value`, `attributes?`): `string`
 
+Writes a cookie.
+
 #### Parameters
 
 ##### key
 
 `string`
 
+The cookie name.
+
 ##### value
 
 `string`
 
+The value.
+
 ##### attributes?
 
 [`CookieAttributes`](../type-aliases/CookieAttributes.md)
+
+Optional attributes.
 
 #### Returns
 

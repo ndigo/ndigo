@@ -6,6 +6,8 @@
 
 # server
 
+Server-side authentication coordinator.
+
 ## Classes
 
 - [AuthServer](classes/AuthServer.md)

@@ -14,11 +14,15 @@ Parsed cookie structure returned by cookie parsing helpers.
 
 > `optional` **domain?**: `string`
 
+Cookie domain.
+
 ***
 
 ### expires?
 
 > `optional` **expires?**: `string`
+
+Expiry date string.
 
 ***
 
@@ -26,11 +30,15 @@ Parsed cookie structure returned by cookie parsing helpers.
 
 > `optional` **maxAge?**: `string`
 
+Maximum age in seconds.
+
 ***
 
 ### name
 
 > **name**: `string`
+
+Cookie name.
 
 ***
 
@@ -38,11 +46,15 @@ Parsed cookie structure returned by cookie parsing helpers.
 
 > `optional` **path?**: `string`
 
+Cookie path.
+
 ***
 
 ### sameSite?
 
 > `optional` **sameSite?**: `string`
+
+SameSite policy.
 
 ***
 
@@ -50,9 +62,12 @@ Parsed cookie structure returned by cookie parsing helpers.
 
 > `optional` **secure?**: `boolean`
 
+Whether the cookie is HTTPS-only.
+
 ***
 
 ### value
 
 > **value**: `string`
 
+Cookie value.

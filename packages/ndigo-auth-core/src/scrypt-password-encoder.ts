@@ -1,4 +1,5 @@
 /**
+ * scrypt password encoder with PHC-style hashes.
  */
 import { randomBytes, scryptSync, timingSafeEqual } from 'node:crypto';
 import { type PasswordEncoder, schemePrefix, UnknownPasswordSchemeError } from './password-encoder';
@@ -90,6 +91,13 @@ export class ScryptPasswordEncoder implements PasswordEncoder {
         this.#saltBytes = validatePositiveInt(options.saltBytes ?? DEFAULT_SALT_BYTES, 'saltBytes');
     }
 
+    /**
+     * Hashes a password with a fresh salt using the configured scrypt
+     * parameters.
+     *
+     * @param rawPassword - The plaintext password.
+     * @returns The PHC-style scrypt hash.
+     */
     encode(rawPassword: string): string {
         const salt = randomBytes(this.#saltBytes);
         const derived = this.#derive(rawPassword, salt, {
@@ -104,6 +112,13 @@ export class ScryptPasswordEncoder implements PasswordEncoder {
         );
     }
 
+    /**
+     * Verifies a password against a PHC-style scrypt hash in constant time.
+     *
+     * @param rawPassword - The plaintext password.
+     * @param encodedPassword - The stored scrypt hash.
+     * @returns Whether the password matches.
+     */
     verify(rawPassword: string, encodedPassword: string): boolean {
         const parsed = this.#parse(encodedPassword);
         try {
@@ -120,6 +135,12 @@ export class ScryptPasswordEncoder implements PasswordEncoder {
         }
     }
 
+    /**
+     * Whether the stored parameters differ from the current configuration.
+     *
+     * @param encodedPassword - The stored scrypt hash.
+     * @returns Whether a rehash is recommended.
+     */
     needsRehash(encodedPassword: string): boolean {
         const parsed = this.#parse(encodedPassword);
         return (

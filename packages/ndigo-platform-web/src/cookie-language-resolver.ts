@@ -1,4 +1,5 @@
 /**
+ * Language resolver backed by a cookie.
  */
 import { AbstractLanguageResolver, NavigatorLanguageResolver } from '@ndigo/dispatcher';
 import { normalizeLocale } from '@ndigo/content';
@@ -15,6 +16,7 @@ import Cookies from './cookies';
  */
 export class CookieLanguageResolver extends AbstractLanguageResolver {
     #fallback: AbstractLanguageResolver;
+    /** The cookie name that stores the language. */
     readonly cookieName: string;
 
     get [Symbol.toStringTag](): string {

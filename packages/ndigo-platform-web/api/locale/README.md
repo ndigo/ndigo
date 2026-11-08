@@ -6,6 +6,8 @@
 
 # locale
 
+Browser locale signal and helpers.
+
 ## Variables
 
 - [currentLocale](variables/currentLocale.md)

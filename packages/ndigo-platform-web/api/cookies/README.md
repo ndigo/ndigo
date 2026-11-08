@@ -6,6 +6,8 @@
 
 # cookies
 
+Browser cookie parsing and jar helpers.
+
 ## Interfaces
 
 - [Cookie](interfaces/Cookie.md)

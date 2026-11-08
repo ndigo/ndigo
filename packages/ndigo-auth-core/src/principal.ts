@@ -13,11 +13,17 @@ export interface Principal {
 
     /**
      * Returns `true` if this principal has the given role.
+     *
+     * @param role - The role name to test.
+     * @returns Whether the role is assigned.
      */
     hasRole(role: string): boolean;
 
     /**
      * Returns `true` if this principal has **at least one** of the given roles.
+     *
+     * @param roles - The role names to test.
+     * @returns Whether any role is assigned.
      */
     hasAnyRole(...roles: string[]): boolean;
 }
@@ -26,14 +32,29 @@ export interface Principal {
  * Sentinel principal representing an unauthenticated user.
  */
 export class AnonymousPrincipal implements Principal {
+    /** The sentinel id (`'anonymous'`). */
     readonly id = 'anonymous';
+    /** The display name (`'Anonymous'`). */
     readonly name = 'Anonymous';
+    /** The empty role set. */
     readonly roles: ReadonlyArray<string> = [];
 
+    /**
+     * Always `false` for the anonymous sentinel.
+     *
+     * @param _role - Ignored.
+     * @returns Always `false`.
+     */
     hasRole(_role: string): boolean {
         return false;
     }
 
+    /**
+     * Always `false` for the anonymous sentinel.
+     *
+     * @param _roles - Ignored.
+     * @returns Always `false`.
+     */
     hasAnyRole(..._roles: string[]): boolean {
         return false;
     }
@@ -45,8 +66,11 @@ export class AnonymousPrincipal implements Principal {
  * `CredentialsAuthAdapter` — AD-33 D-5).
  */
 export class DefaultPrincipal implements Principal {
+    /** Unique identifier for this principal. */
     readonly id: string;
+    /** Human-readable display name. */
     readonly name: string;
+    /** Roles assigned to this principal. */
     readonly roles: ReadonlyArray<string>;
 
     constructor(id: string, name: string, roles: readonly string[] = []) {
@@ -55,10 +79,22 @@ export class DefaultPrincipal implements Principal {
         this.roles = roles;
     }
 
+    /**
+     * Returns `true` if this principal has the given role.
+     *
+     * @param role - The role name to test.
+     * @returns Whether the role is assigned.
+     */
     hasRole(role: string): boolean {
         return this.roles.includes(role);
     }
 
+    /**
+     * Returns `true` if this principal has at least one of the given roles.
+     *
+     * @param roles - The role names to test.
+     * @returns Whether any role is assigned.
+     */
     hasAnyRole(...roles: string[]): boolean {
         return roles.some((role) => this.roles.includes(role));
     }
@@ -68,6 +104,9 @@ export class DefaultPrincipal implements Principal {
  * Duck-type guard for {@link Principal}: shape check, not identity —
  * per STYLE_GUIDE §3.7, property/method-presence guards use the `like*`
  * prefix (`is*` is reserved for `instanceof`/`typeof` checks).
+ *
+ * @param value - The candidate value to inspect.
+ * @returns `true` when the value has the principal shape.
  */
 export function likePrincipal(value: unknown): value is Principal {
     return typeof value === 'object' && value !== null && 'id' in value && 'name' in value && 'roles' in value;

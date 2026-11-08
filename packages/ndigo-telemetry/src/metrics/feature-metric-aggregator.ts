@@ -1,4 +1,5 @@
 /**
+ * Per-feature metric aggregation and snapshot projection.
  */
 import { compareBy, IllegalStateError, numberComparator, stringComparator } from '@ndigo/core';
 import { type MetricSnapshot, type MetricSnapshotProvider } from './metric-snapshot';
@@ -14,10 +15,15 @@ interface MutableFeatureMetrics {
  * Represents a statistical summary of recorded durations.
  */
 export interface DurationSummary {
+    /** Number of retained samples. */
     readonly count: number;
+    /** Largest sample. */
     readonly max: number;
+    /** Arithmetic mean. */
     readonly mean: number;
+    /** Smallest sample. */
     readonly min: number;
+    /** Median sample. */
     readonly p50: number;
 }
 
@@ -25,10 +31,15 @@ export interface DurationSummary {
  * Represents a collection of metrics for a specific feature.
  */
 export interface FeatureMetrics {
+    /** Counter totals by name. */
     readonly counters: ReadonlyMap<string, number>;
+    /** Duration summaries by name. */
     readonly durations: ReadonlyMap<string, DurationSummary>;
+    /** The feature name. */
     readonly feature: string;
+    /** Gauge values by name. */
     readonly gauges: ReadonlyMap<string, number>;
+    /** Last update time. */
     readonly updatedAt: Date;
 }
 
@@ -36,7 +47,9 @@ export interface FeatureMetrics {
  * Options for configuring the `FeatureMetricAggregator`.
  */
 export interface FeatureMetricAggregatorOptions {
+    /** Maximum retained duration samples per series. */
     readonly maxDurationSamples?: number;
+    /** Maximum tracked features. */
     readonly maxFeatures?: number;
 }
 
@@ -248,6 +261,8 @@ export class FeatureMetricAggregatorProvider implements MetricSnapshotProvider {
     readonly #aggregator: FeatureMetricAggregator;
 
     /**
+     * Creates the provider over an aggregator.
+     *
      * @param aggregator - The aggregator to project (bound by the caller).
      */
     constructor(aggregator: FeatureMetricAggregator) {

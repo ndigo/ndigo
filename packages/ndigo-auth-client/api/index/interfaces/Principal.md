@@ -46,9 +46,13 @@ Returns `true` if this principal has **at least one** of the given roles.
 
 ...`string`[]
 
+The role names to test.
+
 #### Returns
 
 `boolean`
+
+Whether any role is assigned.
 
 ***
 
@@ -64,6 +68,10 @@ Returns `true` if this principal has the given role.
 
 `string`
 
+The role name to test.
+
 #### Returns
 
 `boolean`
+
+Whether the role is assigned.

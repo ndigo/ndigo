@@ -6,6 +6,8 @@
 
 # state
 
+The authentication-state type.
+
 ## Interfaces
 
 - [AuthenticationState](interfaces/AuthenticationState.md)

@@ -6,6 +6,8 @@
 
 # configure-converter-registry
 
+Configures the browser argument value converter registry.
+
 ## Functions
 
 - [configureArgumentValueConverterRegistry](functions/configureArgumentValueConverterRegistry.md)

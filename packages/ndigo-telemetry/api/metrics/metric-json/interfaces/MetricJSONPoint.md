@@ -14,6 +14,8 @@ The JSON form of one aggregated point.
 
 > `readonly` **attributes**: `Record`\<`string`, `AttributeValue`\>
 
+The point's attribute set.
+
 ***
 
 ### histogram?

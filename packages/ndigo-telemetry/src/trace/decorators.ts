@@ -1,4 +1,5 @@
 /**
+ * `@traced` decorator and trace metadata readers.
  */
 import '@tsmetadata/polyfill';
 import { getSymbolMetadata } from '@ndigo/core';

@@ -1,4 +1,5 @@
 /**
+ * `@authenticated` / `@authorized` metadata decorators.
  */
 import '@tsmetadata/polyfill';
 
@@ -10,6 +11,10 @@ export const AUTH_ROLES_KEY = 'auth:roles';
  *
  * This is a passive metadata decorator. The actual enforcement is handled
  * by the `AuthRouteGuard` (server-side) or `ClientAuthGuard` (client-side).
+ *
+ * @param target - The decorated class or method.
+ * @param context - The decorator context.
+ * @returns Nothing; metadata is recorded on the context.
  */
 export function authenticated(target: unknown, context: ClassDecoratorContext | ClassMethodDecoratorContext): void {
     const kind = context.kind;
@@ -32,6 +37,15 @@ export function authenticated(target: unknown, context: ClassDecoratorContext | 
  * This is a passive metadata decorator.
  *
  * @param role - The role name that the principal must possess.
+ * @returns The class/method decorator.
+ *
+ * @example
+ * ```ts
+ * class AdminController {
+ *     @authorized('admin')
+ *     deleteAll(): void {}
+ * }
+ * ```
  */
 export function authorized(role: string) {
     return function (target: unknown, context: ClassDecoratorContext | ClassMethodDecoratorContext): void {

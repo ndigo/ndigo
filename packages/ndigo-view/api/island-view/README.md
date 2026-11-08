@@ -6,6 +6,8 @@
 
 # island-view
 
+Server-rendered island markup with hydratable model payloads.
+
 ## Classes
 
 - [IslandView](classes/IslandView.md)

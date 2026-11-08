@@ -15,11 +15,15 @@ are resolved, and `delayMs` is gone.
 
 > **maxAttempts**: `number`
 
+Attempts allowed before terminal failure.
+
 ***
 
 ### payload
 
 > **payload**: `unknown`
+
+JSON-serializable payload handed to the handler.
 
 ***
 
@@ -27,11 +31,15 @@ are resolved, and `delayMs` is gone.
 
 > **runAt**: `number`
 
+Absolute earliest run time (epoch milliseconds).
+
 ***
 
 ### timeoutMs?
 
 > `optional` **timeoutMs?**: `number`
+
+Per-execution timeout, when configured.
 
 ***
 
@@ -39,3 +47,4 @@ are resolved, and `delayMs` is gone.
 
 > **type**: `string`
 
+Job type, matched against registered `@jobHandler` types.

@@ -1,4 +1,5 @@
 /**
+ * Base view that serializes a model into a rendered body.
  */
 import { IllegalStateError } from '@ndigo/core';
 import type { Route } from '@ndigo/router';
@@ -18,7 +19,13 @@ import type { ViewTarget } from './view-target.js';
  * `serialize`.
  */
 export abstract class AbstractSerializingView extends AbstractView implements ProducerView {
-    /** {@inheritDoc} */
+    /**
+     * Produces the serialized document for document mode.
+     *
+     * @param model - The data model to encode.
+     * @param _route - The current route (unused).
+     * @returns The encoded body and its media type.
+     */
     async renderTo(model: unknown, _route: Route): Promise<RenderResult> {
         void _route;
         return {
@@ -27,7 +34,14 @@ export abstract class AbstractSerializingView extends AbstractView implements Pr
         };
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Renders the serialized body into a view target.
+     *
+     * @param viewModel - The view model to encode.
+     * @param request - The current request.
+     * @param target - The view target that receives the body.
+     * @returns A promise that resolves once the target commits the body.
+     */
     protected async _renderView(viewModel: unknown, request: unknown, target?: ViewTarget): Promise<void> {
         if (!target) {
             throw new IllegalStateError('AbstractSerializingView requires a ViewTarget to render.');

@@ -61,6 +61,14 @@ export type JobHandler = (payload: unknown, context: JobHandlerContext) => void 
  * @param type - Non-empty job type string; duplicates fail loud at scan time.
  * @param options - Optional `maxAttempts`/`timeoutMs` overrides.
  * @returns The class method decorator.
+ *
+ * @example
+ * ```ts
+ * class EmailJobs {
+ *     @jobHandler('email.send', { maxAttempts: 5, timeoutMs: 30_000 })
+ *     async send(payload: unknown): Promise<void> {}
+ * }
+ * ```
  */
 export function jobHandler(type: string, options: JobHandlerOptions = {}) {
     if (typeof type !== 'string' || type.trim().length === 0) {

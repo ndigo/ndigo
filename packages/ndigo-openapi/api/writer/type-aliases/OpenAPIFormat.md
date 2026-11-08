@@ -8,3 +8,4 @@
 
 > **OpenAPIFormat** = `"json"` \| `"yaml"`
 
+Output serialization format.

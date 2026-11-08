@@ -17,19 +17,27 @@ Consumers must unsubscribe before the application closes the transport.
 
 > **publish**(`scope`, `message`): `Promise`\<`void`\>
 
+Publishes one message after backend acceptance.
+
 #### Parameters
 
 ##### scope
 
 [`SocketFanoutScope`](../type-aliases/SocketFanoutScope.md)
 
+The fan-out scope to publish to.
+
 ##### message
 
 [`SocketFanoutMessage`](SocketFanoutMessage.md)
 
+The message to publish.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves after backend acceptance.
 
 ***
 
@@ -37,16 +45,24 @@ Consumers must unsubscribe before the application closes the transport.
 
 > **subscribe**(`scope`, `receive`): `Promise`\<() => `Promise`\<`void`\>\>
 
+Subscribes to a scope's messages; completion signals readiness.
+
 #### Parameters
 
 ##### scope
 
 [`SocketFanoutScope`](../type-aliases/SocketFanoutScope.md)
 
+The fan-out scope to subscribe to.
+
 ##### receive
 
 (`message`) => `void`
 
+Invoked for each published message.
+
 #### Returns
 
 `Promise`\<() => `Promise`\<`void`\>\>
+
+An unsubscribe function.

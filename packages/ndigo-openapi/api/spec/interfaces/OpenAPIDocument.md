@@ -36,6 +36,8 @@ Named security schemes ([OpenAPIGeneratorOptions.securitySchemes](OpenAPIGenerat
 
 > **info**: `object`
 
+Document metadata (title, version, description).
+
 #### description?
 
 > `optional` **description?**: `string`
@@ -54,11 +56,15 @@ Named security schemes ([OpenAPIGeneratorOptions.securitySchemes](OpenAPIGenerat
 
 > **openapi**: `"3.0.3"`
 
+The OpenAPI version emitted (`3.0.3`).
+
 ***
 
 ### paths
 
 > **paths**: `Record`\<`string`, [`OpenAPIPathItem`](../type-aliases/OpenAPIPathItem.md)\>
+
+Path items keyed by URL template.
 
 ***
 
@@ -75,6 +81,8 @@ per-operation `security` overrides them. Present when
 ### servers?
 
 > `optional` **servers?**: `object`[]
+
+Optional server list.
 
 #### url
 

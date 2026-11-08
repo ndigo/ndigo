@@ -6,6 +6,8 @@
 
 # producer-view
 
+The producer-view contract for whole-document rendering.
+
 ## Interfaces
 
 - [ProducerView](interfaces/ProducerView.md)

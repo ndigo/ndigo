@@ -155,19 +155,27 @@ The optional view target.
 
 > **renderTo**(`model`, `_route`): `Promise`\<[`RenderResult`](../../producer-view/interfaces/RenderResult.md)\>
 
+Produces the serialized document for document mode.
+
 #### Parameters
 
 ##### model
 
 `unknown`
 
+The data model to encode.
+
 ##### \_route
 
 [`Route`](#)
 
+The current route (unused).
+
 #### Returns
 
 `Promise`\<[`RenderResult`](../../producer-view/interfaces/RenderResult.md)\>
+
+The encoded body and its media type.
 
 #### Inherited from
 

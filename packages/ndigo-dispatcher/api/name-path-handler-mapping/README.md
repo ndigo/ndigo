@@ -6,6 +6,8 @@
 
 # name-path-handler-mapping
 
+Name-based path handler mapping.
+
 ## Classes
 
 - [NamePathHandlerMapping](classes/NamePathHandlerMapping.md)

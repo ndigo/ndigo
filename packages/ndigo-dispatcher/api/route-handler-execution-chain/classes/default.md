@@ -144,6 +144,8 @@ The model and view produced by the handler.
 
 `Promise`\<`void`\>
 
+A promise that resolves once every interceptor has run.
+
 ***
 
 ### applyPreHandle()
@@ -193,3 +195,5 @@ The error that terminated execution, if any.
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once every completion callback has run.

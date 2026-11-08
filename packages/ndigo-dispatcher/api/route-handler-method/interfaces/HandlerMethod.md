@@ -20,6 +20,8 @@ value).
 
 > **invoke**\<`ModelAndView`\>(`route`, ...`args`): `ModelAndView`
 
+Invokes the handler with the resolved route.
+
 #### Type Parameters
 
 ##### ModelAndView
@@ -32,13 +34,19 @@ value).
 
 [`Route`](#)
 
+The route being resolved.
+
 ##### args
 
 ...`unknown`[]
 
+Additional invocation arguments.
+
 #### Returns
 
 `ModelAndView`
+
+The handler's result.
 
 #### Overrides
 

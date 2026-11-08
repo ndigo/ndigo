@@ -1,4 +1,5 @@
 /**
+ * Route mapping info model.
  */
 
 import { Route } from '@ndigo/router';

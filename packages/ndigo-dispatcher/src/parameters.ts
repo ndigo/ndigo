@@ -1,4 +1,5 @@
 /**
+ * Parameter decorators.
  */
 
 import '@tsmetadata/polyfill';
@@ -27,6 +28,9 @@ export * from './parameter-factories';
  *   handleRequest(page: string) {}
  * }
  * ```
+ *
+ * @param paramMap - The parameter extractors keyed by argument name.
+ * @returns The method decorator.
  */
 export function parameters(paramMap: ParameterMap) {
     return function (target: unknown, context: ClassMethodDecoratorContext): void {
@@ -284,6 +288,7 @@ function toMethodParameter(paramName: string, extractor: ParameterExtractor): Me
  *
  * @param target - The class prototype or constructor.
  * @param propertyKey - The method name.
+ * @param resolvedParams - The resolved parameters to store.
  */
 export function storeResolvedParameters(
     target: unknown,
@@ -302,6 +307,10 @@ export function storeResolvedParameters(
 
 /**
  * Get method parameters
+ *
+ * @param target - The class prototype or constructor.
+ * @param propertyKey - The method name.
+ * @returns The stored parameters, or `undefined` when none were registered.
  */
 export function getMethodParameter(target: unknown, propertyKey: string | symbol): MethodParameter[] | undefined {
     const metadata = getSymbolMetadata(target);
@@ -310,6 +319,10 @@ export function getMethodParameter(target: unknown, propertyKey: string | symbol
 
 /**
  * Check if method has parameters
+ *
+ * @param target - The class prototype or constructor.
+ * @param propertyKey - The method name.
+ * @returns `true` when parameters were registered for the method.
  */
 export function hasMethodParameter(target: unknown, propertyKey: string | symbol): boolean {
     return getMethodParameter(target, propertyKey) !== undefined;

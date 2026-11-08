@@ -6,6 +6,8 @@
 
 # index
 
+Public API of `@ndigo/dispatcher`.
+
 ## Interfaces
 
 - [SocketRequestSources](interfaces/SocketRequestSources.md)

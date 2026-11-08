@@ -1,4 +1,5 @@
 /**
+ * Pattern-based route conditions.
  */
 
 import { Route } from '@ndigo/router';
@@ -30,10 +31,12 @@ export class PatternsRouteCondition extends AbstractRouteCondition<PatternsRoute
      */
     useTrailingSlashMatch!: boolean;
 
+    /** The condition's content parts. */
     get content(): string[] {
         return Array.from(this.patterns);
     }
 
+    /** The separator used when rendering. */
     get infix(): string {
         return ' || ';
     }

@@ -52,9 +52,13 @@ Wrapped condition, when present.
 
 > **get** **content**(): [`RouteCondition`](../interfaces/RouteCondition.md)\<`unknown`\>[]
 
+The wrapped condition parts.
+
 ##### Returns
 
 [`RouteCondition`](../interfaces/RouteCondition.md)\<`unknown`\>[]
+
+The condition's constituent parts.
 
 #### Overrides
 
@@ -68,9 +72,13 @@ Wrapped condition, when present.
 
 > **get** **infix**(): `string`
 
+The separator used when rendering.
+
 ##### Returns
 
 `string`
+
+The separator used when rendering the parts.
 
 #### Overrides
 

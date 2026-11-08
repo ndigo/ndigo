@@ -6,6 +6,8 @@
 
 # path-pattern-comparator
 
+Path-pattern comparison.
+
 ## Classes
 
 - [PathPatternComparator](classes/PathPatternComparator.md)

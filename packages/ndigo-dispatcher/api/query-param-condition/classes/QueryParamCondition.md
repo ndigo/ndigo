@@ -74,9 +74,13 @@ Parameter expressions that must all match.
 
 > **get** **content**(): [`QueryParamExpression`](QueryParamExpression.md)[]
 
+The condition's expressions.
+
 ##### Returns
 
 [`QueryParamExpression`](QueryParamExpression.md)[]
+
+The condition's constituent parts.
 
 #### Overrides
 
@@ -90,9 +94,13 @@ Parameter expressions that must all match.
 
 > **get** **infix**(): `string`
 
+The conjunction separator.
+
 ##### Returns
 
 `string`
+
+The separator used when rendering the parts.
 
 #### Overrides
 

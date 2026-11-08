@@ -1,4 +1,5 @@
 /**
+ * Abstract path-based handler mapping.
  */
 
 import { IllegalStateError } from '@ndigo/core';

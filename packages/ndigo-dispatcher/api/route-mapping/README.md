@@ -6,6 +6,8 @@
 
 # route-mapping
 
+Route mapping contracts.
+
 ## Type Aliases
 
 - [RouteMappingConfiguration](type-aliases/RouteMappingConfiguration.md)

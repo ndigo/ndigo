@@ -6,6 +6,8 @@
 
 # error-mapping
 
+Error-to-resolution mappings.
+
 ## Variables
 
 - [errorHandler](variables/errorHandler.md)

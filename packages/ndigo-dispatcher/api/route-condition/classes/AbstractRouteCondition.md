@@ -46,11 +46,15 @@ Contract for route matching conditions.
 
 > `abstract` **content**: `unknown`[]
 
+The condition's constituent parts.
+
 ***
 
 ### infix
 
 > `abstract` **infix**: `string`
+
+The separator used when rendering the parts.
 
 ## Accessors
 
@@ -72,7 +76,7 @@ Whether this condition contains no content.
 
 > `abstract` **compareTo**(`value`, `route?`): `number`
 
-Compare this condition with another condition.
+Compares this condition with another.
 
 #### Parameters
 
@@ -80,19 +84,19 @@ Compare this condition with another condition.
 
 `T`
 
-The condition to compare against.
+The condition to compare.
 
 ##### route?
 
 [`Route`](#)\<`Record`\<`string`, `string`\>\>
 
-The route used to break ties, if needed.
+Optional tie-breaking route.
 
 #### Returns
 
 `number`
 
-A comparison result compatible with `Array.prototype.sort`.
+The comparison result.
 
 #### Implementation of
 
@@ -130,7 +134,7 @@ The value to compare.
 
 > `abstract` **match**(`route`): `T` \| `null`
 
-Return the condition that matches a route, or `null` when no match exists.
+Matches the condition against a route.
 
 #### Parameters
 
@@ -138,13 +142,13 @@ Return the condition that matches a route, or `null` when no match exists.
 
 [`Route`](#)
 
-The current route.
+The route to match.
 
 #### Returns
 
 `T` \| `null`
 
-A matching condition instance or `null`.
+The matching condition, or `null`.
 
 #### Implementation of
 
@@ -156,13 +160,15 @@ A matching condition instance or `null`.
 
 > `abstract` **merge**(`other`): `T`
 
-Merge this condition with another condition of the same type.
+Merges this condition with another.
 
 #### Parameters
 
 ##### other
 
 `T`
+
+The condition to merge with.
 
 #### Returns
 

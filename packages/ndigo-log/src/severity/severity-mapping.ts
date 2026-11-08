@@ -1,4 +1,5 @@
 /**
+ * Severity-number mappings for supported schemes.
  */
 import { SeverityNumber } from '@opentelemetry/api-logs';
 

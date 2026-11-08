@@ -6,6 +6,8 @@
 
 # severity/severity
 
+Severity conversion and logger-level resolution.
+
 ## Variables
 
 - [LOGGER\_LEVEL\_NAMES](variables/LOGGER_LEVEL_NAMES.md)

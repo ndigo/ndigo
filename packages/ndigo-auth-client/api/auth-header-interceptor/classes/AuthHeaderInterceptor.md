@@ -31,6 +31,8 @@ await http.get('https://api.example.com/me');
 
 > **new AuthHeaderInterceptor**(`session`): `AuthHeaderInterceptor`
 
+Creates the interceptor over an auth session.
+
 #### Parameters
 
 ##### session

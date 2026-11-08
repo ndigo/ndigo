@@ -1,4 +1,5 @@
 /**
+ * Redis-backed named-cache manager.
  */
 import { resolveCacheName } from '@ndigo/cache';
 import { IllegalStateError } from '@ndigo/core';
@@ -26,6 +27,11 @@ export class RedisCacheManager implements CacheManager, AsyncCloseable {
     readonly #caches = new Map<string, RedisCache<unknown>>();
     #closed = false;
 
+    /**
+     * Creates a manager over a borrowed or owned Redis connection.
+     *
+     * @param options - Connection, namespace, and TTL defaults.
+     */
     constructor(options: RedisCacheManagerOptions) {
         // Validate policy even when no handle is acquired.
         this.#namespace = options.namespace;
@@ -46,15 +52,39 @@ export class RedisCacheManager implements CacheManager, AsyncCloseable {
         this.#connection = new RedisConnection(options);
     }
 
+    /**
+     * Connects the underlying Redis connection.
+     *
+     * @returns A promise that resolves once connected.
+     */
     connect(): Promise<void> {
         return this.#connection.connect();
     }
+    /** The most recent connection error, when one occurred. */
     get lastError(): Error | undefined {
         return this.#connection.lastError;
     }
 
+    /**
+     * Returns the named cache, auto-creating its handle.
+     *
+     * @param name - Non-empty cache name.
+     * @returns The Redis cache handle.
+     */
     getCache<V = unknown>(name: string): RedisCache<V>;
+    /**
+     * Returns the token-identified cache, auto-creating its handle.
+     *
+     * @param token - The cache store token.
+     * @returns The Redis cache handle.
+     */
     getCache<V = unknown>(token: ContextToken<Cache<V>>): RedisCache<V>;
+    /**
+     * Returns the cache for a name or token.
+     *
+     * @param nameOrToken - Cache name or typed store token.
+     * @returns The Redis cache handle.
+     */
     getCache<V = unknown>(nameOrToken: string | ContextToken<Cache<V>>): RedisCache<V> {
         if (this.#closed) throw new IllegalStateError('RedisCacheManager is closed');
         const name = resolveCacheName(nameOrToken, 'RedisCacheManager');
@@ -70,14 +100,37 @@ export class RedisCacheManager implements CacheManager, AsyncCloseable {
         return cache as RedisCache<V>;
     }
 
+    /**
+     * Returns whether this manager acquired a handle for the name.
+     *
+     * @param name - Non-empty cache name.
+     * @returns Whether the handle exists.
+     */
     hasCache(name: string): boolean;
+    /**
+     * Returns whether this manager acquired a handle for the token.
+     *
+     * @param token - The cache store token.
+     * @returns Whether the handle exists.
+     */
     hasCache(token: ContextToken<Cache<unknown>>): boolean;
+    /**
+     * Returns whether this manager acquired a handle for the name or token.
+     *
+     * @param nameOrToken - Cache name or typed store token.
+     * @returns Whether the handle exists.
+     */
     hasCache(nameOrToken: string | ContextToken<Cache<unknown>>): boolean {
         if (this.#closed) throw new IllegalStateError('RedisCacheManager is closed');
         const name = resolveCacheName(nameOrToken, 'RedisCacheManager');
         return this.#caches.has(name);
     }
 
+    /**
+     * Seals the manager and closes the underlying connection.
+     *
+     * @returns A promise that resolves once closed.
+     */
     close(): Promise<void> {
         this.#closed = true;
         return this.#connection.close();

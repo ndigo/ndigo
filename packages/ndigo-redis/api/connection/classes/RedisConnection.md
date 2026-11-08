@@ -21,11 +21,15 @@ through lastError and command rejections, never logged with credentials.
 
 > **new RedisConnection**(`options`): `RedisConnection`
 
+Creates a connection from a URL or an already-ready client.
+
 #### Parameters
 
 ##### options
 
 [`RedisConnectionOptions`](../type-aliases/RedisConnectionOptions.md)
+
+URL or borrowed client configuration.
 
 #### Returns
 
@@ -71,6 +75,8 @@ Rejects new work, drains tracked operations, then closes only owned clients.
 
 `Promise`\<`void`\>
 
+A promise that resolves once the connection is closed.
+
 #### Implementation of
 
 `AsyncCloseable.close`
@@ -86,6 +92,8 @@ Idempotent explicit connection; failed startup remains a rejected promise.
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once the client is ready.
 
 ***
 
@@ -109,6 +117,10 @@ new operations require readiness and never become cache misses on failure.
 
 (`client`) => `Promise`\<`T`\>
 
+The adapter operation to execute with the ready client.
+
 #### Returns
 
 `Promise`\<`T`\>
+
+The operation's result.

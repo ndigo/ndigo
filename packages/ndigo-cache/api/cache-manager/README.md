@@ -6,6 +6,8 @@
 
 # cache-manager
 
+Named-cache registry and its in-memory implementation.
+
 ## Classes
 
 - [MemoryCacheManager](classes/MemoryCacheManager.md)

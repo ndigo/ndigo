@@ -20,6 +20,8 @@ node — the Redis keys are the shared truth.
 
 > **new RedisLockDriver**(`options`): `RedisLockDriver`
 
+Creates a driver over the given connection and namespace.
+
 #### Parameters
 
 ##### options
@@ -50,13 +52,19 @@ Backend identifier for diagnostics.
 
 > **acquire**(`key`, `options`): `Promise`\<[`LockHandle`](#) \| `null`\>
 
+Acquires a lease for `key`, returning `null` when it is already held.
+
 #### Parameters
 
 ##### key
 
 `string`
 
+The lock key.
+
 ##### options
+
+The lease duration.
 
 ###### ttlMs
 
@@ -65,6 +73,8 @@ Backend identifier for diagnostics.
 #### Returns
 
 `Promise`\<[`LockHandle`](#) \| `null`\>
+
+The held handle, or `null` when another holder owns the lease.
 
 #### Implementation of
 
@@ -83,6 +93,8 @@ is untouched; idempotent.
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once the leases are released.
 
 #### Implementation of
 

@@ -23,3 +23,10 @@ The name of the logger.
 [`Logger`](../../logger/interfaces/Logger.md)
 
 A `Logger` instance.
+
+## Example
+
+```ts
+const logger = getLogger('catalog');
+logger.info('catalog loaded');
+```

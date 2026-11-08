@@ -14,9 +14,12 @@ Metadata for a route's authentication requirements.
 
 > **requiredRoles**: `string`[]
 
+Roles required to proceed.
+
 ***
 
 ### requiresAuth
 
 > **requiresAuth**: `boolean`
 
+Whether authentication is required.

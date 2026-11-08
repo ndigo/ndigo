@@ -6,6 +6,8 @@
 
 # index
 
+Public API of `@ndigo/redis` — Redis-backed capability drivers.
+
 ## References
 
 ### RedisClient

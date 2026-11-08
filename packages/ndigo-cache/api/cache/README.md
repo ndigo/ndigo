@@ -6,6 +6,8 @@
 
 # cache
 
+The cache contract, its miss sentinel, and the in-memory store.
+
 ## Classes
 
 - [CacheMiss](classes/CacheMiss.md)

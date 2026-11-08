@@ -1,4 +1,5 @@
 /**
+ * Severity conversion and logger-level resolution.
  */
 import { SeverityNumber } from '@opentelemetry/api-logs';
 import { Logger } from '../logger/logger.js';

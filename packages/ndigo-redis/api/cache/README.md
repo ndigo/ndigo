@@ -6,6 +6,8 @@
 
 # cache
 
+Redis cache subpath exports.
+
 ## References
 
 ### RedisCache

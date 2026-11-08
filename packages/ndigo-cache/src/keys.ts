@@ -1,4 +1,5 @@
 /**
+ * Stable serialization of cache keys.
  */
 
 /**

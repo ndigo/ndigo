@@ -6,6 +6,8 @@
 
 # logger/logger
 
+The logger contract and log attribute types.
+
 ## Interfaces
 
 - [Logger](interfaces/Logger.md)

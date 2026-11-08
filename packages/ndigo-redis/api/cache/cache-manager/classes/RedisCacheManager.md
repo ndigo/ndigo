@@ -22,11 +22,15 @@ borrowed and remains usable after manager shutdown.
 
 > **new RedisCacheManager**(`options`): `RedisCacheManager`
 
+Creates a manager over a borrowed or owned Redis connection.
+
 #### Parameters
 
 ##### options
 
 [`RedisCacheManagerOptions`](../type-aliases/RedisCacheManagerOptions.md)
+
+Connection, namespace, and TTL defaults.
 
 #### Returns
 
@@ -40,6 +44,8 @@ borrowed and remains usable after manager shutdown.
 
 > **get** **lastError**(): `Error` \| `undefined`
 
+The most recent connection error, when one occurred.
+
 ##### Returns
 
 `Error` \| `undefined`
@@ -50,9 +56,13 @@ borrowed and remains usable after manager shutdown.
 
 > **close**(): `Promise`\<`void`\>
 
+Seals the manager and closes the underlying connection.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once closed.
 
 #### Implementation of
 
@@ -64,20 +74,31 @@ borrowed and remains usable after manager shutdown.
 
 > **connect**(): `Promise`\<`void`\>
 
+Connects the underlying Redis connection.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once connected.
 
 ***
 
 ### getCache()
 
+Returns the cache for a name or token.
+
+#### Param
+
+**nameOrToken**
+
+Cache name or typed store token.
+
 #### Call Signature
 
 > **getCache**\<`V`\>(`name`): [`RedisCache`](../../cache/classes/RedisCache.md)\<`V`\>
 
-Returns the named cache, auto-creating it with the manager defaults
-when absent.
+Returns the named cache, auto-creating its handle.
 
 ##### Type Parameters
 
@@ -97,9 +118,7 @@ Non-empty cache name.
 
 [`RedisCache`](../../cache/classes/RedisCache.md)\<`V`\>
 
-##### Throws
-
-For a non-string or empty name.
+The Redis cache handle.
 
 ##### Implementation of
 
@@ -109,8 +128,7 @@ For a non-string or empty name.
 
 > **getCache**\<`V`\>(`token`): [`RedisCache`](../../cache/classes/RedisCache.md)\<`V`\>
 
-Returns the cache identified by a typed store token (AD-34 D7) —
-description-backed, same store as the string form.
+Returns the token-identified cache, auto-creating its handle.
 
 ##### Type Parameters
 
@@ -130,6 +148,8 @@ The cache store token.
 
 [`RedisCache`](../../cache/classes/RedisCache.md)\<`V`\>
 
+The Redis cache handle.
+
 ##### Implementation of
 
 `CacheManager.getCache`
@@ -138,11 +158,19 @@ The cache store token.
 
 ### hasCache()
 
+Returns whether this manager acquired a handle for the name or token.
+
+#### Param
+
+**nameOrToken**
+
+Cache name or typed store token.
+
 #### Call Signature
 
 > **hasCache**(`name`): `boolean`
 
-Returns whether the named cache exists (no creation).
+Returns whether this manager acquired a handle for the name.
 
 ##### Parameters
 
@@ -156,9 +184,7 @@ Non-empty cache name.
 
 `boolean`
 
-##### Throws
-
-For a non-string or empty name.
+Whether the handle exists.
 
 ##### Implementation of
 
@@ -168,7 +194,7 @@ For a non-string or empty name.
 
 > **hasCache**(`token`): `boolean`
 
-Returns whether the token-identified cache exists (no creation).
+Returns whether this manager acquired a handle for the token.
 
 ##### Parameters
 
@@ -182,9 +208,7 @@ The cache store token.
 
 `boolean`
 
-##### Throws
-
-For an empty token description.
+Whether the handle exists.
 
 ##### Implementation of
 

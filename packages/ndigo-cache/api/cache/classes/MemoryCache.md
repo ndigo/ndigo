@@ -35,6 +35,8 @@ In-memory cache with TTL expiry and bounded-size eviction.
 
 > **new MemoryCache**\<`V`\>(`options?`): `MemoryCache`\<`V`\>
 
+Creates a cache with the given options.
+
 #### Parameters
 
 ##### options?
@@ -64,6 +66,8 @@ Removes all entries.
 
 `Promise`\<`void`\>
 
+A promise that resolves once cleared.
+
 #### Implementation of
 
 [`Cache`](../interfaces/Cache.md).[`clear`](../interfaces/Cache.md#clear)
@@ -74,7 +78,7 @@ Removes all entries.
 
 > **delete**(`key`): `Promise`\<`boolean`\>
 
-Removes an entry. Returns whether the entry existed.
+Removes an entry.
 
 #### Parameters
 
@@ -82,9 +86,13 @@ Removes an entry. Returns whether the entry existed.
 
 `string`
 
+The cache key.
+
 #### Returns
 
 `Promise`\<`boolean`\>
+
+Whether the entry existed.
 
 #### Implementation of
 
@@ -96,9 +104,7 @@ Removes an entry. Returns whether the entry existed.
 
 > **get**(`key`): `Promise`\<[`CacheMiss`](CacheMiss.md) \| `V`\>
 
-Returns the live cached value or the [CacheMiss](CacheMiss.md) sentinel.
-Expiry and recency handling follow the backend's documented policy;
-MemoryCache removes expired entries lazily and promotes LRU hits.
+Returns the live value or the miss sentinel, promoting LRU hits.
 
 #### Parameters
 
@@ -106,9 +112,13 @@ MemoryCache removes expired entries lazily and promotes LRU hits.
 
 `string`
 
+The cache key.
+
 #### Returns
 
 `Promise`\<[`CacheMiss`](CacheMiss.md) \| `V`\>
+
+The cached value, or the miss sentinel.
 
 #### Implementation of
 
@@ -120,8 +130,7 @@ MemoryCache removes expired entries lazily and promotes LRU hits.
 
 > **has**(`key`): `Promise`\<`boolean`\>
 
-Returns whether the key holds a live entry. Does not update recency
-in MemoryCache; remote expiry follows the backend's clock.
+Whether the key holds a live entry.
 
 #### Parameters
 
@@ -129,9 +138,13 @@ in MemoryCache; remote expiry follows the backend's clock.
 
 `string`
 
+The cache key.
+
 #### Returns
 
 `Promise`\<`boolean`\>
+
+Whether a live entry exists.
 
 #### Implementation of
 
@@ -143,8 +156,7 @@ in MemoryCache; remote expiry follows the backend's clock.
 
 > **set**(`key`, `value`, `ttl?`): `Promise`\<`void`\>
 
-Stores a value, optionally overriding the backend default TTL.
-Capacity and eviction policy are backend-specific configuration.
+Stores a value with an optional TTL override.
 
 #### Parameters
 
@@ -152,22 +164,25 @@ Capacity and eviction policy are backend-specific configuration.
 
 `string`
 
+The cache key.
+
 ##### value
 
 `V`
+
+The value to store.
 
 ##### ttl?
 
 `number`
 
+Optional entry lifetime in milliseconds.
+
 #### Returns
 
 `Promise`\<`void`\>
 
-#### Throws
-
-When the value is the [CacheMiss](CacheMiss.md) sentinel or
-  the TTL is not a positive finite number of milliseconds.
+A promise that resolves once the value is stored.
 
 #### Implementation of
 
@@ -184,6 +199,8 @@ Entry count; expiry is lazy.
 #### Returns
 
 `Promise`\<`number`\>
+
+The number of stored entries.
 
 #### Implementation of
 

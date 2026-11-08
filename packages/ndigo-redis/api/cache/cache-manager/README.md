@@ -6,6 +6,8 @@
 
 # cache/cache-manager
 
+Redis-backed named-cache manager.
+
 ## Classes
 
 - [RedisCacheManager](classes/RedisCacheManager.md)

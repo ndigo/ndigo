@@ -20,3 +20,4 @@ which breaks if a bundle duplicates the class).
 
 > `readonly` `static` **INSTANCE**: `CacheMiss`
 
+The sole miss sentinel instance.

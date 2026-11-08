@@ -32,8 +32,7 @@ flood cannot grow the map without limit.
 
 > `readonly` **kind**: `"in-memory"` = `'in-memory'`
 
-Backend identifier for observability/diagnostics
-(e.g. `'in-memory'`, `'redis'`).
+Store identifier (`'in-memory'`).
 
 #### Implementation of
 
@@ -45,7 +44,7 @@ Backend identifier for observability/diagnostics
 
 > **delete**(`token`): `Promise`\<`void`\>
 
-Removes the binding for `token` (rotation consumes the presented token).
+Removes the binding for `token`.
 
 #### Parameters
 
@@ -53,9 +52,13 @@ Removes the binding for `token` (rotation consumes the presented token).
 
 `string`
 
+The refresh token.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once removed.
 
 #### Implementation of
 
@@ -67,7 +70,7 @@ Removes the binding for `token` (rotation consumes the presented token).
 
 > **get**(`token`): `Promise`\<[`RefreshTokenBinding`](../interfaces/RefreshTokenBinding.md) \| `null`\>
 
-Returns the binding for `token`, or `null` when unknown or consumed.
+Returns the binding for `token`, or `null` when unknown.
 
 #### Parameters
 
@@ -75,9 +78,13 @@ Returns the binding for `token`, or `null` when unknown or consumed.
 
 `string`
 
+The refresh token.
+
 #### Returns
 
 `Promise`\<[`RefreshTokenBinding`](../interfaces/RefreshTokenBinding.md) \| `null`\>
+
+The recorded binding, or `null`.
 
 #### Implementation of
 
@@ -89,7 +96,7 @@ Returns the binding for `token`, or `null` when unknown or consumed.
 
 > **set**(`token`, `binding`): `Promise`\<`void`\>
 
-Stores the binding for `token`, replacing any existing entry.
+Stores the binding for `token`, evicting the oldest at the cap.
 
 #### Parameters
 
@@ -97,13 +104,19 @@ Stores the binding for `token`, replacing any existing entry.
 
 `string`
 
+The refresh token.
+
 ##### binding
 
 [`RefreshTokenBinding`](../interfaces/RefreshTokenBinding.md)
 
+The subject binding to record.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once stored.
 
 #### Implementation of
 

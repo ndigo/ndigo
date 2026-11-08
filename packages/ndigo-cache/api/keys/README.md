@@ -6,6 +6,8 @@
 
 # keys
 
+Stable serialization of cache keys.
+
 ## Functions
 
 - [serializeCacheKey](functions/serializeCacheKey.md)

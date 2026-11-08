@@ -18,6 +18,8 @@ state before allowing navigation to proceed.
 
 > **new ClientAuthGuard**(`authClient`, `loginRedirect?`, `forbiddenRedirect?`): `ClientAuthGuard`
 
+Creates the guard with the given redirects.
+
 #### Parameters
 
 ##### authClient

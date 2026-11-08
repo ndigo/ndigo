@@ -6,6 +6,8 @@
 
 # connection
 
+Owned or borrowed node-redis connection with tracked operations.
+
 ## Classes
 
 - [RedisConnection](classes/RedisConnection.md)

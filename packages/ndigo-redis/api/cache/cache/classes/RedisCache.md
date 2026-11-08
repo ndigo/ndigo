@@ -27,15 +27,21 @@ keyspace-wide KEYS command, cluster guarantee or per-cache eviction simulation.
 
 > **new RedisCache**\<`V`\>(`connection`, `options`): `RedisCache`\<`V`\>
 
+Creates a cache handle over the given connection and namespace.
+
 #### Parameters
 
 ##### connection
 
 [`RedisConnection`](../../../connection/classes/RedisConnection.md)
 
+The Redis connection to run commands on.
+
 ##### options
 
 [`RedisCacheOptions`](../interfaces/RedisCacheOptions.md)
+
+Namespace, cache name, and TTL defaults.
 
 #### Returns
 
@@ -53,6 +59,8 @@ Bounded DEL batches; Redis SCAN COUNT is a hint, not a hard page limit.
 
 `Promise`\<`void`\>
 
+A promise that resolves once the namespace is cleared.
+
 #### Implementation of
 
 `Cache.clear`
@@ -63,7 +71,7 @@ Bounded DEL batches; Redis SCAN COUNT is a hint, not a hard page limit.
 
 > **delete**(`key`): `Promise`\<`boolean`\>
 
-Removes an entry. Returns whether the entry existed.
+Removes an entry.
 
 #### Parameters
 
@@ -71,9 +79,13 @@ Removes an entry. Returns whether the entry existed.
 
 `string`
 
+The cache key.
+
 #### Returns
 
 `Promise`\<`boolean`\>
+
+Whether the entry existed.
 
 #### Implementation of
 
@@ -85,9 +97,7 @@ Removes an entry. Returns whether the entry existed.
 
 > **get**(`key`): `Promise`\<`V` \| [`CacheMiss`](#)\>
 
-Returns the live cached value or the [CacheMiss](#) sentinel.
-Expiry and recency handling follow the backend's documented policy;
-MemoryCache removes expired entries lazily and promotes LRU hits.
+Returns the live cached value or the miss sentinel.
 
 #### Parameters
 
@@ -95,9 +105,13 @@ MemoryCache removes expired entries lazily and promotes LRU hits.
 
 `string`
 
+The cache key.
+
 #### Returns
 
 `Promise`\<`V` \| [`CacheMiss`](#)\>
+
+The cached value, or the miss sentinel.
 
 #### Implementation of
 
@@ -109,8 +123,7 @@ MemoryCache removes expired entries lazily and promotes LRU hits.
 
 > **has**(`key`): `Promise`\<`boolean`\>
 
-Returns whether the key holds a live entry. Does not update recency
-in MemoryCache; remote expiry follows the backend's clock.
+Whether the key holds a live entry.
 
 #### Parameters
 
@@ -118,9 +131,13 @@ in MemoryCache; remote expiry follows the backend's clock.
 
 `string`
 
+The cache key.
+
 #### Returns
 
 `Promise`\<`boolean`\>
+
+Whether a live entry exists.
 
 #### Implementation of
 
@@ -132,8 +149,7 @@ in MemoryCache; remote expiry follows the backend's clock.
 
 > **set**(`key`, `value`, `ttl?`): `Promise`\<`void`\>
 
-Stores a value, optionally overriding the backend default TTL.
-Capacity and eviction policy are backend-specific configuration.
+Stores a value with an optional TTL override.
 
 #### Parameters
 
@@ -141,22 +157,25 @@ Capacity and eviction policy are backend-specific configuration.
 
 `string`
 
+The cache key.
+
 ##### value
 
 `V`
+
+The value to store.
 
 ##### ttl?
 
 `number`
 
+Optional entry lifetime in milliseconds.
+
 #### Returns
 
 `Promise`\<`void`\>
 
-#### Throws
-
-When the value is the [CacheMiss](#) sentinel or
-  the TTL is not a positive finite number of milliseconds.
+A promise that resolves once stored.
 
 #### Implementation of
 
@@ -173,6 +192,8 @@ Deduplicates SCAN results and checks server-side expiry; not an atomic snapshot.
 #### Returns
 
 `Promise`\<`number`\>
+
+The number of live entries in this namespace.
 
 #### Implementation of
 

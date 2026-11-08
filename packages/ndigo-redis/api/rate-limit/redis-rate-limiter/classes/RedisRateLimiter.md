@@ -21,6 +21,8 @@ Redis keys are the shared truth.
 
 > **new RedisRateLimiter**(`options`): `RedisRateLimiter`
 
+Creates a limiter over the given connection and namespace.
+
 #### Parameters
 
 ##### options
@@ -58,6 +60,8 @@ borrowed connection is untouched; idempotent.
 
 `Promise`\<`void`\>
 
+A promise that resolves once sealed.
+
 #### Implementation of
 
 `AsyncCloseable.close`
@@ -68,10 +72,7 @@ borrowed connection is untouched; idempotent.
 
 > **consume**(`key`, `policy`): `Promise`\<[`RateLimitResult`](#)\>
 
-Accounts one request for `key` under `policy`. Implementations MUST
-fail loud (`RangeError`) on malformed policies and MUST be safe for
-concurrent use. The async signature is deliberate (AD-39): a shared
-backend resolves its counter over a network hop.
+Accounts one request for `key` under `policy`.
 
 #### Parameters
 
@@ -79,13 +80,19 @@ backend resolves its counter over a network hop.
 
 `string`
 
+The client key whose budget is consumed.
+
 ##### policy
 
 [`RateLimitPolicy`](#)
 
+The window and limit to enforce.
+
 #### Returns
 
 `Promise`\<[`RateLimitResult`](#)\>
+
+Whether the request is allowed and, when denied, the wait before retry.
 
 #### Implementation of
 

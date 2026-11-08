@@ -6,6 +6,8 @@
 
 # logger/logger-factory
 
+Logger factory, threshold configuration, and backend selection.
+
 ## Classes
 
 - [LoggerFactory](classes/LoggerFactory.md)

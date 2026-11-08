@@ -1,4 +1,5 @@
 /**
+ * HTTP interceptor that injects bearer tokens from the auth session.
  */
 import { HTTP, RequestAwareHTTPInterceptor } from '@ndigo/http';
 import { AuthSession } from '@ndigo/auth-core';
@@ -22,6 +23,8 @@ export class AuthHeaderInterceptor implements RequestAwareHTTPInterceptor {
     readonly #session: AuthSession;
 
     /**
+     * Creates the interceptor over an auth session.
+     *
      * @param session - The session providing the current auth token.
      */
     constructor(session: AuthSession) {

@@ -6,6 +6,8 @@
 
 # logger/open-telemetry-logger
 
+OpenTelemetry-backed logger.
+
 ## Classes
 
 - [OpenTelemetryLogger](classes/OpenTelemetryLogger.md)

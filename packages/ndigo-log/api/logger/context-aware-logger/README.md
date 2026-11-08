@@ -6,6 +6,8 @@
 
 # logger/context-aware-logger
 
+Logger decorator that injects active trace/span attributes.
+
 ## Classes
 
 - [ContextAwareLogger](classes/ContextAwareLogger.md)

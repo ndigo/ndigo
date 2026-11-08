@@ -37,7 +37,7 @@ Implementations of this interface handle the protocol-specific logic
 
 > `readonly` **id**: `"oidc"` = `'oidc'`
 
-The unique identifier for this adapter (e.g., 'oidc', 'saml').
+Adapter identifier (`'oidc'`).
 
 #### Implementation of
 
@@ -49,7 +49,8 @@ The unique identifier for this adapter (e.g., 'oidc', 'saml').
 
 > **authenticate**(`_credentials`): `Promise`\<[`AuthResult`](../../index/interfaces/AuthResult.md)\>
 
-Performs the primary authentication flow.
+Rejects direct credential authentication; OIDC uses the authorization
+code flow instead.
 
 #### Parameters
 
@@ -57,11 +58,17 @@ Performs the primary authentication flow.
 
 `unknown`
 
+Ignored; direct credentials are unsupported.
+
 #### Returns
 
 `Promise`\<[`AuthResult`](../../index/interfaces/AuthResult.md)\>
 
-An [AuthResult](../../index/interfaces/AuthResult.md) containing the principal and session token.
+Never — this method always throws.
+
+#### Throws
+
+Always, directing callers to the authorization-code flow.
 
 #### Implementation of
 
@@ -81,6 +88,8 @@ authorization-endpoint URL to redirect the user to.
 #### Returns
 
 `Promise`\<[`AuthorizationRequest`](../interfaces/AuthorizationRequest.md)\>
+
+The authorization URL and the generated state/nonce/PKCE values.
 
 ***
 
@@ -106,13 +115,23 @@ survive redirects, restarts, or multiple instances.
 
 `string`
 
+The authorization code returned by the provider.
+
 ##### state
 
 `string`
 
+The state parameter returned alongside the code.
+
 #### Returns
 
 `Promise`\<[`OIDCResult`](../interfaces/OIDCResult.md)\>
+
+The verified principal, tokens, and expiry.
+
+#### Throws
+
+When the state is unknown/expired or token verification fails.
 
 ***
 
@@ -130,13 +149,19 @@ is advertised.
 
 `string`
 
+Optional ID token hint for the provider.
+
 ##### postLogoutRedirectUri?
 
 `string`
 
+Optional URL to return to after logout.
+
 #### Returns
 
 `Promise`\<`string` \| `null`\>
+
+The end-session URL, or `null` when unavailable.
 
 ***
 
@@ -144,7 +169,8 @@ is advertised.
 
 > **logout**(`_token`): `Promise`\<`void`\>
 
-Terminates the session associated with the given token.
+No-op logout: OIDC logout requires a redirect to the provider's
+end-session endpoint (see [OIDCAdapter.getEndSessionUrl](#getendsessionurl)).
 
 #### Parameters
 
@@ -152,9 +178,13 @@ Terminates the session associated with the given token.
 
 `string`
 
+Ignored; the provider owns the browser session.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves immediately.
 
 #### Implementation of
 
@@ -199,6 +229,8 @@ The refresh token captured from the exchange.
 
 `Promise`\<[`OIDCResult`](../interfaces/OIDCResult.md)\>
 
+The refreshed principal, tokens, and expiry.
+
 #### Implementation of
 
 [`AuthAdapter`](../../index/interfaces/AuthAdapter.md).[`refresh`](../../index/interfaces/AuthAdapter.md#refresh)
@@ -226,6 +258,8 @@ The ID token to validate.
 #### Returns
 
 `Promise`\<[`Principal`](../../index/interfaces/Principal.md) \| `null`\>
+
+The verified principal, or `null` on validation failure.
 
 #### Implementation of
 

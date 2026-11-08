@@ -6,6 +6,8 @@
 
 # client-guard
 
+Router guard enforcing `@authenticated` / `@authorized` metadata.
+
 ## Classes
 
 - [ClientAuthGuard](classes/ClientAuthGuard.md)

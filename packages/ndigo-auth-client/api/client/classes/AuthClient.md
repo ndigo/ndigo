@@ -30,6 +30,8 @@ and coordinating with authentication adapters for client-side flows
 
 > **get** **isAuthenticated**(): `boolean`
 
+Whether a principal is currently authenticated.
+
 ##### Returns
 
 `boolean`
@@ -42,6 +44,8 @@ and coordinating with authentication adapters for client-side flows
 
 > **get** **principal**(): [`Principal`](../../index/interfaces/Principal.md) \| `null`
 
+The authenticated principal, or `null`.
+
 ##### Returns
 
 [`Principal`](../../index/interfaces/Principal.md) \| `null`
@@ -53,6 +57,8 @@ and coordinating with authentication adapters for client-side flows
 #### Get Signature
 
 > **get** **state**(): [`AuthenticationState`](../../index/interfaces/AuthenticationState.md)
+
+A snapshot of the current authentication state.
 
 ##### Returns
 

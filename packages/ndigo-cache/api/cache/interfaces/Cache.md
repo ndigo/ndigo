@@ -28,6 +28,8 @@ Removes all entries.
 
 `Promise`\<`void`\>
 
+A promise that resolves once cleared.
+
 ***
 
 ### delete()
@@ -42,9 +44,13 @@ Removes an entry. Returns whether the entry existed.
 
 `string`
 
+The cache key.
+
 #### Returns
 
 `Promise`\<`boolean`\>
+
+Whether the entry existed.
 
 ***
 
@@ -62,9 +68,13 @@ MemoryCache removes expired entries lazily and promotes LRU hits.
 
 `string`
 
+The cache key.
+
 #### Returns
 
 `Promise`\<`V` \| [`CacheMiss`](../classes/CacheMiss.md)\>
+
+The cached value, or the miss sentinel.
 
 ***
 
@@ -81,9 +91,13 @@ in MemoryCache; remote expiry follows the backend's clock.
 
 `string`
 
+The cache key.
+
 #### Returns
 
 `Promise`\<`boolean`\>
+
+Whether a live entry exists.
 
 ***
 
@@ -100,17 +114,25 @@ Capacity and eviction policy are backend-specific configuration.
 
 `string`
 
+The cache key.
+
 ##### value
 
 `V`
+
+The value to store.
 
 ##### ttl?
 
 `number`
 
+Optional entry lifetime in milliseconds.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once the value is stored.
 
 #### Throws
 
@@ -128,3 +150,5 @@ Entry count under the backend's documented expiry/concurrency policy.
 #### Returns
 
 `Promise`\<`number`\>
+
+The entry count.

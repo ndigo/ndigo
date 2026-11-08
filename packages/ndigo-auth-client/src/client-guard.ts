@@ -1,4 +1,5 @@
 /**
+ * Router guard enforcing `@authenticated` / `@authorized` metadata.
  */
 import { AUTH_REQUIRED_KEY, AUTH_ROLES_KEY } from '@ndigo/auth-core';
 import { type AuthClient } from './client';
@@ -7,7 +8,9 @@ import { type AuthClient } from './client';
  * Metadata for a route's authentication requirements.
  */
 export interface AuthRouteMetadata {
+    /** Whether authentication is required. */
     requiresAuth: boolean;
+    /** Roles required to proceed. */
     requiredRoles: string[];
 }
 
@@ -52,6 +55,8 @@ export class ClientAuthGuard {
     #forbiddenRedirect: string;
 
     /**
+     * Creates the guard with the given redirects.
+     *
      * @param authClient - The client-side authentication manager.
      * @param loginRedirect - The route to redirect to if unauthenticated.
      * @param forbiddenRedirect - The route to redirect to if unauthorized.

@@ -72,6 +72,8 @@ Unsubscribe all listeners, then close only the dedicated owned subscriber.
 
 `Promise`\<`void`\>
 
+A promise that resolves once the fan-out is closed.
+
 #### Implementation of
 
 `AsyncCloseable.close`
@@ -88,11 +90,15 @@ Explicit readiness; construction never opens sockets.
 
 `Promise`\<`void`\>
 
+A promise that resolves once publisher and subscriber are ready.
+
 ***
 
 ### publish()
 
 > **publish**(`scope`, `message`): `Promise`\<`void`\>
+
+Publishes one message after backend acceptance.
 
 #### Parameters
 
@@ -100,13 +106,19 @@ Explicit readiness; construction never opens sockets.
 
 [`SocketFanoutScope`](#)
 
+The fan-out scope to publish to.
+
 ##### message
 
 [`SocketFanoutMessage`](#)
 
+The message to publish.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves after Redis accepts the publish.
 
 #### Implementation of
 
@@ -118,19 +130,27 @@ Explicit readiness; construction never opens sockets.
 
 > **subscribe**(`scope`, `receive`): `Promise`\<() => `Promise`\<`void`\>\>
 
+Subscribes to a scope's messages; completion signals readiness.
+
 #### Parameters
 
 ##### scope
 
 [`SocketFanoutScope`](#)
 
+The fan-out scope to subscribe to.
+
 ##### receive
 
 (`message`) => `void`
 
+Invoked for each message from another origin.
+
 #### Returns
 
 `Promise`\<() => `Promise`\<`void`\>\>
+
+An unsubscribe function.
 
 #### Implementation of
 

@@ -1,4 +1,5 @@
 /**
+ * Logger factory, threshold configuration, and backend selection.
  */
 import { Exception } from '@opentelemetry/api';
 import { Logger, LogAttributes } from './logger.js';
@@ -291,8 +292,15 @@ export class LoggerFactory {
 
 /**
  * A convenience function to get a `Logger` instance from the `LoggerFactory`.
+ *
  * @param name - The name of the logger.
  * @returns A `Logger` instance.
+ *
+ * @example
+ * ```ts
+ * const logger = getLogger('catalog');
+ * logger.info('catalog loaded');
+ * ```
  */
 export function getLogger(name: string): Logger {
     return LoggerFactory.getLogger(name);

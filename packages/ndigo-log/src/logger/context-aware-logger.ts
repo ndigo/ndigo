@@ -1,4 +1,5 @@
 /**
+ * Logger decorator that injects active trace/span attributes.
  */
 import { context, trace, Exception } from '@opentelemetry/api';
 import { SeverityNumber } from '@opentelemetry/api-logs';

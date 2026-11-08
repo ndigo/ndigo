@@ -43,9 +43,13 @@ Removes the entry for `state`; unknown keys are a no-op.
 
 `string`
 
+The authorization-state value.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once removed.
 
 ***
 
@@ -61,9 +65,13 @@ Returns the pending request for `state`, or `null` when unknown.
 
 `string`
 
+The authorization-state value.
+
 #### Returns
 
 `Promise`\<[`PendingAuthorization`](PendingAuthorization.md) \| `null`\>
+
+The pending authorization request, or `null`.
 
 ***
 
@@ -79,10 +87,16 @@ Stores `pending` under `state`, replacing any existing entry.
 
 `string`
 
+The authorization-state value.
+
 ##### pending
 
 [`PendingAuthorization`](PendingAuthorization.md)
 
+The pending request to store.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once stored.

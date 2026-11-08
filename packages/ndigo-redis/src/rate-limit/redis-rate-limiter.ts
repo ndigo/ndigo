@@ -73,6 +73,8 @@ export class RedisRateLimiter implements RateLimiter, AsyncCloseable {
     #closed = false;
 
     /**
+     * Creates a limiter over the given connection and namespace.
+     *
      * @param options - Borrowed connection, namespace, and failure posture.
      */
     constructor(options: RedisRateLimiterOptions) {
@@ -90,6 +92,13 @@ export class RedisRateLimiter implements RateLimiter, AsyncCloseable {
         this.#onError = options.onError ?? 'fail-closed';
     }
 
+    /**
+     * Accounts one request for `key` under `policy`.
+     *
+     * @param key - The client key whose budget is consumed.
+     * @param policy - The window and limit to enforce.
+     * @returns Whether the request is allowed and, when denied, the wait before retry.
+     */
     async consume(key: string, policy: RateLimitPolicy): Promise<RateLimitResult> {
         validateRateLimitPolicy(policy);
         this.#assertOpen();
@@ -135,6 +144,8 @@ export class RedisRateLimiter implements RateLimiter, AsyncCloseable {
     /**
      * Seals this driver; a closed driver accepts no operations. The
      * borrowed connection is untouched; idempotent.
+     *
+     * @returns A promise that resolves once sealed.
      */
     close(): Promise<void> {
         this.#closed = true;

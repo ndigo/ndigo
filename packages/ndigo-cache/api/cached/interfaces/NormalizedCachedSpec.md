@@ -16,11 +16,15 @@ Canonical `@cached` specification: validated by
 
 > **cacheName**: `string`
 
+The resolved cache name.
+
 ***
 
 ### key
 
 > **key**: `string` \| ((...`args`) => `string`) \| `undefined`
+
+The resolved key strategy, when one was supplied.
 
 ***
 
@@ -28,3 +32,4 @@ Canonical `@cached` specification: validated by
 
 > **ttl**: `number` \| `undefined`
 
+The entry lifetime in milliseconds, when set.

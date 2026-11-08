@@ -1,4 +1,5 @@
 /**
+ * Redis-backed cache store.
  */
 import { CacheMiss, type Cache } from '@ndigo/cache';
 import { RedisConnection } from '../connection';
@@ -32,6 +33,12 @@ export class RedisCache<V = unknown> implements Cache<V> {
     readonly #prefix: string;
     readonly #defaultTtl: number | undefined;
 
+    /**
+     * Creates a cache handle over the given connection and namespace.
+     *
+     * @param connection - The Redis connection to run commands on.
+     * @param options - Namespace, cache name, and TTL defaults.
+     */
     constructor(connection: RedisConnection, options: RedisCacheOptions) {
         if (
             typeof options.namespace !== 'string' ||
@@ -61,6 +68,12 @@ export class RedisCache<V = unknown> implements Cache<V> {
         return Math.ceil(ttl);
     }
 
+    /**
+     * Returns the live cached value or the miss sentinel.
+     *
+     * @param key - The cache key.
+     * @returns The cached value, or the miss sentinel.
+     */
     async get(key: string): Promise<V | CacheMiss> {
         const encodedKey = this.#key(key);
         return this.#connection.run(async (client) => {
@@ -69,6 +82,14 @@ export class RedisCache<V = unknown> implements Cache<V> {
         });
     }
 
+    /**
+     * Stores a value with an optional TTL override.
+     *
+     * @param key - The cache key.
+     * @param value - The value to store.
+     * @param ttl - Optional entry lifetime in milliseconds.
+     * @returns A promise that resolves once stored.
+     */
     async set(key: string, value: V, ttl?: number): Promise<void> {
         const encodedKey = this.#key(key);
         const payload = encode(value);
@@ -82,17 +103,33 @@ export class RedisCache<V = unknown> implements Cache<V> {
         });
     }
 
+    /**
+     * Whether the key holds a live entry.
+     *
+     * @param key - The cache key.
+     * @returns Whether a live entry exists.
+     */
     async has(key: string): Promise<boolean> {
         // Decode as get does: corruption is a failure, not an apparent valid hit.
         return (await this.get(key)) !== CacheMiss.INSTANCE;
     }
 
+    /**
+     * Removes an entry.
+     *
+     * @param key - The cache key.
+     * @returns Whether the entry existed.
+     */
     async delete(key: string): Promise<boolean> {
         const encodedKey = this.#key(key);
         return this.#connection.run(async (client) => (await client.del(encodedKey)) !== 0);
     }
 
-    /** Bounded DEL batches; Redis SCAN COUNT is a hint, not a hard page limit. */
+    /**
+     * Bounded DEL batches; Redis SCAN COUNT is a hint, not a hard page limit.
+     *
+     * @returns A promise that resolves once the namespace is cleared.
+     */
     async clear(): Promise<void> {
         await this.#connection.run(async (client) => {
             for await (const keys of client.scanIterator({ MATCH: this.#prefix + '*', COUNT: 128 })) {
@@ -104,7 +141,11 @@ export class RedisCache<V = unknown> implements Cache<V> {
         });
     }
 
-    /** Deduplicates SCAN results and checks server-side expiry; not an atomic snapshot. */
+    /**
+     * Deduplicates SCAN results and checks server-side expiry; not an atomic snapshot.
+     *
+     * @returns The number of live entries in this namespace.
+     */
     async size(): Promise<number> {
         return this.#connection.run(async (client) => {
             const seen = new Set<string>();

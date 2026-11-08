@@ -1,4 +1,5 @@
 /**
+ * The `@cached` decorator: spec resolution and method memoization.
  */
 import '@tsmetadata/polyfill';
 import { isDevMode } from '@ndigo/context';
@@ -59,8 +60,11 @@ export interface CachedSpec {
  * `Symbol.metadata` for introspection.
  */
 export interface NormalizedCachedSpec {
+    /** The resolved cache name. */
     cacheName: string;
+    /** The resolved key strategy, when one was supplied. */
     key: string | ((...args: unknown[]) => string) | undefined;
+    /** The entry lifetime in milliseconds, when set. */
     ttl: number | undefined;
 }
 
@@ -110,6 +114,16 @@ export function resolveCachedSpec(spec: CachedSpec = {}): NormalizedCachedSpec {
  *
  * @param spec - Cache selection/key/TTL (see {@link CachedSpec}).
  * @returns The class method decorator.
+ *
+ * @example
+ * ```ts
+ * class CatalogService {
+ *     @cached({ cacheName: 'catalog', ttl: 30_000 })
+ *     async load(id: string): Promise<unknown> {
+ *         return id;
+ *     }
+ * }
+ * ```
  */
 export function cached(spec: CachedSpec = {}) {
     const normalized = resolveCachedSpec(spec);

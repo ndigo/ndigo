@@ -1,10 +1,13 @@
 # AD-69: Component integration contract — adopt the Web Component ecosystem; the framework owns the bridge
 
 **Date:** 2026-10-06
-**Status:** Accepted — decision recorded; the two framework-side bridge halves
+**Status:** Superseded in part by [AD-95](2026-11-08_AD95_NDIGO_UI.md) — D-1
+(do not build a general component library) and D-5 (in-house only if every
+candidate fails) are replaced by an owned, curated design system. **D-2** (the
+vetting checklist), **D-3** (DSD/FACE bridge), and **D-6** (no dependency by
+default) remain in force. The two framework-side bridge halves
 (DSD first-paint plumbing, `AsFormAssociated` bridge) landed with this record's
-spike. **No UI library is added to the workspace by this decision** — selecting
-one is a separate decision (revisit trigger below).
+spike.
 
 ## Context
 

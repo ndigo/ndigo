@@ -1,6 +1,6 @@
 # ndigo Decision Records (ADRs)
 
-Architecture Decision Records for the ndigo monorepo — **AD-01..AD-93**,
+Architecture Decision Records for the ndigo monorepo — **AD-01..AD-95**,
 contiguous. Every record captures a decision with its context, the evidence
 (plan, code, commits), the decided shape, consequences, and a revisit trigger.
 
@@ -94,9 +94,9 @@ contiguous. Every record captures a decision with its context, the evidence
 | **AD-66** | 2026-10-05    | Accepted                     | [TOON support as an opt-in authoring format — token + decode-only config files, JSON default intact](2026-10-05_AD66_TOON_OPTIN_SUPPORT.md)                                                                                    |
 | **AD-67** | 2026-10-06    | Accepted                     | [Logging core extraction — `@ndigo/log` leaf package, telemetry re-exports, single instrumentation set](2026-10-06_AD67_LOG_LEAF_PACKAGE.md)                                                                                   |
 | **AD-68** | 2026-10-06    | Accepted                     | [User-wide revocation — explicit session deletion, account version epoch for JWTs](2026-10-06_AD68_USER_WIDE_REVOCATION.md)                                                                                                    |
-| **AD-69** | 2026-10-06    | Accepted                     | [Component integration contract — adopt the Web Component ecosystem; framework owns the DSD/FACE bridge](2026-10-06_AD69_COMPONENT_INTEGRATION_CONTRACT.md)                                                                    |
+| **AD-69** | 2026-10-06    | Superseded in part           | [Component integration contract — adopt the Web Component ecosystem; framework owns the DSD/FACE bridge](2026-10-06_AD69_COMPONENT_INTEGRATION_CONTRACT.md)                                                                    |
 | **AD-70** | 2026-10-06    | Accepted                     | [Editor tooling — introspection first (`@ndigo/inspect` manifest, config schema, lint rules); no language server yet](2026-10-06_AD70_EDITOR_TOOLING_INTROSPECTION_FIRST.md)                                                   |
-| **AD-71** | 2026-10-07    | Accepted                     | [Component library selection — Web Awesome for the reference integration](2026-10-07_AD71_COMPONENT_LIBRARY_SELECTION.md)                                                                                                      |
+| **AD-71** | 2026-10-07    | Superseded                   | [Component library selection — Web Awesome for the reference integration](2026-10-07_AD71_COMPONENT_LIBRARY_SELECTION.md)                                                                                                      |
 | **AD-72** | 2026-10-07    | Accepted                     | [Durable jobs and the transactional outbox — `@ndigo/jobs`](2026-10-07_AD72_JOBS_AND_OUTBOX.md)                                                                                                                                |
 | **AD-73** | 2026-10-07    | Accepted                     | [Distributed locks — `@ndigo/locks` (Redis fencing + `@scheduled({lock})`)](2026-10-07_AD73_DISTRIBUTED_LOCKS.md)                                                                                                              |
 | **AD-74** | 2026-10-07    | Accepted                     | [Clustering / worker offload — `@ndigo/cluster` (process supervisor, signal relay, bounded restarts)](2026-10-07_AD74_CLUSTERING.md)                                                                                           |
@@ -120,3 +120,4 @@ contiguous. Every record captures a decision with its context, the evidence
 | **AD-92** | 2026-11-05    | Accepted                     | [`create-ndigo-app` — standalone scaffold ships at 1.0](2026-11-05_AD92_CREATE_NDIGO_APP_AT_1_0.md)                                                                                                                            |
 | **AD-93** | 2026-11-05    | Accepted                     | [`packages/` stays consumer-only — the generator collection moves to `tools/`](2026-11-05_AD93_INTERNALIZE_GENERATORS.md)                                                                                                      |
 | **AD-94** | 2026-11-06    | Accepted                     | [Error lineage — `IllegalStateError` for closed-state guards, `FrameworkError`/`ApplicationError` as the package bases](2026-11-06_AD94_ERROR_LINEAGE.md)                                                                      |
+| **AD-95** | 2026-11-08    | Accepted                     | [ndigo-ui — an owned design system distributed as a code registry, superseding AD-69 D-1/D-5 and AD-71](2026-11-08_AD95_NDIGO_UI.md)                                                                                           |

@@ -1,10 +1,10 @@
 # AD-71: Component library selection — Web Awesome for the reference integration
 
 **Date:** 2026-10-07
-**Status:** Accepted — selects the library AD-69 deferred, and lands its
-revisit trigger #1: one documented reference integration (guide 21 +
-`apps/ndigo-island`). **The framework packages stay dependency-free** — the
-library is a dependency of one demo application only.
+**Status:** Superseded by [AD-95](2026-11-08_AD95_NDIGO_UI.md) — Web Awesome is
+no longer the reference integration; the framework packages stay
+dependency-free, and `apps/07-ndigo-island` keeps the library only until the
+migration milestone, when the dependency is removed from the workspace.
 
 ## Context
 

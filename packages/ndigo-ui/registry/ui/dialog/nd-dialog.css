@@ -1,0 +1,116 @@
+/* <nd-dialog> — modal surface built on the shared design tokens. */
+
+nd-dialog {
+    display: contents;
+}
+
+/* Until the element upgrades, hide the dialog body so server-rendered markup
+   cannot flash open before the machine applies `hidden`. */
+nd-dialog:not(:defined) [data-part='content'] {
+    display: none;
+}
+
+nd-dialog [data-part='trigger'] {
+    padding: var(--nd-space-2) var(--nd-space-3);
+    color: var(--nd-color-text);
+    font: inherit;
+    background: var(--nd-color-surface);
+    border: 1px solid var(--nd-color-border);
+    border-radius: var(--nd-radius-md);
+    cursor: pointer;
+}
+
+nd-dialog [data-part='trigger']:hover {
+    background: var(--nd-color-surface-raised);
+}
+
+nd-dialog [data-part='backdrop'] {
+    position: fixed;
+    inset: 0;
+    z-index: var(--nd-z-overlay);
+    background: rgb(10 10 20 / 0.65);
+    backdrop-filter: blur(2px);
+}
+
+nd-dialog [data-part='positioner'] {
+    position: fixed;
+    inset: 0;
+    z-index: var(--nd-z-modal);
+    display: grid;
+    place-items: center;
+    padding: var(--nd-space-4);
+    pointer-events: none;
+}
+
+nd-dialog [data-part='content'] {
+    position: relative;
+    width: min(100%, 32rem);
+    max-height: calc(100vh - var(--nd-space-8));
+    padding: var(--nd-space-6);
+    overflow: auto;
+    color: var(--nd-color-text);
+    background: var(--nd-color-surface-raised);
+    border: 1px solid var(--nd-color-border);
+    border-radius: var(--nd-radius-lg);
+    box-shadow: var(--nd-shadow-lg);
+    pointer-events: auto;
+}
+
+nd-dialog [data-part='title'] {
+    margin-block: 0 var(--nd-space-2);
+    padding-inline-end: var(--nd-space-8);
+    font-size: var(--nd-text-xl);
+    font-weight: var(--nd-weight-semibold);
+    line-height: var(--nd-leading-tight);
+}
+
+nd-dialog [data-part='description'] {
+    margin-block: 0 var(--nd-space-4);
+    color: var(--nd-color-text-muted);
+    font-size: var(--nd-text-sm);
+}
+
+nd-dialog [data-part='close-trigger'] {
+    position: absolute;
+    inset-block-start: var(--nd-space-3);
+    inset-inline-end: var(--nd-space-3);
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    color: var(--nd-color-text-muted);
+    font: inherit;
+    background: transparent;
+    border: 0;
+    border-radius: var(--nd-radius-sm);
+    cursor: pointer;
+}
+
+nd-dialog [data-part='close-trigger']:hover {
+    color: var(--nd-color-text);
+    background: var(--nd-color-accent-soft);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    nd-dialog [data-part='backdrop'][data-state='open'] {
+        animation: nd-dialog-fade var(--nd-duration-base) var(--nd-ease-standard);
+    }
+
+    nd-dialog [data-part='content'][data-state='open'] {
+        animation: nd-dialog-enter var(--nd-duration-base) var(--nd-ease-emphasized);
+    }
+}
+
+@keyframes nd-dialog-fade {
+    from {
+        opacity: 0;
+    }
+}
+
+@keyframes nd-dialog-enter {
+    from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.98);
+    }
+}

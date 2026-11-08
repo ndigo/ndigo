@@ -10,6 +10,9 @@ export default defineConfig({
         exclude: ['**/node_modules/**', '**/dist/**', '**/lib/**', '**/coverage/**'],
     },
     resolve: {
-        alias: [{ find: /^@ndigo\/ui$/, replacement: resolve(__dirname, './src') }],
+        alias: [
+            { find: '@/lib', replacement: resolve(__dirname, './registry/base') },
+            { find: /^@ndigo\/ui$/, replacement: resolve(__dirname, './src') },
+        ],
     },
 });

@@ -39,5 +39,12 @@
   "license": "ISC",
   "sideEffects": [
     "**/*.css"
-  ]
+  ],
+  "devDependencies": {
+    "@zag-js/core": "~1.47.0",
+    "@zag-js/dialog": "~1.47.0",
+    "@zag-js/menu": "~1.47.0",
+    "@zag-js/vanilla": "~1.47.0",
+    "axe-core": "^4.14.0"
+  }
 }

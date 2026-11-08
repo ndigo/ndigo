@@ -23,6 +23,11 @@ const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '.');
 
 /** Ordered `@ndigo/*` → `packages/<pkg>/src` alias table consumed by every Vitest config. */
 export const ndigoAliases: { find: RegExp; replacement: string }[] = [
+    // Registry copy-in sources use the shadcn `@/` import prefix; the CLI
+    // rewrites it to the consumer's aliases, and tests resolve it to the
+    // package's registry tree.
+    { find: '@/lib', replacement: resolve(repoRoot, 'packages/ndigo-ui/registry/base') },
+
     // Live `@ndigo/util` subpaths only — `function`/`list`/`logic`/`object`/`relation`
     // were aspirational imports with no `src/` directory (and no manifest export).
     { find: /^@ndigo\/util\/crypto/, replacement: resolve(repoRoot, 'packages/ndigo-util/src/crypto') },

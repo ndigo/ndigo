@@ -6,6 +6,8 @@
 
 # simple-path-handler-mapping
 
+Simple path handler mapping.
+
 ## Classes
 
 - [SimplePathHandlerMapping](classes/SimplePathHandlerMapping.md)

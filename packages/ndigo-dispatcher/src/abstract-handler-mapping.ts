@@ -1,4 +1,5 @@
 /**
+ * Abstract handler-mapping registry.
  */
 
 import { Null, PathMatcher, URLGlobPathMatcher } from '@ndigo/core';

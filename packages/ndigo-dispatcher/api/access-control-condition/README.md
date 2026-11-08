@@ -6,6 +6,8 @@
 
 # access-control-condition
 
+Access-control route condition.
+
 ## Classes
 
 - [AccessControlCondition](classes/AccessControlCondition.md)

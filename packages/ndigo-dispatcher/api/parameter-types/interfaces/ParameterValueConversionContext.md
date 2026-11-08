@@ -16,11 +16,15 @@ being bound for.
 
 > **mapping**: `unknown`
 
+The route mapping.
+
 ***
 
 ### name
 
 > **name**: `string`
+
+The bound parameter name.
 
 ***
 
@@ -28,9 +32,12 @@ being bound for.
 
 > **parameter**: [`MethodParameter`](../classes/MethodParameter.md)
 
+The method parameter it came from.
+
 ***
 
 ### route
 
 > **route**: `unknown`
 
+The route being resolved.

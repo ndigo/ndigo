@@ -18,10 +18,16 @@ route). Both denials return `false` for chain compatibility.
 
 [`Route`](#)
 
+The route being processed.
+
 ### outcome
 
 `boolean` \| [`InterceptorDenial`](../interfaces/InterceptorDenial.md)
 
+The interceptor's `preHandle` outcome.
+
 ## Returns
 
 `boolean`
+
+`true` when processing should continue.

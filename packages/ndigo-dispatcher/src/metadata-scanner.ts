@@ -1,4 +1,5 @@
 /**
+ * Decorator metadata scanning.
  */
 
 import { MultiValueMap, getSymbolMetadata } from '@ndigo/core';

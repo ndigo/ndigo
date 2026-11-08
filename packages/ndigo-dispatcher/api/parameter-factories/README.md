@@ -6,6 +6,8 @@
 
 # parameter-factories
 
+Parameter decorator factories.
+
 ## Functions
 
 - [asArray](functions/asArray.md)

@@ -75,9 +75,13 @@ Matrix-parameter expressions that must all match.
 
 > **get** **content**(): [`MatrixParamExpression`](MatrixParamExpression.md)[]
 
+The condition's expressions.
+
 ##### Returns
 
 [`MatrixParamExpression`](MatrixParamExpression.md)[]
+
+The condition's constituent parts.
 
 #### Overrides
 
@@ -91,9 +95,13 @@ Matrix-parameter expressions that must all match.
 
 > **get** **infix**(): `string`
 
+The conjunction separator.
+
 ##### Returns
 
 `string`
+
+The separator used when rendering the parts.
 
 #### Overrides
 

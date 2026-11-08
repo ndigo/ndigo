@@ -16,6 +16,10 @@ Converts a value to a `Date` instance.
 
 `unknown`
 
+A date string, timestamp, or `Date`.
+
 ## Returns
 
 `Date`
+
+The parsed date.

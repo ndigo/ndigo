@@ -43,11 +43,15 @@ This indicates that the specified view template or component could not be locate
 
 > `readonly` **route**: [`Route`](#)
 
+The route whose view could not be resolved.
+
 ***
 
 ### viewName
 
 > `readonly` **viewName**: `string`
+
+The unresolved view name.
 
 ## Accessors
 

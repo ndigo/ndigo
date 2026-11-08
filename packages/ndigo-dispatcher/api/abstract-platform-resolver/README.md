@@ -6,6 +6,8 @@
 
 # abstract-platform-resolver
 
+Abstract argument resolvers for platform-specific values.
+
 ## Classes
 
 - [AbstractCookieValueArgumentResolver](classes/AbstractCookieValueArgumentResolver.md)

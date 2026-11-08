@@ -17,13 +17,19 @@ Omit the name to bind the entire parsed body object (`bodyValue()`).
 
 `string`
 
+The body field name, or `''` for the whole body.
+
 ### options?
 
 [`ParameterExtractorOptions`](../../parameter-types/interfaces/ParameterExtractorOptions.md) = `{}`
 
+Required/default/conversion options.
+
 ## Returns
 
 [`ParameterExtractor`](../../parameter-types/type-aliases/ParameterExtractor.md)
+
+The parameter extractor.
 
 ## Example
 

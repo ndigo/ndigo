@@ -57,17 +57,23 @@ Analogous to the request-binding error model.
 
 > `readonly` **controllerName**: `string` \| `null`
 
+The controller name, when known.
+
 ***
 
 ### methodName
 
 > `readonly` **methodName**: `string` \| `null`
 
+The handler method name, when known.
+
 ***
 
 ### parameterName
 
 > `readonly` **parameterName**: `string` \| `null`
+
+The parameter name, when known.
 
 ## Accessors
 

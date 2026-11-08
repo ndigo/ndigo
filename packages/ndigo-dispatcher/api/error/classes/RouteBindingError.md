@@ -60,6 +60,8 @@ An error that represents a failure to retrieve a required [Route](#) property.
 
 > **name**: `string`
 
+The property name that failed to bind.
+
 #### Overrides
 
 `FrameworkError.name`
@@ -69,6 +71,8 @@ An error that represents a failure to retrieve a required [Route](#) property.
 ### route
 
 > **route**: [`Route`](#)\<`Record`\<`string`, `string`\>\> \| `null`
+
+The route being bound, or `null` for message-only errors.
 
 ## Accessors
 

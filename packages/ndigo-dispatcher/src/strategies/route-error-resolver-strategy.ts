@@ -1,4 +1,5 @@
 /**
+ * Route error-resolver strategy.
  */
 
 import { ApplicationContext } from '@ndigo/context';
@@ -12,7 +13,13 @@ import { StrategyInitializer } from './strategy-initializer';
  * which the collection is registered.
  */
 export interface RouteErrorResolverStrategy {
+    /** The ordered error resolvers. */
     errorResolvers: RouteErrorResolver[];
+    /**
+     * Installs the error-resolver collection.
+     *
+     * @param context - The application context.
+     */
     initErrorResolvers(context: ApplicationContext): void;
 }
 

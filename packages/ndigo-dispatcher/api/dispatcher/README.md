@@ -6,6 +6,8 @@
 
 # dispatcher
 
+The dispatcher contract and implementation.
+
 ## Classes
 
 - [AbstractDispatcher](classes/AbstractDispatcher.md)

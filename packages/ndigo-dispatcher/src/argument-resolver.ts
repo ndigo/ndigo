@@ -1,4 +1,5 @@
 /**
+ * Argument resolver contracts and built-in resolvers.
  */
 
 import { ApplicationContext } from '@ndigo/context';
@@ -107,6 +108,15 @@ export abstract class AbstractNamedValueMethodArgumentResolver implements Handle
         return validatedValue;
     }
 
+    /**
+     * Resolves the raw value for a named parameter.
+     *
+     * @param name - The parameter name.
+     * @param parameter - The method parameter descriptor.
+     * @param route - The current route.
+     * @param mapping - The route handler mapping.
+     * @returns The raw value, before defaulting and conversion.
+     */
     protected abstract resolveName(name: string, parameter: MethodParameter, route: Route, mapping: unknown): unknown;
 
     /**
@@ -121,6 +131,15 @@ export abstract class AbstractNamedValueMethodArgumentResolver implements Handle
  * Resolves method arguments from matrix variables in the URL path.
  */
 export class MatrixValueMethodArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
+    /**
+     * Reads a matrix variable from the matched path segment.
+     *
+     * @param name - The matrix-variable name.
+     * @param parameter - The method parameter descriptor.
+     * @param route - The resolved route.
+     * @param mapping - The method's route mapping.
+     * @returns The variable value, falling back to route data.
+     */
     protected resolveName(name: string, parameter: MethodParameter, route: Route, mapping: unknown): unknown {
         let index = -1,
             segmentName = '',
@@ -162,6 +181,15 @@ export class MatrixValueMethodArgumentResolver extends AbstractNamedValueMethodA
  * Resolves method arguments from query parameters.
  */
 export class QueryValueMethodArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
+    /**
+     * Reads a query parameter, or the whole query when unnamed.
+     *
+     * @param name - The query-parameter name, or `''`.
+     * @param parameter - The method parameter descriptor.
+     * @param route - The resolved route.
+     * @param mapping - The method's route mapping.
+     * @returns The parameter value or the query record.
+     */
     protected resolveName(name: string, parameter: MethodParameter, route: Route, mapping: unknown): unknown {
         // No name (`queryValue()`) binds the entire query object — the
         // `*Value(name)` contract: omit the name → the whole source.
@@ -182,6 +210,15 @@ export class QueryValueMethodArgumentResolver extends AbstractNamedValueMethodAr
  * Resolves method arguments from path variables.
  */
 export class PathValueMethodArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
+    /**
+     * Reads a path variable, or the whole params record when unnamed.
+     *
+     * @param name - The path-variable name, or `''`.
+     * @param parameter - The method parameter descriptor.
+     * @param route - The resolved route.
+     * @param mapping - The method's route mapping.
+     * @returns The parameter value or the params record.
+     */
     protected resolveName(name: string, parameter: MethodParameter, route: Route, mapping: unknown): unknown {
         // `pathVariable()` binds the whole params record; named binds one.
         return name === '' ? route.params : route.params?.[name];
@@ -201,6 +238,15 @@ export class PathValueMethodArgumentResolver extends AbstractNamedValueMethodArg
  * Resolves method arguments from request attributes.
  */
 export class AttributeValueMethodArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
+    /**
+     * Reads a request attribute by dotted path, or the whole bag when unnamed.
+     *
+     * @param name - The attribute path, or `''`.
+     * @param parameter - The method parameter descriptor.
+     * @param route - The resolved route.
+     * @param mapping - The method's route mapping.
+     * @returns The attribute value or the attributes record.
+     */
     protected resolveName(name: string, parameter: MethodParameter, route: Route, mapping: unknown): unknown {
         // `attributeValue()` binds the whole framework-context bag;
         // named binds one value (nested-capable, D-2).
@@ -224,6 +270,15 @@ export class AttributeValueMethodArgumentResolver extends AbstractNamedValueMeth
  * `route.id` by the extractor's name (the ROUTE meta source).
  */
 export class RouteValueMethodArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
+    /**
+     * Reads a route meta value: the whole route, a built-in property, or an attribute.
+     *
+     * @param name - The property name, or `''` for the whole route.
+     * @param parameter - The method parameter descriptor.
+     * @param route - The resolved route.
+     * @param mapping - The method's route mapping.
+     * @returns The requested route value.
+     */
     protected resolveName(name: string, parameter: MethodParameter, route: Route, mapping: unknown): unknown {
         // `routeValue()` (no name) binds the whole Route — the `*Value(name)`
         // contract extracts a value *named* `name`, and there is no "route"
@@ -235,6 +290,12 @@ export class RouteValueMethodArgumentResolver extends AbstractNamedValueMethodAr
         return route.attributes?.[name];
     }
 
+    /**
+     * Whether the given method parameter is supported by this resolver.
+     *
+     * @param parameter - The method parameter to check.
+     * @returns Whether the parameter binds a route value.
+     */
     supportsParameter(parameter: MethodParameter): boolean {
         return MethodParameterType.ROUTE.equals(parameter.type);
     }

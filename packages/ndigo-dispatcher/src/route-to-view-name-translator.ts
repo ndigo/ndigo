@@ -1,4 +1,5 @@
 /**
+ * Route-to-view-name translation contracts.
  */
 
 import { Route } from '@ndigo/router';

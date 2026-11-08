@@ -84,17 +84,25 @@ extending this base — only the BIND path invoked it.
 
 [`MethodParameter`](../../parameter-types/classes/MethodParameter.md)
 
+The method parameter being resolved.
+
 ##### route
 
 [`Route`](#)
+
+The current route.
 
 ##### mapping
 
 `unknown`
 
+The route handler mapping.
+
 #### Returns
 
 `unknown`
+
+The resolved and converted value.
 
 #### Inherited from
 
@@ -106,7 +114,7 @@ extending this base — only the BIND path invoked it.
 
 > **supportsParameter**(`parameter`): `boolean`
 
-Whether the given method parameter is supported by this resolver.
+Whether the parameter binds a cookie value.
 
 #### Parameters
 
@@ -120,7 +128,7 @@ The method parameter to check.
 
 `boolean`
 
-Whether or not the given method parameter is supported by this resolver.
+`true` for cookie parameter types.
 
 #### Overrides
 

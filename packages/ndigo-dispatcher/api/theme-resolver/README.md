@@ -6,6 +6,8 @@
 
 # theme-resolver
 
+Theme resolution contracts.
+
 ## Classes
 
 - [AbstractThemeResolver](classes/AbstractThemeResolver.md)

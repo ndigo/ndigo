@@ -1,4 +1,5 @@
 /**
+ * Language resolution contracts.
  */
 
 import { normalizeLocale, parseAcceptLanguage } from '@ndigo/content';

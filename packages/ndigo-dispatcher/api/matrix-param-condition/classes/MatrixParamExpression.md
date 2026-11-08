@@ -47,6 +47,8 @@ The expression to parse.
 
 > `readonly` **isNegated**: `boolean`
 
+Whether the expression is negated (`!`).
+
 #### Inherited from
 
 [`QueryParamExpression`](../../query-param-condition/classes/QueryParamExpression.md).[`isNegated`](../../query-param-condition/classes/QueryParamExpression.md#isnegated)
@@ -57,6 +59,8 @@ The expression to parse.
 
 > `readonly` **name**: `string`
 
+The expression name.
+
 #### Inherited from
 
 [`QueryParamExpression`](../../query-param-condition/classes/QueryParamExpression.md).[`name`](../../query-param-condition/classes/QueryParamExpression.md#name)
@@ -66,6 +70,8 @@ The expression to parse.
 ### value?
 
 > `readonly` `optional` **value?**: `string`
+
+The parsed value, when present.
 
 #### Inherited from
 
@@ -79,9 +85,13 @@ The expression to parse.
 
 > **get** **isCaseSensitiveName**(): `boolean`
 
+Matrix-parameter names are always case-sensitive.
+
 ##### Returns
 
 `boolean`
+
+Whether the name comparison is case-sensitive.
 
 #### Overrides
 

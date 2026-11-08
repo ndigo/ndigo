@@ -16,10 +16,16 @@ Check if method has parameters
 
 `unknown`
 
+The class prototype or constructor.
+
 ### propertyKey
 
 `string` \| `symbol`
 
+The method name.
+
 ## Returns
 
 `boolean`
+
+`true` when parameters were registered for the method.

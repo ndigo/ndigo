@@ -1,4 +1,5 @@
 /**
+ * Parameter decorator factories.
  */
 
 import {
@@ -18,6 +19,10 @@ import {
  *   limit: queryValue('limit', { required: true, defaultValue: '10' })
  * })
  * ```
+ *
+ * @param name - The query parameter name, or `''` for the whole query.
+ * @param options - Required/default/conversion options.
+ * @returns The parameter extractor.
  */
 export function queryValue(name?: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
     return {
@@ -38,6 +43,10 @@ export function queryValue(name?: string, options: ParameterExtractorOptions = {
  *   userId: pathVariable('userId')
  * })
  * ```
+ *
+ * @param name - The path-variable name, or `''` for the whole path.
+ * @param options - Required/default/conversion options.
+ * @returns The parameter extractor.
  */
 export function pathVariable(name?: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
     return {
@@ -59,6 +68,10 @@ export function pathVariable(name?: string, options: ParameterExtractorOptions =
  *   size: matrixValue('size', { required: true })
  * })
  * ```
+ *
+ * @param name - The matrix-parameter name.
+ * @param options - Required/default/conversion options.
+ * @returns The parameter extractor.
  */
 export function matrixValue(name: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
     return {
@@ -80,6 +93,10 @@ export function matrixValue(name: string, options: ParameterExtractorOptions = {
  *   token: cookieValue('AUTH_TOKEN', { required: true })
  * })
  * ```
+ *
+ * @param name - The cookie name, or `''` for the whole jar.
+ * @param options - Required/default/conversion options.
+ * @returns The parameter extractor.
  */
 export function cookieValue(name?: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
     return {
@@ -102,6 +119,10 @@ export function cookieValue(name?: string, options: ParameterExtractorOptions = 
  *   token: requestSessionValue('AUTH_TOKEN', { required: true })
  * })
  * ```
+ *
+ * @param name - The session value path, or `''` for the whole session.
+ * @param options - Required/default/conversion options.
+ * @returns The parameter extractor.
  */
 export function requestSessionValue(name?: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
     return {
@@ -123,6 +144,10 @@ export function requestSessionValue(name?: string, options: ParameterExtractorOp
  *   theme: sessionStorageValue('theme'),
  * })
  * ```
+ *
+ * @param name - The storage key, or `''` for the whole jar.
+ * @param options - Required/default/conversion options.
+ * @returns The parameter extractor.
  */
 export function sessionStorageValue(name?: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
     return {
@@ -144,6 +169,10 @@ export function sessionStorageValue(name?: string, options: ParameterExtractorOp
  *   token: localStorageValue('token'),
  * })
  * ```
+ *
+ * @param name - The storage key, or `''` for the whole jar.
+ * @param options - Required/default/conversion options.
+ * @returns The parameter extractor.
  */
 export function localStorageValue(name?: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
     return {
@@ -165,6 +194,10 @@ export function localStorageValue(name?: string, options: ParameterExtractorOpti
  *   token: historyStateValue('token'),
  * })
  * ```
+ *
+ * @param name - The history-state path, or `''` for the whole state.
+ * @param options - Required/default/conversion options.
+ * @returns The parameter extractor.
  */
 export function historyStateValue(name?: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
     return {
@@ -193,6 +226,11 @@ export function historyStateValue(name?: string, options: ParameterExtractorOpti
  *   profile: dataBinderValue('body', ProfileForm, { prefix: 'profile.' })
  * })
  * ```
+ *
+ * @param source - The data source name.
+ * @param target - Optional target constructor for the bound result.
+ * @param options - Required/default/prefix/conversion options.
+ * @returns The parameter extractor.
  */
 export function dataBinderValue(
     source: DataBindingSource,
@@ -224,6 +262,10 @@ export function dataBinderValue(
  *   user: attributeValue('user')
  * })
  * ```
+ *
+ * @param name - The route-attribute name.
+ * @param options - Required/default/conversion options.
+ * @returns The parameter extractor.
  */
 export function attributeValue(name?: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
     return {
@@ -245,6 +287,10 @@ export function attributeValue(name?: string, options: ParameterExtractorOptions
  *   authorization: headerValue('authorization', { required: true })
  * })
  * ```
+ *
+ * @param name - The header name, or `''` for the whole header record.
+ * @param options - Required/default/conversion options.
+ * @returns The parameter extractor.
  */
 export function headerValue(name?: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
     return {
@@ -267,6 +313,10 @@ export function headerValue(name?: string, options: ParameterExtractorOptions = 
  *   payload: bodyValue()
  * })
  * ```
+ *
+ * @param name - The body field name, or `''` for the whole body.
+ * @param options - Required/default/conversion options.
+ * @returns The parameter extractor.
  */
 export function bodyValue(name?: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
     return {
@@ -300,6 +350,7 @@ export function bodyValue(name?: string, options: ParameterExtractorOptions = {}
  *
  * @param partName - The multipart field name; defaults to the argument name.
  * @param options - Extractor options (`required`).
+ * @returns The parameter extractor.
  */
 export function fileValue(partName?: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
     return {
@@ -343,13 +394,33 @@ export function fileValue(partName?: string, options: ParameterExtractorOptions 
  *   file: fileValue()
  * })
  * ```
+ *
+ * @param partName - The multipart field name; defaults to the argument name.
+ * @param target - Optional target constructor for the bound part.
+ * @param options - Extractor options (`required`).
+ * @returns The parameter extractor.
  */
 export function requestPart(
     partName?: string,
     target?: new () => object,
     options?: ParameterExtractorOptions
 ): ParameterExtractor;
+/**
+ * Creates a request-part extractor targeting a DTO.
+ *
+ * @param target - The DTO constructor.
+ * @param options - Extractor options (`required`).
+ * @returns The parameter extractor.
+ */
 export function requestPart(target: new () => object, options?: ParameterExtractorOptions): ParameterExtractor;
+/**
+ * Creates a request-part extractor.
+ *
+ * @param partNameOrTarget - The part name or a DTO constructor.
+ * @param targetOrOptions - The DTO constructor or options.
+ * @param options - Extractor options (`required`).
+ * @returns The parameter extractor.
+ */
 export function requestPart(
     partNameOrTarget?: string | (new () => object),
     targetOrOptions?: (new () => object) | ParameterExtractorOptions,
@@ -460,6 +531,9 @@ export function methodValue(): ParameterExtractor {
 
 /**
  * Wraps a parameter extractor to enforce number conversion.
+ *
+ * @param extractor - The extractor to wrap.
+ * @returns The extractor with number conversion.
  * @example asNumber(queryValue('age'))
  */
 export function asNumber(extractor: ParameterExtractor): ParameterExtractor {
@@ -468,6 +542,9 @@ export function asNumber(extractor: ParameterExtractor): ParameterExtractor {
 
 /**
  * Wraps a parameter extractor to enforce boolean conversion.
+ *
+ * @param extractor - The extractor to wrap.
+ * @returns The extractor with boolean conversion.
  * @example asBoolean(historyStateValue('isActive'))
  */
 export function asBoolean(extractor: ParameterExtractor): ParameterExtractor {
@@ -476,6 +553,9 @@ export function asBoolean(extractor: ParameterExtractor): ParameterExtractor {
 
 /**
  * Wraps a parameter extractor to enforce Date conversion.
+ *
+ * @param extractor - The extractor to wrap.
+ * @returns The extractor with Date conversion.
  * @example asDate(cookieValue('lastLogin'))
  */
 export function asDate(extractor: ParameterExtractor): ParameterExtractor {
@@ -484,6 +564,9 @@ export function asDate(extractor: ParameterExtractor): ParameterExtractor {
 
 /**
  * Wraps a parameter extractor to enforce JSON conversion.
+ *
+ * @param extractor - The extractor to wrap.
+ * @returns The extractor with JSON conversion.
  * @example asJson<UserProfile>(sessionStorageValue('profile'))
  */
 export function asJson<_T = unknown>(extractor: ParameterExtractor): ParameterExtractor {
@@ -492,6 +575,9 @@ export function asJson<_T = unknown>(extractor: ParameterExtractor): ParameterEx
 
 /**
  * Wraps a parameter extractor to enforce UUID conversion.
+ *
+ * @param extractor - The extractor to wrap.
+ * @returns The extractor with UUID conversion.
  * @example asUUID(pathValue('userId'))
  */
 export function asUUID(extractor: ParameterExtractor): ParameterExtractor {
@@ -500,6 +586,9 @@ export function asUUID(extractor: ParameterExtractor): ParameterExtractor {
 
 /**
  * Wraps a parameter extractor to enforce array conversion.
+ *
+ * @param extractor - The extractor to wrap.
+ * @returns The extractor with array conversion.
  * @example asArray(queryValue('tags'))
  */
 export function asArray(extractor: ParameterExtractor): ParameterExtractor {
@@ -512,6 +601,10 @@ export function asArray(extractor: ParameterExtractor): ParameterExtractor {
  * ```ts
  * withConversion(queryValue('id'), { source: String, target: UUID })
  * ```
+ *
+ * @param extractor - The extractor to wrap.
+ * @param convertType - The source/target conversion pair.
+ * @returns The extractor with the conversion applied.
  */
 export function withConversion(
     extractor: ParameterExtractor,

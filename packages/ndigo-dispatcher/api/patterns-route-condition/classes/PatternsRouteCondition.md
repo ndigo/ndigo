@@ -144,9 +144,13 @@ Whether a trailing slash may be treated as equivalent.
 
 > **get** **content**(): `string`[]
 
+The condition's content parts.
+
 ##### Returns
 
 `string`[]
+
+The condition's constituent parts.
 
 #### Overrides
 
@@ -160,9 +164,13 @@ Whether a trailing slash may be treated as equivalent.
 
 > **get** **infix**(): `string`
 
+The separator used when rendering.
+
 ##### Returns
 
 `string`
+
+The separator used when rendering the parts.
 
 #### Overrides
 

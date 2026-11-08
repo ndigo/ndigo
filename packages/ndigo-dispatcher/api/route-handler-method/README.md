@@ -6,6 +6,8 @@
 
 # route-handler-method
 
+Route-handler method metadata.
+
 ## Classes
 
 - [ErrorHandlerMethod](classes/ErrorHandlerMethod.md)

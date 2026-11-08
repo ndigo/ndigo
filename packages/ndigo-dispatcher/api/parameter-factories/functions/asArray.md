@@ -16,9 +16,13 @@ Wraps a parameter extractor to enforce array conversion.
 
 [`ParameterExtractor`](../../parameter-types/type-aliases/ParameterExtractor.md)
 
+The extractor to wrap.
+
 ## Returns
 
 [`ParameterExtractor`](../../parameter-types/type-aliases/ParameterExtractor.md)
+
+The extractor with array conversion.
 
 ## Example
 

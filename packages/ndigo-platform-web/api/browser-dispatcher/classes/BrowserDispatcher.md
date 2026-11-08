@@ -64,6 +64,8 @@ The default view name to use if none is specified.
 
 > **errorResolvers**: `RouteErrorResolver`[]
 
+The ordered error resolvers.
+
 #### Inherited from
 
 `AbstractDispatcher.errorResolvers`
@@ -74,6 +76,8 @@ The default view name to use if none is specified.
 
 > **handlerAdapters**: `RouteHandlerAdapter`[]
 
+The ordered adapters consulted for a handler.
+
 #### Inherited from
 
 `AbstractDispatcher.handlerAdapters`
@@ -83,6 +87,8 @@ The default view name to use if none is specified.
 ### handlerMappings
 
 > **handlerMappings**: `RouteHandlerMapping`[]
+
+The ordered mappings a route is resolved against.
 
 #### Inherited from
 
@@ -106,6 +112,8 @@ The default view name to use if none is specified.
 
 > **languageResolver**: `LanguageResolver`
 
+The active locale resolver.
+
 #### Inherited from
 
 `AbstractDispatcher.languageResolver`
@@ -128,6 +136,8 @@ The default view name to use if none is specified.
 
 > **routeToViewNameTranslator**: `RouteToViewNameTranslator`
 
+The translator that derives a view name from a route.
+
 #### Inherited from
 
 `AbstractDispatcher.routeToViewNameTranslator`
@@ -137,6 +147,8 @@ The default view name to use if none is specified.
 ### strategies
 
 > **strategies**: `string`[]
+
+Names of the strategies this composition contributes.
 
 #### Inherited from
 
@@ -148,6 +160,8 @@ The default view name to use if none is specified.
 
 > **themeResolver**: `ThemeResolver`
 
+The active theme resolver.
+
 #### Inherited from
 
 `AbstractDispatcher.themeResolver`
@@ -157,6 +171,8 @@ The default view name to use if none is specified.
 ### viewResolvers
 
 > **viewResolvers**: `ViewResolver`[]
+
+The ordered view resolvers.
 
 #### Inherited from
 
@@ -222,11 +238,15 @@ entry.
 
 > **addStrategy**(`name`): `void`
 
+Records a strategy name to initialize later.
+
 #### Parameters
 
 ##### name
 
 `string`
+
+The strategy name.
 
 #### Returns
 
@@ -256,6 +276,8 @@ The route to dispatch.
 
 `Promise`\<`void`\>
 
+A promise that resolves once the route is fully processed.
+
 #### Inherited from
 
 `AbstractDispatcher.dispatch`
@@ -265,6 +287,8 @@ The route to dispatch.
 ### getDefaultStrategy()
 
 > **getDefaultStrategy**\<`T`\>(`context`, `key`, `strategy`): `T`
+
+Installs a default strategy under a context key.
 
 #### Type Parameters
 
@@ -278,17 +302,25 @@ The route to dispatch.
 
 `ApplicationContext`
 
+The application context.
+
 ##### key
 
 `string`
+
+The context key to register under.
 
 ##### strategy
 
 `T`
 
+The default strategy value.
+
 #### Returns
 
 `T`
+
+The strategy now registered in the context.
 
 #### Inherited from
 
@@ -300,15 +332,21 @@ The route to dispatch.
 
 > **getDefaultViewName**(`route`): `string`
 
+Derives the default view name for a route.
+
 #### Parameters
 
 ##### route
 
 [`Route`](#)
 
+The route to translate.
+
 #### Returns
 
 `string`
+
+The default view name.
 
 #### Inherited from
 
@@ -320,15 +358,21 @@ The route to dispatch.
 
 > **getHandler**(`route`): [`RouteHandlerExecutionChain`](#)
 
+Resolves a route to its execution chain.
+
 #### Parameters
 
 ##### route
 
 [`Route`](#)
 
+The route to resolve.
+
 #### Returns
 
 [`RouteHandlerExecutionChain`](#)
+
+The execution chain for the route.
 
 #### Inherited from
 
@@ -340,15 +384,21 @@ The route to dispatch.
 
 > **getHandlerAdapter**(`handler`): `RouteHandlerAdapter`
 
+Finds the adapter that supports a handler.
+
 #### Parameters
 
 ##### handler
 
 `object` \| `undefined`
 
+The resolved handler.
+
 #### Returns
 
 `RouteHandlerAdapter`
+
+The supporting adapter.
 
 #### Inherited from
 
@@ -359,6 +409,8 @@ The route to dispatch.
 ### initCollectionStrategy()
 
 > **initCollectionStrategy**\<`T`\>(`context`, `collectionStrategyKey`, `strategyKey`, `name`, `defaultStrategy`): `void`
+
+Installs a collection strategy from the context or its default.
 
 #### Type Parameters
 
@@ -372,21 +424,31 @@ The route to dispatch.
 
 `ApplicationContext`
 
+The application context.
+
 ##### collectionStrategyKey
 
 `string`
+
+The context key holding the collection.
 
 ##### strategyKey
 
 `string`
 
+The context key holding a single strategy.
+
 ##### name
 
 `string`
 
+The instance property to assign.
+
 ##### defaultStrategy
 
 `T`[]
+
+The fallback collection.
 
 #### Returns
 
@@ -402,11 +464,15 @@ The route to dispatch.
 
 > **initErrorResolvers**(`context`): `void`
 
+Installs the error-resolver collection.
+
 #### Parameters
 
 ##### context
 
 `ApplicationContext`
+
+The application context.
 
 #### Returns
 
@@ -422,11 +488,15 @@ The route to dispatch.
 
 > **initHandlerAdapters**(`context`): `void`
 
+Installs the handler adapters from the context or the defaults.
+
 #### Parameters
 
 ##### context
 
 `ApplicationContext`
+
+The application context.
 
 #### Returns
 
@@ -442,11 +512,15 @@ The route to dispatch.
 
 > **initHandlerMappings**(`context`): `void`
 
+Installs the handler mappings from the context or the defaults.
+
 #### Parameters
 
 ##### context
 
 `ApplicationContext`
+
+The application context.
 
 #### Returns
 
@@ -462,11 +536,15 @@ The route to dispatch.
 
 > **initLanguageResolver**(`context`): `void`
 
+Builds and installs the language resolver.
+
 #### Parameters
 
 ##### context
 
 `ApplicationContext`
+
+The application context.
 
 #### Returns
 
@@ -482,11 +560,15 @@ The route to dispatch.
 
 > **initRouteToViewNameTranslator**(`context`): `void`
 
+Installs the view-name translator.
+
 #### Parameters
 
 ##### context
 
 `ApplicationContext`
+
+The application context.
 
 #### Returns
 
@@ -502,11 +584,15 @@ The route to dispatch.
 
 > **initStrategies**(`context`): `void`
 
+Runs the `init<Strategy>` initializer for every recorded strategy.
+
 #### Parameters
 
 ##### context
 
 `ApplicationContext`
+
+The application context.
 
 #### Returns
 
@@ -522,6 +608,8 @@ The route to dispatch.
 
 > **initStrategy**\<`T`\>(`context`, `strategyKey`, `name`, `defaultStrategy`): `void`
 
+Installs a single strategy from the context or its default.
+
 #### Type Parameters
 
 ##### T
@@ -534,17 +622,25 @@ The route to dispatch.
 
 `ApplicationContext`
 
+The application context.
+
 ##### strategyKey
 
 `string`
+
+The context key holding the strategy.
 
 ##### name
 
 `string`
 
+The instance property to assign.
+
 ##### defaultStrategy
 
 `T`
+
+The fallback strategy.
 
 #### Returns
 
@@ -560,11 +656,15 @@ The route to dispatch.
 
 > **initThemeResolver**(`context`): `void`
 
+Builds and installs the theme resolver.
+
 #### Parameters
 
 ##### context
 
 `ApplicationContext`
+
+The application context.
 
 #### Returns
 
@@ -580,11 +680,15 @@ The route to dispatch.
 
 > **initViewResolvers**(`context`): `void`
 
+Installs the view-resolver chain.
+
 #### Parameters
 
 ##### context
 
 `ApplicationContext`
+
+The application context.
 
 #### Returns
 
@@ -619,6 +723,8 @@ The route associated with the [ModelAndView](#).
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once the view has rendered.
 
 #### Inherited from
 

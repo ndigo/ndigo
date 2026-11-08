@@ -6,6 +6,8 @@
 
 # route-handler-execution-chain
 
+Interceptor execution chain for route handlers.
+
 ## Classes
 
 - [default](classes/default.md)

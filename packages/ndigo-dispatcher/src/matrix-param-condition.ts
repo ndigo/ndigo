@@ -1,4 +1,5 @@
 /**
+ * Matrix-parameter route conditions.
  */
 
 import { Route, RouteSegment } from '@ndigo/router';
@@ -14,6 +15,7 @@ const { defineProperty } = Reflect;
  * This expression walks every segment of the route looking for a matching name/value pair.
  */
 export class MatrixParamExpression extends AbstractNameValueExpression<string> {
+    /** Matrix-parameter names are always case-sensitive. */
     get isCaseSensitiveName(): boolean {
         return true;
     }
@@ -88,10 +90,12 @@ export class MatrixParamCondition extends AbstractRouteCondition<MatrixParamCond
      */
     readonly expressions!: Set<MatrixParamExpression>;
 
+    /** The condition's expressions. */
     get content(): MatrixParamExpression[] {
         return Array.from(this.expressions);
     }
 
+    /** The conjunction separator. */
     get infix(): string {
         return ' && ';
     }

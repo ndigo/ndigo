@@ -16,13 +16,19 @@ Factory function: Create a cookie parameter extractor
 
 `string`
 
+The cookie name, or `''` for the whole jar.
+
 ### options?
 
 [`ParameterExtractorOptions`](../../parameter-types/interfaces/ParameterExtractorOptions.md) = `{}`
 
+Required/default/conversion options.
+
 ## Returns
 
 [`ParameterExtractor`](../../parameter-types/type-aliases/ParameterExtractor.md)
+
+The parameter extractor.
 
 ## Example
 

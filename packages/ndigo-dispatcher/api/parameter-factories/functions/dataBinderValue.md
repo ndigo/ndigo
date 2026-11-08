@@ -23,11 +23,17 @@ convention, AD-26 D-5).
 
 [`DataBindingSource`](../../parameter-types/type-aliases/DataBindingSource.md)
 
+The data source name.
+
 ### target?
 
 new () => `object`
 
+Optional target constructor for the bound result.
+
 ### options?
+
+Required/default/prefix/conversion options.
 
 #### convertType?
 
@@ -56,6 +62,8 @@ new () => `object`
 ## Returns
 
 [`ParameterExtractor`](../../parameter-types/type-aliases/ParameterExtractor.md)
+
+The parameter extractor.
 
 ## Example
 

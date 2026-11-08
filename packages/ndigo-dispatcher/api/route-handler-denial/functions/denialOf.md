@@ -33,3 +33,5 @@ Body and redirect for the denial outcome.
 ## Returns
 
 [`InterceptorDenial`](../interfaces/InterceptorDenial.md)
+
+The denial outcome.

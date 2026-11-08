@@ -16,11 +16,15 @@ application context.
 
 > **handlerMappings**: [`RouteHandlerMapping`](../../../abstract-handler-mapping/interfaces/RouteHandlerMapping.md)[]
 
+The ordered mappings a route is resolved against.
+
 ## Methods
 
 ### getHandler()
 
 > **getHandler**(`route`): [`default`](../../../route-handler-execution-chain/classes/default.md)
+
+Resolves a route to its execution chain.
 
 #### Parameters
 
@@ -28,9 +32,13 @@ application context.
 
 [`Route`](#)
 
+The route to resolve.
+
 #### Returns
 
 [`default`](../../../route-handler-execution-chain/classes/default.md)
+
+The execution chain for the route.
 
 ***
 
@@ -38,11 +46,15 @@ application context.
 
 > **initHandlerMappings**(`context`): `void`
 
+Installs the handler mappings from the context or the defaults.
+
 #### Parameters
 
 ##### context
 
 `ApplicationContext`
+
+The application context.
 
 #### Returns
 

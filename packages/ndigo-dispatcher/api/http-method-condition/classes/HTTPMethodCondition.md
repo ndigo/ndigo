@@ -61,9 +61,13 @@ The required HTTP method, or `undefined` to match any method.
 
 > **get** **content**(): `HTTPMethod`[]
 
+The condition's content parts.
+
 ##### Returns
 
 `HTTPMethod`[]
+
+The condition's constituent parts.
 
 #### Overrides
 
@@ -77,9 +81,13 @@ The required HTTP method, or `undefined` to match any method.
 
 > **get** **infix**(): `string`
 
+The separator used when rendering.
+
 ##### Returns
 
 `string`
+
+The separator used when rendering the parts.
 
 #### Overrides
 

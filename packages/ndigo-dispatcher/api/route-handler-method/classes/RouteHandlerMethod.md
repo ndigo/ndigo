@@ -6,10 +6,7 @@
 
 # Class: RouteHandlerMethod
 
-A strategy for assigning a name to a route handler method's mapping.
-
-The strategy can be configured on [AbstractHandlerMethodMapping](../../abstract-handler-method-mapping/classes/AbstractHandlerMethodMapping.md).
-It is used to assign a name to the mapping of every registered handler method.
+Encapsulates information about a handler method consisting of a `method` and `handler`.
 
 ## Extended by
 
@@ -76,11 +73,15 @@ It is used to assign a name to the mapping of every registered handler method.
 
 > **argumentResolvers**: [`HandlerMethodArgumentResolver`](../../argument-resolver/interfaces/HandlerMethodArgumentResolver.md)[]
 
+The resolvers consulted to bind the parameters.
+
 ***
 
 ### factory
 
 > `readonly` **factory**: [`Factory`](#) \| `null`
+
+The factory that owns the handler, when constructed from one.
 
 ***
 
@@ -88,11 +89,15 @@ It is used to assign a name to the mapping of every registered handler method.
 
 > `readonly` **handler**: `object`
 
+The handler instance.
+
 ***
 
 ### method
 
 > `readonly` **method**: `string`
+
+The method name to invoke on the handler.
 
 ***
 
@@ -100,17 +105,23 @@ It is used to assign a name to the mapping of every registered handler method.
 
 > `readonly` **name**: `string` \| `null`
 
+The handler's registered factory name.
+
 ***
 
 ### parameters
 
 > **parameters**: [`MethodParameter`](../../parameter-types/classes/MethodParameter.md)[]
 
+The method's parameter metadata.
+
 ## Methods
 
 ### invoke()
 
 > **invoke**\<`ModelAndView`\>(`route`, ...`foo`): `ModelAndView`
+
+Invokes the handler method, binding the declared parameters first.
 
 #### Type Parameters
 
@@ -124,13 +135,19 @@ It is used to assign a name to the mapping of every registered handler method.
 
 [`Route`](#)
 
+The route being resolved.
+
 ##### foo
 
 ...`unknown`[]
 
+Ignored; present so subclasses can pass handler arguments.
+
 #### Returns
 
 `ModelAndView`
+
+The handler's result.
 
 #### Implementation of
 
@@ -142,11 +159,13 @@ It is used to assign a name to the mapping of every registered handler method.
 
 > **toString**(): `string`
 
-Returns a string representation of an object.
+Renders the handler and its parameters for debug output.
 
 #### Returns
 
 `string`
+
+A human-readable description.
 
 #### Implementation of
 

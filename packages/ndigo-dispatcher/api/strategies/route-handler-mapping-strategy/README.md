@@ -6,6 +6,8 @@
 
 # strategies/route-handler-mapping-strategy
 
+Route-handler mapping strategy.
+
 ## Interfaces
 
 - [RouteHandlerMappingStrategy](interfaces/RouteHandlerMappingStrategy.md)

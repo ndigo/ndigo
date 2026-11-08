@@ -6,6 +6,8 @@
 
 # argument-resolver
 
+Argument resolver contracts and built-in resolvers.
+
 ## Classes
 
 - [AbstractNamedValueMethodArgumentResolver](classes/AbstractNamedValueMethodArgumentResolver.md)

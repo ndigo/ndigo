@@ -6,6 +6,8 @@
 
 # strategies/route-to-view-name-translator-strategy
 
+Route-to-view-name translator strategy.
+
 ## Interfaces
 
 - [RouteToViewNameTranslatorStrategy](interfaces/RouteToViewNameTranslatorStrategy.md)

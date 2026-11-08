@@ -18,14 +18,22 @@ negation → `'!color'` / `'color!=x'`).
 
 `string`
 
+The parameter name.
+
 ### value?
 
 `string`
+
+The expected value, or omitted for a presence check.
 
 ### options?
 
 [`ConditionBuilderOptions`](../interfaces/ConditionBuilderOptions.md)
 
+Builder options (negation, case sensitivity).
+
 ## Returns
 
 `string`
+
+The condition expression.

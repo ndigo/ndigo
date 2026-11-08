@@ -22,16 +22,24 @@ strategy derives from the handler and mapping metadata.
 
 > **getName**(`handlerMethod`, `mapping`): `string`
 
+Derives the mapping name for a handler method.
+
 #### Parameters
 
 ##### handlerMethod
 
 [`RouteHandlerMethod`](../classes/RouteHandlerMethod.md)
 
+The handler method being registered.
+
 ##### mapping
 
 `T`
 
+The handler method's mapping.
+
 #### Returns
 
 `string`
+
+The mapping name.

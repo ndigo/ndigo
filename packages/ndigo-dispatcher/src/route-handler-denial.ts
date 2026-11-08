@@ -62,6 +62,7 @@ export const DENIAL_STATUS = {
  *
  * @param statusCode - HTTP status for the finalized denial (`401`/`403`).
  * @param options - Body and redirect for the denial outcome.
+ * @returns The denial outcome.
  */
 export function denialOf(
     statusCode: number,
@@ -72,6 +73,9 @@ export function denialOf(
 
 /**
  * Stores a denial on the route so the platform adapter can finalize it.
+ *
+ * @param route - The route being processed.
+ * @param denial - The denial to store.
  */
 export function setInterceptorDenial(route: Route, denial: InterceptorDenial): void {
     route.attributes ??= {};
@@ -80,6 +84,9 @@ export function setInterceptorDenial(route: Route, denial: InterceptorDenial): v
 
 /**
  * Reads the denial stored on the route, if any.
+ *
+ * @param route - The route being processed.
+ * @returns The stored denial, or `null`.
  */
 export function getInterceptorDenial(route: Route): InterceptorDenial | null {
     return (route.attributes?.[INTERCEPTOR_DENIAL_ATTRIBUTE] as InterceptorDenial | undefined) ?? null;
@@ -89,6 +96,10 @@ export function getInterceptorDenial(route: Route): InterceptorDenial | null {
  * Normalizes a `preHandle` outcome: `true` allows; `false` is the default
  * denial; an {@link InterceptorDenial} is an explicit denial (stored on the
  * route). Both denials return `false` for chain compatibility.
+ *
+ * @param route - The route being processed.
+ * @param outcome - The interceptor's `preHandle` outcome.
+ * @returns `true` when processing should continue.
  */
 export function resolvePreHandleOutcome(route: Route, outcome: boolean | InterceptorDenial): boolean {
     if (outcome === true) return true;

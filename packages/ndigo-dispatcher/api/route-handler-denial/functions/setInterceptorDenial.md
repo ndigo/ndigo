@@ -16,9 +16,13 @@ Stores a denial on the route so the platform adapter can finalize it.
 
 [`Route`](#)
 
+The route being processed.
+
 ### denial
 
 [`InterceptorDenial`](../interfaces/InterceptorDenial.md)
+
+The denial to store.
 
 ## Returns
 

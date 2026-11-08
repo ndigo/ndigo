@@ -24,10 +24,12 @@ export class HTTPMethodCondition extends AbstractRouteCondition<HTTPMethodCondit
      */
     readonly method: HTTPMethod | undefined;
 
+    /** The condition's content parts. */
     get content(): HTTPMethod[] {
         return this.method ? [this.method] : [];
     }
 
+    /** The separator used when rendering. */
     get infix(): string {
         return ' ';
     }

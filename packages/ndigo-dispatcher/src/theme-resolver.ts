@@ -1,4 +1,5 @@
 /**
+ * Theme resolution contracts.
  */
 
 import { Route } from '@ndigo/router';

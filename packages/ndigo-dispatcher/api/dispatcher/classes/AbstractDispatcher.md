@@ -61,6 +61,8 @@ The default view name to use if none is specified.
 
 > **errorResolvers**: [`RouteErrorResolver`](../../route-error-resolver/interfaces/RouteErrorResolver.md)[]
 
+The ordered error resolvers.
+
 #### Inherited from
 
 `AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ).errorResolvers`
@@ -71,6 +73,8 @@ The default view name to use if none is specified.
 
 > **handlerAdapters**: [`RouteHandlerAdapter`](../../route-handler-adapter/interfaces/RouteHandlerAdapter.md)[]
 
+The ordered adapters consulted for a handler.
+
 #### Inherited from
 
 `AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ).handlerAdapters`
@@ -80,6 +84,8 @@ The default view name to use if none is specified.
 ### handlerMappings
 
 > **handlerMappings**: [`RouteHandlerMapping`](../../abstract-handler-mapping/interfaces/RouteHandlerMapping.md)[]
+
+The ordered mappings a route is resolved against.
 
 #### Inherited from
 
@@ -99,6 +105,8 @@ The default view name to use if none is specified.
 
 > **languageResolver**: [`LanguageResolver`](../../language-resolver/interfaces/LanguageResolver.md)
 
+The active locale resolver.
+
 #### Inherited from
 
 `AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ).languageResolver`
@@ -117,6 +125,8 @@ The default view name to use if none is specified.
 
 > **routeToViewNameTranslator**: [`RouteToViewNameTranslator`](../../route-to-view-name-translator/interfaces/RouteToViewNameTranslator.md)
 
+The translator that derives a view name from a route.
+
 #### Inherited from
 
 `AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ).routeToViewNameTranslator`
@@ -126,6 +136,8 @@ The default view name to use if none is specified.
 ### strategies
 
 > **strategies**: `string`[]
+
+Names of the strategies this composition contributes.
 
 #### Inherited from
 
@@ -137,6 +149,8 @@ The default view name to use if none is specified.
 
 > **themeResolver**: [`ThemeResolver`](../../theme-resolver/interfaces/ThemeResolver.md)
 
+The active theme resolver.
+
 #### Inherited from
 
 `AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ).themeResolver`
@@ -146,6 +160,8 @@ The default view name to use if none is specified.
 ### viewResolvers
 
 > **viewResolvers**: `ViewResolver`[]
+
+The ordered view resolvers.
 
 #### Inherited from
 
@@ -201,11 +217,15 @@ Returns the string tag for this dispatcher.
 
 > **addStrategy**(`name`): `void`
 
+Records a strategy name to initialize later.
+
 #### Parameters
 
 ##### name
 
 `string`
+
+The strategy name.
 
 #### Returns
 
@@ -235,6 +255,8 @@ The route to dispatch.
 
 `Promise`\<`void`\>
 
+A promise that resolves once the route is fully processed.
+
 #### Implementation of
 
 [`RouteDispatcher`](../interfaces/RouteDispatcher.md).[`dispatch`](../interfaces/RouteDispatcher.md#dispatch)
@@ -244,6 +266,8 @@ The route to dispatch.
 ### getDefaultStrategy()
 
 > **getDefaultStrategy**\<`T`\>(`context`, `key`, `strategy`): `T`
+
+Installs a default strategy under a context key.
 
 #### Type Parameters
 
@@ -257,17 +281,25 @@ The route to dispatch.
 
 `ApplicationContext`
 
+The application context.
+
 ##### key
 
 `string`
+
+The context key to register under.
 
 ##### strategy
 
 `T`
 
+The default strategy value.
+
 #### Returns
 
 `T`
+
+The strategy now registered in the context.
 
 #### Inherited from
 
@@ -279,15 +311,21 @@ The route to dispatch.
 
 > **getDefaultViewName**(`route`): `string`
 
+Derives the default view name for a route.
+
 #### Parameters
 
 ##### route
 
 [`Route`](#)
 
+The route to translate.
+
 #### Returns
 
 `string`
+
+The default view name.
 
 #### Inherited from
 
@@ -299,15 +337,21 @@ The route to dispatch.
 
 > **getHandler**(`route`): [`default`](../../route-handler-execution-chain/classes/default.md)
 
+Resolves a route to its execution chain.
+
 #### Parameters
 
 ##### route
 
 [`Route`](#)
 
+The route to resolve.
+
 #### Returns
 
 [`default`](../../route-handler-execution-chain/classes/default.md)
+
+The execution chain for the route.
 
 #### Inherited from
 
@@ -319,15 +363,21 @@ The route to dispatch.
 
 > **getHandlerAdapter**(`handler`): [`RouteHandlerAdapter`](../../route-handler-adapter/interfaces/RouteHandlerAdapter.md)
 
+Finds the adapter that supports a handler.
+
 #### Parameters
 
 ##### handler
 
 `object` \| `undefined`
 
+The resolved handler.
+
 #### Returns
 
 [`RouteHandlerAdapter`](../../route-handler-adapter/interfaces/RouteHandlerAdapter.md)
+
+The supporting adapter.
 
 #### Inherited from
 
@@ -338,6 +388,8 @@ The route to dispatch.
 ### initCollectionStrategy()
 
 > **initCollectionStrategy**\<`T`\>(`context`, `collectionStrategyKey`, `strategyKey`, `name`, `defaultStrategy`): `void`
+
+Installs a collection strategy from the context or its default.
 
 #### Type Parameters
 
@@ -351,21 +403,31 @@ The route to dispatch.
 
 `ApplicationContext`
 
+The application context.
+
 ##### collectionStrategyKey
 
 `string`
+
+The context key holding the collection.
 
 ##### strategyKey
 
 `string`
 
+The context key holding a single strategy.
+
 ##### name
 
 `string`
 
+The instance property to assign.
+
 ##### defaultStrategy
 
 `T`[]
+
+The fallback collection.
 
 #### Returns
 
@@ -381,11 +443,15 @@ The route to dispatch.
 
 > **initErrorResolvers**(`context`): `void`
 
+Installs the error-resolver collection.
+
 #### Parameters
 
 ##### context
 
 `ApplicationContext`
+
+The application context.
 
 #### Returns
 
@@ -401,11 +467,15 @@ The route to dispatch.
 
 > **initHandlerAdapters**(`context`): `void`
 
+Installs the handler adapters from the context or the defaults.
+
 #### Parameters
 
 ##### context
 
 `ApplicationContext`
+
+The application context.
 
 #### Returns
 
@@ -421,11 +491,15 @@ The route to dispatch.
 
 > **initHandlerMappings**(`context`): `void`
 
+Installs the handler mappings from the context or the defaults.
+
 #### Parameters
 
 ##### context
 
 `ApplicationContext`
+
+The application context.
 
 #### Returns
 
@@ -441,11 +515,15 @@ The route to dispatch.
 
 > **initLanguageResolver**(`context`): `void`
 
+Builds and installs the language resolver.
+
 #### Parameters
 
 ##### context
 
 `ApplicationContext`
+
+The application context.
 
 #### Returns
 
@@ -461,11 +539,15 @@ The route to dispatch.
 
 > **initRouteToViewNameTranslator**(`context`): `void`
 
+Installs the view-name translator.
+
 #### Parameters
 
 ##### context
 
 `ApplicationContext`
+
+The application context.
 
 #### Returns
 
@@ -481,11 +563,15 @@ The route to dispatch.
 
 > **initStrategies**(`context`): `void`
 
+Runs the `init<Strategy>` initializer for every recorded strategy.
+
 #### Parameters
 
 ##### context
 
 `ApplicationContext`
+
+The application context.
 
 #### Returns
 
@@ -501,6 +587,8 @@ The route to dispatch.
 
 > **initStrategy**\<`T`\>(`context`, `strategyKey`, `name`, `defaultStrategy`): `void`
 
+Installs a single strategy from the context or its default.
+
 #### Type Parameters
 
 ##### T
@@ -513,17 +601,25 @@ The route to dispatch.
 
 `ApplicationContext`
 
+The application context.
+
 ##### strategyKey
 
 `string`
+
+The context key holding the strategy.
 
 ##### name
 
 `string`
 
+The instance property to assign.
+
 ##### defaultStrategy
 
 `T`
+
+The fallback strategy.
 
 #### Returns
 
@@ -539,11 +635,15 @@ The route to dispatch.
 
 > **initThemeResolver**(`context`): `void`
 
+Builds and installs the theme resolver.
+
 #### Parameters
 
 ##### context
 
 `ApplicationContext`
+
+The application context.
 
 #### Returns
 
@@ -559,11 +659,15 @@ The route to dispatch.
 
 > **initViewResolvers**(`context`): `void`
 
+Installs the view-resolver chain.
+
 #### Parameters
 
 ##### context
 
 `ApplicationContext`
+
+The application context.
 
 #### Returns
 
@@ -598,6 +702,8 @@ The route associated with the [ModelAndView](../../model-and-view/classes/ModelA
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once the view has rendered.
 
 #### Implementation of
 

@@ -1,4 +1,5 @@
 /**
+ * Path-pattern comparison.
  */
 
 import { Comparator } from '@ndigo/core';

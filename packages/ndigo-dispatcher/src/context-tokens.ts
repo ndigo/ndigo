@@ -1,4 +1,5 @@
 /**
+ * Context tokens for dispatcher services.
  */
 
 import { ContextToken } from '@ndigo/factory';

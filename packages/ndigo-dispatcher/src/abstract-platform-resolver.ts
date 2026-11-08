@@ -1,4 +1,5 @@
 /**
+ * Abstract argument resolvers for platform-specific values.
  */
 
 import { isNil } from '@ndigo/util/types';
@@ -64,6 +65,11 @@ export abstract class AbstractPlatformArgumentResolver extends AbstractNamedValu
      * validation, AD-07) runs after type conversion so schemas see coerced
      * values. Without this invocation the hook was dead on every resolver
      * extending this base — only the BIND path invoked it.
+     *
+     * @param parameter - The method parameter being resolved.
+     * @param route - The current route.
+     * @param mapping - The route handler mapping.
+     * @returns The resolved and converted value.
      */
     resolveArgument(parameter: MethodParameter, route: Route, mapping: unknown): unknown {
         const resolveValue = (v: unknown) => v ?? parameter.defaultValue,
@@ -219,16 +225,35 @@ export abstract class AbstractDataBindingArgumentResolver extends AbstractPlatfo
      */
     protected abstract getSourceData(source: string, route: Route): Record<string, unknown> | undefined;
 
+    /**
+     * Delegates to the shared whole-source binding pipeline.
+     *
+     * @param parameter - The method parameter being bound.
+     * @param route - The current route.
+     * @param mapping - The route handler mapping.
+     * @returns The bound, converted, and validated value.
+     */
     resolveArgument(parameter: MethodParameter, route: Route, mapping: unknown): unknown {
         return this.resolveBoundArgument(parameter, route, mapping, (source, currentRoute) =>
             this.getSourceData(source, currentRoute)
         );
     }
 
+    /**
+     * Whether the parameter binds one of this platform's whole sources.
+     *
+     * @param parameter - The method parameter to check.
+     * @returns `true` when the parameter type matches a bindable source.
+     */
     supportsParameter(parameter: MethodParameter): boolean {
         return this.bindableSources.some((source) => MethodParameterType.data(source).equals(parameter.type));
     }
 
+    /**
+     * Satisfies the named-value contract; whole-source binding never calls it.
+     *
+     * @returns Always `null`.
+     */
     protected resolveName(): null {
         // Whole-source binding overrides `resolveArgument` entirely; this stub
         // satisfies the abstract named-value contract and is never called.
@@ -259,6 +284,15 @@ export abstract class AbstractCookieValueArgumentResolver extends AbstractPlatfo
      */
     protected abstract getCookieJar(route: Route): Record<string, unknown> | undefined;
 
+    /**
+     * Reads a cookie value, or the whole jar when unnamed.
+     *
+     * @param name - The cookie name, or `''`.
+     * @param _parameter - Unused; the cookie resolver needs no parameter metadata.
+     * @param route - The current route.
+     * @param _mapping - Unused; cookies are not mapping-scoped.
+     * @returns The cookie value or the whole jar.
+     */
     protected resolveName(name: string, _parameter: MethodParameter, route: Route, _mapping: unknown): unknown {
         const jar = this.getCookieJar(route);
         if (name === '') {
@@ -270,6 +304,12 @@ export abstract class AbstractCookieValueArgumentResolver extends AbstractPlatfo
         return typeof value === 'string' ? value : undefined;
     }
 
+    /**
+     * Whether the parameter binds a cookie value.
+     *
+     * @param parameter - The method parameter to check.
+     * @returns `true` for cookie parameter types.
+     */
     supportsParameter(parameter: MethodParameter): boolean {
         return MethodParameterType.COOKIE.equals(parameter.type);
     }

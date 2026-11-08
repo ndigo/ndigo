@@ -85,17 +85,23 @@ Set by [validatedBy](../../zod-validated-by/functions/validatedBy.md) (Zod-backe
 
 > `readonly` **convertType**: \{ `source`: `unknown`; `target`: `unknown`; \} \| `undefined`
 
+The type-based conversion pair.
+
 ***
 
 ### defaultValue
 
 > `readonly` **defaultValue**: `string` \| `null`
 
+Value used when the parameter is absent.
+
 ***
 
 ### name
 
 > `readonly` **name**: `string`
+
+The extractor's source name.
 
 ***
 
@@ -116,11 +122,15 @@ key, which may differ from the extractor's source name (e.g.
 
 > `readonly` **prefix**: `string` \| `null`
 
+Optional source-name prefix.
+
 ***
 
 ### required
 
 > `readonly` **required**: `boolean`
+
+Whether the parameter is required.
 
 ***
 
@@ -148,17 +158,21 @@ bound value is a real instance of the target (see
 
 > `readonly` **type**: [`MethodParameterType`](MethodParameterType.md)
 
+The parameter type.
+
 ## Methods
 
 ### toJSON()
 
 > **toJSON**(): `JSONObject`
 
-Returns a JSON-safe representation of the value.
+Serializes the parameter metadata.
 
 #### Returns
 
 `JSONObject`
+
+The JSON representation.
 
 #### Implementation of
 
@@ -170,11 +184,13 @@ Returns a JSON-safe representation of the value.
 
 > **toString**(): `string`
 
-Returns a string representation of the value.
+Returns the parameter name.
 
 #### Returns
 
 `string`
+
+The parameter name.
 
 #### Implementation of
 

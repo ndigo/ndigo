@@ -51,6 +51,8 @@ This is a CONFIGURATION error (application startup time).
 
 > `readonly` **controllerName**: `string` \| `null`
 
+The controller name, when known.
+
 #### Inherited from
 
 [`ParameterBindingError`](ParameterBindingError.md).[`controllerName`](ParameterBindingError.md#controllername)
@@ -61,6 +63,8 @@ This is a CONFIGURATION error (application startup time).
 
 > `readonly` **methodName**: `string` \| `null`
 
+The handler method name, when known.
+
 #### Inherited from
 
 [`ParameterBindingError`](ParameterBindingError.md).[`methodName`](ParameterBindingError.md#methodname)
@@ -70,6 +74,8 @@ This is a CONFIGURATION error (application startup time).
 ### parameterName
 
 > `readonly` **parameterName**: `string` \| `null`
+
+The parameter name, when known.
 
 #### Inherited from
 

@@ -6,6 +6,8 @@
 
 # route-match-result
 
+Route match results.
+
 ## Classes
 
 - [RouteMatchResult](classes/RouteMatchResult.md)

@@ -1,4 +1,5 @@
 /**
+ * Interceptor execution chain for route handlers.
  */
 
 import { RouteHandlerInterceptor } from './route-handler-interceptor';
@@ -96,6 +97,7 @@ export default class RouteHandlerExecutionChain {
      *
      * @param route - The current route.
      * @param mv - The model and view produced by the handler.
+     * @returns A promise that resolves once every interceptor has run.
      */
     async applyPostHandle(route: Route, mv: ModelAndView): Promise<void> {
         const interceptors = this.#interceptors,
@@ -139,6 +141,7 @@ export default class RouteHandlerExecutionChain {
      *
      * @param route - The current route.
      * @param error - The error that terminated execution, if any.
+     * @returns A promise that resolves once every completion callback has run.
      */
     async triggerCompleteHandle(route: Route, error: Error | null = null): Promise<void> {
         const interceptors = this.#interceptors;

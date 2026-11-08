@@ -6,6 +6,8 @@
 
 # logging-interceptor
 
+Logging route-handler interceptor.
+
 ## Classes
 
 - [LoggingRouteHandlerInterceptor](classes/LoggingRouteHandlerInterceptor.md)

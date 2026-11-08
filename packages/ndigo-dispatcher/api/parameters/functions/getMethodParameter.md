@@ -16,10 +16,16 @@ Get method parameters
 
 `unknown`
 
+The class prototype or constructor.
+
 ### propertyKey
 
 `string` \| `symbol`
 
+The method name.
+
 ## Returns
 
 [`MethodParameter`](../../parameter-types/classes/MethodParameter.md)[] \| `undefined`
+
+The stored parameters, or `undefined` when none were registered.

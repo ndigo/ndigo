@@ -1,4 +1,5 @@
 /**
+ * Route-handler mapping strategy.
  */
 
 import { ApplicationContext } from '@ndigo/context';
@@ -17,8 +18,20 @@ import { StrategyInitializer } from './strategy-initializer';
  * application context.
  */
 export interface RouteHandlerMappingStrategy {
+    /** The ordered mappings a route is resolved against. */
     handlerMappings: RouteHandlerMapping[];
+    /**
+     * Installs the handler mappings from the context or the defaults.
+     *
+     * @param context - The application context.
+     */
     initHandlerMappings(context: ApplicationContext): void;
+    /**
+     * Resolves a route to its execution chain.
+     *
+     * @param route - The route to resolve.
+     * @returns The execution chain for the route.
+     */
     getHandler(route: Route): RouteHandlerExecutionChain;
 }
 

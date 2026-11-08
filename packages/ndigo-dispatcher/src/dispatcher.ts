@@ -1,4 +1,5 @@
 /**
+ * The dispatcher contract and implementation.
  */
 
 import { Null } from '@ndigo/core';
@@ -192,7 +193,9 @@ export class AbstractDispatcher
 
     /**
      * Dispatches the given route for processing.
+     *
      * @param route - The route to dispatch.
+     * @returns A promise that resolves once the route is fully processed.
      */
     async dispatch(route: Route): Promise<void> {
         let dispatchError: Error | null = null,
@@ -227,8 +230,10 @@ export class AbstractDispatcher
 
     /**
      * Render the given `ModelAndView`. This is the last stage of handling a route.
+     *
      * @param mv - The {@link ModelAndView} to render.
      * @param route - The route associated with the {@link ModelAndView}.
+     * @returns A promise that resolves once the view has rendered.
      */
     async render(mv: ModelAndView, route: Route): Promise<void> {
         const language = this.languageResolver ? this.languageResolver.resolveLanguage(route) : '',

@@ -1,4 +1,5 @@
 /**
+ * Route error-resolver contracts.
  */
 
 import { Constructable } from '@ndigo/core';

@@ -14,6 +14,8 @@ Resolves a converter based on convertType using ConversionService.
 
 ### convertType?
 
+The source/target type pair.
+
 #### source
 
 `unknown`
@@ -25,3 +27,5 @@ Resolves a converter based on convertType using ConversionService.
 ## Returns
 
 [`ArgumentValueConverter`](../type-aliases/ArgumentValueConverter.md)
+
+The matching converter, or an identity converter.

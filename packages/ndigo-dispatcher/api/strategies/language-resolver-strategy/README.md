@@ -6,6 +6,8 @@
 
 # strategies/language-resolver-strategy
 
+Language-resolver strategy.
+
 ## Interfaces
 
 - [LanguageResolverStrategy](interfaces/LanguageResolverStrategy.md)

@@ -60,6 +60,11 @@ function buildCondition(
  * Builds a query-parameter condition expression (`?filter=all` →
  * `'filter=all'`; presence check when `value` is omitted → `'flag'`;
  * negation → `'!flag'` / `'flag!=x'`).
+ *
+ * @param name - The parameter name.
+ * @param value - The expected value, or omitted for a presence check.
+ * @param options - Builder options (negation, case sensitivity).
+ * @returns The condition expression.
  */
 export function queryParamCondition(name: string, value?: string, options?: ConditionBuilderOptions): string {
     return buildCondition('query', name, value, options);
@@ -69,6 +74,11 @@ export function queryParamCondition(name: string, value?: string, options?: Cond
  * Builds a matrix-parameter condition expression (`/path;color=red` →
  * `'color=red'`; presence check when `value` is omitted → `'color'`;
  * negation → `'!color'` / `'color!=x'`).
+ *
+ * @param name - The parameter name.
+ * @param value - The expected value, or omitted for a presence check.
+ * @param options - Builder options (negation, case sensitivity).
+ * @returns The condition expression.
  */
 export function matrixParamCondition(name: string, value?: string, options?: ConditionBuilderOptions): string {
     return buildCondition('matrix', name, value, options);

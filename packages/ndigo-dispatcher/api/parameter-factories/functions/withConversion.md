@@ -16,7 +16,11 @@ Wraps a parameter extractor to enforce type-based conversion via ConversionServi
 
 [`ParameterExtractor`](../../parameter-types/type-aliases/ParameterExtractor.md)
 
+The extractor to wrap.
+
 ### convertType
+
+The source/target conversion pair.
 
 #### source
 
@@ -29,6 +33,8 @@ Wraps a parameter extractor to enforce type-based conversion via ConversionServi
 ## Returns
 
 [`ParameterExtractor`](../../parameter-types/type-aliases/ParameterExtractor.md)
+
+The extractor with the conversion applied.
 
 ## Example
 

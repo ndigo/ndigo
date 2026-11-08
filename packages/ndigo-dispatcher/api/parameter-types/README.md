@@ -6,6 +6,8 @@
 
 # parameter-types
 
+Method parameter types.
+
 ## Classes
 
 - [MethodParameter](classes/MethodParameter.md)

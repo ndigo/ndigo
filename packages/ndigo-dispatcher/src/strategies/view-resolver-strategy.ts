@@ -1,4 +1,5 @@
 /**
+ * View-resolver strategy.
  */
 
 import { ApplicationContext } from '@ndigo/context';
@@ -12,7 +13,13 @@ import { StrategyInitializer } from './strategy-initializer';
  * initializer that installs them from the application context.
  */
 export interface ViewResolverStrategy {
+    /** The ordered view resolvers. */
     viewResolvers: ViewResolver[];
+    /**
+     * Installs the view-resolver chain.
+     *
+     * @param context - The application context.
+     */
     initViewResolvers(context: ApplicationContext): void;
 }
 

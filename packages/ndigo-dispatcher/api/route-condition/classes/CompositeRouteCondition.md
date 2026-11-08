@@ -44,6 +44,8 @@ Conditions to combine.
 
 > `readonly` **routeConditions**: [`RouteConditionHolder`](RouteConditionHolder.md)[]
 
+The condition holders.
+
 ## Accessors
 
 ### conditions
@@ -51,6 +53,8 @@ Conditions to combine.
 #### Get Signature
 
 > **get** **conditions**(): [`RouteCondition`](../interfaces/RouteCondition.md)\<`unknown`\>[]
+
+The unwrapped conditions.
 
 ##### Returns
 
@@ -64,9 +68,13 @@ Conditions to combine.
 
 > **get** **content**(): [`RouteCondition`](../interfaces/RouteCondition.md)\<`unknown`\>[]
 
+The content parts (empty when no conditions).
+
 ##### Returns
 
 [`RouteCondition`](../interfaces/RouteCondition.md)\<`unknown`\>[]
+
+The condition's constituent parts.
 
 #### Overrides
 
@@ -80,9 +88,13 @@ Conditions to combine.
 
 > **get** **infix**(): `string`
 
+The conjunction separator.
+
 ##### Returns
 
 `string`
+
+The separator used when rendering the parts.
 
 #### Overrides
 
@@ -96,7 +108,7 @@ Conditions to combine.
 
 > **get** **isEmpty**(): `boolean`
 
-Whether this condition contains no content.
+Whether the composite has no conditions.
 
 ##### Returns
 
@@ -113,6 +125,8 @@ Whether this condition contains no content.
 #### Get Signature
 
 > **get** **length**(): `number`
+
+The number of conditions.
 
 ##### Returns
 

@@ -1,4 +1,5 @@
 /**
+ * Route match results.
  */
 import { createNull, JSONValue, Serializable } from '@ndigo/core';
 

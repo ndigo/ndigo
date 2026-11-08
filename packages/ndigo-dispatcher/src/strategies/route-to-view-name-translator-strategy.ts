@@ -1,4 +1,5 @@
 /**
+ * Route-to-view-name translator strategy.
  */
 
 import { ApplicationContext } from '@ndigo/context';
@@ -13,8 +14,20 @@ import { StrategyInitializer } from './strategy-initializer';
  * initializer that installs it from the application context.
  */
 export interface RouteToViewNameTranslatorStrategy {
+    /** The translator that derives a view name from a route. */
     routeToViewNameTranslator: RouteToViewNameTranslator;
+    /**
+     * Installs the view-name translator.
+     *
+     * @param context - The application context.
+     */
     initRouteToViewNameTranslator(context: ApplicationContext): void;
+    /**
+     * Derives the default view name for a route.
+     *
+     * @param route - The route to translate.
+     * @returns The default view name.
+     */
     getDefaultViewName(route: Route): string;
 }
 

@@ -16,6 +16,10 @@ Wraps a converter so `null` and `undefined` are preserved.
 
 [`ArgumentValueConverter`](../type-aliases/ArgumentValueConverter.md)
 
+The converter to wrap.
+
 ## Returns
 
 [`ArgumentValueConverter`](../type-aliases/ArgumentValueConverter.md)
+
+The optional-aware converter.

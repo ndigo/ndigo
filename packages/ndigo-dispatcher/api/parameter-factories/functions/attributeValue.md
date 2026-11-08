@@ -16,13 +16,19 @@ Factory function: Create a route attribute parameter extractor.
 
 `string`
 
+The route-attribute name.
+
 ### options?
 
 [`ParameterExtractorOptions`](../../parameter-types/interfaces/ParameterExtractorOptions.md) = `{}`
 
+Required/default/conversion options.
+
 ## Returns
 
 [`ParameterExtractor`](../../parameter-types/type-aliases/ParameterExtractor.md)
+
+The parameter extractor.
 
 ## Example
 

@@ -16,11 +16,15 @@ them from the application context.
 
 > **handlerAdapters**: [`RouteHandlerAdapter`](../../../route-handler-adapter/interfaces/RouteHandlerAdapter.md)[]
 
+The ordered adapters consulted for a handler.
+
 ## Methods
 
 ### getHandlerAdapter()
 
 > **getHandlerAdapter**(`handler`): [`RouteHandlerAdapter`](../../../route-handler-adapter/interfaces/RouteHandlerAdapter.md)
+
+Finds the adapter that supports a handler.
 
 #### Parameters
 
@@ -28,9 +32,13 @@ them from the application context.
 
 `object` \| `undefined`
 
+The resolved handler.
+
 #### Returns
 
 [`RouteHandlerAdapter`](../../../route-handler-adapter/interfaces/RouteHandlerAdapter.md)
+
+The supporting adapter.
 
 ***
 
@@ -38,11 +46,15 @@ them from the application context.
 
 > **initHandlerAdapters**(`context`): `void`
 
+Installs the handler adapters from the context or the defaults.
+
 #### Parameters
 
 ##### context
 
 `ApplicationContext`
+
+The application context.
 
 #### Returns
 

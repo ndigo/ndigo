@@ -47,6 +47,8 @@ The expression to parse.
 
 > `readonly` **isNegated**: `boolean`
 
+Whether the expression is negated (`!`).
+
 #### Inherited from
 
 [`AbstractNameValueExpression`](../../route-condition/classes/AbstractNameValueExpression.md).[`isNegated`](../../route-condition/classes/AbstractNameValueExpression.md#isnegated)
@@ -56,6 +58,8 @@ The expression to parse.
 ### name
 
 > `readonly` **name**: `string`
+
+The expression name.
 
 #### Inherited from
 
@@ -75,6 +79,8 @@ Parameter names that may satisfy this expression.
 
 > `readonly` `optional` **value?**: `string`
 
+The parsed value, when present.
+
 #### Inherited from
 
 [`AbstractNameValueExpression`](../../route-condition/classes/AbstractNameValueExpression.md).[`value`](../../route-condition/classes/AbstractNameValueExpression.md#value)
@@ -87,9 +93,13 @@ Parameter names that may satisfy this expression.
 
 > **get** **isCaseSensitiveName**(): `boolean`
 
+Query-parameter names are always case-sensitive.
+
 ##### Returns
 
 `boolean`
+
+Whether the name comparison is case-sensitive.
 
 #### Overrides
 

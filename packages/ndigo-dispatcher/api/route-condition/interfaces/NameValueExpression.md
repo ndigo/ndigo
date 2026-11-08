@@ -20,11 +20,15 @@ Describes a parsed name/value expression.
 
 > **isNegated**: `boolean`
 
+Whether the expression is negated (`!`).
+
 ***
 
 ### name
 
 > **name**: `string`
+
+The expression name.
 
 ***
 
@@ -32,3 +36,4 @@ Describes a parsed name/value expression.
 
 > `optional` **value?**: `T`
 
+The parsed value, when the expression has `=`.

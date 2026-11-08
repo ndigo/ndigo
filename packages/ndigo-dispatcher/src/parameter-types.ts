@@ -1,4 +1,5 @@
 /**
+ * Method parameter types.
  */
 
 import { isString } from '@ndigo/util/types';
@@ -40,7 +41,9 @@ export type ParameterExtractor = {
 
 /** Options for creating a parameter extractor with type-based conversion support. */
 export interface ParameterExtractorOptions {
+    /** Whether the parameter is required. */
     required?: boolean;
+    /** Value used when the parameter is absent. */
     defaultValue?: string;
     /** Type-based converter: specifies source and target types for ConversionService lookup. */
     convertType?: { source: unknown; target: unknown };
@@ -52,9 +55,13 @@ export interface ParameterExtractorOptions {
  * being bound for.
  */
 export interface ParameterValueConversionContext {
+    /** The bound parameter name. */
     name: string;
+    /** The method parameter it came from. */
     parameter: MethodParameter;
+    /** The route being resolved. */
     route: unknown;
+    /** The route mapping. */
     mapping: unknown;
 }
 
@@ -74,20 +81,35 @@ export type ParameterMap = Record<string, ParameterExtractor>;
  * Method parameter type enum
  */
 export class MethodParameterType implements Equatable, Serializable {
+    /** Cookie parameter type. */
     static COOKIE: MethodParameterType;
+    /** Matrix parameter type. */
     static MATRIX: MethodParameterType;
+    /** Path-variable parameter type. */
     static PATH: MethodParameterType;
+    /** Query parameter type. */
     static QUERY: MethodParameterType;
+    /** History-state parameter type. */
     static HISTORY_STATE: MethodParameterType;
+    /** Request-session parameter type. */
     static REQUEST_SESSION: MethodParameterType;
+    /** Session-storage parameter type. */
     static SESSION_STORAGE: MethodParameterType;
+    /** Local-storage parameter type. */
     static LOCAL_STORAGE: MethodParameterType;
+    /** Route-attribute parameter type. */
     static ATTRIBUTE: MethodParameterType;
+    /** Header parameter type. */
     static HEADER: MethodParameterType;
+    /** Body parameter type. */
     static BODY: MethodParameterType;
+    /** Route-object parameter type. */
     static ROUTE: MethodParameterType;
+    /** Socket-session parameter type. */
     static SOCKET_SESSION: MethodParameterType;
+    /** Multipart-file parameter type. */
     static MULTIPART_FILE: MethodParameterType;
+    /** Request-part parameter type. */
     static REQUEST_PART: MethodParameterType;
 
     /**
@@ -105,6 +127,12 @@ export class MethodParameterType implements Equatable, Serializable {
         return (dataBindingTypes[source] ??= new MethodParameterType(`data-${source}:value`));
     }
 
+    /**
+     * Resolves a serialized type string to its cached instance.
+     *
+     * @param type - The serialized type string.
+     * @returns The matching type, or `null`.
+     */
     static fromType(type: string): MethodParameterType | null {
         // data-* types are cached instances, not static fields — resolve them
         // from the source cache so serialized types round-trip.
@@ -129,6 +157,7 @@ export class MethodParameterType implements Equatable, Serializable {
         return null;
     }
 
+    /** The serialized type string (e.g. `query:value`). */
     readonly type!: string;
 
     get [Symbol.toStringTag](): string {
@@ -144,14 +173,30 @@ export class MethodParameterType implements Equatable, Serializable {
         });
     }
 
+    /**
+     * Compares this type with another value by serialized form.
+     *
+     * @param value - The value to compare.
+     * @returns Whether both are the same parameter type.
+     */
     equals(value: unknown): boolean {
         return value instanceof MethodParameterType && value.type === this.type;
     }
 
+    /**
+     * Serializes the type.
+     *
+     * @returns The serialized type string.
+     */
     toJSON(): string {
         return this.toString();
     }
 
+    /**
+     * Returns the serialized type string.
+     *
+     * @returns The type string.
+     */
     toString(): string {
         return this.type;
     }
@@ -180,11 +225,17 @@ MethodParameterType.REQUEST_PART = new MethodParameterType('request-part:value')
  * Method parameter metadata
  */
 export class MethodParameter implements Serializable {
+    /** The extractor's source name. */
     readonly name!: string;
+    /** The parameter type. */
     readonly type!: MethodParameterType;
+    /** Whether the parameter is required. */
     readonly required!: boolean;
+    /** Value used when the parameter is absent. */
     readonly defaultValue!: string | null;
+    /** The type-based conversion pair. */
     readonly convertType!: { source: unknown; target: unknown } | undefined;
+    /** Optional source-name prefix. */
     readonly prefix!: string | null;
     /**
      * Optional post-bind validator/converter applied to the resolved value.
@@ -240,6 +291,11 @@ export class MethodParameter implements Serializable {
         this.schema = schema;
     }
 
+    /**
+     * Serializes the parameter metadata.
+     *
+     * @returns The JSON representation.
+     */
     toJSON(): JSONObject {
         const json = createNull();
         json.name = this.name;
@@ -251,6 +307,11 @@ export class MethodParameter implements Serializable {
         return json;
     }
 
+    /**
+     * Returns the parameter name.
+     *
+     * @returns The parameter name.
+     */
     toString(): string {
         return this.name;
     }

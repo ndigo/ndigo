@@ -1,4 +1,5 @@
 /**
+ * Argument value conversion registry.
  */
 
 import { Route } from '@ndigo/router';
@@ -48,12 +49,22 @@ export const identityArgumentValueConverter: ArgumentValueConverter = (value) =>
 
 const toLowerString = (value: unknown): string => `${value}`.toLowerCase();
 
-/** Converts a value to a number using JavaScript's built-in coercion rules. */
+/**
+ * Converts a value to a number using JavaScript's built-in coercion rules.
+ *
+ * @param value - The value to convert.
+ * @returns The numeric value (`NaN` when not coercible).
+ */
 export function toNumberValue(value: unknown): number {
     return Number(value);
 }
 
-/** Converts common string and boolean inputs into a boolean value. */
+/**
+ * Converts common string and boolean inputs into a boolean value.
+ *
+ * @param value - The value to convert.
+ * @returns The converted boolean.
+ */
 export function toBooleanValue(value: unknown): boolean {
     if (typeof value === 'boolean') {
         return value;
@@ -72,24 +83,44 @@ export function toBooleanValue(value: unknown): boolean {
     return Boolean(value);
 }
 
-/** Converts a value to a `Date` instance. */
+/**
+ * Converts a value to a `Date` instance.
+ *
+ * @param value - A date string, timestamp, or `Date`.
+ * @returns The parsed date.
+ */
 export function toDateValue(value: unknown): Date {
     // Date's constructor accepts any coercible input (ISO strings, timestamps, Date).
     return new Date(value as string | number | Date);
 }
 
-/** Parses a JSON string into a JavaScript value. */
+/**
+ * Parses a JSON string into a JavaScript value.
+ *
+ * @param value - The JSON text.
+ * @returns The parsed value.
+ */
 export function toJSONStringValue(value: unknown): unknown {
     // JSON.parse coerces its argument to a string before parsing.
     return JSON.parse(value as string);
 }
 
-/** Creates a converter that splits a string into list items. */
+/**
+ * Creates a converter that splits a string into list items.
+ *
+ * @param separator - The separator to split on (default `,`).
+ * @returns The split converter.
+ */
 export function createStringSplitConverter(separator: string | RegExp = ','): ArgumentValueConverter {
     return (value) => `${value}`.split(separator);
 }
 
-/** Wraps a converter so `null` and `undefined` are preserved. */
+/**
+ * Wraps a converter so `null` and `undefined` are preserved.
+ *
+ * @param converter - The converter to wrap.
+ * @returns The optional-aware converter.
+ */
 export function createOptionalConverter(converter: ArgumentValueConverter): ArgumentValueConverter {
     return (value, context) => {
         if (value === null || value === undefined) {
@@ -148,7 +179,12 @@ function resolveTypeConverter(sourceType: unknown, targetType: unknown): Argumen
 // Main resolver function
 // ---------------------------------------------------------------------------
 
-/** Resolves a converter based on convertType using ConversionService. */
+/**
+ * Resolves a converter based on convertType using ConversionService.
+ *
+ * @param convertType - The source/target type pair.
+ * @returns The matching converter, or an identity converter.
+ */
 export function resolveConverter(convertType?: { source: unknown; target: unknown }): ArgumentValueConverter {
     // Use type-based conversion via ConversionService
     if (convertType && convertType.source && convertType.target) {
@@ -167,7 +203,16 @@ function getParameterTypeName(parameter: MethodParameter): string {
     return parameter.type?.toString?.() || 'unknown';
 }
 
-/** Converts a resolved argument value and wraps conversion failures. */
+/**
+ * Converts a resolved argument value and wraps conversion failures.
+ *
+ * @param convertType - The source/target type pair.
+ * @param value - The resolved raw value.
+ * @param parameter - The method parameter descriptor.
+ * @param route - The route being resolved.
+ * @param mapping - The method's route mapping.
+ * @returns The converted value.
+ */
 export function convertArgumentValue(
     convertType: { source: unknown; target: unknown } | undefined,
     value: unknown,
@@ -197,6 +242,10 @@ export function convertArgumentValue(
  * Used by resolvers whose values are already final (e.g. uploaded file parts),
  * so the shared required/default-value handling still runs without any type
  * conversion.
+ *
+ * @param _convertType - Ignored; present to match the converter signature.
+ * @param value - The resolved value.
+ * @returns The value unchanged.
  */
 export function passthroughArgumentValue(
     _convertType: { source: unknown; target: unknown } | undefined,

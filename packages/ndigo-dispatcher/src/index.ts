@@ -1,4 +1,5 @@
 /**
+ * Public API of `@ndigo/dispatcher`.
  */
 
 export * from './argument-resolver';

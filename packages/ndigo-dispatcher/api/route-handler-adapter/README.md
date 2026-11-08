@@ -6,6 +6,8 @@
 
 # route-handler-adapter
 
+Route-handler adapter contracts.
+
 ## Classes
 
 - [AbstractHandlerMethodAdapter](classes/AbstractHandlerMethodAdapter.md)

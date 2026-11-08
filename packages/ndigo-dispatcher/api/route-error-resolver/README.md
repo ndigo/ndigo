@@ -6,6 +6,8 @@
 
 # route-error-resolver
 
+Route error-resolver contracts.
+
 ## Classes
 
 - [AbstractHandlerMethodErrorResolver](classes/AbstractHandlerMethodErrorResolver.md)

@@ -1,4 +1,5 @@
 /**
+ * Route mapping-info naming strategies.
  */
 
 import { RouteHandlerMethod, RouteHandlerMethodMappingNamingStrategy } from './route-handler-method';

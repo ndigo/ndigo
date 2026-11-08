@@ -17,17 +17,23 @@ the context names none.
 
 > **strategies**: `string`[]
 
+Names of the strategies this composition contributes.
+
 ## Methods
 
 ### addStrategy()
 
 > **addStrategy**(`name`): `void`
 
+Records a strategy name to initialize later.
+
 #### Parameters
 
 ##### name
 
 `string`
+
+The strategy name.
 
 #### Returns
 
@@ -39,6 +45,8 @@ the context names none.
 
 > **getDefaultStrategy**\<`T`\>(`context`, `key`, `strategy`): `T`
 
+Installs a default strategy under a context key.
+
 #### Type Parameters
 
 ##### T
@@ -51,23 +59,33 @@ the context names none.
 
 `ApplicationContext`
 
+The application context.
+
 ##### key
 
 `string`
+
+The context key to register under.
 
 ##### strategy
 
 `T`
 
+The default strategy value.
+
 #### Returns
 
 `T`
+
+The strategy now registered in the context.
 
 ***
 
 ### initCollectionStrategy()
 
 > **initCollectionStrategy**\<`T`\>(`context`, `collectionStrategyKey`, `strategyKey`, `name`, `defaultStrategy`): `void`
+
+Installs a collection strategy from the context or its default.
 
 #### Type Parameters
 
@@ -81,21 +99,31 @@ the context names none.
 
 `ApplicationContext`
 
+The application context.
+
 ##### collectionStrategyKey
 
 `string`
+
+The context key holding the collection.
 
 ##### strategyKey
 
 `string`
 
+The context key holding a single strategy.
+
 ##### name
 
 `string`
 
+The instance property to assign.
+
 ##### defaultStrategy
 
 `T`[]
+
+The fallback collection.
 
 #### Returns
 
@@ -107,11 +135,15 @@ the context names none.
 
 > **initStrategies**(`context`): `void`
 
+Runs the `init<Strategy>` initializer for every recorded strategy.
+
 #### Parameters
 
 ##### context
 
 `ApplicationContext`
+
+The application context.
 
 #### Returns
 
@@ -122,6 +154,8 @@ the context names none.
 ### initStrategy()
 
 > **initStrategy**\<`T`\>(`context`, `strategyKey`, `name`, `defaultStrategy`): `void`
+
+Installs a single strategy from the context or its default.
 
 #### Type Parameters
 
@@ -135,17 +169,25 @@ the context names none.
 
 `ApplicationContext`
 
+The application context.
+
 ##### strategyKey
 
 `string`
+
+The context key holding the strategy.
 
 ##### name
 
 `string`
 
+The instance property to assign.
+
 ##### defaultStrategy
 
 `T`
+
+The fallback strategy.
 
 #### Returns
 

@@ -16,13 +16,19 @@ Factory function: Create a query parameter extractor
 
 `string`
 
+The query parameter name, or `''` for the whole query.
+
 ### options?
 
 [`ParameterExtractorOptions`](../../parameter-types/interfaces/ParameterExtractorOptions.md) = `{}`
 
+Required/default/conversion options.
+
 ## Returns
 
 [`ParameterExtractor`](../../parameter-types/type-aliases/ParameterExtractor.md)
+
+The parameter extractor.
 
 ## Example
 

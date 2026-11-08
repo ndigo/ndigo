@@ -6,6 +6,8 @@
 
 # strategies/route-handler-adapter-strategy
 
+Route-handler adapter strategy.
+
 ## Interfaces
 
 - [RouteHandlerAdapterStrategy](interfaces/RouteHandlerAdapterStrategy.md)

@@ -1,4 +1,5 @@
 /**
+ * Route-handler adapter contracts.
  */
 
 import { like } from '@ndigo/util/types';
@@ -73,6 +74,12 @@ export abstract class AbstractHandlerMethodAdapter
         return 'HandlerMethodAdapter';
     }
 
+    /**
+     * Whether this adapter can handle the given handler.
+     *
+     * @param handler - The resolved handler.
+     * @returns `true` when the adapter supports it.
+     */
     supports(handler: object | undefined): boolean {
         return handler instanceof RouteHandlerMethod && this._supports(handler);
     }
@@ -85,6 +92,12 @@ export abstract class AbstractHandlerMethodAdapter
      * @returns The model and view produced by invoking the handler.
      */
     abstract handle(route: Route, handler: RouteHandlerMethod): Promise<ModelAndView>;
+    /**
+     * Adapter-specific support check.
+     *
+     * @param handler - The handler method to check.
+     * @returns `true` when the adapter handles it.
+     */
     protected abstract _supports(handler: RouteHandlerMethod): boolean;
 }
 

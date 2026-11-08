@@ -78,6 +78,8 @@ error and returns the value the error resolver chain produced, mirroring
 
 > **argumentResolvers**: [`HandlerMethodArgumentResolver`](../../argument-resolver/interfaces/HandlerMethodArgumentResolver.md)[]
 
+The resolvers consulted to bind the parameters.
+
 #### Inherited from
 
 [`RouteHandlerMethod`](RouteHandlerMethod.md).[`argumentResolvers`](RouteHandlerMethod.md#argumentresolvers)
@@ -87,6 +89,8 @@ error and returns the value the error resolver chain produced, mirroring
 ### factory
 
 > `readonly` **factory**: [`Factory`](#) \| `null`
+
+The factory that owns the handler, when constructed from one.
 
 #### Inherited from
 
@@ -98,6 +102,8 @@ error and returns the value the error resolver chain produced, mirroring
 
 > `readonly` **handler**: `object`
 
+The handler instance.
+
 #### Inherited from
 
 [`RouteHandlerMethod`](RouteHandlerMethod.md).[`handler`](RouteHandlerMethod.md#handler)
@@ -107,6 +113,8 @@ error and returns the value the error resolver chain produced, mirroring
 ### method
 
 > `readonly` **method**: `string`
+
+The method name to invoke on the handler.
 
 #### Inherited from
 
@@ -118,6 +126,8 @@ error and returns the value the error resolver chain produced, mirroring
 
 > `readonly` **name**: `string` \| `null`
 
+The handler's registered factory name.
+
 #### Inherited from
 
 [`RouteHandlerMethod`](RouteHandlerMethod.md).[`name`](RouteHandlerMethod.md#name)
@@ -128,6 +138,8 @@ error and returns the value the error resolver chain produced, mirroring
 
 > **parameters**: [`MethodParameter`](../../parameter-types/classes/MethodParameter.md)[]
 
+The method's parameter metadata.
+
 #### Inherited from
 
 [`RouteHandlerMethod`](RouteHandlerMethod.md).[`parameters`](RouteHandlerMethod.md#parameters)
@@ -137,6 +149,8 @@ error and returns the value the error resolver chain produced, mirroring
 ### invoke()
 
 > **invoke**\<`ModelAndView`\>(`route`, `error`, `handlerMethod`): `ModelAndView`
+
+Invokes the error handler with the route and thrown error.
 
 #### Type Parameters
 
@@ -150,17 +164,25 @@ error and returns the value the error resolver chain produced, mirroring
 
 [`Route`](#)
 
+The route whose handler failed.
+
 ##### error
 
 `Error`
+
+The thrown error.
 
 ##### handlerMethod
 
 [`RouteHandlerMethod`](RouteHandlerMethod.md)
 
+The handler method that threw.
+
 #### Returns
 
 `ModelAndView`
+
+The resolved error response.
 
 #### Overrides
 
@@ -172,11 +194,13 @@ error and returns the value the error resolver chain produced, mirroring
 
 > **toString**(): `string`
 
-Returns a string representation of an object.
+Renders the handler and its parameters for debug output.
 
 #### Returns
 
 `string`
+
+A human-readable description.
 
 #### Inherited from
 

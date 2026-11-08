@@ -6,6 +6,8 @@
 
 # route-mapping-info-naming-strategy
 
+Route mapping-info naming strategies.
+
 ## Classes
 
 - [RouteMappingInfoHandlerMethodMappingNamingStrategy](classes/RouteMappingInfoHandlerMethodMappingNamingStrategy.md)

@@ -1,4 +1,5 @@
 /**
+ * The model-and-view result type.
  */
 
 import { View, AbstractView } from '@ndigo/view';

@@ -1,4 +1,5 @@
 /**
+ * Query-parameter route conditions.
  */
 
 import { Route } from '@ndigo/router';
@@ -19,6 +20,7 @@ export class QueryParamExpression extends AbstractNameValueExpression<string> {
      */
     readonly namesToMatch!: Set<string>;
 
+    /** Query-parameter names are always case-sensitive. */
     get isCaseSensitiveName(): boolean {
         return true;
     }
@@ -92,10 +94,12 @@ export class QueryParamCondition extends AbstractRouteCondition<QueryParamCondit
      */
     readonly expressions!: Set<QueryParamExpression>;
 
+    /** The condition's expressions. */
     get content(): QueryParamExpression[] {
         return Array.from(this.expressions);
     }
 
+    /** The conjunction separator. */
     get infix(): string {
         return ' && ';
     }

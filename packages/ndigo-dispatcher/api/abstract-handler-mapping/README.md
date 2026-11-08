@@ -6,6 +6,8 @@
 
 # abstract-handler-mapping
 
+Abstract handler-mapping registry.
+
 ## Classes
 
 - [AbstractHandlerMapping](classes/AbstractHandlerMapping.md)

@@ -16,11 +16,15 @@ initializer that installs it from the application context.
 
 > **routeToViewNameTranslator**: [`RouteToViewNameTranslator`](../../../route-to-view-name-translator/interfaces/RouteToViewNameTranslator.md)
 
+The translator that derives a view name from a route.
+
 ## Methods
 
 ### getDefaultViewName()
 
 > **getDefaultViewName**(`route`): `string`
+
+Derives the default view name for a route.
 
 #### Parameters
 
@@ -28,9 +32,13 @@ initializer that installs it from the application context.
 
 [`Route`](#)
 
+The route to translate.
+
 #### Returns
 
 `string`
+
+The default view name.
 
 ***
 
@@ -38,11 +46,15 @@ initializer that installs it from the application context.
 
 > **initRouteToViewNameTranslator**(`context`): `void`
 
+Installs the view-name translator.
+
 #### Parameters
 
 ##### context
 
 `ApplicationContext`
+
+The application context.
 
 #### Returns
 

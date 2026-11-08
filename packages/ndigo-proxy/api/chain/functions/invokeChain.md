@@ -26,14 +26,28 @@ Runs the matched interceptor chain for one call and returns its result.
 
 readonly [`MethodInterceptor`](../../interceptor/interfaces/MethodInterceptor.md)[]
 
+The pre-matched, pre-sorted interceptor chain.
+
 ### invocation
 
 [`MethodInvocation`](../../interceptor/interfaces/MethodInvocation.md)
+
+The invocation passed to every interceptor.
 
 ### tail
 
 () => `unknown`
 
+Invokes the installed method on the target.
+
 ## Returns
 
 `unknown`
+
+The chain's final result.
+
+## Example
+
+```ts
+const result = invokeChain(interceptors, invocation, () => method.apply(target, args));
+```

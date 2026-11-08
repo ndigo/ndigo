@@ -6,6 +6,8 @@
 
 # index
 
+Public API of `@ndigo/content` — messages, language codes, themes, and
+
 ## References
 
 ### AR

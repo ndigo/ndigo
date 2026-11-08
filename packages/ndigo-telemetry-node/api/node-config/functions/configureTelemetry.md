@@ -23,6 +23,19 @@ call.
 
 [`TelemetryConfig`](../interfaces/TelemetryConfig.md)
 
+Exporter, sampler, instrumentation, and severity settings.
+
 ## Returns
 
 `NodeSDK` \| `undefined`
+
+Nothing; the providers are registered as a side effect.
+
+## Example
+
+```ts
+configureTelemetry({
+    traceExporter: { url: 'http://localhost:4318/v1/traces' },
+    sampler: { ratio: 0.1 },
+});
+```

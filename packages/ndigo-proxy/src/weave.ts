@@ -28,7 +28,9 @@ import {
  * pre-matched, pre-sorted interceptor chain.
  */
 export interface MethodChainSpec {
+    /** The method's static descriptor. */
     readonly descriptor: MethodDescriptor;
+    /** The pre-matched, pre-sorted interceptor chain. */
     readonly interceptors: readonly MethodInterceptor[];
 }
 
@@ -46,6 +48,9 @@ const INTERCEPTED = new WeakMap<object, object>();
  * Whether the instance (a woven proxy or the raw target it advises) was
  * already woven by this package. Guards against double-wrapping when
  * processing runs twice.
+ *
+ * @param instance - The object to inspect.
+ * @returns `true` when the object is already registered as woven.
  */
 export function isIntercepted(instance: object): boolean {
     return INTERCEPTED.has(instance);
@@ -64,6 +69,9 @@ const WOVEN_BY = new WeakMap<object, object>();
  * The `interception(...)` processor known to have woven `instance`, or
  * `undefined` when it was woven standalone (`interceptMethods`) or by an
  * unrecorded producer. Not an interception check — see {@link isIntercepted}.
+ *
+ * @param instance - The woven proxy to inspect.
+ * @returns The owning processor, or `undefined` for standalone weaving.
  */
 export function wovenBy(instance: object): object | undefined {
     return WOVEN_BY.get(instance);
@@ -122,6 +130,11 @@ function entryNameOf(instance: object): string {
  * Interceptors are sorted once per entry by {@link sortInterceptors} (missing
  * order counts as 0; ties keep registration order) — the `order` contract
  * holds on every path.
+ *
+ * @param instance - The object whose method surface is enumerated.
+ * @param entryName - The container entry name recorded on each descriptor.
+ * @param interceptors - The advice to match against each method.
+ * @returns The matched method specs, in prototype enumeration order.
  */
 export function collectMethodSpecs(
     instance: object,
@@ -191,6 +204,11 @@ export function interceptAndRegister(target: object, specs: readonly MethodChain
  * @returns A woven proxy; the existing proxy when `instance` (or the raw
  *   target it advises) was already woven; or `instance` itself when nothing
  *   matches.
+ *
+ * @example
+ * ```ts
+ * const audited = interceptMethods(service, [new AuditInterceptor()]);
+ * ```
  */
 export function interceptMethods<T extends object>(instance: T, interceptors: readonly MethodInterceptor[]): T {
     const existing = INTERCEPTED.get(instance);
@@ -213,6 +231,9 @@ export function interceptMethods<T extends object>(instance: T, interceptors: re
  * chain above them; for class prototypes (service-client surfaces) it starts
  * on the prototype itself. The processor and the weaver must agree on this
  * enumeration so interception and target-binding cover the same method set.
+ *
+ * @param target - The instance or prototype to enumerate.
+ * @returns The string-named data methods on its prototype chain.
  */
 export function enumeratePrototypeMethods(target: object): readonly string[] {
     const names = new Set<string>();

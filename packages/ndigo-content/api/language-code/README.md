@@ -6,6 +6,8 @@
 
 # language-code
 
+BCP 47 language-code value object with canonical parsing and comparison.
+
 ## Classes
 
 - [LanguageCode](classes/LanguageCode.md)

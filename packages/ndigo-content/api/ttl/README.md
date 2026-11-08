@@ -6,6 +6,8 @@
 
 # ttl
 
+TTL-cached content loading with explicit invalidation.
+
 ## Classes
 
 - [TtlContentSource](classes/TtlContentSource.md)

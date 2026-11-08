@@ -1,7 +1,4 @@
 /**
- */
-
-/**
  * Metadata-only method annotations for `@ndigo/proxy`.
  *
  * An annotation decorator writes a value into the TC39 `Symbol.metadata`
@@ -54,6 +51,11 @@ export interface AnnotationKey<T> {
  * @typeParam T - The annotation value type.
  * @param name - Unique annotation name within the `proxy:` namespace.
  * @returns An {@link AnnotationKey} callable with the annotation value.
+ *
+ * @example
+ * ```ts
+ * const audited = methodAnnotation<{ action: string }>('audited');
+ * ```
  */
 export function methodAnnotation<T = unknown>(name: string): AnnotationKey<T> {
     if (typeof name !== 'string' || name.length === 0) {
@@ -88,6 +90,11 @@ export function methodAnnotation<T = unknown>(name: string): AnnotationKey<T> {
  * @param key - The {@link AnnotationKey} the value was stored under.
  * @param methodName - The method to look up.
  * @returns The annotation value, or `undefined` when the method carries none.
+ *
+ * @example
+ * ```ts
+ * const action = annotationOf(OrderService, audited, 'submit');
+ * ```
  */
 export function annotationOf<T>(target: unknown, key: AnnotationKey<T>, methodName: PropertyKey): T | undefined {
     let carrier: unknown =

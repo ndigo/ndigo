@@ -1,4 +1,5 @@
 /**
+ * The `name`-aware custom element contract and mixin.
  */
 import { Constructable } from '@ndigo/core';
 
@@ -7,6 +8,7 @@ import { Constructable } from '@ndigo/core';
  * reflected as a `name` property by the `AsNdigoElement` mixin.
  */
 export interface NdigoElement {
+    /** The element's tag name. */
     name: string;
 }
 

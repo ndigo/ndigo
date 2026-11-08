@@ -6,6 +6,8 @@
 
 # tag-mapping
 
+`@tagMapping` decorator metadata for custom-element tags.
+
 ## Variables
 
 - [TagMapping](variables/TagMapping.md)

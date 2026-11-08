@@ -15,3 +15,9 @@ Builds the Stricli application for `@ndigo/cli`.
 `Application`\<`CommandContext`\>
 
 The application instance.
+
+## Example
+
+```ts
+const app = buildCliApp();
+```

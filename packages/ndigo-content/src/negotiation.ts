@@ -1,4 +1,5 @@
 /**
+ * Content negotiation from `Accept-Language` headers.
  */
 import { compareBy, invertComparison, numberComparator } from '@ndigo/core';
 

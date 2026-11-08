@@ -1,4 +1,6 @@
 /**
+ * The content-source contract, its static implementation, and awareness
+ * mixins.
  */
 import { like } from '@ndigo/util/types';
 import { Constructable } from '@ndigo/core';

@@ -1,4 +1,5 @@
 /**
+ * TTL-cached content loading with explicit invalidation.
  */
 import { ContentSource } from './content';
 import { LanguageCode } from './language-code';
@@ -91,6 +92,10 @@ export class TtlContentSource implements ContentSource {
 
     /**
      * Evicts the cache entry for a specific key+language pair.
+     *
+     * @param key - The content key.
+     * @param language - The language whose entry is evicted.
+     * @returns Nothing; the entry is removed when present.
      */
     invalidateEntry(key: string, language: string | LanguageCode): void {
         this.#cache.delete(`${key}:${String(language)}`);

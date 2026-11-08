@@ -6,6 +6,8 @@
 
 # browser-mock-client
 
+BrowserMockClient — drive `BrowserDispatcher` with a DOM-free capture target.
+
 ## Classes
 
 - [BrowserMockClient](classes/BrowserMockClient.md)

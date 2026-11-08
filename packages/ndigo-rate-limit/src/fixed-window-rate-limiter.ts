@@ -22,6 +22,7 @@ import { type RateLimitPolicy, type RateLimitResult, type RateLimiter, validateR
  * (key, window) pair, sliding to a fresh window once `windowMs` elapses.
  */
 export class FixedWindowRateLimiter implements RateLimiter {
+    /** Backend identifier (`'fixed-window'`). */
     readonly kind = 'fixed-window';
 
     readonly #buckets = new Map<string, { windowStart: number; windowMs: number; count: number }>();
@@ -36,6 +37,13 @@ export class FixedWindowRateLimiter implements RateLimiter {
         }
     }
 
+    /**
+     * Accounts one request for `key` under `policy`.
+     *
+     * @param key - The client key whose budget is consumed.
+     * @param policy - The window and limit to enforce.
+     * @returns Whether the request is allowed and, when denied, the wait before retry.
+     */
     async consume(key: string, policy: RateLimitPolicy): Promise<RateLimitResult> {
         validateRateLimitPolicy(policy);
         const now = Date.now();

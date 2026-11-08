@@ -1,4 +1,5 @@
 /**
+ * Client-side hydration of server-rendered islands.
  */
 import { getLogger } from '@ndigo/log';
 

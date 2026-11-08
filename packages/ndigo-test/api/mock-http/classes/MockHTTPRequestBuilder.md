@@ -19,6 +19,8 @@ expect(res.json()).toEqual([...]);
 
 > **new MockHTTPRequestBuilder**(`mockHTTP`, `request`): `MockHTTPRequestBuilder`
 
+Creates a builder for one request against `mockHTTP`.
+
 #### Parameters
 
 ##### mockHTTP
@@ -195,9 +197,13 @@ Set the client socket address (the rate limiter's key; SEC-6).
 
 `string`
 
+The socket address to report.
+
 #### Returns
 
 `this`
+
+This builder.
 
 ***
 

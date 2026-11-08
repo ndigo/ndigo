@@ -6,6 +6,8 @@
 
 # annotation
 
+Metadata-only method annotations for `@ndigo/proxy`.
+
 ## Interfaces
 
 - [AnnotationKey](interfaces/AnnotationKey.md)

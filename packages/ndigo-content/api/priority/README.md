@@ -6,6 +6,8 @@
 
 # priority
 
+Priority-ordered content source selection.
+
 ## Classes
 
 - [PriorityContentSource](classes/PriorityContentSource.md)

@@ -22,6 +22,10 @@ export class ServerSentEventViewInstrumentation extends AbstractBaseInstrumentat
         super('server-sent-event-view');
     }
 
+    /**
+     * Patches `ServerSentEventView#renderTo` to record SSE rendering spans and
+     * byte counts.
+     */
     enable(): void {
         this._wrap(
             ServerSentEventView.prototype,
@@ -81,6 +85,9 @@ export class ServerSentEventViewInstrumentation extends AbstractBaseInstrumentat
         );
     }
 
+    /**
+     * Restores the original `renderTo` method.
+     */
     disable(): void {
         this._unwrap(ServerSentEventView.prototype, 'renderTo');
     }

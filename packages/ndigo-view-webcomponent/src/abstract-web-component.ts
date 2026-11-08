@@ -1,4 +1,5 @@
 /**
+ * Base class for Ndigo custom elements with event delegation and lifecycle hooks.
  */
 import { EventEmitter, EventType, EventHandlers, ApplicationContext, ApplicationContextAware } from '@ndigo/context';
 import { IllegalStateError } from '@ndigo/core';
@@ -241,6 +242,8 @@ export abstract class AbstractWebComponent
 
     /**
      * Returns the event types with registered listeners.
+     *
+     * @returns The event types that currently have listeners.
      */
     eventTypes(): EventType[] {
         return Array.from(this.#wrappedListeners.keys());
@@ -248,6 +251,9 @@ export abstract class AbstractWebComponent
 
     /**
      * Returns the number of listeners for a type.
+     *
+     * @param type - The event type to inspect.
+     * @returns The number of registered listeners.
      */
     listenerCount(type: EventType): number {
         const typeMap = this.#wrappedListeners.get(type.toString());
@@ -256,6 +262,9 @@ export abstract class AbstractWebComponent
 
     /**
      * Returns a snapshot of listeners for a type.
+     *
+     * @param type - The event type to inspect.
+     * @returns The listeners registered for `type`.
      */
     listeners(type: EventType): Function[] {
         const typeMap = this.#wrappedListeners.get(type.toString());
@@ -353,6 +362,9 @@ export abstract class AbstractWebComponent
         });
     }
 
+    /**
+     * Re-binds delegated listeners and emits `connect` after a reconnect.
+     */
     connectedCallback(): void {
         // disconnectedCallback() unbinds every DOM listener; re-attach the
         // delegated root listeners so delegation survives a reconnect.
@@ -361,6 +373,9 @@ export abstract class AbstractWebComponent
         this.handleConnect();
     }
 
+    /**
+     * Unbinds delegated listeners and emits `disconnect`.
+     */
     disconnectedCallback(): void {
         this.#binder.unbindAll();
         this.emit('disconnect');

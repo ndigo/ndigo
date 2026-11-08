@@ -21,6 +21,10 @@ enumeration so interception and target-binding cover the same method set.
 
 `object`
 
+The instance or prototype to enumerate.
+
 ## Returns
 
 readonly `string`[]
+
+The string-named data methods on its prototype chain.

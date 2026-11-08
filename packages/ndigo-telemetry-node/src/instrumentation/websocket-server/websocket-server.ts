@@ -76,6 +76,10 @@ export class WebSocketServerInstrumentation extends AbstractBaseInstrumentation 
         this.#roomAttribute = options.roomAttribute ?? false;
     }
 
+    /**
+     * Patches session registration/removal to record connection spans, counts,
+     * and backpressure metrics.
+     */
     enable(): void {
         // `InstrumentationBase` calls `enable()` from ITS constructor —
         // before this subclass's field initializers (or any `#private`
@@ -190,6 +194,9 @@ export class WebSocketServerInstrumentation extends AbstractBaseInstrumentation 
         });
     }
 
+    /**
+     * Restores the original registry methods.
+     */
     disable(): void {
         this._unwrap(NodeSocketSessionRegistry.prototype, 'register');
         this._unwrap(NodeSocketSessionRegistry.prototype, 'remove');

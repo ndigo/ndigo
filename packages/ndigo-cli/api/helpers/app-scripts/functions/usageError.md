@@ -19,6 +19,10 @@ Rendering and exit behavior are owned by the CLI application config in
 
 `string`
 
+The usage error message.
+
 ## Returns
 
 `Error` & `object`
+
+An `Error` carrying exit code `2`.

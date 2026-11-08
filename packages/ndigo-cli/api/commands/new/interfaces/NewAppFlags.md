@@ -14,11 +14,15 @@ The flags `ndigo new` forwards to the `app` generator's schema.
 
 > `optional` **description?**: `string`
 
+One-line app description.
+
 ***
 
 ### dryRun?
 
 > `optional` **dryRun?**: `boolean`
+
+Preview the file plan without writing.
 
 ***
 
@@ -26,11 +30,15 @@ The flags `ndigo new` forwards to the `app` generator's schema.
 
 > `optional` **kind?**: `"browser"` \| `"node"`
 
+The application kind (browser or node).
+
 ***
 
 ### number?
 
 > `optional` **number?**: `number`
+
+The reading-order number (`apps/NN-…`).
 
 ***
 
@@ -38,9 +46,12 @@ The flags `ndigo new` forwards to the `app` generator's schema.
 
 > `optional` **port?**: `number`
 
+The dev port.
+
 ***
 
 ### preset?
 
 > `optional` **preset?**: `string`
 
+The scaffold preset.

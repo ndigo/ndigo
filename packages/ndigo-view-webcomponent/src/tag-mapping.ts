@@ -1,4 +1,5 @@
 /**
+ * `@tagMapping` decorator metadata for custom-element tags.
  */
 import '@tsmetadata/polyfill';
 import { Constructable } from '@ndigo/core';

@@ -1,4 +1,5 @@
 /**
+ * Theme contracts, a static resolver, and structural guards.
  */
 import { like } from '@ndigo/util/types';
 import { ContentSource } from './content';

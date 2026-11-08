@@ -6,6 +6,8 @@
 
 # request-builder
 
+Builds a Ndigo `Route` and `NodeRequest` from a MockHTTP request spec.
+
 ## Interfaces
 
 - [MockRequest](interfaces/MockRequest.md)

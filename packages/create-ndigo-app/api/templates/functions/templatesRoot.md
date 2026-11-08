@@ -13,3 +13,5 @@ Absolute path to the templates root shipped with the package.
 ## Returns
 
 `string`
+
+The absolute `templates/` directory.

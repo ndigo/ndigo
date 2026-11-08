@@ -32,3 +32,10 @@ The parsed flags.
 `string`[]
 
 The argv appended to `exec nx g @ndigo/generators:app`.
+
+## Example
+
+```ts
+newAppArgv('todo', { kind: 'browser', port: 3000 });
+// ['--name', 'todo', '--kind', 'browser', '--port', '3000']
+```

@@ -80,9 +80,13 @@ DELETE request builder.
 
 `string`
 
+The path, e.g. `/todos`.
+
 #### Returns
 
 [`MockHTTPRequestBuilder`](MockHTTPRequestBuilder.md)
+
+A builder for the request.
 
 ***
 
@@ -104,6 +108,8 @@ The path, e.g. `/todos`.
 
 [`MockHTTPRequestBuilder`](MockHTTPRequestBuilder.md)
 
+A builder for the request.
+
 ***
 
 ### patch()
@@ -118,9 +124,13 @@ PATCH request builder.
 
 `string`
 
+The path, e.g. `/todos`.
+
 #### Returns
 
 [`MockHTTPRequestBuilder`](MockHTTPRequestBuilder.md)
+
+A builder for the request.
 
 ***
 
@@ -136,9 +146,13 @@ POST request builder.
 
 `string`
 
+The path, e.g. `/todos`.
+
 #### Returns
 
 [`MockHTTPRequestBuilder`](MockHTTPRequestBuilder.md)
+
+A builder for the request.
 
 ***
 
@@ -154,9 +168,13 @@ PUT request builder.
 
 `string`
 
+The path, e.g. `/todos`.
+
 #### Returns
 
 [`MockHTTPRequestBuilder`](MockHTTPRequestBuilder.md)
+
+A builder for the request.
 
 ***
 
@@ -172,9 +190,13 @@ QUERY (RFC 9889) request builder.
 
 `string`
 
+The path, e.g. `/todos`.
+
 #### Returns
 
 [`MockHTTPRequestBuilder`](MockHTTPRequestBuilder.md)
+
+A builder for the request.
 
 ***
 

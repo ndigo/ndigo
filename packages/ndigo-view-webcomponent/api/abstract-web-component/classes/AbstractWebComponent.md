@@ -50,6 +50,8 @@ batched rendering, and lifecycle hooks.
 
 > **name**: `string`
 
+The element's tag name.
+
 #### Inherited from
 
 `AsNdigoElement(HTMLElement).name`
@@ -97,6 +99,8 @@ Example: `.btn` to `handleBtn`, `change .input` to `handleInput`.
 
 > **connectedCallback**(): `void`
 
+Re-binds delegated listeners and emits `connect` after a reconnect.
+
 #### Returns
 
 `void`
@@ -134,6 +138,8 @@ The created HTMLElement.
 ### disconnectedCallback()
 
 > **disconnectedCallback**(): `void`
+
+Unbinds delegated listeners and emits `disconnect`.
 
 #### Returns
 
@@ -185,6 +191,8 @@ Returns the event types with registered listeners.
 
 `EventType`[]
 
+The event types that currently have listeners.
+
 #### Implementation of
 
 `EventEmitter.eventTypes`
@@ -203,9 +211,13 @@ Returns the number of listeners for a type.
 
 `EventType`
 
+The event type to inspect.
+
 #### Returns
 
 `number`
+
+The number of registered listeners.
 
 #### Implementation of
 
@@ -225,9 +237,13 @@ Returns a snapshot of listeners for a type.
 
 `EventType`
 
+The event type to inspect.
+
 #### Returns
 
 `Function`[]
+
+The listeners registered for `type`.
 
 #### Implementation of
 

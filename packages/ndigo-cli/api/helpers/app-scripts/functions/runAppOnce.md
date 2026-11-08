@@ -35,6 +35,8 @@ The missing-script hint.
 
 `string`[] = `[]`
 
+Arguments appended to the resolved script.
+
 ## Returns
 
 `Promise`\<`number`\>

@@ -17,11 +17,15 @@ left component/header un-runnable when their required fields were missing.
 
 > `optional` **author?**: `string`
 
+The generated author line.
+
 ***
 
 ### className?
 
 > `optional` **className?**: `string`
+
+The generated class name.
 
 ***
 
@@ -29,11 +33,15 @@ left component/header un-runnable when their required fields were missing.
 
 > `optional` **description?**: `string`
 
+The package description.
+
 ***
 
 ### file?
 
 > `optional` **file?**: `string`
+
+The target file (header generator).
 
 ***
 
@@ -41,11 +49,15 @@ left component/header un-runnable when their required fields were missing.
 
 > `optional` **force?**: `boolean`
 
+Overwrite an existing file.
+
 ***
 
 ### jobs?
 
 > `optional` **jobs?**: `boolean`
+
+Include jobs support in the package.
 
 ***
 
@@ -53,11 +65,15 @@ left component/header un-runnable when their required fields were missing.
 
 > `optional` **module?**: `string`
 
+The module name for the header.
+
 ***
 
 ### name?
 
 > `optional` **name?**: `string`
+
+The generated symbol or package name.
 
 ***
 
@@ -65,11 +81,15 @@ left component/header un-runnable when their required fields were missing.
 
 > `optional` **package?**: `string`
 
+The target package directory name.
+
 ***
 
 ### path?
 
 > `optional` **path?**: `string`
+
+The target path (readme generator).
 
 ***
 
@@ -77,3 +97,4 @@ left component/header un-runnable when their required fields were missing.
 
 > `optional` **summary?**: `string`
 
+The doc summary for the generated file.

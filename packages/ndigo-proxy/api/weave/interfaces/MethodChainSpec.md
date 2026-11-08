@@ -15,9 +15,12 @@ pre-matched, pre-sorted interceptor chain.
 
 > `readonly` **descriptor**: [`MethodDescriptor`](../../interceptor/interfaces/MethodDescriptor.md)
 
+The method's static descriptor.
+
 ***
 
 ### interceptors
 
 > `readonly` **interceptors**: readonly [`MethodInterceptor`](../../interceptor/interfaces/MethodInterceptor.md)[]
 
+The pre-matched, pre-sorted interceptor chain.

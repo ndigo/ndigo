@@ -50,6 +50,10 @@ export interface RateLimiter {
      * fail loud (`RangeError`) on malformed policies and MUST be safe for
      * concurrent use. The async signature is deliberate (AD-39): a shared
      * backend resolves its counter over a network hop.
+     *
+     * @param key - The client key whose budget is consumed.
+     * @param policy - The window and limit to enforce.
+     * @returns Whether the request may proceed and, when denied, the wait before retry.
      */
     consume(key: string, policy: RateLimitPolicy): Promise<RateLimitResult>;
 }
@@ -57,6 +61,16 @@ export interface RateLimiter {
 /**
  * Structural type guard for {@link RateLimiter} — used where a bean or
  * option is resolved by shape instead of the {@link "context-tokens".RATE_LIMITER | RATE_LIMITER} token.
+ *
+ * @param value - The candidate value to inspect.
+ * @returns `true` when the value implements the limiter contract.
+ *
+ * @example
+ * ```ts
+ * if (likeRateLimiter(candidate)) {
+ *     await candidate.consume('client-1', policy);
+ * }
+ * ```
  */
 export function likeRateLimiter(value: unknown): value is RateLimiter {
     return like({ kind: String, consume: Function })(value);
@@ -65,6 +79,16 @@ export function likeRateLimiter(value: unknown): value is RateLimiter {
 /**
  * Validates a {@link RateLimitPolicy} — shared by the `@rateLimit`
  * decorator (decoration-time) and every limiter (call-time).
+ *
+ * @param policy - The policy to validate.
+ * @param where - Label used in the thrown error (defaults to `"rate limit policy"`).
+ * @returns Nothing; throws on an invalid policy.
+ * @throws When `limit` or `windowMs` is not a positive integer.
+ *
+ * @example
+ * ```ts
+ * validateRateLimitPolicy({ limit: 100, windowMs: 60_000 });
+ * ```
  */
 export function validateRateLimitPolicy(policy: RateLimitPolicy, where = 'rate limit policy'): void {
     if (!Number.isInteger(policy.limit) || policy.limit < 1) {

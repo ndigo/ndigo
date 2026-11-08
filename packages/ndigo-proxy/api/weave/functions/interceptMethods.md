@@ -46,3 +46,9 @@ The advice to apply (matched per method).
 A woven proxy; the existing proxy when `instance` (or the raw
   target it advises) was already woven; or `instance` itself when nothing
   matches.
+
+## Example
+
+```ts
+const audited = interceptMethods(service, [new AuditInterceptor()]);
+```

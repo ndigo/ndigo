@@ -6,6 +6,8 @@
 
 # composite
 
+Composite content and theme sources that delegate across a list.
+
 ## Classes
 
 - [CompositeContentSource](classes/CompositeContentSource.md)

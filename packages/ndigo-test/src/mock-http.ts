@@ -128,6 +128,8 @@ export class MockHTTPRequestBuilder {
     #request: MockRequest;
 
     /**
+     * Creates a builder for one request against `mockHTTP`.
+     *
      * @param mockHTTP - The owning MockHTTP.
      * @param request - The base request spec.
      */
@@ -219,6 +221,9 @@ export class MockHTTPRequestBuilder {
 
     /**
      * Set the client socket address (the rate limiter's key; SEC-6).
+     *
+     * @param remoteAddress - The socket address to report.
+     * @returns This builder.
      */
     remoteAddress(remoteAddress: string): this {
         this.#request.remoteAddress = remoteAddress;
@@ -478,32 +483,62 @@ export class MockHTTP {
         return toResult(prepared, response);
     }
 
-    /** GET request builder. @param path - The path, e.g. `/todos`. */
+    /**
+     * GET request builder.
+     *
+     * @param path - The path, e.g. `/todos`.
+     * @returns A builder for the request.
+     */
     get(path: string): MockHTTPRequestBuilder {
         return this.#method('GET', path);
     }
 
-    /** POST request builder. */
+    /**
+     * POST request builder.
+     *
+     * @param path - The path, e.g. `/todos`.
+     * @returns A builder for the request.
+     */
     post(path: string): MockHTTPRequestBuilder {
         return this.#method('POST', path);
     }
 
-    /** PUT request builder. */
+    /**
+     * PUT request builder.
+     *
+     * @param path - The path, e.g. `/todos`.
+     * @returns A builder for the request.
+     */
     put(path: string): MockHTTPRequestBuilder {
         return this.#method('PUT', path);
     }
 
-    /** DELETE request builder. */
+    /**
+     * DELETE request builder.
+     *
+     * @param path - The path, e.g. `/todos`.
+     * @returns A builder for the request.
+     */
     delete(path: string): MockHTTPRequestBuilder {
         return this.#method('DELETE', path);
     }
 
-    /** PATCH request builder. */
+    /**
+     * PATCH request builder.
+     *
+     * @param path - The path, e.g. `/todos`.
+     * @returns A builder for the request.
+     */
     patch(path: string): MockHTTPRequestBuilder {
         return this.#method('PATCH', path);
     }
 
-    /** QUERY (RFC 9889) request builder. */
+    /**
+     * QUERY (RFC 9889) request builder.
+     *
+     * @param path - The path, e.g. `/todos`.
+     * @returns A builder for the request.
+     */
     query(path: string): MockHTTPRequestBuilder {
         return this.#method('QUERY', path);
     }

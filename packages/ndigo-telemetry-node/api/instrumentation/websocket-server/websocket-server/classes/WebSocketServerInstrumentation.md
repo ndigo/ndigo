@@ -63,7 +63,7 @@ Room-attribute opt-in (see
 
 > **disable**(): `void`
 
-Hook for subclasses to wire up `_unwrap` calls.
+Restores the original registry methods.
 
 #### Returns
 
@@ -79,7 +79,8 @@ Hook for subclasses to wire up `_unwrap` calls.
 
 > **enable**(): `void`
 
-Hook for subclasses to wire up `_wrap` calls.
+Patches session registration/removal to record connection spans, counts,
+and backpressure metrics.
 
 #### Returns
 

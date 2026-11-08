@@ -143,6 +143,12 @@ export function cachedBootApp(sources: Function[]): NdigoTestApp {
  * when the last reference is released.
  *
  * @param sources - The sources the app was booted with.
+ *
+ * @example
+ * ```ts
+ * const app = bootApp([AppConfiguration]);
+ * releaseCachedApp([AppConfiguration]);
+ * ```
  */
 export function releaseCachedApp(sources: Function[]): void {
     const key = sourcesKey(sources);

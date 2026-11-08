@@ -1,4 +1,5 @@
 /**
+ * Form-associated custom element support.
  */
 import { Constructable } from '@ndigo/core';
 

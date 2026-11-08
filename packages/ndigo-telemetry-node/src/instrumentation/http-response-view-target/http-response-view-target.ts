@@ -20,6 +20,9 @@ export class HTTPResponseViewTargetInstrumentation extends AbstractBaseInstrumen
         super('http-response-view-target');
     }
 
+    /**
+     * Patches `HTTPResponseViewTarget#commit` to record response-render spans.
+     */
     enable(): void {
         this._wrap(
             HTTPResponseViewTarget.prototype,
@@ -51,6 +54,9 @@ export class HTTPResponseViewTargetInstrumentation extends AbstractBaseInstrumen
         );
     }
 
+    /**
+     * Restores the original `commit` method.
+     */
     disable(): void {
         this._unwrap(HTTPResponseViewTarget.prototype, 'commit');
     }

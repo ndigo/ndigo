@@ -51,6 +51,8 @@ When `host` is null or undefined.
 
 > **destroyed**: `boolean`
 
+Whether the target has been destroyed.
+
 #### Implementation of
 
 `Destroyable.destroyed`
@@ -63,7 +65,7 @@ When `host` is null or undefined.
 
 > **get** **container**(): [`RenderHost`](../type-aliases/RenderHost.md)
 
-The host node that receives rendered output.
+The host node that receives rendered content.
 
 ##### Returns
 

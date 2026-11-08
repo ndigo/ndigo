@@ -23,14 +23,22 @@ holds on every path.
 
 `object`
 
+The object whose method surface is enumerated.
+
 ### entryName
 
 `string`
+
+The container entry name recorded on each descriptor.
 
 ### interceptors
 
 readonly [`MethodInterceptor`](../../interceptor/interfaces/MethodInterceptor.md)[]
 
+The advice to match against each method.
+
 ## Returns
 
 [`MethodChainSpec`](../interfaces/MethodChainSpec.md)[]
+
+The matched method specs, in prototype enumeration order.

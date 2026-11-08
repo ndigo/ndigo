@@ -1,4 +1,5 @@
 /**
+ * DOM view target that renders into a host node.
  */
 import { EventBridgeViewTarget } from '@ndigo/view';
 import { like } from '@ndigo/util/types';
@@ -50,6 +51,7 @@ export class DOMElementViewTarget implements DOMViewTarget, Destroyable {
     #eventMap: Record<string, string>;
     #applicationContext: EventEmitter | null;
     #binder: DOMEventBinder;
+    /** Whether the target has been destroyed. */
     destroyed: boolean;
 
     /**
@@ -76,6 +78,7 @@ export class DOMElementViewTarget implements DOMViewTarget, Destroyable {
         this.destroyed = false;
     }
 
+    /** The host node that receives rendered content. */
     get container(): RenderHost {
         return this.#host;
     }

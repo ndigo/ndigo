@@ -1,4 +1,5 @@
 /**
+ * Public API of `@ndigo/view-webcomponent` — custom-element views.
  */
 export * from './abstract-web-component';
 export * from './ndigo-element';

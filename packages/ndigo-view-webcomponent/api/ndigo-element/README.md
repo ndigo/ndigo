@@ -6,6 +6,8 @@
 
 # ndigo-element
 
+The `name`-aware custom element contract and mixin.
+
 ## Interfaces
 
 - [NdigoElement](interfaces/NdigoElement.md)

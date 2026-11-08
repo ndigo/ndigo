@@ -6,6 +6,8 @@
 
 # view
 
+A view that renders a custom element into a view target.
+
 ## Classes
 
 - [WebComponentView](classes/WebComponentView.md)

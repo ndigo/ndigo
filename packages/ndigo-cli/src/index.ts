@@ -45,6 +45,11 @@ import { dbRollbackCommand } from './commands/db/rollback.js';
  * Builds the Stricli application for `@ndigo/cli`.
  *
  * @returns The application instance.
+ *
+ * @example
+ * ```ts
+ * const app = buildCliApp();
+ * ```
  */
 export function buildCliApp() {
     const dbRouteMap = buildRouteMap({
@@ -156,6 +161,11 @@ export function buildCliApp() {
  *
  * @param args - The argv after the binary name (defaults to the process argv).
  * @returns When the process completes (commands set their own exit codes).
+ *
+ * @example
+ * ```ts
+ * await runCli(['db', 'status']);
+ * ```
  */
 export async function runCli(args: string[] = process.argv.slice(2)): Promise<unknown> {
     const app = buildCliApp();

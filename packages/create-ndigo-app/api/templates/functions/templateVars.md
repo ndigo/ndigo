@@ -16,6 +16,10 @@ Substitution variables derived from the scaffold options.
 
 [`ScaffoldOptions`](../../types/interfaces/ScaffoldOptions.md)
 
+The scaffold options.
+
 ## Returns
 
 `Record`\<`string`, `string` \| `number`\>
+
+The `{{key}}` substitution map.

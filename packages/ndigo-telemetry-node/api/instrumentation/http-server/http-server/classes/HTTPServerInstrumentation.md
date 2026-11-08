@@ -40,7 +40,7 @@ configureTelemetry({
 
 > **disable**(): `void`
 
-Hook for subclasses to wire up `_unwrap` calls.
+Restores the original `start` and `close` methods.
 
 #### Returns
 
@@ -56,7 +56,7 @@ Hook for subclasses to wire up `_unwrap` calls.
 
 > **enable**(): `void`
 
-Hook for subclasses to wire up `_wrap` calls.
+Patches `HTTPServer#start` and `#close` to record server lifecycle spans.
 
 #### Returns
 

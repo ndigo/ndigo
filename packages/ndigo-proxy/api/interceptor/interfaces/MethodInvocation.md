@@ -89,9 +89,13 @@ declaration wins). `undefined` when the method carries none.
 
 [`AnnotationKey`](../../annotation/interfaces/AnnotationKey.md)\<`T`\>
 
+The annotation handle to read.
+
 #### Returns
 
 `T` \| `undefined`
+
+The annotation value, or `undefined` when the method carries none.
 
 #### Inherited from
 

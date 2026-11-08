@@ -29,16 +29,27 @@ const GENERATOR_KINDS = [
  * left component/header un-runnable when their required fields were missing.
  */
 export interface GenerateFlags {
+    /** The generated symbol or package name. */
     name?: string;
+    /** The target package directory name. */
     package?: string;
+    /** The target file (header generator). */
     file?: string;
+    /** Overwrite an existing file. */
     force?: boolean;
+    /** The generated class name. */
     className?: string;
+    /** The doc summary for the generated file. */
     summary?: string;
+    /** The generated author line. */
     author?: string;
+    /** The package description. */
     description?: string;
+    /** The module name for the header. */
     module?: string;
+    /** The target path (readme generator). */
     path?: string;
+    /** Include jobs support in the package. */
     jobs?: boolean;
 }
 
@@ -69,6 +80,12 @@ const FLAG_KEYS_BY_KIND: Record<string, readonly string[]> = {
  * @param kind - The generator kind.
  * @param flags - The parsed flags.
  * @returns The argv appended to `exec nx g @ndigo/generators:<kind>`.
+ *
+ * @example
+ * ```ts
+ * generateArgv('component', { name: 'card', package: 'ndigo-views' });
+ * // ['--name', 'card', '--package', 'ndigo-views']
+ * ```
  */
 export function generateArgv(kind: string, flags: GenerateFlags): string[] {
     const argv: string[] = [];

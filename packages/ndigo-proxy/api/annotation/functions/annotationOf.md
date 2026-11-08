@@ -42,3 +42,9 @@ The method to look up.
 `T` \| `undefined`
 
 The annotation value, or `undefined` when the method carries none.
+
+## Example
+
+```ts
+const action = annotationOf(OrderService, audited, 'submit');
+```

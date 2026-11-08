@@ -6,6 +6,8 @@
 
 # content
 
+The content-source contract, its static implementation, and awareness
+
 ## Classes
 
 - [StaticContentSource](classes/StaticContentSource.md)

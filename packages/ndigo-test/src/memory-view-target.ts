@@ -30,18 +30,34 @@ export class MemoryViewTarget implements ViewTarget {
         return this.#lastRender;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Prepares the target for a render (there is no DOM container to clear).
+     *
+     * @param route - The route being rendered.
+     * @returns A promise that resolves immediately.
+     */
     async prepare(route: Route): Promise<void> {
         // No DOM container to clear.
         void route;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Captures a rendered output for assertions.
+     *
+     * @param output - The rendered output.
+     * @param model - The data model used for the render.
+     * @param route - The route that was rendered.
+     * @returns A promise that resolves once the render is captured.
+     */
     async commit(output: unknown, model: unknown, route: Route): Promise<void> {
         this.#lastRender = { output, model, route };
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Clears the captured render.
+     *
+     * @returns A promise that resolves once the capture is cleared.
+     */
     async clear(): Promise<void> {
         this.#lastRender = null;
     }

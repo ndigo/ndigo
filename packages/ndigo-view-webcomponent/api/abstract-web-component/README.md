@@ -6,6 +6,8 @@
 
 # abstract-web-component
 
+Base class for Ndigo custom elements with event delegation and lifecycle hooks.
+
 ## Classes
 
 - [AbstractWebComponent](classes/AbstractWebComponent.md)

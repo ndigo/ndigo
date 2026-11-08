@@ -1,21 +1,19 @@
 #!/usr/bin/env node
 /**
- * TSDoc coverage ratchet for the Ndigo monorepo.
+ * TSDoc coverage gate for the Ndigo monorepo.
  *
  * Scans package source trees (TypeScript AST, no build) and reports per-package
  * documentation depth: module summaries, undocumented members, missing
- * `@param`/`@returns`, and example/remarks counts. `--check` compares against
- * the committed baseline (`docs/tsdoc-baseline.json`) and fails on regression;
- * `--write-baseline` refreshes the baseline as packages are cleaned.
+ * `@param`/`@returns`, and example/remarks counts. `--check` fails when any
+ * package is above zero on a gated metric — there is no baseline to ratchet.
  *
  * Usage:
- *   node scripts/doc-coverage.mjs                 # print table
- *   node scripts/doc-coverage.mjs --json          # machine-readable
- *   node scripts/doc-coverage.mjs --write-baseline # refresh baseline
- *   node scripts/doc-coverage.mjs --check         # ratchet check (CI)
+ *   node scripts/doc-coverage.mjs         # print table
+ *   node scripts/doc-coverage.mjs --json  # machine-readable
+ *   node scripts/doc-coverage.mjs --check # gate (CI)
  */
 import { createRequire } from 'node:module';
-import { readdirSync, readFileSync, writeFileSync, existsSync, statSync } from 'node:fs';
+import { readdirSync, readFileSync, existsSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 
 const ROOT = new URL('..', import.meta.url).pathname.replace(/\/$/, '');
@@ -23,11 +21,9 @@ const require = createRequire(join(ROOT, 'package.json'));
 const ts = require('typescript-6');
 
 const PACKAGES = join(ROOT, 'packages');
-const BASELINE = join(ROOT, 'docs', 'tsdoc-baseline.json');
 
 const args = process.argv.slice(2);
 const JSON_OUT = args.includes('--json');
-const WRITE = args.includes('--write-baseline');
 const CHECK = args.includes('--check');
 
 function walk(dir, out = []) {
@@ -160,12 +156,6 @@ for (const dir of dirs) {
     if (s) results[dir] = s;
 }
 
-if (WRITE) {
-    writeFileSync(BASELINE, JSON.stringify(results, null, 2) + '\n');
-    console.log(`Wrote baseline for ${Object.keys(results).length} packages to ${BASELINE}`);
-    process.exit(0);
-}
-
 if (JSON_OUT) {
     console.log(JSON.stringify(results, null, 2));
     process.exit(0);
@@ -191,32 +181,26 @@ for (const dir of dirs) {
 }
 
 if (CHECK) {
-    if (!existsSync(BASELINE)) {
-        console.error('✗ No baseline found at', BASELINE, '— run --write-baseline first');
-        process.exit(1);
-    }
-    const baseline = JSON.parse(readFileSync(BASELINE, 'utf8'));
-    let regressions = 0;
+    const gated = [
+        ['modulesWithoutSummary', 'module summaries missing'],
+        ['membersUndocumented', 'undocumented members'],
+        ['methodsMissingParam', 'methods missing @param'],
+        ['functionsMissingReturns', 'functions missing @returns'],
+    ];
+    let failures = 0;
     for (const dir of dirs) {
-        const cur = results[dir];
-        const base = baseline[dir];
-        if (!cur || !base) continue;
-        const badKeys = [
-            'modulesWithoutSummary',
-            'membersUndocumented',
-            'methodsMissingParam',
-            'functionsMissingReturns',
-        ];
-        for (const k of badKeys) {
-            if (cur[k] > base[k]) {
-                regressions++;
-                console.error(`✗ ${dir}: ${k} regressed ${base[k]} → ${cur[k]}`);
+        const s = results[dir];
+        if (!s) continue;
+        for (const [key, label] of gated) {
+            if (s[key] > 0) {
+                failures++;
+                console.error(`✗ ${dir}: ${s[key]} ${label}`);
             }
         }
     }
-    if (regressions) {
-        console.error(`\n✗ ${regressions} regression(s) vs baseline`);
+    if (failures) {
+        console.error(`\n✗ ${failures} documentation gap(s) — the gate is zero tolerance`);
         process.exit(1);
     }
-    console.log('\n✓ No regressions vs baseline');
+    console.log(`\n✓ All ${Object.keys(results).length} packages are at zero on every doc-coverage metric`);
 }

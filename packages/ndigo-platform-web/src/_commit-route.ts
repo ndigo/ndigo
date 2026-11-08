@@ -1,4 +1,5 @@
 /**
+ * Route-commit pipeline shared by the web router adapters.
  */
 import { PathRoute, RouterExecutionChain } from '@ndigo/router';
 import type { RouterErrorHandler } from '@ndigo/router';

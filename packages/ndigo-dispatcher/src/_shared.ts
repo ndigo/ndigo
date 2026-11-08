@@ -1,4 +1,5 @@
 /**
+ * Shared helpers used by the dispatcher mapping and resolution paths.
  */
 
 import { isString } from '@ndigo/util/types';

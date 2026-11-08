@@ -1,4 +1,5 @@
 /**
+ * Route match pairing a mapping with its resolved handler method.
  */
 
 import { Comparator, Serializable } from '@ndigo/core';

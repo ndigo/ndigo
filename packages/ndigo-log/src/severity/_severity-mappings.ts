@@ -1,4 +1,5 @@
 /**
+ * Severity mappings between level names and OpenTelemetry severity numbers.
  */
 import { SeverityNumber } from '@opentelemetry/api-logs';
 import { SeverityMapping } from './severity-mapping.js';

@@ -210,6 +210,13 @@ jobs:
         # docs/guides/12-package-documentation.md
         run: git diff --exit-code -- packages API.md
 
+      - name: TSDoc coverage (zero tolerance)
+        # Every package must stay at zero: module summaries present, exported
+        # class/interface members documented, methods carrying @param for
+        # every parameter, and functions with a non-void return carrying
+        # @returns. No baseline — the gate fails on any gap.
+        run: pnpm doc:coverage
+
       - name: Install graft
         # The repo graph tool is a global npm package on dev machines; make it
         # available to the lanes below. Pinned: the graph format and parser

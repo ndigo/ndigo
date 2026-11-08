@@ -6,6 +6,8 @@
 
 # retry-on-offline-interceptor
 
+HTTP interceptor that retries once the browser is online.
+
 ## Classes
 
 - [RetryOnOfflineInterceptor](classes/RetryOnOfflineInterceptor.md)

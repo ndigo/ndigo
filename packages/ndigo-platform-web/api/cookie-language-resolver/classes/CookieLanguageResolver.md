@@ -53,6 +53,8 @@ Resolver used when no cookie value is present
 
 > `readonly` **cookieName**: `string`
 
+The cookie name that stores the language.
+
 ***
 
 ### defaultLanguage

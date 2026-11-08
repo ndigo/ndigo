@@ -6,6 +6,8 @@
 
 # trace
 
+Trace decorators and correlation helpers.
+
 ## References
 
 ### currentTraceContext

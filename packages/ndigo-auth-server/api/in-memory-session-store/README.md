@@ -6,6 +6,8 @@
 
 # in-memory-session-store
 
+In-memory session store for tests and single-process deployments.
+
 ## Classes
 
 - [InMemorySessionStore](classes/InMemorySessionStore.md)

@@ -14,9 +14,12 @@ One aggregated point: the attribute set plus the aggregated value.
 
 > `readonly` **attributes**: `Record`\<`string`, `AttributeValue`\>
 
+The point's attribute set.
+
 ***
 
 ### value
 
 > `readonly` **value**: [`MetricPointValue`](../type-aliases/MetricPointValue.md)
 
+The aggregated value.

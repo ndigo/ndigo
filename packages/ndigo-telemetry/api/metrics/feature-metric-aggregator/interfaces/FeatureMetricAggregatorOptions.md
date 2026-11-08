@@ -14,9 +14,12 @@ Options for configuring the `FeatureMetricAggregator`.
 
 > `readonly` `optional` **maxDurationSamples?**: `number`
 
+Maximum retained duration samples per series.
+
 ***
 
 ### maxFeatures?
 
 > `readonly` `optional` **maxFeatures?**: `number`
 
+Maximum tracked features.

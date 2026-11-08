@@ -20,6 +20,8 @@ Creates the browser connectivity wiring for `WebSocketClient`:
 
 [`OnlineReconnectTrigger`](../interfaces/OnlineReconnectTrigger.md)
 
+The online/offline reconnect trigger.
+
 ## Example
 
 ```ts

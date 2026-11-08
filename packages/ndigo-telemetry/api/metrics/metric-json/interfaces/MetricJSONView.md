@@ -14,3 +14,4 @@ The complete JSON projection: `{ metrics: { <name>: MetricJSONEntry } }`.
 
 > `readonly` **metrics**: `Readonly`\<`Record`\<`string`, [`MetricJSONEntry`](MetricJSONEntry.md)\>\>
 
+Snapshots keyed by metric name.

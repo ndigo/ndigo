@@ -1,4 +1,5 @@
 /**
+ * In-memory session store for tests and single-process deployments.
  */
 import { randomToken } from '@ndigo/util';
 import { type SessionRecord, type SessionStore } from '@ndigo/auth-core';
@@ -35,11 +36,17 @@ const DEFAULT_MAX_SESSIONS = 512;
  * cap bounds the live-session map (SEC-4, 2026-09-27 review).
  */
 export class InMemorySessionStore implements SessionStore {
+    /** Store identifier (`'in-memory'`). */
     readonly kind = 'in-memory';
 
     readonly #sessions = new Map<string, { record: SessionRecord; expiresAt: number }>();
     readonly #maxSessions: number;
 
+    /**
+     * Creates a store with the given capacity.
+     *
+     * @param options - Store options (maximum live sessions).
+     */
     constructor(options: InMemorySessionStoreOptions = {}) {
         this.#maxSessions = options.maxSessions ?? DEFAULT_MAX_SESSIONS;
         if (!Number.isInteger(this.#maxSessions) || this.#maxSessions < 1) {
@@ -49,10 +56,23 @@ export class InMemorySessionStore implements SessionStore {
         }
     }
 
+    /**
+     * Creates a session record.
+     *
+     * @param record - The session record to store.
+     * @param ttlMs - The session lifetime in milliseconds.
+     * @returns The generated session id.
+     */
     async create(record: SessionRecord, ttlMs: number): Promise<string> {
         return this.#insert(record, ttlMs).id;
     }
 
+    /**
+     * Returns the live session record for an id.
+     *
+     * @param sessionId - The session id.
+     * @returns The record, or `null` when missing or expired.
+     */
     async get(sessionId: string): Promise<SessionRecord | null> {
         const entry = this.#sessions.get(sessionId);
         if (!entry) return null;
@@ -63,6 +83,13 @@ export class InMemorySessionStore implements SessionStore {
         return entry.record;
     }
 
+    /**
+     * Rotates a session, preserving its remaining TTL.
+     *
+     * @param sessionId - The current session id.
+     * @param record - The record to store under the new id.
+     * @returns The new session id and its effective expiry.
+     */
     async rotate(sessionId: string, record: SessionRecord): Promise<{ id: string; expiresAt: number }> {
         const entry = this.#sessions.get(sessionId);
         if (!entry) {
@@ -75,10 +102,22 @@ export class InMemorySessionStore implements SessionStore {
         return this.#insert(record, ttlMs);
     }
 
+    /**
+     * Deletes one session.
+     *
+     * @param sessionId - The session id.
+     * @returns A promise that resolves once deleted.
+     */
     async delete(sessionId: string): Promise<void> {
         this.#sessions.delete(sessionId);
     }
 
+    /**
+     * Deletes every live session belonging to a user.
+     *
+     * @param userId - The account id.
+     * @returns The number of live sessions removed.
+     */
     async deleteForUser(userId: string): Promise<number> {
         const now = Date.now();
         let removed = 0;

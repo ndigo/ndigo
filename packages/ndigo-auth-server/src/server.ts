@@ -1,4 +1,5 @@
 /**
+ * Server-side authentication coordinator.
  */
 import { type Principal } from '@ndigo/auth-core';
 import { AuthRegistry } from '@ndigo/auth-core';

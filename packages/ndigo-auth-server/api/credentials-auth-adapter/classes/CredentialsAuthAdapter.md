@@ -45,11 +45,15 @@ v1 — see the auth completion plan, Wave 5 hardening).
 
 > **new CredentialsAuthAdapter**(`options`): `CredentialsAuthAdapter`
 
+Creates the adapter over the given stores.
+
 #### Parameters
 
 ##### options
 
 [`CredentialsAuthAdapterOptions`](../interfaces/CredentialsAuthAdapterOptions.md)
+
+User store, password encoder, session store, and TTL.
 
 #### Returns
 
@@ -61,7 +65,7 @@ v1 — see the auth completion plan, Wave 5 hardening).
 
 > `readonly` **id**: `"credentials"` = `'credentials'`
 
-The unique identifier for this adapter (e.g., 'oidc', 'saml').
+Adapter identifier (`'credentials'`).
 
 #### Implementation of
 
@@ -73,7 +77,7 @@ The unique identifier for this adapter (e.g., 'oidc', 'saml').
 
 > **authenticate**(`credentials`): `Promise`\<[`AuthResult`](#)\>
 
-Performs the primary authentication flow.
+Authenticates a username/password pair and issues an opaque session.
 
 #### Parameters
 
@@ -81,14 +85,17 @@ Performs the primary authentication flow.
 
 `unknown`
 
-The credentials provided by the user. Adapters
-narrow this opaque value to their protocol-specific credential shape.
+The `{ username, password }` credentials.
 
 #### Returns
 
 `Promise`\<[`AuthResult`](#)\>
 
-An [AuthResult](#) containing the principal and session token.
+The authenticated principal, session token, and expiry.
+
+#### Throws
+
+`InvalidCredentialsError` for every failure mode.
 
 #### Implementation of
 
@@ -100,7 +107,7 @@ An [AuthResult](#) containing the principal and session token.
 
 > **logout**(`token`): `Promise`\<`void`\>
 
-Terminates the session associated with the given token.
+Deletes one session.
 
 #### Parameters
 
@@ -108,11 +115,13 @@ Terminates the session associated with the given token.
 
 `string`
 
-The token to invalidate.
+The session token to revoke.
 
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once deleted.
 
 #### Implementation of
 
@@ -155,7 +164,7 @@ When the account is unknown (`UserStore.incrementTokenVersion`
 
 > **refresh**(`token`): `Promise`\<[`AuthResult`](#)\>
 
-Refreshes an existing session token.
+Rotates a session token (fixation-safe: the old token dies).
 
 #### Parameters
 
@@ -163,13 +172,17 @@ Refreshes an existing session token.
 
 `string`
 
-The token to refresh.
+The current session token.
 
 #### Returns
 
 `Promise`\<[`AuthResult`](#)\>
 
-A new [AuthResult](#) with the updated token.
+The principal and the rotated session token/expiry.
+
+#### Throws
+
+`InvalidCredentialsError` when the session or account is invalid.
 
 #### Implementation of
 
@@ -181,7 +194,7 @@ A new [AuthResult](#) with the updated token.
 
 > **validate**(`token`): `Promise`\<[`Principal`](#) \| `null`\>
 
-Validates a session token and returns the associated principal.
+Validates an opaque session token and its live account state.
 
 #### Parameters
 
@@ -189,13 +202,13 @@ Validates a session token and returns the associated principal.
 
 `string`
 
-The session or access token to validate.
+The session token.
 
 #### Returns
 
 `Promise`\<[`Principal`](#) \| `null`\>
 
-The authenticated [Principal](#), or `null` if the token is invalid or expired.
+The authenticated principal, or `null` when invalid/revoked.
 
 #### Implementation of
 

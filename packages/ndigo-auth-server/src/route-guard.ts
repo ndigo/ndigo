@@ -1,4 +1,5 @@
 /**
+ * Route interceptor enforcing `@authenticated` / `@authorized` metadata.
  */
 import {
     type RouteHandlerInterceptor,
@@ -41,6 +42,8 @@ export class AuthRouteGuard implements RouteHandlerInterceptor {
     #denialOptions: AuthGuardDenialOptions;
 
     /**
+     * Creates the guard with the given token extraction and denial policy.
+     *
      * @param authServer - The server-side auth coordinator.
      * @param tokenExtractor - A function to extract the auth token from the route/request.
      * @param adapterId - The ID of the authentication adapter to validate with.
@@ -67,6 +70,10 @@ export class AuthRouteGuard implements RouteHandlerInterceptor {
     /**
      * Checks authentication and authorization metadata on the handler before
      * allowing execution to proceed.
+     *
+     * @param route - The route being dispatched.
+     * @param handler - The route handler carrying decorator metadata.
+     * @returns `true` to proceed, or a denial response.
      */
     async preHandle(route: Route, handler: object | undefined): Promise<boolean | InterceptorDenial> {
         const methodHandler = handler as RouteHandlerMethod | undefined;
@@ -110,10 +117,26 @@ export class AuthRouteGuard implements RouteHandlerInterceptor {
         return true;
     }
 
+    /**
+     * No-op post-handle hook.
+     *
+     * @param _route - The dispatched route.
+     * @param _handler - The handler that ran.
+     * @param _modelAndView - The produced model and view.
+     * @returns A promise that resolves immediately.
+     */
     async postHandle(_route: Route, _handler: object | undefined, _modelAndView: ModelAndView): Promise<void> {
         // no-op
     }
 
+    /**
+     * No-op completion hook.
+     *
+     * @param _route - The dispatched route.
+     * @param _handler - The handler that ran.
+     * @param _error - The error raised, if any.
+     * @returns A promise that resolves immediately.
+     */
     async completeHandle(_route: Route, _handler: object | undefined, _error: Error | null): Promise<void> {
         // no-op
     }

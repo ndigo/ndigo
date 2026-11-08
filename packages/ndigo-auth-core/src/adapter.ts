@@ -1,4 +1,5 @@
 /**
+ * The authentication-adapter contract.
  */
 import { type Principal } from './principal';
 import { type AuthResult } from './state';

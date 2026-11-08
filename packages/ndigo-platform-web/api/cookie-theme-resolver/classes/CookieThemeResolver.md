@@ -46,6 +46,8 @@ Fallback theme when the cookie is absent.
 
 > `readonly` **cookieName**: `string`
 
+The cookie name that stores the theme.
+
 ***
 
 ### defaultThemeName
@@ -88,9 +90,13 @@ Resolves the current theme from cookies or the fallback value.
 
 [`Route`](#)
 
+The current route (unused).
+
 #### Returns
 
 `string`
+
+The resolved theme name.
 
 #### Overrides
 

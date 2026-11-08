@@ -1,4 +1,5 @@
 /**
+ * Multi-scheme password encoder with a default scheme.
  */
 import { type PasswordEncoder, schemePrefix, UnknownPasswordSchemeError } from './password-encoder';
 
@@ -39,15 +40,34 @@ export class DelegatingPasswordEncoder implements PasswordEncoder {
         this.#defaultId = defaultId;
     }
 
+    /**
+     * Hashes with the default scheme, prefixing its id.
+     *
+     * @param rawPassword - The plaintext password.
+     * @returns The `{scheme}`-prefixed hash.
+     */
     encode(rawPassword: string): string {
         return `{${this.#defaultId}}${this.#encoders[this.#defaultId].encode(rawPassword)}`;
     }
 
+    /**
+     * Verifies against the hash's declared scheme.
+     *
+     * @param rawPassword - The plaintext password.
+     * @param encodedPassword - The `{scheme}`-prefixed hash.
+     * @returns Whether the password matches.
+     */
     verify(rawPassword: string, encodedPassword: string): boolean {
         const { id, body } = this.#parse(encodedPassword);
         return this.#encoders[id].verify(rawPassword, body);
     }
 
+    /**
+     * Whether the hash's scheme or parameters are outdated.
+     *
+     * @param encodedPassword - The `{scheme}`-prefixed hash.
+     * @returns Whether a rehash is recommended.
+     */
     needsRehash(encodedPassword: string): boolean {
         const { id, body } = this.#parse(encodedPassword);
         if (id !== this.#defaultId) return true;

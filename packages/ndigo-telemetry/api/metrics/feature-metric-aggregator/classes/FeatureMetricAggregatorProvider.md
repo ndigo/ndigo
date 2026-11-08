@@ -32,6 +32,8 @@ Projection rules:
 
 > **new FeatureMetricAggregatorProvider**(`aggregator`): `FeatureMetricAggregatorProvider`
 
+Creates the provider over an aggregator.
+
 #### Parameters
 
 ##### aggregator

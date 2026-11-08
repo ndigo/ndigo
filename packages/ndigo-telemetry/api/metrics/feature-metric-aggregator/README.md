@@ -6,6 +6,8 @@
 
 # metrics/feature-metric-aggregator
 
+Per-feature metric aggregation and snapshot projection.
+
 ## Classes
 
 - [FeatureMetricAggregator](classes/FeatureMetricAggregator.md)

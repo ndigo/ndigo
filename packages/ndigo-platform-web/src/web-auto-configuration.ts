@@ -1,4 +1,5 @@
 /**
+ * Auto-configuration for the browser platform.
  */
 import { configuration, entry } from '@ndigo/context';
 import { argumentValueConverters, RadixMetadataHandlerMapping } from '@ndigo/dispatcher';

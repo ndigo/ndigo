@@ -6,6 +6,8 @@
 
 # adapter
 
+The authentication-adapter contract.
+
 ## Interfaces
 
 - [AuthAdapter](interfaces/AuthAdapter.md)

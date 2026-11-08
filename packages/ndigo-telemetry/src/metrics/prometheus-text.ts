@@ -26,6 +26,9 @@ const invalidNameCharacter = /[^a-zA-Z0-9_:.]/g;
  * Sanitizes an OTel instrument name to the Prometheus name grammar
  * `[a-zA-Z_:][a-zA-Z0-9_:.]*`: every invalid character becomes `_`, and a
  * leading digit gains an `_` prefix (a name may not start with a digit).
+ *
+ * @param name - The instrument or attribute name.
+ * @returns The Prometheus-safe name.
  */
 export function sanitizePrometheusName(name: string): string {
     const sanitized = name.replace(invalidNameCharacter, '_');
@@ -52,6 +55,9 @@ function scalarLiteral(value: AttributeValue): string | undefined {
  * {@link sanitizePrometheusName} — an attribute key outside the exposition
  * grammar would otherwise produce a malformed document (REV-004) — and a
  * sanitized collision within one set keeps the first key.
+ *
+ * @param attributes - The point's attribute set.
+ * @returns The rendered `{k="v",...}` attribute block.
  */
 export function renderPrometheusAttributes(attributes: Readonly<Record<string, AttributeValue>>): string {
     const parts: string[] = [];

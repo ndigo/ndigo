@@ -1,4 +1,5 @@
 /**
+ * Browser cookie parsing and jar helpers.
  */
 import { createNull, JSONObject, JSONValue } from '@ndigo/core';
 import { parseCookieHeader } from './parser/cookie-parser';
@@ -8,22 +9,35 @@ const logger = getLogger('ndigo-platform-web:cookies');
 
 /** Parsed cookie structure returned by cookie parsing helpers. */
 export interface Cookie {
+    /** Cookie name. */
     name: string;
+    /** Cookie value. */
     value: string;
+    /** Cookie domain. */
     domain?: string;
+    /** Expiry date string. */
     expires?: string;
+    /** Maximum age in seconds. */
     maxAge?: string;
+    /** Cookie path. */
     path?: string;
+    /** SameSite policy. */
     sameSite?: string;
+    /** Whether the cookie is HTTPS-only. */
     secure?: boolean;
 }
 
 /** Minimal cookie-jar API exposed by the platform-web package. */
 export interface CookieJar {
+    /** Reads a cookie value. @param key - The cookie name. */
     get(key: string): JSONValue | undefined;
+    /** Reads and parses a JSON cookie. @param key - The cookie name. */
     getJSON(key: string): JSONValue | undefined;
+    /** Removes a cookie. @param key - The cookie name. @param attributes - Optional attributes. */
     remove(key: string, attributes?: CookieAttributes): string;
+    /** Writes a cookie. @param key - The cookie name. @param value - The value. @param attributes - Optional attributes. */
     set(key: string, value: string, attributes?: CookieAttributes): string;
+    /** Parses a cookie header string. @param input - The raw header. */
     run(input: string): CookieParseResult;
 }
 

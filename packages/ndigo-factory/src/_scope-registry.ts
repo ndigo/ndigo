@@ -1,4 +1,5 @@
 /**
+ * Scope registry backing factory scope strategies.
  */
 import { IllegalStateError } from '@ndigo/core';
 import { PossibleScope, Scope } from './scope';

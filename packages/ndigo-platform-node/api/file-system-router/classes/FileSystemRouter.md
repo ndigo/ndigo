@@ -40,7 +40,7 @@ A router implementation for Node.js that resolves routes based on the file syste
 
 > **get** **callback**(): `RouterCallback`
 
-Invoked when the route changes.
+The route-change callback.
 
 ##### Returns
 
@@ -58,7 +58,7 @@ Invoked when the route changes.
 
 > **get** **route**(): `string`
 
-The current route path.
+The current route.
 
 ##### Returns
 
@@ -99,11 +99,15 @@ The `RouterInterceptor` to add.
 
 > **navigate**(`path`): `void`
 
+Sets the route and notifies the callback.
+
 #### Parameters
 
 ##### path
 
 `string`
+
+The target path.
 
 #### Returns
 

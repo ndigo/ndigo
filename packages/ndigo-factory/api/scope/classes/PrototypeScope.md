@@ -34,11 +34,15 @@ A future scoping split may move concrete scope implementations to a separate mod
 
 > **destroyValue**(`_name`): `void`
 
+No-op: prototype values are not cached.
+
 #### Parameters
 
 ##### \_name
 
 `string`
+
+The value name (unused).
 
 #### Returns
 
@@ -54,6 +58,8 @@ A future scoping split may move concrete scope implementations to a separate mod
 
 > **getValue**\<`T`\>(`_name`, `objectFactory`): `T`
 
+Creates a fresh instance on every call.
+
 #### Type Parameters
 
 ##### T
@@ -66,13 +72,19 @@ A future scoping split may move concrete scope implementations to a separate mod
 
 `string`
 
+The value name (unused).
+
 ##### objectFactory
 
 [`ObjectFactory`](../type-aliases/ObjectFactory.md)\<`T`\>
 
+The factory to invoke.
+
 #### Returns
 
 `T`
+
+A new value.
 
 #### Implementation of
 

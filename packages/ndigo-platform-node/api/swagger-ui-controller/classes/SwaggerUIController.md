@@ -56,6 +56,8 @@ The current route.
 
 `Promise`\<`void`\>
 
+A promise that resolves once written.
+
 ***
 
 ### page()
@@ -75,3 +77,5 @@ The current route (carries the Node response).
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once written.

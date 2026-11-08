@@ -47,23 +47,33 @@ key, denied as **429 + `Retry-After`** problem documents.
 
 > **completeHandle**(`_route`, `_handler`, `_error`): `Promise`\<`void`\>
 
+No-op completion hook.
+
 #### Parameters
 
 ##### \_route
 
 [`Route`](#)
 
+The dispatched route.
+
 ##### \_handler
 
 `object` \| `undefined`
+
+The handler that ran.
 
 ##### \_error
 
 `Error` \| `null`
 
+The error raised, if any.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves immediately.
 
 #### Implementation of
 
@@ -75,23 +85,33 @@ key, denied as **429 + `Retry-After`** problem documents.
 
 > **postHandle**(`_route`, `_handler`, `_modelAndView`): `Promise`\<`void`\>
 
+No-op post-handle hook.
+
 #### Parameters
 
 ##### \_route
 
 [`Route`](#)
 
+The dispatched route.
+
 ##### \_handler
 
 `object` \| `undefined`
+
+The handler that ran.
 
 ##### \_modelAndView
 
 [`ModelAndView`](#)
 
+The produced model and view.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves immediately.
 
 #### Implementation of
 
@@ -103,19 +123,27 @@ key, denied as **429 + `Retry-After`** problem documents.
 
 > **preHandle**(`route`, `handler`): `Promise`\<`boolean` \| [`InterceptorDenial`](#)\>
 
+Enforces the route's rate-limit policy.
+
 #### Parameters
 
 ##### route
 
 [`Route`](#)
 
+The route being dispatched.
+
 ##### handler
 
 `object` \| `undefined`
 
+The route handler carrying `@rateLimit` metadata.
+
 #### Returns
 
 `Promise`\<`boolean` \| [`InterceptorDenial`](#)\>
+
+Whether to proceed, or a 429 denial.
 
 #### Implementation of
 

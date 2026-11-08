@@ -66,3 +66,5 @@ The request-relative path to serve (raw, undecoded).
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once the response is written.

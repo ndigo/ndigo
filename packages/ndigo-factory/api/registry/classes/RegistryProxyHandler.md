@@ -39,7 +39,7 @@ to behave like a plain object. This is used to implement `ProxiedFactory`.
 
 > **deleteProperty**(`target`, `key`): `boolean`
 
-A trap for the `delete` operator.
+Destroys the value behind a deleted property.
 
 #### Parameters
 
@@ -47,17 +47,19 @@ A trap for the `delete` operator.
 
 `T`
 
-The original object which is being proxied.
+The registry.
 
 ##### key
 
 `PropertyKey`
 
+The property key.
+
 #### Returns
 
 `boolean`
 
-A `Boolean` indicating whether or not the property was deleted.
+Whether the property was deleted.
 
 #### Implementation of
 
@@ -69,7 +71,7 @@ A `Boolean` indicating whether or not the property was deleted.
 
 > **get**\<`U`\>(`target`, `key`): `U`
 
-A trap for getting a property value.
+Resolves a property through the registry.
 
 #### Type Parameters
 
@@ -83,15 +85,19 @@ A trap for getting a property value.
 
 `T`
 
-The original object which is being proxied.
+The registry.
 
 ##### key
 
 `PropertyKey`
 
+The property key.
+
 #### Returns
 
 `U`
+
+The resolved value or bound member.
 
 #### Implementation of
 
@@ -103,7 +109,7 @@ The original object which is being proxied.
 
 > **has**(`target`, `key`): `boolean`
 
-A trap for the `in` operator.
+Whether the registry has the property.
 
 #### Parameters
 
@@ -111,15 +117,19 @@ A trap for the `in` operator.
 
 `T`
 
-The original object which is being proxied.
+The registry.
 
 ##### key
 
 `PropertyKey`
 
+The property key.
+
 #### Returns
 
 `boolean`
+
+Whether the value is registered.
 
 #### Implementation of
 
@@ -131,7 +141,7 @@ The original object which is being proxied.
 
 > **set**\<`U`\>(`target`, `key`, `value`): `boolean`
 
-A trap for setting a property value.
+Stores a property through the registry.
 
 #### Type Parameters
 
@@ -145,21 +155,25 @@ A trap for setting a property value.
 
 `T`
 
-The original object which is being proxied.
+The registry.
 
 ##### key
 
 `PropertyKey`
 
+The property key.
+
 ##### value
 
 `U`
+
+The value to store.
 
 #### Returns
 
 `boolean`
 
-A `Boolean` indicating whether or not the property was set.
+Whether the property was stored.
 
 #### Implementation of
 

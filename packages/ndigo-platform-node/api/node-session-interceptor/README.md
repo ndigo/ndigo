@@ -6,6 +6,8 @@
 
 # node-session-interceptor
 
+Interceptor that attaches the request session.
+
 ## Classes
 
 - [NodeSessionInterceptor](classes/NodeSessionInterceptor.md)

@@ -8,6 +8,8 @@
 
 > **likeCloseable**(`value`): `value is Closeable`
 
+Narrows a value to the [Closeable](../interfaces/Closeable.md) shape.
+
 ## Parameters
 
 ### value

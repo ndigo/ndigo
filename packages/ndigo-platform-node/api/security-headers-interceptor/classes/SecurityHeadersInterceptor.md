@@ -54,9 +54,14 @@ Header configuration (see
 
 > **completeHandle**(): `void` \| `Promise`\<`void`\>
 
+Header interceptor: nothing to finalize (errors already carry the
+headers — written in preHandle before any denial/failure path).
+
 #### Returns
 
 `void` \| `Promise`\<`void`\>
+
+Nothing.
 
 #### Implementation of
 
@@ -68,9 +73,13 @@ Header configuration (see
 
 > **postHandle**(): `void` \| `Promise`\<`void`\>
 
+Header interceptor: nothing to finalize.
+
 #### Returns
 
 `void` \| `Promise`\<`void`\>
+
+Nothing.
 
 #### Implementation of
 
@@ -93,13 +102,19 @@ upgrades). Always allows the request through.
 
 [`Route`](#)
 
+The route being dispatched.
+
 ##### \_handler
 
 `object` \| `undefined`
 
+The route handler (unused).
+
 #### Returns
 
 `Promise`\<`PreHandleOutcome`\>
+
+Whether to proceed.
 
 #### Implementation of
 

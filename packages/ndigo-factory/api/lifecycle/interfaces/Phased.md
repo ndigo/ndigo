@@ -18,3 +18,4 @@ A component that runs in a numeric startup phase.
 
 > `readonly` **phase**: `number`
 
+The component's startup phase.

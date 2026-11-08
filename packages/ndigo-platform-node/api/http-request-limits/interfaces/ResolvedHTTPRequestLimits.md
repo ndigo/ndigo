@@ -14,11 +14,15 @@ Resolved, read-only limits with defaults applied.
 
 > `readonly` **headersTimeoutMs**: `number`
 
+Header-arrival timeout in milliseconds.
+
 ***
 
 ### keepAliveTimeoutMs
 
 > `readonly` **keepAliveTimeoutMs**: `number`
+
+Keep-alive idle timeout in milliseconds.
 
 ***
 
@@ -26,11 +30,15 @@ Resolved, read-only limits with defaults applied.
 
 > `readonly` **maxBodyBytes**: `number`
 
+Maximum request body size in bytes.
+
 ***
 
 ### maxHeaderBytes
 
 > `readonly` **maxHeaderBytes**: `number`
+
+Maximum header size in bytes.
 
 ***
 
@@ -38,11 +46,15 @@ Resolved, read-only limits with defaults applied.
 
 > `readonly` **maxRequestsPerSocket**: `number`
 
+Maximum pending requests per socket.
+
 ***
 
 ### requestTimeoutMs
 
 > `readonly` **requestTimeoutMs**: `number`
+
+Total request window in milliseconds.
 
 ***
 
@@ -50,3 +62,4 @@ Resolved, read-only limits with defaults applied.
 
 > `readonly` **shutdownTimeoutMs**: `number`
 
+Shutdown grace period in milliseconds.

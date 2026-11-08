@@ -21,6 +21,8 @@ export class ResponseEntity<T = unknown> {
     readonly headers: Record<string, string>;
 
     /**
+     * Creates a response entity.
+     *
      * @param body - The response body.
      * @param status - The HTTP status.
      * @param headers - Response headers.
@@ -31,72 +33,141 @@ export class ResponseEntity<T = unknown> {
         this.headers = headers;
     }
 
-    /** `200 OK` response. */
+    /**
+     * Creates a `200 OK` response.
+     *
+     * @param body - The response body.
+     * @returns The response entity.
+     */
     static ok<T>(body: T): ResponseEntity<T> {
         return new ResponseEntity(body, ResponseStatuses.OK);
     }
 
-    /** `201 Created` response. */
+    /**
+     * Creates a `201 Created` response.
+     *
+     * @param body - The response body.
+     * @returns The response entity.
+     */
     static created<T>(body: T): ResponseEntity<T> {
         return new ResponseEntity(body, ResponseStatuses.CREATED);
     }
 
-    /** `204 No Content` response. */
+    /**
+     * Creates a `204 No Content` response.
+     *
+     * @returns The response entity.
+     */
     static noContent(): ResponseEntity<void> {
         return new ResponseEntity(undefined, ResponseStatuses.NO_CONTENT);
     }
 
-    /** `404 Not Found` response. */
+    /**
+     * Creates a `404 Not Found` response.
+     *
+     * @returns The response entity.
+     */
     static notFound(): ResponseEntity<void> {
         return new ResponseEntity(undefined, ResponseStatuses.NOT_FOUND);
     }
 
-    /** `400 Bad Request` response. */
+    /**
+     * Creates a `400 Bad Request` response.
+     *
+     * @param body - The optional response body.
+     * @returns The response entity.
+     */
     static badRequest<T = unknown>(body?: T): ResponseEntity<T | undefined> {
         return new ResponseEntity(body, ResponseStatuses.BAD_REQUEST);
     }
 
-    /** `401 Unauthorized` response. */
+    /**
+     * Creates a `401 Unauthorized` response.
+     *
+     * @param body - The optional response body.
+     * @param headers - Response headers.
+     * @returns The response entity.
+     */
     static unauthorized<T = unknown>(body?: T, headers: Record<string, string> = {}): ResponseEntity<T | undefined> {
         return new ResponseEntity(body, ResponseStatuses.UNAUTHORIZED, headers);
     }
 
-    /** `403 Forbidden` response. */
+    /**
+     * Creates a `403 Forbidden` response.
+     *
+     * @param body - The optional response body.
+     * @returns The response entity.
+     */
     static forbidden<T = unknown>(body?: T): ResponseEntity<T | undefined> {
         return new ResponseEntity(body, ResponseStatuses.FORBIDDEN);
     }
 
-    /** `405 Method Not Allowed` response. */
+    /**
+     * Creates a `405 Method Not Allowed` response.
+     *
+     * @param body - The optional response body.
+     * @returns The response entity.
+     */
     static methodNotAllowed<T = unknown>(body?: T): ResponseEntity<T | undefined> {
         return new ResponseEntity(body, ResponseStatuses.METHOD_NOT_ALLOWED);
     }
 
-    /** `406 Not Acceptable` response. */
+    /**
+     * Creates a `406 Not Acceptable` response.
+     *
+     * @param body - The optional response body.
+     * @returns The response entity.
+     */
     static notAcceptable<T = unknown>(body?: T): ResponseEntity<T | undefined> {
         return new ResponseEntity(body, ResponseStatuses.NOT_ACCEPTABLE);
     }
 
-    /** `415 Unsupported Media Type` response. */
+    /**
+     * Creates a `415 Unsupported Media Type` response.
+     *
+     * @param body - The optional response body.
+     * @returns The response entity.
+     */
     static unsupportedMediaType<T = unknown>(body?: T): ResponseEntity<T | undefined> {
         return new ResponseEntity(body, ResponseStatuses.UNSUPPORTED_MEDIA_TYPE);
     }
 
-    /** `422 Unprocessable Entity` response (schema validation failures). */
+    /**
+     * Creates a `422 Unprocessable Entity` response (schema validation failures).
+     *
+     * @param body - The optional response body.
+     * @returns The response entity.
+     */
     static unprocessableEntity<T = unknown>(body?: T): ResponseEntity<T | undefined> {
         return new ResponseEntity(body, ResponseStatuses.UNPROCESSABLE_ENTITY);
     }
 
-    /** `429 Too Many Requests` response. */
+    /**
+     * Creates a `429 Too Many Requests` response.
+     *
+     * @param body - The optional response body.
+     * @returns The response entity.
+     */
     static tooManyRequests<T = unknown>(body?: T): ResponseEntity<T | undefined> {
         return new ResponseEntity(body, ResponseStatuses.TOO_MANY_REQUESTS);
     }
 
-    /** `503 Service Unavailable` response. */
+    /**
+     * Creates a `503 Service Unavailable` response.
+     *
+     * @param body - The optional response body.
+     * @returns The response entity.
+     */
     static serviceUnavailable<T = unknown>(body?: T): ResponseEntity<T | undefined> {
         return new ResponseEntity(body, ResponseStatuses.SERVICE_UNAVAILABLE);
     }
 
-    /** `500 Internal Server Error` response. */
+    /**
+     * Creates a `500 Internal Server Error` response.
+     *
+     * @param body - The optional response body.
+     * @returns The response entity.
+     */
     static internalServerError<T = unknown>(body?: T): ResponseEntity<T | undefined> {
         return new ResponseEntity(body, ResponseStatuses.INTERNAL_SERVER_ERROR);
     }

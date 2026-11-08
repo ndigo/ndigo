@@ -79,7 +79,13 @@ export class ServerSentEventView implements ProducerView {
         this.destroyed = true;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Produces the streaming SSE response.
+     *
+     * @param _model - The data model (unused).
+     * @param route - The current route.
+     * @returns The streaming render result.
+     */
     async renderTo(_model: unknown, route: Route): Promise<RenderResult> {
         const res = route.attributes?.[NODE_RESPONSE_ATTRIBUTE] as unknown as ServerResponse | undefined;
 

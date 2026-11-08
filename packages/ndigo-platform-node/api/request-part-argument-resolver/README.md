@@ -6,6 +6,8 @@
 
 # request-part-argument-resolver
 
+Argument resolver that reads request parts.
+
 ## Classes
 
 - [NodeRequestPartMethodArgumentResolver](classes/NodeRequestPartMethodArgumentResolver.md)

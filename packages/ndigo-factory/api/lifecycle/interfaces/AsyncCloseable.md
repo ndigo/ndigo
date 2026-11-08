@@ -18,6 +18,8 @@ A [Closeable](Closeable.md) whose close is asynchronous.
 
 > **close**(): `Promise`\<`void`\>
 
+Releases the value's resources asynchronously.
+
 #### Returns
 
 `Promise`\<`void`\>

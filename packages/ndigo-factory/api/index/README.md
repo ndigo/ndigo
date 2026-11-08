@@ -6,6 +6,8 @@
 
 # index
 
+Public API of `@ndigo/factory` — factories, scopes, and lifecycle.
+
 ## References
 
 ### $aware

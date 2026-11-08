@@ -19,11 +19,15 @@ A [Lifecycle](Lifecycle.md) that starts automatically and runs in a declared pha
 
 > `readonly` **isAutoStartup**: `boolean`
 
+Whether the component starts with the context.
+
 ***
 
 ### isRunning
 
 > `readonly` **isRunning**: `boolean`
+
+Whether the component is running.
 
 #### Inherited from
 
@@ -35,6 +39,8 @@ A [Lifecycle](Lifecycle.md) that starts automatically and runs in a declared pha
 
 > `readonly` **phase**: `number`
 
+The component's startup phase.
+
 #### Inherited from
 
 [`Phased`](Phased.md).[`phase`](Phased.md#phase)
@@ -44,6 +50,8 @@ A [Lifecycle](Lifecycle.md) that starts automatically and runs in a declared pha
 ### start()
 
 > **start**(): `void`
+
+Starts the component.
 
 #### Returns
 
@@ -58,6 +66,8 @@ A [Lifecycle](Lifecycle.md) that starts automatically and runs in a declared pha
 ### stop()
 
 > **stop**(): `void`
+
+Stops the component.
 
 #### Returns
 

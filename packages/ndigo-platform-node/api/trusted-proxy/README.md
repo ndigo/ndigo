@@ -6,6 +6,8 @@
 
 # trusted-proxy
 
+Trusted-proxy client-address resolution.
+
 ## Classes
 
 - [TrustedProxySet](classes/TrustedProxySet.md)

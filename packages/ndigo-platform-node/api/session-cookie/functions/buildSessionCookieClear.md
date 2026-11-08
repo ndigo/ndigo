@@ -18,9 +18,13 @@ immediately (`Max-Age=0` + epoch `Expires`) under the same name and
 
 [`SessionCookieOptions`](../interfaces/SessionCookieOptions.md) = `{}`
 
+Cookie name/security options.
+
 ## Returns
 
 `string`
+
+The expiring `Set-Cookie` value.
 
 ## Throws
 

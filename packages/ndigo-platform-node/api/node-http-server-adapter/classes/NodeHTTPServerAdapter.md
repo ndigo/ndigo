@@ -25,6 +25,8 @@ await adapter.listen(3000);
 
 > **new NodeHTTPServerAdapter**(`dispatcher`, `options?`): `NodeHTTPServerAdapter`
 
+Creates the adapter.
+
 #### Parameters
 
 ##### dispatcher
@@ -51,7 +53,7 @@ Optional request limits and timeouts.
 
 > **get** **server**(): `unknown`
 
-The underlying server instance (for integration tests, etc.).
+The underlying Node server.
 
 ##### Returns
 
@@ -93,6 +95,8 @@ destroying remaining sockets.
 
 `Promise`\<`void`\>
 
+A promise that resolves once closed.
+
 #### Implementation of
 
 [`HTTPServerAdapter`](../../http-server/interfaces/HTTPServerAdapter.md).[`close`](../../http-server/interfaces/HTTPServerAdapter.md#close)
@@ -103,19 +107,27 @@ destroying remaining sockets.
 
 > **handleRequest**(`req`, `res`): `Promise`\<`void`\>
 
+Handles one incoming request through the dispatch pipeline.
+
 #### Parameters
 
 ##### req
 
 `IncomingMessage`
 
+The Node request.
+
 ##### res
 
 `ServerResponse`
 
+The Node response.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once the response is written.
 
 ***
 
@@ -132,13 +144,19 @@ instead of resolving silently.
 
 `number`
 
+The port to bind.
+
 ##### host?
 
 `string`
 
+The bind host.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once listening.
 
 #### Implementation of
 

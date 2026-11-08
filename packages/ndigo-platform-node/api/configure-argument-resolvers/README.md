@@ -6,6 +6,8 @@
 
 # configure-argument-resolvers
 
+Registers the Node argument resolvers.
+
 ## Functions
 
 - [configureNodeArgumentResolvers](functions/configureNodeArgumentResolvers.md)

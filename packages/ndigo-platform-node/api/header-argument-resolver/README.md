@@ -6,6 +6,8 @@
 
 # header-argument-resolver
 
+Argument resolver that reads request headers.
+
 ## Classes
 
 - [NodeHeaderValueMethodArgumentResolver](classes/NodeHeaderValueMethodArgumentResolver.md)

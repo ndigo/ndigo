@@ -6,6 +6,8 @@
 
 # producer-writer
 
+Writes producer-view results to Node responses.
+
 ## Functions
 
 - [writeRenderResult](functions/writeRenderResult.md)

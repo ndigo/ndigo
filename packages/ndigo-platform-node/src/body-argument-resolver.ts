@@ -1,4 +1,5 @@
 /**
+ * Argument resolver that reads the request body.
  */
 import {
     MethodParameter,
@@ -24,6 +25,15 @@ export class NodeBodyValueMethodArgumentResolver extends AbstractPlatformArgumen
         return 'NodeBodyValueMethodArgumentResolver';
     }
 
+    /**
+     * Reads the parsed request body (or a dotted field).
+     *
+     * @param name - The field path, or `''` for the whole body.
+     * @param _parameter - The method parameter (unused).
+     * @param route - The current route.
+     * @param _mapping - The route mapping (unused).
+     * @returns The body value.
+     */
     protected resolveName(name: string, _parameter: MethodParameter, route: Route, _mapping: unknown): unknown {
         const request = getNodeRequest(route);
         if (!request) {
@@ -34,6 +44,12 @@ export class NodeBodyValueMethodArgumentResolver extends AbstractPlatformArgumen
         return name === '' ? request.body : readDottedValue(request.body, name);
     }
 
+    /**
+     * Whether this resolver supports body parameters.
+     *
+     * @param parameter - The method parameter to test.
+     * @returns Whether the parameter type matches.
+     */
     supportsParameter(parameter: MethodParameter): boolean {
         return MethodParameterType.BODY.equals(parameter.type);
     }

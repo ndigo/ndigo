@@ -6,6 +6,8 @@
 
 # aware
 
+Aware mixins for injecting factory and context dependencies.
+
 ## Interfaces
 
 - [Aware](interfaces/Aware.md)

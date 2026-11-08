@@ -20,6 +20,8 @@ A response with an explicit HTTP status, headers, and body.
 
 > **new ResponseEntity**\<`T`\>(`body`, `status`, `headers?`): `ResponseEntity`\<`T`\>
 
+Creates a response entity.
+
 #### Parameters
 
 ##### body
@@ -74,7 +76,7 @@ The HTTP status.
 
 > `static` **badRequest**\<`T`\>(`body?`): `ResponseEntity`\<`T` \| `undefined`\>
 
-`400 Bad Request` response.
+Creates a `400 Bad Request` response.
 
 #### Type Parameters
 
@@ -88,9 +90,13 @@ The HTTP status.
 
 `T`
 
+The optional response body.
+
 #### Returns
 
 `ResponseEntity`\<`T` \| `undefined`\>
+
+The response entity.
 
 ***
 
@@ -98,7 +104,7 @@ The HTTP status.
 
 > `static` **created**\<`T`\>(`body`): `ResponseEntity`\<`T`\>
 
-`201 Created` response.
+Creates a `201 Created` response.
 
 #### Type Parameters
 
@@ -112,9 +118,13 @@ The HTTP status.
 
 `T`
 
+The response body.
+
 #### Returns
 
 `ResponseEntity`\<`T`\>
+
+The response entity.
 
 ***
 
@@ -122,7 +132,7 @@ The HTTP status.
 
 > `static` **forbidden**\<`T`\>(`body?`): `ResponseEntity`\<`T` \| `undefined`\>
 
-`403 Forbidden` response.
+Creates a `403 Forbidden` response.
 
 #### Type Parameters
 
@@ -136,9 +146,13 @@ The HTTP status.
 
 `T`
 
+The optional response body.
+
 #### Returns
 
 `ResponseEntity`\<`T` \| `undefined`\>
+
+The response entity.
 
 ***
 
@@ -146,7 +160,7 @@ The HTTP status.
 
 > `static` **internalServerError**\<`T`\>(`body?`): `ResponseEntity`\<`T` \| `undefined`\>
 
-`500 Internal Server Error` response.
+Creates a `500 Internal Server Error` response.
 
 #### Type Parameters
 
@@ -160,9 +174,13 @@ The HTTP status.
 
 `T`
 
+The optional response body.
+
 #### Returns
 
 `ResponseEntity`\<`T` \| `undefined`\>
+
+The response entity.
 
 ***
 
@@ -170,7 +188,7 @@ The HTTP status.
 
 > `static` **methodNotAllowed**\<`T`\>(`body?`): `ResponseEntity`\<`T` \| `undefined`\>
 
-`405 Method Not Allowed` response.
+Creates a `405 Method Not Allowed` response.
 
 #### Type Parameters
 
@@ -184,9 +202,13 @@ The HTTP status.
 
 `T`
 
+The optional response body.
+
 #### Returns
 
 `ResponseEntity`\<`T` \| `undefined`\>
+
+The response entity.
 
 ***
 
@@ -194,11 +216,13 @@ The HTTP status.
 
 > `static` **noContent**(): `ResponseEntity`\<`void`\>
 
-`204 No Content` response.
+Creates a `204 No Content` response.
 
 #### Returns
 
 `ResponseEntity`\<`void`\>
+
+The response entity.
 
 ***
 
@@ -206,7 +230,7 @@ The HTTP status.
 
 > `static` **notAcceptable**\<`T`\>(`body?`): `ResponseEntity`\<`T` \| `undefined`\>
 
-`406 Not Acceptable` response.
+Creates a `406 Not Acceptable` response.
 
 #### Type Parameters
 
@@ -220,9 +244,13 @@ The HTTP status.
 
 `T`
 
+The optional response body.
+
 #### Returns
 
 `ResponseEntity`\<`T` \| `undefined`\>
+
+The response entity.
 
 ***
 
@@ -230,11 +258,13 @@ The HTTP status.
 
 > `static` **notFound**(): `ResponseEntity`\<`void`\>
 
-`404 Not Found` response.
+Creates a `404 Not Found` response.
 
 #### Returns
 
 `ResponseEntity`\<`void`\>
+
+The response entity.
 
 ***
 
@@ -242,7 +272,7 @@ The HTTP status.
 
 > `static` **ok**\<`T`\>(`body`): `ResponseEntity`\<`T`\>
 
-`200 OK` response.
+Creates a `200 OK` response.
 
 #### Type Parameters
 
@@ -256,9 +286,13 @@ The HTTP status.
 
 `T`
 
+The response body.
+
 #### Returns
 
 `ResponseEntity`\<`T`\>
+
+The response entity.
 
 ***
 
@@ -266,7 +300,7 @@ The HTTP status.
 
 > `static` **serviceUnavailable**\<`T`\>(`body?`): `ResponseEntity`\<`T` \| `undefined`\>
 
-`503 Service Unavailable` response.
+Creates a `503 Service Unavailable` response.
 
 #### Type Parameters
 
@@ -280,9 +314,13 @@ The HTTP status.
 
 `T`
 
+The optional response body.
+
 #### Returns
 
 `ResponseEntity`\<`T` \| `undefined`\>
+
+The response entity.
 
 ***
 
@@ -290,7 +328,7 @@ The HTTP status.
 
 > `static` **tooManyRequests**\<`T`\>(`body?`): `ResponseEntity`\<`T` \| `undefined`\>
 
-`429 Too Many Requests` response.
+Creates a `429 Too Many Requests` response.
 
 #### Type Parameters
 
@@ -304,9 +342,13 @@ The HTTP status.
 
 `T`
 
+The optional response body.
+
 #### Returns
 
 `ResponseEntity`\<`T` \| `undefined`\>
+
+The response entity.
 
 ***
 
@@ -314,7 +356,7 @@ The HTTP status.
 
 > `static` **unauthorized**\<`T`\>(`body?`, `headers?`): `ResponseEntity`\<`T` \| `undefined`\>
 
-`401 Unauthorized` response.
+Creates a `401 Unauthorized` response.
 
 #### Type Parameters
 
@@ -328,13 +370,19 @@ The HTTP status.
 
 `T`
 
+The optional response body.
+
 ##### headers?
 
 `Record`\<`string`, `string`\> = `{}`
 
+Response headers.
+
 #### Returns
 
 `ResponseEntity`\<`T` \| `undefined`\>
+
+The response entity.
 
 ***
 
@@ -342,7 +390,7 @@ The HTTP status.
 
 > `static` **unprocessableEntity**\<`T`\>(`body?`): `ResponseEntity`\<`T` \| `undefined`\>
 
-`422 Unprocessable Entity` response (schema validation failures).
+Creates a `422 Unprocessable Entity` response (schema validation failures).
 
 #### Type Parameters
 
@@ -356,9 +404,13 @@ The HTTP status.
 
 `T`
 
+The optional response body.
+
 #### Returns
 
 `ResponseEntity`\<`T` \| `undefined`\>
+
+The response entity.
 
 ***
 
@@ -366,7 +418,7 @@ The HTTP status.
 
 > `static` **unsupportedMediaType**\<`T`\>(`body?`): `ResponseEntity`\<`T` \| `undefined`\>
 
-`415 Unsupported Media Type` response.
+Creates a `415 Unsupported Media Type` response.
 
 #### Type Parameters
 
@@ -380,6 +432,10 @@ The HTTP status.
 
 `T`
 
+The optional response body.
+
 #### Returns
 
 `ResponseEntity`\<`T` \| `undefined`\>
+
+The response entity.

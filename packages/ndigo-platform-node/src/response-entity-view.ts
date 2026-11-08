@@ -12,7 +12,13 @@ import { isProblemDetails, toProblemDetails, type ProblemDetails } from './probl
  * complete response document.
  */
 export class ResponseEntityView implements ProducerView {
-    /** {@inheritDoc} */
+    /**
+     * Produces the response document (problem+json for 4xx/5xx).
+     *
+     * @param entity - The response entity.
+     * @param route - The current route.
+     * @returns The render result.
+     */
     async renderTo(entity: ResponseEntity<unknown>, route: Route): Promise<RenderResult> {
         // AD-10: every 4xx/5xx response is a problem+json document.
         if (entity.status.code >= 400) {

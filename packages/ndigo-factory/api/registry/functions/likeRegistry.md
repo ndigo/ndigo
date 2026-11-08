@@ -8,6 +8,8 @@
 
 > **likeRegistry**(`value`): `value is Registry`
 
+Narrows a value to the [Registry](../interfaces/Registry.md) shape.
+
 ## Parameters
 
 ### value

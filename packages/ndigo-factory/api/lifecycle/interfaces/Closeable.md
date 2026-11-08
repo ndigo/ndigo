@@ -18,6 +18,8 @@ A value that can be closed to release its resources.
 
 > **close**(): `void`
 
+Releases the value's resources.
+
 #### Returns
 
 `void`

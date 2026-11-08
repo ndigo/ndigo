@@ -25,6 +25,8 @@ mapping.interceptors.push(new CSRFInterceptor());
 
 > **new CSRFInterceptor**(`options?`): `CSRFInterceptor`
 
+Creates the CSRF interceptor.
+
 #### Parameters
 
 ##### options?
@@ -43,6 +45,8 @@ Interceptor options.
 
 > **completeHandle**(): `void`
 
+No completion hook needed.
+
 #### Returns
 
 `void`
@@ -56,6 +60,8 @@ Interceptor options.
 ### postHandle()
 
 > **postHandle**(): `void`
+
+No post-processing — CSRF is a pre-handler concern.
 
 #### Returns
 

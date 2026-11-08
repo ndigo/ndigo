@@ -1,4 +1,5 @@
 /**
+ * Abstract factory with scopes, lifecycle, and version checks.
  */
 import {
     FrameworkError,
@@ -183,7 +184,17 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
      * @typeParam T - The type of the value.
      */
     destroyValue<T = unknown>(token: ContextToken<T>): void;
+    /**
+     * Destroys a value managed by the factory by name.
+     *
+     * @param name - The value name.
+     */
     destroyValue(name: string): void;
+    /**
+     * Destroys a value managed by the factory.
+     *
+     * @param nameOrToken - The value name or token.
+     */
     destroyValue<T = unknown>(nameOrToken: string | ContextToken<T>): void {
         const name = typeof nameOrToken === 'string' ? nameOrToken : nameOrToken.description;
 
@@ -240,7 +251,21 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
      * @typeParam T - The type of the value.
      */
     getValue<T = unknown>(token: ContextToken<T>): T;
+    /**
+     * Retrieves a value by name, creating it when necessary.
+     *
+     * @param name - The value name.
+     * @param argumentsList - Constructor arguments.
+     * @returns The retrieved value.
+     */
     getValue<T = unknown>(name: string, argumentsList?: unknown[]): T;
+    /**
+     * Retrieves a value by name or token.
+     *
+     * @param nameOrToken - The value name or token.
+     * @param argumentsList - Constructor arguments.
+     * @returns The retrieved value.
+     */
     getValue<T = unknown>(nameOrToken: string | ContextToken<T>, argumentsList: unknown[] = []): T {
         const name = typeof nameOrToken === 'string' ? nameOrToken : nameOrToken.description;
 
@@ -318,6 +343,9 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
 
     /**
      * Checks the resolved value's version against the token's requiredVersion and warns on mismatch.
+     *
+     * @param nameOrToken - The value name or token.
+     * @param value - The resolved value.
      */
     _checkVersion<T>(nameOrToken: string | ContextToken<T>, value: T): void {
         if (typeof nameOrToken === 'string') {
@@ -410,7 +438,19 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
      * @typeParam T - The type of the value.
      */
     hasValue<T = unknown>(token: ContextToken<T>): boolean;
+    /**
+     * Checks whether a value is registered by name.
+     *
+     * @param name - The value name.
+     * @returns Whether a value is registered.
+     */
     hasValue(name: string): boolean;
+    /**
+     * Checks whether a value is registered by name or token.
+     *
+     * @param nameOrToken - The value name or token.
+     * @returns Whether a value is registered.
+     */
     hasValue<T = unknown>(nameOrToken: string | ContextToken<T>): boolean {
         const name = typeof nameOrToken === 'string' ? nameOrToken : nameOrToken.description;
         return (
@@ -467,7 +507,19 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
      * @typeParam T - The type of the value.
      */
     setValue<T = unknown>(token: ContextToken<T>, value: T): void;
+    /**
+     * Sets a value by name.
+     *
+     * @param name - The value name.
+     * @param value - The value to register.
+     */
     setValue<T = unknown>(name: string, value: T): void;
+    /**
+     * Sets a value by name or token.
+     *
+     * @param nameOrToken - The value name or token.
+     * @param value - The value to register.
+     */
     setValue<T = unknown>(nameOrToken: string | ContextToken<T>, value: T): void {
         const name = typeof nameOrToken === 'string' ? nameOrToken : nameOrToken.description;
 

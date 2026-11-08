@@ -8,6 +8,8 @@
 
 > **likeDestroyable**(`value`): `value is Destroyable`
 
+Narrows a value to the [Destroyable](../interfaces/Destroyable.md) shape.
+
 ## Parameters
 
 ### value

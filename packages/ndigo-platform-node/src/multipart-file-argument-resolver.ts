@@ -1,4 +1,5 @@
 /**
+ * Argument resolver that binds uploaded multipart files.
  */
 import {
     AbstractPlatformArgumentResolver,
@@ -31,6 +32,15 @@ export class NodeMultipartFileMethodArgumentResolver extends AbstractPlatformArg
         return 'NodeMultipartFileMethodArgumentResolver';
     }
 
+    /**
+     * Reads the uploaded file(s) bound to the parameter.
+     *
+     * @param _name - The value name (unused).
+     * @param parameter - The method parameter.
+     * @param route - The current route.
+     * @param _mapping - The route mapping (unused).
+     * @returns The file, an array of files, or `undefined`.
+     */
     protected resolveName(_name: string, parameter: MethodParameter, route: Route, _mapping: unknown): unknown {
         const parts = getNodeRequest(route)?.multipart?.files.get(parameter.name);
         if (!parts || parts.length === 0) {
@@ -40,6 +50,12 @@ export class NodeMultipartFileMethodArgumentResolver extends AbstractPlatformArg
         return parts.length === 1 ? parts[0] : parts;
     }
 
+    /**
+     * Whether this resolver supports multipart-file parameters.
+     *
+     * @param parameter - The method parameter to test.
+     * @returns Whether the parameter type matches.
+     */
     supportsParameter(parameter: MethodParameter): boolean {
         return MethodParameterType.MULTIPART_FILE.equals(parameter.type);
     }

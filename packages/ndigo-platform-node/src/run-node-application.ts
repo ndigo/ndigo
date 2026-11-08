@@ -1,4 +1,5 @@
 /**
+ * Node application bootstrap entry point.
  */
 import { ApplicationBuilder, StandardConfigFileLoader } from '@ndigo/boot';
 import type { ConfigurableApplicationContext } from '@ndigo/context';

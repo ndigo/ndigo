@@ -87,19 +87,27 @@ Destroys the view; renders after destruction produce an empty stream.
 
 > **renderTo**(`_model`, `route`): `Promise`\<[`RenderResult`](#)\>
 
+Produces the streaming SSE response.
+
 #### Parameters
 
 ##### \_model
 
 `unknown`
 
+The data model (unused).
+
 ##### route
 
 [`Route`](#)
 
+The current route.
+
 #### Returns
 
 `Promise`\<[`RenderResult`](#)\>
+
+The streaming render result.
 
 #### Implementation of
 

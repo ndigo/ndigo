@@ -1,4 +1,5 @@
 /**
+ * Aware mixins for injecting factory and context dependencies.
  */
 import { like } from '@ndigo/util/types';
 //import { Constructable } from '@ndigo/core';
@@ -52,18 +53,16 @@ export const AsAware = <T extends Constructable>(superclass: T): Constructable<A
     };
 
 /**
- * @readonly
- */
-
-/**
- * @see module:factory.AsNameAware
-
+ * Mixin adding a mutable `name` property to a class.
  */
 export const AsNameAware = <T extends Constructable>(superclass: T): Constructable<NameAware> & T =>
     class extends AsAware(superclass) implements NameAware {
         readonly name!: string;
 
         /**
+         * Sets the value's name.
+         *
+         * @param name - The name to set.
          */
         setName(name: string): void {
             Reflect.defineProperty(this, 'name', {
@@ -73,14 +72,6 @@ export const AsNameAware = <T extends Constructable>(superclass: T): Constructab
             });
         }
     };
-
-/**
- * @readonly
- */
-
-/**
- * @readonly
- */
 
 /**
  * Determines whether or not the `value` provided is {@link Aware}.

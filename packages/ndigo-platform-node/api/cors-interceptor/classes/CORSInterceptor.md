@@ -50,17 +50,25 @@ Completion hook is not needed for CORS.
 
 [`Route`](#)
 
+The dispatched route.
+
 ##### \_handler
 
 `object` \| `undefined`
+
+The handler that ran.
 
 ##### \_error
 
 `Error` \| `null`
 
+The error raised, if any.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves immediately.
 
 #### Implementation of
 
@@ -80,17 +88,25 @@ Ensures the allow headers reach actual (non-preflight) responses.
 
 [`Route`](#)
 
+The route being dispatched.
+
 ##### \_handler
 
 `object` \| `undefined`
+
+The route handler (unused).
 
 ##### \_modelAndView
 
 [`ModelAndView`](#)
 
+The produced model and view (unused).
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once handled.
 
 #### Implementation of
 
@@ -110,13 +126,19 @@ Attaches CORS headers and short-circuits preflight requests.
 
 [`Route`](#)
 
+The route being dispatched.
+
 ##### \_handler
 
 `object` \| `undefined`
 
+The route handler (unused).
+
 #### Returns
 
 `Promise`\<`boolean` \| [`InterceptorDenial`](#)\>
+
+Whether to proceed, or a preflight denial.
 
 #### Implementation of
 

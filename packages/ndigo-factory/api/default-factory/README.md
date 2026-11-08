@@ -6,6 +6,8 @@
 
 # default-factory
 
+Default factory implementations.
+
 ## Classes
 
 - [DefaultFactory](classes/DefaultFactory.md)

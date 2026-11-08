@@ -18,6 +18,8 @@ A [Destroyable](Destroyable.md) whose destruction is asynchronous.
 
 > **destroyed**: `boolean`
 
+Whether the value has been destroyed.
+
 #### Inherited from
 
 [`Destroyable`](Destroyable.md).[`destroyed`](Destroyable.md#destroyed)
@@ -27,6 +29,8 @@ A [Destroyable](Destroyable.md) whose destruction is asynchronous.
 ### destroy()
 
 > **destroy**(): `Promise`\<`void`\>
+
+Releases the value's resources asynchronously.
 
 #### Returns
 

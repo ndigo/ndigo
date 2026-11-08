@@ -17,13 +17,19 @@ headers were sent or without a response.
 
 [`Route`](#)
 
+The current route.
+
 ### token
 
 `string`
 
+The session token.
+
 ### options?
 
 [`SessionCookieOptions`](../interfaces/SessionCookieOptions.md)
+
+Cookie name/security options.
 
 ## Returns
 

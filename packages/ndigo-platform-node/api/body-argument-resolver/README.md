@@ -6,6 +6,8 @@
 
 # body-argument-resolver
 
+Argument resolver that reads the request body.
+
 ## Classes
 
 - [NodeBodyValueMethodArgumentResolver](classes/NodeBodyValueMethodArgumentResolver.md)

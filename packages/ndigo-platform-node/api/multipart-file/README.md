@@ -6,6 +6,8 @@
 
 # multipart-file
 
+Uploaded multipart file model.
+
 ## Classes
 
 - [NodeMultipartContext](classes/NodeMultipartContext.md)

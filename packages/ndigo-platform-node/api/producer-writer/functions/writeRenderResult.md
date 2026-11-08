@@ -27,3 +27,5 @@ The response document.
 ## Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once written.

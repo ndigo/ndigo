@@ -6,6 +6,8 @@
 
 # run-node-application
 
+Node application bootstrap entry point.
+
 ## Interfaces
 
 - [NodeApplication](interfaces/NodeApplication.md)

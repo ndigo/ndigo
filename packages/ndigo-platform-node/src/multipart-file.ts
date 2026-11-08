@@ -1,4 +1,5 @@
 /**
+ * Uploaded multipart file model.
  */
 import { Readable } from 'node:stream';
 import { createReadStream } from 'node:fs';
@@ -29,7 +30,7 @@ export interface MultipartFile {
     bytes(): Uint8Array | Promise<Uint8Array>;
     /** Streaming read (`getInputStream`). */
     stream(): Readable;
-    /** Copy the part to `dest` (`transferTo`). Creates parent directories. */
+    /** Copy the part to `dest` (`transferTo`). Creates parent directories. @param dest - The destination path. */
     transferTo(dest: string): Promise<void>;
 }
 

@@ -49,10 +49,15 @@ export interface SocketLimits {
 
 /** Resolved, read-only socket limits with defaults applied. */
 export interface ResolvedSocketLimits {
+    /** Maximum inbound frame size in bytes. */
     readonly maxPayloadBytes: number;
+    /** Maximum queued outbound messages. */
     readonly maxQueuedMessages: number;
+    /** Maximum queued outbound bytes, or `null`. */
     readonly maxQueuedBytes: number | null;
+    /** Maximum buffered bytes, or `null`. */
     readonly maxBufferedBytes: number | null;
+    /** Overflow posture. */
     readonly onOverflow: 'close' | 'drop';
 }
 
@@ -152,6 +157,9 @@ export function resolveSocketLimits(
  * §5.5.1). Invalid input throws a `RangeError` instead of surfacing as a
  * late `ws` error mid-loop (e.g. a `closeAll` aborting on the first bad
  * session).
+ *
+ * @param code - The close status code.
+ * @param reason - The close reason.
  */
 export function assertCloseFrame(code: number, reason: string): void {
     const validCode =

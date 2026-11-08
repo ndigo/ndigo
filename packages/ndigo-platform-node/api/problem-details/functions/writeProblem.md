@@ -30,6 +30,8 @@ The problem document.
 
 `Record`\<`string`, `string` \| `string`[]\> = `{}`
 
+Additional response headers.
+
 ## Returns
 
 `void`

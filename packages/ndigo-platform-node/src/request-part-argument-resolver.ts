@@ -1,4 +1,5 @@
 /**
+ * Argument resolver that reads request parts.
  */
 import {
     MethodParameter,
@@ -49,6 +50,14 @@ export class NodeRequestPartMethodArgumentResolver extends AbstractPlatformArgum
         return 'NodeRequestPartMethodArgumentResolver';
     }
 
+    /**
+     * Resolves a request part onto the parameter (optionally targeting a DTO).
+     *
+     * @param parameter - The method parameter.
+     * @param route - The current route.
+     * @param mapping - The route mapping.
+     * @returns The bound value.
+     */
     resolveArgument(parameter: MethodParameter, route: Route, mapping: unknown): unknown {
         const raw = this.resolveName(parameter.name, parameter, route, mapping);
         const value = raw ?? parameter.defaultValue;
@@ -68,6 +77,15 @@ export class NodeRequestPartMethodArgumentResolver extends AbstractPlatformArgum
         return this.resolveConvertedValue(parameter, bound, route, mapping, instance);
     }
 
+    /**
+     * Reads a parsed multipart field.
+     *
+     * @param name - The field name.
+     * @param _parameter - The method parameter (unused).
+     * @param route - The current route.
+     * @param _mapping - The route mapping (unused).
+     * @returns The parsed field value.
+     */
     protected resolveName(name: string, _parameter: MethodParameter, route: Route, _mapping: unknown): unknown {
         const part = getNodeRequest(route)?.multipart?.fields[name];
         if (part === undefined) {
@@ -76,6 +94,12 @@ export class NodeRequestPartMethodArgumentResolver extends AbstractPlatformArgum
         return Array.isArray(part) ? part.map(parseJsonPart) : parseJsonPart(part);
     }
 
+    /**
+     * Whether this resolver supports request-part parameters.
+     *
+     * @param parameter - The method parameter to test.
+     * @returns Whether the parameter type matches.
+     */
     supportsParameter(parameter: MethodParameter): boolean {
         return MethodParameterType.REQUEST_PART.equals(parameter.type);
     }

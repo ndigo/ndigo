@@ -6,6 +6,8 @@
 
 # multipart-file-argument-resolver
 
+Argument resolver that binds uploaded multipart files.
+
 ## Classes
 
 - [NodeMultipartFileMethodArgumentResolver](classes/NodeMultipartFileMethodArgumentResolver.md)

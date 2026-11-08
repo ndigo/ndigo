@@ -6,6 +6,8 @@
 
 # factory
 
+Factory type exports.
+
 ## References
 
 ### AbstractFactory

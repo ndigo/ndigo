@@ -6,6 +6,8 @@
 
 # node-auto-configuration
 
+Auto-configuration for the Node platform.
+
 ## Classes
 
 - [NodeAutoConfiguration](classes/NodeAutoConfiguration.md)

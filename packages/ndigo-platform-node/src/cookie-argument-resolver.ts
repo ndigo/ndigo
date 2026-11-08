@@ -1,4 +1,5 @@
 /**
+ * Argument resolver that reads cookies.
  */
 import { AbstractCookieValueArgumentResolver } from '@ndigo/dispatcher';
 import { Route } from '@ndigo/router';
@@ -16,7 +17,12 @@ export class NodeCookieValueMethodArgumentResolver extends AbstractCookieValueAr
         return 'NodeCookieValueMethodArgumentResolver';
     }
 
-    /** Reads the parsed cookies off the Node request attached to the route. */
+    /**
+     * Reads the parsed cookies off the Node request attached to the route.
+     *
+     * @param route - The current route.
+     * @returns The cookie jar, or `undefined`.
+     */
     protected getCookieJar(route: Route): Record<string, unknown> | undefined {
         return getNodeRequest(route)?.cookies;
     }

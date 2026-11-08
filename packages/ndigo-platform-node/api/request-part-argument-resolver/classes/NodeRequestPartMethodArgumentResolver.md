@@ -90,14 +90,7 @@ if the argument is undefined or null.
 
 > **resolveArgument**(`parameter`, `route`, `mapping`): `unknown`
 
-Resolves and converts a method argument value.
-
-Pipeline: resolveName → defaultValue fallback → convertType lookup → conversion → extractor validation → nil check.
-
-The `parameter.convert` hook (installed by `validatedBy` for Zod
-validation, AD-07) runs after type conversion so schemas see coerced
-values. Without this invocation the hook was dead on every resolver
-extending this base — only the BIND path invoked it.
+Resolves a request part onto the parameter (optionally targeting a DTO).
 
 #### Parameters
 
@@ -105,17 +98,25 @@ extending this base — only the BIND path invoked it.
 
 `MethodParameter`
 
+The method parameter.
+
 ##### route
 
 [`Route`](#)
+
+The current route.
 
 ##### mapping
 
 `unknown`
 
+The route mapping.
+
 #### Returns
 
 `unknown`
+
+The bound value.
 
 #### Overrides
 
@@ -127,7 +128,7 @@ extending this base — only the BIND path invoked it.
 
 > **supportsParameter**(`parameter`): `boolean`
 
-Whether the given method parameter is supported by this resolver.
+Whether this resolver supports request-part parameters.
 
 #### Parameters
 
@@ -135,13 +136,13 @@ Whether the given method parameter is supported by this resolver.
 
 `MethodParameter`
 
-The method parameter to check.
+The method parameter to test.
 
 #### Returns
 
 `boolean`
 
-Whether or not the given method parameter is supported by this resolver.
+Whether the parameter type matches.
 
 #### Overrides
 

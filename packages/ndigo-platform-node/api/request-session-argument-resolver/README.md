@@ -6,6 +6,8 @@
 
 # request-session-argument-resolver
 
+Argument resolver that reads request-session values.
+
 ## Classes
 
 - [NodeRequestSessionValueMethodArgumentResolver](classes/NodeRequestSessionValueMethodArgumentResolver.md)

@@ -18,13 +18,19 @@ malformed entries (no `=`, empty name) are skipped.
 
 `string` \| `undefined`
 
+The raw `Cookie` header.
+
 ### options?
 
 [`CookieParseOptions`](../interfaces/CookieParseOptions.md) = `{}`
 
+Parsing limits.
+
 ## Returns
 
 `Record`\<`string`, `string`\>
+
+The parsed cookie record.
 
 ## Throws
 

@@ -6,6 +6,8 @@
 
 # patterns-route-condition
 
+Pattern-based route conditions.
+
 ## Classes
 
 - [PatternsRouteCondition](classes/PatternsRouteCondition.md)

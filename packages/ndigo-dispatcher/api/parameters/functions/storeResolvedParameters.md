@@ -30,6 +30,8 @@ The method name.
 
 [`MethodParameter`](../../parameter-types/classes/MethodParameter.md)[]
 
+The resolved parameters to store.
+
 ## Returns
 
 `void`

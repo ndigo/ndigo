@@ -16,6 +16,10 @@ Parses a JSON string into a JavaScript value.
 
 `unknown`
 
+The JSON text.
+
 ## Returns
 
 `unknown`
+
+The parsed value.

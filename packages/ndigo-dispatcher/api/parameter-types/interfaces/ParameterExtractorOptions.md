@@ -30,9 +30,12 @@ Type-based converter: specifies source and target types for ConversionService lo
 
 > `optional` **defaultValue?**: `string`
 
+Value used when the parameter is absent.
+
 ***
 
 ### required?
 
 > `optional` **required?**: `boolean`
 
+Whether the parameter is required.

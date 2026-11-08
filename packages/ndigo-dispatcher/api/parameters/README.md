@@ -6,6 +6,8 @@
 
 # parameters
 
+Parameter decorators.
+
 ## Type Aliases
 
 - [ParameterMappingKind](type-aliases/ParameterMappingKind.md)

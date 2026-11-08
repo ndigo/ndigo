@@ -317,7 +317,7 @@ detected on a previous init are skipped.
 
 > **match**(`route`, `pattern`): [`RouteMatchResult`](../../route-match-result/classes/RouteMatchResult.md) \| `null`
 
-Check whether the route matches a pattern.
+Matches a route against a single registered pattern.
 
 #### Parameters
 
@@ -325,7 +325,7 @@ Check whether the route matches a pattern.
 
 [`Route`](#)
 
-The current route.
+The route to match.
 
 ##### pattern
 
@@ -337,7 +337,7 @@ The pattern to test.
 
 [`RouteMatchResult`](../../route-match-result/classes/RouteMatchResult.md) \| `null`
 
-A match result, or `null`.
+The match result, or `null` when the pattern does not match.
 
 #### Implementation of
 
@@ -349,7 +349,7 @@ A match result, or `null`.
 
 > **registerMapping**(`mapping`, `handler`, `method`): `void`
 
-Register a single mapping and handler method.
+Registers a mapping and its handler in the tree and candidate index.
 
 #### Parameters
 
@@ -357,13 +357,13 @@ Register a single mapping and handler method.
 
 [`RouteMappingInfo`](../../route-mapping-info-model/classes/RouteMappingInfo.md)
 
-The mapping metadata.
+The mapping to register.
 
 ##### handler
 
 [`MaybeHandler`](#)
 
-The handler instance or application-context name.
+The handler class or instance.
 
 ##### method
 

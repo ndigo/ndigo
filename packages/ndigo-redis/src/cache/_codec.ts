@@ -1,4 +1,5 @@
 /**
+ * JSON codec used by the Redis cache driver.
  */
 
 /** Validate JSON values without silently dropping fields or invoking getters/toJSON. */

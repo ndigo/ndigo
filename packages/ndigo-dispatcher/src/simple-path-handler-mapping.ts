@@ -1,4 +1,5 @@
 /**
+ * Simple path handler mapping.
  */
 
 import { ApplicationContext } from '@ndigo/context';

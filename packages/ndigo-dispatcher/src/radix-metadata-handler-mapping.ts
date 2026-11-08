@@ -1,4 +1,5 @@
 /**
+ * Radix-tree metadata handler mapping.
  */
 
 import { RadixTree, RadixMatch, Comparator, MultiValueMap } from '@ndigo/core';
@@ -99,6 +100,13 @@ export class RadixMetadataHandlerMapping
         return 'RadixMetadataHandlerMapping';
     }
 
+    /**
+     * Matches a route against a single registered pattern.
+     *
+     * @param route - The route to match.
+     * @param pattern - The pattern to test.
+     * @returns The match result, or `null` when the pattern does not match.
+     */
     match(route: Route, pattern: string): RouteMatchResult | null {
         const info: RouteMappingInfo = new RouteMappingInfo(pattern),
             matchingInfo = info.match(route);
@@ -109,16 +117,35 @@ export class RadixMetadataHandlerMapping
         return new RouteMatchResult(patterns[0], route.path);
     }
 
+    /**
+     * Builds the comparator used to rank mappings for a route.
+     *
+     * @param route - The route being resolved.
+     * @returns The comparator.
+     */
     protected _getMappingComparator(route: Route): Comparator<RouteMappingInfo> {
         return {
             compare: (info1, info2) => info1.compareTo(info2, route),
         };
     }
 
+    /**
+     * Narrows a mapping to the part that matches a route.
+     *
+     * @param mapping - The mapping to test.
+     * @param route - The route being resolved.
+     * @returns The matching mapping, or `null`.
+     */
     protected _getMatchingMapping(mapping: RouteMappingInfo, route: Route): RouteMappingInfo | null {
         return mapping.match(route);
     }
 
+    /**
+     * Resolves the handler for a route through the radix tree.
+     *
+     * @param route - The route to resolve.
+     * @returns The matching handler method, or `null`.
+     */
     protected override _getHandler(route: Route): RouteHandlerMethod | null {
         const { path } = route;
         const match: RadixMatch<RadixEntry> | null = this.#radixTree.lookup(path);
@@ -192,10 +219,24 @@ export class RadixMetadataHandlerMapping
         return winner.handlerMethod;
     }
 
+    /**
+     * Hook invoked when no mapping matches the path.
+     *
+     * @param mappings - Candidate mappings (unused by the radix tree).
+     * @param path - The requested path.
+     * @param route - The route being resolved.
+     * @returns Always `null` for the radix mapping.
+     */
     protected _handleNoMatch(mappings: unknown, path: string, route: Route): RouteHandlerMethod | null {
         return null;
     }
 
+    /**
+     * Whether a value is a route-mapping handler.
+     *
+     * @param value - The value to inspect.
+     * @returns `true` when the value (or its constructor) carries route-mapping metadata.
+     */
     protected _isHandler(value: unknown): boolean {
         return (
             hasRouteMapping(value) ||
@@ -206,10 +247,24 @@ export class RadixMetadataHandlerMapping
         );
     }
 
+    /**
+     * Stores path parameters extracted from the radix match.
+     *
+     * @param mapping - The winning mapping.
+     * @param path - The requested path.
+     * @param route - The route being resolved.
+     */
     protected override _handleMatch(mapping: RouteMappingInfo, path: string, route: Route): void {
         super._handleMatch(mapping, path, route);
     }
 
+    /**
+     * Registers a mapping and its handler in the tree and candidate index.
+     *
+     * @param mapping - The mapping to register.
+     * @param handler - The handler class or instance.
+     * @param method - The handler method name.
+     */
     override registerMapping(mapping: RouteMappingInfo, handler: MaybeHandler, method: string): void {
         const handlerMethod = this._createRequestHandlerMethod(handler, method);
         for (const pattern of mapping.patterns()) {

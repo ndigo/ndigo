@@ -1,4 +1,5 @@
 /**
+ * Logging route-handler interceptor.
  */
 
 import { RouteHandlerInterceptor } from './route-handler-interceptor';
@@ -75,6 +76,7 @@ export class LoggingRouteHandlerInterceptor implements RouteHandlerInterceptor {
      * @param route - The current route.
      * @param handler - The route handler.
      * @param modelAndView - The model and view returned by the handler.
+     * @returns A promise that resolves when the log entry is written.
      */
     async postHandle(route: Route, handler: object | undefined, modelAndView: ModelAndView): Promise<void> {
         const startTime = this.#startTimeMap.get(route);
@@ -93,6 +95,7 @@ export class LoggingRouteHandlerInterceptor implements RouteHandlerInterceptor {
      * @param route - The current route.
      * @param handler - The route handler.
      * @param error - The error thrown during execution.
+     * @returns A promise that resolves when cleanup completes.
      */
     async completeHandle(route: Route, handler: object | undefined, error: Error): Promise<void> {
         if (error) {

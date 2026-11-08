@@ -1,4 +1,5 @@
 /**
+ * Language-resolver strategy.
  */
 
 import { ApplicationContext } from '@ndigo/context';
@@ -12,7 +13,13 @@ import { StrategyInitializer } from './strategy-initializer';
  * so the resolver can be built from environment settings.
  */
 export interface LanguageResolverStrategy {
+    /** The active locale resolver. */
     languageResolver: LanguageResolver;
+    /**
+     * Builds and installs the language resolver.
+     *
+     * @param context - The application context.
+     */
     initLanguageResolver(context: ApplicationContext): void;
 }
 

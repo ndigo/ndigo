@@ -132,7 +132,7 @@ The ApplicationContext to be used by this object.
 
 > **supports**(`handler`): `boolean`
 
-Tests whether this adapter supports the given handler.
+Whether this adapter can handle the given handler.
 
 #### Parameters
 
@@ -140,13 +140,13 @@ Tests whether this adapter supports the given handler.
 
 `object` \| `undefined`
 
-The handler instance to test.
+The resolved handler.
 
 #### Returns
 
 `boolean`
 
-`true` when the handler is supported.
+`true` when the adapter supports it.
 
 #### Implementation of
 

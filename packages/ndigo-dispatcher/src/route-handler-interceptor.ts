@@ -1,4 +1,5 @@
 /**
+ * Route-handler interceptor contracts.
  */
 
 import { ModelAndView } from './model-and-view';
@@ -20,8 +21,29 @@ export type PreHandleOutcome = boolean | InterceptorDenial;
  * path. Every hook may be async; the chain awaits each in turn.
  */
 export interface RouteHandlerInterceptor {
+    /**
+     * Callback after the request completes, including the error path.
+     *
+     * @param route - The completed route.
+     * @param handler - The handler instance, when known.
+     * @param error - The error raised during handling, if any.
+     */
     completeHandle(route: Route, handler: object | undefined, error: Error): void | Promise<void>;
+    /**
+     * Callback after the handler returns successfully but before the view renders.
+     *
+     * @param route - The resolved route.
+     * @param handler - The handler instance, when known.
+     * @param modelAndView - The handler's result.
+     */
     postHandle(route: Route, handler: object | undefined, modelAndView: ModelAndView): void | Promise<void>;
+    /**
+     * Callback after the handler is resolved but before it is invoked.
+     *
+     * @param route - The resolved route.
+     * @param handler - The handler instance, when known.
+     * @returns `true` to continue, or a denial outcome.
+     */
     preHandle(route: Route, handler: object | undefined): PreHandleOutcome | Promise<PreHandleOutcome>;
 }
 
@@ -36,26 +58,14 @@ export interface RouteHandlerInterceptor {
  * for a large field of preprocessing aspects, e.g. for authorization checks,
  * or common handler behavior like locale or theme changes. Its main purpose
  * is to allow for factoring out repetitive handler code.
- *
- */
-
-/**
- * Callback after completion of route processing, that is, after rendering the view. Will be called on any outcome of handler execution, thus allows for proper resource cleanup.
- */
-
-/**
- * Intercept the execution of a handler. Called after RouteHandlerAdapter actually invoked the handler, but before the Dispatcher renders the view.
- */
-
-/**
- * Intercept the execution of a handler. Called after HandlerMapping determined
- * an appropriate handler object, but before RouteHandlerAdapter invokes the handler.
  */
 export class MappedHandlerInterceptor extends AsPathMatcherFilter(Null) implements RouteHandlerInterceptor {
     #interceptor: RouteHandlerInterceptor;
 
+    /** The matcher used to filter requests by path. */
     pathMatcher!: PathMatcher;
 
+    /** The wrapped interceptor. */
     get interceptor(): RouteHandlerInterceptor {
         return this.#interceptor;
     }
@@ -67,14 +77,37 @@ export class MappedHandlerInterceptor extends AsPathMatcherFilter(Null) implemen
         this.setIncludePatterns(includePatterns);
     }
 
+    /**
+     * Delegates the completion callback to the wrapped interceptor.
+     *
+     * @param route - The completed route.
+     * @param handler - The handler instance, when known.
+     * @param error - The error raised during handling, if any.
+     * @returns A promise that resolves when the wrapped callback completes.
+     */
     async completeHandle(route: Route, handler: object | undefined, error: Error | null = null): Promise<void> {
         await this.#interceptor.completeHandle(route, handler, error as Error);
     }
 
+    /**
+     * Delegates the post-handle callback to the wrapped interceptor.
+     *
+     * @param route - The resolved route.
+     * @param handler - The handler instance, when known.
+     * @param modelAndView - The handler's result.
+     * @returns A promise that resolves when the wrapped callback completes.
+     */
     async postHandle(route: Route, handler: object | undefined, modelAndView: ModelAndView): Promise<void> {
         await this.#interceptor.postHandle(route, handler, modelAndView);
     }
 
+    /**
+     * Delegates the pre-handle callback to the wrapped interceptor.
+     *
+     * @param route - The resolved route.
+     * @param handler - The handler instance, when known.
+     * @returns The wrapped interceptor's outcome.
+     */
     async preHandle(route: Route, handler: object | undefined): Promise<PreHandleOutcome> {
         // Include/exclude filtering happens when the execution chain is built
         // (`AbstractHandlerMapping._getHandlerExecutionChain` calls `matches`

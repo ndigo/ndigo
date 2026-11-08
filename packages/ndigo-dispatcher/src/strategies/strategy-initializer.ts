@@ -1,4 +1,5 @@
 /**
+ * Strategy initializer.
  */
 
 import { ApplicationContext } from '@ndigo/context';
@@ -12,10 +13,38 @@ import { toPascal } from '@ndigo/util/string';
  * the context names none.
  */
 export interface StrategyInitializer {
+    /** Names of the strategies this composition contributes. */
     strategies: string[];
+    /**
+     * Records a strategy name to initialize later.
+     *
+     * @param name - The strategy name.
+     */
     addStrategy(name: string): void;
+    /**
+     * Installs a default strategy under a context key.
+     *
+     * @param context - The application context.
+     * @param key - The context key to register under.
+     * @param strategy - The default strategy value.
+     * @returns The strategy now registered in the context.
+     */
     getDefaultStrategy<T>(context: ApplicationContext, key: string, strategy: T): T;
+    /**
+     * Runs the `init<Strategy>` initializer for every recorded strategy.
+     *
+     * @param context - The application context.
+     */
     initStrategies(context: ApplicationContext): void;
+    /**
+     * Installs a collection strategy from the context or its default.
+     *
+     * @param context - The application context.
+     * @param collectionStrategyKey - The context key holding the collection.
+     * @param strategyKey - The context key holding a single strategy.
+     * @param name - The instance property to assign.
+     * @param defaultStrategy - The fallback collection.
+     */
     initCollectionStrategy<T = unknown>(
         context: ApplicationContext,
         collectionStrategyKey: string,
@@ -23,6 +52,14 @@ export interface StrategyInitializer {
         name: string,
         defaultStrategy: T[]
     ): void;
+    /**
+     * Installs a single strategy from the context or its default.
+     *
+     * @param context - The application context.
+     * @param strategyKey - The context key holding the strategy.
+     * @param name - The instance property to assign.
+     * @param defaultStrategy - The fallback strategy.
+     */
     initStrategy<T = unknown>(context: ApplicationContext, strategyKey: string, name: string, defaultStrategy: T): void;
 }
 
@@ -43,10 +80,18 @@ const dynamic = (target: object) => target as unknown as Record<string, unknown>
  */
 export const AsStrategyInitializer = <T extends Constructable>(superclass: T): Constructable<StrategyInitializer> & T =>
     class extends superclass implements StrategyInitializer {
+        /** Whether `initStrategies` has run. */
         initialized!: boolean;
+        /** Names of the strategies to initialize. */
         strategies!: string[];
+        /** The context captured at initialization. */
         applicationContext!: ApplicationContext;
 
+        /**
+         * Records a strategy name to initialize later.
+         *
+         * @param name - The strategy name.
+         */
         addStrategy(name: string): void {
             if (this.initialized) {
                 throw new IllegalStateError('Cannot add strategy after initialization');

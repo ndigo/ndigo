@@ -6,6 +6,8 @@
 
 # metadata-scanner
 
+Decorator metadata scanning.
+
 ## Classes
 
 - [MetadataScanner](classes/MetadataScanner.md)

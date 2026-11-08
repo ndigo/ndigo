@@ -6,6 +6,8 @@
 
 # route-mapping-info-model
 
+Route mapping info model.
+
 ## Classes
 
 - [RouteMappingInfo](classes/RouteMappingInfo.md)

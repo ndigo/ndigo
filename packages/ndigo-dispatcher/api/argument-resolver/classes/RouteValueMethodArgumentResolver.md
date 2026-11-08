@@ -119,7 +119,7 @@ The method parameter to check.
 
 `boolean`
 
-Whether or not the given method parameter is supported by this resolver.
+Whether the parameter binds a route value.
 
 #### Overrides
 

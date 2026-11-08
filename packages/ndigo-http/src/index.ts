@@ -1,50 +1,6 @@
 /**
  * HTTP client with interceptor support and convenience verb helpers.
  */
-/**
- * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch}
- */
-
-/**
- * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/Body}
- */
-
-/**
- * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/Response/Response#Parameters}
- * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/Blob}
- * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/BufferSource}
- * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/FormData}
- * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams}
- * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream}
- * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String}
- */
-
-/**
- * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/Headers}
- */
-
-/**
- */
-
-/**
- * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/Request}
- */
-
-/**
- * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/Request/Request#Parameters}
- */
-
-/**
- * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/Request/Request#Parameters}
- */
-
-/**
- * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/Response}
- */
-
-/**
- * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/Response/Response#Parameters}
- */
 
 import * as HTTPHeaders from './http-headers';
 import * as ResponseStatuses from './response-statuses';

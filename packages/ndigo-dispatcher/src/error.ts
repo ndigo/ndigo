@@ -1,4 +1,5 @@
 /**
+ * Dispatcher error types.
  */
 
 import { FrameworkError } from '@ndigo/core';
@@ -12,6 +13,7 @@ const { defineProperty } = Reflect;
  * This typically indicates a misconfiguration or an unhandled route.
  */
 export class NoHandlerFoundError extends FrameworkError {
+    /** The route with no handler. */
     route!: Route;
 
     get [Symbol.toStringTag](): string {
@@ -33,7 +35,9 @@ export class NoHandlerFoundError extends FrameworkError {
  * This indicates that the specified view template or component could not be located.
  */
 export class NoViewFoundError extends FrameworkError {
+    /** The route whose view could not be resolved. */
     readonly route!: Route;
+    /** The unresolved view name. */
     readonly viewName!: string;
 
     get [Symbol.toStringTag](): string {
@@ -51,7 +55,9 @@ export class NoViewFoundError extends FrameworkError {
  * An error that represents a failure to retrieve a required {@link Route|Route} property.
  */
 export class RouteBindingError extends FrameworkError {
+    /** The route being bound, or `null` for message-only errors. */
     route!: Route | null;
+    /** The property name that failed to bind. */
     name!: string;
 
     get [Symbol.toStringTag](): string {
@@ -79,8 +85,11 @@ export class RouteBindingError extends FrameworkError {
  *
  */
 export class ParameterBindingError extends FrameworkError {
+    /** The parameter name, when known. */
     readonly parameterName!: string | null;
+    /** The handler method name, when known. */
     readonly methodName!: string | null;
+    /** The controller name, when known. */
     readonly controllerName!: string | null;
 
     get [Symbol.toStringTag](): string {
@@ -133,7 +142,9 @@ export class InvalidParameterMappingError extends ParameterBindingError {
  *
  */
 export class MissingParameterError extends ParameterBindingError {
+    /** The parameter type (e.g. `query:value`). */
     readonly parameterType!: string | null;
+    /** Whether the parameter was required. */
     readonly required!: boolean | null;
 
     get [Symbol.toStringTag](): string {
@@ -175,7 +186,9 @@ export class MissingParameterError extends ParameterBindingError {
  *
  */
 export class ParameterConversionError extends ParameterBindingError {
+    /** The parameter type (e.g. `path:variable`). */
     readonly parameterType!: string | null;
+    /** The conversion error that caused the failure. */
     readonly cause!: Error | null;
 
     get [Symbol.toStringTag](): string {

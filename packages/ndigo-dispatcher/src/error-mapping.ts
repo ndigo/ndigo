@@ -1,4 +1,5 @@
 /**
+ * Error-to-resolution mappings.
  */
 
 import '@tsmetadata/polyfill';

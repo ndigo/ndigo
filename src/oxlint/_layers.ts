@@ -16,6 +16,7 @@ export const LAYER_RANK: Record<string, number> = {
     'auth-core': 0,
     dom: 0,
     log: 0,
+    ui: 0,
     util: 0,
     // 1 — kernel primitives
     cluster: 1,

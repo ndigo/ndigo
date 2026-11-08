@@ -17,13 +17,19 @@ Reads `sessionStorage` on the browser platform (scalar-only).
 
 `string`
 
+The storage key, or `''` for the whole jar.
+
 ### options?
 
 [`ParameterExtractorOptions`](../../parameter-types/interfaces/ParameterExtractorOptions.md) = `{}`
 
+Required/default/conversion options.
+
 ## Returns
 
 [`ParameterExtractor`](../../parameter-types/type-aliases/ParameterExtractor.md)
+
+The parameter extractor.
 
 ## Example
 

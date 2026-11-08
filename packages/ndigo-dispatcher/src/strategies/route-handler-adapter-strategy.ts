@@ -1,4 +1,5 @@
 /**
+ * Route-handler adapter strategy.
  */
 
 import { ApplicationContext } from '@ndigo/context';
@@ -12,21 +13,22 @@ import { StrategyInitializer } from './strategy-initializer';
  * them from the application context.
  */
 export interface RouteHandlerAdapterStrategy {
+    /** The ordered adapters consulted for a handler. */
     handlerAdapters: RouteHandlerAdapter[];
+    /**
+     * Installs the handler adapters from the context or the defaults.
+     *
+     * @param context - The application context.
+     */
     initHandlerAdapters(context: ApplicationContext): void;
+    /**
+     * Finds the adapter that supports a handler.
+     *
+     * @param handler - The resolved handler.
+     * @returns The supporting adapter.
+     */
     getHandlerAdapter(handler: object | undefined): RouteHandlerAdapter;
 }
-
-/**
- * Initialize the handler adapters used by the class. If no handler adapters are defined, it defaults to {@link ControllerHandlerAdapter|ControllerHandlerAdapter}.
- */
-
-/**
- * Return the handler adapter for the given handler.
- * @param handler - The handler to find an adapter for.
- * @returns The adapter for the handler.
- * @throws If no adapter can be found for the handler.
- */
 
 const HANDLER_ADAPTER = 'handlerAdapter',
     HANDLER_ADAPTERS = `${HANDLER_ADAPTER}s`,
@@ -40,9 +42,12 @@ export const AsRouteHandlerAdapterStrategy = <T extends Constructable<StrategyIn
     superclass: T
 ): Constructable<RouteHandlerAdapterStrategy> & T =>
     class extends superclass implements RouteHandlerAdapterStrategy {
+        /** The context key holding a single handler adapter. */
         readonly handlerAdapterKey: string;
+        /** The context key holding the adapter collection. */
         readonly handlerAdapterCollectionKey: string;
 
+        /** The ordered adapters consulted for a handler. */
         handlerAdapters!: RouteHandlerAdapter[];
 
         // oxlint-disable-next-line no-explicit-any -- TS2545: mixin constructor must be exactly (...args: any[]).
@@ -53,6 +58,12 @@ export const AsRouteHandlerAdapterStrategy = <T extends Constructable<StrategyIn
             this.addStrategy(HANDLER_ADAPTERS);
         }
 
+        /**
+         * Initializes the handler adapters, defaulting to the controller and
+         * metadata adapters when the context configures none.
+         *
+         * @param context - The application context.
+         */
         initHandlerAdapters(context: ApplicationContext) {
             const { handlerAdapterKey, handlerAdapterCollectionKey } = this;
 
@@ -65,6 +76,13 @@ export const AsRouteHandlerAdapterStrategy = <T extends Constructable<StrategyIn
             );
         }
 
+        /**
+         * Return the handler adapter for the given handler.
+         *
+         * @param handler - The handler to find an adapter for.
+         * @returns The adapter for the handler.
+         * @throws If no adapter can be found for the handler.
+         */
         getHandlerAdapter(handler: object | undefined): RouteHandlerAdapter {
             const handlerAdapter: RouteHandlerAdapter | undefined = this.handlerAdapters.find((adapter) => {
                 // The interface declares supports(); the typeof check guards

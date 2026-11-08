@@ -1,4 +1,5 @@
 /**
+ * Route-handler method metadata.
  */
 
 import { Factory, likeFactory } from '@ndigo/factory';
@@ -23,6 +24,12 @@ const typeName = (value: unknown): string =>
  * implement it without the route plumbing below.
  */
 export interface Invocable {
+    /**
+     * Invokes the target with positional arguments.
+     *
+     * @param args - The positional arguments.
+     * @returns The invocation result.
+     */
     invoke<T = unknown>(...args: unknown[]): T;
 }
 
@@ -32,6 +39,13 @@ export interface Invocable {
  * value).
  */
 export interface HandlerMethod extends Invocable {
+    /**
+     * Invokes the handler with the resolved route.
+     *
+     * @param route - The route being resolved.
+     * @param args - Additional invocation arguments.
+     * @returns The handler's result.
+     */
     invoke<ModelAndView>(route: Route, ...args: unknown[]): ModelAndView;
 }
 
@@ -41,6 +55,13 @@ export interface HandlerMethod extends Invocable {
  * strategy derives from the handler and mapping metadata.
  */
 export interface RouteHandlerMethodMappingNamingStrategy<T = unknown> {
+    /**
+     * Derives the mapping name for a handler method.
+     *
+     * @param handlerMethod - The handler method being registered.
+     * @param mapping - The handler method's mapping.
+     * @returns The mapping name.
+     */
     getName(handlerMethod: RouteHandlerMethod, mapping: T): string;
 }
 
@@ -48,20 +69,19 @@ export interface RouteHandlerMethodMappingNamingStrategy<T = unknown> {
  * Encapsulates information about a handler method consisting of a `method` and `handler`.
  */
 
-/**
- * A strategy for assigning a name to a route handler method's mapping.
- *
- * The strategy can be configured on {@link "abstract-handler-method-mapping".AbstractHandlerMethodMapping | AbstractHandlerMethodMapping}.
- * It is used to assign a name to the mapping of every registered handler method.
- */
-
 export class RouteHandlerMethod implements HandlerMethod, Serializable {
+    /** The factory that owns the handler, when constructed from one. */
     readonly factory!: Factory | null;
+    /** The handler's registered factory name. */
     readonly name!: string | null;
+    /** The handler instance. */
     readonly handler!: object;
+    /** The method name to invoke on the handler. */
     readonly method!: string;
 
+    /** The method's parameter metadata. */
     parameters!: MethodParameter[];
+    /** The resolvers consulted to bind the parameters. */
     argumentResolvers!: HandlerMethodArgumentResolver[];
 
     /**
@@ -96,6 +116,13 @@ export class RouteHandlerMethod implements HandlerMethod, Serializable {
         this.parameters = args.filter((arg) => arg instanceof MethodParameter);
     }
 
+    /**
+     * Invokes the handler method, binding the declared parameters first.
+     *
+     * @param route - The route being resolved.
+     * @param foo - Ignored; present so subclasses can pass handler arguments.
+     * @returns The handler's result.
+     */
     invoke<ModelAndView>(route: Route, ...foo: unknown[]): ModelAndView {
         /**
          * * Hardcoding route as a parameter is a bit of a cop-out. It would be better to allow them to pick parameters, etc. as arguments.
@@ -149,6 +176,11 @@ export class RouteHandlerMethod implements HandlerMethod, Serializable {
         return (this.handler as Record<string, Function>)[this.method](...args);
     }
 
+    /**
+     * Renders the handler and its parameters for debug output.
+     *
+     * @returns A human-readable description.
+     */
     toString(): string {
         return `${typeName(this.handler)}#${this.method}( ${JSON.stringify(this.parameters)} )`;
     }
@@ -160,6 +192,14 @@ export class RouteHandlerMethod implements HandlerMethod, Serializable {
  * `RouteHandlerMethod`'s invocation contract.
  */
 export class ErrorHandlerMethod extends RouteHandlerMethod {
+    /**
+     * Invokes the error handler with the route and thrown error.
+     *
+     * @param route - The route whose handler failed.
+     * @param error - The thrown error.
+     * @param handlerMethod - The handler method that threw.
+     * @returns The resolved error response.
+     */
     invoke<ModelAndView>(route: Route, error: Error, handlerMethod: RouteHandlerMethod): ModelAndView {
         return super.invoke(route, error, handlerMethod);
     }

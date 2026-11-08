@@ -6,6 +6,8 @@
 
 # route-handler-interceptor
 
+Route-handler interceptor contracts.
+
 ## Classes
 
 - [MappedHandlerInterceptor](classes/MappedHandlerInterceptor.md)

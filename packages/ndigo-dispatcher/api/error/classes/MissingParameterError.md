@@ -56,6 +56,8 @@ Analogous to the missing-parameter binding error.
 
 > `readonly` **controllerName**: `string` \| `null`
 
+The controller name, when known.
+
 #### Inherited from
 
 [`ParameterBindingError`](ParameterBindingError.md).[`controllerName`](ParameterBindingError.md#controllername)
@@ -65,6 +67,8 @@ Analogous to the missing-parameter binding error.
 ### methodName
 
 > `readonly` **methodName**: `string` \| `null`
+
+The handler method name, when known.
 
 #### Inherited from
 
@@ -76,6 +80,8 @@ Analogous to the missing-parameter binding error.
 
 > `readonly` **parameterName**: `string` \| `null`
 
+The parameter name, when known.
+
 #### Inherited from
 
 [`ParameterBindingError`](ParameterBindingError.md).[`parameterName`](ParameterBindingError.md#parametername)
@@ -86,11 +92,15 @@ Analogous to the missing-parameter binding error.
 
 > `readonly` **parameterType**: `string` \| `null`
 
+The parameter type (e.g. `query:value`).
+
 ***
 
 ### required
 
 > `readonly` **required**: `boolean` \| `null`
+
+Whether the parameter was required.
 
 ## Accessors
 

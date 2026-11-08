@@ -20,10 +20,16 @@ conversion.
 
 \{ `source`: `unknown`; `target`: `unknown`; \} \| `undefined`
 
+Ignored; present to match the converter signature.
+
 ### value
 
 `unknown`
 
+The resolved value.
+
 ## Returns
 
 `unknown`
+
+The value unchanged.

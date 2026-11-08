@@ -16,17 +16,23 @@ initializer that installs them from the application context.
 
 > **viewResolvers**: `ViewResolver`[]
 
+The ordered view resolvers.
+
 ## Methods
 
 ### initViewResolvers()
 
 > **initViewResolvers**(`context`): `void`
 
+Installs the view-resolver chain.
+
 #### Parameters
 
 ##### context
 
 `ApplicationContext`
+
+The application context.
 
 #### Returns
 

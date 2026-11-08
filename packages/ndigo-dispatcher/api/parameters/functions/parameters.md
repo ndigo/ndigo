@@ -19,7 +19,11 @@ Uses function parameter name extraction to map extractors to positions.
 
 [`ParameterMap`](../../parameter-types/type-aliases/ParameterMap.md)
 
+The parameter extractors keyed by argument name.
+
 ## Returns
+
+The method decorator.
 
 (`target`, `context`) => `void`
 

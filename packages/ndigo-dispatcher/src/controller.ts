@@ -1,4 +1,5 @@
 /**
+ * Controller base class.
  */
 
 import { ModelAndView } from './model-and-view';
@@ -37,6 +38,12 @@ export abstract class AbstractPathViewController implements Controller {
         return new ModelAndView(viewName);
     }
 
+    /**
+     * Derives the view name for a route.
+     *
+     * @param route - The route to translate.
+     * @returns The view name.
+     */
     protected abstract _getViewNameForRoute(route: Route): string;
 }
 

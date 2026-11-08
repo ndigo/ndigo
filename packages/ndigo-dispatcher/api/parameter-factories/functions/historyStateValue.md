@@ -17,13 +17,19 @@ Reads `history.state` on the browser platform (nested-capable).
 
 `string`
 
+The history-state path, or `''` for the whole state.
+
 ### options?
 
 [`ParameterExtractorOptions`](../../parameter-types/interfaces/ParameterExtractorOptions.md) = `{}`
 
+Required/default/conversion options.
+
 ## Returns
 
 [`ParameterExtractor`](../../parameter-types/type-aliases/ParameterExtractor.md)
+
+The parameter extractor.
 
 ## Example
 

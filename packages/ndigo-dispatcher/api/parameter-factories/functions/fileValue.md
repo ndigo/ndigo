@@ -36,6 +36,8 @@ Extractor options (`required`).
 
 [`ParameterExtractor`](../../parameter-types/type-aliases/ParameterExtractor.md)
 
+The parameter extractor.
+
 ## Example
 
 ```ts

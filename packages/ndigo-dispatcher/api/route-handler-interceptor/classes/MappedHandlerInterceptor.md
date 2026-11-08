@@ -6,8 +6,16 @@
 
 # Class: MappedHandlerInterceptor
 
-Intercept the execution of a handler. Called after HandlerMapping determined
-an appropriate handler object, but before RouteHandlerAdapter invokes the handler.
+Workflow interface that allows for customized handler execution chains.
+Applications can register any number of existing or custom interceptors
+for certain groups of handlers, to add common preprocessing behavior
+without needing to modify each handler implementation.
+
+A `RouteHandlerInterceptor` gets called before the appropriate `RouteHandlerAdapter`
+triggers the execution of the handler itself. This mechanism can be used
+for a large field of preprocessing aspects, e.g. for authorization checks,
+or common handler behavior like locale or theme changes. Its main purpose
+is to allow for factoring out repetitive handler code.
 
 ## Extends
 
@@ -51,7 +59,7 @@ an appropriate handler object, but before RouteHandlerAdapter invokes the handle
 
 > **pathMatcher**: `PathMatcher`
 
-The `PathMatcher` instance used for matching patterns.
+The matcher used to filter requests by path.
 
 #### Overrides
 
@@ -65,6 +73,8 @@ The `PathMatcher` instance used for matching patterns.
 
 > **get** **interceptor**(): [`RouteHandlerInterceptor`](../interfaces/RouteHandlerInterceptor.md)
 
+The wrapped interceptor.
+
 ##### Returns
 
 [`RouteHandlerInterceptor`](../interfaces/RouteHandlerInterceptor.md)
@@ -75,23 +85,33 @@ The `PathMatcher` instance used for matching patterns.
 
 > **completeHandle**(`route`, `handler`, `error?`): `Promise`\<`void`\>
 
+Delegates the completion callback to the wrapped interceptor.
+
 #### Parameters
 
 ##### route
 
 [`Route`](#)
 
+The completed route.
+
 ##### handler
 
 `object` \| `undefined`
+
+The handler instance, when known.
 
 ##### error?
 
 `Error` \| `null` = `null`
 
+The error raised during handling, if any.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves when the wrapped callback completes.
 
 #### Implementation of
 
@@ -135,23 +155,33 @@ An optional `PathMatcher` to use for matching. If not provided, `this.pathMatche
 
 > **postHandle**(`route`, `handler`, `modelAndView`): `Promise`\<`void`\>
 
+Delegates the post-handle callback to the wrapped interceptor.
+
 #### Parameters
 
 ##### route
 
 [`Route`](#)
 
+The resolved route.
+
 ##### handler
 
 `object` \| `undefined`
+
+The handler instance, when known.
 
 ##### modelAndView
 
 [`ModelAndView`](../../model-and-view/classes/ModelAndView.md)
 
+The handler's result.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves when the wrapped callback completes.
 
 #### Implementation of
 
@@ -163,19 +193,27 @@ An optional `PathMatcher` to use for matching. If not provided, `this.pathMatche
 
 > **preHandle**(`route`, `handler`): `Promise`\<[`PreHandleOutcome`](../type-aliases/PreHandleOutcome.md)\>
 
+Delegates the pre-handle callback to the wrapped interceptor.
+
 #### Parameters
 
 ##### route
 
 [`Route`](#)
 
+The resolved route.
+
 ##### handler
 
 `object` \| `undefined`
 
+The handler instance, when known.
+
 #### Returns
 
 `Promise`\<[`PreHandleOutcome`](../type-aliases/PreHandleOutcome.md)\>
+
+The wrapped interceptor's outcome.
 
 #### Implementation of
 

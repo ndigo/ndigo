@@ -6,6 +6,8 @@
 
 # error
 
+Dispatcher error types.
+
 ## Classes
 
 - [InvalidParameterMappingError](classes/InvalidParameterMappingError.md)

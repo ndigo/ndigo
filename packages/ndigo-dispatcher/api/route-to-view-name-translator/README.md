@@ -6,6 +6,8 @@
 
 # route-to-view-name-translator
 
+Route-to-view-name translation contracts.
+
 ## Classes
 
 - [DefaultRouteToViewNameTranslator](classes/DefaultRouteToViewNameTranslator.md)

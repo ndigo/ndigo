@@ -6,6 +6,8 @@
 
 # context-tokens
 
+Context tokens for dispatcher services.
+
 ## Variables
 
 - [ARGUMENT\_RESOLVER](variables/ARGUMENT_RESOLVER.md)

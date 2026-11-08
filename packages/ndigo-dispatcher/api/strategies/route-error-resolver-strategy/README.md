@@ -6,6 +6,8 @@
 
 # strategies/route-error-resolver-strategy
 
+Route error-resolver strategy.
+
 ## Interfaces
 
 - [RouteErrorResolverStrategy](interfaces/RouteErrorResolverStrategy.md)

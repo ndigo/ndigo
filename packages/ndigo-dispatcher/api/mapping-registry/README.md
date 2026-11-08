@@ -6,6 +6,8 @@
 
 # mapping-registry
 
+Handler-mapping registry.
+
 ## Classes
 
 - [MappingEntry](classes/MappingEntry.md)

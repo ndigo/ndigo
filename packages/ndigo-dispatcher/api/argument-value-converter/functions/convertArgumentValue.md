@@ -16,22 +16,34 @@ Converts a resolved argument value and wraps conversion failures.
 
 \{ `source`: `unknown`; `target`: `unknown`; \} \| `undefined`
 
+The source/target type pair.
+
 ### value
 
 `unknown`
+
+The resolved raw value.
 
 ### parameter
 
 [`MethodParameter`](../../parameter-types/classes/MethodParameter.md)
 
+The method parameter descriptor.
+
 ### route
 
 [`Route`](#)
+
+The route being resolved.
 
 ### mapping
 
 `unknown`
 
+The method's route mapping.
+
 ## Returns
 
 `unknown`
+
+The converted value.

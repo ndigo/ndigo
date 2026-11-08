@@ -6,6 +6,8 @@
 
 # strategies/view-resolver-strategy
 
+View-resolver strategy.
+
 ## Interfaces
 
 - [ViewResolverStrategy](interfaces/ViewResolverStrategy.md)

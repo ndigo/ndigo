@@ -6,6 +6,8 @@
 
 # strategies/strategy-initializer
 
+Strategy initializer.
+
 ## Interfaces
 
 - [StrategyInitializer](interfaces/StrategyInitializer.md)

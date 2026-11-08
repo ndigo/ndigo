@@ -40,6 +40,7 @@ import { dbPullCommand } from './commands/db/pull.js';
 import { dbStudioCommand } from './commands/db/studio.js';
 import { dbSeedCommand } from './commands/db/seed.js';
 import { dbRollbackCommand } from './commands/db/rollback.js';
+import { uiRouteMap } from './commands/ui/index.js';
 
 /**
  * Builds the Stricli application for `@ndigo/cli`.
@@ -90,6 +91,7 @@ export function buildCliApp() {
             add: addCommand,
             update: updateCommand,
             logs: logsCommand,
+            ui: uiRouteMap,
             db: dbRouteMap,
         },
         aliases: { g: 'generate', routes: 'inspect' },

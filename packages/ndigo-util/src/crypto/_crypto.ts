@@ -1,4 +1,5 @@
 /**
+ * Cryptography availability guard shared by the random helpers.
  */
 
 /**

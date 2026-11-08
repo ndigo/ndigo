@@ -133,17 +133,18 @@ Rules:
   <pkg-dir>` regenerates a single package.
 - **Coverage gate:** `pnpm doc:api` fails when a **top-level exported**
   function, class, interface, or type alias has no doc comment (declaration
-  or signature). By design: class/interface members, variables, and enum
-  members are exempt (names self-document); `@internal` and `_`-prefixed
-  internal files are exempt. Adding a public symbol with no comment is a
-  CI failure — write the one-liner (type aliases included).
-- **Depth ratchet:** `scripts/doc-coverage.mjs` tracks per-package documentation
-  depth (module summaries, undocumented members, missing `@param`/`@returns`,
-  example/remarks counts) against a committed baseline
-  (`docs/tsdoc-baseline.json`). CI fails on regression; the baseline is
-  refreshed as packages are cleaned, and is deleted once everything is at
-  zero tolerance. Run `node scripts/doc-coverage.mjs --write-baseline` after
-  a batch.
+  or signature). Variables and enum members are exempt (names self-document);
+  `@internal` and `_`-prefixed internal files are exempt. Adding a public
+  symbol with no comment is a CI failure — write the one-liner (type aliases
+  included).
+- **Depth gate (zero tolerance):** `pnpm doc:coverage`
+  (`scripts/doc-coverage.mjs --check`) enforces documentation depth per
+  package: every source module carries a real summary (not a tag-only block),
+  every exported class/interface member has a doc comment, every method with
+  parameters documents each one with `@param`, and every function with a
+  non-`void` return documents `@returns`. Any nonzero count fails CI — there
+  is no baseline and no ratchet. Fix the gap rather than adding an exemption;
+  the check prints one line per package and metric.
 - **Named exports render readable pages:** TypeDoc derives each page's name
   from the declaration, so a default export renders as `default`
   (`api/<module>/classes/default.md`). Export named symbols and re-export them

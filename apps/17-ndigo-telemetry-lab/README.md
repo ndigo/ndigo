@@ -90,7 +90,7 @@ counters.
 
 The SDK is shut down on `SIGINT`/`SIGTERM` (`gracefulShutdown`), so the last
 batch — including the server's `HTTPServer.close` span and the metrics reader —
-is flushed instead of dropped (guide 10 §6).
+is flushed instead of dropped (guide 32 §6).
 
 ## What to look for
 
@@ -170,7 +170,7 @@ With a collector, both halves land in the **same trace**, one span from each
 ### Sampling (`NDIGO_TELEMETRY_SAMPLER`)
 
 `always` (default), `off`, or a ratio in `[0, 1]`; anything else fails at boot
-rather than silently meaning "always" (guide 10 §2). The sampler is
+rather than silently meaning "always" (guide 32 §2). The sampler is
 parent-based, so **children follow the caller's decision** — with `off`, a root
 request exports nothing, while a request carrying a sampled `traceparent` is
 still traced end to end:
@@ -259,14 +259,14 @@ pnpm --filter @ndigo/telemetry-lab test        # vitest, 4 files, 21 tests
 
 ## See Also
 
-- [Guide 10 — Telemetry](../../docs/guides/10-telemetry.md): the sampler, exporter
+- [Guide 32 — Telemetry](../../docs/guides/32-telemetry.md): the sampler, exporter
   and flush semantics this app configures.
-- [Guide 16 — Persistence and distributed backends](../../docs/guides/16-persistence-and-distributed-backends.md):
+- [Guide 21 — Persistence and distributed backends](../../docs/guides/21-persistence-and-shared-stores.md):
   where the telemetry backends sit in a Ndigo deployment.
-- [Guide 05 — Scheduling](../../docs/guides/05-scheduling.md),
-  [Guide 06 — WebSockets](../../docs/guides/06-websockets.md),
-  [Guide 19 — Testing](../../docs/guides/19-testing.md),
-  [Guide 20 — The HTTP client](../../docs/guides/20-http-client.md).
+- [Guide 23 — Scheduling](../../docs/guides/23-scheduling.md),
+  [Guide 15 — WebSockets](../../docs/guides/15-websockets.md),
+  [Guide 36 — Testing](../../docs/guides/36-testing.md),
+  [Guide 11 — The HTTP client](../../docs/guides/11-http-client.md).
 - [`apps/05-ndigo-api`](../05-ndigo-api/README.md) — the same collector wiring in a
   larger app; `apps/08-ndigo-views`' client demo for the browser-side
   `TraceHeaderInterceptor` pattern.

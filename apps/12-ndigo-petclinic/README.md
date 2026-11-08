@@ -147,7 +147,7 @@ McArdle` — are included; that keeps the owner list at three pages of five.
   alongside the document, chosen by view name, with every other name delegated
   to the standard resolver.
 - `@ndigo/dispatcher` **whole-source form binding** (`dataBinderValue('body')`,
-  guide 09) on every post, with **Zod** as the single validation source
+  guide 06) on every post, with **Zod** as the single validation source
   (`src/forms.ts`) and **query validation** (`validatedQuery`) for the paged
   searches.
 - **Validation that re-renders instead of failing**: the reason the form schemas
@@ -228,15 +228,15 @@ Deliberately simplified or replaced:
 - [apps/README](../README.md) — the numbered application ladder and port registry
 - [07 — ndigo-island](../07-ndigo-island/README.md) — EJS view resolution,
   static asset serving and i18n in a Node app
-- [02 — Request Validation](../../docs/guides/02-request-validation.md) — Zod
+- [07 — Request Validation](../../docs/guides/07-request-validation.md) — Zod
   contracts, `validatedQuery`/`validatedBody`, the 422 document
-- [09 — Argument Binding](../../docs/guides/09-argument-binding.md) —
+- [06 — Argument Binding](../../docs/guides/06-argument-binding.md) —
   `dataBinderValue` and the whole-source form path
-- [04 — i18n and Content](../../docs/guides/04-i18n-and-content.md) — message
+- [17 — Internationalization & Content](../../docs/guides/17-i18n-and-content.md) — message
   sources, template helpers, locale negotiation
-- [17 — Static Files](../../docs/guides/17-static-files.md) — `StaticController`
+- [10 — Static Files](../../docs/guides/10-static-files.md) — `StaticController`
   semantics
-- [19 — Testing](../../docs/guides/19-testing.md) — `bootApp` + `MockHTTP`
+- [36 — Testing](../../docs/guides/36-testing.md) — `bootApp` + `MockHTTP`
 - [@ndigo/orm](../../packages/ndigo-orm/README.md) — entities, relations, paging
 - [@ndigo/view-ejs](../../packages/ndigo-view-ejs/README.md) — the EJS view
   technology

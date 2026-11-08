@@ -27,7 +27,7 @@ ADRs and guides cited are the per-surface details.
 5. **Stop, drain, then close — in `finally`.** Producers and serving stop
    first, consumers unsubscribe, transports close, the synchronous
    container close runs last. Cleanup is written so a failure cannot skip
-   the remaining steps (guides 06/16, AD-40).
+   the remaining steps (guides 15/21, AD-40).
 6. **Close is a contract, not a convention.** Container teardown recognizes
    `Closeable`; external adapters bridge `dispose()` to it explicitly.
    A dispose-only object registered with the container is not proof of

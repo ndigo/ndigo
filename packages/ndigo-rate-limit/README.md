@@ -33,7 +33,7 @@ const result = await limiter.consume('203.0.113.7', policy);
 if (result.allowed) {
     // …serve the request…
 } else {
-    // 429 + Retry-After (result.retryAfterMs) — see guide 11 §5
+    // 429 + Retry-After (result.retryAfterMs) — see guide 26 §5
 }
 ```
 
@@ -42,7 +42,7 @@ a shared backend resolves over its network hop. All implementations share
 one contract — the interceptor awaits it.
 
 Multi node: register a `RedisRateLimiter` bean (see
-[guide 16](../../docs/guides/16-persistence-and-distributed-backends.md));
+[guide 21](../../docs/guides/21-persistence-and-shared-stores.md));
 every process counts against the **same** budgets.
 
 ## Usage

@@ -16,9 +16,14 @@ markers, links.
 
 ### [Guides](./guides/README.md)
 
-How-to guides (numbered `NN-slug.md`, living documents — no dates). Guide 01
-is the end-to-end tutorial/integration path; 02–28 cover one feature area
-each, and 29 covers the application directory/file conventions.
+How-to guides (numbered `NN-slug.md`, living documents — no dates). **00–40**
+are application guides: 00–02 start the ladder (concepts, Node, browser),
+03–09 cover the fundamentals, and the rest cover the web/API, data, security,
+browser, cross-cutting, and operations surfaces. **90–91** are contributor
+guides (package documentation and application conventions). See the
+[guide index](./guides/README.md) and the
+[2026-11-08 renumbering map](./reference/2026-11-08_GUIDE_RENUMBERING.md) for
+the old-to-new mapping.
 
 ### [Plans](./plans/README.md)
 

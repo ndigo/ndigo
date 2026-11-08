@@ -20,7 +20,7 @@
  *   7. README standard: the required H2 set
  *      (Installation, Getting Started, Usage, API, Development, Contributing,
  *      License) is present and in order — see
- *      docs/guides/12-package-documentation.md.
+ *      docs/guides/90-package-documentation.md.
  *   8. Root manifest: devDependencies obey the same dead-dependency rule,
  *      judged against workspace-wide import usage (root scripts/configs, the
  *      repo-only root `src/` tree, plus every project's src/test/bench);
@@ -137,7 +137,7 @@ const APP_ASSET_DEPS = new Set([
 
 /**
  * Required H2 sections of every package README, in order. `Configuration` and
- * `See Also` are optional; see docs/guides/12-package-documentation.md.
+ * `See Also` are optional; see docs/guides/90-package-documentation.md.
  */
 const REQUIRED_README_SECTIONS = [
     'Installation',
@@ -318,11 +318,11 @@ for (const dir of readdirSync(PACKAGES)) {
         }
     }
 
-    // Documentation standard (see docs/guides/12-package-documentation.md)
+    // Documentation standard (see docs/guides/90-package-documentation.md)
     const readmePath = join(PACKAGES, dir, 'README.md');
     const readme = existsSync(readmePath) ? readFileSync(readmePath, 'utf8') : '';
     if (readme.trim().length < 200) {
-        fail(name, `README.md must exist with real content (docs/guides/12-package-documentation.md)`);
+        fail(name, `README.md must exist with real content (docs/guides/90-package-documentation.md)`);
     } else {
         const h2s = readme
             .split('\n')
@@ -333,12 +333,12 @@ for (const dir of readdirSync(PACKAGES)) {
         if (missing.length > 0) {
             fail(
                 name,
-                `README.md is missing required section(s) ${missing.map((s) => `"## ${s}"`).join(', ')} — the required H2 set is defined in docs/guides/12-package-documentation.md`
+                `README.md is missing required section(s) ${missing.map((s) => `"## ${s}"`).join(', ')} — the required H2 set is defined in docs/guides/90-package-documentation.md`
             );
         } else if (positions.some((position, index) => index > 0 && position < positions[index - 1])) {
             fail(
                 name,
-                `README.md required sections are out of order — expected ${REQUIRED_README_SECTIONS.map((s) => `"## ${s}"`).join(' → ')} (docs/guides/12-package-documentation.md)`
+                `README.md required sections are out of order — expected ${REQUIRED_README_SECTIONS.map((s) => `"## ${s}"`).join(' → ')} (docs/guides/90-package-documentation.md)`
             );
         }
     }
@@ -350,7 +350,7 @@ for (const dir of readdirSync(PACKAGES)) {
     if (!Array.isArray(manifest.keywords) || manifest.keywords.length === 0) {
         fail(name, `keywords must be a non-empty array (docs standard)`);
     }
-    // Documentation standard (see docs/guides/12-package-documentation.md): every
+    // Documentation standard (see docs/guides/90-package-documentation.md): every
     // publishable package ships its compiled lib/ and generated api/.
     if (!Array.isArray(manifest.files) || !manifest.files.includes('api') || !manifest.files.includes('lib')) {
         fail(name, `files must include "api" and "lib" (docs standard)`);

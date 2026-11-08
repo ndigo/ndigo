@@ -80,7 +80,7 @@ describe('mode 4 — login rate limiting', () => {
     });
 
     test('both credential endpoints share one budget per client address', async () => {
-        // The limiter's key is the address (documented in guide 11 §5), not the
+        // The limiter's key is the address (documented in guide 26 §5), not the
         // route — a brute-force attacker cannot multiply the budget by rotating
         // between the cookie and the JWT login.
         for (let index = 0; index < LOGIN_RATE_LIMIT.limit; index += 1) {

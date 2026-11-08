@@ -39,7 +39,7 @@ pnpm exec nx generate @ndigo/generators:redis-setup --directory apps/05-ndigo-ap
 
 `ndigo new <name>` and `ndigo generate <kind>` front the same collection; the
 `app` generator's options are documented in
-[guide 25](../../docs/guides/25-ndigo-cli.md). `header` is intentionally
+[guide 37](../../docs/guides/37-ndigo-cli.md). `header` is intentionally
 dependency-free and does not run `formatFiles`: its output is canonical by
 construction (see the generator's TSDoc).
 

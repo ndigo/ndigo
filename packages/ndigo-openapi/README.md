@@ -92,7 +92,7 @@ new OpenAPISpecGenerator().generate(tables, {
 | `excludePaths`                  | `[]`                        | Path denylist                        |
 
 Docs endpoints are open by default (the `/health`+`/metrics` posture) — wire
-`accessGuard` on untrusted networks (guide 13 §1). The guard should check the
+`accessGuard` on untrusted networks (guide 12 §1). The guard should check the
 request itself: the docs controllers carry no `@authenticated`/`@authorized`
 metadata, so a metadata-driven guard always permits these endpoints.
 
@@ -126,7 +126,7 @@ pnpm --filter @ndigo/openapi test
 
 ## See Also
 
-- [Guide 13 — OpenAPI & API Docs](../../docs/guides/13-openapi-and-api-docs.md)
+- [Guide 12 — OpenAPI & API Docs](../../docs/guides/12-openapi-and-api-docs.md)
 - [@ndigo/platform-node](../ndigo-platform-node/README.md) — hosts `OpenAPIDocsAutoConfiguration` (serving; the platform owns bytes + headers)
 
 ## Contributing

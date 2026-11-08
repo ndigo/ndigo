@@ -162,8 +162,8 @@ Omitting the name binds the entire source object (`queryValue()` =
 whole query, `bodyValue()` = whole body — the `*Value(name)` whole-source
 rule, AD-27 amendment). Whole-source **data
 binding** (`dataBinderValue`) and multipart JSON parts (`requestPart`) are
-covered in guide [09 — Argument Binding](09-argument-binding.md). Follow
-guide [02 — Request Validation](02-request-validation.md) for coercion and
+covered in guide [06 — Argument Binding](06-argument-binding.md). Follow
+guide [07 — Request Validation](07-request-validation.md) for coercion and
 validation on top of extractors.
 
 ## 5. Managed beans and the server
@@ -213,7 +213,7 @@ The framework maps errors deterministically:
 | Insufficient role                                        | 403                             |
 | No route / no view                                       | 404                             |
 | Path exists, method not allowed                          | 405 + `Allow`                   |
-| Zod validation failure                                   | 422 + `errors[]` (see guide 02) |
+| Zod validation failure                                   | 422 + `errors[]` (see guide 07) |
 | Anything unhandled                                       | 500 (internals never leaked)    |
 
 Handlers can return a `ResponseEntity<ProblemDetails>` for full control, or
@@ -410,9 +410,9 @@ new HTTPServer(null, { tls: { key: '/etc/tls/key.pem', cert: '/etc/tls/cert.pem'
 
 ## Next steps
 
-- [Guide 02 — Request Validation](02-request-validation.md): coercion,
+- [Guide 07 — Request Validation](07-request-validation.md): coercion,
   `validatedBody`, and entity-derived schemas.
-- [Guide 17 — Static Files](17-static-files.md): serving a directory over
+- [Guide 10 — Static Files](10-static-files.md): serving a directory over
   HTTP — ETag/Range, precompressed variants, SPA fallback (the reference demo
   is `apps/05-ndigo-api`'s `/static/`).
 - Package READMEs: `@ndigo/platform-node`, `@ndigo/dispatcher`, `@ndigo/boot`,

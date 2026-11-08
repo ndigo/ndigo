@@ -77,7 +77,7 @@ import { validatedBody } from '@ndigo/dispatcher';
 // @parameters({ data: validatedBody(insertSchemaForEntity(Note)) })
 ```
 
-Unvalidated create bodies are rejected with a 422 problem document carrying the structured issues; the same schema family drives Drizzle table + select schemas via `@ndigo/orm-drizzle`. Guide: [`docs/guides/02-request-validation.md`](../../docs/guides/02-request-validation.md).
+Unvalidated create bodies are rejected with a 422 problem document carrying the structured issues; the same schema family drives Drizzle table + select schemas via `@ndigo/orm-drizzle`. Guide: [`docs/guides/07-request-validation.md`](../../docs/guides/07-request-validation.md).
 
 ## API
 

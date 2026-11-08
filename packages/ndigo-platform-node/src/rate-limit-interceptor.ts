@@ -56,7 +56,7 @@ export function rateLimit(options: RateLimitPolicy) {
  *
  * - **Key**: `NodeRequest.remoteAddress` — the socket peer unless the
  *   direct connection matches the adapter's `trustedProxies` allowlist
- *   (`NDIGO_TRUSTED_PROXIES` env; see node-request.ts:35 and guide 11
+ *   (`NDIGO_TRUSTED_PROXIES` env; see node-request.ts:35 and guide 26
  *   §9): then `X-Forwarded-For` is walked rightmost-first and the first
  *   non-trusted valid IP wins, so spoofed leftmost values can never win;
  *   with no trusted proxies configured the socket peer is used.

@@ -6,6 +6,8 @@
 
 # session-cookie
 
+Session cookie construction and mutation.
+
 ## Interfaces
 
 - [SessionCookieOptions](interfaces/SessionCookieOptions.md)

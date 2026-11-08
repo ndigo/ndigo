@@ -8,6 +8,8 @@
 
 > **likeLifecycle**(`value`): `value is Lifecycle`
 
+Narrows a value to the [Lifecycle](../interfaces/Lifecycle.md) shape.
+
 ## Parameters
 
 ### value

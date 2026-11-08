@@ -26,6 +26,10 @@ The policy is validated at decoration time (fail loud at definition).
 
 [`RateLimitPolicy`](#)
 
+The rate-limit policy.
+
 ## Returns
+
+The class/method decorator.
 
 (`target`, `context`) => `void`

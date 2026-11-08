@@ -18,9 +18,13 @@ options used to set the cookie so the clear targets it exactly.
 
 [`Route`](#)
 
+The current route.
+
 ### options?
 
 [`SessionCookieOptions`](../interfaces/SessionCookieOptions.md)
+
+Cookie name/security options.
 
 ## Returns
 

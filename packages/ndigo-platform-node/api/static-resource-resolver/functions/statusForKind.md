@@ -16,6 +16,10 @@ Maps a resolution kind to an HTTP status.
 
 [`StaticResourceKind`](../type-aliases/StaticResourceKind.md)
 
+The resolution kind.
+
 ## Returns
 
 `number`
+
+The HTTP status code.

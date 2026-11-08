@@ -1,4 +1,5 @@
 /**
+ * Shared factory types and helpers.
  */
 // Shared Object/Reflect helpers used across the factory implementation.
 

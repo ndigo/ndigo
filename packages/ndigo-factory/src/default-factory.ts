@@ -1,4 +1,5 @@
 /**
+ * Default factory implementations.
  */
 import { RegistryProxyHandler } from './registry';
 import { AbstractFactory } from './abstract-factory';

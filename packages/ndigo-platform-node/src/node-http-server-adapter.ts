@@ -1,4 +1,5 @@
 /**
+ * Node HTTP server adapter for the dispatcher.
  */
 /**
  * Node.js HTTP server adapter wrapping `node:http.createServer()`.
@@ -317,6 +318,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
      */
     #forceClose: (() => void) | null = null;
 
+    /** The underlying Node server. */
     get server(): unknown {
         return this.#server;
     }
@@ -331,6 +333,8 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
     }
 
     /**
+     * Creates the adapter.
+     *
      * @param dispatcher - The dispatcher to invoke for each incoming request.
      * @param options - Optional request limits and timeouts.
      */
@@ -374,6 +378,10 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
     /**
      * Binds the server. Rejects on bind errors (port in use, bad host, …)
      * instead of resolving silently.
+     *
+     * @param port - The port to bind.
+     * @param host - The bind host.
+     * @returns A promise that resolves once listening.
      */
     async listen(port: number, host?: string): Promise<void> {
         if (this.#server) {
@@ -957,6 +965,8 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
      * Stops the server gracefully: stop accepting new connections, then wait
      * up to `shutdownTimeoutMs` for in-flight requests to drain before
      * destroying remaining sockets.
+     *
+     * @returns A promise that resolves once closed.
      */
     async close(): Promise<void> {
         const server = this.#server;
@@ -1012,6 +1022,13 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
         });
     }
 
+    /**
+     * Handles one incoming request through the dispatch pipeline.
+     *
+     * @param req - The Node request.
+     * @param res - The Node response.
+     * @returns A promise that resolves once the response is written.
+     */
     async handleRequest(req: IncomingMessage, res: ServerResponse): Promise<void> {
         let multipart: MultipartContext | undefined;
         try {

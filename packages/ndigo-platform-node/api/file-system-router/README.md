@@ -6,6 +6,8 @@
 
 # file-system-router
 
+Router that reads the current route from the file system.
+
 ## Classes
 
 - [FileSystemRouter](classes/FileSystemRouter.md)

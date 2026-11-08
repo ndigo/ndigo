@@ -6,6 +6,8 @@
 
 # file-system-resource-loader
 
+Resource loader backed by the file system.
+
 ## Classes
 
 - [FileSystemResourceLoader](classes/FileSystemResourceLoader.md)

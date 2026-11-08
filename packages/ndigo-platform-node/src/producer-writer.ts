@@ -1,4 +1,5 @@
 /**
+ * Writes producer-view results to Node responses.
  */
 import type { ServerResponse } from 'node:http';
 import { once } from 'node:events';
@@ -32,6 +33,7 @@ function waitForDrainOrClose(res: ServerResponse): Promise<boolean> {
  *
  * @param res - The response to write to; a no-op when absent or already sent.
  * @param result - The response document.
+ * @returns A promise that resolves once written.
  */
 export async function writeRenderResult(res: ServerResponse | undefined, result: RenderResult): Promise<void> {
     if (!res || res.headersSent) {

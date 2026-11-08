@@ -19,11 +19,15 @@ A component with an explicit start/stop lifecycle.
 
 > `readonly` **isRunning**: `boolean`
 
+Whether the component is running.
+
 ## Methods
 
 ### start()
 
 > **start**(): `void`
+
+Starts the component.
 
 #### Returns
 
@@ -34,6 +38,8 @@ A component with an explicit start/stop lifecycle.
 ### stop()
 
 > **stop**(): `void`
+
+Stops the component.
 
 #### Returns
 

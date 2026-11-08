@@ -1,4 +1,5 @@
 /**
+ * The factory contract and structural guards.
  */
 import { Constructable } from '@ndigo/core';
 import { like } from '@ndigo/util/types';

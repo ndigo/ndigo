@@ -1,4 +1,5 @@
 /**
+ * Scope contracts and implementations.
  */
 import '@tsmetadata/polyfill';
 import { IllegalStateError } from '@ndigo/core';
@@ -26,7 +27,15 @@ export type ObjectFactory<T = unknown> = () => T;
  * factory and can destroy cached values.
  */
 export interface Scope {
+    /** Destroys a cached value. @param name - The value name. */
     destroyValue(name: string): void;
+    /**
+     * Resolves a named value through the object factory.
+     *
+     * @param name - The value name.
+     * @param objectFactory - The lazy factory invoked on a miss.
+     * @returns The cached or newly created value.
+     */
     getValue<T = unknown>(name: string, objectFactory: ObjectFactory<T>): T;
 }
 
@@ -34,9 +43,13 @@ export interface Scope {
  * A factory that exposes named {@link Scope} strategies and destroys scoped values.
  */
 export interface ScopedFactory {
+    /** Destroys a scoped value. @param scopeName - The scope. @param valueName - The value name. */
     destroyScopedValue(scopeName: string, valueName: string): void;
+    /** Returns a registered scope. @param name - The scope name. */
     getScope(name: string): Scope;
+    /** Returns the registered scope names. @returns The scope names. */
     getScopeNames(): PossibleScope[];
+    /** Registers a scope. @param name - The scope name. @param scope - The scope strategy. */
     registerScope(name: string, scope: Scope): void;
 }
 
@@ -137,10 +150,22 @@ export const refreshScope = scope('refresh');
  * A future scoping split may move concrete scope implementations to a separate module.
  */
 export class PrototypeScope implements Scope {
+    /**
+     * No-op: prototype values are not cached.
+     *
+     * @param _name - The value name (unused).
+     */
     destroyValue(_name: string): void {
         // Intentionally no-op. Prototype values are not cached/tracked.
     }
 
+    /**
+     * Creates a fresh instance on every call.
+     *
+     * @param _name - The value name (unused).
+     * @param objectFactory - The factory to invoke.
+     * @returns A new value.
+     */
     getValue<T = unknown>(_name: string, objectFactory: ObjectFactory<T>): T {
         return objectFactory();
     }
@@ -170,6 +195,8 @@ export class HashScope implements Scope {
      * callback, then discards the key's bucket. Callbacks are best effort —
      * a throwing callback is logged and never aborts the sweep, so no stale
      * bucket survives `endScope`.
+     *
+     * @param key - The scope key to end.
      */
     endScope(key: string): void {
         const callbacks = this.#destructionCallbacks.get(key);
@@ -192,10 +219,20 @@ export class HashScope implements Scope {
         }
     }
 
+    /**
+     * The active hash-scope key.
+     *
+     * @returns The current key, or `null`.
+     */
     getCurrentKey(): string | null {
         return this.#currentKey;
     }
 
+    /**
+     * Activates a hash-scope key.
+     *
+     * @param key - The scope key.
+     */
     setCurrentKey(key: string): void {
         this.#currentKey = key;
 
@@ -204,6 +241,11 @@ export class HashScope implements Scope {
         }
     }
 
+    /**
+     * Destroys a value in the active hash-scope bucket.
+     *
+     * @param name - The value name.
+     */
     destroyValue(name: string): void {
         if (!this.#currentKey) {
             throw new IllegalStateError('No active hash scope context. Call setCurrentKey() first.');
@@ -224,6 +266,9 @@ export class HashScope implements Scope {
     /**
      * Registers a destruction callback for `name` within the active key's
      * bucket; `destroyValue`/`endScope` run it before discarding the value.
+     *
+     * @param name - The value name.
+     * @param callback - The teardown callback.
      */
     registerDestructionCallback(name: string, callback: () => void): void {
         if (!this.#currentKey) {
@@ -238,6 +283,13 @@ export class HashScope implements Scope {
         callbacks.set(name, callback);
     }
 
+    /**
+     * Resolves a value in the active hash-scope bucket.
+     *
+     * @param name - The value name.
+     * @param objectFactory - The lazy factory invoked on a miss.
+     * @returns The cached or newly created value.
+     */
     getValue<T = unknown>(name: string, objectFactory: ObjectFactory<T>): T {
         if (!this.#currentKey) {
             throw new IllegalStateError('No active hash scope context. Call setCurrentKey() first.');
@@ -266,6 +318,11 @@ export class SingletonScope implements Scope {
     #instances: Map<string, unknown> = new Map<string, unknown>();
     #destructionCallbacks: Map<string, () => void> = new Map<string, () => void>();
 
+    /**
+     * Destroys a cached value.
+     *
+     * @param name - The value name.
+     */
     destroyValue(name: string): void {
         const callback = this.#destructionCallbacks.get(name);
 
@@ -277,6 +334,13 @@ export class SingletonScope implements Scope {
         this.#instances.delete(name);
     }
 
+    /**
+     * Resolves a cached value, creating it on a miss.
+     *
+     * @param name - The value name.
+     * @param objectFactory - The lazy factory invoked on a miss.
+     * @returns The cached or newly created value.
+     */
     getValue<T = unknown>(name: string, objectFactory: ObjectFactory<T>): T {
         if (!this.#instances.has(name)) {
             this.#instances.set(name, objectFactory());
@@ -285,6 +349,12 @@ export class SingletonScope implements Scope {
         return this.#instances.get(name) as T;
     }
 
+    /**
+     * Registers a teardown callback for a value.
+     *
+     * @param name - The value name.
+     * @param callback - The teardown callback.
+     */
     registerDestructionCallback(name: string, callback: () => void): void {
         this.#destructionCallbacks.set(name, callback);
     }
@@ -306,6 +376,11 @@ export class RefreshScope implements Scope {
     #instances: Map<string, unknown> = new Map<string, unknown>();
     #destructionCallbacks: Map<string, () => void> = new Map<string, () => void>();
 
+    /**
+     * Destroys a cached value.
+     *
+     * @param name - The value name.
+     */
     destroyValue(name: string): void {
         const callback = this.#destructionCallbacks.get(name);
 
@@ -317,6 +392,13 @@ export class RefreshScope implements Scope {
         this.#instances.delete(name);
     }
 
+    /**
+     * Resolves a cached value, creating it on a miss.
+     *
+     * @param name - The value name.
+     * @param objectFactory - The lazy factory invoked on a miss.
+     * @returns The cached or newly created value.
+     */
     getValue<T = unknown>(name: string, objectFactory: ObjectFactory<T>): T {
         if (!this.#instances.has(name)) {
             this.#instances.set(name, objectFactory());
@@ -325,6 +407,12 @@ export class RefreshScope implements Scope {
         return this.#instances.get(name) as T;
     }
 
+    /**
+     * Registers a teardown callback for a value.
+     *
+     * @param name - The value name.
+     * @param callback - The teardown callback.
+     */
     registerDestructionCallback(name: string, callback: () => void): void {
         this.#destructionCallbacks.set(name, callback);
     }

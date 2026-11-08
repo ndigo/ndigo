@@ -6,6 +6,8 @@
 
 # data-binding-argument-resolver
 
+Argument resolver that reads Node data sources.
+
 ## Classes
 
 - [NodeDataBindingMethodArgumentResolver](classes/NodeDataBindingMethodArgumentResolver.md)

@@ -6,6 +6,8 @@
 
 # node-config-file-reader
 
+Config-file reader backed by the Node file system.
+
 ## Variables
 
 - [nodeConfigFileReader](variables/nodeConfigFileReader.md)

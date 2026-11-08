@@ -16,6 +16,8 @@ Interface that defines a registry for shared instances.
 
 > **destroyValue**\<`T`\>(`token`): `void`
 
+Destroys a value by token.
+
 ##### Type Parameters
 
 ###### T
@@ -28,6 +30,8 @@ Interface that defines a registry for shared instances.
 
 [`ContextToken`](../classes/ContextToken.md)\<`T`\>
 
+The value token.
+
 ##### Returns
 
 `void`
@@ -36,11 +40,15 @@ Interface that defines a registry for shared instances.
 
 > **destroyValue**(`name`): `void`
 
+Destroys a value by name.
+
 ##### Parameters
 
 ###### name
 
 `string`
+
+The value name.
 
 ##### Returns
 
@@ -54,6 +62,8 @@ Interface that defines a registry for shared instances.
 
 > **getValue**\<`T`\>(`token`): `T`
 
+Retrieves a value by token.
+
 ##### Type Parameters
 
 ###### T
@@ -66,6 +76,8 @@ Interface that defines a registry for shared instances.
 
 [`ContextToken`](../classes/ContextToken.md)\<`T`\>
 
+The value token.
+
 ##### Returns
 
 `T`
@@ -73,6 +85,8 @@ Interface that defines a registry for shared instances.
 #### Call Signature
 
 > **getValue**\<`T`\>(`name`): `T`
+
+Retrieves a value by name.
 
 ##### Type Parameters
 
@@ -85,6 +99,8 @@ Interface that defines a registry for shared instances.
 ###### name
 
 `string`
+
+The value name.
 
 ##### Returns
 
@@ -98,6 +114,8 @@ Interface that defines a registry for shared instances.
 
 > **hasValue**\<`T`\>(`token`): `boolean`
 
+Checks for a value by token.
+
 ##### Type Parameters
 
 ###### T
@@ -110,6 +128,8 @@ Interface that defines a registry for shared instances.
 
 [`ContextToken`](../classes/ContextToken.md)\<`T`\>
 
+The value token.
+
 ##### Returns
 
 `boolean`
@@ -118,11 +138,15 @@ Interface that defines a registry for shared instances.
 
 > **hasValue**(`name`): `boolean`
 
+Checks for a value by name.
+
 ##### Parameters
 
 ###### name
 
 `string`
+
+The value name.
 
 ##### Returns
 
@@ -136,6 +160,8 @@ Interface that defines a registry for shared instances.
 
 > **setValue**\<`T`\>(`token`, `value`): `void`
 
+Sets a value by token.
+
 ##### Type Parameters
 
 ###### T
@@ -148,9 +174,13 @@ Interface that defines a registry for shared instances.
 
 [`ContextToken`](../classes/ContextToken.md)\<`T`\>
 
+The value token.
+
 ###### value
 
 `T`
+
+The value.
 
 ##### Returns
 
@@ -159,6 +189,8 @@ Interface that defines a registry for shared instances.
 #### Call Signature
 
 > **setValue**\<`T`\>(`name`, `value`): `void`
+
+Sets a value by name.
 
 ##### Type Parameters
 
@@ -172,9 +204,13 @@ Interface that defines a registry for shared instances.
 
 `string`
 
+The value name.
+
 ###### value
 
 `T`
+
+The value.
 
 ##### Returns
 

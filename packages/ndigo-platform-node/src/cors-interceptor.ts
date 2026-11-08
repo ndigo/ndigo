@@ -98,6 +98,10 @@ export class CORSInterceptor implements RouteHandlerInterceptor {
 
     /**
      * Attaches CORS headers and short-circuits preflight requests.
+     *
+     * @param route - The route being dispatched.
+     * @param _handler - The route handler (unused).
+     * @returns Whether to proceed, or a preflight denial.
      */
     async preHandle(route: Route, _handler: object | undefined): Promise<boolean | InterceptorDenial> {
         const res = route.attributes?.[NODE_RESPONSE_ATTRIBUTE] as ServerResponse | undefined;
@@ -130,6 +134,11 @@ export class CORSInterceptor implements RouteHandlerInterceptor {
 
     /**
      * Ensures the allow headers reach actual (non-preflight) responses.
+     *
+     * @param route - The route being dispatched.
+     * @param _handler - The route handler (unused).
+     * @param _modelAndView - The produced model and view (unused).
+     * @returns A promise that resolves once handled.
      */
     async postHandle(route: Route, _handler: object | undefined, _modelAndView: ModelAndView): Promise<void> {
         const res = route.attributes?.[NODE_RESPONSE_ATTRIBUTE] as ServerResponse | undefined;
@@ -144,6 +153,11 @@ export class CORSInterceptor implements RouteHandlerInterceptor {
 
     /**
      * Completion hook is not needed for CORS.
+     *
+     * @param _route - The dispatched route.
+     * @param _handler - The handler that ran.
+     * @param _error - The error raised, if any.
+     * @returns A promise that resolves immediately.
      */
     async completeHandle(_route: Route, _handler: object | undefined, _error: Error | null): Promise<void> {
         // no-op

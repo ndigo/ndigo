@@ -26,6 +26,8 @@ The implementation is registered as a context bean by
 
 > **new NodeSocketSessionRegistry**(`options?`): `NodeSocketSessionRegistry`
 
+Creates the registry.
+
 #### Parameters
 
 ##### options?
@@ -171,6 +173,8 @@ Release registry subscriptions and heartbeat, not the application-owned transpor
 
 `Promise`\<`void`\>
 
+A promise that resolves once closed.
+
 #### Implementation of
 
 `AsyncCloseable.close`
@@ -223,6 +227,8 @@ subscriptions and remains observable on subsequent connect calls.
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once connected.
 
 ***
 

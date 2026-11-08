@@ -1,4 +1,5 @@
 /**
+ * Interceptor that attaches the request session.
  */
 import { type RouteHandlerInterceptor, type ModelAndView } from '@ndigo/dispatcher';
 import type { Route } from '@ndigo/router';
@@ -46,6 +47,12 @@ export class NodeSessionInterceptor implements RouteHandlerInterceptor {
         this.#cookieName = cookieName;
     }
 
+    /**
+     * Restores the session principal from the session cookie before dispatch.
+     *
+     * @param route - The route being dispatched.
+     * @returns Whether to proceed.
+     */
     async preHandle(route: Route): Promise<boolean> {
         const request = getNodeRequest(route);
         if (!request) return true;
@@ -64,10 +71,26 @@ export class NodeSessionInterceptor implements RouteHandlerInterceptor {
         return true;
     }
 
+    /**
+     * No-op post-handle hook.
+     *
+     * @param _route - The dispatched route.
+     * @param _handler - The handler that ran.
+     * @param _modelAndView - The produced model and view.
+     * @returns A promise that resolves immediately.
+     */
     async postHandle(_route: Route, _handler: object | undefined, _modelAndView: ModelAndView): Promise<void> {
         // no-op — session restoration happens before dispatch.
     }
 
+    /**
+     * No-op completion hook.
+     *
+     * @param _route - The dispatched route.
+     * @param _handler - The handler that ran.
+     * @param _error - The error raised, if any.
+     * @returns A promise that resolves immediately.
+     */
     async completeHandle(_route: Route, _handler: object | undefined, _error: Error | null): Promise<void> {
         // no-op.
     }

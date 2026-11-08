@@ -1,4 +1,5 @@
 /**
+ * Applies security response headers.
  */
 import helmet from 'helmet';
 import type { HelmetOptions } from 'helmet';
@@ -154,6 +155,10 @@ export class SecurityHeadersInterceptor implements RouteHandlerInterceptor {
      * idiom: response resolved from the route attributes). Skips when no
      * response is attached or the head was already flushed (e.g. socket
      * upgrades). Always allows the request through.
+     *
+     * @param route - The route being dispatched.
+     * @param _handler - The route handler (unused).
+     * @returns Whether to proceed.
      */
     async preHandle(route: Route, _handler: object | undefined): Promise<PreHandleOutcome> {
         if (this.#middlewares.length === 0) {
@@ -178,10 +183,21 @@ export class SecurityHeadersInterceptor implements RouteHandlerInterceptor {
         return true;
     }
 
+    /**
+     * Header interceptor: nothing to finalize.
+     *
+     * @returns Nothing.
+     */
     postHandle(): void | Promise<void> {
         // Header interceptor: nothing to finalize.
     }
 
+    /**
+     * Header interceptor: nothing to finalize (errors already carry the
+     * headers — written in preHandle before any denial/failure path).
+     *
+     * @returns Nothing.
+     */
     completeHandle(): void | Promise<void> {
         // Header interceptor: nothing to finalize (errors already carry the
         // headers — written in preHandle before any denial/failure path).

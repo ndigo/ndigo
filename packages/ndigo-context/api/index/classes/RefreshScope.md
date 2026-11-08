@@ -58,11 +58,15 @@ aborts the sweep.
 
 > **destroyValue**(`name`): `void`
 
+Destroys a cached value.
+
 #### Parameters
 
 ##### name
 
 `string`
+
+The value name.
 
 #### Returns
 
@@ -78,6 +82,8 @@ aborts the sweep.
 
 > **getValue**\<`T`\>(`name`, `objectFactory`): `T`
 
+Resolves a cached value, creating it on a miss.
+
 #### Type Parameters
 
 ##### T
@@ -90,13 +96,19 @@ aborts the sweep.
 
 `string`
 
+The value name.
+
 ##### objectFactory
 
 `ObjectFactory`\<`T`\>
 
+The lazy factory invoked on a miss.
+
 #### Returns
 
 `T`
+
+The cached or newly created value.
 
 #### Implementation of
 
@@ -108,15 +120,21 @@ aborts the sweep.
 
 > **registerDestructionCallback**(`name`, `callback`): `void`
 
+Registers a teardown callback for a value.
+
 #### Parameters
 
 ##### name
 
 `string`
 
+The value name.
+
 ##### callback
 
 () => `void`
+
+The teardown callback.
 
 #### Returns
 

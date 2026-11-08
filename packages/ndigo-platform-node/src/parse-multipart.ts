@@ -52,6 +52,7 @@ export interface MultipartLimits {
 
 /** Options accepted by {@link parseMultipart}. */
 export interface MultipartParseOptions {
+    /** Parsing limits. */
     limits?: MultipartLimits;
     /** Directory for spilled temp files (default `os.tmpdir()`). */
     tmpDir?: string;
@@ -174,6 +175,10 @@ function sanitizeFilename(filename: string | undefined): string | null {
  * whole body first, so an oversized upload cannot exhaust memory. Rejects with
  * a `413` {@link RequestLimitError} when any configured limit is exceeded, and
  * with a `400` when the body is not valid multipart.
+ *
+ * @param req - The incoming request.
+ * @param options - Parsing limits and temp directory.
+ * @returns The parsed multipart context.
  */
 export async function parseMultipart(
     req: IncomingMessage,

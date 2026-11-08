@@ -8,6 +8,8 @@
 
 > **likeInitializable**(`value`): `value is Initializable`
 
+Narrows a value to the [Initializable](../interfaces/Initializable.md) shape.
+
 ## Parameters
 
 ### value

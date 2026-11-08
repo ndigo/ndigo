@@ -41,11 +41,15 @@ value is discarded — mirroring `SingletonScope.destroyValue` and
 
 > **destroyValue**(`name`): `void`
 
+Destroys a value in the active hash-scope bucket.
+
 #### Parameters
 
 ##### name
 
 `string`
+
+The value name.
 
 #### Returns
 
@@ -72,6 +76,8 @@ bucket survives `endScope`.
 
 `string`
 
+The scope key to end.
+
 #### Returns
 
 `void`
@@ -82,15 +88,21 @@ bucket survives `endScope`.
 
 > **getCurrentKey**(): `string` \| `null`
 
+The active hash-scope key.
+
 #### Returns
 
 `string` \| `null`
+
+The current key, or `null`.
 
 ***
 
 ### getValue()
 
 > **getValue**\<`T`\>(`name`, `objectFactory`): `T`
+
+Resolves a value in the active hash-scope bucket.
 
 #### Type Parameters
 
@@ -104,13 +116,19 @@ bucket survives `endScope`.
 
 `string`
 
+The value name.
+
 ##### objectFactory
 
 [`ObjectFactory`](../type-aliases/ObjectFactory.md)\<`T`\>
 
+The lazy factory invoked on a miss.
+
 #### Returns
 
 `T`
+
+The cached or newly created value.
 
 #### Implementation of
 
@@ -131,9 +149,13 @@ bucket; `destroyValue`/`endScope` run it before discarding the value.
 
 `string`
 
+The value name.
+
 ##### callback
 
 () => `void`
+
+The teardown callback.
 
 #### Returns
 
@@ -145,11 +167,15 @@ bucket; `destroyValue`/`endScope` run it before discarding the value.
 
 > **setCurrentKey**(`key`): `void`
 
+Activates a hash-scope key.
+
 #### Parameters
 
 ##### key
 
 `string`
+
+The scope key.
 
 #### Returns
 

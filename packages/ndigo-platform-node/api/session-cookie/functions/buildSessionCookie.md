@@ -18,13 +18,19 @@ The name is configurable via `options.name`.
 
 `string`
 
+The session token.
+
 ### options?
 
 [`SessionCookieOptions`](../interfaces/SessionCookieOptions.md) = `{}`
 
+Cookie name/security options.
+
 ## Returns
 
 `string`
+
+The `Set-Cookie` value.
 
 ## Throws
 

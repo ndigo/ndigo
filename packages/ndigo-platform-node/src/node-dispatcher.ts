@@ -37,6 +37,7 @@ export class NodeDispatcher extends AbstractDispatcher {
      *
      * @param mv - The `ModelAndView` to render.
      * @param route - The route associated with the `ModelAndView`.
+     * @returns A promise that resolves once rendered.
      */
     override async render(mv: ModelAndView, route: Route): Promise<void> {
         const res = route.attributes?.[NODE_RESPONSE_ATTRIBUTE] as unknown as ServerResponse | undefined;

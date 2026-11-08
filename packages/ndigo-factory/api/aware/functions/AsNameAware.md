@@ -8,6 +8,8 @@
 
 > **AsNameAware**\<`T`\>(`superclass`): [`Constructable`](#)\<[`NameAware`](../interfaces/NameAware.md)\> & `T`
 
+Mixin adding a mutable `name` property to a class.
+
 ## Type Parameters
 
 ### T
@@ -23,7 +25,3 @@
 ## Returns
 
 [`Constructable`](#)\<[`NameAware`](../interfaces/NameAware.md)\> & `T`
-
-## See
-
-module:factory.AsNameAware

@@ -1,4 +1,5 @@
 /**
+ * Registers the Node argument resolvers.
  */
 import { ApplicationContext } from '@ndigo/context';
 import {
@@ -20,6 +21,8 @@ import { NodeRequestSessionValueMethodArgumentResolver } from './request-session
  * match wins). Single source of truth shared by
  * {@link configureNodeArgumentResolvers} and the auto-configuration entry, so
  * the two lists can never drift (HG-7).
+ *
+ * @returns The Node argument resolvers, in registration order.
  */
 export function createNodeArgumentResolvers(): HandlerMethodArgumentResolver[] {
     return [
@@ -40,6 +43,10 @@ export function createNodeArgumentResolvers(): HandlerMethodArgumentResolver[] {
 
 /**
  * Registers Node.js-specific argument resolvers into the application context.
+ *
+ * @param applicationContext - The application context to configure.
+ * @param _options - Reserved options (unused).
+ * @returns The registered argument resolvers.
  */
 export function configureNodeArgumentResolvers(
     applicationContext: ApplicationContext,

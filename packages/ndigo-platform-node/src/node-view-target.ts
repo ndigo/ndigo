@@ -18,18 +18,32 @@ export class HTTPResponseViewTarget implements ViewTarget {
     readonly #response: ServerResponse | undefined;
 
     /**
+     * Creates a view target over a Node response.
+     *
      * @param response - The Node.js `ServerResponse` to write to.
      */
     constructor(response: ServerResponse | undefined) {
         this.#response = response;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Prepares the target for a render (no-op).
+     *
+     * @param route - The route being rendered.
+     * @returns A promise that resolves immediately.
+     */
     async prepare(route: Route): Promise<void> {
         // Content type and headers are set by the view or response entity
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Writes the rendered output to the response.
+     *
+     * @param output - The rendered output.
+     * @param model - The data model.
+     * @param route - The current route.
+     * @returns A promise that resolves once written.
+     */
     async commit(output: unknown, model: unknown, route: Route): Promise<void> {
         if (!this.#response || this.#response.headersSent) {
             return;

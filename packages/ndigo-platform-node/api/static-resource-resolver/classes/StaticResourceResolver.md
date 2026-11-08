@@ -39,6 +39,8 @@ Canonical base directory (resolved lazily, cached).
 
 `Promise`\<`string`\>
 
+The canonical base path.
+
 ***
 
 ### resolve()
@@ -78,3 +80,5 @@ Optional resolution controls (D-6/D-7).
 #### Returns
 
 `Promise`\<[`StaticResourceResult`](../interfaces/StaticResourceResult.md)\>
+
+The resolved resource or a classified failure.

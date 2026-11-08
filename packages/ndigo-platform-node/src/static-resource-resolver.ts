@@ -13,6 +13,7 @@ export type StaticEncoding = 'br' | 'gzip';
 
 /** The result of resolving a static resource. */
 export interface StaticResourceResult {
+    /** The resolution outcome. */
     readonly kind: StaticResourceKind;
     /**
      * Absolute path of the payload file to open (only for `ok` file-backed
@@ -127,6 +128,9 @@ export interface StaticResolveOptions {
  * beats wildcard on ties). `identity`, and q=0 exclusions fall through
  * correctly. Returns `null` when no supported encoding is acceptable (serve
  * the original).
+ *
+ * @param header - The `Accept-Encoding` header.
+ * @returns The chosen encoding, or `null`.
  */
 export function negotiateEncoding(header: string | undefined): StaticEncoding | null {
     if (!header) {
@@ -199,7 +203,11 @@ export class StaticResourceResolver {
         this.#rawBase = basePath;
     }
 
-    /** Canonical base directory (resolved lazily, cached). */
+    /**
+     * Canonical base directory (resolved lazily, cached).
+     *
+     * @returns The canonical base path.
+     */
     async base(): Promise<string> {
         this.#base ??= await realpath(this.#rawBase);
         return this.#base;
@@ -224,6 +232,7 @@ export class StaticResourceResolver {
      *   literally contain them can be served — encoded traversal is inert,
      *   and encoded spaces/unicode filenames are not servable (TST-3).
      * @param options - Optional resolution controls (D-6/D-7).
+     * @returns The resolved resource or a classified failure.
      */
     async resolve(requestPath: string, options?: StaticResolveOptions): Promise<StaticResourceResult> {
         try {
@@ -450,6 +459,9 @@ function escapeHtml(value: string): string {
 
 /**
  * Maps a resolution kind to an HTTP status.
+ *
+ * @param kind - The resolution kind.
+ * @returns The HTTP status code.
  */
 export function statusForKind(kind: StaticResourceKind): number {
     switch (kind) {

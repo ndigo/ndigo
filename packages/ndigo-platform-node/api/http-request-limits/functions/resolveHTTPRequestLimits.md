@@ -17,6 +17,10 @@ Validates and resolves user-provided limits, filling defaults. Throws a
 
 [`HTTPRequestLimits`](../interfaces/HTTPRequestLimits.md)
 
+The user-provided limits.
+
 ## Returns
 
 [`ResolvedHTTPRequestLimits`](../interfaces/ResolvedHTTPRequestLimits.md)
+
+The resolved limits with defaults applied.

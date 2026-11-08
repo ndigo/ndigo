@@ -19,6 +19,8 @@ trailing-slash form so `{uiPath}{*file}` concatenation is clean.
 
 > **accessGuard**: [`RouteHandlerInterceptor`](#) \| `undefined`
 
+Optional access guard for both endpoints.
+
 ***
 
 ### description?
@@ -36,6 +38,8 @@ Spec `info.description`.
 ### enabled
 
 > **enabled**: `boolean`
+
+Whether the docs endpoints are enabled.
 
 ***
 
@@ -81,6 +85,8 @@ Called once per registered handler method, before path expansion.
 ### path
 
 > **path**: `string`
+
+The spec path.
 
 ***
 
@@ -139,6 +145,8 @@ Spec `info.title`; defaults to `'API'`.
 ### uiPath
 
 > **uiPath**: `string`
+
+The Swagger UI path.
 
 ***
 

@@ -1,4 +1,5 @@
 /**
+ * Public API of `@ndigo/factory` — factories, scopes, and lifecycle.
  */
 export * from './aware';
 export * from './context-tokens';

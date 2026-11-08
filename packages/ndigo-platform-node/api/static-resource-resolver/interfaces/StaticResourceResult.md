@@ -50,6 +50,8 @@ which are not cacheable validators.
 
 > `readonly` **kind**: [`StaticResourceKind`](../type-aliases/StaticResourceKind.md)
 
+The resolution outcome.
+
 ***
 
 ### mtimeMs?

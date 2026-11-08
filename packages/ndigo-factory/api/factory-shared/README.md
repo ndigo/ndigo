@@ -6,6 +6,8 @@
 
 # factory-shared
 
+Shared factory types and helpers.
+
 ## Functions
 
 - [construct](functions/construct.md)

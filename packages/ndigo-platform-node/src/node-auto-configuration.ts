@@ -1,4 +1,5 @@
 /**
+ * Auto-configuration for the Node platform.
  */
 import { configuration, entry, AsApplicationContextAware, type ApplicationContext } from '@ndigo/context';
 import { whenNode, Null, createConversionService, type ConversionService } from '@ndigo/core';

@@ -14,15 +14,21 @@ A factory that exposes named [Scope](Scope.md) strategies and destroys scoped va
 
 > **destroyScopedValue**(`scopeName`, `valueName`): `void`
 
+Destroys a scoped value.
+
 #### Parameters
 
 ##### scopeName
 
 `string`
 
+The scope.
+
 ##### valueName
 
 `string`
+
+The value name.
 
 #### Returns
 
@@ -34,11 +40,15 @@ A factory that exposes named [Scope](Scope.md) strategies and destroys scoped va
 
 > **getScope**(`name`): [`Scope`](Scope.md)
 
+Returns a registered scope.
+
 #### Parameters
 
 ##### name
 
 `string`
+
+The scope name.
 
 #### Returns
 
@@ -50,9 +60,13 @@ A factory that exposes named [Scope](Scope.md) strategies and destroys scoped va
 
 > **getScopeNames**(): `string`[]
 
+Returns the registered scope names.
+
 #### Returns
 
 `string`[]
+
+The scope names.
 
 ***
 
@@ -60,15 +74,21 @@ A factory that exposes named [Scope](Scope.md) strategies and destroys scoped va
 
 > **registerScope**(`name`, `scope`): `void`
 
+Registers a scope.
+
 #### Parameters
 
 ##### name
 
 `string`
 
+The scope name.
+
 ##### scope
 
 [`Scope`](Scope.md)
+
+The scope strategy.
 
 #### Returns
 

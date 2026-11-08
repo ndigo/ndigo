@@ -34,6 +34,12 @@ export interface FlagEvaluationContextResolver {
  * key the rate limiter uses. An absent address yields no context.
  */
 export class ClientAddressFlagContextResolver implements FlagEvaluationContextResolver {
+    /**
+     * Resolves the flag context from the trusted client address.
+     *
+     * @param route - The current route.
+     * @returns The evaluation context, or `undefined`.
+     */
     resolve(route: Route): FlagEvaluationContext | undefined {
         const address = getNodeRequest(route)?.remoteAddress;
         if (typeof address !== 'string' || address === '') return undefined;
@@ -72,6 +78,13 @@ export class SessionPrincipalFlagContextResolver implements FlagEvaluationContex
         this.#fallback = fallback;
     }
 
+    /**
+     * Resolves the flag context from the session principal, falling back to
+     * the client address.
+     *
+     * @param route - The current route.
+     * @returns The evaluation context.
+     */
     resolve(route: Route): FlagEvaluationContext | undefined {
         const principal = getNodeRequest(route)?.session?.['principal'];
         if (likePrincipal(principal)) {

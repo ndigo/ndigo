@@ -21,9 +21,13 @@ session).
 
 `number`
 
+The close status code.
+
 ### reason
 
 `string`
+
+The close reason.
 
 ## Returns
 

@@ -30,6 +30,8 @@ class AppConfig {
 
 > **new StaticController**(`baseDir?`, `options?`): `StaticController`
 
+Creates the static controller.
+
 #### Parameters
 
 ##### baseDir?
@@ -62,9 +64,13 @@ GET/HEAD /static/`{*file}` — serves the file with full HTTP semantics.
 
 `string`
 
+The requested file path.
+
 ##### route?
 
 [`Route`](#)\<`Record`\<`string`, `string`\>\>
+
+The current route.
 
 #### Returns
 

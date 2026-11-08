@@ -15,11 +15,15 @@ factory and can destroy cached values.
 
 > **destroyValue**(`name`): `void`
 
+Destroys a cached value.
+
 #### Parameters
 
 ##### name
 
 `string`
+
+The value name.
 
 #### Returns
 
@@ -30,6 +34,8 @@ factory and can destroy cached values.
 ### getValue()
 
 > **getValue**\<`T`\>(`name`, `objectFactory`): `T`
+
+Resolves a named value through the object factory.
 
 #### Type Parameters
 
@@ -43,10 +49,16 @@ factory and can destroy cached values.
 
 `string`
 
+The value name.
+
 ##### objectFactory
 
 [`ObjectFactory`](../type-aliases/ObjectFactory.md)\<`T`\>
 
+The lazy factory invoked on a miss.
+
 #### Returns
 
 `T`
+
+The cached or newly created value.

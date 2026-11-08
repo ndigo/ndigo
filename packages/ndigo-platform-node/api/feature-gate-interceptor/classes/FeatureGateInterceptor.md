@@ -60,23 +60,33 @@ Marks the value as aware so the factory's aware injection calls
 
 > **completeHandle**(`_route`, `_handler`, `_error`): `Promise`\<`void`\>
 
+No-op completion hook.
+
 #### Parameters
 
 ##### \_route
 
 [`Route`](#)
 
+The dispatched route.
+
 ##### \_handler
 
 `object` \| `undefined`
+
+The handler that ran.
 
 ##### \_error
 
 `Error` \| `null`
 
+The error raised, if any.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves immediately.
 
 #### Implementation of
 
@@ -88,23 +98,33 @@ Marks the value as aware so the factory's aware injection calls
 
 > **postHandle**(`_route`, `_handler`, `_modelAndView`): `Promise`\<`void`\>
 
+No-op post-handle hook.
+
 #### Parameters
 
 ##### \_route
 
 [`Route`](#)
 
+The dispatched route.
+
 ##### \_handler
 
 `object` \| `undefined`
+
+The handler that ran.
 
 ##### \_modelAndView
 
 [`ModelAndView`](#)
 
+The produced model and view.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves immediately.
 
 #### Implementation of
 
@@ -116,19 +136,27 @@ Marks the value as aware so the factory's aware injection calls
 
 > **preHandle**(`route`, `handler`): `Promise`\<`boolean` \| [`InterceptorDenial`](#)\>
 
+Rejects requests whose feature flag is disabled.
+
 #### Parameters
 
 ##### route
 
 [`Route`](#)
 
+The route being dispatched.
+
 ##### handler
 
 `object` \| `undefined`
 
+The route handler carrying `@whenFeature` metadata.
+
 #### Returns
 
 `Promise`\<`boolean` \| [`InterceptorDenial`](#)\>
+
+Whether to proceed, or a 404 denial.
 
 #### Implementation of
 
@@ -147,6 +175,8 @@ Injected by the aware processor when the interceptor entry registers.
 ##### context
 
 `ApplicationContext`
+
+The application context.
 
 #### Returns
 

@@ -25,12 +25,19 @@ export interface HTTPRequestLimits {
 
 /** Resolved, read-only limits with defaults applied. */
 export interface ResolvedHTTPRequestLimits {
+    /** Maximum request body size in bytes. */
     readonly maxBodyBytes: number;
+    /** Maximum header size in bytes. */
     readonly maxHeaderBytes: number;
+    /** Total request window in milliseconds. */
     readonly requestTimeoutMs: number;
+    /** Header-arrival timeout in milliseconds. */
     readonly headersTimeoutMs: number;
+    /** Keep-alive idle timeout in milliseconds. */
     readonly keepAliveTimeoutMs: number;
+    /** Shutdown grace period in milliseconds. */
     readonly shutdownTimeoutMs: number;
+    /** Maximum pending requests per socket. */
     readonly maxRequestsPerSocket: number;
 }
 
@@ -48,6 +55,9 @@ export const DEFAULT_HTTP_REQUEST_LIMITS: ResolvedHTTPRequestLimits = {
 /**
  * Validates and resolves user-provided limits, filling defaults. Throws a
  * `RangeError` for non-positive or non-finite values.
+ *
+ * @param limits - The user-provided limits.
+ * @returns The resolved limits with defaults applied.
  */
 export function resolveHTTPRequestLimits(limits?: HTTPRequestLimits): ResolvedHTTPRequestLimits {
     const resolved: ResolvedHTTPRequestLimits = { ...DEFAULT_HTTP_REQUEST_LIMITS };
@@ -72,7 +82,9 @@ export function resolveHTTPRequestLimits(limits?: HTTPRequestLimits): ResolvedHT
  * without ever leaking internals to the client.
  */
 export class RequestLimitError extends FrameworkError {
+    /** The HTTP status to report. */
     readonly statusCode: number;
+    /** The machine-readable failure code. */
     readonly code: string;
 
     constructor(statusCode: number, code: string, message: string) {
@@ -96,6 +108,10 @@ export type BodyParseResult =
  * Supported: `application/json` (strict — malformed JSON is rejected),
  * `text/*`, `application/x-www-form-urlencoded` (into `Record`), and any
  * other type as raw text under the wildcard `'*'` key.
+ *
+ * @param contentType - The declared content type.
+ * @param raw - The raw body bytes.
+ * @returns The parsed body result.
  */
 export function parseBody(contentType: string | undefined, raw: Buffer): BodyParseResult {
     if (raw.length === 0) return { kind: 'empty' };

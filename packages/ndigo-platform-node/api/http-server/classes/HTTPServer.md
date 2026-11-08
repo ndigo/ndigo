@@ -177,6 +177,8 @@ Stop the server gracefully. Idempotent.
 
 `Promise`\<`void`\>
 
+A promise that resolves once closed.
+
 ***
 
 ### setApplicationContext()
@@ -214,6 +216,8 @@ until the server is closed, after which a fresh start can be issued.
 
 `Promise`\<`void`\>
 
+A promise that resolves once listening.
+
 #### Implementation of
 
 `SmartLifecycle.start`
@@ -229,6 +233,8 @@ until the server is closed, after which a fresh start can be issued.
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once stopped.
 
 #### Implementation of
 

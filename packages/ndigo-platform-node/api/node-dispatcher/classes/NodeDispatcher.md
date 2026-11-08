@@ -627,6 +627,8 @@ The route associated with the `ModelAndView`.
 
 `Promise`\<`void`\>
 
+A promise that resolves once rendered.
+
 #### Overrides
 
 `AbstractDispatcher.render`

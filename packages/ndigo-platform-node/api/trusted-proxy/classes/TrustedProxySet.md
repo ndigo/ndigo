@@ -79,6 +79,8 @@ An IP literal (socket peer or header entry).
 
 `boolean`
 
+Whether the address is trusted.
+
 #### Implementation of
 
 `Matchable.matches`

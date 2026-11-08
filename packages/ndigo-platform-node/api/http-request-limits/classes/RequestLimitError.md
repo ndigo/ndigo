@@ -49,11 +49,15 @@ without ever leaking internals to the client.
 
 > `readonly` **code**: `string`
 
+The machine-readable failure code.
+
 ***
 
 ### statusCode
 
 > `readonly` **statusCode**: `number`
+
+The HTTP status to report.
 
 ## Accessors
 

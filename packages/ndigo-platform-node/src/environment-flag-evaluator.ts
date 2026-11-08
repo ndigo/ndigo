@@ -47,6 +47,11 @@ export class EnvironmentFlagEvaluator extends AsApplicationContextAware(Null) im
      * Evaluates `flag` against the current environment state. Never
      * throws: an absent provider environment or a failing read resolves
      * as `ERROR`/`DEFAULT` with the supplied default.
+     *
+     * @param flag - The flag key.
+     * @param defaultValue - The value returned when the flag is absent or fails.
+     * @param ctx - Optional evaluation context.
+     * @returns The evaluation result.
      */
     async evaluate<T extends FlagValue>(
         flag: string,

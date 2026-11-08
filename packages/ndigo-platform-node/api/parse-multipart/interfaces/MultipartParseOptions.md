@@ -14,6 +14,8 @@ Options accepted by [parseMultipart](../functions/parseMultipart.md).
 
 > `optional` **limits?**: [`MultipartLimits`](MultipartLimits.md)
 
+Parsing limits.
+
 ***
 
 ### tmpDir?

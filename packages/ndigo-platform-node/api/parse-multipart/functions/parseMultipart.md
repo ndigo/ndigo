@@ -21,10 +21,16 @@ with a `400` when the body is not valid multipart.
 
 `IncomingMessage`
 
+The incoming request.
+
 ### options?
 
 [`MultipartParseOptions`](../interfaces/MultipartParseOptions.md) = `{}`
 
+Parsing limits and temp directory.
+
 ## Returns
 
 `Promise`\<[`NodeMultipartContext`](../../multipart-file/classes/NodeMultipartContext.md)\>
+
+The parsed multipart context.

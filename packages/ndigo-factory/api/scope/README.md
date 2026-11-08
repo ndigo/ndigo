@@ -6,6 +6,8 @@
 
 # scope
 
+Scope contracts and implementations.
+
 ## Classes
 
 - [HashScope](classes/HashScope.md)

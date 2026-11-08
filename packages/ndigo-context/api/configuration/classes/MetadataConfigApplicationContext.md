@@ -325,9 +325,13 @@ Checks the resolved value's version against the token's requiredVersion and warn
 
 `string` \| [`ContextToken`](../../index/classes/ContextToken.md)\<`T`\>
 
+The value name or token.
+
 ##### value
 
 `T`
+
+The resolved value.
 
 #### Returns
 
@@ -533,13 +537,15 @@ The type of the value.
 
 > **destroyValue**(`name`): `void`
 
-Destroys a value managed by the factory.
+Destroys a value managed by the factory by name.
 
 ##### Parameters
 
 ###### name
 
 `string`
+
+The value name.
 
 ##### Returns
 
@@ -851,7 +857,7 @@ The retrieved value.
 
 > **getValue**\<`T`\>(`name`, `argumentsList?`): `T`
 
-Retrieves a value from the factory, creating it if necessary.
+Retrieves a value by name, creating it when necessary.
 
 ##### Type Parameters
 
@@ -859,17 +865,19 @@ Retrieves a value from the factory, creating it if necessary.
 
 `T` = `unknown`
 
-The type of the value.
-
 ##### Parameters
 
 ###### name
 
 `string`
 
+The value name.
+
 ###### argumentsList?
 
 `unknown`[]
+
+Constructor arguments.
 
 ##### Returns
 
@@ -1025,7 +1033,7 @@ The type of the value.
 
 > **hasValue**(`name`): `boolean`
 
-Checks if the factory has a value (either an instance or a constructor) registered under the given name or token.
+Checks whether a value is registered by name.
 
 ##### Parameters
 
@@ -1033,11 +1041,13 @@ Checks if the factory has a value (either an instance or a constructor) register
 
 `string`
 
+The value name.
+
 ##### Returns
 
 `boolean`
 
-`true` if a value is registered, `false` otherwise.
+Whether a value is registered.
 
 ##### Inherited from
 
@@ -1525,7 +1535,7 @@ The value to register.
 
 > **setValue**\<`T`\>(`name`, `value`): `void`
 
-Sets a value (either a constructor or an instance) in the factory.
+Sets a value by name.
 
 ##### Type Parameters
 
@@ -1533,13 +1543,13 @@ Sets a value (either a constructor or an instance) in the factory.
 
 `T` = `unknown`
 
-The type of the value.
-
 ##### Parameters
 
 ###### name
 
 `string`
+
+The value name.
 
 ###### value
 

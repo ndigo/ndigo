@@ -6,6 +6,8 @@
 
 # security-headers-interceptor
 
+Applies security response headers.
+
 ## Classes
 
 - [SecurityHeadersInterceptor](classes/SecurityHeadersInterceptor.md)

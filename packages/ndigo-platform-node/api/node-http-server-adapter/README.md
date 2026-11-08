@@ -6,6 +6,8 @@
 
 # node-http-server-adapter
 
+Node HTTP server adapter for the dispatcher.
+
 ## Classes
 
 - [NodeHTTPServerAdapter](classes/NodeHTTPServerAdapter.md)

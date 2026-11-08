@@ -6,6 +6,8 @@
 
 # node-request
 
+Node request attribute helpers.
+
 ## Interfaces
 
 - [NodeRequest](interfaces/NodeRequest.md)

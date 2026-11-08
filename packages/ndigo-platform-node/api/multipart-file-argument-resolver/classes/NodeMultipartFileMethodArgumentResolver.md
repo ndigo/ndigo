@@ -123,7 +123,7 @@ extending this base — only the BIND path invoked it.
 
 > **supportsParameter**(`parameter`): `boolean`
 
-Whether the given method parameter is supported by this resolver.
+Whether this resolver supports multipart-file parameters.
 
 #### Parameters
 
@@ -131,13 +131,13 @@ Whether the given method parameter is supported by this resolver.
 
 `MethodParameter`
 
-The method parameter to check.
+The method parameter to test.
 
 #### Returns
 
 `boolean`
 
-Whether or not the given method parameter is supported by this resolver.
+Whether the parameter type matches.
 
 #### Overrides
 

@@ -14,11 +14,15 @@ A value with a post-construction `init()` hook.
 
 > **init**(...`args`): `void`
 
+Runs the post-construction initialization hook.
+
 #### Parameters
 
 ##### args
 
 ...`unknown`[]
+
+Initialization arguments.
 
 #### Returns
 

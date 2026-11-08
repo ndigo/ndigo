@@ -1,4 +1,5 @@
 /**
+ * Entry-processor contracts and structural guards.
  */
 import { Destroyable } from './lifecycle';
 import { like } from '@ndigo/util/types';

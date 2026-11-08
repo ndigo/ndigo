@@ -8,6 +8,8 @@
 
 > **likePhased**(`value`): `value is Phased`
 
+Narrows a value to the [Phased](../interfaces/Phased.md) shape.
+
 ## Parameters
 
 ### value

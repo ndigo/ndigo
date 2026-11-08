@@ -31,6 +31,7 @@ const logger = getLogger('ndigo-platform-node:openapi-docs-controller');
  * writes a 500 problem document; only successful documents are memoized.
  */
 export class OpenAPIDocsController extends AsApplicationContextAware(Null) {
+    /** The application context injected by the aware mixin. */
     readonly applicationContext!: ApplicationContext;
 
     readonly #options: ResolvedOpenAPIDocsOptions;

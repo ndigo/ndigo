@@ -33,11 +33,15 @@ Destruction callbacks can be registered when an instance is created.
 
 > **destroyValue**(`name`): `void`
 
+Destroys a cached value.
+
 #### Parameters
 
 ##### name
 
 `string`
+
+The value name.
 
 #### Returns
 
@@ -53,6 +57,8 @@ Destruction callbacks can be registered when an instance is created.
 
 > **getValue**\<`T`\>(`name`, `objectFactory`): `T`
 
+Resolves a cached value, creating it on a miss.
+
 #### Type Parameters
 
 ##### T
@@ -65,13 +71,19 @@ Destruction callbacks can be registered when an instance is created.
 
 `string`
 
+The value name.
+
 ##### objectFactory
 
 [`ObjectFactory`](../type-aliases/ObjectFactory.md)\<`T`\>
 
+The lazy factory invoked on a miss.
+
 #### Returns
 
 `T`
+
+The cached or newly created value.
 
 #### Implementation of
 
@@ -83,15 +95,21 @@ Destruction callbacks can be registered when an instance is created.
 
 > **registerDestructionCallback**(`name`, `callback`): `void`
 
+Registers a teardown callback for a value.
+
 #### Parameters
 
 ##### name
 
 `string`
 
+The value name.
+
 ##### callback
 
 () => `void`
+
+The teardown callback.
 
 #### Returns
 

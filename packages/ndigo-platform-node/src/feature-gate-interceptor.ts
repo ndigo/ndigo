@@ -79,11 +79,22 @@ export class FeatureGateInterceptor implements RouteHandlerInterceptor, Applicat
         return true;
     }
 
-    /** Injected by the aware processor when the interceptor entry registers. */
+    /**
+     * Injected by the aware processor when the interceptor entry registers.
+     *
+     * @param context - The application context.
+     */
     setApplicationContext(context: ApplicationContext): void {
         this.#applicationContext = context;
     }
 
+    /**
+     * Rejects requests whose feature flag is disabled.
+     *
+     * @param route - The route being dispatched.
+     * @param handler - The route handler carrying `@whenFeature` metadata.
+     * @returns Whether to proceed, or a 404 denial.
+     */
     async preHandle(route: Route, handler: object | undefined): Promise<boolean | InterceptorDenial> {
         const flag = this.#flagFor(handler);
         if (flag === undefined) {
@@ -109,10 +120,26 @@ export class FeatureGateInterceptor implements RouteHandlerInterceptor, Applicat
         return denialOf(404, { body: { error: 'Not Found' } });
     }
 
+    /**
+     * No-op post-handle hook.
+     *
+     * @param _route - The dispatched route.
+     * @param _handler - The handler that ran.
+     * @param _modelAndView - The produced model and view.
+     * @returns A promise that resolves immediately.
+     */
     async postHandle(_route: Route, _handler: object | undefined, _modelAndView: ModelAndView): Promise<void> {
         // no-op — feature gating is a pre-handler concern.
     }
 
+    /**
+     * No-op completion hook.
+     *
+     * @param _route - The dispatched route.
+     * @param _handler - The handler that ran.
+     * @param _error - The error raised, if any.
+     * @returns A promise that resolves immediately.
+     */
     async completeHandle(_route: Route, _handler: object | undefined, _error: Error | null): Promise<void> {
         // no-op.
     }

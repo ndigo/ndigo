@@ -6,6 +6,8 @@
 
 # registry
 
+The registry contract and proxy handler.
+
 ## Classes
 
 - [RegistryProxyHandler](classes/RegistryProxyHandler.md)

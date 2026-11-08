@@ -248,6 +248,7 @@ export class StaticResourceHandler {
      *
      * @param route - The current route (carries the Node request/response).
      * @param requestPath - The request-relative path to serve (raw, undecoded).
+     * @returns A promise that resolves once the response is written.
      */
     async handle(route: Route, requestPath: string): Promise<void> {
         const res = route.attributes?.[NODE_RESPONSE_ATTRIBUTE] as unknown as ServerResponse | undefined;

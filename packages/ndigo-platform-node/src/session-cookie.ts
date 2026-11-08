@@ -1,4 +1,5 @@
 /**
+ * Session cookie construction and mutation.
  */
 import type { ServerResponse } from 'node:http';
 import type { Route } from '@ndigo/router';
@@ -59,6 +60,10 @@ function assertValidCookie(name: string, secure: boolean): void {
  *
  * @throws When a `__Host-`-prefixed `name` is combined
  * with `secure: false` (the browser would reject the cookie).
+ *
+ * @param token - The session token.
+ * @param options - Cookie name/security options.
+ * @returns The `Set-Cookie` value.
  */
 export function buildSessionCookie(token: string, options: SessionCookieOptions = {}): string {
     const name = options.name ?? SESSION_COOKIE;
@@ -76,6 +81,9 @@ export function buildSessionCookie(token: string, options: SessionCookieOptions 
  *
  * @throws When a `__Host-`-prefixed `name` is combined
  * with `secure: false` (the browser would reject the clear).
+ *
+ * @param options - Cookie name/security options.
+ * @returns The expiring `Set-Cookie` value.
  */
 export function buildSessionCookieClear(options: SessionCookieOptions = {}): string {
     const name = options.name ?? SESSION_COOKIE;
@@ -90,6 +98,10 @@ export function buildSessionCookieClear(options: SessionCookieOptions = {}): str
 /**
  * Sets the session cookie on the request's node response. No-op after
  * headers were sent or without a response.
+ *
+ * @param route - The current route.
+ * @param token - The session token.
+ * @param options - Cookie name/security options.
  */
 export function setSessionCookie(route: Route, token: string, options?: SessionCookieOptions): void {
     const response = getNodeResponse(route);
@@ -102,6 +114,9 @@ export function setSessionCookie(route: Route, token: string, options?: SessionC
  * Clears the session cookie on the request's node response. No-op after
  * headers were sent or without a response. Pass the same `name`/`secure`
  * options used to set the cookie so the clear targets it exactly.
+ *
+ * @param route - The current route.
+ * @param options - Cookie name/security options.
  */
 export function clearSessionCookie(route: Route, options?: SessionCookieOptions): void {
     const response = getNodeResponse(route);

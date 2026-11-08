@@ -174,6 +174,7 @@ export class SwaggerUIController {
      * Writes the UI page (no-cache: the page is the wiring point).
      *
      * @param route - The current route (carries the Node response).
+     * @returns A promise that resolves once written.
      */
     @parameters({ route: routeValue() })
     async page(route: Route): Promise<void> {
@@ -196,6 +197,7 @@ export class SwaggerUIController {
      *
      * @param file - The asset path (e.g. `swagger-ui-bundle.js`).
      * @param route - The current route.
+     * @returns A promise that resolves once written.
      */
     @parameters({ file: pathVariable('file'), route: routeValue() })
     async asset(file: string | undefined, route: Route): Promise<void> {

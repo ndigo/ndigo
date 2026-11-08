@@ -8,6 +8,8 @@
 
 > **likeSmartLifecycle**(`value`): `value is SmartLifecycle`
 
+Narrows a value to the [SmartLifecycle](../interfaces/SmartLifecycle.md) shape.
+
 ## Parameters
 
 ### value

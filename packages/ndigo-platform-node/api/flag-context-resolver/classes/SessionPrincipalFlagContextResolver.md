@@ -49,7 +49,8 @@ The resolver used when no principal is available
 
 > **resolve**(`route`): `FlagEvaluationContext` \| `undefined`
 
-Resolves the evaluation context for a route.
+Resolves the flag context from the session principal, falling back to
+the client address.
 
 #### Parameters
 
@@ -57,14 +58,13 @@ Resolves the evaluation context for a route.
 
 [`Route`](#)
 
-The route being gated.
+The current route.
 
 #### Returns
 
 `FlagEvaluationContext` \| `undefined`
 
-The context, or `undefined` for no targeting (percentage
-  rollouts stay closed for untargeted requests).
+The evaluation context.
 
 #### Implementation of
 

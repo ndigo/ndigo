@@ -30,6 +30,8 @@ phase order.
 
 > **isRunning**: `boolean`
 
+Whether the processor is running.
+
 #### Implementation of
 
 [`LifecycleProcessor`](../interfaces/LifecycleProcessor.md).[`isRunning`](../interfaces/LifecycleProcessor.md#isrunning)
@@ -40,11 +42,15 @@ phase order.
 
 > **onClose**(`registry`): `void`
 
+Stops running targets in descending phase order.
+
 #### Parameters
 
 ##### registry
 
 [`Registry`](../../registry/interfaces/Registry.md)
+
+The registry of lifecycle targets.
 
 #### Returns
 
@@ -60,11 +66,15 @@ phase order.
 
 > **onRefresh**(`registry`): `void`
 
+Starts auto-startup targets in ascending phase order.
+
 #### Parameters
 
 ##### registry
 
 [`Registry`](../../registry/interfaces/Registry.md)
+
+The registry of lifecycle targets.
 
 #### Returns
 
@@ -80,6 +90,8 @@ phase order.
 
 > **start**(): `void`
 
+Marks the processor running.
+
 #### Returns
 
 `void`
@@ -93,6 +105,8 @@ phase order.
 ### stop()
 
 > **stop**(): `void`
+
+Marks the processor stopped.
 
 #### Returns
 

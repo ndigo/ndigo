@@ -16,6 +16,8 @@ export class StaticFileView {
     readonly #handler: StaticResourceHandler;
 
     /**
+     * Creates the static file view.
+     *
      * @param basePath - The directory to serve files from.
      * @param options - Static handler options (D-6).
      */
@@ -29,6 +31,7 @@ export class StaticFileView {
      * @param _model - Unused.
      * @param route - The current route; `route.path` selects the file.
      * @param _target - Unused — the handler writes the response directly.
+     * @returns A promise that resolves once written.
      */
     async render(_model: unknown, route: Route, _target: ViewTarget): Promise<void> {
         await this.#handler.handle(route, route.path ?? '/');

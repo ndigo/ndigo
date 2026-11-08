@@ -1,4 +1,5 @@
 /**
+ * Config-file reader backed by the Node file system.
  */
 import { readFile } from 'node:fs/promises';
 import type { ConfigFileReader } from '@ndigo/context';

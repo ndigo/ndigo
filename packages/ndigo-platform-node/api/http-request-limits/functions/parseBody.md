@@ -19,10 +19,16 @@ other type as raw text under the wildcard `'*'` key.
 
 `string` \| `undefined`
 
+The declared content type.
+
 ### raw
 
 `Buffer`
 
+The raw body bytes.
+
 ## Returns
 
 [`BodyParseResult`](../type-aliases/BodyParseResult.md)
+
+The parsed body result.

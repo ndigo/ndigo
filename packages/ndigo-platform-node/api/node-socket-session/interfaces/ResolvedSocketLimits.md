@@ -14,11 +14,15 @@ Resolved, read-only socket limits with defaults applied.
 
 > `readonly` **maxBufferedBytes**: `number` \| `null`
 
+Maximum buffered bytes, or `null`.
+
 ***
 
 ### maxPayloadBytes
 
 > `readonly` **maxPayloadBytes**: `number`
+
+Maximum inbound frame size in bytes.
 
 ***
 
@@ -26,11 +30,15 @@ Resolved, read-only socket limits with defaults applied.
 
 > `readonly` **maxQueuedBytes**: `number` \| `null`
 
+Maximum queued outbound bytes, or `null`.
+
 ***
 
 ### maxQueuedMessages
 
 > `readonly` **maxQueuedMessages**: `number`
+
+Maximum queued outbound messages.
 
 ***
 
@@ -38,3 +46,4 @@ Resolved, read-only socket limits with defaults applied.
 
 > `readonly` **onOverflow**: `"close"` \| `"drop"`
 
+Overflow posture.

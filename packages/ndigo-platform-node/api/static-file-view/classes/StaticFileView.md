@@ -18,6 +18,8 @@ precompressed variants, directory modes) to [StaticResourceHandler](../../static
 
 > **new StaticFileView**(`basePath`, `options?`): `StaticFileView`
 
+Creates the static file view.
+
 #### Parameters
 
 ##### basePath
@@ -67,3 +69,5 @@ Unused — the handler writes the response directly.
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once written.

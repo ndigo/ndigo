@@ -6,6 +6,8 @@
 
 # node-environment
 
+Node environment backed by process environment sources.
+
 ## Classes
 
 - [NodeEnvironment](classes/NodeEnvironment.md)

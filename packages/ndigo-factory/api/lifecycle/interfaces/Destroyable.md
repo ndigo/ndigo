@@ -18,11 +18,15 @@ A value that can be destroyed once it is no longer needed.
 
 > **destroyed**: `boolean`
 
+Whether the value has been destroyed.
+
 ## Methods
 
 ### destroy()
 
 > **destroy**(): `void`
+
+Releases the value's resources.
 
 #### Returns
 

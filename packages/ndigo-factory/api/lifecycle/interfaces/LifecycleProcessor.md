@@ -18,6 +18,8 @@ Drives registered [SmartLifecycle](SmartLifecycle.md) targets on context refresh
 
 > `readonly` **isRunning**: `boolean`
 
+Whether the component is running.
+
 #### Inherited from
 
 [`Lifecycle`](Lifecycle.md).[`isRunning`](Lifecycle.md#isrunning)
@@ -28,11 +30,15 @@ Drives registered [SmartLifecycle](SmartLifecycle.md) targets on context refresh
 
 > **onClose**(`registry`): `void`
 
+Stops running targets on context close.
+
 #### Parameters
 
 ##### registry
 
 [`Registry`](../../registry/interfaces/Registry.md)
+
+The registry of lifecycle targets.
 
 #### Returns
 
@@ -44,11 +50,15 @@ Drives registered [SmartLifecycle](SmartLifecycle.md) targets on context refresh
 
 > **onRefresh**(`registry`): `void`
 
+Starts auto-startup targets on context refresh.
+
 #### Parameters
 
 ##### registry
 
 [`Registry`](../../registry/interfaces/Registry.md)
+
+The registry of lifecycle targets.
 
 #### Returns
 
@@ -59,6 +69,8 @@ Drives registered [SmartLifecycle](SmartLifecycle.md) targets on context refresh
 ### start()
 
 > **start**(): `void`
+
+Starts the component.
 
 #### Returns
 
@@ -73,6 +85,8 @@ Drives registered [SmartLifecycle](SmartLifecycle.md) targets on context refresh
 ### stop()
 
 > **stop**(): `void`
+
+Stops the component.
 
 #### Returns
 

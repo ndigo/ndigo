@@ -42,6 +42,8 @@ The timestamp when this context was created.
 
 > **destroyed**: `boolean`
 
+Whether the value has been destroyed.
+
 #### Inherited from
 
 [`ApplicationContext`](ApplicationContext.md).[`destroyed`](ApplicationContext.md#destroyed)
@@ -258,6 +260,8 @@ Calling `close()` on an already-destroyed context is a safe no-op.
 
 > **destroy**(): `void`
 
+Releases the value's resources.
+
 #### Returns
 
 `void`
@@ -274,6 +278,8 @@ Calling `close()` on an already-destroyed context is a safe no-op.
 
 > **destroyValue**\<`T`\>(`token`): `void`
 
+Destroys a value by token.
+
 ##### Type Parameters
 
 ###### T
@@ -285,6 +291,8 @@ Calling `close()` on an already-destroyed context is a safe no-op.
 ###### token
 
 [`ContextToken`](../../index/classes/ContextToken.md)\<`T`\>
+
+The value token.
 
 ##### Returns
 
@@ -298,11 +306,15 @@ Calling `close()` on an already-destroyed context is a safe no-op.
 
 > **destroyValue**(`name`): `void`
 
+Destroys a value by name.
+
 ##### Parameters
 
 ###### name
 
 `string`
+
+The value name.
 
 ##### Returns
 
@@ -569,6 +581,8 @@ The requested theme.
 
 > **getValue**\<`T`\>(`token`): `T`
 
+Retrieves a value by token.
+
 ##### Type Parameters
 
 ###### T
@@ -580,6 +594,8 @@ The requested theme.
 ###### token
 
 [`ContextToken`](../../index/classes/ContextToken.md)\<`T`\>
+
+The value token.
 
 ##### Returns
 
@@ -593,6 +609,8 @@ The requested theme.
 
 > **getValue**\<`T`\>(`name`): `T`
 
+Retrieves a value by name.
+
 ##### Type Parameters
 
 ###### T
@@ -604,6 +622,8 @@ The requested theme.
 ###### name
 
 `string`
+
+The value name.
 
 ##### Returns
 
@@ -673,6 +693,8 @@ The name of the value.
 
 > **hasValue**\<`T`\>(`token`): `boolean`
 
+Checks for a value by token.
+
 ##### Type Parameters
 
 ###### T
@@ -684,6 +706,8 @@ The name of the value.
 ###### token
 
 [`ContextToken`](../../index/classes/ContextToken.md)\<`T`\>
+
+The value token.
 
 ##### Returns
 
@@ -697,11 +721,15 @@ The name of the value.
 
 > **hasValue**(`name`): `boolean`
 
+Checks for a value by name.
+
 ##### Parameters
 
 ###### name
 
 `string`
+
+The value name.
 
 ##### Returns
 
@@ -1157,6 +1185,8 @@ The theme resolver.
 
 > **setValue**\<`T`\>(`token`, `value`): `void`
 
+Sets a value by token.
+
 ##### Type Parameters
 
 ###### T
@@ -1169,9 +1199,13 @@ The theme resolver.
 
 [`ContextToken`](../../index/classes/ContextToken.md)\<`T`\>
 
+The value token.
+
 ###### value
 
 `T`
+
+The value.
 
 ##### Returns
 
@@ -1185,6 +1219,8 @@ The theme resolver.
 
 > **setValue**\<`T`\>(`name`, `value`): `void`
 
+Sets a value by name.
+
 ##### Type Parameters
 
 ###### T
@@ -1197,9 +1233,13 @@ The theme resolver.
 
 `string`
 
+The value name.
+
 ###### value
 
 `T`
+
+The value.
 
 ##### Returns
 

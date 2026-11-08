@@ -91,17 +91,25 @@ as `ERROR`/`DEFAULT` with the supplied default.
 
 `string`
 
+The flag key.
+
 ##### defaultValue
 
 `T`
+
+The value returned when the flag is absent or fails.
 
 ##### ctx?
 
 `FlagEvaluationContext`
 
+Optional evaluation context.
+
 #### Returns
 
 `Promise`\<`FlagEvaluation`\<`T`\>\>
+
+The evaluation result.
 
 #### Implementation of
 

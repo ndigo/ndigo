@@ -6,6 +6,8 @@
 
 # abstract-factory
 
+Abstract factory with scopes, lifecycle, and version checks.
+
 ## Classes
 
 - [AbstractFactory](classes/AbstractFactory.md)

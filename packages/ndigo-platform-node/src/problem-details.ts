@@ -55,9 +55,9 @@ export const ProblemTypes = {
  * Node's `ServerResponse` and the in-memory MockHTTP sink.
  */
 export interface ProblemResponseWriter {
-    /** Write the status line + headers. */
+    /** Write the status line + headers. @param status - The status code. @param headers - The headers. */
     writeHead(status: number, headers: Record<string, string | string[]>): void;
-    /** Finalize the body. */
+    /** Finalize the body. @param body - The body to write. */
     end(body?: unknown): void;
 }
 
@@ -68,6 +68,7 @@ export interface ProblemResponseWriter {
  *
  * @param res - The response writer (ServerResponse or MockHTTP sink).
  * @param details - The problem document.
+ * @param headers - Additional response headers.
  */
 export function writeProblem(
     res: ProblemResponseWriter,

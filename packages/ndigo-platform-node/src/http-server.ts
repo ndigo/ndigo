@@ -22,7 +22,7 @@ import { readIntEnv } from './read-int-env';
  * The default implementation wraps `node:http.createServer()`.
  */
 export interface HTTPServerAdapter {
-    /** Start listening on the given port and host. */
+    /** Start listening on the given port and host. @param port - The port. @param host - The bind host. */
     listen(port: number, host?: string): Promise<void>;
     /** Stop the server gracefully. */
     close(): Promise<void>;
@@ -290,6 +290,8 @@ export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
     /**
      * Start listening. Idempotent: concurrent callers share the same start
      * until the server is closed, after which a fresh start can be issued.
+     *
+     * @returns A promise that resolves once listening.
      */
     start(): Promise<void> {
         if (!this.#startPromise) {
@@ -328,6 +330,8 @@ export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
 
     /**
      * `SmartLifecycle` — stop the server, delegated to {@link close}.
+     *
+     * @returns A promise that resolves once stopped.
      */
     stop(): Promise<void> {
         return this.close();
@@ -335,6 +339,8 @@ export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
 
     /**
      * Stop the server gracefully. Idempotent.
+     *
+     * @returns A promise that resolves once closed.
      */
     async close(): Promise<void> {
         if (!this.#adapter || !this.#started) {

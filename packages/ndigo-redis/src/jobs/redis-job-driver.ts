@@ -159,6 +159,7 @@ export interface RedisJobDriverOptions {
  * only). One handle per namespace; construct independently in every worker.
  */
 export class RedisJobDriver implements JobDriver {
+    /** Backend identifier (`'redis'`). */
     readonly kind = 'redis';
     readonly #connection: RedisConnection;
     readonly #prefix: string;
@@ -166,6 +167,8 @@ export class RedisJobDriver implements JobDriver {
     #closed = false;
 
     /**
+     * Creates a driver over the given connection and namespace.
+     *
      * @param options - Borrowed connection, namespace, optional id factory.
      */
     constructor(options: RedisJobDriverOptions) {
@@ -182,7 +185,12 @@ export class RedisJobDriver implements JobDriver {
         this.#idFactory = options.idFactory ?? (() => crypto.randomUUID());
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Stores one job and makes it eligible at its resolved `runAt`.
+     *
+     * @param request - The producer-supplied job request.
+     * @returns The stored record.
+     */
     async enqueue(request: JobRequest): Promise<JobRecord> {
         this.#assertOpen();
         const now = Date.now();
@@ -216,7 +224,12 @@ export class RedisJobDriver implements JobDriver {
         return record;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Atomically leases up to `limit` eligible jobs via the claim script.
+     *
+     * @param options - Claim window.
+     * @returns The claimed records (possibly empty).
+     */
     async claim(options: ClaimOptions): Promise<JobRecord[]> {
         this.#assertOpen();
         assertClaimOptions(options);
@@ -262,13 +275,25 @@ export class RedisJobDriver implements JobDriver {
         });
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Removes a finished job.
+     *
+     * @param id - The job identifier.
+     * @returns A promise that resolves once the job is removed.
+     */
     async complete(id: JobId): Promise<void> {
         this.#assertOpen();
         await this.#discard(id);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Returns a job to the queue at `runAt` with the failure recorded.
+     *
+     * @param id - The job identifier.
+     * @param runAt - Next eligible time (epoch milliseconds).
+     * @param lastError - Message from the failed attempt.
+     * @returns A promise that resolves once the job is requeued.
+     */
     async retry(id: JobId, runAt: number, lastError: string): Promise<void> {
         this.#assertOpen();
         const keys = this.#keys();
@@ -283,14 +308,26 @@ export class RedisJobDriver implements JobDriver {
         });
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Terminally fails a job, removing it from the queue.
+     *
+     * @param id - The job identifier.
+     * @param lastError - Message from the final failed attempt.
+     * @returns A promise that resolves once the job is removed.
+     */
     async fail(id: JobId, lastError: string): Promise<void> {
         this.#assertOpen();
         void lastError; // terminal errors surface through telemetry/logs, not storage (AD-72 D-2)
         await this.#discard(id);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Extends the lease of a running job via the heartbeat script.
+     *
+     * @param id - The job identifier.
+     * @param leaseMs - New lease duration from now.
+     * @returns A promise that resolves once the lease is extended.
+     */
     async heartbeat(id: JobId, leaseMs: number): Promise<void> {
         this.#assertOpen();
         const keys = this.#keys();
@@ -305,7 +342,11 @@ export class RedisJobDriver implements JobDriver {
         });
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Number of jobs pending delivery: ready plus leased.
+     *
+     * @returns The pending count.
+     */
     async size(): Promise<number> {
         this.#assertOpen();
         const keys = this.#keys();
@@ -321,6 +362,8 @@ export class RedisJobDriver implements JobDriver {
     /**
      * Seals this handle (borrowed connection untouched; idempotent). Later
      * operations reject with a closed-handle error.
+     *
+     * @returns A promise that resolves once the handle is sealed.
      */
     async close(): Promise<void> {
         this.#closed = true;

@@ -1,4 +1,5 @@
 /**
+ * OIDC authorization-code adapter with PKCE, refresh, and validation.
  */
 import { base64url, createRemoteJWKSet, decodeJwt, jwtVerify, type JWTPayload } from 'jose';
 import { createHash } from 'node:crypto';
@@ -29,6 +30,7 @@ import { FrameworkError } from '@ndigo/core';
  * this so callers can distinguish provider errors from programming errors.
  */
 export class OIDCError extends FrameworkError {
+    /** The failure code. */
     readonly code: OIDCErrorCode;
     /**
      * The HTTP status behind a `network` failure, when one exists — lets
@@ -240,11 +242,27 @@ export interface PendingAuthorizationStore {
      * (e.g. `'in-memory'`, `'session-storage'`, `'redis'`).
      */
     readonly kind: string;
-    /** Returns the pending request for `state`, or `null` when unknown. */
+    /**
+     * Returns the pending request for `state`, or `null` when unknown.
+     *
+     * @param state - The authorization-state value.
+     * @returns The pending authorization request, or `null`.
+     */
     get(state: string): Promise<PendingAuthorization | null>;
-    /** Stores `pending` under `state`, replacing any existing entry. */
+    /**
+     * Stores `pending` under `state`, replacing any existing entry.
+     *
+     * @param state - The authorization-state value.
+     * @param pending - The pending request to store.
+     * @returns A promise that resolves once stored.
+     */
     set(state: string, pending: PendingAuthorization): Promise<void>;
-    /** Removes the entry for `state`; unknown keys are a no-op. */
+    /**
+     * Removes the entry for `state`; unknown keys are a no-op.
+     *
+     * @param state - The authorization-state value.
+     * @returns A promise that resolves once removed.
+     */
     delete(state: string): Promise<void>;
 }
 
@@ -257,14 +275,28 @@ export interface PendingAuthorizationStore {
  * grow the map without limit. Entries persist until redeemed or evicted.
  */
 export class InMemoryPendingAuthorizationStore implements PendingAuthorizationStore {
+    /** Store identifier (`'in-memory'`). */
     readonly kind = 'in-memory';
 
     readonly #entries = new Map<string, PendingAuthorization>();
 
+    /**
+     * Returns the pending request for `state`, or `null` when unknown.
+     *
+     * @param state - The authorization-state value.
+     * @returns The pending request, or `null`.
+     */
     async get(state: string): Promise<PendingAuthorization | null> {
         return this.#entries.get(state) ?? null;
     }
 
+    /**
+     * Stores `pending` under `state`, evicting the oldest entry at the cap.
+     *
+     * @param state - The authorization-state value.
+     * @param pending - The pending request to store.
+     * @returns A promise that resolves once stored.
+     */
     async set(state: string, pending: PendingAuthorization): Promise<void> {
         // Bound memory: evict the oldest pending request when full.
         while (this.#entries.size >= MAX_PENDING_AUTHORIZATIONS) {
@@ -275,6 +307,12 @@ export class InMemoryPendingAuthorizationStore implements PendingAuthorizationSt
         this.#entries.set(state, pending);
     }
 
+    /**
+     * Removes the entry for `state`.
+     *
+     * @param state - The authorization-state value.
+     * @returns A promise that resolves once removed.
+     */
     async delete(state: string): Promise<void> {
         this.#entries.delete(state);
     }
@@ -312,11 +350,27 @@ export interface RefreshTokenStore {
      * (e.g. `'in-memory'`, `'redis'`).
      */
     readonly kind: string;
-    /** Returns the binding for `token`, or `null` when unknown or consumed. */
+    /**
+     * Returns the binding for `token`, or `null` when unknown or consumed.
+     *
+     * @param token - The refresh token.
+     * @returns The recorded binding, or `null`.
+     */
     get(token: string): Promise<RefreshTokenBinding | null>;
-    /** Stores the binding for `token`, replacing any existing entry. */
+    /**
+     * Stores the binding for `token`, replacing any existing entry.
+     *
+     * @param token - The refresh token.
+     * @param binding - The subject binding to record.
+     * @returns A promise that resolves once stored.
+     */
     set(token: string, binding: RefreshTokenBinding): Promise<void>;
-    /** Removes the binding for `token` (rotation consumes the presented token). */
+    /**
+     * Removes the binding for `token` (rotation consumes the presented token).
+     *
+     * @param token - The refresh token.
+     * @returns A promise that resolves once removed.
+     */
     delete(token: string): Promise<void>;
 }
 
@@ -328,14 +382,28 @@ export interface RefreshTokenStore {
  * flood cannot grow the map without limit.
  */
 export class InMemoryRefreshTokenStore implements RefreshTokenStore {
+    /** Store identifier (`'in-memory'`). */
     readonly kind = 'in-memory';
 
     readonly #entries = new Map<string, RefreshTokenBinding>();
 
+    /**
+     * Returns the binding for `token`, or `null` when unknown.
+     *
+     * @param token - The refresh token.
+     * @returns The recorded binding, or `null`.
+     */
     async get(token: string): Promise<RefreshTokenBinding | null> {
         return this.#entries.get(token) ?? null;
     }
 
+    /**
+     * Stores the binding for `token`, evicting the oldest at the cap.
+     *
+     * @param token - The refresh token.
+     * @param binding - The subject binding to record.
+     * @returns A promise that resolves once stored.
+     */
     async set(token: string, binding: RefreshTokenBinding): Promise<void> {
         // Bound memory: evict the oldest binding when full.
         while (this.#entries.size >= MAX_REFRESH_BINDINGS) {
@@ -346,6 +414,12 @@ export class InMemoryRefreshTokenStore implements RefreshTokenStore {
         this.#entries.set(token, binding);
     }
 
+    /**
+     * Removes the binding for `token`.
+     *
+     * @param token - The refresh token.
+     * @returns A promise that resolves once removed.
+     */
     async delete(token: string): Promise<void> {
         this.#entries.delete(token);
     }
@@ -449,6 +523,7 @@ function hashRefreshToken(token: string): string {
 }
 
 export class OIDCAdapter implements AuthAdapter {
+    /** Adapter identifier (`'oidc'`). */
     readonly id = 'oidc';
     readonly #config: OIDCAdapterConfig;
     readonly #discoveryUrl: string;
@@ -705,6 +780,8 @@ export class OIDCAdapter implements AuthAdapter {
      * parameters, and `nonce`, stores the pending request in the configured
      * {@link PendingAuthorizationStore}, and returns the
      * authorization-endpoint URL to redirect the user to.
+     *
+     * @returns The authorization URL and the generated state/nonce/PKCE values.
      */
     async createAuthorizationRequest(): Promise<AuthorizationRequest> {
         const doc = this.#config.discovery ? await this.#ensureDiscovery() : null;
@@ -748,6 +825,11 @@ export class OIDCAdapter implements AuthAdapter {
      * the default in-memory store the callback must be handled by the same
      * adapter instance that created the request; inject a shared store to
      * survive redirects, restarts, or multiple instances.
+     *
+     * @param code - The authorization code returned by the provider.
+     * @param state - The state parameter returned alongside the code.
+     * @returns The verified principal, tokens, and expiry.
+     * @throws When the state is unknown/expired or token verification fails.
      */
     async exchangeCodeForTokens(code: string, state: string): Promise<OIDCResult> {
         const pending = await this.#pending.get(state);
@@ -846,6 +928,7 @@ export class OIDCAdapter implements AuthAdapter {
      * failure.
      *
      * @param token - The ID token to validate.
+     * @returns The verified principal, or `null` on validation failure.
      */
     async validate(token: string): Promise<Principal | null> {
         try {
@@ -860,6 +943,14 @@ export class OIDCAdapter implements AuthAdapter {
         }
     }
 
+    /**
+     * Rejects direct credential authentication; OIDC uses the authorization
+     * code flow instead.
+     *
+     * @param _credentials - Ignored; direct credentials are unsupported.
+     * @returns Never — this method always throws.
+     * @throws Always, directing callers to the authorization-code flow.
+     */
     async authenticate(_credentials: unknown): Promise<AuthResult> {
         // OIDC uses the authorization code flow, not direct credential authentication.
         throw new FrameworkError(
@@ -871,6 +962,10 @@ export class OIDCAdapter implements AuthAdapter {
      * Builds the provider's end-session URL from discovery metadata.
      * Returns `null` when discovery is disabled or no end-session endpoint
      * is advertised.
+     *
+     * @param idTokenHint - Optional ID token hint for the provider.
+     * @param postLogoutRedirectUri - Optional URL to return to after logout.
+     * @returns The end-session URL, or `null` when unavailable.
      */
     async getEndSessionUrl(idTokenHint?: string, postLogoutRedirectUri?: string): Promise<string | null> {
         if (!this.#config.discovery) return null;
@@ -906,6 +1001,7 @@ export class OIDCAdapter implements AuthAdapter {
      * transport errors.
      *
      * @param token - The refresh token captured from the exchange.
+     * @returns The refreshed principal, tokens, and expiry.
      */
     async refresh(token: string): Promise<OIDCResult> {
         const key = hashRefreshToken(token);
@@ -994,6 +1090,13 @@ export class OIDCAdapter implements AuthAdapter {
         };
     }
 
+    /**
+     * No-op logout: OIDC logout requires a redirect to the provider's
+     * end-session endpoint (see {@link OIDCAdapter.getEndSessionUrl}).
+     *
+     * @param _token - Ignored; the provider owns the browser session.
+     * @returns A promise that resolves immediately.
+     */
     async logout(_token: string): Promise<void> {
         // OIDC logout requires redirecting the user to the provider's
         // end_session_endpoint — see getEndSessionUrl().

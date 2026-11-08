@@ -1,4 +1,5 @@
 /**
+ * In-memory memoization over the cache contract.
  */
 import { CacheMiss, MemoryCache } from './cache';
 import { serializeCacheKey } from './keys';

@@ -1,4 +1,5 @@
 /**
+ * The logger contract and log attribute types.
  */
 import { Attributes, Exception } from '@opentelemetry/api';
 import { SeverityNumber } from '@opentelemetry/api-logs';

@@ -6,6 +6,8 @@
 
 # memoize
 
+In-memory memoization over the cache contract.
+
 ## Interfaces
 
 - [MemoizeOptions](interfaces/MemoizeOptions.md)

@@ -20,7 +20,9 @@ export interface RedisSocketFanoutOptions {
     subscriberUrl: string;
     /** Application/environment isolation boundary. */
     namespace: string;
+    /** Maximum serialized envelope size in bytes. */
     maxMessageBytes?: number;
+    /** Subscriber connect timeout in milliseconds. */
     connectTimeout?: number;
 }
 
@@ -160,7 +162,11 @@ export class RedisSocketFanout implements SocketFanout, AsyncCloseable {
         return this.#decodeError;
     }
 
-    /** Explicit readiness; construction never opens sockets. */
+    /**
+     * Explicit readiness; construction never opens sockets.
+     *
+     * @returns A promise that resolves once publisher and subscriber are ready.
+     */
     connect(): Promise<void> {
         if (this.#closed) return Promise.reject(new Error('RedisSocketFanout is closed'));
         this.#connecting ??= Promise.all([this.#publisher.connect(), this.#subscriber.connect()]).then(() => {
@@ -169,6 +175,13 @@ export class RedisSocketFanout implements SocketFanout, AsyncCloseable {
         return this.#connecting;
     }
 
+    /**
+     * Subscribes to a scope's messages; completion signals readiness.
+     *
+     * @param scope - The fan-out scope to subscribe to.
+     * @param receive - Invoked for each message from another origin.
+     * @returns An unsubscribe function.
+     */
     async subscribe(
         scope: SocketFanoutScope,
         receive: (message: SocketFanoutMessage) => void
@@ -223,6 +236,13 @@ export class RedisSocketFanout implements SocketFanout, AsyncCloseable {
         return unsubscribe;
     }
 
+    /**
+     * Publishes one message after backend acceptance.
+     *
+     * @param scope - The fan-out scope to publish to.
+     * @param message - The message to publish.
+     * @returns A promise that resolves after Redis accepts the publish.
+     */
     async publish(scope: SocketFanoutScope, message: SocketFanoutMessage): Promise<void> {
         this.#assertOpen();
         const channel = this.#channel(scope);
@@ -244,7 +264,11 @@ export class RedisSocketFanout implements SocketFanout, AsyncCloseable {
         });
     }
 
-    /** Unsubscribe all listeners, then close only the dedicated owned subscriber. */
+    /**
+     * Unsubscribe all listeners, then close only the dedicated owned subscriber.
+     *
+     * @returns A promise that resolves once the fan-out is closed.
+     */
     close(): Promise<void> {
         if (this.#closing) return this.#closing;
         this.#closed = true;

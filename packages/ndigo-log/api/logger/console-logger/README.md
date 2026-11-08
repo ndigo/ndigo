@@ -6,6 +6,8 @@
 
 # logger/console-logger
 
+Console-backed logger honoring a severity threshold.
+
 ## Classes
 
 - [ConsoleLogger](classes/ConsoleLogger.md)

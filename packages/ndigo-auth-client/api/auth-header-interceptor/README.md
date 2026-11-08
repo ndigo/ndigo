@@ -6,6 +6,8 @@
 
 # auth-header-interceptor
 
+HTTP interceptor that injects bearer tokens from the auth session.
+
 ## Classes
 
 - [AuthHeaderInterceptor](classes/AuthHeaderInterceptor.md)

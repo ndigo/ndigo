@@ -30,6 +30,8 @@
       "@ndigo/dom": ["./packages/ndigo-dom/src"],
       "@ndigo/dom/*": ["./packages/ndigo-dom/src/*"],
       "@ndigo/util": ["./packages/ndigo-util/src"],
+      "@ndigo/ui": ["./packages/ndigo-ui/src"],
+      "@ndigo/ui/*": ["./packages/ndigo-ui/src/*"],
       "@ndigo/util/*": ["./packages/ndigo-util/src/*"],
       "@ndigo/factory": ["./packages/ndigo-factory/src"],
       "@ndigo/factory/*": ["./packages/ndigo-factory/src/*"],

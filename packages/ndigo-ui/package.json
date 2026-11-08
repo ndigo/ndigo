@@ -1,0 +1,43 @@
+{
+  "name": "@ndigo/ui",
+  "version": "0.0.1",
+  "description": "Ndigo UI — brand tokens, theme layers, and the design-system registry contract",
+  "keywords": [
+    "ndigo",
+    "ndigo-ui",
+    "design-system",
+    "design-tokens",
+    "css",
+    "web-components",
+    "registry"
+  ],
+  "type": "module",
+  "files": [
+    "api",
+    "lib",
+    "tokens",
+    "theme"
+  ],
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./tokens.css": "./tokens/ndigo-tokens.css",
+    "./theme.css": "./theme/base.css",
+    "./package.json": "./package.json"
+  },
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build:lib": "tsc -b tsconfig.build.json",
+    "test": "vitest run --config ../../vitest.config.ts"
+  },
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "sideEffects": [
+    "**/*.css"
+  ]
+}

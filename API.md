@@ -53,6 +53,7 @@ package can be read — and installed — on its own.
 | `@ndigo/telemetry-node` | Node.js telemetry for Ndigo — NodeSDK configuration and Node platform instrumentations | [api/README.md](packages/ndigo-telemetry-node/api/README.md) |
 | `@ndigo/telemetry-web` | Browser telemetry for Ndigo — browser telemetry configuration and web instrumentations | [api/README.md](packages/ndigo-telemetry-web/api/README.md) |
 | `@ndigo/test` | Ndigo integration test harness — MockMVC-style in-process request dispatch | [api/README.md](packages/ndigo-test/api/README.md) |
+| `@ndigo/ui` | Ndigo UI — brand tokens, theme layers, and the design-system registry contract | [api/README.md](packages/ndigo-ui/api/README.md) |
 | `@ndigo/util` | Zero-dependency helper utilities — type guards, strings, environment, crypto | [api/README.md](packages/ndigo-util/api/README.md) |
 | `@ndigo/view` | Views, view targets, and content negotiation for Ndigo | [api/README.md](packages/ndigo-view/api/README.md) |
 | `@ndigo/view-ejs` | Ndigo View EJS — server-side EJS template rendering as an isomorphic Ndigo view technology. | [api/README.md](packages/ndigo-view-ejs/api/README.md) |

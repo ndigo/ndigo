@@ -1,0 +1,76 @@
+/* <nd-menu> — dropdown surface built on the shared design tokens. */
+
+nd-menu {
+    display: contents;
+}
+
+/* Until the element upgrades, hide the menu body. */
+nd-menu:not(:defined) [data-part='content'] {
+    display: none;
+}
+
+nd-menu [data-part='trigger'] {
+    padding: var(--nd-space-2) var(--nd-space-3);
+    color: var(--nd-color-text);
+    font: inherit;
+    background: var(--nd-color-surface);
+    border: 1px solid var(--nd-color-border);
+    border-radius: var(--nd-radius-md);
+    cursor: pointer;
+}
+
+nd-menu [data-part='trigger']:hover {
+    background: var(--nd-color-surface-raised);
+}
+
+nd-menu [data-part='positioner'] {
+    z-index: var(--nd-z-dropdown);
+    pointer-events: none;
+}
+
+nd-menu [data-part='content'] {
+    min-width: 12rem;
+    padding: var(--nd-space-1);
+    color: var(--nd-color-text);
+    background: var(--nd-color-surface-raised);
+    border: 1px solid var(--nd-color-border);
+    border-radius: var(--nd-radius-md);
+    box-shadow: var(--nd-shadow-md);
+    pointer-events: auto;
+}
+
+nd-menu [data-part='item'] {
+    padding: var(--nd-space-2) var(--nd-space-3);
+    font-size: var(--nd-text-sm);
+    border-radius: var(--nd-radius-sm);
+    cursor: pointer;
+    user-select: none;
+}
+
+nd-menu [data-part='item'][data-highlighted] {
+    background: var(--nd-color-accent-soft);
+}
+
+nd-menu [data-part='item'][data-disabled] {
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+nd-menu [data-part='separator'] {
+    height: 1px;
+    margin: var(--nd-space-1) 0;
+    background: var(--nd-color-border);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    nd-menu [data-part='content'][data-state='open'] {
+        animation: nd-menu-enter var(--nd-duration-fast) var(--nd-ease-standard);
+    }
+}
+
+@keyframes nd-menu-enter {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+}

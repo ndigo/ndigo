@@ -36,7 +36,9 @@ function declarationsIn(css: string, selector: string): Set<string> {
 describe('token stylesheet', () => {
     it('declares every token in the catalog', () => {
         const declared = new Set([...CSS.matchAll(declarationRe)].map((match) => match[1]));
-        expect([...declared].sort()).toEqual([...TOKEN_NAMES].sort());
+        expect([...declared].sort((a, b) => a.localeCompare(b))).toEqual(
+            [...TOKEN_NAMES].sort((a, b) => a.localeCompare(b))
+        );
     });
 
     it('declares no token twice in the catalog', () => {
@@ -45,13 +47,15 @@ describe('token stylesheet', () => {
 
     it('covers every token group', () => {
         const groups = new Set<TokenGroup>(TOKENS.map((token) => token.group));
-        expect([...groups].sort()).toEqual([...TOKEN_GROUPS].sort());
+        expect([...groups].sort((a, b) => a.localeCompare(b))).toEqual(
+            [...TOKEN_GROUPS].sort((a, b) => a.localeCompare(b))
+        );
     });
 
     it('declares the same semantic colors for dark and light', () => {
         const dark = declarationsIn(CSS, ":root[data-theme='dark']");
         const light = declarationsIn(CSS, ":root[data-theme='light']");
-        expect([...light].sort()).toEqual([...dark].sort());
+        expect([...light].sort((a, b) => a.localeCompare(b))).toEqual([...dark].sort((a, b) => a.localeCompare(b)));
     });
 
     it('stays consumer-agnostic: no imports, font files, or element selectors', () => {

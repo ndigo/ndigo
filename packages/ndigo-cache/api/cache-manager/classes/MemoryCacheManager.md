@@ -21,6 +21,8 @@ singleton per application context.
 
 > **new MemoryCacheManager**(`options?`): `MemoryCacheManager`
 
+Creates a manager with the given defaults.
+
 #### Parameters
 
 ##### options?
@@ -37,12 +39,19 @@ Manager options (see [CacheManagerOptions](../interfaces/CacheManagerOptions.md)
 
 ### getCache()
 
+Returns the cache for a name or token.
+
+#### Param
+
+**nameOrToken**
+
+Cache name or typed store token.
+
 #### Call Signature
 
 > **getCache**\<`V`\>(`name`): [`Cache`](../../cache/interfaces/Cache.md)\<`V`\>
 
-Returns the named cache, auto-creating it with the manager defaults
-when absent.
+Returns the named cache, auto-creating it when absent.
 
 ##### Type Parameters
 
@@ -62,9 +71,7 @@ Non-empty cache name.
 
 [`Cache`](../../cache/interfaces/Cache.md)\<`V`\>
 
-##### Throws
-
-For a non-string or empty name.
+The cache store.
 
 ##### Implementation of
 
@@ -74,8 +81,7 @@ For a non-string or empty name.
 
 > **getCache**\<`V`\>(`token`): [`Cache`](../../cache/interfaces/Cache.md)\<`V`\>
 
-Returns the cache identified by a typed store token (AD-34 D7) —
-description-backed, same store as the string form.
+Returns the token-identified cache, auto-creating it when absent.
 
 ##### Type Parameters
 
@@ -95,6 +101,8 @@ The cache store token.
 
 [`Cache`](../../cache/interfaces/Cache.md)\<`V`\>
 
+The cache store.
+
 ##### Implementation of
 
 [`CacheManager`](../interfaces/CacheManager.md).[`getCache`](../interfaces/CacheManager.md#getcache)
@@ -102,6 +110,14 @@ The cache store token.
 ***
 
 ### hasCache()
+
+Returns whether the cache for a name or token exists.
+
+#### Param
+
+**nameOrToken**
+
+Cache name or typed store token.
 
 #### Call Signature
 
@@ -121,9 +137,7 @@ Non-empty cache name.
 
 `boolean`
 
-##### Throws
-
-For a non-string or empty name.
+Whether the cache exists.
 
 ##### Implementation of
 
@@ -147,9 +161,7 @@ The cache store token.
 
 `boolean`
 
-##### Throws
-
-For an empty token description.
+Whether the cache exists.
 
 ##### Implementation of
 

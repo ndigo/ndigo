@@ -6,6 +6,8 @@
 
 # cache/cache
 
+Redis-backed cache store.
+
 ## Classes
 
 - [RedisCache](classes/RedisCache.md)

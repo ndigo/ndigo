@@ -43,9 +43,13 @@ Removes the binding for `token` (rotation consumes the presented token).
 
 `string`
 
+The refresh token.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once removed.
 
 ***
 
@@ -61,9 +65,13 @@ Returns the binding for `token`, or `null` when unknown or consumed.
 
 `string`
 
+The refresh token.
+
 #### Returns
 
 `Promise`\<[`RefreshTokenBinding`](RefreshTokenBinding.md) \| `null`\>
+
+The recorded binding, or `null`.
 
 ***
 
@@ -79,10 +87,16 @@ Stores the binding for `token`, replacing any existing entry.
 
 `string`
 
+The refresh token.
+
 ##### binding
 
 [`RefreshTokenBinding`](RefreshTokenBinding.md)
 
+The subject binding to record.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once stored.

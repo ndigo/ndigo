@@ -6,6 +6,8 @@
 
 # logger/entry
 
+Structured log-entry types.
+
 ## Interfaces
 
 - [LogEntry](interfaces/LogEntry.md)

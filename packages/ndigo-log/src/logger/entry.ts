@@ -1,4 +1,5 @@
 /**
+ * Structured log-entry types.
  */
 import { Exception } from '@opentelemetry/api';
 import { SeverityNumber } from '@opentelemetry/api-logs';

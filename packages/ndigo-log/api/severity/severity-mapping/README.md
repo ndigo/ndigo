@@ -6,6 +6,8 @@
 
 # severity/severity-mapping
 
+Severity-number mappings for supported schemes.
+
 ## Interfaces
 
 - [SeverityMapping](interfaces/SeverityMapping.md)

@@ -1,4 +1,5 @@
 /**
+ * The cache contract, its miss sentinel, and the in-memory store.
  */
 
 /**
@@ -11,6 +12,7 @@
  * which breaks if a bundle duplicates the class).
  */
 export class CacheMiss {
+    /** The sole miss sentinel instance. */
     static readonly INSTANCE: CacheMiss = new CacheMiss();
 
     private constructor() {
@@ -65,12 +67,19 @@ export interface Cache<V = unknown> {
      * Returns the live cached value or the {@link CacheMiss} sentinel.
      * Expiry and recency handling follow the backend's documented policy;
      * MemoryCache removes expired entries lazily and promotes LRU hits.
+     *
+     * @param key - The cache key.
+     * @returns The cached value, or the miss sentinel.
      */
     get(key: string): Promise<V | CacheMiss>;
     /**
      * Stores a value, optionally overriding the backend default TTL.
      * Capacity and eviction policy are backend-specific configuration.
      *
+     * @param key - The cache key.
+     * @param value - The value to store.
+     * @param ttl - Optional entry lifetime in milliseconds.
+     * @returns A promise that resolves once the value is stored.
      * @throws When the value is the {@link CacheMiss} sentinel or
      *   the TTL is not a positive finite number of milliseconds.
      */
@@ -78,15 +87,21 @@ export interface Cache<V = unknown> {
     /**
      * Returns whether the key holds a live entry. Does not update recency
      * in MemoryCache; remote expiry follows the backend's clock.
+     *
+     * @param key - The cache key.
+     * @returns Whether a live entry exists.
      */
     has(key: string): Promise<boolean>;
     /**
      * Removes an entry. Returns whether the entry existed.
+     *
+     * @param key - The cache key.
+     * @returns Whether the entry existed.
      */
     delete(key: string): Promise<boolean>;
-    /** Removes all entries. */
+    /** Removes all entries. @returns A promise that resolves once cleared. */
     clear(): Promise<void>;
-    /** Entry count under the backend's documented expiry/concurrency policy. */
+    /** Entry count under the backend's documented expiry/concurrency policy. @returns The entry count. */
     size(): Promise<number>;
 }
 
@@ -111,6 +126,8 @@ export class MemoryCache<V = unknown> implements Cache<V> {
     readonly #eviction: 'lru' | 'fifo';
 
     /**
+     * Creates a cache with the given options.
+     *
      * @param options - Store configuration (see {@link CacheOptions}).
      * @throws For a non-integer/negative `maxSize`, a
      *   non-positive `defaultTtl`, or an unknown `eviction` policy.
@@ -135,11 +152,21 @@ export class MemoryCache<V = unknown> implements Cache<V> {
         this.#eviction = eviction;
     }
 
-    /** Entry count; expiry is lazy. */
+    /**
+     * Entry count; expiry is lazy.
+     *
+     * @returns The number of stored entries.
+     */
     async size(): Promise<number> {
         return this.#entries.size;
     }
 
+    /**
+     * Returns the live value or the miss sentinel, promoting LRU hits.
+     *
+     * @param key - The cache key.
+     * @returns The cached value, or the miss sentinel.
+     */
     async get(key: string): Promise<V | CacheMiss> {
         const entry = this.#entries.get(key);
         if (entry === undefined) {
@@ -157,6 +184,14 @@ export class MemoryCache<V = unknown> implements Cache<V> {
         return entry.value;
     }
 
+    /**
+     * Stores a value with an optional TTL override.
+     *
+     * @param key - The cache key.
+     * @param value - The value to store.
+     * @param ttl - Optional entry lifetime in milliseconds.
+     * @returns A promise that resolves once the value is stored.
+     */
     async set(key: string, value: V, ttl?: number): Promise<void> {
         if (value === CacheMiss.INSTANCE) {
             throw new TypeError('MemoryCache: cannot cache the CacheMiss sentinel as a value');
@@ -181,6 +216,12 @@ export class MemoryCache<V = unknown> implements Cache<V> {
         this.#entries.set(key, { value, expiresAt });
     }
 
+    /**
+     * Whether the key holds a live entry.
+     *
+     * @param key - The cache key.
+     * @returns Whether a live entry exists.
+     */
     async has(key: string): Promise<boolean> {
         const entry = this.#entries.get(key);
         if (entry === undefined) {
@@ -193,10 +234,21 @@ export class MemoryCache<V = unknown> implements Cache<V> {
         return true;
     }
 
+    /**
+     * Removes an entry.
+     *
+     * @param key - The cache key.
+     * @returns Whether the entry existed.
+     */
     async delete(key: string): Promise<boolean> {
         return this.#entries.delete(key);
     }
 
+    /**
+     * Removes all entries.
+     *
+     * @returns A promise that resolves once cleared.
+     */
     async clear(): Promise<void> {
         this.#entries.clear();
     }

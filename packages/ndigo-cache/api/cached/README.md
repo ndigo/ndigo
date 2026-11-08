@@ -6,6 +6,8 @@
 
 # cached
 
+The `@cached` decorator: spec resolution and method memoization.
+
 ## Interfaces
 
 - [CachedSpec](interfaces/CachedSpec.md)

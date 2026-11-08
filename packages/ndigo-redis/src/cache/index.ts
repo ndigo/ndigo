@@ -1,4 +1,5 @@
 /**
+ * Redis cache subpath exports.
  */
 export { RedisCache } from './cache';
 export type { RedisCacheOptions } from './cache';

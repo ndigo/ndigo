@@ -25,11 +25,15 @@ Borrowed publisher; never subscribed or closed by this adapter.
 
 > `optional` **connectTimeout?**: `number`
 
+Subscriber connect timeout in milliseconds.
+
 ***
 
 ### maxMessageBytes?
 
 > `optional` **maxMessageBytes?**: `number`
+
+Maximum serialized envelope size in bytes.
 
 ***
 

@@ -26,6 +26,7 @@ export const CLI_ROUTE_NAMES = [
     'add',
     'update',
     'logs',
+    'ui',
     'completion',
 ] as const;
 

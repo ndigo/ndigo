@@ -23,3 +23,4 @@ handler declares its DTO via `@apiDocs({ responses })` (AD-38 D-4).
 
 > **description**: `string`
 
+Human-readable response description.

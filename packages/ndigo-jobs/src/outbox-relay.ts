@@ -45,7 +45,9 @@ export interface OutboxRelayOptions {
  * the standalone/test path.
  */
 export class OutboxRelay implements AsyncCloseable {
+    /** SmartLifecycle phase: after the store/queue wiring. */
     readonly phase = 10;
+    /** Whether the relay auto-starts with the context. */
     readonly isAutoStartup = true;
     readonly #store: OutboxStore;
     readonly #publisher: OutboxPublisher;
@@ -60,6 +62,8 @@ export class OutboxRelay implements AsyncCloseable {
     #timer: NodeJS.Timeout | null = null;
 
     /**
+     * Creates a relay over the given store and publisher.
+     *
      * @param options - Store, publisher, and relay tuning.
      */
     constructor(options: OutboxRelayOptions) {
@@ -115,6 +119,8 @@ export class OutboxRelay implements AsyncCloseable {
 
     /**
      * Container teardown: stops and awaits the pass in flight.
+     *
+     * @returns A promise that resolves once the relay is closed.
      */
     async close(): Promise<void> {
         this.#closed = true;

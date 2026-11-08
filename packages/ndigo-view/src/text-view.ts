@@ -1,4 +1,5 @@
 /**
+ * Plain-text response view.
  */
 import { MediaTypes } from '@ndigo/core';
 import { AbstractSerializingView } from './abstract-serializing-view.js';
@@ -15,7 +16,12 @@ export class TextView extends AbstractSerializingView {
         this.mediaType = MediaTypes.TEXT_PLAIN?.withCharset('UTF-8') ?? null;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Serializes the model as plain text.
+     *
+     * @param model - The data model to serialize.
+     * @returns The text body.
+     */
     protected serialize(model: unknown): string {
         return model == null ? '' : String(model);
     }

@@ -35,6 +35,8 @@ export class JobQueue {
     readonly #maxAttempts: number;
 
     /**
+     * Creates a queue over a driver or a context-resolved driver.
+     *
      * @param options - Driver (or context resolution) and default attempts.
      */
     constructor(options: JobQueueOptions = {}) {

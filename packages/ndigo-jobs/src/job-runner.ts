@@ -68,7 +68,9 @@ export interface JobRunnerOptions {
  * Deterministic tests drive {@link tick} directly with an injected clock.
  */
 export class JobRunner implements AsyncCloseable {
+    /** SmartLifecycle phase: after the handler-registry scan (phase 0). */
     readonly phase = 10;
+    /** Whether the runner starts with the context (`autoStart`). */
     readonly isAutoStartup: boolean;
     #context: ApplicationContext | null = null;
     #driver: JobDriver | null;
@@ -87,6 +89,8 @@ export class JobRunner implements AsyncCloseable {
     readonly #logger: Logger;
 
     /**
+     * Creates a runner over a driver/registry or a context that resolves them.
+     *
      * @param options - Driver/registry (or context resolution) and tuning.
      */
     constructor(options: JobRunnerOptions = {}) {
@@ -155,6 +159,8 @@ export class JobRunner implements AsyncCloseable {
 
     /**
      * Container teardown: stops claiming and drains in-flight executions.
+     *
+     * @returns A promise that resolves once the drain completes.
      */
     async close(): Promise<void> {
         if (this.#destroyed) {
@@ -177,6 +183,8 @@ export class JobRunner implements AsyncCloseable {
      * `timeoutMs` on each handler (or job) whose work can stall; the runner
      * then aborts late handlers and settles them as failed, and the drain
      * completes.
+     *
+     * @returns A promise that resolves when no executions are in flight.
      */
     async drain(): Promise<void> {
         while (this.#inflight.size > 0) {

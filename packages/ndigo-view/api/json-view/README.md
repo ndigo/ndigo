@@ -6,6 +6,8 @@
 
 # json-view
 
+JSON response view.
+
 ## Classes
 
 - [JSONView](classes/JSONView.md)

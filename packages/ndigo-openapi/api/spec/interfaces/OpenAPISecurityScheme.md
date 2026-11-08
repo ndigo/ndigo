@@ -24,6 +24,8 @@ referenced by name from operation/`@apiDocs` `security` requirements.
 
 > `optional` **description?**: `string`
 
+Human-readable scheme description.
+
 ***
 
 ### flows?
@@ -70,3 +72,4 @@ referenced by name from operation/`@apiDocs` `security` requirements.
 
 > **type**: `"apiKey"` \| `"http"` \| `"oauth2"` \| `"openIdConnect"`
 
+Security scheme type.

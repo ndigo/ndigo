@@ -20,6 +20,8 @@ effect of `outbox.append(…)` is delivered through the durable queue.
 
 > **new JobOutboxPublisher**(`queue`): `JobOutboxPublisher`
 
+Creates the publisher over `queue`.
+
 #### Parameters
 
 ##### queue
@@ -38,15 +40,21 @@ The queue entries are enqueued on.
 
 > **publish**(`entry`): `Promise`\<`void`\>
 
+Publishes one outbox entry as a job.
+
 #### Parameters
 
 ##### entry
 
 [`OutboxEntry`](../interfaces/OutboxEntry.md)
 
+The entry to publish.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once the job is enqueued.
 
 #### Implementation of
 

@@ -50,6 +50,8 @@ export type StompWireInput = string | Uint8Array | ArrayBuffer;
 /** Raised on malformed frames (missing NUL, bad `content-length`, …). */
 export class StompProtocolError extends FrameworkError {
     /**
+     * Creates the protocol error for a malformed frame.
+     *
      * @param message - Human-readable protocol failure detail.
      */
     constructor(message: string) {

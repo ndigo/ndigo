@@ -26,11 +26,15 @@ Binary frame delivery mode. Defaults to `'arraybuffer'` in the client.
 
 > **onclose**: ((`event`) => `void`) \| `null`
 
+Called when the connection closes.
+
 ***
 
 ### onerror
 
 > **onerror**: ((`event`) => `void`) \| `null`
+
+Called on transport errors.
 
 ***
 
@@ -38,11 +42,15 @@ Binary frame delivery mode. Defaults to `'arraybuffer'` in the client.
 
 > **onmessage**: ((`event`) => `void`) \| `null`
 
+Called for each inbound frame.
+
 ***
 
 ### onopen
 
 > **onopen**: ((`event`) => `void`) \| `null`
+
+Called when the connection opens.
 
 ## Methods
 
@@ -58,9 +66,13 @@ Initiate (or coerce) a close handshake.
 
 `number`
 
+Close status code (default `1000` normal).
+
 ##### reason?
 
 `string`
+
+Human-readable close reason.
 
 #### Returns
 
@@ -79,6 +91,8 @@ Send a text (or binary) frame.
 ##### data
 
 `string` \| `ArrayBuffer`
+
+The frame payload.
 
 #### Returns
 

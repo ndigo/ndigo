@@ -6,6 +6,8 @@
 
 # view-resolver
 
+View resolution: caches, name safety, and resolver contracts.
+
 ## Classes
 
 - [AbstractCachingViewResolver](classes/AbstractCachingViewResolver.md)

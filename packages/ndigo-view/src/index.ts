@@ -1,4 +1,5 @@
 /**
+ * Public API of `@ndigo/view` — view resolution, targets, and renderers.
  */
 export * from './view.js';
 export * from './view-mapping.js';

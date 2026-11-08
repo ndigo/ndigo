@@ -18,6 +18,8 @@ Raised on malformed frames (missing NUL, bad `content-length`, …).
 
 > **new StompProtocolError**(`message`): `StompProtocolError`
 
+Creates the protocol error for a malformed frame.
+
 #### Parameters
 
 ##### message

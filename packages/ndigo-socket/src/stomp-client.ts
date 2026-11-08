@@ -134,9 +134,9 @@ export interface StompSubscription {
     readonly messages: AsyncIterable<StompMessage>;
     /** Send UNSUBSCRIBE + complete the stream. Idempotent. */
     unsubscribe(): void;
-    /** Send an ACK frame for a delivered message (client acks, §1.4). */
+    /** Send an ACK frame for a delivered message (client acks, §1.4). @param messageId - The delivered message id. */
     ack(messageId: string): void;
-    /** Send a NACK frame for a delivered message (§1.4). */
+    /** Send a NACK frame for a delivered message (§1.4). @param messageId - The delivered message id. */
     nack(messageId: string): void;
 }
 
@@ -225,6 +225,8 @@ export class StompClient {
     #handshake: Handshake | null = null;
 
     /**
+     * Creates a STOMP client over the given socket.
+     *
      * @param socket - The underlying connection (any `SocketClient`).
      * @param options - CONNECT headers and lifecycle policy.
      */

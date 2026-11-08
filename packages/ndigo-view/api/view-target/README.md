@@ -6,6 +6,8 @@
 
 # view-target
 
+The view-target contract that receives rendered output.
+
 ## Interfaces
 
 - [EventBridgeViewTarget](interfaces/EventBridgeViewTarget.md)

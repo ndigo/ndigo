@@ -31,6 +31,8 @@ class ChatController {
 
 > **new StompBroker**(`options?`): `StompBroker`
 
+Creates a broker with the given routing seams and hooks.
+
 #### Parameters
 
 ##### options?
@@ -104,6 +106,8 @@ Close sessions and unsubscribe; the application owns transport shutdown.
 
 `Promise`\<`void`\>
 
+A promise that resolves once the broker is closed.
+
 ***
 
 ### closeAll()
@@ -144,6 +148,8 @@ Await live topic subscription readiness before accepting traffic.
 
 `Promise`\<`void`\>
 
+A promise that resolves once the fan-out subscription is ready.
+
 ***
 
 ### handleSocket()
@@ -169,6 +175,8 @@ The socket session (any transport).
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves when the session stream ends.
 
 ***
 

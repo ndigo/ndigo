@@ -1,4 +1,5 @@
 /**
+ * HTTP status value object.
  */
 import {
     Comparable,
@@ -55,6 +56,13 @@ export default class ResponseStatus implements Comparable<ResponseStatus>, Equat
      * @returns The matching or newly created status, or `null` when no text is provided.
      */
     static for(code: number, text?: string): ResponseStatus;
+    /**
+     * Resolves a status for a code or response.
+     *
+     * @param codeOrResponse - The numeric code or response.
+     * @param text - Optional reason phrase.
+     * @returns The status, or `null` when no text is provided for an unknown code.
+     */
     static for(codeOrResponse: number | Response, text?: string): ResponseStatus | null {
         let code: number;
 
@@ -122,16 +130,12 @@ export default class ResponseStatus implements Comparable<ResponseStatus>, Equat
      * @param text - The reason phrase.
      */
     constructor(code: number, text: string) {
-        /**
-         */
         defineProperty(this, 'code', {
             value: code,
             configurable: true,
             enumerable: true,
             writable: false,
         });
-        /**
-         */
         defineProperty(this, 'text', {
             value: text,
             configurable: true,

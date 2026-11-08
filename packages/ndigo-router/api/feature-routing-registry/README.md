@@ -6,6 +6,8 @@
 
 # feature-routing-registry
 
+Feature route partitions and activation policy.
+
 ## Classes
 
 - [FeatureRoutingRegistry](classes/FeatureRoutingRegistry.md)

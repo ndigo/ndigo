@@ -6,6 +6,8 @@
 
 # route
 
+The route contract.
+
 ## Interfaces
 
 - [Route](interfaces/Route.md)

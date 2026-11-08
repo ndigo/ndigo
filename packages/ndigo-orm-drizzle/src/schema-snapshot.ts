@@ -27,22 +27,31 @@ export type SqliteStorageType = 'INTEGER' | 'REAL' | 'NUMERIC' | 'BLOB' | 'TEXT'
  * or a non-PK generated column, which `persist()` skips while undefined).
  */
 export interface ColumnProjection {
+    /** The column name. */
     name: string;
+    /** The SQLite storage class. */
     type: SqliteStorageType;
+    /** Whether the column is the primary key. */
     primaryKey: boolean;
+    /** Whether the column is generated. */
     generated: boolean;
+    /** Whether the column allows nulls. */
     nullable: boolean;
 }
 
 /** One table's projection. */
 export interface TableProjection {
+    /** The table name. */
     name: string;
+    /** The table's columns. */
     columns: ColumnProjection[];
 }
 
 /** The committed, normalized metadata projection (`db/schema.json`). */
 export interface SchemaSnapshot {
+    /** The snapshot predicate version and capabilities. */
     predicate: typeof SNAPSHOT_PREDICATE;
+    /** The projected tables. */
     tables: TableProjection[];
 }
 

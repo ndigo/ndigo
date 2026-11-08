@@ -1,4 +1,5 @@
 /**
+ * Shared HTTP helpers and response reconstruction.
  */
 /// <reference lib="dom" />
 // TypeScript 6.0 declaration generation fix

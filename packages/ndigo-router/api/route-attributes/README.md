@@ -6,6 +6,8 @@
 
 # route-attributes
 
+Route attribute keys and helpers.
+
 ## Variables
 
 - [ACCEPT\_LANGUAGE\_ATTRIBUTE](variables/ACCEPT_LANGUAGE_ATTRIBUTE.md)

@@ -32,6 +32,8 @@ Drizzle-backed data source that maps `@ndigo/orm` entity metadata to SQL tables.
 
 > **get** **client**(): `Client`
 
+The underlying scoped libSQL client.
+
 ##### Returns
 
 `Client`
@@ -43,6 +45,8 @@ Drizzle-backed data source that maps `@ndigo/orm` entity metadata to SQL tables.
 #### Get Signature
 
 > **get** **db**(): `LibSQLDatabase`
+
+The Drizzle database.
 
 ##### Returns
 
@@ -56,6 +60,8 @@ Drizzle-backed data source that maps `@ndigo/orm` entity metadata to SQL tables.
 
 > **get** **initialized**(): `boolean`
 
+Whether the schema has been initialized.
+
 ##### Returns
 
 `boolean`
@@ -68,6 +74,8 @@ Drizzle-backed data source that maps `@ndigo/orm` entity metadata to SQL tables.
 
 > **get** **url**(): `string`
 
+The configured connection URL.
+
 ##### Returns
 
 `string`
@@ -78,12 +86,18 @@ Drizzle-backed data source that maps `@ndigo/orm` entity metadata to SQL tables.
 
 > **init**(`entities`): `Promise`\<`void`\>
 
+Creates the tables for the given entities (idempotent).
+
 #### Parameters
 
 ##### entities
 
 `Constructable`[]
 
+The entity classes to provision.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once the tables exist.

@@ -6,6 +6,8 @@
 
 # transformers/url-search-params-transformer
 
+Transforms `URLSearchParams` entries.
+
 ## Classes
 
 - [URLSearchParamsTransformer](classes/URLSearchParamsTransformer.md)

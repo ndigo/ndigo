@@ -6,6 +6,8 @@
 
 # transformers/json-transformer
 
+Transforms JSON payloads.
+
 ## Classes
 
 - [JSONTransformer](classes/JSONTransformer.md)

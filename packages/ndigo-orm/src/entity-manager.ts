@@ -1,4 +1,5 @@
 /**
+ * Entity persistence, lookup, and relation loading.
  */
 import { Constructable, IllegalStateError } from '@ndigo/core';
 import { DataSource } from './data-source';
@@ -182,7 +183,11 @@ export class InMemoryEntityManager implements EntityManager {
     }
 
     /**
-     * {@inheritDoc}
+     * Loads one relation value onto an entity.
+     *
+     * @param entity - The entity instance.
+     * @param relationName - The relation field to load.
+     * @returns The loaded relation value.
      */
     fetchRelation(entity: object, relationName: string): unknown {
         const entityClass = entity.constructor as Constructable<object>;

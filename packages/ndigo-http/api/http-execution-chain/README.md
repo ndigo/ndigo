@@ -6,6 +6,8 @@
 
 # http-execution-chain
 
+Interceptor execution chain for HTTP requests.
+
 ## Classes
 
 - [HTTPExecutionChain](classes/HTTPExecutionChain.md)

@@ -39,9 +39,13 @@ The data-source client (recommended), or url/authToken
 
 > **append**(`input`): `Promise`\<`OutboxEntry`\>
 
+Records one side effect.
+
 #### Parameters
 
 ##### input
+
+Type and payload to record.
 
 ###### payload?
 
@@ -55,6 +59,8 @@ The data-source client (recommended), or url/authToken
 
 `Promise`\<`OutboxEntry`\>
 
+The stored entry.
+
 #### Implementation of
 
 `OutboxStore.append`
@@ -65,15 +71,21 @@ The data-source client (recommended), or url/authToken
 
 > **claimPending**(`options?`): `Promise`\<`OutboxEntry`[]\>
 
+Leases up to `limit` unpublished entries.
+
 #### Parameters
 
 ##### options?
 
 `OutboxClaimOptions` = `{}`
 
+Claim window.
+
 #### Returns
 
 `Promise`\<`OutboxEntry`[]\>
+
+The claimed entries.
 
 #### Implementation of
 
@@ -104,15 +116,21 @@ first.
 
 > **markPublished**(`id`): `Promise`\<`void`\>
 
+Marks an entry as published.
+
 #### Parameters
 
 ##### id
 
 `string`
 
+The entry identifier.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once marked.
 
 #### Implementation of
 
@@ -124,15 +142,21 @@ first.
 
 > **prunePublished**(`olderThanMs`): `Promise`\<`number`\>
 
+Deletes published entries older than the given age.
+
 #### Parameters
 
 ##### olderThanMs
 
 `number`
 
+Age in milliseconds.
+
 #### Returns
 
 `Promise`\<`number`\>
+
+Number of pruned entries.
 
 #### Implementation of
 
@@ -144,9 +168,13 @@ first.
 
 > **size**(): `Promise`\<`number`\>
 
+Number of unpublished entries.
+
 #### Returns
 
 `Promise`\<`number`\>
+
+The pending count.
 
 #### Implementation of
 

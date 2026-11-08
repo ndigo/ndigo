@@ -24,6 +24,8 @@ ISO-8601 timestamp recorded at apply time; present when `applied`.
 
 > **description**: `string`
 
+The migration description.
+
 ***
 
 ### state
@@ -38,3 +40,4 @@ Whether the journal records this version as applied.
 
 > **version**: `number`
 
+The migration version.

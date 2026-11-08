@@ -6,6 +6,8 @@
 
 # interceptors/error-normalization-interceptor
 
+Normalizes transport failures into response errors.
+
 ## Classes
 
 - [ErrorNormalizationInterceptor](classes/ErrorNormalizationInterceptor.md)

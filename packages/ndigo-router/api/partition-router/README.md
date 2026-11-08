@@ -6,6 +6,8 @@
 
 # partition-router
 
+Routes navigation across feature partitions.
+
 ## Classes
 
 - [PartitionRouter](classes/PartitionRouter.md)

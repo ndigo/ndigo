@@ -1,4 +1,5 @@
 /**
+ * Structural guard for `Response`-like values.
  */
 import { is, like } from '@ndigo/util/types';
 

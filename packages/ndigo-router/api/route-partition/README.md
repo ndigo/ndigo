@@ -6,6 +6,8 @@
 
 # route-partition
 
+Route partition definitions.
+
 ## Functions
 
 - [matchesPartitionPath](functions/matchesPartitionPath.md)

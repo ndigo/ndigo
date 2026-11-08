@@ -1,4 +1,5 @@
 /**
+ * Context tokens for the router.
  */
 import { ContextToken } from '@ndigo/factory';
 import type { Router } from './router';

@@ -55,19 +55,27 @@ Clears all managed entities and resets identity counters in the in-memory store.
 
 > **fetchRelation**(`entity`, `relationName`): `unknown`
 
+Loads one relation value onto an entity.
+
 #### Parameters
 
 ##### entity
 
 `object`
 
+The entity instance.
+
 ##### relationName
 
 `string`
 
+The relation field to load.
+
 #### Returns
 
 `unknown`
+
+The loaded relation value.
 
 #### Implementation of
 

@@ -6,6 +6,8 @@
 
 # decorators
 
+Entity, column, and relation decorators.
+
 ## Interfaces
 
 - [RelationOptions](interfaces/RelationOptions.md)

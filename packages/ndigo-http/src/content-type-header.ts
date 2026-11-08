@@ -62,6 +62,9 @@ export class ContentTypeHeader extends HTTPHeader {
     /**
      * The bare media type of a `Content-Type` value (see
      * {@link contentTypeBase}).
+     *
+     * @param contentType - The content-type header value.
+     * @returns The bare media type, or `null`.
      */
     baseValue(contentType: string | undefined | null): string | null {
         return contentTypeBase(contentType);
@@ -70,6 +73,9 @@ export class ContentTypeHeader extends HTTPHeader {
     /**
      * The multipart boundary of a `Content-Type` value (see
      * {@link multipartBoundary}).
+     *
+     * @param contentType - The content-type header value.
+     * @returns The boundary, or `null`.
      */
     boundary(contentType: string | undefined | null): string | null {
         return multipartBoundary(contentType);

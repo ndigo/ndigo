@@ -15,9 +15,12 @@ manager invokes when that event occurs.
 
 > **event**: [`LifecycleEvent`](../type-aliases/LifecycleEvent.md)
 
+The lifecycle event.
+
 ***
 
 ### methodName
 
 > **methodName**: `string`
 
+The method invoked for the event.

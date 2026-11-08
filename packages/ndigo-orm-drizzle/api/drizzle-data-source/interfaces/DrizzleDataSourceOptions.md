@@ -14,9 +14,12 @@ Options for configuring the Drizzle data source.
 
 > `optional` **authToken?**: `string`
 
+Optional libSQL auth token.
+
 ***
 
 ### url?
 
 > `optional` **url?**: `string`
 
+libSQL connection URL; defaults to `:memory:`.

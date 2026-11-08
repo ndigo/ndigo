@@ -14,11 +14,15 @@ Defines the core interface for a router, providing access to the current route a
 
 > `readonly` **callback**: [`RouterCallback`](../type-aliases/RouterCallback.md)
 
+Invoked when the route changes.
+
 ***
 
 ### route
 
 > `readonly` **route**: `string`
+
+The current route path.
 
 ## Methods
 
@@ -51,6 +55,8 @@ The target path to navigate to.
 ### refresh()
 
 > **refresh**(): `void`
+
+Re-evaluates the current route.
 
 #### Returns
 

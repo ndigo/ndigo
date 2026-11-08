@@ -6,6 +6,8 @@
 
 # interceptors/status-interceptor
 
+Dispatches by response status.
+
 ## Classes
 
 - [StatusInterceptor](classes/StatusInterceptor.md)

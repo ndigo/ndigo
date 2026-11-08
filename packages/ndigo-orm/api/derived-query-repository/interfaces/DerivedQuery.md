@@ -15,6 +15,8 @@ ordering (single clause) and limit (`First`/`TopN`).
 
 > **filters**: `object`[]
 
+Equality filters parsed from the method name.
+
 #### property
 
 > **property**: `string`
@@ -29,9 +31,12 @@ ordering (single clause) and limit (`First`/`TopN`).
 
 > `optional` **limit?**: `number`
 
+Optional result limit (`First`/`TopN`).
+
 ***
 
 ### orderBy?
 
 > `optional` **orderBy?**: [`SortOrder`](../../page/interfaces/SortOrder.md)[]
 
+Optional ordering clauses.

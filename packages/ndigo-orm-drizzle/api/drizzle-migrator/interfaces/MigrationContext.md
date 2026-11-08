@@ -23,6 +23,8 @@ Executes multiple statements in one round trip (schema DDL batches).
 
 `string`[]
 
+The statements.
+
 #### Returns
 
 `Promise`\<`unknown`\>
@@ -41,9 +43,13 @@ Executes a single statement (DDL or DML) with optional positional args.
 
 `string`
 
+The SQL.
+
 ##### args?
 
 `unknown`[]
+
+Positional arguments.
 
 #### Returns
 

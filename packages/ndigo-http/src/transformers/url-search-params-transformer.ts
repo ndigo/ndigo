@@ -1,4 +1,5 @@
 /**
+ * Transforms `URLSearchParams` entries.
  */
 import { HTTPTransformer, TransformContext } from './http-transformer';
 

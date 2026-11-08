@@ -6,6 +6,8 @@
 
 # interceptors/cache-interceptor
 
+Caches HTTP responses.
+
 ## Classes
 
 - [CacheInterceptor](classes/CacheInterceptor.md)

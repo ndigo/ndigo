@@ -31,8 +31,11 @@ export type DerivedQueryResult<T> = T[];
  * ordering (single clause) and limit (`First`/`TopN`).
  */
 export interface DerivedQuery {
+    /** Equality filters parsed from the method name. */
     filters: Array<{ property: string; valueIndex: number }>;
+    /** Optional ordering clauses. */
     orderBy?: SortOrder[];
+    /** Optional result limit (`First`/`TopN`). */
     limit?: number;
 }
 

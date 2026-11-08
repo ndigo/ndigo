@@ -6,6 +6,8 @@
 
 # http-types
 
+HTTP request/response types and initializer contracts.
+
 ## Interfaces
 
 - [CompletionAwareHTTPInterceptor](interfaces/CompletionAwareHTTPInterceptor.md)

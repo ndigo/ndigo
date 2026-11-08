@@ -44,7 +44,7 @@ export interface NdigoDatabaseAdapter {
     /** Run seed data. */
     seed?(): Promise<void>;
 
-    /** Roll back the last (or N) applied migration. */
+    /** Roll back the last (or N) applied migration. @param count - Number of migrations to roll back. */
     rollback?(count?: number): Promise<void>;
 
     /** Close connections / release resources. */
@@ -105,6 +105,11 @@ function printUsage(registry: Record<string, NdigoDatabaseAdapter>): void {
  *  - Otherwise the configured default.
  *  - Otherwise, if exactly one adapter is registered, it is used.
  *  - Otherwise (multiple, no default) fail with exit code 2 listing names.
+ *
+ * @param registry - Registered adapters keyed by name.
+ * @param defaultName - The configured default adapter.
+ * @param argv - The CLI argv after `db`.
+ * @returns The process exit code.
  */
 export async function runDbCommand(
     registry: Record<string, NdigoDatabaseAdapter>,

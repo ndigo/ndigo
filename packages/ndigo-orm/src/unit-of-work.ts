@@ -1,4 +1,5 @@
 /**
+ * Unit-of-work tracking for pending entity changes.
  */
 import { EntityManager } from './entity-manager';
 

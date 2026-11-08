@@ -35,9 +35,11 @@ export interface LibSQLSessionStoreOptions {
      * Use the default `intMode: 'number'`; strict decoding rejects other modes.
      */
     client?: Client;
+    /** Whether an injected client's ownership is transferred to the store. */
     ownsClient?: boolean;
     /** URL for an owned client; defaults to ':memory:'. */
     url?: string;
+    /** libSQL auth token for an owned client. */
     authToken?: string;
     /**
      * Shared-table live-session cap (default 512); enforced on create via a
@@ -63,6 +65,7 @@ export interface LibSQLSessionStoreOptions {
  * `close` is the container's supported shutdown bridge, not automatic migration.
  */
 export class LibSQLSessionStore implements SessionStore, Closeable {
+    /** Store identifier (`'libsql'`). */
     readonly kind = 'libsql';
     readonly #client: Client;
     readonly #ownsClient: boolean;
@@ -78,12 +81,23 @@ export class LibSQLSessionStore implements SessionStore, Closeable {
         this.#ownsClient = options.client === undefined || options.ownsClient === true;
     }
 
-    /** Explicit, idempotent provisioning of this store's table/index only. */
+    /**
+     * Explicit, idempotent provisioning of this store's table/index only.
+     *
+     * @returns A promise that resolves once provisioned.
+     */
     async initialize(): Promise<void> {
         this.#assertOpen();
         await this.#client.batch(SCHEMA, 'write');
     }
 
+    /**
+     * Creates a session record.
+     *
+     * @param record - The session record to store.
+     * @param ttlMs - The session lifetime in milliseconds.
+     * @returns The generated session id.
+     */
     async create(record: SessionRecord, ttlMs: number): Promise<string> {
         this.#assertOpen();
         const values = encodeRecord(record);
@@ -109,6 +123,12 @@ export class LibSQLSessionStore implements SessionStore, Closeable {
         return id;
     }
 
+    /**
+     * Returns the live session record for an id.
+     *
+     * @param sessionId - The session id.
+     * @returns The record, or `null` when missing or expired.
+     */
     async get(sessionId: string): Promise<SessionRecord | null> {
         this.#assertOpen();
         const result = await this.#client.execute({
@@ -129,6 +149,13 @@ export class LibSQLSessionStore implements SessionStore, Closeable {
         return entry.record;
     }
 
+    /**
+     * Rotates a session, preserving its absolute expiry.
+     *
+     * @param sessionId - The current session id.
+     * @param record - The record to store under the new id.
+     * @returns The new session id and its effective expiry.
+     */
     async rotate(sessionId: string, record: SessionRecord): Promise<{ id: string; expiresAt: number }> {
         this.#assertOpen();
         const values = encodeRecord(record);
@@ -168,11 +195,23 @@ export class LibSQLSessionStore implements SessionStore, Closeable {
         return { id, expiresAt: effectiveExpiry };
     }
 
+    /**
+     * Deletes one session.
+     *
+     * @param sessionId - The session id.
+     * @returns A promise that resolves once deleted.
+     */
     async delete(sessionId: string): Promise<void> {
         this.#assertOpen();
         await this.#client.execute({ sql: `DELETE FROM ${TABLE} WHERE session_id = ?`, args: [sessionId] });
     }
 
+    /**
+     * Deletes every live session belonging to a user.
+     *
+     * @param userId - The account id.
+     * @returns The number of live sessions removed.
+     */
     async deleteForUser(userId: string): Promise<number> {
         this.#assertOpen();
         const result = await this.#client.execute({

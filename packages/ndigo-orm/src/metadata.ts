@@ -1,4 +1,5 @@
 /**
+ * Entity metadata recorded by the ORM decorators.
  */
 import type { z } from 'zod';
 import { Constructable } from '@ndigo/core';
@@ -30,8 +31,11 @@ export type RelationKind = 'one-to-many' | 'many-to-one' | 'many-to-many' | 'one
  * side of the relation.
  */
 export interface RelationDefinition {
+    /** The relation shape. */
     kind: RelationKind;
+    /** The field that holds the relation. */
     fieldName: string;
+    /** Lazily resolves the target entity class. */
     targetEntity: () => ClassType;
     /**
      * Owning side (many-to-one, one-to-one): the `@column` field on THIS
@@ -56,7 +60,9 @@ export type LifecycleEvent = 'prePersist' | 'postLoad' | 'preUpdate' | 'postRemo
  * manager invokes when that event occurs.
  */
 export interface LifecycleHookDefinition {
+    /** The lifecycle event. */
     event: LifecycleEvent;
+    /** The method invoked for the event. */
     methodName: string;
 }
 
@@ -64,8 +70,11 @@ export interface LifecycleHookDefinition {
  * Options for defining a column in an entity.
  */
 export interface ColumnOptions {
+    /** Column name override. */
     name?: string;
+    /** Column type override. */
     type?: string;
+    /** Whether the column allows nulls. */
     nullable?: boolean;
     /**
      * Optional Zod schema validating this column's value. When set, the
@@ -79,10 +88,15 @@ export interface ColumnOptions {
  * Defines a column's properties within an entity.
  */
 export interface ColumnDefinition {
+    /** The entity field name. */
     fieldName: string;
+    /** The database column name. */
     columnName: string;
+    /** The column type. */
     type?: string;
+    /** Whether nulls are allowed. */
     nullable?: boolean;
+    /** Optional Zod schema for the column. */
     schema?: z.ZodType;
 }
 
@@ -90,11 +104,17 @@ export interface ColumnDefinition {
  * Represents the metadata for an entity, including its name, columns, primary key, and generated columns.
  */
 export interface EntityMetadata {
+    /** The entity name. */
     entityName: string;
+    /** Column definitions. */
     columns: ColumnDefinition[];
+    /** The primary-key field name. */
     primaryColumn: string;
+    /** Generated column names. */
     generatedColumns: string[];
+    /** Relation definitions. */
     relations: RelationDefinition[];
+    /** Lifecycle hooks. */
     lifecycleHooks: LifecycleHookDefinition[];
 }
 

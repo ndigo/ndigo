@@ -51,3 +51,4 @@ Applies the change; throw to roll it back. Return value is ignored.
 
 > **version**: `number`
 
+Unique positive version.

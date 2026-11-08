@@ -1,4 +1,5 @@
 /**
+ * Applies configured request headers.
  */
 import { HTTP, RequestAwareHTTPInterceptor } from '../http';
 import * as HTTPHeaders from '../http-headers';

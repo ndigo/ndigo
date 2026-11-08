@@ -1,4 +1,5 @@
 /**
+ * Query-string parsing and serialization.
  */
 import { JSONObject, Parser, Stringifier } from '@ndigo/core';
 import { encodeURIComponent as encode } from '@ndigo/util/string';

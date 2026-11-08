@@ -6,6 +6,8 @@
 
 # interceptors/if-modified-interceptor
 
+Sends and honors `If-Modified-Since`.
+
 ## Classes
 
 - [IfModifiedInterceptor](classes/IfModifiedInterceptor.md)

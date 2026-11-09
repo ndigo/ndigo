@@ -10,6 +10,16 @@ The validation mechanism is a single pipeline: an extractor resolves
   `ParameterConversionError` and surface as a **422 problem document** with the
   structured issues.
 
+**Audience:** Node and browser application developers · **Prerequisites:** Guide 06 · **Reference app:** `apps/05-ndigo-api`, `apps/12-ndigo-petclinic`
+
+## What you'll learn
+
+- Wrap one extractor with `validatedBy`.
+- Validate whole bodies, queries, and parameter maps.
+- Derive Zod schemas from ORM entities.
+- Read the 422 validation document.
+- Keep browser and server validation on the same schema.
+
 ## The pipeline
 
 ```
@@ -151,7 +161,7 @@ hook, so per-field validation works in `@ndigo/platform-web` with the same
 single-decorator surface. (Whole-body `validatedBody` is Node-specific:
 browser request "bodies" are form/model sources.)
 
-## Reference
+## See also
 
 - Full API: JSDoc in `packages/ndigo-dispatcher/src/zod-validated-by.ts`
   (docstring includes all four usage forms) and

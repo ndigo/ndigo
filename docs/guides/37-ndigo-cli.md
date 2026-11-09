@@ -8,6 +8,16 @@ scaffolding (new/generate/add), db migrations, and the maintenance/DX tools
 Built on `@stricli/core` as an embedded library — commands, typed flags,
 `--help`, exit codes. Full tables below and in the package README.
 
+**Audience:** All application developers · **Prerequisites:** Workspace bootstrapped · **Reference app:** `apps/05-ndigo-api`
+
+## What you'll learn
+
+- Run the app with `serve` and `dev`.
+- Scaffold with `new`, `generate`, and `add`.
+- Drive database migrations through the CLI.
+- Inspect the app manifest and doctor output.
+- Understand the shell-free script contract.
+
 ## Commands
 
 ### Application lifecycle

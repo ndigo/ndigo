@@ -11,6 +11,16 @@ This guide is the how-to; the runnable reference is
 [`apps/07-ndigo-island`](../../apps/07-ndigo-island/README.md) — an SSR island whose
 add-item form uses Web Awesome controls end-to-end.
 
+**Audience:** Browser application developers · **Prerequisites:** Guide 02 · **Reference app:** `apps/07-ndigo-island`
+
+## What you'll learn
+
+- Vet a component library against the AD-69 checklist.
+- Import components directly without wrappers.
+- Render a server fallback for first paint.
+- Submit FACE controls through the binding/Zod path.
+- Wire token theming, i18n, and CSP.
+
 ## 1. Selecting a library
 
 Reuse the AD-69 D-2 checklist (all gates must hold) and record the evidence in
@@ -229,7 +239,7 @@ plus the theme asset `client.css` 63.8 KB raw / 9.5 KB gzip. Re-measure per
 component when adding to an app; per-component imports keep the increment
 proportional to what the app actually uses.
 
-## See Also
+## See also
 
 - [AD-69 — Component integration contract](../decisions/2026-10-06_AD69_COMPONENT_INTEGRATION_CONTRACT.md)
 - [AD-71 — Component library selection (Web Awesome)](../decisions/2026-10-07_AD71_COMPONENT_LIBRARY_SELECTION.md)

@@ -199,6 +199,42 @@ Start with **00 — Core Concepts** (when it lands) or guide 01; guide 01
 introduces the concepts the rest of the guides and package READMEs assume. Use
 the API reference when you need the full symbol surface.
 
+## Guide contract
+
+Every published guide follows the same shape. `pnpm guides:check` enforces the
+contract in CI; redirect stubs (`<!-- guide-redirect -->`) are excluded.
+
+```markdown
+# Guide NN — Title
+
+One paragraph: the problem, the outcome, and the reference implementation.
+
+**Audience:** Node / browser / both · **Prerequisites:** guide or setup · **Reference app:** `apps/NN-ndigo-slug`
+
+## What you'll learn
+
+- 3–6 concrete outcomes.
+
+## 1. ...
+
+## See also
+
+- Package README/API, related guides, ADRs, and the demo app.
+```
+
+Rules:
+
+- The H1 number matches the filename number.
+- Use `**Reference app:**` or `**Reference package:**`; every backticked
+  `apps/…` / `packages/…` path must exist.
+- TypeScript fences must parse. Fragments are wrapped in a class/function for
+  the check, so method and decorator snippets are allowed; `…` is treated as a
+  placeholder.
+- Keep the body task-shaped. Target ~300 lines; the check warns above 400 and
+  recommends splitting or moving option tables to the package reference.
+- Link the guide from this index. Planned guides stay unlinked until their file
+  lands.
+
 ## Conventions
 
 - Code snippets are written against the current framework surface and mirror the

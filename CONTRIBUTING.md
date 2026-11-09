@@ -42,6 +42,8 @@ pnpm typecheck           # per-project tsc -b + the spec lane (tsconfig.spec.jso
 pnpm lint                # Oxlint — must report ZERO warnings
 pnpm format:check        # oxfmt over maintained files only
 pnpm docs:links          # relative-link integrity (docs + package/app READMEs)
+pnpm guides:check        # guide contract: titles, metadata, fences, index
+pnpm doc:coverage        # zero-tolerance TSDoc depth gate
 pnpm audit --prod        # production advisories — must be clean
 pnpm manifest:check      # package manifest conformance
 pnpm doc                 # TypeDoc — must emit 0 errors, 0 warnings

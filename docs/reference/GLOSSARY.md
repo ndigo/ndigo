@@ -49,6 +49,9 @@ one or two sentences; follow the guide link for the full treatment.
 
 - **View** — The contract that renders a model to a response.
 - **Producer view** — A view whose body is streamed/async (SSE, downloads).
+- **View engine** — An implementation of `View`/`ProducerView` plus an
+  optional `ViewResolver` for a renderer (EJS, Web Components, React). See
+  [guide 41](../guides/41-custom-view-engines.md).
 - **ModelAndView** — A view name or instance plus model data returned by a
   handler.
 - **View resolver** — Maps a logical view name to a view.
@@ -59,11 +62,26 @@ one or two sentences; follow the guide link for the full treatment.
 - **EJS view** — A server-side template view technology.
 - **Web Component view** — A browser view backed by a custom element.
 - **Island** — A server-rendered Web Component hydrated with a serialized model.
+- **Hydration** — The client step that upgrades server-rendered HTML into an
+  interactive component tree without replacing it. See [guide 29](../guides/29-signals-and-islands.md).
+- **FACE** — A form-associated custom element; it submits standard form data
+  through `ElementInternals`, bridged by `AsFormAssociated`. See
+  [guide 44](../guides/44-accessibility.md).
 - **Signals** — Local reactive state (`signal`, `computed`, `effect`).
 - **Micro frontend / hosted feature** — A child application context mounted
   into a shell under a route prefix.
 - **Partition** — A route prefix owned by a feature; the feature receives the
   stripped route.
+
+## UI and design system
+
+- **ndigo-ui** — The optional first-party design system: `@ndigo/ui` tokens
+  plus a shadcn-compatible registry of copy-in components. See
+  [guide 30](../guides/30-component-integration.md).
+- **Design token** — A named `--nd-*` CSS custom property (color, type, spacing,
+  focus, motion); the styling contract shared by the site and applications.
+- **Registry item** — A shadcn-compatible unit in `registry.json` installed by
+  `ndigo ui add`; the application owns the copied source and its lock entry.
 
 ## Data and async
 

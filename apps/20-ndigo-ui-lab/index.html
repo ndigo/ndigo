@@ -26,6 +26,7 @@
         <link rel="stylesheet" href="/src/ui/nd-pagination/nd-pagination.css" />
         <link rel="stylesheet" href="/src/ui/nd-navigation-menu/nd-navigation-menu.css" />
         <link rel="stylesheet" href="/src/ui/nd-tags-input/nd-tags-input.css" />
+        <link rel="stylesheet" href="/src/ui/nd-file-upload/nd-file-upload.css" />
         <link rel="stylesheet" href="/src/ui/nd-dialog/nd-dialog.css" />
         <link rel="stylesheet" href="/src/ui/nd-drawer/nd-drawer.css" />
         <link rel="stylesheet" href="/src/components/command/command.css" />
@@ -51,6 +52,7 @@
                     <a href="#pagination">Pages</a>
                     <a href="#navigation">Nav</a>
                     <a href="#tags">Tags</a>
+                    <a href="#files">Files</a>
                     <a href="#dialog">Dialog</a>
                     <a href="#command">Command</a>
                     <a href="#menu">Menu</a>
@@ -76,6 +78,7 @@
                         <a href="#pagination">Pages</a>
                         <a href="#navigation">Nav</a>
                         <a href="#tags">Tags</a>
+                        <a href="#files">Files</a>
                         <a href="#dialog">Dialog</a>
                         <a href="#command">Command</a>
                         <a href="#menu">Menu</a>
@@ -348,6 +351,18 @@
                             </div>
                         </nd-tags-input>
                         <p id="tags-status" class="lab-status" role="status">2 tags</p>
+                    </section>
+
+                    <section id="files" class="lab-section" aria-labelledby="files-heading">
+                        <h2 id="files-heading">File upload</h2>
+                        <p>The machine validates types and counts, and owns the hidden file input.</p>
+                        <nd-file-upload name="lab-files" accept="image/*,.pdf" max-files="3" class="lab-block">
+                            <label data-part="label">Attachments</label>
+                            <div data-part="dropzone">Drop files here or use the button below.</div>
+                            <button data-part="trigger" type="button">Choose files</button>
+                            <button data-part="clear-trigger" type="button">Clear</button>
+                        </nd-file-upload>
+                        <p id="files-status" class="lab-status" role="status">No files</p>
                     </section>
 
                     <section id="dialog" class="lab-section" aria-labelledby="dialog-heading">

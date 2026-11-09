@@ -14,7 +14,7 @@
           "sha256": "6a298af62b01122adea3a480b6c04c2711035b5bd558c8187ee2e51572beb1d3"
         }
       ],
-      "installedAt": "2026-11-09T17:29:21.241Z"
+      "installedAt": "2026-11-09T17:38:34.123Z"
     },
     "dialog": {
       "registry": "../../registry.json",
@@ -359,6 +359,21 @@
         }
       ],
       "installedAt": "2026-11-09T17:29:21.241Z"
+    },
+    "file-upload": {
+      "registry": "../../registry.json",
+      "type": "registry:ui",
+      "files": [
+        {
+          "target": "src/ui/nd-file-upload/nd-file-upload.css",
+          "sha256": "4fd7b4d1d63c3c48a32362602969740948e236b1ebda53d96f9504bbc937936c"
+        },
+        {
+          "target": "src/ui/nd-file-upload/nd-file-upload.ts",
+          "sha256": "cbb9276471281e3e9856ff34d1cf56808ba54d2f658dc716036cea6ea5cda08e"
+        }
+      ],
+      "installedAt": "2026-11-09T17:38:34.123Z"
     }
   }
 }

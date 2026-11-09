@@ -1569,6 +1569,9 @@ importers:
       '@zag-js/dialog':
         specifier: ~1.47.0
         version: 1.47.0
+      '@zag-js/file-upload':
+        specifier: ~1.47.0
+        version: 1.47.0
       '@zag-js/menu':
         specifier: ~1.47.0
         version: 1.47.0
@@ -2667,6 +2670,9 @@ importers:
         specifier: ~1.47.0
         version: 1.47.0(@internationalized/date@3.12.4)
       '@zag-js/dialog':
+        specifier: ~1.47.0
+        version: 1.47.0
+      '@zag-js/file-upload':
         specifier: ~1.47.0
         version: 1.47.0
       '@zag-js/menu':
@@ -5624,11 +5630,20 @@ packages:
   '@zag-js/dom-query@1.47.0':
     resolution: {integrity: sha512-wbwzQDYikjRa6IQ+it0Qu6ndpvWiCRoPlaDGiFiZxnzX3IDOR5Bfio+BdQ319+incovMfaYEeuW7sbal91lu4g==}
 
+  '@zag-js/file-upload@1.47.0':
+    resolution: {integrity: sha512-UKL0Q8a1kONnmyic9D4draWfXbvLPSwwk58znKDyMplS5qGBkOVxMxX18TPU+utx/58MOo0bwoRkWr4Rp1jEUw==}
+
+  '@zag-js/file-utils@1.47.0':
+    resolution: {integrity: sha512-UoaCX6midsdF9lewKKLSEO8goaiygJfG+2S3DcQczy3agH+HzGu6Zc+uj74zxbqJ7u8zuI/SF4fdz5KKhLuFHg==}
+
   '@zag-js/focus-trap@1.47.0':
     resolution: {integrity: sha512-A1eeCgOMCUCQf3JMWR+xX0mKzuGltj8ohPtTDvFzWMU4Tf8vsqIJfFsr/yMQqYRBjKAMCDzFWWmdN09NsmAFXQ==}
 
   '@zag-js/focus-visible@1.47.0':
     resolution: {integrity: sha512-Cr77Mb8lzp9KeSeBJUhl6p+1W/ZixryRJC8AnLie7c51WwkWUeq2Is7VMJHyZmawSWTv473HziIJPothc1FPqA==}
+
+  '@zag-js/i18n-utils@1.47.0':
+    resolution: {integrity: sha512-oOByITQQhBeUAcWiVzYoKpwFZRfJ2dbl8R+VLc5MU8h6K32fUGzGDmHsHkRaibHDcrdahmWvSn6ttBQoWtbB3w==}
 
   '@zag-js/interact-outside@1.47.0':
     resolution: {integrity: sha512-Vy2JKw9o4VZ7mYy654V/611kst5p0/vHfqMvXI2tVdiqhI/TSs7iCkV9z2DjOObeSr6c+aLxU+sJ6Fc+sBJVeg==}
@@ -12038,11 +12053,29 @@ snapshots:
     dependencies:
       '@zag-js/types': 1.47.0
 
+  '@zag-js/file-upload@1.47.0':
+    dependencies:
+      '@zag-js/anatomy': 1.47.0
+      '@zag-js/core': 1.47.0
+      '@zag-js/dom-query': 1.47.0
+      '@zag-js/file-utils': 1.47.0
+      '@zag-js/i18n-utils': 1.47.0
+      '@zag-js/types': 1.47.0
+      '@zag-js/utils': 1.47.0
+
+  '@zag-js/file-utils@1.47.0':
+    dependencies:
+      '@zag-js/i18n-utils': 1.47.0
+
   '@zag-js/focus-trap@1.47.0':
     dependencies:
       '@zag-js/dom-query': 1.47.0
 
   '@zag-js/focus-visible@1.47.0':
+    dependencies:
+      '@zag-js/dom-query': 1.47.0
+
+  '@zag-js/i18n-utils@1.47.0':
     dependencies:
       '@zag-js/dom-query': 1.47.0
 

@@ -72,7 +72,7 @@ have their own base styles can import only the token stylesheet.
 The package directory is a shadcn-compatible registry chunk included by the
 repository root `registry.json`. The `theme` item distributes the token and
 base stylesheets; `lib` carries the copy-in custom-element foundation,
-`button`, `input`, `field`, and `checkbox` are the native-first CSS items,
+`button`, `input`, `field`, `checkbox`, and `pagination` are the native-first CSS items,
 `dialog`, `menu`, `popover`, `tooltip`, `tabs`, `accordion`, `switch`, `slider`,
 `select`, `combobox`, `drawer`, `date-picker`, and `scroll-area` are the behaviour items built on
 Zag.js; `toast` is the native-first live region, and `app-shell` and `command` are the blocks.

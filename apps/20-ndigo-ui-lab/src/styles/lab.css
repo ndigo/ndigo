@@ -35,6 +35,11 @@
     margin-block-start: var(--nd-space-6);
 }
 
+.lab-pagination {
+    justify-content: flex-start;
+    margin-block-start: var(--nd-space-6);
+}
+
 .lab-scroll-area [data-part='root'] {
     block-size: 10rem;
     margin-block-start: var(--nd-space-6);

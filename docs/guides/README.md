@@ -176,11 +176,18 @@ that every slot exists yet — guides marked _planned_ are still on the roadmap.
   — build artifacts, environment/secrets, process model, graceful shutdown,
   health probes, TLS/HTTP2-3, static assets, containers, and the production
   checklist.
-- **39 — Quality Guardrails** _(planned)_ — the `@ndigo/oxlint-plugin` rules,
-  decorator/architecture conventions, `@ndigo/inspect` manifests, and
-  package-surface checks.
-- **40 — Troubleshooting & FAQ** _(planned)_ — symptom → cause → fix for
-  routing, binding, validation, CORS/CSRF, DI, views, and migrations.
+- [39 — Quality Guardrails](39-quality-guardrails.md) — the
+  `@ndigo/oxlint-plugin` rules, decorator/architecture conventions,
+  `@ndigo/inspect` manifests, and package-surface checks.
+- [40 — Troubleshooting & FAQ](40-troubleshooting-and-faq.md) — symptom → cause
+  → fix for routing, binding, validation, CORS/CSRF, DI, views, and
+  migrations.
+
+## Reference
+
+- [Package → guide coverage](coverage.md) — the documentation home for every package.
+- [Glossary](../reference/GLOSSARY.md) — the vocabulary used across the guides and API.
+- [Renumbering map](../reference/2026-11-08_GUIDE_RENUMBERING.md) — old→new guide numbers.
 
 ## Contributing
 

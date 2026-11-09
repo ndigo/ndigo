@@ -196,8 +196,23 @@ for (const file of indexed) {
 }
 
 for (const warning of warnings) console.warn(`warning: ${warning}`);
+
+// Every public package must have a documentation decision in the coverage matrix.
+const coveragePath = join(GUIDES, 'coverage.md');
+if (existsSync(coveragePath)) {
+    const coverage = readFileSync(coveragePath, 'utf8');
+    for (const entry of readdirSync(join(ROOT, 'packages'))) {
+        const manifest = join(ROOT, 'packages', entry, 'package.json');
+        if (!existsSync(manifest)) continue;
+        const { name } = JSON.parse(readFileSync(manifest, 'utf8'));
+        if (!coverage.includes(`\`${name}\``)) {
+            failures.push(`docs/guides/coverage.md: missing package ${name}`);
+        }
+    }
+}
+
+for (const failure of failures) console.error(`✗ ${failure}`);
 if (failures.length) {
-    for (const failure of failures) console.error(`✗ ${failure}`);
     console.error(`\n✗ ${failures.length} guide contract failure(s)`);
     process.exit(1);
 }

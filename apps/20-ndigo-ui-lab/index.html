@@ -22,6 +22,7 @@
         <link rel="stylesheet" href="/src/ui/nd-select/nd-select.css" />
         <link rel="stylesheet" href="/src/ui/nd-combobox/nd-combobox.css" />
         <link rel="stylesheet" href="/src/ui/nd-dialog/nd-dialog.css" />
+        <link rel="stylesheet" href="/src/ui/nd-drawer/nd-drawer.css" />
         <link rel="stylesheet" href="/src/ui/nd-menu/nd-menu.css" />
         <script type="module" src="/src/main.ts"></script>
     </head>
@@ -252,6 +253,32 @@
                                 </button>
                             </div>
                         </nd-dialog>
+                    </section>
+
+                    <section id="drawer" class="lab-section" aria-labelledby="drawer-heading">
+                        <h2 id="drawer-heading">Drawer</h2>
+                        <p>The dialog machine with edge placement instead of a centered surface.</p>
+                        <nd-drawer placement="end">
+                            <button class="nd-button" data-variant="secondary" data-part="trigger" type="button">
+                                Open drawer
+                            </button>
+                            <div data-part="content">
+                                <h2 data-part="title">Filters</h2>
+                                <p data-part="description">
+                                    Same focus trap, dismissal, and focus restore as the dialog.
+                                </p>
+                                <button
+                                    class="nd-button"
+                                    data-variant="ghost"
+                                    data-size="sm"
+                                    data-part="close-trigger"
+                                    type="button"
+                                >
+                                    Close
+                                </button>
+                                <p>Drawer body content.</p>
+                            </div>
+                        </nd-drawer>
                     </section>
 
                     <section id="menu" class="lab-section" aria-labelledby="menu-heading">

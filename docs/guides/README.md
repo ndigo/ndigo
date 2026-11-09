@@ -4,9 +4,8 @@ Conceptual and hands-on guides for building applications with Ndigo. These
 complement the API reference; they explain the _how_ with runnable patterns
 grounded in the demo apps.
 
-The numbering is stable: **00–40** are application guides, **90–91** are
-contributor guides. Numbers are reading order within a section, not a promise
-that every slot exists yet — guides marked _planned_ are still on the roadmap.
+The numbering is stable: **00–43** are application guides, **90–91** are
+contributor guides. Numbers are reading order within a section.
 
 > **Renumbered 2026-11-08.** Historical records (ADRs, plans, audits) still use
 > the old numbers. See the [renumbering map](../reference/2026-11-08_GUIDE_RENUMBERING.md);
@@ -35,6 +34,9 @@ that every slot exists yet — guides marked _planned_ are still on the roadmap.
   `@environment` validation, live rebind (`@refreshScope`), at-rest secrets
   (`{cipher:...}` + `NDIGO_SECRET_KEY`), and the remote config source
   (`configServer`, poll → refresh → rebind).
+- [43 — Live Configuration, Secrets & Remote Config](43-live-configuration-and-secrets.md)
+  — `@refreshScope`, `{cipher:...}` values with `NDIGO_SECRET_KEY`, and the
+  remote config server poll loop.
 - [04 — Dependency Injection, Scopes & Lifecycle](04-dependency-injection-and-lifecycle.md)
   — factory scopes, aware interfaces, init/destroy/close, smart lifecycle,
   parent/child contexts, and application events.
@@ -79,6 +81,9 @@ that every slot exists yet — guides marked _planned_ are still on the roadmap.
 - [15 — WebSockets](15-websockets.md) — the `@socketMapping` contract, the
   session registry (`SocketSessionRegistry` bean: rooms, broadcast, heartbeat),
   the isomorphic client, and STOMP destinations/subscriptions/receipts.
+- [42 — STOMP & Cross-Node Fan-Out](42-stomp.md) — STOMP destinations,
+  transactions, ack modes, `/user` and `/queue` semantics, resource caps, and
+  the Redis fan-out.
 - [16 — Typed Service Clients & SSE](16-typed-service-clients-and-sse.md) —
   `@ndigo/service`: `serviceClient`, call decorators, schema-validated JSON,
   `{ stream: true }`, and the SSE parser.

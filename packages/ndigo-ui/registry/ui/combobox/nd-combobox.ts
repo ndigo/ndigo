@@ -9,6 +9,7 @@ import type { Api as ComboboxApi } from '@zag-js/combobox';
 import { normalizeProps, spreadProps } from '@zag-js/vanilla';
 import { defineElement, NdElement } from '@/lib/base-element';
 import { createZagElement } from '@/lib/zag-element';
+import { ensureRootElement } from '@/lib/structure-element';
 
 interface ComboboxItem {
     readonly value: string;
@@ -19,7 +20,16 @@ interface ComboboxItem {
 let nextId = 0;
 
 export class NdCombobox extends NdElement {
-    static observedAttributes = ['open'];
+    static observedAttributes = [
+        'open',
+        'disabled',
+        'readonly',
+        'required',
+        'invalid',
+        'name',
+        'value',
+        'default-value',
+    ];
 
     #machineId = '';
     #allItems: ComboboxItem[] = [];
@@ -37,6 +47,7 @@ export class NdCombobox extends NdElement {
             invalid: this.hasAttribute('invalid'),
             defaultOpen: this.hasAttribute('open'),
             defaultInputValue: this.getAttribute('value') ?? '',
+            defaultValue: this.#initialSelectedValue(),
             onOpenChange: (details) => {
                 this.toggleAttribute('open', details.open);
                 this.emit('open-change', details);
@@ -45,10 +56,7 @@ export class NdCombobox extends NdElement {
                 this.#filter(details.inputValue);
             },
             onValueChange: (details) => {
-                this.dataset.value = details.value.join(',');
-                const label = this.#allItems.find((item) => item.value === details.value[0])?.label;
-                const input = this.querySelector<HTMLInputElement>('[data-part="input"]');
-                if (input && label !== undefined) input.value = label;
+                this.#syncSelection(details.value);
                 this.emit('value-change', details);
             },
         }),
@@ -56,11 +64,12 @@ export class NdCombobox extends NdElement {
     });
 
     protected onConnect(): void {
-        this.#machineId = this.id || `nd-combobox-${++nextId}`;
-        this.#ensureRoot();
+        this.#machineId ||= this.id || `nd-combobox-${++nextId}`;
+        ensureRootElement(this);
         this.#allItems = this.#readItems();
         this.#collection = this.#buildCollection(this.#allItems);
         this.#controller.start();
+        this.#syncSelection(this.#controller.api?.value ?? []);
         this.#filter(this.getAttribute('value') ?? '');
     }
 
@@ -69,7 +78,27 @@ export class NdCombobox extends NdElement {
     }
 
     attributeChangedCallback(name: string, _previous: string | null, value: string | null): void {
-        if (name === 'open') this.#controller.updateProps({ open: value !== null });
+        if (name === 'open') {
+            this.#controller.updateProps({ open: value !== null });
+            return;
+        }
+        if (name === 'value') {
+            const next = value ?? '';
+            this.#controller.api?.setInputValue(next);
+            this.#filter(next);
+            return;
+        }
+        if (name === 'default-value') {
+            this.#controller.api?.setValue(value === null || value.length === 0 ? [] : [value]);
+            return;
+        }
+        this.#controller.updateProps({
+            disabled: this.hasAttribute('disabled'),
+            required: this.hasAttribute('required'),
+            readOnly: this.hasAttribute('readonly'),
+            invalid: this.hasAttribute('invalid'),
+            name: this.getAttribute('name') ?? undefined,
+        });
     }
 
     /** Opens the listbox programmatically. */
@@ -93,14 +122,16 @@ export class NdCombobox extends NdElement {
         this.#controller.api?.setValue([value]);
     }
 
-    #ensureRoot(): HTMLElement {
-        const existing = this.querySelector<HTMLElement>('[data-part="root"]');
-        if (existing) return existing;
-        const root = this.ownerDocument.createElement('div');
-        root.dataset.part = 'root';
-        root.append(...this.children);
-        this.append(root);
-        return root;
+    #syncSelection(values: readonly string[]): void {
+        this.dataset.value = values.join(',');
+        const label = this.#allItems.find((item) => item.value === values[0])?.label;
+        const input = this.querySelector<HTMLInputElement>('[data-part="input"]');
+        if (input && label !== undefined) input.value = label;
+    }
+
+    #initialSelectedValue(): string[] | undefined {
+        const value = this.getAttribute('default-value');
+        return value === null || value.length === 0 ? undefined : [value];
     }
 
     #readItems(): ComboboxItem[] {

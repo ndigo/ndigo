@@ -56,6 +56,17 @@ describe('<nd-combobox>', () => {
         expect(items[0]?.getAttribute('role')).toBe('option');
     });
 
+    it('preselects default-value without treating it as the query', async () => {
+        const combobox = mountElement<NdCombobox>('nd-combobox', MARKUP, { 'default-value': 'banana' });
+        await flush();
+
+        expect(combobox.dataset.value).toBe('banana');
+        expect(getPart<HTMLInputElement>(combobox, '[data-part="input"]').value).toBe('Banana');
+        expect(
+            [...combobox.querySelectorAll<HTMLElement>('[data-part="item"]')].filter((item) => !item.hidden)
+        ).toHaveLength(3);
+    });
+
     it('filters as you type and selects an option', async () => {
         const combobox = mountElement<NdCombobox>('nd-combobox', MARKUP);
         await flush();

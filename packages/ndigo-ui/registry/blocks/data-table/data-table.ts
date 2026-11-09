@@ -119,8 +119,9 @@ export function initDataTable(root: ParentNode): DataTableHandle | null {
 
     const selectedIds = (): string[] =>
         rows()
-            .filter((row) => row.hasAttribute('data-selected'))
-            .map((row, index) => row.dataset.rowId ?? String(index));
+            .map((row, index) => ({ row, id: row.dataset.rowId ?? String(index) }))
+            .filter(({ row }) => row.hasAttribute('data-selected'))
+            .map(({ id }) => id);
 
     const emit = <T>(type: string, detail: T): void => {
         container.dispatchEvent(new CustomEvent<T>(type, { detail, bubbles: true, composed: true }));
@@ -149,8 +150,48 @@ export function initDataTable(root: ParentNode): DataTableHandle | null {
         return out;
     };
 
+    interface PaginationFocus {
+        readonly page: string | undefined;
+        readonly direction: string | undefined;
+    }
+
+    const capturePaginationFocus = (): PaginationFocus | null => {
+        if (pagination === null) return null;
+        const active = pagination.ownerDocument.activeElement;
+        if (!(active instanceof HTMLElement) || !pagination.contains(active)) return null;
+        return { page: active.dataset.page, direction: active.dataset.direction };
+    };
+
+    const restorePaginationFocus = (focus: PaginationFocus | null): void => {
+        if (pagination === null || focus === null) return;
+        const selector =
+            focus.page !== undefined
+                ? `button[data-page="${focus.page}"]`
+                : focus.direction !== undefined
+                  ? `button[data-direction="${focus.direction}"]`
+                  : null;
+        if (selector !== null) {
+            const button = pagination.querySelector<HTMLButtonElement>(selector);
+            if (button !== null && !button.disabled) {
+                button.focus();
+                return;
+            }
+        }
+        // The focused page became the current page (or an edge became disabled).
+        // Focus the current-page indicator so the keyboard position is kept.
+        const current = pagination.querySelector<HTMLElement>('[aria-current="page"]');
+        if (current !== null) {
+            current.tabIndex = -1;
+            current.focus();
+            return;
+        }
+        pagination.tabIndex = -1;
+        pagination.focus();
+    };
+
     const renderPagination = (pageCount: number): void => {
         if (pagination === null) return;
+        const focus = capturePaginationFocus();
         const list = pagination.ownerDocument.createElement('ul');
         list.className = 'nd-pagination__list';
 
@@ -195,6 +236,7 @@ export function initDataTable(root: ParentNode): DataTableHandle | null {
         }
         list.append(edge('Next ›', page + 1, page === pageCount, 'next'));
         pagination.replaceChildren(list);
+        restorePaginationFocus(focus);
     };
 
     const updateStatus = (total: number, start: number, end: number): void => {

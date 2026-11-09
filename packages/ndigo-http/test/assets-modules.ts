@@ -5,18 +5,18 @@
 // these are genuine wildcard ambient declarations rather than module
 // augmentations; the compiled spec lane resolves `./*.pdf` etc. imports.
 declare module '*.pdf' {
-    const src: string;
-    export default src;
+    const pdfSrc: string;
+    export default pdfSrc;
 }
 declare module '*.gif' {
-    const src: string;
-    export default src;
+    const gifSrc: string;
+    export default gifSrc;
 }
 declare module '*.jpg' {
-    const src: string;
-    export default src;
+    const jpgSrc: string;
+    export default jpgSrc;
 }
 declare module '*.png' {
-    const src: string;
-    export default src;
+    const pngSrc: string;
+    export default pngSrc;
 }

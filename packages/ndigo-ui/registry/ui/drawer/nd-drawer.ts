@@ -9,6 +9,7 @@ import type { Api as DialogApi } from '@zag-js/dialog';
 import { normalizeProps, spreadProps } from '@zag-js/vanilla';
 import { defineElement, NdElement } from '@/lib/base-element';
 import { createZagElement } from '@/lib/zag-element';
+import { ensureOverlayStructure } from '@/lib/structure-element';
 
 const DEFAULT_TRIGGER_LABEL = 'Open drawer';
 const PLACEMENTS = new Set(['end', 'start', 'bottom', 'top']);
@@ -34,9 +35,9 @@ export class NdDrawer extends NdElement {
     });
 
     protected onConnect(): void {
-        this.#machineId = this.id || `nd-drawer-${++nextId}`;
+        this.#machineId ||= this.id || `nd-drawer-${++nextId}`;
         this.#applyPlacement();
-        this.#ensureStructure();
+        ensureOverlayStructure(this, { triggerLabel: DEFAULT_TRIGGER_LABEL, backdrop: true });
         this.#controller.start();
     }
 
@@ -64,68 +65,19 @@ export class NdDrawer extends NdElement {
         this.dataset.placement = PLACEMENTS.has(requested) ? requested : 'end';
     }
 
-    #ensureTrigger(): HTMLElement {
-        const existing = this.querySelector<HTMLElement>('[data-part="trigger"]');
-        if (existing) return existing;
-        const trigger = this.ownerDocument.createElement('button');
-        trigger.type = 'button';
-        trigger.dataset.part = 'trigger';
-        trigger.textContent = this.getAttribute('trigger-label') ?? DEFAULT_TRIGGER_LABEL;
-        this.prepend(trigger);
-        return trigger;
-    }
-
-    #ensureStructure(): void {
-        const trigger = this.#ensureTrigger();
-        let content = this.querySelector<HTMLElement>('[data-part="content"]');
-        let positioner = this.querySelector<HTMLElement>('[data-part="positioner"]');
-
-        if (!content) {
-            content = this.ownerDocument.createElement('div');
-            content.dataset.part = 'content';
-            const movable = positioner
-                ? [...positioner.children]
-                : [...this.children].filter(
-                      (child) =>
-                          child !== trigger &&
-                          !(
-                              child instanceof HTMLElement &&
-                              ['backdrop', 'positioner'].includes(child.dataset.part ?? '')
-                          )
-                  );
-            content.append(...movable);
-            (positioner ?? this).append(content);
-        }
-
-        if (!positioner) {
-            positioner = this.ownerDocument.createElement('div');
-            positioner.dataset.part = 'positioner';
-            content.replaceWith(positioner);
-            positioner.append(content);
-        }
-
-        if (content.parentElement !== positioner) positioner.append(content);
-
-        if (!this.querySelector('[data-part="backdrop"]')) {
-            const backdrop = this.ownerDocument.createElement('div');
-            backdrop.dataset.part = 'backdrop';
-            positioner.before(backdrop);
-        }
-    }
-
     #render(api: DialogApi): void {
-        const trigger = this.querySelector<HTMLElement>('[data-part="trigger"]');
-        const backdrop = this.querySelector<HTMLElement>('[data-part="backdrop"]');
-        const positioner = this.querySelector<HTMLElement>('[data-part="positioner"]');
-        const content = this.querySelector<HTMLElement>('[data-part="content"]');
-        const title = this.querySelector<HTMLElement>('[data-part="title"]');
-        const description = this.querySelector<HTMLElement>('[data-part="description"]');
-        const close = this.querySelector<HTMLElement>('[data-part="close-trigger"]');
+        const { trigger, backdrop, positioner, content } = ensureOverlayStructure(this, {
+            triggerLabel: DEFAULT_TRIGGER_LABEL,
+            backdrop: true,
+        });
+        const title = content.querySelector<HTMLElement>('[data-part="title"]');
+        const description = content.querySelector<HTMLElement>('[data-part="description"]');
+        const close = content.querySelector<HTMLElement>('[data-part="close-trigger"]');
 
-        if (trigger) spreadProps(trigger, api.getTriggerProps());
+        spreadProps(trigger, api.getTriggerProps());
         if (backdrop) spreadProps(backdrop, api.getBackdropProps());
-        if (positioner) spreadProps(positioner, api.getPositionerProps());
-        if (content) spreadProps(content, api.getContentProps());
+        spreadProps(positioner, api.getPositionerProps());
+        spreadProps(content, api.getContentProps());
         if (title) spreadProps(title, api.getTitleProps());
         if (description) spreadProps(description, api.getDescriptionProps());
         if (close) spreadProps(close, api.getCloseTriggerProps());

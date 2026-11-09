@@ -52,7 +52,7 @@ describe('<nd-select>', () => {
         expect(select).toBeInstanceOf(NdSelect);
         expect(valueText.textContent).toBe('Banana');
         expect(hidden.value).toBe('banana');
-        expect(hidden.options).toHaveLength(3);
+        expect(hidden.options).toHaveLength(4);
         expect(hidden.name).toBe('fruit');
     });
 
@@ -93,6 +93,18 @@ describe('<nd-select>', () => {
         select.select('cherry');
         await flush();
         expect(select.dataset.value).toBe('cherry');
+    });
+
+    it('does not submit or validate a real value when empty', async () => {
+        const form = document.createElement('form');
+        form.innerHTML = `<nd-select name="fruit" required>${MARKUP}</nd-select>`;
+        document.body.append(form);
+        await flush();
+
+        expect(form.checkValidity()).toBe(false);
+        // The placeholder keeps the control from submitting a real option; the
+        // empty string is the "nothing chosen" value.
+        expect(new FormData(form).get('fruit')).toBe('');
     });
 
     it('is axe-clean when open', async () => {

@@ -16,6 +16,20 @@ const DEFAULT_MAX = Number.POSITIVE_INFINITY;
 let nextId = 0;
 
 export class NdTagsInput extends NdElement {
+    static observedAttributes = [
+        'value',
+        'name',
+        'max',
+        'delimiter',
+        'placeholder',
+        'add-on-paste',
+        'blur-behavior',
+        'disabled',
+        'readonly',
+        'invalid',
+        'required',
+    ];
+
     #machineId = '';
     #items = new Map<string, HTMLElement>();
     #controller = createZagElement({
@@ -43,7 +57,7 @@ export class NdTagsInput extends NdElement {
     });
 
     protected onConnect(): void {
-        this.#machineId = this.id || `nd-tags-input-${++nextId}`;
+        this.#machineId ||= this.id || `nd-tags-input-${++nextId}`;
         this.#ensureHiddenInput();
         this.#controller.start();
         this.dataset.value = (this.#controller.api?.value ?? []).join(', ');
@@ -51,6 +65,25 @@ export class NdTagsInput extends NdElement {
 
     protected onDisconnect(): void {
         this.#controller.stop();
+    }
+
+    attributeChangedCallback(name: string, _previous: string | null, _value: string | null): void {
+        if (name === 'value') {
+            this.#controller.api?.setValue(this.#initialValue());
+            return;
+        }
+        this.#controller.updateProps({
+            name: this.getAttribute('name') ?? undefined,
+            max: this.#numberAttribute('max', DEFAULT_MAX),
+            delimiter: this.#delimiter(),
+            placeholder: this.getAttribute('placeholder') ?? undefined,
+            addOnPaste: this.hasAttribute('add-on-paste'),
+            blurBehavior: this.#blurBehavior(),
+            disabled: this.hasAttribute('disabled'),
+            readOnly: this.hasAttribute('readonly'),
+            invalid: this.hasAttribute('invalid'),
+            required: this.hasAttribute('required'),
+        });
     }
 
     /** Adds one tag, subject to the max limit. */

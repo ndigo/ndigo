@@ -34,16 +34,17 @@ type; clearing the input restores them.
 
 ## Attributes
 
-| Attribute  | Type      | Description                                    |
-| :--------- | :-------- | :--------------------------------------------- |
-| `name`     | `string`  | Form field name                                |
-| `value`    | `string`  | Initial input value                            |
-| `disabled` | `boolean` | Disable the combobox                           |
-| `readonly` | `boolean` | Keep the value but block changes               |
-| `required` | `boolean` | Mark the input required                        |
-| `invalid`  | `boolean` | Mark the input invalid                         |
-| `open`     | `boolean` | Initial open state; `onOpenChange` reflects it |
-| `inline`   | `boolean` | Keep the list in normal flow (no positioning)  |
+| Attribute       | Type      | Description                                    |
+| :-------------- | :-------- | :--------------------------------------------- |
+| `name`          | `string`  | Form field name                                |
+| `value`         | `string`  | Initial input query (not the selected item)    |
+| `default-value` | `string`  | Initial selected item value                    |
+| `disabled`      | `boolean` | Disable the combobox                           |
+| `readonly`      | `boolean` | Keep the value but block changes               |
+| `required`      | `boolean` | Mark the input required                        |
+| `invalid`       | `boolean` | Mark the input invalid                         |
+| `open`          | `boolean` | Initial open state; `onOpenChange` reflects it |
+| `inline`        | `boolean` | Keep the list in normal flow (no positioning)  |
 
 ## Events
 

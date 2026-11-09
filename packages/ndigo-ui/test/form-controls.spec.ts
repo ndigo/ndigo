@@ -1,16 +1,13 @@
 /**
  * Native form tier: token-only CSS and an axe-clean form fixture.
  */
-import { existsSync, readFileSync } from 'node:fs';
-import { join, resolve } from 'node:path';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import axe from 'axe-core';
 import { afterEach, describe, expect, it } from 'vitest';
+import { packageRoot } from './_package-root.js';
 
-const PACKAGE_ROOT = [resolve(process.cwd(), 'packages/ndigo-ui'), resolve(process.cwd())].find((candidate) =>
-    existsSync(join(candidate, 'registry'))
-);
-
-if (!PACKAGE_ROOT) throw new Error(`Cannot locate packages/ndigo-ui from ${process.cwd()}`);
+const PACKAGE_ROOT = packageRoot('registry');
 
 const INPUT_CSS = readFileSync(join(PACKAGE_ROOT, 'registry/ui/input/nd-input.css'), 'utf8');
 const FIELD_CSS = readFileSync(join(PACKAGE_ROOT, 'registry/ui/field/nd-field.css'), 'utf8');

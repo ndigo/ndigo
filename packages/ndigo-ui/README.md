@@ -92,6 +92,21 @@ pointing `registries` at `https://ndigo.dev/r/{name}.json`) or a direct
 `ndigo ui add`. `ndigo ui mcp` exposes the same registry to MCP clients for
 discovery and installation.
 
+### Attribute reactivity
+
+State attributes are live: changing `open`, `checked`, `disabled`, `readonly`,
+`required`, `invalid`, `name`, `value`, `min`, `max`, `step`, `locale`,
+`accept`, `max-files`, `max-file-size`, `min-file-size`, `delimiter`,
+`placeholder`, `add-on-paste`, `blur-behavior`, `orientation`, `placement`, or
+the navigation-menu delay/disable flags on a connected element updates the
+running machine.
+
+Structural attributes are read when the element connects: `trigger-label`,
+`initial-focus`, and the authored collection markup (`[data-part="item"]`).
+Change those before connecting, or recreate the element. Generated element ids
+are stable across disconnects, so moving an element in the DOM keeps its
+`aria-*` wiring intact.
+
 ## API
 
 The full API is at [`api/`](api/README.md). Primary exports live in

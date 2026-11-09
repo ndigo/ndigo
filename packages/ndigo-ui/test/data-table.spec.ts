@@ -1,8 +1,8 @@
 /**
  * Data table block: sorting, selection, pagination, and axe.
  */
-import { existsSync, readFileSync } from 'node:fs';
-import { join, resolve } from 'node:path';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import axe from 'axe-core';
 import { afterEach, describe, expect, it } from 'vitest';
 import { initDataTable } from '../registry/blocks/data-table/data-table';
@@ -12,12 +12,9 @@ import type {
     DataTableSelection,
     DataTableSort,
 } from '../registry/blocks/data-table/data-table';
+import { packageRoot } from './_package-root.js';
 
-const PACKAGE_ROOT = [resolve(process.cwd(), 'packages/ndigo-ui'), resolve(process.cwd())].find((candidate) =>
-    existsSync(join(candidate, 'registry/blocks/data-table/data-table.html'))
-);
-
-if (!PACKAGE_ROOT) throw new Error(`Cannot locate the data table block from ${process.cwd()}`);
+const PACKAGE_ROOT = packageRoot('registry/blocks/data-table/data-table.html');
 
 const HTML = readFileSync(join(PACKAGE_ROOT, 'registry/blocks/data-table/data-table.html'), 'utf8');
 
@@ -145,6 +142,41 @@ describe('data table block', () => {
         handle.setPage(2);
         expect(visibleIds(root)).toEqual(['INV-005', 'INV-002', 'INV-001']);
         expect(handle.selectedIds()).toEqual([]);
+    });
+
+    it('reports row indexes when rows have no data-row-id', () => {
+        document.body.innerHTML = `
+            <div data-data-table data-page-size="2">
+                <table>
+                    <thead><tr><th></th><th data-sort-key="name"><button>Name</button></th></tr></thead>
+                    <tbody data-rows>
+                        <tr><td><input type="checkbox" data-select-row aria-label="a"></td><td>A</td></tr>
+                        <tr><td><input type="checkbox" data-select-row aria-label="b"></td><td>B</td></tr>
+                        <tr><td><input type="checkbox" data-select-row aria-label="c"></td><td>C</td></tr>
+                    </tbody>
+                </table>
+                <p data-status role="status"></p>
+                <nav data-pagination></nav>
+            </div>`;
+        const handle = initDataTable(document);
+        if (handle === null) throw new Error('data table did not initialize');
+
+        const checks = [...document.querySelectorAll<HTMLInputElement>('[data-select-row]')];
+        checks[1]?.click();
+        checks[2]?.click();
+
+        expect(handle.selectedIds()).toEqual(['1', '2']);
+    });
+
+    it('keeps focus on the current page after a page click', () => {
+        const { root } = mount();
+        const pageTwo = root.querySelector<HTMLButtonElement>('[data-pagination] button[data-page="2"]');
+        pageTwo?.focus();
+        pageTwo?.click();
+
+        const current = root.querySelector<HTMLElement>('[data-pagination] [aria-current="page"]');
+        expect(current?.textContent).toBe('2');
+        expect(document.activeElement).toBe(current);
     });
 
     it('is axe-clean', async () => {

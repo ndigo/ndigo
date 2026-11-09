@@ -10,11 +10,15 @@
           "sha256": "e8cf1d5a24d85e6293af9178d1b51ba4cf1b77ab969a6f8307a869ffd3c6f3fd"
         },
         {
+          "target": "src/lib/structure-element.ts",
+          "sha256": "dd2e811dee152a890ed1c70d10eba975c47ba3837601392474670232b0a483d8"
+        },
+        {
           "target": "src/lib/zag-element.ts",
           "sha256": "6a298af62b01122adea3a480b6c04c2711035b5bd558c8187ee2e51572beb1d3"
         }
       ],
-      "installedAt": "2026-11-09T17:38:34.123Z"
+      "installedAt": "2026-11-09T21:04:37.663Z"
     },
     "dialog": {
       "registry": "../../registry.json",
@@ -22,14 +26,14 @@
       "files": [
         {
           "target": "src/ui/nd-dialog/nd-dialog.css",
-          "sha256": "3e09763d5b874aa9f148f80b39ff902fe9383491c395f7078f658ee31772099f"
+          "sha256": "78e416599a306a39f18e6867b93a92d3ab75bc99dac3a619d8c17762425ab783"
         },
         {
           "target": "src/ui/nd-dialog/nd-dialog.ts",
-          "sha256": "46b6ffe6dd1456fa9fa08b03846a2f3cd049e3319682cba8c7e3ca040b9f86b6"
+          "sha256": "472e07e0e88ebee78f1f95d5da73935c1da1419bfaaef00909482d8f6c927308"
         }
       ],
-      "installedAt": "2026-11-09T16:22:34.305Z"
+      "installedAt": "2026-11-09T21:04:37.663Z"
     },
     "menu": {
       "registry": "../../registry.json",
@@ -41,10 +45,10 @@
         },
         {
           "target": "src/ui/nd-menu/nd-menu.ts",
-          "sha256": "c839e65232768858e0da4bec1f376fff53d4c3b548eb58bd8025a445a476d7dc"
+          "sha256": "7bd77d26ad826e061cbcd5ebe25bd817b354e823453ed536ff197f05431e495e"
         }
       ],
-      "installedAt": "2026-11-08T23:47:51.979Z"
+      "installedAt": "2026-11-09T21:04:37.663Z"
     },
     "theme": {
       "registry": "../../registry.json",
@@ -52,14 +56,14 @@
       "files": [
         {
           "target": "styles/ndigo-base.css",
-          "sha256": "2d6395054782908c933f0c8557a54594d8362e3bfd6bd00ed0f9daa9c2c6eb04"
+          "sha256": "e470f161f8b97bc298da43e472929718be115589ef712369c34b3c359263a528"
         },
         {
           "target": "styles/ndigo-tokens.css",
-          "sha256": "dcef65c13d86e0b0b7e944b57c202eecfdc95ab5d4792ed76e0a1b8a93953e54"
+          "sha256": "65615adc247734ea4f952b92fe3f193a09528ccd84f0a662275f8a8051cb6ade"
         }
       ],
-      "installedAt": "2026-11-09T19:29:10.236Z"
+      "installedAt": "2026-11-09T21:04:37.663Z"
     },
     "button": {
       "registry": "../../registry.json",
@@ -70,7 +74,7 @@
           "sha256": "87b9e9902c6c24cc591e60a98d9424cafe5f5f3a573e12fd356bdabb1cd29f26"
         }
       ],
-      "installedAt": "2026-11-09T19:20:29.809Z"
+      "installedAt": "2026-11-09T21:04:37.663Z"
     },
     "app-shell": {
       "registry": "../../registry.json",
@@ -85,7 +89,7 @@
           "sha256": "8dcaa6bc4e5f510986a43272f8a907bf54759fd73a791d198114c3d18285ce60"
         }
       ],
-      "installedAt": "2026-11-08T23:47:51.979Z"
+      "installedAt": "2026-11-09T21:04:37.663Z"
     },
     "input": {
       "registry": "../../registry.json",
@@ -96,7 +100,7 @@
           "sha256": "cfdf86e127a95b1d60ff0bae19e6423333bbae7bdfca3dc5c547ed2d47ab6a03"
         }
       ],
-      "installedAt": "2026-11-09T00:43:29.700Z"
+      "installedAt": "2026-11-09T21:04:37.663Z"
     },
     "field": {
       "registry": "../../registry.json",
@@ -107,7 +111,7 @@
           "sha256": "771f7302c00ea28f7ae3ec62be0c48b6b5ee17978f4bfd71a517cb18b1ca06af"
         }
       ],
-      "installedAt": "2026-11-09T00:43:29.700Z"
+      "installedAt": "2026-11-09T21:04:37.663Z"
     },
     "checkbox": {
       "registry": "../../registry.json",
@@ -118,7 +122,7 @@
           "sha256": "479888036532877dcbe0042d7b7f9138ff9f094da3c131e91996a233951c0526"
         }
       ],
-      "installedAt": "2026-11-09T17:56:00.586Z"
+      "installedAt": "2026-11-09T21:04:37.663Z"
     },
     "popover": {
       "registry": "../../registry.json",
@@ -130,10 +134,10 @@
         },
         {
           "target": "src/ui/nd-popover/nd-popover.ts",
-          "sha256": "d66f8448e584206958cae570dcbeea93a522b65588e621399dad37af30f93bfb"
+          "sha256": "20fd797050bce6ffa9dcf9ba26c91c5be57bd1cd36c4d9a842bf95fa47fbd000"
         }
       ],
-      "installedAt": "2026-11-09T14:32:43.075Z"
+      "installedAt": "2026-11-09T21:04:37.663Z"
     },
     "tooltip": {
       "registry": "../../registry.json",
@@ -145,10 +149,10 @@
         },
         {
           "target": "src/ui/nd-tooltip/nd-tooltip.ts",
-          "sha256": "6fd85571d328c76c5973b6ad123dc7405f3855bef576d1cc644722fe09f708c1"
+          "sha256": "6349ace31e22ef85c30b76884afd672e2e90bdc31df45e31f96313be242cfbc0"
         }
       ],
-      "installedAt": "2026-11-09T14:32:43.075Z"
+      "installedAt": "2026-11-09T21:04:37.663Z"
     },
     "tabs": {
       "registry": "../../registry.json",
@@ -160,10 +164,10 @@
         },
         {
           "target": "src/ui/nd-tabs/nd-tabs.ts",
-          "sha256": "467dfc45ad656a4c07459b278b7ca2719be67eeed96817ab740240c683dfefa3"
+          "sha256": "687dcf1d49b5e0d64932b25f61b0a491301df0717c496f2e506d54ca78c5d740"
         }
       ],
-      "installedAt": "2026-11-09T14:32:43.075Z"
+      "installedAt": "2026-11-09T21:04:37.663Z"
     },
     "accordion": {
       "registry": "../../registry.json",
@@ -175,10 +179,10 @@
         },
         {
           "target": "src/ui/nd-accordion/nd-accordion.ts",
-          "sha256": "43f71ececbf5c18ad0caee51990b5da7ff2f907f3bd60d5f5429ad5a6911f35b"
+          "sha256": "7cedef05e513563ca97a8ad3bed584d3ee5ee525cf6cce626641085623376fb1"
         }
       ],
-      "installedAt": "2026-11-09T14:32:43.075Z"
+      "installedAt": "2026-11-09T21:04:37.663Z"
     },
     "switch": {
       "registry": "../../registry.json",
@@ -190,10 +194,10 @@
         },
         {
           "target": "src/ui/nd-switch/nd-switch.ts",
-          "sha256": "ccff6cffe7c68ec676b61e5323f94c13795f176d450f598149d53fbedb874e3b"
+          "sha256": "eff179e939e86a829eb1691082f5ca7df26b4effcc9ee747d55933e4652ba193"
         }
       ],
-      "installedAt": "2026-11-09T15:07:03.389Z"
+      "installedAt": "2026-11-09T21:04:37.663Z"
     },
     "slider": {
       "registry": "../../registry.json",
@@ -205,10 +209,10 @@
         },
         {
           "target": "src/ui/nd-slider/nd-slider.ts",
-          "sha256": "4fa9c0bc594c47023f7c40e57afeb43e454fffa389848350a5502904a32a9f23"
+          "sha256": "a1a63dd677da5f8cd918c8e7a70b92910ad3d4b489e87f6b953d8ef5e49ba4f5"
         }
       ],
-      "installedAt": "2026-11-09T15:07:03.389Z"
+      "installedAt": "2026-11-09T21:04:37.663Z"
     },
     "toast": {
       "registry": "../../registry.json",
@@ -220,10 +224,10 @@
         },
         {
           "target": "src/ui/nd-toast/nd-toast.ts",
-          "sha256": "9a0e1a23e635aa42bcf5bbd52cfc8512330da980cb04633b1c5bae9740ab2bcb"
+          "sha256": "d55288c6f241aed75dbe4392f7cd0cf414008dcd205db0540965b6a082501f0e"
         }
       ],
-      "installedAt": "2026-11-09T15:07:03.389Z"
+      "installedAt": "2026-11-09T21:04:37.663Z"
     },
     "select": {
       "registry": "../../registry.json",
@@ -235,10 +239,10 @@
         },
         {
           "target": "src/ui/nd-select/nd-select.ts",
-          "sha256": "973d2f9eca32abe4a80faa746c03c960f110e2818899d67b07df5e3baa3b8bb7"
+          "sha256": "1d48f3e133c420f866972794889dd011090bd2e97c0fa5ad7d55c234d8858da1"
         }
       ],
-      "installedAt": "2026-11-09T15:32:33.587Z"
+      "installedAt": "2026-11-09T21:04:37.663Z"
     },
     "combobox": {
       "registry": "../../registry.json",
@@ -250,10 +254,10 @@
         },
         {
           "target": "src/ui/nd-combobox/nd-combobox.ts",
-          "sha256": "6e067b6c28b2216efd9513114cca4ca9f380256b95976f6d3ab0ad0859d8c3bf"
+          "sha256": "d0b8e979f798ac48629db419065b6f7e524f33d7ece4b2d3f1ea4843a4e1076a"
         }
       ],
-      "installedAt": "2026-11-09T16:22:34.305Z"
+      "installedAt": "2026-11-09T21:04:37.663Z"
     },
     "drawer": {
       "registry": "../../registry.json",
@@ -265,10 +269,10 @@
         },
         {
           "target": "src/ui/nd-drawer/nd-drawer.ts",
-          "sha256": "2f7d61c96701ab9fac408c024db7513f165ca63c17761ecba6bb14b2f3adaf8c"
+          "sha256": "92fd7c36b1a23f88b7fd4f79581839fe46f4dd219ca98b80c0decfe7b77c5bab"
         }
       ],
-      "installedAt": "2026-11-09T15:59:34.377Z"
+      "installedAt": "2026-11-09T21:04:37.663Z"
     },
     "command": {
       "registry": "../../registry.json",
@@ -276,18 +280,18 @@
       "files": [
         {
           "target": "src/components/command/command.css",
-          "sha256": "a677e446f0800824bf450ca16dc254de8754f382591e5415d987fe91668449a3"
+          "sha256": "adb50e62ec04a39320d02cba050d0b4f5c5ed17b0a1a7df44a24b640ec5f3f4b"
         },
         {
           "target": "src/components/command/command.html",
-          "sha256": "cfd9a078fac8fa6f5b7051d9087280830962cee0aaf20acb7d252a40dd59f4bb"
+          "sha256": "e7614997a793d2b2276834e55e617929122ebad040bc8ab11192fb2133fd3af1"
         },
         {
           "target": "src/components/command/command.ts",
           "sha256": "18c32c751f9f8c756a3ec68967066471e2e4d3016111a6fd3b7d49beb4989400"
         }
       ],
-      "installedAt": "2026-11-09T16:22:34.305Z"
+      "installedAt": "2026-11-09T21:04:37.663Z"
     },
     "date-picker": {
       "registry": "../../registry.json",
@@ -299,10 +303,10 @@
         },
         {
           "target": "src/ui/nd-date-picker/nd-date-picker.ts",
-          "sha256": "a0e0ebc913b4f4de73e737ee7e85c7f3b5644fb2d4afd6f83ff80c31777e3827"
+          "sha256": "1ec54db19323e89817734fd0b7a6463331d426784ef179b895496a027c2a2ae6"
         }
       ],
-      "installedAt": "2026-11-09T16:38:04.721Z"
+      "installedAt": "2026-11-09T21:04:37.663Z"
     },
     "scroll-area": {
       "registry": "../../registry.json",
@@ -310,14 +314,14 @@
       "files": [
         {
           "target": "src/ui/nd-scroll-area/nd-scroll-area.css",
-          "sha256": "d55887f0bed758ed90fba1e15d25db4a77eb0134c27c8f99d3739509f7137dac"
+          "sha256": "df9c23743140e11458a3acd583af5afcf1aedc2f9c7a32c62eb6f364f2907eb0"
         },
         {
           "target": "src/ui/nd-scroll-area/nd-scroll-area.ts",
-          "sha256": "e00af67a7ca3d6dfc6cb43d0a3a4f9de2557947022f4de042b4becf345f534fa"
+          "sha256": "a382ff17748cca4f6b8bb81d35959a339abbb8a8762a6d0a94e8f992b40425ac"
         }
       ],
-      "installedAt": "2026-11-09T16:45:59.921Z"
+      "installedAt": "2026-11-09T21:04:37.663Z"
     },
     "pagination": {
       "registry": "../../registry.json",
@@ -328,7 +332,7 @@
           "sha256": "e14a94e2479d6421ece109e89c568d459f91f804c0f5140afb1f3da12872db7b"
         }
       ],
-      "installedAt": "2026-11-09T17:56:00.586Z"
+      "installedAt": "2026-11-09T21:04:37.663Z"
     },
     "navigation-menu": {
       "registry": "../../registry.json",
@@ -340,10 +344,10 @@
         },
         {
           "target": "src/ui/nd-navigation-menu/nd-navigation-menu.ts",
-          "sha256": "25ee4b315d46521835debe80c9fbbfd8111a2a6eb48e62256219eb3b4352cfe5"
+          "sha256": "d7dd81e9560ac8be4bed23b0c13a600eba233872b21330b64baef6b7e87c8011"
         }
       ],
-      "installedAt": "2026-11-09T17:05:01.545Z"
+      "installedAt": "2026-11-09T21:04:37.663Z"
     },
     "tags-input": {
       "registry": "../../registry.json",
@@ -355,10 +359,10 @@
         },
         {
           "target": "src/ui/nd-tags-input/nd-tags-input.ts",
-          "sha256": "9570df11114ec5a21022319e9c19bd29c14c0bf69efd14f512e0a4988a408015"
+          "sha256": "3f6794db7f449d0056015001fd433133cc1f20d17c89b1d9fc06a7996a28865b"
         }
       ],
-      "installedAt": "2026-11-09T17:29:21.241Z"
+      "installedAt": "2026-11-09T21:04:37.663Z"
     },
     "file-upload": {
       "registry": "../../registry.json",
@@ -370,10 +374,10 @@
         },
         {
           "target": "src/ui/nd-file-upload/nd-file-upload.ts",
-          "sha256": "cbb9276471281e3e9856ff34d1cf56808ba54d2f658dc716036cea6ea5cda08e"
+          "sha256": "a679356533e89975faef782adb5531d7717a42df3a51612e9fccf7f2e50b2949"
         }
       ],
-      "installedAt": "2026-11-09T17:38:34.123Z"
+      "installedAt": "2026-11-09T21:04:37.663Z"
     },
     "table": {
       "registry": "../../registry.json",
@@ -384,7 +388,7 @@
           "sha256": "9e022d08099a8b31e4afa39ce54374071e4adbe0ec4853b7e8c14a5a2d710426"
         }
       ],
-      "installedAt": "2026-11-09T17:56:00.586Z"
+      "installedAt": "2026-11-09T21:04:37.663Z"
     },
     "data-table": {
       "registry": "../../registry.json",
@@ -400,10 +404,10 @@
         },
         {
           "target": "src/components/data-table/data-table.ts",
-          "sha256": "d2a9c945caf3f5ea74a189308ea2523452d6a475fefdadf1be4ffe5c96da9b1b"
+          "sha256": "011d1a66ea894ceea0f0e6c82b77ad9a8000739c4187cb13cef4078182a11c59"
         }
       ],
-      "installedAt": "2026-11-09T17:56:00.586Z"
+      "installedAt": "2026-11-09T21:04:37.663Z"
     },
     "alert": {
       "registry": "../../registry.json",
@@ -414,7 +418,7 @@
           "sha256": "4928479c5785e3e2613abd03c0f335727bec94dea8b91116f15f6f9b921f3014"
         }
       ],
-      "installedAt": "2026-11-09T18:26:42.394Z"
+      "installedAt": "2026-11-09T21:04:37.663Z"
     },
     "badge": {
       "registry": "../../registry.json",
@@ -425,7 +429,7 @@
           "sha256": "480c89e4abb4f0f66ddcc04593deb7d180097cc4993d576b0e519af2a1655a00"
         }
       ],
-      "installedAt": "2026-11-09T18:26:42.394Z"
+      "installedAt": "2026-11-09T21:04:37.663Z"
     },
     "card": {
       "registry": "../../registry.json",
@@ -433,10 +437,10 @@
       "files": [
         {
           "target": "src/ui/nd-card/nd-card.css",
-          "sha256": "26831c151de8979898a434e3f11ed82e97fca2b1e3e7fff95aa06865c2c55bc8"
+          "sha256": "26399e233b5a801e7eab4fa4ed621898949d5c61cd64ca7b3c074e375726aae0"
         }
       ],
-      "installedAt": "2026-11-09T18:26:42.394Z"
+      "installedAt": "2026-11-09T21:04:37.663Z"
     },
     "separator": {
       "registry": "../../registry.json",
@@ -447,7 +451,7 @@
           "sha256": "c07ba5f164c07879bd2a045dbd7136064929618bca212318934e6e416221e629"
         }
       ],
-      "installedAt": "2026-11-09T18:26:42.394Z"
+      "installedAt": "2026-11-09T21:04:37.663Z"
     },
     "skeleton": {
       "registry": "../../registry.json",
@@ -458,7 +462,7 @@
           "sha256": "e93955bb107ca473089feceb17ad03302a72dfbe8cc39dfa1392c8c368a2fd7c"
         }
       ],
-      "installedAt": "2026-11-09T18:26:42.394Z"
+      "installedAt": "2026-11-09T21:04:37.663Z"
     },
     "spinner": {
       "registry": "../../registry.json",
@@ -469,7 +473,7 @@
           "sha256": "da335399cf2f22cc1ec436cf24fe52f4e3dfd38c161a3e5d3cfdc46f3c6c2904"
         }
       ],
-      "installedAt": "2026-11-09T18:26:42.394Z"
+      "installedAt": "2026-11-09T21:04:37.663Z"
     },
     "breadcrumb": {
       "registry": "../../registry.json",
@@ -480,7 +484,7 @@
           "sha256": "e028eb3c4ce14d8c1c8c325be5b3ab8b2d08acba62dce4be175fc6404ec29496"
         }
       ],
-      "installedAt": "2026-11-09T18:34:37.761Z"
+      "installedAt": "2026-11-09T21:04:37.663Z"
     },
     "kbd": {
       "registry": "../../registry.json",
@@ -491,7 +495,7 @@
           "sha256": "cdb3bb3988321cf9b3eb33be9e4624d0e5fada816450e8eaf1dc4c9dc7de037f"
         }
       ],
-      "installedAt": "2026-11-09T18:34:37.761Z"
+      "installedAt": "2026-11-09T21:04:37.663Z"
     },
     "aspect-ratio": {
       "registry": "../../registry.json",
@@ -502,7 +506,7 @@
           "sha256": "f8c2c58ca82127459aa415fe5cc124ef6b5f457d8d08486db16c6a7f0827641c"
         }
       ],
-      "installedAt": "2026-11-09T18:34:37.761Z"
+      "installedAt": "2026-11-09T21:04:37.663Z"
     },
     "item": {
       "registry": "../../registry.json",
@@ -513,7 +517,7 @@
           "sha256": "13f4edc46643f2544a82502241145f3d737d1e7612daff27daec59151225b570"
         }
       ],
-      "installedAt": "2026-11-09T18:34:37.761Z"
+      "installedAt": "2026-11-09T21:04:37.663Z"
     },
     "typography": {
       "registry": "../../registry.json",
@@ -524,7 +528,7 @@
           "sha256": "a0390835b1f4c924dcf4ade0ff5e56833f53f5c4f153d743dc67482978738e57"
         }
       ],
-      "installedAt": "2026-11-09T18:34:37.761Z"
+      "installedAt": "2026-11-09T21:04:37.663Z"
     },
     "code-block": {
       "registry": "../../registry.json",
@@ -536,14 +540,14 @@
         },
         {
           "target": "src/components/code-block/code-block.html",
-          "sha256": "27d90282b3551f9fb3abd7de000187fff95ea08006b0ad01d45cc88ddd63135c"
+          "sha256": "4c1111374e9f9c7a5fc68f4ab249dd14aed4d83acdccd22c82352c26ac230826"
         },
         {
           "target": "src/components/code-block/code-block.ts",
           "sha256": "148c42b27e1018ae0d0119aa5fb99ef6438d650e20c53ca29038ac4f635dd74c"
         }
       ],
-      "installedAt": "2026-11-09T19:20:29.809Z"
+      "installedAt": "2026-11-09T21:04:37.663Z"
     },
     "sidebar": {
       "registry": "../../registry.json",
@@ -558,7 +562,7 @@
           "sha256": "f86de7f07b065e01c18875b8e2fc9be6623209a93097c093fb75714efe39a816"
         }
       ],
-      "installedAt": "2026-11-09T19:29:10.236Z"
+      "installedAt": "2026-11-09T21:04:37.663Z"
     }
   }
 }

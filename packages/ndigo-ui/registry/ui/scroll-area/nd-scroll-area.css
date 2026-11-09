@@ -68,3 +68,9 @@ nd-scroll-area [data-part='root']:not([data-overflow-x]) [data-part='corner'],
 nd-scroll-area [data-part='root']:not([data-overflow-y]) [data-part='corner'] {
     display: none;
 }
+
+@media (prefers-reduced-motion: reduce) {
+    nd-scroll-area [data-part='scrollbar'] {
+        transition: none;
+    }
+}

@@ -4,9 +4,11 @@
 
 The lab dogfoods the copy-in registry. The `styles/`, `src/lib/`, `src/ui/`, and
 `src/components/` trees are a full install of the 41-item registry, committed
-with `ui.lock.json`; the page exercises the native-first primitives, the
-Zag.js behaviour elements, and all five blocks. The typed token catalog comes
-from `@ndigo/ui`.
+with `ui.lock.json`; the page exercises the native-first primitives, the Zag.js
+behaviour elements, and all five blocks. The typed token catalog comes from
+`@ndigo/ui`. The bootstrap globs the installed element and stylesheet trees, so
+adding a registry item requires a reinstall, not edits to `index.html` or
+`main.ts`.
 
 ## Run
 
@@ -33,12 +35,15 @@ The committed tree is the full registry install. From the repository root:
 
 ```bash
 node packages/ndigo-cli/bin/run.js ui init apps/20-ndigo-ui-lab --registry ../../registry.json --force
-node packages/ndigo-cli/bin/run.js ui add <item> --dir apps/20-ndigo-ui-lab --skipInstall --overwrite
+ITEMS=$(node -e "const r=require('./packages/ndigo-ui/registry.json');console.log(r.items.map((i) => i.name).join(' '))")
+node packages/ndigo-cli/bin/run.js ui add $ITEMS --dir apps/20-ndigo-ui-lab --overwrite --skipInstall
 ```
 
 `ui.lock.json` records every installed item and file hash. Reinstall or update
 individual items with `ui add`; use `--skipInstall` because the lab's npm
 dependencies are already declared in its `package.json`.
+`packages/ndigo-ui/test/ui-lock.spec.ts` fails when the lock, the installed
+files, and the registry sources drift apart.
 
 ## Both channels
 
@@ -61,7 +66,9 @@ pnpm --filter @ndigo/ui-lab test
 ```
 
 The spec parses the real `index.html`, upgrades the installed elements,
-exercises the interactive tiers, and runs axe.
+exercises the interactive tiers (dialog, menu, select, combobox, date-picker,
+table, and block paths), and runs axe. The registry suite adds the
+token-contrast contract, RTL fixture, and lock-drift guard.
 
 ## See Also
 

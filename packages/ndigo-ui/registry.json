@@ -42,6 +42,11 @@
           "path": "registry/base/zag-element.ts",
           "type": "registry:lib",
           "target": "@lib/zag-element.ts"
+        },
+        {
+          "path": "registry/base/structure-element.ts",
+          "type": "registry:lib",
+          "target": "@lib/structure-element.ts"
         }
       ],
       "docs": "Copy-in foundation for `<nd-*>` elements: the `NdElement` lifecycle base and `createZagElement`."

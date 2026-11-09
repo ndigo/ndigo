@@ -19,7 +19,7 @@ const blocks = initCodeBlocks(document);
         <span class="nd-code-block__language">TypeScript</span>
         <button class="nd-button" data-variant="ghost" data-size="sm" type="button" data-copy>Copy</button>
     </div>
-    <pre class="nd-code-block__pre"><code class="nd-code-block__code">const answer = 42;</code></pre>
+    <pre class="nd-code-block__pre" tabindex="0"><code class="nd-code-block__code">const answer = 42;</code></pre>
 </div>
 ```
 
@@ -42,7 +42,8 @@ and the block emits `nd-copy`; on failure the button stays unchanged.
 The copy action is a real button with a visible label. The language label is
 plain text; it does not need `aria-hidden`. Keep the code as text inside
 `<pre><code>` so screen readers and find-in-page work; do not render it into
-images or line-number columns.
+images or line-number columns. Keep `tabindex="0"` on the `<pre>` so keyboard
+users can scroll a long line.
 
 ## Styling
 

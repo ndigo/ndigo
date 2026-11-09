@@ -96,7 +96,8 @@
     --nd-color-border: #2a2a4a;
     --nd-color-code-bg: #0f0f1f;
     --nd-color-accent: var(--nd-palette-violet);
-    --nd-color-accent-strong: var(--nd-palette-violet-bright);
+    /* AA on the dark surfaces (≥5.6:1); the brand gradient keeps violet-bright. */
+    --nd-color-accent-strong: #b07cff;
     --nd-color-accent-soft: rgb(91 59 224 / 0.18);
     --nd-color-on-accent: #ffffff;
     --nd-color-success: #4ade80;
@@ -120,7 +121,7 @@
     --nd-color-accent-soft: rgb(91 59 224 / 0.1);
     --nd-color-on-accent: #ffffff;
     --nd-color-success: #15803d;
-    --nd-color-warning: #a16207;
+    --nd-color-warning: #92400e;
     --nd-color-danger: #b91c1c;
     --nd-color-info: #1d4ed8;
     color-scheme: light;
@@ -141,7 +142,7 @@
         --nd-color-accent-soft: rgb(91 59 224 / 0.1);
         --nd-color-on-accent: #ffffff;
         --nd-color-success: #15803d;
-        --nd-color-warning: #a16207;
+        --nd-color-warning: #92400e;
         --nd-color-danger: #b91c1c;
         --nd-color-info: #1d4ed8;
         color-scheme: light;

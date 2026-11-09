@@ -137,6 +137,20 @@ describe('<nd-accordion>', () => {
         expect(document.activeElement).toBe(triggers[1]);
     });
 
+    it('switches the open item in single mode', async () => {
+        const accordion = mountElement<NdAccordion>('nd-accordion', ACCORDION_MARKUP);
+        await flush();
+        accordion.toggle('shipping');
+        await flush();
+        accordion.toggle('returns');
+        await flush();
+
+        expect(accordion.dataset.value).toBe('returns');
+        const triggers = accordion.querySelectorAll<HTMLElement>('[data-part="item-trigger"]');
+        expect(triggers[0]?.getAttribute('aria-expanded')).toBe('false');
+        expect(triggers[1]?.getAttribute('aria-expanded')).toBe('true');
+    });
+
     it('is axe-clean with an item open', async () => {
         const accordion = mountElement<NdAccordion>('nd-accordion', ACCORDION_MARKUP);
         await flush();

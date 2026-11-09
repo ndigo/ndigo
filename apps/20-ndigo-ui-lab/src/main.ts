@@ -12,6 +12,8 @@ import type { NdToast } from './ui/nd-toast/nd-toast';
 import './ui/nd-toast/nd-toast';
 import './ui/nd-slider/nd-slider';
 import './ui/nd-switch/nd-switch';
+import './ui/nd-select/nd-select';
+import './ui/nd-combobox/nd-combobox';
 import { TOKENS } from '@ndigo/ui';
 
 const tokenCount = document.querySelector('#token-count');

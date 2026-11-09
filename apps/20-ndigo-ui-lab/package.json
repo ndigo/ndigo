@@ -21,10 +21,13 @@
   "dependencies": {
     "@ndigo/ui": "~0.0.1",
     "@zag-js/accordion": "~1.47.0",
+    "@zag-js/collection": "~1.47.0",
+    "@zag-js/combobox": "~1.47.0",
     "@zag-js/core": "~1.47.0",
     "@zag-js/dialog": "~1.47.0",
     "@zag-js/menu": "~1.47.0",
     "@zag-js/popover": "~1.47.0",
+    "@zag-js/select": "~1.47.0",
     "@zag-js/slider": "~1.47.0",
     "@zag-js/switch": "~1.47.0",
     "@zag-js/tabs": "~1.47.0",

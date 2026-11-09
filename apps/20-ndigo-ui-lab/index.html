@@ -19,6 +19,8 @@
         <link rel="stylesheet" href="/src/ui/nd-switch/nd-switch.css" />
         <link rel="stylesheet" href="/src/ui/nd-slider/nd-slider.css" />
         <link rel="stylesheet" href="/src/ui/nd-toast/nd-toast.css" />
+        <link rel="stylesheet" href="/src/ui/nd-select/nd-select.css" />
+        <link rel="stylesheet" href="/src/ui/nd-combobox/nd-combobox.css" />
         <link rel="stylesheet" href="/src/ui/nd-dialog/nd-dialog.css" />
         <link rel="stylesheet" href="/src/ui/nd-menu/nd-menu.css" />
         <script type="module" src="/src/main.ts"></script>
@@ -36,6 +38,7 @@
                     <a href="#buttons">Buttons</a>
                     <a href="#form">Form</a>
                     <a href="#feedback">Feedback</a>
+                    <a href="#selection">Selection</a>
                     <a href="#dialog">Dialog</a>
                     <a href="#menu">Menu</a>
                     <a href="#disclosure">Disclosure</a>
@@ -54,6 +57,7 @@
                         <a href="#buttons">Buttons</a>
                         <a href="#form">Form</a>
                         <a href="#feedback">Feedback</a>
+                        <a href="#selection">Selection</a>
                         <a href="#dialog">Dialog</a>
                         <a href="#menu">Menu</a>
                         <a href="#disclosure">Disclosure</a>
@@ -168,6 +172,61 @@
                                 Dismiss
                             </button>
                         </nd-toast>
+                    </section>
+
+                    <section id="selection" class="lab-section" aria-labelledby="selection-heading">
+                        <h2 id="selection-heading">Selection</h2>
+                        <p>Select derives its options from markup; combobox filters them as you type.</p>
+                        <nd-select name="lab-fruit" value="apple" class="lab-block">
+                            <label data-part="label">Fruit</label>
+                            <div data-part="control">
+                                <button data-part="trigger" type="button">
+                                    <span data-part="value-text"></span>
+                                    <span data-part="indicator">v</span>
+                                </button>
+                                <button data-part="clear-trigger" type="button">Clear</button>
+                            </div>
+                            <div data-part="positioner">
+                                <div data-part="content">
+                                    <div data-part="item" data-value="apple">
+                                        <span data-part="item-text">Apple</span>
+                                        <span data-part="item-indicator">✓</span>
+                                    </div>
+                                    <div data-part="item" data-value="banana">
+                                        <span data-part="item-text">Banana</span>
+                                        <span data-part="item-indicator">✓</span>
+                                    </div>
+                                    <div data-part="item" data-value="cherry">
+                                        <span data-part="item-text">Cherry</span>
+                                        <span data-part="item-indicator">✓</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </nd-select>
+                        <nd-combobox name="lab-fruit-search" class="lab-block">
+                            <label data-part="label">Search fruit</label>
+                            <div data-part="control">
+                                <input data-part="input" placeholder="Type to filter" />
+                                <button data-part="trigger" type="button">v</button>
+                                <button data-part="clear-trigger" type="button">Clear</button>
+                            </div>
+                            <div data-part="positioner">
+                                <div data-part="content">
+                                    <div data-part="item" data-value="apple">
+                                        <span data-part="item-text">Apple</span>
+                                        <span data-part="item-indicator">✓</span>
+                                    </div>
+                                    <div data-part="item" data-value="banana">
+                                        <span data-part="item-text">Banana</span>
+                                        <span data-part="item-indicator">✓</span>
+                                    </div>
+                                    <div data-part="item" data-value="cherry">
+                                        <span data-part="item-text">Cherry</span>
+                                        <span data-part="item-indicator">✓</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </nd-combobox>
                     </section>
                     <section id="dialog" class="lab-section" aria-labelledby="dialog-heading">
                         <h2 id="dialog-heading">Dialog</h2>

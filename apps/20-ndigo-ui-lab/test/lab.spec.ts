@@ -12,6 +12,8 @@ import '../src/ui/nd-accordion/nd-accordion';
 import '../src/ui/nd-dialog/nd-dialog';
 import '../src/ui/nd-menu/nd-menu';
 import '../src/ui/nd-popover/nd-popover';
+import '../src/ui/nd-combobox/nd-combobox';
+import '../src/ui/nd-select/nd-select';
 import '../src/ui/nd-slider/nd-slider';
 import '../src/ui/nd-switch/nd-switch';
 import '../src/ui/nd-tabs/nd-tabs';
@@ -29,6 +31,11 @@ class TestResizeObserver implements ResizeObserver {
 // The menu's popper positioning uses ResizeObserver; jsdom does not ship one.
 if (typeof globalThis.ResizeObserver === 'undefined') {
     globalThis.ResizeObserver = TestResizeObserver;
+}
+
+// Select scrolls the content into view; jsdom does not implement it.
+if (typeof Element !== 'undefined' && typeof Element.prototype.scrollTo !== 'function') {
+    Element.prototype.scrollTo = () => {};
 }
 
 const APP_ROOT = dirname(dirname(fileURLToPath(import.meta.url)));
@@ -82,6 +89,26 @@ describe('ndigo-ui lab', () => {
         expect(document.querySelector('#lab-email')?.getAttribute('aria-invalid')).toBe('true');
         expect(document.querySelectorAll('.nd-checkbox, .nd-radio')).toHaveLength(3);
         expect(document.querySelector('#lab-name')?.getAttribute('aria-describedby')).toBe('lab-name-help');
+    });
+
+    it('renders the selection tier', async () => {
+        const select = get<HTMLElement>(document, 'nd-select');
+        get<HTMLElement>(select, '[data-part="trigger"]').click();
+        await flush();
+        get<HTMLElement>(select, '[data-part="item"][data-value="banana"]').click();
+        await flush();
+        expect(select.dataset.value).toBe('banana');
+
+        const combobox = get<HTMLElement>(document, 'nd-combobox');
+        const input = get<HTMLInputElement>(combobox, '[data-part="input"]');
+        input.focus();
+        input.value = 'cher';
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        await flush();
+        get<HTMLElement>(combobox, '[data-part="item"][data-value="cherry"]').click();
+        await flush();
+        expect(combobox.dataset.value).toBe('cherry');
+        expect(input.value).toBe('Cherry');
     });
 
     it('renders the feedback tier', async () => {

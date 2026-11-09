@@ -171,6 +171,14 @@ describe('ndigo-ui lab', () => {
         expect(get<HTMLElement>(table, '[data-status]').textContent).toBe('Showing 4–6 of 6');
     });
 
+    it('renders the sidebar block', () => {
+        const sidebar = get<HTMLElement>(document, 'aside.nd-sidebar[aria-label="Docs navigation"]');
+        expect(sidebar.querySelectorAll('details.nd-sidebar__group')).toHaveLength(2);
+        expect(sidebar.querySelectorAll('details[open]')).toHaveLength(1);
+        expect(sidebar.querySelectorAll('summary.nd-sidebar__group-label')).toHaveLength(2);
+        expect(get<HTMLElement>(sidebar, '[aria-current="page"]').textContent).toBe('Overview');
+    });
+
     it('renders the code block tier', async () => {
         const block = get<HTMLElement>(document, '[data-code-block]');
         const writeText = vi.fn().mockResolvedValue(undefined);

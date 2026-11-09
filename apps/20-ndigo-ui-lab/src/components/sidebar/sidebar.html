@@ -1,0 +1,42 @@
+<!-- Ndigo sidebar: section navigation with native collapsible groups.
+     On small screens it stacks above the content; host the same nav in
+     `nd-drawer` when an off-canvas panel is wanted. -->
+<aside class="nd-sidebar" aria-label="Section navigation">
+    <div class="nd-sidebar__header">
+        <span class="nd-sidebar__brand">Workspace</span>
+        <span class="nd-sidebar__version">v0.0.1</span>
+    </div>
+
+    <nav class="nd-sidebar__nav">
+        <details class="nd-sidebar__group" open>
+            <summary class="nd-sidebar__group-label">Getting started</summary>
+            <ul class="nd-sidebar__list">
+                <li><a class="nd-sidebar__link" href="#overview" aria-current="page">Overview</a></li>
+                <li><a class="nd-sidebar__link" href="#install">Installation</a></li>
+                <li><a class="nd-sidebar__link" href="#theming">Theming</a></li>
+            </ul>
+        </details>
+
+        <details class="nd-sidebar__group">
+            <summary class="nd-sidebar__group-label">Components</summary>
+            <ul class="nd-sidebar__list">
+                <li><a class="nd-sidebar__link" href="#buttons">Buttons</a></li>
+                <li><a class="nd-sidebar__link" href="#cards">Cards</a></li>
+                <li><a class="nd-sidebar__link" href="#tables">Tables</a></li>
+            </ul>
+        </details>
+
+        <details class="nd-sidebar__group">
+            <summary class="nd-sidebar__group-label">Reference</summary>
+            <ul class="nd-sidebar__list">
+                <li><a class="nd-sidebar__link" href="#tokens">Tokens</a></li>
+                <li><a class="nd-sidebar__link" href="#registry">Registry</a></li>
+            </ul>
+        </details>
+    </nav>
+
+    <div class="nd-sidebar__footer">
+        <a class="nd-sidebar__link" href="#settings">Settings</a>
+        <p class="nd-sidebar__note">Docs stay in the registry.</p>
+    </div>
+</aside>

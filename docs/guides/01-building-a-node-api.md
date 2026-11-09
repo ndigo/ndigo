@@ -107,7 +107,9 @@ entries typically don't need this; controllers are plain classes.
 
 Controllers are plain classes whose methods carry mapping decorators.
 `@getMapping` / `@postMapping` (from `@ndigo/dispatcher`) describe path and
-method; `@parameters` describes how method arguments are bound.
+method; `@parameters` describes how method arguments are bound. The full
+routing surface — patterns, conditions, precedence, partitions — is
+[guide 05](05-routing-and-route-conditions.md).
 
 ```ts
 import '@tsmetadata/polyfill';
@@ -195,6 +197,10 @@ force-exits non-zero. Programmatic `context.close()` also stops the server via
 the lifecycle processor.
 
 ## 6. The error contract (RFC 9457)
+
+The extension surface — `@errorMapping`, custom resolvers, and the error
+lineage — is [guide 08](08-errors-and-problem-details.md). This section shows
+the shape every handler can rely on.
 
 Every 4xx/5xx response is an `application/problem+json` document:
 

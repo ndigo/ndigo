@@ -1593,6 +1593,9 @@ importers:
       '@zag-js/tabs':
         specifier: ~1.47.0
         version: 1.47.0
+      '@zag-js/tags-input':
+        specifier: ~1.47.0
+        version: 1.47.0
       '@zag-js/tooltip':
         specifier: ~1.47.0
         version: 1.47.0
@@ -2688,6 +2691,9 @@ importers:
         specifier: ~1.47.0
         version: 1.47.0
       '@zag-js/tabs':
+        specifier: ~1.47.0
+        version: 1.47.0
+      '@zag-js/tags-input':
         specifier: ~1.47.0
         version: 1.47.0
       '@zag-js/tooltip':
@@ -5587,6 +5593,9 @@ packages:
   '@zag-js/aria-hidden@1.47.0':
     resolution: {integrity: sha512-UVnk+Ge7YvS873dSBzLE6lihHz8jcnaAS6aRxg4O5Gj3NaazW5jWb3dCiSgSGQaG0lxJCdIZysafHy/mIeSbhw==}
 
+  '@zag-js/auto-resize@1.47.0':
+    resolution: {integrity: sha512-+9Mt1Ka7FCQ0kYB93JkzZ+cgv3yR3e4wjIHs8UIqop+wagA77rcgylsm4yyjSYfELBhTNTuUcKOKxHaZELDwTQ==}
+
   '@zag-js/collection@1.47.0':
     resolution: {integrity: sha512-GMnmLfuf/fmUQKKkRaEPn7yIBye5S++GbNZSNJd9WtBZMHf5iu9+bsWSIQOt38O7lNUAmieoBD+k6w70bam2Vw==}
 
@@ -5662,6 +5671,9 @@ packages:
 
   '@zag-js/tabs@1.47.0':
     resolution: {integrity: sha512-ozwN9K5DUbO99S2M4+E18VhrGwWpTo8q97cigOByySpZp6vBJI2A1HNQEVTqwgH9ltrRPfAYUatWXrkO/Dxamw==}
+
+  '@zag-js/tags-input@1.47.0':
+    resolution: {integrity: sha512-w9FSMyqyjvt9HUkj4UEIUSKrtNOozoenyKfL344hmeZScY/vpl8ZFCk+CrtAgFvu2o1a8IxlJDlcb6CC5SYrpg==}
 
   '@zag-js/tooltip@1.47.0':
     resolution: {integrity: sha512-5KE8VDS5C175AvYmypk43KXK7NfW3EMSx+V2PbM10zJFHqC0BKeRpWtvWY7Q9fTY2iEoJ9FPuN5H2CXahcmL7A==}
@@ -11961,6 +11973,10 @@ snapshots:
     dependencies:
       '@zag-js/dom-query': 1.47.0
 
+  '@zag-js/auto-resize@1.47.0':
+    dependencies:
+      '@zag-js/dom-query': 1.47.0
+
   '@zag-js/collection@1.47.0':
     dependencies:
       '@zag-js/utils': 1.47.0
@@ -12129,6 +12145,17 @@ snapshots:
       '@zag-js/anatomy': 1.47.0
       '@zag-js/core': 1.47.0
       '@zag-js/dom-query': 1.47.0
+      '@zag-js/types': 1.47.0
+      '@zag-js/utils': 1.47.0
+
+  '@zag-js/tags-input@1.47.0':
+    dependencies:
+      '@zag-js/anatomy': 1.47.0
+      '@zag-js/auto-resize': 1.47.0
+      '@zag-js/core': 1.47.0
+      '@zag-js/dom-query': 1.47.0
+      '@zag-js/interact-outside': 1.47.0
+      '@zag-js/live-region': 1.47.0
       '@zag-js/types': 1.47.0
       '@zag-js/utils': 1.47.0
 

@@ -14,7 +14,7 @@
           "sha256": "6a298af62b01122adea3a480b6c04c2711035b5bd558c8187ee2e51572beb1d3"
         }
       ],
-      "installedAt": "2026-11-09T17:05:01.545Z"
+      "installedAt": "2026-11-09T17:29:21.241Z"
     },
     "dialog": {
       "registry": "../../registry.json",
@@ -344,6 +344,21 @@
         }
       ],
       "installedAt": "2026-11-09T17:05:01.545Z"
+    },
+    "tags-input": {
+      "registry": "../../registry.json",
+      "type": "registry:ui",
+      "files": [
+        {
+          "target": "src/ui/nd-tags-input/nd-tags-input.css",
+          "sha256": "bb6857b324b6309d6bfae1daa36460fd81c97e0c19a1890c7ffe538e6c5a8f19"
+        },
+        {
+          "target": "src/ui/nd-tags-input/nd-tags-input.ts",
+          "sha256": "9570df11114ec5a21022319e9c19bd29c14c0bf69efd14f512e0a4988a408015"
+        }
+      ],
+      "installedAt": "2026-11-09T17:29:21.241Z"
     }
   }
 }

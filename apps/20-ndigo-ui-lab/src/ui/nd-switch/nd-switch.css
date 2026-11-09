@@ -1,0 +1,73 @@
+/* <nd-switch> — toggle built on the design tokens. */
+
+nd-switch {
+    display: contents;
+}
+
+nd-switch [data-part='root'] {
+    display: inline-flex;
+    gap: var(--nd-space-2);
+    align-items: center;
+    cursor: pointer;
+}
+
+nd-switch [data-part='hidden-input'] {
+    /* Zag supplies the visually-hidden style inline. */
+    margin: 0;
+}
+
+nd-switch [data-part='control'] {
+    position: relative;
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    inline-size: 2.25rem;
+    block-size: 1.25rem;
+    padding: 2px;
+    background: var(--nd-color-surface);
+    border: 1px solid var(--nd-color-border);
+    border-radius: var(--nd-radius-full);
+    transition: background-color var(--nd-duration-fast) var(--nd-ease-standard);
+}
+
+nd-switch [data-part='control'][data-state='checked'] {
+    background: var(--nd-color-accent);
+    border-color: var(--nd-color-accent);
+}
+
+nd-switch [data-part='control'][data-focus-visible] {
+    outline: var(--nd-focus-ring-width) solid var(--nd-focus-ring-color);
+    outline-offset: var(--nd-focus-ring-offset);
+}
+
+nd-switch [data-part='thumb'] {
+    inline-size: 0.875rem;
+    block-size: 0.875rem;
+    background: var(--nd-color-text-muted);
+    border-radius: var(--nd-radius-full);
+    transition:
+        transform var(--nd-duration-fast) var(--nd-ease-standard),
+        background-color var(--nd-duration-fast) var(--nd-ease-standard);
+}
+
+nd-switch [data-part='thumb'][data-state='checked'] {
+    background: var(--nd-color-on-accent);
+    transform: translateX(1rem);
+}
+
+nd-switch [data-part='label'] {
+    color: var(--nd-color-text);
+    font-size: var(--nd-text-sm);
+}
+
+nd-switch [data-disabled] {
+    cursor: not-allowed;
+    opacity: 0.55;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    nd-switch [data-part='control'],
+    nd-switch [data-part='thumb'] {
+        transition: none;
+    }
+}

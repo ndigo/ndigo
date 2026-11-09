@@ -14,7 +14,7 @@
           "sha256": "6a298af62b01122adea3a480b6c04c2711035b5bd558c8187ee2e51572beb1d3"
         }
       ],
-      "installedAt": "2026-11-09T14:32:43.075Z"
+      "installedAt": "2026-11-09T15:07:03.389Z"
     },
     "dialog": {
       "registry": "../../registry.json",
@@ -179,6 +179,51 @@
         }
       ],
       "installedAt": "2026-11-09T14:32:43.075Z"
+    },
+    "switch": {
+      "registry": "../../registry.json",
+      "type": "registry:ui",
+      "files": [
+        {
+          "target": "src/ui/nd-switch/nd-switch.css",
+          "sha256": "0bea455f158b48676f9aada60bcbb272e1414ab086273c37b3d4b57058d8813b"
+        },
+        {
+          "target": "src/ui/nd-switch/nd-switch.ts",
+          "sha256": "ccff6cffe7c68ec676b61e5323f94c13795f176d450f598149d53fbedb874e3b"
+        }
+      ],
+      "installedAt": "2026-11-09T15:07:03.389Z"
+    },
+    "slider": {
+      "registry": "../../registry.json",
+      "type": "registry:ui",
+      "files": [
+        {
+          "target": "src/ui/nd-slider/nd-slider.css",
+          "sha256": "0e59d72affda3ca32c32f63724aa98e8d80f034d876f0cdbab07296ebe345b5e"
+        },
+        {
+          "target": "src/ui/nd-slider/nd-slider.ts",
+          "sha256": "4fa9c0bc594c47023f7c40e57afeb43e454fffa389848350a5502904a32a9f23"
+        }
+      ],
+      "installedAt": "2026-11-09T15:07:03.389Z"
+    },
+    "toast": {
+      "registry": "../../registry.json",
+      "type": "registry:ui",
+      "files": [
+        {
+          "target": "src/ui/nd-toast/nd-toast.css",
+          "sha256": "33013d2d7617722a1b4bf7c944bf451021981b251add303bef3882497912315f"
+        },
+        {
+          "target": "src/ui/nd-toast/nd-toast.ts",
+          "sha256": "9a0e1a23e635aa42bcf5bbd52cfc8512330da980cb04633b1c5bae9740ab2bcb"
+        }
+      ],
+      "installedAt": "2026-11-09T15:07:03.389Z"
     }
   }
 }

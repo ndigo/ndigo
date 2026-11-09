@@ -1,0 +1,76 @@
+/* <nd-toast> — transient notification built on the design tokens. */
+
+nd-toast {
+    position: fixed;
+    inset-block-end: var(--nd-space-4);
+    inset-inline-end: var(--nd-space-4);
+    z-index: var(--nd-z-toast);
+    display: grid;
+    gap: var(--nd-space-1);
+    inline-size: min(24rem, calc(100vw - var(--nd-space-8)));
+    padding: var(--nd-space-4);
+    color: var(--nd-color-text);
+    background: var(--nd-color-surface-raised);
+    border: 1px solid var(--nd-color-border);
+    border-inline-start: 3px solid var(--nd-color-accent);
+    border-radius: var(--nd-radius-md);
+    box-shadow: var(--nd-shadow-md);
+}
+
+nd-toast[hidden] {
+    display: none;
+}
+
+nd-toast[data-type='success'] {
+    border-inline-start-color: var(--nd-color-success);
+}
+
+nd-toast[data-type='warning'] {
+    border-inline-start-color: var(--nd-color-warning);
+}
+
+nd-toast[data-type='error'] {
+    border-inline-start-color: var(--nd-color-danger);
+}
+
+nd-toast [data-part='title'] {
+    font-size: var(--nd-text-sm);
+    font-weight: var(--nd-weight-semibold);
+}
+
+nd-toast [data-part='description'] {
+    color: var(--nd-color-text-muted);
+    font-size: var(--nd-text-sm);
+    line-height: var(--nd-leading-normal);
+}
+
+nd-toast [data-part='close-trigger'] {
+    position: absolute;
+    inset-block-start: var(--nd-space-2);
+    inset-inline-end: var(--nd-space-2);
+    padding: var(--nd-space-1);
+    color: var(--nd-color-text-muted);
+    font: inherit;
+    background: transparent;
+    border: 0;
+    border-radius: var(--nd-radius-sm);
+    cursor: pointer;
+}
+
+nd-toast [data-part='close-trigger']:hover {
+    color: var(--nd-color-text);
+    background: var(--nd-color-accent-soft);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    nd-toast[data-state='open'] {
+        animation: nd-toast-enter var(--nd-duration-base) var(--nd-ease-emphasized);
+    }
+}
+
+@keyframes nd-toast-enter {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+}

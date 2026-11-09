@@ -1563,6 +1563,12 @@ importers:
       '@zag-js/popover':
         specifier: ~1.47.0
         version: 1.47.0
+      '@zag-js/slider':
+        specifier: ~1.47.0
+        version: 1.47.0
+      '@zag-js/switch':
+        specifier: ~1.47.0
+        version: 1.47.0
       '@zag-js/tabs':
         specifier: ~1.47.0
         version: 1.47.0
@@ -2631,6 +2637,12 @@ importers:
         specifier: ~1.47.0
         version: 1.47.0
       '@zag-js/popover':
+        specifier: ~1.47.0
+        version: 1.47.0
+      '@zag-js/slider':
+        specifier: ~1.47.0
+        version: 1.47.0
+      '@zag-js/switch':
         specifier: ~1.47.0
         version: 1.47.0
       '@zag-js/tabs':
@@ -5563,8 +5575,14 @@ packages:
   '@zag-js/remove-scroll@1.47.0':
     resolution: {integrity: sha512-HmK8RGxNkdBx7M2+RaLor05C/5dxHB6rye2uhi7GtvhDJ1vLGYEolkkD37tKQBOWasbkfsV/PZab0rCZsxDtQg==}
 
+  '@zag-js/slider@1.47.0':
+    resolution: {integrity: sha512-rQRiQnOQeeuWe7Gy1jtRO7h+ELhspFcBt9NR2+JpxOGN3sSNQcTmRXvmC6SDnI8NGdwLywYQTEdUAic9aDSnZg==}
+
   '@zag-js/store@1.47.0':
     resolution: {integrity: sha512-uHkrNEJhtRf5xbBBreTX5vXBGT6RfOfKDcRs02u9yhatk9DJRTgk5DQGLKcqH/X+SIeRU5smzUKH4OPT8wR42A==}
+
+  '@zag-js/switch@1.47.0':
+    resolution: {integrity: sha512-61jm3G+QnwMTzpLyOC0eZU9yXRNKnEnd63iruAmOxTmaQWCCdRdxPVn0qnwm2Ve6W/9VdNvwPyt4U9KoC+Y9uw==}
 
   '@zag-js/tabs@1.47.0':
     resolution: {integrity: sha512-ozwN9K5DUbO99S2M4+E18VhrGwWpTo8q97cigOByySpZp6vBJI2A1HNQEVTqwgH9ltrRPfAYUatWXrkO/Dxamw==}
@@ -11938,9 +11956,26 @@ snapshots:
     dependencies:
       '@zag-js/dom-query': 1.47.0
 
+  '@zag-js/slider@1.47.0':
+    dependencies:
+      '@zag-js/anatomy': 1.47.0
+      '@zag-js/core': 1.47.0
+      '@zag-js/dom-query': 1.47.0
+      '@zag-js/types': 1.47.0
+      '@zag-js/utils': 1.47.0
+
   '@zag-js/store@1.47.0':
     dependencies:
       proxy-compare: 3.0.1
+
+  '@zag-js/switch@1.47.0':
+    dependencies:
+      '@zag-js/anatomy': 1.47.0
+      '@zag-js/core': 1.47.0
+      '@zag-js/dom-query': 1.47.0
+      '@zag-js/focus-visible': 1.47.0
+      '@zag-js/types': 1.47.0
+      '@zag-js/utils': 1.47.0
 
   '@zag-js/tabs@1.47.0':
     dependencies:

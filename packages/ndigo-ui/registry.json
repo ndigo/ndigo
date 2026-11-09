@@ -270,6 +270,73 @@
         }
       ],
       "docs": "`<nd-accordion>` \u2014 see the item README for parts, events, and keyboard behaviour."
+    },
+    {
+      "name": "switch",
+      "type": "registry:ui",
+      "title": "Switch",
+      "description": "Labelled toggle with a hidden checkbox and the ARIA switch contract.",
+      "author": "Ndigo <https://ndigo.dev>",
+      "categories": ["ui", "form"],
+      "dependencies": ["@zag-js/switch@~1.47.0"],
+      "registryDependencies": ["lib"],
+      "files": [
+        {
+          "path": "registry/ui/switch/nd-switch.ts",
+          "type": "registry:ui",
+          "target": "@ui/nd-switch/nd-switch.ts"
+        },
+        {
+          "path": "registry/ui/switch/nd-switch.css",
+          "type": "registry:file",
+          "target": "@ui/nd-switch/nd-switch.css"
+        }
+      ],
+      "docs": "`<nd-switch>` builds the label/input/control/thumb from text markup; emits `nd-checked-change`."
+    },
+    {
+      "name": "slider",
+      "type": "registry:ui",
+      "title": "Slider",
+      "description": "Single-value range with track, range, thumb, and keyboard steps.",
+      "author": "Ndigo <https://ndigo.dev>",
+      "categories": ["ui", "form"],
+      "dependencies": ["@zag-js/slider@~1.47.0"],
+      "registryDependencies": ["lib"],
+      "files": [
+        {
+          "path": "registry/ui/slider/nd-slider.ts",
+          "type": "registry:ui",
+          "target": "@ui/nd-slider/nd-slider.ts"
+        },
+        {
+          "path": "registry/ui/slider/nd-slider.css",
+          "type": "registry:file",
+          "target": "@ui/nd-slider/nd-slider.css"
+        }
+      ],
+      "docs": "`<nd-slider>` provides track/range/thumb parts, `setValue()`, and keyboard steps; emits `nd-value-change`."
+    },
+    {
+      "name": "toast",
+      "type": "registry:ui",
+      "title": "Toast",
+      "description": "Single transient notification with live-region semantics and auto-dismiss.",
+      "author": "Ndigo <https://ndigo.dev>",
+      "categories": ["ui", "feedback"],
+      "files": [
+        {
+          "path": "registry/ui/toast/nd-toast.ts",
+          "type": "registry:ui",
+          "target": "@ui/nd-toast/nd-toast.ts"
+        },
+        {
+          "path": "registry/ui/toast/nd-toast.css",
+          "type": "registry:file",
+          "target": "@ui/nd-toast/nd-toast.css"
+        }
+      ],
+      "docs": "`<nd-toast>` is a native-first live region with `show()`/`hide()` and an optional duration; emits `nd-open-change`."
     }
   ]
 }

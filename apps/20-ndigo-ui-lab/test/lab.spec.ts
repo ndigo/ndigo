@@ -12,8 +12,12 @@ import '../src/ui/nd-accordion/nd-accordion';
 import '../src/ui/nd-dialog/nd-dialog';
 import '../src/ui/nd-menu/nd-menu';
 import '../src/ui/nd-popover/nd-popover';
+import '../src/ui/nd-slider/nd-slider';
+import '../src/ui/nd-switch/nd-switch';
 import '../src/ui/nd-tabs/nd-tabs';
+import '../src/ui/nd-toast/nd-toast';
 import '../src/ui/nd-tooltip/nd-tooltip';
+import type { NdToast } from '../src/ui/nd-toast/nd-toast';
 import type { NdTooltip } from '../src/ui/nd-tooltip/nd-tooltip';
 
 class TestResizeObserver implements ResizeObserver {
@@ -78,6 +82,27 @@ describe('ndigo-ui lab', () => {
         expect(document.querySelector('#lab-email')?.getAttribute('aria-invalid')).toBe('true');
         expect(document.querySelectorAll('.nd-checkbox, .nd-radio')).toHaveLength(3);
         expect(document.querySelector('#lab-name')?.getAttribute('aria-describedby')).toBe('lab-name-help');
+    });
+
+    it('renders the feedback tier', async () => {
+        const control = get<HTMLElement>(document, 'nd-switch');
+        const root = get<HTMLElement>(control, '[data-part="root"]');
+        root.click();
+        await flush();
+        expect(control.hasAttribute('checked')).toBe(false);
+
+        const slider = get<HTMLElement>(document, 'nd-slider');
+        const thumb = get<HTMLElement>(slider, '[data-part="thumb"]');
+        expect(thumb.getAttribute('aria-valuenow')).toBe('40');
+        thumb.focus();
+        thumb.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+        await flush();
+        expect(thumb.getAttribute('aria-valuenow')).toBe('41');
+
+        const toast = get<HTMLElement>(document, 'nd-toast') as NdToast;
+        toast.show();
+        await flush();
+        expect(toast.hidden).toBe(false);
     });
 
     it('renders the overlay and disclosure tier', async () => {

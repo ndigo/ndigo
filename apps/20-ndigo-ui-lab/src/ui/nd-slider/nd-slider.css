@@ -1,0 +1,63 @@
+/* <nd-slider> — single-value range built on the design tokens. */
+
+nd-slider {
+    display: contents;
+}
+
+nd-slider [data-part='root'] {
+    display: block;
+}
+
+nd-slider [data-part='label'],
+nd-slider [data-part='value-text'] {
+    display: block;
+    margin-block-end: var(--nd-space-2);
+    color: var(--nd-color-text);
+    font-size: var(--nd-text-sm);
+}
+
+nd-slider [data-part='control'] {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-block-size: 1.5rem;
+}
+
+nd-slider [data-part='track'] {
+    position: relative;
+    inline-size: 100%;
+    block-size: 0.375rem;
+    background: var(--nd-color-border);
+    border-radius: var(--nd-radius-full);
+}
+
+nd-slider [data-part='range'] {
+    background: var(--nd-color-accent);
+    border-radius: var(--nd-radius-full);
+}
+
+nd-slider [data-part='thumb'] {
+    inline-size: 1rem;
+    block-size: 1rem;
+    background: var(--nd-color-surface-raised);
+    border: 2px solid var(--nd-color-accent);
+    border-radius: var(--nd-radius-full);
+    box-shadow: var(--nd-shadow-sm);
+    cursor: grab;
+}
+
+nd-slider [data-part='thumb']:focus-visible,
+nd-slider [data-part='thumb'][data-focus] {
+    outline: var(--nd-focus-ring-width) solid var(--nd-focus-ring-color);
+    outline-offset: var(--nd-focus-ring-offset);
+}
+
+nd-slider [data-part='thumb'][data-dragging] {
+    cursor: grabbing;
+}
+
+nd-slider [data-part='thumb'][aria-disabled='true'],
+nd-slider [data-part='root'][data-disabled] {
+    cursor: not-allowed;
+    opacity: 0.55;
+}

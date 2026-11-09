@@ -6,6 +6,8 @@ import { machine as accordionMachine } from '@zag-js/accordion';
 import { machine as popoverMachine } from '@zag-js/popover';
 import { machine as dialogMachine } from '@zag-js/dialog';
 import { machine as menuMachine } from '@zag-js/menu';
+import { machine as sliderMachine } from '@zag-js/slider';
+import { machine as switchMachine } from '@zag-js/switch';
 import { machine as tabsMachine } from '@zag-js/tabs';
 import { machine as tooltipMachine } from '@zag-js/tooltip';
 import { normalizeProps } from '@zag-js/vanilla';
@@ -19,6 +21,8 @@ describe('Zag.js 1.x pin', () => {
         expect(tooltipMachine.states.open).toBeDefined();
         expect(typeof tabsMachine.initialState).toBe('function');
         expect(typeof accordionMachine.initialState).toBe('function');
+        expect(typeof switchMachine.initialState).toBe('function');
+        expect(typeof sliderMachine.initialState).toBe('function');
         expect(typeof INIT_STATE).toBe('string');
     });
 

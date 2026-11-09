@@ -16,6 +16,9 @@
         <link rel="stylesheet" href="/src/ui/nd-tooltip/nd-tooltip.css" />
         <link rel="stylesheet" href="/src/ui/nd-tabs/nd-tabs.css" />
         <link rel="stylesheet" href="/src/ui/nd-accordion/nd-accordion.css" />
+        <link rel="stylesheet" href="/src/ui/nd-switch/nd-switch.css" />
+        <link rel="stylesheet" href="/src/ui/nd-slider/nd-slider.css" />
+        <link rel="stylesheet" href="/src/ui/nd-toast/nd-toast.css" />
         <link rel="stylesheet" href="/src/ui/nd-dialog/nd-dialog.css" />
         <link rel="stylesheet" href="/src/ui/nd-menu/nd-menu.css" />
         <script type="module" src="/src/main.ts"></script>
@@ -32,6 +35,7 @@
                 <nav class="nd-app-shell__nav" aria-label="Primary">
                     <a href="#buttons">Buttons</a>
                     <a href="#form">Form</a>
+                    <a href="#feedback">Feedback</a>
                     <a href="#dialog">Dialog</a>
                     <a href="#menu">Menu</a>
                     <a href="#disclosure">Disclosure</a>
@@ -49,6 +53,7 @@
                     <nav aria-label="Sections">
                         <a href="#buttons">Buttons</a>
                         <a href="#form">Form</a>
+                        <a href="#feedback">Feedback</a>
                         <a href="#dialog">Dialog</a>
                         <a href="#menu">Menu</a>
                         <a href="#disclosure">Disclosure</a>
@@ -130,6 +135,39 @@
                             </fieldset>
                             <button class="nd-button" data-variant="primary" type="submit">Save</button>
                         </form>
+                    </section>
+
+                    <section id="feedback" class="lab-section" aria-labelledby="feedback-heading">
+                        <h2 id="feedback-heading">Feedback</h2>
+                        <p>Switch, slider, and a single-toast live region.</p>
+                        <div class="lab-row">
+                            <nd-switch checked>Notifications</nd-switch>
+                        </div>
+                        <nd-slider value="40" class="lab-block">
+                            <label data-part="label">Volume</label>
+                            <div data-part="control">
+                                <div data-part="track"><div data-part="range"></div></div>
+                                <div data-part="thumb"></div>
+                            </div>
+                        </nd-slider>
+                        <div class="lab-row">
+                            <button class="nd-button" data-variant="primary" id="toast-trigger" type="button">
+                                Show toast
+                            </button>
+                        </div>
+                        <nd-toast type="success" duration="4000">
+                            <span data-part="title">Saved</span>
+                            <span data-part="description">The lab is using the registry-installed toast.</span>
+                            <button
+                                class="nd-button"
+                                data-variant="ghost"
+                                data-size="sm"
+                                data-part="close-trigger"
+                                type="button"
+                            >
+                                Dismiss
+                            </button>
+                        </nd-toast>
                     </section>
                     <section id="dialog" class="lab-section" aria-labelledby="dialog-heading">
                         <h2 id="dialog-heading">Dialog</h2>

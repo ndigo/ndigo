@@ -198,4 +198,5 @@ prefix (`ROOT` for prefix-less classes).
 
 - [Guide 32 — Telemetry](32-telemetry.md) — the metrics behind `/metrics`
 - [Guide 26 — Authentication & Sessions](26-authentication-and-sessions.md) — protecting the surface
+- [Guide 38 — Deployment & Production Readiness](38-deployment-and-production-readiness.md) — probes and exposure
 - [`@ndigo/management`](../../packages/ndigo-management/README.md) — the endpoint contracts

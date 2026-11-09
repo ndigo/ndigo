@@ -85,8 +85,9 @@ that every slot exists yet — guides marked _planned_ are still on the roadmap.
 - [17 — Internationalization & Content](17-i18n-and-content.md) — the message
   source contract, i18next resources, server negotiation (`Accept-Language`),
   EJS `t()`/formatter helpers, and island locale propagation.
-- **18 — Forms End-to-End** _(planned)_ — server-rendered forms, validation
-  re-render, CSRF/PRG, browser error-envelope mapping, and FACE controls.
+- [18 — Forms End-to-End](18-forms-end-to-end.md) — server-rendered forms,
+  validation re-render, CSRF/PRG, browser error-envelope mapping, and FACE
+  controls.
 - [19 — Caching](19-caching.md) — the `@ndigo/cache` store (TTL + LRU/FIFO
   eviction), the `@cached` decorator for server methods, and `memoize` for
   client functions — the same semantics on both sides.
@@ -171,9 +172,10 @@ that every slot exists yet — guides marked _planned_ are still on the roadmap.
 
 ## Operations and quality
 
-- **38 — Deployment & Production Readiness** _(planned)_ — build artifacts,
-  environment/secrets, process model, graceful shutdown, health probes,
-  TLS/HTTP2-3, static assets, containers, and the production checklist.
+- [38 — Deployment & Production Readiness](38-deployment-and-production-readiness.md)
+  — build artifacts, environment/secrets, process model, graceful shutdown,
+  health probes, TLS/HTTP2-3, static assets, containers, and the production
+  checklist.
 - **39 — Quality Guardrails** _(planned)_ — the `@ndigo/oxlint-plugin` rules,
   decorator/architecture conventions, `@ndigo/inspect` manifests, and
   package-surface checks.

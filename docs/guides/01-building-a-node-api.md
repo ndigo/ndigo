@@ -342,6 +342,9 @@ depends on it (AD-67).
 
 ## 8. Deployment topology — TLS and HTTP/2–3 at the edge
 
+The full production checklist — process model, shutdown, probes, secrets,
+and static caching — is [guide 38](38-deployment-and-production-readiness.md).
+
 The framework's origin listener serves **HTTP/1.1 over plain TCP** and does
 not terminate TLS in-process (see [AD-80](../decisions/2026-10-09_AD80_HTTP23_EDGE_TERMINATION.md)).
 The supported production topology is:

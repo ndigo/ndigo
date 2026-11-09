@@ -108,6 +108,7 @@ Options (both spec forms, decoration-time validated):
 ## See also
 
 - AD-73: `docs/decisions/2026-10-07_AD73_DISTRIBUTED_LOCKS.md`
+- [Guide 38 — Deployment & Production Readiness](38-deployment-and-production-readiness.md) — clustered operation and the production checklist
 - The scheduler guide (05) for single-flight and `maxRunTime` semantics —
   the lock is the cross-process half of the same wrapper.
 - The jobs guide (22) — leases, at-least-once, and `NodeAutoConfiguration`

@@ -337,6 +337,52 @@
         }
       ],
       "docs": "`<nd-toast>` is a native-first live region with `show()`/`hide()` and an optional duration; emits `nd-open-change`."
+    },
+    {
+      "name": "select",
+      "type": "registry:ui",
+      "title": "Select",
+      "description": "Single-select dropdown with a hidden native select and listbox options.",
+      "author": "Ndigo <https://ndigo.dev>",
+      "categories": ["ui", "form"],
+      "dependencies": ["@zag-js/select@~1.47.0", "@zag-js/collection@~1.47.0"],
+      "registryDependencies": ["lib"],
+      "files": [
+        {
+          "path": "registry/ui/select/nd-select.ts",
+          "type": "registry:ui",
+          "target": "@ui/nd-select/nd-select.ts"
+        },
+        {
+          "path": "registry/ui/select/nd-select.css",
+          "type": "registry:file",
+          "target": "@ui/nd-select/nd-select.css"
+        }
+      ],
+      "docs": "`<nd-select>` derives its collection from `[data-part=\"item\"][data-value]` markup; see the item README."
+    },
+    {
+      "name": "combobox",
+      "type": "registry:ui",
+      "title": "Combobox",
+      "description": "Filterable single-select with an input, listbox, and filtered collection.",
+      "author": "Ndigo <https://ndigo.dev>",
+      "categories": ["ui", "form"],
+      "dependencies": ["@zag-js/combobox@~1.47.0", "@zag-js/collection@~1.47.0"],
+      "registryDependencies": ["lib"],
+      "files": [
+        {
+          "path": "registry/ui/combobox/nd-combobox.ts",
+          "type": "registry:ui",
+          "target": "@ui/nd-combobox/nd-combobox.ts"
+        },
+        {
+          "path": "registry/ui/combobox/nd-combobox.css",
+          "type": "registry:file",
+          "target": "@ui/nd-combobox/nd-combobox.css"
+        }
+      ],
+      "docs": "`<nd-combobox>` derives its collection from `[data-part=\"item\"][data-value]` markup; see the item README."
     }
   ]
 }

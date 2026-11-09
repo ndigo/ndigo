@@ -1551,6 +1551,12 @@ importers:
       '@zag-js/accordion':
         specifier: ~1.47.0
         version: 1.47.0
+      '@zag-js/collection':
+        specifier: ~1.47.0
+        version: 1.47.0
+      '@zag-js/combobox':
+        specifier: ~1.47.0
+        version: 1.47.0
       '@zag-js/core':
         specifier: ~1.47.0
         version: 1.47.0
@@ -1561,6 +1567,9 @@ importers:
         specifier: ~1.47.0
         version: 1.47.0
       '@zag-js/popover':
+        specifier: ~1.47.0
+        version: 1.47.0
+      '@zag-js/select':
         specifier: ~1.47.0
         version: 1.47.0
       '@zag-js/slider':
@@ -2627,6 +2636,12 @@ importers:
       '@zag-js/accordion':
         specifier: ~1.47.0
         version: 1.47.0
+      '@zag-js/collection':
+        specifier: ~1.47.0
+        version: 1.47.0
+      '@zag-js/combobox':
+        specifier: ~1.47.0
+        version: 1.47.0
       '@zag-js/core':
         specifier: ~1.47.0
         version: 1.47.0
@@ -2637,6 +2652,9 @@ importers:
         specifier: ~1.47.0
         version: 1.47.0
       '@zag-js/popover':
+        specifier: ~1.47.0
+        version: 1.47.0
+      '@zag-js/select':
         specifier: ~1.47.0
         version: 1.47.0
       '@zag-js/slider':
@@ -5539,6 +5557,12 @@ packages:
   '@zag-js/aria-hidden@1.47.0':
     resolution: {integrity: sha512-UVnk+Ge7YvS873dSBzLE6lihHz8jcnaAS6aRxg4O5Gj3NaazW5jWb3dCiSgSGQaG0lxJCdIZysafHy/mIeSbhw==}
 
+  '@zag-js/collection@1.47.0':
+    resolution: {integrity: sha512-GMnmLfuf/fmUQKKkRaEPn7yIBye5S++GbNZSNJd9WtBZMHf5iu9+bsWSIQOt38O7lNUAmieoBD+k6w70bam2Vw==}
+
+  '@zag-js/combobox@1.47.0':
+    resolution: {integrity: sha512-3bPm37vRNcA0KuYmN3n+s35tVaTo0WB1zQ8fWRBAPAutW0D3H4Qp4yt/Fd1rTBFgRREPSO07dFEPNc2JMdJyZw==}
+
   '@zag-js/core@1.47.0':
     resolution: {integrity: sha512-VOlDoXvB43DoHsSJHrBTXBP0gQRPA8nTZY2dIG328iL+U70vu2cYNUDMTBBxHlexJPE3JDAt9kFIoEmfZCNPew==}
 
@@ -5560,6 +5584,9 @@ packages:
   '@zag-js/interact-outside@1.47.0':
     resolution: {integrity: sha512-Vy2JKw9o4VZ7mYy654V/611kst5p0/vHfqMvXI2tVdiqhI/TSs7iCkV9z2DjOObeSr6c+aLxU+sJ6Fc+sBJVeg==}
 
+  '@zag-js/live-region@1.47.0':
+    resolution: {integrity: sha512-IFmmnkiwtzAc/qtHDLK77SHPJ/d4oI8yLdIty/8KtgHncJ47LBpjJQIeu0A4gC7akkHQNYPJwlErvqErVX8hsA==}
+
   '@zag-js/menu@1.47.0':
     resolution: {integrity: sha512-eTFuBunFqUdcWnm5k+pSYuBRbomhoga0l11q0hLOBlTYY2Sfm2hm/6U0aOOJuvcZXXS31Iv8P04KhspFHKD+kA==}
 
@@ -5574,6 +5601,9 @@ packages:
 
   '@zag-js/remove-scroll@1.47.0':
     resolution: {integrity: sha512-HmK8RGxNkdBx7M2+RaLor05C/5dxHB6rye2uhi7GtvhDJ1vLGYEolkkD37tKQBOWasbkfsV/PZab0rCZsxDtQg==}
+
+  '@zag-js/select@1.47.0':
+    resolution: {integrity: sha512-lH5J0o+ejtXmqGErM1t/Qe7rBcX4skINwn87/8kjwdQaCYo6cgvYyt+8TyalA9WPvmvgWipH7B+wxawyIqi8zA==}
 
   '@zag-js/slider@1.47.0':
     resolution: {integrity: sha512-rQRiQnOQeeuWe7Gy1jtRO7h+ELhspFcBt9NR2+JpxOGN3sSNQcTmRXvmC6SDnI8NGdwLywYQTEdUAic9aDSnZg==}
@@ -11879,6 +11909,23 @@ snapshots:
     dependencies:
       '@zag-js/dom-query': 1.47.0
 
+  '@zag-js/collection@1.47.0':
+    dependencies:
+      '@zag-js/utils': 1.47.0
+
+  '@zag-js/combobox@1.47.0':
+    dependencies:
+      '@zag-js/anatomy': 1.47.0
+      '@zag-js/collection': 1.47.0
+      '@zag-js/core': 1.47.0
+      '@zag-js/dismissable': 1.47.0
+      '@zag-js/dom-query': 1.47.0
+      '@zag-js/focus-visible': 1.47.0
+      '@zag-js/live-region': 1.47.0
+      '@zag-js/popper': 1.47.0
+      '@zag-js/types': 1.47.0
+      '@zag-js/utils': 1.47.0
+
   '@zag-js/core@1.47.0':
     dependencies:
       '@zag-js/dom-query': 1.47.0
@@ -11919,6 +11966,8 @@ snapshots:
       '@zag-js/dom-query': 1.47.0
       '@zag-js/utils': 1.47.0
 
+  '@zag-js/live-region@1.47.0': {}
+
   '@zag-js/menu@1.47.0':
     dependencies:
       '@zag-js/anatomy': 1.47.0
@@ -11955,6 +12004,18 @@ snapshots:
   '@zag-js/remove-scroll@1.47.0':
     dependencies:
       '@zag-js/dom-query': 1.47.0
+
+  '@zag-js/select@1.47.0':
+    dependencies:
+      '@zag-js/anatomy': 1.47.0
+      '@zag-js/collection': 1.47.0
+      '@zag-js/core': 1.47.0
+      '@zag-js/dismissable': 1.47.0
+      '@zag-js/dom-query': 1.47.0
+      '@zag-js/focus-visible': 1.47.0
+      '@zag-js/popper': 1.47.0
+      '@zag-js/types': 1.47.0
+      '@zag-js/utils': 1.47.0
 
   '@zag-js/slider@1.47.0':
     dependencies:

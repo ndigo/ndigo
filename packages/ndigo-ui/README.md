@@ -73,8 +73,8 @@ The package directory is a shadcn-compatible registry chunk included by the
 repository root `registry.json`. The `theme` item distributes the token and
 base stylesheets; `lib` carries the copy-in custom-element foundation,
 `button`, `input`, `field`, and `checkbox` are the native-first CSS items,
-`dialog`, `menu`, `popover`, `tooltip`, `tabs`, `accordion`, `switch`, and
-`slider` are the behaviour items built on Zag.js; `toast` is the native-first
+`dialog`, `menu`, `popover`, `tooltip`, `tabs`, `accordion`, `switch`, `slider`,
+`select`, and `combobox` are the behaviour items built on Zag.js; `toast` is the native-first
 live region, and `app-shell` is the first block.
 
 ## API

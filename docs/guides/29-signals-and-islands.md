@@ -226,6 +226,8 @@ signal, so the island renders only well-formed models.
   (view resolution).
 - Architecture: [Micro Frontends](../architecture/micro-frontends.md) — the
   host/island map, shared dependencies, event isolation.
+- [Guide 31 — Micro Frontends with `@ndigo/host`](31-micro-frontends.md) — the
+  hosted-feature shape.
 - Packages: `@ndigo/signals`, `@ndigo/view` (`IslandView`),
   `@ndigo/view-webcomponent` (`hydrateIslands`, `@TagMapping`),
   `@ndigo/service` (`stream: true`), `@ndigo/platform-node`

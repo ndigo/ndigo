@@ -18,9 +18,13 @@ export interface RegistryToolContext {
     readonly registry?: string;
 }
 
-interface ItemFilters {
+/** Optional filters for {@link listItems}. */
+export interface ItemFilters {
+    /** Exact registry type, e.g. `registry:ui`. */
     readonly type?: string;
+    /** Category membership, e.g. `form`. */
     readonly category?: string;
+    /** Case-insensitive text filter. */
     readonly query?: string;
 }
 
@@ -29,12 +33,19 @@ interface Loaded {
     readonly source: string;
 }
 
-interface InstallRequest {
+/** Request for {@link installItems}. */
+export interface InstallRequest {
+    /** Registry item names to install. */
     readonly items: readonly string[];
+    /** Application directory (defaults to the context directory). */
     readonly dir?: string;
+    /** Registry source override. */
     readonly registry?: string;
+    /** Plan only (default true). */
     readonly dryRun?: boolean;
+    /** Replace files that differ from the registry content. */
     readonly overwrite?: boolean;
+    /** Write files without installing npm dependencies. */
     readonly skipInstall?: boolean;
 }
 

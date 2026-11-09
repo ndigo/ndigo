@@ -14,11 +14,35 @@ An item plus the location of the chunk that declared it.
 
 ## Properties
 
+### author?
+
+> `readonly` `optional` **author?**: `string`
+
+Author or upstream attribution.
+
+#### Inherited from
+
+[`RegistryItem`](RegistryItem.md).[`author`](RegistryItem.md#author)
+
+***
+
 ### base
 
 > `readonly` **base**: `string`
 
 Directory or URL the item's file paths are relative to.
+
+***
+
+### categories?
+
+> `readonly` `optional` **categories?**: readonly `string`[]
+
+Browsing categories (e.g. `form`, `overlay`).
+
+#### Inherited from
+
+[`RegistryItem`](RegistryItem.md).[`categories`](RegistryItem.md#categories)
 
 ***
 
@@ -43,6 +67,18 @@ One-line description.
 #### Inherited from
 
 [`RegistryItem`](RegistryItem.md).[`description`](RegistryItem.md#description)
+
+***
+
+### docs?
+
+> `readonly` `optional` **docs?**: `string`
+
+Install/usage note shown by the catalogue and MCP tools.
+
+#### Inherited from
+
+[`RegistryItem`](RegistryItem.md).[`docs`](RegistryItem.md#docs)
 
 ***
 

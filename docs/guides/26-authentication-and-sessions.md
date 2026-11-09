@@ -322,5 +322,6 @@ tokens). None blocks the 1.0 credential + session story.
 ## See also
 
 - [Guide 19 — Caching](19-caching.md) — session stores and TTLs
+- [Guide 28 — Security Hardening](28-security-hardening.md) — CORS, CSRF, headers, and rate limits
 - [apps/18-ndigo-auth-playground](../../apps/18-ndigo-auth-playground/README.md) — the runnable auth matrix
 - [AD-33](../decisions/2026-09-26_AD33_AUTH_CREDENTIALS_AND_SESSIONS.md) — the auth decision

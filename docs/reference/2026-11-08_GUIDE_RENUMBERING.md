@@ -30,7 +30,7 @@ instead.
 |  14 |  13 | DTO & Conversion                               |
 |  08 |  14 | Multipart & File Upload                        |
 |  06 |  15 | WebSockets                                     |
-|   — |  16 | Typed Service Clients & SSE _(planned)_        |
+|   — |  16 | Typed Service Clients & SSE                    |
 |  04 |  17 | Internationalization & Content                 |
 |   — |  18 | Forms End-to-End _(planned)_                   |
 |  07 |  19 | Caching                                        |
@@ -42,7 +42,7 @@ instead.
 |  24 |  25 | Clustering                                     |
 |  11 |  26 | Authentication & Sessions                      |
 |   — |  27 | Browser Authentication & OIDC _(planned)_      |
-|   — |  28 | Security Hardening _(planned)_                 |
+|   — |  28 | Security Hardening                             |
 |  18 |  29 | Signals & Islands                              |
 |  21 |  30 | Component Integration                          |
 |   — |  31 | Micro Frontends with `@ndigo/host` _(planned)_ |

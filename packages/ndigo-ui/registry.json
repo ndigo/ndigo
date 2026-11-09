@@ -456,6 +456,29 @@
         }
       ],
       "docs": "`<nd-date-picker>` submits an ISO value through a hidden input; see the item README for the grid and keyboard contract."
+    },
+    {
+      "name": "scroll-area",
+      "type": "registry:ui",
+      "title": "Scroll area",
+      "description": "Styled scrolling viewport with custom scrollbars, corner, and hover/drag states.",
+      "author": "Ndigo <https://ndigo.dev>",
+      "categories": ["ui", "layout"],
+      "dependencies": ["@zag-js/scroll-area@~1.47.0"],
+      "registryDependencies": ["lib"],
+      "files": [
+        {
+          "path": "registry/ui/scroll-area/nd-scroll-area.ts",
+          "type": "registry:ui",
+          "target": "@ui/nd-scroll-area/nd-scroll-area.ts"
+        },
+        {
+          "path": "registry/ui/scroll-area/nd-scroll-area.css",
+          "type": "registry:file",
+          "target": "@ui/nd-scroll-area/nd-scroll-area.css"
+        }
+      ],
+      "docs": "`<nd-scroll-area>` wraps authored content in root/viewport/content and renders both scrollbars; give it a block size."
     }
   ]
 }

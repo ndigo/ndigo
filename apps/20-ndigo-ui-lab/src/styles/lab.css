@@ -35,6 +35,24 @@
     margin-block-start: var(--nd-space-6);
 }
 
+.lab-scroll-area [data-part='root'] {
+    block-size: 10rem;
+    margin-block-start: var(--nd-space-6);
+    background: var(--nd-color-surface);
+    border: 1px solid var(--nd-color-border);
+    border-radius: var(--nd-radius-md);
+}
+
+.lab-scroll-content {
+    display: grid;
+    gap: var(--nd-space-3);
+    padding: var(--nd-space-3);
+}
+
+.lab-scroll-content p {
+    margin: 0;
+}
+
 .lab-status {
     margin-block-start: var(--nd-space-3);
     color: var(--nd-color-text-muted);

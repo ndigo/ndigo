@@ -15,6 +15,7 @@ import '../src/ui/nd-menu/nd-menu';
 import '../src/ui/nd-popover/nd-popover';
 import '../src/ui/nd-combobox/nd-combobox';
 import '../src/ui/nd-date-picker/nd-date-picker';
+import '../src/ui/nd-scroll-area/nd-scroll-area';
 import '../src/ui/nd-select/nd-select';
 import '../src/ui/nd-slider/nd-slider';
 import '../src/ui/nd-switch/nd-switch';
@@ -132,6 +133,14 @@ describe('ndigo-ui lab', () => {
         expect(content.hidden).toBe(true);
         expect(picker.dataset.value).toBe('2026-12-25');
         expect(get<HTMLInputElement>(picker, '[data-part="hidden-input"]').value).toBe('2026-12-25');
+    });
+
+    it('renders the scroll area tier', async () => {
+        const area = get<HTMLElement>(document, 'nd-scroll-area');
+        expect(area.querySelector('[data-part="root"]')).not.toBeNull();
+        expect(area.querySelector('[data-part="viewport"]')).not.toBeNull();
+        expect(area.querySelector('[data-part="content"]')?.textContent).toContain('Row 1');
+        expect(area.querySelectorAll('[data-part="scrollbar"]')).toHaveLength(2);
     });
 
     it('renders the feedback tier', async () => {

@@ -1575,6 +1575,9 @@ importers:
       '@zag-js/popover':
         specifier: ~1.47.0
         version: 1.47.0
+      '@zag-js/scroll-area':
+        specifier: ~1.47.0
+        version: 1.47.0
       '@zag-js/select':
         specifier: ~1.47.0
         version: 1.47.0
@@ -2664,6 +2667,9 @@ importers:
         specifier: ~1.47.0
         version: 1.47.0
       '@zag-js/popover':
+        specifier: ~1.47.0
+        version: 1.47.0
+      '@zag-js/scroll-area':
         specifier: ~1.47.0
         version: 1.47.0
       '@zag-js/select':
@@ -5629,6 +5635,9 @@ packages:
 
   '@zag-js/remove-scroll@1.47.0':
     resolution: {integrity: sha512-HmK8RGxNkdBx7M2+RaLor05C/5dxHB6rye2uhi7GtvhDJ1vLGYEolkkD37tKQBOWasbkfsV/PZab0rCZsxDtQg==}
+
+  '@zag-js/scroll-area@1.47.0':
+    resolution: {integrity: sha512-uaHlnkiVQYZzr5KDCsQZ39XPUMaYwIEwDvASbcKM+5cAEa+Sh4ZHlltngcnyNLfQS/SLwWw2kN4wYc76kGsLVQ==}
 
   '@zag-js/select@1.47.0':
     resolution: {integrity: sha512-lH5J0o+ejtXmqGErM1t/Qe7rBcX4skINwn87/8kjwdQaCYo6cgvYyt+8TyalA9WPvmvgWipH7B+wxawyIqi8zA==}
@@ -12055,6 +12064,14 @@ snapshots:
   '@zag-js/remove-scroll@1.47.0':
     dependencies:
       '@zag-js/dom-query': 1.47.0
+
+  '@zag-js/scroll-area@1.47.0':
+    dependencies:
+      '@zag-js/anatomy': 1.47.0
+      '@zag-js/core': 1.47.0
+      '@zag-js/dom-query': 1.47.0
+      '@zag-js/types': 1.47.0
+      '@zag-js/utils': 1.47.0
 
   '@zag-js/select@1.47.0':
     dependencies:

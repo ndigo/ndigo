@@ -1,0 +1,44 @@
+/* nd-code-block — preformatted surface with a copy action.
+   Pair with nd-button.css. */
+
+.nd-code-block {
+    overflow: hidden;
+    background: var(--nd-color-code-bg);
+    border: 1px solid var(--nd-color-border);
+    border-radius: var(--nd-radius-lg);
+}
+
+.nd-code-block__header {
+    display: flex;
+    gap: var(--nd-space-2);
+    align-items: center;
+    justify-content: space-between;
+    padding-block: var(--nd-space-1);
+    padding-inline: var(--nd-space-3);
+    background: var(--nd-color-surface);
+    border-block-end: 1px solid var(--nd-color-border);
+}
+
+.nd-code-block__language {
+    color: var(--nd-color-text-muted);
+    font-family: var(--nd-font-mono);
+    font-size: var(--nd-text-xs);
+}
+
+.nd-code-block__pre {
+    margin: 0;
+    padding: var(--nd-space-4);
+    overflow: auto;
+    color: var(--nd-color-text);
+    font-family: var(--nd-font-mono);
+    font-size: var(--nd-text-sm);
+    line-height: var(--nd-leading-normal);
+    tab-size: 4;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+}
+
+.nd-code-block__code {
+    font: inherit;
+}

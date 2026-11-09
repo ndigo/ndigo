@@ -35,6 +35,10 @@
     margin-block-start: var(--nd-space-6);
 }
 
+.lab-navigation {
+    margin-block-start: var(--nd-space-6);
+}
+
 .lab-pagination {
     justify-content: flex-start;
     margin-block-start: var(--nd-space-6);

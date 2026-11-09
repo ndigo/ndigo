@@ -49,6 +49,7 @@
     "@zag-js/date-picker": "~1.47.0",
     "@zag-js/dialog": "~1.47.0",
     "@zag-js/menu": "~1.47.0",
+    "@zag-js/navigation-menu": "~1.47.0",
     "@zag-js/popover": "~1.47.0",
     "@zag-js/scroll-area": "~1.47.0",
     "@zag-js/select": "~1.47.0",

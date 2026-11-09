@@ -24,6 +24,7 @@
         <link rel="stylesheet" href="/src/ui/nd-date-picker/nd-date-picker.css" />
         <link rel="stylesheet" href="/src/ui/nd-scroll-area/nd-scroll-area.css" />
         <link rel="stylesheet" href="/src/ui/nd-pagination/nd-pagination.css" />
+        <link rel="stylesheet" href="/src/ui/nd-navigation-menu/nd-navigation-menu.css" />
         <link rel="stylesheet" href="/src/ui/nd-dialog/nd-dialog.css" />
         <link rel="stylesheet" href="/src/ui/nd-drawer/nd-drawer.css" />
         <link rel="stylesheet" href="/src/components/command/command.css" />
@@ -47,6 +48,7 @@
                     <a href="#date">Date</a>
                     <a href="#scroll">Scroll</a>
                     <a href="#pagination">Pages</a>
+                    <a href="#navigation">Nav</a>
                     <a href="#dialog">Dialog</a>
                     <a href="#command">Command</a>
                     <a href="#menu">Menu</a>
@@ -70,6 +72,7 @@
                         <a href="#date">Date</a>
                         <a href="#scroll">Scroll</a>
                         <a href="#pagination">Pages</a>
+                        <a href="#navigation">Nav</a>
                         <a href="#dialog">Dialog</a>
                         <a href="#command">Command</a>
                         <a href="#menu">Menu</a>
@@ -301,6 +304,34 @@
                                 </li>
                             </ul>
                         </nav>
+                    </section>
+
+                    <section id="navigation" class="lab-section" aria-labelledby="navigation-heading">
+                        <h2 id="navigation-heading">Navigation menu</h2>
+                        <p>A menubar with dropdown content; hover, click, and arrow keys come from the machine.</p>
+                        <nd-navigation-menu aria-label="Lab sections menu" class="lab-navigation">
+                            <ul data-part="list">
+                                <li data-part="item" data-value="inputs">
+                                    <button data-part="trigger" type="button">Inputs</button>
+                                    <div data-part="content">
+                                        <a data-part="link" href="#form">Form</a>
+                                        <a data-part="link" href="#selection">Selection</a>
+                                        <a data-part="link" href="#date">Date picker</a>
+                                    </div>
+                                </li>
+                                <li data-part="item" data-value="layout">
+                                    <button data-part="trigger" type="button">Layout</button>
+                                    <div data-part="content">
+                                        <a data-part="link" href="#buttons">Buttons</a>
+                                        <a data-part="link" href="#scroll">Scroll area</a>
+                                        <a data-part="link" href="#pagination">Pagination</a>
+                                    </div>
+                                </li>
+                                <li data-part="item" data-value="tokens">
+                                    <a data-part="link" href="#tokens">Tokens</a>
+                                </li>
+                            </ul>
+                        </nd-navigation-menu>
                     </section>
 
                     <section id="dialog" class="lab-section" aria-labelledby="dialog-heading">

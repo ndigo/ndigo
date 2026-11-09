@@ -12,6 +12,7 @@ import { machine as scrollAreaMachine } from '@zag-js/scroll-area';
 import { machine as selectMachine } from '@zag-js/select';
 import { machine as dialogMachine } from '@zag-js/dialog';
 import { machine as menuMachine } from '@zag-js/menu';
+import { machine as navigationMenuMachine } from '@zag-js/navigation-menu';
 import { machine as sliderMachine } from '@zag-js/slider';
 import { machine as switchMachine } from '@zag-js/switch';
 import { machine as tabsMachine } from '@zag-js/tabs';
@@ -33,6 +34,7 @@ describe('Zag.js 1.x pin', () => {
         expect(typeof comboboxMachine.initialState).toBe('function');
         expect(typeof datePickerMachine.initialState).toBe('function');
         expect(typeof scrollAreaMachine.initialState).toBe('function');
+        expect(typeof navigationMenuMachine.initialState).toBe('function');
         expect(parseDate('2026-11-09').toString()).toBe('2026-11-09');
         expect(new ListCollection({ items: ['a'] }).items).toEqual(['a']);
         expect(typeof INIT_STATE).toBe('string');

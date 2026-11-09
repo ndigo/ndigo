@@ -75,7 +75,7 @@ drain-before-close rule.
 
 - Decisions: AD-18 (host lifecycle), AD-39 (async by default), AD-40
   (ownership/initialization/shutdown), AD-41 (deferral discipline)
-- Guides: 06 (websocket close composition), 16 §5 (persistence shutdown)
+- Guides: 15 (websocket close composition), 21 §5 (persistence shutdown)
 - Reference: `docs/reference/2026-08-22_CONTEXT_LIFECYCLE.md`
 - Packages: `@ndigo/redis`, `@ndigo/orm-drizzle`, `@ndigo/socket` READMEs
   (per-surface ownership statements)

@@ -1,0 +1,36 @@
+/* nd-field — label, help, and error scaffolding for native controls.
+   Pairs with the `input` item; the control keeps its native semantics. */
+
+.nd-field {
+    display: grid;
+    gap: var(--nd-space-2);
+}
+
+.nd-label {
+    color: var(--nd-color-text);
+    font-size: var(--nd-text-sm);
+    font-weight: var(--nd-weight-medium);
+    line-height: var(--nd-leading-tight);
+}
+
+.nd-label[data-required]::after {
+    content: ' *';
+    color: var(--nd-color-danger);
+}
+
+.nd-help {
+    color: var(--nd-color-text-muted);
+    font-size: var(--nd-text-xs);
+    line-height: var(--nd-leading-normal);
+}
+
+.nd-error {
+    color: var(--nd-color-danger);
+    font-size: var(--nd-text-xs);
+    line-height: var(--nd-leading-normal);
+}
+
+/* Mark the label when the control is explicitly invalid. */
+.nd-field:has([aria-invalid='true']) .nd-label {
+    color: var(--nd-color-danger);
+}

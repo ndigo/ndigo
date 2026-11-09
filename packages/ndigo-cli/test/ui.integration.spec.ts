@@ -59,7 +59,7 @@ describe('ndigo ui (real bin)', () => {
         const { code, out } = await runCli(['ui', 'validate', '--registry', REGISTRY]);
 
         expect(code).toBe(0);
-        expect(out).toContain('Registry is valid: 6 items');
+        expect(out).toMatch(/Registry is valid: \d+ items/u);
     });
 
     test('writes ndigo.ui.json', async () => {

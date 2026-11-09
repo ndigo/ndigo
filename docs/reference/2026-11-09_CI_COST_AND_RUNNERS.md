@@ -48,7 +48,7 @@ Two structural causes:
 | Control                                                      | Effect                                                                                                                                |
 | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------- |
 | `runs-on: fromJSON(vars.CI_RUNNER \|\| '["ubuntu-latest"]')` | One repository variable moves the quality lane between hosted and self-hosted                                                         |
-| `vars.CI_RUNNER_E2E`                                         | Opt-in for the browser lane only; hosted by default because `playwright install --with-deps` needs root                               |
+| `vars.CI_RUNNER_E2E`                                         | Opt-in for the browser lane only; the runner installer preinstalls Chromium's system libraries, so `--with-deps` is skipped there     |
 | `nx affected -t test --base=<PR base>` on PRs                | Only changed projects and their dependents run; full suite on schedule/dispatch                                                       |
 | `~/.nx` cache restore; save only from schedule/dispatch/main | Correct Nx path; PR pushes no longer upload a multi-hundred-MB entry each run                                                         |
 | Draft PRs skipped                                            | WIP pushes cost nothing; `ready_for_review` starts the lane                                                                           |
@@ -59,11 +59,25 @@ Two structural causes:
 
 ## Self-hosted runner
 
-Host setup lives outside the repository (it needs `sudo`): `~/bin/ci-runner-install.sh`,
-undone by `~/bin/undo-ci-runner-install-20261109.sh`. It registers an
-unprivileged `ghrunner` account, installs the runner under `/opt/actions-runner`,
-adds the account to the `docker` group (the Redis service container needs it),
-and starts a systemd unit.
+Host setup lives outside the repository (it needs `sudo`). Two idempotent
+scripts, each with an undo twin:
+
+- `~/bin/ci-runner-install.sh` (undo `~/bin/undo-ci-runner-install-20261109.sh`)
+  registers an unprivileged `ghrunner` account, installs the runner under
+  `/opt/actions-runner`, provisions Node 24 at `/opt/node24` and prepends it to
+  the runner's `.path`, adds `ghrunner` to the `docker` group, and starts the
+  systemd unit. `INSTALL_BROWSER_DEPS=1` additionally installs Chromium's
+  shared libraries for the e2e lane.
+- `~/bin/ci-runner-docker.sh` (undo `~/bin/undo-ci-runner-docker-20261109.sh`)
+  enables the `docker` snap daemon on `/var/run/docker.sock`. Docker Desktop's
+  engine socket is per-user (`~/.docker/desktop/`) and unreachable by
+  `ghrunner`, so the system daemon is what makes the `services: redis`
+  container work — and it starts at boot, not at desktop login.
+
+Node is a prerequisite, not a convenience: `pnpm/action-setup` installs pnpm by
+running its preinstall through `sh`, which needs `node` before
+`actions/setup-node` has run. A bare host has none, and the first job died with
+`sh: 1: node: not found`.
 
 Enable:
 
@@ -83,6 +97,9 @@ Properties worth knowing:
   construction — the cache-path bug above cannot occur there.
 - `_work` holds the checkout; the Nx cache holds build outputs. Both live under
   `/home/ghrunner`.
+- The first e2e run downloads Chromium into
+  `/home/ghrunner/.cache/ms-playwright`; later runs reuse it (the browser lane
+  dropped from 125 s to 39 s on the second run).
 - Jobs queue while the machine is offline (up to 24 hours) and then fail. The
   hosted fallback exists for that case.
 - A runner registration runs **one job at a time**; concurrent PRs queue. There

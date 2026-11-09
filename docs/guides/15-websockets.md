@@ -586,4 +586,5 @@ channels; a namespace is isolation convention, not authorization.
 
 - [Guide 29 — Signals & Islands](29-signals-and-islands.md) — SSE into reactive state
 - [Guide 26 — Authentication & Sessions](26-authentication-and-sessions.md) — socket auth
+- [Guide 28 — Security Hardening](28-security-hardening.md) — origins and rate limits
 - [`@ndigo/socket`](../../packages/ndigo-socket/README.md) — client, sessions, and STOMP

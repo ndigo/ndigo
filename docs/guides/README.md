@@ -79,9 +79,9 @@ that every slot exists yet — guides marked _planned_ are still on the roadmap.
 - [15 — WebSockets](15-websockets.md) — the `@socketMapping` contract, the
   session registry (`SocketSessionRegistry` bean: rooms, broadcast, heartbeat),
   the isomorphic client, and STOMP destinations/subscriptions/receipts.
-- **16 — Typed Service Clients & SSE** _(planned)_ — `@ndigo/service`:
-  `serviceClient`, call decorators, schema-validated JSON, `{ stream: true }`,
-  and the SSE parser.
+- [16 — Typed Service Clients & SSE](16-typed-service-clients-and-sse.md) —
+  `@ndigo/service`: `serviceClient`, call decorators, schema-validated JSON,
+  `{ stream: true }`, and the SSE parser.
 - [17 — Internationalization & Content](17-i18n-and-content.md) — the message
   source contract, i18next resources, server negotiation (`Accept-Language`),
   EJS `t()`/formatter helpers, and island locale propagation.
@@ -123,9 +123,9 @@ that every slot exists yet — guides marked _planned_ are still on the roadmap.
   revocation, and the admin-store workflow.
 - **27 — Browser Authentication & OIDC** _(planned)_ — `AuthClient`,
   `ClientAuthGuard`, and the OIDC authorization-code + PKCE adapter.
-- **28 — Security Hardening** _(planned)_ — CORS, CSRF, security headers/CSP,
-  rate limiting, trusted proxies, cookie/session flags, and management
-  exposure.
+- [28 — Security Hardening](28-security-hardening.md) — CORS, CSRF, security
+  headers/CSP, rate limiting, trusted proxies, cookie/session flags, and
+  management exposure.
 
 ## Browser and UI
 

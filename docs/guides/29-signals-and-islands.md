@@ -220,6 +220,7 @@ signal, so the island renders only well-formed models.
 
 ## See also
 
+- [Guide 16 — Typed Service Clients & SSE](16-typed-service-clients-and-sse.md) — the stream the signal consumes
 - Decisions: [AD-09](../decisions/2026-09-05_AD09_SERVER_PUSH.md) (SSE server
   push), [AD-65](../decisions/2026-09-06_AD65_VIEW_RESOLUTION_STRATEGY.md)
   (view resolution).

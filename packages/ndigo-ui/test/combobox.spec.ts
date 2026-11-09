@@ -90,6 +90,38 @@ describe('<nd-combobox>', () => {
         expect(combobox.dataset.value).toBe('cherry');
     });
 
+    it('opens, closes, and clears programmatically', async () => {
+        const combobox = mountElement<NdCombobox>('nd-combobox', MARKUP);
+        await flush();
+        const input = getPart<HTMLInputElement>(combobox, '[data-part="input"]');
+        const content = getPart<HTMLElement>(combobox, '[data-part="content"]');
+
+        combobox.show();
+        await flush();
+        expect(content.hasAttribute('hidden')).toBe(false);
+
+        combobox.select('cherry');
+        await flush();
+        expect(input.value).toBe('Cherry');
+
+        combobox.clear();
+        await flush();
+        expect(input.value).toBe('');
+        expect(combobox.dataset.value).toBe('');
+
+        combobox.hide();
+        await flush();
+        expect(content.hasAttribute('hidden')).toBe(true);
+    });
+
+    it('keeps the list in normal flow when inline', async () => {
+        const combobox = mountElement<NdCombobox>('nd-combobox', MARKUP, { inline: '' });
+        await flush();
+        const positioner = getPart<HTMLElement>(combobox, '[data-part="positioner"]');
+
+        expect(positioner.getAttribute('style')).toBeNull();
+    });
+
     it('is axe-clean when open', async () => {
         const combobox = mountElement<NdCombobox>('nd-combobox', MARKUP);
         await flush();

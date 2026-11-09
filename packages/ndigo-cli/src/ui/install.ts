@@ -5,11 +5,11 @@
 import { spawn } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { dirname, isAbsolute, join, normalize } from 'node:path';
+import { dirname, isAbsolute, join, normalize, relative } from 'node:path';
 import { usageError } from '../helpers/app-scripts.js';
 import { UI_LOCK_FILE, resolveTargetPath } from './config.js';
 import type { UiAliases } from './config.js';
-import { readRegistryFile, resolveItemClosure } from './registry.js';
+import { isRemoteSource, readRegistryFile, resolveItemClosure } from './registry.js';
 import type { LoadedRegistry } from './registry-types.js';
 
 /**
@@ -212,9 +212,19 @@ function writeLockFile(dir: string, plan: InstallPlan): void {
         const itemFiles = plan.files
             .filter((file) => file.item === item.name)
             .map((file) => ({ target: file.target, sha256: file.sha256 }));
-        lock.items[item.name] = { registry: plan.source, type: item.type, files: itemFiles, installedAt };
+        lock.items[item.name] = {
+            registry: portableSource(plan.source, dir),
+            type: item.type,
+            files: itemFiles,
+            installedAt,
+        };
     }
     writeFileSync(path, `${JSON.stringify(lock, null, 2)}\n`);
+}
+
+/** Local sources are stored relative to the app so the lockfile is portable. */
+function portableSource(source: string, dir: string): string {
+    return isRemoteSource(source) ? source : relative(dir, source);
 }
 
 function readLockFile(path: string): UiLockFile {

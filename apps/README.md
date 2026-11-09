@@ -41,6 +41,7 @@ and file-naming convention is in
 | 17  | `17-ndigo-telemetry-lab`   | `@ndigo/telemetry-lab`   | Node + built client | 3090             | Node — end-to-end observability: browser→server trace continuation, scheduled-task spans, socket metrics, sampling, console/OTLP exporters                                                                                         |
 | 18  | `18-ndigo-auth-playground` | `@ndigo/auth-playground` | Node + built client | 3110             | Node — auth matrix: secure cookies + session rotation, JWT expiry/refresh, role guards on HTTP and sockets, rate-limited login, durable LibSQL sessions, embedded OIDC issuer (code + PKCE S256)                                   |
 | 19  | `19-ndigo-hn`              | `@ndigo/hn`              | Browser (Vite)      | 3450             | Browser — Hacker News reader: cached/offline HTTP client, incremental long-list rendering, deep links, comment tree bounded to depth 3                                                                                             |
+| 20  | `20-ndigo-ui-lab`          | `@ndigo/ui-lab`          | Browser (Vite)      | 3460             | Browser — owned design system: registry-installed dialog/menu/button/app-shell, typed token catalog, axe-clean                                                                                                                     |
 
 ## Applications
 
@@ -362,6 +363,7 @@ endpoints, and what the app demonstrates:
 - [17-ndigo-telemetry-lab](17-ndigo-telemetry-lab/README.md)
 - [18-ndigo-auth-playground](18-ndigo-auth-playground/README.md)
 - [19-ndigo-hn](19-ndigo-hn/README.md)
+- [20-ndigo-ui-lab](20-ndigo-ui-lab/README.md)
 
 ## Configuration
 

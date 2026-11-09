@@ -29,7 +29,7 @@ export const listUiCommand = buildCommand({
             registry: {
                 kind: 'parsed',
                 parse: (value: string) => value,
-                brief: 'Registry file, directory, or URL (default: config, then the GitHub registry).',
+                brief: 'Registry file, directory, or URL (default: config, then the ndigo.dev registry).',
                 optional: true,
             },
             json: { kind: 'boolean', brief: 'Print the raw item JSON.', optional: true },

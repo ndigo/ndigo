@@ -1,0 +1,32 @@
+{
+  "name": "@ndigo/ui-lab",
+  "version": "0.0.1",
+  "description": "Ndigo UI lab — registry-installed tokens, blocks, and behaviour elements",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run --config vitest.config.ts"
+  },
+  "keywords": [
+    "ndigo",
+    "ndigo-ui",
+    "design-system",
+    "lab"
+  ],
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@ndigo/ui": "~0.0.1",
+    "@zag-js/core": "~1.47.0",
+    "@zag-js/dialog": "~1.47.0",
+    "@zag-js/menu": "~1.47.0",
+    "@zag-js/vanilla": "~1.47.0"
+  },
+  "devDependencies": {
+    "axe-core": "^4.14.0",
+    "vite": "catalog:"
+  }
+}

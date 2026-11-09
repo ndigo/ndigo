@@ -5,7 +5,7 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
-import { resolveAliases, resolveTargetPath, writeUiConfig } from '../src/ui/config.js';
+import { resolveAliases, resolveRegistrySource, resolveTargetPath, writeUiConfig } from '../src/ui/config.js';
 import { applyInstall, detectPackageManager, planInstall } from '../src/ui/install.js';
 import { loadRegistry } from '../src/ui/registry.js';
 import { createRegistryFixture } from './_ui-registry-fixture.js';
@@ -58,7 +58,7 @@ describe('install planning', () => {
 
     it('maps overridden aliases', async () => {
         const { fixture, registry } = await setup();
-        writeUiConfig(fixture.app, { aliases: { ui: 'app/ui' } }, false);
+        writeUiConfig(fixture.app, { registry: '../registry.json', aliases: { ui: 'app/ui' } }, false);
 
         const aliases = resolveAliases(fixture.app);
         const plan = await planInstall(registry, ['dialog'], aliases);
@@ -68,6 +68,7 @@ describe('install planning', () => {
         expect(plan.files.map((entry) => entry.target)).toContain('app/ui/dialog.ts');
         expect(resolveTargetPath('@ui/x.ts', aliases)).toBe('app/ui/x.ts');
         expect(() => resolveTargetPath('@unknown/x.ts', aliases)).toThrow(/unknown registry target/);
+        expect(resolveRegistrySource(fixture.app)).toBe(fixture.registry);
     });
 });
 
@@ -93,11 +94,12 @@ describe('install application', () => {
         expect(readFileSync(join(fixture.app, 'src/ui/dialog.ts'), 'utf8')).toBe('export const dialog = true;\n');
         const lock = JSON.parse(readFileSync(join(fixture.app, 'ui.lock.json'), 'utf8')) as {
             version: number;
-            items: Record<string, { files: { target: string; sha256: string }[] }>;
+            items: Record<string, { registry: string; files: { target: string; sha256: string }[] }>;
         };
         expect(lock.version).toBe(1);
         expect(Object.keys(lock.items)).toEqual(['lib', 'dialog']);
         expect(lock.items['dialog']?.files[0]?.target).toBe('src/ui/dialog.ts');
+        expect(lock.items['dialog']?.registry).toBe('../registry.json');
 
         const second = await applyInstall(plan, { dir: fixture.app, install: false });
         expect(second.written).toEqual([]);

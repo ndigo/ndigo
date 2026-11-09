@@ -22,7 +22,7 @@ export const validateUiCommand = buildCommand({
             registry: {
                 kind: 'parsed',
                 parse: (value: string) => value,
-                brief: 'Registry file, directory, or URL (default: config, then the GitHub registry).',
+                brief: 'Registry file, directory, or URL (default: config, then the ndigo.dev registry).',
                 optional: true,
             },
         },

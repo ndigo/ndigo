@@ -6,6 +6,6 @@
 
 # Variable: DEFAULT\_REGISTRY\_SOURCE
 
-> `const` **DEFAULT\_REGISTRY\_SOURCE**: `"https://raw.githubusercontent.com/ndigo/ndigo/main/registry.json"` = `'https://raw.githubusercontent.com/ndigo/ndigo/main/registry.json'`
+> `const` **DEFAULT\_REGISTRY\_SOURCE**: `"https://ndigo.dev/r/registry.json"` = `'https://ndigo.dev/r/registry.json'`
 
-The default registry (GitHub serves the repository root registry).
+The default registry (the ndigo.dev namespace root).

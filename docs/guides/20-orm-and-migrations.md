@@ -5,6 +5,16 @@ single schema source, `ndigo db generate` renders versioned migrations from
 them, `ndigo db migrate` applies them through the journaled runner, and
 `ndigo db status` reports the journal. Reference application: `apps/05-ndigo-api`.
 
+**Audience:** Node application developers · **Prerequisites:** Guide 01 · **Reference app:** `apps/05-ndigo-api`
+
+## What you'll learn
+
+- Declare entities with decorators.
+- Use repositories, relations, paging, and the unit of work.
+- Generate and commit a migration snapshot.
+- Run, inspect, and boot-apply migrations.
+- Know the fidelity ceiling that stays hand-written.
+
 ## The lifecycle
 
 ```text
@@ -169,7 +179,7 @@ The data source's parent directory is created on demand
 (`ensureDbDir` — libSQL fails CANTOPEN when it is missing); the store itself
 (`apps/*/data/`) is gitignored.
 
-## References
+## See also
 
 - [AD-30](../decisions/2026-09-26_AD30_ORM_MIGRATIONS.md) — the journaled
   runner contract (versions, journal, D-2 atomicity, D-3 DDL sharing).

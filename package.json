@@ -28,6 +28,7 @@
     "doc:api": "node scripts/doc-api.mjs",
     "doc:check": "pnpm doc:api && git diff --exit-code -- packages API.md",
     "doc:coverage": "node scripts/doc-coverage.mjs --check",
+    "guides:check": "node scripts/check-guides.mjs",
     "docs:links": "node scripts/check-doc-links.mjs",
     "audit:dead": "knip",
     "db:schema:check": "node scripts/check-migration-schema.mjs",

@@ -7,6 +7,16 @@ The design: the reference framework's declarative decorator shape with Nest/Adon
 semantics — async single-flight runs, error isolation, drain-on-close, and
 no catch-up after restarts.
 
+**Audience:** Node application developers · **Prerequisites:** Guide 01 · **Reference app:** `apps/05-ndigo-api`, `apps/17-ndigo-telemetry-lab`
+
+## What you'll learn
+
+- Declare tasks with `@scheduled`.
+- Use cron, fixed-rate, and fixed-delay specs.
+- Understand single-flight and error isolation.
+- Inspect per-run spans and metrics.
+- Respect the Node-only guardrails.
+
 ## 1. Quickstart
 
 Add a `@scheduled` method to **any registered bean**, and the node platform

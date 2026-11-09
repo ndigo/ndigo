@@ -11,6 +11,16 @@ piece (client-side **HTTP** caching) — see the `ndigo-views` client demo and
 the `@ndigo/http` package README; they are separate machinery with
 response-specific semantics.
 
+**Audience:** Node and browser application developers · **Prerequisites:** Workspace bootstrapped; guide 21 for shared Redis · **Reference app:** `apps/05-ndigo-api`, `apps/08-ndigo-views`
+
+## What you'll learn
+
+- Use the TTL/LRU store and its miss semantics.
+- Cache server methods with `@cached`.
+- Memoize client functions with `memoize`.
+- Invalidate entries deliberately.
+- Move the same contracts onto Redis.
+
 ## 1. The store
 
 ```ts
@@ -212,3 +222,9 @@ await the manager before closing the context. Supply URLs/credentials through
 application environment/secrets binding; the adapter never logs them or
 connects automatically to localhost. See the [Redis package README](../../packages/ndigo-redis/README.md)
 for the full codec, failure, ACL, lifecycle and live verification contracts.
+
+## See also
+
+- [Guide 11 — The HTTP Client](11-http-client.md) — HTTP caching interceptors
+- [Guide 21 — Persistence & Shared Stores](21-persistence-and-shared-stores.md) — the Redis cache
+- [`@ndigo/cache`](../../packages/ndigo-cache/README.md) — the store contract

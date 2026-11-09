@@ -5,6 +5,16 @@ nodes: exactly one node runs the fire, others skip. They are the shared
 primitive behind multi-node scheduling (this guide, AD-73) and the future
 cluster spine (GAP-2).
 
+**Audience:** Node application developers and operators · **Prerequisites:** Guide 23 · **Reference package:** `packages/ndigo-locks`
+
+## What you'll learn
+
+- Model a lock as a lease with a fencing token.
+- Use the in-process driver on a single node.
+- Move to the Redis driver across nodes.
+- Make a scheduled task single-executor.
+- Handle expired leases and stale holders.
+
 ## The model: leases, not booleans
 
 A lock is a **lease**: acquiring sets a TTL, and the holder must finish (or

@@ -12,6 +12,16 @@ machinery; the application context composes it — a Node app can run socket
 sessions and HTTP sessions side by side as separate beans bound through
 separate extractors (`socketSessionValue()` / `requestSessionValue()`).
 
+**Audience:** Node and browser application developers · **Prerequisites:** Guide 01 · **Reference app:** `apps/05-ndigo-api`, `apps/13-ndigo-chat`
+
+## What you'll learn
+
+- Declare handlers with `@socketMapping`.
+- Use the session registry for rooms and broadcast.
+- Add heartbeat and origin checks.
+- Connect with the isomorphic client.
+- Bridge STOMP destinations and subscriptions.
+
 ## 1. Quickstart
 
 Add a `@socketMapping` handler to any controller and connect:
@@ -206,18 +216,21 @@ upgrade-time authenticator is what puts it there:
 new HTTPServer(dispatcher, {
     authenticate: (sources) => {
         const principal = lookupPrincipal(sources.query.token as string);
-        return principal ? { principal, user: principal.id } : null;   // null ⇒ close 1008
+        return principal ? { principal, user: principal.id } : null; // null ⇒ close 1008
     },
 });
 
 // or as a context bean (bean-based apps never construct the server):
-@entry socketRequestAuthenticator(): SocketRequestAuthenticator {
-    return {
-        authenticate: (sources) => {
-            const principal = lookupPrincipal(tokenFrom(sources));
-            return principal ? { principal, user: principal.id } : null;
-        },
-    };
+class SocketAuthConfiguration {
+    @entry
+    socketRequestAuthenticator(): SocketRequestAuthenticator {
+        return {
+            authenticate: (sources) => {
+                const principal = lookupPrincipal(tokenFrom(sources));
+                return principal ? { principal, user: principal.id } : null;
+            },
+        };
+    }
 }
 ```
 
@@ -568,3 +581,9 @@ channels; a namespace is isolation convention, not authorization.
   (contracts + client + STOMP), `@ndigo/dispatcher` (handler vocabulary),
   [`@ndigo/platform-node`](../../packages/ndigo-platform-node/README.md)
   (registry, adapter, auto-configuration), `@ndigo/platform-web` (online trigger)
+
+## See also
+
+- [Guide 29 — Signals & Islands](29-signals-and-islands.md) — SSE into reactive state
+- [Guide 26 — Authentication & Sessions](26-authentication-and-sessions.md) — socket auth
+- [`@ndigo/socket`](../../packages/ndigo-socket/README.md) — client, sessions, and STOMP

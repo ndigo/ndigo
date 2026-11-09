@@ -6,6 +6,16 @@ file's role obvious before it is opened. They apply to new apps and to files
 touched while changing an existing app; the [migration backlog](#migration-backlog)
 lists the older shapes that are deliberately left for follow-up work.
 
+**Audience:** Framework contributors · **Prerequisites:** Workspace bootstrapped; guide 37 · **Reference app:** `apps/05-ndigo-api`
+
+## What you'll learn
+
+- Name directories, packages, and apps.
+- Pair `-web` and `-api` applications.
+- Apply role-based file suffixes and folder layout.
+- Keep the demonstration ladder readable.
+- Work through the deferred normalization backlog.
+
 ## 1. Directory and package names
 
 Every application lives at:
@@ -173,7 +183,7 @@ and are deferred so the ladder stays reviewable:
 Each row is a candidate for the next touch of that app, not a licence for a
 repo-wide rename. When a row is complete, delete it from this table.
 
-## See Also
+## See also
 
 - [apps/README.md](../../apps/README.md) — the numbered ladder, ports, and per-app index
 - [STYLE_GUIDE.md](../../STYLE_GUIDE.md) — file, symbol, and role-suffix rules in the framework packages

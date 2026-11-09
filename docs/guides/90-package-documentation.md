@@ -5,6 +5,16 @@ meet, and the tooling that keeps it true. Applies to all
 `packages/*`; the reference implementation of the standard is the
 [`ndigo-generators`](../../tools/generators/README.md) scaffolding.
 
+**Audience:** Framework contributors · **Prerequisites:** Workspace bootstrapped; `CONTRIBUTING.md` · **Reference package:** `packages/ndigo-core`
+
+## What you'll learn
+
+- Meet the required package README skeleton.
+- Fill the manifest metadata correctly.
+- Generate and commit the API tree.
+- Pass the freshness and manifest gates.
+- Scaffold a new package with the generators.
+
 ## Why this shape
 
 Ndigo packages are deliberately standalone-readable: a developer who only
@@ -181,3 +191,9 @@ in real content, then let `pnpm manifest:check` + `pnpm doc:api` validate.
   generated index.
 - **No per-package `README` duplication of the API** — the generated
   reference is the single source for signatures.
+
+## See also
+
+- [CONTRIBUTING.md](../../CONTRIBUTING.md) — the repository workflow
+- [Generators](../../tools/generators/README.md) — package and README scaffolding
+- [API index](../../API.md) — the generated package surface

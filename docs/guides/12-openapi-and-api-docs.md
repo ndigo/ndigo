@@ -6,6 +6,16 @@ and parameter maps that serve requests, so the spec cannot drift from
 behavior — and serves it with Swagger UI out of the box. No comments to
 write, no second source of truth.
 
+**Audience:** Node API developers · **Prerequisites:** Guides 01, 07, and 13 · **Reference app:** `apps/05-ndigo-api`
+
+## What you'll learn
+
+- Serve the generated spec and Swagger UI.
+- Read the spec produced from dispatch metadata.
+- Document operations and responses with `@apiDocs`.
+- Publish response schemas without a second source of truth.
+- Guard the docs endpoints on untrusted networks.
+
 ## 1. The endpoints
 
 `swagger-ui-dist` is a **peer dependency** of `@ndigo/platform-node` (asset-only
@@ -38,7 +48,7 @@ Both endpoints are **open by default** (same posture as `/health` +
 ```ts
 class SecureDocsConfiguration extends OpenAPIDocsAutoConfiguration {
     constructor() {
-        super({ accessGuard: /* any RouteHandlerInterceptor */ });
+        super({ accessGuard: undefined /* any RouteHandlerInterceptor */ });
     }
 }
 ```
@@ -202,3 +212,9 @@ options, until it forwards them.)
 - **Assets are local** — no CDN; Swagger UI is served from
   `swagger-ui-dist` with the platform's static-file machinery (ETag,
   conditional GET, cache headers).
+
+## See also
+
+- [Guide 13 — DTO & Conversion](13-dto-conversion.md) — response schemas
+- [Guide 26 — Authentication & Sessions](26-authentication-and-sessions.md) — guarding the docs endpoints
+- [`@ndigo/openapi`](../../packages/ndigo-openapi/README.md) — the generator surface

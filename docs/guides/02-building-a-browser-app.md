@@ -11,6 +11,15 @@ Reference applications: [`apps/08-ndigo-views`](../../apps/08-ndigo-views/README
 (views and resolver chains) and [`apps/19-ndigo-hn`](../../apps/19-ndigo-hn/README.md)
 (routing, services, offline cache, deep links).
 
+**Audience:** Browser application developers · **Prerequisites:** Workspace bootstrapped; guide 01 concepts recommended · **Reference app:** `apps/08-ndigo-views`, `apps/19-ndigo-hn`
+
+## What you'll learn
+
+- Bootstrap a browser app with `createWebApplication`.
+- Wire hash routing, in-page dispatch, and DOM view targets.
+- Register app-specific tokens, services, and router interceptors.
+- Test the app through the `bootBrowserApp` harness.
+
 ## 1. Bootstrap: `createWebApplication`
 
 ```ts
@@ -130,7 +139,7 @@ Every generated browser app also ships a bundle guard (`test/bundle.spec.ts`)
 that parses the built entry and rejects raw TC39 decorators — run it via
 the app's `test` script (`vite build && vitest run`).
 
-## Next steps
+## See also
 
 - [01 — Building a Node API](01-building-a-node-api.md) — the server twin
   of this guide, including the deployment topology notes.

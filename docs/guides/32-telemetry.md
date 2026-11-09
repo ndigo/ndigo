@@ -5,6 +5,16 @@ Node and browser, the `configureTelemetry` knobs (sampling, exporters), and
 log↔trace correlation tooling. Node config lives in `@ndigo/telemetry-node`
 (OTel `NodeSDK` wrapper); browser config in `@ndigo/telemetry-web`.
 
+**Audience:** Node and browser application developers and operators · **Prerequisites:** Guide 01 or guide 02 · **Reference app:** `apps/17-ndigo-telemetry-lab`
+
+## What you'll learn
+
+- Configure logging and the OTel pipeline once.
+- Emit spans, metrics, and structured logs.
+- Choose sampling and exporter settings.
+- Correlate logs with traces.
+- Flush and shut down telemetry cleanly.
+
 ## 1. Quickstart (node)
 
 Configure once **at boot** — the OpenTelemetry API registers global
@@ -173,3 +183,9 @@ processors had not yet exported.
   framework instrumentations; re-exports the logging surface from `@ndigo/log`
 - `@ndigo/telemetry-node` — `configureTelemetry`, node instrumentations
 - `@ndigo/telemetry-web` — `configureBrowserTelemetry`
+
+## See also
+
+- [Guide 33 — Management Endpoints](33-management-endpoints.md) — health and metrics exposure
+- [apps/17-ndigo-telemetry-lab](../../apps/17-ndigo-telemetry-lab/README.md) — end-to-end telemetry
+- [`@ndigo/telemetry-node`](../../packages/ndigo-telemetry-node/README.md) — Node wiring

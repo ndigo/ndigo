@@ -8,6 +8,16 @@ session/user stores, JWT adapter) and `@ndigo/platform-node` (cookies,
 session interceptor, rate limiting). Design decisions: [AD-33](../decisions/2026-09-26_AD33_AUTH_CREDENTIALS_AND_SESSIONS.md);
 landed via [the auth completion plan](../plans/2026-09-26_AUTH_COMPLETION.md).
 
+**Audience:** Node application developers · **Prerequisites:** Guide 01 · **Reference app:** `apps/18-ndigo-auth-playground`, `apps/05-ndigo-api`
+
+## What you'll learn
+
+- Hash passwords and verify credentials safely.
+- Issue opaque cookie sessions and rotate on elevation.
+- Issue, refresh, and revoke JWTs.
+- Guard routes by authentication and role.
+- Apply the rate-limit, CSRF, and trusted-proxy posture.
+
 ## 1. Quickstart (server-rendered cookie flow)
 
 ```ts
@@ -308,3 +318,9 @@ authorization-code + PKCE), RBAC beyond `@authorized`'s role list,
 persistent session-store backends, argon2id (additive when needed),
 persistent JWT rotation ledger (needed only for long-lived access
 tokens). None blocks the 1.0 credential + session story.
+
+## See also
+
+- [Guide 19 — Caching](19-caching.md) — session stores and TTLs
+- [apps/18-ndigo-auth-playground](../../apps/18-ndigo-auth-playground/README.md) — the runnable auth matrix
+- [AD-33](../decisions/2026-09-26_AD33_AUTH_CREDENTIALS_AND_SESSIONS.md) — the auth decision

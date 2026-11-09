@@ -6,6 +6,16 @@ of the framework (AD-82). They are **not** `@whenProperty`:
 configuration class _registers_; `@whenFeature` decides at **request time**
 whether a route _is reachable_ — and can flip while the process runs.
 
+**Audience:** Node and browser application developers · **Prerequisites:** Guide 01 or guide 02 · **Reference app:** `apps/05-ndigo-api`
+
+## What you'll learn
+
+- Implement the never-throw `FlagEvaluator` SPI.
+- Start from the property-backed provider.
+- Gate a route with `@whenFeature`.
+- Run a staged rollout.
+- Bridge a vendor through OpenFeature.
+
 ## The model: evaluate, never crash
 
 All flag evaluation runs through one contract, `FlagEvaluator`
@@ -211,3 +221,9 @@ registers on the web client with the same instance.
 
 Reference application: `apps/05-ndigo-api` — the `/gated-report` demo route,
 grounded in `test/feature-flags.spec.ts`.
+
+## See also
+
+- [Guide 01 — Building a Node API](01-building-a-node-api.md) — the app lifecycle
+- [apps/05-ndigo-api](../../apps/05-ndigo-api/README.md) — the `/gated-report` demo
+- [AD-82](../decisions/2026-10-10_AD82_FEATURE_FLAGS.md) — the flags decision

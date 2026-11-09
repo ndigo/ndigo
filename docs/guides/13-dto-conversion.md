@@ -4,6 +4,16 @@ How to project models into API shapes with `ConversionService` (AD-38):
 one service converts both leaf values and whole objects — schema targets are
 contract-enforced projection, fail-fast. Reference application: `apps/05-ndigo-api`.
 
+**Audience:** Node API developers · **Prerequisites:** Guides 01 and 07 · **Reference app:** `apps/05-ndigo-api`
+
+## What you'll learn
+
+- Convert leaf values and whole objects with `ConversionService`.
+- Derive DTO schemas from entity metadata.
+- Convert request payloads into entities.
+- Declare the OpenAPI response contract.
+- Compose leaf and shape conversions.
+
 ## One service, two target kinds
 
 `ConversionService` converts any value to a target **constructor** (leaf,
@@ -129,3 +139,9 @@ override the bean for custom converter registries.
 - No async facade — call `schema.parseAsync` directly when needed.
 - Client-side reuse works out of the box (ndigo-core has no node
   dependencies) though no formal web wiring exists.
+
+## See also
+
+- [Guide 12 — OpenAPI & API Docs](12-openapi-and-api-docs.md) — the generated spec
+- [Guide 20 — ORM & Migrations](20-orm-and-migrations.md) — entity metadata
+- [AD-38](../decisions/2026-09-29_AD38_DTO_MAPPING.md) — the conversion decision

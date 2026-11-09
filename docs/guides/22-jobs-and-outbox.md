@@ -9,6 +9,16 @@ claims; the in-process reference driver for development, a durable libSQL
 store, and a Redis driver for multi-node deployments. The outbox closes the
 last gap — "send the email only if the order actually committed."
 
+**Audience:** Node application developers · **Prerequisites:** Guides 20 and 21 · **Reference package:** `packages/ndigo-jobs`
+
+## What you'll learn
+
+- Implement or choose a `JobDriver`.
+- Discover `@jobHandler` workers.
+- Apply retries, timeouts, and spans.
+- Use the durable libSQL and Redis drivers.
+- Commit side effects with the transactional outbox.
+
 ## 1. Quickstart
 
 Add a `@jobHandler` method to any registered bean, enqueue a job, and start a
@@ -180,7 +190,7 @@ through the driver's atomic claim only; AD-41 keeps distributed scheduling
 deferred), cron-persistent schedules, and a CLI. Each needs its own decision
 record — see AD-72's consequences.
 
-## See Also
+## See also
 
 - [Guide 23 — Scheduling](23-scheduling.md): the trigger side — `@scheduled`
   for time-based work, jobs for delivered work.

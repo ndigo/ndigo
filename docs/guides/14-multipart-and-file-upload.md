@@ -11,6 +11,16 @@ Ndigo's resolver/interceptor model: parsing happens **before** argument binding,
 see parts directly rather than a buffered body. The one new runtime dependency is busboy —
 the canonical zero-dependency streaming parser; Ndigo owns the contract and wraps it.
 
+**Audience:** Node application developers · **Prerequisites:** Guides 01 and 06 · **Reference app:** `apps/05-ndigo-api`
+
+## What you'll learn
+
+- Accept a `multipart/form-data` upload with `fileValue()`.
+- Bind multiple files and text fields.
+- Choose buffered bytes or a temp file.
+- Map size limits to 413 and sanitize filenames.
+- Avoid the common streaming and cleanup pitfalls.
+
 ## 1. The contract
 
 A `MultipartFile` (`@ndigo/platform-node`) is one part of the request. It is backed either by
@@ -147,3 +157,9 @@ the contract exposes bytes/stream so a caller pipes to their store unchanged. Wr
 
 Reference: `apps/05-ndigo-api` (`POST /api/upload` demo gate in `upload-controller.ts`, round-trip +
 empty-file spec in `upload.spec.ts`). Design rationale: [AD-26](../decisions/2026-09-22_AD26_MULTIPART_FILE_UPLOAD.md).
+
+## See also
+
+- [Guide 06 — Argument Binding](06-argument-binding.md) — the extractor pipeline
+- [Guide 10 — Static Files](10-static-files.md) — serving the uploaded result
+- [`@ndigo/platform-node`](../../packages/ndigo-platform-node/README.md) — the multipart parser

@@ -11,6 +11,16 @@ pnpm add @ndigo/redis @ndigo/orm-drizzle @ndigo/cache @ndigo/socket
 # node only: @ndigo/redis requires Node 24+; standalone Redis 7.2+
 ```
 
+**Audience:** Node application developers and operators · **Prerequisites:** Guides 19 and 26 · **Reference app:** `apps/16-ndigo-redis-fanout`, `apps/18-ndigo-auth-playground`
+
+## What you'll learn
+
+- Apply the memory-first backend doctrine.
+- Persist sessions in LibSQL.
+- Share the cache through Redis.
+- Respect owned vs borrowed client lifecycle.
+- Observe backend failures instead of hiding them.
+
 ## 1. The doctrine (AD-40)
 
 - **Capability-owned contracts, no universal store.** Sessions implement
@@ -45,12 +55,12 @@ import { ScryptPasswordEncoder } from '@ndigo/auth-core/scrypt'; // Node-only (n
 
 const sessions = new LibSQLSessionStore({
     url: 'file:./sessions.db', // or an injected { client } with intMode: 'number'
-    maxSessions: 512,          // default 512; shared live-session cap
+    maxSessions: 512, // default 512; shared live-session cap
 });
 await sessions.initialize(); // explicit: provisions ndigo_sessions + expiry index
 
 const auth = new CredentialsAuthAdapter({
-    userStore: /* your user store */,
+    userStore: undefined /* your user store */,
     passwordEncoder: new ScryptPasswordEncoder({ ln: 14 }),
     sessionStore: sessions, // the durable store; memory remains the default
 });
@@ -182,7 +192,7 @@ Not built, with an explicit decision and revisit triggers:
   not distributed consumption; durable pub/sub replay, offline queues, and
   global ordering are out of scope for the live fan-out.
 
-## References
+## See also
 
 - Decisions: [AD-40](../decisions/2026-10-01_AD40_PERSISTENCE_BASELINE.md),
   [AD-41](../decisions/2026-10-03_AD41_DISTRIBUTED_SCHEDULING_DEFERRED.md),

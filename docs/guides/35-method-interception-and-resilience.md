@@ -8,6 +8,16 @@ The design: declarative interception _without_ an AOP language. JavaScript's
 `Proxy` is the machinery; annotations are the selection contract; interceptors
 are plain objects that decide, in code, what runs around a call.
 
+**Audience:** Node application developers · **Prerequisites:** Guide 01 · **Reference app:** `apps/15-ndigo-resilience-lab`, `apps/05-ndigo-api`
+
+## What you'll learn
+
+- Declare metadata-only annotations.
+- Build an interceptor chain around managed methods.
+- Weave standalone service clients.
+- Register interceptors by class, instance, or token.
+- Apply retry, backoff, and circuit breaking.
+
 ## 1. Quickstart
 
 Declare policy as **metadata-only annotations** — they never replace or wrap
@@ -174,7 +184,7 @@ class PushAPI {
 | AspectJ pointcuts, introductions, `@Primary`-style selection | Not applicable to the metadata contract (AD-42)                                              |
 | Transport-level retry / status classification                | Lives in `@ndigo/http`; the layers compose (AD-43 D-8)                                       |
 
-## References
+## See also
 
 - Interception: [AD-42](../decisions/2026-10-03_AD42_METHOD_INTERCEPTION.md),
   plan `docs/plans/2026-10-03_METHOD_INTERCEPTION.md`

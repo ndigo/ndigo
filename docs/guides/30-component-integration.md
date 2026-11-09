@@ -217,6 +217,7 @@ until the migration lands.
 
 - [Guide 02 — Building a Browser App](02-building-a-browser-app.md) — the browser preset
 - [Guide 09 — Views, Targets & Content Negotiation](09-views-and-content-negotiation.md) — view contracts
+- [Guide 44 — Accessibility](44-accessibility.md) — the a11y gate and testing
 - [Guide 18 — Forms End-to-End](18-forms-end-to-end.md) — binding and validation
 - [Guide 28 — Security Hardening](28-security-hardening.md) — CSP
 - [Guide 41 — Custom View Engines](41-custom-view-engines.md) — React/Vue UI strategies

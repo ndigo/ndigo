@@ -121,8 +121,9 @@ that every slot exists yet — guides marked _planned_ are still on the roadmap.
 - [26 — Authentication & Sessions](26-authentication-and-sessions.md) —
   credentials + session storage, the auth decorators, JWT issuance/refresh and
   revocation, and the admin-store workflow.
-- **27 — Browser Authentication & OIDC** _(planned)_ — `AuthClient`,
-  `ClientAuthGuard`, and the OIDC authorization-code + PKCE adapter.
+- [27 — Browser Authentication & OIDC](27-browser-authentication-and-oidc.md) —
+  `AuthClient`, `ClientAuthGuard`, and the OIDC authorization-code + PKCE
+  adapter.
 - [28 — Security Hardening](28-security-hardening.md) — CORS, CSRF, security
   headers/CSP, rate limiting, trusted proxies, cookie/session flags, and
   management exposure.
@@ -138,9 +139,9 @@ that every slot exists yet — guides marked _planned_ are still on the roadmap.
   wrappers, the server-fallback pattern for first paint, FACE form submission
   into the existing binding/Zod path, token theming, and i18n wiring.
   Reference application: `apps/07-ndigo-island` (AD-71 — Web Awesome).
-- **31 — Micro Frontends with `@ndigo/host`** _(planned)_ — `HostManager`,
-  feature contexts, lazy chunks, shared-dependency validation, event relay, and
-  feature routing.
+- [31 — Micro Frontends with `@ndigo/host`](31-micro-frontends.md) —
+  `HostManager`, feature contexts, lazy chunks, shared-dependency validation,
+  event relay, and feature routing.
 
 ## Cross-cutting
 

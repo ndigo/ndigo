@@ -171,6 +171,15 @@ for (const file of files) {
         failures.push(`${file}:${line}: TypeScript fence does not parse`);
     }
 
+    // Cross-guide links must not keep a stale number in the label.
+    for (const match of text.matchAll(/\[(?:Guide )?(\d{2}) — [^\]]+\]\(([^)]+)\)/g)) {
+        const target = match[2].split('#')[0].split('/').pop() ?? '';
+        const targetNumber = /^(\d{2})-/.exec(target)?.[1];
+        if (targetNumber && targetNumber !== match[1]) {
+            failures.push(`${file}: link label ${match[1]} points at ${targetNumber} (${match[2]})`);
+        }
+    }
+
     const lines = text.split('\n').length;
     if (lines > 400) warnings.push(`${file}: ${lines} lines (contract target is ~300, hard review at 400)`);
 }

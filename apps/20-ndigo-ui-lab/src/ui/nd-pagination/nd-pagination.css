@@ -1,0 +1,74 @@
+/* nd-pagination — native navigation styled with the design tokens.
+   Server-renderable: links for pages, aria-current for the current page, and
+   aria-disabled spans at the unavailable edges. */
+
+.nd-pagination {
+    display: flex;
+    justify-content: center;
+}
+
+.nd-pagination__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--nd-space-1);
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.nd-pagination__link {
+    display: inline-flex;
+    gap: var(--nd-space-1);
+    align-items: center;
+    justify-content: center;
+    min-inline-size: 2.25rem;
+    min-block-size: 2.25rem;
+    padding-block: var(--nd-space-1);
+    padding-inline: var(--nd-space-2);
+    color: var(--nd-color-text);
+    font: inherit;
+    font-size: var(--nd-text-sm);
+    text-decoration: none;
+    background: var(--nd-color-surface);
+    border: 1px solid var(--nd-color-border);
+    border-radius: var(--nd-radius-md);
+    cursor: pointer;
+}
+
+.nd-pagination__link[data-direction] {
+    padding-inline: var(--nd-space-3);
+}
+
+.nd-pagination__link:hover {
+    background: var(--nd-color-accent-soft);
+    border-color: var(--nd-color-accent);
+}
+
+.nd-pagination__link:focus-visible {
+    outline: var(--nd-focus-ring-width) solid var(--nd-focus-ring-color);
+    outline-offset: var(--nd-focus-ring-offset);
+}
+
+.nd-pagination__link[aria-current='page'] {
+    color: var(--nd-color-on-accent);
+    font-weight: var(--nd-weight-medium);
+    background: var(--nd-color-accent);
+    border-color: var(--nd-color-accent);
+}
+
+.nd-pagination__link[aria-disabled='true'] {
+    color: var(--nd-color-text-muted);
+    pointer-events: none;
+    background: transparent;
+    opacity: 0.55;
+}
+
+.nd-pagination__ellipsis {
+    display: grid;
+    place-items: center;
+    min-inline-size: 2.25rem;
+    min-block-size: 2.25rem;
+    color: var(--nd-color-text-muted);
+    font-size: var(--nd-text-sm);
+}

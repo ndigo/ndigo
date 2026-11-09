@@ -6,9 +6,15 @@ name: Docs
 on:
   pull_request:
     branches: [master, main]
+    # Runs on open/promote only. Every job bills at least one minute and bills
+    # whole even when the link check fails in five seconds, so the light lane is
+    # re-run when the PR is promoted rather than on every push; `pnpm preflight`
+    # covers edits in between (issue #276).
+    types: [opened, reopened, ready_for_review]
     paths:
       - '**/*.md'
       - 'docs/**'
+  workflow_dispatch:
 
 # Minimal permissions: only read the repository.
 permissions:
@@ -23,8 +29,9 @@ env:
 
 jobs:
   docs:
-    runs-on: ubuntu-latest
+    runs-on: ${{ fromJSON(vars.CI_RUNNER || '["ubuntu-latest"]') }}
     timeout-minutes: 10
+    if: ${{ github.event_name != 'pull_request' || !github.event.pull_request.draft }}
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2

@@ -33,7 +33,21 @@ pnpm install             # installs all workspace packages
 
 ## Validate before you push
 
-All of these must pass; CI runs them on every PR:
+Run the whole lane locally with one command:
+
+```bash
+pnpm hooks:install   # once per clone: worktree guard + pre-push lane
+pnpm preflight       # every gate below, fail-fast order (~5 min on a dev box)
+pnpm preflight:fast  # format, lint, links, typecheck only
+```
+
+`preflight` mirrors `.github/workflows/ci.yml` and is what the pre-push hook
+runs. GitHub-hosted runner minutes are a hard monthly budget (2,000 on the free
+tier), so a push carries its own proof and CI is the backstop, not the first
+run. `git push --no-verify` skips the hook; `PREFLIGHT=fast git push` runs the
+fast gates only.
+
+Every gate individually:
 
 ```bash
 pnpm build               # all library packages (tsc -b per package)
@@ -48,6 +62,9 @@ pnpm audit --prod        # production advisories — must be clean
 pnpm manifest:check      # package manifest conformance
 pnpm doc                 # TypeDoc — must emit 0 errors, 0 warnings
 ```
+
+CI cost is itself a tracked gate: `pnpm ci:usage` replays the run history and
+reports billable minutes per workflow, job, and day (issue #276).
 
 Format the code you touched:
 

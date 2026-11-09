@@ -186,6 +186,7 @@ and `X-Forwarded-Proto`; keep the proxy's hop count minimal.
 - [Guide 24 — Distributed Locks](24-distributed-locks.md) — single-executor work across slots
 - [Guide 25 — Clustering](25-clustering.md) — the supervisor and worker slots
 - [Guide 32 — Telemetry](32-telemetry.md) — traces, metrics, logs
+- [Guide 45 — Performance & Scaling](45-performance-and-scaling.md) — budgets and load
 - [Guide 33 — Management Endpoints](33-management-endpoints.md) — health and metrics
 - [Guide 37 — The `ndigo` CLI](37-ndigo-cli.md) — `serve`, `build`, `dev`
 - [Security Architecture](../architecture/security.md) — trust boundaries

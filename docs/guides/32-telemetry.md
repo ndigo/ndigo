@@ -186,6 +186,7 @@ processors had not yet exported.
 
 ## See also
 
+- [Guide 45 — Performance & Scaling](45-performance-and-scaling.md) — cardinality and sampling cost
 - [Guide 33 — Management Endpoints](33-management-endpoints.md) — health and metrics exposure
 - [apps/17-ndigo-telemetry-lab](../../apps/17-ndigo-telemetry-lab/README.md) — end-to-end telemetry
 - [`@ndigo/telemetry-node`](../../packages/ndigo-telemetry-node/README.md) — Node wiring

@@ -1,0 +1,44 @@
+/* nd-data-table — layout for the data table block.
+   Pair with nd-table.css, nd-checkbox.css, nd-button.css, and nd-pagination.css. */
+
+.nd-data-table {
+    display: grid;
+    gap: var(--nd-space-3);
+}
+
+.nd-data-table__table {
+    min-inline-size: 36rem;
+}
+
+.nd-data-table__select {
+    inline-size: 2.75rem;
+    text-align: center;
+}
+
+/* Pagination hides rows with the hidden attribute; keep them out of the table
+   layout even though rows normally get an explicit display value. */
+.nd-data-table tbody tr[hidden] {
+    display: none;
+}
+
+.nd-data-table__footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--nd-space-3);
+    align-items: center;
+    justify-content: space-between;
+}
+
+.nd-data-table__status {
+    margin: 0;
+    color: var(--nd-color-text-muted);
+    font-size: var(--nd-text-sm);
+}
+
+.nd-data-table [data-pagination] {
+    justify-content: flex-end;
+}
+
+.nd-data-table [data-pagination] .nd-pagination__list {
+    flex-wrap: nowrap;
+}

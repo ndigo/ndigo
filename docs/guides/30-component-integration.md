@@ -93,8 +93,9 @@ npx shadcn@latest add @ndigo/code-block
 
 The direct URL works without configuration:
 `npx shadcn@latest add https://ndigo.dev/r/code-block.json`. Browse the
-catalogue at [ndigo.dev/ui](https://ndigo.dev/ui) for the live item list,
-install commands, targets, and READMEs.
+catalogue at [ndigo.dev/ui](https://ndigo.dev/ui) for the item list, install
+commands, targets, and READMEs (the generated pages live in `ndigo-site`; the
+host is not deployed yet).
 
 Agents can run `ndigo ui mcp --dir <app> --registry <source>` to expose the same
 registry over MCP. The server provides `list_items`, `search_items`, `get_item`,

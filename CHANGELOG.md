@@ -22,6 +22,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `@ndigo/ui`: the owned design system — canonical `--nd-*` tokens, the opt-in
+  base layer, the typed token catalog, and a shadcn-compatible copy-in registry
+  (41 items: theme, element foundation, native-first and Zag.js primitives, and
+  five blocks).
+- `@ndigo/cli`: the `ui` family — `ui init`, `list`, `view`, `validate`, `add`,
+  and `mcp` (a stdio MCP server for registry discovery and installation).
+- `apps/20-ndigo-ui-lab`: a browser lab for the full ndigo-ui registry — tokens,
+  native-first primitives, Zag.js behaviour elements, and all five blocks — with
+  keyboard and axe coverage.
+
 - `@ndigo/cli`: the command surface expanded from the AD-75 core (serve, dev,
   generate, db, inspect, doctor) to the full developer loop — `build`, `test`,
   `lint`, `format`, `typecheck`, `clean`, `info`, `config`, `routes`, `logs`,
@@ -209,6 +219,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- `apps/07-ndigo-island`: migrated from Web Awesome to the ndigo-ui registry
+  items — the form now uses native `<input>`/`<button>` with copy-in CSS and no
+  component-library dependency (AD-95).
 - `@ndigo/cli` (AD-75): the CLI underpinnings moved from `@oclif/core` v5 to
   `@stricli/core` — commands are `buildCommand` declarations, nested `db`
   routes use `buildRouteMap`, and the bin reads the same Stricli application

@@ -141,11 +141,12 @@ contributor guides. Numbers are reading order within a section.
   stream and event bridges) and the island lifecycle: `IslandView` marker →
   `hydrateIslands()` → SSE-driven re-render.
 - [30 — UI Libraries & Component Integration](30-component-integration.md) —
-  ndigo-ui (tokens, the `ndigo ui` registry, copy-in ownership) as the optional
-  default, plus third-party Web Component libraries (Web Awesome): the AD-69
-  vetting checklist, per-component imports without wrappers, first-paint
-  fallback, FACE forms, theming, i18n, and CSP. The framework depends on none
-  of them. Reference application: `apps/07-ndigo-island`.
+  ndigo-ui (tokens, the `ndigo ui`/shadcn registry, the `/ui` catalogue, MCP
+  discovery, copy-in ownership) as the optional default, plus third-party Web
+  Component libraries (Web Awesome): the AD-69 vetting checklist, per-component
+  imports without wrappers, first-paint fallback, form participation, theming,
+  i18n, and CSP. The framework depends on none of them. Reference application:
+  `apps/20-ndigo-ui-lab`; `apps/07-ndigo-island` is the migrated island example.
 - [31 — Micro Frontends with `@ndigo/host`](31-micro-frontends.md) —
   `HostManager`, feature contexts, lazy chunks, shared-dependency validation,
   event relay, and feature routing.

@@ -14,7 +14,7 @@ that every slot exists yet — guides marked _planned_ are still on the roadmap.
 
 ## Start here
 
-1. **00 — Core Concepts & Mental Model** _(planned)_ — context/factory/bean,
+1. [00 — Core Concepts & Mental Model](00-core-concepts.md) — context/factory/bean,
    dispatcher/route/mapping, views and targets, platform presets, and how the
    packages fit together.
 2. [01 — Building a Node API](01-building-a-node-api.md) — the primary server
@@ -35,9 +35,9 @@ that every slot exists yet — guides marked _planned_ are still on the roadmap.
   `@environment` validation, live rebind (`@refreshScope`), at-rest secrets
   (`{cipher:...}` + `NDIGO_SECRET_KEY`), and the remote config source
   (`configServer`, poll → refresh → rebind).
-- **04 — Dependency Injection, Scopes & Lifecycle** _(planned)_ — factory
-  scopes, aware interfaces, init/destroy/close, smart lifecycle, parent/child
-  contexts, and application events.
+- [04 — Dependency Injection, Scopes & Lifecycle](04-dependency-injection-and-lifecycle.md)
+  — factory scopes, aware interfaces, init/destroy/close, smart lifecycle,
+  parent/child contexts, and application events.
 - **05 — Routing & Route Conditions** _(planned)_ — path patterns, query and
   matrix conditions, method/access conditions, precedence, 404/405, partitions,
   and feature routing.
@@ -195,9 +195,10 @@ that every slot exists yet — guides marked _planned_ are still on the roadmap.
 - **Browser app:** 02 → 29 → 30 → 31 → 27 → 28 → 36.
 - **Full-stack / islands:** 01 + 02 → 09 → 17 → 18 → 29 → 30 → 31.
 
-Start with **00 — Core Concepts** (when it lands) or guide 01; guide 01
-introduces the concepts the rest of the guides and package READMEs assume. Use
-the API reference when you need the full symbol surface.
+Start with [**00 — Core Concepts**](00-core-concepts.md), then guide 01 for a
+Node app or guide 02 for a browser app. Guide 01 introduces the concepts the rest
+of the guides and package READMEs assume. Use the API reference when you need
+the full symbol surface.
 
 ## Guide contract
 

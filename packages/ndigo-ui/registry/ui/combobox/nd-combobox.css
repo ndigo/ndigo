@@ -1,0 +1,107 @@
+/* <nd-combobox> — filterable select built on the design tokens. */
+
+nd-combobox {
+    display: contents;
+}
+
+nd-combobox [data-part='root'] {
+    display: block;
+}
+
+nd-combobox [data-part='label'] {
+    display: block;
+    margin-block-end: var(--nd-space-1);
+    color: var(--nd-color-text);
+    font-size: var(--nd-text-sm);
+    font-weight: var(--nd-weight-medium);
+}
+
+nd-combobox [data-part='control'] {
+    display: flex;
+    gap: var(--nd-space-1);
+    align-items: center;
+}
+
+nd-combobox [data-part='input'] {
+    flex: 1;
+    min-block-size: 2.5rem;
+    padding-block: var(--nd-space-2);
+    padding-inline: var(--nd-space-3);
+    color: var(--nd-color-text);
+    font: inherit;
+    font-size: var(--nd-text-sm);
+    background: var(--nd-color-surface);
+    border: 1px solid var(--nd-color-border);
+    border-radius: var(--nd-radius-md);
+}
+
+nd-combobox [data-part='input']::placeholder {
+    color: var(--nd-color-text-muted);
+}
+
+nd-combobox [data-part='input']:focus-visible {
+    border-color: var(--nd-color-accent);
+    outline: var(--nd-focus-ring-width) solid var(--nd-focus-ring-color);
+    outline-offset: var(--nd-focus-ring-offset);
+}
+
+nd-combobox [data-part='trigger'],
+nd-combobox [data-part='clear-trigger'] {
+    padding: var(--nd-space-2);
+    color: var(--nd-color-text-muted);
+    font: inherit;
+    background: transparent;
+    border: 0;
+    border-radius: var(--nd-radius-sm);
+    cursor: pointer;
+}
+
+nd-combobox [data-part='trigger']:hover,
+nd-combobox [data-part='clear-trigger']:hover {
+    color: var(--nd-color-text);
+    background: var(--nd-color-accent-soft);
+}
+
+nd-combobox [data-part='positioner'] {
+    z-index: var(--nd-z-dropdown);
+}
+
+nd-combobox [data-part='content'] {
+    min-inline-size: 12rem;
+    max-block-size: 16rem;
+    padding-block: var(--nd-space-1);
+    overflow: auto;
+    color: var(--nd-color-text);
+    background: var(--nd-color-surface-raised);
+    border: 1px solid var(--nd-color-border);
+    border-radius: var(--nd-radius-md);
+    box-shadow: var(--nd-shadow-md);
+}
+
+nd-combobox [data-part='item'] {
+    display: flex;
+    gap: var(--nd-space-2);
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--nd-space-2) var(--nd-space-3);
+    font-size: var(--nd-text-sm);
+    cursor: pointer;
+}
+
+nd-combobox [data-part='item'][data-highlighted] {
+    background: var(--nd-color-accent-soft);
+}
+
+nd-combobox [data-part='item'][data-state='checked'] {
+    color: var(--nd-color-accent-strong);
+    font-weight: var(--nd-weight-medium);
+}
+
+nd-combobox [data-part='item'][data-disabled] {
+    pointer-events: none;
+    opacity: 0.55;
+}
+
+nd-combobox [data-part='item-indicator'] {
+    color: var(--nd-color-accent-strong);
+}

@@ -12,6 +12,11 @@ if (typeof globalThis.ResizeObserver === 'undefined') {
     globalThis.ResizeObserver = TestResizeObserver;
 }
 
+// Select scrolls the content into view on open; jsdom does not implement it.
+if (typeof Element !== 'undefined' && typeof Element.prototype.scrollTo !== 'function') {
+    Element.prototype.scrollTo = () => {};
+}
+
 export async function flush(): Promise<void> {
     await new Promise<void>((resolve) => setTimeout(resolve, 0));
     if (typeof requestAnimationFrame === 'function') {

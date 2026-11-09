@@ -1,9 +1,12 @@
 /**
  * Dependency pin guard for the Zag.js spike.
  */
+import { ListCollection } from '@zag-js/collection';
 import { INIT_STATE } from '@zag-js/core';
 import { machine as accordionMachine } from '@zag-js/accordion';
+import { machine as comboboxMachine } from '@zag-js/combobox';
 import { machine as popoverMachine } from '@zag-js/popover';
+import { machine as selectMachine } from '@zag-js/select';
 import { machine as dialogMachine } from '@zag-js/dialog';
 import { machine as menuMachine } from '@zag-js/menu';
 import { machine as sliderMachine } from '@zag-js/slider';
@@ -23,6 +26,9 @@ describe('Zag.js 1.x pin', () => {
         expect(typeof accordionMachine.initialState).toBe('function');
         expect(typeof switchMachine.initialState).toBe('function');
         expect(typeof sliderMachine.initialState).toBe('function');
+        expect(typeof selectMachine.initialState).toBe('function');
+        expect(typeof comboboxMachine.initialState).toBe('function');
+        expect(new ListCollection({ items: ['a'] }).items).toEqual(['a']);
         expect(typeof INIT_STATE).toBe('string');
     });
 

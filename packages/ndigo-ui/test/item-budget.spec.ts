@@ -31,6 +31,14 @@ const ITEMS: readonly ItemBudget[] = [
         files: ['registry/ui/button/nd-button.css'],
     },
     {
+        meta: 'registry/ui/combobox/meta.json',
+        files: ['registry/ui/combobox/nd-combobox.ts', 'registry/ui/combobox/nd-combobox.css'],
+    },
+    {
+        meta: 'registry/ui/select/meta.json',
+        files: ['registry/ui/select/nd-select.ts', 'registry/ui/select/nd-select.css'],
+    },
+    {
         meta: 'registry/ui/slider/meta.json',
         files: ['registry/ui/slider/nd-slider.ts', 'registry/ui/slider/nd-slider.css'],
     },

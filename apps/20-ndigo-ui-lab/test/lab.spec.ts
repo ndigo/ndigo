@@ -10,6 +10,7 @@ import axe from 'axe-core';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import '../src/ui/nd-accordion/nd-accordion';
 import '../src/ui/nd-dialog/nd-dialog';
+import '../src/ui/nd-drawer/nd-drawer';
 import '../src/ui/nd-menu/nd-menu';
 import '../src/ui/nd-popover/nd-popover';
 import '../src/ui/nd-combobox/nd-combobox';
@@ -156,6 +157,18 @@ describe('ndigo-ui lab', () => {
         itemTrigger.click();
         await flush();
         expect(itemTrigger.getAttribute('aria-expanded')).toBe('true');
+    });
+
+    it('opens and closes the drawer', async () => {
+        const drawer = get<HTMLElement>(document, 'nd-drawer');
+        const content = get<HTMLElement>(drawer, '[data-part="content"]');
+        get<HTMLElement>(drawer, '[data-part="trigger"]').click();
+        await flush();
+        expect(content.hasAttribute('hidden')).toBe(false);
+
+        get<HTMLElement>(drawer, '[data-part="close-trigger"]').click();
+        await flush();
+        expect(content.hasAttribute('hidden')).toBe(true);
     });
 
     it('opens and closes the dialog', async () => {

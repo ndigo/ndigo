@@ -14,7 +14,7 @@
           "sha256": "6a298af62b01122adea3a480b6c04c2711035b5bd558c8187ee2e51572beb1d3"
         }
       ],
-      "installedAt": "2026-11-09T15:32:33.587Z"
+      "installedAt": "2026-11-09T15:59:34.377Z"
     },
     "dialog": {
       "registry": "../../registry.json",
@@ -254,6 +254,21 @@
         }
       ],
       "installedAt": "2026-11-09T15:32:33.587Z"
+    },
+    "drawer": {
+      "registry": "../../registry.json",
+      "type": "registry:ui",
+      "files": [
+        {
+          "target": "src/ui/nd-drawer/nd-drawer.css",
+          "sha256": "9d411c1956b9023a4e2b2fe6029655c9b9c341e3439c0bdfba6c430d66f2b1da"
+        },
+        {
+          "target": "src/ui/nd-drawer/nd-drawer.ts",
+          "sha256": "2f7d61c96701ab9fac408c024db7513f165ca63c17761ecba6bb14b2f3adaf8c"
+        }
+      ],
+      "installedAt": "2026-11-09T15:59:34.377Z"
     }
   }
 }

@@ -3,6 +3,7 @@
  * token readout and the menu selection status.
  */
 import './ui/nd-dialog/nd-dialog';
+import './ui/nd-drawer/nd-drawer';
 import './ui/nd-menu/nd-menu';
 import './ui/nd-popover/nd-popover';
 import './ui/nd-tooltip/nd-tooltip';

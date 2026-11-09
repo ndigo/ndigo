@@ -810,6 +810,28 @@
         }
       ],
       "docs": "Copy the block and call `initCodeBlocks(document)`; the copy action emits `nd-copy`."
+    },
+    {
+      "name": "sidebar",
+      "type": "registry:block",
+      "title": "Sidebar",
+      "description": "Sticky section navigation with native collapsible groups, active links, and a footer.",
+      "author": "Ndigo <https://ndigo.dev>",
+      "categories": ["block", "navigation"],
+      "registryDependencies": ["theme"],
+      "files": [
+        {
+          "path": "registry/blocks/sidebar/sidebar.html",
+          "type": "registry:block",
+          "target": "@components/sidebar/sidebar.html"
+        },
+        {
+          "path": "registry/blocks/sidebar/sidebar.css",
+          "type": "registry:file",
+          "target": "@components/sidebar/sidebar.css"
+        }
+      ],
+      "docs": "Copy the aside into a layout grid; groups are native `<details>` and the active link uses `aria-current=\"page\"`."
     }
   ]
 }

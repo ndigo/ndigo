@@ -59,7 +59,7 @@
           "sha256": "dcef65c13d86e0b0b7e944b57c202eecfdc95ab5d4792ed76e0a1b8a93953e54"
         }
       ],
-      "installedAt": "2026-11-09T19:20:29.809Z"
+      "installedAt": "2026-11-09T19:29:10.236Z"
     },
     "button": {
       "registry": "../../registry.json",
@@ -544,6 +544,21 @@
         }
       ],
       "installedAt": "2026-11-09T19:20:29.809Z"
+    },
+    "sidebar": {
+      "registry": "../../registry.json",
+      "type": "registry:block",
+      "files": [
+        {
+          "target": "src/components/sidebar/sidebar.css",
+          "sha256": "e9386db4e3ebcaf32bedd120ce833aa4b66db610d71e85281e53dcf5f06c9b7f"
+        },
+        {
+          "target": "src/components/sidebar/sidebar.html",
+          "sha256": "f86de7f07b065e01c18875b8e2fc9be6623209a93097c093fb75714efe39a816"
+        }
+      ],
+      "installedAt": "2026-11-09T19:29:10.236Z"
     }
   }
 }

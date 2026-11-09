@@ -17,8 +17,8 @@ JavaScript-native structures with fail-loud semantics throughout.
 - Order property sources and activate profiles correctly.
 - Bind external values to typed `@configurationProperties` classes.
 - Resolve placeholders and validate the environment at boot.
-- Refresh live configuration and keep secrets out of artifacts.
-- Pull remote configuration through the config server.
+- Extend the environment with custom sources and customizers.
+- Continue with [guide 43](43-live-configuration-and-secrets.md) for refresh, secrets, and remote config.
 
 ## The pipeline
 
@@ -325,127 +325,12 @@ rebuilds); `NodeEnvironment.refresh()` also re-snapshots `process.env`. An
 environment refresh **emits `config:refresh`** — the trigger behind the live
 rebind (next section).
 
-## 7. Live rebind — `@refreshScope`
+## 7. Live configuration, secrets, and remote config
 
-Configuration is no longer a boot-time snapshot: environments emit
-`config:refresh` after every `refresh()`, and beans opt in to re-binding on
-it. Mark a `@configurationProperties` class:
-
-```ts
-import { refreshScope, configurationProperties, property } from '@ndigo/context';
-
-@refreshScope // re-binds on every environment refresh
-@configurationProperties('server')
-class ServerConfig {
-    @property('port', Number) @defaultValue('8080') port!: number;
-}
-```
-
-- `@refreshScope` = a scope (`scope('refresh')`): its cached instance is
-  discarded on `config:refresh`; the next `getValue` re-creates from the
-  factory.
-- The boot rebind listener re-runs `resolveConfigurationProperties` +
-  `setValue` for refresh-scoped classes — `getValue('serverConfig')` returns
-  the fresh snapshot; unmarked classes keep the boot-time instance
-  (snapshot identity).
-- Scope-level beans (constructor-registered classes) clear their caches on
-  the event too.
-- **Freshness is on re-fetch, not on the reference**: a bean that captured
-  a config object in its constructor keeps the old object until it
-  re-looks up. No proxy machinery (repo posture) — documented, deliberate.
-- Coverage is config classes only in v1 (AD-29 D-2); `@entry` method
-  results are not re-run.
-
-#### Refresh snapshot semantics
-
-`config:refresh` re-binds the opt-in surface only — it does **not**
-re-inject consumers. After a refresh:
-
-- singleton beans and consumers that captured a value **at construction**
-  keep the **old** value for their lifetime;
-- only `@refreshScope` beans and re-bound `@configurationProperties` names
-  see the new values (from their next lookup);
-- a bean that injects the environment / property accessor (or reads
-  `environment.getPropertyAs(...)` at call time) always observes the
-  current source state.
-
-The recommended consumer pattern is therefore to **inject the environment
-(or another property accessor) rather than the value**: reads at call time
-see fresh state after any number of refreshes, while captured values go
-stale the moment a refresh lands. Dependency re-injection of captured
-values is a designed follow-up (plan ARC-3) — v1 consumers must re-look-up
-or read through the environment.
-
-Implementation note: `@refreshScope` is realized by **two listeners** —
-the context's scope-clear (`RefreshScope.clear()` on `config:refresh`) and
-boot's config-class rebind (`resolveConfigurationProperties` + `setValue`)
-— whose relative order is their subscription order.
-
-## 8. At-rest secrets — `{cipher:...}` values and `NDIGO_SECRET_KEY`
-
-Encrypted config values keep secrets out of repos/backups/logs: the
-**ciphertext** lives in the file, the **key** lives in a separate channel.
-This defends read-only access to stored artifacts (repo leak, backup, paste)
-— it does NOT defend against full host compromise (documented threat model,
-AD-29 D-4).
-
-```json
-{ "db": { "password": "{cipher:v1:…}" } }
-```
-
-```ts
-// Node bootstrap: key + decryptor wiring
-const app = new ApplicationBuilder([/* configurations */]);
-app.secrets(AESGCMCipher.fromEnvironment()); // reads NDIGO_SECRET_KEY
-```
-
-- `NDIGO_SECRET_KEY` is base64 of **exactly 32 bytes** (AES-256); malformed
-  or wrong length fails at construction, never a passive field. Passphrases
-  are rejected.
-- Values resolve to plaintext at every lookup and in
-  `@configurationProperties` binding; the key path (`db.password`) is bound
-  as GCM AAD — moving a ciphertext between keys fails auth at lookup.
-- Fail-loud everywhere: wrong key, tampered value, or an unknown
-  marker scheme throws; decrypted values never reach error text or logs.
-- The marker's `scheme` segment is the dispatch key — a deployment can mix
-  schemes (old `cipher:v1` + future `jwe:` values) during migration; an
-  adapter whose capabilities can't honor key-path AAD is refused at wiring.
-- With no decryptor wired, markers pass through as raw text (local binding
-  does not fail) — the two-channel posture is deployer-driven, not
-  enforced; wires are the signal.
-
-## 9. Config server — remote sources and the poll loop
-
-Fetch a plain JSON document over HTTPS and make it a named source — changes
-merge live and rebind refresh-scoped beans:
-
-```ts
-builder.configServer({
-    url: 'https://config.internal/ndigo-api.json', // https enforced
-    pollMs: 30_000, // 0/absent = fetch once
-    headers: { Authorization: `Bearer ${process.env.NDIGO_CONFIG_SERVER_TOKEN}` },
-    optional: false, // fail boot when unreachable
-});
-```
-
-- Precedence slot: `commandLine > boot > systemEnvironment > configServer >
-  dotenv > application-{profile} > application > defaults` (documented
-  chain, pinned by a real-boot order spec; the `dotenv` entry is a reserved
-  slot — nothing reads `.env`, see §1).
-- **Change detection**: ETag/`If-None-Match` (304 → nothing happens) or
-  body-text comparison. A real change replaces the source in place and
-  fires `environment.refresh()` → `config:refresh` → `@refreshScope` beans
-  rebind. No change → no event → no rebinding.
-- `optional: true` (default): a dead server at boot warns and proceeds on
-  local sources; later poll failures keep last-good. `optional: false`
-  fails startup loudly naming the URL.
-- `{cipher:...}` values inside a fetched document decrypt when `secrets(...)`
-  is also wired.
-- Lifecycle: polling starts after boot succeeds and stops when the returned
-  context closes.
-- Runtime delivery (e.g. Vault): use a custom `fetch` seam with a
-  `vault://`-style URL — documented extension point, no Vault-specific
-  code in v1 (AD-29 D-3 rung 5).
+Live rebinding, at-rest `{cipher:...}` secrets, and the remote config server are
+covered in [guide 43](43-live-configuration-and-secrets.md). Everything above is
+the boot-time source/binding pipeline; everything in 43 is the running-app
+surface.
 
 ## Editor support
 
@@ -504,6 +389,7 @@ annotated `"x-ndigo-read-from-config": false`; `management.*` is read by
 
 ## See also
 
+- [Guide 43 — Live Configuration, Secrets & Remote Config](43-live-configuration-and-secrets.md) — refresh, secrets, and the config server
 - [Guide 01 — Building a Node API](01-building-a-node-api.md) for the surrounding bootstrap
 - [Environment API](../reference/2026-09-08_ENVIRONMENT_API.md) for the full surface
 - [AD-29](../decisions/2026-09-25_AD29_CONFIGURATION_REFRESH_SECRETS_CONFIG_SERVER.md) for the precedence, refresh, secrets, and config-server decisions

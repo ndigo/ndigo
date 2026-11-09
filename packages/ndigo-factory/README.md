@@ -38,7 +38,7 @@ factory.getValue<GreetingService>('greetingService').greet(); // 'hello'
 - `@singletonScope` — one shared instance per factory (default when no scope is declared)
 - `@prototypeScope` — a new instance on each `getValue()` resolution
 - `@hashScope` — key-based contextual scope (explicit key activation required)
-- `@refreshScope` — one cached instance per factory, discarded when the environment refreshes (`config:refresh`), so the next `getValue()` re-creates it — see [guide 03 §7](../../docs/guides/03-environment-configuration.md#7-live-rebind--refreshscope)
+- `@refreshScope` — one cached instance per factory, discarded when the environment refreshes (`config:refresh`), so the next `getValue()` re-creates it — see [guide 43 §1](../../docs/guides/43-live-configuration-and-secrets.md#1-live-rebind--refreshscope)
 - `@scope('<name>')` — custom scope marker
 
 Built-in names: `singleton`, `prototype`, `route` (implemented using key-based hash scope), `hash`, `refresh`. Custom scopes register through `ScopedFactory`: `registerScope(name, scope)`, `getScope(name)`, `getScopeNames()`, `destroyScopedValue(scopeName, valueName)`. Custom implementations conform to the `Scope` interface and use an object-factory callback pattern for lazy creation.

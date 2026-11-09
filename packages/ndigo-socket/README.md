@@ -155,7 +155,7 @@ no reconnect, replay, global ordering or exactly-once promise. Each transport
 supports one consumer per scope; a registry (`path`/`room`) and broker (`topic`)
 can share one. Await `broker.close()` to close sessions and unsubscribe before
 the owner closes the transport/publisher; it does not close either transport or
-queue store. See the [opt-in composition and limits](../../docs/guides/15-websockets.md#cross-node-live-fan-out-opt-in).
+queue store. See the [opt-in composition and limits](../../docs/guides/42-stomp.md#2-cross-node-live-fan-out-opt-in).
 
 ## API
 

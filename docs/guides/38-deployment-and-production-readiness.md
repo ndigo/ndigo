@@ -180,7 +180,8 @@ and `X-Forwarded-Proto`; keep the proxy's hop count minimal.
 
 ## See also
 
-- [Guide 03 — Environment & Configuration](03-environment-configuration.md) — profiles, secrets, refresh
+- [Guide 03 — Environment & Configuration](03-environment-configuration.md) — the boot-time pipeline
+- [Guide 43 — Live Configuration, Secrets & Remote Config](43-live-configuration-and-secrets.md) — refresh, secrets, remote config
 - [Guide 04 — Dependency Injection, Scopes & Lifecycle](04-dependency-injection-and-lifecycle.md) — shutdown hooks
 - [Guide 24 — Distributed Locks](24-distributed-locks.md) — single-executor work across slots
 - [Guide 25 — Clustering](25-clustering.md) — the supervisor and worker slots

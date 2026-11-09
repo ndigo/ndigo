@@ -135,14 +135,19 @@ that every slot exists yet — guides marked _planned_ are still on the roadmap.
   `@ndigo/signals` (`signal`/`computed`/`effect`, the `@reactive` decorators,
   stream and event bridges) and the island lifecycle: `IslandView` marker →
   `hydrateIslands()` → SSE-driven re-render.
-- [30 — Component Integration](30-component-integration.md) — adopting a Web
-  Component library: the AD-69 vetting checklist, per-component imports without
-  wrappers, the server-fallback pattern for first paint, FACE form submission
-  into the existing binding/Zod path, token theming, and i18n wiring.
-  Reference application: `apps/07-ndigo-island` (AD-71 — Web Awesome).
+- [30 — UI Libraries & Component Integration](30-component-integration.md) —
+  ndigo-ui (tokens, the `ndigo ui` registry, copy-in ownership) as the optional
+  default, plus third-party Web Component libraries (Web Awesome): the AD-69
+  vetting checklist, per-component imports without wrappers, first-paint
+  fallback, FACE forms, theming, i18n, and CSP. The framework depends on none
+  of them. Reference application: `apps/07-ndigo-island`.
 - [31 — Micro Frontends with `@ndigo/host`](31-micro-frontends.md) —
   `HostManager`, feature contexts, lazy chunks, shared-dependency validation,
   event relay, and feature routing.
+
+- [41 — Custom View Engines](41-custom-view-engines.md) — implement `View` /
+  `ProducerView` for React, Vue, or a bespoke renderer; resolver registration,
+  hydration, assets, CSP, streaming, and testing.
 
 ## Cross-cutting
 

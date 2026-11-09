@@ -1,0 +1,51 @@
+/* nd-checkbox — native checkbox and radio controls on the design tokens.
+   The platform supplies the control; `accent-color` supplies the brand. */
+
+.nd-checkbox,
+.nd-radio {
+    flex: none;
+    inline-size: 1rem;
+    block-size: 1rem;
+    margin: 0;
+    accent-color: var(--nd-color-accent);
+    cursor: pointer;
+}
+
+.nd-checkbox:focus-visible,
+.nd-radio:focus-visible {
+    outline: var(--nd-focus-ring-width) solid var(--nd-focus-ring-color);
+    outline-offset: var(--nd-focus-ring-offset);
+}
+
+.nd-checkbox:disabled,
+.nd-radio:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+}
+
+.nd-choice {
+    display: flex;
+    gap: var(--nd-space-2);
+    align-items: start;
+}
+
+.nd-choice > .nd-checkbox,
+.nd-choice > .nd-radio {
+    margin-block-start: 0.15em;
+}
+
+.nd-choice > .nd-label {
+    font-weight: var(--nd-weight-regular);
+}
+
+.nd-choice-group {
+    display: grid;
+    gap: var(--nd-space-2);
+    padding: 0;
+    margin: 0;
+    border: 0;
+}
+
+.nd-choice-group > .nd-label {
+    margin-block-end: var(--nd-space-1);
+}

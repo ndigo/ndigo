@@ -27,6 +27,14 @@ const ITEMS: readonly ItemBudget[] = [
         files: ['registry/blocks/app-shell/app-shell.html', 'registry/blocks/app-shell/app-shell.css'],
     },
     {
+        meta: 'registry/blocks/code-block/meta.json',
+        files: [
+            'registry/blocks/code-block/code-block.html',
+            'registry/blocks/code-block/code-block.css',
+            'registry/blocks/code-block/code-block.ts',
+        ],
+    },
+    {
         meta: 'registry/blocks/data-table/meta.json',
         files: [
             'registry/blocks/data-table/data-table.html',

@@ -59,7 +59,7 @@
           "sha256": "dcef65c13d86e0b0b7e944b57c202eecfdc95ab5d4792ed76e0a1b8a93953e54"
         }
       ],
-      "installedAt": "2026-11-09T17:56:00.586Z"
+      "installedAt": "2026-11-09T19:20:29.809Z"
     },
     "button": {
       "registry": "../../registry.json",
@@ -70,7 +70,7 @@
           "sha256": "87b9e9902c6c24cc591e60a98d9424cafe5f5f3a573e12fd356bdabb1cd29f26"
         }
       ],
-      "installedAt": "2026-11-09T17:56:00.586Z"
+      "installedAt": "2026-11-09T19:20:29.809Z"
     },
     "app-shell": {
       "registry": "../../registry.json",
@@ -525,6 +525,25 @@
         }
       ],
       "installedAt": "2026-11-09T18:34:37.761Z"
+    },
+    "code-block": {
+      "registry": "../../registry.json",
+      "type": "registry:block",
+      "files": [
+        {
+          "target": "src/components/code-block/code-block.css",
+          "sha256": "4bc252961cfcb362f498cef7f2fba45b114866585ea4c6c6f7067903f0964486"
+        },
+        {
+          "target": "src/components/code-block/code-block.html",
+          "sha256": "27d90282b3551f9fb3abd7de000187fff95ea08006b0ad01d45cc88ddd63135c"
+        },
+        {
+          "target": "src/components/code-block/code-block.ts",
+          "sha256": "148c42b27e1018ae0d0119aa5fb99ef6438d650e20c53ca29038ac4f635dd74c"
+        }
+      ],
+      "installedAt": "2026-11-09T19:20:29.809Z"
     }
   }
 }

@@ -783,6 +783,33 @@
         }
       ],
       "docs": "Add `.nd-prose` around rendered content; heading levels stay semantic and the width caps at 65ch."
+    },
+    {
+      "name": "code-block",
+      "type": "registry:block",
+      "title": "Code block",
+      "description": "Preformatted code surface with a language label, copy button, and nd-copy event.",
+      "author": "Ndigo <https://ndigo.dev>",
+      "categories": ["block", "content"],
+      "registryDependencies": ["theme", "button"],
+      "files": [
+        {
+          "path": "registry/blocks/code-block/code-block.html",
+          "type": "registry:block",
+          "target": "@components/code-block/code-block.html"
+        },
+        {
+          "path": "registry/blocks/code-block/code-block.css",
+          "type": "registry:file",
+          "target": "@components/code-block/code-block.css"
+        },
+        {
+          "path": "registry/blocks/code-block/code-block.ts",
+          "type": "registry:file",
+          "target": "@components/code-block/code-block.ts"
+        }
+      ],
+      "docs": "Copy the block and call `initCodeBlocks(document)`; the copy action emits `nd-copy`."
     }
   ]
 }

@@ -7,7 +7,7 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import axe from 'axe-core';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import '../src/ui/nd-accordion/nd-accordion';
 import '../src/ui/nd-dialog/nd-dialog';
 import '../src/ui/nd-drawer/nd-drawer';
@@ -27,6 +27,7 @@ import '../src/ui/nd-toast/nd-toast';
 import '../src/ui/nd-tooltip/nd-tooltip';
 import { initCommandPalette } from '../src/components/command/command';
 import { initDataTable } from '../src/components/data-table/data-table';
+import { initCodeBlocks } from '../src/components/code-block/code-block';
 import type { NdToast } from '../src/ui/nd-toast/nd-toast';
 import type { NdTooltip } from '../src/ui/nd-tooltip/nd-tooltip';
 
@@ -80,6 +81,7 @@ beforeEach(() => {
     document.body.innerHTML = match?.[1] ?? '';
     initCommandPalette(document);
     initDataTable(document);
+    initCodeBlocks(document);
 });
 
 afterEach(() => {
@@ -167,6 +169,22 @@ describe('ndigo-ui lab', () => {
 
         get<HTMLButtonElement>(table, '[data-pagination] button[data-page="2"]').click();
         expect(get<HTMLElement>(table, '[data-status]').textContent).toBe('Showing 4–6 of 6');
+    });
+
+    it('renders the code block tier', async () => {
+        const block = get<HTMLElement>(document, '[data-code-block]');
+        const writeText = vi.fn().mockResolvedValue(undefined);
+        Object.defineProperty(navigator, 'clipboard', { value: { writeText }, configurable: true });
+        const copies: string[] = [];
+        block.addEventListener('nd-copy', (event) => {
+            copies.push((event as CustomEvent<{ text: string }>).detail.text);
+        });
+
+        get<HTMLButtonElement>(block, '[data-copy]').click();
+        await vi.waitFor(() => expect(get<HTMLElement>(block, '[data-copy]').textContent?.trim()).toBe('Copied'));
+
+        expect(copies).toHaveLength(1);
+        expect(copies[0]).toContain('export function greet');
     });
 
     it('renders the content primitives', () => {

@@ -78,7 +78,8 @@ native-first CSS items,
 `dialog`, `menu`, `popover`, `tooltip`, `tabs`, `accordion`, `switch`, `slider`,
 `select`, `combobox`, `drawer`, `date-picker`, `scroll-area`, `navigation-menu`, `tags-input`, and
 `file-upload` are the behaviour items built on Zag.js; `toast` is the native-first live region, and
-`app-shell` and `command` are the blocks; `data-table` composes the table, checkbox, button, and pagination items.
+`app-shell` and `command` are the blocks; `data-table` composes the table, checkbox, button, and pagination items;
+`code-block` adds the preformatted surface and copy action.
 
 ## API
 

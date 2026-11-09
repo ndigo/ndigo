@@ -17,6 +17,7 @@ import '../src/ui/nd-combobox/nd-combobox';
 import '../src/ui/nd-date-picker/nd-date-picker';
 import '../src/ui/nd-scroll-area/nd-scroll-area';
 import '../src/ui/nd-navigation-menu/nd-navigation-menu';
+import '../src/ui/nd-tags-input/nd-tags-input';
 import '../src/ui/nd-select/nd-select';
 import '../src/ui/nd-slider/nd-slider';
 import '../src/ui/nd-switch/nd-switch';
@@ -150,6 +151,25 @@ describe('ndigo-ui lab', () => {
         expect(content.hidden).toBe(true);
         expect(picker.dataset.value).toBe('2026-12-25');
         expect(get<HTMLInputElement>(picker, '[data-part="hidden-input"]').value).toBe('2026-12-25');
+    });
+
+    it('renders the tags input tier', async () => {
+        const tags = get<HTMLElement>(document, 'nd-tags-input');
+        const previews = () =>
+            [...tags.querySelectorAll<HTMLElement>('[data-part="item-text"]')].map((item) => item.textContent);
+        expect(previews()).toEqual(['design', 'system']);
+
+        const input = get<HTMLInputElement>(tags, '[data-part="input"]');
+        input.focus();
+        await flush();
+        input.value = 'accessibility';
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        await flush();
+        input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+        await flush();
+
+        expect(previews()).toEqual(['design', 'system', 'accessibility']);
+        expect(tags.dataset.value).toBe('design, system, accessibility');
     });
 
     it('renders the navigation menu tier', async () => {

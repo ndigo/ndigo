@@ -25,6 +25,7 @@
         <link rel="stylesheet" href="/src/ui/nd-scroll-area/nd-scroll-area.css" />
         <link rel="stylesheet" href="/src/ui/nd-pagination/nd-pagination.css" />
         <link rel="stylesheet" href="/src/ui/nd-navigation-menu/nd-navigation-menu.css" />
+        <link rel="stylesheet" href="/src/ui/nd-tags-input/nd-tags-input.css" />
         <link rel="stylesheet" href="/src/ui/nd-dialog/nd-dialog.css" />
         <link rel="stylesheet" href="/src/ui/nd-drawer/nd-drawer.css" />
         <link rel="stylesheet" href="/src/components/command/command.css" />
@@ -49,6 +50,7 @@
                     <a href="#scroll">Scroll</a>
                     <a href="#pagination">Pages</a>
                     <a href="#navigation">Nav</a>
+                    <a href="#tags">Tags</a>
                     <a href="#dialog">Dialog</a>
                     <a href="#command">Command</a>
                     <a href="#menu">Menu</a>
@@ -73,6 +75,7 @@
                         <a href="#scroll">Scroll</a>
                         <a href="#pagination">Pages</a>
                         <a href="#navigation">Nav</a>
+                        <a href="#tags">Tags</a>
                         <a href="#dialog">Dialog</a>
                         <a href="#command">Command</a>
                         <a href="#menu">Menu</a>
@@ -332,6 +335,19 @@
                                 </li>
                             </ul>
                         </nd-navigation-menu>
+                    </section>
+
+                    <section id="tags" class="lab-section" aria-labelledby="tags-heading">
+                        <h2 id="tags-heading">Tags input</h2>
+                        <p>Type a tag and press Enter; each chip removes from its own trigger.</p>
+                        <nd-tags-input name="lab-tags" value="design, system" class="lab-block">
+                            <label data-part="label">Skills</label>
+                            <div data-part="control">
+                                <input data-part="input" placeholder="Add a skill" />
+                                <button data-part="clear-trigger" type="button">Clear</button>
+                            </div>
+                        </nd-tags-input>
+                        <p id="tags-status" class="lab-status" role="status">2 tags</p>
                     </section>
 
                     <section id="dialog" class="lab-section" aria-labelledby="dialog-heading">

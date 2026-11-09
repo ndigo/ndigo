@@ -39,6 +39,10 @@ const ITEMS: readonly ItemBudget[] = [
         files: ['registry/ui/button/nd-button.css'],
     },
     {
+        meta: 'registry/ui/tags-input/meta.json',
+        files: ['registry/ui/tags-input/nd-tags-input.ts', 'registry/ui/tags-input/nd-tags-input.css'],
+    },
+    {
         meta: 'registry/ui/navigation-menu/meta.json',
         files: [
             'registry/ui/navigation-menu/nd-navigation-menu.ts',

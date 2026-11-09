@@ -518,6 +518,29 @@
         }
       ],
       "docs": "`<nd-navigation-menu>` is the root; author list/item/trigger/content/link parts and mark the current page with `aria-current`."
+    },
+    {
+      "name": "tags-input",
+      "type": "registry:ui",
+      "title": "Tags input",
+      "description": "Removable tag chips with a hidden form value, max limit, paste parsing, and inline editing.",
+      "author": "Ndigo <https://ndigo.dev>",
+      "categories": ["ui", "form"],
+      "dependencies": ["@zag-js/tags-input@~1.47.0"],
+      "registryDependencies": ["lib"],
+      "files": [
+        {
+          "path": "registry/ui/tags-input/nd-tags-input.ts",
+          "type": "registry:ui",
+          "target": "@ui/nd-tags-input/nd-tags-input.ts"
+        },
+        {
+          "path": "registry/ui/tags-input/nd-tags-input.css",
+          "type": "registry:file",
+          "target": "@ui/nd-tags-input/nd-tags-input.css"
+        }
+      ],
+      "docs": "`<nd-tags-input>` generates chips from the machine value; the hidden input joins tags with `\", \"`."
     }
   ]
 }

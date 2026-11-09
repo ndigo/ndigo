@@ -16,6 +16,7 @@ import '../src/ui/nd-popover/nd-popover';
 import '../src/ui/nd-combobox/nd-combobox';
 import '../src/ui/nd-date-picker/nd-date-picker';
 import '../src/ui/nd-scroll-area/nd-scroll-area';
+import '../src/ui/nd-navigation-menu/nd-navigation-menu';
 import '../src/ui/nd-select/nd-select';
 import '../src/ui/nd-slider/nd-slider';
 import '../src/ui/nd-switch/nd-switch';
@@ -149,6 +150,25 @@ describe('ndigo-ui lab', () => {
         expect(content.hidden).toBe(true);
         expect(picker.dataset.value).toBe('2026-12-25');
         expect(get<HTMLInputElement>(picker, '[data-part="hidden-input"]').value).toBe('2026-12-25');
+    });
+
+    it('renders the navigation menu tier', async () => {
+        const menu = get<HTMLElement>(document, 'nd-navigation-menu');
+        expect(menu.getAttribute('aria-label')).toBe('Lab sections menu');
+
+        const trigger = get<HTMLElement>(menu, '[data-part="trigger"]');
+        const content = get<HTMLElement>(menu, '[data-part="content"]');
+        trigger.click();
+        await flush();
+        expect(content.hidden).toBe(false);
+
+        trigger.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+        await flush();
+        expect(document.activeElement?.textContent).toBe('Layout');
+
+        document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+        await flush();
+        expect(content.hidden).toBe(true);
     });
 
     it('renders the scroll area tier', async () => {

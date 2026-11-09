@@ -14,6 +14,7 @@ import '../src/ui/nd-drawer/nd-drawer';
 import '../src/ui/nd-menu/nd-menu';
 import '../src/ui/nd-popover/nd-popover';
 import '../src/ui/nd-combobox/nd-combobox';
+import '../src/ui/nd-date-picker/nd-date-picker';
 import '../src/ui/nd-select/nd-select';
 import '../src/ui/nd-slider/nd-slider';
 import '../src/ui/nd-switch/nd-switch';
@@ -112,6 +113,25 @@ describe('ndigo-ui lab', () => {
         await flush();
         expect(combobox.dataset.value).toBe('cherry');
         expect(input.value).toBe('Cherry');
+    });
+
+    it('renders the date picker tier', async () => {
+        const picker = get<HTMLElement>(document, 'nd-date-picker');
+        const content = get<HTMLElement>(picker, '[data-part="content"]');
+        get<HTMLElement>(picker, '[data-part="trigger"]').click();
+        await flush();
+        expect(content.hidden).toBe(false);
+        expect(get<HTMLElement>(picker, '[data-part="view-label"]').textContent).toBe('November 2026');
+
+        get<HTMLElement>(picker, '[data-part="next-trigger"]').click();
+        await flush();
+        expect(get<HTMLElement>(picker, '[data-part="view-label"]').textContent).toBe('December 2026');
+
+        get<HTMLElement>(picker, '[data-part="table-cell-trigger"][data-value="2026-12-25"]').click();
+        await flush();
+        expect(content.hidden).toBe(true);
+        expect(picker.dataset.value).toBe('2026-12-25');
+        expect(get<HTMLInputElement>(picker, '[data-part="hidden-input"]').value).toBe('2026-12-25');
     });
 
     it('renders the feedback tier', async () => {

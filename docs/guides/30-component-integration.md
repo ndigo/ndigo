@@ -1,55 +1,141 @@
-# Guide 30 — Component Integration
+# Guide 30 — UI Libraries & Component Integration
 
-Ndigo ships an integration contract, not a component library: components come
-from the Web Component ecosystem, the framework owns the bridge (declarative
-shadow DOM first paint, form association, hydration). The decision record is
-[AD-69](../decisions/2026-10-06_AD69_COMPONENT_INTEGRATION_CONTRACT.md); the
-library selected for the reference integration is Web Awesome
-([AD-71](../decisions/2026-10-07_AD71_COMPONENT_LIBRARY_SELECTION.md)).
+Ndigo ships **no mandatory UI library**. The framework owns the bridge to the
+Web Component ecosystem — declarative shadow DOM first paint, form association,
+hydration, view resolution — and an application chooses its components. The
+first-party design system, [`@ndigo/ui`](https://github.com/ndigo/ndigo/tree/main/packages/ndigo-ui),
+is the recommended default, but it is optional and the framework does not depend
+on it.
 
-This guide is the how-to; the runnable reference is
-[`apps/07-ndigo-island`](../../apps/07-ndigo-island/README.md) — an SSR island whose
-add-item form uses Web Awesome controls end-to-end.
+This guide covers both paths: using ndigo-ui, and adopting any other Web
+Component library (Web Awesome is the worked example). The runnable third-party
+reference is [`apps/07-ndigo-island`](../../apps/07-ndigo-island/README.md); the
+decision records are [AD-69](../decisions/2026-10-06_AD69_COMPONENT_INTEGRATION_CONTRACT.md),
+[AD-71](../decisions/2026-10-07_AD71_COMPONENT_LIBRARY_SELECTION.md), and
+[AD-95](../decisions/2026-11-08_AD95_NDIGO_UI.md).
 
 **Audience:** Browser application developers · **Prerequisites:** Guide 02 · **Reference app:** `apps/07-ndigo-island`
 
 ## What you'll learn
 
-- Vet a component library against the AD-69 checklist.
-- Import components directly without wrappers.
-- Render a server fallback for first paint.
-- Submit FACE controls through the binding/Zod path.
-- Wire token theming, i18n, and CSP.
+- Choose between ndigo-ui, a third-party Web Component library, and a view-engine UI.
+- Install ndigo-ui tokens and copy-in components with the `ndigo ui` registry.
+- Keep the framework and your app independent of any one UI library.
+- Vet a third-party library and render its first paint safely.
+- Wire FACE forms, theming, i18n, and CSP without wrappers.
 
-## 1. Selecting a library
+## 1. Choose a strategy
 
-Reuse the AD-69 D-2 checklist (all gates must hold) and record the evidence in
-a selecting ADR before adding a dependency:
+| Strategy                              | Use when                                                            | Cost                                                                      |
+| ------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| **ndigo-ui** (first-party, optional)  | You want the Ndigo design language and a copy-in registry           | You own the installed source; components arrive via `ndigo ui add`        |
+| **Third-party Web Component library** | You already have a design system (Web Awesome, Shoelace, Lit-based) | You own the adoption/fallback/i18n work; the framework stays library-free |
+| **View-engine UI** (React/Vue/Svelte) | The UI is a full framework app or a React design system             | You implement or adopt a view engine (guide 41)                           |
+| **Hand-rolled / native**              | Small surfaces, maximum control                                     | You build accessibility, forms, and theming yourself                      |
 
-| #   | Criterion     | Gate                                                                               |
-| :-- | :------------ | :--------------------------------------------------------------------------------- |
-| 1   | License       | OSI-approved; commercial tiers must be optional add-ons only                       |
-| 2   | DSD/SSR       | Real shadow content can be server-rendered, or the fallback pattern (§3) covers it |
-| 3   | FACE/forms    | Custom controls submit standard form data (name/value)                             |
-| 4   | Accessibility | Keyboard + axe-clean on the components the app uses, not just claims               |
-| 5   | Theming       | CSS custom properties (no shadow-piercing hacks); logical properties for RTL       |
-| 6   | i18n          | Component strings localizable (no hard-coded English in chrome)                    |
-| 7   | Packaging     | ESM, per-component imports, tree-shakable, no global side effects                  |
-| 8   | Maintenance   | Recent publishes, multiple maintainers, issue responsiveness                       |
-| 9   | Bundle budget | Measured per-component cost fits the app's budget                                  |
-| 10  | Wrapping      | Usable without per-component wrappers (attribute/event surface is the API)         |
+The framework packages never import a UI library. Each application selects
+independently, and two apps in one monorepo may choose differently.
 
-The library is an **application** dependency: framework packages stay
-library-free, and each consumer selects independently.
+## 2. ndigo-ui quickstart
 
-## 2. Installing and using components directly
+ndigo-ui has two halves: a small `@ndigo/ui` package (tokens, theme, typed
+catalog) and a shadcn-compatible registry of copy-in components.
+
+Install the token package and import the stylesheets:
+
+```bash
+pnpm add @ndigo/ui
+```
+
+```css
+@import '@ndigo/ui/tokens.css';
+@import '@ndigo/ui/theme.css';
+```
+
+Tokens expose `--nd-*` custom properties (color, type, spacing, radius, shadow,
+motion, stacking, focus). Dark is the default; set `data-theme="light"` on the
+root for the light palette.
+
+Initialize the registry in the app:
+
+```bash
+ndigo ui init ./apps/my-app
+ndigo ui add button input field dialog menu app-shell --dir ./apps/my-app
+```
+
+`ndigo ui init` writes `ndigo.ui.json` with the registry URL and the `src/ui`,
+`src/lib`, `src/components`, and `src/hooks` aliases. `ui add` resolves
+`registryDependencies`, installs the files into those aliases, records a
+SHA-256 per file in `ui.lock.json`, and installs the item's npm dependencies
+with the app's package manager. Use `--skipInstall` when you manage
+dependencies separately, and `--dryRun` to preview. The `theme` item is the
+copy-in alternative to importing `@ndigo/ui/tokens.css`; use one or the
+other.
+
+The current registry items are `theme`, `lib`, the native-first `button`,
+`input`, `field`, and `checkbox`, the Zag.js-backed `dialog` and `menu`, and the
+`app-shell` block. The set grows by milestone; components outside it compose
+from tokens rather than being absorbed into the package.
+
+Ownership rules:
+
+- **Installed source is yours.** Read it, edit it, and keep it in your repo;
+  updates are deliberate (`ui add --overwrite`), not automatic.
+- **The package is not a runtime.** `@ndigo/ui` ships tokens, theme CSS, and the
+  typed catalog; the element code is copy-in.
+- **Behaviour comes from Zag.js**, markup/styles from the registry. No styled
+  component library is a dependency.
+- **Conformance precedes a component**: axe-clean, keyboard/focus contract,
+  logical properties for RTL, reduced motion, DSD first paint, FACE
+  participation, and a measured gzip budget.
+
+ndigo-ui knows no consumer. The site/Astro adapter and Ndigo-specific blocks
+live outside the package; if a reusable integration emerges, it becomes an
+opt-in `integrations/` registry item.
+
+## 3. Library independence
+
+The contract is the Web Component, not the library:
+
+- The framework imports no UI package. `@ndigo/platform-web` and
+  `@ndigo/view-webcomponent` provide the bridge, not components.
+- `@ndigo/ui` is optional; `pnpm remove @ndigo/ui` leaves a working app.
+- A third-party library is an **application** dependency; the framework
+  packages stay library-free (AD-69 D-6/AD-95 D-2).
+- A view engine (React/Vue) is a presentation choice, not a framework
+  dependency. Guide 41 covers adding one.
+
+This is the difference between “the framework recommends ndigo-ui” and “the
+framework requires ndigo-ui”. Keep the app's imports at the component boundary
+so swapping libraries is a localized change.
+
+## 4. Choosing a third-party library
+
+Reuse the AD-69 D-2 checklist and record the evidence in a selecting ADR:
+
+| #   | Criterion     | Gate                                                                  |
+| --- | ------------- | --------------------------------------------------------------------- |
+| 1   | License       | OSI-approved; commercial tiers optional                               |
+| 2   | DSD/SSR       | Real shadow content server-renders, or the fallback pattern covers it |
+| 3   | FACE/forms    | Controls submit standard name/value form data                         |
+| 4   | Accessibility | Keyboard + axe-clean on the components you use                        |
+| 5   | Theming       | CSS custom properties, no shadow-piercing hacks; logical properties   |
+| 6   | i18n          | Chrome strings localizable                                            |
+| 7   | Packaging     | ESM, per-component imports, tree-shakable, no global side effects     |
+| 8   | Maintenance   | Recent releases, multiple maintainers, responsive issues              |
+| 9   | Bundle budget | Measured per-component cost fits the budget                           |
+| 10  | Wrapping      | Usable without per-component wrappers                                 |
+
+If a library fails a gate, use it as inspiration, not as a dependency. The
+framework's preference is a library that passes the gates, not a particular
+brand.
+
+## 5. Using components directly
 
 Import the components you use by their per-component path and let the import
-register the element — no wrapper, no facade, no re-export shim (AD-69 D-4).
-Use attributes and events directly, exactly as the library documents:
+register the element — no wrapper, no facade (Web Awesome example):
 
 ```ts
-// apps/07-ndigo-island/client/main.ts (abridged)
 import '@awesome.me/webawesome/dist/components/button/button.js';
 import '@awesome.me/webawesome/dist/components/input/input.js';
 
@@ -57,191 +143,82 @@ const input = document.createElement('wa-input');
 input.setAttribute('name', 'text');
 input.setAttribute('label', labels.inputLabel);
 input.setAttribute('required', '');
+
 const submit = document.createElement('wa-button');
 submit.setAttribute('type', 'submit');
-submit.setAttribute('appearance', 'filled');
 ```
 
-Per-component imports are also the bundle-budget mechanism: the demo adds
-button + input only, and pays for input + button only (§10 measures the cost).
+The same rule applies to ndigo-ui elements: import the copy-in module
+(`src/ui/nd-button/nd-button.ts`), then use `<nd-button>` directly. Attributes
+and events are the API; do not build a per-component wrapper that hides them.
 
-## 3. First paint: the server fallback pattern
+## 6. First paint
 
-Third-party components cannot portably server-render yet (Web Awesome marks
-SSR experimental; AD-69 defers a `@lit-labs/ssr` adapter until it stabilizes).
-The portable pattern is the island one: the server renders a **derived
-fallback** — skeleton or content from the same model — into a declarative
-shadow root, and the component's first client render replaces it in place.
+Third-party components cannot portably server-render yet. The portable pattern
+is the island one: the server renders a **derived fallback** (skeleton or the
+same model) into a declarative shadow root, and the component's first client
+render replaces it in place:
 
 ```ts
-// apps/07-ndigo-island/src/island-controller.ts (abridged)
+import { IslandView } from '@ndigo/view';
+
 const island = new IslandView('todo-app', { shadowHtml: renderTodoFallback(model) });
 ```
 
-The fallback markup is trusted author markup (`shadowHtml` is never escaped;
-never pass user input). With the client bundle blocked the browser parses the
-template into a real shadow root and shows the fallback; with the bundle it
-hydrates in place (ADR-69 D-3). When a library's SSR support stabilizes,
-`did-ssr` (Web Awesome) plus the library's hydration entry point can replace
-this pattern component-by-component.
+ndigo-ui primitives are designed for this pattern: their DSD fallback is part
+of the conformance contract. For third-party libraries, keep the fallback
+derived from the same model so the swap is invisible.
 
-## 4. Forms: FACE controls use the standard submission path
+## 7. FACE forms
 
-A component that is a **form-associated custom element** (FACE) contributes
-`name`/`value` to `FormData` like a native control. Nothing about the server
-side changes:
+A form-associated custom element participates in the normal `<form>`
+submission; the server sees ordinary name/value pairs. Keep the existing
+binding + Zod path (guides 06/07/18) and let the control submit:
 
-```ts
-// client: read the form like any native form — no hidden inputs
-const formData = new FormData(form);
-for (const [key, value] of formData.entries()) {
-    body.set(key, String(value)); // application/x-www-form-urlencoded
-}
-```
+- ndigo-ui's current form items (`button`, `input`, `field`, `checkbox`) are native-first CSS over native elements, so they submit standard data automatically. A future custom form control uses `AsFormAssociated(Base)` from `@ndigo/view-webcomponent`.
+- Web Awesome controls are FACE; set `name` and let the form serialize them.
+- Do not add a second binding path per component library. If a control cannot
+  submit standard form data, it fails the vetting gate.
 
-```ts
-// server: the standard binding + validation path (guides 06 and 02)
-@postMapping('/items')
-@parameters({ item: validatedBy(AddItemSchema, dataBinderValue('body')) })
-addItem(item: { text: string }) { /* … */ }
-```
+## 8. Theming and i18n
 
-Binding failures (malformed transport) stay `400`; schema failures surface as
-the RFC 9457 `422` problem document with `errors[]`.
+- **ndigo-ui** — consume `--nd-*`; do not hard-code colors/spacing. The token
+  catalog (`TOKENS`, `resolveToken`) is the typed contract.
+- **Third-party** — theme through the library's CSS custom properties; map
+  your brand tokens onto its variables at the app boundary.
+- **i18n** — component chrome strings must be localizable. Pass the negotiated
+  locale (guide 17) into the component's label/aria attributes; do not rely on
+  hard-coded English defaults.
+- **RTL** — require logical properties; test one component per library.
 
-Two constraints worth knowing:
+## 9. CSP and bundle budget
 
-- Keep the `<form>` and its FACE controls in the **same tree** (e.g. both
-  inside the island's shadow root, as the demo does). Form association does not
-  cross shadow boundaries.
-- Constraint attributes (`required`, `pattern`, …) come from the library; the
-  schema on the server remains the validation source of truth.
+If the library injects inline styles/scripts, extend the CSP explicitly
+(`style-src`/`script-src` with a nonce or hash) rather than disabling CSP
+(guide 28). Budget per component: import only what the page uses, measure the
+gzip delta, and record it in the ADR. ndigo-ui items ship with a recorded
+budget; a third-party library's claim is not a measurement.
 
-New Ndigo-owned controls get the same participation through
-`AsFormAssociated(Base)` in `@ndigo/view-webcomponent`.
+## 10. Migrating Web Awesome to ndigo-ui
 
-## 5. Theming: tokens are the contract
+`apps/07-ndigo-island` keeps its Web Awesome integration until the ndigo-ui
+components it needs exist (AD-95 Phase 3). The migration is mechanical:
 
-Link the library's theme once and override its CSS custom properties — at
-`:root`, on the island host, or per component:
+1. `ndigo ui add` the equivalent items (`button`, `input`, `field`, ...).
+2. Replace `<wa-*>` with `<nd-*>`, keeping `name`/attributes/events.
+3. Map Web Awesome CSS variables onto `--nd-*` at the app boundary.
+4. Remove the Web Awesome dependency and its per-component imports.
+5. Re-check FACE submission, fallback markup, and the bundle delta.
 
-```html
-<link rel="stylesheet" href="/static/client.css" />
-<style>
-    :root {
-        --wa-color-brand-fill-loud: #1f7a5a;
-        --wa-form-control-border-radius: 0.5rem;
-    }
-</style>
-```
-
-Custom properties inherit through shadow boundaries, so document-level token
-overrides reach into component internals without `::part`/`::deep`
-shadow-piercing. The theme stylesheet is a build input of the client bundle
-(import it once from the client entry; the build emits a linked asset).
-
-## 6. i18n and locale
-
-The library localizes its own chrome from the document language: serve
-`<html lang="…">` (Ndigo negotiates and renders it, guide 17) and import the
-translation modules you support:
-
-```ts
-import '@awesome.me/webawesome/dist/translations/fr.js';
-```
-
-Notes: per-component `lang`/`dir` must be set on the component itself, not an
-ancestor; the library's mechanism covers component chrome only — application
-strings stay in `@ndigo/content` (or the island model). The demo also selects
-its own labels from the island's negotiated locale (`data-ndigo-locale`).
-
-## 7. What stays out of scope
-
-- **No wrappers or facades.** If a library needs one, that is a signal for the
-  adoption checklist, not a license to build a shadow API.
-- **No full component SSR** until the upstream support stabilizes; the
-  fallback pattern is the documented answer.
-- **RTL** is delegated to the library (AD-71); Ndigo's own RTL work remains
-  tracked with Content/i18n.
-
-## 8. Reference integration — `apps/07-ndigo-island`
-
-The demo wires every step above together:
-
-| Layer         | What it shows                                                                                                                                                 |
-| :------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Client island | Web Awesome input + button rendered directly into the island's shadow root; labels from the island locale                                                     |
-| Submission    | `FormData` from the FACE controls → `application/x-www-form-urlencoded` POST to `/items`                                                                      |
-| Server        | `dataBinderValue('body')` + Zod (`validatedBy`) → store mutation → SSE push to every connected client                                                         |
-| First paint   | Server-rendered fallback (list + form skeleton) in a declarative shadow root, replaced on hydration                                                           |
-| Theming       | `client.css` theme + `--wa-*` token overrides from the shell                                                                                                  |
-| Lifecycle     | The client island releases its render effect and SSE subscription in `handleDisconnect()` (WC-F); a DOM move reconnects without stacking subscriptions        |
-| Reconnect     | The SSE client resubscribes with bounded exponential backoff after the stream ends, and shows the connection state in the status line (WC-G)                  |
-| Security      | The demo widens the CSP for the library's inline-icon fetch — see §9                                                                                          |
-| Browser lane  | A Playwright spec drives the real server: DSD fallback before hydration, FACE submit → `/items` → SSE delivery, clear affordance, zero page/CSP errors (WC-E) |
-| Bundle        | Per-component imports; see the measured cost below                                                                                                            |
-
-Run it:
-
-```bash
-cd apps/07-ndigo-island && pnpm dev
-# GET http://127.0.0.1:3200/        — the hybrid shell
-# POST http://127.0.0.1:3200/items  — urlencoded form endpoint (text=…)
-
-pnpm test        # unit/integration: shell, hydration, form endpoint, SSE coalescing, lifecycle, CSP wiring
-pnpm test:e2e    # browser lane (Playwright); starts the app server on port 3280
-```
-
-## 9. Security: CSP for adopted libraries' inline assets
-
-The framework sends a restrictive default CSP, including `connect-src 'self'`
-(see [AD-25](../decisions/2026-09-18_AD25_SECURITY_HEADERS.md)). A library that
-`fetch()`es an inline asset — Web Awesome's `wa-icon` renders its system icons
-from a `data:image/svg+xml` URL, which `with-clear` triggers at runtime — is
-blocked by that default: the console logs a CSP violation and the asset is
-missing (here, the clear affordance).
-
-Adopted libraries may therefore need `connect-src` / `img-src` widening for
-inline assets. Widen it through the documented `SecurityHeadersInterceptor`
-directives seam (the same seam a cross-host WebSocket uses to add
-`wss://<host>`), keeping `useDefaults: true` so the rest of the header set is
-unchanged:
-
-```ts
-// apps/07-ndigo-island/src/island-configuration.ts (abridged)
-const mapping = context.getValue(HANDLER_MAPPING);
-mapping.interceptors.splice(
-    0,
-    1,
-    new SecurityHeadersInterceptor({
-        headers: {
-            contentSecurityPolicy: {
-                useDefaults: true,
-                directives: { 'connect-src': ["'self'", 'data:'] },
-            },
-        },
-    })
-);
-```
-
-Exact directives for this demo: `connect-src 'self' data:`. `img-src` needs no
-widening here because the icon SVG is fetched as text and injected inline; add
-`data:` to `img-src` too only if the library loads such URLs as images. Never
-add bare `ws:`/`wss:` — enumerate the host.
-
-## 10. Bundle budget reference
-
-Measured 2026-10-07 (Web Awesome 3.14.0): a tree-shaken bundle of
-button + input + switch + dialog is **174 KB raw / 43.5 KB gzip** (esbuild,
-minified). The reference app's actual, unminified build deltas for
-input + button: `client.js` 335.9 KB → 538.6 KB raw (80.2 KB → 129.3 KB gzip),
-plus the theme asset `client.css` 63.8 KB raw / 9.5 KB gzip. Re-measure per
-component when adding to an app; per-component imports keep the increment
-proportional to what the app actually uses.
+Keep the Web Awesome material in this guide as the worked third-party example
+until the migration lands.
 
 ## See also
 
-- [AD-69 — Component integration contract](../decisions/2026-10-06_AD69_COMPONENT_INTEGRATION_CONTRACT.md)
-- [AD-71 — Component library selection (Web Awesome)](../decisions/2026-10-07_AD71_COMPONENT_LIBRARY_SELECTION.md)
-- [Guide 29 — Signals & Islands](29-signals-and-islands.md) — the island lifecycle in detail
-- [apps/07-ndigo-island](../../apps/07-ndigo-island/README.md) — the runnable reference
+- [Guide 02 — Building a Browser App](02-building-a-browser-app.md) — the browser preset
+- [Guide 09 — Views, Targets & Content Negotiation](09-views-and-content-negotiation.md) — view contracts
+- [Guide 18 — Forms End-to-End](18-forms-end-to-end.md) — binding and validation
+- [Guide 28 — Security Hardening](28-security-hardening.md) — CSP
+- [Guide 41 — Custom View Engines](41-custom-view-engines.md) — React/Vue UI strategies
+- [`@ndigo/ui`](../../packages/ndigo-ui/README.md) — tokens, theme, registry
+- [AD-69](../decisions/2026-10-06_AD69_COMPONENT_INTEGRATION_CONTRACT.md), [AD-71](../decisions/2026-10-07_AD71_COMPONENT_LIBRARY_SELECTION.md), and [AD-95](../decisions/2026-11-08_AD95_NDIGO_UI.md) — component, selection, and ndigo-ui decisions

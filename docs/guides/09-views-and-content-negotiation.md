@@ -190,5 +190,6 @@ not bake theme names into a view; take them from the resolver.
 - [Guide 08 — Errors & Problem Details](08-errors-and-problem-details.md) — 406 and error views
 - [Guide 17 — Internationalization & Content](17-i18n-and-content.md) — locale in templates
 - [Guide 29 — Signals & Islands](29-signals-and-islands.md) — island hydration
+- [Guide 41 — Custom View Engines](41-custom-view-engines.md) — adding React/Vue or a bespoke renderer
 - [`@ndigo/view`](../../packages/ndigo-view/README.md) — the view and negotiation surface
 - [AD-53](../decisions/2026-03-22_AD53_VIEW_EVENT_ARCHITECTURE.md) and [AD-65](../decisions/2026-09-06_AD65_VIEW_RESOLUTION_STRATEGY.md) — the view model and resolution strategy

@@ -1,0 +1,46 @@
+/* nd-badge — compact status label built on the design tokens. */
+
+.nd-badge {
+    display: inline-flex;
+    gap: var(--nd-space-1);
+    align-items: center;
+    padding-block: 0.125rem;
+    padding-inline: var(--nd-space-2);
+    color: var(--nd-color-text);
+    font-size: var(--nd-text-xs);
+    font-weight: var(--nd-weight-medium);
+    line-height: 1.4;
+    white-space: nowrap;
+    background: var(--nd-color-surface-raised);
+    border: 1px solid var(--nd-color-border);
+    border-radius: var(--nd-radius-full);
+}
+
+.nd-badge[data-variant='accent'] {
+    color: var(--nd-color-on-accent);
+    background: var(--nd-color-accent);
+    border-color: transparent;
+}
+
+.nd-badge[data-variant='success'],
+.nd-badge[data-variant='warning'],
+.nd-badge[data-variant='danger'],
+.nd-badge[data-variant='info'] {
+    --nd-badge-color: var(--nd-color-success);
+
+    color: var(--nd-color-text);
+    background: color-mix(in srgb, var(--nd-badge-color) 14%, var(--nd-color-surface));
+    border-color: color-mix(in srgb, var(--nd-badge-color) 40%, var(--nd-color-border));
+}
+
+.nd-badge[data-variant='warning'] {
+    --nd-badge-color: var(--nd-color-warning);
+}
+
+.nd-badge[data-variant='danger'] {
+    --nd-badge-color: var(--nd-color-danger);
+}
+
+.nd-badge[data-variant='info'] {
+    --nd-badge-color: var(--nd-color-info);
+}

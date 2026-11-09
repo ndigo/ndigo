@@ -1,0 +1,50 @@
+/* nd-alert — inline status message built on the design tokens. */
+
+.nd-alert {
+    --nd-alert-color: var(--nd-color-info);
+
+    display: flex;
+    gap: var(--nd-space-3);
+    align-items: flex-start;
+    padding: var(--nd-space-3) var(--nd-space-4);
+    color: var(--nd-color-text);
+    background: color-mix(in srgb, var(--nd-alert-color) 10%, var(--nd-color-surface));
+    border: 1px solid color-mix(in srgb, var(--nd-alert-color) 40%, var(--nd-color-border));
+    border-inline-start: 3px solid var(--nd-alert-color);
+    border-radius: var(--nd-radius-md);
+}
+
+.nd-alert[data-variant='success'] {
+    --nd-alert-color: var(--nd-color-success);
+}
+
+.nd-alert[data-variant='warning'] {
+    --nd-alert-color: var(--nd-color-warning);
+}
+
+.nd-alert[data-variant='danger'] {
+    --nd-alert-color: var(--nd-color-danger);
+}
+
+.nd-alert__icon {
+    flex: none;
+    color: var(--nd-alert-color);
+}
+
+.nd-alert__content {
+    display: grid;
+    gap: var(--nd-space-1);
+    min-inline-size: 0;
+}
+
+.nd-alert__title {
+    margin: 0;
+    font-size: var(--nd-text-sm);
+    font-weight: var(--nd-weight-semibold);
+}
+
+.nd-alert__description {
+    margin: 0;
+    color: var(--nd-color-text-muted);
+    font-size: var(--nd-text-sm);
+}

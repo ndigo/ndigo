@@ -470,6 +470,61 @@
         }
       ],
       "installedAt": "2026-11-09T18:26:42.394Z"
+    },
+    "breadcrumb": {
+      "registry": "../../registry.json",
+      "type": "registry:ui",
+      "files": [
+        {
+          "target": "src/ui/nd-breadcrumb/nd-breadcrumb.css",
+          "sha256": "e028eb3c4ce14d8c1c8c325be5b3ab8b2d08acba62dce4be175fc6404ec29496"
+        }
+      ],
+      "installedAt": "2026-11-09T18:34:37.761Z"
+    },
+    "kbd": {
+      "registry": "../../registry.json",
+      "type": "registry:ui",
+      "files": [
+        {
+          "target": "src/ui/nd-kbd/nd-kbd.css",
+          "sha256": "cdb3bb3988321cf9b3eb33be9e4624d0e5fada816450e8eaf1dc4c9dc7de037f"
+        }
+      ],
+      "installedAt": "2026-11-09T18:34:37.761Z"
+    },
+    "aspect-ratio": {
+      "registry": "../../registry.json",
+      "type": "registry:ui",
+      "files": [
+        {
+          "target": "src/ui/nd-aspect-ratio/nd-aspect-ratio.css",
+          "sha256": "f8c2c58ca82127459aa415fe5cc124ef6b5f457d8d08486db16c6a7f0827641c"
+        }
+      ],
+      "installedAt": "2026-11-09T18:34:37.761Z"
+    },
+    "item": {
+      "registry": "../../registry.json",
+      "type": "registry:ui",
+      "files": [
+        {
+          "target": "src/ui/nd-item/nd-item.css",
+          "sha256": "13f4edc46643f2544a82502241145f3d737d1e7612daff27daec59151225b570"
+        }
+      ],
+      "installedAt": "2026-11-09T18:34:37.761Z"
+    },
+    "typography": {
+      "registry": "../../registry.json",
+      "type": "registry:ui",
+      "files": [
+        {
+          "target": "src/ui/nd-typography/nd-typography.css",
+          "sha256": "a0390835b1f4c924dcf4ade0ff5e56833f53f5c4f153d743dc67482978738e57"
+        }
+      ],
+      "installedAt": "2026-11-09T18:34:37.761Z"
     }
   }
 }

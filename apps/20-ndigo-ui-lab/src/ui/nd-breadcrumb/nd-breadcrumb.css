@@ -1,0 +1,50 @@
+/* nd-breadcrumb — hierarchical page trail built on the design tokens. */
+
+.nd-breadcrumb {
+    font-size: var(--nd-text-sm);
+}
+
+.nd-breadcrumb__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--nd-space-1);
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.nd-breadcrumb__item {
+    display: inline-flex;
+    gap: var(--nd-space-1);
+    align-items: center;
+    min-inline-size: 0;
+}
+
+/* The slash is presentational; the "/ ''" alt text keeps it out of the
+   accessibility tree where supported. */
+.nd-breadcrumb__item + .nd-breadcrumb__item::before {
+    content: '/' / '';
+    color: var(--nd-color-text-muted);
+}
+
+.nd-breadcrumb__link {
+    color: var(--nd-color-text-muted);
+    text-decoration: none;
+    border-radius: var(--nd-radius-sm);
+}
+
+.nd-breadcrumb__link:hover {
+    color: var(--nd-color-text);
+    text-decoration: underline;
+}
+
+.nd-breadcrumb__link:focus-visible {
+    outline: var(--nd-focus-ring-width) solid var(--nd-focus-ring-color);
+    outline-offset: var(--nd-focus-ring-offset);
+}
+
+.nd-breadcrumb [aria-current='page'] {
+    color: var(--nd-color-text);
+    font-weight: var(--nd-weight-medium);
+}

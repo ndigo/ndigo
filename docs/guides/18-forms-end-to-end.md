@@ -149,6 +149,7 @@ try {
 - [Guide 07 — Request Validation](07-request-validation.md) — schemas and 422
 - [Guide 09 — Views, Targets & Content Negotiation](09-views-and-content-negotiation.md) — the form view model
 - [Guide 14 — Multipart & File Upload](14-multipart-and-file-upload.md) — file fields
+- [Guide 44 — Accessibility](44-accessibility.md) — labels, errors, and focus
 - [Guide 28 — Security Hardening](28-security-hardening.md) — CSRF
 - [apps/12-ndigo-petclinic](../../apps/12-ndigo-petclinic/README.md) — the server form reference
 - [apps/10-ndigo-conduit-web](../../apps/10-ndigo-conduit-web/README.md) — the browser form reference

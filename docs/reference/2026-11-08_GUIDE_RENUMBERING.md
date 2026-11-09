@@ -1,7 +1,7 @@
 # Guide Renumbering Map (2026-11-08)
 
 The guides were renumbered from the historical 01–30 sequence into the current
-application curriculum: **00–43** for application guides and **90–91** for
+application curriculum: **00–44** for application guides and **90–91** for
 contributor guides. This file is the bridge for historical records: ADRs,
 plans, audits, and dated migrations written before 2026-11-08 still cite the
 old numbers and old filenames.
@@ -58,6 +58,7 @@ instead.
 |   — |  41 | Custom View Engines                         |
 |   — |  42 | STOMP & Cross-Node Fan-Out                  |
 |   — |  43 | Live Configuration, Secrets & Remote Config |
+|   — |  44 | Accessibility                               |
 |  12 |  90 | Package Documentation                       |
 |  29 |  91 | Application Conventions                     |
 

@@ -33,6 +33,9 @@ yarn-error.log
 # client. `git check-ignore` must stay silent for these.
 !apps/10-ndigo-conduit-web/src/lib/
 !apps/10-ndigo-conduit-web/src/lib/**
+# Registry copy-in foundation for the UI lab (the `lib` item targets @lib/).
+!apps/20-ndigo-ui-lab/src/lib/
+!apps/20-ndigo-ui-lab/src/lib/**
 *.tsbuildinfo
 
 # Build artifacts in package roots

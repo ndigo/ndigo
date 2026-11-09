@@ -13,12 +13,12 @@
     "test:e2e": "pnpm build:client && playwright test"
   },
   "dependencies": {
-    "@awesome.me/webawesome": "^3.14.0",
     "@ndigo/boot": "~0.0.1",
     "@ndigo/content-i18next": "~0.0.1",
     "@ndigo/context": "~0.0.1",
     "@ndigo/dispatcher": "~0.0.1",
     "@ndigo/http": "~0.0.1",
+    "@ndigo/log": "~0.0.1",
     "@ndigo/platform-node": "~0.0.1",
     "@ndigo/service": "~0.0.1",
     "@ndigo/signals": "~0.0.1",
@@ -27,14 +27,14 @@
     "@ndigo/view-ejs": "~0.0.1",
     "@ndigo/view-webcomponent": "~0.0.1",
     "@tsmetadata/polyfill": "catalog:",
-    "zod": "catalog:",
-    "@ndigo/log": "~0.0.1"
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@ndigo/boot": "~0.0.1",
     "@ndigo/context": "~0.0.1",
     "@ndigo/dispatcher": "~0.0.1",
     "@ndigo/http": "~0.0.1",
+    "@ndigo/log": "~0.0.1",
     "@ndigo/platform-node": "~0.0.1",
     "@ndigo/router": "~0.0.1",
     "@ndigo/service": "~0.0.1",
@@ -45,7 +45,6 @@
     "@ndigo/view-webcomponent": "~0.0.1",
     "@playwright/test": "^1.64.1",
     "tsx": "catalog:",
-    "vite": "catalog:",
-    "@ndigo/log": "~0.0.1"
+    "vite": "catalog:"
   }
 }

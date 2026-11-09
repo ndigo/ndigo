@@ -8,15 +8,9 @@ import { hydrateIslands } from '@ndigo/view-webcomponent';
 import type { ProducerView } from '@ndigo/view';
 import { IslandController } from '../src/island-controller';
 import { TodoModelStore } from '../src/todo-model-store';
-import { installFormAssociatedShims } from './jsdom-form-associated-shim';
 // Side-effect import: registers the demo's `todo-app` custom element
 // (`@TagMapping`) and runs the demo's own `hydrateIslands()` bootstrap.
 import '../client/main';
-
-// jsdom lacks the form-participation half of `ElementInternals` (AD-71's
-// adopted controls construct against it); install the no-op shim before the
-// island renders.
-installFormAssociatedShims();
 
 const viewsDir = resolve('views');
 
@@ -78,13 +72,11 @@ describe('ndigo-island SSR → hydration', () => {
         const live = document.querySelector('todo-app');
         expect(live?.shadowRoot?.textContent).toContain('[hydrated on client] 2 item(s), filter: all');
 
-        // AD-71 reference integration: the adopted library's form-associated
-        // controls render into the same root. jsdom cannot exercise FACE form
-        // data, so the live-browser check covers the submission path.
+        // The add-item form uses the registry-installed native controls.
         const shadow = live?.shadowRoot;
         expect(shadow?.querySelector('form')).toBeTruthy();
-        expect(shadow?.querySelector('wa-input')?.getAttribute('name')).toBe('text');
-        expect(shadow?.querySelector('wa-button')?.getAttribute('type')).toBe('submit');
+        expect(shadow?.querySelector('input.nd-input')?.getAttribute('name')).toBe('text');
+        expect(shadow?.querySelector('button.nd-button')?.getAttribute('type')).toBe('submit');
 
         // Release the island's SSE subscription/reconnect loop (WC-F) so the
         // test leaves no pending timers behind.

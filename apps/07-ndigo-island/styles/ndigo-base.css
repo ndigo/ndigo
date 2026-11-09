@@ -1,0 +1,92 @@
+/* ==========================================================================
+   Ndigo base layer — opt-in native-element defaults built on the tokens.
+   Consumer-agnostic: this file styles platform elements, never application
+   chrome, and applies brand utilities under the `nd-` prefix.
+   ========================================================================== */
+
+:where(html) {
+    background: var(--nd-color-bg);
+    color: var(--nd-color-text);
+    font-family: var(--nd-font-sans);
+    line-height: var(--nd-leading-normal);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+:where(body) {
+    margin: 0;
+    background: var(--nd-color-bg);
+    color: var(--nd-color-text);
+}
+
+:where(h1, h2, h3, h4, h5, h6) {
+    margin-block: 0 var(--nd-space-2);
+    font-family: var(--nd-font-sans);
+    font-weight: var(--nd-weight-semibold);
+    line-height: var(--nd-leading-tight);
+    letter-spacing: var(--nd-tracking-tight);
+}
+
+:where(code, pre, kbd, samp) {
+    font-family: var(--nd-font-mono);
+    font-size: 0.9em;
+}
+
+:where(pre) {
+    padding: var(--nd-space-4);
+    overflow: auto;
+    background: var(--nd-color-code-bg);
+    border: 1px solid var(--nd-color-border);
+    border-radius: var(--nd-radius-md);
+}
+
+:where(a) {
+    color: var(--nd-color-accent-strong);
+    text-underline-offset: 0.15em;
+}
+
+:where(a:hover) {
+    text-decoration-thickness: 2px;
+}
+
+:where(:focus-visible) {
+    outline: var(--nd-focus-ring-width) solid var(--nd-focus-ring-color);
+    outline-offset: var(--nd-focus-ring-offset);
+}
+
+:where(img, svg, video, canvas) {
+    display: block;
+    max-width: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :where(*, *::before, *::after) {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ---------- Brand utilities ---------- */
+
+.nd-gradient-text {
+    background: var(--nd-gradient-brand);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.nd-gradient-bg {
+    background: var(--nd-gradient-brand);
+}
+
+.nd-display {
+    font-family: var(--nd-font-display);
+    letter-spacing: var(--nd-tracking-tight);
+}
+
+.nd-mark {
+    font-family: var(--nd-font-display);
+    letter-spacing: var(--nd-tracking-wide);
+}

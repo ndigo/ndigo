@@ -1,23 +1,19 @@
 /**
- * SEC-C — the demo widens its CSP `connect-src` so the adopted library's
- * inline-icon fetch (Web Awesome `with-clear`) is admitted.
+ * Default security headers for the island shell.
  */
 // @vitest-environment node
 import { describe, test, expect, beforeAll, afterAll } from 'vitest';
 import type { Server } from 'node:http';
 import { MetadataConfigApplicationContext } from '@ndigo/context';
 import { NodeAutoConfiguration, NodeDispatcher, NodeHTTPServerAdapter } from '@ndigo/platform-node';
-import { IslandConfiguration, applyDemoSecurityHeaders } from '../src/island-configuration';
+import { IslandConfiguration } from '../src/island-configuration';
 import { MESSAGE_SOURCE } from '../src/context-tokens';
 
 /**
- * The reference integration keeps `with-clear`; `wa-icon` renders its clear
- * icon through `fetch('data:image/svg+xml,…')`, which the framework's default
- * `connect-src 'self'` blocks. The demo replaces the default-on
- * `SecurityHeadersInterceptor` through the documented seam; this asserts the
- * wiring applies on a real response.
+ * The demo relies on the framework's default header set: no `data:` in
+ * `connect-src`, because the registry-installed controls fetch no icons.
  */
-describe('ndigo-island security headers (SEC-C)', () => {
+describe('ndigo-island security headers', () => {
     let adapter: NodeHTTPServerAdapter;
     let base: string;
 
@@ -27,7 +23,6 @@ describe('ndigo-island security headers (SEC-C)', () => {
         context.register(IslandConfiguration);
         context.refresh();
         context.setMessageSource(context.getValue(MESSAGE_SOURCE));
-        applyDemoSecurityHeaders(context);
 
         const dispatcher = context.getValue<NodeDispatcher>('dispatcher');
         adapter = new NodeHTTPServerAdapter(dispatcher);
@@ -43,14 +38,14 @@ describe('ndigo-island security headers (SEC-C)', () => {
         await adapter?.close();
     });
 
-    test('CSP admits data: in connect-src while keeping the default set', async () => {
+    test('serves the default CSP without the removed data: allowance', async () => {
         const res = await fetch(`${base}/`);
         expect(res.status).toBe(200);
 
         const csp = res.headers.get('content-security-policy') ?? '';
         expect(csp).toContain("default-src 'self'");
-        expect(csp).toContain("connect-src 'self' data:");
-        // Every other default header survives the seam replacement.
+        expect(csp).toContain("connect-src 'self'");
+        expect(csp).not.toMatch(/connect-src[^;]*data:/);
         expect(res.headers.get('x-content-type-options')).toBe('nosniff');
         expect(res.headers.get('referrer-policy')).toBe('no-referrer');
     });

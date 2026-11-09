@@ -20,6 +20,32 @@
     margin-block-start: var(--nd-space-4);
 }
 
+.lab-sidebar-demo {
+    display: grid;
+    grid-template-columns: 16rem minmax(0, 1fr);
+    gap: var(--nd-space-6);
+    align-items: start;
+    margin-block-start: var(--nd-space-6);
+}
+
+.lab-sidebar-content {
+    padding: var(--nd-space-4);
+    color: var(--nd-color-text-muted);
+    font-size: var(--nd-text-sm);
+    border: 1px dashed var(--nd-color-border);
+    border-radius: var(--nd-radius-lg);
+}
+
+.lab-sidebar-content p {
+    margin: 0;
+}
+
+@media (max-width: 48rem) {
+    .lab-sidebar-demo {
+        grid-template-columns: 1fr;
+    }
+}
+
 .lab-aspect {
     max-inline-size: 24rem;
     margin-block-start: var(--nd-space-4);

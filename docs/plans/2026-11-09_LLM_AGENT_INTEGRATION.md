@@ -15,13 +15,13 @@ the last twelve months, and the stories have converged on five capability
 families. Two are relevant to Ndigo today; three become relevant once the
 framework exposes a runtime surface.
 
-| Family | Who ships it | Representative artifact |
-| :-- | :-- | :-- |
-| Dev-time context | Angular, Svelte, Next.js, Laravel | `SKILL.md` sets, managed `AGENTS.md`, version-matched docs in `node_modules` |
-| Project introspection MCP | Angular CLI, Laravel Boost | `list_projects`, `get_best_practices`, DB schema/query, `record_rule` |
-| Runtime/dev-server MCP | Next.js, .NET Aspire | `/_next/mcp`: `get_errors`, `get_routes`, `compile_route`, OTel traces |
-| Self-correction tools | Svelte, Angular | `svelte-autofixer`, `onpush_zoneless_migration` |
-| App-facing agent surface | Laravel MCP, FastAPI-MCP, Nuxt, Angular WebMCP | tools/resources/prompts + OAuth 2.1; `provideExperimentalWebMcpTools` |
+| Family                    | Who ships it                                   | Representative artifact                                                      |
+| :------------------------ | :--------------------------------------------- | :--------------------------------------------------------------------------- |
+| Dev-time context          | Angular, Svelte, Next.js, Laravel              | `SKILL.md` sets, managed `AGENTS.md`, version-matched docs in `node_modules` |
+| Project introspection MCP | Angular CLI, Laravel Boost                     | `list_projects`, `get_best_practices`, DB schema/query, `record_rule`        |
+| Runtime/dev-server MCP    | Next.js, .NET Aspire                           | `/_next/mcp`: `get_errors`, `get_routes`, `compile_route`, OTel traces       |
+| Self-correction tools     | Svelte, Angular                                | `svelte-autofixer`, `onpush_zoneless_migration`                              |
+| App-facing agent surface  | Laravel MCP, FastAPI-MCP, Nuxt, Angular WebMCP | tools/resources/prompts + OAuth 2.1; `provideExperimentalWebMcpTools`        |
 
 Two pieces of published evidence shape the design:
 
@@ -48,19 +48,19 @@ permissions for.
 Three assets change the shape of this plan, and one of them is the single most
 important input:
 
-| Asset | State | Consequence |
-| :-- | :-- | :-- |
-| `ndigo ui mcp` | **Shipped.** Stdio MCP, 5 tools (`list_items`, `search_items`, `get_item`, `install_items`, `validate_registry`), `--readOnly` omits the mutating tool, JSON-text results | The MCP host exists. `ndigo mcp` is a second route map over an extracted host, not a new subsystem |
-| `ui view --json` | Shipped | A `--json` convention exists to standardise and extend, rather than invent |
-| `agent-local/skills/ndigo-ui` | Shipped `SKILL.md`, synced to `.opencode/` and `.omp/` by `pnpm agents:sync`, CI-checked | The skills pipeline exists; only the *content* is new |
-| `@ndigo/ui` registry | 41 items, shadcn-compatible, `ndigo.ui.json` + `ui.lock.json` with per-file SHA-256 | A per-application **component allowlist already exists** — which is exactly A2UI's security model |
-| `@ndigo/inspect` | Manifest v1: `app`, `routes`, `mappings`, `config`; secrets never read | The introspection substrate for `ndigo mcp` is done |
-| `@ndigo/openapi` | Spec generated from the same metadata that serves requests, including `validatedBy` Zod | Tool schemas can be derived, not authored — the parity guarantee |
-| `@ndigo/core` media types | `APPLICATION_JSON`, `TEXT_TOON` (`packages/ndigo-core/src/media-types.ts`) | `application/a2ui+json` is one more registered token |
+| Asset                         | State                                                                                                                                                                     | Consequence                                                                                        |
+| :---------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :------------------------------------------------------------------------------------------------- |
+| `ndigo ui mcp`                | **Shipped.** Stdio MCP, 5 tools (`list_items`, `search_items`, `get_item`, `install_items`, `validate_registry`), `--readOnly` omits the mutating tool, JSON-text results | The MCP host exists. `ndigo mcp` is a second route map over an extracted host, not a new subsystem |
+| `ui view --json`              | Shipped                                                                                                                                                                   | A `--json` convention exists to standardise and extend, rather than invent                         |
+| `agent-local/skills/ndigo-ui` | Shipped `SKILL.md`, synced to `.opencode/` and `.omp/` by `pnpm agents:sync`, CI-checked                                                                                  | The skills pipeline exists; only the _content_ is new                                              |
+| `@ndigo/ui` registry          | 41 items, shadcn-compatible, `ndigo.ui.json` + `ui.lock.json` with per-file SHA-256                                                                                       | A per-application **component allowlist already exists** — which is exactly A2UI's security model  |
+| `@ndigo/inspect`              | Manifest v1: `app`, `routes`, `mappings`, `config`; secrets never read                                                                                                    | The introspection substrate for `ndigo mcp` is done                                                |
+| `@ndigo/openapi`              | Spec generated from the same metadata that serves requests, including `validatedBy` Zod                                                                                   | Tool schemas can be derived, not authored — the parity guarantee                                   |
+| `@ndigo/core` media types     | `APPLICATION_JSON`, `TEXT_TOON` (`packages/ndigo-core/src/media-types.ts`)                                                                                                | `application/a2ui+json` is one more registered token                                               |
 
 The repo also carries the constraint that keeps this honest: **AD-75 D-3** — the
 CLI is a thin front; implementations live in their packages. **AD-70** — `ndigo
-inspect` fronts the *application's* `scripts.inspect`. Both apply verbatim to the
+inspect` fronts the _application's_ `scripts.inspect`. Both apply verbatim to the
 agent surface.
 
 ---
@@ -71,8 +71,8 @@ agent surface.
   X run `ndigo generate controller`, then `ndigo lint`, then `ndigo test`," plus
   the traps. Facts (flags, item lists, route tables) come from machine output,
   because they change faster than the skill. The shipped `ndigo-ui` skill
-  already states this: *"use the tooling rather than a copied list; the set
-  grows."*
+  already states this: _"use the tooling rather than a copied list; the set
+  grows."_
 - **D-2 — One authored source per artifact; satellites are generated.**
   `ndigo-site` already syncs docs from the monorepo. Agent content follows the
   same rule; a published skills repo, if any, is a generated mirror.
@@ -101,18 +101,18 @@ agent surface.
 
 ## 3. Placement
 
-| Artifact | Home | Reason |
-| :-- | :-- | :-- |
-| `--json` sweep, `ndigo commands` | `packages/ndigo-cli` | CLI internals |
-| Agent content source | `tools/agent-content/` (new) | Consumed by two packages (CLI assets, CNA templates) — same shape as `tools/generators` |
-| `ndigo ai:*` | `packages/ndigo-cli/src/commands/ai/` | Route map, like `db` and `ui` |
-| CNA `--agents` | `packages/create-ndigo-app` | Templates version with the scaffold |
-| `ndigo mcp` | `packages/ndigo-cli/src/commands/mcp.ts` | Thin front over the extracted host |
-| `@ndigo/mcp` | new package | Dependency inversion: needs dispatcher metadata, `@ndigo/inspect`, `@ndigo/auth-*` |
-| A2UI media type | `@ndigo/core` + a view in `@ndigo/view` | AD-66 precedent |
-| `<nd-a2ui-surface>` | `packages/ndigo-ui/registry/ui/a2ui-surface/` | Copy-in item; third-party imports inside registry items are the norm (`@zag-js/*`) |
-| `@ndigo/ai` | new package | Wraps the AI SDK through an integration layer, like `@ndigo/dom` wraps linkedom |
-| Catalogue pages, `llms.txt`, `/r/` payloads | `ndigo-site` | Published views |
+| Artifact                                    | Home                                          | Reason                                                                                  |
+| :------------------------------------------ | :-------------------------------------------- | :-------------------------------------------------------------------------------------- |
+| `--json` sweep, `ndigo commands`            | `packages/ndigo-cli`                          | CLI internals                                                                           |
+| Agent content source                        | `tools/agent-content/` (new)                  | Consumed by two packages (CLI assets, CNA templates) — same shape as `tools/generators` |
+| `ndigo ai:*`                                | `packages/ndigo-cli/src/commands/ai/`         | Route map, like `db` and `ui`                                                           |
+| CNA `--agents`                              | `packages/create-ndigo-app`                   | Templates version with the scaffold                                                     |
+| `ndigo mcp`                                 | `packages/ndigo-cli/src/commands/mcp.ts`      | Thin front over the extracted host                                                      |
+| `@ndigo/mcp`                                | new package                                   | Dependency inversion: needs dispatcher metadata, `@ndigo/inspect`, `@ndigo/auth-*`      |
+| A2UI media type                             | `@ndigo/core` + a view in `@ndigo/view`       | AD-66 precedent                                                                         |
+| `<nd-a2ui-surface>`                         | `packages/ndigo-ui/registry/ui/a2ui-surface/` | Copy-in item; third-party imports inside registry items are the norm (`@zag-js/*`)      |
+| `@ndigo/ai`                                 | new package                                   | Wraps the AI SDK through an integration layer, like `@ndigo/dom` wraps linkedom         |
+| Catalogue pages, `llms.txt`, `/r/` payloads | `ndigo-site`                                  | Published views                                                                         |
 
 No new repository. Everything here is version-locked to framework internals or
 to registry shape.
@@ -166,21 +166,21 @@ passes; every swept command emits valid JSON; default output byte-identical;
 
 - `tools/agent-content/` — the single authored source:
 
-  ```
-  tools/agent-content/
-    instructions/ndigo.md          # the managed AGENTS.md block body
-    skills/<id>/SKILL.md           # nine skills, see below
-    docs-index.md                  # compressed index over docs/guides + packages
-    build.mjs                      # emits CLI assets + CNA templates
-    .agent-content.json            # sha256 manifest, CI-gated
-  ```
+    ```
+    tools/agent-content/
+      instructions/ndigo.md          # the managed AGENTS.md block body
+      skills/<id>/SKILL.md           # nine skills, see below
+      docs-index.md                  # compressed index over docs/guides + packages
+      build.mjs                      # emits CLI assets + CNA templates
+      .agent-content.json            # sha256 manifest, CI-gated
+    ```
 
-  `pnpm agent-content:build` emits `packages/ndigo-cli/assets/agent/` and
-  `packages/create-ndigo-app/templates/<kind>/AGENTS.md.template`.
-  `pnpm agent-content:check` fails on drift. This deliberately reuses the
-  `agents:sync` / `agents:check` mechanism but keeps its own store: the existing
-  store serves agents working *on* Ndigo, this one serves agents working *with*
-  it. Do not merge the two.
+    `pnpm agent-content:build` emits `packages/ndigo-cli/assets/agent/` and
+    `packages/create-ndigo-app/templates/<kind>/AGENTS.md.template`.
+    `pnpm agent-content:check` fails on drift. This deliberately reuses the
+    `agents:sync` / `agents:check` mechanism but keeps its own store: the existing
+    store serves agents working _on_ Ndigo, this one serves agents working _with_
+    it. Do not merge the two.
 
 - Nine skills, one per verb cluster: `ndigo-app`, `ndigo-endpoint`,
   `ndigo-persistence`, `ndigo-views`, `ndigo-ui`, `ndigo-reactive`,
@@ -193,15 +193,15 @@ passes; every swept command emits valid JSON; default output byte-identical;
 - `ndigo ai:init | ai:check | ai:update` as a route map
   (`packages/ndigo-cli/src/commands/ai/`):
 
-  | Command | Behaviour |
-  | :-- | :-- |
-  | `ai:init [dir]` | Writes the managed block into `AGENTS.md` between `<!-- BEGIN:ndigo-agent-rules -->` / `<!-- END:ndigo-agent-rules -->`, preserving everything outside; writes `skills/`; writes `.mcp.json` only with `--mcp` |
-  | `ai:check` | Regenerates in memory, diffs, exits 1 when stale |
-  | `ai:update` | Same as init, intended for post-`ndigo update` |
+    | Command         | Behaviour                                                                                                                                                                                                      |
+    | :-------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+    | `ai:init [dir]` | Writes the managed block into `AGENTS.md` between `<!-- BEGIN:ndigo-agent-rules -->` / `<!-- END:ndigo-agent-rules -->`, preserving everything outside; writes `skills/`; writes `.mcp.json` only with `--mcp` |
+    | `ai:check`      | Regenerates in memory, diffs, exits 1 when stale                                                                                                                                                               |
+    | `ai:update`     | Same as init, intended for post-`ndigo update`                                                                                                                                                                 |
 
-  Flags: `--dry-run`, `--force`, `--skills`, `--mcp`, `--instruction-file
+    Flags: `--dry-run`, `--force`, `--skills`, `--mcp`, `--instruction-file
   <path>` (default `AGENTS.md`), `--dir <path>`. No `--agent claude|copilot|…`
-  matrix (D-7).
+    matrix (D-7).
 
 - `create-ndigo-app`: `ScaffoldOptions.agents: boolean`; `--agents` /
   `--no-agents`; interactive prompt defaulting to Yes; `--yes` implies on;
@@ -210,9 +210,9 @@ passes; every swept command emits valid JSON; default output byte-identical;
   written by the CLI, never by the scaffold. `printNextSteps` mentions
   `ndigo ai:init` when skipped.
 
-  The design-system counterpart is **#325** (`--ui`): both flags touch
-  `ScaffoldOptions` and `printNextSteps`, so sequence them together even though
-  neither blocks the other.
+    The design-system counterpart is **#325** (`--ui`): both flags touch
+    `ScaffoldOptions` and `printNextSteps`, so sequence them together even though
+    neither blocks the other.
 
 **Exit criteria.** Fresh scaffold with `--yes` contains a valid `AGENTS.md`
 and no stale claims; `ndigo ai:init` on an existing app is idempotent
@@ -236,17 +236,17 @@ adding a second domain.
   change**; its tests are the safety net.
 - `ndigo mcp [dir] [--readOnly] [--live]`:
 
-  | Tool | Source | Read-only |
-  | :-- | :-- | :-- |
-  | `get_manifest` | app `scripts.inspect` (AD-70), or `@ndigo/inspect` | yes |
-  | `get_routes` | manifest `routes` | yes |
-  | `get_config_keys` | manifest `config` (presence only, never values) | yes |
-  | `get_commands` | `COMMAND_INDEX` from P0 (absent until then) | yes |
-  | `get_best_practices` | rendered `STYLE_GUIDE.md` + `ARCHITECTURE.md` sections, version-pinned | yes |
-  | `run_doctor` | `ndigo doctor` | yes |
-  | `get_logs` | `ndigo logs` | yes |
-  | `run_target` | `ndigo build/test/lint` | **omitted under `--readOnly`** |
-  | `record_rule` | writes `.ndigo/rules/*.md` + index | **omitted under `--readOnly`** |
+    | Tool                 | Source                                                                 | Read-only                      |
+    | :------------------- | :--------------------------------------------------------------------- | :----------------------------- |
+    | `get_manifest`       | app `scripts.inspect` (AD-70), or `@ndigo/inspect`                     | yes                            |
+    | `get_routes`         | manifest `routes`                                                      | yes                            |
+    | `get_config_keys`    | manifest `config` (presence only, never values)                        | yes                            |
+    | `get_commands`       | `COMMAND_INDEX` from P0 (absent until then)                            | yes                            |
+    | `get_best_practices` | rendered `STYLE_GUIDE.md` + `ARCHITECTURE.md` sections, version-pinned | yes                            |
+    | `run_doctor`         | `ndigo doctor`                                                         | yes                            |
+    | `get_logs`           | `ndigo logs`                                                           | yes                            |
+    | `run_target`         | `ndigo build/test/lint`                                                | **omitted under `--readOnly`** |
+    | `record_rule`        | writes `.ndigo/rules/*.md` + index                                     | **omitted under `--readOnly`** |
 
 - Two profiles: **static** (manifest, doctor, logs — no application boot) works
   out of the box; **live** (`--live`) delegates to the application's
@@ -265,26 +265,28 @@ absent.
 ### P3 — `@ndigo/mcp`: application tools from dispatch metadata
 
 **Premise.** This is the phase that fills a hole no JS framework except
-Nuxt/Hono has filled, and it is cheap *because* of `@ndigo/openapi`.
+Nuxt/Hono has filled, and it is cheap _because_ of `@ndigo/openapi`.
 
 **Deliverables**
 
 - Decorators (camelCase, `*Mapping` family, consistent with `@requestMapping` /
   `@getMapping`):
 
-  ```ts
-  @requestMapping('/api/orders')
-  class OrderController {
-      @getMapping('/:id')
-      @parameters({ id: pathVariable('id') })
-      @validatedBy(OrderIdSchema)
-      @toolMapping({ name: 'get_order', readOnly: true })
-      getOrder({ id }: { id: string }) { /* … */ }
-  }
-  ```
+    ```ts
+    @requestMapping('/api/orders')
+    class OrderController {
+        @getMapping('/:id')
+        @parameters({ id: pathVariable('id') })
+        @validatedBy(OrderIdSchema)
+        @toolMapping({ name: 'get_order', readOnly: true })
+        getOrder({ id }: { id: string }) {
+            /* … */
+        }
+    }
+    ```
 
-  `inputSchema` is projected from the same `@parameters` + `validatedBy`
-  metadata that binds the HTTP request. No second description.
+    `inputSchema` is projected from the same `@parameters` + `validatedBy`
+    metadata that binds the HTTP request. No second description.
 
 - `@ndigo/mcp` package: tool registry assembled from dispatcher route tables,
   `tools/list`, `tools/call`, `resources/list` (from `@ndigo/inspect`),
@@ -292,13 +294,13 @@ Nuxt/Hono has filled, and it is cheap *because* of `@ndigo/openapi`.
   a dispatcher route, negotiated as `application/json` or `text/event-stream`
   through the existing SSE view.
 - Auth and policy, all reused rather than invented:
-  - `@ndigo/auth-*` → OAuth 2.1 protected-resource metadata, bearer validation,
-    `WWW-Authenticate`, scopes from route metadata.
-  - `@ndigo/rate-limit` → per-tool and per-principal budgets.
-  - `@ndigo/resilience` → breaker around downstream calls made by tools.
-  - `@ndigo/flags` → `@whenFeature` gates a tool out of `tools/list` entirely.
-  - `@ndigo/log` + `@ndigo/telemetry` → audit record and one span per tool call
-    (`gen_ai.tool.name`, `gen_ai.tool.call.id`).
+    - `@ndigo/auth-*` → OAuth 2.1 protected-resource metadata, bearer validation,
+      `WWW-Authenticate`, scopes from route metadata.
+    - `@ndigo/rate-limit` → per-tool and per-principal budgets.
+    - `@ndigo/resilience` → breaker around downstream calls made by tools.
+    - `@ndigo/flags` → `@whenFeature` gates a tool out of `tools/list` entirely.
+    - `@ndigo/log` + `@ndigo/telemetry` → audit record and one span per tool call
+      (`gen_ai.tool.name`, `gen_ai.tool.call.id`).
 - `ndigo add @ndigo/mcp` → setup generator `@ndigo/generators:mcp-setup`
   (reached through the existing `add.ts` hook) writes `scripts.mcp`, a config
   block, and one sample tool.
@@ -320,8 +322,8 @@ parity test is green.
 
 **Premise.** A2UI's security model is a client-side catalog allowlist. Ndigo UI
 already materialises one per application (`ndigo.ui.json` + `ui.lock.json`
-SHA-256 per file), so Ndigo can state what no other framework can: *the agent's
-component vocabulary is exactly what this application installed, with hashes.*
+SHA-256 per file), so Ndigo can state what no other framework can: _the agent's
+component vocabulary is exactly what this application installed, with hashes._
 
 Order matters — each step is independently valuable.
 
@@ -433,14 +435,14 @@ stderr, exit codes unchanged, human output untouched when absent.
 
 ## 6. Testing
 
-| Layer | Coverage |
-| :-- | :-- |
-| CLI JSON | Snapshot each `--json` payload shape; assert `commands` parity against route map keys |
+| Layer         | Coverage                                                                                                                            |
+| :------------ | :---------------------------------------------------------------------------------------------------------------------------------- |
+| CLI JSON      | Snapshot each `--json` payload shape; assert `commands` parity against route map keys                                               |
 | Agent content | `agent-content:check` drift gate; `ai:init` idempotency (two runs → no diff); marker-block preservation around hand-written content |
-| MCP host | Reuse `ui mcp` tests post-extraction; `--readOnly` tool-list assertions |
-| `@ndigo/mcp` | OpenAPI ↔ `tools/list` schema parity; bearer and scope rejection; feature-gated tools absent from the list |
-| A2UI | Catalog completeness against `registry.json`; unknown-component rejection; surface rendering in the lab |
-| CNA | Both `--agents` values; `--force` over an existing `AGENTS.md` must not clobber outside the markers |
+| MCP host      | Reuse `ui mcp` tests post-extraction; `--readOnly` tool-list assertions                                                             |
+| `@ndigo/mcp`  | OpenAPI ↔ `tools/list` schema parity; bearer and scope rejection; feature-gated tools absent from the list                          |
+| A2UI          | Catalog completeness against `registry.json`; unknown-component rejection; surface rendering in the lab                             |
+| CNA           | Both `--agents` values; `--force` over an existing `AGENTS.md` must not clobber outside the markers                                 |
 
 The repo's existing gates apply unchanged: `pnpm lint`, `pnpm typecheck`,
 `pnpm build`, `pnpm test`, `pnpm manifest:check`, `pnpm docs:links`,
@@ -450,16 +452,16 @@ The repo's existing gates apply unchanged: `pnpm lint`, `pnpm typecheck`,
 
 ## 7. Risks
 
-| Risk | Mitigation |
-| :-- | :-- |
-| MCP tool surface becomes an attack surface | Read-only default (D-5); auth on every remote transport; audit log; approval path for destructive tools; `--readOnly` omits from `tools/list`, not just `tools/call` |
-| Skills go uninvoked (56% in Vercel's evals) | Passive `AGENTS.md` block and docs index carry the facts; skills only carry workflows (D-4) |
-| Generated content rots | `agent-content:check` in CI; content generated, never hand-edited; docs renumbered twice already (12 → 90) |
-| Two agent-content stores drift | Internal (`development-agents/`, `agent-local/`) and consumer (`tools/agent-content/`) are separate by design; neither imports the other |
-| A2UI revision churn | Bind through `web_core`; mapping table is data; (a) and (b) carry no A2UI dependency at all |
-| Registry churn destabilises P4 | Sequence P4 after UI intake settles; `registry.json` is single-lane |
-| `ndigo mcp` duplicates `ui mcp` | Host extracted first (P2), one implementation, two route maps |
-| Scope creep into an AI SDK competitor | P5 is last and requires a demonstrated consumer |
+| Risk                                        | Mitigation                                                                                                                                                           |
+| :------------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| MCP tool surface becomes an attack surface  | Read-only default (D-5); auth on every remote transport; audit log; approval path for destructive tools; `--readOnly` omits from `tools/list`, not just `tools/call` |
+| Skills go uninvoked (56% in Vercel's evals) | Passive `AGENTS.md` block and docs index carry the facts; skills only carry workflows (D-4)                                                                          |
+| Generated content rots                      | `agent-content:check` in CI; content generated, never hand-edited; docs renumbered twice already (12 → 90)                                                           |
+| Two agent-content stores drift              | Internal (`development-agents/`, `agent-local/`) and consumer (`tools/agent-content/`) are separate by design; neither imports the other                             |
+| A2UI revision churn                         | Bind through `web_core`; mapping table is data; (a) and (b) carry no A2UI dependency at all                                                                          |
+| Registry churn destabilises P4              | Sequence P4 after UI intake settles; `registry.json` is single-lane                                                                                                  |
+| `ndigo mcp` duplicates `ui mcp`             | Host extracted first (P2), one implementation, two route maps                                                                                                        |
+| Scope creep into an AI SDK competitor       | P5 is last and requires a demonstrated consumer                                                                                                                      |
 
 ---
 
@@ -488,14 +490,14 @@ The repo's existing gates apply unchanged: `pnpm lint`, `pnpm typecheck`,
 
 ## 9. Decisions to record
 
-| ADR | Subject | Phase |
-| :-- | :-- | :-- |
-| AD-96 | Agent integration umbrella: two audiences, D-1…D-8 | before P0 |
-| AD-97 | `--json` output contract for the CLI | P0 |
-| AD-98 | Agent content generation and the two-store split | P1 |
-| AD-99 | MCP host extraction and `ndigo mcp` profiles | P2 |
-| AD-100 | `@ndigo/mcp` decorator surface and schema projection | P3 |
-| AD-101 | A2UI adoption: catalog, media type, renderer | P4 |
+| ADR    | Subject                                              | Phase     |
+| :----- | :--------------------------------------------------- | :-------- |
+| AD-96  | Agent integration umbrella: two audiences, D-1…D-8   | before P0 |
+| AD-97  | `--json` output contract for the CLI                 | P0        |
+| AD-98  | Agent content generation and the two-store split     | P1        |
+| AD-99  | MCP host extraction and `ndigo mcp` profiles         | P2        |
+| AD-100 | `@ndigo/mcp` decorator surface and schema projection | P3        |
+| AD-101 | A2UI adoption: catalog, media type, renderer         | P4        |
 
 ---
 
@@ -504,20 +506,20 @@ The repo's existing gates apply unchanged: `pnpm lint`, `pnpm typecheck`,
 One issue per phase; P4 splits into five. Names follow
 `<repo>-<issue>-<slug>`, branches `type/N-slug`, one worktree each.
 
-| Issue | Title | Depends on |
-| :-- | :-- | :-- |
-| 1 | `feat(cli): --json contract and ndigo commands` | — |
-| 2 | `feat(cli): agent content generation and ndigo ai:*` | 1 |
-| 3 | `feat(create-ndigo-app): --agents scaffold option` | 2 |
-| 4 | `refactor(cli): extract MCP host; add ndigo mcp` | — (first; `get_commands` follows 1) |
-| 5 | `feat(mcp): @ndigo/mcp tool projection from dispatch metadata` | 4 |
-| 6 | `feat(ui): A2UI catalog exposure` | — |
-| 7 | `feat(core): application/a2ui+json media type and view` | 5, 6 |
-| 8 | `feat(ui): nd-a2ui-surface registry item` | 7 |
-| 9 | `feat(mcp): MCP Apps ui:// resources` | 5 |
-| 10 | `feat(view-webcomponent): WebMCP tool declaration` | 5 |
-| 11 | `feat(ai): @ndigo/ai contracts and AI SDK adapter` | 5 |
-| 12 | `feat(scaffold): ndigo-ui in create-ndigo-app (--ui)` — **filed as #325** | — |
+| Issue | Title                                                                     | Depends on                          |
+| :---- | :------------------------------------------------------------------------ | :---------------------------------- |
+| 1     | `feat(cli): --json contract and ndigo commands`                           | —                                   |
+| 2     | `feat(cli): agent content generation and ndigo ai:*`                      | 1                                   |
+| 3     | `feat(create-ndigo-app): --agents scaffold option`                        | 2                                   |
+| 4     | `refactor(cli): extract MCP host; add ndigo mcp`                          | — (first; `get_commands` follows 1) |
+| 5     | `feat(mcp): @ndigo/mcp tool projection from dispatch metadata`            | 4                                   |
+| 6     | `feat(ui): A2UI catalog exposure`                                         | —                                   |
+| 7     | `feat(core): application/a2ui+json media type and view`                   | 5, 6                                |
+| 8     | `feat(ui): nd-a2ui-surface registry item`                                 | 7                                   |
+| 9     | `feat(mcp): MCP Apps ui:// resources`                                     | 5                                   |
+| 10    | `feat(view-webcomponent): WebMCP tool declaration`                        | 5                                   |
+| 11    | `feat(ai): @ndigo/ai contracts and AI SDK adapter`                        | 5                                   |
+| 12    | `feat(scaffold): ndigo-ui in create-ndigo-app (--ui)` — **filed as #325** | —                                   |
 
 Issue 6 is independent of everything and is the cheapest first win if the
 sequence needs breaking up.
@@ -533,7 +535,7 @@ sequence needs breaking up.
 - `docs/guides/37-ndigo-cli.md`, `docs/guides/30-*` (UI companion),
   `docs/guides/90-package-documentation.md`
 - `docs/plans/2026-11-08_NDIGO_UI.md` — phase/exit-criteria format this plan follows
-- Vercel, *AGENTS.md outperforms skills in our agent evals* (January 2026)
+- Vercel, _AGENTS.md outperforms skills in our agent evals_ (January 2026)
 - Angular — Agent Skills, CLI MCP server, WebMCP;
   Next.js — bundled docs, `/_next/mcp`, agent skills;
   Svelte — MCP server and `svelte-autofixer`;

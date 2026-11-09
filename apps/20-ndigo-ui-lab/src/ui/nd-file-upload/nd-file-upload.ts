@@ -19,7 +19,20 @@ const BYTE_UNITS = ['KB', 'MB', 'GB'] as const;
 let nextId = 0;
 
 export class NdFileUpload extends NdElement {
+    static observedAttributes = [
+        'name',
+        'accept',
+        'max-files',
+        'max-file-size',
+        'min-file-size',
+        'disabled',
+        'required',
+        'readonly',
+        'invalid',
+    ];
+
     #machineId = '';
+    #items = new Map<File, HTMLElement>();
     #controller = createZagElement({
         machine: fileUploadMachine,
         connect: (service): FileUploadApi => connectFileUpload(service, normalizeProps),
@@ -46,7 +59,7 @@ export class NdFileUpload extends NdElement {
     });
 
     protected onConnect(): void {
-        this.#machineId = this.id || `nd-file-upload-${++nextId}`;
+        this.#machineId ||= this.id || `nd-file-upload-${++nextId}`;
         this.#ensureHiddenInput();
         this.#ensureItemGroup();
         this.#controller.start();
@@ -57,6 +70,20 @@ export class NdFileUpload extends NdElement {
 
     protected onDisconnect(): void {
         this.#controller.stop();
+    }
+
+    attributeChangedCallback(): void {
+        this.#controller.updateProps({
+            name: this.getAttribute('name') ?? undefined,
+            accept: (this.getAttribute('accept') as FileMimeType | null) ?? undefined,
+            maxFiles: this.#numberAttribute('max-files', DEFAULT_MAX_FILES),
+            maxFileSize: this.#numberAttribute('max-file-size', DEFAULT_MAX_FILE_SIZE),
+            minFileSize: this.#numberAttribute('min-file-size', DEFAULT_MIN_FILE_SIZE),
+            disabled: this.hasAttribute('disabled'),
+            required: this.hasAttribute('required'),
+            readOnly: this.hasAttribute('readonly'),
+            invalid: this.hasAttribute('invalid'),
+        });
     }
 
     /** Opens the browser file picker. */
@@ -130,6 +157,60 @@ export class NdFileUpload extends NdElement {
         return item;
     }
 
+    #updateItem(api: FileUploadApi, item: HTMLElement, file: File): void {
+        spreadProps(item, api.getItemProps({ file }));
+        const name = item.querySelector<HTMLElement>('[data-part="item-name"]');
+        if (name) {
+            name.textContent = file.name;
+            spreadProps(name, api.getItemNameProps({ file }));
+        }
+        const size = item.querySelector<HTMLElement>('[data-part="item-size-text"]');
+        if (size) {
+            size.textContent = this.#formatSize(file.size);
+            spreadProps(size, api.getItemSizeTextProps({ file }));
+        }
+        const remove = item.querySelector<HTMLElement>('[data-part="item-delete-trigger"]');
+        if (remove) spreadProps(remove, api.getItemDeleteTriggerProps({ file }));
+    }
+
+    #syncItems(api: FileUploadApi, group: HTMLElement): void {
+        const active = this.ownerDocument.activeElement;
+        const focusedItem = active instanceof HTMLElement ? active.closest<HTMLElement>('[data-part="item"]') : null;
+        const focusedIndex = focusedItem === null ? -1 : [...group.children].indexOf(focusedItem);
+        const focusedDelete =
+            focusedIndex >= 0 && active instanceof HTMLElement && active.matches('[data-part="item-delete-trigger"]');
+
+        const files = api.acceptedFiles;
+        for (const [file, item] of this.#items) {
+            if (files.includes(file)) continue;
+            item.remove();
+            this.#items.delete(file);
+        }
+
+        files.forEach((file, index) => {
+            let item = this.#items.get(file);
+            if (item === undefined) {
+                item = this.#createItem(api, file);
+                this.#items.set(file, item);
+            }
+            this.#updateItem(api, item, file);
+            const current = group.children[index] ?? null;
+            if (current !== item) group.insertBefore(item, current);
+        });
+
+        if (focusedDelete && active instanceof HTMLElement && !group.contains(active)) {
+            // The focused row was removed: keep the keyboard position by focusing
+            // the row that took its place (or the previous last row).
+            const items = [...group.children] as HTMLElement[];
+            const target = items[Math.min(focusedIndex, items.length - 1)] ?? null;
+            const nextDelete = target?.querySelector<HTMLElement>('[data-part="item-delete-trigger"]');
+            const fallback =
+                this.querySelector<HTMLElement>('[data-part="dropzone"]') ??
+                this.querySelector<HTMLElement>('[data-part="trigger"]');
+            (nextDelete ?? fallback)?.focus();
+        }
+    }
+
     #render(api: FileUploadApi): void {
         spreadProps(this, api.getRootProps());
         const label = this.querySelector<HTMLElement>('[data-part="label"]');
@@ -146,7 +227,7 @@ export class NdFileUpload extends NdElement {
         if (hidden) spreadProps(hidden, api.getHiddenInputProps());
         if (group) {
             spreadProps(group, api.getItemGroupProps());
-            group.replaceChildren(...api.acceptedFiles.map((file) => this.#createItem(api, file)));
+            this.#syncItems(api, group);
         }
     }
 }

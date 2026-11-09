@@ -28,7 +28,7 @@ nd-dialog [data-part='backdrop'] {
     position: fixed;
     inset: 0;
     z-index: var(--nd-z-overlay);
-    background: rgb(10 10 20 / 0.65);
+    background: color-mix(in srgb, var(--nd-color-bg) 65%, transparent);
     backdrop-filter: blur(2px);
 }
 

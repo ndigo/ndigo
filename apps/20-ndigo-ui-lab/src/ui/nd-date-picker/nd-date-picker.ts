@@ -11,11 +11,23 @@ import type { Api as DatePickerApi, DateValue } from '@zag-js/date-picker';
 import { normalizeProps, spreadProps } from '@zag-js/vanilla';
 import { defineElement, NdElement } from '@/lib/base-element';
 import { createZagElement } from '@/lib/zag-element';
+import { ensureRootElement } from '@/lib/structure-element';
 
 let nextId = 0;
 
 export class NdDatePicker extends NdElement {
-    static observedAttributes = ['open'];
+    static observedAttributes = [
+        'open',
+        'disabled',
+        'name',
+        'readonly',
+        'required',
+        'invalid',
+        'min',
+        'max',
+        'locale',
+        'value',
+    ];
 
     #machineId = '';
     #controller = createZagElement({
@@ -50,7 +62,7 @@ export class NdDatePicker extends NdElement {
     });
 
     protected onConnect(): void {
-        this.#machineId = this.id || `nd-date-picker-${++nextId}`;
+        this.#machineId ||= this.id || `nd-date-picker-${++nextId}`;
         this.#ensureStructure();
         this.#controller.start();
         const value = this.#controller.api?.value.map((date) => date.toString()) ?? [];
@@ -63,7 +75,28 @@ export class NdDatePicker extends NdElement {
     }
 
     attributeChangedCallback(name: string, _previous: string | null, value: string | null): void {
-        if (name === 'open') this.#controller.updateProps({ open: value !== null });
+        if (name === 'open') {
+            this.#controller.updateProps({ open: value !== null });
+            return;
+        }
+        if (name === 'value') {
+            const date = this.#parseIso(value);
+            if (date) this.#controller.api?.setValue([date]);
+            else this.#controller.api?.clearValue();
+            return;
+        }
+        this.#controller.updateProps({
+            disabled: this.hasAttribute('disabled'),
+            readOnly: this.hasAttribute('readonly'),
+            required: this.hasAttribute('required'),
+            invalid: this.hasAttribute('invalid'),
+            locale: this.getAttribute('locale') ?? 'en-US',
+            min: this.#parseIso(this.getAttribute('min')),
+            max: this.#parseIso(this.getAttribute('max')),
+        });
+        if (name === 'disabled' || name === 'name') {
+            this.#syncHiddenInput(this.#controller.api?.value.map((date) => date.toString()) ?? []);
+        }
     }
 
     /** Opens the calendar programmatically. */
@@ -104,11 +137,14 @@ export class NdDatePicker extends NdElement {
 
     #syncHiddenInput(values: readonly string[]): void {
         const hidden = this.querySelector<HTMLInputElement>('[data-part="hidden-input"]');
-        if (hidden) hidden.value = values[0] ?? '';
+        if (!hidden) return;
+        hidden.value = values[0] ?? '';
+        hidden.name = this.getAttribute('name') ?? '';
+        hidden.disabled = this.hasAttribute('disabled');
     }
 
     #ensureStructure(): void {
-        const root = this.#ensureRoot();
+        const root = ensureRootElement(this);
         let content = this.querySelector<HTMLElement>('[data-part="content"]');
         let positioner = this.querySelector<HTMLElement>('[data-part="positioner"]');
 
@@ -144,18 +180,9 @@ export class NdDatePicker extends NdElement {
             hidden.type = 'hidden';
             hidden.dataset.part = 'hidden-input';
             hidden.name = this.getAttribute('name') ?? '';
+            hidden.disabled = this.hasAttribute('disabled');
             root.append(hidden);
         }
-    }
-
-    #ensureRoot(): HTMLElement {
-        const existing = this.firstElementChild;
-        if (existing instanceof HTMLElement && existing.dataset.part === 'root') return existing;
-        const root = this.ownerDocument.createElement('div');
-        root.dataset.part = 'root';
-        root.append(...this.children);
-        this.append(root);
-        return root;
     }
 
     #createContent(): HTMLElement {

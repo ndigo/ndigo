@@ -92,7 +92,9 @@
 
 .nd-command nd-combobox [data-part='input']:focus-visible {
     border: 0;
-    outline: none;
+    /* The dialog clips overflow, so keep the focus ring inset rather than removing it. */
+    outline: var(--nd-focus-ring-width) solid var(--nd-focus-ring-color);
+    outline-offset: calc(-1 * var(--nd-focus-ring-width));
 }
 
 /* ---------- Inline list ---------- */

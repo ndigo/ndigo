@@ -9,11 +9,12 @@ import type { Api as SwitchApi } from '@zag-js/switch';
 import { normalizeProps, spreadProps } from '@zag-js/vanilla';
 import { defineElement, NdElement } from '@/lib/base-element';
 import { createZagElement } from '@/lib/zag-element';
+import { ownPart } from '@/lib/structure-element';
 
 let nextId = 0;
 
 export class NdSwitch extends NdElement {
-    static observedAttributes = ['checked'];
+    static observedAttributes = ['checked', 'disabled', 'readonly', 'required', 'invalid', 'name'];
 
     #machineId = '';
     #controller = createZagElement({
@@ -36,7 +37,7 @@ export class NdSwitch extends NdElement {
     });
 
     protected onConnect(): void {
-        this.#machineId = this.id || `nd-switch-${++nextId}`;
+        this.#machineId ||= this.id || `nd-switch-${++nextId}`;
         this.#ensureStructure();
         this.#controller.start();
     }
@@ -46,11 +47,21 @@ export class NdSwitch extends NdElement {
     }
 
     attributeChangedCallback(name: string, _previous: string | null, value: string | null): void {
-        if (name === 'checked') this.#controller.updateProps({ checked: value !== null });
+        if (name === 'checked') {
+            this.#controller.updateProps({ checked: value !== null });
+            return;
+        }
+        this.#controller.updateProps({
+            disabled: this.hasAttribute('disabled'),
+            readOnly: this.hasAttribute('readonly'),
+            required: this.hasAttribute('required'),
+            invalid: this.hasAttribute('invalid'),
+            name: this.getAttribute('name') ?? undefined,
+        });
     }
 
     #ensureStructure(): void {
-        let root = this.querySelector<HTMLElement>('[data-part="root"]');
+        let root = ownPart<HTMLElement>(this, 'root');
         if (!root) {
             root = this.ownerDocument.createElement('label');
             root.dataset.part = 'root';
@@ -73,7 +84,12 @@ export class NdSwitch extends NdElement {
             return;
         }
 
-        if (!root.querySelector('[data-part="hidden-input"]')) {
+        // Authored nodes beside the root belong inside it.
+        for (const node of Array.from(this.childNodes)) {
+            if (node !== root) root.append(node);
+        }
+
+        if (!ownPart<HTMLElement>(root, 'hidden-input')) {
             const input = this.ownerDocument.createElement('input');
             input.dataset.part = 'hidden-input';
             root.prepend(input);
@@ -81,11 +97,11 @@ export class NdSwitch extends NdElement {
     }
 
     #render(api: SwitchApi): void {
-        const root = this.querySelector<HTMLElement>('[data-part="root"]');
-        const input = this.querySelector<HTMLElement>('[data-part="hidden-input"]');
-        const control = this.querySelector<HTMLElement>('[data-part="control"]');
-        const thumb = this.querySelector<HTMLElement>('[data-part="thumb"]');
-        const label = this.querySelector<HTMLElement>('[data-part="label"]');
+        const root = ownPart<HTMLElement>(this, 'root');
+        const input = root?.querySelector<HTMLElement>('[data-part="hidden-input"]') ?? null;
+        const control = root?.querySelector<HTMLElement>('[data-part="control"]') ?? null;
+        const thumb = root?.querySelector<HTMLElement>('[data-part="thumb"]') ?? null;
+        const label = root?.querySelector<HTMLElement>('[data-part="label"]') ?? null;
 
         if (root) spreadProps(root, api.getRootProps());
         if (input) spreadProps(input, api.getHiddenInputProps());

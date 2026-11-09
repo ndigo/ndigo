@@ -10,6 +10,7 @@ import type { Api as SelectApi } from '@zag-js/select';
 import { normalizeProps, spreadProps } from '@zag-js/vanilla';
 import { defineElement, NdElement } from '@/lib/base-element';
 import { createZagElement } from '@/lib/zag-element';
+import { ensureRootElement } from '@/lib/structure-element';
 
 interface SelectItem {
     readonly value: string;
@@ -20,7 +21,7 @@ interface SelectItem {
 let nextId = 0;
 
 export class NdSelect extends NdElement {
-    static observedAttributes = ['open'];
+    static observedAttributes = ['open', 'disabled', 'readonly', 'required', 'invalid', 'name', 'value', 'placeholder'];
 
     #machineId = '';
     #collection = new ListCollection<SelectItem>({ items: [] });
@@ -52,8 +53,8 @@ export class NdSelect extends NdElement {
     });
 
     protected onConnect(): void {
-        this.#machineId = this.id || `nd-select-${++nextId}`;
-        const root = this.#ensureRoot();
+        this.#machineId ||= this.id || `nd-select-${++nextId}`;
+        const root = ensureRootElement(this);
         this.#ensureHiddenSelect(root);
         this.#collection = new ListCollection<SelectItem>({
             items: this.#readItems(),
@@ -72,7 +73,26 @@ export class NdSelect extends NdElement {
     }
 
     attributeChangedCallback(name: string, _previous: string | null, value: string | null): void {
-        if (name === 'open') this.#controller.updateProps({ open: value !== null });
+        if (name === 'open') {
+            this.#controller.updateProps({ open: value !== null });
+            return;
+        }
+        if (name === 'value') {
+            this.#controller.api?.setValue(value === null || value.length === 0 ? [] : [value]);
+            return;
+        }
+        this.#controller.updateProps({
+            disabled: this.hasAttribute('disabled'),
+            invalid: this.hasAttribute('invalid'),
+            required: this.hasAttribute('required'),
+            readOnly: this.hasAttribute('readonly'),
+            name: this.getAttribute('name') ?? undefined,
+        });
+        if (name === 'placeholder' || name === 'name' || name === 'required' || name === 'disabled') {
+            const current = this.#controller.api?.value ?? [];
+            this.#syncValueText(current);
+            this.#syncHiddenSelect(current);
+        }
     }
 
     /** Selects one value programmatically. */
@@ -83,16 +103,6 @@ export class NdSelect extends NdElement {
     #initialValue(): string[] {
         const value = this.getAttribute('value');
         return value === null || value.length === 0 ? [] : [value];
-    }
-
-    #ensureRoot(): HTMLElement {
-        const existing = this.querySelector<HTMLElement>('[data-part="root"]');
-        if (existing) return existing;
-        const root = this.ownerDocument.createElement('div');
-        root.dataset.part = 'root';
-        root.append(...this.children);
-        this.append(root);
-        return root;
     }
 
     #ensureHiddenSelect(root: HTMLElement): void {
@@ -127,7 +137,13 @@ export class NdSelect extends NdElement {
     #syncHiddenSelect(values: readonly string[]): void {
         const select = this.querySelector<HTMLSelectElement>('[data-part="hidden-select"]');
         if (!select) return;
+        const placeholder = this.ownerDocument.createElement('option');
+        placeholder.value = '';
+        placeholder.disabled = true;
+        placeholder.hidden = true;
+        placeholder.selected = values.length === 0;
         select.replaceChildren(
+            placeholder,
             ...this.#collection.items.map((item) => {
                 const option = this.ownerDocument.createElement('option');
                 option.value = item.value;
@@ -136,6 +152,10 @@ export class NdSelect extends NdElement {
                 return option;
             })
         );
+        // A `<select>` implicitly selects its first option; the placeholder above
+        // prevents an empty select from submitting (or validating as) a real value.
+        select.required = this.hasAttribute('required');
+        select.disabled = this.hasAttribute('disabled');
     }
 
     #render(api: SelectApi): void {

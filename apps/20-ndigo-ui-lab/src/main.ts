@@ -1,29 +1,22 @@
 /**
  * Lab bootstrap: load the registry-installed theme and elements, then wire the
  * token readout and the menu selection status.
+ *
+ * The element and stylesheet lists are globbed from the installed trees, so
+ * adding a registry item does not require editing this file (or index.html).
  */
-import './ui/nd-dialog/nd-dialog';
-import './ui/nd-drawer/nd-drawer';
-import './ui/nd-menu/nd-menu';
-import './ui/nd-popover/nd-popover';
-import './ui/nd-tooltip/nd-tooltip';
-import './ui/nd-tabs/nd-tabs';
-import './ui/nd-accordion/nd-accordion';
+import '../styles/ndigo-tokens.css';
+import '../styles/ndigo-base.css';
+import './styles/lab.css';
 import type { NdToast } from './ui/nd-toast/nd-toast';
-import './ui/nd-toast/nd-toast';
-import './ui/nd-slider/nd-slider';
-import './ui/nd-switch/nd-switch';
-import './ui/nd-select/nd-select';
-import './ui/nd-combobox/nd-combobox';
-import './ui/nd-date-picker/nd-date-picker';
-import './ui/nd-scroll-area/nd-scroll-area';
-import './ui/nd-navigation-menu/nd-navigation-menu';
-import './ui/nd-tags-input/nd-tags-input';
-import './ui/nd-file-upload/nd-file-upload';
 import { initCommandPalette } from './components/command/command';
 import { initDataTable } from './components/data-table/data-table';
 import { initCodeBlocks } from './components/code-block/code-block';
 import { TOKENS } from '@ndigo/ui';
+
+const _uiStyles = import.meta.glob('./ui/**/*.css', { eager: true });
+const _uiModules = import.meta.glob('./ui/**/*.ts', { eager: true });
+const _blockStyles = import.meta.glob('./components/**/*.css', { eager: true });
 
 const tokenCount = document.querySelector('#token-count');
 if (tokenCount !== null) tokenCount.textContent = String(TOKENS.length);

@@ -10,10 +10,13 @@ import type { Api as TabsApi } from '@zag-js/tabs';
 import { normalizeProps, spreadProps } from '@zag-js/vanilla';
 import { defineElement, NdElement } from '@/lib/base-element';
 import { createZagElement } from '@/lib/zag-element';
+import { ensureRootElement } from '@/lib/structure-element';
 
 let nextId = 0;
 
 export class NdTabs extends NdElement {
+    static observedAttributes = ['value'];
+
     #machineId = '';
     #controller = createZagElement({
         machine: tabsMachine,
@@ -31,13 +34,20 @@ export class NdTabs extends NdElement {
     });
 
     protected onConnect(): void {
-        this.#machineId = this.id || `nd-tabs-${++nextId}`;
-        this.#ensureRoot();
+        this.#machineId ||= this.id || `nd-tabs-${++nextId}`;
+        ensureRootElement(this);
         this.#controller.start();
     }
 
     protected onDisconnect(): void {
         this.#controller.stop();
+    }
+
+    attributeChangedCallback(name: string, _previous: string | null, _value: string | null): void {
+        if (name === 'value') {
+            const value = this.#defaultValue();
+            if (value !== undefined) this.#controller.api?.setValue(value);
+        }
     }
 
     /** Selects a tab by value. */
@@ -49,16 +59,6 @@ export class NdTabs extends NdElement {
         const value = this.getAttribute('value');
         if (value !== null) return value;
         return this.querySelector<HTMLElement>('[data-part="trigger"][data-value]')?.dataset.value;
-    }
-
-    #ensureRoot(): HTMLElement {
-        const existing = this.querySelector<HTMLElement>('[data-part="root"]');
-        if (existing) return existing;
-        const root = this.ownerDocument.createElement('div');
-        root.dataset.part = 'root';
-        root.append(...this.children);
-        this.append(root);
-        return root;
     }
 
     #render(api: TabsApi): void {

@@ -2,20 +2,14 @@
  * Token contract tests: the stylesheet and the TypeScript catalog must agree
  * exactly, and the stylesheet must stay consumer-agnostic.
  */
-import { existsSync, readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { getTokenDefinition, TOKEN_GROUPS, TOKEN_NAMES, TOKENS, resolveToken } from '@ndigo/ui';
 import type { TokenGroup } from '@ndigo/ui';
+import { packageRoot } from './_package-root.js';
 
-const STYLESHEET_PATH = [
-    resolve(process.cwd(), 'tokens/ndigo-tokens.css'),
-    resolve(process.cwd(), 'packages/ndigo-ui/tokens/ndigo-tokens.css'),
-].find((candidate) => existsSync(candidate));
-
-if (!STYLESHEET_PATH) {
-    throw new Error(`Cannot locate tokens/ndigo-tokens.css from ${process.cwd()}`);
-}
+const STYLESHEET_PATH = join(packageRoot('tokens/ndigo-tokens.css'), 'tokens/ndigo-tokens.css');
 
 const STYLESHEET = readFileSync(STYLESHEET_PATH, 'utf8');
 const CSS = STYLESHEET.replace(/\/\*[\s\S]*?\*\//g, '');

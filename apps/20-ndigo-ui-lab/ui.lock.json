@@ -14,7 +14,7 @@
           "sha256": "6a298af62b01122adea3a480b6c04c2711035b5bd558c8187ee2e51572beb1d3"
         }
       ],
-      "installedAt": "2026-11-09T16:38:04.721Z"
+      "installedAt": "2026-11-09T16:45:59.921Z"
     },
     "dialog": {
       "registry": "../../registry.json",
@@ -303,6 +303,21 @@
         }
       ],
       "installedAt": "2026-11-09T16:38:04.721Z"
+    },
+    "scroll-area": {
+      "registry": "../../registry.json",
+      "type": "registry:ui",
+      "files": [
+        {
+          "target": "src/ui/nd-scroll-area/nd-scroll-area.css",
+          "sha256": "d55887f0bed758ed90fba1e15d25db4a77eb0134c27c8f99d3739509f7137dac"
+        },
+        {
+          "target": "src/ui/nd-scroll-area/nd-scroll-area.ts",
+          "sha256": "e00af67a7ca3d6dfc6cb43d0a3a4f9de2557947022f4de042b4becf345f534fa"
+        }
+      ],
+      "installedAt": "2026-11-09T16:45:59.921Z"
     }
   }
 }

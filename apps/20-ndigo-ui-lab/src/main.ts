@@ -16,6 +16,7 @@ import './ui/nd-switch/nd-switch';
 import './ui/nd-select/nd-select';
 import './ui/nd-combobox/nd-combobox';
 import './ui/nd-date-picker/nd-date-picker';
+import './ui/nd-scroll-area/nd-scroll-area';
 import { initCommandPalette } from './components/command/command';
 import { TOKENS } from '@ndigo/ui';
 

@@ -1,0 +1,74 @@
+/* <nd-popover> — non-modal overlay surface built on the design tokens. */
+
+nd-popover {
+    display: contents;
+}
+
+nd-popover [data-part='trigger'] {
+    padding: var(--nd-space-2) var(--nd-space-3);
+    color: var(--nd-color-text);
+    font: inherit;
+    background: var(--nd-color-surface);
+    border: 1px solid var(--nd-color-border);
+    border-radius: var(--nd-radius-md);
+    cursor: pointer;
+}
+
+nd-popover [data-part='trigger']:hover {
+    background: var(--nd-color-surface-raised);
+}
+
+nd-popover [data-part='positioner'] {
+    z-index: var(--nd-z-dropdown);
+}
+
+nd-popover [data-part='content'] {
+    position: relative;
+    width: max-content;
+    max-inline-size: 20rem;
+    padding: var(--nd-space-4);
+    color: var(--nd-color-text);
+    background: var(--nd-color-surface-raised);
+    border: 1px solid var(--nd-color-border);
+    border-radius: var(--nd-radius-lg);
+    box-shadow: var(--nd-shadow-md);
+}
+
+nd-popover [data-part='title'] {
+    margin-block: 0 var(--nd-space-2);
+    padding-inline-end: var(--nd-space-6);
+    font-size: var(--nd-text-base);
+    font-weight: var(--nd-weight-semibold);
+}
+
+nd-popover [data-part='description'] {
+    margin-block: 0 var(--nd-space-3);
+    color: var(--nd-color-text-muted);
+    font-size: var(--nd-text-sm);
+}
+
+nd-popover [data-part='close-trigger'] {
+    position: absolute;
+    inset-block-start: var(--nd-space-2);
+    inset-inline-end: var(--nd-space-2);
+    padding: var(--nd-space-1);
+    color: var(--nd-color-text-muted);
+    font: inherit;
+    background: transparent;
+    border: 0;
+    border-radius: var(--nd-radius-sm);
+    cursor: pointer;
+}
+
+nd-popover [data-part='close-trigger']:hover {
+    color: var(--nd-color-text);
+    background: var(--nd-color-accent-soft);
+}
+
+nd-popover [data-part='arrow'] {
+    inline-size: 0.75rem;
+    block-size: 0.75rem;
+    background: var(--nd-color-surface-raised);
+    border: 1px solid var(--nd-color-border);
+    transform: rotate(45deg);
+}

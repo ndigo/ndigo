@@ -154,6 +154,7 @@ demo.
 | [ndigo-telemetry-lab](apps/17-ndigo-telemetry-lab/README.md)     | End-to-end observability — traces, metrics, sampling                |
 | [ndigo-auth-playground](apps/18-ndigo-auth-playground/README.md) | Auth matrix — cookies, JWT, roles, OIDC + PKCE                      |
 | [ndigo-hn](apps/19-ndigo-hn/README.md)                           | Hacker News reader — cached/offline HTTP client, long lists         |
+| [ndigo-ui-lab](apps/20-ndigo-ui-lab/README.md)                   | Owned design system — full 41-item registry, tokens, and blocks     |
 
 The [apps/README](apps/README.md) documents the progression from simple to
 complex. App directories are numbered in reading order (`apps/01-ndigo-hello` …);
@@ -180,10 +181,12 @@ Core & infrastructure:
 - [ndigo-resilience](packages/ndigo-resilience/README.md) — resilience policies: `@retry`, `@circuitBreaker`
 - [ndigo-context](packages/ndigo-context/README.md) — application context, configuration, environments
 - [ndigo-boot](packages/ndigo-boot/README.md) — application bootstrap, profiles, typed config
+- [ndigo-cluster](packages/ndigo-cluster/README.md) — process supervisor: replicated worker slots, signal relay, graceful drains
+- [ndigo-flags](packages/ndigo-flags/README.md) — feature flags: `FlagEvaluator` SPI, property provider, `@whenFeature`
+- [ndigo-flags-openfeature](packages/ndigo-flags-openfeature/README.md) — OpenFeature bridge over the flags SPI
 - [ndigo-signals](packages/ndigo-signals/README.md) — reactive state
 - [ndigo-dom](packages/ndigo-dom/README.md) — isomorphic DOM providers
 - [ndigo-cache](packages/ndigo-cache/README.md) — cache manager + `@cached` decorator
-- [ndigo-scheduler](packages/ndigo-scheduler/README.md) — cron scheduling (`@scheduled`), task registry
 
 Content & i18n:
 
@@ -204,16 +207,24 @@ Dispatch & views:
 - [ndigo-view-ejs](packages/ndigo-view-ejs/README.md) — EJS template technology
 - [ndigo-view-webcomponent](packages/ndigo-view-webcomponent/README.md) — Web Component views
 
+UI & components:
+
+- [ndigo-ui](packages/ndigo-ui/README.md) — design-system tokens, opt-in base layer, typed token catalog, and the copy-in registry
+
 Platforms:
 
 - [ndigo-platform-node](packages/ndigo-platform-node/README.md) — Node HTTP server, dispatcher, static files
 - [ndigo-platform-web](packages/ndigo-platform-web/README.md) — browser platform glue
 
-Data & management:
+Data, async & management:
 
 - [ndigo-orm](packages/ndigo-orm/README.md) — repository/data-mapper persistence
 - [ndigo-orm-drizzle](packages/ndigo-orm-drizzle/README.md) — Drizzle ORM adapter
 - [ndigo-redis](packages/ndigo-redis/README.md) — shared Redis cache + cross-node pub/sub fan-out (Node)
+- [ndigo-jobs](packages/ndigo-jobs/README.md) — durable job queues, worker execution, transactional outbox (Node)
+- [ndigo-locks](packages/ndigo-locks/README.md) — distributed locks with fencing tokens (Node)
+- [ndigo-rate-limit](packages/ndigo-rate-limit/README.md) — fixed-window rate limiting and the shared-store driver seam
+- [ndigo-scheduler](packages/ndigo-scheduler/README.md) — cron scheduling (`@scheduled`), task registry
 - [ndigo-management](packages/ndigo-management/README.md) — `/health`, `/metrics` endpoints
 - [ndigo-openapi](packages/ndigo-openapi/README.md) — OpenAPI 3.0 spec from dispatch metadata + Swagger UI
 
@@ -229,12 +240,17 @@ Telemetry:
 - [ndigo-telemetry-node](packages/ndigo-telemetry-node/README.md) — NodeSDK + Node instrumentations
 - [ndigo-telemetry-web](packages/ndigo-telemetry-web/README.md) — browser setup + instrumentations
 
-Testing & tooling:
+Tooling & scaffolding:
+
+- [ndigo-cli](packages/ndigo-cli/README.md) — the `ndigo` CLI: app lifecycle, scaffolding, db migrations, UI registry + MCP, and DX tools
+- [create-ndigo-app](packages/create-ndigo-app/README.md) — scaffold a standalone Ndigo application (node or browser)
+- [ndigo-generators](tools/generators/README.md) — repo-local Nx scaffolding (the `ndigo new` / `ndigo generate` engines)
+
+Testing & quality:
 
 - [ndigo-test](packages/ndigo-test/README.md) — MockHTTP in-process test harness
 - [ndigo-oxlint-plugin](packages/ndigo-oxlint-plugin/README.md) — consumer-facing oxlint rules (repo-only rules live in [src/oxlint](src/oxlint/README.md))
 - [ndigo-inspect](packages/ndigo-inspect/README.md) — deterministic app manifest generator (routes, mappings, config keys)
-- [ndigo-generators](tools/generators/README.md) — repo-local Nx scaffolding (the `ndigo new` / `ndigo generate` engines)
 
 Micro frontends:
 

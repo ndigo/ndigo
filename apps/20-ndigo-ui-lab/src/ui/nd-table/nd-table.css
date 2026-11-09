@@ -1,0 +1,117 @@
+/* nd-table — semantic tables built on the design tokens.
+   Wrap in .nd-table-wrap for horizontal overflow. No runtime. */
+
+.nd-table-wrap {
+    inline-size: 100%;
+    overflow-x: auto;
+    border: 1px solid var(--nd-color-border);
+    border-radius: var(--nd-radius-lg);
+}
+
+.nd-table {
+    inline-size: 100%;
+    color: var(--nd-color-text);
+    font-size: var(--nd-text-sm);
+    border-collapse: collapse;
+}
+
+.nd-table__caption {
+    padding: var(--nd-space-3) var(--nd-space-4);
+    color: var(--nd-color-text-muted);
+    font-size: var(--nd-text-sm);
+    text-align: start;
+    caption-side: top;
+}
+
+.nd-table thead {
+    background: var(--nd-color-surface);
+}
+
+.nd-table th {
+    padding: var(--nd-space-2) var(--nd-space-3);
+    color: var(--nd-color-text-muted);
+    font-size: var(--nd-text-xs);
+    font-weight: var(--nd-weight-medium);
+    text-align: start;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    border-block-end: 1px solid var(--nd-color-border);
+}
+
+.nd-table td {
+    padding: var(--nd-space-3);
+    vertical-align: middle;
+    border-block-end: 1px solid var(--nd-color-border);
+}
+
+.nd-table tbody tr:last-child td {
+    border-block-end: 0;
+}
+
+.nd-table tbody tr:hover {
+    background: var(--nd-color-accent-soft);
+}
+
+.nd-table tbody tr[data-selected] {
+    background: var(--nd-color-accent-soft);
+}
+
+.nd-table tfoot {
+    color: var(--nd-color-text);
+    font-weight: var(--nd-weight-medium);
+    background: var(--nd-color-surface);
+}
+
+.nd-table [data-numeric] {
+    font-variant-numeric: tabular-nums;
+    text-align: end;
+}
+
+.nd-table--striped tbody tr:nth-child(even) {
+    background: var(--nd-color-surface);
+}
+
+.nd-table--compact th,
+.nd-table--compact td {
+    padding-block: var(--nd-space-2);
+}
+
+/* ---------- Sortable headers ---------- */
+
+.nd-table th[aria-sort] {
+    color: var(--nd-color-text);
+}
+
+.nd-table__sort {
+    display: inline-flex;
+    gap: var(--nd-space-1);
+    align-items: center;
+    padding: 0;
+    color: inherit;
+    font: inherit;
+    text-transform: inherit;
+    letter-spacing: inherit;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+}
+
+.nd-table__sort:hover {
+    color: var(--nd-color-text);
+}
+
+.nd-table__sort:focus-visible {
+    outline: var(--nd-focus-ring-width) solid var(--nd-focus-ring-color);
+    outline-offset: var(--nd-focus-ring-offset);
+}
+
+.nd-table__sort-icon {
+    color: var(--nd-color-text-muted);
+    font-size: 0.75em;
+}
+
+.nd-table th[aria-sort='ascending'] .nd-table__sort-icon,
+.nd-table th[aria-sort='descending'] .nd-table__sort-icon {
+    color: var(--nd-color-accent-strong);
+}

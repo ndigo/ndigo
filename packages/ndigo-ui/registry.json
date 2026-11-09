@@ -495,6 +495,29 @@
         }
       ],
       "docs": "Use a labelled `<nav>` with `.nd-pagination__list`; the current page is `aria-current=\"page\"` and unavailable edges are `aria-disabled` spans."
+    },
+    {
+      "name": "navigation-menu",
+      "type": "registry:ui",
+      "title": "Navigation menu",
+      "description": "Site navigation with dropdown content, hover/click triggers, and keyboard item navigation.",
+      "author": "Ndigo <https://ndigo.dev>",
+      "categories": ["ui", "navigation"],
+      "dependencies": ["@zag-js/navigation-menu@~1.47.0"],
+      "registryDependencies": ["lib"],
+      "files": [
+        {
+          "path": "registry/ui/navigation-menu/nd-navigation-menu.ts",
+          "type": "registry:ui",
+          "target": "@ui/nd-navigation-menu/nd-navigation-menu.ts"
+        },
+        {
+          "path": "registry/ui/navigation-menu/nd-navigation-menu.css",
+          "type": "registry:file",
+          "target": "@ui/nd-navigation-menu/nd-navigation-menu.css"
+        }
+      ],
+      "docs": "`<nd-navigation-menu>` is the root; author list/item/trigger/content/link parts and mark the current page with `aria-current`."
     }
   ]
 }

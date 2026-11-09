@@ -1572,6 +1572,9 @@ importers:
       '@zag-js/menu':
         specifier: ~1.47.0
         version: 1.47.0
+      '@zag-js/navigation-menu':
+        specifier: ~1.47.0
+        version: 1.47.0
       '@zag-js/popover':
         specifier: ~1.47.0
         version: 1.47.0
@@ -2664,6 +2667,9 @@ importers:
         specifier: ~1.47.0
         version: 1.47.0
       '@zag-js/menu':
+        specifier: ~1.47.0
+        version: 1.47.0
+      '@zag-js/navigation-menu':
         specifier: ~1.47.0
         version: 1.47.0
       '@zag-js/popover':
@@ -5623,6 +5629,9 @@ packages:
 
   '@zag-js/menu@1.47.0':
     resolution: {integrity: sha512-eTFuBunFqUdcWnm5k+pSYuBRbomhoga0l11q0hLOBlTYY2Sfm2hm/6U0aOOJuvcZXXS31Iv8P04KhspFHKD+kA==}
+
+  '@zag-js/navigation-menu@1.47.0':
+    resolution: {integrity: sha512-u0nYQ040WGDz7Pd1ZjUm/I+yRZWjhkd6Rb3AkyslhBWjqGAg4Ht+ja1aks3pQIv8sD3bJZStlFI7YQTV9yOGaQ==}
 
   '@zag-js/popover@1.47.0':
     resolution: {integrity: sha512-NHLuKLKf1FkDuAmyNAizFsg5Yv21bY85Mq4S+fWHygSBW3e7Perf2GeJD7ot3fltzC8TkWxgeZ1vW0e+TDMxdw==}
@@ -12037,6 +12046,15 @@ snapshots:
       '@zag-js/focus-visible': 1.47.0
       '@zag-js/popper': 1.47.0
       '@zag-js/rect-utils': 1.47.0
+      '@zag-js/types': 1.47.0
+      '@zag-js/utils': 1.47.0
+
+  '@zag-js/navigation-menu@1.47.0':
+    dependencies:
+      '@zag-js/anatomy': 1.47.0
+      '@zag-js/core': 1.47.0
+      '@zag-js/dismissable': 1.47.0
+      '@zag-js/dom-query': 1.47.0
       '@zag-js/types': 1.47.0
       '@zag-js/utils': 1.47.0
 

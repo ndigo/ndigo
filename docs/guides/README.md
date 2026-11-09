@@ -38,9 +38,9 @@ that every slot exists yet — guides marked _planned_ are still on the roadmap.
 - [04 — Dependency Injection, Scopes & Lifecycle](04-dependency-injection-and-lifecycle.md)
   — factory scopes, aware interfaces, init/destroy/close, smart lifecycle,
   parent/child contexts, and application events.
-- **05 — Routing & Route Conditions** _(planned)_ — path patterns, query and
-  matrix conditions, method/access conditions, precedence, 404/405, partitions,
-  and feature routing.
+- [05 — Routing & Route Conditions](05-routing-and-route-conditions.md) — path
+  patterns, query and matrix conditions, method/access conditions, precedence,
+  404/405, partitions, and feature routing.
 - [06 — Argument Binding](06-argument-binding.md) — the handler binding
   surface: per-source extractors, whole-source data binding (`dataBinderValue`
   — the form/model story), `requestPart` JSON parts, matrix parity,
@@ -50,11 +50,12 @@ that every slot exists yet — guides marked _planned_ are still on the roadmap.
   request pipeline: `@parameters` extractor composition, the `validatedBy` /
   `validatedBody` / `validatedQuery` surface, and entity-derived schemas
   (`insertSchemaForEntity`).
-- **08 — Errors & Problem Details** _(planned)_ — RFC 9457, error lineage,
-  `@errorMapping`, resolver chains, validation/binding failures, and denials.
-- **09 — Views, Targets & Content Negotiation** _(planned)_ — view contracts,
-  serializing views, HTTP/DOM targets, negotiation, resolvers, EJS and Web
-  Component views, and themes.
+- [08 — Errors & Problem Details](08-errors-and-problem-details.md) — RFC 9457,
+  error lineage, `@errorMapping`, resolver chains, validation/binding failures,
+  and denials.
+- [09 — Views, Targets & Content Negotiation](09-views-and-content-negotiation.md)
+  — view contracts, serializing views, HTTP/DOM targets, negotiation,
+  resolvers, EJS and Web Component views, and themes.
 
 ## Web and APIs
 

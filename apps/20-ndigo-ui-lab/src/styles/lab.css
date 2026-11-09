@@ -29,6 +29,12 @@
     margin-block-start: var(--nd-space-4);
 }
 
+.lab-block {
+    display: block;
+    max-inline-size: 40rem;
+    margin-block-start: var(--nd-space-6);
+}
+
 .lab-status {
     margin-block-start: var(--nd-space-3);
     color: var(--nd-color-text-muted);

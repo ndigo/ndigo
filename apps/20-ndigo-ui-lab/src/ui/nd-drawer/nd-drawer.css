@@ -1,0 +1,154 @@
+/* <nd-drawer> — edge-anchored dialog built on the design tokens. */
+
+nd-drawer {
+    display: contents;
+}
+
+/* Until the element upgrades, hide the drawer body. */
+nd-drawer:not(:defined) [data-part='content'] {
+    display: none;
+}
+
+nd-drawer [data-part='trigger'] {
+    padding: var(--nd-space-2) var(--nd-space-3);
+    color: var(--nd-color-text);
+    font: inherit;
+    background: var(--nd-color-surface);
+    border: 1px solid var(--nd-color-border);
+    border-radius: var(--nd-radius-md);
+    cursor: pointer;
+}
+
+nd-drawer [data-part='trigger']:hover {
+    background: var(--nd-color-surface-raised);
+}
+
+nd-drawer [data-part='backdrop'] {
+    position: fixed;
+    inset: 0;
+    z-index: var(--nd-z-overlay);
+    background: color-mix(in srgb, var(--nd-color-bg) 65%, transparent);
+    backdrop-filter: blur(2px);
+}
+
+nd-drawer [data-part='positioner'] {
+    position: fixed;
+    inset: 0;
+    z-index: var(--nd-z-modal);
+    display: flex;
+    padding: 0;
+    pointer-events: none;
+}
+
+nd-drawer [data-part='content'] {
+    position: relative;
+    overflow: auto;
+    color: var(--nd-color-text);
+    background: var(--nd-color-surface-raised);
+    border: 1px solid var(--nd-color-border);
+    box-shadow: var(--nd-shadow-lg);
+    pointer-events: auto;
+}
+
+nd-drawer [data-part='title'] {
+    margin-block: 0 var(--nd-space-2);
+    padding-inline-end: var(--nd-space-8);
+    font-size: var(--nd-text-xl);
+    font-weight: var(--nd-weight-semibold);
+    line-height: var(--nd-leading-tight);
+}
+
+nd-drawer [data-part='description'] {
+    margin-block: 0 var(--nd-space-4);
+    color: var(--nd-color-text-muted);
+    font-size: var(--nd-text-sm);
+}
+
+nd-drawer [data-part='close-trigger'] {
+    position: absolute;
+    inset-block-start: var(--nd-space-3);
+    inset-inline-end: var(--nd-space-3);
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    color: var(--nd-color-text-muted);
+    font: inherit;
+    background: transparent;
+    border: 0;
+    border-radius: var(--nd-radius-sm);
+    cursor: pointer;
+}
+
+nd-drawer [data-part='close-trigger']:hover {
+    color: var(--nd-color-text);
+    background: var(--nd-color-accent-soft);
+}
+
+/* ---------- Placements ---------- */
+
+nd-drawer[data-placement='end'] [data-part='positioner'] {
+    justify-content: flex-end;
+    align-items: stretch;
+}
+
+nd-drawer[data-placement='end'] [data-part='content'] {
+    inline-size: min(24rem, 100%);
+    block-size: 100%;
+    border-inline-end: 0;
+    border-radius: var(--nd-radius-lg) 0 0 var(--nd-radius-lg);
+}
+
+nd-drawer[data-placement='start'] [data-part='positioner'] {
+    justify-content: flex-start;
+    align-items: stretch;
+}
+
+nd-drawer[data-placement='start'] [data-part='content'] {
+    inline-size: min(24rem, 100%);
+    block-size: 100%;
+    border-inline-start: 0;
+    border-radius: 0 var(--nd-radius-lg) var(--nd-radius-lg) 0;
+}
+
+nd-drawer[data-placement='bottom'] [data-part='positioner'] {
+    align-items: flex-end;
+    justify-content: stretch;
+}
+
+nd-drawer[data-placement='bottom'] [data-part='content'] {
+    inline-size: 100%;
+    max-block-size: 80dvh;
+    border-block-end: 0;
+    border-radius: var(--nd-radius-lg) var(--nd-radius-lg) 0 0;
+}
+
+nd-drawer[data-placement='top'] [data-part='positioner'] {
+    align-items: flex-start;
+    justify-content: stretch;
+}
+
+nd-drawer[data-placement='top'] [data-part='content'] {
+    inline-size: 100%;
+    max-block-size: 80dvh;
+    border-block-start: 0;
+    border-radius: 0 0 var(--nd-radius-lg) var(--nd-radius-lg);
+}
+
+/* Content needs padding except where the edge owns it. */
+nd-drawer [data-part='content'] {
+    padding: var(--nd-space-6);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    nd-drawer [data-part='backdrop'][data-state='open'] {
+        animation: nd-drawer-fade var(--nd-duration-base) var(--nd-ease-standard);
+    }
+}
+
+@keyframes nd-drawer-fade {
+    from {
+        opacity: 0;
+    }
+}

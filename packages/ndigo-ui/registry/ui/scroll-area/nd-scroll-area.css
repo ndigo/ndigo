@@ -1,0 +1,70 @@
+/* <nd-scroll-area> — styled scrolling viewport built on the design tokens. */
+
+nd-scroll-area {
+    display: contents;
+}
+
+nd-scroll-area [data-part='root'] {
+    position: relative;
+}
+
+nd-scroll-area [data-part='viewport'] {
+    overscroll-behavior: contain;
+    scrollbar-width: none;
+}
+
+nd-scroll-area [data-part='viewport']::-webkit-scrollbar {
+    display: none;
+}
+
+nd-scroll-area [data-part='viewport']:focus-visible {
+    outline: var(--nd-focus-ring-width) solid var(--nd-focus-ring-color);
+    outline-offset: calc(-1 * var(--nd-focus-ring-width));
+}
+
+nd-scroll-area [data-part='scrollbar'] {
+    display: flex;
+    padding: 2px;
+    background: transparent;
+    border-radius: var(--nd-radius-full);
+    transition: background-color var(--nd-duration-fast) var(--nd-ease-standard);
+}
+
+nd-scroll-area [data-part='scrollbar'][data-orientation='vertical'] {
+    inline-size: 0.625rem;
+}
+
+nd-scroll-area [data-part='scrollbar'][data-orientation='horizontal'] {
+    block-size: 0.625rem;
+}
+
+nd-scroll-area [data-part='scrollbar'][data-hover],
+nd-scroll-area [data-part='scrollbar'][data-dragging] {
+    background: var(--nd-color-accent-soft);
+}
+
+nd-scroll-area [data-part='thumb'] {
+    flex: 1;
+    background: var(--nd-color-border);
+    border-radius: var(--nd-radius-full);
+}
+
+nd-scroll-area [data-part='scrollbar'][data-hover] [data-part='thumb'],
+nd-scroll-area [data-part='scrollbar'][data-dragging] [data-part='thumb'] {
+    background: var(--nd-color-text-muted);
+}
+
+nd-scroll-area [data-part='corner'] {
+    background: transparent;
+}
+
+/* Hide a scrollbar until the corresponding axis reports overflow. */
+nd-scroll-area [data-part='root']:not([data-overflow-y]) [data-part='scrollbar'][data-orientation='vertical'],
+nd-scroll-area [data-part='root']:not([data-overflow-x]) [data-part='scrollbar'][data-orientation='horizontal'] {
+    display: none;
+}
+
+nd-scroll-area [data-part='root']:not([data-overflow-x]) [data-part='corner'],
+nd-scroll-area [data-part='root']:not([data-overflow-y]) [data-part='corner'] {
+    display: none;
+}

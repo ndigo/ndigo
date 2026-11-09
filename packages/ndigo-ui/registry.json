@@ -479,6 +479,22 @@
         }
       ],
       "docs": "`<nd-scroll-area>` wraps authored content in root/viewport/content and renders both scrollbars; give it a block size."
+    },
+    {
+      "name": "pagination",
+      "type": "registry:ui",
+      "title": "Pagination",
+      "description": "Native page navigation with links, a current-page state, ellipsis, and disabled edges.",
+      "author": "Ndigo <https://ndigo.dev>",
+      "categories": ["ui", "navigation"],
+      "files": [
+        {
+          "path": "registry/ui/pagination/nd-pagination.css",
+          "type": "registry:file",
+          "target": "@ui/nd-pagination/nd-pagination.css"
+        }
+      ],
+      "docs": "Use a labelled `<nav>` with `.nd-pagination__list`; the current page is `aria-current=\"page\"` and unavailable edges are `aria-disabled` spans."
     }
   ]
 }

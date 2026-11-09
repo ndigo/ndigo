@@ -23,6 +23,7 @@
         <link rel="stylesheet" href="/src/ui/nd-combobox/nd-combobox.css" />
         <link rel="stylesheet" href="/src/ui/nd-date-picker/nd-date-picker.css" />
         <link rel="stylesheet" href="/src/ui/nd-scroll-area/nd-scroll-area.css" />
+        <link rel="stylesheet" href="/src/ui/nd-pagination/nd-pagination.css" />
         <link rel="stylesheet" href="/src/ui/nd-dialog/nd-dialog.css" />
         <link rel="stylesheet" href="/src/ui/nd-drawer/nd-drawer.css" />
         <link rel="stylesheet" href="/src/components/command/command.css" />
@@ -45,6 +46,7 @@
                     <a href="#selection">Selection</a>
                     <a href="#date">Date</a>
                     <a href="#scroll">Scroll</a>
+                    <a href="#pagination">Pages</a>
                     <a href="#dialog">Dialog</a>
                     <a href="#command">Command</a>
                     <a href="#menu">Menu</a>
@@ -67,6 +69,7 @@
                         <a href="#selection">Selection</a>
                         <a href="#date">Date</a>
                         <a href="#scroll">Scroll</a>
+                        <a href="#pagination">Pages</a>
                         <a href="#dialog">Dialog</a>
                         <a href="#command">Command</a>
                         <a href="#menu">Menu</a>
@@ -276,6 +279,28 @@
                                 <p>Row 8: scrollable content inside the machine-driven viewport.</p>
                             </div>
                         </nd-scroll-area>
+                    </section>
+
+                    <section id="pagination" class="lab-section" aria-labelledby="pagination-heading">
+                        <h2 id="pagination-heading">Pagination</h2>
+                        <p>Native links with a current-page marker and a disabled previous edge.</p>
+                        <nav class="nd-pagination lab-pagination" aria-label="Pagination">
+                            <ul class="nd-pagination__list">
+                                <li>
+                                    <span class="nd-pagination__link" data-direction="previous" aria-disabled="true">
+                                        ‹ Previous
+                                    </span>
+                                </li>
+                                <li><a class="nd-pagination__link" href="?page=1">1</a></li>
+                                <li><span class="nd-pagination__link" aria-current="page">2</span></li>
+                                <li><a class="nd-pagination__link" href="?page=3">3</a></li>
+                                <li><span class="nd-pagination__ellipsis" aria-hidden="true">…</span></li>
+                                <li><a class="nd-pagination__link" href="?page=8">8</a></li>
+                                <li>
+                                    <a class="nd-pagination__link" data-direction="next" href="?page=3">Next ›</a>
+                                </li>
+                            </ul>
+                        </nav>
                     </section>
 
                     <section id="dialog" class="lab-section" aria-labelledby="dialog-heading">

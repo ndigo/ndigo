@@ -8,21 +8,22 @@ is the recommended default, but it is optional and the framework does not depend
 on it.
 
 This guide covers both paths: using ndigo-ui, and adopting any other Web
-Component library (Web Awesome is the worked example). The runnable third-party
-reference is [`apps/07-ndigo-island`](../../apps/07-ndigo-island/README.md); the
-decision records are [AD-69](../decisions/2026-10-06_AD69_COMPONENT_INTEGRATION_CONTRACT.md),
+Component library (Web Awesome is the worked example). The runnable ndigo-ui
+reference is [`apps/20-ndigo-ui-lab`](../../apps/20-ndigo-ui-lab/README.md);
+[`apps/07-ndigo-island`](../../apps/07-ndigo-island/README.md) is the migrated
+island app. The decision records are [AD-69](../decisions/2026-10-06_AD69_COMPONENT_INTEGRATION_CONTRACT.md),
 [AD-71](../decisions/2026-10-07_AD71_COMPONENT_LIBRARY_SELECTION.md), and
 [AD-95](../decisions/2026-11-08_AD95_NDIGO_UI.md).
 
-**Audience:** Browser application developers · **Prerequisites:** Guide 02 · **Reference app:** `apps/07-ndigo-island`
+**Audience:** Browser application developers · **Prerequisites:** Guide 02 · **Reference app:** `apps/20-ndigo-ui-lab`
 
 ## What you'll learn
 
 - Choose between ndigo-ui, a third-party Web Component library, and a view-engine UI.
-- Install ndigo-ui tokens and copy-in components with the `ndigo ui` registry.
+- Install ndigo-ui tokens and copy-in components with the `ndigo ui` or shadcn registry channel.
 - Keep the framework and your app independent of any one UI library.
 - Vet a third-party library and render its first paint safely.
-- Wire FACE forms, theming, i18n, and CSP without wrappers.
+- Wire forms, theming, i18n, and CSP without wrappers.
 
 ## 1. Choose a strategy
 
@@ -56,26 +57,57 @@ Tokens expose `--nd-*` custom properties (color, type, spacing, radius, shadow,
 motion, stacking, focus). Dark is the default; set `data-theme="light"` on the
 root for the light palette.
 
-Initialize the registry in the app:
+For an application in this monorepo or the lab, install copy-in items with the
+first-party CLI. Point the app at the repository registry:
 
 ```bash
-ndigo ui init ./apps/my-app
-ndigo ui add button input field dialog menu app-shell --dir ./apps/my-app
+ndigo ui init apps/my-app --registry ../../registry.json
+ndigo ui add theme lib button input field dialog app-shell --dir apps/my-app
 ```
 
-`ndigo ui init` writes `ndigo.ui.json` with the registry URL and the `src/ui`,
-`src/lib`, `src/components`, and `src/hooks` aliases. `ui add` resolves
-`registryDependencies`, installs the files into those aliases, records a
-SHA-256 per file in `ui.lock.json`, and installs the item's npm dependencies
-with the app's package manager. Use `--skipInstall` when you manage
-dependencies separately, and `--dryRun` to preview. The `theme` item is the
-copy-in alternative to importing `@ndigo/ui/tokens.css`; use one or the
-other.
+In a checkout without the CLI on `PATH`, use
+`node packages/ndigo-cli/bin/run.js ui ...`. `ui init` writes `ndigo.ui.json`
+with the registry source and aliases (`@ui` → `src/ui`, `@lib` → `src/lib`,
+`@components` → `src/components`, `@hooks` → `src/hooks`). `ui add` resolves
+registry dependencies, writes the files, records a SHA-256 per file in
+`ui.lock.json`, and installs the item's npm dependencies. Use `--skipInstall`,
+`--dryRun`, and `--overwrite` as needed. The `theme` item is the copy-in
+alternative to importing `@ndigo/ui/tokens.css`; use one or the other.
 
-The current registry items are `theme`, `lib`, the native-first `button`,
-`input`, `field`, and `checkbox`, the Zag.js-backed `dialog` and `menu`, and the
-`app-shell` block. The set grows by milestone; components outside it compose
-from tokens rather than being absorbed into the package.
+External applications use the shadcn channel. Configure the namespace in
+`components.json`:
+
+```json
+{
+    "registries": {
+        "@ndigo": "https://ndigo.dev/r/{name}.json"
+    }
+}
+```
+
+Then install an item:
+
+```bash
+npx shadcn@latest add @ndigo/code-block
+```
+
+The direct URL works without configuration:
+`npx shadcn@latest add https://ndigo.dev/r/code-block.json`. Browse the
+catalogue at [ndigo.dev/ui](https://ndigo.dev/ui) for the live item list,
+install commands, targets, and READMEs.
+
+The registry has 41 items: `theme`, `lib`, 34 primitives, and 5 blocks. At the
+time of writing the native-first primitives are `button`, `input`, `field`,
+`checkbox`, `table`, `alert`, `badge`, `card`, `separator`, `skeleton`,
+`spinner`, `breadcrumb`, `kbd`, `aspect-ratio`, `item`, `typography`, and
+`pagination`; the Zag.js behaviour primitives are `dialog`, `menu`, `popover`,
+`tooltip`, `tabs`, `accordion`, `switch`, `slider`, `select`, `combobox`,
+`drawer`, `date-picker`, `scroll-area`, `navigation-menu`, `tags-input`, and
+`file-upload`; `toast` is a native-first live region. The blocks are
+`app-shell`, `command`, `data-table`, `code-block`, and `sidebar`. Use
+`ndigo ui list` or the catalogue for the current set rather than a copied list;
+components outside the registry compose from tokens instead of being absorbed
+into the package.
 
 Ownership rules:
 
@@ -86,8 +118,8 @@ Ownership rules:
 - **Behaviour comes from Zag.js**, markup/styles from the registry. No styled
   component library is a dependency.
 - **Conformance precedes a component**: axe-clean, keyboard/focus contract,
-  logical properties for RTL, reduced motion, DSD first paint, FACE
-  participation, and a measured gzip budget.
+  logical properties for RTL, reduced motion, light-DOM first paint, form
+  participation (native/hidden inputs or FACE), and a measured gzip budget.
 
 ndigo-ui knows no consumer. The site/Astro adapter and Ndigo-specific blocks
 live outside the package; if a reusable integration emerges, it becomes an
@@ -148,8 +180,10 @@ const submit = document.createElement('wa-button');
 submit.setAttribute('type', 'submit');
 ```
 
-The same rule applies to ndigo-ui elements: import the copy-in module
-(`src/ui/nd-button/nd-button.ts`), then use `<nd-button>` directly. Attributes
+The same rule applies to ndigo-ui. Native-first items are CSS over platform
+elements: import `src/ui/nd-button/nd-button.css` and use
+`<button class="nd-button">`. Behaviour elements are copy-in modules: import
+`src/ui/nd-dialog/nd-dialog.ts`, then use `<nd-dialog>` directly. Attributes
 and events are the API; do not build a per-component wrapper that hides them.
 
 ## 6. First paint
@@ -165,17 +199,26 @@ import { IslandView } from '@ndigo/view';
 const island = new IslandView('todo-app', { shadowHtml: renderTodoFallback(model) });
 ```
 
-ndigo-ui primitives are designed for this pattern: their DSD fallback is part
-of the conformance contract. For third-party libraries, keep the fallback
+ndigo-ui elements are light-DOM: server markup is the first paint, and the
+element upgrades it in place. The island pattern still applies when the server
+and client models must match. For third-party libraries, keep the fallback
 derived from the same model so the swap is invisible.
 
-## 7. FACE forms
+## 7. Forms
 
-A form-associated custom element participates in the normal `<form>`
-submission; the server sees ordinary name/value pairs. Keep the existing
-binding + Zod path (guides 06/07/18) and let the control submit:
+Keep the existing binding + Zod path (guides 06/07/18) and let the control
+submit ordinary name/value pairs:
 
-- ndigo-ui's current form items (`button`, `input`, `field`, `checkbox`) are native-first CSS over native elements, so they submit standard data automatically. A future custom form control uses `AsFormAssociated(Base)` from `@ndigo/view-webcomponent`.
+- ndigo-ui's native-first items (`button`, `input`, `field`, `checkbox`,
+  `table`, ...) are CSS over native elements, so they submit standard data
+  automatically. `field` owns the label; `input` also covers `<textarea>`.
+- `select`, `switch`, `tags-input`, and `date-picker` render hidden native
+  inputs carrying the value. Keep them in the markup and let the form
+  serialize them.
+- `slider` and `combobox` expose their value through the element API and
+  `nd-value-change`; add a native input when the form must submit them.
+- A custom form control can use `AsFormAssociated(Base)` from
+  `@ndigo/view-webcomponent` when a hidden input is not appropriate.
 - Web Awesome controls are FACE; set `name` and let the form serialize them.
 - Do not add a second binding path per component library. If a control cannot
   submit standard form data, it fails the vetting gate.
@@ -199,22 +242,26 @@ If the library injects inline styles/scripts, extend the CSP explicitly
 gzip delta, and record it in the ADR. ndigo-ui items ship with a recorded
 budget; a third-party library's claim is not a measurement.
 
-## 10. Migrating Web Awesome to ndigo-ui
+## 10. Web Awesome as a third-party example
 
-`apps/07-ndigo-island` keeps its Web Awesome integration until the ndigo-ui
-components it needs exist (AD-95 Phase 3). The migration is mechanical:
+`apps/07-ndigo-island` migrated from Web Awesome to ndigo-ui in Phase 3; its
+source no longer imports `<wa-*>` components. The migration sequence remains the
+worked example for moving a third-party library onto ndigo-ui:
 
-1. `ndigo ui add` the equivalent items (`button`, `input`, `field`, ...).
-2. Replace `<wa-*>` with `<nd-*>`, keeping `name`/attributes/events.
+1. Install the equivalent registry items (`theme`, `lib`, `button`, `input`,
+   `field`, ...).
+2. Replace `<wa-*>` with the native element or `<nd-*>`, keeping
+   `name`/attributes/events.
 3. Map Web Awesome CSS variables onto `--nd-*` at the app boundary.
 4. Remove the Web Awesome dependency and its per-component imports.
-5. Re-check FACE submission, fallback markup, and the bundle delta.
+5. Re-check form submission, fallback markup, and the bundle delta.
 
-Keep the Web Awesome material in this guide as the worked third-party example
-until the migration lands.
+Web Awesome stays in this guide as the vetting/fallback example, not as a
+current app dependency.
 
 ## See also
 
+- [UI catalogue](https://ndigo.dev/ui) — browse and install registry items
 - [Guide 02 — Building a Browser App](02-building-a-browser-app.md) — the browser preset
 - [Guide 09 — Views, Targets & Content Negotiation](09-views-and-content-negotiation.md) — view contracts
 - [Guide 44 — Accessibility](44-accessibility.md) — the a11y gate and testing
@@ -222,4 +269,6 @@ until the migration lands.
 - [Guide 28 — Security Hardening](28-security-hardening.md) — CSP
 - [Guide 41 — Custom View Engines](41-custom-view-engines.md) — React/Vue UI strategies
 - [`@ndigo/ui`](../../packages/ndigo-ui/README.md) — tokens, theme, registry
+- [`apps/20-ndigo-ui-lab`](../../apps/20-ndigo-ui-lab/README.md) — the runnable consumer
+- [ndigo-ui agent skill](../../agent-local/skills/ndigo-ui/SKILL.md) — the agent-facing usage and porting contract
 - [AD-69](../decisions/2026-10-06_AD69_COMPONENT_INTEGRATION_CONTRACT.md), [AD-71](../decisions/2026-10-07_AD71_COMPONENT_LIBRARY_SELECTION.md), and [AD-95](../decisions/2026-11-08_AD95_NDIGO_UI.md) — component, selection, and ndigo-ui decisions

@@ -18,6 +18,7 @@ import './ui/nd-combobox/nd-combobox';
 import './ui/nd-date-picker/nd-date-picker';
 import './ui/nd-scroll-area/nd-scroll-area';
 import './ui/nd-navigation-menu/nd-navigation-menu';
+import './ui/nd-tags-input/nd-tags-input';
 import { initCommandPalette } from './components/command/command';
 import { TOKENS } from '@ndigo/ui';
 
@@ -48,4 +49,11 @@ datePicker?.addEventListener('nd-value-change', (event) => {
     if (dateStatus !== null) {
         dateStatus.textContent = detail.valueAsString[0] ? `Selected: ${detail.valueAsString[0]}` : 'No date selected';
     }
+});
+
+const tags = document.querySelector('nd-tags-input');
+const tagStatus = document.querySelector('#tags-status');
+tags?.addEventListener('nd-value-change', (event) => {
+    const detail = (event as CustomEvent<{ value: string[] }>).detail;
+    if (tagStatus !== null) tagStatus.textContent = `${detail.value.length} tags`;
 });

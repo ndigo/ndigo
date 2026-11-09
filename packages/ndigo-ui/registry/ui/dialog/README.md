@@ -41,11 +41,16 @@ short form with body markup alone also works.
 | :-------------- | :-------- | :---------------------------------------------- |
 | `open`          | `boolean` | Controlled open state; reflected by the element |
 | `trigger-label` | `string`  | Label for the generated trigger                 |
+| `initial-focus` | `string`  | Selector for the element focused on open        |
 
 ## Events
 
 - `nd-open-change` — `detail: { open: boolean }`, emitted when the dialog opens
   or closes.
+
+## Methods
+
+- `show()` / `hide()` — open or close programmatically without a trigger.
 
 ## Styling
 

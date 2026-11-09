@@ -72,6 +72,22 @@ export class NdCombobox extends NdElement {
         if (name === 'open') this.#controller.updateProps({ open: value !== null });
     }
 
+    /** Opens the listbox programmatically. */
+    show(): void {
+        this.#controller.api?.setOpen(true);
+    }
+
+    /** Closes the listbox programmatically. */
+    hide(): void {
+        this.#controller.api?.setOpen(false);
+    }
+
+    /** Clears the selected value and the query. */
+    clear(): void {
+        this.#controller.api?.clearValue();
+        this.#controller.api?.setInputValue('');
+    }
+
     /** Selects one value programmatically. */
     select(value: string): void {
         this.#controller.api?.setValue([value]);
@@ -139,7 +155,9 @@ export class NdCombobox extends NdElement {
         if (input) spreadProps(input, api.getInputProps());
         if (trigger) spreadProps(trigger, api.getTriggerProps());
         if (clear) spreadProps(clear, api.getClearTriggerProps());
-        if (positioner) spreadProps(positioner, api.getPositionerProps());
+        // `inline` keeps the list in normal flow (a command palette), so the
+        // popper's fixed positioning must not be applied to the positioner.
+        if (positioner && !this.hasAttribute('inline')) spreadProps(positioner, api.getPositionerProps());
         if (content) spreadProps(content, api.getContentProps());
 
         for (const element of this.querySelectorAll<HTMLElement>('[data-part="item"][data-value]')) {

@@ -14,7 +14,7 @@
           "sha256": "6a298af62b01122adea3a480b6c04c2711035b5bd558c8187ee2e51572beb1d3"
         }
       ],
-      "installedAt": "2026-11-09T15:59:34.377Z"
+      "installedAt": "2026-11-09T16:22:34.305Z"
     },
     "dialog": {
       "registry": "../../registry.json",
@@ -26,10 +26,10 @@
         },
         {
           "target": "src/ui/nd-dialog/nd-dialog.ts",
-          "sha256": "9f067e932eb81de719fbe15e8fcf1794c040e87a1ca31794c5622cfd2d26a87a"
+          "sha256": "46b6ffe6dd1456fa9fa08b03846a2f3cd049e3319682cba8c7e3ca040b9f86b6"
         }
       ],
-      "installedAt": "2026-11-08T23:47:51.979Z"
+      "installedAt": "2026-11-09T16:22:34.305Z"
     },
     "menu": {
       "registry": "../../registry.json",
@@ -59,7 +59,7 @@
           "sha256": "dcef65c13d86e0b0b7e944b57c202eecfdc95ab5d4792ed76e0a1b8a93953e54"
         }
       ],
-      "installedAt": "2026-11-08T23:47:51.979Z"
+      "installedAt": "2026-11-09T16:22:34.305Z"
     },
     "button": {
       "registry": "../../registry.json",
@@ -70,7 +70,7 @@
           "sha256": "87b9e9902c6c24cc591e60a98d9424cafe5f5f3a573e12fd356bdabb1cd29f26"
         }
       ],
-      "installedAt": "2026-11-08T23:47:51.979Z"
+      "installedAt": "2026-11-09T16:22:34.305Z"
     },
     "app-shell": {
       "registry": "../../registry.json",
@@ -246,14 +246,14 @@
       "files": [
         {
           "target": "src/ui/nd-combobox/nd-combobox.css",
-          "sha256": "142ecad7c5da6160eaf9a51adb4497a2ca335f97cdc3d1e9e0b5b9c4decf08b2"
+          "sha256": "b90dbbf4da9b8ddef6b2c22f344f3fa20feb8c42df7be0f1f4d865bbb81a28f8"
         },
         {
           "target": "src/ui/nd-combobox/nd-combobox.ts",
-          "sha256": "732259accf67791bdf6b3dff890d7deabe3c363b034a807cac7b23dede1b7cd2"
+          "sha256": "6e067b6c28b2216efd9513114cca4ca9f380256b95976f6d3ab0ad0859d8c3bf"
         }
       ],
-      "installedAt": "2026-11-09T15:32:33.587Z"
+      "installedAt": "2026-11-09T16:22:34.305Z"
     },
     "drawer": {
       "registry": "../../registry.json",
@@ -269,6 +269,25 @@
         }
       ],
       "installedAt": "2026-11-09T15:59:34.377Z"
+    },
+    "command": {
+      "registry": "../../registry.json",
+      "type": "registry:block",
+      "files": [
+        {
+          "target": "src/components/command/command.css",
+          "sha256": "a677e446f0800824bf450ca16dc254de8754f382591e5415d987fe91668449a3"
+        },
+        {
+          "target": "src/components/command/command.html",
+          "sha256": "cfd9a078fac8fa6f5b7051d9087280830962cee0aaf20acb7d252a40dd59f4bb"
+        },
+        {
+          "target": "src/components/command/command.ts",
+          "sha256": "18c32c751f9f8c756a3ec68967066471e2e4d3016111a6fd3b7d49beb4989400"
+        }
+      ],
+      "installedAt": "2026-11-09T16:22:34.305Z"
     }
   }
 }

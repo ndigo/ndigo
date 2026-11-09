@@ -406,6 +406,33 @@
         }
       ],
       "docs": "`<nd-drawer>` shares the dialog machine; set `placement` to `end`, `start`, `bottom`, or `top`."
+    },
+    {
+      "name": "command",
+      "type": "registry:block",
+      "title": "Command palette",
+      "description": "Modal command palette: a combobox inside a dialog, opened with Cmd/Ctrl+K.",
+      "author": "Ndigo <https://ndigo.dev>",
+      "categories": ["block", "overlay"],
+      "registryDependencies": ["theme", "button", "dialog", "combobox"],
+      "files": [
+        {
+          "path": "registry/blocks/command/command.html",
+          "type": "registry:block",
+          "target": "@components/command/command.html"
+        },
+        {
+          "path": "registry/blocks/command/command.css",
+          "type": "registry:file",
+          "target": "@components/command/command.css"
+        },
+        {
+          "path": "registry/blocks/command/command.ts",
+          "type": "registry:file",
+          "target": "@components/command/command.ts"
+        }
+      ],
+      "docs": "Copy the block and initialize it with `initCommandPalette(document)`; Cmd/Ctrl+K opens the palette and `nd-command` reports the selection."
     }
   ]
 }

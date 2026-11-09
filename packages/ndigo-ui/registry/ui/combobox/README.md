@@ -43,6 +43,7 @@ type; clearing the input restores them.
 | `required` | `boolean` | Mark the input required                        |
 | `invalid`  | `boolean` | Mark the input invalid                         |
 | `open`     | `boolean` | Initial open state; `onOpenChange` reflects it |
+| `inline`   | `boolean` | Keep the list in normal flow (no positioning)  |
 
 ## Events
 
@@ -52,6 +53,8 @@ type; clearing the input restores them.
 
 ## Methods
 
+- `show()` / `hide()` — open or close the listbox programmatically.
+- `clear()` — reset the selected value and the query.
 - `select(value)` — select one value programmatically.
 
 ## Keyboard and accessibility

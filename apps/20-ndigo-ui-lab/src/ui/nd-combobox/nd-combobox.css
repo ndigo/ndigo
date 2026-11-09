@@ -88,6 +88,10 @@ nd-combobox [data-part='item'] {
     cursor: pointer;
 }
 
+nd-combobox [data-part='item'][hidden] {
+    display: none;
+}
+
 nd-combobox [data-part='item'][data-highlighted] {
     background: var(--nd-color-accent-soft);
 }

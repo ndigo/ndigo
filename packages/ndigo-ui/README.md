@@ -75,7 +75,7 @@ base stylesheets; `lib` carries the copy-in custom-element foundation,
 `button`, `input`, `field`, and `checkbox` are the native-first CSS items,
 `dialog`, `menu`, `popover`, `tooltip`, `tabs`, `accordion`, `switch`, `slider`,
 `select`, `combobox`, and `drawer` are the behaviour items built on Zag.js; `toast` is the native-first
-live region, and `app-shell` is the first block.
+live region, and `app-shell` and `command` are the blocks.
 
 ## API
 

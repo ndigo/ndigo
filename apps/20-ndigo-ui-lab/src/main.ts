@@ -4,6 +4,10 @@
  */
 import './ui/nd-dialog/nd-dialog';
 import './ui/nd-menu/nd-menu';
+import './ui/nd-popover/nd-popover';
+import './ui/nd-tooltip/nd-tooltip';
+import './ui/nd-tabs/nd-tabs';
+import './ui/nd-accordion/nd-accordion';
 import { TOKENS } from '@ndigo/ui';
 
 const tokenCount = document.querySelector('#token-count');

@@ -22,8 +22,13 @@ export async function flush(): Promise<void> {
 /**
  * Creates an element, fills it with markup, and connects it to the document.
  */
-export function mountElement<T extends HTMLElement>(tagName: string, markup: string): T {
+export function mountElement<T extends HTMLElement>(
+    tagName: string,
+    markup: string,
+    attributes: Record<string, string> = {}
+): T {
     const element = document.createElement(tagName) as T;
+    for (const [name, value] of Object.entries(attributes)) element.setAttribute(name, value);
     element.innerHTML = markup;
     document.body.append(element);
     return element;

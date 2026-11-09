@@ -1,0 +1,62 @@
+/* <nd-accordion> — disclosure stack built on the design tokens. */
+
+nd-accordion {
+    display: contents;
+}
+
+nd-accordion [data-part='root'] {
+    display: block;
+}
+
+nd-accordion [data-part='item'] {
+    border-block-end: 1px solid var(--nd-color-border);
+}
+
+nd-accordion [data-part='item-trigger'] {
+    display: flex;
+    gap: var(--nd-space-3);
+    align-items: center;
+    justify-content: space-between;
+    inline-size: 100%;
+    padding-block: var(--nd-space-3);
+    color: var(--nd-color-text);
+    font: inherit;
+    font-size: var(--nd-text-sm);
+    font-weight: var(--nd-weight-medium);
+    text-align: start;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+}
+
+nd-accordion [data-part='item-trigger']:focus-visible {
+    outline: var(--nd-focus-ring-width) solid var(--nd-focus-ring-color);
+    outline-offset: calc(-1 * var(--nd-focus-ring-width));
+}
+
+nd-accordion [data-part='item-trigger']:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+}
+
+nd-accordion [data-part='item-content'] {
+    padding-block-end: var(--nd-space-4);
+    color: var(--nd-color-text-muted);
+    font-size: var(--nd-text-sm);
+    line-height: var(--nd-leading-relaxed);
+}
+
+nd-accordion [data-part='item-indicator'] {
+    color: var(--nd-color-text-muted);
+    transition: transform var(--nd-duration-fast) var(--nd-ease-standard);
+}
+
+nd-accordion [data-part='item-indicator'][data-state='open'] {
+    transform: rotate(45deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    nd-accordion [data-part='item-indicator'] {
+        transition: none;
+    }
+}

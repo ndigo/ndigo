@@ -178,6 +178,98 @@
         }
       ],
       "docs": "Apply `nd-checkbox`/`nd-radio` to native controls; use `nd-choice` rows and a `nd-choice-group` fieldset."
+    },
+    {
+      "name": "popover",
+      "type": "registry:ui",
+      "title": "Popover",
+      "description": "Non-modal overlay with a trigger, positioned surface, title/description, close, and arrow.",
+      "author": "Ndigo <https://ndigo.dev>",
+      "categories": ["ui", "behaviour"],
+      "dependencies": ["@zag-js/popover@~1.47.0"],
+      "registryDependencies": ["lib"],
+      "files": [
+        {
+          "path": "registry/ui/popover/nd-popover.ts",
+          "type": "registry:ui",
+          "target": "@ui/nd-popover/nd-popover.ts"
+        },
+        {
+          "path": "registry/ui/popover/nd-popover.css",
+          "type": "registry:file",
+          "target": "@ui/nd-popover/nd-popover.css"
+        }
+      ],
+      "docs": "`<nd-popover>` \u2014 see the item README for parts, events, and keyboard behaviour."
+    },
+    {
+      "name": "tooltip",
+      "type": "registry:ui",
+      "title": "Tooltip",
+      "description": "Hint surface with hover/focus delays, arrow, and aria-describedby wiring.",
+      "author": "Ndigo <https://ndigo.dev>",
+      "categories": ["ui", "behaviour"],
+      "dependencies": ["@zag-js/tooltip@~1.47.0"],
+      "registryDependencies": ["lib"],
+      "files": [
+        {
+          "path": "registry/ui/tooltip/nd-tooltip.ts",
+          "type": "registry:ui",
+          "target": "@ui/nd-tooltip/nd-tooltip.ts"
+        },
+        {
+          "path": "registry/ui/tooltip/nd-tooltip.css",
+          "type": "registry:file",
+          "target": "@ui/nd-tooltip/nd-tooltip.css"
+        }
+      ],
+      "docs": "`<nd-tooltip>` \u2014 see the item README for parts, events, and keyboard behaviour."
+    },
+    {
+      "name": "tabs",
+      "type": "registry:ui",
+      "title": "Tabs",
+      "description": "Tablist, roving focus, arrow navigation, and tabpanels.",
+      "author": "Ndigo <https://ndigo.dev>",
+      "categories": ["ui", "behaviour"],
+      "dependencies": ["@zag-js/tabs@~1.47.0"],
+      "registryDependencies": ["lib"],
+      "files": [
+        {
+          "path": "registry/ui/tabs/nd-tabs.ts",
+          "type": "registry:ui",
+          "target": "@ui/nd-tabs/nd-tabs.ts"
+        },
+        {
+          "path": "registry/ui/tabs/nd-tabs.css",
+          "type": "registry:file",
+          "target": "@ui/nd-tabs/nd-tabs.css"
+        }
+      ],
+      "docs": "`<nd-tabs>` \u2014 see the item README for parts, events, and keyboard behaviour."
+    },
+    {
+      "name": "accordion",
+      "type": "registry:ui",
+      "title": "Accordion",
+      "description": "Expandable items with single/multiple and collapsible modes.",
+      "author": "Ndigo <https://ndigo.dev>",
+      "categories": ["ui", "behaviour"],
+      "dependencies": ["@zag-js/accordion@~1.47.0"],
+      "registryDependencies": ["lib"],
+      "files": [
+        {
+          "path": "registry/ui/accordion/nd-accordion.ts",
+          "type": "registry:ui",
+          "target": "@ui/nd-accordion/nd-accordion.ts"
+        },
+        {
+          "path": "registry/ui/accordion/nd-accordion.css",
+          "type": "registry:file",
+          "target": "@ui/nd-accordion/nd-accordion.css"
+        }
+      ],
+      "docs": "`<nd-accordion>` \u2014 see the item README for parts, events, and keyboard behaviour."
     }
   ]
 }

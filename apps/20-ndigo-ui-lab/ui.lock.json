@@ -14,7 +14,7 @@
           "sha256": "6a298af62b01122adea3a480b6c04c2711035b5bd558c8187ee2e51572beb1d3"
         }
       ],
-      "installedAt": "2026-11-08T23:47:51.979Z"
+      "installedAt": "2026-11-09T14:32:43.075Z"
     },
     "dialog": {
       "registry": "../../registry.json",
@@ -119,6 +119,66 @@
         }
       ],
       "installedAt": "2026-11-09T00:43:29.700Z"
+    },
+    "popover": {
+      "registry": "../../registry.json",
+      "type": "registry:ui",
+      "files": [
+        {
+          "target": "src/ui/nd-popover/nd-popover.css",
+          "sha256": "1ed20c076b48d53598c2ec4e5080200306bb7d6887f47bccb915879ddfb18b54"
+        },
+        {
+          "target": "src/ui/nd-popover/nd-popover.ts",
+          "sha256": "d66f8448e584206958cae570dcbeea93a522b65588e621399dad37af30f93bfb"
+        }
+      ],
+      "installedAt": "2026-11-09T14:32:43.075Z"
+    },
+    "tooltip": {
+      "registry": "../../registry.json",
+      "type": "registry:ui",
+      "files": [
+        {
+          "target": "src/ui/nd-tooltip/nd-tooltip.css",
+          "sha256": "252e886c73d7a2f8217834417cdf470fb1eae3041d30e846602f6b678909522b"
+        },
+        {
+          "target": "src/ui/nd-tooltip/nd-tooltip.ts",
+          "sha256": "6fd85571d328c76c5973b6ad123dc7405f3855bef576d1cc644722fe09f708c1"
+        }
+      ],
+      "installedAt": "2026-11-09T14:32:43.075Z"
+    },
+    "tabs": {
+      "registry": "../../registry.json",
+      "type": "registry:ui",
+      "files": [
+        {
+          "target": "src/ui/nd-tabs/nd-tabs.css",
+          "sha256": "6ba2c5bb3d7cfadecb9836025b1549234f69c8c88a410ae409bce9e9f17caa03"
+        },
+        {
+          "target": "src/ui/nd-tabs/nd-tabs.ts",
+          "sha256": "467dfc45ad656a4c07459b278b7ca2719be67eeed96817ab740240c683dfefa3"
+        }
+      ],
+      "installedAt": "2026-11-09T14:32:43.075Z"
+    },
+    "accordion": {
+      "registry": "../../registry.json",
+      "type": "registry:ui",
+      "files": [
+        {
+          "target": "src/ui/nd-accordion/nd-accordion.css",
+          "sha256": "456418e6228f2933a53d610c68bc15e09d8043c2e76ce0fc9d9b4a06d035ec52"
+        },
+        {
+          "target": "src/ui/nd-accordion/nd-accordion.ts",
+          "sha256": "43f71ececbf5c18ad0caee51990b5da7ff2f907f3bd60d5f5429ad5a6911f35b"
+        }
+      ],
+      "installedAt": "2026-11-09T14:32:43.075Z"
     }
   }
 }

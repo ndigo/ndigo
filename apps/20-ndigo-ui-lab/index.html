@@ -12,6 +12,10 @@
         <link rel="stylesheet" href="/src/ui/nd-input/nd-input.css" />
         <link rel="stylesheet" href="/src/ui/nd-field/nd-field.css" />
         <link rel="stylesheet" href="/src/ui/nd-checkbox/nd-checkbox.css" />
+        <link rel="stylesheet" href="/src/ui/nd-popover/nd-popover.css" />
+        <link rel="stylesheet" href="/src/ui/nd-tooltip/nd-tooltip.css" />
+        <link rel="stylesheet" href="/src/ui/nd-tabs/nd-tabs.css" />
+        <link rel="stylesheet" href="/src/ui/nd-accordion/nd-accordion.css" />
         <link rel="stylesheet" href="/src/ui/nd-dialog/nd-dialog.css" />
         <link rel="stylesheet" href="/src/ui/nd-menu/nd-menu.css" />
         <script type="module" src="/src/main.ts"></script>
@@ -30,6 +34,7 @@
                     <a href="#form">Form</a>
                     <a href="#dialog">Dialog</a>
                     <a href="#menu">Menu</a>
+                    <a href="#disclosure">Disclosure</a>
                     <a href="#tokens">Tokens</a>
                 </nav>
 
@@ -46,6 +51,7 @@
                         <a href="#form">Form</a>
                         <a href="#dialog">Dialog</a>
                         <a href="#menu">Menu</a>
+                        <a href="#disclosure">Disclosure</a>
                         <a href="#tokens">Tokens</a>
                     </nav>
                 </aside>
@@ -168,6 +174,77 @@
                         <p id="menu-status" class="lab-status" role="status">No action selected</p>
                     </section>
 
+                    <section id="disclosure" class="lab-section" aria-labelledby="disclosure-heading">
+                        <h2 id="disclosure-heading">Overlays and disclosure</h2>
+                        <p>Popover, tooltip, tabs, and accordion reuse the shared Zag controller.</p>
+                        <div class="lab-row">
+                            <nd-popover>
+                                <button class="nd-button" data-variant="secondary" data-part="trigger" type="button">
+                                    Open popover
+                                </button>
+                                <div data-part="positioner">
+                                    <div data-part="content">
+                                        <h3 data-part="title">Popover</h3>
+                                        <p data-part="description">
+                                            A non-modal surface with focus handling and Escape dismissal.
+                                        </p>
+                                        <button
+                                            class="nd-button"
+                                            data-variant="ghost"
+                                            data-size="sm"
+                                            data-part="close-trigger"
+                                            type="button"
+                                        >
+                                            Close
+                                        </button>
+                                    </div>
+                                </div>
+                            </nd-popover>
+
+                            <nd-tooltip open-delay="100" close-delay="100">
+                                <button class="nd-button" data-variant="ghost" data-part="trigger" type="button">
+                                    Hover for a tip
+                                </button>
+                                <div data-part="positioner">
+                                    <div data-part="content">Shortcuts live in the command palette.</div>
+                                </div>
+                            </nd-tooltip>
+                        </div>
+
+                        <nd-tabs value="overview" class="lab-block">
+                            <div data-part="root">
+                                <div data-part="list">
+                                    <button data-part="trigger" data-value="overview" type="button">Overview</button>
+                                    <button data-part="trigger" data-value="install" type="button">Install</button>
+                                </div>
+                                <div data-part="content" data-value="overview">
+                                    The overview panel is selected at first paint.
+                                </div>
+                                <div data-part="content" data-value="install">
+                                    The install panel appears when its tab is selected.
+                                </div>
+                            </div>
+                        </nd-tabs>
+
+                        <nd-accordion collapsible class="lab-block">
+                            <div data-part="item" data-value="shipping">
+                                <button data-part="item-trigger" data-value="shipping" type="button">
+                                    Shipping <span data-part="item-indicator">+</span>
+                                </button>
+                                <div data-part="item-content" data-value="shipping">
+                                    Orders leave the warehouse in two business days.
+                                </div>
+                            </div>
+                            <div data-part="item" data-value="returns">
+                                <button data-part="item-trigger" data-value="returns" type="button">
+                                    Returns <span data-part="item-indicator">+</span>
+                                </button>
+                                <div data-part="item-content" data-value="returns">
+                                    Unused items can be returned within thirty days.
+                                </div>
+                            </div>
+                        </nd-accordion>
+                    </section>
                     <section id="tokens" class="lab-section" aria-labelledby="tokens-heading">
                         <h2 id="tokens-heading">Tokens</h2>
                         <p>

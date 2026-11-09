@@ -31,6 +31,22 @@ const ITEMS: readonly ItemBudget[] = [
         files: ['registry/ui/button/nd-button.css'],
     },
     {
+        meta: 'registry/ui/accordion/meta.json',
+        files: ['registry/ui/accordion/nd-accordion.ts', 'registry/ui/accordion/nd-accordion.css'],
+    },
+    {
+        meta: 'registry/ui/popover/meta.json',
+        files: ['registry/ui/popover/nd-popover.ts', 'registry/ui/popover/nd-popover.css'],
+    },
+    {
+        meta: 'registry/ui/tabs/meta.json',
+        files: ['registry/ui/tabs/nd-tabs.ts', 'registry/ui/tabs/nd-tabs.css'],
+    },
+    {
+        meta: 'registry/ui/tooltip/meta.json',
+        files: ['registry/ui/tooltip/nd-tooltip.ts', 'registry/ui/tooltip/nd-tooltip.css'],
+    },
+    {
         meta: 'registry/ui/checkbox/meta.json',
         files: ['registry/ui/checkbox/nd-checkbox.css'],
     },

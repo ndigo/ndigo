@@ -8,8 +8,13 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import axe from 'axe-core';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import '../src/ui/nd-accordion/nd-accordion';
 import '../src/ui/nd-dialog/nd-dialog';
 import '../src/ui/nd-menu/nd-menu';
+import '../src/ui/nd-popover/nd-popover';
+import '../src/ui/nd-tabs/nd-tabs';
+import '../src/ui/nd-tooltip/nd-tooltip';
+import type { NdTooltip } from '../src/ui/nd-tooltip/nd-tooltip';
 
 class TestResizeObserver implements ResizeObserver {
     observe(): void {}
@@ -73,6 +78,32 @@ describe('ndigo-ui lab', () => {
         expect(document.querySelector('#lab-email')?.getAttribute('aria-invalid')).toBe('true');
         expect(document.querySelectorAll('.nd-checkbox, .nd-radio')).toHaveLength(3);
         expect(document.querySelector('#lab-name')?.getAttribute('aria-describedby')).toBe('lab-name-help');
+    });
+
+    it('renders the overlay and disclosure tier', async () => {
+        const popover = get<HTMLElement>(document, 'nd-popover');
+        const popoverContent = get<HTMLElement>(popover, '[data-part="content"]');
+        get<HTMLElement>(popover, '[data-part="trigger"]').click();
+        await flush();
+        expect(popoverContent.hasAttribute('hidden')).toBe(false);
+
+        const tooltip = get<HTMLElement>(document, 'nd-tooltip') as NdTooltip;
+        tooltip.show();
+        await flush();
+        expect(get<HTMLElement>(tooltip, '[data-part="content"]').hasAttribute('hidden')).toBe(false);
+
+        const tabs = get<HTMLElement>(document, 'nd-tabs');
+        const tabTriggers = tabs.querySelectorAll<HTMLElement>('[data-part="trigger"]');
+        tabTriggers[1]?.click();
+        await flush();
+        expect(tabTriggers[1]?.getAttribute('aria-selected')).toBe('true');
+
+        const accordion = get<HTMLElement>(document, 'nd-accordion');
+        const itemTrigger = get<HTMLElement>(accordion, '[data-part="item-trigger"]');
+        itemTrigger.focus();
+        itemTrigger.click();
+        await flush();
+        expect(itemTrigger.getAttribute('aria-expanded')).toBe('true');
     });
 
     it('opens and closes the dialog', async () => {

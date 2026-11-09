@@ -10,6 +10,7 @@ import type { Api as MenuApi } from '@zag-js/menu';
 import { normalizeProps, spreadProps } from '@zag-js/vanilla';
 import { defineElement, NdElement } from '@/lib/base-element';
 import { createZagElement } from '@/lib/zag-element';
+import { ensureOverlayStructure } from '@/lib/structure-element';
 
 const DEFAULT_TRIGGER_LABEL = 'Open menu';
 
@@ -36,8 +37,8 @@ export class NdMenu extends NdElement {
     });
 
     protected onConnect(): void {
-        this.#machineId = this.id || `nd-menu-${++nextId}`;
-        this.#ensureStructure();
+        this.#machineId ||= this.id || `nd-menu-${++nextId}`;
+        ensureOverlayStructure(this, { triggerLabel: DEFAULT_TRIGGER_LABEL });
         this.#controller.start();
     }
 
@@ -49,58 +50,21 @@ export class NdMenu extends NdElement {
         if (name === 'open') this.#controller.updateProps({ open: value !== null });
     }
 
-    #ensureTrigger(): HTMLElement {
-        const existing = this.querySelector<HTMLElement>('[data-part="trigger"]');
-        if (existing) return existing;
-        const trigger = this.ownerDocument.createElement('button');
-        trigger.type = 'button';
-        trigger.dataset.part = 'trigger';
-        trigger.textContent = this.getAttribute('trigger-label') ?? DEFAULT_TRIGGER_LABEL;
-        this.prepend(trigger);
-        return trigger;
-    }
-
-    #ensureStructure(): void {
-        const trigger = this.#ensureTrigger();
-        let content = this.querySelector<HTMLElement>('[data-part="content"]');
-        let positioner = this.querySelector<HTMLElement>('[data-part="positioner"]');
-
-        if (!content) {
-            content = this.ownerDocument.createElement('div');
-            content.dataset.part = 'content';
-            const movable = positioner
-                ? [...positioner.children]
-                : [...this.children].filter(
-                      (child) =>
-                          child !== trigger && !(child instanceof HTMLElement && child.dataset.part === 'positioner')
-                  );
-            content.append(...movable);
-            (positioner ?? this).append(content);
-        }
-
-        if (!positioner) {
-            positioner = this.ownerDocument.createElement('div');
-            positioner.dataset.part = 'positioner';
-            content.replaceWith(positioner);
-            positioner.append(content);
-        }
-
-        if (content.parentElement !== positioner) positioner.append(content);
-    }
-
     #render(api: MenuApi): void {
-        const trigger = this.querySelector<HTMLElement>('[data-part="trigger"]');
-        const positioner = this.querySelector<HTMLElement>('[data-part="positioner"]');
-        const content = this.querySelector<HTMLElement>('[data-part="content"]');
-        if (trigger) spreadProps(trigger, api.getTriggerProps());
-        if (positioner) spreadProps(positioner, api.getPositionerProps());
-        if (content) spreadProps(content, api.getContentProps());
+        const { trigger, positioner, content } = ensureOverlayStructure(this, {
+            triggerLabel: DEFAULT_TRIGGER_LABEL,
+        });
+        spreadProps(trigger, api.getTriggerProps());
+        spreadProps(positioner, api.getPositionerProps());
+        spreadProps(content, api.getContentProps());
 
-        for (const separator of this.querySelectorAll<HTMLElement>('[data-part="separator"]')) {
+        for (const separator of content.querySelectorAll<HTMLElement>('[data-part="separator"]')) {
+            if (separator.closest('[data-part="content"]') !== content) continue;
             spreadProps(separator, api.getSeparatorProps());
         }
 
-        for (const item of this.querySelectorAll<HTMLElement>('[data-part="item"]')) {
+        for (const item of content.querySelectorAll<HTMLElement>('[data-part="item"]')) {
+            if (item.closest('[data-part="content"]') !== content) continue;
             const value = item.dataset.value;
             if (!value) continue;
             const text = item.getAttribute('data-valuetext') ?? item.textContent?.trim();

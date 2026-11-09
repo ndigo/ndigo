@@ -11,9 +11,10 @@ This guide covers both paths: using ndigo-ui, and adopting any other Web
 Component library (Web Awesome is the worked example). The runnable ndigo-ui
 reference is [`apps/20-ndigo-ui-lab`](../../apps/20-ndigo-ui-lab/README.md);
 [`apps/07-ndigo-island`](../../apps/07-ndigo-island/README.md) is the migrated
-island app. The decision records are [AD-69](../decisions/2026-10-06_AD69_COMPONENT_INTEGRATION_CONTRACT.md),
-[AD-71](../decisions/2026-10-07_AD71_COMPONENT_LIBRARY_SELECTION.md), and
-[AD-95](../decisions/2026-11-08_AD95_NDIGO_UI.md).
+island app. The decision records are
+[AD-69](../decisions/2026-10-06_AD69_COMPONENT_INTEGRATION_CONTRACT.md),
+[AD-95](../decisions/2026-11-08_AD95_NDIGO_UI.md) (which supersedes AD-71), and
+the superseded [AD-71](../decisions/2026-10-07_AD71_COMPONENT_LIBRARY_SELECTION.md).
 
 **Audience:** Browser application developers · **Prerequisites:** Guide 02 · **Reference app:** `apps/20-ndigo-ui-lab`
 
@@ -250,9 +251,10 @@ budget; a third-party library's claim is not a measurement.
 
 ## 10. Web Awesome as a third-party example
 
-`apps/07-ndigo-island` migrated from Web Awesome to ndigo-ui in Phase 3; its
-source no longer imports `<wa-*>` components. The migration sequence remains the
-worked example for moving a third-party library onto ndigo-ui:
+`apps/07-ndigo-island` migrated from Web Awesome to ndigo-ui in Phase 3
+(issue #304); its source no longer imports `<wa-*>` components and the library
+is no longer installed anywhere in this repository. The migration sequence
+remains the worked example for moving a third-party library onto ndigo-ui:
 
 1. Install the equivalent registry items (`theme`, `lib`, `button`, `input`,
    `field`, ...).

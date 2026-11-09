@@ -11,10 +11,13 @@ import type { Api as AccordionApi } from '@zag-js/accordion';
 import { normalizeProps, spreadProps } from '@zag-js/vanilla';
 import { defineElement, NdElement } from '@/lib/base-element';
 import { createZagElement } from '@/lib/zag-element';
+import { ensureRootElement } from '@/lib/structure-element';
 
 let nextId = 0;
 
 export class NdAccordion extends NdElement {
+    static observedAttributes = ['multiple', 'collapsible', 'value'];
+
     #machineId = '';
     #controller = createZagElement({
         machine: accordionMachine,
@@ -33,8 +36,8 @@ export class NdAccordion extends NdElement {
     });
 
     protected onConnect(): void {
-        this.#machineId = this.id || `nd-accordion-${++nextId}`;
-        this.#ensureRoot();
+        this.#machineId ||= this.id || `nd-accordion-${++nextId}`;
+        ensureRootElement(this);
         this.#controller.start();
     }
 
@@ -42,12 +45,29 @@ export class NdAccordion extends NdElement {
         this.#controller.stop();
     }
 
+    attributeChangedCallback(name: string, _previous: string | null, _value: string | null): void {
+        if (name === 'value') {
+            this.#controller.api?.setValue(this.#defaultValue());
+            return;
+        }
+        this.#controller.updateProps({
+            multiple: this.hasAttribute('multiple'),
+            collapsible: this.hasAttribute('collapsible'),
+        });
+    }
+
     /** Toggles an item by value. */
     toggle(value: string): void {
         const api = this.#controller.api;
         if (!api) return;
         const current = api.value;
-        api.setValue(current.includes(value) ? current.filter((entry) => entry !== value) : [...current, value]);
+        if (current.includes(value)) {
+            if (this.hasAttribute('collapsible')) api.setValue(current.filter((entry) => entry !== value));
+            return;
+        }
+        // Single mode must replace the open item; appending a second value is
+        // rejected by the machine and would leave the first item open.
+        api.setValue(this.hasAttribute('multiple') ? [...current, value] : [value]);
     }
 
     #defaultValue(): string[] {
@@ -55,16 +75,6 @@ export class NdAccordion extends NdElement {
             .split(',')
             .map((value) => value.trim())
             .filter((value) => value.length > 0);
-    }
-
-    #ensureRoot(): HTMLElement {
-        const existing = this.querySelector<HTMLElement>('[data-part="root"]');
-        if (existing) return existing;
-        const root = this.ownerDocument.createElement('div');
-        root.dataset.part = 'root';
-        root.append(...this.children);
-        this.append(root);
-        return root;
     }
 
     #render(api: AccordionApi): void {

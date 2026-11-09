@@ -68,6 +68,17 @@
     }
 }
 
+@media (forced-colors: active) {
+    :where(:focus-visible) {
+        outline: 2px solid Highlight;
+        outline-offset: 2px;
+    }
+
+    :where([aria-current='page'], [aria-selected='true'], [data-selected]) {
+        outline: 1px solid Highlight;
+    }
+}
+
 /* ---------- Brand utilities ---------- */
 
 .nd-gradient-text {

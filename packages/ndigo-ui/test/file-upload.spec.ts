@@ -121,6 +121,22 @@ describe('<nd-file-upload>', () => {
         expect(upload.dataset.value).toBe('');
     });
 
+    it('keeps keyboard focus after deleting a file', async () => {
+        const upload = mountElement<NdFileUpload>('nd-file-upload', MARKUP, { 'max-files': '3' });
+        await flush();
+        select(upload, [makeFile('a.txt'), makeFile('b.txt'), makeFile('c.txt')]);
+        await flush();
+
+        const deletes = upload.querySelectorAll<HTMLElement>('[data-part="item-delete-trigger"]');
+        deletes[1]?.focus();
+        deletes[1]?.click();
+        await flush();
+
+        expect(itemNames(upload)).toEqual(['a.txt', 'c.txt']);
+        const remaining = upload.querySelectorAll<HTMLElement>('[data-part="item-delete-trigger"]');
+        expect(document.activeElement).toBe(remaining[1]);
+    });
+
     it('is axe-clean with files', async () => {
         const upload = mountElement<NdFileUpload>('nd-file-upload', MARKUP);
         await flush();

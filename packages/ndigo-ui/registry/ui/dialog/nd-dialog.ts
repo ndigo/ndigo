@@ -11,6 +11,7 @@ import type { Api as DialogApi } from '@zag-js/dialog';
 import { normalizeProps, spreadProps } from '@zag-js/vanilla';
 import { defineElement, NdElement } from '@/lib/base-element';
 import { createZagElement } from '@/lib/zag-element';
+import { ensureOverlayStructure } from '@/lib/structure-element';
 
 const DEFAULT_TRIGGER_LABEL = 'Open dialog';
 
@@ -37,8 +38,8 @@ export class NdDialog extends NdElement {
     });
 
     protected onConnect(): void {
-        this.#machineId = this.id || `nd-dialog-${++nextId}`;
-        this.#ensureStructure();
+        this.#machineId ||= this.id || `nd-dialog-${++nextId}`;
+        ensureOverlayStructure(this, { triggerLabel: DEFAULT_TRIGGER_LABEL, backdrop: true });
         this.#controller.start();
     }
 
@@ -84,85 +85,19 @@ export class NdDialog extends NdElement {
         else focus();
     }
 
-    #ensureTrigger(): HTMLElement {
-        const existing = this.#ownPart('trigger');
-        if (existing) return existing;
-        const trigger = this.ownerDocument.createElement('button');
-        trigger.type = 'button';
-        trigger.dataset.part = 'trigger';
-        trigger.textContent = this.getAttribute('trigger-label') ?? DEFAULT_TRIGGER_LABEL;
-        this.prepend(trigger);
-        return trigger;
-    }
-
-    #ensureStructure(): void {
-        const trigger = this.#ensureTrigger();
-        let content = this.#ownPart('content');
-        let positioner = this.#ownPart('positioner');
-
-        if (!content) {
-            content = this.ownerDocument.createElement('div');
-            content.dataset.part = 'content';
-            const movable = positioner
-                ? [...positioner.children]
-                : [...this.children].filter(
-                      (child) =>
-                          child !== trigger &&
-                          !(
-                              child instanceof HTMLElement &&
-                              ['backdrop', 'positioner'].includes(child.dataset.part ?? '')
-                          )
-                  );
-            content.append(...movable);
-            (positioner ?? this).append(content);
-        }
-
-        if (!positioner) {
-            positioner = this.ownerDocument.createElement('div');
-            positioner.dataset.part = 'positioner';
-            content.replaceWith(positioner);
-            positioner.append(content);
-        }
-
-        if (content.parentElement !== positioner) positioner.append(content);
-
-        if (!this.#ownPart('backdrop')) {
-            const backdrop = this.ownerDocument.createElement('div');
-            backdrop.dataset.part = 'backdrop';
-            positioner.before(backdrop);
-        }
-    }
-
-    /**
-     * Finds one of the dialog's own parts without matching a nested component's
-     * parts. A nested combobox or popover also uses `[data-part]`, so an
-     * unscoped descendant query would steal its positioner or trigger.
-     */
-    #ownPart<T extends HTMLElement = HTMLElement>(name: string): T | null {
-        for (const child of this.children) {
-            if (!(child instanceof HTMLElement)) continue;
-            if (child.dataset.part === name) return child as T;
-            if (child.dataset.part !== 'positioner') continue;
-            for (const nested of child.children) {
-                if (nested instanceof HTMLElement && nested.dataset.part === name) return nested as T;
-            }
-        }
-        return null;
-    }
-
     #render(api: DialogApi): void {
-        const trigger = this.#ownPart('trigger');
-        const backdrop = this.#ownPart('backdrop');
-        const positioner = this.#ownPart('positioner');
-        const content = this.#ownPart('content');
-        const title = content?.querySelector<HTMLElement>('[data-part="title"]') ?? null;
-        const description = content?.querySelector<HTMLElement>('[data-part="description"]') ?? null;
-        const close = content?.querySelector<HTMLElement>('[data-part="close-trigger"]') ?? null;
+        const { trigger, backdrop, positioner, content } = ensureOverlayStructure(this, {
+            triggerLabel: DEFAULT_TRIGGER_LABEL,
+            backdrop: true,
+        });
+        const title = content.querySelector<HTMLElement>('[data-part="title"]');
+        const description = content.querySelector<HTMLElement>('[data-part="description"]');
+        const close = content.querySelector<HTMLElement>('[data-part="close-trigger"]');
 
-        if (trigger) spreadProps(trigger, api.getTriggerProps());
+        spreadProps(trigger, api.getTriggerProps());
         if (backdrop) spreadProps(backdrop, api.getBackdropProps());
-        if (positioner) spreadProps(positioner, api.getPositionerProps());
-        if (content) spreadProps(content, api.getContentProps());
+        spreadProps(positioner, api.getPositionerProps());
+        spreadProps(content, api.getContentProps());
         if (title) spreadProps(title, api.getTitleProps());
         if (description) spreadProps(description, api.getDescriptionProps());
         if (close) spreadProps(close, api.getCloseTriggerProps());

@@ -280,15 +280,17 @@ class TodoIsland extends AbstractWebComponent {
             '.add-item { display: flex; gap: 0.5rem; align-items: flex-end; margin-top: 0.75rem; }',
             '.add-item-field { flex: 1; display: grid; gap: 0.25rem; }',
             '.add-item-label { color: var(--nd-color-text); font-size: var(--nd-text-sm); font-weight: var(--nd-weight-medium); }',
-            '.add-item-status { color: #666; font-size: 0.85rem; }',
+            '.add-item-status { color: var(--nd-color-text-muted); font-size: 0.85rem; }',
         ].join('\n');
         const list = document.createElement('ul');
         const hint = document.createElement('p');
         hint.style.fontSize = '0.85rem';
-        hint.style.color = '#666';
+        hint.style.color = 'var(--nd-color-text-muted)';
         const live = document.createElement('p');
         live.style.fontSize = '0.85rem';
-        live.style.color = '#1a7f4b'; // ≥4.5:1 on white (axe WCAG AA)
+        live.style.color = 'var(--nd-color-success)';
+        live.setAttribute('role', 'status');
+        live.setAttribute('aria-live', 'polite');
         live.textContent = labels.connection[this.#connectionState];
         const form = document.createElement('form');
         form.className = 'add-item';

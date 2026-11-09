@@ -157,6 +157,24 @@ describe('<nd-date-picker>', () => {
         expect(content.hasAttribute('hidden')).toBe(true);
     });
 
+    it('omits a disabled picker from form data', async () => {
+        const form = document.createElement('form');
+        form.innerHTML = `<nd-date-picker name="start" value="2026-11-09" disabled>${MARKUP}</nd-date-picker>`;
+        document.body.append(form);
+        await flush();
+
+        expect(new FormData(form).get('start')).toBeNull();
+    });
+
+    it('follows the name attribute after connect', async () => {
+        const picker = mountElement<NdDatePicker>('nd-date-picker', MARKUP, { name: 'start' });
+        await flush();
+        picker.setAttribute('name', 'end');
+        await flush();
+
+        expect(getPart<HTMLInputElement>(picker, '[data-part="hidden-input"]').name).toBe('end');
+    });
+
     it('is axe-clean when open', async () => {
         const picker = mountElement<NdDatePicker>('nd-date-picker', MARKUP, { value: '2026-11-09' });
         await flush();

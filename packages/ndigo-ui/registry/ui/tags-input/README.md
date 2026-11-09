@@ -4,7 +4,8 @@
 
 `<nd-tags-input>` turns typed entries into chips. Enter or the delimiter adds a
 tag, the delete trigger removes one, and a hidden input carries the
-comma-separated form value. Tags are editable by double-click or Enter on a
+delimiter-joined form value (`"alpha, beta"` by default; the delimiter is
+configurable). Tags are editable by double-click or Enter on a
 highlighted chip.
 
 ## Markup

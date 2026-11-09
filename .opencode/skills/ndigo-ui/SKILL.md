@@ -95,10 +95,12 @@ The direct URL works without configuration:
 npx shadcn@latest add https://ndigo.dev/r/code-block.json
 ```
 
-Browse the catalogue at `https://ndigo.dev/ui`; every page shows the install
-command, target paths, dependencies, and the item README. The first-party
-`ndigo ui` commands are the monorepo/lab installer; do not claim the remote
-namespace as a `ndigo ui` source until its resolver supports built payloads.
+Browse the catalogue at `https://ndigo.dev/ui` when the site is deployed; each
+page shows the install command, target paths, dependencies, and the item README.
+The generated pages and `public/r/` payloads live in `ndigo-site`. The
+first-party `ndigo ui` commands are the monorepo/lab installer; do not claim the
+remote namespace as a `ndigo ui` source until its resolver supports built
+payloads.
 
 ## 3. Compose
 

@@ -1,0 +1,55 @@
+/* <nd-tabs> — tab set built on the design tokens. */
+
+nd-tabs {
+    display: contents;
+}
+
+nd-tabs [data-part='root'] {
+    display: block;
+}
+
+nd-tabs [data-part='list'] {
+    position: relative;
+    display: flex;
+    gap: var(--nd-space-1);
+    border-block-end: 1px solid var(--nd-color-border);
+}
+
+nd-tabs [data-part='trigger'] {
+    padding: var(--nd-space-2) var(--nd-space-3);
+    color: var(--nd-color-text-muted);
+    font: inherit;
+    font-size: var(--nd-text-sm);
+    font-weight: var(--nd-weight-medium);
+    background: transparent;
+    border: 0;
+    border-block-end: 2px solid transparent;
+    cursor: pointer;
+}
+
+nd-tabs [data-part='trigger']:hover {
+    color: var(--nd-color-text);
+}
+
+nd-tabs [data-part='trigger'][aria-selected='true'] {
+    color: var(--nd-color-text);
+    border-block-end-color: var(--nd-color-accent);
+}
+
+nd-tabs [data-part='trigger']:focus-visible {
+    outline: var(--nd-focus-ring-width) solid var(--nd-focus-ring-color);
+    outline-offset: calc(-1 * var(--nd-focus-ring-width));
+}
+
+nd-tabs [data-part='trigger']:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+}
+
+nd-tabs [data-part='content'] {
+    padding-block: var(--nd-space-4);
+}
+
+nd-tabs [data-part='indicator'] {
+    background: var(--nd-color-accent);
+}

@@ -1,0 +1,27 @@
+/* <nd-tooltip> — hint surface built on the design tokens. */
+
+nd-tooltip {
+    display: contents;
+}
+
+nd-tooltip [data-part='positioner'] {
+    z-index: var(--nd-z-tooltip);
+}
+
+nd-tooltip [data-part='content'] {
+    max-inline-size: 16rem;
+    padding: var(--nd-space-2) var(--nd-space-3);
+    color: var(--nd-color-bg);
+    font-size: var(--nd-text-xs);
+    line-height: var(--nd-leading-normal);
+    background: var(--nd-color-text);
+    border-radius: var(--nd-radius-md);
+    box-shadow: var(--nd-shadow-md);
+}
+
+nd-tooltip [data-part='arrow'] {
+    inline-size: 0.5rem;
+    block-size: 0.5rem;
+    background: var(--nd-color-text);
+    transform: rotate(45deg);
+}

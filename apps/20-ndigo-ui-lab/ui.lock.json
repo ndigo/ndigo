@@ -1,0 +1,91 @@
+{
+  "version": 1,
+  "items": {
+    "lib": {
+      "registry": "../../registry.json",
+      "type": "registry:lib",
+      "files": [
+        {
+          "target": "src/lib/base-element.ts",
+          "sha256": "e8cf1d5a24d85e6293af9178d1b51ba4cf1b77ab969a6f8307a869ffd3c6f3fd"
+        },
+        {
+          "target": "src/lib/zag-element.ts",
+          "sha256": "6a298af62b01122adea3a480b6c04c2711035b5bd558c8187ee2e51572beb1d3"
+        }
+      ],
+      "installedAt": "2026-11-08T23:47:51.979Z"
+    },
+    "dialog": {
+      "registry": "../../registry.json",
+      "type": "registry:ui",
+      "files": [
+        {
+          "target": "src/ui/nd-dialog/nd-dialog.css",
+          "sha256": "3e09763d5b874aa9f148f80b39ff902fe9383491c395f7078f658ee31772099f"
+        },
+        {
+          "target": "src/ui/nd-dialog/nd-dialog.ts",
+          "sha256": "9f067e932eb81de719fbe15e8fcf1794c040e87a1ca31794c5622cfd2d26a87a"
+        }
+      ],
+      "installedAt": "2026-11-08T23:47:51.979Z"
+    },
+    "menu": {
+      "registry": "../../registry.json",
+      "type": "registry:ui",
+      "files": [
+        {
+          "target": "src/ui/nd-menu/nd-menu.css",
+          "sha256": "0e3e53b38170cfa0140301db93f6dafba3e4d30ed7220ac8eb4d22b5118f21d2"
+        },
+        {
+          "target": "src/ui/nd-menu/nd-menu.ts",
+          "sha256": "c839e65232768858e0da4bec1f376fff53d4c3b548eb58bd8025a445a476d7dc"
+        }
+      ],
+      "installedAt": "2026-11-08T23:47:51.979Z"
+    },
+    "theme": {
+      "registry": "../../registry.json",
+      "type": "registry:theme",
+      "files": [
+        {
+          "target": "styles/ndigo-base.css",
+          "sha256": "2d6395054782908c933f0c8557a54594d8362e3bfd6bd00ed0f9daa9c2c6eb04"
+        },
+        {
+          "target": "styles/ndigo-tokens.css",
+          "sha256": "dcef65c13d86e0b0b7e944b57c202eecfdc95ab5d4792ed76e0a1b8a93953e54"
+        }
+      ],
+      "installedAt": "2026-11-08T23:47:51.979Z"
+    },
+    "button": {
+      "registry": "../../registry.json",
+      "type": "registry:ui",
+      "files": [
+        {
+          "target": "src/ui/nd-button/nd-button.css",
+          "sha256": "87b9e9902c6c24cc591e60a98d9424cafe5f5f3a573e12fd356bdabb1cd29f26"
+        }
+      ],
+      "installedAt": "2026-11-08T23:47:51.979Z"
+    },
+    "app-shell": {
+      "registry": "../../registry.json",
+      "type": "registry:block",
+      "files": [
+        {
+          "target": "src/components/app-shell/app-shell.css",
+          "sha256": "1c36b4f5f2863479311effbb1d4cbffbfc30bb9841eed32a1f7f16cd0c289014"
+        },
+        {
+          "target": "src/components/app-shell/app-shell.html",
+          "sha256": "8dcaa6bc4e5f510986a43272f8a907bf54759fd73a791d198114c3d18285ce60"
+        }
+      ],
+      "installedAt": "2026-11-08T23:47:51.979Z"
+    }
+  }
+}

@@ -3,9 +3,9 @@
  * and maps registry target placeholders to application paths.
  */
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 import { usageError } from '../helpers/app-scripts.js';
-import { normalizeRegistrySource } from './registry.js';
+import { isRemoteSource, normalizeRegistrySource } from './registry.js';
 
 /** The consumer configuration file. */
 export const UI_CONFIG_FILE = 'ndigo.ui.json';
@@ -13,8 +13,8 @@ export const UI_CONFIG_FILE = 'ndigo.ui.json';
 /** The install lockfile. */
 export const UI_LOCK_FILE = 'ui.lock.json';
 
-/** The default registry (GitHub serves the repository root registry). */
-export const DEFAULT_REGISTRY_SOURCE = 'https://raw.githubusercontent.com/ndigo/ndigo/main/registry.json';
+/** The default registry (the ndigo.dev namespace root). */
+export const DEFAULT_REGISTRY_SOURCE = 'https://ndigo.dev/r/registry.json';
 
 /**
  * Filesystem aliases used to resolve registry targets.
@@ -107,8 +107,12 @@ export function resolveAliases(dir: string): UiAliases {
  * @returns The normalized registry source.
  */
 export function resolveRegistrySource(dir: string, flag?: string): string {
-    if (flag !== undefined) return normalizeRegistrySource(flag);
-    return normalizeRegistrySource(readUiConfig(dir)?.registry ?? DEFAULT_REGISTRY_SOURCE);
+    const source = flag ?? readUiConfig(dir)?.registry ?? DEFAULT_REGISTRY_SOURCE;
+    if (isRemoteSource(source)) return source;
+    // Config paths are app-relative so the committed ndigo.ui.json stays
+    // portable; a CLI flag keeps the caller's cwd semantics.
+    const absolute = flag === undefined ? resolve(dir, source) : source;
+    return normalizeRegistrySource(absolute);
 }
 
 /**

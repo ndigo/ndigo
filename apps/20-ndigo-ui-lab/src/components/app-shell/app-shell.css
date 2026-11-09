@@ -1,0 +1,158 @@
+/* nd-app-shell — responsive application frame built on the design tokens.
+   The markup supplies the landmarks; this file supplies the layout. */
+
+.nd-app-shell {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    min-block-size: 100dvh;
+    color: var(--nd-color-text);
+    background: var(--nd-color-bg);
+}
+
+.nd-skip-link {
+    position: absolute;
+    inset-block-start: var(--nd-space-2);
+    inset-inline-start: var(--nd-space-2);
+    z-index: var(--nd-z-tooltip);
+    padding: var(--nd-space-2) var(--nd-space-4);
+    color: var(--nd-color-text);
+    background: var(--nd-color-surface-raised);
+    border: 1px solid var(--nd-color-border);
+    border-radius: var(--nd-radius-md);
+    box-shadow: var(--nd-shadow-md);
+    transform: translateY(-200%);
+    transition: transform var(--nd-duration-fast) var(--nd-ease-standard);
+}
+
+.nd-skip-link:focus {
+    transform: translateY(0);
+}
+
+/* ---------- Banner ---------- */
+
+.nd-app-shell__banner {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: var(--nd-z-sticky);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--nd-space-4);
+    align-items: center;
+    padding-block: var(--nd-space-3);
+    padding-inline: var(--nd-space-4);
+    background: var(--nd-color-surface);
+    border-block-end: 1px solid var(--nd-color-border);
+}
+
+.nd-app-shell__brand {
+    font-size: var(--nd-text-lg);
+    color: var(--nd-color-text);
+    text-decoration: none;
+}
+
+.nd-app-shell__nav {
+    display: flex;
+    gap: var(--nd-space-1);
+    margin-inline-start: auto;
+}
+
+.nd-app-shell__nav a {
+    padding: var(--nd-space-2) var(--nd-space-3);
+    color: var(--nd-color-text-muted);
+    font-size: var(--nd-text-sm);
+    text-decoration: none;
+    border-radius: var(--nd-radius-sm);
+}
+
+.nd-app-shell__nav a:hover,
+.nd-app-shell__nav a[aria-current='page'] {
+    color: var(--nd-color-text);
+    background: var(--nd-color-accent-soft);
+}
+
+.nd-app-shell__actions {
+    display: flex;
+    gap: var(--nd-space-2);
+}
+
+/* ---------- Body ---------- */
+
+.nd-app-shell__body {
+    display: grid;
+    grid-template-columns: minmax(12rem, 16rem) minmax(0, 1fr);
+    gap: var(--nd-space-6);
+    width: min(100%, 90rem);
+    margin-inline: auto;
+    padding: var(--nd-space-6) var(--nd-space-4);
+}
+
+.nd-app-shell__sidebar {
+    align-self: start;
+    padding-inline-end: var(--nd-space-4);
+    border-inline-end: 1px solid var(--nd-color-border);
+}
+
+.nd-app-shell__sidebar nav {
+    display: grid;
+    gap: var(--nd-space-1);
+}
+
+.nd-app-shell__sidebar a {
+    padding: var(--nd-space-2) var(--nd-space-3);
+    color: var(--nd-color-text-muted);
+    font-size: var(--nd-text-sm);
+    text-decoration: none;
+    border-radius: var(--nd-radius-sm);
+}
+
+.nd-app-shell__sidebar a:hover,
+.nd-app-shell__sidebar a[aria-current='page'] {
+    color: var(--nd-color-text);
+    background: var(--nd-color-accent-soft);
+}
+
+.nd-app-shell__main {
+    min-width: 0;
+}
+
+/* ---------- Footer ---------- */
+
+.nd-app-shell__footer {
+    padding: var(--nd-space-6) var(--nd-space-4);
+    color: var(--nd-color-text-muted);
+    font-size: var(--nd-text-sm);
+    border-block-start: 1px solid var(--nd-color-border);
+}
+
+/* ---------- Small screens ---------- */
+
+@media (max-width: 48rem) {
+    .nd-app-shell__nav {
+        order: 3;
+        width: 100%;
+        margin-inline-start: 0;
+        overflow-x: auto;
+    }
+
+    .nd-app-shell__body {
+        grid-template-columns: 1fr;
+    }
+
+    .nd-app-shell__sidebar {
+        padding-block-end: var(--nd-space-3);
+        padding-inline-end: 0;
+        border-inline-end: 0;
+        border-block-end: 1px solid var(--nd-color-border);
+    }
+
+    .nd-app-shell__sidebar nav {
+        display: flex;
+        overflow-x: auto;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .nd-skip-link {
+        transition: none;
+    }
+}

@@ -1,0 +1,113 @@
+/* nd-button — native-first button styles built on the design tokens.
+   Apply to <button> for actions and <a href> for navigation. No JavaScript. */
+
+.nd-button {
+    --nd-button-bg: var(--nd-color-surface);
+    --nd-button-fg: var(--nd-color-text);
+    --nd-button-border: var(--nd-color-border);
+    --nd-button-hover-bg: var(--nd-color-surface-raised);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--nd-space-2);
+    min-block-size: 2.5rem;
+    padding-block: var(--nd-space-2);
+    padding-inline: var(--nd-space-4);
+    font: inherit;
+    font-size: var(--nd-text-sm);
+    font-weight: var(--nd-weight-medium);
+    line-height: var(--nd-leading-tight);
+    color: var(--nd-button-fg);
+    text-align: center;
+    text-decoration: none;
+    white-space: nowrap;
+    vertical-align: middle;
+    background: var(--nd-button-bg);
+    border: 1px solid var(--nd-button-border);
+    border-radius: var(--nd-radius-md);
+    cursor: pointer;
+    user-select: none;
+    transition:
+        background-color var(--nd-duration-fast) var(--nd-ease-standard),
+        border-color var(--nd-duration-fast) var(--nd-ease-standard),
+        color var(--nd-duration-fast) var(--nd-ease-standard);
+}
+
+.nd-button:hover {
+    background: var(--nd-button-hover-bg);
+}
+
+.nd-button:focus-visible {
+    outline: var(--nd-focus-ring-width) solid var(--nd-focus-ring-color);
+    outline-offset: var(--nd-focus-ring-offset);
+}
+
+.nd-button:disabled,
+.nd-button[aria-disabled='true'] {
+    cursor: not-allowed;
+    opacity: 0.55;
+}
+
+.nd-button[aria-disabled='true'] {
+    pointer-events: none;
+}
+
+.nd-button svg {
+    flex: none;
+    inline-size: 1em;
+    block-size: 1em;
+}
+
+/* ---------- Variants ---------- */
+
+.nd-button[data-variant='primary'] {
+    --nd-button-bg: var(--nd-color-accent);
+    --nd-button-fg: var(--nd-color-on-accent);
+    --nd-button-border: transparent;
+    --nd-button-hover-bg: color-mix(in srgb, var(--nd-color-accent) 88%, var(--nd-color-text));
+}
+
+.nd-button[data-variant='secondary'] {
+    --nd-button-bg: var(--nd-color-surface);
+    --nd-button-fg: var(--nd-color-text);
+    --nd-button-border: var(--nd-color-border);
+    --nd-button-hover-bg: var(--nd-color-surface-raised);
+}
+
+.nd-button[data-variant='ghost'] {
+    --nd-button-bg: transparent;
+    --nd-button-fg: var(--nd-color-text);
+    --nd-button-border: transparent;
+    --nd-button-hover-bg: var(--nd-color-accent-soft);
+}
+
+.nd-button[data-variant='danger'] {
+    --nd-button-bg: transparent;
+    --nd-button-fg: var(--nd-color-danger);
+    --nd-button-border: color-mix(in srgb, var(--nd-color-danger) 55%, transparent);
+    --nd-button-hover-bg: color-mix(in srgb, var(--nd-color-danger) 12%, transparent);
+}
+
+/* ---------- Sizes ---------- */
+
+.nd-button[data-size='sm'] {
+    min-block-size: 2rem;
+    padding-block: var(--nd-space-1);
+    padding-inline: var(--nd-space-3);
+    font-size: var(--nd-text-xs);
+    border-radius: var(--nd-radius-sm);
+}
+
+.nd-button[data-size='lg'] {
+    min-block-size: 3rem;
+    padding-block: var(--nd-space-3);
+    padding-inline: var(--nd-space-6);
+    font-size: var(--nd-text-base);
+    border-radius: var(--nd-radius-lg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .nd-button {
+        transition: none;
+    }
+}

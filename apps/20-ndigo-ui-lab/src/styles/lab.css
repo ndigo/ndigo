@@ -1,0 +1,85 @@
+/* Lab-only layout. Every colour, space, and radius comes from the tokens. */
+
+.nd-app-shell__main {
+    max-width: 60rem;
+}
+
+.lab-lede {
+    max-width: 48rem;
+    color: var(--nd-color-text-muted);
+    font-size: var(--nd-text-lg);
+}
+
+.lab-section {
+    margin-block-start: var(--nd-space-12);
+}
+
+.lab-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--nd-space-3);
+    align-items: center;
+    margin-block-start: var(--nd-space-4);
+}
+
+.lab-status {
+    margin-block-start: var(--nd-space-3);
+    color: var(--nd-color-text-muted);
+    font-size: var(--nd-text-sm);
+}
+
+.lab-swatches {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
+    gap: var(--nd-space-3);
+    margin-block-start: var(--nd-space-4);
+}
+
+.lab-swatch {
+    --lab-swatch-color: var(--nd-color-surface);
+
+    display: grid;
+    gap: var(--nd-space-1);
+    color: var(--nd-color-text-muted);
+    font-size: var(--nd-text-xs);
+}
+
+.lab-swatch::before {
+    content: '';
+    block-size: 3rem;
+    background: var(--lab-swatch-color);
+    border: 1px solid var(--nd-color-border);
+    border-radius: var(--nd-radius-md);
+}
+
+.lab-swatch--bg {
+    --lab-swatch-color: var(--nd-color-bg);
+}
+
+.lab-swatch--surface {
+    --lab-swatch-color: var(--nd-color-surface-raised);
+}
+
+.lab-swatch--accent {
+    --lab-swatch-color: var(--nd-color-accent);
+}
+
+.lab-swatch--accent-strong {
+    --lab-swatch-color: var(--nd-color-accent-strong);
+}
+
+.lab-swatch--success {
+    --lab-swatch-color: var(--nd-color-success);
+}
+
+.lab-swatch--warning {
+    --lab-swatch-color: var(--nd-color-warning);
+}
+
+.lab-swatch--danger {
+    --lab-swatch-color: var(--nd-color-danger);
+}
+
+.lab-swatch--info {
+    --lab-swatch-color: var(--nd-color-info);
+}

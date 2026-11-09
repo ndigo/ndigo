@@ -8,11 +8,14 @@ The finished shape of every pattern here lives in `apps/05-ndigo-api` — use it
 the canonical reference. Concepts link to the relevant decision record where the rationale
 is worth reading.
 
-## Prerequisites
+**Audience:** Node application developers · **Prerequisites:** Workspace bootstrapped (`pnpm install`) and the Node platform packages built (`pnpm --filter @ndigo/platform-node build:lib`) · **Reference app:** `apps/05-ndigo-api` (minimal companion: `apps/02-ndigo-hello-node`)
 
-- The Ndigo monorepo bootstrapped (`pnpm install`).
-- Node platform packages built: `pnpm --filter @ndigo/platform-node build:lib`
-  (workspace packages resolve to their `lib/` outputs).
+## What you'll learn
+
+- Bootstrap with `runNodeApplication` and control the manual `ApplicationBuilder` path.
+- Bind configuration classes and register `@entry` beans.
+- Map controllers and bind request arguments across every source.
+- Return the RFC 9457 error contract and shut the server down cleanly.
 
 ## 1. Bootstrap: `runNodeApplication`
 
@@ -408,7 +411,7 @@ new HTTPServer(null, { tls: { key: '/etc/tls/key.pem', cert: '/etc/tls/cert.pem'
   are no-ops on the secure flavor; request/header timeouts are honored on
   both.
 
-## Next steps
+## See also
 
 - [Guide 07 — Request Validation](07-request-validation.md): coercion,
   `validatedBody`, and entity-derived schemas.

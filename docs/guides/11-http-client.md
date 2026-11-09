@@ -10,6 +10,16 @@ For the server side of an HTTP interaction (routing, binding, views), see
 [guide 01](./01-building-a-node-api.md); for exercising a client in tests, see
 [guide 36](./36-testing.md).
 
+**Audience:** Node and browser application developers · **Prerequisites:** Workspace bootstrapped; no prior guide required · **Reference app:** `apps/08-ndigo-views`, `apps/19-ndigo-hn`
+
+## What you'll learn
+
+- Create a client with `HTTP.create` and send every verb.
+- Use the interceptor lifecycle hooks and built-ins.
+- Compose request/response body transforms.
+- Parse query and matrix strings.
+- Add caching, offline queueing, and retries.
+
 ## 1. Create a client
 
 `HTTP.create(config)` is the recommended standalone entry point. It accepts the
@@ -105,7 +115,7 @@ import { QueryString, MatrixString } from '@ndigo/http';
 const params = QueryString.parse('a=1&a=2&b=3'); // { a: ['1','2'], b: '3' }
 ```
 
-## References
+## See also
 
 - Generated API: [`@ndigo/http` api](../../packages/ndigo-http/api/README.md);
   the full symbol surface is on the package README.

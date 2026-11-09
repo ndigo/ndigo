@@ -11,6 +11,16 @@ This is the layer between unit-testing a controller and driving a real browser
 with Playwright. It mirrors the `NodeHTTPServerAdapter` passing a real request
 into `NodeDispatcher`, but swaps the network for an in-memory `ResponseSink`.
 
+**Audience:** All application developers · **Prerequisites:** Guide 01 or guide 02 · **Reference app:** `apps/05-ndigo-api`, `apps/08-ndigo-views`
+
+## What you'll learn
+
+- Boot a real application with `bootApp`.
+- Drive requests through `MockHTTP`.
+- Test browser apps with `BrowserMockClient`.
+- Use the timing helpers for async work.
+- Know what the harness deliberately is not.
+
 ## 1. Boot the application
 
 `bootApp(sources)` accepts `@configuration` classes (registered with the
@@ -132,7 +142,7 @@ promises so fake-timer suites stay deterministic.
 - No assertion library — it returns shaped values for Vitest's `expect`.
 - No mocking framework — it exercises real beans and real dispatch.
 
-## References
+## See also
 
 - Decision: [AD-63](../decisions/2026-09-04_AD63_NDIGO_TEST_HARNESS.md) — the
   in-process, socket-free harness.

@@ -5,6 +5,16 @@ every slot runs the same application, the existing contracts arbitrate
 single-executor work, and a signal drains every slot through its own
 graceful shutdown (AD-74).
 
+**Audience:** Node application developers and operators · **Prerequisites:** Guide 01 · **Reference package:** `packages/ndigo-cluster`
+
+## What you'll learn
+
+- Run the supervisor with a worker-slot count.
+- Assign ports and slot identity to children.
+- Relay signals into each child’s graceful shutdown.
+- Bound restart backoff and fail closed on crash loops.
+- Combine clustering with single-executor work.
+
 ## The model
 
 `@ndigo/cluster` is a **supervisor, not a coordinator**. There is no leader,

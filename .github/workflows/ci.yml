@@ -217,6 +217,12 @@ jobs:
         # @returns. No baseline — the gate fails on any gap.
         run: pnpm doc:coverage
 
+      - name: TSDoc examples (syntax)
+        # Every fenced @example block in package source must parse as
+        # TypeScript; the checker fails on any diagnostic. Docs standard:
+        # docs/guides/90-package-documentation.md
+        run: pnpm doc:examples
+
       - name: Install graft
         # The repo graph tool is a global npm package on dev machines; make it
         # available to the lanes below. Pinned: the graph format and parser

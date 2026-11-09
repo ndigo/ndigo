@@ -1,0 +1,68 @@
+/* nd-input — native text controls on the design tokens.
+   Apply to <input> for single-line text and <textarea> for multi-line text. */
+
+.nd-input,
+.nd-textarea {
+    box-sizing: border-box;
+    inline-size: 100%;
+    padding-block: var(--nd-space-2);
+    padding-inline: var(--nd-space-3);
+    color: var(--nd-color-text);
+    font: inherit;
+    font-size: var(--nd-text-sm);
+    background: var(--nd-color-surface);
+    border: 1px solid var(--nd-color-border);
+    border-radius: var(--nd-radius-md);
+    transition:
+        border-color var(--nd-duration-fast) var(--nd-ease-standard),
+        box-shadow var(--nd-duration-fast) var(--nd-ease-standard);
+}
+
+.nd-input {
+    min-block-size: 2.5rem;
+}
+
+.nd-textarea {
+    min-block-size: 6rem;
+    resize: vertical;
+}
+
+.nd-input::placeholder,
+.nd-textarea::placeholder {
+    color: var(--nd-color-text-muted);
+}
+
+.nd-input:hover:not(:disabled),
+.nd-textarea:hover:not(:disabled) {
+    border-color: var(--nd-color-accent);
+}
+
+.nd-input:focus-visible,
+.nd-textarea:focus-visible {
+    border-color: var(--nd-color-accent);
+    outline: var(--nd-focus-ring-width) solid var(--nd-focus-ring-color);
+    outline-offset: var(--nd-focus-ring-offset);
+}
+
+.nd-input:disabled,
+.nd-textarea:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+}
+
+.nd-input[aria-invalid='true'],
+.nd-textarea[aria-invalid='true'] {
+    border-color: var(--nd-color-danger);
+}
+
+.nd-input[aria-invalid='true']:focus-visible,
+.nd-textarea[aria-invalid='true']:focus-visible {
+    outline-color: var(--nd-color-danger);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .nd-input,
+    .nd-textarea {
+        transition: none;
+    }
+}

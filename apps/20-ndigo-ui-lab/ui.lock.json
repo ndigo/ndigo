@@ -86,6 +86,39 @@
         }
       ],
       "installedAt": "2026-11-08T23:47:51.979Z"
+    },
+    "input": {
+      "registry": "../../registry.json",
+      "type": "registry:ui",
+      "files": [
+        {
+          "target": "src/ui/nd-input/nd-input.css",
+          "sha256": "cfdf86e127a95b1d60ff0bae19e6423333bbae7bdfca3dc5c547ed2d47ab6a03"
+        }
+      ],
+      "installedAt": "2026-11-09T00:43:29.700Z"
+    },
+    "field": {
+      "registry": "../../registry.json",
+      "type": "registry:ui",
+      "files": [
+        {
+          "target": "src/ui/nd-field/nd-field.css",
+          "sha256": "771f7302c00ea28f7ae3ec62be0c48b6b5ee17978f4bfd71a517cb18b1ca06af"
+        }
+      ],
+      "installedAt": "2026-11-09T00:43:29.700Z"
+    },
+    "checkbox": {
+      "registry": "../../registry.json",
+      "type": "registry:ui",
+      "files": [
+        {
+          "target": "src/ui/nd-checkbox/nd-checkbox.css",
+          "sha256": "479888036532877dcbe0042d7b7f9138ff9f094da3c131e91996a233951c0526"
+        }
+      ],
+      "installedAt": "2026-11-09T00:43:29.700Z"
     }
   }
 }

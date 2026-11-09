@@ -31,6 +31,18 @@ const ITEMS: readonly ItemBudget[] = [
         files: ['registry/ui/button/nd-button.css'],
     },
     {
+        meta: 'registry/ui/checkbox/meta.json',
+        files: ['registry/ui/checkbox/nd-checkbox.css'],
+    },
+    {
+        meta: 'registry/ui/field/meta.json',
+        files: ['registry/ui/field/nd-field.css'],
+    },
+    {
+        meta: 'registry/ui/input/meta.json',
+        files: ['registry/ui/input/nd-input.css'],
+    },
+    {
         meta: 'registry/ui/dialog/meta.json',
         files: ['registry/ui/dialog/nd-dialog.ts', 'registry/ui/dialog/nd-dialog.css'],
     },

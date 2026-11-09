@@ -9,6 +9,9 @@
         <link rel="stylesheet" href="/src/styles/lab.css" />
         <link rel="stylesheet" href="/src/components/app-shell/app-shell.css" />
         <link rel="stylesheet" href="/src/ui/nd-button/nd-button.css" />
+        <link rel="stylesheet" href="/src/ui/nd-input/nd-input.css" />
+        <link rel="stylesheet" href="/src/ui/nd-field/nd-field.css" />
+        <link rel="stylesheet" href="/src/ui/nd-checkbox/nd-checkbox.css" />
         <link rel="stylesheet" href="/src/ui/nd-dialog/nd-dialog.css" />
         <link rel="stylesheet" href="/src/ui/nd-menu/nd-menu.css" />
         <script type="module" src="/src/main.ts"></script>
@@ -24,6 +27,7 @@
 
                 <nav class="nd-app-shell__nav" aria-label="Primary">
                     <a href="#buttons">Buttons</a>
+                    <a href="#form">Form</a>
                     <a href="#dialog">Dialog</a>
                     <a href="#menu">Menu</a>
                     <a href="#tokens">Tokens</a>
@@ -39,6 +43,7 @@
                 <aside class="nd-app-shell__sidebar" aria-label="Section navigation">
                     <nav aria-label="Sections">
                         <a href="#buttons">Buttons</a>
+                        <a href="#form">Form</a>
                         <a href="#dialog">Dialog</a>
                         <a href="#menu">Menu</a>
                         <a href="#tokens">Tokens</a>
@@ -70,6 +75,56 @@
                         </div>
                     </section>
 
+                    <section id="form" class="lab-section" aria-labelledby="form-heading">
+                        <h2 id="form-heading">Form</h2>
+                        <p>Native inputs and choices styled by the input, field, and checkbox items.</p>
+                        <form class="lab-form" novalidate>
+                            <div class="nd-field">
+                                <label class="nd-label" for="lab-name" data-required>Name</label>
+                                <input
+                                    class="nd-input"
+                                    id="lab-name"
+                                    name="name"
+                                    autocomplete="name"
+                                    required
+                                    aria-describedby="lab-name-help"
+                                />
+                                <p class="nd-help" id="lab-name-help">The name shown on your profile.</p>
+                            </div>
+                            <div class="nd-field">
+                                <label class="nd-label" for="lab-notes">Notes</label>
+                                <textarea class="nd-textarea" id="lab-notes" name="notes"></textarea>
+                            </div>
+                            <div class="nd-field">
+                                <label class="nd-label" for="lab-email">Email</label>
+                                <input
+                                    class="nd-input"
+                                    id="lab-email"
+                                    name="email"
+                                    type="email"
+                                    aria-invalid="true"
+                                    aria-describedby="lab-email-error"
+                                />
+                                <p class="nd-error" id="lab-email-error">Enter a valid email address.</p>
+                            </div>
+                            <fieldset class="nd-choice-group">
+                                <legend class="nd-label">Preferences</legend>
+                                <label class="nd-choice">
+                                    <input class="nd-checkbox" type="checkbox" name="updates" checked />
+                                    <span class="nd-label">Product updates</span>
+                                </label>
+                                <label class="nd-choice">
+                                    <input class="nd-radio" type="radio" name="lab-plan" value="free" checked />
+                                    <span class="nd-label">Free</span>
+                                </label>
+                                <label class="nd-choice">
+                                    <input class="nd-radio" type="radio" name="lab-plan" value="pro" />
+                                    <span class="nd-label">Pro</span>
+                                </label>
+                            </fieldset>
+                            <button class="nd-button" data-variant="primary" type="submit">Save</button>
+                        </form>
+                    </section>
                     <section id="dialog" class="lab-section" aria-labelledby="dialog-heading">
                         <h2 id="dialog-heading">Dialog</h2>
                         <p>The modal, focus trap, and dismissal come from the Zag.js dialog machine.</p>

@@ -129,6 +129,55 @@
         }
       ],
       "docs": "Copy the markup into a layout and replace the `<main>` contents; keep the skip link first and the landmarks unique."
+    },
+    {
+      "name": "input",
+      "type": "registry:ui",
+      "title": "Input",
+      "description": "Native text inputs and textareas with focus, disabled, and invalid states.",
+      "author": "Ndigo <https://ndigo.dev>",
+      "categories": ["ui", "form"],
+      "files": [
+        {
+          "path": "registry/ui/input/nd-input.css",
+          "type": "registry:file",
+          "target": "@ui/nd-input/nd-input.css"
+        }
+      ],
+      "docs": "Apply `nd-input` to a native `<input>` and `nd-textarea` to a `<textarea>`; pair with a `label` and `aria-describedby`."
+    },
+    {
+      "name": "field",
+      "type": "registry:ui",
+      "title": "Field",
+      "description": "Label, help, and error scaffolding for native form controls.",
+      "author": "Ndigo <https://ndigo.dev>",
+      "categories": ["ui", "form"],
+      "registryDependencies": ["input"],
+      "files": [
+        {
+          "path": "registry/ui/field/nd-field.css",
+          "type": "registry:file",
+          "target": "@ui/nd-field/nd-field.css"
+        }
+      ],
+      "docs": "Wrap a labelled control in `nd-field`; use `nd-label`, `nd-help`, and `nd-error`, and `aria-invalid` for the state."
+    },
+    {
+      "name": "checkbox",
+      "type": "registry:ui",
+      "title": "Checkbox and radio",
+      "description": "Native checkboxes and radios with the brand accent, focus, and choice-group layout.",
+      "author": "Ndigo <https://ndigo.dev>",
+      "categories": ["ui", "form"],
+      "files": [
+        {
+          "path": "registry/ui/checkbox/nd-checkbox.css",
+          "type": "registry:file",
+          "target": "@ui/nd-checkbox/nd-checkbox.css"
+        }
+      ],
+      "docs": "Apply `nd-checkbox`/`nd-radio` to native controls; use `nd-choice` rows and a `nd-choice-group` fieldset."
     }
   ]
 }

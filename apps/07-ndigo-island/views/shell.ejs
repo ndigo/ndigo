@@ -3,19 +3,13 @@
 <head>
     <meta charset="utf-8" />
     <title><%= await t('app.title') %></title>
-    <!-- The adopted library's theme (design tokens) is a build input of the
-         client bundle; the static controller serves the built asset. -->
+    <!-- The design tokens and base layer are build inputs of the client bundle;
+         the static controller serves the built asset. Custom properties inherit
+         into the island's shadow root, so the page and island share one theme. -->
     <link rel="stylesheet" href="/static/client.css" />
     <style>
-        body { font-family: system-ui, sans-serif; max-width: 40rem; margin: 3rem auto; padding: 0 1rem; }
-        todo-app { display: block; border: 1px solid var(--wa-color-surface-border, #ddd); border-radius: 8px; padding: 1rem; }
-        /* AD-71 D-4: theming is CSS custom properties — token overrides at the
-           document level inherit into the island's shadow root, no
-           shadow-piercing hacks. */
-        :root {
-            --wa-color-brand-fill-loud: #1f7a5a;
-            --wa-form-control-border-radius: 0.5rem;
-        }
+        body { font-family: var(--nd-font-sans, system-ui, sans-serif); max-width: 40rem; margin: 3rem auto; padding: 0 1rem; }
+        todo-app { display: block; padding: 1rem; background: var(--nd-color-surface, #fff); border: 1px solid var(--nd-color-border, #ddd); border-radius: var(--nd-radius-lg, 8px); }
     </style>
 </head>
 <body>

@@ -1,14 +1,12 @@
 /**
  */
-// AD-71 reference integration — Web Awesome, imported per component (no
-// wrappers): importing a component registers its element (the intended side
-// effect); the theme CSS carries the design-token contract; the fr
-// translation localizes the library's own chrome whenever the document is
-// served with lang="fr".
-import '@awesome.me/webawesome/dist/components/button/button.js';
-import '@awesome.me/webawesome/dist/components/input/input.js';
-import '@awesome.me/webawesome/dist/styles/themes/default.css';
-import '@awesome.me/webawesome/dist/translations/fr.js';
+// Design-system integration: the tokens and base layer load at the document
+// level, while the button and input item CSS is injected into the island's
+// shadow root (document styles do not cross the shadow boundary).
+import '../styles/ndigo-tokens.css';
+import '../styles/ndigo-base.css';
+import buttonStyles from './ui/nd-button/nd-button.css?inline';
+import inputStyles from './ui/nd-input/nd-input.css?inline';
 import { AbstractWebComponent, hydrateIslands, TagMapping } from '@ndigo/view-webcomponent';
 import { service, getCall, serviceClient } from '@ndigo/service';
 import { HTTP } from '@ndigo/http';
@@ -25,9 +23,8 @@ import { z } from 'zod';
  * validates each event (AD-07) and feeds it into the local `@ndigo/signals`
  * state, which re-renders the island.
  *
- * The add-item form is the AD-71 reference integration: Web Awesome
- * form-associated controls submit standard name/value pairs, so the POST body
- * is ordinary `application/x-www-form-urlencoded` and the server binds it
+ * The add-item form uses the registry-installed native controls, so the POST
+ * body is ordinary `application/x-www-form-urlencoded` and the server binds it
  * through the existing `dataBinderValue` + Zod path (guide 06/07).
  */
 
@@ -77,7 +74,7 @@ const ISLAND_LABELS = {
         inputLabel: 'Add an item',
         inputPlaceholder: 'What needs doing?',
         addButton: 'Add',
-        idle: '[form] Web Awesome controls — submit posts standard form data.',
+        idle: '[form] registry-installed native controls — submit posts standard form data.',
         accepted: (text: string) => `[form] accepted "${text}" — model update pushed over SSE`,
         rejected: (detail: string) => `[form] submit failed (${detail})`,
         connection: {
@@ -90,7 +87,7 @@ const ISLAND_LABELS = {
         inputLabel: 'Ajouter un élément',
         inputPlaceholder: 'Que faut-il faire ?',
         addButton: 'Ajouter',
-        idle: '[form] composants Web Awesome — l’envoi utilise les données de formulaire standard.',
+        idle: '[form] composants natifs du registre — l’envoi utilise les données de formulaire standard.',
         accepted: (text: string) => `[form] « ${text} » accepté — mise à jour poussée via SSE`,
         rejected: (detail: string) => `[form] échec de l’envoi (${detail})`,
         connection: {
@@ -271,15 +268,18 @@ class TodoIsland extends AbstractWebComponent {
 
     /**
      * Builds the model-independent parts: the item list host, the status
-     * lines, and the add-item form (AD-71 reference integration — the Web
-     * Awesome controls are used directly; attributes and events are the API).
+     * lines, and the add-item form. The form uses the registry-installed
+     * native input and button items.
      */
     #buildShell(root: ShadowRoot): void {
         const labels = labelsFor(this.#locale);
         const style = document.createElement('style');
         style.textContent = [
+            buttonStyles,
+            inputStyles,
             '.add-item { display: flex; gap: 0.5rem; align-items: flex-end; margin-top: 0.75rem; }',
-            '.add-item wa-input { flex: 1; }',
+            '.add-item-field { flex: 1; display: grid; gap: 0.25rem; }',
+            '.add-item-label { color: var(--nd-color-text); font-size: var(--nd-text-sm); font-weight: var(--nd-weight-medium); }',
             '.add-item-status { color: #666; font-size: 0.85rem; }',
         ].join('\n');
         const list = document.createElement('ul');
@@ -292,20 +292,24 @@ class TodoIsland extends AbstractWebComponent {
         live.textContent = labels.connection[this.#connectionState];
         const form = document.createElement('form');
         form.className = 'add-item';
-        const input = document.createElement('wa-input') as HTMLElement & { value: string };
-        input.setAttribute('name', 'text');
-        input.setAttribute('label', labels.inputLabel);
-        input.setAttribute('placeholder', labels.inputPlaceholder);
-        input.setAttribute('with-clear', '');
-        input.setAttribute('required', '');
-        const submit = document.createElement('wa-button');
-        submit.setAttribute('type', 'submit');
-        // `accent` is the loud fill (driven by --wa-color-brand-fill-loud),
-        // so the shell's token override is visibly exercised (AD-71 D-4).
-        submit.setAttribute('appearance', 'accent');
-        submit.setAttribute('variant', 'brand');
+        const field = document.createElement('label');
+        field.className = 'add-item-field';
+        const label = document.createElement('span');
+        label.className = 'add-item-label';
+        label.textContent = labels.inputLabel;
+        const input = document.createElement('input');
+        input.className = 'nd-input';
+        input.type = 'text';
+        input.name = 'text';
+        input.placeholder = labels.inputPlaceholder;
+        input.required = true;
+        field.append(label, input);
+        const submit = document.createElement('button');
+        submit.className = 'nd-button';
+        submit.type = 'submit';
+        submit.dataset.variant = 'primary';
         submit.textContent = labels.addButton;
-        form.append(input, submit);
+        form.append(field, submit);
         const status = document.createElement('p');
         status.className = 'add-item-status';
         status.setAttribute('role', 'status');
@@ -320,16 +324,10 @@ class TodoIsland extends AbstractWebComponent {
     }
 
     /**
-     * Standard form submission (AD-71 D-4): the form-associated custom
-     * controls contribute name/value pairs to `FormData` exactly like native
-     * controls — no hidden inputs, no component-specific extraction.
+     * Standard form submission: native controls contribute name/value pairs
+     * to `FormData` with no hidden inputs or component-specific extraction.
      */
-    #submitItem(
-        event: Event,
-        form: HTMLFormElement,
-        input: HTMLElement & { value: string },
-        status: HTMLParagraphElement
-    ): void {
+    #submitItem(event: Event, form: HTMLFormElement, input: HTMLInputElement, status: HTMLParagraphElement): void {
         event.preventDefault();
         const formData = new FormData(form);
         const text = String(formData.get('text') ?? '').trim();
@@ -344,11 +342,7 @@ class TodoIsland extends AbstractWebComponent {
     }
 
     /** Posts the form body to the server and reports the outcome. */
-    async #postItem(
-        body: URLSearchParams,
-        input: HTMLElement & { value: string },
-        status: HTMLParagraphElement
-    ): Promise<void> {
+    async #postItem(body: URLSearchParams, input: HTMLInputElement, status: HTMLParagraphElement): Promise<void> {
         const labels = labelsFor(this.#locale);
         try {
             const response = await this.#http.post('/items', {

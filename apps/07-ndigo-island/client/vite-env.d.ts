@@ -1,6 +1,10 @@
 /**
  * Vite handles CSS imports at build time; TypeScript needs the ambient
- * declaration to typecheck the client entry (the Web Awesome theme
- * stylesheet is imported for its side effect).
+ * declarations for side-effect stylesheet imports and `?inline` CSS strings
+ * (the design tokens, base layer, and shadow-root item styles).
  */
 declare module '*.css';
+declare module '*.css?inline' {
+    const css: string;
+    export default css;
+}

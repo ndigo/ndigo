@@ -26,16 +26,14 @@ cd apps/07-ndigo-island && pnpm dev
   resubscribes with bounded exponential backoff after the stream ends and shows
   the connection state in its status line (WC-G). Disconnecting the island
   releases its render effect and SSE subscription (WC-F).
-- **Component-library reference integration (AD-71)**: Web Awesome imported
-  per component (no wrappers) — the add-item form's form-associated controls
-  submit ordinary `application/x-www-form-urlencoded` data to `POST /items`,
-  bound and validated through the standard `dataBinderValue` + Zod path, and
-  the resulting model update reaches every client over SSE. The theme is the
-  library's token stylesheet plus `--wa-*` overrides from the shell. See
-  [guide 30](../../docs/guides/30-component-integration.md).
-- The library's `with-clear` icon is fetched from a `data:` URL, so the demo
-  widens the CSP `connect-src` (via the `SecurityHeadersInterceptor` seam) —
-  see guide 30 §9.
+- **Design-system integration**: the add-item form uses the registry-installed
+  `input` and `button` items — native controls, no component wrappers. The
+  copy-in CSS lives in `client/ui/`, the tokens and base layer in `styles/`,
+  and `client/main.ts` injects the item styles into the island's shadow root.
+  The form submits ordinary `application/x-www-form-urlencoded` data to
+  `POST /items`, bound and validated through the standard `dataBinderValue` +
+  Zod path; the model update reaches every client over SSE.
+- The default CSP is retained: the native controls fetch no external icons.
 
 ## Development
 

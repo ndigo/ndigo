@@ -5,12 +5,8 @@
  */
 // @vitest-environment jsdom
 import { describe, test, expect, vi } from 'vitest';
-import { installFormAssociatedShims } from './jsdom-form-associated-shim';
 // Side-effect import: registers `todo-app` (`@TagMapping`) and its bootstrap.
 import '../client/main';
-
-// jsdom lacks the form-participation half of `ElementInternals` (AD-71).
-installFormAssociatedShims();
 
 type TodoModel = { items: { text: string; done: boolean }[]; filter: string };
 type IslandElement = HTMLElement & { model: TodoModel };

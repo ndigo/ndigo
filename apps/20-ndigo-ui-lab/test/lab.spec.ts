@@ -26,6 +26,7 @@ import '../src/ui/nd-tabs/nd-tabs';
 import '../src/ui/nd-toast/nd-toast';
 import '../src/ui/nd-tooltip/nd-tooltip';
 import { initCommandPalette } from '../src/components/command/command';
+import { initDataTable } from '../src/components/data-table/data-table';
 import type { NdToast } from '../src/ui/nd-toast/nd-toast';
 import type { NdTooltip } from '../src/ui/nd-tooltip/nd-tooltip';
 
@@ -78,6 +79,7 @@ beforeEach(() => {
     const match = bodyPattern.exec(HTML);
     document.body.innerHTML = match?.[1] ?? '';
     initCommandPalette(document);
+    initDataTable(document);
 });
 
 afterEach(() => {
@@ -97,7 +99,7 @@ describe('ndigo-ui lab', () => {
     it('renders the native form tier', () => {
         expect(document.querySelectorAll('label.nd-label[for]')).toHaveLength(3);
         expect(document.querySelector('#lab-email')?.getAttribute('aria-invalid')).toBe('true');
-        expect(document.querySelectorAll('.nd-checkbox, .nd-radio')).toHaveLength(3);
+        expect(document.querySelectorAll('#form .nd-checkbox, #form .nd-radio')).toHaveLength(3);
         expect(document.querySelector('#lab-name')?.getAttribute('aria-describedby')).toBe('lab-name-help');
     });
 
@@ -152,6 +154,19 @@ describe('ndigo-ui lab', () => {
         expect(content.hidden).toBe(true);
         expect(picker.dataset.value).toBe('2026-12-25');
         expect(get<HTMLInputElement>(picker, '[data-part="hidden-input"]').value).toBe('2026-12-25');
+    });
+
+    it('renders the data table tier', () => {
+        const table = get<HTMLElement>(document, '[data-data-table]');
+        expect(get<HTMLElement>(table, '[data-status]').textContent).toBe('Showing 1–3 of 6');
+        expect(table.querySelectorAll('tbody > tr:not([hidden])')).toHaveLength(3);
+
+        get<HTMLButtonElement>(table, 'th[data-sort-key="amount"] button').click();
+        expect(get<HTMLElement>(table, 'th[data-sort-key="amount"]').getAttribute('aria-sort')).toBe('ascending');
+        expect(get<HTMLElement>(table, 'tbody > tr:not([hidden])').dataset.rowId).toBe('INV-006');
+
+        get<HTMLButtonElement>(table, '[data-pagination] button[data-page="2"]').click();
+        expect(get<HTMLElement>(table, '[data-status]').textContent).toBe('Showing 4–6 of 6');
     });
 
     it('renders the table tier', () => {

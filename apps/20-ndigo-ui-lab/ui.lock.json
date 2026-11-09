@@ -404,6 +404,72 @@
         }
       ],
       "installedAt": "2026-11-09T17:56:00.586Z"
+    },
+    "alert": {
+      "registry": "../../registry.json",
+      "type": "registry:ui",
+      "files": [
+        {
+          "target": "src/ui/nd-alert/nd-alert.css",
+          "sha256": "4928479c5785e3e2613abd03c0f335727bec94dea8b91116f15f6f9b921f3014"
+        }
+      ],
+      "installedAt": "2026-11-09T18:26:42.394Z"
+    },
+    "badge": {
+      "registry": "../../registry.json",
+      "type": "registry:ui",
+      "files": [
+        {
+          "target": "src/ui/nd-badge/nd-badge.css",
+          "sha256": "480c89e4abb4f0f66ddcc04593deb7d180097cc4993d576b0e519af2a1655a00"
+        }
+      ],
+      "installedAt": "2026-11-09T18:26:42.394Z"
+    },
+    "card": {
+      "registry": "../../registry.json",
+      "type": "registry:ui",
+      "files": [
+        {
+          "target": "src/ui/nd-card/nd-card.css",
+          "sha256": "26831c151de8979898a434e3f11ed82e97fca2b1e3e7fff95aa06865c2c55bc8"
+        }
+      ],
+      "installedAt": "2026-11-09T18:26:42.394Z"
+    },
+    "separator": {
+      "registry": "../../registry.json",
+      "type": "registry:ui",
+      "files": [
+        {
+          "target": "src/ui/nd-separator/nd-separator.css",
+          "sha256": "c07ba5f164c07879bd2a045dbd7136064929618bca212318934e6e416221e629"
+        }
+      ],
+      "installedAt": "2026-11-09T18:26:42.394Z"
+    },
+    "skeleton": {
+      "registry": "../../registry.json",
+      "type": "registry:ui",
+      "files": [
+        {
+          "target": "src/ui/nd-skeleton/nd-skeleton.css",
+          "sha256": "e93955bb107ca473089feceb17ad03302a72dfbe8cc39dfa1392c8c368a2fd7c"
+        }
+      ],
+      "installedAt": "2026-11-09T18:26:42.394Z"
+    },
+    "spinner": {
+      "registry": "../../registry.json",
+      "type": "registry:ui",
+      "files": [
+        {
+          "target": "src/ui/nd-spinner/nd-spinner.css",
+          "sha256": "da335399cf2f22cc1ec436cf24fe52f4e3dfd38c161a3e5d3cfdc46f3c6c2904"
+        }
+      ],
+      "installedAt": "2026-11-09T18:26:42.394Z"
     }
   }
 }

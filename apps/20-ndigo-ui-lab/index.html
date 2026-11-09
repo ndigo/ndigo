@@ -28,6 +28,12 @@
         <link rel="stylesheet" href="/src/ui/nd-tags-input/nd-tags-input.css" />
         <link rel="stylesheet" href="/src/ui/nd-file-upload/nd-file-upload.css" />
         <link rel="stylesheet" href="/src/ui/nd-table/nd-table.css" />
+        <link rel="stylesheet" href="/src/ui/nd-alert/nd-alert.css" />
+        <link rel="stylesheet" href="/src/ui/nd-badge/nd-badge.css" />
+        <link rel="stylesheet" href="/src/ui/nd-card/nd-card.css" />
+        <link rel="stylesheet" href="/src/ui/nd-separator/nd-separator.css" />
+        <link rel="stylesheet" href="/src/ui/nd-skeleton/nd-skeleton.css" />
+        <link rel="stylesheet" href="/src/ui/nd-spinner/nd-spinner.css" />
         <link rel="stylesheet" href="/src/components/data-table/data-table.css" />
         <link rel="stylesheet" href="/src/ui/nd-dialog/nd-dialog.css" />
         <link rel="stylesheet" href="/src/ui/nd-drawer/nd-drawer.css" />
@@ -56,6 +62,7 @@
                     <a href="#tags">Tags</a>
                     <a href="#files">Files</a>
                     <a href="#table">Table</a>
+                    <a href="#surfaces">Surfaces</a>
                     <a href="#data-table">Data</a>
                     <a href="#dialog">Dialog</a>
                     <a href="#command">Command</a>
@@ -84,6 +91,7 @@
                         <a href="#tags">Tags</a>
                         <a href="#files">Files</a>
                         <a href="#table">Table</a>
+                        <a href="#surfaces">Surfaces</a>
                         <a href="#data-table">Data</a>
                         <a href="#dialog">Dialog</a>
                         <a href="#command">Command</a>
@@ -414,6 +422,69 @@
                                 </tfoot>
                             </table>
                         </div>
+                    </section>
+
+                    <section id="surfaces" class="lab-section" aria-labelledby="surfaces-heading">
+                        <h2 id="surfaces-heading">Surfaces and feedback</h2>
+                        <p>Alert, badge, card, separator, skeleton, and spinner — all markup and CSS.</p>
+                        <div class="lab-stack">
+                            <div class="nd-alert" data-variant="success" role="status">
+                                <span class="nd-alert__icon" aria-hidden="true">✓</span>
+                                <div class="nd-alert__content">
+                                    <p class="nd-alert__title">Saved</p>
+                                    <p class="nd-alert__description">The invoice was updated.</p>
+                                </div>
+                            </div>
+                            <div class="nd-alert" data-variant="warning" role="status">
+                                <span class="nd-alert__icon" aria-hidden="true">!</span>
+                                <div class="nd-alert__content">
+                                    <p class="nd-alert__title">Check the address</p>
+                                    <p class="nd-alert__description">The postal code is missing.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="lab-row">
+                            <span class="nd-badge">Draft</span>
+                            <span class="nd-badge" data-variant="accent">New</span>
+                            <span class="nd-badge" data-variant="success">Paid</span>
+                            <span class="nd-badge" data-variant="warning">Pending</span>
+                            <span class="nd-badge" data-variant="danger">Overdue</span>
+                        </div>
+
+                        <article class="nd-card lab-card">
+                            <div class="nd-card__header">
+                                <h3 class="nd-card__title">Quarterly report</h3>
+                                <p class="nd-card__description">Revenue and retention for Q3.</p>
+                            </div>
+                            <div class="nd-card__content"><p>Open the dashboard for the full breakdown.</p></div>
+                            <div class="nd-card__footer">
+                                <button class="nd-button" data-variant="primary" type="button">Open</button>
+                            </div>
+                        </article>
+
+                        <div class="lab-row">
+                            <span>Left</span>
+                            <div
+                                class="nd-separator"
+                                data-orientation="vertical"
+                                role="separator"
+                                aria-orientation="vertical"
+                            ></div>
+                            <span>Right</span>
+                        </div>
+
+                        <div class="lab-stack" data-skeletons aria-hidden="true">
+                            <span class="nd-skeleton" data-shape="text" style="inline-size: 60%"></span>
+                            <span class="nd-skeleton" data-shape="text" style="inline-size: 40%"></span>
+                            <span class="nd-skeleton" data-shape="circle"></span>
+                            <span class="nd-skeleton" data-shape="rect"></span>
+                        </div>
+
+                        <p class="lab-row" role="status">
+                            <span class="nd-spinner" data-size="sm" aria-hidden="true"></span>
+                            Loading invoices…
+                        </p>
                     </section>
 
                     <section id="data-table" class="lab-section" aria-labelledby="data-table-heading">

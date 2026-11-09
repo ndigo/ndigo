@@ -6,7 +6,7 @@ import { ApplicationBuilder } from '@ndigo/boot';
 import { NodeAutoConfiguration, HTTP_SERVER, gracefulShutdown } from '@ndigo/platform-node';
 import { getLogger } from '@ndigo/log';
 import { getErrorMessage } from '@ndigo/util';
-import { IslandConfiguration, applyDemoSecurityHeaders } from './island-configuration';
+import { IslandConfiguration } from './island-configuration';
 import { MESSAGE_SOURCE, MODEL_STORE } from './context-tokens';
 
 // The managed server reads its port from process.env.PORT, so surface the
@@ -20,11 +20,6 @@ async function main() {
     // run() refreshes the context — the handler mapping + dispatcher
     // auto-initialize on refresh.
     const context = await new ApplicationBuilder([NodeAutoConfiguration, IslandConfiguration]).run();
-
-    // SEC-C: widen the demo's CSP `connect-src` for the Web Awesome clear-icon
-    // fetch (see `applyDemoSecurityHeaders`). Runs on the refreshed context,
-    // before the server accepts requests.
-    applyDemoSecurityHeaders(context);
 
     // The application message source (i18next resources) backs the shell's
     // locale helpers; negotiated per request via the Accept-Language header.

@@ -1,0 +1,19 @@
+/* nd-aspect — fixed-ratio media frame built on the design tokens. */
+
+.nd-aspect {
+    position: relative;
+    display: grid;
+    place-items: center;
+    aspect-ratio: var(--nd-aspect-ratio, 16 / 9);
+    overflow: hidden;
+    background: var(--nd-color-surface-raised);
+    border-radius: var(--nd-radius-md);
+}
+
+.nd-aspect > :is(img, video, iframe) {
+    position: absolute;
+    inset: 0;
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+}

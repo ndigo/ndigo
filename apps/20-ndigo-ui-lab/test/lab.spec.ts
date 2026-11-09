@@ -84,7 +84,9 @@ afterEach(() => {
 describe('ndigo-ui lab', () => {
     it('renders the shell landmarks', () => {
         expect(document.querySelectorAll('main')).toHaveLength(1);
-        expect(document.querySelectorAll('nav[aria-label]')).toHaveLength(2);
+        expect(
+            document.querySelectorAll('.nd-app-shell__banner nav[aria-label], .nd-app-shell__sidebar nav[aria-label]')
+        ).toHaveLength(2);
         expect(document.querySelector('.nd-skip-link')?.getAttribute('href')).toBe('#nd-main');
         expect(document.querySelector('h1')?.textContent).toBe('Ndigo UI lab');
     });
@@ -114,6 +116,20 @@ describe('ndigo-ui lab', () => {
         await flush();
         expect(combobox.dataset.value).toBe('cherry');
         expect(input.value).toBe('Cherry');
+    });
+
+    it('renders the pagination tier', () => {
+        const nav = get<HTMLElement>(document, 'nav.nd-pagination');
+        expect(nav.getAttribute('aria-label')).toBe('Pagination');
+        expect(nav.querySelectorAll('[aria-current="page"]')).toHaveLength(1);
+        expect(nav.querySelector('[aria-current="page"]')?.textContent).toBe('2');
+
+        const previous = get<HTMLElement>(nav, '[data-direction="previous"]');
+        expect(previous.getAttribute('aria-disabled')).toBe('true');
+        expect(previous.hasAttribute('href')).toBe(false);
+
+        expect(get<HTMLElement>(nav, '.nd-pagination__ellipsis').getAttribute('aria-hidden')).toBe('true');
+        expect(nav.querySelectorAll('a.nd-pagination__link:not([data-direction])').length).toBe(3);
     });
 
     it('renders the date picker tier', async () => {

@@ -318,6 +318,17 @@
         }
       ],
       "installedAt": "2026-11-09T16:45:59.921Z"
+    },
+    "pagination": {
+      "registry": "../../registry.json",
+      "type": "registry:ui",
+      "files": [
+        {
+          "target": "src/ui/nd-pagination/nd-pagination.css",
+          "sha256": "e14a94e2479d6421ece109e89c568d459f91f804c0f5140afb1f3da12872db7b"
+        }
+      ],
+      "installedAt": "2026-11-09T16:51:40.042Z"
     }
   }
 }

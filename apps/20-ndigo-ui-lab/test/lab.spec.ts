@@ -18,6 +18,7 @@ import '../src/ui/nd-date-picker/nd-date-picker';
 import '../src/ui/nd-scroll-area/nd-scroll-area';
 import '../src/ui/nd-navigation-menu/nd-navigation-menu';
 import '../src/ui/nd-tags-input/nd-tags-input';
+import '../src/ui/nd-file-upload/nd-file-upload';
 import '../src/ui/nd-select/nd-select';
 import '../src/ui/nd-slider/nd-slider';
 import '../src/ui/nd-switch/nd-switch';
@@ -151,6 +152,24 @@ describe('ndigo-ui lab', () => {
         expect(content.hidden).toBe(true);
         expect(picker.dataset.value).toBe('2026-12-25');
         expect(get<HTMLInputElement>(picker, '[data-part="hidden-input"]').value).toBe('2026-12-25');
+    });
+
+    it('renders the file upload tier', async () => {
+        const upload = get<HTMLElement>(document, 'nd-file-upload');
+        const input = get<HTMLInputElement>(upload, '[data-part="hidden-input"]');
+        Object.defineProperty(input, 'files', {
+            value: [new File(['brief'], 'brief.pdf', { type: 'application/pdf' })],
+            configurable: true,
+        });
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        await flush();
+
+        expect(get<HTMLElement>(upload, '[data-part="item-name"]').textContent).toBe('brief.pdf');
+        expect(upload.dataset.count).toBe('1');
+
+        get<HTMLElement>(upload, '[data-part="clear-trigger"]').click();
+        await flush();
+        expect(upload.querySelector('[data-part="item"]')).toBeNull();
     });
 
     it('renders the tags input tier', async () => {

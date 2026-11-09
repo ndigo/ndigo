@@ -15,6 +15,7 @@ import './ui/nd-slider/nd-slider';
 import './ui/nd-switch/nd-switch';
 import './ui/nd-select/nd-select';
 import './ui/nd-combobox/nd-combobox';
+import './ui/nd-date-picker/nd-date-picker';
 import { initCommandPalette } from './components/command/command';
 import { TOKENS } from '@ndigo/ui';
 
@@ -36,4 +37,13 @@ const commandStatus = document.querySelector('#command-status');
 command?.root.addEventListener('nd-command', (event) => {
     const detail = (event as CustomEvent<{ label: string }>).detail;
     if (commandStatus !== null) commandStatus.textContent = `Selected: ${detail.label}`;
+});
+
+const datePicker = document.querySelector('nd-date-picker');
+const dateStatus = document.querySelector('#date-status');
+datePicker?.addEventListener('nd-value-change', (event) => {
+    const detail = (event as CustomEvent<{ valueAsString: string[] }>).detail;
+    if (dateStatus !== null) {
+        dateStatus.textContent = detail.valueAsString[0] ? `Selected: ${detail.valueAsString[0]}` : 'No date selected';
+    }
 });

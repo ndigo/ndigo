@@ -39,6 +39,10 @@ const ITEMS: readonly ItemBudget[] = [
         files: ['registry/ui/button/nd-button.css'],
     },
     {
+        meta: 'registry/ui/date-picker/meta.json',
+        files: ['registry/ui/date-picker/nd-date-picker.ts', 'registry/ui/date-picker/nd-date-picker.css'],
+    },
+    {
         meta: 'registry/ui/drawer/meta.json',
         files: ['registry/ui/drawer/nd-drawer.ts', 'registry/ui/drawer/nd-drawer.css'],
     },

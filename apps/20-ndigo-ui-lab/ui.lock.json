@@ -14,7 +14,7 @@
           "sha256": "6a298af62b01122adea3a480b6c04c2711035b5bd558c8187ee2e51572beb1d3"
         }
       ],
-      "installedAt": "2026-11-09T16:22:34.305Z"
+      "installedAt": "2026-11-09T16:38:04.721Z"
     },
     "dialog": {
       "registry": "../../registry.json",
@@ -288,6 +288,21 @@
         }
       ],
       "installedAt": "2026-11-09T16:22:34.305Z"
+    },
+    "date-picker": {
+      "registry": "../../registry.json",
+      "type": "registry:ui",
+      "files": [
+        {
+          "target": "src/ui/nd-date-picker/nd-date-picker.css",
+          "sha256": "1c1e97c67d31da55925dc9dd0ec646c72829ea01d2fc7ad7f274a24455025a1e"
+        },
+        {
+          "target": "src/ui/nd-date-picker/nd-date-picker.ts",
+          "sha256": "a0e0ebc913b4f4de73e737ee7e85c7f3b5644fb2d4afd6f83ff80c31777e3827"
+        }
+      ],
+      "installedAt": "2026-11-09T16:38:04.721Z"
     }
   }
 }

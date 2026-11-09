@@ -1,10 +1,12 @@
 /**
  * Dependency pin guard for the Zag.js spike.
  */
+import { parseDate } from '@internationalized/date';
 import { ListCollection } from '@zag-js/collection';
 import { INIT_STATE } from '@zag-js/core';
 import { machine as accordionMachine } from '@zag-js/accordion';
 import { machine as comboboxMachine } from '@zag-js/combobox';
+import { machine as datePickerMachine } from '@zag-js/date-picker';
 import { machine as popoverMachine } from '@zag-js/popover';
 import { machine as selectMachine } from '@zag-js/select';
 import { machine as dialogMachine } from '@zag-js/dialog';
@@ -28,6 +30,8 @@ describe('Zag.js 1.x pin', () => {
         expect(typeof sliderMachine.initialState).toBe('function');
         expect(typeof selectMachine.initialState).toBe('function');
         expect(typeof comboboxMachine.initialState).toBe('function');
+        expect(typeof datePickerMachine.initialState).toBe('function');
+        expect(parseDate('2026-11-09').toString()).toBe('2026-11-09');
         expect(new ListCollection({ items: ['a'] }).items).toEqual(['a']);
         expect(typeof INIT_STATE).toBe('string');
     });

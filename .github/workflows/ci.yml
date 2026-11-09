@@ -5,8 +5,13 @@ on:
   # validated, so the post-merge push run was a near-duplicate — dropping it
   # halves the private-repo Actions burn of the normal PR flow. The weekly
   # main sweep plus manual dispatch keep the safety net (MIN-1, 2026-10-31).
+  #
+  # Draft PRs are skipped: work-in-progress pushes are the single largest source
+  # of wasted minutes (issue #276). `ready_for_review` runs the lane the moment
+  # the PR is promoted, so nothing merges unproven.
   pull_request:
     branches: [master, main]
+    types: [opened, synchronize, reopened, ready_for_review]
     # Docs-only PRs take the light `docs.yml` lane (format + links); the full
     # lane runs only when at least one non-doc file changed.
     paths-ignore:
@@ -28,7 +33,7 @@ env:
   CI: true
   # Nx Cloud is parked until its credit allowance restores (issue #206): no
   # remote cache and no self-healing calls. The quality and e2e jobs persist
-  # `.nx/cache` through GitHub Actions instead, which costs no Nx credits.
+  # `.nx` through GitHub Actions instead, which costs no Nx credits.
   # Re-enable by restoring `nxCloudId` in nx.json and the
   # NX_CLOUD_ACCESS_TOKEN secret — leave self-healing (`nx fix-ci`) off unless
   # the workspace plan has room for it.
@@ -38,13 +43,20 @@ env:
 
 jobs:
   quality:
-    runs-on: ubuntu-latest
+    # Self-hosted runner when the repository variable is set (issue #276):
+    # zero billed minutes and the Nx cache persists on disk between runs.
+    # Unset the variable to fall back to GitHub-hosted immediately.
+    #   gh variable set CI_RUNNER --body '["self-hosted","linux","x64"]'
+    runs-on: ${{ fromJSON(vars.CI_RUNNER || '["ubuntu-latest"]') }}
     timeout-minutes: 35
-    # Parked PRs (Dependabot by default — see .github/dependabot.yml) skip the
-    # whole lane, so rebase pushes cost no runner minutes. Un-park by removing
-    # the label and pushing: a rebase push is a `synchronize` event, which
-    # runs CI on the fresh base. Schedule and manual dispatch are never gated.
-    if: ${{ github.event_name != 'pull_request' || !contains(github.event.pull_request.labels.*.name, 'parked') }}
+    outputs:
+      e2e: ${{ steps.e2e-scope.outputs.value }}
+    # Parked PRs (Dependabot by default — see .github/dependabot.yml) and drafts
+    # skip the whole lane, so rebase/WIP pushes cost no runner minutes.
+    # Un-park by removing the label and pushing, or mark ready for review: both
+    # are `synchronize`/`ready_for_review` events that run CI on the fresh base.
+    # Schedule and manual dispatch are never gated.
+    if: ${{ github.event_name != 'pull_request' || (!github.event.pull_request.draft && !contains(github.event.pull_request.labels.*.name, 'parked')) }}
     # Live Redis suites (@ndigo/redis cache + pub/sub) are env-gated and would
     # otherwise never run in CI (review DAT-F14); the URL is exported on the
     # test step below.
@@ -64,6 +76,36 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           persist-credentials: false
+          # `nx affected` diffs against the PR base, so the base commit has to
+          # be in the graph. The repository is small; a full clone costs a few
+          # seconds and buys minutes back from unaffected test projects.
+          fetch-depth: 0
+
+      - name: Detect e2e scope
+        # Browser E2E only pays for itself when browser-facing code moved; the
+        # weekly sweep still exercises it against the whole tree (issue #276).
+        id: e2e-scope
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ "${{ github.event_name }}" != "pull_request" ]; then
+            echo "value=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          changed="$(gh api --paginate "repos/${GITHUB_REPOSITORY}/compare/${{ github.event.pull_request.base.sha }}...${{ github.sha }}" --jq '.files[].filename')"
+          changed_count="$(printf '%s\n' "$changed" | grep -c . || true)"
+          # The compare API truncates at 300 files; a PR that large cannot prove
+          # which paths are absent, so treat it as browser-facing.
+          if [ "$changed_count" -ge 300 ]; then
+            echo "value=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if printf '%s\n' "$changed" | grep -qE '^(apps/|packages/ndigo-(dom|http|ui|signals|boot|view[^/]*)/|pnpm-lock\.yaml$|nx\.json$|tsconfig)'; then
+            echo "value=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "no browser-facing paths changed — e2e skipped"
+            echo "value=false" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Setup pnpm
         uses: pnpm/action-setup@fe02b34f77f8bc703788d5817da081398fad5dd2 # v4.0.0
@@ -75,12 +117,23 @@ jobs:
           cache: pnpm
 
       - name: Restore Nx cache
-        # Local Nx cache persisted across runs instead of the Nx Cloud remote
-        # cache (issue #206). The key rolls with the lockfile and Nx/TS config;
-        # restore-keys reuse the newest compatible tree.
-        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        # Nx 24 resolves its task cache to `~/.nx/<workspace-id>/cache`, not
+        # `.nx/cache`. Caching the old path was a permanent miss — the action
+        # logged "Cache not found" and never saved, so every run rebuilt all 43
+        # libraries and re-ran all 69 test projects from cold (issue #276).
+        # Cache the whole per-user root: Nx keeps the cache and its SQLite
+        # index together and reads a torn pair as a local hit with nothing to
+        # restore.
+        #
+        # Restore on every run; save only from a trusted full run (schedule,
+        # dispatch, main) so PR pushes do not upload a fresh multi-hundred-MB
+        # entry each time and evict the pnpm store. Hosted only: the
+        # self-hosted runner keeps `~/.nx` on disk between runs.
+        if: vars.CI_RUNNER == ''
+        id: nx-cache
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
-          path: .nx/cache
+          path: ~/.nx
           key: ${{ runner.os }}-nx-${{ hashFiles('pnpm-lock.yaml', 'nx.json', 'tsconfig.base.json', 'tsconfig.build.json') }}-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-nx-${{ hashFiles('pnpm-lock.yaml', 'nx.json', 'tsconfig.base.json', 'tsconfig.build.json') }}-
@@ -161,7 +214,16 @@ jobs:
         env:
           # Exercises the env-gated @ndigo/redis live suites (DAT-F14).
           NDIGO_REDIS_TEST_URL: redis://127.0.0.1:6379
-        run: pnpm test
+        # PRs run only the changed projects and their dependents; the weekly
+        # sweep and manual dispatch run the full set as the backstop (issue
+        # #276). `dependsOn: ^build:lib` still builds every transitive
+        # dependency, so a scoped run never tests against missing output.
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            pnpm exec nx affected -t test --base="${{ github.event.pull_request.base.sha }}"
+          else
+            pnpm test
+          fi
 
       - name: API docs (TypeDoc, zero warnings)
         # treatWarningsAsErrors is on: dead links, missing params, or
@@ -250,10 +312,28 @@ jobs:
         if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
         run: graft check
 
+      - name: Save Nx cache
+        # Paired with the restore above: only a trusted full run seeds the cache
+        # the rest of the week restores. `cache-primary-key` is the key the
+        # restore step resolved, so restore and save never disagree.
+        if: vars.CI_RUNNER == '' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/main')
+        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: ~/.nx
+          key: ${{ steps.nx-cache.outputs.cache-primary-key }}
+
   e2e:
-    runs-on: ubuntu-latest
+    # Hosted by default: the browser lane needs system packages installed as
+    # root (`playwright install --with-deps`), which a self-hosted runner
+    # cannot do without passwordless sudo. Opt in with
+    #   gh variable set CI_RUNNER_E2E --body '["self-hosted","linux","x64"]'
+    # after provisioning the deps (see ~/bin/ci-runner-install.sh).
+    runs-on: ${{ fromJSON(vars.CI_RUNNER_E2E || '["ubuntu-latest"]') }}
     timeout-minutes: 20
     needs: [quality]
+    # Skipped when no browser-facing path changed (issue #276); the weekly
+    # sweep always sets the output true, so the lane is still covered there.
+    if: needs.quality.outputs.e2e == 'true'
 
     steps:
       - name: Checkout
@@ -271,12 +351,12 @@ jobs:
           cache: pnpm
 
       - name: Restore Nx cache
-        # Local Nx cache persisted across runs instead of the Nx Cloud remote
-        # cache (issue #206). The key rolls with the lockfile and Nx/TS config;
-        # restore-keys reuse the newest compatible tree.
-        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        # Same per-user root as the quality job — see the note there. Hosted
+        # only; a self-hosted e2e runner keeps `~/.nx` on disk.
+        if: vars.CI_RUNNER_E2E == ''
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
-          path: .nx/cache
+          path: ~/.nx
           key: ${{ runner.os }}-nx-${{ hashFiles('pnpm-lock.yaml', 'nx.json', 'tsconfig.base.json', 'tsconfig.build.json') }}-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-nx-${{ hashFiles('pnpm-lock.yaml', 'nx.json', 'tsconfig.base.json', 'tsconfig.build.json') }}-
@@ -297,7 +377,10 @@ jobs:
         run: pnpm --filter @ndigo/todo-web build
 
       - name: Install Playwright browsers
-        run: pnpm --filter @ndigo/todo-web exec playwright install --with-deps chromium
+        # `--with-deps` shells out to apt and needs root: correct on the hosted
+        # image, wrong on a self-hosted runner (the install script provisions
+        # the browser dependencies once instead).
+        run: pnpm --filter @ndigo/todo-web exec playwright install ${{ vars.CI_RUNNER_E2E == '' && '--with-deps ' || '' }}chromium
 
       - name: E2E
         run: pnpm test:e2e

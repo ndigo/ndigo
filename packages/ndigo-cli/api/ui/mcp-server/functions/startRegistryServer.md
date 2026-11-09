@@ -22,3 +22,5 @@ Application directory, default registry, and mode.
 ## Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once the transport is connected.

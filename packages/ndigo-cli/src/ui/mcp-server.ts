@@ -40,6 +40,7 @@ export function createRegistryServer(options: RegistryServerOptions): McpServer 
  * Starts the server on stdin/stdout. Stdout is reserved for JSON-RPC, so all
  * diagnostics go to stderr.
  * @param options - Application directory, default registry, and mode.
+ * @returns A promise that resolves once the transport is connected.
  */
 export async function startRegistryServer(options: RegistryServerOptions): Promise<void> {
     const server = createRegistryServer(options);

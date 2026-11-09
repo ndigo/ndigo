@@ -1,0 +1,48 @@
+/* nd-skeleton — loading placeholder built on the design tokens.
+   The shimmer only runs when the visitor has not asked for reduced motion. */
+
+.nd-skeleton {
+    display: block;
+    min-block-size: 1em;
+    background: var(--nd-color-surface-raised);
+    border-radius: var(--nd-radius-sm);
+}
+
+.nd-skeleton[data-shape='text'] {
+    block-size: 0.85em;
+    border-radius: var(--nd-radius-full);
+}
+
+.nd-skeleton[data-shape='circle'] {
+    inline-size: 2.5rem;
+    block-size: 2.5rem;
+    border-radius: var(--nd-radius-full);
+}
+
+.nd-skeleton[data-shape='rect'] {
+    block-size: 6rem;
+    border-radius: var(--nd-radius-md);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .nd-skeleton {
+        background-image: linear-gradient(
+            90deg,
+            transparent 0%,
+            color-mix(in srgb, var(--nd-color-text) 8%, transparent) 50%,
+            transparent 100%
+        );
+        background-size: 200% 100%;
+        animation: nd-skeleton-shimmer 1.4s var(--nd-ease-standard) infinite;
+    }
+}
+
+@keyframes nd-skeleton-shimmer {
+    from {
+        background-position: 150% 0;
+    }
+
+    to {
+        background-position: -150% 0;
+    }
+}

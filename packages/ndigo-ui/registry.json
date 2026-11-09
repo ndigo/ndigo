@@ -607,6 +607,102 @@
         }
       ],
       "docs": "Copy the block and call `initDataTable(document)`; sorting, page-local selection, and pagination stay client-side."
+    },
+    {
+      "name": "alert",
+      "type": "registry:ui",
+      "title": "Alert",
+      "description": "Inline status message with info, success, warning, and danger variants.",
+      "author": "Ndigo <https://ndigo.dev>",
+      "categories": ["ui", "feedback"],
+      "files": [
+        {
+          "path": "registry/ui/alert/nd-alert.css",
+          "type": "registry:file",
+          "target": "@ui/nd-alert/nd-alert.css"
+        }
+      ],
+      "docs": "Use `.nd-alert` with `data-variant` and a `role=\"status\"` or `role=\"alert\"`; the icon and text carry the meaning."
+    },
+    {
+      "name": "badge",
+      "type": "registry:ui",
+      "title": "Badge",
+      "description": "Compact status label with neutral, accent, and semantic variants.",
+      "author": "Ndigo <https://ndigo.dev>",
+      "categories": ["ui", "feedback"],
+      "files": [
+        {
+          "path": "registry/ui/badge/nd-badge.css",
+          "type": "registry:file",
+          "target": "@ui/nd-badge/nd-badge.css"
+        }
+      ],
+      "docs": "Apply `.nd-badge` and `data-variant` to a short text element; do not use color alone to convey state."
+    },
+    {
+      "name": "card",
+      "type": "registry:ui",
+      "title": "Card",
+      "description": "Content surface with media, header, content, and footer parts.",
+      "author": "Ndigo <https://ndigo.dev>",
+      "categories": ["ui", "layout"],
+      "files": [
+        {
+          "path": "registry/ui/card/nd-card.css",
+          "type": "registry:file",
+          "target": "@ui/nd-card/nd-card.css"
+        }
+      ],
+      "docs": "Compose `.nd-card` with optional `.nd-card__media`/`__header`/`__content`/`__footer`; keep a real link or button inside."
+    },
+    {
+      "name": "separator",
+      "type": "registry:ui",
+      "title": "Separator",
+      "description": "Horizontal or vertical rule for grouping content.",
+      "author": "Ndigo <https://ndigo.dev>",
+      "categories": ["ui", "layout"],
+      "files": [
+        {
+          "path": "registry/ui/separator/nd-separator.css",
+          "type": "registry:file",
+          "target": "@ui/nd-separator/nd-separator.css"
+        }
+      ],
+      "docs": "Use `<hr class=\"nd-separator\">` for thematic breaks; for vertical rules add `data-orientation=\"vertical\"` and `role=\"separator\"`."
+    },
+    {
+      "name": "skeleton",
+      "type": "registry:ui",
+      "title": "Skeleton",
+      "description": "Loading placeholder shapes with a reduced-motion-safe shimmer.",
+      "author": "Ndigo <https://ndigo.dev>",
+      "categories": ["ui", "feedback"],
+      "files": [
+        {
+          "path": "registry/ui/skeleton/nd-skeleton.css",
+          "type": "registry:file",
+          "target": "@ui/nd-skeleton/nd-skeleton.css"
+        }
+      ],
+      "docs": "Wrap `.nd-skeleton` shapes in `aria-hidden=\"true\"` and announce loading separately."
+    },
+    {
+      "name": "spinner",
+      "type": "registry:ui",
+      "title": "Spinner",
+      "description": "Rotating loading indicator with sizes and reduced-motion handling.",
+      "author": "Ndigo <https://ndigo.dev>",
+      "categories": ["ui", "feedback"],
+      "files": [
+        {
+          "path": "registry/ui/spinner/nd-spinner.css",
+          "type": "registry:file",
+          "target": "@ui/nd-spinner/nd-spinner.css"
+        }
+      ],
+      "docs": "Give `.nd-spinner` `role=\"status\"` and an accessible name; pair it with visible loading text for longer waits."
     }
   ]
 }

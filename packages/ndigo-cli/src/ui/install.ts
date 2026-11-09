@@ -3,6 +3,7 @@
  * mapping, conflict checks, `ui.lock.json`, and npm dependency installation.
  */
 import { spawn } from 'node:child_process';
+import type { ChildProcess } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, isAbsolute, join, normalize, relative } from 'node:path';
@@ -67,6 +68,11 @@ export interface InstallOptions {
     readonly overwrite?: boolean;
     /** Install npm dependencies (default true). */
     readonly install?: boolean;
+    /**
+     * Where the package manager's stdout/stderr go (default `inherit`).
+     * MCP servers must use `stderr`: stdout carries the JSON-RPC protocol.
+     */
+    readonly dependencyStdio?: 'inherit' | 'stderr';
 }
 
 /**
@@ -162,7 +168,7 @@ export async function planInstall(
  * @returns The written/unchanged files and dependencies.
  */
 export async function applyInstall(plan: InstallPlan, options: InstallOptions): Promise<InstallResult> {
-    const { dir, dryRun = false, overwrite = false, install = true } = options;
+    const { dir, dryRun = false, overwrite = false, install = true, dependencyStdio = 'inherit' } = options;
     const written: string[] = [];
     const unchanged: string[] = [];
 
@@ -185,7 +191,7 @@ export async function applyInstall(plan: InstallPlan, options: InstallOptions): 
 
     if (!dryRun) {
         writeLockFile(dir, plan);
-        if (install && plan.dependencies.length > 0) await installDependencies(dir, plan.dependencies);
+        if (install && plan.dependencies.length > 0) await installDependencies(dir, plan.dependencies, dependencyStdio);
     }
 
     return { written, unchanged, dependencies: plan.dependencies, lockPath: join(dir, UI_LOCK_FILE) };
@@ -240,11 +246,19 @@ function readLockFile(path: string): UiLockFile {
     }
 }
 
-async function installDependencies(dir: string, dependencies: readonly string[]): Promise<void> {
+async function installDependencies(
+    dir: string,
+    dependencies: readonly string[],
+    dependencyStdio: 'inherit' | 'stderr'
+): Promise<void> {
     const manager = detectPackageManager(dir);
     const args = manager === 'npm' ? ['install', ...dependencies] : ['add', ...dependencies];
+    // fd 2 is the parent's stderr: an MCP server's stdout is the protocol channel.
+    const child: ChildProcess =
+        dependencyStdio === 'stderr'
+            ? spawn(manager, args, { cwd: dir, stdio: ['ignore', 2, 2] })
+            : spawn(manager, args, { cwd: dir, stdio: 'inherit' });
     await new Promise<void>((resolvePromise, rejectPromise) => {
-        const child = spawn(manager, args, { cwd: dir, stdio: 'inherit' });
         child.once('error', (error) => {
             rejectPromise(usageError(`cannot run ${manager}: ${error.message}`));
         });

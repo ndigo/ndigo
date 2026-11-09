@@ -295,6 +295,11 @@ async function renderPackage(dir) {
     if (unbuilt !== null) return { failed: true, coverage: 0, lines: [unbuilt] };
     let tmp;
     try {
+        // The prune contract belongs to doc:api, not to a TypeDoc default: a
+        // module deleted from src must not leave a zombie page behind if a
+        // render fails before TypeDoc's cleanOutputDir clears the tree.
+        // Removing it up front keeps the doc:check freshness diff honest.
+        rmSync(join(pkgDir, 'api'), { recursive: true, force: true });
         tmp = mkdtempSync(join(tmpdir(), 'ndigo-doc-'));
         const configPath = join(tmp, 'typedoc.json');
         const jsonPath = join(tmp, 'symbols.json');

@@ -606,6 +606,7 @@ Standardized all UPPER_SNAKE_CASE RegExp constants to camelCase with Rule suffix
 
 ## Draft Plans
 
+- [2026-11-09_LLM_AGENT_INTEGRATION.md](2026-11-09_LLM_AGENT_INTEGRATION.md) - Agent and LLM integration: `--json` CLI contract, agent content and `ndigo ai:*`, extracted MCP host and `ndigo mcp`, `@ndigo/mcp` tool projection, A2UI/MCP Apps/WebMCP, `@ndigo/ai` (phases P0–P5; P2 first).
 - [2026-11-08_NDIGO_UI.md](2026-11-08_NDIGO_UI.md) - Ndigo UI: owned design system, shadcn-compatible copy-in registry, Zag.js behaviour, phased plan (0–4).
 - [2026-11-06_CLI_INFRASTRUCTURE_REMAINING.md](2026-11-06_CLI_INFRASTRUCTURE_REMAINING.md) - Reconciled `ndigo-cli` infrastructure work plan: what landed through the expansion wave + 2026-11-06 review remediation (#145–#153), and the genuinely open items — the remote version manifest, `--with-db`, the `full-stack` preset, the openapi runner, `logs --since`.
 

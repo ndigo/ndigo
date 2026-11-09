@@ -129,5 +129,5 @@ exported for tools that need the pieces separately.
 - Package: `@ndigo/platform-node` README — `StaticController`,
   `StaticFileView`, `StaticResourceHandler`, `StaticResourceResolver`.
 - Guides: [01 — Building a Node API](01-building-a-node-api.md) (the server
-  that mounts it), [08 — Multipart & File Upload](14-multipart-and-file-upload.md)
+  that mounts it), [14 — Multipart & File Upload](14-multipart-and-file-upload.md)
   (the upload counterpart).

@@ -143,7 +143,13 @@ the app's `test` script (`vite build && vitest run`).
 
 - [01 — Building a Node API](01-building-a-node-api.md) — the server twin
   of this guide, including the deployment topology notes.
-- [29 — Application Conventions](91-application-conventions.md) — file
-  layout and naming for the `apps/NN-ndigo-<slug>` ladder.
-- [`@ndigo/platform-web`](../../packages/ndigo-platform-web/README.md) —
-  the full browser platform surface.
+- [27 — Browser Authentication & OIDC](27-browser-authentication-and-oidc.md) —
+  client auth and the OIDC flow.
+- [29 — Signals & Islands](29-signals-and-islands.md) — reactive state and
+  island hydration.
+- [31 — Micro Frontends with `@ndigo/host`](31-micro-frontends.md) — composing
+  feature contexts.
+- [91 — Application Conventions](91-application-conventions.md) — file layout
+  and naming for the `apps/NN-ndigo-<slug>` ladder.
+- [`@ndigo/platform-web`](../../packages/ndigo-platform-web/README.md) — the full
+  browser platform surface.

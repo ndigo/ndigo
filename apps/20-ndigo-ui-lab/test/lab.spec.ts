@@ -68,6 +68,13 @@ describe('ndigo-ui lab', () => {
         expect(document.querySelector('h1')?.textContent).toBe('Ndigo UI lab');
     });
 
+    it('renders the native form tier', () => {
+        expect(document.querySelectorAll('label.nd-label[for]')).toHaveLength(3);
+        expect(document.querySelector('#lab-email')?.getAttribute('aria-invalid')).toBe('true');
+        expect(document.querySelectorAll('.nd-checkbox, .nd-radio')).toHaveLength(3);
+        expect(document.querySelector('#lab-name')?.getAttribute('aria-describedby')).toBe('lab-name-help');
+    });
+
     it('opens and closes the dialog', async () => {
         const dialog = get<HTMLElement>(document, 'nd-dialog');
         const trigger = get<HTMLElement>(dialog, '[data-part="trigger"]');

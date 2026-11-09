@@ -111,6 +111,57 @@ describe('<nd-dialog>', () => {
         expect(content.hasAttribute('hidden')).toBe(true);
     });
 
+    it('opens and closes programmatically', async () => {
+        const dialog = mountElement<NdDialog>('nd-dialog', MARKUP);
+        await flush();
+        const content = getPart<HTMLElement>(dialog, '[data-part="content"]');
+
+        dialog.show();
+        await flush();
+        expect(content.hasAttribute('hidden')).toBe(false);
+
+        dialog.hide();
+        await flush();
+        expect(content.hasAttribute('hidden')).toBe(true);
+    });
+
+    it('focuses the initial-focus selector on open', async () => {
+        const dialog = mountElement<NdDialog>(
+            'nd-dialog',
+            `<button data-part="trigger">Open</button>
+             <div data-part="content">
+                 <h2 data-part="title">Rename</h2>
+                 <input id="nd-focus-target" />
+             </div>`,
+            { 'initial-focus': '#nd-focus-target' }
+        );
+        await flush();
+        const trigger = getPart<HTMLElement>(dialog, '[data-part="trigger"]');
+        const input = getPart<HTMLInputElement>(dialog, '#nd-focus-target');
+
+        trigger.click();
+        await flush();
+
+        expect(document.activeElement).toBe(input);
+    });
+
+    it('ignores nested component parts when building its structure', async () => {
+        const dialog = mountElement<NdDialog>(
+            'nd-dialog',
+            `<button data-part="trigger">Open</button>
+             <div data-part="content">
+                 <h2 data-part="title">Nested</h2>
+                 <div data-part="positioner"><div data-part="content">Nested widget</div></div>
+             </div>`
+        );
+        await flush();
+
+        const positioner = dialog.querySelector<HTMLElement>('[data-part="positioner"]');
+        expect(positioner?.parentElement).toBe(dialog);
+        expect(positioner?.querySelector('[data-part="title"]')?.textContent).toBe('Nested');
+        expect(dialog.querySelectorAll('[data-part="positioner"]')).toHaveLength(2);
+    });
+
     it('builds the wrappers when only body markup is provided', async () => {
         const dialog = mountElement<NdDialog>(
             'nd-dialog',

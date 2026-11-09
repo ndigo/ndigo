@@ -15,6 +15,7 @@ import './ui/nd-slider/nd-slider';
 import './ui/nd-switch/nd-switch';
 import './ui/nd-select/nd-select';
 import './ui/nd-combobox/nd-combobox';
+import { initCommandPalette } from './components/command/command';
 import { TOKENS } from '@ndigo/ui';
 
 const tokenCount = document.querySelector('#token-count');
@@ -29,3 +30,10 @@ menu?.addEventListener('nd-select', (event) => {
 
 const toast = document.querySelector<NdToast>('nd-toast');
 document.querySelector('#toast-trigger')?.addEventListener('click', () => toast?.show());
+
+const command = initCommandPalette(document);
+const commandStatus = document.querySelector('#command-status');
+command?.root.addEventListener('nd-command', (event) => {
+    const detail = (event as CustomEvent<{ label: string }>).detail;
+    if (commandStatus !== null) commandStatus.textContent = `Selected: ${detail.label}`;
+});

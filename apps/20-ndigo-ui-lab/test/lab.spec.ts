@@ -20,6 +20,7 @@ import '../src/ui/nd-switch/nd-switch';
 import '../src/ui/nd-tabs/nd-tabs';
 import '../src/ui/nd-toast/nd-toast';
 import '../src/ui/nd-tooltip/nd-tooltip';
+import { initCommandPalette } from '../src/components/command/command';
 import type { NdToast } from '../src/ui/nd-toast/nd-toast';
 import type { NdTooltip } from '../src/ui/nd-tooltip/nd-tooltip';
 
@@ -71,6 +72,7 @@ function press(target: EventTarget, key: string): void {
 beforeEach(() => {
     const match = bodyPattern.exec(HTML);
     document.body.innerHTML = match?.[1] ?? '';
+    initCommandPalette(document);
 });
 
 afterEach(() => {
@@ -157,6 +159,30 @@ describe('ndigo-ui lab', () => {
         itemTrigger.click();
         await flush();
         expect(itemTrigger.getAttribute('aria-expanded')).toBe('true');
+    });
+
+    it('opens the command palette with the shortcut', async () => {
+        const root = get<HTMLElement>(document, '[data-command]');
+        const dialog = get<HTMLElement>(root, 'nd-dialog');
+        const content = get<HTMLElement>(dialog, '[data-part="content"]');
+        const input = get<HTMLInputElement>(root, '[data-part="input"]');
+        const selected: string[] = [];
+        root.addEventListener('nd-command', (event) => {
+            selected.push((event as CustomEvent<{ value: string }>).detail.value);
+        });
+
+        document.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', ctrlKey: true, bubbles: true }));
+        await flush();
+        expect(content.hidden).toBe(false);
+
+        input.value = 'theme';
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        await flush();
+        get<HTMLElement>(root, '[data-part="item"][data-value="toggle-theme"]').click();
+        await flush();
+
+        expect(selected).toEqual(['toggle-theme']);
+        expect(content.hidden).toBe(true);
     });
 
     it('opens and closes the drawer', async () => {

@@ -180,6 +180,7 @@ guide 20.
 ## See also
 
 - AD-75: `docs/decisions/2026-10-07_AD75_FRAMEWORK_CLI.md`
+- [Guide 46 — Upgrading Ndigo](46-upgrading.md) — `update` and migration guides
 - The cluster guide (24) — what `serve --cluster` runs
 - The jobs (22) and locks (23) guides — the coordination the CLI fronts
 - `apps/05-ndigo-api/src/inspect.ts` — the inspect-entry template (AD-70)

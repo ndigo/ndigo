@@ -49,9 +49,9 @@ describe('ndigo-island hybrid demo', () => {
         expect(html).toContain('<li>✅ Server-rendered island</li>');
         expect(html).toContain('<li>⬜ Hydrated on the client</li>');
         expect(html).toContain('[hydrated on client] 2 item(s), filter: all');
-        // AD-71: the adopted library's form cannot server-render portably, so
-        // the derived fallback carries a skeleton the client render replaces.
-        expect(html).toContain('[first paint] The add-item form (Web Awesome) hydrates on the client.');
+        // The form cannot server-render portably, so the derived fallback
+        // carries a skeleton the client render replaces.
+        expect(html).toContain('[first paint] The add-item form (native controls) hydrates on the client.');
     });
 
     test('GET / renders the serialized model into data-ndigo-model', async () => {

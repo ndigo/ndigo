@@ -1,0 +1,10 @@
+{
+  "$schema": "https://ndigo.dev/schema/ndigo.ui.json",
+  "registry": "../../registry.json",
+  "aliases": {
+    "ui": "client/ui",
+    "lib": "client/lib",
+    "components": "client/components",
+    "hooks": "client/hooks"
+  }
+}

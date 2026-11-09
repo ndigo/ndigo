@@ -50,7 +50,7 @@ function renderTodoFallback(model: TodoModel): string {
         .map((item) => `<li>${item.done ? '✅' : '⬜'} ${escapeHtmlText(item.text)}</li>`)
         .join('');
     const hint = `[hydrated on client] ${model.items.length} item(s), filter: ${escapeHtmlText(model.filter)}`;
-    const formSkeleton = '[first paint] The add-item form (Web Awesome) hydrates on the client.';
+    const formSkeleton = '[first paint] The add-item form (native controls) hydrates on the client.';
     return `<ul>${items}</ul><p style="font-size:0.85rem;color:#666">${hint}</p><p style="color:#666">${formSkeleton}</p>`;
 }
 
@@ -174,11 +174,10 @@ export class IslandController {
     }
 
     /**
-     * Accepts the island's add-item form (AD-71 reference integration): the
-     * Web Awesome input is a form-associated custom element, so the browser
-     * submits ordinary `application/x-www-form-urlencoded` name/value pairs —
-     * bound and validated through the standard path (`dataBinderValue` +
-     * Zod, guides 06/07), with no component-specific handling.
+     * Accepts the island's add-item form: native inputs submit ordinary
+     * `application/x-www-form-urlencoded` name/value pairs — bound and
+     * validated through the standard path (`dataBinderValue` + Zod, guides
+     * 06/07), with no component-specific handling.
      *
      * The mutation goes through the model store, so every connected client
      * (including the submitting one) receives the update over SSE.

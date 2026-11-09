@@ -9,10 +9,13 @@ import type { Api as SliderApi } from '@zag-js/slider';
 import { normalizeProps, spreadProps } from '@zag-js/vanilla';
 import { defineElement, NdElement } from '@/lib/base-element';
 import { createZagElement } from '@/lib/zag-element';
+import { ensureRootElement } from '@/lib/structure-element';
 
 let nextId = 0;
 
 export class NdSlider extends NdElement {
+    static observedAttributes = ['disabled', 'readonly', 'name', 'value', 'min', 'max', 'step'];
+
     #machineId = '';
     #controller = createZagElement({
         machine: sliderMachine,
@@ -39,13 +42,28 @@ export class NdSlider extends NdElement {
     });
 
     protected onConnect(): void {
-        this.#machineId = this.id || `nd-slider-${++nextId}`;
-        this.#ensureRoot();
+        this.#machineId ||= this.id || `nd-slider-${++nextId}`;
+        ensureRootElement(this);
         this.#controller.start();
     }
 
     protected onDisconnect(): void {
         this.#controller.stop();
+    }
+
+    attributeChangedCallback(name: string, _previous: string | null, _value: string | null): void {
+        if (name === 'value') {
+            this.#controller.api?.setValue([this.#number('value', this.#number('min', 0))]);
+            return;
+        }
+        this.#controller.updateProps({
+            min: this.#number('min', 0),
+            max: this.#number('max', 100),
+            step: this.#number('step', 1),
+            disabled: this.hasAttribute('disabled'),
+            readOnly: this.hasAttribute('readonly'),
+            name: this.getAttribute('name') ?? undefined,
+        });
     }
 
     /** Sets the slider value. */
@@ -58,16 +76,6 @@ export class NdSlider extends NdElement {
         if (raw === null) return fallback;
         const value = Number(raw);
         return Number.isFinite(value) ? value : fallback;
-    }
-
-    #ensureRoot(): HTMLElement {
-        const existing = this.querySelector<HTMLElement>('[data-part="root"]');
-        if (existing) return existing;
-        const root = this.ownerDocument.createElement('div');
-        root.dataset.part = 'root';
-        root.append(...this.children);
-        this.append(root);
-        return root;
     }
 
     #render(api: SliderApi): void {

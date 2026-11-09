@@ -20,6 +20,8 @@ yarn-error.log
 # Hand-authored type declarations (not generated) — must not be ignored
 !packages/ndigo-util/src/_types/*.d.ts
 !packages/ndigo-util/src/_safe-regex.d.ts
+# Hand-authored Vite ambient types for the UI lab.
+!apps/20-ndigo-ui-lab/src/vite-env.d.ts
 # TypeScript development cache
 **/.tscache/
 # Note: .d.ts files in src/ are generated build artifacts (mirrors of .ts sources).

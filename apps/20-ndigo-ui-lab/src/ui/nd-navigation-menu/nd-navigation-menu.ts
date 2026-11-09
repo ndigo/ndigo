@@ -18,7 +18,16 @@ const DEFAULT_CLOSE_DELAY = 300;
 let nextId = 0;
 
 export class NdNavigationMenu extends NdElement {
-    static observedAttributes = ['orientation'];
+    static observedAttributes = [
+        'orientation',
+        'value',
+        'default-value',
+        'open-delay',
+        'close-delay',
+        'disable-click-trigger',
+        'disable-hover-trigger',
+        'disable-pointer-leave-close',
+    ];
 
     #machineId = '';
     #controller = createZagElement({
@@ -42,7 +51,7 @@ export class NdNavigationMenu extends NdElement {
     });
 
     protected onConnect(): void {
-        this.#machineId = this.id || `nd-navigation-menu-${++nextId}`;
+        this.#machineId ||= this.id || `nd-navigation-menu-${++nextId}`;
         this.#controller.start();
     }
 
@@ -50,8 +59,19 @@ export class NdNavigationMenu extends NdElement {
         this.#controller.stop();
     }
 
-    attributeChangedCallback(name: string, _previous: string | null, value: string | null): void {
-        if (name === 'orientation') this.#controller.updateProps({ orientation: this.#orientation() });
+    attributeChangedCallback(name: string, _previous: string | null, _value: string | null): void {
+        if (name === 'value' || name === 'default-value') {
+            this.#controller.api?.setValue(this.getAttribute('value') ?? this.getAttribute('default-value') ?? '');
+            return;
+        }
+        this.#controller.updateProps({
+            orientation: this.#orientation(),
+            openDelay: this.#numberAttribute('open-delay', DEFAULT_OPEN_DELAY),
+            closeDelay: this.#numberAttribute('close-delay', DEFAULT_CLOSE_DELAY),
+            disableClickTrigger: this.hasAttribute('disable-click-trigger'),
+            disableHoverTrigger: this.hasAttribute('disable-hover-trigger'),
+            disablePointerLeaveClose: this.hasAttribute('disable-pointer-leave-close'),
+        });
     }
 
     /** Opens the dropdown for one item value. */

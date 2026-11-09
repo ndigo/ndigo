@@ -10,6 +10,7 @@ import type { ScrollToDetails, ScrollToEdgeDetails } from '@zag-js/scroll-area';
 import { normalizeProps, spreadProps } from '@zag-js/vanilla';
 import { defineElement, NdElement } from '@/lib/base-element';
 import { createZagElement } from '@/lib/zag-element';
+import { ensureRootElement, ownPart } from '@/lib/structure-element';
 
 interface ScrollAreaAPI {
     getRootProps(): Record<string, unknown>;
@@ -34,7 +35,7 @@ export class NdScrollArea extends NdElement {
     });
 
     protected onConnect(): void {
-        this.#machineId = this.id || `nd-scroll-area-${++nextId}`;
+        this.#machineId ||= this.id || `nd-scroll-area-${++nextId}`;
         this.#ensureStructure();
         this.#controller.start();
     }
@@ -69,40 +70,36 @@ export class NdScrollArea extends NdElement {
     }
 
     #ensureStructure(): void {
-        let root = this.querySelector<HTMLElement>('[data-part="root"]');
-        if (!root) {
-            root = this.ownerDocument.createElement('div');
-            root.dataset.part = 'root';
-            root.append(...this.children);
-            this.append(root);
-        }
-
-        let viewport = root.querySelector<HTMLElement>('[data-part="viewport"]');
+        const root = ensureRootElement(this);
+        let viewport = ownPart<HTMLElement>(root, 'viewport');
         if (!viewport) {
             viewport = this.ownerDocument.createElement('div');
             viewport.dataset.part = 'viewport';
-            const movable = [...root.children].filter(
-                (child) => !(child instanceof HTMLElement && ['scrollbar', 'corner'].includes(child.dataset.part ?? ''))
+            const movable = [...root.childNodes].filter(
+                (node) => !(node instanceof HTMLElement && ['scrollbar', 'corner'].includes(node.dataset.part ?? ''))
             );
             viewport.append(...movable);
             root.prepend(viewport);
         }
 
-        let content = viewport.querySelector<HTMLElement>('[data-part="content"]');
+        let content = ownPart<HTMLElement>(viewport, 'content');
         if (!content) {
             content = this.ownerDocument.createElement('div');
             content.dataset.part = 'content';
-            content.append(...viewport.children);
+            content.append(...viewport.childNodes);
             viewport.append(content);
         }
 
-        if (!root.querySelector('[data-part="scrollbar"][data-orientation="vertical"]')) {
+        const scrollbars = [...root.children].filter(
+            (child): child is HTMLElement => child instanceof HTMLElement && child.dataset.part === 'scrollbar'
+        );
+        if (!scrollbars.some((scrollbar) => scrollbar.dataset.orientation === 'vertical')) {
             root.append(this.#createScrollbar('vertical'));
         }
-        if (!root.querySelector('[data-part="scrollbar"][data-orientation="horizontal"]')) {
+        if (!scrollbars.some((scrollbar) => scrollbar.dataset.orientation === 'horizontal')) {
             root.append(this.#createScrollbar('horizontal'));
         }
-        if (!root.querySelector('[data-part="corner"]')) {
+        if (!ownPart<HTMLElement>(root, 'corner')) {
             const corner = this.ownerDocument.createElement('div');
             corner.dataset.part = 'corner';
             root.append(corner);
@@ -120,20 +117,21 @@ export class NdScrollArea extends NdElement {
     }
 
     #render(api: ScrollAreaAPI): void {
-        const root = this.querySelector<HTMLElement>('[data-part="root"]');
-        const viewport = root?.querySelector<HTMLElement>('[data-part="viewport"]');
-        const content = viewport?.querySelector<HTMLElement>('[data-part="content"]');
-        const corner = root?.querySelector<HTMLElement>('[data-part="corner"]');
+        const root = ensureRootElement(this);
+        const viewport = ownPart<HTMLElement>(root, 'viewport');
+        const content = viewport ? ownPart<HTMLElement>(viewport, 'content') : null;
+        const corner = ownPart<HTMLElement>(root, 'corner');
 
-        if (root) spreadProps(root, api.getRootProps());
+        spreadProps(root, api.getRootProps());
         if (viewport) spreadProps(viewport, api.getViewportProps());
         if (content) spreadProps(content, api.getContentProps());
         if (corner) spreadProps(corner, api.getCornerProps());
 
-        for (const scrollbar of root?.querySelectorAll<HTMLElement>('[data-part="scrollbar"]') ?? []) {
+        for (const scrollbar of root.children) {
+            if (!(scrollbar instanceof HTMLElement) || scrollbar.dataset.part !== 'scrollbar') continue;
             const orientation = scrollbar.dataset.orientation === 'horizontal' ? 'horizontal' : 'vertical';
             spreadProps(scrollbar, api.getScrollbarProps({ orientation }));
-            const thumb = scrollbar.querySelector<HTMLElement>('[data-part="thumb"]');
+            const thumb = ownPart<HTMLElement>(scrollbar, 'thumb');
             if (thumb) spreadProps(thumb, api.getThumbProps({ orientation }));
         }
     }

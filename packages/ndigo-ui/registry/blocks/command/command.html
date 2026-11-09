@@ -1,0 +1,55 @@
+<!-- Ndigo command palette: a combobox inside a modal dialog.
+     Keep the dialog parts; replace the commands in the list. -->
+<div class="nd-command" data-command>
+    <nd-dialog class="nd-command__dialog" trigger-label="Open command palette" initial-focus="[data-part='input']">
+        <button class="nd-button nd-command__trigger" data-variant="secondary" data-part="trigger" type="button">
+            <span>Search commands</span>
+            <kbd class="nd-command__kbd" data-command-shortcut>Ctrl K</kbd>
+        </button>
+        <div data-part="content">
+            <h2 data-part="title" class="nd-command__title">Command palette</h2>
+            <p data-part="description" class="nd-command__description">
+                Type to filter, then press Enter to run a command.
+            </p>
+
+            <nd-combobox class="nd-command__combobox" inline>
+                <label data-part="label" class="nd-command__label">Commands</label>
+                <div data-part="control">
+                    <input data-part="input" placeholder="Type a command…" />
+                </div>
+                <div data-part="positioner">
+                    <div data-part="content">
+                        <div data-part="item" data-value="new-file">
+                            <span data-part="item-text">New file</span>
+                            <span data-part="item-indicator" aria-hidden="true">↵</span>
+                        </div>
+                        <div data-part="item" data-value="open-settings">
+                            <span data-part="item-text">Open settings</span>
+                            <span data-part="item-indicator" aria-hidden="true">↵</span>
+                        </div>
+                        <div data-part="item" data-value="toggle-theme">
+                            <span data-part="item-text">Toggle theme</span>
+                            <span data-part="item-indicator" aria-hidden="true">↵</span>
+                        </div>
+                        <div data-part="item" data-value="sign-out">
+                            <span data-part="item-text">Sign out</span>
+                            <span data-part="item-indicator" aria-hidden="true">↵</span>
+                        </div>
+                    </div>
+                </div>
+            </nd-combobox>
+
+            <p class="nd-command__empty" data-command-empty hidden>No commands found.</p>
+            <button
+                class="nd-command__close"
+                data-variant="ghost"
+                data-size="sm"
+                data-part="close-trigger"
+                type="button"
+                aria-label="Close command palette"
+            >
+                ×
+            </button>
+        </div>
+    </nd-dialog>
+</div>

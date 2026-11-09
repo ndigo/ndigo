@@ -206,6 +206,7 @@ you trust too broadly. Trust only the exact proxy networks.
 
 - [Security Architecture](../architecture/security.md) — trust boundaries and the layer map
 - [Guide 26 — Authentication & Sessions](26-authentication-and-sessions.md) — credentials, cookies, JWT
+- [Guide 43 — Live Configuration, Secrets & Remote Config](43-live-configuration-and-secrets.md) — at-rest secrets
 - [Guide 33 — Management Endpoints](33-management-endpoints.md) — exposure and guarding
 - [Guide 10 — Static Files](10-static-files.md) — containment and method safety
 - [Guide 15 — WebSockets](15-websockets.md) — origin and socket auth

@@ -4,7 +4,7 @@ Conceptual and hands-on guides for building applications with Ndigo. These
 complement the API reference; they explain the _how_ with runnable patterns
 grounded in the demo apps.
 
-The numbering is stable: **00–44** are application guides, **90–91** are
+The numbering is stable: **00–45** are application guides, **90–91** are
 contributor guides. Numbers are reading order within a section.
 
 > **Renumbered 2026-11-08.** Historical records (ADRs, plans, audits) still use
@@ -153,6 +153,8 @@ contributor guides. Numbers are reading order within a section.
 - [41 — Custom View Engines](41-custom-view-engines.md) — implement `View` /
   `ProducerView` for React, Vue, or a bespoke renderer; resolver registration,
   hydration, assets, CSP, streaming, and testing.
+- [45 — Performance & Scaling](45-performance-and-scaling.md) — measure-first
+  budgets, request/render/network/data/runtime levers, and the benchmark lanes.
 - [44 — Accessibility](44-accessibility.md) — landmarks, keyboard/focus, FACE
   forms, reduced motion/RTL, SSR focus, library vetting, and axe testing.
 

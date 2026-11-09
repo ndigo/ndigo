@@ -22,6 +22,7 @@ import './ui/nd-tags-input/nd-tags-input';
 import './ui/nd-file-upload/nd-file-upload';
 import { initCommandPalette } from './components/command/command';
 import { initDataTable } from './components/data-table/data-table';
+import { initCodeBlocks } from './components/code-block/code-block';
 import { TOKENS } from '@ndigo/ui';
 
 const tokenCount = document.querySelector('#token-count');
@@ -72,6 +73,7 @@ files?.addEventListener('nd-file-change', (event) => {
 });
 
 initDataTable(document);
+initCodeBlocks(document);
 
 const dataTable = document.querySelector('[data-data-table]');
 const dataTableSelection = document.querySelector('#data-table-selection');

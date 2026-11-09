@@ -39,6 +39,7 @@
         <link rel="stylesheet" href="/src/ui/nd-item/nd-item.css" />
         <link rel="stylesheet" href="/src/ui/nd-kbd/nd-kbd.css" />
         <link rel="stylesheet" href="/src/ui/nd-typography/nd-typography.css" />
+        <link rel="stylesheet" href="/src/components/code-block/code-block.css" />
         <link rel="stylesheet" href="/src/components/data-table/data-table.css" />
         <link rel="stylesheet" href="/src/ui/nd-dialog/nd-dialog.css" />
         <link rel="stylesheet" href="/src/ui/nd-drawer/nd-drawer.css" />
@@ -69,6 +70,7 @@
                     <a href="#table">Table</a>
                     <a href="#surfaces">Surfaces</a>
                     <a href="#content">Content</a>
+                    <a href="#code">Code</a>
                     <a href="#data-table">Data</a>
                     <a href="#dialog">Dialog</a>
                     <a href="#command">Command</a>
@@ -99,6 +101,7 @@
                         <a href="#table">Table</a>
                         <a href="#surfaces">Surfaces</a>
                         <a href="#content">Content</a>
+                        <a href="#code">Code</a>
                         <a href="#data-table">Data</a>
                         <a href="#dialog">Dialog</a>
                         <a href="#command">Command</a>
@@ -531,6 +534,24 @@
                             </ul>
                             <blockquote>Own the code you ship.</blockquote>
                         </article>
+                    </section>
+
+                    <section id="code" class="lab-section" aria-labelledby="code-heading">
+                        <h2 id="code-heading">Code block</h2>
+                        <p>A preformatted surface with a language label and a copy action.</p>
+                        <div class="nd-code-block" data-code-block>
+                            <div class="nd-code-block__header">
+                                <span class="nd-code-block__language">TypeScript</span>
+                                <button class="nd-button" data-variant="ghost" data-size="sm" type="button" data-copy>
+                                    Copy
+                                </button>
+                            </div>
+                            <pre
+                                class="nd-code-block__pre"
+                            ><code class="nd-code-block__code">export function greet(name: string) {
+    return `Hello, ${name}`;
+}</code></pre>
+                        </div>
                     </section>
 
                     <section id="data-table" class="lab-section" aria-labelledby="data-table-heading">

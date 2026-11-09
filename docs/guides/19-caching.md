@@ -225,6 +225,7 @@ for the full codec, failure, ACL, lifecycle and live verification contracts.
 
 ## See also
 
+- [Guide 45 — Performance & Scaling](45-performance-and-scaling.md) — measuring cache impact
 - [Guide 11 — The HTTP Client](11-http-client.md) — HTTP caching interceptors
 - [Guide 21 — Persistence & Shared Stores](21-persistence-and-shared-stores.md) — the Redis cache
 - [`@ndigo/cache`](../../packages/ndigo-cache/README.md) — the store contract

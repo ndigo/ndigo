@@ -1,0 +1,101 @@
+# CI Cost and Runners
+
+How the repository spends GitHub Actions minutes, why the spend is what it is,
+and the switches that keep it inside the free tier. Tracking issue: #276.
+
+## Budget model
+
+The repository is private on the GitHub **Free** plan: **2,000 included
+`ubuntu-latest` minutes per calendar month**, then a hard stop. The default
+spending limit is `$0`, so usage does not silently roll into overage — workflows
+simply stop accepting jobs mid-PR.
+
+Billing is per **job**, not per step: a job bills its whole wall-clock duration
+rounded up to the minute, cancelled jobs bill the portion they ran, and a job
+that fails in five seconds still bills one minute.
+
+Dependabot's own update jobs (`dynamic` event) run on GitHub infrastructure and
+never bill. Workflows that Dependabot's PRs _trigger_ do bill, which is why those
+PRs arrive labelled `parked` (see `ci.yml`).
+
+## Measured baseline
+
+Trailing 30 days ending 2026-11-09, replayed from the runs API:
+
+| Workflow | Runs | Billable minutes |
+| -------- | ---- | ---------------- |
+| CI       | 311  | 2,540            |
+| Docs     | 231  | 231              |
+
+Within a successful `quality` job, one step dominated: `Unit + integration
+tests` at ~9.1 of ~13.2 minutes. Build was 0.5, typecheck 0.4, API docs 1.9.
+
+Two structural causes:
+
+1. **The Nx task cache never persisted.** The workflow cached `.nx/cache`, but
+   Nx 24 resolves its cache to `~/.nx/<workspace-id>/cache` (see
+   `node_modules/nx/dist/src/utils/cache-directory.js` → `sharedDataDirectory`).
+   The action logged `Cache not found` and never saved, so every run rebuilt all
+   43 libraries and re-ran all 69 test projects from cold. The `Cache: 43/112`
+   hits visible in logs were all `build:lib` replaying from the earlier
+   `pnpm build` step **inside the same job**.
+2. **Run count inflated by `docs/*` branches.** The TSDoc batches edit comments
+   in `packages/*/src`, so each push to those PRs pays the full lane; several
+   branches pushed eight times.
+
+## What the workflow does now
+
+| Control                                                      | Effect                                                                                                  |
+| ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------- |
+| `runs-on: fromJSON(vars.CI_RUNNER \|\| '["ubuntu-latest"]')` | One repository variable moves the quality lane between hosted and self-hosted                           |
+| `vars.CI_RUNNER_E2E`                                         | Opt-in for the browser lane only; hosted by default because `playwright install --with-deps` needs root |
+| `nx affected -t test --base=<PR base>` on PRs                | Only changed projects and their dependents run; full suite on schedule/dispatch                         |
+| `~/.nx` cache restore; save only from schedule/dispatch/main | Correct Nx path; PR pushes no longer upload a multi-hundred-MB entry each run                           |
+| Draft PRs skipped                                            | WIP pushes cost nothing; `ready_for_review` starts the lane                                             |
+| e2e gated on browser-facing paths                            | `apps/`, `ndigo-{dom,http,ui,signals,boot,view*}`, lockfile, toolchain; weekly sweep covers the rest    |
+| `Docs` on open/promote only                                  | One billed minute per docs PR instead of one per push                                                   |
+| `pnpm preflight` + pre-push hook                             | The lane runs on the machine that wrote the code                                                        |
+
+## Self-hosted runner
+
+Host setup lives outside the repository (it needs `sudo`): `~/bin/ci-runner-install.sh`,
+undone by `~/bin/undo-ci-runner-install-20261109.sh`. It registers an
+unprivileged `ghrunner` account, installs the runner under `/opt/actions-runner`,
+adds the account to the `docker` group (the Redis service container needs it),
+and starts a systemd unit.
+
+Enable:
+
+```bash
+gh variable set CI_RUNNER --body '["self-hosted","linux","x64"]'
+```
+
+Fall back to hosted (immediately, no code change):
+
+```bash
+gh variable delete CI_RUNNER
+```
+
+Properties worth knowing:
+
+- `~/.nx` persists on that machine between runs, so the task cache is warm by
+  construction — the cache-path bug above cannot occur there.
+- `_work` holds the checkout; the Nx cache holds build outputs. Both live under
+  `/home/ghrunner`.
+- Jobs queue while the machine is offline (up to 24 hours) and then fail. The
+  hosted fallback exists for that case.
+- Every job executes repository code on the developer's machine. The repository
+  is private with no forks, which is what makes that acceptable; do not add
+  untrusted forks while `CI_RUNNER` is set.
+
+## Ongoing check
+
+```bash
+pnpm ci:usage                  # this calendar month
+pnpm ci:usage --days 7         # rolling window
+pnpm ci:usage --since 2026-11-01 --json
+```
+
+The script replays run history and prints billable minutes per workflow, job,
+and day against the monthly allowance. Policy: if a rolling 7-day window exceeds
+~450 hosted minutes, clear `CI_RUNNER` and investigate before the month ends.

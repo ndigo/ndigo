@@ -9,7 +9,7 @@
 import { chmodSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 
-const hook = new URL('../.githooks/pre-commit', import.meta.url);
+const hooks = ['pre-commit', 'pre-push'].map((name) => new URL(`../.githooks/${name}`, import.meta.url));
 const { status, error } = spawnSync('git', ['config', 'core.hooksPath', '.githooks'], { stdio: 'inherit' });
 
 if (error || status !== 0) {
@@ -17,8 +17,10 @@ if (error || status !== 0) {
     process.exit(status ?? 1);
 }
 
-// A clone with core.fileMode=false can check the hook out without its
-// executable bit; restore it so Git will run the hook.
-chmodSync(hook, 0o755);
+// A clone with core.fileMode=false can check the hooks out without their
+// executable bit; restore it so Git will run them.
+for (const hook of hooks) {
+    chmodSync(hook, 0o755);
+}
 
 console.log('hooks:install: core.hooksPath -> .githooks');

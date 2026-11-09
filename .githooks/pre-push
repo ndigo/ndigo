@@ -1,0 +1,11 @@
+#!/bin/sh
+# Run the local quality lane before a push (issue #276): hosted Actions minutes
+# are a hard monthly budget, so a push must carry its own proof. Skip with
+# `git push --no-verify`; run only the fast gates with `PREFLIGHT=fast`.
+set -eu
+
+if [ "${PREFLIGHT:-full}" = "fast" ]; then
+    exec pnpm preflight --fast
+fi
+
+exec pnpm preflight

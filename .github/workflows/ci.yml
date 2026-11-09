@@ -63,8 +63,12 @@ jobs:
     services:
       redis:
         image: redis:7-alpine
+        # Published on 6380, not the stock 6379: a self-hosted runner shares the
+        # host's network namespace with local dev sessions, and 6379 is the
+        # first port a local Redis would take (issue #283). Hosted runners are
+        # isolated, so the non-default port costs nothing there.
         ports:
-          - 6379:6379
+          - 6380:6379
         options: >-
           --health-cmd "redis-cli ping"
           --health-interval 10s
@@ -157,6 +161,12 @@ jobs:
         # documented route (and the hello-node WebSocket echo), then requires a
         # clean SIGTERM exit — real-process rot that in-process tests miss
         # (socket bind, static files, view rendering, shutdown).
+        #
+        # A self-hosted runner shares the host with local dev sessions and with
+        # `pnpm preflight` (which runs this same script), so its probes shift
+        # to 14xxx while local runs stay on 4xxx (issue #283).
+        env:
+          APPS_SMOKE_PORT_OFFSET: ${{ vars.CI_RUNNER != '' && '10000' || '0' }}
         run: pnpm apps:smoke
 
       - name: Lint (zero warnings)
@@ -212,8 +222,9 @@ jobs:
 
       - name: Unit + integration tests
         env:
-          # Exercises the env-gated @ndigo/redis live suites (DAT-F14).
-          NDIGO_REDIS_TEST_URL: redis://127.0.0.1:6379
+          # Exercises the env-gated @ndigo/redis live suites (DAT-F14); the
+          # service publishes on 6380 for host-port isolation (issue #283).
+          NDIGO_REDIS_TEST_URL: redis://127.0.0.1:6380
         # PRs run only the changed projects and their dependents; the weekly
         # sweep and manual dispatch run the full set as the backstop (issue
         # #276). `dependsOn: ^build:lib` still builds every transitive

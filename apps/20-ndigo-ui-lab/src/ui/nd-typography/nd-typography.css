@@ -1,0 +1,86 @@
+/* nd-prose — rendered long-form content built on the design tokens.
+   Scoped so application chrome keeps its own typography. */
+
+.nd-prose {
+    max-inline-size: 65ch;
+    color: var(--nd-color-text);
+    font-size: var(--nd-text-base);
+    line-height: var(--nd-leading-relaxed);
+}
+
+.nd-prose :where(h1, h2, h3, h4) {
+    margin-block: 0 var(--nd-space-3);
+    line-height: var(--nd-leading-tight);
+    letter-spacing: var(--nd-tracking-tight);
+}
+
+.nd-prose h1 {
+    font-size: var(--nd-text-3xl);
+}
+
+.nd-prose h2 {
+    margin-block-start: var(--nd-space-6);
+    font-size: var(--nd-text-2xl);
+}
+
+.nd-prose h3 {
+    margin-block-start: var(--nd-space-4);
+    font-size: var(--nd-text-xl);
+}
+
+.nd-prose h4 {
+    font-size: var(--nd-text-lg);
+}
+
+.nd-prose :where(p, ul, ol, dl, blockquote, pre, table, figure) {
+    margin-block: 0 var(--nd-space-4);
+}
+
+.nd-prose :where(ul, ol) {
+    padding-inline-start: var(--nd-space-6);
+}
+
+.nd-prose :where(li) {
+    margin-block-end: var(--nd-space-1);
+}
+
+.nd-prose :where(a) {
+    color: var(--nd-color-accent-strong);
+    text-underline-offset: 0.15em;
+}
+
+.nd-prose :where(strong, b) {
+    font-weight: var(--nd-weight-semibold);
+}
+
+.nd-prose :where(code) {
+    padding-block: 0.1em;
+    padding-inline: 0.3em;
+    font-family: var(--nd-font-mono);
+    font-size: 0.9em;
+    background: var(--nd-color-surface-raised);
+    border: 1px solid var(--nd-color-border);
+    border-radius: var(--nd-radius-sm);
+}
+
+.nd-prose :where(pre code) {
+    padding: 0;
+    background: transparent;
+    border: 0;
+}
+
+.nd-prose :where(blockquote) {
+    padding-inline-start: var(--nd-space-4);
+    color: var(--nd-color-text-muted);
+    border-inline-start: 3px solid var(--nd-color-border);
+}
+
+.nd-prose :where(hr) {
+    margin-block: var(--nd-space-6);
+    border: 0;
+    border-block-start: 1px solid var(--nd-color-border);
+}
+
+.nd-prose :where(img, video) {
+    border-radius: var(--nd-radius-md);
+}

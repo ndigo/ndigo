@@ -1,0 +1,68 @@
+/* nd-item — list row with media, text, and actions built on the tokens. */
+
+.nd-item {
+    display: flex;
+    gap: var(--nd-space-3);
+    align-items: center;
+    padding: var(--nd-space-2) var(--nd-space-3);
+    color: var(--nd-color-text);
+    border-radius: var(--nd-radius-md);
+}
+
+.nd-item--bordered {
+    background: var(--nd-color-surface);
+    border: 1px solid var(--nd-color-border);
+}
+
+.nd-item:hover {
+    background: var(--nd-color-accent-soft);
+}
+
+.nd-item[data-selected] {
+    background: var(--nd-color-accent-soft);
+}
+
+.nd-item__media {
+    display: grid;
+    flex: none;
+    place-items: center;
+    inline-size: 2.25rem;
+    block-size: 2.25rem;
+    overflow: hidden;
+    color: var(--nd-color-text-muted);
+    background: var(--nd-color-surface-raised);
+    border-radius: var(--nd-radius-full);
+}
+
+.nd-item__media img {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+}
+
+.nd-item__content {
+    display: grid;
+    flex: 1;
+    gap: 0.125rem;
+    min-inline-size: 0;
+}
+
+.nd-item__title {
+    overflow: hidden;
+    font-size: var(--nd-text-sm);
+    font-weight: var(--nd-weight-medium);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.nd-item__description {
+    color: var(--nd-color-text-muted);
+    font-size: var(--nd-text-xs);
+}
+
+.nd-item__actions {
+    display: flex;
+    flex: none;
+    gap: var(--nd-space-1);
+    align-items: center;
+}

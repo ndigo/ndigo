@@ -14,6 +14,17 @@
     margin-block-start: var(--nd-space-12);
 }
 
+.lab-stack {
+    display: grid;
+    gap: var(--nd-space-3);
+    margin-block-start: var(--nd-space-4);
+}
+
+.lab-card {
+    max-inline-size: 26rem;
+    margin-block-start: var(--nd-space-4);
+}
+
 .lab-row {
     display: flex;
     flex-wrap: wrap;

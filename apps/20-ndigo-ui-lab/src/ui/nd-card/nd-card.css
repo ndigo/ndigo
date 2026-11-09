@@ -1,0 +1,68 @@
+/* nd-card — content surface built on the design tokens. */
+
+.nd-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--nd-space-3);
+    color: var(--nd-color-text);
+    background: var(--nd-color-surface);
+    border: 1px solid var(--nd-color-border);
+    border-radius: var(--nd-radius-lg);
+    box-shadow: var(--nd-shadow-sm);
+    overflow: hidden;
+}
+
+.nd-card__media {
+    display: block;
+    inline-size: 100%;
+    block-size: auto;
+    margin: 0;
+    object-fit: cover;
+}
+
+.nd-card__header {
+    display: grid;
+    gap: var(--nd-space-1);
+    padding: var(--nd-space-4) var(--nd-space-4) 0;
+}
+
+.nd-card__title {
+    margin: 0;
+    font-size: var(--nd-text-lg);
+    font-weight: var(--nd-weight-semibold);
+    line-height: var(--nd-leading-tight);
+}
+
+.nd-card__description {
+    margin: 0;
+    color: var(--nd-color-text-muted);
+    font-size: var(--nd-text-sm);
+}
+
+.nd-card__content {
+    padding-inline: var(--nd-space-4);
+    font-size: var(--nd-text-sm);
+}
+
+.nd-card__content:last-child {
+    padding-block-end: var(--nd-space-4);
+}
+
+.nd-card__footer {
+    display: flex;
+    gap: var(--nd-space-2);
+    align-items: center;
+    padding: 0 var(--nd-space-4) var(--nd-space-4);
+}
+
+.nd-card--interactive {
+    transition:
+        border-color var(--nd-duration-fast) var(--nd-ease-standard),
+        box-shadow var(--nd-duration-fast) var(--nd-ease-standard);
+}
+
+.nd-card--interactive:hover,
+.nd-card--interactive:focus-within {
+    border-color: var(--nd-color-accent);
+    box-shadow: var(--nd-shadow-md);
+}

@@ -169,6 +169,21 @@ describe('ndigo-ui lab', () => {
         expect(get<HTMLElement>(table, '[data-status]').textContent).toBe('Showing 4–6 of 6');
     });
 
+    it('renders the surface primitives', () => {
+        const section = get<HTMLElement>(document, '#surfaces');
+        expect(section.querySelectorAll('.nd-alert')).toHaveLength(2);
+        expect(get<HTMLElement>(section, '.nd-alert[data-variant="success"] .nd-alert__title').textContent).toBe(
+            'Saved'
+        );
+        expect(section.querySelectorAll('.nd-badge')).toHaveLength(5);
+        expect(get<HTMLElement>(section, '.nd-card__title').textContent).toBe('Quarterly report');
+        expect(get<HTMLElement>(section, '.nd-separator[role="separator"]').getAttribute('aria-orientation')).toBe(
+            'vertical'
+        );
+        expect(section.querySelectorAll('[data-skeletons] .nd-skeleton')).toHaveLength(4);
+        expect(get<HTMLElement>(section, 'p[role="status"]').textContent).toContain('Loading invoices');
+    });
+
     it('renders the table tier', () => {
         const table = get<HTMLTableElement>(document, 'table.nd-table');
         expect(get<HTMLElement>(table, 'caption').textContent?.trim()).toBe('Open invoices');

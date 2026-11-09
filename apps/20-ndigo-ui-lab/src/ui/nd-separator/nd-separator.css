@@ -1,0 +1,16 @@
+/* nd-separator — horizontal or vertical rule built on the design tokens. */
+
+.nd-separator {
+    margin-block: var(--nd-space-4);
+    border: 0;
+    border-block-start: 1px solid var(--nd-color-border);
+}
+
+.nd-separator[data-orientation='vertical'] {
+    align-self: stretch;
+    inline-size: 0;
+    min-block-size: 1.5rem;
+    margin: 0 var(--nd-space-2);
+    border-block-start: 0;
+    border-inline-start: 1px solid var(--nd-color-border);
+}

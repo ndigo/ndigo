@@ -229,55 +229,25 @@ Handlers can return a `ResponseEntity<ProblemDetails>` for full control, or
 rely on the default chain. The `urn:ndigo:*` problem-type scheme is a
 placeholder — replace with real HTTPS URIs before first public release.
 
-## 6b. WebSockets (`@socketMapping`)
+## 6b. WebSockets
 
-Real-time endpoints are declared with `@socketMapping` and handled as
-**async-iterable producer-consumers** — `for await` inbound messages, `yield`
-outbound (mirroring the SSE view style):
+Real-time endpoints use `@socketMapping` and async-iterable producer-consumers.
+The session registry, rooms, heartbeat, client, STOMP, and cross-node fan-out
+are [guide 15](15-websockets.md) and [guide 42](42-stomp.md). A minimal handler:
 
 ```ts
-import { socketMapping, type SocketSession } from '@ndigo/dispatcher';
+import { requestMapping, socketMapping, type SocketSession } from '@ndigo/dispatcher';
 
 @requestMapping('/chat')
 class ChatController {
     @socketMapping('/room')
     async *room(session: SocketSession) {
         for await (const message of session.messages) {
-            yield { event: 'chat', data: { text: String(message) } };
+            yield { event: 'chat', data: String(message) };
         }
     }
 }
 ```
-
-- The adapter performs the RFC 6455 handshake (via `ws`) only when the
-  request carries `Connection: Upgrade` + `Upgrade: websocket`; a plain HTTP
-  request to a socket path is `404`.
-- `SocketSession` (`@ndigo/dispatcher`) is transport-neutral: `messages`
-  (async iterable), `send`, `close(code, reason)`, `closed`, `isClosed`.
-- Params/interceptors run on the upgrade request like a normal request, so
-  auth denial rejects the upgrade with `401`/`403`.
-
-**Mapping conditions apply to sockets too.** The same `queryParams` /
-`matrixParams` conditions that gate HTTP mappings gate WebSocket upgrades —
-the upgrade request's query string is parsed into the route, so e.g.
-`@socketMapping({ value: '/room', queryParams: 'token=abc' })` only upgrades
-when the URL query matches (`ws://host/room?token=abc`), and a handler can
-read the upgrade sources with the standard vocabulary:
-
-```ts
-@socketMapping({ value: '/room', queryParams: 'token=abc', private: false })
-@parameters({ token: queryValue('token'), via: headerValue('x-via') })
-async *room(session: SocketSession) {
-    const token = String(session.params['token']);  // bound from ?token=
-    const via = String(session.params['via']);      // bound from the x-via header
-    // session.query / session.headers / session.cookies also exposed directly
-}
-```
-
-`@parameters` on a socket method binds its extractors against the **upgrade
-request sources** (query, path, header, cookie) into `session.params`
-(validated + coerced, Zod included). A missing required parameter closes the
-socket with `1008` before the handler runs.
 
 ## 6c. Parameter source compatibility (the `@parameters` matrix)
 
@@ -340,85 +310,13 @@ override the default. Logging comes from the dependency-light `@ndigo/log`
 leaf; `@ndigo/telemetry` re-exports the same surface when an app already
 depends on it (AD-67).
 
-## 8. Deployment topology — TLS and HTTP/2–3 at the edge
+## 8. Deployment topology
 
-The full production checklist — process model, shutdown, probes, secrets,
-and static caching — is [guide 38](38-deployment-and-production-readiness.md).
-
-The framework's origin listener serves **HTTP/1.1 over plain TCP** and does
-not terminate TLS in-process (see [AD-80](../decisions/2026-10-09_AD80_HTTP23_EDGE_TERMINATION.md)).
-The supported production topology is:
-
-```text
-browser/client ──(TLS, HTTP/2, HTTP/3)──► edge proxy/LB/CDN ──(HTTP/1.1)──► origin
-```
-
-The edge terminates TLS, HTTP/2 and HTTP/3 — that is where the
-user-visible benefits (multiplexing, HPACK, 0-RTT) are realized. The
-origin hop is keep-alive HTTP/1.1, which is by design: Node has no HTTP/3
-listener, and WebSockets cannot ride h2 (neither `ws` nor browsers
-implement RFC 8441).
-
-- **Bind the origin to the loopback or a private interface.** The default
-  bind is `127.0.0.1`; only the edge may reach the origin. Exposing the
-  plaintext listener publicly is a misconfiguration.
-- **Preserve client identity with the trusted-proxy allowlist.**
-  Configure `trustedProxies` (or `NDIGO_TRUSTED_PROXIES`) with the edge's
-  addresses (AD-37). Without it every request looks like the proxy's IP —
-  rate limiting, audit logs and `remoteAddress` are wrong; with a wrongly
-  widened allowlist, spoofed `X-Forwarded-For` headers are trusted. Empty
-  = trust nobody, which is the safe default.
-- **WebSockets and STOMP:** the proxy must pass `Upgrade`/`Connection`
-  headers through. nginx, Caddy and HAProxy do by default; an h2-only edge
-  configuration that refuses h1.1 fallback breaks socket upgrades —
-  keep the origin's h1.1 path reachable. Browser pages never notice the
-  origin hop: they speak h2 to the edge either way.
-- **SSE and long-lived streams:** configure the proxy's idle timeout above
-  your event cadence (or disable it for the stream paths) so the connection
-  is not dropped mid-stream.
-
-### Optional: native TLS + HTTP/2 at the origin
-
-Pass TLS material (`tls` on `HTTPServerOptions`/adapter options, or the
-`NDIGO_TLS_KEY` + `NDIGO_TLS_CERT` env pair with optional `NDIGO_TLS_CA`) and
-the origin listener switches to `http2.createSecureServer` in
-`allowHTTP1` mode — ALPN negotiates **h2** with an **HTTP/1.1 fallback**
-on the same port (AD-81):
-
-```ts
-new HTTPServer(null, { tls: { key: '/etc/tls/key.pem', cert: '/etc/tls/cert.pem' } });
-```
-
-- PEM entries are inline-or-path: a value whose first non-whitespace
-  characters are `-----BEGIN` is certificate content; anything else is a
-  file path read at bind time. The env pair is all-or-nothing — one key
-  without the other throws at construction rather than silently serving
-  plaintext; blank env values (`NDIGO_TLS_KEY=`) count as unset. The env
-  configures the **default adapter only** — an app that passes a custom
-  adapter owns its own TLS story.
-- **Certificate files are read once at bind time** — rotating a key or
-  certificate requires a restart (same lifecycle as the process).
-- **Mutual TLS is opt-in** — `clientAuth: 'request'` asks for a client
-  certificate but admits anonymous clients; `clientAuth: 'require'`
-  rejects connections without a certificate that verifies against `ca`
-  (or Node's baseline trust store when `ca` is absent — which typically
-  rejects every presented certificate). `ca` alone never requests a
-  client certificate.
-- **Bound the h2 stream count for production** — `maxConcurrentStreams`
-  caps concurrent HTTP/2 streams per connection (the SETTINGS value).
-  Node's default is unbounded, so a single client could open any number
-  of concurrent requests; 128 (the nginx default) is a sane ceiling.
-- `minVersion` (`'TLSv1.2'` default / `'TLSv1.3'`) and `ciphers`
-  (OpenSSL list) tune the cipher policy; keep `minVersion: 'TLSv1.3'` for
-  strict deployments.
-- **WebSockets keep riding the h1.1 fallback** — neither `ws` nor browsers
-  implement RFC 8441, so socket/STOMP endpoints cannot upgrade over h2;
-  keep the h1.1 ALPN path reachable.
-- **HTTP/3 still terminates at the edge** (Node has no QUIC listener);
-  the default topology above remains the supported production shape.
-- Options that are h1.1-only (`keepAliveTimeout`, `maxRequestsPerSocket`)
-  are no-ops on the secure flavor; request/header timeouts are honored on
-  both.
+The production checklist — TLS/HTTP2–3 at the edge or `NDIGO_TLS_KEY`/`CERT`,
+trusted proxies, health probes, graceful shutdown, clustering, and static
+caching — is [guide 38](38-deployment-and-production-readiness.md). Keep the
+local dev server plaintext; terminate TLS at the edge unless you are running
+the Node listener as the public origin.
 
 ## See also
 

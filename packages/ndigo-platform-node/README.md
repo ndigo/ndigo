@@ -63,7 +63,7 @@ is a `400`, never silently reshaped. `listen()` rejects on bind errors, and
 ### TLS and HTTP/2 origin (opt-in)
 
 The origin listens on plaintext HTTP/1.1 by default — the edge-terminated
-posture (see [guide 01 §8](../../docs/guides/01-building-a-node-api.md#8-deployment-topology--tls-and-http23-at-the-edge)
+posture (see [guide 38 §6](../../docs/guides/38-deployment-and-production-readiness.md#6-tls-and-the-edge)
 and [AD-80](../../docs/decisions/2026-10-09_AD80_HTTP23_EDGE_TERMINATION.md)).
 Pass TLS material and the listener becomes an `http2.createSecureServer`
 in `allowHTTP1` mode: ALPN negotiates HTTP/2 with an HTTP/1.1 fallback on
@@ -293,7 +293,7 @@ runs with `finally` even on failure, including failed startup. The registry does
 not own/close the transport. `StompBroker({ fanout })` can share it for topics;
 await `broker.connect()` before serving and `broker.close()` before transport
 shutdown. Each transport permits one consumer per scope. See the
-[websockets guide](../../docs/guides/15-websockets.md#cross-node-live-fan-out-opt-in)
+[STOMP & fan-out guide](../../docs/guides/42-stomp.md#2-cross-node-live-fan-out-opt-in)
 for complete composition, failure semantics, Redis limits and deployment policy.
 
 ### Socket authentication

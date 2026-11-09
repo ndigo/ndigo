@@ -148,7 +148,7 @@ serving, and all consumers connect before `server.start()`.
 
 Details — delivery semantics (live at-most-once, no replay/reconnect/global
 ordering), echo suppression, Redis limits, stop/shutdown ordering, and
-deployment policy — are in [guide 15, cross-node live fan-out](15-websockets.md#cross-node-live-fan-out-opt-in).
+deployment policy — are in [guide 42, cross-node live fan-out](42-stomp.md#2-cross-node-live-fan-out-opt-in).
 
 ## 5. Shutdown ordering
 

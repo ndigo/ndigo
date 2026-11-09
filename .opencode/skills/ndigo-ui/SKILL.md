@@ -63,6 +63,14 @@ SHA-256 per file in `ui.lock.json`, and installs npm dependencies. Useful flags:
 `ui init <dir> --registry <source>` writes `ndigo.ui.json` with the default
 aliases (`@ui` → `src/ui`, `@lib` → `src/lib`, `@components`, `@hooks`).
 
+### MCP server
+
+`ndigo ui mcp --dir <app> [--registry <source>] [--readOnly]` serves the same
+registry over stdio. Tools: `list_items`, `search_items`, `get_item`,
+`install_items`, `validate_registry`. Results are JSON text.
+`install_items` plans by default; set `dryRun: false` to write. `--readOnly`
+omits the install tool.
+
 ### External applications: the shadcn channel
 
 Configure the namespace in `components.json`:

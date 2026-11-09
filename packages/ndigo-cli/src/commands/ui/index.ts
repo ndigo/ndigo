@@ -5,6 +5,7 @@ import { buildRouteMap } from '@stricli/core';
 import { addUiCommand } from './add.js';
 import { initUiCommand } from './init.js';
 import { listUiCommand } from './list.js';
+import { mcpUiCommand } from './mcp.js';
 import { validateUiCommand } from './validate.js';
 import { viewUiCommand } from './view.js';
 
@@ -18,6 +19,7 @@ export const uiRouteMap = buildRouteMap({
         list: listUiCommand,
         view: viewUiCommand,
         validate: validateUiCommand,
+        mcp: mcpUiCommand,
     },
     docs: { brief: 'Inspect and install Ndigo UI registry items' },
 });

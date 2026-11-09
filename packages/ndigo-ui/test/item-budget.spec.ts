@@ -39,6 +39,13 @@ const ITEMS: readonly ItemBudget[] = [
         files: ['registry/ui/button/nd-button.css'],
     },
     {
+        meta: 'registry/ui/navigation-menu/meta.json',
+        files: [
+            'registry/ui/navigation-menu/nd-navigation-menu.ts',
+            'registry/ui/navigation-menu/nd-navigation-menu.css',
+        ],
+    },
+    {
         meta: 'registry/ui/pagination/meta.json',
         files: ['registry/ui/pagination/nd-pagination.css'],
     },

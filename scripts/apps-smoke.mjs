@@ -11,6 +11,12 @@
  * Probe ports live in the dedicated 4xxx range, never the documented dev port,
  * so a running dev server can never masquerade as a passing smoke.
  *
+ * `APPS_SMOKE_PORT_OFFSET` shifts every probe port (and every `*_PORT` value in
+ * an app's manifest env). A self-hosted runner shares the host's network
+ * namespace with local dev sessions and with `pnpm preflight`, which runs this
+ * same script; the workflow sets an offset of 10000 there so the two can never
+ * fight over the 4xxx range (issue #283).
+ *
  * Registry: add one entry per new Node app (browser apps are covered by their
  * own `pnpm test`, which builds the bundle and runs the bundle spec). Keep
  * probe ports unique.
@@ -27,6 +33,51 @@ const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const READY_TIMEOUT_MS = Number(process.env['APPS_SMOKE_READY_MS'] ?? 60_000);
 const EXIT_TIMEOUT_MS = 10_000;
 const WS_TIMEOUT_MS = 10_000;
+
+/**
+ * Port shift for every probe listener (issue #283).
+ *
+ * A self-hosted runner executes in the host's network namespace, where a local
+ * dev server — or the pre-push preflight running this same script — can hold a
+ * 4xxx probe port. CI exports 10000 so runner probes land in 14xxx.
+ */
+const PORT_OFFSET = Number(process.env['APPS_SMOKE_PORT_OFFSET'] ?? 0);
+if (!Number.isInteger(PORT_OFFSET) || PORT_OFFSET < 0) {
+    console.error(
+        `apps-smoke: APPS_SMOKE_PORT_OFFSET must be a non-negative integer, got ${process.env['APPS_SMOKE_PORT_OFFSET']}`
+    );
+    process.exit(1);
+}
+
+/**
+ * Effective probe port for an app: its registered port plus the offset.
+ *
+ * @param {AppProbe} app
+ */
+function probePort(app) {
+    return app.port + PORT_OFFSET;
+}
+
+/**
+ * Shift `*_PORT` values in an app's manifest env by the same offset.
+ *
+ * The auth playground starts an OIDC issuer on `OIDC_ISSUER_PORT`; shifting
+ * only the app's own port would leave that child listener on a port the local
+ * host may already hold, so the offset would only half-isolate the run.
+ *
+ * @param {Record<string, string> | undefined} env
+ * @returns {Record<string, string> | undefined}
+ */
+function shiftPortEnv(env) {
+    if (!env || PORT_OFFSET === 0) return env;
+    return Object.fromEntries(
+        Object.entries(env).map(([key, value]) => [
+            key,
+            key.endsWith('_PORT') && /^\d+$/.test(value) ? String(Number(value) + PORT_OFFSET) : value,
+        ])
+    );
+}
+
 /** Exit code a runtime wrapper reports for "terminated by SIGTERM" (128 + 15). */
 const SIGTERM_EXIT_CODE = 128 + 15;
 const LOG_TAIL = 8_000;
@@ -73,7 +124,8 @@ const APPS = [
  */
 async function runApp(app) {
     const cwd = join(ROOT, 'apps', app.dir);
-    const url = `http://127.0.0.1:${app.port}${app.probe}`;
+    const port = probePort(app);
+    const url = `http://127.0.0.1:${port}${app.probe}`;
 
     /**
      * Whether the probe URL answers right now.
@@ -92,7 +144,7 @@ async function runApp(app) {
     // A stale listener on the probe port would make every later assertion
     // vacuous — refuse to run rather than report a false pass.
     if (await portAnswers(500)) {
-        throw new Error(`probe port ${app.port} is already answering before start (stale listener?)`);
+        throw new Error(`probe port ${port} is already answering before start (stale listener?)`);
     }
     // Run the app's own `scripts.start` directly (what `pnpm start` executes)
     // instead of spawning `pnpm`, whose CLI may only exist as a PATH-dependent
@@ -107,8 +159,8 @@ async function runApp(app) {
         cwd,
         env: {
             ...process.env,
-            PORT: String(app.port),
-            ...app.env,
+            PORT: String(port),
+            ...shiftPortEnv(app.env),
             PATH: [join(cwd, 'node_modules', '.bin'), dirname(process.execPath), process.env.PATH].join(':'),
         },
         stdio: ['ignore', 'pipe', 'pipe'],
@@ -174,7 +226,7 @@ async function runApp(app) {
         }
     }
     if (app.websocket) {
-        const echoed = await probeWebSocket(`ws://127.0.0.1:${app.port}${app.websocket}`);
+        const echoed = await probeWebSocket(`ws://127.0.0.1:${port}${app.websocket}`);
         if (!echoed.includes('smoke-frame')) {
             fail(`${app.websocket} echo did not round-trip the smoke frame`);
         }
@@ -201,7 +253,7 @@ async function runApp(app) {
         await delay(100);
     }
     if (await portAnswers(300)) {
-        fail(`port ${app.port} still answers after exit (leaked listener)`);
+        fail(`port ${port} still answers after exit (leaked listener)`);
     }
     return output.trim().split('\n').at(-1) ?? '';
 }
@@ -256,7 +308,7 @@ for (const app of apps) {
     try {
         // eslint-disable-next-line no-await-in-loop -- apps are probed one at a time so ports and process output stay attributable.
         await runApp(app);
-        console.log(`ok   ${app.dir}  (port ${app.port}, ${Date.now() - started}ms)`);
+        console.log(`ok   ${app.dir}  (port ${probePort(app)}, ${Date.now() - started}ms)`);
     } catch (error) {
         failures.push(app.dir);
         console.error(`FAIL ${app.dir}: ${error instanceof Error ? error.message : String(error)}`);

@@ -45,16 +45,17 @@ Two structural causes:
 
 ## What the workflow does now
 
-| Control                                                      | Effect                                                                                                  |
-| ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------- |
-| `runs-on: fromJSON(vars.CI_RUNNER \|\| '["ubuntu-latest"]')` | One repository variable moves the quality lane between hosted and self-hosted                           |
-| `vars.CI_RUNNER_E2E`                                         | Opt-in for the browser lane only; hosted by default because `playwright install --with-deps` needs root |
-| `nx affected -t test --base=<PR base>` on PRs                | Only changed projects and their dependents run; full suite on schedule/dispatch                         |
-| `~/.nx` cache restore; save only from schedule/dispatch/main | Correct Nx path; PR pushes no longer upload a multi-hundred-MB entry each run                           |
-| Draft PRs skipped                                            | WIP pushes cost nothing; `ready_for_review` starts the lane                                             |
-| e2e gated on browser-facing paths                            | `apps/`, `ndigo-{dom,http,ui,signals,boot,view*}`, lockfile, toolchain; weekly sweep covers the rest    |
-| `Docs` on open/promote only                                  | One billed minute per docs PR instead of one per push                                                   |
-| `pnpm preflight` + pre-push hook                             | The lane runs on the machine that wrote the code                                                        |
+| Control                                                      | Effect                                                                                                                                |
+| ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `runs-on: fromJSON(vars.CI_RUNNER \|\| '["ubuntu-latest"]')` | One repository variable moves the quality lane between hosted and self-hosted                                                         |
+| `vars.CI_RUNNER_E2E`                                         | Opt-in for the browser lane only; hosted by default because `playwright install --with-deps` needs root                               |
+| `nx affected -t test --base=<PR base>` on PRs                | Only changed projects and their dependents run; full suite on schedule/dispatch                                                       |
+| `~/.nx` cache restore; save only from schedule/dispatch/main | Correct Nx path; PR pushes no longer upload a multi-hundred-MB entry each run                                                         |
+| Draft PRs skipped                                            | WIP pushes cost nothing; `ready_for_review` starts the lane                                                                           |
+| e2e gated on browser-facing paths                            | `apps/`, `ndigo-{dom,http,ui,signals,boot,view*}`, lockfile, toolchain; weekly sweep covers the rest                                  |
+| `Docs` on open/promote only                                  | One billed minute per docs PR instead of one per push                                                                                 |
+| `pnpm preflight` + pre-push hook                             | The lane runs on the machine that wrote the code                                                                                      |
+| Redis on host 6380; smoke probes on 14xxx on the runner      | A self-hosted job shares the host network, so it never fights a local dev server or a concurrent preflight for 6379/4xxx (issue #283) |
 
 ## Self-hosted runner
 
@@ -84,6 +85,15 @@ Properties worth knowing:
   `/home/ghrunner`.
 - Jobs queue while the machine is offline (up to 24 hours) and then fail. The
   hosted fallback exists for that case.
+- A runner registration runs **one job at a time**; concurrent PRs queue. There
+  is no parallel-jobs setting — capacity means registering another runner
+  instance.
+- Jobs share the **host network namespace** with local dev sessions, so fixed
+  ports are isolated rather than left to chance: Redis publishes on `6380`, and
+  `ci.yml` sets `APPS_SMOKE_PORT_OFFSET=10000` for the smoke step so runner
+  probes run on 14xxx while a local `pnpm preflight` stays on 4xxx (issue #283).
+  e2e still uses 4173/3280 — avoid running those preview servers locally while
+  a browser lane is active.
 - Every job executes repository code on the developer's machine. The repository
   is private with no forks, which is what makes that acceptable; do not add
   untrusted forks while `CI_RUNNER` is set.

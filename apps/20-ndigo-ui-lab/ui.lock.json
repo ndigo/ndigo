@@ -14,7 +14,7 @@
           "sha256": "6a298af62b01122adea3a480b6c04c2711035b5bd558c8187ee2e51572beb1d3"
         }
       ],
-      "installedAt": "2026-11-09T15:07:03.389Z"
+      "installedAt": "2026-11-09T15:32:33.587Z"
     },
     "dialog": {
       "registry": "../../registry.json",
@@ -224,6 +224,36 @@
         }
       ],
       "installedAt": "2026-11-09T15:07:03.389Z"
+    },
+    "select": {
+      "registry": "../../registry.json",
+      "type": "registry:ui",
+      "files": [
+        {
+          "target": "src/ui/nd-select/nd-select.css",
+          "sha256": "d391b896ff44644fc1609b2751eb44a0f64b8ff0a78c3f259d2ec807d2097d68"
+        },
+        {
+          "target": "src/ui/nd-select/nd-select.ts",
+          "sha256": "973d2f9eca32abe4a80faa746c03c960f110e2818899d67b07df5e3baa3b8bb7"
+        }
+      ],
+      "installedAt": "2026-11-09T15:32:33.587Z"
+    },
+    "combobox": {
+      "registry": "../../registry.json",
+      "type": "registry:ui",
+      "files": [
+        {
+          "target": "src/ui/nd-combobox/nd-combobox.css",
+          "sha256": "142ecad7c5da6160eaf9a51adb4497a2ca335f97cdc3d1e9e0b5b9c4decf08b2"
+        },
+        {
+          "target": "src/ui/nd-combobox/nd-combobox.ts",
+          "sha256": "732259accf67791bdf6b3dff890d7deabe3c363b034a807cac7b23dede1b7cd2"
+        }
+      ],
+      "installedAt": "2026-11-09T15:32:33.587Z"
     }
   }
 }

@@ -18,6 +18,7 @@ This directory contains reference documentation for dependencies, configurations
 - [2026-03-25_FEATURE_METRIC_NAMING_AND_DASHBOARD_PATTERNS.md](./2026-03-25_FEATURE_METRIC_NAMING_AND_DASHBOARD_PATTERNS.md) - Feature-metric naming contract and dashboard grouping patterns
 - [GLOSSARY.md](./GLOSSARY.md) - Shared vocabulary for the guides, API, and ADRs
 - [2026-11-08_GUIDE_RENUMBERING.md](./2026-11-08_GUIDE_RENUMBERING.md) - Old-to-new guide number map after the 2026-11-08 curriculum renumber (historical records keep the old numbers)
+- [2026-11-09_CI_COST_AND_RUNNERS.md](./2026-11-09_CI_COST_AND_RUNNERS.md) - Actions minute budget, the Nx cache-path fix, and the self-hosted runner switches
 
 ## Naming Convention
 

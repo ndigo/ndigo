@@ -16,6 +16,7 @@ This directory contains reference documentation for dependencies, configurations
 - [2026-09-01_FEATURE_ASSESSMENT.md](./2026-09-01_FEATURE_ASSESSMENT.md) - Framework feature assessment (partial hydration, MFE shell status, remote module story)
 - [2026-09-08_ENVIRONMENT_API.md](./2026-09-08_ENVIRONMENT_API.md) - Ndigo environment API surface: sources, profiles, binding, validation, and decorators
 - [2026-03-25_FEATURE_METRIC_NAMING_AND_DASHBOARD_PATTERNS.md](./2026-03-25_FEATURE_METRIC_NAMING_AND_DASHBOARD_PATTERNS.md) - Feature-metric naming contract and dashboard grouping patterns
+- [GLOSSARY.md](./GLOSSARY.md) - Shared vocabulary for the guides, API, and ADRs
 - [2026-11-08_GUIDE_RENUMBERING.md](./2026-11-08_GUIDE_RENUMBERING.md) - Old-to-new guide number map after the 2026-11-08 curriculum renumber (historical records keep the old numbers)
 
 ## Naming Convention

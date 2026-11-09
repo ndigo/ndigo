@@ -194,6 +194,7 @@ in real content, then let `pnpm manifest:check` + `pnpm doc:api` validate.
 
 ## See also
 
+- [Guide 46 — Upgrading Ndigo](46-upgrading.md) — migration-guide authoring
 - [CONTRIBUTING.md](../../CONTRIBUTING.md) — the repository workflow
 - [Generators](../../tools/generators/README.md) — package and README scaffolding
 - [API index](../../API.md) — the generated package surface

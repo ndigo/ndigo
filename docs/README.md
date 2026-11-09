@@ -16,7 +16,7 @@ markers, links.
 
 ### [Guides](./guides/README.md)
 
-How-to guides (numbered `NN-slug.md`, living documents — no dates). **00–45**
+How-to guides (numbered `NN-slug.md`, living documents — no dates). **00–46**
 are application guides: 00–02 start the ladder (concepts, Node, browser),
 03–09 cover the fundamentals, and the rest cover the web/API, data, security,
 browser, cross-cutting, and operations surfaces. **90–91** are contributor

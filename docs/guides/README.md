@@ -4,7 +4,7 @@ Conceptual and hands-on guides for building applications with Ndigo. These
 complement the API reference; they explain the _how_ with runnable patterns
 grounded in the demo apps.
 
-The numbering is stable: **00–45** are application guides, **90–91** are
+The numbering is stable: **00–46** are application guides, **90–91** are
 contributor guides. Numbers are reading order within a section.
 
 > **Renumbered 2026-11-08.** Historical records (ADRs, plans, audits) still use
@@ -196,6 +196,9 @@ contributor guides. Numbers are reading order within a section.
 - [40 — Troubleshooting & FAQ](40-troubleshooting-and-faq.md) — symptom → cause
   → fix for routing, binding, validation, CORS/CSRF, DI, views, and
   migrations.
+- [46 — Upgrading Ndigo](46-upgrading.md) — the freeze/additive policy,
+  `ndigo update`, CHANGELOG/migration workflow, rollback, and writing a
+  migration guide.
 
 ## Reference
 

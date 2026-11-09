@@ -70,16 +70,27 @@ have their own base styles can import only the token stylesheet.
 ### Registry
 
 The package directory is a shadcn-compatible registry chunk included by the
-repository root `registry.json`. The `theme` item distributes the token and
-base stylesheets; `lib` carries the copy-in custom-element foundation,
-`button`, `input`, `field`, `checkbox`, `alert`, `badge`, `card`, `separator`, `skeleton`, `spinner`,
-`breadcrumb`, `kbd`, `aspect-ratio`, `item`, `typography`, `pagination`, and `table` are the
-native-first CSS items,
-`dialog`, `menu`, `popover`, `tooltip`, `tabs`, `accordion`, `switch`, `slider`,
-`select`, `combobox`, `drawer`, `date-picker`, `scroll-area`, `navigation-menu`, `tags-input`, and
-`file-upload` are the behaviour items built on Zag.js; `toast` is the native-first live region, and
-`app-shell` and `command` are the blocks; `data-table` composes the table, checkbox, button, and pagination items;
-`code-block` adds the preformatted surface and copy action; `sidebar` is the collapsible section navigation.
+repository root `registry.json`. The registry currently has 41 items:
+
+- **Foundation:** `theme` (tokens plus the opt-in base layer) and `lib` (the
+  copy-in custom-element foundation).
+- **Native-first CSS:** `button`, `input`, `field`, `checkbox`, `table`,
+  `alert`, `badge`, `card`, `separator`, `skeleton`, `spinner`, `breadcrumb`,
+  `kbd`, `aspect-ratio`, `item`, `typography`, `pagination`; `toast` is a
+  native-first live region.
+- **Behaviour (Zag.js):** `dialog`, `menu`, `popover`, `tooltip`, `tabs`,
+  `accordion`, `switch`, `slider`, `select`, `combobox`, `drawer`,
+  `date-picker`, `scroll-area`, `navigation-menu`, `tags-input`, `file-upload`.
+- **Blocks:** `app-shell`, `command`, `data-table` (table + checkbox + button +
+  pagination), `code-block`, `sidebar`.
+
+Browse the catalogue at [ndigo.dev/ui](https://ndigo.dev/ui) once the site is
+deployed. External applications install items with the shadcn namespace
+(`@ndigo/<item>` after
+pointing `registries` at `https://ndigo.dev/r/{name}.json`) or a direct
+`https://ndigo.dev/r/<item>.json` URL; monorepo apps and the lab use
+`ndigo ui add`. `ndigo ui mcp` exposes the same registry to MCP clients for
+discovery and installation.
 
 ## API
 

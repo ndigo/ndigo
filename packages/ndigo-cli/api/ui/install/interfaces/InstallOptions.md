@@ -10,6 +10,15 @@ Options for applying an install plan.
 
 ## Properties
 
+### dependencyStdio?
+
+> `readonly` `optional` **dependencyStdio?**: `"inherit"` \| `"stderr"`
+
+Where the package manager's stdout/stderr go (default `inherit`).
+MCP servers must use `stderr`: stdout carries the JSON-RPC protocol.
+
+***
+
 ### dir
 
 > `readonly` **dir**: `string`

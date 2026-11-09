@@ -3,6 +3,9 @@
  * Real-bin integration lane for `ndigo ui`: list, validate, init, and add
  * against the repository registry in a temporary application.
  */
+import { Client } from '@modelcontextprotocol/sdk/client/index.js';
+import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
+import { CallToolResultSchema } from '@modelcontextprotocol/sdk/types.js';
 import { spawn } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -95,5 +98,54 @@ describe('ndigo ui (real bin)', () => {
 
         expect(code).toBe(2);
         expect(`${out}${err}`).toContain("unknown registry item 'missing-item'");
+    });
+
+    test('exposes the MCP command in help', async () => {
+        const { code, out } = await runCli(['ui', 'mcp', '--help']);
+
+        expect(code).toBe(0);
+        expect(out).toContain('MCP');
+        expect(out.toLowerCase()).toContain('readonly');
+    });
+
+    test('serves the registry over MCP stdio', async () => {
+        const transport = new StdioClientTransport({
+            command: process.execPath,
+            args: [BIN, 'ui', 'mcp', '--dir', app, '--registry', REGISTRY],
+            cwd: REPO_ROOT,
+            stderr: 'ignore',
+        });
+        const client = new Client({ name: 'ndigo-ui-mcp-bin', version: '1.0.0' });
+        await client.connect(transport);
+        try {
+            const tools = (await client.listTools()).tools.map((tool) => tool.name);
+            expect(tools).toEqual(['list_items', 'search_items', 'get_item', 'validate_registry', 'install_items']);
+
+            const result = CallToolResultSchema.parse(
+                await client.callTool({ name: 'list_items', arguments: {} }, CallToolResultSchema)
+            );
+            const block = result.content.find((entry) => entry.type === 'text');
+            expect(block?.type === 'text' ? block.text : '').toContain('dialog');
+        } finally {
+            await client.close();
+        }
+    });
+
+    test('serves a read-only registry over MCP stdio', async () => {
+        const transport = new StdioClientTransport({
+            command: process.execPath,
+            args: [BIN, 'ui', 'mcp', '--dir', app, '--registry', REGISTRY, '--readOnly'],
+            cwd: REPO_ROOT,
+            stderr: 'ignore',
+        });
+        const client = new Client({ name: 'ndigo-ui-mcp-readonly', version: '1.0.0' });
+        await client.connect(transport);
+        try {
+            const tools = (await client.listTools()).tools.map((tool) => tool.name);
+            expect(tools).not.toContain('install_items');
+            expect(tools).toContain('get_item');
+        } finally {
+            await client.close();
+        }
     });
 });

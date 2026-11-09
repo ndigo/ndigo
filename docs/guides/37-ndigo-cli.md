@@ -3,8 +3,9 @@
 One `ndigo` entry replaces the bespoke per-app start scripts and covers the
 whole command surface: app lifecycle (serve/dev — serve replicates across
 worker slots), release-qc fronts (build/test/lint/format/typecheck),
-scaffolding (new/generate/add), db migrations, and the maintenance/DX tools
-(inspect/doctor/info/clean/config/env/logs/openapi/update/completion).
+scaffolding (new/generate/add), db migrations, the UI registry (`ui`), and the
+maintenance/DX tools (inspect/doctor/info/clean/config/env/logs/openapi/update/
+completion).
 Built on `@stricli/core` as an embedded library — commands, typed flags,
 `--help`, exit codes. Full tables below and in the package README.
 
@@ -62,6 +63,21 @@ app's registered `NdigoDatabaseAdapter`s (see `@ndigo/orm`), where
 | `ndigo db studio`       | `scripts.db:studio` (adapter-optional)                              | `ndigo db studio`                                   |
 | `ndigo db seed`         | `scripts.db:seed` (adapter-optional)                                | `ndigo db seed`                                     |
 | `ndigo db rollback [n]` | `scripts.db:rollback` (adapter-optional)                            | `ndigo db rollback 1`                               |
+
+### UI registry
+
+| Command                  | Runs…                                                                   | Example                                                      |
+| :----------------------- | :---------------------------------------------------------------------- | :----------------------------------------------------------- |
+| `ndigo ui init [dir]`    | writes `ndigo.ui.json` with the registry source and aliases             | `ndigo ui init ./apps/my-app --registry ../../registry.json` |
+| `ndigo ui list`          | lists registry items                                                    | `ndigo ui list --registry registry.json`                     |
+| `ndigo ui view <item>`   | shows one item's type, dependencies, and file targets                   | `ndigo ui view code-block --registry registry.json`          |
+| `ndigo ui validate`      | validates item shape, targets, and local files                          | `ndigo ui validate --registry registry.json`                 |
+| `ndigo ui add <item...>` | installs items and `registryDependencies` into `ndigo.ui.json` aliases  | `ndigo ui add button dialog --dir ./apps/my-app`             |
+| `ndigo ui mcp`           | serves the registry over stdio MCP (`--readOnly` omits `install_items`) | `ndigo ui mcp --dir ./apps/my-app --readOnly`                |
+
+`ui mcp` exposes `list_items`, `search_items`, `get_item`, `install_items`, and
+`validate_registry`. Installs default to a dry run; `dryRun: false` writes files
+and installs npm dependencies. Guide 30 covers the component and token story.
 
 ### Maintenance
 

@@ -89,11 +89,16 @@ resolves item dependencies, and installs the files into the aliases from
 | `ndigo ui view <item>`   | Shows one item's type, dependencies, and files (`--registry`, `--json`).                                       |
 | `ndigo ui validate`      | Validates item shape, targets, and local file existence (`--registry`).                                        |
 | `ndigo ui add <item...>` | Installs items and `registryDependencies` (`--dir`, `--registry`, `--dryRun`, `--overwrite`, `--skipInstall`). |
+| `ndigo ui mcp`           | Runs the registry as a stdio MCP server (`--dir`, `--registry`, `--readOnly`).                                 |
 
 `ui add` writes `ui.lock.json` with a SHA-256 per installed file and installs
 the item's npm dependencies with the application's package manager (detected
 from its lockfile). Use `--skipInstall` when the dependencies are managed
 separately.
+
+`ui mcp` exposes `list_items`, `search_items`, `get_item`, `install_items`, and
+`validate_registry` to MCP clients. Installs are dry runs by default; set
+`dryRun: false` to write. `--readOnly` omits the install tool.
 
 ### Maintenance and DX
 

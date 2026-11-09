@@ -14,6 +14,22 @@ One item in a registry chunk.
 
 ## Properties
 
+### author?
+
+> `readonly` `optional` **author?**: `string`
+
+Author or upstream attribution.
+
+***
+
+### categories?
+
+> `readonly` `optional` **categories?**: readonly `string`[]
+
+Browsing categories (e.g. `form`, `overlay`).
+
+***
+
 ### dependencies?
 
 > `readonly` `optional` **dependencies?**: readonly `string`[]
@@ -27,6 +43,14 @@ npm dependencies required by the item.
 > `readonly` `optional` **description?**: `string`
 
 One-line description.
+
+***
+
+### docs?
+
+> `readonly` `optional` **docs?**: `string`
+
+Install/usage note shown by the catalogue and MCP tools.
 
 ***
 

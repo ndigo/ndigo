@@ -96,6 +96,11 @@ The direct URL works without configuration:
 catalogue at [ndigo.dev/ui](https://ndigo.dev/ui) for the live item list,
 install commands, targets, and READMEs.
 
+Agents can run `ndigo ui mcp --dir <app> --registry <source>` to expose the same
+registry over MCP. The server provides `list_items`, `search_items`, `get_item`,
+`install_items`, and `validate_registry`; installs plan by default (`dryRun:
+false` writes), and `--readOnly` omits the install tool.
+
 The registry has 41 items: `theme`, `lib`, 34 primitives, and 5 blocks. At the
 time of writing the native-first primitives are `button`, `input`, `field`,
 `checkbox`, `table`, `alert`, `badge`, `card`, `separator`, `skeleton`,

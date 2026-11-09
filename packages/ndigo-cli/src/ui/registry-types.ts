@@ -28,6 +28,12 @@ export interface RegistryItem {
     readonly title?: string;
     /** One-line description. */
     readonly description?: string;
+    /** Author or upstream attribution. */
+    readonly author?: string;
+    /** Browsing categories (e.g. `form`, `overlay`). */
+    readonly categories?: readonly string[];
+    /** Install/usage note shown by the catalogue and MCP tools. */
+    readonly docs?: string;
     /** npm dependencies required by the item. */
     readonly dependencies?: readonly string[];
     /** Registry item names this item needs. */

@@ -169,6 +169,16 @@ describe('ndigo-ui lab', () => {
         expect(get<HTMLElement>(table, '[data-status]').textContent).toBe('Showing 4–6 of 6');
     });
 
+    it('renders the content primitives', () => {
+        const section = get<HTMLElement>(document, '#content');
+        expect(get<HTMLElement>(section, '.nd-breadcrumb').getAttribute('aria-label')).toBe('Breadcrumb');
+        expect(get<HTMLElement>(section, '[aria-current="page"]').textContent).toBe('Components');
+        expect(section.querySelectorAll('.nd-kbd')).toHaveLength(2);
+        expect(get<HTMLElement>(section, '.nd-aspect').textContent).toContain('16:9 media');
+        expect(get<HTMLElement>(section, '.nd-item__title').textContent).toBe('Ada Lovelace');
+        expect(get<HTMLElement>(section, '.nd-prose h3').textContent).toBe('Release notes');
+    });
+
     it('renders the surface primitives', () => {
         const section = get<HTMLElement>(document, '#surfaces');
         expect(section.querySelectorAll('.nd-alert')).toHaveLength(2);

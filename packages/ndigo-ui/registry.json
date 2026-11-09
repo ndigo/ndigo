@@ -703,6 +703,86 @@
         }
       ],
       "docs": "Give `.nd-spinner` `role=\"status\"` and an accessible name; pair it with visible loading text for longer waits."
+    },
+    {
+      "name": "breadcrumb",
+      "type": "registry:ui",
+      "title": "Breadcrumb",
+      "description": "Hierarchical page trail with links and a current-page marker.",
+      "author": "Ndigo <https://ndigo.dev>",
+      "categories": ["ui", "navigation"],
+      "files": [
+        {
+          "path": "registry/ui/breadcrumb/nd-breadcrumb.css",
+          "type": "registry:file",
+          "target": "@ui/nd-breadcrumb/nd-breadcrumb.css"
+        }
+      ],
+      "docs": "Use a labelled `<nav>` with an ordered list; mark the last item `aria-current=\"page\"`."
+    },
+    {
+      "name": "kbd",
+      "type": "registry:ui",
+      "title": "Keyboard key",
+      "description": "Key caps and keyboard chords for shortcut hints.",
+      "author": "Ndigo <https://ndigo.dev>",
+      "categories": ["ui", "content"],
+      "files": [
+        {
+          "path": "registry/ui/kbd/nd-kbd.css",
+          "type": "registry:file",
+          "target": "@ui/nd-kbd/nd-kbd.css"
+        }
+      ],
+      "docs": "Use `<kbd class=\"nd-kbd\">` for user input; pair it with the real control rather than making it a button."
+    },
+    {
+      "name": "aspect-ratio",
+      "type": "registry:ui",
+      "title": "Aspect ratio",
+      "description": "Fixed-ratio media frame that reserves space before loading.",
+      "author": "Ndigo <https://ndigo.dev>",
+      "categories": ["ui", "layout"],
+      "files": [
+        {
+          "path": "registry/ui/aspect-ratio/nd-aspect-ratio.css",
+          "type": "registry:file",
+          "target": "@ui/nd-aspect-ratio/nd-aspect-ratio.css"
+        }
+      ],
+      "docs": "Set `--nd-aspect-ratio` on `.nd-aspect`; images, videos, and iframes fill the frame with cover."
+    },
+    {
+      "name": "item",
+      "type": "registry:ui",
+      "title": "Item",
+      "description": "List row with media, title, description, and trailing actions.",
+      "author": "Ndigo <https://ndigo.dev>",
+      "categories": ["ui", "layout"],
+      "files": [
+        {
+          "path": "registry/ui/item/nd-item.css",
+          "type": "registry:file",
+          "target": "@ui/nd-item/nd-item.css"
+        }
+      ],
+      "docs": "Compose `.nd-item` parts inside a list; use `--bordered`/`data-selected` for row states."
+    },
+    {
+      "name": "typography",
+      "type": "registry:ui",
+      "title": "Typography",
+      "description": "Scoped prose styles for rendered long-form content.",
+      "author": "Ndigo <https://ndigo.dev>",
+      "categories": ["ui", "content"],
+      "files": [
+        {
+          "path": "registry/ui/typography/nd-typography.css",
+          "type": "registry:file",
+          "target": "@ui/nd-typography/nd-typography.css"
+        }
+      ],
+      "docs": "Add `.nd-prose` around rendered content; heading levels stay semantic and the width caps at 65ch."
     }
   ]
 }

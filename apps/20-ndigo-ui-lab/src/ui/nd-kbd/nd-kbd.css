@@ -1,0 +1,21 @@
+/* nd-kbd — key caps and key chords built on the design tokens. */
+
+.nd-kbd {
+    display: inline-block;
+    padding-block: 0.1em;
+    padding-inline: 0.4em;
+    color: var(--nd-color-text);
+    font-family: var(--nd-font-mono);
+    font-size: var(--nd-text-xs);
+    line-height: 1.4;
+    background: var(--nd-color-surface-raised);
+    border: 1px solid var(--nd-color-border);
+    border-block-end-width: 2px;
+    border-radius: var(--nd-radius-sm);
+}
+
+.nd-kbd-group {
+    display: inline-flex;
+    gap: var(--nd-space-1);
+    align-items: center;
+}

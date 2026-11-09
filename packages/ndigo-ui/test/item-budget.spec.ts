@@ -47,6 +47,26 @@ const ITEMS: readonly ItemBudget[] = [
         files: ['registry/ui/button/nd-button.css'],
     },
     {
+        meta: 'registry/ui/breadcrumb/meta.json',
+        files: ['registry/ui/breadcrumb/nd-breadcrumb.css'],
+    },
+    {
+        meta: 'registry/ui/kbd/meta.json',
+        files: ['registry/ui/kbd/nd-kbd.css'],
+    },
+    {
+        meta: 'registry/ui/aspect-ratio/meta.json',
+        files: ['registry/ui/aspect-ratio/nd-aspect-ratio.css'],
+    },
+    {
+        meta: 'registry/ui/item/meta.json',
+        files: ['registry/ui/item/nd-item.css'],
+    },
+    {
+        meta: 'registry/ui/typography/meta.json',
+        files: ['registry/ui/typography/nd-typography.css'],
+    },
+    {
         meta: 'registry/ui/alert/meta.json',
         files: ['registry/ui/alert/nd-alert.css'],
     },

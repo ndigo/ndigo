@@ -34,6 +34,11 @@
         <link rel="stylesheet" href="/src/ui/nd-separator/nd-separator.css" />
         <link rel="stylesheet" href="/src/ui/nd-skeleton/nd-skeleton.css" />
         <link rel="stylesheet" href="/src/ui/nd-spinner/nd-spinner.css" />
+        <link rel="stylesheet" href="/src/ui/nd-aspect-ratio/nd-aspect-ratio.css" />
+        <link rel="stylesheet" href="/src/ui/nd-breadcrumb/nd-breadcrumb.css" />
+        <link rel="stylesheet" href="/src/ui/nd-item/nd-item.css" />
+        <link rel="stylesheet" href="/src/ui/nd-kbd/nd-kbd.css" />
+        <link rel="stylesheet" href="/src/ui/nd-typography/nd-typography.css" />
         <link rel="stylesheet" href="/src/components/data-table/data-table.css" />
         <link rel="stylesheet" href="/src/ui/nd-dialog/nd-dialog.css" />
         <link rel="stylesheet" href="/src/ui/nd-drawer/nd-drawer.css" />
@@ -63,6 +68,7 @@
                     <a href="#files">Files</a>
                     <a href="#table">Table</a>
                     <a href="#surfaces">Surfaces</a>
+                    <a href="#content">Content</a>
                     <a href="#data-table">Data</a>
                     <a href="#dialog">Dialog</a>
                     <a href="#command">Command</a>
@@ -92,6 +98,7 @@
                         <a href="#files">Files</a>
                         <a href="#table">Table</a>
                         <a href="#surfaces">Surfaces</a>
+                        <a href="#content">Content</a>
                         <a href="#data-table">Data</a>
                         <a href="#dialog">Dialog</a>
                         <a href="#command">Command</a>
@@ -485,6 +492,45 @@
                             <span class="nd-spinner" data-size="sm" aria-hidden="true"></span>
                             Loading invoices…
                         </p>
+                    </section>
+
+                    <section id="content" class="lab-section" aria-labelledby="content-heading">
+                        <h2 id="content-heading">Content</h2>
+                        <p>Breadcrumb, key caps, an aspect-ratio frame, an item row, and prose styles.</p>
+                        <nav class="nd-breadcrumb" aria-label="Breadcrumb">
+                            <ol class="nd-breadcrumb__list">
+                                <li class="nd-breadcrumb__item">
+                                    <a class="nd-breadcrumb__link" href="#tokens">Home</a>
+                                </li>
+                                <li class="nd-breadcrumb__item">
+                                    <a class="nd-breadcrumb__link" href="#content">Docs</a>
+                                </li>
+                                <li class="nd-breadcrumb__item"><span aria-current="page">Components</span></li>
+                            </ol>
+                        </nav>
+                        <p>Press <kbd class="nd-kbd">Ctrl</kbd> + <kbd class="nd-kbd">K</kbd> to search.</p>
+                        <div class="nd-aspect lab-aspect"><span>16:9 media</span></div>
+                        <div class="nd-item nd-item--bordered lab-item">
+                            <span class="nd-item__media">AL</span>
+                            <div class="nd-item__content">
+                                <span class="nd-item__title">Ada Lovelace</span>
+                                <span class="nd-item__description">Engineering</span>
+                            </div>
+                            <div class="nd-item__actions">
+                                <button class="nd-button" data-variant="ghost" data-size="sm" type="button">
+                                    Edit
+                                </button>
+                            </div>
+                        </div>
+                        <article class="nd-prose lab-prose">
+                            <h3>Release notes</h3>
+                            <p>The registry now ships <strong>39 items</strong>, all copy-in and framework-free.</p>
+                            <ul>
+                                <li>New tokens and primitives</li>
+                                <li>Blocks compose existing items</li>
+                            </ul>
+                            <blockquote>Own the code you ship.</blockquote>
+                        </article>
                     </section>
 
                     <section id="data-table" class="lab-section" aria-labelledby="data-table-heading">

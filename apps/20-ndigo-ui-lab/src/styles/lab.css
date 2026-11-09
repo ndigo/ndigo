@@ -20,6 +20,20 @@
     margin-block-start: var(--nd-space-4);
 }
 
+.lab-aspect {
+    max-inline-size: 24rem;
+    margin-block-start: var(--nd-space-4);
+}
+
+.lab-item {
+    max-inline-size: 26rem;
+    margin-block-start: var(--nd-space-4);
+}
+
+.lab-prose {
+    margin-block-start: var(--nd-space-6);
+}
+
 .lab-card {
     max-inline-size: 26rem;
     margin-block-start: var(--nd-space-4);

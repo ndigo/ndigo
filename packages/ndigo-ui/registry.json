@@ -580,6 +580,33 @@
         }
       ],
       "docs": "Wrap `.nd-table` in `.nd-table-wrap`; put `aria-sort` on sortable `<th>` and `data-numeric` on aligned cells."
+    },
+    {
+      "name": "data-table",
+      "type": "registry:block",
+      "title": "Data table",
+      "description": "Sortable, selectable, paged table composed from the table, checkbox, button, and pagination items.",
+      "author": "Ndigo <https://ndigo.dev>",
+      "categories": ["block", "data"],
+      "registryDependencies": ["theme", "table", "checkbox", "button", "pagination"],
+      "files": [
+        {
+          "path": "registry/blocks/data-table/data-table.html",
+          "type": "registry:block",
+          "target": "@components/data-table/data-table.html"
+        },
+        {
+          "path": "registry/blocks/data-table/data-table.css",
+          "type": "registry:file",
+          "target": "@components/data-table/data-table.css"
+        },
+        {
+          "path": "registry/blocks/data-table/data-table.ts",
+          "type": "registry:file",
+          "target": "@components/data-table/data-table.ts"
+        }
+      ],
+      "docs": "Copy the block and call `initDataTable(document)`; sorting, page-local selection, and pagination stay client-side."
     }
   ]
 }

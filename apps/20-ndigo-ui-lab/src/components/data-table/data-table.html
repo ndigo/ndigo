@@ -1,0 +1,103 @@
+<!-- Ndigo data table: authored rows plus client-side sorting, selection, and
+     pagination. Initialize with `initDataTable(document)`. -->
+<div class="nd-data-table" data-data-table data-page-size="3">
+    <div class="nd-table-wrap">
+        <table class="nd-table nd-table--striped nd-data-table__table">
+            <caption class="nd-table__caption">
+                Invoices
+            </caption>
+            <thead>
+                <tr>
+                    <th scope="col" class="nd-data-table__select">
+                        <input
+                            class="nd-checkbox"
+                            type="checkbox"
+                            data-select-all
+                            aria-label="Select all rows on this page"
+                        />
+                    </th>
+                    <th scope="col" data-sort-key="invoice" data-sort-type="text">
+                        <button class="nd-table__sort" type="button">
+                            Invoice
+                            <span class="nd-table__sort-icon" aria-hidden="true">↕</span>
+                        </button>
+                    </th>
+                    <th scope="col" data-sort-key="customer" data-sort-type="text">
+                        <button class="nd-table__sort" type="button">
+                            Customer
+                            <span class="nd-table__sort-icon" aria-hidden="true">↕</span>
+                        </button>
+                    </th>
+                    <th scope="col" data-sort-key="amount" data-sort-type="number" data-numeric>
+                        <button class="nd-table__sort" type="button">
+                            Amount
+                            <span class="nd-table__sort-icon" aria-hidden="true">↕</span>
+                        </button>
+                    </th>
+                    <th scope="col">Status</th>
+                </tr>
+            </thead>
+            <tbody data-rows>
+                <tr data-row-id="INV-001">
+                    <td class="nd-data-table__select">
+                        <input class="nd-checkbox" type="checkbox" data-select-row aria-label="Select INV-001" />
+                    </td>
+                    <td data-sort-value="INV-001">INV-001</td>
+                    <td>Acme</td>
+                    <td data-numeric data-sort-value="1200">$1,200.00</td>
+                    <td>Paid</td>
+                </tr>
+                <tr data-row-id="INV-002">
+                    <td class="nd-data-table__select">
+                        <input class="nd-checkbox" type="checkbox" data-select-row aria-label="Select INV-002" />
+                    </td>
+                    <td data-sort-value="INV-002">INV-002</td>
+                    <td>Globex</td>
+                    <td data-numeric data-sort-value="840">$840.00</td>
+                    <td>Sent</td>
+                </tr>
+                <tr data-row-id="INV-003">
+                    <td class="nd-data-table__select">
+                        <input class="nd-checkbox" type="checkbox" data-select-row aria-label="Select INV-003" />
+                    </td>
+                    <td data-sort-value="INV-003">INV-003</td>
+                    <td>Initech</td>
+                    <td data-numeric data-sort-value="2400">$2,400.00</td>
+                    <td>Overdue</td>
+                </tr>
+                <tr data-row-id="INV-004">
+                    <td class="nd-data-table__select">
+                        <input class="nd-checkbox" type="checkbox" data-select-row aria-label="Select INV-004" />
+                    </td>
+                    <td data-sort-value="INV-004">INV-004</td>
+                    <td>Umbrella</td>
+                    <td data-numeric data-sort-value="300">$300.00</td>
+                    <td>Paid</td>
+                </tr>
+                <tr data-row-id="INV-005">
+                    <td class="nd-data-table__select">
+                        <input class="nd-checkbox" type="checkbox" data-select-row aria-label="Select INV-005" />
+                    </td>
+                    <td data-sort-value="INV-005">INV-005</td>
+                    <td>Hooli</td>
+                    <td data-numeric data-sort-value="5600">$5,600.00</td>
+                    <td>Sent</td>
+                </tr>
+                <tr data-row-id="INV-006">
+                    <td class="nd-data-table__select">
+                        <input class="nd-checkbox" type="checkbox" data-select-row aria-label="Select INV-006" />
+                    </td>
+                    <td data-sort-value="INV-006">INV-006</td>
+                    <td>Soylent</td>
+                    <td data-numeric data-sort-value="120">$120.00</td>
+                    <td>Overdue</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="nd-data-table__footer">
+        <p class="nd-data-table__status" data-status role="status" aria-live="polite"></p>
+        <nav class="nd-pagination" data-pagination aria-label="Invoice pages"></nav>
+    </div>
+</div>

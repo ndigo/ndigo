@@ -21,6 +21,7 @@ import './ui/nd-navigation-menu/nd-navigation-menu';
 import './ui/nd-tags-input/nd-tags-input';
 import './ui/nd-file-upload/nd-file-upload';
 import { initCommandPalette } from './components/command/command';
+import { initDataTable } from './components/data-table/data-table';
 import { TOKENS } from '@ndigo/ui';
 
 const tokenCount = document.querySelector('#token-count');
@@ -67,5 +68,16 @@ files?.addEventListener('nd-file-change', (event) => {
         filesStatus.textContent = detail.acceptedFiles.length
             ? detail.acceptedFiles.map((file) => file.name).join(', ')
             : 'No files';
+    }
+});
+
+initDataTable(document);
+
+const dataTable = document.querySelector('[data-data-table]');
+const dataTableSelection = document.querySelector('#data-table-selection');
+dataTable?.addEventListener('nd-selection-change', (event) => {
+    const detail = (event as CustomEvent<{ ids: string[] }>).detail;
+    if (dataTableSelection !== null) {
+        dataTableSelection.textContent = detail.ids.length ? `Selected: ${detail.ids.join(', ')}` : 'No rows selected';
     }
 });

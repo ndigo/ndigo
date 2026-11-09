@@ -383,6 +383,29 @@
         }
       ],
       "docs": "`<nd-combobox>` derives its collection from `[data-part=\"item\"][data-value]` markup; see the item README."
+    },
+    {
+      "name": "drawer",
+      "type": "registry:ui",
+      "title": "Drawer",
+      "description": "Edge-anchored dialog with end, start, bottom, and top placement.",
+      "author": "Ndigo <https://ndigo.dev>",
+      "categories": ["ui", "overlay"],
+      "dependencies": ["@zag-js/dialog@~1.47.0"],
+      "registryDependencies": ["lib"],
+      "files": [
+        {
+          "path": "registry/ui/drawer/nd-drawer.ts",
+          "type": "registry:ui",
+          "target": "@ui/nd-drawer/nd-drawer.ts"
+        },
+        {
+          "path": "registry/ui/drawer/nd-drawer.css",
+          "type": "registry:file",
+          "target": "@ui/nd-drawer/nd-drawer.css"
+        }
+      ],
+      "docs": "`<nd-drawer>` shares the dialog machine; set `placement` to `end`, `start`, `bottom`, or `top`."
     }
   ]
 }

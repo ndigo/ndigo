@@ -374,6 +374,17 @@
         }
       ],
       "installedAt": "2026-11-09T17:38:34.123Z"
+    },
+    "table": {
+      "registry": "../../registry.json",
+      "type": "registry:ui",
+      "files": [
+        {
+          "target": "src/ui/nd-table/nd-table.css",
+          "sha256": "9e022d08099a8b31e4afa39ce54374071e4adbe0ec4853b7e8c14a5a2d710426"
+        }
+      ],
+      "installedAt": "2026-11-09T17:47:46.753Z"
     }
   }
 }

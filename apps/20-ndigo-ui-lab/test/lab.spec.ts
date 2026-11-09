@@ -154,6 +154,20 @@ describe('ndigo-ui lab', () => {
         expect(get<HTMLInputElement>(picker, '[data-part="hidden-input"]').value).toBe('2026-12-25');
     });
 
+    it('renders the table tier', () => {
+        const table = get<HTMLTableElement>(document, 'table.nd-table');
+        expect(get<HTMLElement>(table, 'caption').textContent?.trim()).toBe('Open invoices');
+
+        const sorted = get<HTMLElement>(table, 'th[aria-sort="ascending"]');
+        expect(get<HTMLElement>(sorted, 'button.nd-table__sort').textContent).toContain('Amount');
+        expect(get<HTMLElement>(sorted, 'button.nd-table__sort .nd-table__sort-icon').getAttribute('aria-hidden')).toBe(
+            'true'
+        );
+
+        expect(table.querySelectorAll('td[data-numeric]').length).toBe(5);
+        expect(get<HTMLElement>(table, 'tfoot td[data-numeric]').textContent?.trim()).toBe('$2,040.00');
+    });
+
     it('renders the file upload tier', async () => {
         const upload = get<HTMLElement>(document, 'nd-file-upload');
         const input = get<HTMLInputElement>(upload, '[data-part="hidden-input"]');

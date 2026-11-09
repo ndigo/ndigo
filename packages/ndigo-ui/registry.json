@@ -564,6 +564,22 @@
         }
       ],
       "docs": "`<nd-file-upload>` renders a dropzone and file list; the machine owns validation, the hidden input, and accepted files."
+    },
+    {
+      "name": "table",
+      "type": "registry:ui",
+      "title": "Table",
+      "description": "Native tables with an overflow wrapper, sortable headers, numeric alignment, and row states.",
+      "author": "Ndigo <https://ndigo.dev>",
+      "categories": ["ui", "data"],
+      "files": [
+        {
+          "path": "registry/ui/table/nd-table.css",
+          "type": "registry:file",
+          "target": "@ui/nd-table/nd-table.css"
+        }
+      ],
+      "docs": "Wrap `.nd-table` in `.nd-table-wrap`; put `aria-sort` on sortable `<th>` and `data-numeric` on aligned cells."
     }
   ]
 }

@@ -19,6 +19,7 @@ import './ui/nd-date-picker/nd-date-picker';
 import './ui/nd-scroll-area/nd-scroll-area';
 import './ui/nd-navigation-menu/nd-navigation-menu';
 import './ui/nd-tags-input/nd-tags-input';
+import './ui/nd-file-upload/nd-file-upload';
 import { initCommandPalette } from './components/command/command';
 import { TOKENS } from '@ndigo/ui';
 
@@ -56,4 +57,15 @@ const tagStatus = document.querySelector('#tags-status');
 tags?.addEventListener('nd-value-change', (event) => {
     const detail = (event as CustomEvent<{ value: string[] }>).detail;
     if (tagStatus !== null) tagStatus.textContent = `${detail.value.length} tags`;
+});
+
+const files = document.querySelector('nd-file-upload');
+const filesStatus = document.querySelector('#files-status');
+files?.addEventListener('nd-file-change', (event) => {
+    const detail = (event as CustomEvent<{ acceptedFiles: File[] }>).detail;
+    if (filesStatus !== null) {
+        filesStatus.textContent = detail.acceptedFiles.length
+            ? detail.acceptedFiles.map((file) => file.name).join(', ')
+            : 'No files';
+    }
 });

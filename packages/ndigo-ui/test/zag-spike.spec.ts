@@ -11,6 +11,7 @@ import { machine as popoverMachine } from '@zag-js/popover';
 import { machine as scrollAreaMachine } from '@zag-js/scroll-area';
 import { machine as selectMachine } from '@zag-js/select';
 import { machine as dialogMachine } from '@zag-js/dialog';
+import { machine as fileUploadMachine } from '@zag-js/file-upload';
 import { machine as menuMachine } from '@zag-js/menu';
 import { machine as navigationMenuMachine } from '@zag-js/navigation-menu';
 import { machine as sliderMachine } from '@zag-js/slider';
@@ -37,6 +38,7 @@ describe('Zag.js 1.x pin', () => {
         expect(typeof scrollAreaMachine.initialState).toBe('function');
         expect(typeof navigationMenuMachine.initialState).toBe('function');
         expect(typeof tagsInputMachine.initialState).toBe('function');
+        expect(typeof fileUploadMachine.initialState).toBe('function');
         expect(parseDate('2026-11-09').toString()).toBe('2026-11-09');
         expect(new ListCollection({ items: ['a'] }).items).toEqual(['a']);
         expect(typeof INIT_STATE).toBe('string');

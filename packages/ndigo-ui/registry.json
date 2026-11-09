@@ -541,6 +541,29 @@
         }
       ],
       "docs": "`<nd-tags-input>` generates chips from the machine value; the hidden input joins tags with `\", \"`."
+    },
+    {
+      "name": "file-upload",
+      "type": "registry:ui",
+      "title": "File upload",
+      "description": "Dropzone with accept/size/count validation, a hidden file input, and a removable file list.",
+      "author": "Ndigo <https://ndigo.dev>",
+      "categories": ["ui", "form"],
+      "dependencies": ["@zag-js/file-upload@~1.47.0"],
+      "registryDependencies": ["lib"],
+      "files": [
+        {
+          "path": "registry/ui/file-upload/nd-file-upload.ts",
+          "type": "registry:ui",
+          "target": "@ui/nd-file-upload/nd-file-upload.ts"
+        },
+        {
+          "path": "registry/ui/file-upload/nd-file-upload.css",
+          "type": "registry:file",
+          "target": "@ui/nd-file-upload/nd-file-upload.css"
+        }
+      ],
+      "docs": "`<nd-file-upload>` renders a dropzone and file list; the machine owns validation, the hidden input, and accepted files."
     }
   ]
 }

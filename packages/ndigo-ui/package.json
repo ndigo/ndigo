@@ -41,10 +41,12 @@
     "**/*.css"
   ],
   "devDependencies": {
+    "@internationalized/date": "^3.12.4",
     "@zag-js/accordion": "~1.47.0",
     "@zag-js/collection": "~1.47.0",
     "@zag-js/combobox": "~1.47.0",
     "@zag-js/core": "~1.47.0",
+    "@zag-js/date-picker": "~1.47.0",
     "@zag-js/dialog": "~1.47.0",
     "@zag-js/menu": "~1.47.0",
     "@zag-js/popover": "~1.47.0",

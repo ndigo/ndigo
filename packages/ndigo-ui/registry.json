@@ -433,6 +433,29 @@
         }
       ],
       "docs": "Copy the block and initialize it with `initCommandPalette(document)`; Cmd/Ctrl+K opens the palette and `nd-command` reports the selection."
+    },
+    {
+      "name": "date-picker",
+      "type": "registry:ui",
+      "title": "Date picker",
+      "description": "Popup calendar with an ISO form value, keyboard navigation, and min/max bounds.",
+      "author": "Ndigo <https://ndigo.dev>",
+      "categories": ["ui", "form"],
+      "dependencies": ["@zag-js/date-picker@~1.47.0", "@internationalized/date@^3.12.4"],
+      "registryDependencies": ["lib"],
+      "files": [
+        {
+          "path": "registry/ui/date-picker/nd-date-picker.ts",
+          "type": "registry:ui",
+          "target": "@ui/nd-date-picker/nd-date-picker.ts"
+        },
+        {
+          "path": "registry/ui/date-picker/nd-date-picker.css",
+          "type": "registry:file",
+          "target": "@ui/nd-date-picker/nd-date-picker.css"
+        }
+      ],
+      "docs": "`<nd-date-picker>` submits an ISO value through a hidden input; see the item README for the grid and keyboard contract."
     }
   ]
 }

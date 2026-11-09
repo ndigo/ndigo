@@ -21,6 +21,7 @@
         <link rel="stylesheet" href="/src/ui/nd-toast/nd-toast.css" />
         <link rel="stylesheet" href="/src/ui/nd-select/nd-select.css" />
         <link rel="stylesheet" href="/src/ui/nd-combobox/nd-combobox.css" />
+        <link rel="stylesheet" href="/src/ui/nd-date-picker/nd-date-picker.css" />
         <link rel="stylesheet" href="/src/ui/nd-dialog/nd-dialog.css" />
         <link rel="stylesheet" href="/src/ui/nd-drawer/nd-drawer.css" />
         <link rel="stylesheet" href="/src/components/command/command.css" />
@@ -41,6 +42,7 @@
                     <a href="#form">Form</a>
                     <a href="#feedback">Feedback</a>
                     <a href="#selection">Selection</a>
+                    <a href="#date">Date</a>
                     <a href="#dialog">Dialog</a>
                     <a href="#command">Command</a>
                     <a href="#menu">Menu</a>
@@ -61,6 +63,7 @@
                         <a href="#form">Form</a>
                         <a href="#feedback">Feedback</a>
                         <a href="#selection">Selection</a>
+                        <a href="#date">Date</a>
                         <a href="#dialog">Dialog</a>
                         <a href="#command">Command</a>
                         <a href="#menu">Menu</a>
@@ -232,6 +235,29 @@
                             </div>
                         </nd-combobox>
                     </section>
+                    <section id="date" class="lab-section" aria-labelledby="date-heading">
+                        <h2 id="date-heading">Date picker</h2>
+                        <p>The calendar grid is generated from the machine; the hidden input carries an ISO value.</p>
+                        <nd-date-picker name="lab-date" value="2026-11-09" class="lab-block">
+                            <label data-part="label">Start date</label>
+                            <div data-part="control">
+                                <input data-part="input" placeholder="Pick a date" />
+                                <button data-part="trigger" type="button" aria-label="Open calendar">v</button>
+                                <button data-part="clear-trigger" type="button">Clear</button>
+                            </div>
+                            <div data-part="positioner">
+                                <div data-part="content">
+                                    <div data-part="view-control">
+                                        <button data-part="prev-trigger" type="button">‹</button>
+                                        <span data-part="view-label"></span>
+                                        <button data-part="next-trigger" type="button">›</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </nd-date-picker>
+                        <p id="date-status" class="lab-status" role="status">No date selected</p>
+                    </section>
+
                     <section id="dialog" class="lab-section" aria-labelledby="dialog-heading">
                         <h2 id="dialog-heading">Dialog</h2>
                         <p>The modal, focus trap, and dismissal come from the Zag.js dialog machine.</p>

@@ -1,0 +1,39 @@
+{
+  "name": "@ndigo/view-toon",
+  "version": "0.0.1",
+  "description": "TOON (Token-Oriented Object Notation) view technology for Ndigo — text/toon output, a negotiation resolver, and a prompt encoder.",
+  "type": "module",
+  "files": [
+    "api",
+    "lib"
+  ],
+  "exports": {
+    ".": {
+      "default": "./lib/index.js",
+      "types": "./lib/index.d.ts"
+    }
+  },
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build:lib": "tsc -b tsconfig.build.json",
+    "test": "vitest run --config ../../vitest.config.ts"
+  },
+  "keywords": [
+    "ndigo",
+    "ndigo-js",
+    "ndigo-view",
+    "ndigo-view-toon",
+    "toon"
+  ],
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@ndigo/core": "~0.0.1",
+    "@ndigo/view": "~0.0.1",
+    "@toon-format/toon": "catalog:"
+  },
+  "devDependencies": {
+    "@ndigo/router": "~0.0.1"
+  },
+  "sideEffects": false
+}

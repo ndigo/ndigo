@@ -3,9 +3,12 @@
 **Status:** Phases 0–1 landed 2026-10-05 (owner-confirmed dependency shape);
 Phase 2 (docs) landed with the guide section below; **Phase 3 (`fromConfig`)
 landed 2026-11-10** (issue #347) — a `.toon` address suffix decodes as TOON,
-an explicit `format` overrides it, JSON stays the default. The pin advanced
-to `4.4.0` (spec v4.4) on 2026-10-31 via the October dependency train (#36).
-Ratified by [ADR-66](../decisions/2026-10-05_AD66_TOON_OPTIN_SUPPORT.md).
+an explicit `format` overrides it, JSON stays the default. **Phase 4 (the
+representation) landed 2026-11-10** (issue #348, [AD-102](../decisions/2026-11-10_AD102_TOON_REPRESENTATION.md))
+— `@ndigo/view-toon` ships `ToonView`, `toonViewResolver`, and `encodeToon`;
+AD-66 D-3 is superseded in part. The pin advanced to `4.4.0` (spec v4.4) on
+2026-10-31 via the October dependency train (#36). Ratified by
+[ADR-66](../decisions/2026-10-05_AD66_TOON_OPTIN_SUPPORT.md).
 
 **Context:** [TOON](https://github.com/toon-format/toon) (Token-Oriented
 Object Notation, spec v4.1, 2026-07-26) is a line-oriented, indentation-based
@@ -42,6 +45,7 @@ contracts, or defaults?
 | `MediaTypes` token (`text/toon`)                                                             | `@ndigo/core` `media-types.ts`                      | ✅ **Phase 0 — landed.** Inert, typed, zero-dep; negotiable only when a user composes it (view/interceptor). `getDefaultCharset()` already yields `utf-8` for `text/*` → `text/toon;charset=utf-8`, matching spec §17.       |
 | `application.json` config files                                                              | `@ndigo/boot` `StandardConfigFileLoader`            | ✅ **Phase 1 — landed.** Decode-only `.toon` variant feeding the same `JSONObject` merge pipeline. Opt-in, reversible, no default change.                                                                                    |
 | `ApplicationBuilder.fromConfig(url)`                                                         | `@ndigo/boot`                                       | ✅ **Phase 3 — landed (#347, 2026-11-10).** A `.toon` address suffix decodes as TOON; explicit `format` overrides with one refused contradiction (`'json'` over a `.toon` address); query strings stripped before detection. |
+| `@ndigo/view-toon` (`ToonView`, `toonViewResolver`, `encodeToon`)                            | `packages/ndigo-view-toon`                          | ✅ **Phase 4 — landed (#348, AD-102, 2026-11-10).** Opt-in per route, app-registered `.toon` extension only, JSON stays the default; encoder for prompt composition.                                                         |
 | Config server wire format                                                                    | `@ndigo/context` `RemotePropertySource`             | ❌ Never — external contract; ETag/last-good/304 logic is JSON-shaped.                                                                                                                                                       |
 | Wire formats (HTTP views, SSE, WebSocket/STOMP, mock-http)                                   | ndigo-view, ndigo-service, ndigo-socket, ndigo-test | ❌ Never — interop surface, IANA-registered media-types territory.                                                                                                                                                           |
 | Storage (Redis codec envelope, LibSQL session/roles, cookies, local-storage resource loader) | ndigo-redis, ndigo-orm-drizzle, platform-web        | ❌ Never — existing data, no format migration.                                                                                                                                                                               |
@@ -115,6 +119,28 @@ re-parsing, and the JSON path stays byte-identical (`response.json()`).
 Closes the owner gate: the framework itself is the consumer (agent/session
 tooling anticipating TOON traction).
 
+### Phase 4 — the representation (landed 2026-11-10, issue #348, AD-102)
+
+`packages/ndigo-view-toon` — the `view-*` technology shape, with
+`@toon-format/toon` as a **regular** pinned dependency (static import;
+`ToonView.serialize` stays synchronous and a wire surface fails at install
+time, never as a request-time missing-module error):
+
+- `ToonView` — `AbstractSerializingView` over `text/toon;charset=utf-8`
+  (spec §17); encoder failures (non-JSON values, cycles) map to
+  `IllegalStateError` with a bounded, control-stripped message and the cause
+  attached.
+- `toonViewResolver(viewName = 'toon', options?)` — the `a2uiViewResolver`
+  shape; JSON registered first keeps unopinionated clients on the default.
+- `encodeToon(value, options?)` — the synchronous prompt-composition
+  encoder; no view or HTTP involved.
+
+Boundary narrowed (AD-66 D-3 in part): TOON appears in HTTP responses only
+as an explicitly composed, per-route representation; `.toon` extension
+mapping is application-owned (never framework-wired); JSON remains the
+default and the fallback; storage/SSE/WS/STOMP/external protocols/MCP stay
+out in full. Rollback = uninstall the package and drop the resolver.
+
 ## 4. Acceptance criteria
 
 - [x] P0: `MediaTypes.TEXT_TOON` exported; registry/charset/negotiation
@@ -141,6 +167,17 @@ detection.
       (`application-builder.spec.ts`, 11 new cases; 65/65 green); decoder
       diagnostics bounded and control-stripped with the cause attached;
       docs land in guide 03.
+
+- [x] P4: `@ndigo/view-toon` ships `ToonView`, `toonViewResolver`, and
+      `encodeToon`; round-trip through the same SDK's `decode` for uniform
+      tabular, nested, scalar, degenerate, and delimiter/indentSize variants
+      (12-spec suite); resolver name contract; negotiation keeps JSON the
+      default with or without a `.toon` extension-map entry; encoder
+      diagnostics bounded with the cause attached; AD-66 marked
+      superseded-in-part, decisions index row added; guide 09 documents the
+      preference-order rule; pan-repo inventory rows (README, ARCHITECTURE
+      layer table/diagram/package map, guide 00, guide 41, coverage);
+      `tsconfig.spec.json` + `vitest.aliases.ts` entries; doc:api regenerated.
 
 ## 5. Risks & rollback
 

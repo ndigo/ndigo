@@ -2913,6 +2913,22 @@ importers:
         specifier: ^3.1.5
         version: 3.1.5
 
+  packages/ndigo-view-toon:
+    dependencies:
+      '@ndigo/core':
+        specifier: ~0.0.1
+        version: link:../ndigo-core
+      '@ndigo/view':
+        specifier: ~0.0.1
+        version: link:../ndigo-view
+      '@toon-format/toon':
+        specifier: 'catalog:'
+        version: 4.4.0
+    devDependencies:
+      '@ndigo/router':
+        specifier: ~0.0.1
+        version: link:../ndigo-router
+
   packages/ndigo-view-webcomponent:
     dependencies:
       '@ndigo/context':

@@ -206,6 +206,7 @@ Dispatch & views:
 - [ndigo-mcp](packages/ndigo-mcp/README.md) — MCP tools projected from dispatch metadata (stdio + Streamable HTTP)
 - [ndigo-view](packages/ndigo-view/README.md) — views, targets, content negotiation
 - [ndigo-view-ejs](packages/ndigo-view-ejs/README.md) — EJS template technology
+- [ndigo-view-toon](packages/ndigo-view-toon/README.md) — TOON (text/toon) view technology
 - [ndigo-view-webcomponent](packages/ndigo-view-webcomponent/README.md) — Web Component views
 
 UI & components:

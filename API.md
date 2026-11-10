@@ -60,6 +60,7 @@ package can be read — and installed — on its own.
 | `@ndigo/util` | Zero-dependency helper utilities — type guards, strings, environment, crypto | [api/README.md](packages/ndigo-util/api/README.md) |
 | `@ndigo/view` | Views, view targets, and content negotiation for Ndigo | [api/README.md](packages/ndigo-view/api/README.md) |
 | `@ndigo/view-ejs` | Ndigo View EJS — server-side EJS template rendering as an isomorphic Ndigo view technology. | [api/README.md](packages/ndigo-view-ejs/api/README.md) |
+| `@ndigo/view-toon` | TOON (Token-Oriented Object Notation) view technology for Ndigo — text/toon output, a negotiation resolver, and a prompt encoder. | [api/README.md](packages/ndigo-view-toon/api/README.md) |
 | `@ndigo/view-webcomponent` | Web Component view technology for Ndigo — component creation and event binding | [api/README.md](packages/ndigo-view-webcomponent/api/README.md) |
 
 Tooling notes:

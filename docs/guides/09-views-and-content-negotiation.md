@@ -77,6 +77,7 @@ A `ResponseEntity` adds an explicit status and headers; the platform rewrites a
 | ----------------- | -------------------------- | -------------------------------------------------- |
 | `JSONView`        | `application/json`         | `JSON.stringify` with the route as context         |
 | `A2UIView`        | `application/a2ui+json`    | Array of A2UI messages for agent-driven surfaces   |
+| `ToonView`        | `text/toon`                | Tabular/agent payloads as TOON (AD-102; opt-in)    |
 | `CSVView`         | `text/csv`                 | Records from a model field (`{ records: 'rows' }`) |
 | `TextView`        | `text/plain`               | Plain string bodies                                |
 | `OctetStreamView` | `application/octet-stream` | Binary bodies                                      |
@@ -92,6 +93,28 @@ The A2UI representation is plain JSON over the A2UI 1.0 message array
 `Accept: application/a2ui+json`) selects it; without that registration the
 logical view keeps its JSON representation. A tool result carrying
 `ModelAndView('a2ui', messages)` reaches an MCP client as the message array.
+
+### TOON (`@ndigo/view-toon`, AD-102)
+
+TOON (Token-Oriented Object Notation) is a line-oriented encoding of the JSON
+data model, tuned for LLM prompts. `ToonView` serializes a model as
+`text/toon;charset=utf-8`, and `encodeToon()` renders the same document
+synchronously for in-process prompt composition — no view or HTTP involved.
+
+Preference order matters for who gets TOON. Register the JSON resolver
+**first**, then `toonViewResolver`: without a negotiable Accept hint the
+resolver serves the first candidate, so registration order is what keeps JSON
+the default for unopinionated clients. A `.toon` path extension works only if
+the application adds `'toon'` to its own extension map — the framework's
+wiring registers nothing for it, and it is a provisional media type (not
+IANA-registered), so the representation is opt-in per route and marked
+experimental while TOON remains a Working Draft.
+
+Choose TOON for its design win: uniform arrays of flat objects — one field
+header instead of a key repetition per row. It is neutral-to-worse on small
+nested objects, so the recommendation is measured: prefer it for agent-facing
+or prompt-bound payloads of roughly 2 KB or more of tabular shape, and keep
+JSON as the default everywhere else.
 
 ## 4. Content negotiation
 
@@ -150,7 +173,7 @@ Name resolution is cached per `(name, language)`; only the media-type choice is
 per request. Resolvers map/load views — they never register components. A Web
 Component's `customElements.define` remains the module's own side effect.
 
-## 6. EJS and Web Components
+## 6. EJS, TOON, and Web Components
 
 The view **technology** is separate from the resolver:
 
@@ -158,6 +181,8 @@ The view **technology** is separate from the resolver:
   `@ndigo/content`, and the locale rides on the route (guide 17).
 - `@ndigo/view-webcomponent` — server-rendered Web Components; the browser
   hydrates them with `@ndigo/signals` (guide 29).
+- `@ndigo/view-toon` — the `text/toon` representation and prompt encoder
+  (AD-102); opt-in per route, never a default.
 - `IslandView` — server-rendered markup plus a serialized model, hydrated on
   the client; the first paint can carry trusted Declarative Shadow DOM markup.
 

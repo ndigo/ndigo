@@ -249,4 +249,5 @@ and a static document; add streaming when the page is large enough to measure.
 - [Guide 36 — Testing with `@ndigo/test`](36-testing.md) — the request harness
 - [`@ndigo/view`](../../packages/ndigo-view/README.md) — `View`, `ProducerView`, resolvers
 - [`@ndigo/view-ejs`](../../packages/ndigo-view-ejs/README.md) — a server-rendering engine
+- [`@ndigo/view-toon`](../../packages/ndigo-view-toon/README.md) — a `text/toon` representation engine
 - [`@ndigo/view-webcomponent`](../../packages/ndigo-view-webcomponent/README.md) — a client-rendering engine

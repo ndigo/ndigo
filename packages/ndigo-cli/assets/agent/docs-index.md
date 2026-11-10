@@ -109,5 +109,6 @@ matches the task; do not guess APIs from memory.
 - `@ndigo/util` — Zero-dependency helper utilities — type guards, strings, environment, crypto
 - `@ndigo/view` — Views, view targets, and content negotiation for Ndigo
 - `@ndigo/view-ejs` — Ndigo View EJS — server-side EJS template rendering as an isomorphic Ndigo view technology.
+- `@ndigo/view-toon` — TOON (Token-Oriented Object Notation) view technology for Ndigo — text/toon output, a negotiation resolver, and a prompt encoder.
 - `@ndigo/view-webcomponent` — Web Component view technology for Ndigo — component creation and event binding
 - `create-ndigo-app` — Scaffold a standalone Ndigo application (node or browser kind).

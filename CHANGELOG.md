@@ -55,6 +55,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `@ndigo/core` + `@ndigo/view`: `application/a2ui+json` and `A2UIView` — an
   A2UI 1.0 message-array representation selected by content negotiation, with
   an `a2uiViewResolver` helper and no A2UI runtime dependency.
+- `@ndigo/ui`: the `a2ui-surface` registry item — `<nd-a2ui-surface>` renders
+  A2UI 1.0 surfaces with `@a2ui/web_core` and the installed `nd-*` elements.
+  The component map is generated from `registry.json` and filtered to elements
+  the page defines; unknown components emit `nd-a2ui-error`.
 - `apps/20-ndigo-ui-lab`: a browser lab for the full ndigo-ui registry — tokens,
   native-first primitives, Zag.js behaviour elements, and all five blocks — with
   keyboard and axe coverage.

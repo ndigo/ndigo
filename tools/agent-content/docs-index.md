@@ -82,6 +82,7 @@ matches the task; do not guess APIs from memory.
 - `@ndigo/locks` — Distributed locks with fencing tokens for Node.js — the single-executor primitive behind multi-node @scheduled and cluster work
 - `@ndigo/log` — Isomorphic logging core for Ndigo — logger abstraction, severity mappings, and threshold filtering on the OpenTelemetry API
 - `@ndigo/management` — Ndigo management endpoints — /health and /metrics (actuator-style)
+- `@ndigo/mcp` — Model Context Protocol tools projected from Ndigo dispatch metadata
 - `@ndigo/openapi` — OpenAPI 3.0 documentation for Ndigo apps — spec generation from dispatch metadata + Swagger UI
 - `@ndigo/orm` — Ndigo ORM - Repository and Data Mapper persistence abstractions
 - `@ndigo/orm-drizzle` — Ndigo ORM Drizzle – Drizzle ORM adapter for @ndigo/orm

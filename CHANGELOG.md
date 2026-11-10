@@ -46,6 +46,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `@ndigo/cli`: `ui catalog` and the `get_catalog` MCP tool — an A2UI 1.0
   catalog derived from the registry and the application's `ui.lock.json`, so
   an agent can only generate components the application installed.
+- `@ndigo/mcp`: MCP tools projected from dispatch metadata — `@toolMapping`
+  handlers serve `tools/list`, `tools/call`, resources, and prompts over stdio
+  and Streamable HTTP, with read-only and `@whenFeature` policy, OpenAPI schema
+  parity, and one GenAI span per call. `ndigo add @ndigo/mcp` runs the
+  `mcp-setup` generator. `@ndigo/platform-node` exposes the raw request on the
+  route for transport-owning handlers.
 - `apps/20-ndigo-ui-lab`: a browser lab for the full ndigo-ui registry — tokens,
   native-first primitives, Zag.js behaviour elements, and all five blocks — with
   keyboard and axe coverage.

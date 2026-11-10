@@ -121,6 +121,30 @@ Claude Code reads `.claude/skills/` only; symlink each generated skill
 (`ln -s ../../.agents/skills/<id> .claude/skills/<id>`) or install the published
 mirror with `npx skills add ndigo/skills`.
 
+### Agent tools
+
+`@ndigo/mcp` turns `@toolMapping` handlers into MCP tools over stdio or
+Streamable HTTP. The input schema is projected from the same `@parameters` +
+`validatedBy` metadata that binds the request, so the OpenAPI document and
+`tools/list` carry identical schemas.
+
+```ts
+@getMapping('/orders/:id')
+@parameters({ id: pathValue() })
+@toolMapping({ name: 'get_order', readOnly: true })
+getOrder({ id }: { id: string }) {
+    /* … */
+}
+```
+
+`ndigo add @ndigo/mcp` installs the package and runs the `mcp-setup` generator
+(a wiring module plus a sample tool). `McpToolRegistry.from(dispatcher, {
+readOnly })` projects the tools; `startStdioServer(registry)` serves stdio, and
+`McpHttpEndpoint` mounted on a dispatcher route serves Streamable HTTP through
+the normal interceptor chain. `@whenFeature` hides a tool from `tools/list`;
+each call emits one `execute_tool` span with `gen_ai.tool.name` and
+`gen_ai.tool.call.id`.
+
 ### Maintenance
 
 | Command            | Runs…                                                                                                                         | Example                                           |

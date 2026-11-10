@@ -43,7 +43,7 @@ ndigo serve --cluster 4 --port 3000   # 4 replicated worker slots
 | `ndigo typecheck [dir]` | Runs the app's `typecheck` script.                                               |
 | `ndigo clean [dir]`     | Removes `dist`/`lib`/`.nx`/`coverage` (`--dryRun` previews; `--force` required). |
 | `ndigo inspect [dir]`   | Runs the app's `inspect` entry (the manifest printer).                           |
-| `ndigo routes [dir]`    | Alias of `inspect` (the route-table view).                                       |
+| `ndigo routes [dir]`    | Runs `inspect`; `--json` emits the manifest's route list.                        |
 | `ndigo logs [dir]`      | Tails `logs/app.log` (`--file`, `--lines`, `--follow`).                          |
 
 ### Scaffolding and generators
@@ -103,15 +103,16 @@ separately.
 ### Agents
 
 `ndigo mcp [dir]` runs the application's introspection tools as a stdio MCP
-server: `get_manifest`, `get_routes`, `get_config_keys` (presence only),
-`get_best_practices`, `run_doctor`, and `get_logs`. `run_target`
-(build/test/lint) and `record_rule` (`.ndigo/rules/`) are omitted under
-`--readOnly`; `--live` delegates to the application's own `scripts.mcp`.
+server: `get_manifest`, `get_commands`, `get_routes`, `get_config_keys`
+(presence only), `get_best_practices`, `run_doctor`, and `get_logs`.
+`run_target` (build/test/lint) and `record_rule` (`.ndigo/rules/`) are omitted
+under `--readOnly`; `--live` delegates to the application's own `scripts.mcp`.
 
 ### Maintenance and DX
 
 | Command               | What it does                                                                              |
 | :-------------------- | :---------------------------------------------------------------------------------------- |
+| `ndigo commands`      | Lists every verb with its flags, positionals, and exit codes (`--json`).                  |
 | `ndigo doctor`        | Environment diagnostics — the issue-report starter.                                       |
 | `ndigo info`          | `doctor` plus the installed `@ndigo/*` packages.                                          |
 | `ndigo update [dir]`  | Bumps `@ndigo/*` from a version manifest (`--check` compares; apply pins exact versions). |
@@ -121,7 +122,10 @@ server: `get_manifest`, `get_routes`, `get_config_keys` (presence only),
 | `ndigo completion`    | Prints a bash completion script (`--shell`).                                              |
 
 Every command: `--help`/`-h`, `--version`/`-v`, exit `0` ok / `2` usage /
-`1` runtime. Scripts run **shell-free** (single commands only) so OS
+`1` runtime. Commands with a machine-readable form take `--json`: one JSON
+document on stdout, diagnostics on stderr, exit codes unchanged, and human
+output untouched without the flag. `serve`, `build`, `test`, `inspect`, and
+`mcp` have no `--json`. Scripts run **shell-free** (single commands only) so OS
 signals reach the actual application — package-manager `run` wrappers and
 dash-style shells both swallow `SIGTERM`.
 

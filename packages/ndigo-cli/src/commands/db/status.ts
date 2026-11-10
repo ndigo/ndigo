@@ -7,22 +7,27 @@
  * journal readback (`_ndigo_migrations`) is the app's, not the CLI's.
  */
 import { buildCommand } from '@stricli/core';
-import { resolveAppDir, runAppOnce } from '../../helpers/app-scripts.js';
+import { captureAppOnce, resolveAppDir, runAppOnce } from '../../helpers/app-scripts.js';
+import { jsonFlag, writeJson } from '../_json.js';
+
+const STATUS_HINT = 'add a "db:status" script, e.g. "db:status": "tsx src/db-status.ts"';
 
 /**
  * The database status command.
  */
 export const dbStatusCommand = buildCommand({
-    async func(_flags: {}, dir: string) {
+    async func(flags: { json?: boolean }, dir: string) {
         const resolved = resolveAppDir(dir);
-        process.exitCode = await runAppOnce(
-            resolved,
-            'db:status',
-            'add a "db:status" script, e.g. "db:status": "tsx src/db-status.ts"'
-        );
+        if (flags.json === true) {
+            const result = await captureAppOnce(resolved, 'db:status', STATUS_HINT);
+            writeJson({ target: 'db:status', ...result });
+            process.exitCode = result.exitCode;
+            return;
+        }
+        process.exitCode = await runAppOnce(resolved, 'db:status', STATUS_HINT);
     },
     parameters: {
-        flags: {},
+        flags: { json: jsonFlag },
         positional: {
             kind: 'tuple',
             parameters: [

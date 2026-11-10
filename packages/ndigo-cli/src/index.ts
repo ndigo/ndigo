@@ -15,6 +15,7 @@ import { devCommand } from './commands/dev.js';
 import { newCommand } from './commands/new.js';
 import { generateCommand } from './commands/generate.js';
 import { inspectCommand } from './commands/inspect.js';
+import { routesCommand } from './commands/routes.js';
 import { mcpCommand } from './commands/mcp.js';
 import { doctorCommand } from './commands/doctor.js';
 import { infoCommand } from './commands/info.js';
@@ -42,6 +43,8 @@ import { dbStudioCommand } from './commands/db/studio.js';
 import { dbSeedCommand } from './commands/db/seed.js';
 import { dbRollbackCommand } from './commands/db/rollback.js';
 import { uiRouteMap } from './commands/ui/index.js';
+import { commandsCommand } from './commands/commands.js';
+import { collectCommandIndex, setCommandIndex } from './commands/_command-registry.js';
 
 /**
  * Builds the Stricli application for `@ndigo/cli`.
@@ -77,7 +80,9 @@ export function buildCliApp() {
             new: newCommand,
             generate: generateCommand,
             inspect: inspectCommand,
+            routes: routesCommand,
             mcp: mcpCommand,
+            commands: commandsCommand,
             doctor: doctorCommand,
             info: infoCommand,
             build: buildCmd,
@@ -96,9 +101,11 @@ export function buildCliApp() {
             ui: uiRouteMap,
             db: dbRouteMap,
         },
-        aliases: { g: 'generate', routes: 'inspect' },
+        aliases: { g: 'generate' },
         docs: { brief: 'The Ndigo framework CLI' },
     });
+
+    setCommandIndex(collectCommandIndex(rootRouteMap));
 
     let version = '0.0.1';
     try {

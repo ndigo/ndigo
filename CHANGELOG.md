@@ -32,6 +32,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (`get_manifest`, `get_routes`, `get_config_keys`, `get_best_practices`,
   `run_doctor`, `get_logs`, `run_target`, `record_rule`), with `--readOnly`
   gating and `--live` delegation to the app's `scripts.mcp`.
+- `@ndigo/cli`: one `--json` contract across `doctor`, `info`, `logs`,
+  `config list`, `env`, `openapi`, `db status`, `lint`, `typecheck`, and
+  `routes` — one document on stdout, diagnostics on stderr, exit codes
+  unchanged, human output untouched without the flag. `ndigo commands` (and
+  the MCP `get_commands` tool) publishes the command index with flags,
+  positionals, and exit codes.
 - `apps/20-ndigo-ui-lab`: a browser lab for the full ndigo-ui registry — tokens,
   native-first primitives, Zag.js behaviour elements, and all five blocks — with
   keyboard and axe coverage.

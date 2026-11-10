@@ -3,6 +3,7 @@
  */
 import { buildCommand } from '@stricli/core';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { jsonFlag, writeJson } from './_json.js';
 
 const CONFIG_FILE = '.ndigorc.json';
 
@@ -26,8 +27,17 @@ function readConfig(): Record<string, unknown> {
  * The app-config get/set/list command.
  */
 export const configCommand = buildCommand({
-    async func(flags: { list?: boolean }, action: string, key: string, value: string) {
+    async func(flags: { list?: boolean; json?: boolean }, action: string, key: string, value: string) {
         const cfg = readConfig();
+        if (flags.json === true) {
+            if (flags.list !== true && action !== 'list') {
+                process.stderr.write('--json is only supported for config list\n');
+                process.exitCode = 2;
+                return;
+            }
+            writeJson({ entries: cfg });
+            return;
+        }
         if (flags.list || action === 'list') {
             for (const [k, v] of Object.entries(cfg)) process.stdout.write(`${k}=${JSON.stringify(v)}\n`);
             return;
@@ -56,7 +66,10 @@ export const configCommand = buildCommand({
         process.exitCode = 2;
     },
     parameters: {
-        flags: { list: { kind: 'boolean', brief: 'List all config keys.', optional: true } },
+        flags: {
+            list: { kind: 'boolean', brief: 'List all config keys.', optional: true },
+            json: jsonFlag,
+        },
         positional: {
             kind: 'tuple',
             parameters: [

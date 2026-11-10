@@ -13,6 +13,7 @@ import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
 import { createAppServer, startAppServer } from '../src/mcp/server.js';
 import type { AppServerOptions } from '../src/mcp/server.js';
+import { buildCliApp } from '../src/index.js';
 
 const MANIFEST = {
     version: 1,
@@ -103,6 +104,7 @@ describe('ndigo mcp', () => {
         const client = await connect({ dir: createApp() });
         expect(await toolNames(client)).toEqual([
             'get_best_practices',
+            'get_commands',
             'get_config_keys',
             'get_logs',
             'get_manifest',
@@ -127,6 +129,18 @@ describe('ndigo mcp', () => {
         expect(await call(client, 'get_manifest', {})).toEqual(MANIFEST);
         expect(await call(client, 'get_routes', {})).toEqual({ routes: MANIFEST.routes });
         expect(await call(client, 'get_config_keys', {})).toEqual({ keys: MANIFEST.config });
+    });
+
+    it('returns the command index through get_commands', async () => {
+        buildCliApp();
+        const client = await connect({ dir: createApp() });
+        const index = (await call(client, 'get_commands', {})) as {
+            commands: { command: string; flags: { name: string }[]; positionals: { name: string }[] }[];
+        };
+        expect(index.commands.map((entry) => entry.command)).toContain('commands');
+        const mcp = index.commands.find((entry) => entry.command === 'mcp');
+        expect(mcp?.flags.map((flag) => flag.name)).toEqual(['readOnly', 'live']);
+        expect(mcp?.positionals.map((positional) => positional.name)).toEqual(['dir']);
     });
 
     it('reports a missing inspect script with the AD-70 hint', async () => {

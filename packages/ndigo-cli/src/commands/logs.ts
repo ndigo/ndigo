@@ -6,13 +6,14 @@
  */
 import { buildCommand, numberParser } from '@stricli/core';
 import { closeSync, existsSync, openSync, readFileSync, readSync, statSync, unwatchFile, watchFile } from 'node:fs';
-import { resolveLogFile, tailLines } from '../helpers/log-tail.js';
+import { readLogTail, resolveLogFile, tailLines } from '../helpers/log-tail.js';
+import { jsonFlag, writeJson } from './_json.js';
 
 /**
  * The log-file tail command.
  */
 export const logsCommand = buildCommand({
-    async func(flags: { file?: string; lines?: number; follow?: boolean }, dir: string) {
+    async func(flags: { file?: string; lines?: number; follow?: boolean; json?: boolean }, dir: string) {
         // `dir` names the app whose default log location is used; --file
         // overrides the location entirely (no package.json check — a log
         // file is addressable without the app manifest).
@@ -30,6 +31,16 @@ export const logsCommand = buildCommand({
         if (!Number.isInteger(lines) || lines <= 0) {
             process.stderr.write(`--lines must be a positive integer (received ${flags.lines})\n`);
             process.exitCode = 2;
+            return;
+        }
+
+        if (flags.json === true) {
+            if (flags.follow === true) {
+                process.stderr.write('--json emits one snapshot — omit --follow\n');
+                process.exitCode = 2;
+                return;
+            }
+            writeJson({ file, lines, content: readLogTail(file, lines) });
             return;
         }
 
@@ -106,6 +117,7 @@ export const logsCommand = buildCommand({
                 optional: true,
             },
             follow: { kind: 'boolean', brief: 'Follow the log (tail -f).', optional: true },
+            json: jsonFlag,
         },
         positional: {
             kind: 'tuple',

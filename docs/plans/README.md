@@ -7,6 +7,19 @@ Every implemented plan has its **decision recorded** in
 
 ## Completed Plans
 
+### 2026-11-09 - Agent and LLM integration
+
+Two audiences, one derived surface: a machine-readable CLI (`--json`,
+`commands`), version-matched agent content (`ndigo ai:*`), an extracted MCP host
+with `ndigo mcp`, `@ndigo/mcp` tools projected from dispatch metadata, and the
+A2UI/MCP Apps/WebMCP UI story, ending with the provider-neutral `@ndigo/ai`
+loop and its `@ndigo/ai-sdk` adapter. All phases P0–P5 shipped; decisions
+AD-96..AD-101.
+
+[Read plan](2026-11-09_LLM_AGENT_INTEGRATION.md)
+
+---
+
 ### 2026-11-06 - Database adapter abstraction
 
 The `db` command family became engine-agnostic: `@ndigo/orm` defines the
@@ -607,7 +620,6 @@ Standardized all UPPER_SNAKE_CASE RegExp constants to camelCase with Rule suffix
 
 ## Draft Plans
 
-- [2026-11-09_LLM_AGENT_INTEGRATION.md](2026-11-09_LLM_AGENT_INTEGRATION.md) - Agent and LLM integration: `--json` CLI contract, agent content and `ndigo ai:*`, extracted MCP host and `ndigo mcp`, `@ndigo/mcp` tool projection, A2UI/MCP Apps/WebMCP, `@ndigo/ai` (phases P0–P5; P2 first).
 - [2026-11-08_NDIGO_UI.md](2026-11-08_NDIGO_UI.md) - Ndigo UI: owned design system, shadcn-compatible copy-in registry, Zag.js behaviour, phased plan (0–4).
 - [2026-11-06_CLI_INFRASTRUCTURE_REMAINING.md](2026-11-06_CLI_INFRASTRUCTURE_REMAINING.md) - Reconciled `ndigo-cli` infrastructure work plan: what landed through the expansion wave + 2026-11-06 review remediation (#145–#153), and the genuinely open items — the remote version manifest, `--with-db`, the `full-stack` preset, the openapi runner, `logs --since`.
 

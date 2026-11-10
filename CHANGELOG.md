@@ -22,6 +22,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `@ndigo/ai`: provider-neutral agent contracts — messages, streaming events,
+  structured output, and a bounded tool-calling loop over `@ndigo/mcp` tool
+  sources, with GenAI spans, rate limits, and rollout flags.
+- `@ndigo/ai-sdk`: the Vercel AI SDK integration layer (`ai`), the only package
+  that imports the SDK; tools are declared but executed by the agent loop.
+- `@ndigo/mcp`: `McpToolRegistry.from(dispatcher)` now accepts the real
+  dispatcher type, and `argumentResolvers` binds parameterized tools through
+  the same chain HTTP uses. Tools without it fail with a clear error instead
+  of a missing-resolver crash.
+- `apps/21-ndigo-agent-lab`: a local-model tool loop over the same
+  `@toolMapping` handlers served by HTTP and MCP, streamed over SSE with one
+  trace.
 - `@ndigo/ui`: the owned design system — canonical `--nd-*` tokens, the opt-in
   base layer, the typed token catalog, and a shadcn-compatible copy-in registry
   (41 items: theme, element foundation, native-first and Zag.js primitives, and

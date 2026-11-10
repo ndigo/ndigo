@@ -9,6 +9,10 @@ The Ndigo framework CLI — serve, build, db, generate, inspect, and the develop
 ## Modules
 
 - [commands/add](commands/add/README.md)
+- [commands/ai](commands/ai/README.md)
+- [commands/ai/check](commands/ai/check/README.md)
+- [commands/ai/init](commands/ai/init/README.md)
+- [commands/ai/update](commands/ai/update/README.md)
 - [commands/build](commands/build/README.md)
 - [commands/clean](commands/clean/README.md)
 - [commands/commands](commands/commands/README.md)

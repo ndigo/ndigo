@@ -12,7 +12,8 @@
   "files": [
     "bin",
     "api",
-    "lib"
+    "lib",
+    "assets"
   ],
   "bin": {
     "ndigo": "./bin/run.js"

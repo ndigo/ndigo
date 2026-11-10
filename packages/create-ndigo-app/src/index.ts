@@ -18,6 +18,7 @@ interface ParsedArgs {
     yes: boolean;
     local: boolean;
     force: boolean;
+    agents?: boolean;
     help: boolean;
     version: boolean;
 }
@@ -43,6 +44,10 @@ function parseArgs(argv: string[]): ParsedArgs {
             result.local = true;
         } else if (token === '--force') {
             result.force = true;
+        } else if (token === '--agents') {
+            result.agents = true;
+        } else if (token === '--no-agents') {
+            result.agents = false;
         } else if (token === '--help' || token === '-h') {
             result.help = true;
         } else if (token === '--version') {
@@ -100,7 +105,7 @@ function rewriteLocalDeps(targetDir: string): void {
     writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, 'utf8');
 }
 
-function printNextSteps(targetDir: string, kind: AppKind): void {
+function printNextSteps(targetDir: string, kind: AppKind, agents: boolean): void {
     console.log(`\nScaffolded ${kind} app at ${targetDir}\n`);
     console.log('Next steps:');
     console.log(`  cd ${targetDir}`);
@@ -111,6 +116,7 @@ function printNextSteps(targetDir: string, kind: AppKind): void {
         console.log('  pnpm dev     # or: pnpm test');
     }
     console.log('  pnpm test');
+    if (!agents) console.log('  ndigo ai:init   # add agent context (AGENTS.md + skills)');
 }
 
 /**
@@ -148,6 +154,8 @@ Options:
   --yes, -y               Accept defaults without prompting
   --local                 Rewrite @ndigo/* deps to file: links (dev mode)
   --force                 Overwrite a non-empty target directory
+  --agents                Write the AGENTS.md agent bootstrap (default: on)
+  --no-agents             Skip the agent bootstrap
   --help, -h              Show this help
   --version               Show version
 `);
@@ -207,6 +215,18 @@ Options:
         return 2;
     }
 
+    let agents: boolean;
+    try {
+        agents =
+            parsed.agents ??
+            (parsed.yes
+                ? true
+                : (await promptChoice('Agent context (AGENTS.md)', ['yes', 'no'] as const, 'yes')) === 'yes');
+    } catch (error) {
+        console.error(`create-ndigo-app: ${(error as Error).message}`);
+        return 2;
+    }
+
     let description: string;
     try {
         description =
@@ -254,6 +274,7 @@ Options:
         yes: parsed.yes,
         local: parsed.local,
         force: parsed.force,
+        agents,
     });
     try {
         copyTemplate(kind, targetDir, vars);
@@ -261,6 +282,7 @@ Options:
         console.error(`create-ndigo-app: ${(error as Error).message}`);
         return 1;
     }
+    if (!agents) rmSync(join(targetDir, 'AGENTS.md'), { force: true });
 
     if (parsed.local) {
         try {
@@ -273,7 +295,7 @@ Options:
         console.log('   with this directory added to pnpm-workspace.yaml or placed under apps/.)');
     }
 
-    printNextSteps(targetDir, kind);
+    printNextSteps(targetDir, kind, agents);
     return 0;
 }
 

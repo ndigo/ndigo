@@ -51,6 +51,7 @@ const TOP_LEVEL = [
 ];
 const DB_COMMANDS = ['generate', 'list', 'migrate', 'new', 'pull', 'push', 'rollback', 'seed', 'status', 'studio'];
 const UI_COMMANDS = ['add', 'init', 'list', 'mcp', 'validate', 'view'];
+const AI_COMMANDS = ['check', 'init', 'update'];
 
 interface Result {
     readonly code: number;
@@ -146,9 +147,10 @@ describe('ndigo commands --json', () => {
         const result = await runCli(['commands', '--json']);
         const index = document<{ commands: { command: string }[] }>(result);
         const expected = [
-            ...TOP_LEVEL.filter((name) => name !== 'db' && name !== 'ui'),
+            ...TOP_LEVEL.filter((name) => name !== 'db' && name !== 'ui' && name !== 'ai'),
             ...DB_COMMANDS.map((name) => `db ${name}`),
             ...UI_COMMANDS.map((name) => `ui ${name}`),
+            ...AI_COMMANDS.map((name) => `ai ${name}`),
         ].sort();
         expect(index.commands.map((entry) => entry.command).sort()).toEqual(expected);
     });

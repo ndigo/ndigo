@@ -10,6 +10,14 @@ Parsed CLI flags.
 
 ## Properties
 
+### agents
+
+> **agents**: `boolean`
+
+Write the AGENTS.md bootstrap pointer (default: on).
+
+***
+
 ### description
 
 > **description**: `string`

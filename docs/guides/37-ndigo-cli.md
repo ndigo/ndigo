@@ -94,11 +94,33 @@ hands stdio to the application's own `scripts.mcp` instead of the static set.
 clients, so an agent can discover the CLI surface without shelling out. The
 `ui mcp` server stays registry-specific.
 
+### Agent context
+
+`ndigo ai:init [dir]` writes the version-matched agent context:
+
+- the managed block in `AGENTS.md` between `<!-- BEGIN:ndigo-agent-rules -->`
+  and `<!-- END:ndigo-agent-rules -->`, preserving everything outside;
+- nine skills under `.agents/skills/<id>/SKILL.md` (read by Codex, Cursor,
+  Copilot, Gemini CLI, OpenCode, Antigravity, Junie, and OpenClaw);
+- `.mcp.json` only with `--mcp`, merging the `ndigo` server and preserving every
+  other server.
+
+`ndigo ai:check` exits `1` when the generated content is stale; `ndigo ai:update`
+refreshes it. `--force` replaces drifted generated skill files; `--skills`
+writes skills only; `--instruction-file <path>` targets another instruction
+file; `--dry-run` prints the plan. The content ships with the CLI, so it matches
+the installed framework version, not the website.
+
+Claude Code reads `.claude/skills/` only; symlink each generated skill
+(`ln -s ../../.agents/skills/<id> .claude/skills/<id>`) or install the published
+mirror with `npx skills add ndigo/skills`.
+
 ### Maintenance
 
 | Command            | Runs…                                                                                                                         | Example                                           |
 | :----------------- | :---------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------ |
 | `ndigo commands`   | (CLI-owned: every verb, flag, positional, and exit code; `--json`)                                                            | `ndigo commands --json`                           |
+| `ndigo ai`         | `init`/`check`/`update` — `AGENTS.md` rules, `.agents/skills/`, optional `.mcp.json`                                          | `ndigo ai:init`                                   |
 | `ndigo doctor`     | (self-diagnostics: versions, workspace, git, checks)                                                                          | `ndigo doctor`                                    |
 | `ndigo info`       | `doctor` + installed `@ndigo/*` packages                                                                                      | `ndigo info`                                      |
 | `ndigo update`     | (CLI-owned: applies exact pins from a version manifest, then `pnpm install`; `--check` compares, `--manifest` picks the file) | `ndigo update --check`                            |

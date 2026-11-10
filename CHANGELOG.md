@@ -38,6 +38,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   unchanged, human output untouched without the flag. `ndigo commands` (and
   the MCP `get_commands` tool) publishes the command index with flags,
   positionals, and exit codes.
+- `@ndigo/cli`: `ai:init`/`ai:check`/`ai:update` — a version-matched managed
+  `AGENTS.md` block, nine skills under `.agents/skills/`, and optional
+  `.mcp.json` wiring, generated from `tools/agent-content/` and shipped with
+  the CLI. `create-ndigo-app` gains `--agents`/`--no-agents` for the bootstrap
+  pointer.
 - `apps/20-ndigo-ui-lab`: a browser lab for the full ndigo-ui registry — tokens,
   native-first primitives, Zag.js behaviour elements, and all five blocks — with
   keyboard and axe coverage.

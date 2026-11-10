@@ -23,6 +23,8 @@ export interface ScaffoldOptions {
     local: boolean;
     /** Force overwrite a non-empty target directory. */
     force: boolean;
+    /** Write the AGENTS.md bootstrap pointer (default: on). */
+    agents: boolean;
 }
 
 /** A single file-write plan entry. */

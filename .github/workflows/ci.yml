@@ -212,6 +212,12 @@ jobs:
         # not freshness against the store.
         run: pnpm agents:check
 
+      - name: Consumer agent content integrity
+        # tools/agent-content is the authored store; the CLI assets and the
+        # CNA bootstrap templates are generated. Regenerate with
+        # `pnpm agent-content:build` — never hand-edit the emitted files.
+        run: pnpm agent-content:check
+
       - name: Strict type-check
         # Per-project tsc -b with the build config over every package and
         # app (`pnpm typecheck`). Scoped with --filter so out-of-tree

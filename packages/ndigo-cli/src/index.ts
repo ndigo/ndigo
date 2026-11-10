@@ -15,6 +15,7 @@ import { devCommand } from './commands/dev.js';
 import { newCommand } from './commands/new.js';
 import { generateCommand } from './commands/generate.js';
 import { inspectCommand } from './commands/inspect.js';
+import { mcpCommand } from './commands/mcp.js';
 import { doctorCommand } from './commands/doctor.js';
 import { infoCommand } from './commands/info.js';
 import { buildScriptCommand as buildCmd } from './commands/build.js';
@@ -76,6 +77,7 @@ export function buildCliApp() {
             new: newCommand,
             generate: generateCommand,
             inspect: inspectCommand,
+            mcp: mcpCommand,
             doctor: doctorCommand,
             info: infoCommand,
             build: buildCmd,

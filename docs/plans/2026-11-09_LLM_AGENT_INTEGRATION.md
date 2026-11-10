@@ -89,9 +89,13 @@ agent surface.
 - **D-6 — Consumer content ships with the CLI.** Skills, docs index, and
   instruction blocks are version-matched to the installed framework, not to the
   website's latest.
-- **D-7 — No harness matrix.** Emit `AGENTS.md`, a portable `skills/` directory,
-  and `.mcp.json`; document per-client snippets on the site. `graft` already
-  deploys agent wiring across claude/codex/copilot/antigravity/hermes — do not
+- **D-7 — No harness matrix.** Emit the paths harnesses already share:
+  `AGENTS.md` at the repository root and `.agents/skills/<id>/SKILL.md`.
+  `.mcp.json` is written only under `--mcp`, and only in its Claude Code /
+  Copilot CLI shape; every other client is a documented snippet on the site.
+  Per-harness installation is delegated to `npx skills add` against the
+  generated mirror, never implemented in the CLI. `graft` already deploys
+  agent wiring across claude/codex/copilot/antigravity/hermes — do not
   duplicate that.
 - **D-8 — Representations are negotiated, not special-cased.** A2UI, MCP App
   resources, and TOON are all view representations selected by content
@@ -113,9 +117,11 @@ agent surface.
 | `<nd-a2ui-surface>`                         | `packages/ndigo-ui/registry/ui/a2ui-surface/` | Copy-in item; third-party imports inside registry items are the norm (`@zag-js/*`)      |
 | `@ndigo/ai`                                 | new package                                   | Wraps the AI SDK through an integration layer, like `@ndigo/dom` wraps linkedom         |
 | Catalogue pages, `llms.txt`, `/r/` payloads | `ndigo-site`                                  | Published views                                                                         |
+| Agent setup page, skills mirror             | `ndigo-site`, generated `ndigo/skills`        | Per-client snippets and a generated publication; no authored client files               |
 
-No new repository. Everything here is version-locked to framework internals or
-to registry shape.
+No new development repository. Everything here is version-locked to framework
+internals or to registry shape; the `ndigo/skills` mirror is a generated
+publication, not a source.
 
 ---
 
@@ -169,7 +175,7 @@ passes; every swept command emits valid JSON; default output byte-identical;
     ```
     tools/agent-content/
       instructions/ndigo.md          # the managed AGENTS.md block body
-      skills/<id>/SKILL.md           # nine skills, see below
+      skills/<id>/SKILL.md           # nine skills, see below; emitted to .agents/skills/
       docs-index.md                  # compressed index over docs/guides + packages
       build.mjs                      # emits CLI assets + CNA templates
       .agent-content.json            # sha256 manifest, CI-gated
@@ -182,6 +188,14 @@ passes; every swept command emits valid JSON; default output byte-identical;
     store serves agents working _on_ Ndigo, this one serves agents working _with_
     it. Do not merge the two.
 
+    The emitted skill target is `<app>/.agents/skills/<id>/SKILL.md` — the shared
+    location read by Codex, Cursor, Copilot, Gemini CLI, OpenCode, Antigravity,
+    Junie, and OpenClaw. Claude Code reads `.claude/skills/` only; the site
+    documents a per-skill symlink rather than the CLI writing a second copy.
+    Root `skills/` is not used — it is OpenClaw's workspace convention, not a
+    shared one. One constant in `build.mjs` names the target, so a future
+    convention change stays a one-line edit.
+
 - Nine skills, one per verb cluster: `ndigo-app`, `ndigo-endpoint`,
   `ndigo-persistence`, `ndigo-views`, `ndigo-ui`, `ndigo-reactive`,
   `ndigo-verify`, `ndigo-debug`, `ndigo-upgrade`. Each is short (≤120 lines):
@@ -193,15 +207,20 @@ passes; every swept command emits valid JSON; default output byte-identical;
 - `ndigo ai:init | ai:check | ai:update` as a route map
   (`packages/ndigo-cli/src/commands/ai/`):
 
-    | Command         | Behaviour                                                                                                                                                                                                      |
-    | :-------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-    | `ai:init [dir]` | Writes the managed block into `AGENTS.md` between `<!-- BEGIN:ndigo-agent-rules -->` / `<!-- END:ndigo-agent-rules -->`, preserving everything outside; writes `skills/`; writes `.mcp.json` only with `--mcp` |
-    | `ai:check`      | Regenerates in memory, diffs, exits 1 when stale                                                                                                                                                               |
-    | `ai:update`     | Same as init, intended for post-`ndigo update`                                                                                                                                                                 |
+    | Command         | Behaviour                                                                                                                                                                                                                                                |
+    | :-------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+    | `ai:init [dir]` | Writes the managed block into `AGENTS.md` between `<!-- BEGIN:ndigo-agent-rules -->` / `<!-- END:ndigo-agent-rules -->`, preserving everything outside; writes `.agents/skills/`; writes `.mcp.json` (Claude Code / Copilot CLI shape) only with `--mcp` |
+    | `ai:check`      | Regenerates in memory, diffs, exits 1 when stale                                                                                                                                                                                                         |
+    | `ai:update`     | Same as init, intended for post-`ndigo update`                                                                                                                                                                                                           |
 
     Flags: `--dry-run`, `--force`, `--skills`, `--mcp`, `--instruction-file
   <path>` (default `AGENTS.md`), `--dir <path>`. No `--agent claude|copilot|…`
     matrix (D-7).
+
+    `--mcp` is the only client-specific flag. `.mcp.json` is read by Claude Code
+    and Copilot CLI; VS Code (`.vscode/mcp.json`), Cursor (`.cursor/mcp.json`),
+    Gemini (`.gemini/settings.json`), and OpenCode (`opencode.json`) each get a
+    snippet in the site table, not a generated file.
 
 - `create-ndigo-app`: `ScaffoldOptions.agents: boolean`; `--agents` /
   `--no-agents`; interactive prompt defaulting to Yes; `--yes` implies on;
@@ -214,10 +233,19 @@ passes; every swept command emits valid JSON; default output byte-identical;
     `ScaffoldOptions` and `printNextSteps`, so sequence them together even though
     neither blocks the other.
 
+- `ndigo-site`: one "using Ndigo with your agent" page — canonically
+  `AGENTS.md` + `.agents/skills/`, the Claude Code per-skill symlink snippet,
+  and one MCP config snippet per client (Claude Code / Copilot CLI, VS Code,
+  Cursor, Gemini, OpenCode). This page is the only per-client documentation
+  surface; applications receive no generated client files.
+
 **Exit criteria.** Fresh scaffold with `--yes` contains a valid `AGENTS.md`
 and no stale claims; `ndigo ai:init` on an existing app is idempotent
-(two runs, no diff); `ai:check` fails after a manual edit to generated content;
-CNA tests cover both flag values; `pnpm agent-content:check` in CI.
+(two runs, no diff); the tree it creates is exactly `AGENTS.md`,
+`.agents/skills/*/SKILL.md`, and (with `--mcp`) `.mcp.json` — no writes to
+`.claude/`, `.github/`, `.cursor/`, or `.opencode/`; `ai:check` fails after a
+manual edit to generated content; CNA tests cover both flag values;
+`pnpm agent-content:check` in CI.
 
 **Single-lane files.** `packages/create-ndigo-app/api/`, `packages/ndigo-cli/api/`.
 
@@ -435,14 +463,14 @@ stderr, exit codes unchanged, human output untouched when absent.
 
 ## 6. Testing
 
-| Layer         | Coverage                                                                                                                            |
-| :------------ | :---------------------------------------------------------------------------------------------------------------------------------- |
-| CLI JSON      | Snapshot each `--json` payload shape; assert `commands` parity against route map keys                                               |
-| Agent content | `agent-content:check` drift gate; `ai:init` idempotency (two runs → no diff); marker-block preservation around hand-written content |
-| MCP host      | Reuse `ui mcp` tests post-extraction; `--readOnly` tool-list assertions                                                             |
-| `@ndigo/mcp`  | OpenAPI ↔ `tools/list` schema parity; bearer and scope rejection; feature-gated tools absent from the list                          |
-| A2UI          | Catalog completeness against `registry.json`; unknown-component rejection; surface rendering in the lab                             |
-| CNA           | Both `--agents` values; `--force` over an existing `AGENTS.md` must not clobber outside the markers                                 |
+| Layer         | Coverage                                                                                                                                                                                                               |
+| :------------ | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| CLI JSON      | Snapshot each `--json` payload shape; assert `commands` parity against route map keys                                                                                                                                  |
+| Agent content | `agent-content:check` drift gate; `ai:init` idempotency (two runs → no diff); marker-block preservation around hand-written content; emitted tree is exactly `AGENTS.md` + `.agents/skills/`; mirror matches the store |
+| MCP host      | Reuse `ui mcp` tests post-extraction; `--readOnly` tool-list assertions                                                                                                                                                |
+| `@ndigo/mcp`  | OpenAPI ↔ `tools/list` schema parity; bearer and scope rejection; feature-gated tools absent from the list                                                                                                             |
+| A2UI          | Catalog completeness against `registry.json`; unknown-component rejection; surface rendering in the lab                                                                                                                |
+| CNA           | Both `--agents` values; `--force` over an existing `AGENTS.md` must not clobber outside the markers                                                                                                                    |
 
 The repo's existing gates apply unchanged: `pnpm lint`, `pnpm typecheck`,
 `pnpm build`, `pnpm test`, `pnpm manifest:check`, `pnpm docs:links`,
@@ -452,16 +480,17 @@ The repo's existing gates apply unchanged: `pnpm lint`, `pnpm typecheck`,
 
 ## 7. Risks
 
-| Risk                                        | Mitigation                                                                                                                                                           |
-| :------------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| MCP tool surface becomes an attack surface  | Read-only default (D-5); auth on every remote transport; audit log; approval path for destructive tools; `--readOnly` omits from `tools/list`, not just `tools/call` |
-| Skills go uninvoked (56% in Vercel's evals) | Passive `AGENTS.md` block and docs index carry the facts; skills only carry workflows (D-4)                                                                          |
-| Generated content rots                      | `agent-content:check` in CI; content generated, never hand-edited; docs renumbered twice already (12 → 90)                                                           |
-| Two agent-content stores drift              | Internal (`development-agents/`, `agent-local/`) and consumer (`tools/agent-content/`) are separate by design; neither imports the other                             |
-| A2UI revision churn                         | Bind through `web_core`; mapping table is data; (a) and (b) carry no A2UI dependency at all                                                                          |
-| Registry churn destabilises P4              | Sequence P4 after UI intake settles; `registry.json` is single-lane                                                                                                  |
-| `ndigo mcp` duplicates `ui mcp`             | Host extracted first (P2), one implementation, two route maps                                                                                                        |
-| Scope creep into an AI SDK competitor       | P5 is last and requires a demonstrated consumer                                                                                                                      |
+| Risk                                        | Mitigation                                                                                                                                                                                                  |
+| :------------------------------------------ | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| MCP tool surface becomes an attack surface  | Read-only default (D-5); auth on every remote transport; audit log; approval path for destructive tools; `--readOnly` omits from `tools/list`, not just `tools/call`                                        |
+| Skills go uninvoked (56% in Vercel's evals) | Passive `AGENTS.md` block and docs index carry the facts; skills only carry workflows (D-4)                                                                                                                 |
+| Generated content rots                      | `agent-content:check` in CI; content generated, never hand-edited; docs renumbered twice already (12 → 90)                                                                                                  |
+| Harness skill and MCP paths churn           | One target constant in `build.mjs`; canonical paths only (`.agents/skills/`); per-client installs delegated to `npx skills add`; no copies written into `.claude/`, `.github/`, `.opencode/`, or `.cursor/` |
+| Two agent-content stores drift              | Internal (`development-agents/`, `agent-local/`) and consumer (`tools/agent-content/`) are separate by design; neither imports the other                                                                    |
+| A2UI revision churn                         | Bind through `web_core`; mapping table is data; (a) and (b) carry no A2UI dependency at all                                                                                                                 |
+| Registry churn destabilises P4              | Sequence P4 after UI intake settles; `registry.json` is single-lane                                                                                                                                         |
+| `ndigo mcp` duplicates `ui mcp`             | Host extracted first (P2), one implementation, two route maps                                                                                                                                               |
+| Scope creep into an AI SDK competitor       | P5 is last and requires a demonstrated consumer                                                                                                                                                             |
 
 ---
 
@@ -482,9 +511,12 @@ The repo's existing gates apply unchanged: `pnpm lint`, `pnpm typecheck`,
    `registry:integration` type may be cleaner if more arrive.
 5. **`ndigo mcp --live` transport.** Keep stdio-only for local agents, or also
    support SSE for remote ones before P3 exists?
-6. **Public skills repository.** Ship only `ndigo ai:init`, or also publish a
-   generated `ndigo/skills` mirror for `npx skills add` discoverability? Mirror
-   only; never a second source.
+6. **Public skills repository — resolved: generated mirror, no CLI installer.**
+   `ndigo ai:init` stays the version-matched path (D-6). A generated
+   `ndigo/skills` mirror is published from `tools/agent-content/` for
+   `npx skills add ndigo/skills`, which owns the per-harness install matrix and
+   its churn. The mirror is never hand-edited and is gated by
+   `agent-content:check` in CI.
 
 ---
 
@@ -524,6 +556,10 @@ One issue per phase; P4 splits into five. Names follow
 Issue 6 is independent of everything and is the cheapest first win if the
 sequence needs breaking up.
 
+The P1 site page and the generated `ndigo/skills` mirror ride issue 2: one
+authored store, one `agent-content:build` output feeding CLI assets, the CNA
+template, and the mirror.
+
 ---
 
 ## 11. References
@@ -535,6 +571,10 @@ sequence needs breaking up.
 - `docs/guides/37-ndigo-cli.md`, `docs/guides/30-*` (UI companion),
   `docs/guides/90-package-documentation.md`
 - `docs/plans/2026-11-08_NDIGO_UI.md` — phase/exit-criteria format this plan follows
+- Agent Skills client locations (checked 2026-10-25): `.agents/skills/` is read
+  by Codex, Cursor, Copilot, Gemini CLI, OpenCode, Antigravity, Junie, and
+  OpenClaw; Claude Code reads `.claude/skills/` only; `.mcp.json` is read by
+  Claude Code and Copilot CLI, not VS Code, Cursor, Gemini, or OpenCode
 - Vercel, _AGENTS.md outperforms skills in our agent evals_ (January 2026)
 - Angular — Agent Skills, CLI MCP server, WebMCP;
   Next.js — bundled docs, `/_next/mcp`, agent skills;

@@ -100,6 +100,14 @@ separately.
 `validate_registry` to MCP clients. Installs are dry runs by default; set
 `dryRun: false` to write. `--readOnly` omits the install tool.
 
+### Agents
+
+`ndigo mcp [dir]` runs the application's introspection tools as a stdio MCP
+server: `get_manifest`, `get_routes`, `get_config_keys` (presence only),
+`get_best_practices`, `run_doctor`, and `get_logs`. `run_target`
+(build/test/lint) and `record_rule` (`.ndigo/rules/`) are omitted under
+`--readOnly`; `--live` delegates to the application's own `scripts.mcp`.
+
 ### Maintenance and DX
 
 | Command               | What it does                                                                              |

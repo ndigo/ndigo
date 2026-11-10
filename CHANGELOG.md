@@ -28,6 +28,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   five blocks).
 - `@ndigo/cli`: the `ui` family — `ui init`, `list`, `view`, `validate`, `add`,
   and `mcp` (a stdio MCP server for registry discovery and installation).
+- `@ndigo/cli`: `mcp` — a stdio MCP server over application introspection
+  (`get_manifest`, `get_routes`, `get_config_keys`, `get_best_practices`,
+  `run_doctor`, `get_logs`, `run_target`, `record_rule`), with `--readOnly`
+  gating and `--live` delegation to the app's `scripts.mcp`.
 - `apps/20-ndigo-ui-lab`: a browser lab for the full ndigo-ui registry — tokens,
   native-first primitives, Zag.js behaviour elements, and all five blocks — with
   keyboard and axe coverage.

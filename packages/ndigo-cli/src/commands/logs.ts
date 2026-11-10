@@ -6,7 +6,7 @@
  */
 import { buildCommand, numberParser } from '@stricli/core';
 import { closeSync, existsSync, openSync, readFileSync, readSync, statSync, unwatchFile, watchFile } from 'node:fs';
-import { join } from 'node:path';
+import { resolveLogFile, tailLines } from '../helpers/log-tail.js';
 
 /**
  * The log-file tail command.
@@ -16,7 +16,7 @@ export const logsCommand = buildCommand({
         // `dir` names the app whose default log location is used; --file
         // overrides the location entirely (no package.json check — a log
         // file is addressable without the app manifest).
-        const file = flags.file ?? join(dir, 'logs', 'app.log');
+        const file = resolveLogFile(dir, flags.file);
         if (!existsSync(file)) {
             process.stderr.write(`log file not found: ${file}\n`);
             process.exitCode = 2;
@@ -34,27 +34,7 @@ export const logsCommand = buildCommand({
         }
 
         const printLastLines = (buffer: Buffer, count: number): void => {
-            // Count the VISIBLY populated line endings: a single trailing
-            // newline closes the final line and must not consume one of the
-            // requested lines (the previous `slice(-n)` counted that empty
-            // segment too, so `--lines 2` showed one line on newline-terminated
-            // logs — the off-by-one this rewrite is expected to fix).
-            let end = buffer.byteLength;
-            if (end > 0 && buffer[end - 1] === 0x0a) {
-                end--;
-            }
-            let cut = 0;
-            let seen = 0;
-            for (let index = end - 1; index >= 0; index--) {
-                if (buffer[index] === 0x0a) {
-                    seen++;
-                    if (seen === count) {
-                        cut = index + 1;
-                        break;
-                    }
-                }
-            }
-            process.stdout.write(buffer.subarray(cut));
+            process.stdout.write(tailLines(buffer, count));
         };
 
         // One snapshot drives both the printed tail and the follow position:

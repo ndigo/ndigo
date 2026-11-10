@@ -8,7 +8,7 @@
  */
 import { buildCommand } from '@stricli/core';
 import { captureAppOnce, resolveAppDir, runAppOnce } from '../../helpers/app-scripts.js';
-import { jsonFlag, writeJson } from '../_json.js';
+import { jsonFlag, writeJson } from '../_output.js';
 
 const STATUS_HINT = 'add a "db:status" script, e.g. "db:status": "tsx src/db-status.ts"';
 

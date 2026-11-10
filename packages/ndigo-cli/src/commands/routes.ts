@@ -5,7 +5,7 @@
  */
 import { buildCommand } from '@stricli/core';
 import { captureAppOnce, resolveAppDir, runAppOnce } from '../helpers/app-scripts.js';
-import { jsonFlag, writeJson } from './_json.js';
+import { jsonFlag, pickFormat, toonFlag, writeJson, writeToon } from './_output.js';
 import { appDirPositional } from './_script-fronts.js';
 
 const INSPECT_HINT =
@@ -15,9 +15,10 @@ const INSPECT_HINT =
  * The route-list command.
  */
 export const routesCommand = buildCommand({
-    async func(flags: { json?: boolean }, dir: string) {
+    async func(flags: { json?: boolean; toon?: boolean }, dir: string) {
         const resolved = resolveAppDir(dir);
-        if (flags.json !== true) {
+        const format = pickFormat(flags);
+        if (format === undefined) {
             process.exitCode = await runAppOnce(resolved, 'inspect', INSPECT_HINT);
             return;
         }
@@ -48,14 +49,20 @@ export const routesCommand = buildCommand({
             process.exitCode = 1;
             return;
         }
-        writeJson({ routes });
+        const output = { routes };
+        if (format === 'toon') {
+            // Uniform route records — the same tabular shape as `ui list`.
+            await writeToon(output);
+            return;
+        }
+        writeJson(output);
     },
     parameters: {
-        flags: { json: jsonFlag },
+        flags: { json: jsonFlag, toon: toonFlag },
         positional: {
             kind: 'tuple',
             parameters: [appDirPositional],
         },
     },
-    docs: { brief: 'Print the application routes (--json emits the route list)' },
+    docs: { brief: 'Print the application routes (--json or --toon emits the route list)' },
 });

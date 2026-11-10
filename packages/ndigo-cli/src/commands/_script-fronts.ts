@@ -7,7 +7,7 @@
  */
 import { buildCommand } from '@stricli/core';
 import { captureAppOnce, resolveAppDir, runAppOnce } from '../helpers/app-scripts.js';
-import { jsonFlag, writeJson } from './_json.js';
+import { jsonFlag, writeJson } from './_output.js';
 
 /**
  * The application-directory positional every command that addresses an app

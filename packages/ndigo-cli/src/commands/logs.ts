@@ -7,7 +7,7 @@
 import { buildCommand, numberParser } from '@stricli/core';
 import { closeSync, existsSync, openSync, readFileSync, readSync, statSync, unwatchFile, watchFile } from 'node:fs';
 import { readLogTail, resolveLogFile, tailLines } from '../helpers/log-tail.js';
-import { jsonFlag, writeJson } from './_json.js';
+import { jsonFlag, writeJson } from './_output.js';
 
 /**
  * The log-file tail command.

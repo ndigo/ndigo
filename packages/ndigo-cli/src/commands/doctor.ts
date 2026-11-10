@@ -3,7 +3,7 @@
  */
 import { buildCommand } from '@stricli/core';
 import { collectDiagnostics, runDiagnostics } from './_diagnostics.js';
-import { jsonFlag, writeJson } from './_json.js';
+import { jsonFlag, writeJson } from './_output.js';
 
 /**
  * The environment self-diagnostics command.

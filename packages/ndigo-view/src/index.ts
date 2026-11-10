@@ -8,6 +8,7 @@ export * from './view-target.js';
 export * from './producer-view.js';
 export * from './abstract-serializing-view.js';
 export * from './json-view.js';
+export * from './a2ui-view.js';
 export * from './text-view.js';
 export * from './csv-view.js';
 export * from './octet-stream-view.js';

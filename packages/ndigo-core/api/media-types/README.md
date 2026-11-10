@@ -10,6 +10,7 @@ Well-known, interned `MediaType` constants for common media types.
 
 ## Variables
 
+- [APPLICATION\_A2UI\_JSON](variables/APPLICATION_A2UI_JSON.md)
 - [APPLICATION\_FORM\_URLENCODED](variables/APPLICATION_FORM_URLENCODED.md)
 - [APPLICATION\_JAVASCRIPT](variables/APPLICATION_JAVASCRIPT.md)
 - [APPLICATION\_JSON](variables/APPLICATION_JSON.md)

@@ -8,6 +8,7 @@ View contracts, view targets, and content-negotiation resolution for Ndigo — t
 
 ## Modules
 
+- [a2ui-view](a2ui-view/README.md)
 - [abstract-serializing-view](abstract-serializing-view/README.md)
 - [content-negotiation-view-resolver](content-negotiation-view-resolver/README.md)
 - [csv-view](csv-view/README.md)

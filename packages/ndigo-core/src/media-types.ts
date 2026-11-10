@@ -11,6 +11,12 @@ export const APPLICATION_OCTET_STREAM = MediaType.registered('application', 'oct
 export const APPLICATION_JAVASCRIPT = MediaType.registered('application', 'javascript');
 /** Well-known `application/json` media type. */
 export const APPLICATION_JSON = MediaType.registered('application', 'json');
+/**
+ * Well-known `application/a2ui+json` media type — the A2UI 1.0 message
+ * envelope (a JSON array of surface messages). Provisional until the format
+ * is final; the representation is reversible in one diff.
+ */
+export const APPLICATION_A2UI_JSON = MediaType.registered('application', 'a2ui+json');
 /** Well-known `application/pdf` media type. */
 export const APPLICATION_PDF = MediaType.registered('application', 'pdf');
 /** Well-known `application/problem+json` media type. */

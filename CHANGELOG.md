@@ -52,6 +52,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   parity, and one GenAI span per call. `ndigo add @ndigo/mcp` runs the
   `mcp-setup` generator. `@ndigo/platform-node` exposes the raw request on the
   route for transport-owning handlers.
+- `@ndigo/core` + `@ndigo/view`: `application/a2ui+json` and `A2UIView` — an
+  A2UI 1.0 message-array representation selected by content negotiation, with
+  an `a2uiViewResolver` helper and no A2UI runtime dependency.
 - `apps/20-ndigo-ui-lab`: a browser lab for the full ndigo-ui registry — tokens,
   native-first primitives, Zag.js behaviour elements, and all five blocks — with
   keyboard and axe coverage.

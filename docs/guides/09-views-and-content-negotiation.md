@@ -76,6 +76,7 @@ A `ResponseEntity` adds an explicit status and headers; the platform rewrites a
 | View              | Media type                 | Notes                                              |
 | ----------------- | -------------------------- | -------------------------------------------------- |
 | `JSONView`        | `application/json`         | `JSON.stringify` with the route as context         |
+| `A2UIView`        | `application/a2ui+json`    | Array of A2UI messages for agent-driven surfaces   |
 | `CSVView`         | `text/csv`                 | Records from a model field (`{ records: 'rows' }`) |
 | `TextView`        | `text/plain`               | Plain string bodies                                |
 | `OctetStreamView` | `application/octet-stream` | Binary bodies                                      |
@@ -84,6 +85,13 @@ A `ResponseEntity` adds an explicit status and headers; the platform rewrites a
 All serializing views expose their `mediaType`, which is what negotiation
 matches against. A view without a media type is a fallback, not a negotiation
 candidate.
+
+The A2UI representation is plain JSON over the A2UI 1.0 message array
+(`createSurface`, `updateComponents`, …). Register
+`a2uiViewResolver('report')` beside the JSON resolver and a `.a2ui` request (or
+`Accept: application/a2ui+json`) selects it; without that registration the
+logical view keeps its JSON representation. A tool result carrying
+`ModelAndView('a2ui', messages)` reaches an MCP client as the message array.
 
 ## 4. Content negotiation
 

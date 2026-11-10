@@ -168,6 +168,30 @@ describe('McpToolRegistry', () => {
         }
     });
 
+    it('carries an A2UI model through tool results', async () => {
+        const messages = [{ version: '1.0', createSurface: { surfaceId: 'orders', catalogId: 'ndigo-ui' } }];
+        class Controller {
+            @toolMapping({ name: 'render_surface', readOnly: true })
+            renderSurface(): unknown {
+                return null;
+            }
+        }
+        const registry = McpToolRegistry.from(
+            table([
+                {
+                    mapping: mapping('/surface'),
+                    handlerMethod: handlerMethod(
+                        new Controller(),
+                        'renderSurface',
+                        [],
+                        () => new ModelAndView('a2ui', { messages })
+                    ),
+                },
+            ])
+        );
+        expect(await registry.call('render_surface')).toEqual({ messages });
+    });
+
     it('reports an unknown tool', async () => {
         const registry = McpToolRegistry.from(table([]));
         await expect(registry.call('missing')).rejects.toThrow("unknown or unavailable MCP tool 'missing'");

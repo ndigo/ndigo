@@ -6,12 +6,13 @@
 
 # templates
 
-Template resolution and substitution for the scaffold.
+Template resolution, substitution, and the file-write plan for the scaffold.
 
 ## Functions
 
-- [copyTemplate](functions/copyTemplate.md)
+- [applyPlan](functions/applyPlan.md)
 - [kindTemplateDir](functions/kindTemplateDir.md)
+- [planTemplate](functions/planTemplate.md)
 - [substitute](functions/substitute.md)
 - [templatesRoot](functions/templatesRoot.md)
 - [templateVars](functions/templateVars.md)

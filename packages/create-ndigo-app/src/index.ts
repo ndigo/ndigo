@@ -1,11 +1,12 @@
 /**
  * `create-ndigo-app` — scaffold a standalone Ndigo application.
  */
-import { existsSync, mkdirSync, readdirSync, rmSync, writeFileSync, readFileSync } from 'node:fs';
+import { appendFileSync, existsSync, mkdirSync, readdirSync, rmSync, writeFileSync, readFileSync } from 'node:fs';
 import { join, resolve, sep } from 'node:path';
 import { promptChoice, promptLine } from './prompts.js';
-import { copyTemplate, templateVars } from './templates.js';
-import type { AppKind } from './types.js';
+import { applyPlan, planTemplate, templateVars } from './templates.js';
+import { UI_AGENTS_SECTION, UI_NEXT_STEP, planUiPointer } from './ui-pointer.js';
+import type { AppKind, PlannedFile } from './types.js';
 
 const VALID_KINDS: readonly AppKind[] = ['browser', 'node'];
 
@@ -19,6 +20,7 @@ interface ParsedArgs {
     local: boolean;
     force: boolean;
     agents?: boolean;
+    ui?: boolean;
     help: boolean;
     version: boolean;
 }
@@ -48,6 +50,10 @@ function parseArgs(argv: string[]): ParsedArgs {
             result.agents = true;
         } else if (token === '--no-agents') {
             result.agents = false;
+        } else if (token === '--ui') {
+            result.ui = true;
+        } else if (token === '--no-ui') {
+            result.ui = false;
         } else if (token === '--help' || token === '-h') {
             result.help = true;
         } else if (token === '--version') {
@@ -105,7 +111,19 @@ function rewriteLocalDeps(targetDir: string): void {
     writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, 'utf8');
 }
 
-function printNextSteps(targetDir: string, kind: AppKind, agents: boolean): void {
+function addUiDependency(targetDir: string): void {
+    const manifestPath = join(targetDir, 'package.json');
+    const manifest = JSON.parse(readFileSync(manifestPath, 'utf8')) as {
+        dependencies?: Record<string, string>;
+    };
+    const dependencies = { ...manifest.dependencies, '@ndigo/ui': '~0.0.1' };
+    manifest.dependencies = Object.fromEntries(
+        Object.entries(dependencies).sort(([left], [right]) => left.localeCompare(right))
+    );
+    writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, 'utf8');
+}
+
+function printNextSteps(targetDir: string, kind: AppKind, agents: boolean, ui: boolean): void {
     console.log(`\nScaffolded ${kind} app at ${targetDir}\n`);
     console.log('Next steps:');
     console.log(`  cd ${targetDir}`);
@@ -116,6 +134,7 @@ function printNextSteps(targetDir: string, kind: AppKind, agents: boolean): void
         console.log('  pnpm dev     # or: pnpm test');
     }
     console.log('  pnpm test');
+    if (ui) console.log(`  ${UI_NEXT_STEP}`);
     if (!agents) console.log('  ndigo ai:init   # add agent context (AGENTS.md + skills)');
 }
 
@@ -146,16 +165,18 @@ export async function scaffold(argv: string[]): Promise<number> {
 Usage: create-ndigo-app [name|target-dir] [options]
 
 Options:
-  --kind <node|browser>   Application kind (default: node)
+  --kind <node|browser>   Application kind (default: node, or browser with --ui)
   --name <slug>           App slug (kebab-case)
   --description <text>    One-line description
   --port <n>              Dev port (default: 3000)
   --dir <path>            Target directory
   --yes, -y               Accept defaults without prompting
-  --local                 Rewrite @ndigo/* deps to file: links (dev mode)
+  --local                 Rewrite @ndigo/* deps to workspace:* links (dev mode)
   --force                 Overwrite a non-empty target directory
   --agents                Write the AGENTS.md agent bootstrap (default: on)
   --no-agents             Skip the agent bootstrap
+  --ui                    Add the Ndigo UI design system (browser kind only; default: off)
+  --no-ui                 Skip the design-system pointer
   --help, -h              Show this help
   --version               Show version
 `);
@@ -197,10 +218,19 @@ Options:
         return 2;
     }
 
+    if (parsed.ui === true && parsed.kind === 'node') {
+        console.error('create-ndigo-app: --ui requires --kind browser');
+        return 2;
+    }
+
     let kind = parsed.kind;
     try {
         if (kind === undefined) {
-            if (parsed.yes) {
+            if (parsed.ui === true) {
+                // `--ui` is browser-only; implying the kind keeps the flag usable
+                // on its own instead of erroring on the node default.
+                kind = 'browser';
+            } else if (parsed.yes) {
                 kind = 'node';
             } else {
                 kind = await promptChoice('App kind', ['node', 'browser'] as const, 'node');
@@ -222,6 +252,20 @@ Options:
             (parsed.yes
                 ? true
                 : (await promptChoice('Agent context (AGENTS.md)', ['yes', 'no'] as const, 'yes')) === 'yes');
+    } catch (error) {
+        console.error(`create-ndigo-app: ${(error as Error).message}`);
+        return 2;
+    }
+
+    let ui: boolean;
+    try {
+        ui =
+            parsed.ui ??
+            (kind !== 'browser'
+                ? false
+                : parsed.yes
+                  ? false
+                  : (await promptChoice('Add the Ndigo UI design system?', ['yes', 'no'] as const, 'no')) === 'yes');
     } catch (error) {
         console.error(`create-ndigo-app: ${(error as Error).message}`);
         return 2;
@@ -275,27 +319,35 @@ Options:
         local: parsed.local,
         force: parsed.force,
         agents,
+        ui,
     });
     try {
-        copyTemplate(kind, targetDir, vars);
+        const plan: PlannedFile[] = planTemplate(kind, vars);
+        if (ui) plan.push(...planUiPointer());
+        applyPlan(targetDir, plan);
     } catch (error) {
         console.error(`create-ndigo-app: ${(error as Error).message}`);
         return 1;
     }
-    if (!agents) rmSync(join(targetDir, 'AGENTS.md'), { force: true });
+    if (!agents) {
+        rmSync(join(targetDir, 'AGENTS.md'), { force: true });
+    } else if (ui) {
+        appendFileSync(join(targetDir, 'AGENTS.md'), UI_AGENTS_SECTION, 'utf8');
+    }
 
+    try {
+        if (ui) addUiDependency(targetDir);
+        if (parsed.local) rewriteLocalDeps(targetDir);
+    } catch (error) {
+        console.error(`create-ndigo-app: ${(error as Error).message}`);
+        return 1;
+    }
     if (parsed.local) {
-        try {
-            rewriteLocalDeps(targetDir);
-        } catch (error) {
-            console.error(`create-ndigo-app: ${(error as Error).message}`);
-            return 1;
-        }
         console.log('  (dev mode: @ndigo/* rewritten to workspace:* — run pnpm install from the workspace root,');
         console.log('   with this directory added to pnpm-workspace.yaml or placed under apps/.)');
     }
 
-    printNextSteps(targetDir, kind, agents);
+    printNextSteps(targetDir, kind, agents, ui);
     return 0;
 }
 

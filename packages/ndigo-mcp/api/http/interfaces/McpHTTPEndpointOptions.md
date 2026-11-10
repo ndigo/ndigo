@@ -15,3 +15,11 @@ Options for [McpHTTPEndpoint](../classes/McpHTTPEndpoint.md).
 > `readonly` `optional` **inspect?**: `InspectManifest`
 
 The application manifest, exposed as MCP resources.
+
+***
+
+### uiResources?
+
+> `readonly` `optional` **uiResources?**: readonly [`UiResource`](../../ui-resource/interfaces/UiResource.md)[]
+
+MCP Apps `ui://` resources served as `text/html;profile=mcp-app`.

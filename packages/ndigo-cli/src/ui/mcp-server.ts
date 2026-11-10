@@ -6,7 +6,7 @@ import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 import { createMcpHost } from '../helpers/mcp-host.js';
 import type { McpHost } from '../helpers/mcp-host.js';
-import { getItem, installItems, listItems, searchItems, validateRegistrySource } from './mcp-tools.js';
+import { getCatalog, getItem, installItems, listItems, searchItems, validateRegistrySource } from './mcp-tools.js';
 import type { RegistryToolContext } from './mcp-tools.js';
 
 /** Options for {@link createRegistryServer}. */
@@ -100,6 +100,18 @@ function registerDiscoveryTools(host: McpHost, options: RegistryServerOptions): 
         },
         annotations: { readOnlyHint: true },
         run: (args) => validateRegistrySource(options, args.registry),
+    });
+
+    host.registerTool({
+        name: 'get_catalog',
+        title: 'Get the A2UI component catalog',
+        description:
+            'Return the A2UI catalog for the registry items this application installed (ui.lock.json). Components not installed are absent.',
+        inputSchema: {
+            registry: z.string().optional().describe('Registry source override (file, directory, or URL).'),
+        },
+        annotations: { readOnlyHint: true },
+        run: (args) => getCatalog(options, args.registry),
     });
 }
 

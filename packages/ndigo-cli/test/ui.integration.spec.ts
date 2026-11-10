@@ -65,6 +65,26 @@ describe('ndigo ui (real bin)', () => {
         expect(out).toMatch(/Registry is valid: \d+ items/u);
     });
 
+    test('emits the A2UI catalog for installed items', async () => {
+        const install = await runCli(['ui', 'add', 'button', '--dir', app, '--registry', REGISTRY, '--skipInstall']);
+        expect(install.code).toBe(0);
+
+        const json = await runCli(['ui', 'catalog', '--dir', app, '--json']);
+        expect(json.code).toBe(0);
+        const catalog = JSON.parse(json.out) as {
+            catalogId: string;
+            components: Record<string, { 'x-ndigo-item': string }>;
+        };
+        expect(catalog.catalogId).toBe('ndigo-ui');
+        expect(Object.keys(catalog.components)).toContain('Button');
+        expect(catalog.components.Button?.['x-ndigo-item']).toBe('button');
+
+        const human = await runCli(['ui', 'catalog', '--dir', app]);
+        expect(human.code).toBe(0);
+        expect(human.out).toContain('catalog ndigo-ui');
+        expect(human.out).toContain('Button');
+    });
+
     test('writes ndigo.ui.json', async () => {
         const { code } = await runCli(['ui', 'init', app, '--registry', REGISTRY]);
         const config = JSON.parse(readFileSync(join(app, 'ndigo.ui.json'), 'utf8')) as { registry: string };
@@ -119,7 +139,14 @@ describe('ndigo ui (real bin)', () => {
         await client.connect(transport);
         try {
             const tools = (await client.listTools()).tools.map((tool) => tool.name);
-            expect(tools).toEqual(['list_items', 'search_items', 'get_item', 'validate_registry', 'install_items']);
+            expect(tools).toEqual([
+                'list_items',
+                'search_items',
+                'get_item',
+                'validate_registry',
+                'get_catalog',
+                'install_items',
+            ]);
 
             const result = CallToolResultSchema.parse(
                 await client.callTool({ name: 'list_items', arguments: {} }, CallToolResultSchema)

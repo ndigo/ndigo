@@ -3,6 +3,7 @@
  */
 import { buildRouteMap } from '@stricli/core';
 import { addUiCommand } from './add.js';
+import { catalogUiCommand } from './catalog.js';
 import { initUiCommand } from './init.js';
 import { listUiCommand } from './list.js';
 import { mcpUiCommand } from './mcp.js';
@@ -17,6 +18,7 @@ export const uiRouteMap = buildRouteMap({
         init: initUiCommand,
         add: addUiCommand,
         list: listUiCommand,
+        catalog: catalogUiCommand,
         view: viewUiCommand,
         validate: validateUiCommand,
         mcp: mcpUiCommand,

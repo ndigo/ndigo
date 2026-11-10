@@ -74,11 +74,17 @@ app's registered `NdigoDatabaseAdapter`s (see `@ndigo/orm`), where
 | `ndigo ui view <item>`   | shows one item's type, dependencies, and file targets                   | `ndigo ui view code-block --registry registry.json`          |
 | `ndigo ui validate`      | validates item shape, targets, and local files                          | `ndigo ui validate --registry registry.json`                 |
 | `ndigo ui add <item...>` | installs items and `registryDependencies` into `ndigo.ui.json` aliases  | `ndigo ui add button dialog --dir ./apps/my-app`             |
+| `ndigo ui catalog`       | emits the A2UI catalog for installed items (`--json`)                   | `ndigo ui catalog --dir ./apps/my-app --json`                |
 | `ndigo ui mcp`           | serves the registry over stdio MCP (`--readOnly` omits `install_items`) | `ndigo ui mcp --dir ./apps/my-app --readOnly`                |
 
-`ui mcp` exposes `list_items`, `search_items`, `get_item`, `install_items`, and
-`validate_registry`. Installs default to a dry run; `dryRun: false` writes files
-and installs npm dependencies. Guide 30 covers the component and token story.
+`ui mcp` exposes `list_items`, `search_items`, `get_item`, `get_catalog`,
+`install_items`, and `validate_registry`. Installs default to a dry run;
+`dryRun: false` writes files and installs npm dependencies. Guide 30 covers the
+component and token story.
+
+`ui catalog` projects the registry and the application's `ui.lock.json` into an
+A2UI 1.0 catalog: only installed `registry:ui` and `registry:block` items appear,
+so an agent's component vocabulary is exactly what the application ships.
 
 ### Agents
 
@@ -142,8 +148,9 @@ failures, … }`; `logs` returns one snapshot (and rejects `--follow`);
 `config list` returns `{ entries }`; `env` returns `{ file, entries, missing,
 ok }`; `routes` returns `{ routes }`; `lint`, `typecheck`, and `db status`
 return `{ target, exitCode, stdout, stderr }`; `openapi` emits the document
-itself; `commands` returns the full index. `serve`, `build`, `test`, `inspect`,
-and `mcp` deliberately have no `--json`.
+itself; `commands` returns the full index; `ui catalog` returns the A2UI
+catalog. `serve`, `build`, `test`, `inspect`, and `mcp` deliberately have no
+`--json`.
 
 ## `ndigo dev` and server watch
 

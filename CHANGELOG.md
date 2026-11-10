@@ -43,6 +43,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `.mcp.json` wiring, generated from `tools/agent-content/` and shipped with
   the CLI. `create-ndigo-app` gains `--agents`/`--no-agents` for the bootstrap
   pointer.
+- `@ndigo/cli`: `ui catalog` and the `get_catalog` MCP tool — an A2UI 1.0
+  catalog derived from the registry and the application's `ui.lock.json`, so
+  an agent can only generate components the application installed.
 - `apps/20-ndigo-ui-lab`: a browser lab for the full ndigo-ui registry — tokens,
   native-first primitives, Zag.js behaviour elements, and all five blocks — with
   keyboard and axe coverage.

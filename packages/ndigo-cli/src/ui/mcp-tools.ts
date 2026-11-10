@@ -7,6 +7,7 @@ import { dirname, join, resolve } from 'node:path';
 import { resolveAppDir } from '../helpers/app-scripts.js';
 import { resolveAliases, resolveRegistrySource } from './config.js';
 import { applyInstall, planInstall } from './install.js';
+import { buildCatalog, readInstalledItems, readInstalledRegistry } from './catalog.js';
 import { isRemoteSource, loadRegistry, normalizeRegistrySource, validateRegistry } from './registry.js';
 import type { LoadedRegistry, LocatedRegistryItem } from './registry-types.js';
 
@@ -150,6 +151,23 @@ export async function validateRegistrySource(context: RegistryToolContext, overr
     const registry = await loadRegistry(source);
     const errors = validateRegistry(registry);
     return { source, valid: errors.length === 0, items: registry.items.length, errors };
+}
+
+/**
+ * Returns the A2UI catalog of installed renderable registry items.
+ *
+ * @param context - Registry context.
+ * @param override - Optional registry source override.
+ * @returns The registry source, installed item names, and the catalog.
+ */
+export async function getCatalog(context: RegistryToolContext, override?: string) {
+    const installed = readInstalledItems(context.dir);
+    const fallback = context.registry ?? readInstalledRegistry(context.dir);
+    const { registry, source } = await loadFor(
+        fallback === undefined ? context : { ...context, registry: fallback },
+        override
+    );
+    return { source, installed, catalog: buildCatalog(registry, installed) };
 }
 
 async function loadFor(context: RegistryToolContext, override: string | undefined): Promise<Loaded> {

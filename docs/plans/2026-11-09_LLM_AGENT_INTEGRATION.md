@@ -230,8 +230,10 @@ passes; every swept command emits valid JSON; default output byte-identical;
   `ndigo ai:init` when skipped.
 
     The design-system counterpart is **#325** (`--ui`): both flags touch
-    `ScaffoldOptions` and `printNextSteps`, so sequence them together even though
-    neither blocks the other.
+    `ScaffoldOptions` and `printNextSteps`. **Delivered:** `--ui` writes the
+    `ndigo.ui.json` pointer, the token import, and the `@ndigo/ui` dependency;
+    its design-system paragraph is appended at scaffold time, so the managed
+    `tools/agent-content/` block and its emitted template stay untouched.
 
 - `ndigo-site`: one "using Ndigo with your agent" page — canonically
   `AGENTS.md` + `.agents/skills/`, the Claude Code per-skill symlink snippet,

@@ -11,8 +11,9 @@ import { MethodParameter, MethodParameterType, toolMapping } from '@ndigo/dispat
 import { NODE_INCOMING_ATTRIBUTE, NODE_REQUEST_ATTRIBUTE, NODE_RESPONSE_ATTRIBUTE } from '@ndigo/platform-node';
 import type { Route } from '@ndigo/router';
 import { afterEach, describe, expect, it } from 'vitest';
-import { McpHTTPEndpoint, protectedResourceMetadata } from '../src/http';
+import { McpHTTPEndpoint, type McpHTTPEndpointOptions, protectedResourceMetadata } from '../src/http';
 import { McpToolRegistry } from '../src/registry';
+import { createUiResource, MCP_APP_MIME_TYPE } from '../src/ui-resource';
 import { handlerMethod, mapping, table } from './_fixtures';
 
 class Controller {
@@ -50,8 +51,8 @@ afterEach(async () => {
     }
 });
 
-async function start(): Promise<Client> {
-    const endpoint = new McpHTTPEndpoint(registry());
+async function start(options: McpHTTPEndpointOptions = {}): Promise<Client> {
+    const endpoint = new McpHTTPEndpoint(registry(), options);
     const server = createServer((req, res) => {
         void (async () => {
             const chunks: Buffer[] = [];
@@ -105,6 +106,25 @@ describe('McpHTTPEndpoint', () => {
         );
         const block = result.content.find((entry) => entry.type === 'text');
         expect(block?.type === 'text' ? JSON.parse(block.text) : null).toEqual({ id: '42' });
+    });
+
+    it('serves MCP Apps UI resources over Streamable HTTP', async () => {
+        const orders = createUiResource({
+            uri: 'ui://orders',
+            name: 'Orders',
+            body: '<main>Orders</main>',
+        });
+        const mcp = await start({ uiResources: [orders] });
+
+        expect(mcp.getServerCapabilities()?.extensions?.['io.modelcontextprotocol/ui']).toEqual({});
+
+        const { resources } = await mcp.listResources();
+        expect(resources.map((resource) => resource.uri)).toContain('ui://orders');
+
+        const read = await mcp.readResource({ uri: 'ui://orders' });
+        expect(read.contents[0]).toMatchObject({ uri: 'ui://orders', mimeType: MCP_APP_MIME_TYPE });
+        const content = read.contents[0];
+        expect(content !== undefined && 'text' in content ? content.text : '').toContain('<main>Orders</main>');
     });
 });
 

@@ -11,11 +11,14 @@ import { getNodeRequest, NODE_INCOMING_ATTRIBUTE, NODE_RESPONSE_ATTRIBUTE } from
 import type { Route } from '@ndigo/router';
 import type { McpToolRegistry } from './registry.js';
 import { createMcpServer } from './server.js';
+import type { UiResource } from './ui-resource.js';
 
 /** Options for {@link McpHTTPEndpoint}. */
 export interface McpHTTPEndpointOptions {
     /** The application manifest, exposed as MCP resources. */
     readonly inspect?: InspectManifest;
+    /** MCP Apps `ui://` resources served as `text/html;profile=mcp-app`. */
+    readonly uiResources?: readonly UiResource[];
 }
 
 /**

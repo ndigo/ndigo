@@ -11,3 +11,4 @@ export * from './view-mapping';
 export * from './web-component-view-resolver';
 
 export * from './hydrate';
+export * from './webmcp';

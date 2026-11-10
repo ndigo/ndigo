@@ -18,3 +18,4 @@ Web Component rendering engine for Ndigo — turns `AbstractWebComponent` views 
 - [view](view/README.md)
 - [view-mapping](view-mapping/README.md)
 - [web-component-view-resolver](web-component-view-resolver/README.md)
+- [webmcp](webmcp/README.md)

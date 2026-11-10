@@ -12,6 +12,7 @@ export const ordersUi = createUiResource({
     name: 'Orders',
     description: 'The order catalogue rendered by an MCP Apps host.',
     title: 'Orders',
+    trustedMarkup: true,
     body: `<main>
     <h1>Orders</h1>
     <table>

@@ -9,6 +9,8 @@ import '../styles/ndigo-tokens.css';
 import '../styles/ndigo-base.css';
 import './styles/lab.css';
 import type { NdToast } from './ui/nd-toast/nd-toast';
+import type { NdA2uiSurface } from './ui/nd-a2ui-surface/nd-a2ui-surface';
+import './components/webmcp/webmcp-demo';
 import { initCommandPalette } from './components/command/command';
 import { initDataTable } from './components/data-table/data-table';
 import { initCodeBlocks } from './components/code-block/code-block';
@@ -76,3 +78,20 @@ dataTable?.addEventListener('nd-selection-change', (event) => {
         dataTableSelection.textContent = detail.ids.length ? `Selected: ${detail.ids.join(', ')}` : 'No rows selected';
     }
 });
+
+// A2UI: the same message array the agent lab's `/reports/orders` route emits.
+// The surface renders only the components this app installed, so the demo uses
+// `nd-switch` from the local registry tree.
+const a2ui = document.querySelector<NdA2uiSurface>('#a2ui-demo');
+if (a2ui !== null) {
+    a2ui.messages = [
+        { version: '1.0', createSurface: { surfaceId: 'lab', catalogId: 'ndigo-ui' } },
+        {
+            version: '1.0',
+            updateComponents: {
+                surfaceId: 'lab',
+                components: [{ id: 'root', component: 'Switch', checked: true }],
+            },
+        },
+    ];
+}

@@ -909,6 +909,19 @@
                             </div>
                         </nd-accordion>
                     </section>
+                    <section id="agent" class="lab-section" aria-labelledby="agent-heading">
+                        <h2 id="agent-heading">Agent surfaces</h2>
+                        <p>
+                            The A2UI surface renders the component vocabulary this app installed; the WebMCP element
+                            exposes <code>search_catalogue</code> to a browser agent while connected.
+                        </p>
+                        <nd-a2ui-surface id="a2ui-demo"></nd-a2ui-surface>
+                        <nd-webmcp-demo id="webmcp-demo"></nd-webmcp-demo>
+                        <p id="webmcp-status" class="lab-status" role="status">
+                            WebMCP tool: search_catalogue — no-op registration without
+                            <code>document.modelContext</code>.
+                        </p>
+                    </section>
                     <section id="tokens" class="lab-section" aria-labelledby="tokens-heading">
                         <h2 id="tokens-heading">Tokens</h2>
                         <p>

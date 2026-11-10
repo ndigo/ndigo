@@ -28,6 +28,10 @@ pnpm --filter @ndigo/ui-lab dev
 - **Blocks:** app-shell, command, data-table, code-block, sidebar
 - **Foundation:** the `theme` tokens/base layer and the `lib` element
   foundation
+- **Agent surfaces:** `<nd-a2ui-surface>` renders the installed component
+  vocabulary from A2UI messages, and `<nd-webmcp-demo>` exposes
+  `search_catalogue` as a WebMCP tool while connected (a no-op in browsers
+  without `document.modelContext`)
 
 ## Install source
 

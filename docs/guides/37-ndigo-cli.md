@@ -23,19 +23,20 @@ Built on `@stricli/core` as an embedded library — commands, typed flags,
 
 ### Application lifecycle
 
-| Command           | Runs the app's…                                                                    | Example                                                   |
-| :---------------- | :--------------------------------------------------------------------------------- | :-------------------------------------------------------- |
-| `ndigo serve`     | `scripts.start` under the supervisor                                               | `ndigo serve ./apps/05-ndigo-api --port 3000 --cluster 4` |
-| `ndigo dev`       | `scripts.dev` (vite) or `scripts.start`                                            | `ndigo dev ./apps/15-ndigo-resilience-lab --port 3200`    |
-| `ndigo build`     | `scripts.build` (one-shot)                                                         | `ndigo build ./apps/05-ndigo-api`                         |
-| `ndigo test`      | `scripts.test`                                                                     | `ndigo test`                                              |
-| `ndigo lint`      | `scripts.lint`                                                                     | `ndigo lint`                                              |
-| `ndigo format`    | `scripts.format`                                                                   | `ndigo format`                                            |
-| `ndigo typecheck` | `scripts.typecheck`                                                                | `ndigo typecheck`                                         |
-| `ndigo clean`     | (CLI-owned: `dist`/`lib`/`.nx`/`coverage`; `--dryRun` previews, `--force` removes) | `ndigo clean --force`                                     |
-| `ndigo inspect`   | `scripts.inspect` (the AD-70 printer)                                              | `ndigo inspect ./apps/05-ndigo-api`                       |
-| `ndigo routes`    | `scripts.inspect` (alias of `inspect`)                                             | `ndigo routes ./apps/05-ndigo-api`                        |
-| `ndigo logs`      | (CLI-owned: tails `logs/app.log`; `--follow`, `--lines`, `--file`)                 | `ndigo logs --follow`                                     |
+| Command           | Runs the app's…                                                                        | Example                                                   |
+| :---------------- | :------------------------------------------------------------------------------------- | :-------------------------------------------------------- |
+| `ndigo serve`     | `scripts.start` under the supervisor                                                   | `ndigo serve ./apps/05-ndigo-api --port 3000 --cluster 4` |
+| `ndigo dev`       | `scripts.dev` (vite) or `scripts.start`                                                | `ndigo dev ./apps/15-ndigo-resilience-lab --port 3200`    |
+| `ndigo build`     | `scripts.build` (one-shot)                                                             | `ndigo build ./apps/05-ndigo-api`                         |
+| `ndigo test`      | `scripts.test`                                                                         | `ndigo test`                                              |
+| `ndigo lint`      | `scripts.lint`                                                                         | `ndigo lint`                                              |
+| `ndigo format`    | `scripts.format`                                                                       | `ndigo format`                                            |
+| `ndigo typecheck` | `scripts.typecheck`                                                                    | `ndigo typecheck`                                         |
+| `ndigo clean`     | (CLI-owned: `dist`/`lib`/`.nx`/`coverage`; `--dryRun` previews, `--force` removes)     | `ndigo clean --force`                                     |
+| `ndigo inspect`   | `scripts.inspect` (the AD-70 printer)                                                  | `ndigo inspect ./apps/05-ndigo-api`                       |
+| `ndigo routes`    | `scripts.inspect` (alias of `inspect`)                                                 | `ndigo routes ./apps/05-ndigo-api`                        |
+| `ndigo logs`      | (CLI-owned: tails `logs/app.log`; `--follow`, `--lines`, `--file`)                     | `ndigo logs --follow`                                     |
+| `ndigo mcp`       | serves the app manifest, diagnostics, and logs over stdio MCP (`--readOnly`, `--live`) | `ndigo mcp ./apps/05-ndigo-api --readOnly`                |
 
 ### Scaffolding
 
@@ -78,6 +79,20 @@ app's registered `NdigoDatabaseAdapter`s (see `@ndigo/orm`), where
 `ui mcp` exposes `list_items`, `search_items`, `get_item`, `install_items`, and
 `validate_registry`. Installs default to a dry run; `dryRun: false` writes files
 and installs npm dependencies. Guide 30 covers the component and token story.
+
+### Agents
+
+`ndigo mcp` serves application introspection to MCP clients. The static profile
+exposes `get_manifest` (the AD-70 `scripts.inspect` output), `get_routes`,
+`get_config_keys` (presence only — values are never in the manifest),
+`get_best_practices` (`STYLE_GUIDE.md`/`ARCHITECTURE.md` sections), `run_doctor`,
+and `get_logs`. `run_target` (`scripts.build`/`test`/`lint`) and `record_rule`
+(`.ndigo/rules/*.md` plus an index) are omitted under `--readOnly`. `--live`
+hands stdio to the application's own `scripts.mcp` instead of the static set.
+
+`get_commands` is absent until the `--json` contract and `ndigo commands` land
+(P0 of the agent integration plan). `ndigo ui mcp` remains the registry-specific
+server.
 
 ### Maintenance
 

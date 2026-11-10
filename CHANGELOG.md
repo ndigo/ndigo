@@ -955,10 +955,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
-- Disabled or deleted accounts revoke live sessions and JWTs at validation,
-  and on-demand user-wide revocation is available through
-  `CredentialsAuthAdapter.logoutAll(userId)` +
-  `SessionStore.deleteForUser(userId)` (AD-68, SE-7).
+- `@ndigo/ui` A2UI surfaces sanitize rendered attributes/props. `nd-a2ui-surface`
+  writes to the DOM only through an allow-list of keys; dangerous attributes,
+  event handlers, and any prop that escapes the registry surface are dropped.
+- `@ndigo/mcp` MCP Apps hardening: the default body is escaped
+  (`display: trustedMarkup: true` renders author-owned markup), the renderer
+  validates the barrier URI, `scriptType` matches a narrow set, and CSP
+  domains are validated before the document is written.
+- `@ndigo/boot` fromConfig hardens against SSRF and unsafe dynamic imports:
+  relative helpers avoid `import()` on remote specifiers, absolute URLs must be
+  `https`, and `sourceCatalog` is a required allowlist of configuration
+  factories.
+- `@ndigo/cli` remote UI documentation: local path sources have a local registry
+  root; remote content must include registries and `_remote` is only for fetched
+  chunks with a 10-s timeout and a cap on response size.
+- `@ndigo/cli`: `ndigo ai` mirrors the A2UI component map generation for both the
+  registry and the lab, so the lab's copy-in `nd-a2ui-surface` cannot drift from
+  the registry.
+- `@ndigo/ai` agent correctness: intermediate text accumulates in a single-run
+  result, unknown finish reasons map to a known value, and the lab agent refresh
+  config when the application context refreshes.
+- `@ndigo/dispatcher` prevents tool names with odd casing from entering the MCP
+  tool namespace; generated names must follow the same snake-case rule as
+  declared names.
 - JWT `validate` accepts only access tokens: framework refresh tokens
   (`token_use: 'refresh'`, 7-day TTL) can no longer authenticate an API
   request; a present claim that is not `'access'` fails closed (SE-7).

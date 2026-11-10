@@ -10,6 +10,18 @@ Public API of `@ndigo/view` — view resolution, targets, and renderers.
 
 ## References
 
+### A2UIView
+
+Re-exports [A2UIView](../a2ui-view/classes/A2UIView.md)
+
+***
+
+### a2uiViewResolver
+
+Re-exports [a2uiViewResolver](../a2ui-view/functions/a2uiViewResolver.md)
+
+***
+
 ### AbstractCachingViewResolver
 
 Re-exports [AbstractCachingViewResolver](../view-resolver/classes/AbstractCachingViewResolver.md)

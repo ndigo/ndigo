@@ -4,6 +4,7 @@
 import { buildCommand } from '@stricli/core';
 import { resolveAppDir } from '../../helpers/app-scripts.js';
 import { getCatalog } from '../../ui/mcp-tools.js';
+import { writeJson } from '../_output.js';
 
 /**
  * The A2UI catalog command.
@@ -15,7 +16,7 @@ export const catalogUiCommand = buildCommand({
         const { source, catalog } = await getCatalog(context);
 
         if (flags.json === true) {
-            process.stdout.write(`${JSON.stringify(catalog, null, 2)}\n`);
+            writeJson(catalog);
             return;
         }
         process.stdout.write(

@@ -10,17 +10,17 @@ The agent loop: drives a provider-neutral model, executes the tools the
 
 ## Classes
 
-- [AiAgent](classes/AiAgent.md)
+- [AIAgent](classes/AIAgent.md)
 
 ## Interfaces
 
-- [AiAgentOptions](interfaces/AiAgentOptions.md)
-- [AiRateLimitOptions](interfaces/AiRateLimitOptions.md)
-- [AiRolloutOptions](interfaces/AiRolloutOptions.md)
-- [AiRunRequest](interfaces/AiRunRequest.md)
-- [AiRunResult](interfaces/AiRunResult.md)
+- [AIAgentOptions](interfaces/AIAgentOptions.md)
+- [AIRateLimitOptions](interfaces/AIRateLimitOptions.md)
+- [AIRolloutOptions](interfaces/AIRolloutOptions.md)
+- [AIRunRequest](interfaces/AIRunRequest.md)
+- [AIRunResult](interfaces/AIRunResult.md)
 
 ## Type Aliases
 
-- [AiAgentStream](type-aliases/AiAgentStream.md)
-- [AiStreamEvent](type-aliases/AiStreamEvent.md)
+- [AIAgentStream](type-aliases/AIAgentStream.md)
+- [AIStreamEvent](type-aliases/AIStreamEvent.md)

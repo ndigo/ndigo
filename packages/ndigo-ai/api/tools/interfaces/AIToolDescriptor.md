@@ -2,9 +2,9 @@
 
 ***
 
-[@ndigo/ai](../../README.md) / [tools](../README.md) / AiToolDescriptor
+[@ndigo/ai](../../README.md) / [tools](../README.md) / AIToolDescriptor
 
-# Interface: AiToolDescriptor
+# Interface: AIToolDescriptor
 
 One tool as reported by a source: the same shape as MCP `tools/list`
 entries (`name`, `description`, JSON Schema `inputSchema`).

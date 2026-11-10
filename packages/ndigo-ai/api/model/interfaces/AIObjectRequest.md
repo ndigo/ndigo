@@ -2,9 +2,9 @@
 
 ***
 
-[@ndigo/ai](../../README.md) / [model](../README.md) / AiObjectRequest
+[@ndigo/ai](../../README.md) / [model](../README.md) / AIObjectRequest
 
-# Interface: AiObjectRequest\<T\>
+# Interface: AIObjectRequest\<T\>
 
 A structured-output request: the model must return an object matching the
 Zod schema.
@@ -27,7 +27,7 @@ Output-token cap, when the provider supports it.
 
 ### messages
 
-> `readonly` **messages**: readonly [`AiMessage`](../../messages/type-aliases/AiMessage.md)[]
+> `readonly` **messages**: readonly [`AIMessage`](../../messages/type-aliases/AIMessage.md)[]
 
 The conversation driving the generation.
 

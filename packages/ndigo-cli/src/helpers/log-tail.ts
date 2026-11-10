@@ -1,7 +1,7 @@
 /**
  * Log-tail primitives shared by `ndigo logs` and the MCP `get_logs` tool.
  */
-import { readFileSync } from 'node:fs';
+import { closeSync, openSync, readSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 
 /**
@@ -47,6 +47,13 @@ export function tailLines(buffer: Buffer, count: number): Buffer {
 }
 
 /**
+ * Upper bound on the log slice that the tail reader reads. Reading only the
+ * trailing chunk prevents a huge log from exhausting memory when `--lines` is
+ * larger than the file.
+ */
+const MAX_LOG_TAIL_BYTES = 64 * 1024;
+
+/**
  * Reads the tail of a log file as UTF-8.
  *
  * @param file - The log path.
@@ -54,5 +61,17 @@ export function tailLines(buffer: Buffer, count: number): Buffer {
  * @returns The retained text.
  */
 export function readLogTail(file: string, count: number): string {
-    return tailLines(readFileSync(file), count).toString('utf8');
+    const stats = statSync(file);
+    if (!stats.isFile()) {
+        throw new Error(`log path is not a file: ${file}`);
+    }
+    const fd = openSync(file, 'r');
+    const readSize = Math.min(MAX_LOG_TAIL_BYTES, stats.size);
+    const buffer = Buffer.alloc(readSize);
+    try {
+        readSync(fd, buffer, 0, readSize, stats.size - readSize);
+    } finally {
+        closeSync(fd);
+    }
+    return tailLines(buffer, count).toString('utf8');
 }

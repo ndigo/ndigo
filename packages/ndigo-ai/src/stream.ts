@@ -3,16 +3,16 @@
  * envelopes are exactly what `ServerSentEventView` consumes and what
  * `parseServerSentEvents` returns on the client.
  */
-import type { AiStreamEvent } from './agent';
+import type { AIStreamEvent } from './agent';
 
 /**
- * One SSE frame produced from an {@link AiStreamEvent}.
+ * One SSE frame produced from an {@link AIStreamEvent}.
  */
-export interface AiServerSentEvent {
+export interface AIServerSentEvent {
     /** The SSE `event:` name (`text-delta`, `tool-call`, `tool-result`, `finish`). */
     readonly event: string;
     /** The JSON-serializable event payload. */
-    readonly data: AiStreamEvent;
+    readonly data: AIStreamEvent;
 }
 
 /**
@@ -26,7 +26,7 @@ export interface AiServerSentEvent {
  * return new ServerSentEventView(toServerSentEvents(agent.stream(request)));
  * ```
  */
-export async function* toServerSentEvents(events: AsyncIterable<AiStreamEvent>): AsyncGenerator<AiServerSentEvent> {
+export async function* toServerSentEvents(events: AsyncIterable<AIStreamEvent>): AsyncGenerator<AIServerSentEvent> {
     for await (const event of events) {
         yield { event: event.type, data: event };
     }

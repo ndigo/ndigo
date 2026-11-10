@@ -22,6 +22,11 @@ interface CaptureResult {
     missing: boolean;
 }
 
+/**
+ * How long the external command checks wait before being reported as missing.
+ */
+export const DIAGNOSTICS_TIMEOUT_MS = 1500;
+
 function capture(argv: string[], cwd?: string): Promise<CaptureResult> {
     return new Promise<CaptureResult>((resolve) => {
         const child = spawn(argv[0] ?? '', argv.slice(1), { stdio: 'pipe', cwd });
@@ -38,13 +43,18 @@ function capture(argv: string[], cwd?: string): Promise<CaptureResult> {
             settled = true;
             resolve(result);
         };
-        child.once('exit', () => settle({ value: chunks.join('').trim().split('\n')[0] ?? '', missing: false }));
-        // Node emits 'error' asynchronously when the program cannot be
-        // spawned (ENOENT) and does not guarantee a matching 'exit', so the
-        // constructor try/catch previously wrapped the one case it could
-        // not catch (issue #144): a missing `pnpm` reported a lying healthy
-        // row instead of the diagnostic this check exists to print.
-        child.once('error', () => settle({ value: '', missing: true }));
+        const timeout = setTimeout(() => {
+            child.kill();
+            settle({ value: '', missing: true });
+        }, DIAGNOSTICS_TIMEOUT_MS);
+        child.once('exit', () => {
+            clearTimeout(timeout);
+            settle({ value: chunks.join('').trim().split('\n')[0] ?? '', missing: false });
+        });
+        child.once('error', () => {
+            clearTimeout(timeout);
+            settle({ value: '', missing: true });
+        });
     });
 }
 

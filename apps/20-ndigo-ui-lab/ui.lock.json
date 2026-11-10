@@ -574,7 +574,7 @@
         },
         {
           "target": "src/ui/nd-a2ui-surface/nd-a2ui-surface.ts",
-          "sha256": "2da98423bf8fd6f6f3b9611376cddbcce7520931923ea387b769f1ae5db0648c"
+          "sha256": "d2190ba0f371f08addb0afae4547154cc82afefe4e0886b0beb729344a649975"
         }
       ],
       "installedAt": "2026-11-10T03:07:31.826Z"

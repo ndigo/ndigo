@@ -5,14 +5,14 @@
 import { MockLanguageModelV4, convertArrayToReadableStream } from 'ai/test';
 import { describe, expect, it } from 'vitest';
 import { z } from 'zod';
-import { AiSdkModel, aiSdkModel } from '../src';
+import { AISdkModel, aiSdkModel } from '../src';
 
 const USAGE = {
     inputTokens: { total: 7, noCache: 7, cacheRead: undefined, cacheWrite: undefined },
     outputTokens: { total: 3, text: 3, reasoning: undefined },
 };
 
-describe('AiSdkModel', () => {
+describe('AISdkModel', () => {
     it('derives identity from the AI SDK model and maps a tool-call step', async () => {
         const model = new MockLanguageModelV4({
             provider: 'mock',
@@ -24,7 +24,7 @@ describe('AiSdkModel', () => {
                 warnings: [],
             },
         });
-        const adapter = new AiSdkModel(model);
+        const adapter = new AISdkModel(model);
 
         expect(adapter.info).toEqual({ provider: 'mock', model: 'm1' });
 

@@ -2,11 +2,11 @@
 
 ***
 
-[@ndigo/ai](../../README.md) / [tools](../README.md) / AiToolCallContext
+[@ndigo/ai](../../README.md) / [tools](../README.md) / AIToolCallContext
 
-# Interface: AiToolCallContext
+# Interface: AIToolCallContext
 
-Per-call context passed to [AiToolSource.call](AiToolSource.md#call). The `callId` is the
+Per-call context passed to [AIToolSource.call](AIToolSource.md#call). The `callId` is the
 model-assigned tool-call id and is recorded as `gen_ai.tool.call.id`.
 
 ## Properties

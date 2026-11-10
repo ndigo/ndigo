@@ -488,12 +488,20 @@ This builder for chaining.
 
 ### fromConfig()
 
-> `static` **fromConfig**(`url`): `Promise`\<`ApplicationBuilder`\>
+> `static` **fromConfig**(`url`, `options?`): `Promise`\<`ApplicationBuilder`\>
 
-Creates a builder from a JSON configuration URL.
+Creates a builder from a configuration URL (JSON, or TOON — AD-66).
 
-Fetches the JSON config from the given URL and uses the top-level
+Fetches the config from the given URL and uses the top-level
 `sources`, `profiles`, and `properties` keys to bootstrap the application.
+
+The document format follows the address: a `.toon` path suffix (query
+string and fragment stripped) decodes as TOON, everything else as
+JSON — JSON stays the default, and an explicit `format` option
+overrides the address (a `.toon` address under `format: 'json'`
+errors rather than silently re-parsing). TOON decoding follows the
+same contract as `.toon` config files: strict mode, JSON-shaped
+rename hint, object shape guard, bounded decoder diagnostics.
 
 The `sources` array is expected to contain module specifiers that can be
 dynamically imported as configuration classes.
@@ -504,7 +512,14 @@ dynamically imported as configuration classes.
 
 `string` \| `URL`
 
-URL pointing to a JSON configuration file.
+URL pointing to a JSON or TOON configuration file.
+
+##### options?
+
+[`FromConfigOptions`](../interfaces/FromConfigOptions.md) = `{}`
+
+Decode options: an explicit `format` and a TOON
+  decoder seam for specs/alternative validators.
 
 #### Returns
 

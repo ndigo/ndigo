@@ -2,12 +2,19 @@
 
 **Date:** 2026-10-05
 **Status:** Accepted — Phase 0 (MediaType token) and Phase 1 (`.toon` config
-files) landed 2026-10-05; Phase 3 (`fromConfig`) deferred until a consumer
-asks (plan: [2026-10-05_TOON_SUPPORT](../plans/2026-10-05_TOON_SUPPORT.md)).
+files) landed 2026-10-05; **Phase 3 (`fromConfig`) landed 2026-11-10** (a
+`.toon` address suffix decodes as TOON, an explicit `format` overrides it,
+JSON stays the default; plan:
+[2026-10-05_TOON_SUPPORT](../plans/2026-10-05_TOON_SUPPORT.md)).
 
 _Amendment (2026-11-07): the optional peer pin advanced from `4.1.1` to
 `4.4.0` (spec v4.4, 2026-10-08) in the October dependency train (#36); the
 decode-only contract and the boundaries above are unchanged._
+
+_Phase 3 note (2026-11-10): `fromConfig` follows the address (a `.toon`
+path suffix) rather than defaulting — D-3's "no `fromConfig` defaults"
+boundary holds: extensionless or `.json` URLs stay JSON, and an explicit
+`format` option is the caller's statement._
 
 ## Context
 

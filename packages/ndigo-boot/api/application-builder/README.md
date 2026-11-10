@@ -11,3 +11,7 @@ Fluent builder for configuring and running an application bootstrap sequence.
 ## Classes
 
 - [ApplicationBuilder](classes/ApplicationBuilder.md)
+
+## Interfaces
+
+- [FromConfigOptions](interfaces/FromConfigOptions.md)

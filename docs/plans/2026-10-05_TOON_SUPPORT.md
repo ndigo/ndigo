@@ -1,10 +1,11 @@
 # 2026-10-05 TOON support — opt-in authoring format (not a JSON replacement)
 
 **Status:** Phases 0–1 landed 2026-10-05 (owner-confirmed dependency shape);
-Phase 2 (docs) landed with the guide section below; Phase 3 (`fromConfig`)
-deferred until a consumer asks. The pin advanced to `4.4.0` (spec v4.4) on
-2026-10-31 via the October dependency train (#36). Ratified by
-[ADR-66](../decisions/2026-10-05_AD66_TOON_OPTIN_SUPPORT.md).
+Phase 2 (docs) landed with the guide section below; **Phase 3 (`fromConfig`)
+landed 2026-11-10** (issue #347) — a `.toon` address suffix decodes as TOON,
+an explicit `format` overrides it, JSON stays the default. The pin advanced
+to `4.4.0` (spec v4.4) on 2026-10-31 via the October dependency train (#36).
+Ratified by [ADR-66](../decisions/2026-10-05_AD66_TOON_OPTIN_SUPPORT.md).
 
 **Context:** [TOON](https://github.com/toon-format/toon) (Token-Oriented
 Object Notation, spec v4.1, 2026-07-26) is a line-oriented, indentation-based
@@ -36,16 +37,16 @@ contracts, or defaults?
 
 ## 2. Candidate surface & verdict
 
-| Surface                                                                                      | Where                                               | Verdict                                                                                                                                                                                                                |
-| :------------------------------------------------------------------------------------------- | :-------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `MediaTypes` token (`text/toon`)                                                             | `@ndigo/core` `media-types.ts`                      | ✅ **Phase 0 — landed.** Inert, typed, zero-dep; negotiable only when a user composes it (view/interceptor). `getDefaultCharset()` already yields `utf-8` for `text/*` → `text/toon;charset=utf-8`, matching spec §17. |
-| `application.json` config files                                                              | `@ndigo/boot` `StandardConfigFileLoader`            | ✅ **Phase 1 — landed.** Decode-only `.toon` variant feeding the same `JSONObject` merge pipeline. Opt-in, reversible, no default change.                                                                              |
-| `ApplicationBuilder.fromConfig(url)`                                                         | `@ndigo/boot`                                       | 🟡 **Phase 3 — optional.** Auto-detect by URL extension / `format` option; single-shot bootstrap, low value.                                                                                                           |
-| Config server wire format                                                                    | `@ndigo/context` `RemotePropertySource`             | ❌ Never — external contract; ETag/last-good/304 logic is JSON-shaped.                                                                                                                                                 |
-| Wire formats (HTTP views, SSE, WebSocket/STOMP, mock-http)                                   | ndigo-view, ndigo-service, ndigo-socket, ndigo-test | ❌ Never — interop surface, IANA-registered media-types territory.                                                                                                                                                     |
-| Storage (Redis codec envelope, LibSQL session/roles, cookies, local-storage resource loader) | ndigo-redis, ndigo-orm-drizzle, platform-web        | ❌ Never — existing data, no format migration.                                                                                                                                                                         |
-| OIDC discovery/JWKS, `parseBody('application/json')`                                         | auth-client, platform-node                          | ❌ Never — external protocols.                                                                                                                                                                                         |
-| Content-negotiation defaults (`.toon` path-extension mapping, default view)                  | ndigo-view                                          | ❌ Never — would make an unregistered type framework-negotiable globally.                                                                                                                                              |
+| Surface                                                                                      | Where                                               | Verdict                                                                                                                                                                                                                      |
+| :------------------------------------------------------------------------------------------- | :-------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `MediaTypes` token (`text/toon`)                                                             | `@ndigo/core` `media-types.ts`                      | ✅ **Phase 0 — landed.** Inert, typed, zero-dep; negotiable only when a user composes it (view/interceptor). `getDefaultCharset()` already yields `utf-8` for `text/*` → `text/toon;charset=utf-8`, matching spec §17.       |
+| `application.json` config files                                                              | `@ndigo/boot` `StandardConfigFileLoader`            | ✅ **Phase 1 — landed.** Decode-only `.toon` variant feeding the same `JSONObject` merge pipeline. Opt-in, reversible, no default change.                                                                                    |
+| `ApplicationBuilder.fromConfig(url)`                                                         | `@ndigo/boot`                                       | ✅ **Phase 3 — landed (#347, 2026-11-10).** A `.toon` address suffix decodes as TOON; explicit `format` overrides with one refused contradiction (`'json'` over a `.toon` address); query strings stripped before detection. |
+| Config server wire format                                                                    | `@ndigo/context` `RemotePropertySource`             | ❌ Never — external contract; ETag/last-good/304 logic is JSON-shaped.                                                                                                                                                       |
+| Wire formats (HTTP views, SSE, WebSocket/STOMP, mock-http)                                   | ndigo-view, ndigo-service, ndigo-socket, ndigo-test | ❌ Never — interop surface, IANA-registered media-types territory.                                                                                                                                                           |
+| Storage (Redis codec envelope, LibSQL session/roles, cookies, local-storage resource loader) | ndigo-redis, ndigo-orm-drizzle, platform-web        | ❌ Never — existing data, no format migration.                                                                                                                                                                               |
+| OIDC discovery/JWKS, `parseBody('application/json')`                                         | auth-client, platform-node                          | ❌ Never — external protocols.                                                                                                                                                                                               |
+| Content-negotiation defaults (`.toon` path-extension mapping, default view)                  | ndigo-view                                          | ❌ Never — would make an unregistered type framework-negotiable globally.                                                                                                                                                    |
 
 Non-negotiable invariants (recheck on every phase): JSON remains the
 default; **decode-only** (no encoder in framework internals); merge
@@ -103,11 +104,16 @@ Guide entry ("Configuration in TOON") in
 caveat, and the "JSON default everywhere else" boundary. Update AD-13's
 "JSON only" line to reference this plan.
 
-### Phase 3 — `fromConfig` TOON (optional, gated on Phase 1 usage)
+### Phase 3 — `fromConfig` TOON (landed 2026-11-10, issue #347)
 
-Auto-detect by URL extension or an explicit `format` option; decode →
-existing `sources`/`profiles`/`properties` handling. Low value; skip unless
-a consumer asks.
+Landed with the same decode contract as Phase 1, shared through the
+internal `src/_toon.ts` seam (`parseToonDocument`): a `.toon` address
+suffix decodes as TOON (query/fragment stripped first — detection reads the
+path, not a cache-busting suffix), an explicit `format` overrides the
+address, `'json'` over a `.toon` address errors rather than silently
+re-parsing, and the JSON path stays byte-identical (`response.json()`).
+Closes the owner gate: the framework itself is the consumer (agent/session
+tooling anticipating TOON traction).
 
 ## 4. Acceptance criteria
 
@@ -126,6 +132,15 @@ a consumer asks.
 Phase 3 acceptance (when picked up): `fromConfig` TOON follows the same
 decode-only contract with an explicit `format` option or URL-extension
 detection.
+
+- [x] P3: `.toon` address suffix decodes as TOON; extensionless/`.json`
+      addresses stay JSON without the peer being resolved; explicit
+      `format` overrides with `'json'`-over-`.toon` refused; query/fragment
+      stripped (`/config.json?x=.toon` stays JSON, `/config.toon?ref=main`
+      stays TOON); `sources`/`profiles`/`properties` parity between formats
+      (`application-builder.spec.ts`, 11 new cases; 65/65 green); decoder
+      diagnostics bounded and control-stripped with the cause attached;
+      docs land in guide 03.
 
 ## 5. Risks & rollback
 

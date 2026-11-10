@@ -131,13 +131,32 @@ describe('ndigo ui mcp', () => {
         expect(invalid.errors.some((message) => message.includes('does not exist'))).toBe(true);
     });
 
+    it('returns the catalog for installed items only', async () => {
+        const fixture = createRegistryFixture();
+        cleanup = fixture.cleanup;
+        const client = await connect({ dir: fixture.app, registry: fixture.registry });
+
+        await call(client, 'install_items', { items: ['dialog'], dryRun: false, skipInstall: true });
+        const result = (await call(client, 'get_catalog', {})) as {
+            catalog: {
+                catalogId: string;
+                components: Record<string, { 'x-ndigo-item': string; 'x-ndigo-element'?: string }>;
+            };
+        };
+
+        expect(result.catalog.catalogId).toBe('ndigo-ui');
+        expect(Object.keys(result.catalog.components)).toEqual(['Dialog']);
+        expect(result.catalog.components.Dialog?.['x-ndigo-item']).toBe('dialog');
+        expect(result.catalog.components.Dialog?.['x-ndigo-element']).toBe('nd-dialog');
+    });
+
     it('omits the install tool in read-only mode', async () => {
         const fixture = createRegistryFixture();
         cleanup = fixture.cleanup;
         const client = await connect({ dir: fixture.app, registry: fixture.registry, readOnly: true });
 
         const tools = (await client.listTools()).tools.map((tool) => tool.name);
-        expect(tools).toEqual(['list_items', 'search_items', 'get_item', 'validate_registry']);
+        expect(tools).toEqual(['list_items', 'search_items', 'get_item', 'validate_registry', 'get_catalog']);
     });
 
     it('returns tool errors instead of throwing', async () => {

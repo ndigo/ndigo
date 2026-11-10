@@ -50,7 +50,7 @@ const TOP_LEVEL = [
     'update',
 ];
 const DB_COMMANDS = ['generate', 'list', 'migrate', 'new', 'pull', 'push', 'rollback', 'seed', 'status', 'studio'];
-const UI_COMMANDS = ['add', 'init', 'list', 'mcp', 'validate', 'view'];
+const UI_COMMANDS = ['add', 'catalog', 'init', 'list', 'mcp', 'validate', 'view'];
 const AI_COMMANDS = ['check', 'init', 'update'];
 
 interface Result {

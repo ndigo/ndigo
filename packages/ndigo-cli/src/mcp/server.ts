@@ -51,6 +51,9 @@ export function createAppServer(options: AppServerOptions): McpServer {
  */
 export async function startAppServer(options: AppServerOptions): Promise<void> {
     if (options.live === true) {
+        if (options.readOnly === true) {
+            throw new Error('--readOnly applies to the static profile; the live server owns its own policy');
+        }
         const resolved = appScriptCommand(options.dir, 'mcp', LIVE_HINT);
         process.exitCode = await runInteractiveSpawn(resolved.argv, { cwd: resolved.cwd, env: resolved.env });
         return;

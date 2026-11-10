@@ -228,6 +228,12 @@ describe('ndigo mcp', () => {
         await expect(startAppServer({ dir: createApp(), live: true })).rejects.toThrow(/no "mcp" script/u);
     });
 
+    it('rejects read-only with the live profile', async () => {
+        await expect(startAppServer({ dir: createApp({ mcp: true }), live: true, readOnly: true })).rejects.toThrow(
+            /readOnly applies/u
+        );
+    });
+
     it('delegates live mode to the application mcp script', async () => {
         await startAppServer({ dir: createApp({ mcp: true }), live: true });
         expect(process.exitCode).toBe(0);

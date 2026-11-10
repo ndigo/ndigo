@@ -53,12 +53,15 @@ matches the task; do not guess APIs from memory.
 - `44-accessibility` — Accessibility: Accessibility is a property of the rendered page, not a library feature. Ndigo supplies the primitives — semantic HTML, form-associated custom elements, declarative-shadow first paint, and an ndigo-ui
 - `45-performance-and-scaling` — Performance & Scaling: Performance work is measurement plus one deliberate change at a time. Ndigo keeps the hot paths small — a radix route lookup, a single dispatch pipeline, isomorphic views — but the expensive parts are
 - `46-upgrading` — Upgrading Ndigo: An upgrade is a small migration project: read what changed, pin the new versions, run the app's gates, and keep a rollback path. Ndigo is pre-1.0, so the rules are stricter and simpler than a publishe
+- `47-ai-agents` — AI Agents, MCP Tools & Streaming: Add a provider-neutral tool-calling loop to an application: define tools once, serve them over HTTP and MCP, run them against a local or hosted model, and stream the result over SSE with one GenAI tra
 - `90-package-documentation` — Package Documentation: How Ndigo packages document themselves — the standard every package must meet, and the tooling that keeps it true. Applies to all packages/; the reference implementation of the standard is the [ndigo-
 - `91-application-conventions` — Application Conventions: How the demo applications under apps/ are named and laid out. The rules keep the ladder readable, keep package names stable across renumbering, and make a file's role obvious before it is opened. They
 - `coverage` — Package → Guide Coverage: Every public package has a documentation home: a guide, a package README/API tree, or an explicit “internal” note. pnpm guides:check verifies that each package name appears in this table, so a new pac
 
 ## Packages
 
+- `@ndigo/ai` — Provider-agnostic agent contracts: chat messages, streaming events, structured output, and a tool-calling loop over MCP tools
+- `@ndigo/ai-sdk` — AI SDK integration layer for Ndigo: the only package that imports the Vercel AI SDK
 - `@ndigo/auth-client` — Client-side authentication for Ndigo — AuthClient, ClientAuthGuard, and OIDC adapter
 - `@ndigo/auth-core` — Core authentication types, interfaces, and passive decorators for Ndigo
 - `@ndigo/auth-server` — Server-side authentication for Ndigo — AuthServer, AuthRouteGuard, and JWT adapter

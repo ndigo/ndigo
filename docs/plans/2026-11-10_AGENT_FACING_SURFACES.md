@@ -1,6 +1,6 @@
 # Agent-facing surfaces — implementation plan
 
-**Status:** Proposed
+**Status:** Delivered — all phases shipped 2026-11-10 (#361, #363, #366, #368, #370)
 **Decision:** [AD-96](../decisions/2026-11-10_AD96_LLM_AGENT_INTEGRATION.md) (umbrella),
 [AD-100](../decisions/2026-11-10_AD100_MCP_TOOL_PROJECTION.md) (tool projection),
 [AD-101](../decisions/2026-11-10_AD101_A2UI_ADOPTION.md) (A2UI)
@@ -326,7 +326,21 @@ name 48 where the package's primary home moved.
 
 ---
 
-## 11. See also
+## 11. Delivery
+
+| Phase | Scope                                                | PR   |
+| :---- | :--------------------------------------------------- | :--- |
+| 1     | `McpHTTPEndpointOptions.uiResources`                 | #361 |
+| 2     | Agent lab: MCP App, A2UI route, Streamable HTTP      | #363 |
+| 3     | UI lab: WebMCP demo and A2UI render                  | #366 |
+| 4     | Guide 48, coverage/index, AD-96 evidence             | #368 |
+| 5     | Guide 47 extension and pointer edits                 | #370 |
+| 6     | Generated docs index, final gates, `ndigo-site` sync | —    |
+
+The plan itself shipped as #359; the agent-lab MCP App markup fix shipped with
+#366.
+
+## 12. See also
 
 - [AD-96](../decisions/2026-11-10_AD96_LLM_AGENT_INTEGRATION.md),
   [AD-98](../decisions/2026-11-10_AD98_AGENT_CONTENT_GENERATION.md),

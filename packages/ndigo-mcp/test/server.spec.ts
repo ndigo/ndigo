@@ -8,6 +8,8 @@ import { MethodParameter, MethodParameterType, toolMapping } from '@ndigo/dispat
 import { afterEach, describe, expect, it } from 'vitest';
 import { McpToolRegistry } from '../src/registry';
 import { createMcpServer } from '../src/server';
+import { createUiResource, MCP_APP_MIME_TYPE } from '../src/ui-resource';
+import type { UiResource } from '../src/ui-resource';
 import { handlerMethod, mapping, table } from './_fixtures';
 
 let close: (() => Promise<void>) | undefined;
@@ -69,9 +71,14 @@ function registry(): McpToolRegistry {
     );
 }
 
-async function connect(): Promise<Client> {
+async function connect(
+    options: { registry?: McpToolRegistry; uiResources?: readonly UiResource[] } = {}
+): Promise<Client> {
     const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
-    const server = createMcpServer(registry());
+    const server = createMcpServer(
+        options.registry ?? registry(),
+        options.uiResources === undefined ? {} : { uiResources: options.uiResources }
+    );
     const client = new Client({ name: 'ndigo-mcp-test', version: '1.0.0' });
     await Promise.all([server.connect(serverTransport), client.connect(clientTransport)]);
     close = async () => {
@@ -111,6 +118,48 @@ describe('createMcpServer', () => {
         const block = result.content.find((entry) => entry.type === 'text');
         const text = block?.type === 'text' ? block.text : '';
         expect(JSON.parse(text)).toEqual({ id: '42', verbose: true });
+    });
+
+    it('serves MCP Apps resources and advertises the extension', async () => {
+        class UiController {
+            @toolMapping({ name: 'render_orders', readOnly: true, ui: 'ui://orders' })
+            render(): unknown {
+                return null;
+            }
+        }
+        const uiRegistry = McpToolRegistry.from(
+            table([
+                {
+                    mapping: mapping('/orders/ui'),
+                    handlerMethod: handlerMethod(new UiController(), 'render', [], () => ({ rendered: true })),
+                },
+            ])
+        );
+        const resource = createUiResource({
+            uri: 'ui://orders',
+            name: 'Orders app',
+            body: '<main>Orders</main>',
+            css: 'main { color: red; }',
+            script: 'console.log("orders");',
+            csp: { connectDomains: ['https://api.example.test'] },
+        });
+        const client = await connect({ registry: uiRegistry, uiResources: [resource] });
+
+        expect(client.getServerCapabilities()?.extensions?.['io.modelcontextprotocol/ui']).toEqual({});
+
+        const tools = (await client.listTools()).tools;
+        expect(tools[0]?._meta).toEqual({ ui: { resourceUri: 'ui://orders' } });
+
+        const resources = (await client.listResources()).resources;
+        expect(resources.find((entry) => entry.uri === 'ui://orders')?.mimeType).toBe(MCP_APP_MIME_TYPE);
+
+        const read = await client.readResource({ uri: 'ui://orders' });
+        const block = read.contents[0];
+        expect(block?.mimeType).toBe(MCP_APP_MIME_TYPE);
+        expect(block !== undefined && 'text' in block ? block.text : '').toContain('<style>');
+        expect(block?._meta).toEqual({
+            ui: { resourceUri: 'ui://orders', csp: { connectDomains: ['https://api.example.test'] } },
+        });
     });
 
     it('reports tool failures as isError results', async () => {

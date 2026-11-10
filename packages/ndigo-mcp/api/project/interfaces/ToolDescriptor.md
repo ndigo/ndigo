@@ -10,6 +10,26 @@ One tool as reported to MCP clients.
 
 ## Properties
 
+### \_meta?
+
+> `readonly` `optional` **\_meta?**: `object`
+
+Protocol metadata (MCP Apps UI presentation).
+
+#### ui?
+
+> `readonly` `optional` **ui?**: `object`
+
+UI presentation metadata.
+
+##### ui.resourceUri
+
+> `readonly` **resourceUri**: `string`
+
+The `ui://` resource rendered by the host.
+
+***
+
 ### annotations?
 
 > `readonly` `optional` **annotations?**: `object`

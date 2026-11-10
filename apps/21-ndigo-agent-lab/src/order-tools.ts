@@ -43,7 +43,7 @@ export class OrderTools {
      * @returns The order catalogue.
      */
     @getMapping('/tools/orders')
-    @toolMapping({ name: 'list_orders', readOnly: true, description: 'List every order.' })
+    @toolMapping({ name: 'list_orders', readOnly: true, description: 'List every order.', ui: 'ui://orders' })
     listOrders(): readonly Order[] {
         return ORDERS;
     }

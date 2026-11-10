@@ -17,6 +17,13 @@ describe('ModelAndView', () => {
         expect(mav.model).toBe(model);
     });
 
+    test('it should accept an array model for array-shaped views', () => {
+        const messages = [{ version: '1.0', createSurface: { surfaceId: 's1' } }];
+        const mav = new ModelAndView('a2ui', messages);
+
+        expect(mav.model).toBe(messages);
+    });
+
     test('it should expose Symbol.toStringTag with view name', () => {
         const mav = new ModelAndView('dashboard');
 

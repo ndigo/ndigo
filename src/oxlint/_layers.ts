@@ -53,20 +53,20 @@ export const LAYER_RANK: Record<string, number> = {
     'orm-drizzle': 6,
     redis: 6,
     'view-ejs': 6,
-    'view-webcomponent': 6,
     // 7 — platform layer
     'auth-server': 7,
     inspect: 7,
     openapi: 7,
-    'platform-web': 7,
     telemetry: 7,
+    'view-webcomponent': 7,
     // 8 — platform composition
     'platform-node': 8,
-    'telemetry-web': 8,
+    'platform-web': 8,
     // 9 — application services
     management: 9,
     mcp: 9,
     'telemetry-node': 9,
+    'telemetry-web': 9,
 };
 
 /**

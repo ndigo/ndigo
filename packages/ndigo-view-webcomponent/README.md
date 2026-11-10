@@ -82,6 +82,41 @@ progressive enhancement.
 
 The todomvc benchmark suite (Speedometer-3 style workload in jsdom) measures the engine against other frameworks — model updates re-render in place without replacing the element.
 
+### WebMCP tools
+
+A browser view can expose a handler as a WebMCP tool with the same
+`@parameters` + `validatedBy` metadata the HTTP route uses:
+
+```ts
+import { AbstractWebComponent, AsWebMcpElement, webMcpToolForHandler } from '@ndigo/view-webcomponent';
+
+class CatalogueView extends AsWebMcpElement(AbstractWebComponent) {
+    @parameters({ query: validatedBy(z.string().min(2), queryValue('query')) })
+    search(query: string) {
+        return catalogue.search(query);
+    }
+
+    override webMcpTools() {
+        return [
+            webMcpToolForHandler({
+                handler: this,
+                method: 'search',
+                name: 'search_catalogue',
+                description: 'Search the product catalogue.',
+                readOnly: true,
+            }),
+        ];
+    }
+}
+```
+
+`AsWebMcpElement` registers the tools on connect and aborts the registration on
+disconnect (a reconnect registers again). `provideWebMcpTools` /
+`declareWebMcpTool` are available for non-element code; both feature-detect
+`document.modelContext` and return a no-op registration (`supported: false`) in
+browsers without WebMCP. `exposedTo` lists secure origins allowed to call a
+cross-origin tool.
+
 ## API
 
 The full API is at [`api/`](api/README.md). Primary exports live in

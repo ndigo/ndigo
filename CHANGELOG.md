@@ -59,6 +59,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   parity, and one GenAI span per call. `ndigo add @ndigo/mcp` runs the
   `mcp-setup` generator. `@ndigo/platform-node` exposes the raw request on the
   route for transport-owning handlers.
+- `@ndigo/view-webcomponent`: WebMCP tools — `provideWebMcpTools` /
+  `declareWebMcpTool` (AbortSignal lifecycle), `AsWebMcpElement`
+  (connect/disconnect registration), and `webMcpToolForHandler` (schema from
+  `@parameters` + `validatedBy`).
 - `@ndigo/mcp`: MCP Apps — `_meta.ui.resourceUri` from `@toolMapping({ ui })`,
   `ui://` resources served as `text/html;profile=mcp-app`, a
   `createUiResource` single-file document helper, and the

@@ -145,6 +145,11 @@ the normal interceptor chain. `@whenFeature` hides a tool from `tools/list`;
 each call emits one `execute_tool` span with `gen_ai.tool.name` and
 `gen_ai.tool.call.id`.
 
+For interactive views, declare `ui: 'ui://<app>'` on `@toolMapping` and pass a
+`createUiResource(...)` document to the server; the tool carries
+`_meta.ui.resourceUri` and the resource is served as
+`text/html;profile=mcp-app` under the MCP Apps extension.
+
 ### Maintenance
 
 | Command            | Runs…                                                                                                                         | Example                                           |

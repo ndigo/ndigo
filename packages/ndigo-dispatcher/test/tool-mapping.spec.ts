@@ -30,6 +30,17 @@ describe('@toolMapping', () => {
         expect(getToolMapping(new Controller(), 'run')).toEqual({});
     });
 
+    it('validates and stores the MCP Apps resource URI', () => {
+        expect(() => toolMapping({ ui: 'https://example.test/app' })).toThrow(/ui:\/\//u);
+        expect(() => toolMapping({ ui: 'ui://orders' })).not.toThrow();
+
+        class Controller {
+            @toolMapping({ ui: 'ui://orders' })
+            render(): void {}
+        }
+        expect(getToolMapping(Controller, 'render')).toEqual({ ui: 'ui://orders' });
+    });
+
     it('rejects a non-snake-case tool name at decoration time', () => {
         expect(() => toolMapping({ name: 'GetOrder' })).toThrow(/snake_case/u);
         expect(() => toolMapping({ name: 'get-order' })).toThrow(/snake_case/u);

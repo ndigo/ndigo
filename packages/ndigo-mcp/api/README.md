@@ -13,3 +13,4 @@ MCP tools projected from Ndigo dispatch metadata — one handler, REST route and
 - [project](project/README.md)
 - [registry](registry/README.md)
 - [server](server/README.md)
+- [ui-resource](ui-resource/README.md)

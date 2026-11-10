@@ -15,6 +15,7 @@ import {
 } from '@modelcontextprotocol/sdk/types.js';
 import type { InspectManifest } from '@ndigo/inspect';
 import type { McpToolRegistry } from './registry.js';
+import { MCP_APP_MIME_TYPE, type UiResource } from './ui-resource.js';
 
 /** Options for {@link createMcpServer}. */
 export interface McpServerOptions {
@@ -24,6 +25,8 @@ export interface McpServerOptions {
     readonly version?: string;
     /** The application manifest, exposed as MCP resources. */
     readonly inspect?: InspectManifest;
+    /** MCP Apps `ui://` resources served as `text/html;profile=mcp-app`. */
+    readonly uiResources?: readonly UiResource[];
 }
 
 /**
@@ -34,9 +37,17 @@ export interface McpServerOptions {
  * @returns A server ready to connect to a transport.
  */
 export function createMcpServer(registry: McpToolRegistry, options: McpServerOptions = {}): Server {
+    const uiResources = options.uiResources ?? [];
     const server = new Server(
         { name: options.name ?? 'ndigo', version: options.version ?? '0.0.1' },
-        { capabilities: { tools: {}, resources: {}, prompts: {} } }
+        {
+            capabilities: {
+                tools: {},
+                resources: {},
+                prompts: {},
+                ...(uiResources.length === 0 ? {} : { extensions: { 'io.modelcontextprotocol/ui': {} } }),
+            },
+        }
     );
 
     server.setRequestHandler(ListToolsRequestSchema, async () => ({ tools: await registry.listTools() }));
@@ -66,10 +77,25 @@ export function createMcpServer(registry: McpToolRegistry, options: McpServerOpt
     });
 
     server.setRequestHandler(ListResourcesRequestSchema, async () => ({
-        resources: resourcesOf(options.inspect),
+        resources: resourcesOf(options.inspect, uiResources),
     }));
 
     server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
+        const uiResource = uiResources.find((resource) => resource.uri === request.params.uri);
+        if (uiResource !== undefined) {
+            return {
+                contents: [
+                    {
+                        uri: uiResource.uri,
+                        mimeType: MCP_APP_MIME_TYPE,
+                        text: uiResource.html,
+                        ...(uiResource.ui === undefined
+                            ? {}
+                            : { _meta: { ui: { resourceUri: uiResource.uri, ...uiResource.ui } } }),
+                    },
+                ],
+            };
+        }
         const manifest = options.inspect;
         if (manifest === undefined) {
             throw new Error(`unknown MCP resource '${request.params.uri}'`);
@@ -102,13 +128,23 @@ export async function startStdioServer(registry: McpToolRegistry, options: McpSe
     process.stderr.write(`${options.name ?? 'ndigo'}: listening on stdio\n`);
 }
 
-function resourcesOf(manifest: InspectManifest | undefined) {
-    if (manifest === undefined) return [];
-    return [
-        { uri: 'ndigo://manifest', name: 'Application manifest', mimeType: 'application/json' },
-        { uri: 'ndigo://routes', name: 'Application routes', mimeType: 'application/json' },
-        { uri: 'ndigo://config', name: 'Declared configuration keys', mimeType: 'application/json' },
-    ];
+function resourcesOf(manifest: InspectManifest | undefined, uiResources: readonly UiResource[]) {
+    const manifestResources =
+        manifest === undefined
+            ? []
+            : [
+                  { uri: 'ndigo://manifest', name: 'Application manifest', mimeType: 'application/json' },
+                  { uri: 'ndigo://routes', name: 'Application routes', mimeType: 'application/json' },
+                  { uri: 'ndigo://config', name: 'Declared configuration keys', mimeType: 'application/json' },
+              ];
+    const appResources = uiResources.map((resource) => ({
+        uri: resource.uri,
+        name: resource.name,
+        ...(resource.description === undefined ? {} : { description: resource.description }),
+        mimeType: MCP_APP_MIME_TYPE,
+        ...(resource.ui === undefined ? {} : { _meta: { ui: { resourceUri: resource.uri, ...resource.ui } } }),
+    }));
+    return [...manifestResources, ...appResources];
 }
 
 function resourceBody(manifest: InspectManifest, uri: string): unknown {

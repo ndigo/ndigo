@@ -6,3 +6,4 @@ export * from './project.js';
 export * from './registry.js';
 export * from './server.js';
 export * from './http.js';
+export * from './ui-resource.js';

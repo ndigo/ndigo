@@ -23,6 +23,14 @@ export interface ToolDescriptor {
         /** The tool only reads state. */
         readonly readOnlyHint?: boolean;
     };
+    /** Protocol metadata (MCP Apps UI presentation). */
+    readonly _meta?: {
+        /** UI presentation metadata. */
+        readonly ui?: {
+            /** The `ui://` resource rendered by the host. */
+            readonly resourceUri: string;
+        };
+    };
 }
 
 /** A projected tool with the handler needed to invoke it. */
@@ -105,6 +113,7 @@ export function projectTools(source: MappingSource): RegisteredTool[] {
                     description: metadata.description ?? describe(entry),
                     inputSchema: inputSchemaOf(entry.handlerMethod),
                     annotations: { readOnlyHint: readOnly },
+                    ...(metadata.ui === undefined ? {} : { _meta: { ui: { resourceUri: metadata.ui } } }),
                 },
                 handlerMethod: entry.handlerMethod,
                 info: entry.mapping,

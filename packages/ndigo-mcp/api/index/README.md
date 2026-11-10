@@ -16,6 +16,12 @@ Re-exports [createMcpServer](../server/functions/createMcpServer.md)
 
 ***
 
+### createUiResource
+
+Re-exports [createUiResource](../ui-resource/functions/createUiResource.md)
+
+***
+
 ### DispatcherLike
 
 Re-exports [DispatcherLike](../project/interfaces/DispatcherLike.md)
@@ -43,6 +49,12 @@ Re-exports [MappingSource](../project/type-aliases/MappingSource.md)
 ### MappingTableLike
 
 Re-exports [MappingTableLike](../project/interfaces/MappingTableLike.md)
+
+***
+
+### MCP\_APP\_MIME\_TYPE
+
+Re-exports [MCP_APP_MIME_TYPE](../ui-resource/variables/MCP_APP_MIME_TYPE.md)
 
 ***
 
@@ -115,3 +127,33 @@ Re-exports [ToolCallContext](../registry/interfaces/ToolCallContext.md)
 ### ToolDescriptor
 
 Re-exports [ToolDescriptor](../project/interfaces/ToolDescriptor.md)
+
+***
+
+### UiCspConfig
+
+Re-exports [UiCspConfig](../ui-resource/interfaces/UiCspConfig.md)
+
+***
+
+### UiMetadata
+
+Re-exports [UiMetadata](../ui-resource/interfaces/UiMetadata.md)
+
+***
+
+### UiResource
+
+Re-exports [UiResource](../ui-resource/interfaces/UiResource.md)
+
+***
+
+### UiResourceInput
+
+Re-exports [UiResourceInput](../ui-resource/interfaces/UiResourceInput.md)
+
+***
+
+### UiVisibility
+
+Re-exports [UiVisibility](../ui-resource/type-aliases/UiVisibility.md)

@@ -18,7 +18,7 @@ import { handlerMethod, mapping, table } from './_fixtures';
 describe('projectTools', () => {
     it('projects @toolMapping handlers from dispatch metadata', () => {
         class OrdersController {
-            @toolMapping({ name: 'get_order', description: 'Read one order', readOnly: true })
+            @toolMapping({ name: 'get_order', description: 'Read one order', readOnly: true, ui: 'ui://orders' })
             @parameters({ id: pathValue(), verbose: queryValue('verbose') })
             getOrder(_args: unknown): unknown {
                 return { ok: true };
@@ -52,6 +52,7 @@ describe('projectTools', () => {
             required: ['id'],
         });
         expect(tools[0]?.readOnly).toBe(true);
+        expect(tools[0]?.descriptor._meta).toEqual({ ui: { resourceUri: 'ui://orders' } });
     });
 
     it('derives a snake_case name and a route description by default', () => {

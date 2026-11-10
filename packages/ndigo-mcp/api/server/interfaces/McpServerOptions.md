@@ -26,6 +26,14 @@ Server name reported to clients.
 
 ***
 
+### uiResources?
+
+> `readonly` `optional` **uiResources?**: readonly [`UiResource`](../../ui-resource/interfaces/UiResource.md)[]
+
+MCP Apps `ui://` resources served as `text/html;profile=mcp-app`.
+
+***
+
 ### version?
 
 > `readonly` `optional` **version?**: `string`

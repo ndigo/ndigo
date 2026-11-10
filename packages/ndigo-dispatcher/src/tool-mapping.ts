@@ -23,6 +23,11 @@ export interface ToolMappingMetadata {
     readonly description?: string;
     /** Mark the tool read-only (mutating tools are gated by policy). */
     readonly readOnly?: boolean;
+    /**
+     * MCP Apps resource URI (`ui://…`) rendered by the host after the call.
+     * Projected as `_meta.ui.resourceUri`.
+     */
+    readonly ui?: string;
 }
 
 /**
@@ -51,6 +56,10 @@ export function toolMapping(options: ToolMappingMetadata = {}) {
         throw new TypeError(
             `@toolMapping name must be snake_case starting with a letter — received '${String(name)}'.`
         );
+    }
+    const ui = options.ui;
+    if (ui !== undefined && (!ui.startsWith('ui://') || /\s/u.test(ui))) {
+        throw new TypeError(`@toolMapping ui must be a ui:// resource URI — received '${String(ui)}'.`);
     }
     return function (target: unknown, context: ClassMethodDecoratorContext): void {
         void target;

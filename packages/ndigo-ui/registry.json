@@ -837,6 +837,29 @@
         }
       ],
       "docs": "Copy the aside into a layout grid; groups are native `<details>` and the active link uses `aria-current=\"page\"`."
+    },
+    {
+      "name": "a2ui-surface",
+      "type": "registry:ui",
+      "title": "A2UI surface",
+      "description": "Renders A2UI 1.0 surfaces with the installed ndigo-ui custom elements.",
+      "author": "Ndigo <https://ndigo.dev>",
+      "categories": ["ui", "agent", "behaviour"],
+      "dependencies": ["@a2ui/web_core@~0.15.0"],
+      "registryDependencies": ["lib"],
+      "files": [
+        {
+          "path": "registry/ui/a2ui-surface/nd-a2ui-surface.ts",
+          "type": "registry:ui",
+          "target": "@ui/nd-a2ui-surface/nd-a2ui-surface.ts"
+        },
+        {
+          "path": "registry/ui/a2ui-surface/component-map.ts",
+          "type": "registry:ui",
+          "target": "@ui/nd-a2ui-surface/component-map.ts"
+        }
+      ],
+      "docs": "Set `messages` to an A2UI 1.0 message array. Components render as the installed `<nd-*>` elements named in the generated map; unknown or uninstalled components emit `nd-a2ui-error`."
     }
   ]
 }

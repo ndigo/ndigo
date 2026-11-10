@@ -96,6 +96,8 @@ overrides:
   react-router: '>=7.18.2'
   smol-toml: '>=1.8.1' # GHSA-r4xh-jqrq-34v2 — quadratic-time parse() key rescan (nx · @nx/devkit chain)
   source-map-js: '>=1.2.2' # GHSA-68fv-2mgg-jv7q — ReDoS in source-map parsing (sibling todomvc Vue build chain)
+  '@a2ui/web_core>zod': '>=4.6.6' # GHSA-mrhx-c7xc-m3w5 — web_core pins zod ^3; the workspace v4 line is API-compatible on the surface path
+  'zod-to-json-schema>zod': '>=4.6.6' # same advisory — the schema helper must not carry the vulnerable copy
 
 # pnpm 12's built-in `minimumReleaseAge` (1440 min) quarantines packages
 # published in the last day. The default is non-strict, so an install that

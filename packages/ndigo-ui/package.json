@@ -41,6 +41,7 @@
     "**/*.css"
   ],
   "devDependencies": {
+    "@a2ui/web_core": "~0.15.0",
     "@internationalized/date": "^3.12.4",
     "@zag-js/accordion": "~1.47.0",
     "@zag-js/collection": "~1.47.0",

@@ -70,7 +70,7 @@ have their own base styles can import only the token stylesheet.
 ### Registry
 
 The package directory is a shadcn-compatible registry chunk included by the
-repository root `registry.json`. The registry currently has 41 items:
+repository root `registry.json`. The registry currently has 42 items:
 
 - **Foundation:** `theme` (tokens plus the opt-in base layer) and `lib` (the
   copy-in custom-element foundation).
@@ -81,6 +81,8 @@ repository root `registry.json`. The registry currently has 41 items:
 - **Behaviour (Zag.js):** `dialog`, `menu`, `popover`, `tooltip`, `tabs`,
   `accordion`, `switch`, `slider`, `select`, `combobox`, `drawer`,
   `date-picker`, `scroll-area`, `navigation-menu`, `tags-input`, `file-upload`.
+- **Agent:** `a2ui-surface` renders A2UI 1.0 surfaces with the installed
+  custom elements.
 - **Blocks:** `app-shell`, `command`, `data-table` (table + checkbox + button +
   pagination), `code-block`, `sidebar`.
 

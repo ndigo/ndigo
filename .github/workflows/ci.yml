@@ -218,6 +218,11 @@ jobs:
         # `pnpm agent-content:build` — never hand-edit the emitted files.
         run: pnpm agent-content:check
 
+      - name: A2UI component map integrity
+        # The map is generated from registry.json; a registry item change must
+        # regenerate it with `pnpm ui:a2ui-map:build`.
+        run: pnpm ui:a2ui-map:check
+
       - name: Strict type-check
         # Per-project tsc -b with the build config over every package and
         # app (`pnpm typecheck`). Scoped with --filter so out-of-tree

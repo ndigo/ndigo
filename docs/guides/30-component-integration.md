@@ -100,10 +100,10 @@ host is not deployed yet).
 
 Agents can run `ndigo ui mcp --dir <app> --registry <source>` to expose the same
 registry over MCP. The server provides `list_items`, `search_items`, `get_item`,
-`install_items`, and `validate_registry`; installs plan by default (`dryRun:
-false` writes), and `--readOnly` omits the install tool.
+`get_catalog`, `install_items`, and `validate_registry`; installs plan by
+default (`dryRun: false` writes), and `--readOnly` omits the install tool.
 
-The registry has 41 items: `theme`, `lib`, 34 primitives, and 5 blocks. At the
+The registry has 42 items: `theme`, `lib`, 35 primitives, and 5 blocks. At the
 time of writing the native-first primitives are `button`, `input`, `field`,
 `checkbox`, `table`, `alert`, `badge`, `card`, `separator`, `skeleton`,
 `spinner`, `breadcrumb`, `kbd`, `aspect-ratio`, `item`, `typography`, and

@@ -4,7 +4,12 @@
 
 import { View, AbstractView } from '@ndigo/view';
 
-type Model<T = unknown> = { [key: string]: T } | Map<string, T>;
+/**
+ * A view model: a keyed object, a map, or a bare array. The array form exists
+ * for views whose model is the document itself (A2UI serializes its message
+ * array), so handlers do not need a cast.
+ */
+type Model<T = unknown> = { [key: string]: T } | Map<string, T> | readonly unknown[];
 
 /**
  * Holds a view plus its optional model data.

@@ -16,6 +16,7 @@ Registry operations behind the `ndigo ui mcp` tools: discovery, inspection,
 
 ## Functions
 
+- [getCatalog](functions/getCatalog.md)
 - [getItem](functions/getItem.md)
 - [installItems](functions/installItems.md)
 - [listItems](functions/listItems.md)

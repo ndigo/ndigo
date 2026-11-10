@@ -22,6 +22,16 @@ class Controller {
     getOrder(): unknown {
         return null;
     }
+
+    @toolMapping({ name: 'list_orders', readOnly: true })
+    listOrders(): unknown {
+        return null;
+    }
+
+    @toolMapping({ name: 'create_order' })
+    createOrder(): unknown {
+        return null;
+    }
 }
 
 function registry(): McpToolRegistry {
@@ -47,6 +57,14 @@ function registry(): McpToolRegistry {
                     verbose: route.data['verbose'] === true,
                 })),
             },
+            {
+                mapping: mapping('/orders'),
+                handlerMethod: handlerMethod(new Controller(), 'listOrders', [], () => []),
+            },
+            {
+                mapping: mapping('/orders', 'POST'),
+                handlerMethod: handlerMethod(new Controller(), 'createOrder', [], () => ({ created: true })),
+            },
         ])
     );
 }
@@ -67,21 +85,22 @@ describe('createMcpServer', () => {
     it('lists tools with their JSON Schema', async () => {
         const client = await connect();
         const { tools } = await client.listTools();
-        expect(tools).toEqual([
-            {
-                name: 'get_order',
-                description: 'Read an order',
-                inputSchema: {
-                    type: 'object',
-                    properties: {
-                        id: { type: 'string' },
-                        verbose: { type: 'boolean' },
-                    },
-                    required: ['id'],
+        expect(tools.map((tool) => tool.name)).toEqual(['get_order', 'list_orders', 'create_order']);
+        expect(tools.find((tool) => tool.name === 'get_order')).toEqual({
+            name: 'get_order',
+            description: 'Read an order',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    id: { type: 'string' },
+                    verbose: { type: 'boolean' },
                 },
-                annotations: { readOnlyHint: true },
+                required: ['id'],
             },
-        ]);
+            annotations: { readOnlyHint: true },
+        });
+        expect(tools.find((tool) => tool.name === 'list_orders')?.annotations).toEqual({ readOnlyHint: true });
+        expect(tools.find((tool) => tool.name === 'create_order')?.annotations).toEqual({ readOnlyHint: false });
     });
 
     it('calls a tool and serializes the result', async () => {

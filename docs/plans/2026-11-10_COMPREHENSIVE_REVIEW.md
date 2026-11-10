@@ -8,6 +8,10 @@ extraction, and agent/skill deployment changes. Method: mechanical gates plus
 parallel read-only review of the changed source slices; no source edits were made
 during review.
 
+_Status: implemented in `fix/review-2026-11-10` (worktree
+`ndigo-357-2026-11-10-comprehensive-review`), issue
+[ndigo/ndigo#357](https://github.com/ndigo/ndigo/issues/357)._
+
 ## 0. Gate baseline
 
 Run at HEAD `ccd06d224`:

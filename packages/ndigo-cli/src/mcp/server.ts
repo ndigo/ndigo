@@ -30,8 +30,7 @@ export interface AppServerOptions {
 }
 
 /** The missing-`mcp`-script hint, mirroring the `inspect` one (AD-70). */
-const LIVE_HINT =
-    'add an "mcp" script that starts the application MCP server, e.g. "mcp": "tsx src/mcp.ts" (AD-70)';
+const LIVE_HINT = 'add an "mcp" script that starts the application MCP server, e.g. "mcp": "tsx src/mcp.ts" (AD-70)';
 
 /**
  * Creates the static application MCP server.
@@ -93,7 +92,8 @@ function createAppHost(options: AppServerOptions): McpHost {
     host.registerTool({
         name: 'get_config_keys',
         title: 'List configuration keys',
-        description: 'Return the declared configuration keys. Values are never part of the manifest, so none are returned.',
+        description:
+            'Return the declared configuration keys. Values are never part of the manifest, so none are returned.',
         inputSchema: {},
         annotations: { readOnlyHint: true },
         run: () => getConfigKeys(context),

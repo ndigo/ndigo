@@ -186,7 +186,10 @@ describe('ndigo mcp', () => {
         const dir = createApp();
         const docs = mkdtempSync(join(tmpdir(), 'ndigo-docs-'));
         dirs.push(docs);
-        writeFileSync(join(docs, 'STYLE_GUIDE.md'), '# Style\n\n## Naming\n\nUse camelCase.\n\n## Modules\n\nOne per file.\n');
+        writeFileSync(
+            join(docs, 'STYLE_GUIDE.md'),
+            '# Style\n\n## Naming\n\nUse camelCase.\n\n## Modules\n\nOne per file.\n'
+        );
         writeFileSync(join(docs, 'ARCHITECTURE.md'), '# Architecture\n\n## Worktrees\n\nOne per session.\n');
         process.env['NDIGO_DOCS_DIR'] = docs;
         const client = await connect({ dir });

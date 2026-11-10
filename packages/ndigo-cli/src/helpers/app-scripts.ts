@@ -256,10 +256,7 @@ export async function captureAppOnce(
     return captureSpawn([...resolved.argv, ...extraArgv], { cwd: resolved.cwd, env: resolved.env });
 }
 
-async function captureSpawn(
-    argv: string[],
-    options: { cwd?: string; env?: NodeJS.ProcessEnv }
-): Promise<CapturedRun> {
+async function captureSpawn(argv: string[], options: { cwd?: string; env?: NodeJS.ProcessEnv }): Promise<CapturedRun> {
     let child: ChildProcess | null = null;
     const relay = (signal: NodeJS.Signals): void => {
         child?.kill(signal);

@@ -72,7 +72,8 @@ export function createMcpHost(options: McpHostOptions): McpHost {
         // `ToolCallback<Shape>` cannot resolve its conditional argument type
         // while `Shape` is generic (TS erases it to the constraint), so the
         // handler's precise parameter type is asserted at the SDK boundary.
-        const handler = (async (args: ToolArguments<Shape>) => runTool(() => tool.run(args))) as unknown as ToolCallback<Shape>;
+        const handler = (async (args: ToolArguments<Shape>) =>
+            runTool(() => tool.run(args))) as unknown as ToolCallback<Shape>;
         server.registerTool<ToolSchema, Shape>(
             tool.name,
             {

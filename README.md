@@ -203,6 +203,7 @@ HTTP & routing:
 Dispatch & views:
 
 - [ndigo-dispatcher](packages/ndigo-dispatcher/README.md) — request dispatch, parameters, radix mapping
+- [ndigo-mcp](packages/ndigo-mcp/README.md) — MCP tools projected from dispatch metadata (stdio + Streamable HTTP)
 - [ndigo-view](packages/ndigo-view/README.md) — views, targets, content negotiation
 - [ndigo-view-ejs](packages/ndigo-view-ejs/README.md) — EJS template technology
 - [ndigo-view-webcomponent](packages/ndigo-view-webcomponent/README.md) — Web Component views

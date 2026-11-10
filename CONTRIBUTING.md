@@ -178,12 +178,13 @@ The repository's AI-agent definitions are **generated, not hand-edited**.
   [`development-agents`](https://github.com/jeff/development-agents)
   (agents, skills, per-harness shims) plus this repo's `agent-local/`
   (repo-specific overrides, e.g. the `graft` skill).
-- Regenerate: `pnpm agents:sync` — renders all harness copies + the
-  `.agent-gen.json` sha256 manifest.
+- Regenerate: `pnpm agents:sync` — renders agents per harness, skills once
+  into the shared `.agents/skills/`, plus the `.agent-gen.json` sha256
+  manifest.
 - Validate: `pnpm agents:check` — manifest + structural invariants
   (CI-gated).
 - Edit `development-agents/` or `agent-local/` and regenerate; never edit
-  generated files under `.opencode/agents`, `.omp/agents`.
+  generated files under `.opencode/agents`, `.omp/agents`, `.agents/skills`.
 - Repo-owned deployment files (`opencode.json`, `.opencode/plugins/`,
   `AGENTS.md`) are authored in-repo but carry editor code-execution reach, so
   they sit under the same drift gate: hashes live in `.agent-local.json`,

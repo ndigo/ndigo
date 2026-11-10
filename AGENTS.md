@@ -526,12 +526,16 @@ This repository's AI-agent definitions are **generated, not hand-edited**:
 - **Source of truth:** the neutral store in `development-agents/` (agents,
   skills, per-harness shims) plus this repo's `agent-local/` (repo-specific
   overrides, e.g. the `graft` skill).
-- **Regenerate:** `pnpm agents:sync` (runs `gen.mjs`; emits `.opencode/`,
-  `.omp/` copies + `.agent-gen.json`)
+- **Regenerate:** `pnpm agents:sync` (runs `gen.mjs`; agents into
+  `.opencode/` + `.omp/`, skills once into the harness-neutral `.agents/skills/`,
+  plus `.agent-gen.json`)
 - **Validate:** `pnpm agents:check` — committed files vs. the sha256
   manifest + structural invariants (CI-gated)
 - Edit `development-agents/` or `agent-local/` and regenerate — never edit
-  generated files under `.opencode/agents`, `.omp/agents`.
+  generated files under `.opencode/agents`, `.omp/agents`, `.agents/skills`.
+  Skills are deployed once to `.agents/skills` because both harnesses read
+  that tree natively; a second copy under a harness directory would shadow it
+  at a different precedence.
 - Models: not part of the deployment — agents inherit the session model
   (OpenCode `model`, OMP `modelRoles`, configured outside the store).
 

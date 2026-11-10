@@ -201,9 +201,10 @@ jobs:
         run: pnpm manifest:check
 
       - name: Agent config integrity
-        # Generated agents/skills (.opencode/, .omp/) must match the
-        # committed sha256 manifest. Regenerate with `pnpm agents:sync` from
-        # the development-agents neutral store — never hand-edit generated dirs.
+        # Generated agents (.opencode/agents, .omp/agents) and the shared
+        # harness-neutral skills (.agents/skills) must match the committed
+        # sha256 manifest. Regenerate with `pnpm agents:sync` from the
+        # development-agents neutral store — never hand-edit generated dirs.
         # Repo-owned deployment files (opencode.json, .opencode/plugins/,
         # AGENTS.md) are covered by a second manifest (.agent-local.json);
         # refresh it with `node scripts/agents-check.mjs --update`.

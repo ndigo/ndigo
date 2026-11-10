@@ -100,7 +100,8 @@ AD-98 (agent content), AD-99 (MCP host), AD-100 (`@ndigo/mcp`), and AD-101
 - Shipped: `@ndigo/mcp`, `@ndigo/ai`, `@ndigo/ai-sdk`,
   `apps/21-ndigo-agent-lab`, `tools/agent-content`, `ndigo ai:*`, `ndigo mcp`,
   `ndigo ui catalog`, `nd-a2ui-surface`, MCP Apps `ui://` resources, WebMCP.
-- Guides: 37 (`ndigo` CLI) and 47 (AI agents, MCP tools, streaming).
+- Guides: 37 (`ndigo` CLI), 47 (AI agents, MCP tools, streaming), and 48
+  (agent-facing surfaces).
 - Issues/PRs: #327, #329, #331, #333, #335, #337, #339, #342, #344, #346.
 
 ## See Also

@@ -15,10 +15,10 @@
 
 The agent integration ships in two directions, and only one is documented:
 
-| Direction              | What it means                                   | Documented today                                                  |
-| :--------------------- | :---------------------------------------------- | :---------------------------------------------------------------- |
-| Model → app            | Run an agent inside a Ndigo app                 | Guide 47 — `@ndigo/ai`, `@ndigo/ai-sdk`, SSE, limits (180 lines)  |
-| App → agent            | Make handlers callable by an agent              | Fragments only — see below                                        |
+| Direction   | What it means                      | Documented today                                                 |
+| :---------- | :--------------------------------- | :--------------------------------------------------------------- |
+| Model → app | Run an agent inside a Ndigo app    | Guide 47 — `@ndigo/ai`, `@ndigo/ai-sdk`, SSE, limits (180 lines) |
+| App → agent | Make handlers callable by an agent | Fragments only — see below                                       |
 
 The plan's own audience split says developer agents are addressed by P0–P2 and
 product agents by P3–P5. Guide 47 covers P5 alone; P3 (tool projection) and P4
@@ -47,16 +47,16 @@ this gap, so the demo extension is part of this plan rather than a follow-up.
 
 ## 1. What ships
 
-| # | Deliverable                                                                | Kind                |
-| :- | :------------------------------------------------------------------------- | :------------------ |
-| 1 | `docs/guides/48-agent-facing-surfaces.md`                                  | New guide           |
-| 2 | `apps/21-ndigo-agent-lab`: MCP App, A2UI route, Streamable HTTP endpoint   | Demo (Node)         |
-| 3 | `apps/20-ndigo-ui-lab`: WebMCP demo element beside the A2UI surface        | Demo (browser)      |
-| 4 | `packages/ndigo-mcp`: `McpHTTPEndpointOptions.uiResources`                 | Small additive API  |
-| 5 | Guide 47: structured output, adapter contract, abort/errors                | Guide extension     |
-| 6 | Guides 37/09 + index/coverage/AD-96 evidence                               | Pointer edits       |
-| 7 | `tools/agent-content/docs-index.md` + CLI asset copy                       | Generated           |
-| 8 | `ndigo-site` content sync                                                  | Separate repo       |
+| #   | Deliverable                                                              | Kind               |
+| :-- | :----------------------------------------------------------------------- | :----------------- |
+| 1   | `docs/guides/48-agent-facing-surfaces.md`                                | New guide          |
+| 2   | `apps/21-ndigo-agent-lab`: MCP App, A2UI route, Streamable HTTP endpoint | Demo (Node)        |
+| 3   | `apps/20-ndigo-ui-lab`: WebMCP demo element beside the A2UI surface      | Demo (browser)     |
+| 4   | `packages/ndigo-mcp`: `McpHTTPEndpointOptions.uiResources`               | Small additive API |
+| 5   | Guide 47: structured output, adapter contract, abort/errors              | Guide extension    |
+| 6   | Guides 37/09 + index/coverage/AD-96 evidence                             | Pointer edits      |
+| 7   | `tools/agent-content/docs-index.md` + CLI asset copy                     | Generated          |
+| 8   | `ndigo-site` content sync                                                | Separate repo      |
 
 Deliberately **not** shipped: a guide for `ndigo ai:*` (stays in Guide 37 and
 the site page), a guide per package, and any new AI runtime feature.
@@ -76,16 +76,16 @@ A2UI surface, WebMCP tool — with no duplicated descriptions.
 
 ### Section outline
 
-| § | Section                    | Content                                                                                                              | Target  |
-| :- | :------------------------- | :------------------------------------------------------------------------------------------------------------------- | :------ |
-| 1 | One handler, many surfaces | Projection table; where each surface is declared; schema parity as the invariant                                     | ~30 ln  |
-| 2 | Declaring a tool           | `@toolMapping({ name, description, readOnly, ui })`; naming rules; `@whenFeature` removes a tool from `tools/list`    | ~40 ln  |
-| 3 | Serving MCP                | `McpToolRegistry.from(dispatcher, { readOnly, argumentResolvers, isFeatureEnabled })`; stdio vs Streamable HTTP      | ~35 ln  |
-| 4 | Policy and auth            | Bearer/scopes through `@ndigo/auth-*`; per-tool rate limits; breaker; one `execute_tool` span; read-only default     | ~30 ln  |
-| 5 | MCP Apps                   | `ui: 'ui://orders'`; `createUiResource(...)`; CSP/visibility/permissions; single-file HTML; no wildcard origin       | ~35 ln  |
-| 6 | A2UI                       | `A2UIView` / `a2uiViewResolver` / `MediaTypes.APPLICATION_A2UI_JSON`; `nd-a2ui-surface`; installed-only catalog       | ~40 ln  |
-| 7 | WebMCP                     | `AsWebMcpElement` + `webMcpToolForHandler`; connect/disconnect lifecycle; `exposedTo`; feature detection              | ~30 ln  |
-| 8 | Prove the parity           | `OpenAPISpecGenerator` over the dispatcher tables vs `tools/list`; MCP smoke test; unknown-component rejection        | ~25 ln  |
+| §   | Section                    | Content                                                                                                            | Target |
+| :-- | :------------------------- | :----------------------------------------------------------------------------------------------------------------- | :----- |
+| 1   | One handler, many surfaces | Projection table; where each surface is declared; schema parity as the invariant                                   | ~30 ln |
+| 2   | Declaring a tool           | `@toolMapping({ name, description, readOnly, ui })`; naming rules; `@whenFeature` removes a tool from `tools/list` | ~40 ln |
+| 3   | Serving MCP                | `McpToolRegistry.from(dispatcher, { readOnly, argumentResolvers, isFeatureEnabled })`; stdio vs Streamable HTTP    | ~35 ln |
+| 4   | Policy and auth            | Bearer/scopes through `@ndigo/auth-*`; per-tool rate limits; breaker; one `execute_tool` span; read-only default   | ~30 ln |
+| 5   | MCP Apps                   | `ui: 'ui://orders'`; `createUiResource(...)`; CSP/visibility/permissions; single-file HTML; no wildcard origin     | ~35 ln |
+| 6   | A2UI                       | `A2UIView` / `a2uiViewResolver` / `MediaTypes.APPLICATION_A2UI_JSON`; `nd-a2ui-surface`; installed-only catalog    | ~40 ln |
+| 7   | WebMCP                     | `AsWebMcpElement` + `webMcpToolForHandler`; connect/disconnect lifecycle; `exposedTo`; feature detection           | ~30 ln |
+| 8   | Prove the parity           | `OpenAPISpecGenerator` over the dispatcher tables vs `tools/list`; MCP smoke test; unknown-component rejection     | ~25 ln |
 
 Total target: ~265 lines, under the 300-line target and well under the 400-line
 warning.
@@ -113,18 +113,18 @@ Today the app has `order-tools.ts` (two `@toolMapping` handlers), `chat-controll
 (SSE), `mcp.ts` (stdio), and no HTTP MCP transport, MCP App, A2UI route, or test
 lane.
 
-| File                                    | Change                                                                                                       |
-| :-------------------------------------- | :----------------------------------------------------------------------------------------------------------- |
-| `src/order-tools.ts`                    | Add `ui: 'ui://orders'` to `listOrders`' `@toolMapping`                                                       |
-| `src/orders-ui.ts` (new)                | `createUiResource({ uri: 'ui://orders', name, body, css, script, csp })` — one self-contained document        |
-| `src/mcp.ts`                            | Pass `{ name: 'ndigo-agent-lab', uiResources: [ordersUi] }` to `startStdioServer`                             |
-| `src/http-mcp-controller.ts` (new)      | Lazy `McpHTTPEndpoint` + methodless `@requestMapping({ value: '/mcp' })` handler (mirror `ChatController`'s lazy context pattern) |
-| `src/report-controller.ts` (new)        | `@getMapping('/reports/orders')` returning `ModelAndView('orders', a2uiMessages)`                             |
-| `src/agent-lab-configuration.ts`        | `@entry()` `ContentNegotiationViewResolver` with `a2uiViewResolver('orders')` + a JSON resolver for `orders`  |
-| `package.json`                          | `@ndigo/view` (runtime), `vitest` (dev); add a `test` script                                                  |
-| `test/parity.spec.ts` (new)             | OpenAPI ↔ `tools/list` schema parity; `_meta.ui.resourceUri` on `list_orders`; A2UI view serialization        |
-| `vitest.config.ts` (new)                | Node environment, `ndigoAliases` (mirror `apps/20-ndigo-ui-lab/vitest.config.ts`)                             |
-| `README.md`                             | Sections for MCP Apps, A2UI, and the HTTP endpoint; run commands                                             |
+| File                               | Change                                                                                                                            |
+| :--------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------- |
+| `src/order-tools.ts`               | Add `ui: 'ui://orders'` to `listOrders`' `@toolMapping`                                                                           |
+| `src/orders-ui.ts` (new)           | `createUiResource({ uri: 'ui://orders', name, body, css, script, csp })` — one self-contained document                            |
+| `src/mcp.ts`                       | Pass `{ name: 'ndigo-agent-lab', uiResources: [ordersUi] }` to `startStdioServer`                                                 |
+| `src/http-mcp-controller.ts` (new) | Lazy `McpHTTPEndpoint` + methodless `@requestMapping({ value: '/mcp' })` handler (mirror `ChatController`'s lazy context pattern) |
+| `src/report-controller.ts` (new)   | `@getMapping('/reports/orders')` returning `ModelAndView('orders', a2uiMessages)`                                                 |
+| `src/agent-lab-configuration.ts`   | `@entry()` `ContentNegotiationViewResolver` with `a2uiViewResolver('orders')` + a JSON resolver for `orders`                      |
+| `package.json`                     | `@ndigo/view` (runtime), `vitest` (dev); add a `test` script                                                                      |
+| `test/parity.spec.ts` (new)        | OpenAPI ↔ `tools/list` schema parity; `_meta.ui.resourceUri` on `list_orders`; A2UI view serialization                            |
+| `vitest.config.ts` (new)           | Node environment, `ndigoAliases` (mirror `apps/20-ndigo-ui-lab/vitest.config.ts`)                                                 |
+| `README.md`                        | Sections for MCP Apps, A2UI, and the HTTP endpoint; run commands                                                                  |
 
 Notes:
 
@@ -142,13 +142,13 @@ Notes:
 The lab already renders A2UI through `<nd-a2ui-surface>` and has a jsdom test
 lane. WebMCP belongs here because it is the browser half of the same story.
 
-| File                                      | Change                                                                                                       |
-| :---------------------------------------- | :----------------------------------------------------------------------------------------------------------- |
+| File                                         | Change                                                                                                                                                  |
+| :------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `src/components/webmcp/webmcp-demo.ts` (new) | `class WebMcpDemo extends AsWebMcpElement(NdElement)` with a `@parameters`-decorated `search` and `webMcpTools()` returning `webMcpToolForHandler(...)` |
-| `src/main.ts`                             | Import the demo module so `defineElement('nd-webmcp-demo', …)` runs                                           |
-| `index.html`                              | One section with `<nd-webmcp-demo>` and a status line                                                         |
-| `test/webmcp-demo.spec.ts` (new)          | jsdom: `document.modelContext` is absent, so registration is a no-op; assert the tool descriptor and that connect/disconnect do not throw |
-| `package.json`                            | `@ndigo/dispatcher`, `@ndigo/view-webcomponent`, `zod`                                                        |
+| `src/main.ts`                                | Import the demo module so `defineElement('nd-webmcp-demo', …)` runs                                                                                     |
+| `index.html`                                 | One section with `<nd-webmcp-demo>` and a status line                                                                                                   |
+| `test/webmcp-demo.spec.ts` (new)             | jsdom: `document.modelContext` is absent, so registration is a no-op; assert the tool descriptor and that connect/disconnect do not throw               |
+| `package.json`                               | `@ndigo/dispatcher`, `@ndigo/view-webcomponent`, `zod`                                                                                                  |
 
 Notes:
 
@@ -182,11 +182,11 @@ Regenerate `packages/ndigo-mcp/api/` with `pnpm doc:api`.
 Guide 47 stays the model-loop guide; it gains three short sections and a
 cross-link to 48.
 
-| Addition              | Content                                                                                                                 |
-| :-------------------- | :---------------------------------------------------------------------------------------------------------------------- |
-| Structured output     | `AiAgent.object({ schema, messages })` → `AiObjectResult<T>`; the adapter's `generateObject`; when to prefer it over tools |
-| The adapter contract  | `AiModel`: `info`, `generateStep`, `streamStep`, `generateObject`; adapters never execute tools — the loop does          |
-| Abort and failures    | `AiRunRequest.signal`; `AiModelDisabledError` (rollout flag) and `AiRateLimitError` (`retryAfterMs`)                     |
+| Addition             | Content                                                                                                                    |
+| :------------------- | :------------------------------------------------------------------------------------------------------------------------- |
+| Structured output    | `AiAgent.object({ schema, messages })` → `AiObjectResult<T>`; the adapter's `generateObject`; when to prefer it over tools |
+| The adapter contract | `AiModel`: `info`, `generateStep`, `streamStep`, `generateObject`; adapters never execute tools — the loop does            |
+| Abort and failures   | `AiRunRequest.signal`; `AiModelDisabledError` (rollout flag) and `AiRateLimitError` (`retryAfterMs`)                       |
 
 Retitle the H1 to `# Guide 47 — AI Agents, Model Loops & Streaming` so "MCP
 Tools" is not claimed by two guides. The filename stays; links are unaffected.
@@ -196,14 +196,14 @@ Update the one-line description in `docs/guides/README.md`.
 
 ## 5. Existing-guide and index edits
 
-| File                                          | Edit                                                                                                              |
-| :-------------------------------------------- | :---------------------------------------------------------------------------------------------------------------- |
-| `docs/guides/37-ndigo-cli.md`                 | Replace the runtime MCP Apps/WebMCP paragraphs with one-line pointers to 48. Keep `ndigo mcp`, `ndigo ai:*`, `ui catalog` — it is the CLI guide |
-| `docs/guides/09-views-and-content-negotiation.md` | Keep the A2UI view subsection; add "see Guide 48 for the end-to-end surface"                                  |
-| `docs/guides/README.md`                       | Add 48 to the index; update 47's summary                                                                          |
-| `docs/guides/coverage.md`                     | `@ndigo/mcp` → 48 (37 stays for the host command); add 48 to `@ndigo/view`, `@ndigo/view-webcomponent`, `@ndigo/ui`; note WebMCP on the webcomponent row |
-| `docs/decisions/2026-11-10_AD96_LLM_AGENT_INTEGRATION.md` | Evidence line: `Guides: 37, 47, 48`                                                                  |
-| `docs/plans/README.md`                        | Index this plan under "Draft Plans"                                                                               |
+| File                                                      | Edit                                                                                                                                                     |
+| :-------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `docs/guides/37-ndigo-cli.md`                             | Replace the runtime MCP Apps/WebMCP paragraphs with one-line pointers to 48. Keep `ndigo mcp`, `ndigo ai:*`, `ui catalog` — it is the CLI guide          |
+| `docs/guides/09-views-and-content-negotiation.md`         | Keep the A2UI view subsection; add "see Guide 48 for the end-to-end surface"                                                                             |
+| `docs/guides/README.md`                                   | Add 48 to the index; update 47's summary                                                                                                                 |
+| `docs/guides/coverage.md`                                 | `@ndigo/mcp` → 48 (37 stays for the host command); add 48 to `@ndigo/view`, `@ndigo/view-webcomponent`, `@ndigo/ui`; note WebMCP on the webcomponent row |
+| `docs/decisions/2026-11-10_AD96_LLM_AGENT_INTEGRATION.md` | Evidence line: `Guides: 37, 47, 48`                                                                                                                      |
+| `docs/plans/README.md`                                    | Index this plan under "Draft Plans"                                                                                                                      |
 
 Do not rewrite the 2026-11-09 integration plan; it is a historical record.
 
@@ -223,15 +223,15 @@ Do not rewrite the 2026-11-09 integration plan; it is a historical record.
 
 ## 7. Testing
 
-| Layer            | Command                                                        | Asserts                                                              |
-| :--------------- | :------------------------------------------------------------- | :------------------------------------------------------------------- |
-| Guide contract   | `pnpm guides:check`                                            | H1 numbering, reference paths, parseable fences, index link          |
-| Links            | `pnpm docs:links`                                              | No broken relative links after the edits                             |
-| MCP transport    | `pnpm vitest run packages/ndigo-mcp/test/http.spec.ts`         | HTTP endpoint advertises and serves UI resources                     |
-| Agent lab        | `pnpm --filter @ndigo/agent-lab test`                          | OpenAPI ↔ `tools/list` parity, `_meta.ui`, A2UI serialization        |
-| UI lab           | `pnpm --filter @ndigo/ui-lab test`                             | WebMCP descriptor + no-op registration without `document.modelContext` |
-| Generated content | `pnpm agent-content:check`                                    | Docs index matches the guide tree                                    |
-| Repo gates       | `pnpm lint`, `pnpm build`, `pnpm test`                         | Nothing regressed                                                    |
+| Layer             | Command                                                | Asserts                                                                |
+| :---------------- | :----------------------------------------------------- | :--------------------------------------------------------------------- |
+| Guide contract    | `pnpm guides:check`                                    | H1 numbering, reference paths, parseable fences, index link            |
+| Links             | `pnpm docs:links`                                      | No broken relative links after the edits                               |
+| MCP transport     | `pnpm vitest run packages/ndigo-mcp/test/http.spec.ts` | HTTP endpoint advertises and serves UI resources                       |
+| Agent lab         | `pnpm --filter @ndigo/agent-lab test`                  | OpenAPI ↔ `tools/list` parity, `_meta.ui`, A2UI serialization          |
+| UI lab            | `pnpm --filter @ndigo/ui-lab test`                     | WebMCP descriptor + no-op registration without `document.modelContext` |
+| Generated content | `pnpm agent-content:check`                             | Docs index matches the guide tree                                      |
+| Repo gates        | `pnpm lint`, `pnpm build`, `pnpm test`                 | Nothing regressed                                                      |
 
 Manual smoke:
 
@@ -247,14 +247,14 @@ pnpm --filter @ndigo/agent-lab mcp   # stdio: tools/list + resources/read ui://o
 
 ## 8. Risks and decisions
 
-| Risk / decision                     | Position                                                                                                                   |
-| :---------------------------------- | :------------------------------------------------------------------------------------------------------------------------- |
-| WebMCP cannot run in a Node app     | Browser surface goes to `apps/20-ndigo-ui-lab` (already the A2UI home), not `apps/21`. Guide 48 cites both apps.            |
-| A2UI catalog has no `Text`/`List`   | Demo uses `Switch`/`Slider`; the guide states the constraint. A basic catalog is out of scope and would be a separate change. |
-| `McpHTTPEndpoint` API change        | Additive optional field; regenerate `packages/ndigo-mcp/api/`. `pnpm-lock.yaml` untouched.                                   |
-| Guide 47 retitle                    | Cheap and clarifying; filename unchanged, so no redirects.                                                                  |
-| A guide for `ndigo ai:*`            | Not yet. Guide 37 plus the site page own it; revisit only if the site page does not land.                                   |
-| App 21 has no test lane             | Adding vitest is part of this work; the parity test is the guide's proof, so it should live with the demo.                  |
+| Risk / decision                   | Position                                                                                                                      |
+| :-------------------------------- | :---------------------------------------------------------------------------------------------------------------------------- |
+| WebMCP cannot run in a Node app   | Browser surface goes to `apps/20-ndigo-ui-lab` (already the A2UI home), not `apps/21`. Guide 48 cites both apps.              |
+| A2UI catalog has no `Text`/`List` | Demo uses `Switch`/`Slider`; the guide states the constraint. A basic catalog is out of scope and would be a separate change. |
+| `McpHTTPEndpoint` API change      | Additive optional field; regenerate `packages/ndigo-mcp/api/`. `pnpm-lock.yaml` untouched.                                    |
+| Guide 47 retitle                  | Cheap and clarifying; filename unchanged, so no redirects.                                                                    |
+| A guide for `ndigo ai:*`          | Not yet. Guide 37 plus the site page own it; revisit only if the site page does not land.                                     |
+| App 21 has no test lane           | Adding vitest is part of this work; the parity test is the guide's proof, so it should live with the demo.                    |
 
 ---
 

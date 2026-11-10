@@ -6,9 +6,9 @@
 
 # Function: aiSdkModel()
 
-> **aiSdkModel**(`model`, `options?`): [`AiSdkModel`](../classes/AiSdkModel.md)
+> **aiSdkModel**(`model`, `options?`): [`AISdkModel`](../classes/AISdkModel.md)
 
-Creates an [AiSdkModel](../classes/AiSdkModel.md) without `new`.
+Creates an [AISdkModel](../classes/AISdkModel.md) without `new`.
 
 ## Parameters
 
@@ -20,12 +20,12 @@ The AI SDK language model.
 
 ### options?
 
-[`AiSdkModelOptions`](../interfaces/AiSdkModelOptions.md) = `{}`
+[`AISdkModelOptions`](../interfaces/AISdkModelOptions.md) = `{}`
 
 Optional identity overrides.
 
 ## Returns
 
-[`AiSdkModel`](../classes/AiSdkModel.md)
+[`AISdkModel`](../classes/AISdkModel.md)
 
 The adapter.

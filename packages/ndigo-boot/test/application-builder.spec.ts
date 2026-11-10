@@ -24,6 +24,14 @@ class ExtraConfiguration {
 }
 
 @configuration
+class CatalogSource {
+    @entry()
+    catalogValue() {
+        return 'catalog';
+    }
+}
+
+@configuration
 class ChildConfiguration {
     @entry()
     childValue() {
@@ -185,6 +193,34 @@ describe('ApplicationBuilder.fromConfig', () => {
         // Should run without error
         await expect(builder.run()).resolves.toBeInstanceOf(Object);
     });
+
+    test('rejects a non-http config URL', async () => {
+        await expect(ApplicationBuilder.fromConfig('file:///config.json')).rejects.toThrow(/must use https or http/u);
+    });
+
+    test('resolves sources only through the static catalog', async () => {
+        vi.mocked(fetch).mockResolvedValueOnce({
+            ok: true,
+            json: () => Promise.resolve({ sources: ['catalogSource'] }),
+        } as Response);
+
+        const builder = await ApplicationBuilder.fromConfig('/config.json', {
+            sourceCatalog: { catalogSource: CatalogSource },
+        });
+        expect(builder).toBeInstanceOf(ApplicationBuilder);
+        await expect(builder.run()).resolves.toBeInstanceOf(Object);
+    });
+
+    test('rejects an unknown source id', async () => {
+        vi.mocked(fetch).mockResolvedValueOnce({
+            ok: true,
+            json: () => Promise.resolve({ sources: ['missing'] }),
+        } as Response);
+
+        await expect(ApplicationBuilder.fromConfig('/config.json')).rejects.toThrow(
+            /is not present in the source catalog/u
+        );
+    });
 });
 
 // TOON fixtures produced with the pinned reference decoder (`@toon-format/toon`
@@ -291,7 +327,7 @@ describe('ApplicationBuilder.fromConfig — TOON decode (AD-66 Phase 3)', () => 
     test('a URL object address is handled', async () => {
         vi.mocked(fetch).mockResolvedValueOnce(textDocument(TOON_FLAT));
 
-        const context = await (await ApplicationBuilder.fromConfig(new URL('file:///config.toon'))).run();
+        const context = await (await ApplicationBuilder.fromConfig(new URL('https://example/config.toon'))).run();
 
         expect(context.environment.getProperty('server')).toEqual({ port: 9090 });
     });

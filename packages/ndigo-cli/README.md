@@ -104,6 +104,12 @@ only installed `registry:ui` and `registry:block` items appear.
 `install_items`, and `validate_registry` to MCP clients. Installs are dry runs
 by default; set `dryRun: false` to write. `--readOnly` omits the install tool.
 
+Remote registries are read-only content sources: chunk and item file paths are
+resolved against and contained within the selected local registry, HTTP(S)
+fetches use a 10 s timeout and a 10 MiB cap, and chunks that declare includes
+outside the selected registry fail with a message rather than silently
+reading a broader path.
+
 ### Agents
 
 `ndigo mcp [dir]` runs the application's introspection tools as a stdio MCP

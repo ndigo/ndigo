@@ -4,26 +4,26 @@
  * sources, and SSE framing.
  */
 export {
-    AiAgent,
-    type AiAgentOptions,
-    type AiAgentStream,
-    type AiRateLimitOptions,
-    type AiRolloutOptions,
-    type AiRunRequest,
-    type AiRunResult,
-    type AiStreamEvent,
+    AIAgent,
+    type AIAgentOptions,
+    type AIAgentStream,
+    type AIRateLimitOptions,
+    type AIRolloutOptions,
+    type AIRunRequest,
+    type AIRunResult,
+    type AIStreamEvent,
 } from './agent';
-export { AiModelDisabledError, AiRateLimitError } from './errors';
-export { type AiFinishReason, type AiMessage, type AiTokenUsage, type AiToolCall, type AiToolResult } from './messages';
+export { AIModelDisabledError, AIRateLimitError } from './errors';
+export { type AIFinishReason, type AIMessage, type AITokenUsage, type AIToolCall, type AIToolResult } from './messages';
 export {
-    type AiModel,
-    type AiModelInfo,
-    type AiObjectRequest,
-    type AiObjectResult,
-    type AiStepRequest,
-    type AiStepResult,
-    type AiStepStream,
-    type AiStepStreamEvent,
+    type AIModel,
+    type AIModelInfo,
+    type AIObjectRequest,
+    type AIObjectResult,
+    type AIStepRequest,
+    type AIStepResult,
+    type AIStepStream,
+    type AIStepStreamEvent,
 } from './model';
-export { type AiServerSentEvent, toServerSentEvents } from './stream';
-export { type AiToolCallContext, type AiToolDescriptor, type AiToolSource } from './tools';
+export { type AIServerSentEvent, toServerSentEvents } from './stream';
+export { type AIToolCallContext, type AIToolDescriptor, type AIToolSource } from './tools';

@@ -182,8 +182,16 @@ export function webMcpToolForHandler(options: WebMcpHandlerToolOptions): WebMcpT
         execute: (args) => {
             const values = parameters.map((parameter) => {
                 const key = parameterKey(parameter);
-                const value = key === '' ? undefined : args[key];
-                return parameter.convert === undefined ? value : parameter.convert(value);
+                if (key === '') return undefined;
+                const value = args[key];
+                const converted = parameter.convert === undefined ? value : parameter.convert(value);
+                if (parameter.schema === undefined) return converted;
+                const result = parameter.schema.safeParse(converted);
+                if (result.success) return result.data;
+                const issues = result.error.issues
+                    .map((issue) => `${issue.path.join('.') || 'value'}: ${issue.message}`)
+                    .join(', ');
+                throw new TypeError(`WebMCP argument '${key}' does not match its schema: ${issues}`);
             });
             return (method as (...args: unknown[]) => unknown).apply(options.handler, values);
         },

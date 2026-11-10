@@ -40,3 +40,14 @@ TOON, everything else as JSON — JSON stays the default (AD-66). The
 explicit values override the address, with one refused contradiction:
 `'toon'` always decodes as TOON, while `'json'` over a `.toon` address
 errors instead of silently re-parsing the document as JSON.
+
+***
+
+### sourceCatalog?
+
+> `optional` **sourceCatalog?**: `Record`\<`string`, `Function`\>
+
+Static configuration sources keyed by the `sources` id in the document.
+The catalog is the only source registry; ids absent from the catalog are
+rejected. This keeps configuration consumers from importing untrusted
+module specifiers.

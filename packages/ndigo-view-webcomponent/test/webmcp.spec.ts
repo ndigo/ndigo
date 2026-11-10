@@ -107,8 +107,11 @@ describe('webMcpToolForHandler', () => {
         });
         expect(tool.annotations).toEqual({ readOnlyHint: true });
         expect(await tool.execute({ query: 'books' }, { signal: new AbortController().signal })).toBe('books');
+        const untrusted: unknown = { query: 'x' };
         await expect(
-            Promise.resolve().then(() => tool.execute({ query: 'x' }, { signal: new AbortController().signal }))
+            Promise.resolve().then(() =>
+                tool.execute(untrusted as unknown as Record<string, unknown>, { signal: new AbortController().signal })
+            )
         ).rejects.toThrow();
     });
 });

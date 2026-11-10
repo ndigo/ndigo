@@ -67,8 +67,13 @@ export interface UiResourceInput {
     readonly description?: string;
     /** Document title (escaped). */
     readonly title?: string;
-    /** Markup placed inside `<body>`. */
+    /**
+     * Markup inserted inside `<body>`. Escaped by default; set
+     * {@link trustedMarkup} to `true` only for markup that the application owns.
+     */
     readonly body: string;
+    /** Opt in to rendering `body` verbatim. */
+    readonly trustedMarkup?: boolean;
     /** CSS inlined in a `<style>` element. */
     readonly css?: string;
     /** JavaScript inlined in a `<script>` element. */
@@ -98,14 +103,25 @@ export interface UiResourceInput {
  *   element.
  */
 export function createUiResource(input: UiResourceInput): UiResource {
-    if (!input.uri.startsWith('ui://') || /\s/u.test(input.uri)) {
+    if (!input.uri.startsWith('ui://') || !/^ui:\/\/[A-Za-z0-9-]+(?:::.*)?$/u.test(input.uri)) {
         throw new TypeError(`createUiResource uri must be a ui:// resource URI — received '${input.uri}'.`);
     }
-    if (input.css !== undefined && /<\/style/iu.test(input.css)) {
+    if (input.css !== undefined && /<\s*\/\s*style/iu.test(input.css)) {
         throw new TypeError(`createUiResource css for '${input.uri}' must not close its <style> element.`);
     }
-    if (input.script !== undefined && /<\/script/iu.test(input.script)) {
+    if (input.script !== undefined && /<\s*\/\s*script/iu.test(input.script)) {
         throw new TypeError(`createUiResource script for '${input.uri}' must not close its <script> element.`);
+    }
+    if (input.scriptType !== undefined && input.scriptType !== 'module' && input.scriptType !== 'classic') {
+        throw new TypeError(
+            `createUiResource scriptType for '${input.uri}' must be 'module' or 'classic' — received '${String(
+                input.scriptType
+            )}'.`
+        );
+    }
+    for (const [key, domains] of Object.entries(input.csp ?? {})) {
+        if (domains === undefined) continue;
+        for (const domain of domains) validateCspDomain(input.uri, key, domain);
     }
     const title = escapeHtml(input.title ?? input.name);
     const style = input.css === undefined ? '' : `        <style>\n${input.css}\n        </style>\n`;
@@ -121,7 +137,7 @@ export function createUiResource(input: UiResourceInput): UiResource {
         <title>${title}</title>
 ${style}    </head>
     <body>
-${input.body}
+${input.trustedMarkup === true ? input.body : escapeHtml(input.body)}
 ${script}    </body>
 </html>
 `;
@@ -143,4 +159,27 @@ ${script}    </body>
 
 function escapeHtml(value: string): string {
     return value.replace(/&/gu, '&amp;').replace(/</gu, '&lt;').replace(/>/gu, '&gt;').replace(/"/gu, '&quot;');
+}
+
+const CSP_PROTOCOLS: Record<string, true> = {
+    'https:': true,
+    'http:': true,
+    'wss:': true,
+    'ws:': true,
+};
+
+function validateCspDomain(uri: string, key: string, domain: string): void {
+    let parsed: URL;
+    try {
+        parsed = new URL(domain);
+    } catch {
+        throw new TypeError(`createUiResource csp.${key} for '${uri}' must be a valid URL.`);
+    }
+    if (CSP_PROTOCOLS[parsed.protocol] === undefined) {
+        throw new TypeError(`createUiResource csp.${key} for '${uri}' must use http, https, ws, or wss.`);
+    }
+    // oxlint-disable-next-line eslint/no-control-regex -- allowlist guard for control characters.
+    if (/\s|;|[\u0000-\u001F\u007F]/u.test(domain)) {
+        throw new TypeError(`createUiResource csp.${key} for '${uri}' contains unsafe characters.`);
+    }
 }

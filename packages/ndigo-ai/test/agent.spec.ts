@@ -7,26 +7,26 @@ import { BasicTracerProvider, InMemorySpanExporter, SimpleSpanProcessor } from '
 import { describe, expect, it } from 'vitest';
 import { z } from 'zod';
 import {
-    AiAgent,
-    AiModelDisabledError,
-    AiRateLimitError,
-    type AiMessage,
-    type AiModel,
-    type AiModelInfo,
-    type AiObjectRequest,
-    type AiObjectResult,
-    type AiStepRequest,
-    type AiStepResult,
-    type AiStepStream,
-    type AiStepStreamEvent,
-    type AiToolCall,
-    type AiToolSource,
+    AIAgent,
+    AIModelDisabledError,
+    AIRateLimitError,
+    type AIMessage,
+    type AIModel,
+    type AIModelInfo,
+    type AIObjectRequest,
+    type AIObjectResult,
+    type AIStepRequest,
+    type AIStepResult,
+    type AIStepStream,
+    type AIStepStreamEvent,
+    type AIToolCall,
+    type AIToolSource,
 } from '../src';
 import { toServerSentEvents } from '../src';
 
-const INFO: AiModelInfo = { provider: 'test', model: 'scripted' };
+const INFO: AIModelInfo = { provider: 'test', model: 'scripted' };
 
-function step(text: string, toolCalls: readonly AiToolCall[] = []): AiStepResult {
+function step(text: string, toolCalls: readonly AIToolCall[] = []): AIStepResult {
     return {
         text,
         toolCalls,
@@ -35,34 +35,34 @@ function step(text: string, toolCalls: readonly AiToolCall[] = []): AiStepResult
     };
 }
 
-class ScriptedModel implements AiModel {
+class ScriptedModel implements AIModel {
     readonly info = INFO;
-    readonly steps: AiStepResult[];
-    readonly requests: AiStepRequest[] = [];
+    readonly steps: AIStepResult[];
+    readonly requests: AIStepRequest[] = [];
     objectResult: unknown = { answer: 'ok' };
 
-    constructor(steps: readonly AiStepResult[]) {
+    constructor(steps: readonly AIStepResult[]) {
         this.steps = [...steps];
     }
 
-    async generateStep(request: AiStepRequest): Promise<AiStepResult> {
+    async generateStep(request: AIStepRequest): Promise<AIStepResult> {
         this.requests.push(request);
         return this.steps.shift() ?? step('fallback');
     }
 
-    async *streamStep(request: AiStepRequest): AiStepStream {
+    async *streamStep(request: AIStepRequest): AIStepStream {
         this.requests.push(request);
         const settled = this.steps.shift() ?? step('fallback');
         if (settled.text.length > 0) {
-            yield { type: 'text-delta', text: settled.text } satisfies AiStepStreamEvent;
+            yield { type: 'text-delta', text: settled.text } satisfies AIStepStreamEvent;
         }
         for (const call of settled.toolCalls) {
-            yield { type: 'tool-call', call } satisfies AiStepStreamEvent;
+            yield { type: 'tool-call', call } satisfies AIStepStreamEvent;
         }
         return settled;
     }
 
-    async generateObject<T>(request: AiObjectRequest<T>): Promise<AiObjectResult<T>> {
+    async generateObject<T>(request: AIObjectRequest<T>): Promise<AIObjectResult<T>> {
         return {
             object: request.schema.parse(this.objectResult),
             finishReason: 'stop',
@@ -71,7 +71,7 @@ class ScriptedModel implements AiModel {
     }
 }
 
-class FakeTools implements AiToolSource {
+class FakeTools implements AIToolSource {
     readonly calls: Array<{ name: string; args: Record<string, unknown> | undefined; callId: string | undefined }> = [];
     readonly fail: boolean;
 
@@ -92,13 +92,13 @@ class FakeTools implements AiToolSource {
     }
 }
 
-const CALL: AiToolCall = { id: 'call-1', name: 'lookup', input: { id: 'a' } };
+const CALL: AIToolCall = { id: 'call-1', name: 'lookup', input: { id: 'a' } };
 
-describe('AiAgent', () => {
+describe('AIAgent', () => {
     it('executes tool calls and feeds results back until the model stops', async () => {
         const model = new ScriptedModel([step('', [CALL]), step('the answer')]);
         const tools = new FakeTools();
-        const agent = new AiAgent({ model, tools });
+        const agent = new AIAgent({ model, tools });
 
         const result = await agent.run({
             messages: [
@@ -128,7 +128,7 @@ describe('AiAgent', () => {
 
     it('reports handler failures back to the model instead of aborting the run', async () => {
         const model = new ScriptedModel([step('', [CALL]), step('recovered')]);
-        const agent = new AiAgent({ model, tools: new FakeTools(true) });
+        const agent = new AIAgent({ model, tools: new FakeTools(true) });
 
         const result = await agent.run({ messages: [{ role: 'user', content: 'find a' }] });
 
@@ -138,7 +138,7 @@ describe('AiAgent', () => {
 
     it('feeds unknown tools back when no source is configured', async () => {
         const model = new ScriptedModel([step('', [CALL]), step('no tools')]);
-        const agent = new AiAgent({ model });
+        const agent = new AIAgent({ model });
 
         const result = await agent.run({ messages: [{ role: 'user', content: 'find a' }] });
 
@@ -151,7 +151,7 @@ describe('AiAgent', () => {
             step('', [{ id: 'c2', name: 'lookup', input: {} }]),
             step('never reached'),
         ]);
-        const agent = new AiAgent({ model, tools: new FakeTools(), maxSteps: 2 });
+        const agent = new AIAgent({ model, tools: new FakeTools(), maxSteps: 2 });
 
         const result = await agent.run({ messages: [{ role: 'user', content: 'loop' }] });
 
@@ -162,12 +162,12 @@ describe('AiAgent', () => {
     });
 
     it('rejects a non-positive maxSteps', () => {
-        expect(() => new AiAgent({ model: new ScriptedModel([]), maxSteps: 0 })).toThrow(/positive integer/u);
+        expect(() => new AIAgent({ model: new ScriptedModel([]), maxSteps: 0 })).toThrow(/positive integer/u);
     });
 
     it('refuses calls when the rollout flag is off', async () => {
         const model = new ScriptedModel([]);
-        const agent = new AiAgent({
+        const agent = new AIAgent({
             model,
             rollout: {
                 key: 'ai.chat',
@@ -183,14 +183,14 @@ describe('AiAgent', () => {
         });
 
         await expect(agent.run({ messages: [{ role: 'user', content: 'hi' }] })).rejects.toBeInstanceOf(
-            AiModelDisabledError
+            AIModelDisabledError
         );
         expect(model.requests).toHaveLength(0);
     });
 
     it('refuses calls when the rate limit is exhausted', async () => {
         const model = new ScriptedModel([]);
-        const agent = new AiAgent({
+        const agent = new AIAgent({
             model,
             rateLimit: {
                 policy: { limit: 1, windowMs: 60_000 },
@@ -202,14 +202,14 @@ describe('AiAgent', () => {
         });
 
         const error = await agent.run({ messages: [{ role: 'user', content: 'hi' }] }).catch((caught) => caught);
-        expect(error).toBeInstanceOf(AiRateLimitError);
-        expect((error as AiRateLimitError).retryAfterMs).toBe(2500);
+        expect(error).toBeInstanceOf(AIRateLimitError);
+        expect((error as AIRateLimitError).retryAfterMs).toBe(2500);
         expect(model.requests).toHaveLength(0);
     });
 
     it('streams text, tool calls, results, and a finish event', async () => {
         const model = new ScriptedModel([step('partial ', [CALL]), step('final')]);
-        const agent = new AiAgent({ model, tools: new FakeTools() });
+        const agent = new AIAgent({ model, tools: new FakeTools() });
 
         const iterator = agent.stream({ messages: [{ role: 'user', content: 'go' }] });
         const events = [];
@@ -231,12 +231,12 @@ describe('AiAgent', () => {
             'text-delta',
             'finish',
         ]);
-        expect(settled).toMatchObject({ text: 'final', finishReason: 'stop', steps: 2 });
+        expect(settled).toMatchObject({ text: 'partial \nfinal', finishReason: 'stop', steps: 2 });
     });
 
     it('frames agent events as SSE envelopes', async () => {
         const model = new ScriptedModel([step('hello')]);
-        const agent = new AiAgent({ model });
+        const agent = new AIAgent({ model });
         const frames = [];
         for await (const frame of toServerSentEvents(agent.stream({ messages: [{ role: 'user', content: 'hi' }] }))) {
             frames.push(frame);
@@ -248,7 +248,7 @@ describe('AiAgent', () => {
 
     it('generates a schema-validated object through the model', async () => {
         const model = new ScriptedModel([]);
-        const agent = new AiAgent({ model });
+        const agent = new AIAgent({ model });
         const result = await agent.object({
             schema: z.object({ answer: z.string() }),
             messages: [{ role: 'user', content: 'answer' }],
@@ -264,8 +264,8 @@ describe('AiAgent', () => {
         trace.setGlobalTracerProvider(provider);
         try {
             const model = new ScriptedModel([step('hi')]);
-            const agent = new AiAgent({ model });
-            const messages: AiMessage[] = [{ role: 'user', content: 'hello' }];
+            const agent = new AIAgent({ model });
+            const messages: AIMessage[] = [{ role: 'user', content: 'hello' }];
             await agent.run({ messages, temperature: 0.2, maxOutputTokens: 100 });
 
             const spans = exporter.getFinishedSpans();

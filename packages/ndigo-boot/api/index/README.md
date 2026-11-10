@@ -104,6 +104,12 @@ Re-exports [nestedConfig](../configuration-properties/functions/nestedConfig.md)
 
 ***
 
+### parseJsonConfig
+
+Re-exports [parseJsonConfig](../config-file-loader/functions/parseJsonConfig.md)
+
+***
+
 ### PRECEDENCE
 
 Re-exports [PRECEDENCE](../precedence/variables/PRECEDENCE.md)

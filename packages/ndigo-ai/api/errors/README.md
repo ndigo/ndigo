@@ -10,5 +10,5 @@ Typed failures raised by the agent loop before or around a model call.
 
 ## Classes
 
-- [AiModelDisabledError](classes/AiModelDisabledError.md)
-- [AiRateLimitError](classes/AiRateLimitError.md)
+- [AIModelDisabledError](classes/AIModelDisabledError.md)
+- [AIRateLimitError](classes/AIRateLimitError.md)

@@ -6,8 +6,6 @@
 
 # Interface: ToolDescriptor
 
-One tool as reported to MCP clients.
-
 ## Properties
 
 ### \_meta?

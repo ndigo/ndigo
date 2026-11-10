@@ -6,6 +6,13 @@ files) landed 2026-10-05; **Phase 3 (`fromConfig`) landed 2026-11-10** (a
 `.toon` address suffix decodes as TOON, an explicit `format` overrides it,
 JSON stays the default; plan:
 [2026-10-05_TOON_SUPPORT](../plans/2026-10-05_TOON_SUPPORT.md)).
+**2026-11-10: D-3 superseded in part by
+[AD-102](2026-11-10_AD102_TOON_REPRESENTATION.md)** — TOON became an opt-in
+HTTP representation in the dedicated `@ndigo/view-toon` package; the "no
+HTTP views" clause and the absolute `.toon` extension-mapping ban are
+narrowed to _framework defaults_. D-1, D-2, D-4, and every other D-3
+boundary (storage, SSE/WS/STOMP, external protocols, config-server,
+negotiation and `fromConfig` defaults) remain current.
 
 _Amendment (2026-11-07): the optional peer pin advanced from `4.1.1` to
 `4.4.0` (spec v4.4, 2026-10-08) in the October dependency train (#36); the
@@ -64,7 +71,10 @@ behavior; decode-only usage of the format.**
   the peer for `@ndigo/boot`, and a `decodeToon` seam covers specs and
   alternate validators), exact-version-pinned (`4.1.1`), `toon-spec: 4.1`
   documented.
-- D-3 — Boundaries (permanent): no TOON in wire formats (HTTP views, SSE,
+- D-3 — Boundaries (permanent; **superseded in part 2026-11-10 by
+  [AD-102](2026-11-10_AD102_TOON_REPRESENTATION.md)** — the "no TOON in HTTP
+  views" clause and this point's absolute `.toon` extension-mapping ban are
+  narrowed to _framework defaults_): no TOON in wire formats (HTTP views, SSE,
   WebSocket/STOMP, mock-http), storage (Redis envelope, LibSQL columns,
   cookies, local-storage loader), OIDC/external protocols, config-server
   transport, `fromConfig` defaults, or content-negotiation defaults

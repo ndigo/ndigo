@@ -958,6 +958,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `@ndigo/ui` A2UI surfaces sanitize rendered attributes/props. `nd-a2ui-surface`
   writes to the DOM only through an allow-list of keys; dangerous attributes,
   event handlers, and any prop that escapes the registry surface are dropped.
+  Focus is restored to the focused element when the surface re-renders, and the
+  surface container carries `role="region"` + `aria-live="polite"` by default.
 - `@ndigo/mcp` MCP Apps hardening: the default body is escaped
   (`display: trustedMarkup: true` renders author-owned markup), the renderer
   validates the barrier URI, `scriptType` matches a narrow set, and CSP

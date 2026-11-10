@@ -7,6 +7,7 @@ import { z } from 'zod';
 import { appScriptCommand, runInteractiveSpawn } from '../helpers/app-scripts.js';
 import { createMcpHost } from '../helpers/mcp-host.js';
 import type { McpHost } from '../helpers/mcp-host.js';
+import { requireCommandIndex } from '../commands/_command-registry.js';
 import {
     createAppToolContext,
     getBestPractices,
@@ -81,6 +82,16 @@ function createAppHost(options: AppServerOptions): McpHost {
         inputSchema: {},
         annotations: { readOnlyHint: true },
         run: () => getManifest(context),
+    });
+
+    host.registerTool({
+        name: 'get_commands',
+        title: 'List CLI commands',
+        description:
+            'Return the CLI command index: every verb, its positionals, flags, brief, and the shared exit-code contract.',
+        inputSchema: {},
+        annotations: { readOnlyHint: true },
+        run: () => requireCommandIndex(),
     });
 
     host.registerTool({

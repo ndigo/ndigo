@@ -34,7 +34,7 @@ Built on `@stricli/core` as an embedded library — commands, typed flags,
 | `ndigo typecheck` | `scripts.typecheck`                                                                    | `ndigo typecheck`                                         |
 | `ndigo clean`     | (CLI-owned: `dist`/`lib`/`.nx`/`coverage`; `--dryRun` previews, `--force` removes)     | `ndigo clean --force`                                     |
 | `ndigo inspect`   | `scripts.inspect` (the AD-70 printer)                                                  | `ndigo inspect ./apps/05-ndigo-api`                       |
-| `ndigo routes`    | `scripts.inspect` (alias of `inspect`)                                                 | `ndigo routes ./apps/05-ndigo-api`                        |
+| `ndigo routes`    | `scripts.inspect`; `--json` emits the route list                                       | `ndigo routes ./apps/05-ndigo-api --json`                 |
 | `ndigo logs`      | (CLI-owned: tails `logs/app.log`; `--follow`, `--lines`, `--file`)                     | `ndigo logs --follow`                                     |
 | `ndigo mcp`       | serves the app manifest, diagnostics, and logs over stdio MCP (`--readOnly`, `--live`) | `ndigo mcp ./apps/05-ndigo-api --readOnly`                |
 
@@ -90,14 +90,15 @@ and `get_logs`. `run_target` (`scripts.build`/`test`/`lint`) and `record_rule`
 (`.ndigo/rules/*.md` plus an index) are omitted under `--readOnly`. `--live`
 hands stdio to the application's own `scripts.mcp` instead of the static set.
 
-`get_commands` is absent until the `--json` contract and `ndigo commands` land
-(P0 of the agent integration plan). `ndigo ui mcp` remains the registry-specific
-server.
+`get_commands` exposes the same command index (`ndigo commands --json`) to MCP
+clients, so an agent can discover the CLI surface without shelling out. The
+`ui mcp` server stays registry-specific.
 
 ### Maintenance
 
 | Command            | Runs…                                                                                                                         | Example                                           |
 | :----------------- | :---------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------ |
+| `ndigo commands`   | (CLI-owned: every verb, flag, positional, and exit code; `--json`)                                                            | `ndigo commands --json`                           |
 | `ndigo doctor`     | (self-diagnostics: versions, workspace, git, checks)                                                                          | `ndigo doctor`                                    |
 | `ndigo info`       | `doctor` + installed `@ndigo/*` packages                                                                                      | `ndigo info`                                      |
 | `ndigo update`     | (CLI-owned: applies exact pins from a version manifest, then `pnpm install`; `--check` compares, `--manifest` picks the file) | `ndigo update --check`                            |
@@ -109,6 +110,18 @@ server.
 Every command follows the Stricli contract: `--help`/`-h`, `--version`/`-v`,
 exit `0` ok / `2` usage / `1` runtime. `ndigo doctor` exits `1` when a check
 fails (an unsupported Node, a missing pnpm/git, or no workspace above the cwd).
+
+### `--json`
+
+Commands with a machine-readable form take `--json`: exactly one JSON document
+on stdout, diagnostics on stderr, exit codes unchanged, and human output
+untouched without the flag. `doctor` and `info` return `{ ok, exitCode, rows,
+failures, … }`; `logs` returns one snapshot (and rejects `--follow`);
+`config list` returns `{ entries }`; `env` returns `{ file, entries, missing,
+ok }`; `routes` returns `{ routes }`; `lint`, `typecheck`, and `db status`
+return `{ target, exitCode, stdout, stderr }`; `openapi` emits the document
+itself; `commands` returns the full index. `serve`, `build`, `test`, `inspect`,
+and `mcp` deliberately have no `--json`.
 
 ## `ndigo dev` and server watch
 

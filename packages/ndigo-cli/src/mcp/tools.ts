@@ -250,14 +250,14 @@ export async function getLogs(context: AppToolContext, request: LogRequest = {})
     return { file, lines, content: readLogTail(file, lines) };
 }
 
-const TARGET_HINTS = {
+/** The app scripts `run_target` can front. */
+export type AppTarget = 'build' | 'test' | 'lint';
+
+const TARGET_HINTS: Record<AppTarget, string> = {
     build: 'add a "build" script to package.json',
     test: 'add a "test" script to package.json',
     lint: 'add a "lint" script to package.json',
-} as const;
-
-/** The app scripts `run_target` can front. */
-export type AppTarget = keyof typeof TARGET_HINTS;
+};
 
 /**
  * Runs one of the application's build, test, or lint scripts and captures

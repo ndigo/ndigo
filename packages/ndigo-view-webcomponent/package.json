@@ -1,7 +1,7 @@
 {
   "name": "@ndigo/view-webcomponent",
   "version": "0.0.1",
-  "description": "Web Component view technology for Ndigo — component creation and event binding",
+  "description": "Web Component view technology for Ndigo \u2014 component creation and event binding",
   "type": "module",
   "files": [
     "api",
@@ -32,11 +32,13 @@
   "dependencies": {
     "@ndigo/context": "~0.0.1",
     "@ndigo/core": "~0.0.1",
+    "@ndigo/dispatcher": "~0.0.1",
     "@ndigo/factory": "~0.0.1",
     "@ndigo/log": "~0.0.1",
     "@ndigo/router": "~0.0.1",
     "@ndigo/util": "~0.0.1",
     "@ndigo/view": "~0.0.1",
-    "@tsmetadata/polyfill": "catalog:"
+    "@tsmetadata/polyfill": "catalog:",
+    "zod": "catalog:"
   }
 }

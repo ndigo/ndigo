@@ -34,6 +34,7 @@ export const LAYER_RANK: Record<string, number> = {
     proxy: 3,
     'rate-limit': 3,
     // 4 — runtime layer
+    ai: 4,
     'auth-client': 4,
     'content-i18next': 4,
     context: 4,
@@ -41,6 +42,7 @@ export const LAYER_RANK: Record<string, number> = {
     resilience: 4,
     router: 4,
     // 5 — runtime composition
+    'ai-sdk': 5,
     boot: 5,
     cache: 5,
     host: 5,

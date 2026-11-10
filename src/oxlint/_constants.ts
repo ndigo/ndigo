@@ -3,12 +3,13 @@
  */
 export const INTEGRATION_LAYER_MAP: Record<string, string> = {
     linkedom: '@ndigo/dom',
+    ai: '@ndigo/ai-sdk',
 };
 
 /**
  * Package names that are allowed to import the libraries they encapsulate.
  */
-export const INTEGRATION_LAYER_PACKAGES: string[] = ['@ndigo/dom'];
+export const INTEGRATION_LAYER_PACKAGES: string[] = ['@ndigo/dom', '@ndigo/ai-sdk'];
 
 /**
  * Browser-environment globals the isomorphic-code guard watches for.

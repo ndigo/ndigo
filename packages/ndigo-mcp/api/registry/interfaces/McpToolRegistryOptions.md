@@ -10,6 +10,17 @@ Policy options for a registry.
 
 ## Properties
 
+### argumentResolvers?
+
+> `readonly` `optional` **argumentResolvers?**: readonly `HandlerMethodArgumentResolver`[]
+
+The dispatcher's argument-resolver chain (the `ARGUMENT_RESOLVERS`
+context bean). Tool calls bind path/query/header/body arguments through
+the same resolvers as HTTP; without them, tools that declare parameters
+fail with a clear error.
+
+***
+
 ### isFeatureEnabled?
 
 > `readonly` `optional` **isFeatureEnabled?**: (`flag`) => `boolean` \| `Promise`\<`boolean`\>

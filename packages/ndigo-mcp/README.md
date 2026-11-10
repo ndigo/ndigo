@@ -43,6 +43,8 @@ import { McpToolRegistry, startStdioServer } from '@ndigo/mcp';
 
 const registry = McpToolRegistry.from(dispatcher, {
     readOnly: process.env['NDIGO_MCP_READ_ONLY'] === 'true',
+    // Bind tool arguments through the same resolvers HTTP uses.
+    argumentResolvers: context.getValue(ARGUMENT_RESOLVERS),
 });
 await startStdioServer(registry);
 ```
@@ -65,6 +67,9 @@ and projects every `@toolMapping` handler:
 
 - `readOnly: true` omits mutating tools from `tools/list` and rejects them on
   call.
+- `argumentResolvers` is the dispatcher's `ARGUMENT_RESOLVERS` bean. Tools
+  without parameters work without it; parameterized tools need it to bind
+  path/query/header/body values.
 - `@whenFeature('flag')` hides the tool unless `isFeatureEnabled(flag)` returns
   true. Without an evaluator, gated tools stay hidden (fail closed).
 - The HTTP endpoint is an ordinary dispatcher route, so the interceptor chain

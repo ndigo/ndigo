@@ -11,6 +11,8 @@ package can be read — and installed — on its own.
 | Package | Description | API reference |
 | :------ | :----------- | :------------ |
 | `create-ndigo-app` | Scaffold a standalone Ndigo application (node or browser kind). | [api/README.md](packages/create-ndigo-app/api/README.md) |
+| `@ndigo/ai` | Provider-agnostic agent contracts: chat messages, streaming events, structured output, and a tool-calling loop over MCP tools | [api/README.md](packages/ndigo-ai/api/README.md) |
+| `@ndigo/ai-sdk` | AI SDK integration layer for Ndigo: the only package that imports the Vercel AI SDK | [api/README.md](packages/ndigo-ai-sdk/api/README.md) |
 | `@ndigo/auth-client` | Client-side authentication for Ndigo — AuthClient, ClientAuthGuard, and OIDC adapter | [api/README.md](packages/ndigo-auth-client/api/README.md) |
 | `@ndigo/auth-core` | Core authentication types, interfaces, and passive decorators for Ndigo | [api/README.md](packages/ndigo-auth-core/api/README.md) |
 | `@ndigo/auth-server` | Server-side authentication for Ndigo — AuthServer, AuthRouteGuard, and JWT adapter | [api/README.md](packages/ndigo-auth-server/api/README.md) |

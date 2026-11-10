@@ -1,0 +1,46 @@
+{
+  "name": "@ndigo/ai",
+  "version": "0.0.1",
+  "description": "Provider-agnostic agent contracts: chat messages, streaming events, structured output, and a tool-calling loop over MCP tools",
+  "keywords": [
+    "ndigo",
+    "ndigo-js",
+    "ai",
+    "agents",
+    "llm",
+    "tools"
+  ],
+  "type": "module",
+  "files": [
+    "api",
+    "lib"
+  ],
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build:lib": "tsc -b tsconfig.build.json",
+    "test": "vitest run --config ../../vitest.config.ts",
+    "test:watch": "vitest --config ../../vitest.config.ts"
+  },
+  "dependencies": {
+    "@ndigo/core": "~0.0.1",
+    "@ndigo/flags": "~0.0.1",
+    "@ndigo/rate-limit": "~0.0.1",
+    "@opentelemetry/api": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@opentelemetry/sdk-trace-base": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  },
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "sideEffects": false
+}

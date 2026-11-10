@@ -1,0 +1,35 @@
+{
+  "name": "@ndigo/agent-lab",
+  "version": "0.0.1",
+  "description": "Ndigo Agent Lab — a local-model tool-calling loop over MCP tools, streamed over SSE and traced with GenAI spans",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "dev": "tsx src/index.ts",
+    "mcp": "tsx src/mcp.ts"
+  },
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@ai-sdk/openai-compatible": "^2.0.38",
+    "@ndigo/ai": "~0.0.1",
+    "@ndigo/ai-sdk": "~0.0.1",
+    "@ndigo/boot": "~0.0.1",
+    "@ndigo/context": "~0.0.1",
+    "@ndigo/dispatcher": "~0.0.1",
+    "@ndigo/factory": "~0.0.1",
+    "@ndigo/flags": "~0.0.1",
+    "@ndigo/log": "~0.0.1",
+    "@ndigo/mcp": "~0.0.1",
+    "@ndigo/platform-node": "~0.0.1",
+    "@ndigo/rate-limit": "~0.0.1",
+    "@ndigo/telemetry-node": "~0.0.1",
+    "@tsmetadata/polyfill": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "tsx": "catalog:",
+    "typescript": "catalog:"
+  }
+}

@@ -117,6 +117,7 @@ const APPS = [
     { dir: '16-ndigo-redis-fanout', port: 4160, probe: '/health' },
     { dir: '17-ndigo-telemetry-lab', port: 4090, probe: '/health' },
     { dir: '18-ndigo-auth-playground', port: 4110, probe: '/health', env: { OIDC_ISSUER_PORT: '4111' } },
+    { dir: '21-ndigo-agent-lab', port: 4210, probe: '/tools/orders' },
 ];
 
 /**

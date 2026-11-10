@@ -74,6 +74,14 @@ Target directory (relative to the cwd unless absolute).
 
 ***
 
+### ui
+
+> **ui**: `boolean`
+
+Write the ndigo-ui pointer and token import (browser kind only; default: off).
+
+***
+
 ### yes
 
 > **yes**: `boolean`

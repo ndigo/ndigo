@@ -1,14 +1,19 @@
 /**
- * Template resolution and substitution for the scaffold.
+ * Template resolution, substitution, and the file-write plan for the scaffold.
  *
  * Templates live under `templates/<kind>/` and use `{{key}}` placeholders
  * (distinct from the `${...}` template literals that appear in the
  * generated TypeScript, so the two never collide).
+ *
+ * The scaffold resolves a complete {@link PlannedFile} list before writing
+ * anything: the template tree contributes its entries and the optional
+ * `--ui` pointer appends its own, so no conditional file becomes a second
+ * copy of registry content under `templates/`.
  */
 import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { AppKind, ScaffoldOptions } from './types.js';
+import type { AppKind, PlannedFile, ScaffoldOptions } from './types.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -48,6 +53,9 @@ export function templateVars(options: ScaffoldOptions): Record<string, string | 
         entryMethod: `${camelName}Controller`,
         description: options.description,
         port: options.port,
+        // `--ui` owns the stylesheet, so the entry module imports it only then.
+        // The leading newline keeps the unset case free of a blank line.
+        uiStylesImport: options.ui ? "\nimport './styles.css';" : '',
     };
 }
 
@@ -75,30 +83,30 @@ export function substitute(content: string, vars: Record<string, string | number
 }
 
 /**
- * Recursively copies a template tree into `targetDir`, applying `{{...}}`
+ * Resolves the template tree for a kind into a file plan, applying `{{...}}`
  * substitution to file contents and `__name__` substitution to file names.
- * Strips a trailing `.template` suffix.
+ * Strips a trailing `.template` suffix. Reads only; writes nothing.
  *
- * @param kind - The application kind whose template tree is copied.
- * @param targetDir - The destination directory.
+ * @param kind - The application kind whose template tree is planned.
  * @param vars - The `{{key}}` substitution map.
- * @returns Nothing; writes the tree to disk.
+ * @returns One entry per template file, in directory order.
  */
-export function copyTemplate(kind: AppKind, targetDir: string, vars: Record<string, string | number>): void {
+export function planTemplate(kind: AppKind, vars: Record<string, string | number>): PlannedFile[] {
     const src = kindTemplateDir(kind);
     if (!existsSync(src)) {
         throw new Error(`Template directory not found: ${src}`);
     }
-    copyDir(src, targetDir, vars);
+    const plan: PlannedFile[] = [];
+    walk(src, '', vars, plan);
+    return plan;
 }
 
-function copyDir(srcDir: string, destDir: string, vars: Record<string, string | number>): void {
-    mkdirSync(destDir, { recursive: true });
+function walk(srcDir: string, prefix: string, vars: Record<string, string | number>, plan: PlannedFile[]): void {
     for (const entry of readdirSync(srcDir)) {
         const srcPath = join(srcDir, entry);
         const stat = statSync(srcPath);
         if (stat.isDirectory()) {
-            copyDir(srcPath, join(destDir, entry), vars);
+            walk(srcPath, join(prefix, entry), vars, plan);
             continue;
         }
         let destName = entry;
@@ -108,8 +116,23 @@ function copyDir(srcDir: string, destDir: string, vars: Record<string, string | 
         if (destName.endsWith('.template')) {
             destName = destName.slice(0, -'.template'.length);
         }
-        const raw = readFileSync(srcPath, 'utf8');
-        const content = substitute(raw, vars);
-        writeFileSync(join(destDir, destName), content, 'utf8');
+        const content = substitute(readFileSync(srcPath, 'utf8'), vars);
+        const template = join(prefix, entry).split('\\').join('/');
+        plan.push({ destination: join(prefix, destName), content, template });
+    }
+}
+
+/**
+ * Writes a resolved plan into `targetDir`, creating directories as needed.
+ *
+ * @param targetDir - The destination directory.
+ * @param plan - The resolved file plan.
+ * @returns Nothing; writes the plan to disk.
+ */
+export function applyPlan(targetDir: string, plan: readonly PlannedFile[]): void {
+    for (const file of plan) {
+        const destination = join(targetDir, file.destination);
+        mkdirSync(dirname(destination), { recursive: true });
+        writeFileSync(destination, file.content, 'utf8');
     }
 }

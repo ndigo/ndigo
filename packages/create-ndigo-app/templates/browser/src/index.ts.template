@@ -1,6 +1,6 @@
 /**
  */
-import { createWebApplication } from '@ndigo/platform-web';
+import { createWebApplication } from '@ndigo/platform-web';{{uiStylesImport}}
 import { {{className}}Configuration } from './{{name}}-configuration';
 // Side effect: registers the `{{name}}-app` custom element.
 import './{{name}}-app-view';

@@ -25,10 +25,11 @@ pnpm start        # node kind
 ```
 create-ndigo-app [dir] [--kind node|browser] [--name <slug>]
                  [--description "..."] [--port N] [--yes] [--local] [--force]
-                 [--agents|--no-agents]
+                 [--agents|--no-agents] [--ui|--no-ui]
 ```
 
-- `--kind` — `node` (tsx) or `browser` (vite). Defaults to `node`.
+- `--kind` — `node` (tsx) or `browser` (vite). Defaults to `node`, or to
+  `browser` when `--ui` is given.
 - `--name` — app slug (kebab-case). Defaults to the target directory's basename.
 - `--description` — one-line description used in the manifest and README.
 - `--port` — dev port (default 3000).
@@ -41,6 +42,31 @@ create-ndigo-app [dir] [--kind node|browser] [--name <slug>]
 - `--agents` / `--no-agents` — write or omit the `AGENTS.md` bootstrap pointer
   (default on; `--yes` implies on). The pointer tells an agent to run
   `ndigo ai:init` for the full, version-matched context.
+- `--ui` / `--no-ui` — write the Ndigo UI pointer (default off; `--yes` does not
+  imply it). Browser kind only: `--ui` with `--kind node` is a usage error.
+
+### Design system
+
+`--ui` writes `ndigo.ui.json` — the same schema, registry default, and
+`@ui`/`@lib`/`@components`/`@hooks` aliases `ndigo ui init` writes — adds
+`@ndigo/ui` to the dependencies, and imports the tokens from the entry
+stylesheet:
+
+```css
+@import '@ndigo/ui/tokens.css';
+```
+
+The scaffold writes **pointers only**. Components, extra theme layers, and
+`ui.lock.json` are version-bearing content installed by the CLI, so nothing
+under `templates/` duplicates `packages/ndigo-ui/registry/`:
+
+```bash
+pnpm exec ndigo ui add button input field
+pnpm exec ndigo ui list
+```
+
+`ndigo ui add theme` is the copy-in alternative to the `@ndigo/ui` token
+import — an application uses one or the other, never both.
 
 The scaffolded app uses the AD-90 lifecycle presets (`runNodeApplication` /
 `createWebApplication`), ships a smoke test and (for the browser kind) the

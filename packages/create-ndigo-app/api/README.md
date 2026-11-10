@@ -12,3 +12,4 @@ Scaffold a standalone Ndigo application (node or browser kind).
 - [prompts](prompts/README.md)
 - [templates](templates/README.md)
 - [types](types/README.md)
+- [ui-pointer](ui-pointer/README.md)

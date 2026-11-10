@@ -43,6 +43,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `.mcp.json` wiring, generated from `tools/agent-content/` and shipped with
   the CLI. `create-ndigo-app` gains `--agents`/`--no-agents` for the bootstrap
   pointer.
+- `create-ndigo-app`: `--ui`/`--no-ui` — browser scaffolds can opt into the
+  Ndigo design system. The flag writes the version-free pointers only
+  (`ndigo.ui.json` with the `ndigo ui init` aliases, a `src/styles.css` that
+  imports `@ndigo/ui/tokens.css`, and the `@ndigo/ui` dependency); components
+  and the lockfile stay with `ndigo ui`. Off by default and never implied by
+  `--yes`; `--ui` without `--kind` means browser, and `--kind node --ui` is a
+  usage error.
 - `@ndigo/cli`: `ui catalog` and the `get_catalog` MCP tool — an A2UI 1.0
   catalog derived from the registry and the application's `ui.lock.json`, so
   an agent can only generate components the application installed.

@@ -22,6 +22,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `@ndigo/view-toon`: the TOON view technology (AD-102) — `ToonView`
+  (`text/toon;charset=utf-8`), `toonViewResolver(viewName, options?)` for
+  opt-in per-route negotiation (register the JSON resolver first:
+  registration order is what keeps JSON the default), and `encodeToon()`
+  for synchronous in-process prompt composition. `@toon-format/toon` is a
+  regular pinned dependency (spec v4.4), so the wire surface fails at
+  install time, never as a request-time missing-module error. Supersedes
+  AD-66 D-3 in part: TOON may appear in HTTP responses as an explicitly
+  composed representation with an app-registered `.toon` extension; the
+  framework wires nothing for it, and storage, SSE, WS/STOMP, external
+  protocols, MCP results/schemas, and every negotiation default stay
+  out of reach. JSON remains the fallback and the fixed default
+  everywhere.
 - `@ndigo/ai`: provider-neutral agent contracts — messages, streaming events,
   structured output, and a bounded tool-calling loop over `@ndigo/mcp` tool
   sources, with GenAI spans, rate limits, and rollout flags.

@@ -287,6 +287,8 @@ everything downstream (merge, secrets, zod, binding) sees the plain JSON
 model. Wire/storage/config-server surfaces stay permanently JSON.
 Phase 3 (`fromConfig`) landed 2026-11-10: a `.toon` address suffix decodes
 as TOON, an explicit `format` overrides it, JSON stays the default.
+Phase 4 (AD-102, #348) shipped the `@ndigo/view-toon` representation —
+opt-in per route, JSON default intact.
 
 [Read plan](2026-10-05_TOON_SUPPORT.md)
 

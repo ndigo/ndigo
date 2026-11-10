@@ -46,6 +46,8 @@
       "@ndigo/view/*": ["./packages/ndigo-view/src/*"],
       "@ndigo/view-ejs": ["./packages/ndigo-view-ejs/src"],
       "@ndigo/view-ejs/*": ["./packages/ndigo-view-ejs/src/*"],
+      "@ndigo/view-toon": ["./packages/ndigo-view-toon/src"],
+      "@ndigo/view-toon/*": ["./packages/ndigo-view-toon/src/*"],
       "@ndigo/view-webcomponent": ["./packages/ndigo-view-webcomponent/src"],
       "@ndigo/view-webcomponent/*": ["./packages/ndigo-view-webcomponent/src/*"],
       "@ndigo/http": ["./packages/ndigo-http/src"],

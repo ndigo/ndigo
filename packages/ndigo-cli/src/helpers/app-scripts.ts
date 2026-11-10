@@ -226,6 +226,78 @@ export async function runAppOnce(
     return runInteractiveSpawn([...resolved.argv, ...extraArgv], { cwd: resolved.cwd, env: resolved.env });
 }
 
+/** The captured outcome of a one-shot app script. */
+export interface CapturedRun {
+    /** The child's exit code (`128 + signal` when killed, `127` when missing). */
+    readonly exitCode: number;
+    /** Everything the child wrote to stdout. */
+    readonly stdout: string;
+    /** Everything the child wrote to stderr. */
+    readonly stderr: string;
+}
+
+/**
+ * Runs a one-shot app script with piped stdio and returns its output, for
+ * callers that must inspect it rather than display it (MCP tools).
+ *
+ * @param dir - The app directory (absolute).
+ * @param scriptKey - The `scripts.<key>` to run.
+ * @param hint - The missing-script hint.
+ * @param extraArgv - Arguments appended to the resolved script.
+ * @returns The exit code plus captured stdout and stderr.
+ */
+export async function captureAppOnce(
+    dir: string,
+    scriptKey: string,
+    hint: string,
+    extraArgv: string[] = []
+): Promise<CapturedRun> {
+    const resolved = appScriptCommand(dir, scriptKey, hint);
+    return captureSpawn([...resolved.argv, ...extraArgv], { cwd: resolved.cwd, env: resolved.env });
+}
+
+async function captureSpawn(argv: string[], options: { cwd?: string; env?: NodeJS.ProcessEnv }): Promise<CapturedRun> {
+    let child: ChildProcess | null = null;
+    const relay = (signal: NodeJS.Signals): void => {
+        child?.kill(signal);
+    };
+    // Signal handlers are installed BEFORE the spawn, matching
+    // runInteractiveSpawn (AD75-H2): a signal arriving between spawn and
+    // registration would otherwise leave the child orphaned.
+    for (const signal of ['SIGINT', 'SIGTERM'] as NodeJS.Signals[]) {
+        process.on(signal, relay);
+    }
+    try {
+        child = spawn(argv[0] ?? '', argv.slice(1), {
+            stdio: ['ignore', 'pipe', 'pipe'],
+            cwd: options.cwd,
+            env: options.env,
+        });
+        const stdout: Buffer[] = [];
+        const stderr: Buffer[] = [];
+        child.stdout?.on('data', (chunk: Buffer) => stdout.push(chunk));
+        child.stderr?.on('data', (chunk: Buffer) => stderr.push(chunk));
+        const exitCode = await new Promise<number>((resolve) => {
+            child?.once('exit', (code, signal) => {
+                resolve(code ?? (signal === 'SIGINT' ? 130 : signal === 'SIGTERM' ? 143 : 1));
+            });
+            child?.once('error', () => {
+                stderr.push(Buffer.from(`'${argv[0] ?? ''}' is not available on PATH — cannot run the command\n`));
+                resolve(127);
+            });
+        });
+        return {
+            exitCode,
+            stdout: Buffer.concat(stdout).toString('utf8'),
+            stderr: Buffer.concat(stderr).toString('utf8'),
+        };
+    } finally {
+        for (const signal of ['SIGINT', 'SIGTERM'] as NodeJS.Signals[]) {
+            process.off(signal, relay);
+        }
+    }
+}
+
 /**
  * Runs a raw workspace command (the `pnpm exec nx` bridge) once.
  *

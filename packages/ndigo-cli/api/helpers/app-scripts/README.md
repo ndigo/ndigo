@@ -8,9 +8,14 @@
 
 Command-side process helpers: everything `@ndigo/cli` runs is one of the
 
+## Interfaces
+
+- [CapturedRun](interfaces/CapturedRun.md)
+
 ## Functions
 
 - [appScriptCommand](functions/appScriptCommand.md)
+- [captureAppOnce](functions/captureAppOnce.md)
 - [readAppManifest](functions/readAppManifest.md)
 - [resolveAppDir](functions/resolveAppDir.md)
 - [runAppOnce](functions/runAppOnce.md)

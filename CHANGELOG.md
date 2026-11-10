@@ -22,6 +22,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `@ndigo/cli`: `ndigo routes --toon` — one TOON document on stdout for the
+  route list, an experimental sibling beside the `--json` contract (issue
+  #349). Measured first (`scripts/toon-measure.mjs`): on a real 20-route
+  manifest TOON is −59% vs pretty / −36% vs minified JSON; `ui list`'s
+  heterogeneous registry items measure −21%/<0% and stay JSON-only. The two
+  flags error together, `--json` stays canonical, the flag brief is marked
+  `[experimental]` while TOON is a Working Draft, and the SDK arrives as a
+  regular lazily imported dependency (CLI startup untouched).
 - `@ndigo/view-toon`: the TOON view technology (AD-102) — `ToonView`
   (`text/toon;charset=utf-8`), `toonViewResolver(viewName, options?)` for
   opt-in per-route negotiation (register the JSON resolver first:

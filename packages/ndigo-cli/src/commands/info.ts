@@ -5,7 +5,7 @@ import { buildCommand } from '@stricli/core';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { collectDiagnostics, runDiagnostics } from './_diagnostics.js';
-import { jsonFlag, writeJson } from './_json.js';
+import { jsonFlag, writeJson } from './_output.js';
 import { appDirPositional } from './_script-fronts.js';
 
 /** One installed `@ndigo/*` package. */

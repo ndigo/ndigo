@@ -43,7 +43,7 @@ ndigo serve --cluster 4 --port 3000   # 4 replicated worker slots
 | `ndigo typecheck [dir]` | Runs the app's `typecheck` script.                                               |
 | `ndigo clean [dir]`     | Removes `dist`/`lib`/`.nx`/`coverage` (`--dryRun` previews; `--force` required). |
 | `ndigo inspect [dir]`   | Runs the app's `inspect` entry (the manifest printer).                           |
-| `ndigo routes [dir]`    | Runs `inspect`; `--json` emits the manifest's route list.                        |
+| `ndigo routes [dir]`    | Runs `inspect`; `--json` or `--toon` emits the manifest's route list.            |
 | `ndigo logs [dir]`      | Tails `logs/app.log` (`--file`, `--lines`, `--follow`).                          |
 
 ### Scaffolding and generators
@@ -135,7 +135,11 @@ Every command: `--help`/`-h`, `--version`/`-v`, exit `0` ok / `2` usage /
 `1` runtime. Commands with a machine-readable form take `--json`: one JSON
 document on stdout, diagnostics on stderr, exit codes unchanged, and human
 output untouched without the flag. `serve`, `build`, `test`, `inspect`, and
-`mcp` have no `--json`. Scripts run **shell-free** (single commands only) so OS
+`mcp` have no `--json`. `ndigo routes` also takes `--toon` (one TOON document
+on stdout) — **experimental**, measured against `scripts/toon-measure.mjs`
+(−59% vs pretty / −36% vs minified JSON on a real 20-route manifest, the only
+verb above the ≥30% keep-threshold so far), and the two flags error when
+passed together. Scripts run **shell-free** (single commands only) so OS
 signals reach the actual application — package-manager `run` wrappers and
 dash-style shells both swallow `SIGTERM`.
 

@@ -3,7 +3,7 @@
  */
 import { buildCommand } from '@stricli/core';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
-import { jsonFlag, writeJson } from './_json.js';
+import { jsonFlag, writeJson } from './_output.js';
 
 const CONFIG_FILE = '.ndigorc.json';
 

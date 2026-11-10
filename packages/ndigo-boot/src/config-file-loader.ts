@@ -3,27 +3,9 @@
  * support, into a configurable environment.
  */
 import { IllegalStateError, JSONObject } from '@ndigo/core';
-import { getErrorMessage } from '@ndigo/util';
 import type { ConfigurableEnvironment } from '@ndigo/context';
 import type { ConfigFileReader } from '@ndigo/context';
-
-/**
- * Exact version of the optional `@toon-format/toon` peer (AD-66 D-4) — keep
- * in sync with the `peerDependencies`/`devDependencies` pin in
- * `packages/ndigo-boot/package.json`; the install hint in
- * {@link loadToonDecoder} references it.
- */
-const TOON_PEER_VERSION = '4.4.0';
-
-/**
- * Runtime shape of the optional `@toon-format/toon` peer. Declared locally
- * instead of `import type`-ed so that building `@ndigo/boot` from source never
- * requires the optional peer to resolve (AD-66): the lazy dynamic import in
- * {@link loadToonDecoder} is the only load site.
- */
-interface ToonDecoderModule {
-    decode(content: string): unknown;
-}
+import { parseToonDocument } from './_toon';
 
 /**
  * The config-file format to load. `'auto'` (default) probes
@@ -71,38 +53,6 @@ export interface ConfigFileLoaderOptions {
 
 const DEFAULT_LOCATIONS = ['./config/', './'];
 
-/**
- * Lazy loader for the optional `@toon-format/toon` peer. DELIBERATE dynamic
- * import (exception to the static-import rule): consumers without the
- * optional peer keep zero install/build cost — a static import would fail
- * their builds. The literal specifier plus `@vite-ignore` keeps the module a
- * *declared, scannable* runtime dependency while bundlers skip it.
- * `toon-spec: 4.4` (https://github.com/toon-format/spec).
- */
-const loadToonDecoder = async (): Promise<(content: string) => JSONObject> => {
-    let peer: ToonDecoderModule;
-    try {
-        peer = (await import(/* @vite-ignore */ '@toon-format/toon')) as ToonDecoderModule;
-    } catch (cause) {
-        // Every resolution failure maps to "not installed": the peer is
-        // optional, so a missing/corrupt install is the expected case. A
-        // version whose exports changed surfaces through the shape check
-        // below instead of a misleading "not valid TOON" at parse time.
-        throw new IllegalStateError(
-            'A .toon config file was found, but the optional "@toon-format/toon" dependency is not installed. ' +
-                `Install it (e.g. \`npm i @toon-format/toon@${TOON_PEER_VERSION}\`) to use TOON config files.`,
-            { cause }
-        );
-    }
-    if (typeof peer.decode !== 'function') {
-        throw new IllegalStateError(
-            `The installed "@toon-format/toon" does not expose the expected decode() export — expected v${TOON_PEER_VERSION}. ` +
-                `Reinstall it (e.g. \`npm i @toon-format/toon@${TOON_PEER_VERSION}\`).`
-        );
-    }
-    return peer.decode as unknown as (content: string) => JSONObject;
-};
-
 const withTrailingSlash = (location: string): string => (location.endsWith('/') ? location : `${location}/`);
 
 const stripPrefix = (location: string): { path: string; optional: boolean; required: boolean } => ({
@@ -143,21 +93,6 @@ export function mergeConfig(base: JSONObject, override: JSONObject): JSONObject 
 }
 
 const isPlainObject = (value: unknown): boolean => value !== null && typeof value === 'object' && !Array.isArray(value);
-
-/**
- * Decoder diagnostics quote input slices, and config files routinely hold
- * credentials — bound the message and strip control characters before it
- * enters an error/log (AD-66, SEC parity with the JSON path's bounded
- * `JSON.parse` message).
- */
-const MAX_DECODER_MESSAGE_CHARS = 200;
-const sanitizeDecoderMessage = (message: string): string => {
-    // oxlint-disable-next-line no-control-regex -- stripping control characters from diagnostics is the purpose of this sanitizer.
-    const printable = message.replace(/[\u0000-\u001f\u007f]/g, ' ');
-    return printable.length > MAX_DECODER_MESSAGE_CHARS
-        ? `${printable.slice(0, MAX_DECODER_MESSAGE_CHARS - 3)}...`
-        : printable;
-};
 
 /**
  * Loads `application.json` / `application-{profile}.json` (and, when
@@ -289,44 +224,13 @@ export class StandardConfigFileLoader {
 
     /**
      * Decodes a `.toon` document (spec v4.4) into the JSON object the
-     * property-source merge consumes. Strict mode is the reference decoder's
-     * default, so duplicate sibling keys and count/width mismatches error
-     * (§14) — cross-file profile merging is unaffected: it happens after
-     * decode, on the `application` source, with the usual object-merge /
-     * array-replace semantics. The JSON path intentionally keeps its raw
+     * property-source merge consumes — the shared {@link parseToonDocument}
+     * contract (strict mode, JSON-shaped rename hint, object shape guard,
+     * bounded decoder diagnostics). The JSON path intentionally keeps its raw
      * `JSON.parse` errors; TOON errors carry the file path and a sanitized,
      * truncated decoder message.
      */
     async #parseToon(content: string, path: string): Promise<JSONObject> {
-        // A JSON document pasted or renamed into a .toon file is the format's
-        // most plausible authoring slip. TOON would decode `{"a": 1}` as an
-        // ordinary key: value line (key `{"a"`, value `1}`) — a silent,
-        // garbage object — so reject `{`/`[`-leading documents up front with
-        // a rename hint. `[N]:` array-form roots also start with `[`; they
-        // are invalid for config anyway (shape guard below), so the hint
-        // costs nothing on the valid-to-TOON path.
-        const first = content.trimStart()[0];
-        if (first === '{' || first === '[') {
-            throw new IllegalStateError(
-                `Config file "${path}" starts like a JSON document but has a .toon extension. ` +
-                    'TOON is line/indentation-based: rename the file to .json or convert its contents.'
-            );
-        }
-        const decode = this.#decodeToon ?? (await loadToonDecoder());
-        let parsed: unknown;
-        try {
-            parsed = await decode(content);
-        } catch (cause) {
-            throw new IllegalStateError(
-                `Config file "${path}" is not valid TOON: ${sanitizeDecoderMessage(getErrorMessage(cause))}`,
-                { cause }
-            );
-        }
-        if (!isPlainObject(parsed)) {
-            throw new IllegalStateError(
-                `Config file "${path}" must decode to a TOON object (got ${Array.isArray(parsed) ? 'an array' : typeof parsed})`
-            );
-        }
-        return parsed as JSONObject;
+        return parseToonDocument(content, path, this.#decodeToon ?? undefined);
     }
 }

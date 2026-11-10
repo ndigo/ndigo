@@ -1,5 +1,6 @@
 /**
- * Shared diagnostics routine used by `doctor` and `info`.
+ * Shared diagnostics routine used by `doctor`, `info`, and the MCP
+ * `run_doctor` tool.
  */
 import { spawn } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
@@ -8,14 +9,22 @@ import { fileURLToPath } from 'node:url';
 
 export const MIN_NODE_MAJOR = 24;
 
+/** The collected diagnostics, before any rendering. */
+export interface DiagnosticsReport {
+    /** One printable row per checked fact. */
+    readonly rows: readonly string[];
+    /** One message per failed check. */
+    readonly failures: readonly string[];
+}
+
 interface CaptureResult {
     value: string;
     missing: boolean;
 }
 
-function capture(argv: string[]): Promise<CaptureResult> {
+function capture(argv: string[], cwd?: string): Promise<CaptureResult> {
     return new Promise<CaptureResult>((resolve) => {
-        const child = spawn(argv[0] ?? '', argv.slice(1), { stdio: 'pipe' });
+        const child = spawn(argv[0] ?? '', argv.slice(1), { stdio: 'pipe', cwd });
         const chunks: string[] = [];
         const stdout = child.stdout;
         if (stdout !== null) {
@@ -50,8 +59,8 @@ function cliVersion(): string {
     }
 }
 
-function workspaceRoot(): string | undefined {
-    let current = process.cwd();
+function workspaceRoot(from: string): string | undefined {
+    let current = from;
     for (;;) {
         if (existsSync(join(current, 'pnpm-workspace.yaml'))) return current;
         const parent = dirname(current);
@@ -60,7 +69,14 @@ function workspaceRoot(): string | undefined {
     }
 }
 
-export async function runDiagnostics(): Promise<number> {
+/**
+ * Collects the environment and workspace diagnostics without printing them.
+ *
+ * @param cwd - The directory the checks describe (defaults to the process
+ *   working directory).
+ * @returns The printable rows and any failures.
+ */
+export async function collectDiagnostics(cwd = process.cwd()): Promise<DiagnosticsReport> {
     const failures: string[] = [];
     const check = (ok: boolean, message: string): void => {
         if (!ok) failures.push(message);
@@ -71,16 +87,26 @@ export async function runDiagnostics(): Promise<number> {
     const majorMatch = /^v(\d+)\./.exec(process.version);
     const nodeMajor = majorMatch === null ? 0 : Number(majorMatch[1]);
     check(nodeMajor >= MIN_NODE_MAJOR, `node ${process.version} — require >= v${MIN_NODE_MAJOR}`);
-    const pnpm = await capture(['pnpm', '--version']);
+    const pnpm = await capture(['pnpm', '--version'], cwd);
     check(!pnpm.missing, 'pnpm is not on PATH — install pnpm (the workspace package manager)');
     rows.push(`pnpm ${pnpm.missing ? 'n/a (not found)' : pnpm.value}`);
-    const root = workspaceRoot();
+    const root = workspaceRoot(cwd);
     check(root !== undefined, 'not inside a Ndigo workspace — no pnpm-workspace.yaml above the cwd');
     rows.push(`workspace ${root ?? 'n/a (not found)'}`);
-    const git = await capture(['git', 'rev-parse', '--short', 'HEAD']);
+    const git = await capture(['git', 'rev-parse', '--short', 'HEAD'], cwd);
     check(!git.missing, 'git is not on PATH');
     rows.push(`git ${git.missing ? 'n/a (not found)' : git.value}`);
-    rows.push(`cwd ${process.cwd()}`);
+    rows.push(`cwd ${cwd}`);
+    return { rows, failures };
+}
+
+/**
+ * Prints the diagnostics report and reports whether every check passed.
+ *
+ * @returns `0` when all checks pass, `1` otherwise.
+ */
+export async function runDiagnostics(): Promise<number> {
+    const { rows, failures } = await collectDiagnostics();
     for (const row of rows) process.stdout.write(`${row}\n`);
     for (const failure of failures) process.stdout.write(`✗ ${failure}\n`);
     return failures.length > 0 ? 1 : 0;

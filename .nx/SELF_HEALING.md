@@ -16,8 +16,9 @@ proposing changes. Ndigo conventions: `STYLE_GUIDE.md` (how to write),
   `pnpm doc`, never hand-edit.
 - `pnpm-lock.yaml` — dependency changes go through `pnpm install` / `pnpm add`
   in the owning workspace; never hand-edit the lockfile.
-- `.opencode/`, `.omp/`, `.agent-local.json` — generated agent deployment;
-  edit `agent-local/`, then run `pnpm agents:sync` and `pnpm agents:check`.
+- `.opencode/`, `.omp/`, `.agents/`, `.agent-local.json` — generated agent
+  deployment; edit `agent-local/`, then run `pnpm agents:sync` and
+  `pnpm agents:check`.
 - `graft/` — local, gitignored code-graph cache; never propose changes there.
 - `docs/plans/`, `docs/migrations/`, `docs/audits/`, `docs/decisions/` —
   historical records; do not rewrite them.

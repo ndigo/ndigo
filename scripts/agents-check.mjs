@@ -2,12 +2,15 @@
 // agents-check.mjs — verify the generated agent/skill deployment.
 //
 // The agent configuration is generated from the neutral store
-// (development-agents/) into .opencode/ and .omp/ by `gen.mjs`.
+// (development-agents/) by `gen.mjs`: agents into .opencode/ and .omp/,
+// skills once into the harness-neutral .agents/skills.
 // This script validates the committed deployment without needing the store:
 //
 //   1. every file listed in .agent-gen.json exists and its sha256 matches
 //   2. structural invariants: frontmatter present, no model fields in
-//      opencode agents, no template-placeholder bugs ("for the.")
+//      opencode agents, no template-placeholder bugs ("for the."), every
+//      skill's directory name equals its frontmatter `name` and it has a
+//      `description` (both harnesses index skills by those fields)
 //
 // Regenerate with `pnpm agents:sync`; edit in the store or agent-local/, never
 // in the generated directories. Zero dependencies. Exit 1 on any failure.
@@ -96,6 +99,35 @@ for (const dir of ['.opencode/agents']) {
     for (const file of readdirSync(abs).filter((f) => f.endsWith('.md'))) {
         const head = readFileSync(join(abs, file), 'utf8').split('\n---', 1)[0];
         if (head.includes('\nmodel:')) report(`${dir}/${file}: opencode agents must not pin a model`);
+    }
+}
+// Skills are harness-neutral. OpenCode derives the skill ID from the directory
+// name and OMP from the frontmatter `name` (defaulting to the directory), so a
+// mismatch splits the catalog between harnesses; both only advertise skills
+// that carry a description.
+const skillsRoot = '.agents/skills';
+if (!existsSync(join(root, skillsRoot))) report(`missing generated directory ${skillsRoot}`);
+else {
+    for (const entry of readdirSync(join(root, skillsRoot), { withFileTypes: true })) {
+        if (!entry.isDirectory()) {
+            report(`${skillsRoot}/${entry.name}: skills must be directories (<name>/SKILL.md)`);
+            continue;
+        }
+        const rel = join(skillsRoot, entry.name, 'SKILL.md');
+        if (!existsSync(join(root, rel))) {
+            report(`${rel}: missing SKILL.md`);
+            continue;
+        }
+        const text = readFileSync(join(root, rel), 'utf8');
+        if (!text.startsWith('---')) report(`${rel}: missing YAML frontmatter`);
+        const head = text.split('\n---', 1)[0];
+        const name = head
+            .match(/^name:\s*(.+)$/m)?.[1]
+            ?.trim()
+            .replace(/^["']|["']$/g, '');
+        if (!name) report(`${rel}: missing frontmatter name`);
+        else if (name !== entry.name) report(`${rel}: name '${name}' != directory '${entry.name}'`);
+        if (!/^description:\s*\S/m.test(head)) report(`${rel}: missing frontmatter description`);
     }
 }
 

@@ -17,7 +17,7 @@ describe('create-ndigo-app scaffold', () => {
     });
 
     function target(name: string): string {
-        const dir = join(tmpdir(), `ndigo-scaffold-test-${name}`);
+        const dir = join(process.cwd(), `ndigo-scaffold-test-${name}`);
         created.push(dir);
         return dir;
     }

@@ -77,7 +77,7 @@ its own model spans.
   mounting cannot represent.
 - Hosts require tool approval or streaming results as a first-class contract.
 - A non-dispatch tool source needs to be first-class rather than an
-  `AiToolSource` implementation.
+  `AIToolSource` implementation.
 
 ## Evidence
 

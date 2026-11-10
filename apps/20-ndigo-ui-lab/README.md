@@ -45,6 +45,13 @@ dependencies are already declared in its `package.json`.
 `packages/ndigo-ui/test/ui-lock.spec.ts` fails when the lock, the installed
 files, and the registry sources drift apart.
 
+The lab's `nd-a2ui-surface` copy-in item part is the same as the registry
+surface but mirrored: `packages/ndigo-ui/scripts/build-a2ui-map.mjs` writes a
+generated `component-map.ts` for both the registry and the lab and `--check`
+verifies both. Multiple surfaces render as sibling `data-a2ui-surface-id`
+sections, and the surface element exposes `role="region"` + `aria-live="polite"`
+by default.
+
 ## Both channels
 
 - **Ndigo CLI:** the committed install above (`ndigo ui add`).

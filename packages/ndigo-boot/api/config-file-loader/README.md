@@ -23,3 +23,4 @@ Loads `application.json` / `application.toon` config files, with profile
 ## Functions
 
 - [mergeConfig](functions/mergeConfig.md)
+- [parseJsonConfig](functions/parseJsonConfig.md)

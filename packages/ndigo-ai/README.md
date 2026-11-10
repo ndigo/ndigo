@@ -20,12 +20,12 @@ Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥12.
 ## Getting Started
 
 ```ts
-import { AiAgent } from '@ndigo/ai';
+import { AIAgent } from '@ndigo/ai';
 import { aiSdkModel } from '@ndigo/ai-sdk';
 import { McpToolRegistry } from '@ndigo/mcp';
 
 const tools = McpToolRegistry.from(dispatcher, { readOnly: true });
-const agent = new AiAgent({ model: aiSdkModel(provider.chatModel('qwen3')), tools });
+const agent = new AIAgent({ model: aiSdkModel(provider.chatModel('qwen3')), tools });
 
 const result = await agent.run({
     messages: [{ role: 'user', content: 'What did Ada order?' }],
@@ -47,17 +47,17 @@ return new ServerSentEventView(toServerSentEvents(agent.stream({ messages: [{ ro
 
 | Export               | Purpose                                                    |
 | :------------------- | :--------------------------------------------------------- |
-| `AiModel`            | One provider step plus structured output.                  |
-| `AiMessage`          | System/user/assistant/tool message union.                  |
-| `AiStepResult`       | Text, tool calls, finish reason, token usage for one step. |
-| `AiToolSource`       | `listTools()` + `call()`; satisfied by `McpToolRegistry`.  |
-| `AiAgent`            | Bounded multi-step loop, telemetry, limits, rollout gate.  |
+| `AIModel`            | One provider step plus structured output.                  |
+| `AIMessage`          | System/user/assistant/tool message union.                  |
+| `AIStepResult`       | Text, tool calls, finish reason, token usage for one step. |
+| `AIToolSource`       | `listTools()` + `call()`; satisfied by `McpToolRegistry`.  |
+| `AIAgent`            | Bounded multi-step loop, telemetry, limits, rollout gate.  |
 | `toServerSentEvents` | Maps agent events to `{ event, data }` frames.             |
 
 ### Policies
 
 - **Rate limit** — pass a `RateLimiter` and policy; the default key is
-  `provider:model`, and exhaustion throws `AiRateLimitError` with
+  `provider:model`, and exhaustion throws `AIRateLimitError` with
   `retryAfterMs`.
 - **Rollout flag** — pass a `FlagEvaluator` and key; the flag is evaluated as
   a boolean with a `false` default, so a missing or broken flag fails closed.

@@ -2,11 +2,11 @@
 
 ***
 
-[@ndigo/ai-sdk](../README.md) / AiSdkModel
+[@ndigo/ai-sdk](../README.md) / AISdkModel
 
-# Class: AiSdkModel
+# Class: AISdkModel
 
-Adapts an AI SDK `LanguageModel` to the provider-neutral `AiModel`
+Adapts an AI SDK `LanguageModel` to the provider-neutral `AIModel`
 contract.
 
 The adapter declares tools to the model but never executes them — the
@@ -15,13 +15,13 @@ sources behave identically across providers.
 
 ## Implements
 
-- `AiModel`
+- `AIModel`
 
 ## Constructors
 
 ### Constructor
 
-> **new AiSdkModel**(`model`, `options?`): `AiSdkModel`
+> **new AISdkModel**(`model`, `options?`): `AISdkModel`
 
 #### Parameters
 
@@ -33,31 +33,31 @@ The AI SDK language model (provider package output).
 
 ##### options?
 
-[`AiSdkModelOptions`](../interfaces/AiSdkModelOptions.md) = `{}`
+[`AISdkModelOptions`](../interfaces/AISdkModelOptions.md) = `{}`
 
 Optional identity overrides.
 
 #### Returns
 
-`AiSdkModel`
+`AISdkModel`
 
 ## Properties
 
 ### info
 
-> `readonly` **info**: `AiModelInfo`
+> `readonly` **info**: `AIModelInfo`
 
 Model identity used in telemetry and rate-limit keys.
 
 #### Implementation of
 
-`AiModel.info`
+`AIModel.info`
 
 ## Methods
 
 ### generateObject()
 
-> **generateObject**\<`T`\>(`request`): `Promise`\<`AiObjectResult`\<`T`\>\>
+> **generateObject**\<`T`\>(`request`): `Promise`\<`AIObjectResult`\<`T`\>\>
 
 Generates a Zod-validated object through the AI SDK.
 
@@ -71,25 +71,25 @@ Generates a Zod-validated object through the AI SDK.
 
 ##### request
 
-`AiObjectRequest`\<`T`\>
+`AIObjectRequest`\<`T`\>
 
 The schema and conversation.
 
 #### Returns
 
-`Promise`\<`AiObjectResult`\<`T`\>\>
+`Promise`\<`AIObjectResult`\<`T`\>\>
 
 The validated object and usage.
 
 #### Implementation of
 
-`AiModel.generateObject`
+`AIModel.generateObject`
 
 ***
 
 ### generateStep()
 
-> **generateStep**(`request`): `Promise`\<`AiStepResult`\>
+> **generateStep**(`request`): `Promise`\<`AIStepResult`\>
 
 Performs one non-streaming AI SDK call.
 
@@ -97,25 +97,25 @@ Performs one non-streaming AI SDK call.
 
 ##### request
 
-`AiStepRequest`
+`AIStepRequest`
 
 The conversation, tools, and sampling options.
 
 #### Returns
 
-`Promise`\<`AiStepResult`\>
+`Promise`\<`AIStepResult`\>
 
 The settled step.
 
 #### Implementation of
 
-`AiModel.generateStep`
+`AIModel.generateStep`
 
 ***
 
 ### streamStep()
 
-> **streamStep**(`request`): `AiStepStream`
+> **streamStep**(`request`): `AIStepStream`
 
 Performs one streaming AI SDK call and returns the settled step.
 
@@ -123,16 +123,16 @@ Performs one streaming AI SDK call and returns the settled step.
 
 ##### request
 
-`AiStepRequest`
+`AIStepRequest`
 
 The conversation, tools, and sampling options.
 
 #### Returns
 
-`AiStepStream`
+`AIStepStream`
 
 The step event stream; its return value is the settled step.
 
 #### Implementation of
 
-`AiModel.streamStep`
+`AIModel.streamStep`

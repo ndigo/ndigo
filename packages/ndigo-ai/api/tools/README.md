@@ -10,6 +10,6 @@ The tool-source contract the agent loop consumes. `McpToolRegistry`
 
 ## Interfaces
 
-- [AiToolCallContext](interfaces/AiToolCallContext.md)
-- [AiToolDescriptor](interfaces/AiToolDescriptor.md)
-- [AiToolSource](interfaces/AiToolSource.md)
+- [AIToolCallContext](interfaces/AIToolCallContext.md)
+- [AIToolDescriptor](interfaces/AIToolDescriptor.md)
+- [AIToolSource](interfaces/AIToolSource.md)

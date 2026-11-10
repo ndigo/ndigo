@@ -1,8 +1,18 @@
 /**
  * `create-ndigo-app` — scaffold a standalone Ndigo application.
  */
-import { appendFileSync, existsSync, mkdirSync, readdirSync, rmSync, writeFileSync, readFileSync } from 'node:fs';
-import { join, resolve, sep } from 'node:path';
+import {
+    appendFileSync,
+    existsSync,
+    lstatSync,
+    mkdirSync,
+    readdirSync,
+    rmSync,
+    writeFileSync,
+    readFileSync,
+    realpathSync,
+} from 'node:fs';
+import { join, relative, resolve, sep } from 'node:path';
 import { promptChoice, promptLine } from './prompts.js';
 import { applyPlan, planTemplate, templateVars } from './templates.js';
 import { UI_AGENTS_SECTION, UI_NEXT_STEP, planUiPointer } from './ui-pointer.js';
@@ -136,6 +146,37 @@ function printNextSteps(targetDir: string, kind: AppKind, agents: boolean, ui: b
     console.log('  pnpm test');
     if (ui) console.log(`  ${UI_NEXT_STEP}`);
     if (!agents) console.log('  ndigo ai:init   # add agent context (AGENTS.md + skills)');
+}
+
+/**
+ * Resolves and constrains a scaffold target directory to the current working
+ * directory. Symlinks are rejected, so the resolved path can neither escape the
+ * caller's project root nor escape a non-directory target.
+ *
+ * @param targetDir - User-supplied target path.
+ * @returns The canonical absolute target directory.
+ * @throws On path escapes, symlinks, and non-directory targets.
+ */
+function ensureSafeTargetDir(targetDir: string): string {
+    const absolute = resolve(targetDir);
+    const cwd = process.cwd();
+    const relativePath = relative(cwd, absolute);
+    if (relativePath.startsWith('..') && relativePath !== '') {
+        throw new Error(`create-ndigo-app: target directory must be inside cwd — received ${absolute}`);
+    }
+    if (existsSync(absolute)) {
+        const stat = lstatSync(absolute);
+        if (stat.isSymbolicLink()) {
+            throw new Error(`create-ndigo-app: refusing to write through a symlink: ${absolute}`);
+        }
+        if (!stat.isDirectory()) {
+            throw new Error(`create-ndigo-app: target directory is a file: ${absolute}`);
+        }
+        if (realpathSync(absolute) !== absolute) {
+            throw new Error(`create-ndigo-app: refusing to scaffold into a reassigned path: ${absolute}`);
+        }
+    }
+    return absolute;
 }
 
 /**
@@ -289,7 +330,7 @@ Options:
         return 2;
     }
 
-    const targetDir = resolve(parsed.targetDir ?? `./${name}`);
+    const targetDir = ensureSafeTargetDir(parsed.targetDir ?? `./${name}`);
     if (isNonEmpty(targetDir) && !parsed.force) {
         console.error(`create-ndigo-app: target directory is not empty: ${targetDir} (use --force to overwrite)`);
         return 1;

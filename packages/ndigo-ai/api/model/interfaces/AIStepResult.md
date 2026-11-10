@@ -2,9 +2,9 @@
 
 ***
 
-[@ndigo/ai](../../README.md) / [model](../README.md) / AiStepResult
+[@ndigo/ai](../../README.md) / [model](../README.md) / AIStepResult
 
-# Interface: AiStepResult
+# Interface: AIStepResult
 
 One completed model step: text, tool calls (if any), and usage.
 
@@ -12,7 +12,7 @@ One completed model step: text, tool calls (if any), and usage.
 
 ### finishReason
 
-> `readonly` **finishReason**: [`AiFinishReason`](../../messages/type-aliases/AiFinishReason.md)
+> `readonly` **finishReason**: [`AIFinishReason`](../../messages/type-aliases/AIFinishReason.md)
 
 Why the provider stopped.
 
@@ -28,7 +28,7 @@ The assistant text produced in this step.
 
 ### toolCalls
 
-> `readonly` **toolCalls**: readonly [`AiToolCall`](../../messages/interfaces/AiToolCall.md)[]
+> `readonly` **toolCalls**: readonly [`AIToolCall`](../../messages/interfaces/AIToolCall.md)[]
 
 Tool calls the model requested; the agent executes them.
 
@@ -36,6 +36,6 @@ Tool calls the model requested; the agent executes them.
 
 ### usage
 
-> `readonly` **usage**: [`AiTokenUsage`](../../messages/interfaces/AiTokenUsage.md)
+> `readonly` **usage**: [`AITokenUsage`](../../messages/interfaces/AITokenUsage.md)
 
 Token usage for this step.

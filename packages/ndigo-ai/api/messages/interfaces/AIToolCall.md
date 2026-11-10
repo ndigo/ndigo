@@ -2,9 +2,9 @@
 
 ***
 
-[@ndigo/ai](../../README.md) / [messages](../README.md) / AiToolCall
+[@ndigo/ai](../../README.md) / [messages](../README.md) / AIToolCall
 
-# Interface: AiToolCall
+# Interface: AIToolCall
 
 A tool call produced by a model. `input` is the decoded JSON arguments
 object; the model's schema has already been applied by the adapter.

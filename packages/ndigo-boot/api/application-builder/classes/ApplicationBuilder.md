@@ -503,8 +503,9 @@ errors rather than silently re-parsing). TOON decoding follows the
 same contract as `.toon` config files: strict mode, JSON-shaped
 rename hint, object shape guard, bounded decoder diagnostics.
 
-The `sources` array is expected to contain module specifiers that can be
-dynamically imported as configuration classes.
+The `sources` array is expected to contain static source catalog keys.
+`sourceCatalog` is required to resolve them; the `import()` seam is not
+called with remote specifiers, so a config document cannot start code.
 
 #### Parameters
 
@@ -518,8 +519,8 @@ URL pointing to a JSON or TOON configuration file.
 
 [`FromConfigOptions`](../interfaces/FromConfigOptions.md) = `{}`
 
-Decode options: an explicit `format` and a TOON
-  decoder seam for specs/alternative validators.
+Decode options: an explicit `format`, a TOON decoder
+  seam, and the static source catalog.
 
 #### Returns
 
@@ -532,11 +533,13 @@ A promise resolving to the configured builder.
 ```ts
 // config.json:
 // {
-//   "sources": ["@ndigo/AppConfig"],
+//   "sources": ["app"],
 //   "profiles": ["production"],
 //   "properties": { "server.port": 8080 }
 // }
 
-const app = await ApplicationBuilder.fromConfig('/config.json');
+const app = await ApplicationBuilder.fromConfig('/config.json', {
+  sourceCatalog: { app: AppConfiguration },
+});
 app.run();
 ```

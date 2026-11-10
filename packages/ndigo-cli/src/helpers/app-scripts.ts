@@ -256,6 +256,9 @@ export async function captureAppOnce(
     return captureSpawn([...resolved.argv, ...extraArgv], { cwd: resolved.cwd, env: resolved.env });
 }
 
+/** One run can emit up to this many captured bytes before backpressure drops them. */
+const MAX_CAPTURED_BYTES = 1024 * 1024;
+
 async function captureSpawn(argv: string[], options: { cwd?: string; env?: NodeJS.ProcessEnv }): Promise<CapturedRun> {
     let child: ChildProcess | null = null;
     const relay = (signal: NodeJS.Signals): void => {
@@ -275,10 +278,30 @@ async function captureSpawn(argv: string[], options: { cwd?: string; env?: NodeJ
         });
         const stdout: Buffer[] = [];
         const stderr: Buffer[] = [];
-        child.stdout?.on('data', (chunk: Buffer) => stdout.push(chunk));
-        child.stderr?.on('data', (chunk: Buffer) => stderr.push(chunk));
+        const noop = (): void => {};
+        let stdoutBytes = 0;
+        let stderrBytes = 0;
+        const append = (target: Buffer[], chunk: Buffer): void => {
+            const bytes = target === stdout ? stdoutBytes : stderrBytes;
+            const remaining = MAX_CAPTURED_BYTES - bytes;
+            if (remaining <= 0) return;
+            const clipped = chunk.subarray(0, remaining);
+            target.push(clipped);
+            if (target === stdout) stdoutBytes += clipped.byteLength;
+            else stderrBytes += clipped.byteLength;
+        };
+
+        child.stdout?.on('data', (chunk: Buffer) => append(stdout, chunk));
+        child.stderr?.on('data', (chunk: Buffer) => append(stderr, chunk));
+        // Both streams must be closed for the read endpoint to be final; `exit`
+        // can fire before the last buffered bytes land.
+        const closeAll = (): void => {
+            child?.stdout?.once('end', noop);
+            child?.stderr?.once('end', noop);
+        };
         const exitCode = await new Promise<number>((resolve) => {
             child?.once('exit', (code, signal) => {
+                closeAll();
                 resolve(code ?? (signal === 'SIGINT' ? 130 : signal === 'SIGTERM' ? 143 : 1));
             });
             child?.once('error', () => {
@@ -286,6 +309,7 @@ async function captureSpawn(argv: string[], options: { cwd?: string; env?: NodeJ
                 resolve(127);
             });
         });
+
         return {
             exitCode,
             stdout: Buffer.concat(stdout).toString('utf8'),

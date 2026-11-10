@@ -2,11 +2,11 @@
 
 ***
 
-[@ndigo/ai](../../README.md) / [messages](../README.md) / AiToolResult
+[@ndigo/ai](../../README.md) / [messages](../README.md) / AIToolResult
 
-# Interface: AiToolResult
+# Interface: AIToolResult
 
-A completed tool execution, as reported in `AiRunResult`.
+A completed tool execution, as reported in `AIRunResult`.
 
 ## Properties
 

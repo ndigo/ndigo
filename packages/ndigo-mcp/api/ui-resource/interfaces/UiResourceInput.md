@@ -14,7 +14,8 @@ Inputs for [createUiResource](../functions/createUiResource.md).
 
 > `readonly` **body**: `string`
 
-Markup placed inside `<body>`.
+Markup inserted inside `<body>`. Escaped by default; set
+[trustedMarkup](#trustedmarkup) to `true` only for markup that the application owns.
 
 ***
 
@@ -103,6 +104,14 @@ Script type (default `module`).
 > `readonly` `optional` **title?**: `string`
 
 Document title (escaped).
+
+***
+
+### trustedMarkup?
+
+> `readonly` `optional` **trustedMarkup?**: `boolean`
+
+Opt in to rendering `body` verbatim.
 
 ***
 

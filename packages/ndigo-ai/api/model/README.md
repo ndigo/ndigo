@@ -10,14 +10,14 @@ The language-model contract: one provider call per step plus structured
 
 ## Interfaces
 
-- [AiModel](interfaces/AiModel.md)
-- [AiModelInfo](interfaces/AiModelInfo.md)
-- [AiObjectRequest](interfaces/AiObjectRequest.md)
-- [AiObjectResult](interfaces/AiObjectResult.md)
-- [AiStepRequest](interfaces/AiStepRequest.md)
-- [AiStepResult](interfaces/AiStepResult.md)
+- [AIModel](interfaces/AIModel.md)
+- [AIModelInfo](interfaces/AIModelInfo.md)
+- [AIObjectRequest](interfaces/AIObjectRequest.md)
+- [AIObjectResult](interfaces/AIObjectResult.md)
+- [AIStepRequest](interfaces/AIStepRequest.md)
+- [AIStepResult](interfaces/AIStepResult.md)
 
 ## Type Aliases
 
-- [AiStepStream](type-aliases/AiStepStream.md)
-- [AiStepStreamEvent](type-aliases/AiStepStreamEvent.md)
+- [AIStepStream](type-aliases/AIStepStream.md)
+- [AIStepStreamEvent](type-aliases/AIStepStreamEvent.md)

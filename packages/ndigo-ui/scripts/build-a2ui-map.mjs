@@ -17,7 +17,12 @@ import { fileURLToPath } from 'node:url';
 
 const PACKAGE_ROOT = dirname(dirname(fileURLToPath(import.meta.url)));
 const REGISTRY = join(PACKAGE_ROOT, 'registry.json');
-const OUTPUT = join(PACKAGE_ROOT, 'registry', 'ui', 'a2ui-surface', 'component-map.ts');
+const OUTPUTS = [
+    join(PACKAGE_ROOT, 'registry', 'ui', 'a2ui-surface', 'component-map.ts'),
+    // The lab owns a copy that stays in sync with the registry-generated map;
+    // `--check` verifies both identities the same way.
+    join(PACKAGE_ROOT, '..', '..', 'apps', '20-ndigo-ui-lab', 'src', 'ui', 'nd-a2ui-surface', 'component-map.ts'),
+];
 const CHECK = process.argv.includes('--check');
 
 const registry = JSON.parse(readFileSync(REGISTRY, 'utf8'));
@@ -59,13 +64,15 @@ ${entries.map(([name, tag]) => `    ${propertyKey(name)}: '${tag}',`).join('\n')
 `;
 
 if (CHECK) {
-    if (!existsSync(OUTPUT) || readFileSync(OUTPUT, 'utf8') !== content) {
+    if (OUTPUTS.some((target) => !existsSync(target) || readFileSync(target, 'utf8') !== content)) {
         process.stderr.write('✗ a2ui map is stale — run `pnpm ui:a2ui-map:build`\n');
         process.exitCode = 1;
     } else {
         console.log(`a2ui map current (${entries.length} components)`);
     }
 } else {
-    writeFileSync(OUTPUT, content, 'utf8');
+    for (const target of OUTPUTS) {
+        writeFileSync(target, content, 'utf8');
+    }
     console.log(`a2ui map: ${entries.length} components`);
 }

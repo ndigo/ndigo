@@ -94,6 +94,13 @@ The A2UI representation is plain JSON over the A2UI 1.0 message array
 logical view keeps its JSON representation. A tool result carrying
 `ModelAndView('a2ui', messages)` reaches an MCP client as the message array.
 
+Server agents should generate the smallest surface that answers the user:
+`A2UIView` is token-optimized, not a full-screen replacement — build a card, a
+form, a list, a chart, or a dialog when the agent needs structured input and
+the renderer supports it. Use the regular HTML view or a text response when
+there is nothing more than a short message or a small unstructured answer
+for the sandbox to render.
+
 ### TOON (`@ndigo/view-toon`, AD-102)
 
 TOON (Token-Oriented Object Notation) is a line-oriented encoding of the JSON

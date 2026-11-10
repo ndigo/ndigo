@@ -8,11 +8,11 @@ The AI SDK integration layer — the only package that imports the Vercel AI
 
 ## Classes
 
-- [AiSdkModel](classes/AiSdkModel.md)
+- [AISdkModel](classes/AISdkModel.md)
 
 ## Interfaces
 
-- [AiSdkModelOptions](interfaces/AiSdkModelOptions.md)
+- [AISdkModelOptions](interfaces/AISdkModelOptions.md)
 
 ## Functions
 

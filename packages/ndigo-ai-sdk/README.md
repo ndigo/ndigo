@@ -1,7 +1,7 @@
 # @ndigo/ai-sdk
 
 > The AI SDK integration layer — the only package that imports the Vercel AI
-> SDK. Everything else talks to `@ndigo/ai`'s `AiModel` contract.
+> SDK. Everything else talks to `@ndigo/ai`'s `AIModel` contract.
 
 The adapter declares tools to the model but never executes them. The
 `@ndigo/ai` agent loop owns execution, so MCP tools and local tool sources
@@ -20,7 +20,7 @@ package is app-owned: `@ndigo/ai-sdk` wraps `ai`, not every provider.
 
 ```ts
 import { createOpenAICompatible } from '@ai-sdk/openai-compatible';
-import { AiAgent } from '@ndigo/ai';
+import { AIAgent } from '@ndigo/ai';
 import { aiSdkModel } from '@ndigo/ai-sdk';
 
 const provider = createOpenAICompatible({
@@ -29,7 +29,7 @@ const provider = createOpenAICompatible({
     apiKey: config.apiKey,
 });
 
-const agent = new AiAgent({
+const agent = new AIAgent({
     model: aiSdkModel(provider.chatModel('qwen3'), { provider: 'lmstudio', model: 'qwen3' }),
 });
 ```
@@ -40,14 +40,14 @@ const agent = new AiAgent({
 
 | `@ndigo/ai`                      | AI SDK                                             |
 | :------------------------------- | :------------------------------------------------- |
-| `AiMessage` system               | `instructions`                                     |
+| `AIMessage` system               | `instructions`                                     |
 | assistant tool calls             | assistant content `tool-call` parts                |
 | tool results                     | tool message `tool-result` parts (`json` fallback) |
-| `AiToolDescriptor` (JSON Schema) | `jsonSchema()` tool `inputSchema`                  |
+| `AIToolDescriptor` (JSON Schema) | `jsonSchema()` tool `inputSchema`                  |
 | structured output (Zod)          | `zodSchema()`                                      |
 | `streamStep`                     | `streamText().stream`                              |
 
-`AiSdkModel.info` reads `provider` / `modelId` from the model and can be
+`AISdkModel.info` reads `provider` / `modelId` from the model and can be
 overridden for stable telemetry and rate-limit keys.
 
 ### Integration-layer rule

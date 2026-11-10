@@ -2,9 +2,9 @@
 
 ***
 
-[@ndigo/ai](../../README.md) / [tools](../README.md) / AiToolSource
+[@ndigo/ai](../../README.md) / [tools](../README.md) / AIToolSource
 
-# Interface: AiToolSource
+# Interface: AIToolSource
 
 A source of tools the agent may call. Implementations decide where tools
 live and how they execute; `McpToolRegistry` is the canonical one.
@@ -33,7 +33,7 @@ The decoded JSON arguments.
 
 ##### context?
 
-[`AiToolCallContext`](AiToolCallContext.md)
+[`AIToolCallContext`](AIToolCallContext.md)
 
 The call context, including the model call id.
 
@@ -51,12 +51,12 @@ When the tool is unknown, hidden, or the handler fails.
 
 ### listTools()
 
-> **listTools**(): `Promise`\<readonly [`AiToolDescriptor`](AiToolDescriptor.md)[]\>
+> **listTools**(): `Promise`\<readonly [`AIToolDescriptor`](AIToolDescriptor.md)[]\>
 
 Lists the tools visible under the source's policy.
 
 #### Returns
 
-`Promise`\<readonly [`AiToolDescriptor`](AiToolDescriptor.md)[]\>
+`Promise`\<readonly [`AIToolDescriptor`](AIToolDescriptor.md)[]\>
 
 The tool descriptors shown to the model.

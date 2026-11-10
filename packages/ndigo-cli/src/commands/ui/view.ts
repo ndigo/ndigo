@@ -5,6 +5,7 @@ import { buildCommand } from '@stricli/core';
 import { usageError } from '../../helpers/app-scripts.js';
 import { resolveRegistrySource } from '../../ui/config.js';
 import { loadRegistry } from '../../ui/registry.js';
+import { writeJson } from '../_output.js';
 
 /**
  * The item inspection command.
@@ -17,7 +18,7 @@ export const viewUiCommand = buildCommand({
         if (item === undefined) throw usageError(`unknown registry item '${name}'`);
 
         if (flags.json === true) {
-            process.stdout.write(`${JSON.stringify(item, null, 2)}\n`);
+            writeJson(item);
             return;
         }
         process.stdout.write(`${item.name} (${item.type})\n`);

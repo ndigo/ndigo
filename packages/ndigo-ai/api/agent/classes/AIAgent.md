@@ -2,9 +2,9 @@
 
 ***
 
-[@ndigo/ai](../../README.md) / [agent](../README.md) / AiAgent
+[@ndigo/ai](../../README.md) / [agent](../README.md) / AIAgent
 
-# Class: AiAgent
+# Class: AIAgent
 
 Drives one model through a bounded tool-calling loop.
 
@@ -12,19 +12,19 @@ Drives one model through a bounded tool-calling loop.
 
 ### Constructor
 
-> **new AiAgent**(`options`): `AiAgent`
+> **new AIAgent**(`options`): `AIAgent`
 
 #### Parameters
 
 ##### options
 
-[`AiAgentOptions`](../interfaces/AiAgentOptions.md)
+[`AIAgentOptions`](../interfaces/AIAgentOptions.md)
 
 The model, optional tool source, and policy.
 
 #### Returns
 
-`AiAgent`
+`AIAgent`
 
 #### Throws
 
@@ -36,19 +36,19 @@ When `maxSteps` is not a positive integer.
 
 #### Get Signature
 
-> **get** **modelInfo**(): [`AiModelInfo`](../../model/interfaces/AiModelInfo.md)
+> **get** **modelInfo**(): [`AIModelInfo`](../../model/interfaces/AIModelInfo.md)
 
 The model identity this agent drives.
 
 ##### Returns
 
-[`AiModelInfo`](../../model/interfaces/AiModelInfo.md)
+[`AIModelInfo`](../../model/interfaces/AIModelInfo.md)
 
 ## Methods
 
 ### object()
 
-> **object**\<`T`\>(`request`): `Promise`\<[`AiObjectResult`](../../model/interfaces/AiObjectResult.md)\<`T`\>\>
+> **object**\<`T`\>(`request`): `Promise`\<[`AIObjectResult`](../../model/interfaces/AIObjectResult.md)\<`T`\>\>
 
 Generates a schema-validated object, without tools.
 
@@ -62,13 +62,13 @@ Generates a schema-validated object, without tools.
 
 ##### request
 
-[`AiObjectRequest`](../../model/interfaces/AiObjectRequest.md)\<`T`\>
+[`AIObjectRequest`](../../model/interfaces/AIObjectRequest.md)\<`T`\>
 
 The Zod schema and conversation.
 
 #### Returns
 
-`Promise`\<[`AiObjectResult`](../../model/interfaces/AiObjectResult.md)\<`T`\>\>
+`Promise`\<[`AIObjectResult`](../../model/interfaces/AIObjectResult.md)\<`T`\>\>
 
 The validated object and usage.
 
@@ -76,7 +76,7 @@ The validated object and usage.
 
 ### run()
 
-> **run**(`request`): `Promise`\<[`AiRunResult`](../interfaces/AiRunResult.md)\>
+> **run**(`request`): `Promise`\<[`AIRunResult`](../interfaces/AIRunResult.md)\>
 
 Runs the tool loop to completion.
 
@@ -84,13 +84,13 @@ Runs the tool loop to completion.
 
 ##### request
 
-[`AiRunRequest`](../interfaces/AiRunRequest.md)
+[`AIRunRequest`](../interfaces/AIRunRequest.md)
 
 The conversation and sampling options.
 
 #### Returns
 
-`Promise`\<[`AiRunResult`](../interfaces/AiRunResult.md)\>
+`Promise`\<[`AIRunResult`](../interfaces/AIRunResult.md)\>
 
 The settled run result.
 
@@ -98,7 +98,7 @@ The settled run result.
 
 ### stream()
 
-> **stream**(`request`): [`AiAgentStream`](../type-aliases/AiAgentStream.md)
+> **stream**(`request`): [`AIAgentStream`](../type-aliases/AIAgentStream.md)
 
 Streams a run. Text deltas and tool calls arrive as they happen; the
 generator returns the settled result after the loop.
@@ -107,12 +107,12 @@ generator returns the settled result after the loop.
 
 ##### request
 
-[`AiRunRequest`](../interfaces/AiRunRequest.md)
+[`AIRunRequest`](../interfaces/AIRunRequest.md)
 
 The conversation and sampling options.
 
 #### Returns
 
-[`AiAgentStream`](../type-aliases/AiAgentStream.md)
+[`AIAgentStream`](../type-aliases/AIAgentStream.md)
 
 The event generator; consume it to completion.

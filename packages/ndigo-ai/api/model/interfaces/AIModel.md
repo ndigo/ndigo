@@ -2,9 +2,9 @@
 
 ***
 
-[@ndigo/ai](../../README.md) / [model](../README.md) / AiModel
+[@ndigo/ai](../../README.md) / [model](../README.md) / AIModel
 
-# Interface: AiModel
+# Interface: AIModel
 
 The provider-neutral language-model contract.
 
@@ -12,7 +12,7 @@ The provider-neutral language-model contract.
 
 ### info
 
-> `readonly` **info**: [`AiModelInfo`](AiModelInfo.md)
+> `readonly` **info**: [`AIModelInfo`](AIModelInfo.md)
 
 Identity used in telemetry and rate limits.
 
@@ -20,7 +20,7 @@ Identity used in telemetry and rate limits.
 
 ### generateObject()
 
-> **generateObject**\<`T`\>(`request`): `Promise`\<[`AiObjectResult`](AiObjectResult.md)\<`T`\>\>
+> **generateObject**\<`T`\>(`request`): `Promise`\<[`AIObjectResult`](AIObjectResult.md)\<`T`\>\>
 
 Generates a schema-validated object.
 
@@ -34,13 +34,13 @@ Generates a schema-validated object.
 
 ##### request
 
-[`AiObjectRequest`](AiObjectRequest.md)\<`T`\>
+[`AIObjectRequest`](AIObjectRequest.md)\<`T`\>
 
 The schema and conversation.
 
 #### Returns
 
-`Promise`\<[`AiObjectResult`](AiObjectResult.md)\<`T`\>\>
+`Promise`\<[`AIObjectResult`](AIObjectResult.md)\<`T`\>\>
 
 The validated object and usage.
 
@@ -48,7 +48,7 @@ The validated object and usage.
 
 ### generateStep()
 
-> **generateStep**(`request`): `Promise`\<[`AiStepResult`](AiStepResult.md)\>
+> **generateStep**(`request`): `Promise`\<[`AIStepResult`](AIStepResult.md)\>
 
 Performs one non-streaming model call. Tools are declared to the model
 but never executed by the adapter.
@@ -57,13 +57,13 @@ but never executed by the adapter.
 
 ##### request
 
-[`AiStepRequest`](AiStepRequest.md)
+[`AIStepRequest`](AIStepRequest.md)
 
 The conversation, tools, and sampling options.
 
 #### Returns
 
-`Promise`\<[`AiStepResult`](AiStepResult.md)\>
+`Promise`\<[`AIStepResult`](AIStepResult.md)\>
 
 The settled step.
 
@@ -71,7 +71,7 @@ The settled step.
 
 ### streamStep()
 
-> **streamStep**(`request`): [`AiStepStream`](../type-aliases/AiStepStream.md)
+> **streamStep**(`request`): [`AIStepStream`](../type-aliases/AIStepStream.md)
 
 Performs one streaming model call. Tools are declared but never
 executed by the adapter.
@@ -80,12 +80,12 @@ executed by the adapter.
 
 ##### request
 
-[`AiStepRequest`](AiStepRequest.md)
+[`AIStepRequest`](AIStepRequest.md)
 
 The conversation, tools, and sampling options.
 
 #### Returns
 
-[`AiStepStream`](../type-aliases/AiStepStream.md)
+[`AIStepStream`](../type-aliases/AIStepStream.md)
 
 The step event stream; its return value is the settled step.

@@ -2,9 +2,9 @@
 
 ***
 
-[@ndigo/ai](../../README.md) / [agent](../README.md) / AiRolloutOptions
+[@ndigo/ai](../../README.md) / [agent](../README.md) / AIRolloutOptions
 
-# Interface: AiRolloutOptions
+# Interface: AIRolloutOptions
 
 Model-rollout gate. The flag is evaluated as a boolean with a `false`
 default, so a broken or missing flag disables the model (fail closed).

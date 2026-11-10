@@ -6,7 +6,7 @@
 
 # Function: toServerSentEvents()
 
-> **toServerSentEvents**(`events`): `AsyncGenerator`\<[`AiServerSentEvent`](../interfaces/AiServerSentEvent.md)\>
+> **toServerSentEvents**(`events`): `AsyncGenerator`\<[`AIServerSentEvent`](../interfaces/AIServerSentEvent.md)\>
 
 Maps agent events to `ServerSentEventView` frames.
 
@@ -14,13 +14,13 @@ Maps agent events to `ServerSentEventView` frames.
 
 ### events
 
-`AsyncIterable`\<[`AiStreamEvent`](../../agent/type-aliases/AiStreamEvent.md)\>
+`AsyncIterable`\<[`AIStreamEvent`](../../agent/type-aliases/AIStreamEvent.md)\>
 
 The agent stream events.
 
 ## Returns
 
-`AsyncGenerator`\<[`AiServerSentEvent`](../interfaces/AiServerSentEvent.md)\>
+`AsyncGenerator`\<[`AIServerSentEvent`](../interfaces/AIServerSentEvent.md)\>
 
 An async iterable of SSE envelopes.
 

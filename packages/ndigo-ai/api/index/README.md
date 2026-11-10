@@ -10,165 +10,165 @@ Public API of `@ndigo/ai` — provider-neutral messages, the language-model
 
 ## References
 
-### AiAgent
+### AIAgent
 
-Re-exports [AiAgent](../agent/classes/AiAgent.md)
-
-***
-
-### AiAgentOptions
-
-Re-exports [AiAgentOptions](../agent/interfaces/AiAgentOptions.md)
+Re-exports [AIAgent](../agent/classes/AIAgent.md)
 
 ***
 
-### AiAgentStream
+### AIAgentOptions
 
-Re-exports [AiAgentStream](../agent/type-aliases/AiAgentStream.md)
-
-***
-
-### AiFinishReason
-
-Re-exports [AiFinishReason](../messages/type-aliases/AiFinishReason.md)
+Re-exports [AIAgentOptions](../agent/interfaces/AIAgentOptions.md)
 
 ***
 
-### AiMessage
+### AIAgentStream
 
-Re-exports [AiMessage](../messages/type-aliases/AiMessage.md)
-
-***
-
-### AiModel
-
-Re-exports [AiModel](../model/interfaces/AiModel.md)
+Re-exports [AIAgentStream](../agent/type-aliases/AIAgentStream.md)
 
 ***
 
-### AiModelDisabledError
+### AIFinishReason
 
-Re-exports [AiModelDisabledError](../errors/classes/AiModelDisabledError.md)
-
-***
-
-### AiModelInfo
-
-Re-exports [AiModelInfo](../model/interfaces/AiModelInfo.md)
+Re-exports [AIFinishReason](../messages/type-aliases/AIFinishReason.md)
 
 ***
 
-### AiObjectRequest
+### AIMessage
 
-Re-exports [AiObjectRequest](../model/interfaces/AiObjectRequest.md)
-
-***
-
-### AiObjectResult
-
-Re-exports [AiObjectResult](../model/interfaces/AiObjectResult.md)
+Re-exports [AIMessage](../messages/type-aliases/AIMessage.md)
 
 ***
 
-### AiRateLimitError
+### AIModel
 
-Re-exports [AiRateLimitError](../errors/classes/AiRateLimitError.md)
-
-***
-
-### AiRateLimitOptions
-
-Re-exports [AiRateLimitOptions](../agent/interfaces/AiRateLimitOptions.md)
+Re-exports [AIModel](../model/interfaces/AIModel.md)
 
 ***
 
-### AiRolloutOptions
+### AIModelDisabledError
 
-Re-exports [AiRolloutOptions](../agent/interfaces/AiRolloutOptions.md)
-
-***
-
-### AiRunRequest
-
-Re-exports [AiRunRequest](../agent/interfaces/AiRunRequest.md)
+Re-exports [AIModelDisabledError](../errors/classes/AIModelDisabledError.md)
 
 ***
 
-### AiRunResult
+### AIModelInfo
 
-Re-exports [AiRunResult](../agent/interfaces/AiRunResult.md)
-
-***
-
-### AiServerSentEvent
-
-Re-exports [AiServerSentEvent](../stream/interfaces/AiServerSentEvent.md)
+Re-exports [AIModelInfo](../model/interfaces/AIModelInfo.md)
 
 ***
 
-### AiStepRequest
+### AIObjectRequest
 
-Re-exports [AiStepRequest](../model/interfaces/AiStepRequest.md)
-
-***
-
-### AiStepResult
-
-Re-exports [AiStepResult](../model/interfaces/AiStepResult.md)
+Re-exports [AIObjectRequest](../model/interfaces/AIObjectRequest.md)
 
 ***
 
-### AiStepStream
+### AIObjectResult
 
-Re-exports [AiStepStream](../model/type-aliases/AiStepStream.md)
-
-***
-
-### AiStepStreamEvent
-
-Re-exports [AiStepStreamEvent](../model/type-aliases/AiStepStreamEvent.md)
+Re-exports [AIObjectResult](../model/interfaces/AIObjectResult.md)
 
 ***
 
-### AiStreamEvent
+### AIRateLimitError
 
-Re-exports [AiStreamEvent](../agent/type-aliases/AiStreamEvent.md)
-
-***
-
-### AiTokenUsage
-
-Re-exports [AiTokenUsage](../messages/interfaces/AiTokenUsage.md)
+Re-exports [AIRateLimitError](../errors/classes/AIRateLimitError.md)
 
 ***
 
-### AiToolCall
+### AIRateLimitOptions
 
-Re-exports [AiToolCall](../messages/interfaces/AiToolCall.md)
-
-***
-
-### AiToolCallContext
-
-Re-exports [AiToolCallContext](../tools/interfaces/AiToolCallContext.md)
+Re-exports [AIRateLimitOptions](../agent/interfaces/AIRateLimitOptions.md)
 
 ***
 
-### AiToolDescriptor
+### AIRolloutOptions
 
-Re-exports [AiToolDescriptor](../tools/interfaces/AiToolDescriptor.md)
-
-***
-
-### AiToolResult
-
-Re-exports [AiToolResult](../messages/interfaces/AiToolResult.md)
+Re-exports [AIRolloutOptions](../agent/interfaces/AIRolloutOptions.md)
 
 ***
 
-### AiToolSource
+### AIRunRequest
 
-Re-exports [AiToolSource](../tools/interfaces/AiToolSource.md)
+Re-exports [AIRunRequest](../agent/interfaces/AIRunRequest.md)
+
+***
+
+### AIRunResult
+
+Re-exports [AIRunResult](../agent/interfaces/AIRunResult.md)
+
+***
+
+### AIServerSentEvent
+
+Re-exports [AIServerSentEvent](../stream/interfaces/AIServerSentEvent.md)
+
+***
+
+### AIStepRequest
+
+Re-exports [AIStepRequest](../model/interfaces/AIStepRequest.md)
+
+***
+
+### AIStepResult
+
+Re-exports [AIStepResult](../model/interfaces/AIStepResult.md)
+
+***
+
+### AIStepStream
+
+Re-exports [AIStepStream](../model/type-aliases/AIStepStream.md)
+
+***
+
+### AIStepStreamEvent
+
+Re-exports [AIStepStreamEvent](../model/type-aliases/AIStepStreamEvent.md)
+
+***
+
+### AIStreamEvent
+
+Re-exports [AIStreamEvent](../agent/type-aliases/AIStreamEvent.md)
+
+***
+
+### AITokenUsage
+
+Re-exports [AITokenUsage](../messages/interfaces/AITokenUsage.md)
+
+***
+
+### AIToolCall
+
+Re-exports [AIToolCall](../messages/interfaces/AIToolCall.md)
+
+***
+
+### AIToolCallContext
+
+Re-exports [AIToolCallContext](../tools/interfaces/AIToolCallContext.md)
+
+***
+
+### AIToolDescriptor
+
+Re-exports [AIToolDescriptor](../tools/interfaces/AIToolDescriptor.md)
+
+***
+
+### AIToolResult
+
+Re-exports [AIToolResult](../messages/interfaces/AIToolResult.md)
+
+***
+
+### AIToolSource
+
+Re-exports [AIToolSource](../tools/interfaces/AIToolSource.md)
 
 ***
 

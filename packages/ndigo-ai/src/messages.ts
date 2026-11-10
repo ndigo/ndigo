@@ -7,7 +7,7 @@
  * A tool call produced by a model. `input` is the decoded JSON arguments
  * object; the model's schema has already been applied by the adapter.
  */
-export interface AiToolCall {
+export interface AIToolCall {
     /** Provider-assigned call id, used to pair the call with its result. */
     readonly id: string;
     /** The tool name from the model's tool definition. */
@@ -20,7 +20,7 @@ export interface AiToolCall {
  * Token usage reported by a provider. Fields are optional because not every
  * provider reports every counter; the agent sums the values it receives.
  */
-export interface AiTokenUsage {
+export interface AITokenUsage {
     /** Input (prompt) tokens. */
     readonly inputTokens?: number;
     /** Output (completion) tokens. */
@@ -33,7 +33,7 @@ export interface AiTokenUsage {
  * Why a model step or the whole run finished. `max-steps` is produced by the
  * agent loop; the remaining values mirror the provider finish reasons.
  */
-export type AiFinishReason =
+export type AIFinishReason =
     | 'stop'
     | 'length'
     | 'content-filter'
@@ -50,13 +50,13 @@ export type AiFinishReason =
  * produced by the agent loop after executing those calls; callers normally
  * construct only `system`, `user`, and `assistant` messages.
  */
-export type AiMessage =
+export type AIMessage =
     | { readonly role: 'system'; readonly content: string }
     | { readonly role: 'user'; readonly content: string }
     | {
           readonly role: 'assistant';
           readonly content: string;
-          readonly toolCalls?: readonly AiToolCall[];
+          readonly toolCalls?: readonly AIToolCall[];
       }
     | {
           readonly role: 'tool';
@@ -66,9 +66,9 @@ export type AiMessage =
       };
 
 /**
- * A completed tool execution, as reported in `AiRunResult`.
+ * A completed tool execution, as reported in `AIRunResult`.
  */
-export interface AiToolResult {
+export interface AIToolResult {
     /** The call id this result answers. */
     readonly callId: string;
     /** The tool name. */

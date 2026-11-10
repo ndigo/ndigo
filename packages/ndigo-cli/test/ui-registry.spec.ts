@@ -66,6 +66,27 @@ describe('registry loader', () => {
         expect(errors.some((message) => message.includes('does not exist'))).toBe(true);
     });
 
+    it('rejects registry file paths that escape the selected registry', async () => {
+        const fixture = createRegistryFixture();
+        cleanup = fixture.cleanup;
+        writeFileSync(
+            join(fixture.root, 'pkg', 'registry.json'),
+            JSON.stringify({
+                items: [
+                    {
+                        name: 'dialog',
+                        type: 'registry:ui',
+                        files: [{ path: '../../../../../etc/passwd', type: 'registry:ui' }],
+                    },
+                ],
+            })
+        );
+
+        const errors = validateRegistry(await loadRegistry(fixture.registry));
+
+        expect(errors.some((message) => message.includes('must stay within the selected registry'))).toBe(true);
+    });
+
     it('reports duplicate item names across chunks', async () => {
         const fixture = createRegistryFixture();
         cleanup = fixture.cleanup;

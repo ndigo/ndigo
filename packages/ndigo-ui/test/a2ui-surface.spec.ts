@@ -47,6 +47,56 @@ describe('<nd-a2ui-surface>', () => {
         expect(surface.hasAttribute('data-error')).toBe(false);
     });
 
+    it('drops dangerous props instead of writing arbitrary attributes', async () => {
+        const surface = mount();
+        surface.messages = [
+            { version: '1.0', createSurface: { surfaceId: 's1', catalogId: 'ndigo-ui' } },
+            {
+                version: '1.0',
+                updateComponents: {
+                    surfaceId: 's1',
+                    components: [
+                        {
+                            id: 'root',
+                            component: 'Switch',
+                            checked: true,
+                            label: 'Notifications',
+                            onclick: 'alert()',
+                            on_label: '<script>',
+                            href: 'javascript:alert()',
+                            srcdoc: '<script>alert()</script>',
+                        },
+                    ],
+                },
+            },
+        ];
+        await flush();
+
+        const toggle = surface.querySelector('nd-switch');
+        expect(toggle).not.toBeNull();
+        expect(toggle?.getAttribute('checked')).toBe('true');
+        expect(toggle?.getAttribute('label')).toBe('Notifications');
+        expect(toggle?.getAttribute('onclick')).toBeNull();
+        expect(toggle?.getAttribute('on_label')).toBeNull();
+        expect(toggle?.getAttribute('href')).toBeNull();
+        expect(toggle?.getAttribute('srcdoc')).toBeNull();
+    });
+
+    it('renders multiple surfaces under one element', async () => {
+        const surface = mount();
+        surface.messages = [
+            { version: '1.0', createSurface: { surfaceId: 's1', catalogId: 'ndigo-ui' } },
+            { version: '1.0', createSurface: { surfaceId: 's2', catalogId: 'ndigo-ui' } },
+        ];
+        await flush();
+
+        const sections = [...surface.children]
+            .filter((node): node is HTMLElement => node instanceof HTMLElement)
+            .filter((node) => node.getAttribute('data-a2ui-surface-id') !== null);
+        expect(sections.length).toBe(2);
+        expect(sections.map((section) => section.getAttribute('data-a2ui-surface-id'))).toEqual(['s1', 's2']);
+    });
+
     it('reports an unknown or uninstalled component instead of rendering it', async () => {
         const surface = mount();
         const errors: string[] = [];

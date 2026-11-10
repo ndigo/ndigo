@@ -2,9 +2,9 @@
 
 ***
 
-[@ndigo/ai](../../README.md) / [model](../README.md) / AiStepRequest
+[@ndigo/ai](../../README.md) / [model](../README.md) / AIStepRequest
 
-# Interface: AiStepRequest
+# Interface: AIStepRequest
 
 One model call, including the full conversation so far and the tools the
 model may call. Adapters MUST NOT execute tools: the agent loop does that,
@@ -22,7 +22,7 @@ Output-token cap, when the provider supports it.
 
 ### messages
 
-> `readonly` **messages**: readonly [`AiMessage`](../../messages/type-aliases/AiMessage.md)[]
+> `readonly` **messages**: readonly [`AIMessage`](../../messages/type-aliases/AIMessage.md)[]
 
 The conversation, including prior tool results.
 
@@ -46,6 +46,6 @@ Sampling temperature, when the provider supports it.
 
 ### tools?
 
-> `readonly` `optional` **tools?**: readonly [`AiToolDescriptor`](../../tools/interfaces/AiToolDescriptor.md)[]
+> `readonly` `optional` **tools?**: readonly [`AIToolDescriptor`](../../tools/interfaces/AIToolDescriptor.md)[]
 
 Tools the model may call in this step.

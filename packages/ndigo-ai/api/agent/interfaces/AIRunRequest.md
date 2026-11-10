@@ -2,9 +2,9 @@
 
 ***
 
-[@ndigo/ai](../../README.md) / [agent](../README.md) / AiRunRequest
+[@ndigo/ai](../../README.md) / [agent](../README.md) / AIRunRequest
 
-# Interface: AiRunRequest
+# Interface: AIRunRequest
 
 One agent run request.
 
@@ -20,7 +20,7 @@ Output-token cap, when the provider supports it.
 
 ### messages
 
-> `readonly` **messages**: readonly [`AiMessage`](../../messages/type-aliases/AiMessage.md)[]
+> `readonly` **messages**: readonly [`AIMessage`](../../messages/type-aliases/AIMessage.md)[]
 
 The conversation, typically system + user messages.
 

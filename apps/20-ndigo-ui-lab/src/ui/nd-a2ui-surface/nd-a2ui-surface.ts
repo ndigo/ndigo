@@ -37,8 +37,8 @@ const CATALOG_ID = 'ndigo-ui';
 export class NdA2uiSurface extends NdElement {
     #messages: ProcessableMessagePayload | undefined;
     #processor: MessageProcessor | undefined;
-    #resolver: NodeResolver | undefined;
-    #stop: (() => void) | undefined;
+    #resolvers: NodeResolver[] = [];
+    #stop: Array<() => void> = [];
 
     /** The A2UI messages to render (an array, a single message, or a wrapper). */
     set messages(value: ProcessableMessagePayload) {
@@ -51,6 +51,8 @@ export class NdA2uiSurface extends NdElement {
     }
 
     protected onConnect(): void {
+        if (this.getAttribute('role') === null) this.setAttribute('role', 'region');
+        if (this.getAttribute('aria-live') === null) this.setAttribute('aria-live', 'polite');
         if (this.#messages !== undefined) this.#apply();
     }
 
@@ -68,31 +70,57 @@ export class NdA2uiSurface extends NdElement {
         try {
             const processor = new MessageProcessor([catalog], undefined, { version: SpecVersion.V1_0 });
             processor.processMessages(this.#messages as ProcessableMessagePayload);
-            const surface = [...processor.model.surfacesMap.values()][0];
-            if (surface === undefined) {
+            const surfaces = [...processor.model.surfacesMap.values()];
+            if (surfaces.length === 0) {
                 processor.dispose();
                 this.#fail('the A2UI messages did not create a surface');
                 return;
             }
-            const resolver = new NodeResolver(surface);
+            for (const surface of surfaces) {
+                const resolver = new NodeResolver(surface);
+                this.#resolvers.push(resolver);
+                const section = this.ownerDocument.createElement('div');
+                section.setAttribute('data-a2ui-surface-id', surface.id);
+                section.setAttribute('tabindex', '-1');
+                section.setAttribute('role', 'region');
+                section.setAttribute('aria-live', 'polite');
+                const stop = effect(() => {
+                    const root = getValue(resolver.rootNode);
+                    const activeElement = this.ownerDocument.activeElement;
+                    section.replaceChildren(
+                        root === undefined ? this.ownerDocument.createTextNode('') : this.#renderNode(root)
+                    );
+                    if (activeElement instanceof HTMLElement && activeElement.id.length > 0) {
+                        const focused = section.querySelector<HTMLElement>(`[data-a2ui-id="${activeElement.id}"]`);
+                        focused?.focus();
+                    }
+                });
+                this.#stop.push(stop);
+                this.append(section);
+            }
             this.#processor = processor;
-            this.#resolver = resolver;
-            this.#stop = effect(() => {
-                const root = getValue(resolver.rootNode);
-                this.replaceChildren(
-                    root === undefined ? this.ownerDocument.createTextNode('') : this.#renderNode(root)
-                );
-            });
         } catch (error) {
             this.#fail(error instanceof Error ? error.message : String(error));
         }
     }
 
     #teardown(): void {
-        this.#stop?.();
-        this.#stop = undefined;
-        this.#resolver?.dispose();
-        this.#resolver = undefined;
+        for (const stop of this.#stop) {
+            try {
+                stop();
+            } catch {
+                // An effect can be disposed again — harmless.
+            }
+        }
+        this.#stop = [];
+        for (const resolver of this.#resolvers) {
+            try {
+                resolver.dispose();
+            } catch {
+                // A resolver can be disposed again — harmless.
+            }
+        }
+        this.#resolvers = [];
         this.#processor?.dispose();
         this.#processor = undefined;
     }
@@ -157,11 +185,10 @@ export class NdA2uiSurface extends NdElement {
                 continue;
             }
             if (value === undefined || value === null || typeof value === 'object') continue;
+            if (isSafeA2uiPropKey(key) === false) continue;
             const attribute = camelToKebab(key);
+            if (!isSafeAttribute(attribute, value)) continue;
             element.setAttribute(attribute, String(value));
-            if (attribute in element) {
-                (element as unknown as Record<string, unknown>)[key] = value;
-            }
         }
         return element;
     }
@@ -170,6 +197,46 @@ export class NdA2uiSurface extends NdElement {
         this.setAttribute('data-error', message);
         this.emit('a2ui-error', { message });
     }
+}
+
+const URL_ATTRIBUTES: Record<string, true> = {
+    href: true,
+    src: true,
+    action: true,
+    formaction: true,
+    poster: true,
+    'xlink:href': true,
+};
+
+const BLOCKED_ATTRIBUTES: Record<string, true> = {
+    style: true,
+    srcdoc: true,
+};
+
+function isSafeA2uiPropKey(key: string): boolean {
+    const normalized = key.toLowerCase();
+    return (
+        normalized !== '__proto__' &&
+        normalized !== 'constructor' &&
+        normalized !== 'prototype' &&
+        !key.startsWith('on')
+    );
+}
+
+function isSafeAttribute(attribute: string, value: unknown): boolean {
+    if (!/^[a-z][a-z0-9-]*$/u.test(attribute)) return false;
+    if (attribute.startsWith('on-')) return false;
+    if (BLOCKED_ATTRIBUTES[attribute]) return false;
+    if (URL_ATTRIBUTES[attribute]) {
+        if (typeof value !== 'string') return false;
+        try {
+            const parsed = new URL(value, 'https://ndigo.invalid');
+            return parsed.protocol === 'https:' || parsed.protocol === 'http:';
+        } catch {
+            return false;
+        }
+    }
+    return true;
 }
 
 function camelToKebab(value: string): string {

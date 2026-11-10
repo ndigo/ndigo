@@ -8,7 +8,7 @@
  * One tool as reported by a source: the same shape as MCP `tools/list`
  * entries (`name`, `description`, JSON Schema `inputSchema`).
  */
-export interface AiToolDescriptor {
+export interface AIToolDescriptor {
     /** The tool name the model must call. */
     readonly name: string;
     /** One-line description shown to the model. */
@@ -18,10 +18,10 @@ export interface AiToolDescriptor {
 }
 
 /**
- * Per-call context passed to {@link AiToolSource.call}. The `callId` is the
+ * Per-call context passed to {@link AIToolSource.call}. The `callId` is the
  * model-assigned tool-call id and is recorded as `gen_ai.tool.call.id`.
  */
-export interface AiToolCallContext {
+export interface AIToolCallContext {
     /** The model-assigned tool-call id. */
     readonly callId?: string;
 }
@@ -30,13 +30,13 @@ export interface AiToolCallContext {
  * A source of tools the agent may call. Implementations decide where tools
  * live and how they execute; `McpToolRegistry` is the canonical one.
  */
-export interface AiToolSource {
+export interface AIToolSource {
     /**
      * Lists the tools visible under the source's policy.
      *
      * @returns The tool descriptors shown to the model.
      */
-    listTools(): Promise<readonly AiToolDescriptor[]>;
+    listTools(): Promise<readonly AIToolDescriptor[]>;
 
     /**
      * Invokes one tool.
@@ -47,5 +47,5 @@ export interface AiToolSource {
      * @returns The tool result.
      * @throws When the tool is unknown, hidden, or the handler fails.
      */
-    call(name: string, args?: Record<string, unknown>, context?: AiToolCallContext): Promise<unknown>;
+    call(name: string, args?: Record<string, unknown>, context?: AIToolCallContext): Promise<unknown>;
 }

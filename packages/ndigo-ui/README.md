@@ -82,7 +82,10 @@ repository root `registry.json`. The registry currently has 42 items:
   `accordion`, `switch`, `slider`, `select`, `combobox`, `drawer`,
   `date-picker`, `scroll-area`, `navigation-menu`, `tags-input`, `file-upload`.
 - **Agent:** `a2ui-surface` renders A2UI 1.0 surfaces with the installed
-  custom elements.
+  custom elements. Multiple surfaces render as sibling sections with
+  `data-a2ui-surface-id`, the container carries `role="region"` +
+  `aria-live="polite"`, and focus on a rendered element is restored across
+  re-renders.
 - **Blocks:** `app-shell`, `command`, `data-table` (table + checkbox + button +
   pagination), `code-block`, `sidebar`.
 

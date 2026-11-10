@@ -153,7 +153,10 @@ For interactive views, declare `ui: 'ui://<app>'` on `@toolMapping` and pass a
 Browser views declare the same handlers as WebMCP tools with
 `AsWebMcpElement` + `webMcpToolForHandler`; registration follows the element's
 connect/disconnect lifecycle and the input schema comes from the same
-`@parameters` + `validatedBy` metadata.
+`@parameters` + `validatedBy` metadata. `webMcpToolForHandler` validates the
+arguments it receives at execution time against the same zod schema it
+declared: an argument outside the schema rejects the call with a
+`TypeError` rather than letting the tool run with that value.
 
 ### Maintenance
 

@@ -201,6 +201,19 @@ you trust too broadly. Trust only the exact proxy networks.
 - **Trusting all proxies trusts all headers.** Configure exact networks.
 - **Disabling headers to fix a CSP error hides the error.** Widen the specific
   directive instead.
+- **Remote registries are a read surface, not a write surface.** The CLI
+  validates paths against the selected local registry and only accepts JSON
+  content that the registry source declared; remote content must not include
+  arbitrary local files or unregistered host references.
+- **Remote boot config never starts code silently.** `fromConfig` requires a
+  `sourceCatalog` mapping of configuration factories, so an allowlist replaces
+  direct module `import()` of remote specifiers.
+- **Do not render untrusted markup on A2UI surfaces.** `nd-a2ui-surface` only
+  writes safe attributes/props; pass explicit facts as data, not as markup,
+  and sanitize the source if the values are quotes from user input.
+- **Use `trustedMarkup: true` only for MCP UI documents you own.** The MCP Apps
+  `ui://` resource renderer escapes the body by default; only set
+  `trustedMarkup` when the markup is author-owned, not user input.
 
 ## See also
 

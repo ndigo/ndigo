@@ -113,6 +113,7 @@ describe('McpHTTPEndpoint', () => {
             uri: 'ui://orders',
             name: 'Orders',
             body: '<main>Orders</main>',
+            trustedMarkup: true,
         });
         const mcp = await start({ uiResources: [orders] });
 

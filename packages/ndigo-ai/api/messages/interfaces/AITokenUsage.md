@@ -2,9 +2,9 @@
 
 ***
 
-[@ndigo/ai](../../README.md) / [messages](../README.md) / AiTokenUsage
+[@ndigo/ai](../../README.md) / [messages](../README.md) / AITokenUsage
 
-# Interface: AiTokenUsage
+# Interface: AITokenUsage
 
 Token usage reported by a provider. Fields are optional because not every
 provider reports every counter; the agent sums the values it receives.

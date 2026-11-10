@@ -90,7 +90,7 @@ AD-98 (agent content), AD-99 (MCP host), AD-100 (`@ndigo/mcp`), and AD-101
   generated mirror over adding a matrix.
 - MCP Apps, A2UI, or WebMCP change their transport/extension contracts.
 - The AI SDK makes a breaking major release; `@ndigo/ai-sdk` absorbs it, but
-  the adapter contract (`AiModel`) is the compatibility boundary.
+  the adapter contract (`AIModel`) is the compatibility boundary.
 - A second product-agent consumer exposes a missing framework primitive, or the
   existing `@ndigo/ai` surface proves too thin to be Ndigo-shaped.
 

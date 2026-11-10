@@ -4,7 +4,7 @@
 import { buildCommand } from '@stricli/core';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { jsonFlag, writeJson } from './_json.js';
+import { jsonFlag, writeJson } from './_output.js';
 import { appDirPositional } from './_script-fronts.js';
 
 /** One key from the env template and whether the environment supplies it. */

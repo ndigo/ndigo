@@ -1,13 +1,15 @@
 // @vitest-environment node
 /**
  * The `--json` contract: one document on stdout, diagnostics on stderr, exit
- * codes unchanged, and human output untouched when the flag is absent.
+ * codes unchanged, and human output untouched when the flag is absent — plus
+ * the experimental `--toon` sibling on the measured tabular verb (`routes`).
  */
 import { spawn } from 'node:child_process';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { decode } from '@toon-format/toon';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 /** The compiled bin — the nx lane runs build:lib before test. */
@@ -254,6 +256,37 @@ describe('--json on application and diagnostics commands', () => {
         expect(result.code).not.toBe(0);
         expect(result.out).toBe('');
         expect(result.err).toContain('No flag registered for --json');
+    });
+});
+
+describe('--toon on measured verbs (issue #349)', () => {
+    it('emits the route list as a TOON document that decodes to the --json document', async () => {
+        const json = await runCli(['routes', '--json', appDir]);
+        const toon = await runCli(['routes', '--toon', appDir]);
+
+        expect(toon.code).toBe(0);
+        expect(document<{ routes: unknown[] }>(json)).toEqual(decode(toon.out));
+        expect(JSON.parse(json.out)).toEqual({ routes: MANIFEST.routes });
+    });
+
+    it('refuses --json and --toon together', async () => {
+        const result = await runCli(['routes', '--json', '--toon', appDir]);
+        expect(result.code).toBe(2);
+        expect(result.out).toBe('');
+        expect(result.err).toContain('mutually exclusive');
+    });
+
+    it('keeps ui list --toon unregistered — the shape measured below the keep-threshold', async () => {
+        const result = await runCli(['ui', 'list', '--toon']);
+        expect(result.code).not.toBe(0);
+        expect(result.err).toContain('No flag registered for --toon');
+    });
+
+    it('declares --toon on exactly the measured verbs', async () => {
+        const result = await runCli(['commands', '--json']);
+        const index = document<{ commands: { command: string; flags: { name: string }[] }[] }>(result);
+        const withToon = index.commands.filter((entry) => entry.flags.some((flag) => flag.name === 'toon'));
+        expect(withToon.map((entry) => entry.command)).toEqual(['routes']);
     });
 });
 

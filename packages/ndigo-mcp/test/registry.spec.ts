@@ -2,7 +2,14 @@
  * Registry policy and invocation: read-only gating, feature gates, argument
  * routing, and result normalization.
  */
-import { MethodParameter, MethodParameterType, ModelAndView, toolMapping } from '@ndigo/dispatcher';
+import {
+    MethodParameter,
+    MethodParameterType,
+    ModelAndView,
+    PathValueMethodArgumentResolver,
+    RouteHandlerMethod,
+    toolMapping,
+} from '@ndigo/dispatcher';
 import { whenFeature } from '@ndigo/flags';
 import { trace } from '@opentelemetry/api';
 import { BasicTracerProvider, InMemorySpanExporter, SimpleSpanProcessor } from '@opentelemetry/sdk-trace-base';
@@ -94,6 +101,28 @@ describe('McpToolRegistry', () => {
         expect(captured?.params).toEqual({ id: '42' });
         expect(captured?.method).toBe('GET');
         expect(captured?.data).toEqual({ id: '42', verbose: true });
+    });
+
+    it('binds parameterized tools through the supplied argument resolvers', async () => {
+        class Controller {
+            @toolMapping({ name: 'get_order', readOnly: true })
+            getOrder(id: string): unknown {
+                return { id };
+            }
+        }
+        function entries() {
+            const method = new RouteHandlerMethod(new Controller(), 'getOrder');
+            method.parameters = [PARAMETERS[0] as MethodParameter];
+            return [{ mapping: mapping('/orders/:id'), handlerMethod: method }];
+        }
+
+        const registry = McpToolRegistry.from(table(entries()), {
+            argumentResolvers: [new PathValueMethodArgumentResolver()],
+        });
+        expect(await registry.call('get_order', { id: '42' })).toEqual({ id: '42' });
+
+        const unbound = McpToolRegistry.from(table(entries()));
+        await expect(unbound.call('get_order', { id: '42' })).rejects.toThrow(/argument resolvers/u);
     });
 
     it('normalizes ModelAndView and response-entity results', async () => {

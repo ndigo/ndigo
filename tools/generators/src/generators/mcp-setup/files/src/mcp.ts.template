@@ -1,4 +1,4 @@
-import type { AbstractDispatcher } from '@ndigo/dispatcher';
+import type { AbstractDispatcher, HandlerMethodArgumentResolver } from '@ndigo/dispatcher';
 import { McpToolRegistry, startStdioServer } from '@ndigo/mcp';
 
 /**
@@ -11,8 +11,11 @@ import { McpToolRegistry, startStdioServer } from '@ndigo/mcp';
  */
 export async function serveMcp(
     dispatcher: AbstractDispatcher,
-    options: { readOnly?: boolean } = {}
+    options: { readOnly?: boolean; argumentResolvers?: readonly HandlerMethodArgumentResolver[] } = {}
 ): Promise<void> {
-    const registry = McpToolRegistry.from(dispatcher, { readOnly: options.readOnly === true });
+    const registry = McpToolRegistry.from(dispatcher, {
+        readOnly: options.readOnly === true,
+        ...(options.argumentResolvers === undefined ? {} : { argumentResolvers: options.argumentResolvers }),
+    });
     await startStdioServer(registry);
 }

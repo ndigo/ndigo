@@ -55,6 +55,8 @@ HTML document. Untrusted markup can inject `<script>`/event handlers, defeating
 the sandboxed-iframe assumption.
 Fix: escape/sanitize `body`, or document and enforce that `body` is trusted,
 server-rendered markup only; prefer an allow-listed sanitizer for dynamic content.
+`trustedMarkup: true` is the explicit opt-in; untrusted content goes through
+the A2UI surface or a schema-validated view.
 
 **R-04 — Remote config sources can execute arbitrary code (High).**
 `packages/ndigo-boot/src/application-builder.ts:179-181` dynamically `import()`s

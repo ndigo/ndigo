@@ -4,7 +4,7 @@
  */
 import { buildCommand } from '@stricli/core';
 import { requireCommandIndex } from './_command-registry.js';
-import { jsonFlag, writeJson } from './_json.js';
+import { jsonFlag, writeJson } from './_output.js';
 
 /**
  * The command-index command.

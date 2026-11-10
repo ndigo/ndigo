@@ -32,8 +32,12 @@ When the name is not snake_case or the decorator targets a
 ## Example
 
 ```ts
-@getMapping('/:id')
-@parameters({ id: pathValue() })
-@toolMapping({ name: 'get_order', readOnly: true })
-getOrder({ id }: { id: string }) { … }
+class OrdersController {
+    @getMapping('/:id')
+    @parameters({ id: pathValue() })
+    @toolMapping({ name: 'get_order', readOnly: true })
+    getOrder({ id }: { id: string }): { id: string } {
+        return { id };
+    }
+}
 ```

@@ -35,10 +35,14 @@ export interface ToolMappingMetadata {
  *
  * @example
  * ```ts
- * @getMapping('/:id')
- * @parameters({ id: pathValue() })
- * @toolMapping({ name: 'get_order', readOnly: true })
- * getOrder({ id }: { id: string }) { … }
+ * class OrdersController {
+ *     @getMapping('/:id')
+ *     @parameters({ id: pathValue() })
+ *     @toolMapping({ name: 'get_order', readOnly: true })
+ *     getOrder({ id }: { id: string }): { id: string } {
+ *         return { id };
+ *     }
+ * }
  * ```
  */
 export function toolMapping(options: ToolMappingMetadata = {}) {

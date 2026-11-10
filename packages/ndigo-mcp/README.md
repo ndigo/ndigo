@@ -95,6 +95,34 @@ OAuth 2.1 protected-resource metadata is available as
 (RFC 9728). Pair it with `AuthRouteGuard` for bearer validation and scopes; the
 guard denies before the transport runs.
 
+### MCP Apps
+
+Link a tool to an interactive view with `ui`:
+
+```ts
+import { createUiResource } from '@ndigo/mcp';
+
+@toolMapping({ name: 'get_orders', readOnly: true, ui: 'ui://orders' })
+getOrders() { … }
+
+const orders = createUiResource({
+    uri: 'ui://orders',
+    name: 'Orders',
+    body: '<main>Orders</main>',
+    css: 'main { color: red; }',
+    script: 'console.log("orders");',
+    csp: { connectDomains: ['https://api.example.test'] },
+});
+createMcpServer(registry, { uiResources: [orders] });
+```
+
+The server advertises `io.modelcontextprotocol/ui`, serves the document as
+`text/html;profile=mcp-app`, and carries `_meta.ui` (CSP domains, permissions,
+border, domain). `createUiResource` inlines CSS and a module script into one
+self-contained document and rejects `</style>`/`</script>` breakouts. The host
+renders it in a sandboxed iframe and builds the CSP from the declared domains —
+never use a `*` origin.
+
 ### Resources and telemetry
 
 `createMcpServer(registry, { inspect })` exposes the inspect manifest as

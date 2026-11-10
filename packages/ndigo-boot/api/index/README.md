@@ -74,6 +74,12 @@ Re-exports [defaultValue](../configuration-properties/functions/defaultValue.md)
 
 ***
 
+### FromConfigOptions
+
+Re-exports [FromConfigOptions](../application-builder/interfaces/FromConfigOptions.md)
+
+***
+
 ### getConfigurationPropertiesPrefix
 
 Re-exports [getConfigurationPropertiesPrefix](../configuration-properties/functions/getConfigurationPropertiesPrefix.md)

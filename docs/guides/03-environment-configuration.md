@@ -194,6 +194,26 @@ install it (`npm i @toon-format/toon@4.4.0`) to use TOON files. The
 `text/toon` media type is provisional (not IANA-registered) — this opt-in
 is a pre-1.0 authoring option, not a framework default.
 
+### TOON from a URL (`ApplicationBuilder.fromConfig`, AD-66 Phase 3)
+
+`fromConfig(url)` follows the **address**: a `.toon` path suffix decodes the
+document as TOON, everything else as JSON — JSON stays the default.
+
+```ts
+// .toon suffix → decoded as TOON (the address is the statement, not a default)
+const app = await ApplicationBuilder.fromConfig('https://cdn.example/app/config.toon');
+```
+
+An explicit `format: 'json' | 'toon'` option overrides the address, with one
+refused contradiction: `format: 'toon'` always decodes as TOON, while
+`format: 'json'` over a `.toon` address errors instead of silently
+re-parsing. A query string or fragment is stripped before detection, so a
+cache-busting suffix cannot change the format and a `?x=.toon` query cannot
+select it. The decoded document feeds the same `sources` / `profiles` /
+`properties` pipeline as the JSON path, and the decode contract — strict
+mode, JSON-shaped rename hint, object shape guard — is identical to `.toon`
+config files, including the lazily loaded optional peer.
+
 ## 3. Bind configuration to typed classes
 
 `@configurationProperties` auto-registers a bound, converted singleton:

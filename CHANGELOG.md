@@ -34,6 +34,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `apps/21-ndigo-agent-lab`: a local-model tool loop over the same
   `@toolMapping` handlers served by HTTP and MCP, streamed over SSE with one
   trace.
+- `@ndigo/boot`: `ApplicationBuilder.fromConfig(url, options?)` accepts TOON
+  documents (AD-66 Phase 3) — a `.toon` address suffix decodes as TOON
+  (query strings and fragments stripped first), an explicit
+  `format: 'json' | 'toon'` option overrides the address, and `format:
+  'json'` over a `.toon` address errors instead of silently re-parsing.
+  Extensionless and `.json` addresses stay JSON, the optional
+  `@toon-format/toon` peer is only resolved on the TOON path, and the
+  decode contract is identical to `.toon` config files (strict mode,
+  JSON-shaped rename hint, object shape guard, bounded diagnostics).
 - `@ndigo/ui`: the owned design system — canonical `--nd-*` tokens, the opt-in
   base layer, the typed token catalog, and a shadcn-compatible copy-in registry
   (41 items: theme, element foundation, native-first and Zag.js primitives, and

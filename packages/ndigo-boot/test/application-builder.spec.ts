@@ -1,6 +1,7 @@
 /**
  */
 import { describe, test, expect, vi } from 'vitest';
+import { IllegalStateError } from '@ndigo/core';
 import { ApplicationBuilder } from '../src/application-builder';
 import { Application } from '../src/application';
 import { StandardEnvironment, configuration, entry } from '@ndigo/context';
@@ -183,6 +184,151 @@ describe('ApplicationBuilder.fromConfig', () => {
         expect(builder).toBeInstanceOf(ApplicationBuilder);
         // Should run without error
         await expect(builder.run()).resolves.toBeInstanceOf(Object);
+    });
+});
+
+// TOON fixtures produced with the pinned reference decoder (`@toon-format/toon`
+// 4.4.0, spec v4.4), so the syntax is validated rather than hand-written.
+const TOON_NESTED = 'properties:\n  server:\n    port: 9090\nprofiles[1]: production';
+const TOON_FLAT = 'properties:\n  server.port: 9090';
+
+describe('ApplicationBuilder.fromConfig — TOON decode (AD-66 Phase 3)', () => {
+    beforeEach(() => {
+        vi.stubGlobal('fetch', vi.fn());
+    });
+
+    afterEach(() => {
+        vi.unstubAllGlobals();
+    });
+
+    function textDocument(content: string): Response {
+        return { ok: true, text: () => Promise.resolve(content) } as Response;
+    }
+
+    function jsonDocument(content: Record<string, unknown>): Response {
+        return { ok: true, json: () => Promise.resolve(content) } as Response;
+    }
+
+    test('it should decode a .toon address through the optional peer', async () => {
+        vi.mocked(fetch).mockResolvedValueOnce(textDocument(TOON_NESTED));
+
+        const builder = await ApplicationBuilder.fromConfig('/config.toon');
+        const context = await builder.run();
+
+        expect(fetch).toHaveBeenCalledWith('/config.toon');
+        expect(context.environment.getProperty('server')).toEqual({ port: 9090 });
+        expect(context.environment.activeProfiles).toContain('production');
+    });
+
+    test('it should build the same environment from equivalent JSON and TOON documents', async () => {
+        vi.mocked(fetch)
+            .mockResolvedValueOnce(jsonDocument({ properties: { server: { port: 9090 } }, profiles: ['production'] }))
+            .mockResolvedValueOnce(textDocument(TOON_NESTED));
+
+        const jsonContext = await (await ApplicationBuilder.fromConfig('/config.json')).run();
+        const toonContext = await (await ApplicationBuilder.fromConfig('/config.toon')).run();
+
+        expect(toonContext.environment.getProperty('server')).toEqual(jsonContext.environment.getProperty('server'));
+        expect(toonContext.environment.activeProfiles).toEqual(jsonContext.environment.activeProfiles);
+    });
+
+    test('format:toon decodes regardless of the address', async () => {
+        for (const address of ['/config', '/config.json']) {
+            // The mock is per-response, so each address needs its own fetch in order.
+            // oxlint-disable-next-line no-await-in-loop -- the fetch mock is single-shot per iteration.
+            vi.mocked(fetch).mockResolvedValueOnce(textDocument(TOON_FLAT));
+            // oxlint-disable-next-line no-await-in-loop -- sequential awaits keep each iteration's single-shot mock paired.
+            const context = await (await ApplicationBuilder.fromConfig(address, { format: 'toon' })).run();
+
+            expect(context.environment.getProperty('server')).toEqual({ port: 9090 });
+        }
+    });
+
+    test('format:json over a .toon address refuses the contradiction', async () => {
+        vi.mocked(fetch).mockResolvedValueOnce(textDocument(TOON_FLAT));
+
+        await expect(ApplicationBuilder.fromConfig('/config.toon', { format: 'json' })).rejects.toThrowError(
+            /Config file "\/config\.toon" is TOON but the fromConfig format option is 'json'/
+        );
+    });
+
+    test('it should keep JSON the default for an extensionless address', async () => {
+        const document = { properties: { 'server.port': 8080 } };
+        vi.mocked(fetch).mockResolvedValueOnce(jsonDocument(document));
+
+        const context = await (await ApplicationBuilder.fromConfig('/config')).run();
+
+        // Going down the TOON path would reach `response.text` (absent on this
+        // mock) and fail loudly, so a passing assertion also proves the peer
+        // was never resolved.
+        expect(context.environment.getProperty('server.port')).toBe(8080);
+    });
+
+    test('a query string must not turn a JSON address into TOON', async () => {
+        const document = { properties: { 'server.port': 8080 } };
+        vi.mocked(fetch).mockResolvedValueOnce(jsonDocument(document));
+
+        const context = await (await ApplicationBuilder.fromConfig('/config.json?x=.toon')).run();
+
+        // The query suffix must not make detection read the cached name: a
+        // `.toon(.toon)` read would reach `response.text` (absent on this
+        // mock) and fail loudly.
+        expect(fetch).toHaveBeenCalledWith('/config.json?x=.toon');
+        expect(context.environment.getProperty('server.port')).toBe(8080);
+    });
+
+    test('a cache-busted .toon address still decodes as TOON', async () => {
+        for (const address of ['/config.toon?ref=main', '/config.toon#frag']) {
+            // oxlint-disable-next-line no-await-in-loop -- the fetch mock is single-shot per iteration.
+            vi.mocked(fetch).mockResolvedValueOnce(textDocument(TOON_FLAT));
+            // oxlint-disable-next-line no-await-in-loop -- sequential awaits keep each iteration's single-shot mock paired.
+            const context = await (await ApplicationBuilder.fromConfig(address)).run();
+
+            expect(context.environment.getProperty('server')).toEqual({ port: 9090 });
+        }
+    });
+
+    test('a URL object address is handled', async () => {
+        vi.mocked(fetch).mockResolvedValueOnce(textDocument(TOON_FLAT));
+
+        const context = await (await ApplicationBuilder.fromConfig(new URL('file:///config.toon'))).run();
+
+        expect(context.environment.getProperty('server')).toEqual({ port: 9090 });
+    });
+
+    test('a JSON-shaped document under format:toon errors with the decode advisory', async () => {
+        vi.mocked(fetch).mockResolvedValueOnce(textDocument('{"a": 1}'));
+
+        await expect(ApplicationBuilder.fromConfig('/config', { format: 'toon' })).rejects.toThrowError(
+            /convert the document to TOON or drop the format option/
+        );
+    });
+
+    test('a JSON-shaped document in a .toon file keeps its rename hint', async () => {
+        vi.mocked(fetch).mockResolvedValueOnce(textDocument('{"a": 1}'));
+
+        await expect(ApplicationBuilder.fromConfig('/config.toon')).rejects.toThrowError(
+            /starts like a JSON document[\s\S]*rename the file to \.json/
+        );
+    });
+
+    test('a failing decoder surfaces a bounded, sanitized message with its cause', async () => {
+        vi.mocked(fetch).mockResolvedValueOnce(textDocument(TOON_FLAT));
+        const failing = () => Promise.reject(new Error(`boom\u0000${'x'.repeat(300)}`));
+
+        let caught: unknown;
+        try {
+            await ApplicationBuilder.fromConfig('/config.toon', { decodeToon: failing });
+        } catch (error) {
+            caught = error;
+        }
+
+        expect(caught).toBeInstanceOf(IllegalStateError);
+        const message = (caught as Error).message;
+        expect(message).toContain('is not valid TOON');
+        expect(message).toContain('boom');
+        expect(message).not.toContain('\u0000');
+        expect(message.length).toBeLessThan(260);
     });
 });
 

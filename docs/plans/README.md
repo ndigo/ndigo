@@ -271,8 +271,9 @@ config files in `StandardConfigFileLoader` (`format: 'auto' | 'json' |
 'toon'`, JSON wins collisions, `required:` covers the format pair) — the
 `@toon-format/toon` decoder is an optional peer loaded lazily, and
 everything downstream (merge, secrets, zod, binding) sees the plain JSON
-model. Wire/storage/config-server surfaces stay permanently JSON. Phase 3
-(`fromConfig`) deferred until a consumer asks.
+model. Wire/storage/config-server surfaces stay permanently JSON.
+Phase 3 (`fromConfig`) landed 2026-11-10: a `.toon` address suffix decodes
+as TOON, an explicit `format` overrides it, JSON stays the default.
 
 [Read plan](2026-10-05_TOON_SUPPORT.md)
 

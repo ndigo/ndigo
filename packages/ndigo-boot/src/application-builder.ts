@@ -11,10 +11,40 @@ import {
 } from '@ndigo/context';
 import type { EnvironmentCustomizer } from '@ndigo/context';
 import type { EntryProcessor } from '@ndigo/factory';
-import { JSONObject } from '@ndigo/core';
+import { JSONObject, IllegalStateError } from '@ndigo/core';
 import { z } from 'zod';
 import { Application } from './application';
-import { StandardConfigFileLoader } from './config-file-loader';
+import { ConfigFileFormat, StandardConfigFileLoader } from './config-file-loader';
+import { parseToonDocument } from './_toon';
+
+/**
+ * Options for `ApplicationBuilder.fromConfig`.
+ */
+export interface FromConfigOptions {
+    /**
+     * Restricts how the fetched document is decoded. `'auto'` (default)
+     * follows the address: a `.toon` path suffix decodes the document as
+     * TOON, everything else as JSON — JSON stays the default (AD-66). The
+     * explicit values override the address, with one refused contradiction:
+     * `'toon'` always decodes as TOON, while `'json'` over a `.toon` address
+     * errors instead of silently re-parsing the document as JSON.
+     */
+    format?: ConfigFileFormat;
+    /**
+     * TOON decoder seam, mirroring `ConfigFileLoaderOptions.decodeToon`.
+     * Defaults to the lazy optional `@toon-format/toon` peer; injectable for
+     * specs and alternative validators.
+     */
+    decodeToon?: (content: string) => JSONObject | Promise<JSONObject>;
+}
+
+/**
+ * Strips a query string and fragment from a config URL: the `.toon` address
+ * detection must survive cache-busting suffixes, and a `?x=.toon` query must
+ * not select TOON. Returned string (lowercase `.toon` suffix only) is also
+ * the diagnostics label.
+ */
+const fromConfigPath = (url: string | URL): string => (url instanceof URL ? url.href : url).split(/[?#]/, 1)[0];
 
 /**
  * Builder for configuring and running an application bootstrap sequence.
@@ -87,15 +117,25 @@ export class ApplicationBuilder {
     }
 
     /**
-     * Creates a builder from a JSON configuration URL.
+     * Creates a builder from a configuration URL (JSON, or TOON — AD-66).
      *
-     * Fetches the JSON config from the given URL and uses the top-level
+     * Fetches the config from the given URL and uses the top-level
      * `sources`, `profiles`, and `properties` keys to bootstrap the application.
+     *
+     * The document format follows the address: a `.toon` path suffix (query
+     * string and fragment stripped) decodes as TOON, everything else as
+     * JSON — JSON stays the default, and an explicit `format` option
+     * overrides the address (a `.toon` address under `format: 'json'`
+     * errors rather than silently re-parsing). TOON decoding follows the
+     * same contract as `.toon` config files: strict mode, JSON-shaped
+     * rename hint, object shape guard, bounded decoder diagnostics.
      *
      * The `sources` array is expected to contain module specifiers that can be
      * dynamically imported as configuration classes.
      *
-     * @param url - URL pointing to a JSON configuration file.
+     * @param url - URL pointing to a JSON or TOON configuration file.
+     * @param options - Decode options: an explicit `format` and a TOON
+     *   decoder seam for specs/alternative validators.
      * @returns A promise resolving to the configured builder.
      *
      * @example
@@ -111,12 +151,27 @@ export class ApplicationBuilder {
      * app.run();
      * ```
      */
-    static async fromConfig(url: string | URL): Promise<ApplicationBuilder> {
+    static async fromConfig(url: string | URL, options: FromConfigOptions = {}): Promise<ApplicationBuilder> {
         const response = await fetch(url);
         if (!response.ok) {
             throw new Error(`Failed to load config from ${url}: ${response.status}`);
         }
-        const config = (await response.json()) as Record<string, unknown>;
+        const address = fromConfigPath(url);
+        const format = options.format ?? 'auto';
+        const isToon = address.endsWith('.toon');
+        if (format === 'json' && isToon) {
+            throw new IllegalStateError(
+                `Config file "${address}" is TOON but the fromConfig format option is 'json'. ` +
+                    'Remove the format option, or point at a JSON document.'
+            );
+        }
+        // JSON keeps `response.json()` exactly as before (charset handling and
+        // parse semantics are the platform's); the TOON path reads text and
+        // decodes through the shared document parser.
+        const config =
+            isToon || format === 'toon'
+                ? await parseToonDocument(await response.text(), address, options.decodeToon)
+                : ((await response.json()) as JSONObject as Record<string, unknown>);
 
         const sources: Function[] = [];
         const rawSources = config.sources;

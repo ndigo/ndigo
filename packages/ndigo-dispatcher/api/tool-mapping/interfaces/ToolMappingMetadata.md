@@ -31,3 +31,12 @@ MCP tool name (snake_case); defaults to the method name.
 > `readonly` `optional` **readOnly?**: `boolean`
 
 Mark the tool read-only (mutating tools are gated by policy).
+
+***
+
+### ui?
+
+> `readonly` `optional` **ui?**: `string`
+
+MCP Apps resource URI (`ui://…`) rendered by the host after the call.
+Projected as `_meta.ui.resourceUri`.

@@ -4,7 +4,7 @@
 
 # Ndigo
 
-Ndigo gives TypeScript applications the structure of a server framework and the reach of the web. One context, one dispatcher, one view model — shared by browser and Node — so server-rendered islands, micro frontends, SPAs, and APIs run on the same primitives, with views, HTTP, ORM, auth, and telemetry adopted only when needed.
+Ndigo gives TypeScript applications the structure of a server framework and the reach of the web. One context, one dispatcher, one view model — shared by browser and Node — so server-rendered islands, micro frontends, SPAs, and APIs run on the same primitives, with views, HTTP, ORM, auth, telemetry, and agent surfaces adopted only when needed.
 
 ## Requirements
 
@@ -98,6 +98,16 @@ EJS shell + hydration + live updates: [apps/07-ndigo-island](apps/07-ndigo-islan
 and [apps/12-ndigo-petclinic](apps/12-ndigo-petclinic/README.md); the model is
 [guide 29 — Signals & Islands](docs/guides/29-signals-and-islands.md).
 
+#### If you want to add agents
+
+1. [`@ndigo/mcp`](packages/ndigo-mcp/README.md) — project handlers into MCP tools, MCP Apps, stdio and Streamable HTTP
+2. [`@ndigo/ai`](packages/ndigo-ai/README.md) — provider-neutral agent loop, streaming, and structured output
+3. [`@ndigo/ai-sdk`](packages/ndigo-ai-sdk/README.md) — the Vercel AI SDK adapter (the only package that imports it)
+
+Then follow [guide 47 — AI Agents, Model Loops & Streaming](docs/guides/47-ai-agents.md)
+and [guide 48 — Agent-Facing Surfaces](docs/guides/48-agent-facing-surfaces.md);
+the reference app is [apps/21-ndigo-agent-lab](apps/21-ndigo-agent-lab/README.md).
+
 ### Scaffold a new app
 
 Inside this repository, scaffold an example app with the in-repo generator:
@@ -127,7 +137,7 @@ pnpm dev     # browser apps (Vite)
 pnpm start   # Node apps (tsx)
 ```
 
-All 19 apps — reading order, ports, what each demonstrates — are indexed in
+All 21 apps — reading order, ports, what each demonstrates — are indexed in
 [apps/README.md](apps/README.md); `pnpm apps:smoke` boots and probes every Node
 demo.
 
@@ -155,6 +165,7 @@ demo.
 | [ndigo-auth-playground](apps/18-ndigo-auth-playground/README.md) | Auth matrix — cookies, JWT, roles, OIDC + PKCE                      |
 | [ndigo-hn](apps/19-ndigo-hn/README.md)                           | Hacker News reader — cached/offline HTTP client, long lists         |
 | [ndigo-ui-lab](apps/20-ndigo-ui-lab/README.md)                   | Owned design system — full 42-item registry, tokens, and blocks     |
+| [ndigo-agent-lab](apps/21-ndigo-agent-lab/README.md)             | Local-model tool loop — MCP tools, MCP App, A2UI, SSE + GenAI trace |
 
 The [apps/README](apps/README.md) documents the progression from simple to
 complex. App directories are numbered in reading order (`apps/01-ndigo-hello` …);
@@ -203,11 +214,16 @@ HTTP & routing:
 Dispatch & views:
 
 - [ndigo-dispatcher](packages/ndigo-dispatcher/README.md) — request dispatch, parameters, radix mapping
-- [ndigo-mcp](packages/ndigo-mcp/README.md) — MCP tools projected from dispatch metadata (stdio + Streamable HTTP)
 - [ndigo-view](packages/ndigo-view/README.md) — views, targets, content negotiation
 - [ndigo-view-ejs](packages/ndigo-view-ejs/README.md) — EJS template technology
 - [ndigo-view-toon](packages/ndigo-view-toon/README.md) — TOON (text/toon) view technology
 - [ndigo-view-webcomponent](packages/ndigo-view-webcomponent/README.md) — Web Component views
+
+AI & agents:
+
+- [ndigo-ai](packages/ndigo-ai/README.md) — provider-neutral agent contracts: messages, streaming, structured output, and a bounded tool loop
+- [ndigo-ai-sdk](packages/ndigo-ai-sdk/README.md) — Vercel AI SDK integration layer (the only package that imports it)
+- [ndigo-mcp](packages/ndigo-mcp/README.md) — MCP tools from dispatch metadata: stdio + Streamable HTTP, MCP Apps, GenAI spans
 
 UI & components:
 

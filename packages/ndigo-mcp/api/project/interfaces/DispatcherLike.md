@@ -6,12 +6,20 @@
 
 # Interface: DispatcherLike
 
-A dispatcher-like source: anything carrying handler mapping tables.
+A dispatcher-like source: anything carrying handler mapping objects.
 
 ## Properties
 
+### argumentResolvers?
+
+> `readonly` `optional` **argumentResolvers?**: readonly `HandlerMethodArgumentResolver`[]
+
+The dispatcher's argument-resolver chain, when initialized.
+
+***
+
 ### handlerMappings?
 
-> `readonly` `optional` **handlerMappings?**: readonly [`MappingTableLike`](MappingTableLike.md)[]
+> `readonly` `optional` **handlerMappings?**: readonly `unknown`[]
 
-The dispatcher's registered mapping tables.
+The dispatcher's registered handler mappings.

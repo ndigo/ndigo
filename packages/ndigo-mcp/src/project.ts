@@ -3,7 +3,12 @@
  * comes from the same `@parameters` + `validatedBy` metadata that binds the
  * HTTP request — never a second description.
  */
-import { getToolMapping, type RouteHandlerMethod, type RouteMappingInfo } from '@ndigo/dispatcher';
+import {
+    getToolMapping,
+    type HandlerMethodArgumentResolver,
+    type RouteHandlerMethod,
+    type RouteMappingInfo,
+} from '@ndigo/dispatcher';
 import { getWhenFeature } from '@ndigo/flags';
 import { z } from 'zod';
 
@@ -61,10 +66,12 @@ export interface MappingTableLike {
     getMappingEntries?(): readonly MappingEntryLike[];
 }
 
-/** A dispatcher-like source: anything carrying handler mapping tables. */
+/** A dispatcher-like source: anything carrying handler mapping objects. */
 export interface DispatcherLike {
-    /** The dispatcher's registered mapping tables. */
-    readonly handlerMappings?: readonly MappingTableLike[];
+    /** The dispatcher's registered handler mappings. */
+    readonly handlerMappings?: readonly unknown[];
+    /** The dispatcher's argument-resolver chain, when initialized. */
+    readonly argumentResolvers?: readonly HandlerMethodArgumentResolver[];
 }
 
 /** Anything that can supply mapping entries to the projector. */
@@ -76,10 +83,24 @@ function likeDispatcher(source: MappingSource): source is DispatcherLike {
 
 function tablesOf(source: MappingSource): readonly MappingTableLike[] {
     if (Array.isArray(source)) return source;
-    if (likeDispatcher(source) && source.handlerMappings !== undefined) return source.handlerMappings;
+    if (likeDispatcher(source) && source.handlerMappings !== undefined) {
+        // A dispatcher exposes its mapping objects (`getHandler()`); the
+        // inspect read model is the optional `getMappingEntries()` member.
+        return source.handlerMappings.filter(isMappingTable);
+    }
     // `DispatcherLike` has only optional members, so the false branch cannot
     // exclude it structurally; the remaining explicit member is a table.
     return [source as MappingTableLike];
+}
+
+/**
+ * Whether a dispatcher mapping object exposes the inspect read model.
+ *
+ * @param value - The candidate mapping object.
+ * @returns `true` when `getMappingEntries()` is present.
+ */
+function isMappingTable(value: unknown): value is MappingTableLike {
+    return typeof value === 'object' && value !== null && 'getMappingEntries' in value;
 }
 
 function entriesOf(table: MappingTableLike): readonly MappingEntryLike[] {

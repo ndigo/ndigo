@@ -1,0 +1,42 @@
+{
+  "name": "@ndigo/ai-sdk",
+  "version": "0.0.1",
+  "description": "AI SDK integration layer for Ndigo: the only package that imports the Vercel AI SDK",
+  "keywords": [
+    "ndigo",
+    "ndigo-js",
+    "ai",
+    "ai-sdk",
+    "llm"
+  ],
+  "type": "module",
+  "files": [
+    "api",
+    "lib"
+  ],
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build:lib": "tsc -b tsconfig.build.json",
+    "test": "vitest run --config ../../vitest.config.ts",
+    "test:watch": "vitest --config ../../vitest.config.ts"
+  },
+  "dependencies": {
+    "@ndigo/ai": "~0.0.1",
+    "ai": "^7.0.166"
+  },
+  "devDependencies": {
+    "typescript": "catalog:",
+    "vitest": "catalog:",
+    "zod": "catalog:"
+  },
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "sideEffects": false
+}

@@ -3,11 +3,22 @@
  * invocation through the same binding pipeline the HTTP route uses.
  */
 import { randomUUID } from 'node:crypto';
-import { MethodParameterType, ModelAndView } from '@ndigo/dispatcher';
+import {
+    MethodParameterType,
+    ModelAndView,
+    RouteHandlerMethod,
+    type HandlerMethodArgumentResolver,
+} from '@ndigo/dispatcher';
 import { NODE_REQUEST_ATTRIBUTE, type NodeRequest } from '@ndigo/platform-node';
 import type { Route } from '@ndigo/router';
 import { SpanStatusCode, trace } from '@opentelemetry/api';
-import { projectTools, type MappingSource, type RegisteredTool, type ToolDescriptor } from './project.js';
+import {
+    projectTools,
+    type DispatcherLike,
+    type MappingSource,
+    type RegisteredTool,
+    type ToolDescriptor,
+} from './project.js';
 
 /** Per-call context carried from the transport. */
 export interface ToolCallContext {
@@ -24,6 +35,24 @@ export interface McpToolRegistryOptions {
      * returns true; without an evaluator, gated tools stay hidden (fail closed).
      */
     readonly isFeatureEnabled?: (flag: string) => boolean | Promise<boolean>;
+    /**
+     * The dispatcher's argument-resolver chain (the `ARGUMENT_RESOLVERS`
+     * context bean). Tool calls bind path/query/header/body arguments through
+     * the same resolvers as HTTP; without them, tools that declare parameters
+     * fail with a clear error.
+     */
+    readonly argumentResolvers?: readonly HandlerMethodArgumentResolver[];
+}
+
+/**
+ * Whether a mapping source is a dispatcher (rather than a single table or a
+ * table array).
+ *
+ * @param source - The mapping source.
+ * @returns `true` for dispatcher-shaped sources.
+ */
+function isDispatcherSource(source: MappingSource): source is DispatcherLike {
+    return !Array.isArray(source) && 'handlerMappings' in source;
 }
 
 /**
@@ -48,7 +77,15 @@ export class McpToolRegistry {
      * @returns The registry.
      */
     static from(source: MappingSource, options: McpToolRegistryOptions = {}): McpToolRegistry {
-        return new McpToolRegistry(projectTools(source), options);
+        const tools = projectTools(source);
+        const resolvers =
+            options.argumentResolvers ?? (isDispatcherSource(source) ? source.argumentResolvers : undefined);
+        if (resolvers !== undefined) {
+            for (const tool of tools) {
+                tool.handlerMethod.argumentResolvers = [...resolvers];
+            }
+        }
+        return new McpToolRegistry(tools, options);
     }
 
     /**
@@ -73,6 +110,16 @@ export class McpToolRegistry {
         const tool = (await this.#visibleTools()).find((candidate) => candidate.descriptor.name === name);
         if (tool === undefined) {
             throw new Error(`unknown or unavailable MCP tool '${name}'`);
+        }
+        if (
+            tool.handlerMethod instanceof RouteHandlerMethod &&
+            (tool.handlerMethod.parameters?.length ?? 0) > 0 &&
+            tool.handlerMethod.argumentResolvers === undefined
+        ) {
+            throw new Error(
+                `MCP tool '${name}' declares parameters but the registry has no argument resolvers — ` +
+                    'pass `argumentResolvers` to McpToolRegistry.from()'
+            );
         }
         const tracer = trace.getTracer('@ndigo/mcp');
         return tracer.startActiveSpan(

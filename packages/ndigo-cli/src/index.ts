@@ -43,6 +43,7 @@ import { dbStudioCommand } from './commands/db/studio.js';
 import { dbSeedCommand } from './commands/db/seed.js';
 import { dbRollbackCommand } from './commands/db/rollback.js';
 import { uiRouteMap } from './commands/ui/index.js';
+import { aiRouteMap } from './commands/ai/index.js';
 import { commandsCommand } from './commands/commands.js';
 import { collectCommandIndex, setCommandIndex } from './commands/_command-registry.js';
 
@@ -98,6 +99,7 @@ export function buildCliApp() {
             add: addCommand,
             update: updateCommand,
             logs: logsCommand,
+            ai: aiRouteMap,
             ui: uiRouteMap,
             db: dbRouteMap,
         },

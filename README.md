@@ -154,7 +154,7 @@ demo.
 | [ndigo-telemetry-lab](apps/17-ndigo-telemetry-lab/README.md)     | End-to-end observability — traces, metrics, sampling                |
 | [ndigo-auth-playground](apps/18-ndigo-auth-playground/README.md) | Auth matrix — cookies, JWT, roles, OIDC + PKCE                      |
 | [ndigo-hn](apps/19-ndigo-hn/README.md)                           | Hacker News reader — cached/offline HTTP client, long lists         |
-| [ndigo-ui-lab](apps/20-ndigo-ui-lab/README.md)                   | Owned design system — full 41-item registry, tokens, and blocks     |
+| [ndigo-ui-lab](apps/20-ndigo-ui-lab/README.md)                   | Owned design system — full 42-item registry, tokens, and blocks     |
 
 The [apps/README](apps/README.md) documents the progression from simple to
 complex. App directories are numbered in reading order (`apps/01-ndigo-hello` …);

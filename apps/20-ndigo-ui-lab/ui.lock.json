@@ -18,7 +18,7 @@
           "sha256": "6a298af62b01122adea3a480b6c04c2711035b5bd558c8187ee2e51572beb1d3"
         }
       ],
-      "installedAt": "2026-11-09T21:04:37.663Z"
+      "installedAt": "2026-11-10T03:07:31.826Z"
     },
     "dialog": {
       "registry": "../../registry.json",
@@ -563,6 +563,21 @@
         }
       ],
       "installedAt": "2026-11-09T21:04:37.663Z"
+    },
+    "a2ui-surface": {
+      "registry": "../../registry.json",
+      "type": "registry:ui",
+      "files": [
+        {
+          "target": "src/ui/nd-a2ui-surface/component-map.ts",
+          "sha256": "378c43cb4225eb9a6e6b7b691ace912d53379215b8fb8d4589d33c48f733df8e"
+        },
+        {
+          "target": "src/ui/nd-a2ui-surface/nd-a2ui-surface.ts",
+          "sha256": "2da98423bf8fd6f6f3b9611376cddbcce7520931923ea387b769f1ae5db0648c"
+        }
+      ],
+      "installedAt": "2026-11-10T03:07:31.826Z"
     }
   }
 }

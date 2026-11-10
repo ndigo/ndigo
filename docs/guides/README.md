@@ -169,6 +169,10 @@ contributor guides. Numbers are reading order within a section.
   `/configprops` (declared keys, never values), and the opt-in exposure model.
   Reference application: `apps/05-ndigo-api`.
 - [47 — AI Agents, MCP Tools & Streaming](47-ai-agents.md) — `@ndigo/ai` + `@ndigo/ai-sdk`: a provider-neutral tool loop over the MCP registry, SSE streaming, GenAI spans, rate limits, rollout flags, and secrets.
+- [48 — Agent-Facing Surfaces](48-agent-facing-surfaces.md) — the app→agent
+  direction: `@toolMapping`, MCP over stdio and Streamable HTTP, MCP Apps
+  `ui://` resources, A2UI through content negotiation, WebMCP browser tools,
+  and the OpenAPI ↔ `tools/list` parity proof.
 - [34 — Feature Flags](34-feature-flags.md) — `@ndigo/flags` (AD-82): the
   never-throw `FlagEvaluator` SPI, the zero-config property provider
   (`feature.*`, live refresh), `@whenFeature` route gates (404 when off), the

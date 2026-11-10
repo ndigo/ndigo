@@ -21,7 +21,10 @@
   "dependencies": {
     "@a2ui/web_core": "~0.15.0",
     "@internationalized/date": "^3.12.4",
+    "@ndigo/dispatcher": "~0.0.1",
     "@ndigo/ui": "~0.0.1",
+    "@ndigo/view-webcomponent": "~0.0.1",
+    "@tsmetadata/polyfill": "catalog:",
     "@zag-js/accordion": "~1.47.0",
     "@zag-js/collection": "~1.47.0",
     "@zag-js/combobox": "~1.47.0",
@@ -39,7 +42,8 @@
     "@zag-js/tabs": "~1.47.0",
     "@zag-js/tags-input": "~1.47.0",
     "@zag-js/tooltip": "~1.47.0",
-    "@zag-js/vanilla": "~1.47.0"
+    "@zag-js/vanilla": "~1.47.0",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "axe-core": "^4.14.0",

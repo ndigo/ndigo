@@ -321,6 +321,12 @@ Re-exports [negotiateEncoding](../static-resource-resolver/functions/negotiateEn
 
 ***
 
+### NODE\_INCOMING\_ATTRIBUTE
+
+Re-exports [NODE_INCOMING_ATTRIBUTE](../node-request/variables/NODE_INCOMING_ATTRIBUTE.md)
+
+***
+
 ### NODE\_REQUEST\_ATTRIBUTE
 
 Re-exports [NODE_REQUEST_ATTRIBUTE](../node-request/variables/NODE_REQUEST_ATTRIBUTE.md)

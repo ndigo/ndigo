@@ -65,6 +65,7 @@ export const LAYER_RANK: Record<string, number> = {
     'telemetry-web': 8,
     // 9 — application services
     management: 9,
+    mcp: 9,
     'telemetry-node': 9,
 };
 

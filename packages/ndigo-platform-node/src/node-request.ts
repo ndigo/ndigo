@@ -11,6 +11,13 @@ import type { MultipartContext } from './multipart-file';
 export const NODE_REQUEST_ATTRIBUTE = '__node:request';
 /** Well-known route attribute key under which the Node.js ServerResponse is stored. */
 export const NODE_RESPONSE_ATTRIBUTE = '__node:response';
+/**
+ * Well-known route attribute key under which the raw `IncomingMessage` is
+ * stored. Handlers that own the transport (MCP Streamable HTTP, raw SSE) need
+ * the Node request object, which the parsed {@link NodeRequest} cannot
+ * substitute for.
+ */
+export const NODE_INCOMING_ATTRIBUTE = '__node:incoming';
 
 /**
  * Minimal Node.js request abstraction stored in `route.attributes[NODE_REQUEST_ATTRIBUTE]`.

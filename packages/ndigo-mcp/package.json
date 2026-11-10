@@ -1,0 +1,50 @@
+{
+  "name": "@ndigo/mcp",
+  "version": "0.0.1",
+  "description": "Model Context Protocol tools projected from Ndigo dispatch metadata",
+  "keywords": [
+    "ndigo",
+    "ndigo-js",
+    "framework",
+    "mcp",
+    "tools",
+    "agents"
+  ],
+  "type": "module",
+  "files": [
+    "api",
+    "lib"
+  ],
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build:lib": "tsc -b tsconfig.build.json",
+    "test": "vitest run --config ../../vitest.config.ts",
+    "test:watch": "vitest --config ../../vitest.config.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "@ndigo/dispatcher": "~0.0.1",
+    "@ndigo/flags": "~0.0.1",
+    "@ndigo/inspect": "~0.0.1",
+    "@ndigo/platform-node": "~0.0.1",
+    "@ndigo/router": "~0.0.1",
+    "@opentelemetry/api": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@ndigo/openapi": "~0.0.1",
+    "@opentelemetry/sdk-trace-base": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  },
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "sideEffects": false
+}

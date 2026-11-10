@@ -74,6 +74,11 @@
       "factory": "./src/generators/cache-setup/generator",
       "schema": "./src/generators/cache-setup/schema.json",
       "description": "Wire @ndigo/cache into an application"
+    },
+    "mcp-setup": {
+      "factory": "./src/generators/mcp-setup/generator",
+      "schema": "./src/generators/mcp-setup/schema.json",
+      "description": "Wire @ndigo/mcp into an application"
     }
   }
 }

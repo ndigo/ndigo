@@ -36,6 +36,7 @@ export * from './route-to-view-name-translator';
 export * from './theme-resolver';
 export { AbstractThemeResolver } from './theme-resolver';
 export * from './socket-mapping';
+export * from './tool-mapping';
 export * from './stomp-mapping';
 export * from './socket-session';
 export * from './socket-session-registry';

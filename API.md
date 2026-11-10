@@ -34,6 +34,7 @@ package can be read — and installed — on its own.
 | `@ndigo/locks` | Distributed locks with fencing tokens for Node.js — the single-executor primitive behind multi-node @scheduled and cluster work | [api/README.md](packages/ndigo-locks/api/README.md) |
 | `@ndigo/log` | Isomorphic logging core for Ndigo — logger abstraction, severity mappings, and threshold filtering on the OpenTelemetry API | [api/README.md](packages/ndigo-log/api/README.md) |
 | `@ndigo/management` | Ndigo management endpoints — /health and /metrics (actuator-style) | [api/README.md](packages/ndigo-management/api/README.md) |
+| `@ndigo/mcp` | Model Context Protocol tools projected from Ndigo dispatch metadata | [api/README.md](packages/ndigo-mcp/api/README.md) |
 | `@ndigo/openapi` | OpenAPI 3.0 documentation for Ndigo apps — spec generation from dispatch metadata + Swagger UI | [api/README.md](packages/ndigo-openapi/api/README.md) |
 | `@ndigo/orm` | Ndigo ORM - Repository and Data Mapper persistence abstractions | [api/README.md](packages/ndigo-orm/api/README.md) |
 | `@ndigo/orm-drizzle` | Ndigo ORM Drizzle – Drizzle ORM adapter for @ndigo/orm | [api/README.md](packages/ndigo-orm-drizzle/api/README.md) |

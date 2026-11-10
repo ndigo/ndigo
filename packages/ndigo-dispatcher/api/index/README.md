@@ -424,6 +424,12 @@ Re-exports [getRouteMapping](../route-mapping/functions/getRouteMapping.md)
 
 ***
 
+### getToolMapping
+
+Re-exports [getToolMapping](../tool-mapping/functions/getToolMapping.md)
+
+***
+
 ### HANDLER\_MAPPING
 
 Re-exports [HANDLER_MAPPING](../context-tokens/variables/HANDLER_MAPPING.md)
@@ -1153,6 +1159,24 @@ Re-exports [toJSONStringValue](../argument-value-converter/functions/toJSONStrin
 ### toNumberValue
 
 Re-exports [toNumberValue](../argument-value-converter/functions/toNumberValue.md)
+
+***
+
+### TOOL\_MAPPING\_KEY
+
+Re-exports [TOOL_MAPPING_KEY](../tool-mapping/variables/TOOL_MAPPING_KEY.md)
+
+***
+
+### toolMapping
+
+Re-exports [toolMapping](../tool-mapping/functions/toolMapping.md)
+
+***
+
+### ToolMappingMetadata
+
+Re-exports [ToolMappingMetadata](../tool-mapping/interfaces/ToolMappingMetadata.md)
 
 ***
 

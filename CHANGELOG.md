@@ -141,6 +141,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   sample entity and a database adapter registry.
 - `@ndigo/openapi`: `writeOpenAPISpec` — generate an `OpenAPIDocument` and
   write it to a file (`json`; `yaml` reserved in the signature).
+- `@ndigo/ai-sdk`: `provider.chatModel` model naming plus `provider/rollout`
+  setup; the same integration is reachable through `@ndigo/ai` (agent) and
+  `@ndigo/mcp` (tool registry).
+- `@ndigo/boot`: `application.json` decode-time file context, rejected absolute
+  URLs, and safer JSON path segmentation.
+- `@ndigo/cli`: `doctor` and `info` surface their failing checks as issue-report
+  starter text.
+- `@ndigo/ui`: harden `nd-a2ui-surface` DOM projections (`tabindex` and
+  `aria-live`) and support multiple surfaces in one element.
+- `@ndigo/mcp`: `mcp` validation and generated tool naming checks for the
+  `@toolMapping` surface.
+- `@ndigo/mcp`: `createUiResource`'s body renderer, `scriptType` runtime
+  check, and CSP-domain validation.
 - `@ndigo/cluster`: `waitForExit` now resolves for a child that has already
   exited, and maps signal termination to a defined exit code — removes an
   intermittent supervisor shutdown hang.

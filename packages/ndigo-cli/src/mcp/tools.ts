@@ -15,23 +15,33 @@ const INSPECT_HINT =
 
 /** A manifest route, projected from `@ndigo/inspect` v1. */
 export interface AppRoute {
+    /** The route's stable key. */
     readonly name: string;
+    /** The route pattern (e.g. `/users/{id}`). */
     readonly path: string;
 }
 
 /** A manifest configuration key, projected from `@ndigo/inspect` v1. */
 export interface AppConfigEntry {
+    /** The full environment keypath (e.g. `server.port`). */
     readonly key: string;
+    /** The declared conversion target, when known. */
     readonly type?: string;
+    /** The winning property source name, when known. */
     readonly origin?: string;
+    /** Whether the environment currently supplies a value. */
     readonly hasValue: boolean;
 }
 
 /** The parts of the `@ndigo/inspect` v1 manifest the CLI consumes. */
 export interface AppManifest {
+    /** The manifest schema version. */
     readonly version: number;
+    /** The application identity block. */
     readonly app?: { readonly name?: string; readonly profiles?: readonly string[] };
+    /** Declarative routes, sorted by name then path. */
     readonly routes: readonly AppRoute[];
+    /** Declared configuration keys; values are never part of the manifest. */
     readonly config: readonly AppConfigEntry[];
 }
 
@@ -126,7 +136,9 @@ export async function getConfigKeys(context: AppToolContext): Promise<{ keys: re
 
 /** One section of a best-practice document. */
 export interface PracticeSection {
+    /** The `##` heading text. */
     readonly title: string;
+    /** The section body; empty when the result is an index. */
     readonly content: string;
 }
 

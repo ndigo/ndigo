@@ -49,9 +49,17 @@ export interface McpToolDefinition<Shape extends ToolSchema = ToolSchema> {
 export interface McpHost {
     /** The underlying server, for tests and advanced wiring. */
     readonly server: McpServer;
-    /** Registers a tool, skipping it under {@link McpHostOptions.readOnly}. */
+    /**
+     * Registers a tool, skipping it under {@link McpHostOptions.readOnly}.
+     *
+     * @param tool - The tool definition to register.
+     */
     registerTool<Shape extends ToolSchema>(tool: McpToolDefinition<Shape>): void;
-    /** Connects a stdio transport and writes the listening line to stderr. */
+    /**
+     * Connects a stdio transport and writes the listening line to stderr.
+     *
+     * @param label - The server label prefixed to the stderr line.
+     */
     startStdio(label: string): Promise<void>;
 }
 

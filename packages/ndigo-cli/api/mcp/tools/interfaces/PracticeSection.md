@@ -14,9 +14,12 @@ One section of a best-practice document.
 
 > `readonly` **content**: `string`
 
+The section body; empty when the result is an index.
+
 ***
 
 ### title
 
 > `readonly` **title**: `string`
 
+The `##` heading text.

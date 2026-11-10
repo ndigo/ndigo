@@ -14,9 +14,12 @@ A manifest route, projected from `@ndigo/inspect` v1.
 
 > `readonly` **name**: `string`
 
+The route's stable key.
+
 ***
 
 ### path
 
 > `readonly` **path**: `string`
 
+The route pattern (e.g. `/users/{id}`).

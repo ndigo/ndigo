@@ -14,6 +14,8 @@ The parts of the `@ndigo/inspect` v1 manifest the CLI consumes.
 
 > `readonly` `optional` **app?**: `object`
 
+The application identity block.
+
 #### name?
 
 > `readonly` `optional` **name?**: `string`
@@ -28,11 +30,15 @@ The parts of the `@ndigo/inspect` v1 manifest the CLI consumes.
 
 > `readonly` **config**: readonly [`AppConfigEntry`](AppConfigEntry.md)[]
 
+Declared configuration keys; values are never part of the manifest.
+
 ***
 
 ### routes
 
 > `readonly` **routes**: readonly [`AppRoute`](AppRoute.md)[]
+
+Declarative routes, sorted by name then path.
 
 ***
 
@@ -40,3 +46,4 @@ The parts of the `@ndigo/inspect` v1 manifest the CLI consumes.
 
 > `readonly` **version**: `number`
 
+The manifest schema version.

@@ -14,11 +14,15 @@ A manifest configuration key, projected from `@ndigo/inspect` v1.
 
 > `readonly` **hasValue**: `boolean`
 
+Whether the environment currently supplies a value.
+
 ***
 
 ### key
 
 > `readonly` **key**: `string`
+
+The full environment keypath (e.g. `server.port`).
 
 ***
 
@@ -26,9 +30,12 @@ A manifest configuration key, projected from `@ndigo/inspect` v1.
 
 > `readonly` `optional` **origin?**: `string`
 
+The winning property source name, when known.
+
 ***
 
 ### type?
 
 > `readonly` `optional` **type?**: `string`
 
+The declared conversion target, when known.

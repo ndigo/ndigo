@@ -36,6 +36,8 @@ Registers a tool, skipping it under [McpHostOptions.readOnly](McpHostOptions.md#
 
 [`McpToolDefinition`](McpToolDefinition.md)\<`Shape`\>
 
+The tool definition to register.
+
 #### Returns
 
 `void`
@@ -53,6 +55,8 @@ Connects a stdio transport and writes the listening line to stderr.
 ##### label
 
 `string`
+
+The server label prefixed to the stderr line.
 
 #### Returns
 

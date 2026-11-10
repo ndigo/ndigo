@@ -22,6 +22,7 @@ Subclasses declare their `mediaType` in the constructor and implement
 
 ## Extended by
 
+- [`A2UIView`](../../a2ui-view/classes/A2UIView.md)
 - [`CSVView`](../../csv-view/classes/CSVView.md)
 - [`JSONView`](../../json-view/classes/JSONView.md)
 - [`OctetStreamView`](../../octet-stream-view/classes/OctetStreamView.md)

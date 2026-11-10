@@ -138,25 +138,9 @@ getOrder({ id }: { id: string }) {
 ```
 
 `ndigo add @ndigo/mcp` installs the package and runs the `mcp-setup` generator
-(a wiring module plus a sample tool). `McpToolRegistry.from(dispatcher, {
-readOnly })` projects the tools; `startStdioServer(registry)` serves stdio, and
-`McpHttpEndpoint` mounted on a dispatcher route serves Streamable HTTP through
-the normal interceptor chain. `@whenFeature` hides a tool from `tools/list`;
-each call emits one `execute_tool` span with `gen_ai.tool.name` and
-`gen_ai.tool.call.id`.
-
-For interactive views, declare `ui: 'ui://<app>'` on `@toolMapping` and pass a
-`createUiResource(...)` document to the server; the tool carries
-`_meta.ui.resourceUri` and the resource is served as
-`text/html;profile=mcp-app` under the MCP Apps extension.
-
-Browser views declare the same handlers as WebMCP tools with
-`AsWebMcpElement` + `webMcpToolForHandler`; registration follows the element's
-connect/disconnect lifecycle and the input schema comes from the same
-`@parameters` + `validatedBy` metadata. `webMcpToolForHandler` validates the
-arguments it receives at execution time against the same zod schema it
-declared: an argument outside the schema rejects the call with a
-`TypeError` rather than letting the tool run with that value.
+(a wiring module, a `scripts.mcp` entry, and a sample tool). Projection,
+transports, policy, MCP Apps, and WebMCP are covered end-to-end in
+[Guide 48 — Agent-Facing Surfaces](48-agent-facing-surfaces.md).
 
 ### Maintenance
 

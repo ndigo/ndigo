@@ -108,11 +108,17 @@ server: `get_manifest`, `get_commands`, `get_routes`, `get_config_keys`
 `run_target` (build/test/lint) and `record_rule` (`.ndigo/rules/`) are omitted
 under `--readOnly`; `--live` delegates to the application's own `scripts.mcp`.
 
+`ndigo ai:init [dir]` writes the managed `AGENTS.md` block and nine skills under
+`.agents/skills/`; `--mcp` also merges the `ndigo` server into `.mcp.json`.
+`ndigo ai:check` exits `1` on stale content; `ndigo ai:update` refreshes it, and
+`--force` replaces drifted generated files.
+
 ### Maintenance and DX
 
 | Command               | What it does                                                                              |
 | :-------------------- | :---------------------------------------------------------------------------------------- |
 | `ndigo commands`      | Lists every verb with its flags, positionals, and exit codes (`--json`).                  |
+| `ndigo ai`            | Generates agent context: `init`, `check`, `update` (`--skills`, `--mcp`, `--force`).      |
 | `ndigo doctor`        | Environment diagnostics — the issue-report starter.                                       |
 | `ndigo info`          | `doctor` plus the installed `@ndigo/*` packages.                                          |
 | `ndigo update [dir]`  | Bumps `@ndigo/*` from a version manifest (`--check` compares; apply pins exact versions). |

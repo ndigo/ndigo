@@ -64,4 +64,34 @@ describe('create-ndigo-app scaffold', () => {
         const manifest = JSON.parse(readFileSync(join(target, 'package.json'), 'utf8'));
         expect(manifest.dependencies['@ndigo/platform-node']).toBe('workspace:*');
     });
+
+    test('writes the AGENTS.md bootstrap by default', async () => {
+        const target = join(tmpdir(), 'ndigo-scaffold-test-agents');
+        created.push(target);
+
+        const code = await scaffold([target, '--kind', 'node', '--name', 'scaffoldtest', '--yes']);
+        expect(code).toBe(0);
+
+        const agents = readFileSync(join(target, 'AGENTS.md'), 'utf8');
+        expect(agents).toContain('ndigo ai:init');
+        expect(agents).toContain('ESM only');
+    });
+
+    test('--no-agents omits the bootstrap', async () => {
+        const target = join(tmpdir(), 'ndigo-scaffold-test-no-agents');
+        created.push(target);
+
+        const code = await scaffold([target, '--kind', 'node', '--name', 'scaffoldtest', '--yes', '--no-agents']);
+        expect(code).toBe(0);
+        expect(existsSync(join(target, 'AGENTS.md'))).toBe(false);
+    });
+
+    test('--agents writes the bootstrap explicitly', async () => {
+        const target = join(tmpdir(), 'ndigo-scaffold-test-agents-flag');
+        created.push(target);
+
+        const code = await scaffold([target, '--kind', 'node', '--name', 'scaffoldtest', '--yes', '--agents']);
+        expect(code).toBe(0);
+        expect(existsSync(join(target, 'AGENTS.md'))).toBe(true);
+    });
 });

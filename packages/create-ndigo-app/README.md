@@ -25,6 +25,7 @@ pnpm start        # node kind
 ```
 create-ndigo-app [dir] [--kind node|browser] [--name <slug>]
                  [--description "..."] [--port N] [--yes] [--local] [--force]
+                 [--agents|--no-agents]
 ```
 
 - `--kind` — `node` (tsx) or `browser` (vite). Defaults to `node`.
@@ -37,6 +38,9 @@ create-ndigo-app [dir] [--kind node|browser] [--name <slug>]
   against a local Ndigo checkout (place the scaffolded app under `apps/` or add
   it to `pnpm-workspace.yaml`).
 - `--force` — overwrite a non-empty target directory.
+- `--agents` / `--no-agents` — write or omit the `AGENTS.md` bootstrap pointer
+  (default on; `--yes` implies on). The pointer tells an agent to run
+  `ndigo ai:init` for the full, version-matched context.
 
 The scaffolded app uses the AD-90 lifecycle presets (`runNodeApplication` /
 `createWebApplication`), ships a smoke test and (for the browser kind) the

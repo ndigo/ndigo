@@ -7,7 +7,8 @@
   "scripts": {
     "start": "tsx src/index.ts",
     "dev": "tsx src/index.ts",
-    "mcp": "tsx src/mcp.ts"
+    "mcp": "tsx src/mcp.ts",
+    "test": "vitest run"
   },
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
@@ -17,6 +18,7 @@
     "@ndigo/ai-sdk": "~0.0.1",
     "@ndigo/boot": "~0.0.1",
     "@ndigo/context": "~0.0.1",
+    "@ndigo/core": "~0.0.1",
     "@ndigo/dispatcher": "~0.0.1",
     "@ndigo/factory": "~0.0.1",
     "@ndigo/flags": "~0.0.1",
@@ -24,12 +26,16 @@
     "@ndigo/mcp": "~0.0.1",
     "@ndigo/platform-node": "~0.0.1",
     "@ndigo/rate-limit": "~0.0.1",
+    "@ndigo/router": "~0.0.1",
     "@ndigo/telemetry-node": "~0.0.1",
+    "@ndigo/view": "~0.0.1",
     "@tsmetadata/polyfill": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@ndigo/openapi": "~0.0.1",
     "tsx": "catalog:",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "vitest": "catalog:"
   }
 }

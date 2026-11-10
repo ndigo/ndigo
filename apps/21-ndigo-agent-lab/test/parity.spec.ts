@@ -67,6 +67,7 @@ describe('agent lab surfaces', () => {
         const rendered = await new A2UIView().renderTo(orderSurfaceMessages(), {} as Route);
 
         expect(rendered.mediaType?.toString()).toContain('application/a2ui+json');
+        if (typeof rendered.body !== 'string') throw new Error('expected a string body');
         expect(JSON.parse(rendered.body)).toEqual(orderSurfaceMessages());
     });
 

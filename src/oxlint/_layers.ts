@@ -55,6 +55,7 @@ export const LAYER_RANK: Record<string, number> = {
     'orm-drizzle': 6,
     redis: 6,
     'view-ejs': 6,
+    'view-toon': 6,
     // 7 — platform layer
     'auth-server': 7,
     inspect: 7,

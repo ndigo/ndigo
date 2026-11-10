@@ -1,4 +1,4 @@
-# Guide 47 — AI Agents, MCP Tools & Streaming
+# Guide 47 — AI Agents, Model Loops & Streaming
 
 Add a provider-neutral tool-calling loop to an application: define tools once,
 serve them over HTTP and MCP, run them against a local or hosted model, and
@@ -10,6 +10,7 @@ stream the result over SSE with one GenAI trace.
 
 - How `@ndigo/ai` separates the agent loop from the provider adapter.
 - How `McpToolRegistry` doubles as the agent's tool source with no adapter.
+- How to generate a schema-validated object and implement the `AIModel` contract.
 - How to stream agent events over the existing SSE write path.
 - How rate limits, rollout flags, secrets, and resilience apply to model calls.
 
@@ -75,7 +76,39 @@ const agent = new AIAgent({
 the descriptors and `call(name, args, { callId })` executes them through the
 normal dispatcher binding pipeline.
 
-## 4. Stream over SSE
+## 4. Structured output and the adapter contract
+
+`AIAgent.object()` runs a schema-validated generation without tools:
+
+```ts
+const result = await agent.object({
+    schema: z.object({ orderId: z.string(), reason: z.string() }),
+    messages: [{ role: 'user', content: 'Which order should be refunded?' }],
+});
+result.object.orderId;
+```
+
+The loop never touches provider SDKs. An adapter implements one contract:
+
+```ts
+export interface AIModel {
+    readonly info: AIModelInfo;
+    generateStep(request: AIStepRequest): Promise<AIStepResult>;
+    streamStep(request: AIStepRequest): AIStepStream;
+    generateObject<T>(request: AIObjectRequest<T>): Promise<AIObjectResult<T>>;
+}
+```
+
+- `AIModel.info` supplies `provider` and `model` for telemetry and the
+  rate-limit key.
+- Adapters declare tools but never execute them; `AIAgent` does.
+- `signal` on `AIStepRequest` / `AIObjectRequest` cancels the provider call.
+- Typed failures surface before the provider is reached: `AIModelDisabledError`
+  (rollout flag) and `AIRateLimitError` (`retryAfterMs`).
+- `@ndigo/ai-sdk` is the only package that imports the Vercel AI SDK; follow the
+  same integration-layer rule for any other adapter.
+
+## 5. Stream over SSE
 
 `AIAgent.stream()` is an async generator of `text-delta`, `tool-call`,
 `tool-result`, and `finish` events. `toServerSentEvents` maps each event to the
@@ -105,14 +138,14 @@ The generator's return value is the settled `AIRunResult` (final text, full
 conversation, every tool call/result, usage, and step count) when consumed
 manually; the SSE writer ignores it.
 
-## 5. One trace
+## 6. One trace
 
 Every run opens `chat <model>` with GenAI attributes; MCP tool executions are
 child spans with `gen_ai.tool.name` and `gen_ai.tool.call.id`. The demo exports
 traces to the console, so one request prints a single trace containing the root
 span and each tool span. Point `traceExporter` at OTLP in production.
 
-## 6. Limits, rollout, and resilience
+## 7. Limits, rollout, and resilience
 
 ```ts
 const agent = new AIAgent({
@@ -134,7 +167,7 @@ const agent = new AIAgent({
   agent so a provider outage trips the existing interceptor chain instead of
   surfacing raw SDK errors.
 
-## 7. Secrets
+## 8. Secrets
 
 Provider keys travel through ordinary configuration. A `{cipher:…}` value in
 any property source decrypts at lookup time when the app registers a cipher:
@@ -147,7 +180,7 @@ await runNodeApplication([AgentLabConfiguration, AgentLabConfig], {
 
 Never commit a key, and never place one in a client-bound file.
 
-## 8. Run the reference app
+## 9. Run the reference app
 
 ```bash
 pnpm --filter @ndigo/agent-lab start
@@ -165,7 +198,7 @@ pnpm --filter @ndigo/agent-lab mcp
 Configuration lives under `ai.*`: `baseURL`, `model`, `apiKey`, `maxSteps`, and
 `modelFlag`. The app defaults to LM Studio on port 1234.
 
-## 9. Testing
+## 10. Testing
 
 - Fake `AIModel` implementations prove loop behavior without a provider.
 - `MockLanguageModelV4` from `ai/test` proves adapter mapping.
@@ -176,5 +209,7 @@ Configuration lives under `ai.*`: `baseURL`, `model`, `apiKey`, `maxSteps`, and
 
 - [`@ndigo/ai` README](../../packages/ndigo-ai/README.md), [`@ndigo/ai-sdk` README](../../packages/ndigo-ai-sdk/README.md)
 - [`@ndigo/mcp` README](../../packages/ndigo-mcp/README.md)
+- [Guide 48 — Agent-Facing Surfaces](48-agent-facing-surfaces.md) — the
+  app→agent direction: `@toolMapping`, MCP Apps, A2UI, WebMCP.
 - Guides 16 (SSE), 32 (telemetry), 34 (flags), 35 (resilience), 37 (CLI)
 - `apps/21-ndigo-agent-lab`

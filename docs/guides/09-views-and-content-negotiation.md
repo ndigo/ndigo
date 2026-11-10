@@ -93,6 +93,8 @@ The A2UI representation is plain JSON over the A2UI 1.0 message array
 `Accept: application/a2ui+json`) selects it; without that registration the
 logical view keeps its JSON representation. A tool result carrying
 `ModelAndView('a2ui', messages)` reaches an MCP client as the message array.
+See [Guide 48 — Agent-Facing Surfaces](48-agent-facing-surfaces.md) for the
+route, resolver registration, and installed-only catalog in context.
 
 Server agents should generate the smallest surface that answers the user:
 `A2UIView` is token-optimized, not a full-screen replacement — build a card, a

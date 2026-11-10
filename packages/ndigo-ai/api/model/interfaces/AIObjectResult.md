@@ -2,9 +2,9 @@
 
 ***
 
-[@ndigo/ai](../../README.md) / [model](../README.md) / AiObjectResult
+[@ndigo/ai](../../README.md) / [model](../README.md) / AIObjectResult
 
-# Interface: AiObjectResult\<T\>
+# Interface: AIObjectResult\<T\>
 
 A structured-output result.
 
@@ -18,7 +18,7 @@ A structured-output result.
 
 ### finishReason
 
-> `readonly` **finishReason**: [`AiFinishReason`](../../messages/type-aliases/AiFinishReason.md)
+> `readonly` **finishReason**: [`AIFinishReason`](../../messages/type-aliases/AIFinishReason.md)
 
 Why the provider stopped.
 
@@ -34,6 +34,6 @@ The schema-validated object.
 
 ### usage
 
-> `readonly` **usage**: [`AiTokenUsage`](../../messages/interfaces/AiTokenUsage.md)
+> `readonly` **usage**: [`AITokenUsage`](../../messages/interfaces/AITokenUsage.md)
 
 Token usage for the call.

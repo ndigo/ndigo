@@ -2,9 +2,9 @@
 
 ***
 
-[@ndigo/ai](../../README.md) / [agent](../README.md) / AiRateLimitOptions
+[@ndigo/ai](../../README.md) / [agent](../README.md) / AIRateLimitOptions
 
-# Interface: AiRateLimitOptions
+# Interface: AIRateLimitOptions
 
 Per-run rate-limit policy. The limiter is the shared `@ndigo/rate-limit`
 backend; the key defaults to `provider:model`.

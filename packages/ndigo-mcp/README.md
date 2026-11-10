@@ -128,6 +128,11 @@ self-contained document and rejects `</style>`/`</script>` breakouts. The host
 renders it in a sandboxed iframe and builds the CSP from the declared domains —
 never use a `*` origin.
 
+The document body is escaped by default. Pass `trustedMarkup: true` only for
+markup the application owns (never user input or whatever arrives in tool
+results); untrusted content should go through the A2UI surface or a
+schema-validated view where the engine controls the render.
+
 ### Resources and telemetry
 
 `createMcpServer(registry, { inspect })` exposes the inspect manifest as

@@ -15,7 +15,9 @@ import { z } from 'zod';
 /** A JSON Schema object as carried by MCP `tools/list`. */
 export type JSONSchema = Record<string, unknown>;
 
-/** One tool as reported to MCP clients. */
+/** MCP tool names must be snake_case starting with a letter. */
+const toolNamePattern = /^[a-z][a-z0-9_]*$/u;
+
 export interface ToolDescriptor {
     /** Tool name (snake_case). */
     readonly name: string;
@@ -157,7 +159,14 @@ function defaultToolName(methodName: string): string {
         .replace(/([a-z0-9])([A-Z])/gu, '$1_$2')
         .replace(/[^A-Za-z0-9_]/gu, '_')
         .toLowerCase();
-    return /^[a-z]/u.test(name) ? name : `tool_${name}`;
+    const candidate = /^[a-z]/u.test(name) ? name : `tool_${name}`;
+    if (toolNamePattern.test(candidate) === false) {
+        throw new Error(
+            `generated MCP tool name '${candidate}' is not snake_case — declare a valid @toolMapping name` +
+                ` for '${methodName}'`
+        );
+    }
+    return candidate;
 }
 
 function inputSchemaOf(handlerMethod: RouteHandlerMethod): JSONSchema {

@@ -10,11 +10,11 @@ The provider-neutral message vocabulary shared by every model adapter, the
 
 ## Interfaces
 
-- [AiTokenUsage](interfaces/AiTokenUsage.md)
-- [AiToolCall](interfaces/AiToolCall.md)
-- [AiToolResult](interfaces/AiToolResult.md)
+- [AITokenUsage](interfaces/AITokenUsage.md)
+- [AIToolCall](interfaces/AIToolCall.md)
+- [AIToolResult](interfaces/AIToolResult.md)
 
 ## Type Aliases
 
-- [AiFinishReason](type-aliases/AiFinishReason.md)
-- [AiMessage](type-aliases/AiMessage.md)
+- [AIFinishReason](type-aliases/AIFinishReason.md)
+- [AIMessage](type-aliases/AIMessage.md)

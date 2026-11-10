@@ -209,10 +209,14 @@ refused contradiction: `format: 'toon'` always decodes as TOON, while
 `format: 'json'` over a `.toon` address errors instead of silently
 re-parsing. A query string or fragment is stripped before detection, so a
 cache-busting suffix cannot change the format and a `?x=.toon` query cannot
-select it. The decoded document feeds the same `sources` / `profiles` /
-`properties` pipeline as the JSON path, and the decode contract — strict
-mode, JSON-shaped rename hint, object shape guard — is identical to `.toon`
-config files, including the lazily loaded optional peer.
+select it. `fromConfig` only fetches `http(s)` URLs, and the decode contract —
+strict mode, JSON-shaped rename hint, object shape guard — is identical to
+`.toon` config files, including the lazily loaded optional peer.
+
+`sources` is a list of static source ids; `sourceCatalog` resolves them, so
+the same catalog keys can be reused across environments without exposing the
+`import()` seam to untrusted content. A source id absent from the catalog is
+an `IllegalStateError` at boot, never a silent skip.
 
 ## 3. Bind configuration to typed classes
 

@@ -17,14 +17,14 @@ stream the result over SSE with one GenAI trace.
 
 | Package          | Role                                                              |
 | :--------------- | :---------------------------------------------------------------- |
-| `@ndigo/ai`      | `AiMessage`, `AiModel`, `AiAgent`, stream events, SSE framing.    |
+| `@ndigo/ai`      | `AIMessage`, `AIModel`, `AIAgent`, stream events, SSE framing.    |
 | `@ndigo/ai-sdk`  | The only package that imports the Vercel AI SDK.                  |
 | `@ndigo/mcp`     | Projects `@toolMapping` handlers into an `McpToolRegistry`.       |
 | provider package | App-owned, e.g. `@ai-sdk/openai-compatible` for LM Studio/Ollama. |
 
 The loop is deliberately outside the adapter. A model step returns text, tool
-calls, a finish reason, and usage; `AiAgent` executes the calls through an
-`AiToolSource`, appends the results, and repeats until the model stops or
+calls, a finish reason, and usage; `AIAgent` executes the calls through an
+`AIToolSource`, appends the results, and repeats until the model stops or
 `maxSteps` is reached.
 
 ## 2. Define a tool once
@@ -49,7 +49,7 @@ tool description to keep in sync.
 ## 3. Build the agent
 
 ```ts
-import { AiAgent } from '@ndigo/ai';
+import { AIAgent } from '@ndigo/ai';
 import { aiSdkModel } from '@ndigo/ai-sdk';
 import { McpToolRegistry } from '@ndigo/mcp';
 import { createOpenAICompatible } from '@ai-sdk/openai-compatible';
@@ -64,20 +64,20 @@ const tools = McpToolRegistry.from(dispatcher, {
     readOnly: true,
     argumentResolvers: context.getValue(ARGUMENT_RESOLVERS),
 });
-const agent = new AiAgent({
+const agent = new AIAgent({
     model: aiSdkModel(provider.chatModel(config.model), { provider: 'lmstudio', model: config.model }),
     tools,
     maxSteps: 6,
 });
 ```
 
-`McpToolRegistry` satisfies `AiToolSource` structurally: `listTools()` supplies
+`McpToolRegistry` satisfies `AIToolSource` structurally: `listTools()` supplies
 the descriptors and `call(name, args, { callId })` executes them through the
 normal dispatcher binding pipeline.
 
 ## 4. Stream over SSE
 
-`AiAgent.stream()` is an async generator of `text-delta`, `tool-call`,
+`AIAgent.stream()` is an async generator of `text-delta`, `tool-call`,
 `tool-result`, and `finish` events. `toServerSentEvents` maps each event to the
 `{ event, data }` envelope `ServerSentEventView` already understands.
 
@@ -101,7 +101,7 @@ for await (const event of parseServerSentEvents(response.body)) {
 }
 ```
 
-The generator's return value is the settled `AiRunResult` (final text, full
+The generator's return value is the settled `AIRunResult` (final text, full
 conversation, every tool call/result, usage, and step count) when consumed
 manually; the SSE writer ignores it.
 
@@ -115,7 +115,7 @@ span and each tool span. Point `traceExporter` at OTLP in production.
 ## 6. Limits, rollout, and resilience
 
 ```ts
-const agent = new AiAgent({
+const agent = new AIAgent({
     model,
     tools,
     rateLimit: {
@@ -127,7 +127,7 @@ const agent = new AiAgent({
 ```
 
 - The rate-limit key defaults to `provider:model` and throws
-  `AiRateLimitError` with `retryAfterMs`.
+  `AIRateLimitError` with `retryAfterMs`.
 - The rollout flag is a boolean with a `false` default — a missing flag fails
   closed.
 - Put `@circuitBreaker` / `@retry` on the controller method that calls the
@@ -167,7 +167,7 @@ Configuration lives under `ai.*`: `baseURL`, `model`, `apiKey`, `maxSteps`, and
 
 ## 9. Testing
 
-- Fake `AiModel` implementations prove loop behavior without a provider.
+- Fake `AIModel` implementations prove loop behavior without a provider.
 - `MockLanguageModelV4` from `ai/test` proves adapter mapping.
 - The demo's MCP smoke test lists `lookup_order` and `list_orders` with the same
   schemas the agent receives.

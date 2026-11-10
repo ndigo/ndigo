@@ -2,12 +2,12 @@
 
 ***
 
-[@ndigo/ai](../../README.md) / [errors](../README.md) / AiRateLimitError
+[@ndigo/ai](../../README.md) / [errors](../README.md) / AIRateLimitError
 
-# Class: AiRateLimitError
+# Class: AIRateLimitError
 
 The rate limiter refused the model call. The caller may retry after
-[AiRateLimitError.retryAfterMs](#retryafterms).
+[AIRateLimitError.retryAfterMs](#retryafterms).
 
 ## Extends
 
@@ -17,7 +17,7 @@ The rate limiter refused the model call. The caller may retry after
 
 ### Constructor
 
-> **new AiRateLimitError**(`key`, `retryAfterMs`): `AiRateLimitError`
+> **new AIRateLimitError**(`key`, `retryAfterMs`): `AIRateLimitError`
 
 #### Parameters
 
@@ -35,7 +35,7 @@ Milliseconds until the window resets.
 
 #### Returns
 
-`AiRateLimitError`
+`AIRateLimitError`
 
 #### Overrides
 

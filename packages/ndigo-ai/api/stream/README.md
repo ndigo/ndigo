@@ -10,7 +10,7 @@ Bridges agent stream events onto the existing SSE write path. The yielded
 
 ## Interfaces
 
-- [AiServerSentEvent](interfaces/AiServerSentEvent.md)
+- [AIServerSentEvent](interfaces/AIServerSentEvent.md)
 
 ## Functions
 

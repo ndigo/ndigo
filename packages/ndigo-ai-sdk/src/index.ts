@@ -1,6 +1,6 @@
 /**
  * The Vercel AI SDK integration layer. Every AI SDK import in the repository
- * lives here; the rest of the framework talks to {@link AiModel} from
+ * lives here; the rest of the framework talks to {@link AIModel} from
  * `@ndigo/ai`.
  */
 import {
@@ -16,26 +16,26 @@ import {
     type ToolSet,
 } from 'ai';
 import type {
-    AiFinishReason,
-    AiMessage,
-    AiModel,
-    AiModelInfo,
-    AiObjectRequest,
-    AiObjectResult,
-    AiStepRequest,
-    AiStepResult,
-    AiStepStream,
-    AiStepStreamEvent,
-    AiTokenUsage,
-    AiToolCall,
-    AiToolDescriptor,
+    AIFinishReason,
+    AIMessage,
+    AIModel,
+    AIModelInfo,
+    AIObjectRequest,
+    AIObjectResult,
+    AIStepRequest,
+    AIStepResult,
+    AIStepStream,
+    AIStepStreamEvent,
+    AITokenUsage,
+    AIToolCall,
+    AIToolDescriptor,
 } from '@ndigo/ai';
 
 /**
  * Optional identity overrides. Without them the adapter reads `provider` and
  * `modelId` from the AI SDK model and falls back to `ai-sdk`.
  */
-export interface AiSdkModelOptions {
+export interface AISdkModelOptions {
     /** Provider name used in telemetry and rate-limit keys. */
     readonly provider?: string;
     /** Model id used in telemetry and rate-limit keys. */
@@ -43,23 +43,23 @@ export interface AiSdkModelOptions {
 }
 
 /**
- * Adapts an AI SDK `LanguageModel` to the provider-neutral `AiModel`
+ * Adapts an AI SDK `LanguageModel` to the provider-neutral `AIModel`
  * contract.
  *
  * The adapter declares tools to the model but never executes them — the
  * `@ndigo/ai` agent loop owns execution and telemetry, so MCP tools and local
  * sources behave identically across providers.
  */
-export class AiSdkModel implements AiModel {
+export class AISdkModel implements AIModel {
     /** Model identity used in telemetry and rate-limit keys. */
-    readonly info: AiModelInfo;
+    readonly info: AIModelInfo;
     readonly #model: LanguageModel;
 
     /**
      * @param model - The AI SDK language model (provider package output).
      * @param options - Optional identity overrides.
      */
-    constructor(model: LanguageModel, options: AiSdkModelOptions = {}) {
+    constructor(model: LanguageModel, options: AISdkModelOptions = {}) {
         this.#model = model;
         const candidate = model as { readonly provider?: string; readonly modelId?: string };
         this.info = {
@@ -74,7 +74,7 @@ export class AiSdkModel implements AiModel {
      * @param request - The conversation, tools, and sampling options.
      * @returns The settled step.
      */
-    async generateStep(request: AiStepRequest): Promise<AiStepResult> {
+    async generateStep(request: AIStepRequest): Promise<AIStepResult> {
         const { instructions, messages } = toPrompt(request.messages);
         const result = await generateText({
             model: this.#model,
@@ -100,7 +100,7 @@ export class AiSdkModel implements AiModel {
      * @param request - The conversation, tools, and sampling options.
      * @returns The step event stream; its return value is the settled step.
      */
-    async *streamStep(request: AiStepRequest): AiStepStream {
+    async *streamStep(request: AIStepRequest): AIStepStream {
         const { instructions, messages } = toPrompt(request.messages);
         const result = streamText({
             model: this.#model,
@@ -112,19 +112,19 @@ export class AiSdkModel implements AiModel {
             ...(request.signal === undefined ? {} : { abortSignal: request.signal }),
         });
 
-        const toolCalls: AiToolCall[] = [];
+        const toolCalls: AIToolCall[] = [];
         let text = '';
-        let finishReason: AiFinishReason = 'other';
-        let usage: AiTokenUsage = {};
+        let finishReason: AIFinishReason = 'other';
+        let usage: AITokenUsage = {};
 
         for await (const part of result.stream) {
             if (part.type === 'text-delta') {
                 text += part.text;
-                yield { type: 'text-delta', text: part.text } satisfies AiStepStreamEvent;
+                yield { type: 'text-delta', text: part.text } satisfies AIStepStreamEvent;
             } else if (part.type === 'tool-call') {
                 const call = toToolCall(part);
                 toolCalls.push(call);
-                yield { type: 'tool-call', call } satisfies AiStepStreamEvent;
+                yield { type: 'tool-call', call } satisfies AIStepStreamEvent;
             } else if (part.type === 'finish') {
                 finishReason = asFinishReason(part.finishReason);
                 usage = asUsage(part.totalUsage);
@@ -142,7 +142,7 @@ export class AiSdkModel implements AiModel {
      * @param request - The schema and conversation.
      * @returns The validated object and usage.
      */
-    async generateObject<T>(request: AiObjectRequest<T>): Promise<AiObjectResult<T>> {
+    async generateObject<T>(request: AIObjectRequest<T>): Promise<AIObjectResult<T>> {
         const { instructions, messages } = toPrompt(request.messages);
         const result = await generateObject({
             model: this.#model,
@@ -163,14 +163,14 @@ export class AiSdkModel implements AiModel {
 }
 
 /**
- * Creates an {@link AiSdkModel} without `new`.
+ * Creates an {@link AISdkModel} without `new`.
  *
  * @param model - The AI SDK language model.
  * @param options - Optional identity overrides.
  * @returns The adapter.
  */
-export function aiSdkModel(model: LanguageModel, options: AiSdkModelOptions = {}): AiSdkModel {
-    return new AiSdkModel(model, options);
+export function aiSdkModel(model: LanguageModel, options: AISdkModelOptions = {}): AISdkModel {
+    return new AISdkModel(model, options);
 }
 
 /**
@@ -180,7 +180,7 @@ export function aiSdkModel(model: LanguageModel, options: AiSdkModelOptions = {}
  * @param messages - The provider-neutral conversation.
  * @returns The instructions and model messages.
  */
-function toPrompt(messages: readonly AiMessage[]): { instructions?: string; messages: ModelMessage[] } {
+function toPrompt(messages: readonly AIMessage[]): { instructions?: string; messages: ModelMessage[] } {
     const systems: string[] = [];
     const prompt: ModelMessage[] = [];
 
@@ -231,7 +231,7 @@ function toPrompt(messages: readonly AiMessage[]): { instructions?: string; mess
  * @param tools - The tool descriptors.
  * @returns The AI SDK tool set.
  */
-function toToolSet(tools: readonly AiToolDescriptor[]): ToolSet {
+function toToolSet(tools: readonly AIToolDescriptor[]): ToolSet {
     const set: ToolSet = {};
     for (const tool of tools) {
         set[tool.name] = {
@@ -252,7 +252,7 @@ function toToolCall(part: {
     readonly toolCallId: string;
     readonly toolName: string;
     readonly input: unknown;
-}): AiToolCall {
+}): AIToolCall {
     return {
         id: part.toolCallId,
         name: part.toolName,
@@ -292,13 +292,39 @@ function toToolOutput(output: unknown): { type: 'json'; value: JSONValue } | { t
 }
 
 /**
- * Maps an AI SDK finish reason to the shared union.
+ * Maps an AI SDK finish reason to the shared union. Unknown providers fall back
+ * to `'other'` rather than passing an arbitrary value through to callers.
  *
  * @param reason - The AI SDK finish reason.
  * @returns The provider-neutral finish reason.
  */
-function asFinishReason(reason: string): AiFinishReason {
-    return reason as AiFinishReason;
+function asFinishReason(reason: string): AIFinishReason {
+    const knownFinishReasons: Record<string, true> = {
+        'end-turn': true,
+        'max-output-tokens': true,
+        'max-steps': true,
+        'max-token-limit': true,
+        'no-step-result': true,
+        'other-error': true,
+        'provider-error': true,
+        'stop-sequence': true,
+        'content-filter': true,
+        stop: true,
+        length: true,
+        toolCall: true,
+        'tool-calls': true,
+        error: true,
+        other: true,
+        unknown: true,
+        none: true,
+        abort: true,
+        'unexpected-error': true,
+        'rate-limit': true,
+        'request-continued': true,
+        'response-cancelled': true,
+    };
+
+    return knownFinishReasons[reason] === true ? (reason as AIFinishReason) : 'other';
 }
 
 /**
@@ -311,7 +337,7 @@ function asUsage(usage: {
     readonly inputTokens?: number | undefined;
     readonly outputTokens?: number | undefined;
     readonly totalTokens?: number | undefined;
-}): AiTokenUsage {
+}): AITokenUsage {
     return {
         ...(usage.inputTokens === undefined ? {} : { inputTokens: usage.inputTokens }),
         ...(usage.outputTokens === undefined ? {} : { outputTokens: usage.outputTokens }),

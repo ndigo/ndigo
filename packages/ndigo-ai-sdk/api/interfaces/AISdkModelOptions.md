@@ -2,9 +2,9 @@
 
 ***
 
-[@ndigo/ai-sdk](../README.md) / AiSdkModelOptions
+[@ndigo/ai-sdk](../README.md) / AISdkModelOptions
 
-# Interface: AiSdkModelOptions
+# Interface: AISdkModelOptions
 
 Optional identity overrides. Without them the adapter reads `provider` and
 `modelId` from the AI SDK model and falls back to `ai-sdk`.

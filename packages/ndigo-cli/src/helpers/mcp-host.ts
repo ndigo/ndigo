@@ -114,7 +114,22 @@ export function createMcpHost(options: McpHostOptions): McpHost {
  */
 export async function runTool(run: () => Promise<unknown> | unknown): Promise<CallToolResult> {
     try {
-        return { content: [{ type: 'text', text: JSON.stringify(await run(), null, 2) }] };
+        let value = await run();
+        if (value === undefined) value = null;
+        let text: string;
+        try {
+            text = JSON.stringify(value, null, 2) ?? 'null';
+        } catch (encodeError) {
+            text = JSON.stringify(
+                {
+                    serializationError: encodeError instanceof Error ? encodeError.message : String(encodeError),
+                    value: Object.prototype.toString.call(value),
+                },
+                null,
+                2
+            );
+        }
+        return { content: [{ type: 'text', text }] };
     } catch (error) {
         return {
             content: [{ type: 'text', text: error instanceof Error ? error.message : String(error) }],

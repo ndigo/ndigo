@@ -5,6 +5,7 @@
 import { IllegalStateError, JSONObject } from '@ndigo/core';
 import type { ConfigurableEnvironment } from '@ndigo/context';
 import type { ConfigFileReader } from '@ndigo/context';
+import { getErrorMessage } from '@ndigo/util';
 import { parseToonDocument } from './_toon';
 
 /**
@@ -60,6 +61,31 @@ const stripPrefix = (location: string): { path: string; optional: boolean; requi
     optional: location.startsWith('optional:'),
     required: location.startsWith('required:'),
 });
+
+/**
+ * Parse a JSON config document and include the file path in any decode error.
+ *
+ * @param content - The JSON text.
+ * @param path - The file path for diagnostics.
+ * @returns The parsed JSON object.
+ * @throws `IllegalStateError` when the document is not valid JSON.
+ */
+export function parseJsonConfig(content: string, path: string): JSONObject {
+    let parsed: unknown;
+    try {
+        parsed = JSON.parse(content);
+    } catch (cause) {
+        throw new IllegalStateError(`Config file "${path}" is not valid JSON: ${getErrorMessage(cause)}`, { cause });
+    }
+    if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) {
+        throw new IllegalStateError(
+            `Config file "${path}" must decode to a JSON object (got ${
+                Array.isArray(parsed) ? 'an array' : typeof parsed
+            })`
+        );
+    }
+    return parsed as JSONObject;
+}
 
 /**
  * Recursively merges `override` into `base` (mutates a copy of `base`):
@@ -145,7 +171,7 @@ export class StandardConfigFileLoader {
             }
             const parsed = path.endsWith('.toon')
                 ? await this.#parseToon(content, path)
-                : (JSON.parse(content) as JSONObject);
+                : parseJsonConfig(content, path);
             // All files (base + profile variants) deep-merge into ONE
             // `application` source: later files (profiles) override earlier
             // ones (objects merge, scalars override, arrays replace). Nested

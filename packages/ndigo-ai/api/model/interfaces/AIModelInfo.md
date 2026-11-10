@@ -2,9 +2,9 @@
 
 ***
 
-[@ndigo/ai](../../README.md) / [model](../README.md) / AiModelInfo
+[@ndigo/ai](../../README.md) / [model](../README.md) / AIModelInfo
 
-# Interface: AiModelInfo
+# Interface: AIModelInfo
 
 Human-readable model identity used in telemetry attributes and rate-limit
 keys.

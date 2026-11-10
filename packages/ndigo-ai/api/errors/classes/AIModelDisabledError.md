@@ -2,9 +2,9 @@
 
 ***
 
-[@ndigo/ai](../../README.md) / [errors](../README.md) / AiModelDisabledError
+[@ndigo/ai](../../README.md) / [errors](../README.md) / AIModelDisabledError
 
-# Class: AiModelDisabledError
+# Class: AIModelDisabledError
 
 The model rollout flag evaluated to `false`, so the agent refused the call.
 
@@ -16,7 +16,7 @@ The model rollout flag evaluated to `false`, so the agent refused the call.
 
 ### Constructor
 
-> **new AiModelDisabledError**(`flag`): `AiModelDisabledError`
+> **new AIModelDisabledError**(`flag`): `AIModelDisabledError`
 
 #### Parameters
 
@@ -28,7 +28,7 @@ The feature-flag key that disabled the model.
 
 #### Returns
 
-`AiModelDisabledError`
+`AIModelDisabledError`
 
 #### Overrides
 

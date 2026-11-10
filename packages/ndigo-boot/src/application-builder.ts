@@ -36,6 +36,13 @@ export interface FromConfigOptions {
      * specs and alternative validators.
      */
     decodeToon?: (content: string) => JSONObject | Promise<JSONObject>;
+    /**
+     * Static configuration sources keyed by the `sources` id in the document.
+     * The catalog is the only source registry; ids absent from the catalog are
+     * rejected. This keeps configuration consumers from importing untrusted
+     * module specifiers.
+     */
+    sourceCatalog?: Record<string, Function>;
 }
 
 /**
@@ -45,6 +52,31 @@ export interface FromConfigOptions {
  * the diagnostics label.
  */
 const fromConfigPath = (url: string | URL): string => (url instanceof URL ? url.href : url).split(/[?#]/, 1)[0];
+
+/**
+ * Rejects a `fromConfig` address that is not an HTTP(S) URL: `data:`, `blob:`,
+ * or `file:` URLs (and credential-bearing absolute URLs) are not configuration
+ * downloads. Relative addresses leave the caller's current origin to the
+ * `fetch` implementation.
+ *
+ * @param url - The `fromConfig` address.
+ * @throws `IllegalStateError` when the URL has an unusable scheme.
+ */
+function assertAllowedConfigUrl(url: string | URL): void {
+    const href = url instanceof URL ? url.href : String(url);
+    if (!/^[a-z][a-z0-9.-]*:/iu.test(href)) return;
+    let parsedUrl: URL;
+    try {
+        parsedUrl = new URL(href);
+    } catch {
+        throw new IllegalStateError(`Config URL is not a valid URL — received '${href}'.`);
+    }
+    if (parsedUrl.protocol !== 'https:' && parsedUrl.protocol !== 'http:') {
+        throw new IllegalStateError(
+            'Config URL must use https or http; local files are loaded through the config-file loader.'
+        );
+    }
+}
 
 /**
  * Builder for configuring and running an application bootstrap sequence.
@@ -130,28 +162,32 @@ export class ApplicationBuilder {
      * same contract as `.toon` config files: strict mode, JSON-shaped
      * rename hint, object shape guard, bounded decoder diagnostics.
      *
-     * The `sources` array is expected to contain module specifiers that can be
-     * dynamically imported as configuration classes.
+     * The `sources` array is expected to contain static source catalog keys.
+     * `sourceCatalog` is required to resolve them; the `import()` seam is not
+     * called with remote specifiers, so a config document cannot start code.
      *
      * @param url - URL pointing to a JSON or TOON configuration file.
-     * @param options - Decode options: an explicit `format` and a TOON
-     *   decoder seam for specs/alternative validators.
+     * @param options - Decode options: an explicit `format`, a TOON decoder
+     *   seam, and the static source catalog.
      * @returns A promise resolving to the configured builder.
      *
      * @example
      * ```ts
      * // config.json:
      * // {
-     * //   "sources": ["@ndigo/AppConfig"],
+     * //   "sources": ["app"],
      * //   "profiles": ["production"],
      * //   "properties": { "server.port": 8080 }
      * // }
      *
-     * const app = await ApplicationBuilder.fromConfig('/config.json');
+     * const app = await ApplicationBuilder.fromConfig('/config.json', {
+     *   sourceCatalog: { app: AppConfiguration },
+     * });
      * app.run();
      * ```
      */
     static async fromConfig(url: string | URL, options: FromConfigOptions = {}): Promise<ApplicationBuilder> {
+        assertAllowedConfigUrl(url);
         const response = await fetch(url);
         if (!response.ok) {
             throw new Error(`Failed to load config from ${url}: ${response.status}`);
@@ -176,14 +212,18 @@ export class ApplicationBuilder {
         const sources: Function[] = [];
         const rawSources = config.sources;
         if (Array.isArray(rawSources)) {
-            const modules = await Promise.all(
-                rawSources.map((specifier) => import(/* @vite-ignore */ specifier as string))
-            );
-            for (const mod of modules) {
-                const exported = (mod as Record<string, unknown>).default ?? mod;
-                if (typeof exported === 'function') {
-                    sources.push(exported as Function);
+            for (const rawSource of rawSources) {
+                if (typeof rawSource !== 'string') {
+                    throw new IllegalStateError(`Config file "${address}" source entries must be strings.`);
                 }
+                const source = options.sourceCatalog?.[rawSource];
+                if (typeof source !== 'function') {
+                    throw new IllegalStateError(
+                        `Config file "${address}" source "${rawSource}" is not present in the ` +
+                            'source catalog. Supply a static sourceCatalog to whitelisted sources.'
+                    );
+                }
+                sources.push(source);
             }
         }
 

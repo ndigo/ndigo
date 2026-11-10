@@ -33,8 +33,8 @@ export class OrderTools {
     @getMapping('/tools/orders/:id')
     @parameters({ id: pathVariable('id') })
     @toolMapping({ name: 'lookup_order', readOnly: true, description: 'Read one order by id.' })
-    lookupOrder(id: string): Order | { error: string } {
-        return ORDERS.find((order) => order.id === id) ?? { error: `order '${id}' not found` };
+    lookupOrder(id: string): Order | { error: 'order_not_found' } {
+        return ORDERS.find((order) => order.id === id) ?? { error: 'order_not_found' };
     }
 
     /**

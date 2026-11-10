@@ -37,7 +37,7 @@ import {
     type HandlerMethodArgumentResolver,
     MethodParameterType,
 } from '@ndigo/dispatcher';
-import { NodeRequest, NODE_REQUEST_ATTRIBUTE, NODE_RESPONSE_ATTRIBUTE } from './node-request';
+import { NodeRequest, NODE_INCOMING_ATTRIBUTE, NODE_REQUEST_ATTRIBUTE, NODE_RESPONSE_ATTRIBUTE } from './node-request';
 import { TrustedProxySet, resolveClientAddress } from './trusted-proxy';
 import {
     nodeSocketSession,
@@ -1086,6 +1086,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
                 attributes: {
                     [NODE_REQUEST_ATTRIBUTE]: nodeRequest,
                     [NODE_RESPONSE_ATTRIBUTE]: res,
+                    [NODE_INCOMING_ATTRIBUTE]: req,
                     [ACCEPT_LANGUAGE_ATTRIBUTE]: HTTPHeaders.ACCEPT_LANGUAGE.get(req.headers) ?? undefined,
                 },
             };

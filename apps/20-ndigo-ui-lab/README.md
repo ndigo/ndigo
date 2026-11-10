@@ -3,7 +3,7 @@
 > A browser lab for the owned design system: every registry item installed as copy-in source, no framework runtime.
 
 The lab dogfoods the copy-in registry. The `styles/`, `src/lib/`, `src/ui/`, and
-`src/components/` trees are a full install of the 41-item registry, committed
+`src/components/` trees are a full install of the 42-item registry, committed
 with `ui.lock.json`; the page exercises the native-first primitives, the Zag.js
 behaviour elements, and all five blocks. The typed token catalog comes from
 `@ndigo/ui`. The bootstrap globs the installed element and stylesheet trees, so

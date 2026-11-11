@@ -1917,6 +1917,9 @@ importers:
 
   packages/ndigo-cluster:
     dependencies:
+      '@ndigo/core':
+        specifier: ~0.0.1
+        version: link:../ndigo-core
       '@ndigo/log':
         specifier: ~0.0.1
         version: link:../ndigo-log

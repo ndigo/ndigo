@@ -217,7 +217,7 @@ export class RingBuffer<T = unknown> implements ArrayLike<T | undefined>, Iterab
      * @returns The oldest element, or `undefined` if the buffer is empty.
      */
     peek(): T | undefined {
-        if (this.isEmpty) return undefined;
+        if (this._head === this._tail && !(this._full & FULL)) return undefined;
         return this[this._tail];
     }
 

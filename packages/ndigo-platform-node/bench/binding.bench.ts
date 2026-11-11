@@ -56,6 +56,8 @@ function routeWith(body: unknown) {
 const routeSmall = routeWith(smallBody);
 const routeNested = routeWith(nestedBody);
 const routeInvalid = routeWith(invalidBody);
+const routeEmpty = routeWith({});
+const routeMissing = routeWith(undefined);
 
 test('body — whole-object bind', async ({ bench }) => {
     assertEquivalent('whole body bind', resolver.resolveArgument(wholeBody, routeSmall, null), smallBody);
@@ -80,6 +82,24 @@ test('validate — whole body via Zod', async ({ bench }) => {
         for (let i = 0; i < BATCH; i++) {
             try {
                 retain(resolver.resolveArgument(validatedWhole, routeInvalid, null));
+            } catch {
+                retain('invalid');
+            }
+        }
+    }).run();
+    await bench(benchName('validatedBy(Zod) — empty {}', BATCH), () => {
+        for (let i = 0; i < BATCH; i++) {
+            try {
+                retain(resolver.resolveArgument(validatedWhole, routeEmpty, null));
+            } catch {
+                retain('invalid');
+            }
+        }
+    }).run();
+    await bench(benchName('validatedBy(Zod) — undefined body', BATCH), () => {
+        for (let i = 0; i < BATCH; i++) {
+            try {
+                retain(resolver.resolveArgument(validatedWhole, routeMissing, null));
             } catch {
                 retain('invalid');
             }

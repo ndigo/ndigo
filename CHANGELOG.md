@@ -357,6 +357,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   mapping per instance and fast-paths zero-parameter handlers before the
   metadata read. Same-host bench: zero-param 99 → 3 ns, one path 173 → 57 ns,
   three mixed 329 → 220 ns, RME < 0.3% (`BENCHMARKS.md`).
+- `@ndigo/dispatcher`: `validatedBy` memoizes the normalized failure for the
+  three empty-body shapes per schema. Nullish bodies fail from the template
+  before parsing; keyless plain objects are classified after a failed parse,
+  so valid bodies pay nothing. Same-host bench: `{}` −7 to −10%, `undefined`
+  −12 to −14%, valid unchanged (`BENCHMARKS.md`).
 - `apps/07-ndigo-island`: migrated from Web Awesome to the ndigo-ui registry
   items — the form now uses native `<input>`/`<button>` with copy-in CSS and no
   component-library dependency (AD-95).

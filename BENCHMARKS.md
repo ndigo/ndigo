@@ -178,6 +178,13 @@ representative, 32-source, and access-mix workloads. ORM writes remain the
 largest per-operation cost in the estate and the best candidate for the next
 deep optimization pass.
 
+**Optimization (this branch):** `RouteHandlerMethod.invoke` caches the resolved
+route mapping per handler instance and returns immediately for zero-parameter
+handlers (the whole error-handler path), before touching the polyfill metadata
+proxy. Same-host A/B, RME < 0.3%: `invoke` 0 params 99 → 3 ns (33×), 1 path
+param 173 → 57 ns (−67%), 1 query param 176 → 61 ns (−65%), 3 mixed
+329 → 220 ns (−33%), 10 query 849 → 700 ns (−17%).
+
 ### `like` and error construction
 
 | Scenario                              |              Ndigo | Comparator                      |

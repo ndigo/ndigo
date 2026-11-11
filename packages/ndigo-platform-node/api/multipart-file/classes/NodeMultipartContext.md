@@ -38,7 +38,7 @@ Text fields keyed by form field name; repeated names collapse to an array.
 
 ### files
 
-> `readonly` **files**: `Map`\<`string`, [`MultipartFile`](../interfaces/MultipartFile.md)[]\>
+> `readonly` **files**: `MultiValueMap`\<`string`, [`MultipartFile`](../interfaces/MultipartFile.md)\>
 
 Uploaded file parts grouped by form field name.
 

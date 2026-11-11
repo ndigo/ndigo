@@ -8,16 +8,20 @@ Foundational primitives, contracts, and utilities for Ndigo.
 
 ## Modules
 
+- [bloom-filter](bloom-filter/README.md)
 - [comparable](comparable/README.md)
 - [conditional](conditional/README.md)
 - [constructable](constructable/README.md)
 - [converter](converter/README.md)
+- [count-min-sketch](count-min-sketch/README.md)
 - [data-binder](data-binder/README.md)
+- [deque](deque/README.md)
 - [enumerable](enumerable/README.md)
 - [equatable](equatable/README.md)
 - [error](error/README.md)
 - [feature-metric-recorder](feature-metric-recorder/README.md)
 - [formatter](formatter/README.md)
+- [heap](heap/README.md)
 - [index](index/README.md)
 - [iterable](iterable/README.md)
 - [keypath-converter](keypath-converter/README.md)
@@ -39,6 +43,7 @@ Foundational primitives, contracts, and utilities for Ndigo.
 - [server-sent-event](server-sent-event/README.md)
 - [shared](shared/README.md)
 - [tree-node](tree-node/README.md)
+- [trie](trie/README.md)
 - [url-glob](url-glob/README.md)
 - [wildcard-converter](wildcard-converter/README.md)
 - [wildcard-exp](wildcard-exp/README.md)

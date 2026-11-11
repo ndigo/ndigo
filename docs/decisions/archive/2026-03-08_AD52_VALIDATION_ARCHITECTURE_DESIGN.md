@@ -1,8 +1,10 @@
 # AD-52: An encapsulated validation contract with a pluggable backing backend
 
+> **Archived** — this decision is fully superseded and retained for history. See the superseding ADR linked below.
+
 **Date:** 2026-03-08
-**Status:** Accepted — superseded by
-[AD-07](2026-09-05_AD07_ZOD_VALIDATION.md) (2026-09-05); the packages it
+**Status:** Superseded — superseded by AD-07
+[AD-07](../2026-09-05_AD07_ZOD_VALIDATION.md) (2026-09-05); the packages it
 governed (`ndigo-validate`, `ndigo-model`) were deleted 2026-09-05.
 
 ## Context
@@ -82,7 +84,7 @@ per-entity Zod schema (`entity-schema.ts`, AD-07).
 - Plan: `docs/plans/2026-03-08_VALIDATE_DESIGN.md`
 - Deletion: commit `06c51978` (2026-09-05), `--diff-filter=D` on
   `packages/ndigo-validate/` and `packages/ndigo-model/`
-- Superseding: [AD-07](2026-09-05_AD07_ZOD_VALIDATION.md)
+- Superseding: [AD-07](../2026-09-05_AD07_ZOD_VALIDATION.md)
 
 ## Revisit Trigger
 

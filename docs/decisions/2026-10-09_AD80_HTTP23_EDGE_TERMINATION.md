@@ -1,7 +1,7 @@
 # AD-80: HTTP/2–3 — edge termination is the supported pattern
 
 **Date:** 2026-10-09
-**Status:** Superseded in part by
+**Status:** Superseded in part — superseded in part by AD-81
 [AD-81](2026-10-09_AD81_NATIVE_HTTP2.md) — D-3's optioned native-h2 work
 was executed the same day as an opt-in TLS mode; D-1/D-2 (edge
 termination as the default posture) remain current. Originally: Accepted,

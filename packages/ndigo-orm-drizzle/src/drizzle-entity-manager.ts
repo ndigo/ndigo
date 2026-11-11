@@ -43,10 +43,8 @@ export class DrizzleEntityManager {
         const pkColumn = meta.columns.find((c) => c.fieldName === meta.primaryColumn);
         const pkValue = pkColumn ? record[pkColumn.fieldName] : undefined;
         const hasLifecycleHooks = meta.lifecycleHooks.length > 0;
-        const exists = hasLifecycleHooks &&
-            pkColumn !== undefined &&
-            pkValue !== undefined &&
-            pkValue !== null
+        const exists =
+            hasLifecycleHooks && pkColumn !== undefined && pkValue !== undefined && pkValue !== null
                 ? await this.existsById(entityClass, pkValue)
                 : false;
 

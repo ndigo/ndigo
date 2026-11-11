@@ -19,6 +19,11 @@ The generic parameter `T` provides compile-time type association.
 
 The type of the value associated with this token.
 
+## Implements
+
+- `Equatable`\<`ContextToken`\<`_T`\>\>
+- `Serializable`
+
 ## Constructors
 
 ### Constructor
@@ -67,6 +72,32 @@ and warns on mismatch.
 
 ## Methods
 
+### equals()
+
+> **equals**(`value`): `boolean`
+
+Compares this token with another by description and required version.
+
+#### Parameters
+
+##### value
+
+`unknown`
+
+The value to compare.
+
+#### Returns
+
+`boolean`
+
+`true` when both tokens share the same description and required version.
+
+#### Implementation of
+
+`Equatable.equals`
+
+***
+
 ### toString()
 
 > **toString**(): `string`
@@ -78,3 +109,7 @@ Returns a string representation of the ContextToken.
 `string`
 
 A string in the format `ContextToken(description)`.
+
+#### Implementation of
+
+`Serializable.toString`

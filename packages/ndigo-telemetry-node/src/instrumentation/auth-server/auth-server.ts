@@ -14,34 +14,62 @@ export class AuthServerInstrumentation extends AbstractBaseInstrumentation {
     }
 
     enable(): void {
-        this._wrap(JWTAdapter.prototype, 'validate', this._patch({
-            name: 'JWTAdapter.validate',
-            kind: SpanKind.INTERNAL,
-        }));
-        this._wrap(JWTAdapter.prototype, 'issueTokens', this._patch({
-            name: 'JWTAdapter.issueTokens',
-            kind: SpanKind.INTERNAL,
-        }));
-        this._wrap(JWTAdapter.prototype, 'refresh', this._patch({
-            name: 'JWTAdapter.refresh',
-            kind: SpanKind.INTERNAL,
-        }));
-        this._wrap(CredentialsAuthAdapter.prototype, 'authenticate', this._patch({
-            name: 'CredentialsAuthAdapter.authenticate',
-            kind: SpanKind.INTERNAL,
-        }));
-        this._wrap(CredentialsAuthAdapter.prototype, 'validate', this._patch({
-            name: 'CredentialsAuthAdapter.validate',
-            kind: SpanKind.INTERNAL,
-        }));
-        this._wrap(CredentialsAuthAdapter.prototype, 'refresh', this._patch({
-            name: 'CredentialsAuthAdapter.refresh',
-            kind: SpanKind.INTERNAL,
-        }));
-        this._wrap(AuthRouteGuard.prototype, 'preHandle', this._patch({
-            name: 'AuthRouteGuard.preHandle',
-            kind: SpanKind.INTERNAL,
-        }));
+        this._wrap(
+            JWTAdapter.prototype,
+            'validate',
+            this._patch({
+                name: 'JWTAdapter.validate',
+                kind: SpanKind.INTERNAL,
+            })
+        );
+        this._wrap(
+            JWTAdapter.prototype,
+            'issueTokens',
+            this._patch({
+                name: 'JWTAdapter.issueTokens',
+                kind: SpanKind.INTERNAL,
+            })
+        );
+        this._wrap(
+            JWTAdapter.prototype,
+            'refresh',
+            this._patch({
+                name: 'JWTAdapter.refresh',
+                kind: SpanKind.INTERNAL,
+            })
+        );
+        this._wrap(
+            CredentialsAuthAdapter.prototype,
+            'authenticate',
+            this._patch({
+                name: 'CredentialsAuthAdapter.authenticate',
+                kind: SpanKind.INTERNAL,
+            })
+        );
+        this._wrap(
+            CredentialsAuthAdapter.prototype,
+            'validate',
+            this._patch({
+                name: 'CredentialsAuthAdapter.validate',
+                kind: SpanKind.INTERNAL,
+            })
+        );
+        this._wrap(
+            CredentialsAuthAdapter.prototype,
+            'refresh',
+            this._patch({
+                name: 'CredentialsAuthAdapter.refresh',
+                kind: SpanKind.INTERNAL,
+            })
+        );
+        this._wrap(
+            AuthRouteGuard.prototype,
+            'preHandle',
+            this._patch({
+                name: 'AuthRouteGuard.preHandle',
+                kind: SpanKind.INTERNAL,
+            })
+        );
     }
 
     disable(): void {

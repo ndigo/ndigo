@@ -27,8 +27,15 @@ is a no-op, and `disable()` unwinds the wrappers once and re-arms the next
 
 ## Extended by
 
+- [`CacheInstrumentation`](../../cache/cache/classes/CacheInstrumentation.md)
 - [`ContextInstrumentation`](../../context/context/classes/ContextInstrumentation.md)
 - [`DispatcherInstrumentation`](../../dispatcher/dispatcher/classes/DispatcherInstrumentation.md)
+- [`HostInstrumentation`](../../host/host/classes/HostInstrumentation.md)
+- [`HTTPClientInstrumentation`](../../http-client/http-client/classes/HTTPClientInstrumentation.md)
+- [`LockInstrumentation`](../../locks/locks/classes/LockInstrumentation.md)
+- [`RateLimitInstrumentation`](../../rate-limit/rate-limit/classes/RateLimitInstrumentation.md)
+- [`ResilienceInstrumentation`](../../resilience/resilience/classes/ResilienceInstrumentation.md)
+- [`StompInstrumentation`](../../stomp/stomp/classes/StompInstrumentation.md)
 
 ## Constructors
 

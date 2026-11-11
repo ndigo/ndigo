@@ -46,7 +46,7 @@ The full API is at [`api/`](api/README.md). Primary exports live in
 how it fits with the rest of Ndigo.
 
 - **Bootstrap** — `configureBrowserTelemetry()`
-- **Instrumentations** — `RouterInstrumentation`, `DispatcherInstrumentation`, `WebSocketClientInstrumentation`
+- **Instrumentations** — `RouterInstrumentation`, `DispatcherInstrumentation`, `WebSocketClientInstrumentation`, `AuthClientInstrumentation`
 
 ## Development
 

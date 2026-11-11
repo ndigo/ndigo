@@ -8,8 +8,9 @@
 
 An OpenTelemetry instrumentation for `GenericApplicationContext` lifecycle events.
 
-This instrumentation automatically creates spans for the `destroy` method,
-providing visibility into application context teardown processes.
+This instrumentation automatically creates spans for the `destroy` and
+`refresh` methods, providing visibility into application context teardown
+and refresh processes.
 
 ## Extends
 
@@ -35,7 +36,7 @@ providing visibility into application context teardown processes.
 
 > **disable**(): `void`
 
-Restores the original `destroy` method.
+Restores the original `destroy` and `refresh` methods.
 
 #### Returns
 
@@ -51,7 +52,7 @@ Restores the original `destroy` method.
 
 > **enable**(): `void`
 
-Patches `GenericApplicationContext#destroy` to record teardown spans.
+Patches `GenericApplicationContext#destroy` and `#refresh` to record spans.
 
 #### Returns
 

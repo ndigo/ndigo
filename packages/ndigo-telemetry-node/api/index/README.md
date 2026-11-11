@@ -14,9 +14,33 @@ NodeSDK configuration and the Node platform instrumentations.
 
 ## References
 
+### AuthServerInstrumentation
+
+Re-exports [AuthServerInstrumentation](../instrumentation/auth-server/auth-server/classes/AuthServerInstrumentation.md)
+
+***
+
+### BootInstrumentation
+
+Re-exports [BootInstrumentation](../instrumentation/boot/boot/classes/BootInstrumentation.md)
+
+***
+
+### ClusterInstrumentation
+
+Re-exports [ClusterInstrumentation](../instrumentation/cluster/cluster/classes/ClusterInstrumentation.md)
+
+***
+
 ### configureTelemetry
 
 Re-exports [configureTelemetry](../node-config/functions/configureTelemetry.md)
+
+***
+
+### DrizzleInstrumentation
+
+Re-exports [DrizzleInstrumentation](../instrumentation/drizzle/drizzle/classes/DrizzleInstrumentation.md)
 
 ***
 
@@ -41,6 +65,12 @@ Re-exports [HTTPServerInstrumentation](../instrumentation/http-server/http-serve
 ### PrometheusMetricReader
 
 Re-exports [PrometheusMetricReader](../metrics/prometheus-metric-reader/classes/PrometheusMetricReader.md)
+
+***
+
+### RedisInstrumentation
+
+Re-exports [RedisInstrumentation](../instrumentation/redis/redis/classes/RedisInstrumentation.md)
 
 ***
 

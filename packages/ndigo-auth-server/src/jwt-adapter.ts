@@ -546,7 +546,7 @@ function principalFromPayload(payload: JWTPayload): Principal | null {
     // matching `ndigo-auth-client/oidc-adapter.ts`'s `readRoles`.
     const rawRoles = Array.isArray(payload.roles) ? (payload.roles as unknown[]) : [];
     const roles = rawRoles.filter((role): role is string => typeof role === 'string');
-    // OAuth 2.0 `scope` is a space-delimited string; Azure AD's `scp` is an
+    const roleSet = new Set(roles);
     // array (or a space-delimited string); `scopes` is the custom-IdP array.
     const scopeClaim = payload.scope;
     const scpClaim = payload.scp;
@@ -559,14 +559,15 @@ function principalFromPayload(payload: JWTPayload): Principal | null {
     const scopes = [
         ...new Set(scopeParts.filter((scope): scope is string => typeof scope === 'string' && scope.length > 0)),
     ];
+    const scopeSet = new Set(scopes);
     return {
         id: sub,
         name: String(payload.name ?? payload.email ?? 'Unknown'),
         roles,
         scopes,
-        hasRole: (role: string) => roles.includes(role),
-        hasAnyRole: (...asked: string[]) => asked.some((r) => roles.includes(r)),
-        hasScope: (scope: string) => scopes.includes(scope),
-        hasAnyScope: (...asked: string[]) => asked.some((s) => scopes.includes(s)),
+        hasRole: (role: string) => roleSet.has(role),
+        hasAnyRole: (...asked: string[]) => asked.some((r) => roleSet.has(r)),
+        hasScope: (scope: string) => scopeSet.has(scope),
+        hasAnyScope: (...asked: string[]) => asked.some((s) => scopeSet.has(s)),
     };
 }

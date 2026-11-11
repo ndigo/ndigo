@@ -454,11 +454,14 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
      */
     hasValue<T = unknown>(nameOrToken: string | ContextToken<T>): boolean {
         const name = typeof nameOrToken === 'string' ? nameOrToken : nameOrToken.description;
-        return (
-            this.hasInstance(name) ||
-            this.hasConstructor(name) ||
-            (this.#parent ? (this.#parent as unknown as AbstractFactory).hasValue(name) : false)
-        );
+        if (this.hasInstance(name) || this.hasConstructor(name)) {
+            return true;
+        }
+        const parent = this.#parent;
+        if (parent === null) {
+            return false;
+        }
+        return (parent as unknown as AbstractFactory).hasValue(name);
     }
 
     /**

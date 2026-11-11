@@ -5,7 +5,7 @@ decides how long each one lives, injects the collaborators a bean asks for, and
 closes resources in a defined order when the app stops. This guide covers the
 registration surface, the scope strategies, and the lifecycle hooks.
 
-**Audience:** Node and browser application developers · **Prerequisites:** Guide 01 (Node) or guide 02 (browser) · **Reference app:** `apps/05-ndigo-api`
+**Audience:** Node and browser application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) (Node) or [guide 02](02-building-a-browser-app.md) (browser) · **Reference app:** `apps/05-ndigo-api`
 
 ## What you'll learn
 
@@ -82,13 +82,13 @@ value; both are beans.
 Scopes decide **how long a bean lives**. Declare one with a class decorator from
 `@ndigo/factory`:
 
-| Scope                 | Lifespan                                                  | Use                            |
+| Scope | Lifespan | Use |
 | --------------------- | --------------------------------------------------------- | ------------------------------ |
-| `singleton` (default) | One instance per factory                                  | Services, configuration, pools |
-| `prototype`           | A new instance on every `getValue`                        | Short-lived collaborators      |
-| `hash` / route        | One instance per active scope key, torn down at route end | Per-route request state        |
-| `refresh`             | Cached until `config:refresh`, then re-created            | Configuration-derived clients  |
-| custom                | Whatever the registered `Scope` implements                | App-specific lifetimes         |
+| `singleton` (default) | One instance per factory | Services, configuration, pools |
+| `prototype` | A new instance on every `getValue` | Short-lived collaborators |
+| `hash` / route | One instance per active scope key, torn down at route end | Per-route request state |
+| `refresh` | Cached until `config:refresh`, then re-created | Configuration-derived clients |
+| custom | Whatever the registered `Scope` implements | App-specific lifetimes |
 
 ```ts
 import { singletonScope, prototypeScope, refreshScope, hashScope } from '@ndigo/factory';
@@ -114,7 +114,7 @@ class FeatureClient {
 }
 ```
 
-`@refreshScope` is the bridge to guide 03: when the environment emits
+`@refreshScope` is the bridge to [guide 03](03-environment-configuration.md): when the environment emits
 `config:refresh`, the cached instance is destroyed and the next `getValue`
 re-creates it. A custom scope is registered on the factory with
 `registerScope(name, scope)`; the scope owns its own cache and
@@ -124,11 +124,11 @@ Scope pitfalls:
 
 - A scope decorator belongs on the class, not on the `@entry` method.
 - `prototype` beans are not cached, so nothing calls their `destroy`/`close`
-  automatically; the caller owns them.
+ automatically; the caller owns them.
 - `hash` scope requires an active key (`HashScope.setCurrentKey`); resolving
-  outside a route scope fails loudly.
+ outside a route scope fails loudly.
 - `refresh` destroys the old instance; do not hold a reference to it across a
-  refresh.
+ refresh.
 
 ## 4. Aware callbacks
 
@@ -158,12 +158,12 @@ framework object is genuinely ambient.
 
 Four contracts cover the common lifecycle shapes:
 
-| Contract         | Method               | When it runs                                     |
+| Contract | Method | When it runs |
 | ---------------- | -------------------- | ------------------------------------------------ |
-| `Initializable`  | `init()`             | After construction and aware processing          |
-| `Destroyable`    | `destroy()`          | When the bean is destroyed or the context closes |
-| `Closeable`      | `close()`            | Same as destroy, for close-shaped APIs           |
-| `SmartLifecycle` | `start()` / `stop()` | On context refresh/close, by phase               |
+| `Initializable` | `init` | After construction and aware processing |
+| `Destroyable` | `destroy` | When the bean is destroyed or the context closes |
+| `Closeable` | `close` | Same as destroy, for close-shaped APIs |
+| `SmartLifecycle` | `start` / `stop` | On context refresh/close, by phase |
 
 ```ts
 import type { Initializable, Closeable, SmartLifecycle } from '@ndigo/factory';
@@ -200,12 +200,12 @@ class Heartbeat implements SmartLifecycle {
 `SmartLifecycle` beans start in **ascending** phase order on refresh and stop in
 **descending** phase order on close. Use a lower phase for infrastructure that
 others depend on and a higher phase for consumers. `isAutoStartup: false` opts
-out of automatic start; the context still calls `stop()` if the bean is running.
+out of automatic start; the context still calls `stop` if the bean is running.
 
-Teardown is idempotent: `destroy()`/`close()` may run more than once, so guard
-the body. The container calls `destroy()` when present, otherwise `close()`;
+Teardown is idempotent: `destroy`/`close` may run more than once, so guard
+the body. The container calls `destroy` when present, otherwise `close`;
 implementing both is unnecessary. Async teardown is not awaited by the
-synchronous `context.close()` — bridge an async resource to a
+synchronous `context.close` — bridge an async resource to a
 `Closeable` that drains first (guide 21) or close it explicitly before the
 context.
 
@@ -232,27 +232,27 @@ Events travel through the tree explicitly:
 Use application events for cross-context notification (a feature mounted, a
 configuration refreshed), not for durable work — that is jobs (guide 22) — and
 not for local derived state — that is signals (guide 29). `ContextEventGateway`
-adds an allowlisted relay between a child and a shell; guide 31 covers the
+adds an allowlisted relay between a child and a shell; [guide 31](31-micro-frontends.md) covers the
 micro-frontend wiring.
 
 Closing a context closes its children depth-first, then stops its lifecycle
-processor, destroys its beans, and detaches from the parent. `close()` is a
+processor, destroys its beans, and detaches from the parent. `close` is a
 safe no-op after the first call.
 
 ## 7. Pitfalls
 
 - **Registering an instance with `setValue` bypasses scopes.** It is an
-  instance value for the lifetime of the context; use `@entry` for scoped
-  beans.
+ instance value for the lifetime of the context; use `@entry` for scoped
+ beans.
 - **Circular constructor dependencies fail at refresh.** Break the cycle with a
-  setter/aware callback, a provider method, or a separate collaborator.
-- **A bean captured before `refresh()` is not initialized.** Resolve beans after
-  the context is active; boot presets return the refreshed context.
+ setter/aware callback, a provider method, or a separate collaborator.
+- **A bean captured before `refresh` is not initialized.** Resolve beans after
+ the context is active; boot presets return the refreshed context.
 - **Async cleanup is not automatic.** Bridge to `Closeable` and drain before
-  `context.close()`.
+ `context.close`.
 - **Do not use the context as a global.** Pass it only to infrastructure that
-  genuinely needs the container; application services should take their
-  collaborators as constructor arguments.
+ genuinely needs the container; application services should take their
+ collaborators as constructor arguments.
 
 ## See also
 

@@ -1,11 +1,11 @@
 # Guide 20 — ORM & Migrations
 
-The journaled migration lifecycle (AD-30/AD-78): decorator entities are the
+The journaled migration lifecycle: decorator entities are the
 single schema source, `ndigo db generate` renders versioned migrations from
 them, `ndigo db migrate` applies them through the journaled runner, and
 `ndigo db status` reports the journal. Reference application: `apps/05-ndigo-api`.
 
-**Audience:** Node application developers · **Prerequisites:** Guide 01 · **Reference app:** `apps/05-ndigo-api`
+**Audience:** Node application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) · **Reference app:** `apps/05-ndigo-api`
 
 ## What you'll learn
 
@@ -28,15 +28,15 @@ db/migrations/NNNN-slug.ts ──► ndigo db migrate / migrateOnBoot
                         _ndigo_migrations (journal, forward-only)
 ```
 
-## 1. The runner (`DrizzleMigrator`, AD-30)
+## 1. The runner (`DrizzleMigrator`, )
 
 Migrations are versioned modules, one per file under `db/migrations`:
 `<NNNN>-<slug>.ts`, each exporting a `Migration` as its default export.
 Versions are positive integers and **unique across all files**; the runner
 applies pending ones in ascending order and records each application in the
-`_ndigo_migrations` journal. The runner is **forward-only** — no `down()`, no
+`_ndigo_migrations` journal. The runner is **forward-only** — no `down`, no
 rollback execution; downgrades mean restoring a backup and re-applying.
-`migrate()` is idempotent across restarts; a version that fails is never
+`migrate` is idempotent across restarts; a version that fails is never
 journaled and retries cleanly.
 
 ```ts
@@ -64,17 +64,17 @@ belongs to the application. Hand-written SQL migrations stay first-class:
 the same directory holds generated and authored files, versions unique
 across both.
 
-## 2. Generation (`ndigo db generate`, AD-78)
+## 2. Generation (`ndigo db generate`, )
 
 `ndigo db generate` renders the next migration from your entities — the
 **committed snapshot** is the diff base, so:
 
 - a clean tree generates nothing (`no schema changes`);
 - renaming/adding/dropping **columns or tables** emits the matching
-  `ALTER`/`CREATE`/`DROP` statements as a new versioned file;
+ `ALTER`/`CREATE`/`DROP` statements as a new versioned file;
 - the snapshot (`db/schema.json`) is rewritten on every run — regeneration
-  is byte-identical, which is what the root `pnpm db:schema:check` gate
-  asserts in CI.
+ is byte-identical, which is what the root `pnpm db:schema:check` gate
+ asserts in CI.
 
 The generator lives in the app (entities and snapshot path are app-owned):
 
@@ -101,29 +101,29 @@ name, SQLite storage type, primary key/generated, nullability. Everything
 else stays **hand-written migration SQL**:
 
 - defaults, `UNIQUE`, indexes, CHECK constraints, and FK DDL from relation
-  metadata are not expressed by `@ndigo/orm` column metadata today;
+ metadata are not expressed by `@ndigo/orm` column metadata today;
 - a column **type/nullability/PK change** is unsupported (it needs a table
-  rebuild) — write it by hand;
+ rebuild) — write it by hand;
 - the snapshot format carries a `predicate` version; growing the metadata
-  later bumps it so committed snapshots fail the freshness check instead of
-  silently diverging.
+ later bumps it so committed snapshots fail the freshness check instead of
+ silently diverging.
 
 `db generate` **fails loud instead of emitting what the operator has not
 reviewed**; the patterns below exit non-zero with the offending statements
 on stderr until acknowledged (REV-002/REV-006):
 
 - **destructive drops** (dropped columns, dropped tables) — an entity
-  rename would otherwise render `DROP TABLE IF EXISTS` into a migration
-  unseen; re-run with `NDIGO_DB_ACCEPT_DROPS=true` after reviewing;
+ rename would otherwise render `DROP TABLE IF EXISTS` into a migration
+ unseen; re-run with `NDIGO_DB_ACCEPT_DROPS=true` after reviewing;
 - **unexpressible changes** — reported as unsupported; the snapshot still
-  advances (the entities are the source of truth), so without the
-  acknowledgment a hand-written migration could be forgotten while the
-  freshness gate stays silent; re-run with `NDIGO_DB_ACCEPT_UNSUPPORTED=true`.
+ advances (the entities are the source of truth), so without the
+ acknowledgment a hand-written migration could be forgotten while the
+ freshness gate stays silent; re-run with `NDIGO_DB_ACCEPT_UNSUPPORTED=true`.
 
 Both flags follow the repo's env-flag convention (`present`/`true`/`1`
 enables, `false`/`0`/`''` does not) and are read from the environment.
 
-## 3. Running migrations at boot (`migrations.runOnBoot`, AD-78 D-4)
+## 3. Running migrations at boot (`migrations.runOnBoot`, )
 
 `@ndigo/orm-drizzle` exports `migrateOnBoot({ dataSource, dir })`: loads the
 file migrations and applies pending ones through the journaled runner,
@@ -157,14 +157,14 @@ if (migrationsConfig.runOnBoot) {
 One runner at a time: concurrent migrators fail loud on the journal primary
 key (operator contract, not a lock).
 
-## 4. The `ndigo db` surface (AD-75/AD-78)
+## 4. The `ndigo db` surface 
 
-| Command                     | Runs                                             | Owner                       |
-| :-------------------------- | :----------------------------------------------- | :-------------------------- |
+| Command | Runs | Owner |
+|:-------------------------- |:----------------------------------------------- |:-------------------------- |
 | `ndigo db new [dir] [slug]` | scaffolds `<NNNN>-<slug>.ts` at the next version | CLI (`db/migrations` probe) |
-| `ndigo db generate [dir]`   | the app's `scripts.db:generate`                  | app (entities + snapshot)   |
-| `ndigo db migrate [dir]`    | the app's `scripts.db:migrate` (journaled apply) | app (data source + dir)     |
-| `ndigo db status [dir]`     | the app's `scripts.db:status` (journal readback) | app (data source + dir)     |
+| `ndigo db generate [dir]` | the app's `scripts.db:generate` | app (entities + snapshot) |
+| `ndigo db migrate [dir]` | the app's `scripts.db:migrate` (journaled apply) | app (data source + dir) |
+| `ndigo db status [dir]` | the app's `scripts.db:status` (journal readback) | app (data source + dir) |
 
 ## 5. Reference consumer
 
@@ -181,11 +181,11 @@ The data source's parent directory is created on demand
 
 ## See also
 
-- [AD-30](../decisions/2026-09-26_AD30_ORM_MIGRATIONS.md) — the journaled
-  runner contract (versions, journal, D-2 atomicity, D-3 DDL sharing).
-- [AD-78](../decisions/2026-10-08_AD78_MIGRATION_GENERATION.md) — file
-  migrations, the committed snapshot, generation, `migrateOnBoot`.
-- [AD-75](../decisions/2026-10-07_AD75_FRAMEWORK_CLI.md) — the `db:*` CLI
-  surface.
+- — the journaled
+ runner contract (versions, journal, D-2 atomicity, D-3 DDL sharing).
+- — file
+ migrations, the committed snapshot, generation, `migrateOnBoot`.
+- — the `db:*` CLI
+ surface.
 - [Guide 03](03-environment-configuration.md) — property sources and config
-  files (the dotted-key carrier for `migrations.*`).
+ files (the dotted-key carrier for `migrations.*`).

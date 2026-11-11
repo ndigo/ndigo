@@ -1,6 +1,6 @@
 <!-- guide-redirect -->
 
-# Guide 13 — OpenAPI & API Docs (moved)
+# [Guide 13](13-dto-conversion.md) — OpenAPI & API Docs (moved)
 
 This guide is now [Guide 12 — OpenAPI & API Docs](12-openapi-and-api-docs.md). The old path is kept so
 links from historical records (ADRs, plans, audits) continue to resolve. See the

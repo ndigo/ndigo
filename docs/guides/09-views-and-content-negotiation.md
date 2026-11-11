@@ -49,12 +49,12 @@ the handler resolves; the platform adapter writes the result.
 
 Handlers have four return shapes:
 
-| Return                  | Meaning                                                     |
+| Return | Meaning |
 | ----------------------- | ----------------------------------------------------------- |
-| `ModelAndView`          | A view name or `View` instance plus model data              |
-| `ProducerView` instance | Rendered directly (streams/async iterables, SSE)            |
-| Plain value or `string` | Serialized as a JSON response document                      |
-| `ResponseEntity`        | Explicit status/headers/body; `>= 400` becomes problem+json |
+| `ModelAndView` | A view name or `View` instance plus model data |
+| `ProducerView` instance | Rendered directly (streams/async iterables, SSE) |
+| Plain value or `string` | Serialized as a JSON response document |
+| `ResponseEntity` | Explicit status/headers/body; `>= 400` becomes problem+json |
 
 `ModelAndView` is the explicit form for name- and instance-based views:
 
@@ -73,15 +73,15 @@ A `ResponseEntity` adds an explicit status and headers; the platform rewrites a
 
 `@ndigo/view` ships the representations most APIs need:
 
-| View              | Media type                 | Notes                                              |
+| View | Media type | Notes |
 | ----------------- | -------------------------- | -------------------------------------------------- |
-| `JSONView`        | `application/json`         | `JSON.stringify` with the route as context         |
-| `A2UIView`        | `application/a2ui+json`    | Array of A2UI messages for agent-driven surfaces   |
-| `ToonView`        | `text/toon`                | Tabular/agent payloads as TOON (AD-102; opt-in)    |
-| `CSVView`         | `text/csv`                 | Records from a model field (`{ records: 'rows' }`) |
-| `TextView`        | `text/plain`               | Plain string bodies                                |
-| `OctetStreamView` | `application/octet-stream` | Binary bodies                                      |
-| `ProducerView`    | caller-defined             | Streams/async iterables, SSE                       |
+| `JSONView` | `application/json` | `JSON.stringify` with the route as context |
+| `A2UIView` | `application/a2ui+json` | Array of A2UI messages for agent-driven surfaces |
+| `ToonView` | `text/toon` | Tabular/agent payloads as TOON |
+| `CSVView` | `text/csv` | Records from a model field (`{ records: 'rows' }`) |
+| `TextView` | `text/plain` | Plain string bodies |
+| `OctetStreamView` | `application/octet-stream` | Binary bodies |
+| `ProducerView` | caller-defined | Streams/async iterables, SSE |
 
 All serializing views expose their `mediaType`, which is what negotiation
 matches against. A view without a media type is a fallback, not a negotiation
@@ -103,11 +103,11 @@ the renderer supports it. Use the regular HTML view or a text response when
 there is nothing more than a short message or a small unstructured answer
 for the sandbox to render.
 
-### TOON (`@ndigo/view-toon`, AD-102)
+### TOON (`@ndigo/view-toon`, )
 
 TOON (Token-Oriented Object Notation) is a line-oriented encoding of the JSON
 data model, tuned for LLM prompts. `ToonView` serializes a model as
-`text/toon;charset=utf-8`, and `encodeToon()` renders the same document
+`text/toon;charset=utf-8`, and `encodeToon` renders the same document
 synchronously for in-process prompt composition — no view or HTTP involved.
 
 Preference order matters for who gets TOON. Register the JSON resolver
@@ -132,9 +132,9 @@ platform configures a `ContentNegotiationManager` and a
 `ContentNegotiationViewResolver`; the manager consults its strategies in order:
 
 - **Path extension** — `/report.csv` selects `text/csv`, `/report` falls back
-  to the `Accept` header.
+ to the `Accept` header.
 - **Accept header** — q-values and wildcards are parsed; the client's
-  preference order wins over resolver registration order.
+ preference order wins over resolver registration order.
 - **Fixed strategy** — a configured default for clients that send nothing.
 
 ```ts
@@ -170,13 +170,13 @@ throws `NotAcceptableError` (HTTP 406). That is deliberately distinct from
 
 A view resolver maps a logical name to a view. The platform composes them:
 
-| Resolver                         | Role                                    |
+| Resolver | Role |
 | -------------------------------- | --------------------------------------- |
-| `ImportViewResolver`             | Loads a view module by path (Node)      |
-| `NameViewResolver`               | Looks up a view bean by name            |
-| `ViewResolverComposite`          | Runs an ordered chain, first match wins |
-| `ContentNegotiationViewResolver` | Negotiates among candidate views        |
-| `IslandViewResolver`             | Maps a name to an `IslandView`          |
+| `ImportViewResolver` | Loads a view module by path (Node) |
+| `NameViewResolver` | Looks up a view bean by name |
+| `ViewResolverComposite` | Runs an ordered chain, first match wins |
+| `ContentNegotiationViewResolver` | Negotiates among candidate views |
+| `IslandViewResolver` | Maps a name to an `IslandView` |
 
 Name resolution is cached per `(name, language)`; only the media-type choice is
 per request. Resolvers map/load views — they never register components. A Web
@@ -186,18 +186,18 @@ Component's `customElements.define` remains the module's own side effect.
 
 The view **technology** is separate from the resolver:
 
-- `@ndigo/view-ejs` — server-side EJS templates; `t()` and formatters come from
-  `@ndigo/content`, and the locale rides on the route (guide 17).
+- `@ndigo/view-ejs` — server-side EJS templates; `t` and formatters come from
+ `@ndigo/content`, and the locale rides on the route (guide 17).
 - `@ndigo/view-webcomponent` — server-rendered Web Components; the browser
-  hydrates them with `@ndigo/signals` (guide 29).
+ hydrates them with `@ndigo/signals` (guide 29).
 - `@ndigo/view-toon` — the `text/toon` representation and prompt encoder
-  (AD-102); opt-in per route, never a default.
+ ; opt-in per route, never a default.
 - `IslandView` — server-rendered markup plus a serialized model, hydrated on
-  the client; the first paint can carry trusted Declarative Shadow DOM markup.
+ the client; the first paint can carry trusted Declarative Shadow DOM markup.
 
 The same logical name can resolve to an EJS view on Node and a Web Component in
 the browser. That is the "same name, resolver picks representation" rule
-(AD-65).
+.
 
 ## 7. View targets and themes
 
@@ -213,17 +213,17 @@ not bake theme names into a view; take them from the resolver.
 ## 8. Pitfalls
 
 - **A `string` return is a JSON value, not a view name.** Wrap the name in
-  `new ModelAndView('name')` to reach the resolver chain.
+ `new ModelAndView('name')` to reach the resolver chain.
 - **Give negotiation candidates a `mediaType`.** A view without one cannot be
-  selected by `Accept`.
+ selected by `Accept`.
 - **406 is a representation failure, not a missing route.** Do not catch it and
-  return 404.
+ return 404.
 - **Resolvers are cached per name.** Configure delegate resolvers before the
-  first request; adding them later is not seen.
+ first request; adding them later is not seen.
 - **Do not register components in a resolver.** `customElements.define` belongs
-  to the component module.
+ to the component module.
 - **A 4xx `ResponseEntity` is rewritten to problem+json.** For a custom error
-  envelope, use a `ProducerView` (guide 08).
+ envelope, use a `ProducerView` (guide 08).
 
 ## See also
 
@@ -234,4 +234,4 @@ not bake theme names into a view; take them from the resolver.
 - [Guide 29 — Signals & Islands](29-signals-and-islands.md) — island hydration
 - [Guide 41 — Custom View Engines](41-custom-view-engines.md) — adding React/Vue or a bespoke renderer
 - [`@ndigo/view`](../../packages/ndigo-view/README.md) — the view and negotiation surface
-- [AD-53](../decisions/2026-03-22_AD53_VIEW_EVENT_ARCHITECTURE.md) and [AD-65](../decisions/2026-09-06_AD65_VIEW_RESOLUTION_STRATEGY.md) — the view model and resolution strategy
+- and — the view model and resolution strategy

@@ -7,7 +7,7 @@ resolver architecture — each parameter source is one resolver, first match
 wins — and the binding machinery reuses `DataBinder` (keypath-aware,
 core/isomorphic), `ConversionService`, and the Zod `convert` hook (guide 07).
 
-**Audience:** Node and browser application developers · **Prerequisites:** Guide 01 (Node) or guide 02 (browser); guide 07 for validation · **Reference app:** `apps/05-ndigo-api`
+**Audience:** Node and browser application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) (Node) or [guide 02](02-building-a-browser-app.md) (browser); [guide 07](07-request-validation.md) for validation · **Reference app:** `apps/05-ndigo-api`
 
 ## What you'll learn
 
@@ -23,22 +23,22 @@ One coherent set of bindings, all read from the Route/dispatch context. Source
 is encoded in the type only where a whole source is bound into an object
 (`data-{source}:value`); otherwise each wire source is its own `*:value` type.
 
-| Binding         | Factory                                | Type                    | Source                                            | Nested? | Platform |
+| Binding | Factory | Type | Source | Nested? | Platform |
 | --------------- | -------------------------------------- | ----------------------- | ------------------------------------------------- | ------- | -------- |
-| Path variable   | `pathVariable('id')`                   | `path:variable`         | Route params (`:id`)                              | no      | both     |
-| Query           | `queryValue(name)`                     | `query:value`           | Route query                                       | no      | both     |
-| Matrix          | `matrixValue(name)`                    | `matrix:value`          | Segment matrix                                    | no      | both     |
-| Header          | `headerValue(name)`                    | `header:value`          | Request header                                    | no      | node     |
-| Body            | `bodyValue(name)`; no-arg = whole body | `body:value`            | request body (JSON / urlencoded)                  | yes     | node     |
-| Cookie          | `cookieValue(name)`                    | `cookie:value`          | `document.cookie` / `request.cookies`             | no      | both     |
-| History state   | `historyStateValue(name)`              | `history-state:value`   | `history.state`                                   | yes     | browser  |
-| Session storage | `sessionStorageValue(name)`            | `session-storage:value` | `sessionStorage`                                  | no      | browser  |
-| Local storage   | `localStorageValue(name)`              | `local-storage:value`   | `localStorage`                                    | no      | browser  |
-| Request session | `requestSessionValue(name)`            | `request-session:value` | `request.session`                                 | yes     | node     |
-| Attribute       | `attributeValue(name)`                 | `attribute:value`       | Framework context (`route.attributes`)            | yes     | both     |
-| Data binding    | `dataBinderValue(source, Target?)`     | `data-{source}:value`   | whole flat source → object (per-platform set, §2) | builds  | both     |
-| Request part    | `requestPart(part?, Target?)`          | `request-part:value`    | multipart JSON/text part                          | JSON    | node     |
-| Socket session  | `socketSessionValue(name)`             | `socket-session:value`  | Socket session                                    | —       | socket   |
+| Path variable | `pathVariable('id')` | `path:variable` | Route params (`:id`) | no | both |
+| Query | `queryValue(name)` | `query:value` | Route query | no | both |
+| Matrix | `matrixValue(name)` | `matrix:value` | Segment matrix | no | both |
+| Header | `headerValue(name)` | `header:value` | Request header | no | node |
+| Body | `bodyValue(name)`; no-arg = whole body | `body:value` | request body (JSON / urlencoded) | yes | node |
+| Cookie | `cookieValue(name)` | `cookie:value` | `document.cookie` / `request.cookies` | no | both |
+| History state | `historyStateValue(name)` | `history-state:value` | `history.state` | yes | browser |
+| Session storage | `sessionStorageValue(name)` | `session-storage:value` | `sessionStorage` | no | browser |
+| Local storage | `localStorageValue(name)` | `local-storage:value` | `localStorage` | no | browser |
+| Request session | `requestSessionValue(name)` | `request-session:value` | `request.session` | yes | node |
+| Attribute | `attributeValue(name)` | `attribute:value` | Framework context (`route.attributes`) | yes | both |
+| Data binding | `dataBinderValue(source, Target?)` | `data-{source}:value` | whole flat source → object (per-platform set, §2) | builds | both |
+| Request part | `requestPart(part?, Target?)` | `request-part:value` | multipart JSON/text part | JSON | node |
+| Socket session | `socketSessionValue(name)` | `socket-session:value` | Socket session | — | socket |
 
 **Nested-capable** sources (`body`, `request-session`, `history-state`,
 `attribute`) support dotted reads — `bodyValue('address.city')` walks the JSON
@@ -46,13 +46,13 @@ body. Scalar sources (`query`, `matrix`, headers, cookies, storage) do **not**:
 `queryValue('a.b')` is a literal key, never a walk.
 
 **Whole-source rule:** omitting the name binds the entire source object —
-`queryValue()` = whole query bag, `bodyValue()` = whole body,
-`attributeValue()` = whole framework-context bag, and so on for every
+`queryValue` = whole query bag, `bodyValue` = whole body,
+`attributeValue` = whole framework-context bag, and so on for every
 object-valued binder (the old `'*'` sentinel was removed; `matrixValue` is
-name-only because matrix params span segments). `pathVariable()` binds all
-route params; `routeValue()` binds the whole `Route`; `pathValue()` and
-`methodValue()` are sugar for the `path`/`method` properties — the rest of
-the `ROUTE` surface stays as recorded in AD-27/AD-28.
+name-only because matrix params span segments). `pathVariable` binds all
+route params; `routeValue` binds the whole `Route`; `pathValue` and
+`methodValue` are sugar for the `path`/`method` properties — the rest of
+the `ROUTE` surface stays as recorded in /.
 
 ## 2. Whole-source data binding — the form/model story
 
@@ -97,21 +97,21 @@ class ProfileController {
 Semantics to know:
 
 - **Plain object vs instance.** With no target, `dataBinderValue('body')`
-  binds into a plain nested object. With a target constructor,
-  `dataBinderValue('body', ProfileForm)`, the handler receives a real
-  `instanceof ProfileForm` — `instanceof` checks require the target.
+ binds into a plain nested object. With a target constructor,
+ `dataBinderValue('body', ProfileForm)`, the handler receives a real
+ `instanceof ProfileForm` — `instanceof` checks require the target.
 - **Validation + whitelist.** The Zod `convert` hook runs after binding.
-  Object schemas strip unknown keys by default (zod ^4.5.4 — there is no
-  `.stripUnknown()`); the no-schema path (`dataBinderValue(source)` without
-  `validatedBy`) binds **everything** in the source.
+ Object schemas strip unknown keys by default (zod ^4.5.4 — there is no
+ `.stripUnknown`); the no-schema path (`dataBinderValue(source)` without
+ `validatedBy`) binds **everything** in the source.
 - **Coercion.** Binding is string-typed (form fields arrive as strings); the
-  pipeline has no per-property conversion hook — `z.coerce.number()` is the
-  coercion surface.
+ pipeline has no per-property conversion hook — `z.coerce.number` is the
+ coercion surface.
 - **Missing value.** An absent whole source with `{ required: true }` throws
-  `MissingParameterError` (→ 400). An empty-but-present source binds to an
-  empty object.
+ `MissingParameterError` (→ 400). An empty-but-present source binds to an
+ empty object.
 - **Form + query stay separate** in v1 — query fields do not fold into form
-  binding (a documented divergence from the reference framework's combined model-attribute binding).
+ binding (a documented divergence from the reference framework's combined model-attribute binding).
 
 Nested scalar reads coexist: `bodyValue('address.city')` reads one value out
 of the JSON body without binding.
@@ -120,9 +120,9 @@ of the JSON body without binding.
 
 `requestPart(part?, Target?)` binds a named `multipart/form-data` part like
 `@RequestBody` — JSON parts parse to an object (raw-text fallback), bind into
-an optional DTO instance, then validate. File parts stay `fileValue()` /
+an optional DTO instance, then validate. File parts stay `fileValue` /
 `MultipartFile`. The part name is explicit or the method-argument name
-(AD-26 convention):
+:
 
 ```ts
 @postMapping('/upload')
@@ -134,7 +134,7 @@ an optional DTO instance, then validate. File parts stay `fileValue()` /
 async upload(meta: MetaDto, biography: object, file: MultipartFile) { … }
 ```
 
-`requestPart()` / `requestPart('bio')` yield plain objects; `requestPart(MetaDto)`
+`requestPart` / `requestPart('bio')` yield plain objects; `requestPart(MetaDto)`
 yields an `instanceof MetaDto`. Repeated parts (collapsed to `string[]` by the
 parser) parse per element into an array.
 
@@ -145,7 +145,7 @@ path segment (`/books;color=red`). Repeated params (`;tag=a;tag=b`) and
 comma-joined values (`;id=1,2,3`) bind as arrays; the single-value path is
 unchanged.
 
-### 4.1 Typed condition builders (AD-34 D6)
+### 4.1 Typed condition builders 
 
 Mapping conditions stay canonical expression strings (`queryParams:
 'filter=all'` — mapping tables deserialize from JSON and the registry
@@ -185,14 +185,14 @@ registerArgumentResolvers(context, resolvers);
 ```
 
 - `registerArgumentResolvers(applicationContext, resolvers)` writes the array
-  to `ARGUMENT_RESOLVERS` and returns it — the single registration entry point
-  both platform configure functions share, so custom registration behaves
-  identically on Node and browser.
+ to `ARGUMENT_RESOLVERS` and returns it — the single registration entry point
+ both platform configure functions share, so custom registration behaves
+ identically on Node and browser.
 - **Resolution order is array order.** The adapter discovers the registered
-  resolvers (then a stand-alone resolver under the `ARGUMENT_RESOLVER` token)
-  and appends its built-ins — path, matrix, query, attribute, route. The first
-  `supportsParameter` match wins, so prepending a resolver is how you
-  specialize an existing source without replacing the chain:
+ resolvers (then a stand-alone resolver under the `ARGUMENT_RESOLVER` token)
+ and appends its built-ins — path, matrix, query, attribute, route. The first
+ `supportsParameter` match wins, so prepending a resolver is how you
+ specialize an existing source without replacing the chain:
 
 ```ts
 import { ARGUMENT_RESOLVERS, registerArgumentResolvers } from '@ndigo/dispatcher';
@@ -242,11 +242,11 @@ class UploadArgumentResolver extends AbstractPlatformArgumentResolver {
 }
 ```
 
-See [AD-27](../decisions/2026-09-24_AD27_ARGUMENT_BINDING.md) for the full
+See for the full
 decision record and non-goals.
 
 ## See also
 
 - [Guide 07 — Request Validation](07-request-validation.md) — schemas on top of the extractors
-- [Guide 14 — Multipart & File Upload](14-multipart-and-file-upload.md) — `fileValue()` and request parts
+- [Guide 14 — Multipart & File Upload](14-multipart-and-file-upload.md) — `fileValue` and request parts
 - [`@ndigo/dispatcher`](../../packages/ndigo-dispatcher/README.md) — resolvers and parameter types

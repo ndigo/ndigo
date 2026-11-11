@@ -1,6 +1,6 @@
 <!-- guide-redirect -->
 
-# Guide 23 — Distributed Locks (moved)
+# [Guide 23](23-scheduling.md) — Distributed Locks (moved)
 
 This guide is now [Guide 24 — Distributed Locks](24-distributed-locks.md). The old path is kept so
 links from historical records (ADRs, plans, audits) continue to resolve. See the

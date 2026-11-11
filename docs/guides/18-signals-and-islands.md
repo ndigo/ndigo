@@ -1,6 +1,6 @@
 <!-- guide-redirect -->
 
-# Guide 18 — Signals & Islands (moved)
+# [Guide 18](18-forms-end-to-end.md) — Signals & Islands (moved)
 
 This guide is now [Guide 29 — Signals & Islands](29-signals-and-islands.md). The old path is kept so
 links from historical records (ADRs, plans, audits) continue to resolve. See the

@@ -7,11 +7,11 @@ place of the HTTP server: hash routing, in-page dispatch, and
 web-component rendering. The `createWebApplication` preset
 (`@ndigo/platform-web`, ) wires that runtime in one call.
 
-Reference applications: [`apps/08-ndigo-views`](../../apps/08-ndigo-views/README.md)
-(views and resolver chains) and [`apps/19-ndigo-hn`](../../apps/19-ndigo-hn/README.md)
+Reference applications: [`[apps/08-ndigo-views](https://github.com/ndigo/ndigo/tree/main/apps/08-ndigo-views)`](../../[apps/08-ndigo-views](https://github.com/ndigo/ndigo/tree/main/apps/08-ndigo-views)/README.md)
+(views and resolver chains) and [`[apps/19-ndigo-hn](https://github.com/ndigo/ndigo/tree/main/apps/19-ndigo-hn)`](../../[apps/19-ndigo-hn](https://github.com/ndigo/ndigo/tree/main/apps/19-ndigo-hn)/README.md)
 (routing, services, offline cache, deep links).
 
-**Audience:** Browser application developers · **Prerequisites:** Workspace bootstrapped; [guide 01](01-building-a-node-api.md) concepts recommended · **Reference app:** `apps/08-ndigo-views`, `apps/19-ndigo-hn`
+**Audience:** Browser application developers · **Prerequisites:** Workspace bootstrapped; [guide 01](01-building-a-node-api.md) concepts recommended · **Reference app:** `[apps/08-ndigo-views](https://github.com/ndigo/ndigo/tree/main/apps/08-ndigo-views)`, `[apps/19-ndigo-hn](https://github.com/ndigo/ndigo/tree/main/apps/19-ndigo-hn)`
 
 ## What you'll learn
 
@@ -96,7 +96,7 @@ through `app.router.addInterceptor(...)`.
 ## 3. App-specific state and services
 
 Beans are plain entries; cross-bean reads go through `ContextToken`s so a
-rename cannot silently miss (`apps/19-ndigo-hn/src/app/hn-tokens.ts`):
+rename cannot silently miss (`[apps/19-ndigo-hn](https://github.com/ndigo/ndigo/tree/main/apps/19-ndigo-hn)/src/app/hn-tokens.ts`):
 
 ```ts
 export const APP_SERVICE = new ContextToken<AppService>('appService');

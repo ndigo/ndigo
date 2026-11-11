@@ -5,7 +5,7 @@ parameter, a view name that does not resolve, a proxy that hides the client, or
 a stale build. This guide is the symptom → cause → fix index. Start with the
 status code or the error class, then follow the link into the owning guide.
 
-**Audience:** Node and browser application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) or 02 · **Reference app:** `apps/05-ndigo-api`, `apps/09-ndigo-httpbin`
+**Audience:** Node and browser application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) or 02 · **Reference app:** `[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)`, `[apps/09-ndigo-httpbin](https://github.com/ndigo/ndigo/tree/main/apps/09-ndigo-httpbin)`
 
 ## What you'll learn
 
@@ -25,7 +25,7 @@ status code or the error class, then follow the link into the owning guide.
 | **422** with `errors[]` | Zod validation failed | Read the field paths/messages; fix the schema or input (guide 07) |
 | **406** | Candidates exist but none serves `Accept`/extension | Add a representation or widen the accepted media type (guide 09) |
 | **415** | Wrong `Content-Type` (e.g., login is JSON-only) | Send the expected content type; do not form-post JSON endpoints (guide 26) |
-| **403** on a mutation | CSRF token/cookie mismatch, or missing role | Send `X-CSRF-Token` matching the cookie; check the auth metadata (guides 26/28) |
+| **403** on a mutation | CSRF token/cookie mismatch, or missing role | Send `X-CSRF-Token` matching the cookie; check the auth metadata (guides [26](26-authentication-and-sessions.md)/[28](28-security-hardening.md)) |
 | **429** with `Retry-After` | Rate-limit budget exhausted | Wait for the window, raise the budget, or fix the client key (guide 28) |
 | **500** | Unhandled error or misconfiguration | Read the server log with the trace/request id; the body is deliberately sanitized (guide 08) |
 
@@ -97,8 +97,8 @@ bridged to `Closeable` (guide 21).
 ## 6. Operational checks
 
 ```bash
-ndigo routes ./apps/05-ndigo-api     # the registered route/mapping table
-ndigo inspect ./apps/05-ndigo-api    # routes + mappings + declared config keys
+ndigo routes ./[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)     # the registered route/mapping table
+ndigo inspect ./[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)    # routes + mappings + declared config keys
 ndigo doctor                         # environment/workspace diagnostics
 curl -i localhost:3000/health        # liveness/readiness
 ```
@@ -124,7 +124,7 @@ per process. Add `@scheduled({ lock })` or use the lock driver (guide 24).
 `streamToSignal`/`EventEmitter` bridges, not a plain variable (guide 29).
 
 **Why does the browser guard not protect the API?** Client auth is UX; the
-server guard is the boundary (guides 26/27).
+server guard is the boundary (guides [26](26-authentication-and-sessions.md)/[27](27-browser-authentication-and-oidc.md)).
 
 ## See also
 

@@ -9,7 +9,7 @@ claims; the in-process reference driver for development, a durable libSQL
 store, and a Redis driver for multi-node deployments. The outbox closes the
 last gap — "send the email only if the order actually committed."
 
-**Audience:** Node application developers · **Prerequisites:** Guides 20 and 21 · **Reference package:** `packages/ndigo-jobs`
+**Audience:** Node application developers · **Prerequisites:** Guides [20](20-orm-and-migrations.md) and [21](21-persistence-and-shared-stores.md) · **Reference package:** `packages/ndigo-jobs`
 
 ## What you'll learn
 

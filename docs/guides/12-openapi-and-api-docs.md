@@ -6,7 +6,7 @@ and parameter maps that serve requests, so the spec cannot drift from
 behavior — and serves it with Swagger UI out of the box. No comments to
 write, no second source of truth.
 
-**Audience:** Node API developers · **Prerequisites:** Guides 01, 07, and 13 · **Reference app:** `apps/05-ndigo-api`
+**Audience:** Node API developers · **Prerequisites:** Guides [01](01-building-a-node-api.md), [07](07-request-validation.md), and [13](13-dto-conversion.md) · **Reference app:** `[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)`
 
 ## What you'll learn
 
@@ -126,7 +126,7 @@ spec from self-referencing and changes nothing about live dispatch.
 > discoverable at all);
 > - deploy the docs behind an `accessGuard` — the whole spec becomes
 > private, but is not redacted. The demo demonstrates this: it registers
-> `SecureDocsConfiguration` (`apps/05-ndigo-api/src/secure-docs-configuration.ts`),
+> `SecureDocsConfiguration` (`[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)/src/secure-docs-configuration.ts`),
 > whose guard accepts only an `Authorization: Bearer <token>` that
 > resolves through the same `lookupPrincipal` check the protected
 > handlers apply, so anonymous `/v3/api-docs` and `/swagger-ui/` are 401.

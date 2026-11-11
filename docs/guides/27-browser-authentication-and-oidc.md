@@ -10,7 +10,7 @@ and JWT). It shows the client state, the route guard, the authorization-code +
 PKCE flow, refresh handling, and the server callback bridge used by the
 playground app.
 
-**Audience:** Browser application developers · **Prerequisites:** [Guide 02](02-building-a-browser-app.md) and [guide 26](26-authentication-and-sessions.md) · **Reference app:** `apps/18-ndigo-auth-playground`
+**Audience:** Browser application developers · **Prerequisites:** [Guide 02](02-building-a-browser-app.md) and [guide 26](26-authentication-and-sessions.md) · **Reference app:** `[apps/18-ndigo-auth-playground](https://github.com/ndigo/ndigo/tree/main/apps/18-ndigo-auth-playground)`
 
 ## What you'll learn
 
@@ -194,5 +194,5 @@ server bridge when it can. The server side is [guide 26](26-authentication-and-s
 - [Guide 02 — Building a Browser App](02-building-a-browser-app.md) — the browser preset and router
 - [Guide 28 — Security Hardening](28-security-hardening.md) — cookies, CORS, and CSRF
 - [`@ndigo/auth-client`](../../packages/ndigo-auth-client/README.md) — `AuthClient`, guard, OIDC adapter
-- [apps/18-ndigo-auth-playground](../../apps/18-ndigo-auth-playground/README.md) — six auth modes, including OIDC + PKCE
+- [[apps/18-ndigo-auth-playground](https://github.com/ndigo/ndigo/tree/main/apps/18-ndigo-auth-playground)](../../[apps/18-ndigo-auth-playground](https://github.com/ndigo/ndigo/tree/main/apps/18-ndigo-auth-playground)/README.md) — six auth modes, including OIDC + PKCE
 - and — auth and revocation decisions

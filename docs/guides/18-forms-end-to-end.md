@@ -9,7 +9,7 @@ show the two canonical flows.
 This guide stitches them together: server-rendered forms (PetClinic) and
 browser/API forms (Conduit), plus the upload and CSRF edges.
 
-**Audience:** Node and browser application developers · **Prerequisites:** Guides 06, 07, and 09 · **Reference app:** `apps/12-ndigo-petclinic`, `apps/10-ndigo-conduit-web`
+**Audience:** Node and browser application developers · **Prerequisites:** Guides [06](06-argument-binding.md), [07](07-request-validation.md), and [09](09-views-and-content-negotiation.md) · **Reference app:** `[apps/12-ndigo-petclinic](https://github.com/ndigo/ndigo/tree/main/apps/12-ndigo-petclinic)`, `[apps/10-ndigo-conduit-web](https://github.com/ndigo/ndigo/tree/main/apps/10-ndigo-conduit-web)`
 
 ## What you'll learn
 
@@ -151,5 +151,5 @@ try {
 - [Guide 14 — Multipart & File Upload](14-multipart-and-file-upload.md) — file fields
 - [Guide 44 — Accessibility](44-accessibility.md) — labels, errors, and focus
 - [Guide 28 — Security Hardening](28-security-hardening.md) — CSRF
-- [apps/12-ndigo-petclinic](../../apps/12-ndigo-petclinic/README.md) — the server form reference
-- [apps/10-ndigo-conduit-web](../../apps/10-ndigo-conduit-web/README.md) — the browser form reference
+- [[apps/12-ndigo-petclinic](https://github.com/ndigo/ndigo/tree/main/apps/12-ndigo-petclinic)](../../[apps/12-ndigo-petclinic](https://github.com/ndigo/ndigo/tree/main/apps/12-ndigo-petclinic)/README.md) — the server form reference
+- [[apps/10-ndigo-conduit-web](https://github.com/ndigo/ndigo/tree/main/apps/10-ndigo-conduit-web)](../../[apps/10-ndigo-conduit-web](https://github.com/ndigo/ndigo/tree/main/apps/10-ndigo-conduit-web)/README.md) — the browser form reference

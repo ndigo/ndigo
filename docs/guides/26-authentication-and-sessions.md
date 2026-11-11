@@ -8,7 +8,7 @@ session/user stores, JWT adapter) and `@ndigo/platform-node` (cookies,
 session interceptor, rate limiting). Design decisions: ;
 landed via [the auth completion plan](../plans/2026-09-26_AUTH_COMPLETION.md).
 
-**Audience:** Node application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) · **Reference app:** `apps/18-ndigo-auth-playground`, `apps/05-ndigo-api`
+**Audience:** Node application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) · **Reference app:** `[apps/18-ndigo-auth-playground](https://github.com/ndigo/ndigo/tree/main/apps/18-ndigo-auth-playground)`, `[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)`
 
 ## What you'll learn
 
@@ -325,5 +325,5 @@ tokens). None blocks the 1.0 credential + session story.
 - [Guide 19 — Caching](19-caching.md) — session stores and TTLs
 - [Guide 28 — Security Hardening](28-security-hardening.md) — CORS, CSRF, headers, and rate limits
 - [Guide 27 — Browser Authentication & OIDC](27-browser-authentication-and-oidc.md) — the browser client and OIDC flow
-- [apps/18-ndigo-auth-playground](../../apps/18-ndigo-auth-playground/README.md) — the runnable auth matrix
+- [[apps/18-ndigo-auth-playground](https://github.com/ndigo/ndigo/tree/main/apps/18-ndigo-auth-playground)](../../[apps/18-ndigo-auth-playground](https://github.com/ndigo/ndigo/tree/main/apps/18-ndigo-auth-playground)/README.md) — the runnable auth matrix
 - — the auth decision

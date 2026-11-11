@@ -2,9 +2,9 @@
 
 How to project models into API shapes with `ConversionService`:
 one service converts both leaf values and whole objects — schema targets are
-contract-enforced projection, fail-fast. Reference application: `apps/05-ndigo-api`.
+contract-enforced projection, fail-fast. Reference application: `[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)`.
 
-**Audience:** Node API developers · **Prerequisites:** Guides 01 and 07 · **Reference app:** `apps/05-ndigo-api`
+**Audience:** Node API developers · **Prerequisites:** Guides [01](01-building-a-node-api.md) and [07](07-request-validation.md) · **Reference app:** `[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)`
 
 ## What you'll learn
 

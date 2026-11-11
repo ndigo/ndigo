@@ -9,7 +9,7 @@ completion).
 Built on `@stricli/core` as an embedded library — commands, typed flags,
 `--help`, exit codes. Full tables below and in the package README.
 
-**Audience:** All application developers · **Prerequisites:** Workspace bootstrapped · **Reference app:** `apps/05-ndigo-api`
+**Audience:** All application developers · **Prerequisites:** Workspace bootstrapped · **Reference app:** `[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)`
 
 ## What you'll learn
 
@@ -25,18 +25,18 @@ Built on `@stricli/core` as an embedded library — commands, typed flags,
 
 | Command | Runs the app's… | Example |
 |:---------------- |:------------------------------------------------------------------------------------- |:-------------------------------------------------------- |
-| `ndigo serve` | `scripts.start` under the supervisor | `ndigo serve ./apps/05-ndigo-api --port 3000 --cluster 4` |
-| `ndigo dev` | `scripts.dev` (vite) or `scripts.start` | `ndigo dev ./apps/15-ndigo-resilience-lab --port 3200` |
-| `ndigo build` | `scripts.build` (one-shot) | `ndigo build ./apps/05-ndigo-api` |
+| `ndigo serve` | `scripts.start` under the supervisor | `ndigo serve ./[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api) --port 3000 --cluster 4` |
+| `ndigo dev` | `scripts.dev` (vite) or `scripts.start` | `ndigo dev ./[apps/15-ndigo-resilience-lab](https://github.com/ndigo/ndigo/tree/main/apps/15-ndigo-resilience-lab) --port 3200` |
+| `ndigo build` | `scripts.build` (one-shot) | `ndigo build ./[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)` |
 | `ndigo test` | `scripts.test` | `ndigo test` |
 | `ndigo lint` | `scripts.lint` | `ndigo lint` |
 | `ndigo format` | `scripts.format` | `ndigo format` |
 | `ndigo typecheck` | `scripts.typecheck` | `ndigo typecheck` |
 | `ndigo clean` | (CLI-owned: `dist`/`lib`/`.nx`/`coverage`; `--dryRun` previews, `--force` removes) | `ndigo clean --force` |
-| `ndigo inspect` | `scripts.inspect` (the printer) | `ndigo inspect ./apps/05-ndigo-api` |
-| `ndigo routes` | `scripts.inspect`; `--json` emits the route list | `ndigo routes ./apps/05-ndigo-api --json` |
+| `ndigo inspect` | `scripts.inspect` (the printer) | `ndigo inspect ./[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)` |
+| `ndigo routes` | `scripts.inspect`; `--json` emits the route list | `ndigo routes ./[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api) --json` |
 | `ndigo logs` | (CLI-owned: tails `logs/app.log`; `--follow`, `--lines`, `--file`) | `ndigo logs --follow` |
-| `ndigo mcp` | serves the app manifest, diagnostics, and logs over stdio MCP (`--readOnly`, `--live`) | `ndigo mcp ./apps/05-ndigo-api --readOnly` |
+| `ndigo mcp` | serves the app manifest, diagnostics, and logs over stdio MCP (`--readOnly`, `--live`) | `ndigo mcp ./[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api) --readOnly` |
 
 ### Scaffolding
 
@@ -44,7 +44,7 @@ Built on `@stricli/core` as an embedded library — commands, typed flags,
 |:---------------------- |:----------------------------------------------------------- |:------------------------------------------------- |
 | `ndigo new <name>` | the `app` generator (a new app under `apps/NN-ndigo-<name>`) | `ndigo new todo-widget --preset api` |
 | `ndigo generate <kind>` | `@ndigo/generators` via Nx | `ndigo generate entity --name note --package demo` |
-| `ndigo add <package>` | `pnpm add` + the capability's setup generator | `ndigo add @ndigo/redis ./apps/05-ndigo-api` |
+| `ndigo add <package>` | `pnpm add` + the capability's setup generator | `ndigo add @ndigo/redis ./[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)` |
 
 ### Database
 
@@ -56,10 +56,10 @@ app's registered `NdigoDatabaseAdapter`s (see `@ndigo/orm`), where
 | Command | Runs the app's… | Example |
 |:---------------------- |:------------------------------------------------------------------ |:-------------------------------------------------- |
 | `ndigo db list` | (adapter registry readback) | `ndigo db list` |
-| `ndigo db new [slug]` | scaffolds the next versioned migration | `ndigo db new ./apps/05-ndigo-api add-title-column` |
-| `ndigo db generate` | `scripts.db:generate` | `ndigo db generate ./apps/05-ndigo-api` |
-| `ndigo db migrate` | `scripts.db:migrate` | `ndigo db migrate ./apps/05-ndigo-api` |
-| `ndigo db status` | `scripts.db:status` (journal readback) | `ndigo db status ./apps/05-ndigo-api` |
+| `ndigo db new [slug]` | scaffolds the next versioned migration | `ndigo db new ./[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api) add-title-column` |
+| `ndigo db generate` | `scripts.db:generate` | `ndigo db generate ./[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)` |
+| `ndigo db migrate` | `scripts.db:migrate` | `ndigo db migrate ./[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)` |
+| `ndigo db status` | `scripts.db:status` (journal readback) | `ndigo db status ./[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)` |
 | `ndigo db push`/`pull` | `scripts.db:push` / `scripts.db:pull` (adapter-optional) | `ndigo db push` |
 | `ndigo db studio` | `scripts.db:studio` (adapter-optional) | `ndigo db studio` |
 | `ndigo db seed` | `scripts.db:seed` (adapter-optional) | `ndigo db seed` |
@@ -253,12 +253,12 @@ ndigo new todo-widget --kind node --port 3190 --dryRun
 `ndigo serve --cluster <n>` runs the app across N worker slots:
 
 ```bash
-ndigo serve ./apps/05-ndigo-api --port 3000 --cluster 4
+ndigo serve ./[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api) --port 3000 --cluster 4
 ```
 
 Each slot gets `NDIGO_CLUSTER_SLOT`/`SIZE` and `PORT = 3000 + slot` (guide
 25); single-executor work self-arbitrates through the job leases and locks
-(guides 22/24). `ndigo serve` alone is the same supervisor with one slot —
+(guides [22](22-jobs-and-outbox.md)/[24](24-distributed-locks.md)). `ndigo serve` alone is the same supervisor with one slot —
 signals relay, crashes reap.
 
 ## Adding the conventions
@@ -267,7 +267,7 @@ signals relay, crashes reap.
 declared scripts — add them when the CLI reports them missing (the 
 `inspect` entry builds the manifest without binding a port; apps choose
 their own controllers/config classes, exactly as
-`apps/05-ndigo-api/src/inspect.ts` does). The `db:*` lifecycle — versioned
+`[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)/src/inspect.ts` does). The `db:*` lifecycle — versioned
 migration files, generation from entity metadata, and run-on-boot — is
 [guide 20](20-orm-and-migrations.md).
 
@@ -277,4 +277,4 @@ migration files, generation from entity metadata, and run-on-boot — is
 - [Guide 46 — Upgrading Ndigo](46-upgrading.md) — `update` and migration guides
 - The cluster guide (24) — what `serve --cluster` runs
 - The jobs (22) and locks (23) guides — the coordination the CLI fronts
-- `apps/05-ndigo-api/src/inspect.ts` — the inspect-entry template 
+- `[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)/src/inspect.ts` — the inspect-entry template 

@@ -2,8 +2,8 @@
 
 **Status:** Delivered — all phases shipped 2026-11-10 (#361, #363, #366, #368, #370)
 **Decision:** [AD-96](../decisions/2026-11-10_AD96_LLM_AGENT_INTEGRATION.md) (umbrella),
-[AD-100](../decisions/2026-11-10_AD100_MCP_TOOL_PROJECTION.md) (tool projection),
-[AD-101](../decisions/2026-11-10_AD101_A2UI_ADOPTION.md) (A2UI)
+[AD-100](../decisions/archive/2026-11-10_AD100_MCP_TOOL_PROJECTION.md) (tool projection),
+[AD-101](../decisions/archive/2026-11-10_AD101_A2UI_ADOPTION.md) (A2UI)
 **Tracking:** [#358](https://github.com/ndigo/ndigo/issues/358)
 **Scope:** `docs/guides` (new 48; edits to 47, 37, 09, `README.md`, `coverage.md`),
 `apps/21-ndigo-agent-lab`, `apps/20-ndigo-ui-lab`, `packages/ndigo-mcp`
@@ -343,10 +343,10 @@ The plan itself shipped as #359; the agent-lab MCP App markup fix shipped with
 ## 12. See also
 
 - [AD-96](../decisions/2026-11-10_AD96_LLM_AGENT_INTEGRATION.md),
-  [AD-98](../decisions/2026-11-10_AD98_AGENT_CONTENT_GENERATION.md),
-  [AD-99](../decisions/2026-11-10_AD99_MCP_HOST_EXTRACTION.md),
-  [AD-100](../decisions/2026-11-10_AD100_MCP_TOOL_PROJECTION.md),
-  [AD-101](../decisions/2026-11-10_AD101_A2UI_ADOPTION.md),
+  [AD-98](../decisions/archive/2026-11-10_AD98_AGENT_CONTENT_GENERATION.md),
+  [AD-99](../decisions/archive/2026-11-10_AD99_MCP_HOST_EXTRACTION.md),
+  [AD-100](../decisions/archive/2026-11-10_AD100_MCP_TOOL_PROJECTION.md),
+  [AD-101](../decisions/archive/2026-11-10_AD101_A2UI_ADOPTION.md),
   [AD-102](../decisions/2026-11-10_AD102_TOON_REPRESENTATION.md)
 - [Agent and LLM integration plan](2026-11-09_LLM_AGENT_INTEGRATION.md) — P0–P5 delivery record
 - Guide 47, Guide 37, Guide 09, Guide 30

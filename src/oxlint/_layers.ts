@@ -19,10 +19,10 @@ export const LAYER_RANK: Record<string, number> = {
     ui: 0,
     util: 0,
     // 1 — kernel primitives
-    cluster: 1,
     core: 1,
     signals: 1,
     // 2 — building blocks
+    cluster: 2,
     factory: 2,
     socket: 2,
     // 3 — primitives

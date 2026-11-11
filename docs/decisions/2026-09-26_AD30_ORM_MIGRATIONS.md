@@ -1,4 +1,4 @@
-# AD-30: ORM migrations — journaled versioned DDL for `@ndigo/orm-drizzle`
+# AD-30: ORM — migrations and relation fetch (consolidated)
 
 **Date:** 2026-09-26
 **Status:** Accepted — decisions D-1..D-5 ratified; Wave 1 of the ORM
@@ -107,3 +107,7 @@ migration specs) and `tsc -b` green in `packages/ndigo-orm-drizzle`; `graft
 build` refreshed. Waves 2–4 (pagination/sorting, relation fetch, derived
 query enrichment) follow the plan, each with its own decision/ADR if the
 shape changes.
+
+## Consolidated decisions
+
+This ADR consolidates AD-30 and AD-31 (ORM migrations and relation fetch). Archived record: [AD-31](archive/2026-09-26_AD31_ORM_RELATION_FETCH.md).

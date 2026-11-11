@@ -102,7 +102,7 @@ and stayed red. `docs/plans/2026-09-16_STOMP.md` §6 lists `pnpm lint` +
 (changed files only) or not at all.
 
 **GATE-3 (Block, process) — the ADR/plan claim implementation that is uncommitted.**
-`docs/decisions/2026-09-16_AD23_STOMP.md` documents the second wave (D7–D11)
+`docs/decisions/archive/2026-09-16_AD23_STOMP.md` documents the second wave (D7–D11)
 as implemented and the guide describes the queue store seam, while the code
 for both sits uncommitted (26 modified, 5 untracked files — incl.
 `packages/ndigo-socket/src/message-store.ts` and
@@ -396,7 +396,7 @@ knobs `NDIGO_SOCKET_MAX_QUEUED_BYTES`, `NDIGO_SOCKET_MAX_BUFFERED_BYTES`,
 `NDIGO_SOCKET_ON_OVERFLOW`.
 
 **DOC-3 (Should Fix) — AD-23 D1 dependency statement is stale.**
-`docs/decisions/2026-09-16_AD23_STOMP.md` says the package dependency "stays
+`docs/decisions/archive/2026-09-16_AD23_STOMP.md` says the package dependency "stays
 `@ndigo/signals` … no `@ndigo/util` dependency needed"; `packages/ndigo-socket/package.json`
 now declares `@ndigo/core` (used by the ring-buffer-backed reader/queues). State
 the real dependency set.

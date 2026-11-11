@@ -43,7 +43,7 @@ on the AD-11..17 environment stack.
 ("Configuration" row),
 [AD-11..17](../decisions/2026-09-08_AD11_ENVIRONMENT_PROPERTY_SOURCES.md)
 (environment phases 0–6 — the stack this completes),
-[AD-16](../decisions/2026-09-08_AD16_ENVIRONMENT_OBSERVABILITY.md) (refresh
+[AD-16](../decisions/archive/2026-09-08_AD16_ENVIRONMENT_OBSERVABILITY.md) (refresh
 semantics, the contract this extends),
 [AD-20](../decisions/2026-09-13_AD20_SCHEDULING.md) (auto-config bean
 pattern), [AD-24](../decisions/2026-09-17_AD24_CACHING.md) (managed-bean +

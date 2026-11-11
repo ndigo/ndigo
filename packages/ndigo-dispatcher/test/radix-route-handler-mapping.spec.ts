@@ -115,10 +115,10 @@ describe('RadixMetadataHandlerMapping', () => {
         mapping.setApplicationContext(ctx);
         mapping.init();
 
-        const route = { path: '/users/42' };
-        mapping.getHandler(route as unknown as Route);
+        const route = { path: '/users/42' } as unknown as Route;
+        mapping.getHandler(route);
 
-        expect((route as unknown as { pattern: string }).pattern).toBe('/users/:id');
+        expect(route.pattern).toBe('/users/:id');
     });
 
     test('no match returns null', () => {

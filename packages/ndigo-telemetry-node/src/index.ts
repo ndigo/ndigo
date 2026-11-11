@@ -10,6 +10,7 @@ export {
     type ResolvedExporter,
 } from './node-config';
 export { AuthServerInstrumentation } from './instrumentation/auth-server/auth-server';
+export { BootInstrumentation } from './instrumentation/boot/boot';
 export { DrizzleInstrumentation } from './instrumentation/drizzle/drizzle';
 export { HTTPServerInstrumentation } from './instrumentation/http-server/http-server';
 export { RedisInstrumentation } from './instrumentation/redis/redis';

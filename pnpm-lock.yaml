@@ -2749,6 +2749,9 @@ importers:
       '@ndigo/auth-server':
         specifier: ~0.0.1
         version: link:../ndigo-auth-server
+      '@ndigo/boot':
+        specifier: ~0.0.1
+        version: link:../ndigo-boot
       '@ndigo/context':
         specifier: ~0.0.1
         version: link:../ndigo-context

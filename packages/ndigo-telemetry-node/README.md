@@ -47,7 +47,7 @@ how it fits with the rest of Ndigo.
 
 - **Bootstrap** — `configureTelemetry()`
 - **Prometheus pull** — `PrometheusMetricReader` (backed by `metricExporter: 'prometheus'`); `HTTPServerInstrumentation` records the semconv `http.server.request.duration` histogram (seconds) for every request
-- **Instrumentations** — `HTTPServerInstrumentation`, `ServerSentEventViewInstrumentation`, `WebSocketServerInstrumentation`, `HTTPResponseViewTargetInstrumentation`
+- **Instrumentations** — `HTTPServerInstrumentation`, `ServerSentEventViewInstrumentation`, `WebSocketServerInstrumentation`, `HTTPResponseViewTargetInstrumentation`, `AuthServerInstrumentation`, `RedisInstrumentation`, `DrizzleInstrumentation`
 - **Logging** — `SeverityFilterLogRecordProcessor`
 
 ## Development

@@ -348,6 +348,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   selection is a single allocation-free pass (was `filter()`+`reduce()` per
   request, identical winner semantics). Same-host bench: −8% static, −8.5%
   single-param, −2.6% deep, RME < 0.4% (`BENCHMARKS.md`).
+- `@ndigo/router` / `@ndigo/dispatcher`: the resolved pattern is a normal
+  optional `Route.pattern` property assigned directly, instead of a
+  non-enumerable `Reflect.defineProperty` that pushed route objects into V8
+  dictionary mode. Same-host bench: static 306 → 197 ns (−36%), fresh route
+  373 → 202 ns (−46%), deep −26%, RME < 0.4% (`BENCHMARKS.md`).
 - `@ndigo/dispatcher`: `RouteHandlerMethod.invoke` caches the handler's route
   mapping per instance and fast-paths zero-parameter handlers before the
   metadata read. Same-host bench: zero-param 99 → 3 ns, one path 173 → 57 ns,

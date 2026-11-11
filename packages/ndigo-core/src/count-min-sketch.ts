@@ -1,0 +1,102 @@
+/**
+ * A Count-Min sketch: sub-linear-memory approximate frequency counting.
+ * `estimate()` never undercounts and overcounts with bounded error.
+ */
+import { Serializable, JSONObject } from './serializable.js';
+import { Equatable } from './equatable.js';
+
+function hash32(input: string, seed: number): number {
+    let h = seed >>> 0;
+    for (let i = 0; i < input.length; i++) {
+        h ^= input.charCodeAt(i);
+        h = Math.imul(h, 0x5bd1e995);
+        h ^= h >>> 15;
+    }
+    return h >>> 0;
+}
+
+function toKey(value: unknown): string {
+    if (typeof value === 'string') return value;
+    if (typeof value === 'number' || typeof value === 'boolean' || value === null) return String(value);
+    try { return JSON.stringify(value) ?? String(value); } catch { return String(value); }
+}
+
+export class CountMinSketch implements Serializable, Equatable<CountMinSketch> {
+    #depth: number;
+    #width: number;
+    #table: Uint32Array[];
+    #total: number = 0;
+
+    get [Symbol.toStringTag](): string {
+        return 'CountMinSketch';
+    }
+
+    get depth(): number {
+        return this.#depth;
+    }
+
+    get width(): number {
+        return this.#width;
+    }
+
+    constructor(depth: number = 5, width: number = 1024) {
+        this.#depth = Math.max(1, Math.floor(depth));
+        this.#width = Math.max(1, Math.floor(width));
+        this.#table = Array.from({ length: this.#depth }, () => new Uint32Array(this.#width));
+    }
+
+    static withTargetError(expectedItems: number, falsePositiveRate: number): CountMinSketch {
+        // epsilon = 2/width, delta = 1/2^depth approximations
+        const width = Math.max(1, Math.ceil(2 / falsePositiveRate));
+        const depth = Math.max(1, Math.ceil(Math.log(1 / falsePositiveRate) / Math.log(2)));
+        return new CountMinSketch(depth, width);
+    }
+
+    add(value: unknown, count: number = 1): this {
+        const key = toKey(value);
+        const c = Math.max(0, Math.floor(count));
+        for (let d = 0; d < this.#depth; d++) {
+            const idx = hash32(key, d * 0x9e3779b9 + 1) % this.#width;
+            this.#table[d][idx] += c;
+        }
+        this.#total += c;
+        return this;
+    }
+
+    estimate(value: unknown): number {
+        const key = toKey(value);
+        let min = Infinity;
+        for (let d = 0; d < this.#depth; d++) {
+            const idx = hash32(key, d * 0x9e3779b9 + 1) % this.#width;
+            if (this.#table[d][idx] < min) min = this.#table[d][idx];
+        }
+        return min === Infinity ? 0 : min;
+    }
+
+    get total(): number {
+        return this.#total;
+    }
+
+    clear(): void {
+        for (const row of this.#table) row.fill(0);
+        this.#total = 0;
+    }
+
+    toJSON(): JSONObject {
+        return {
+            depth: this.#depth,
+            width: this.#width,
+            table: this.#table.map((row) => Array.from(row)),
+            total: this.#total,
+        };
+    }
+
+    toString(): string {
+        return `CountMinSketch(depth=${this.#depth}, width=${this.#width}, total=${this.#total})`;
+    }
+
+    equals(value: unknown): boolean {
+        if (!(value instanceof CountMinSketch)) return false;
+        return JSON.stringify(value.toJSON()) === JSON.stringify(this.toJSON());
+    }
+}

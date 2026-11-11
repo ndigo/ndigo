@@ -9,6 +9,7 @@
  * room cannot grow the process without limit.
  */
 import type { SocketSession } from '@ndigo/dispatcher';
+import { Deque } from '@ndigo/core';
 
 /** One chat message as stored and replayed (the `message`/`history` payload). */
 export interface ChatMessage {
@@ -30,7 +31,7 @@ export const DEFAULT_HISTORY_LIMIT = 50;
  * connection.
  */
 export class RoomService {
-    readonly #history = new Map<string, ChatMessage[]>();
+    readonly #history = new Map<string, Deque<ChatMessage>>();
     readonly #members = new Map<string, Map<SocketSession, string>>();
     readonly #limit: number;
 
@@ -49,7 +50,7 @@ export class RoomService {
      * @returns A read-only view of the stored messages (never the mutable array).
      */
     history(room: string): readonly ChatMessage[] {
-        return this.#history.get(room) ?? [];
+        return this.#history.get(room)?.toArray() ?? [];
     }
 
     /**
@@ -59,12 +60,15 @@ export class RoomService {
      * @param message - The message to store.
      */
     append(room: string, message: ChatMessage): void {
-        const messages = this.#history.get(room) ?? [];
+        let messages = this.#history.get(room);
+        if (messages === undefined) {
+            messages = new Deque<ChatMessage>(this.#limit);
+            this.#history.set(room, messages);
+        }
         messages.push(message);
         if (messages.length > this.#limit) {
-            messages.splice(0, messages.length - this.#limit);
+            messages.shift();
         }
-        this.#history.set(room, messages);
     }
 
     /**

@@ -6,8 +6,7 @@
   "private": true,
   "scripts": {
     "storybook": "storybook dev -p 6007",
-    "build-storybook": "storybook build",
-    "test": "vitest run --config vitest.config.ts"
+    "build-storybook": "storybook build"
   },
   "keywords": [
     "ndigo",

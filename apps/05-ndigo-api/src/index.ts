@@ -3,7 +3,17 @@
 import 'node:process';
 import { getEnv } from '@ndigo/context';
 import { AESGCMCipher, runNodeApplication } from '@ndigo/platform-node';
-import { configureTelemetry, HTTPServerInstrumentation, WebSocketServerInstrumentation } from '@ndigo/telemetry-node';
+import { CacheInstrumentation, ContextInstrumentation, DispatcherInstrumentation, HTTPClientInstrumentation } from '@ndigo/telemetry';
+import {
+    AuthServerInstrumentation,
+    configureTelemetry,
+    DrizzleInstrumentation,
+    HTTPResponseViewTargetInstrumentation,
+    HTTPServerInstrumentation,
+    RedisInstrumentation,
+    ServerSentEventViewInstrumentation,
+    WebSocketServerInstrumentation,
+} from '@ndigo/telemetry-node';
 import { getLogger } from '@ndigo/log';
 import { interception } from '@ndigo/proxy';
 import { getErrorMessage } from '@ndigo/util';
@@ -33,7 +43,19 @@ async function main() {
               traceExporter: {
                   url: `${otelEndpoint}/v1/traces`,
               },
-              instrumentations: [new HTTPServerInstrumentation(), new WebSocketServerInstrumentation()],
+              instrumentations: [
+                  new HTTPServerInstrumentation(),
+                  new WebSocketServerInstrumentation(),
+                  new HTTPResponseViewTargetInstrumentation(),
+                  new ServerSentEventViewInstrumentation(),
+                  new DispatcherInstrumentation(),
+                  new ContextInstrumentation(),
+                  new AuthServerInstrumentation(),
+                  new RedisInstrumentation(),
+                  new DrizzleInstrumentation(),
+                  new HTTPClientInstrumentation(),
+                  new CacheInstrumentation(),
+              ],
           })
         : undefined;
 

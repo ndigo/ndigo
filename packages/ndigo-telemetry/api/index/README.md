@@ -49,6 +49,12 @@ Re-exports [AbstractBaseInstrumentation](../instrumentation/base/classes/Abstrac
 
 ***
 
+### CacheInstrumentation
+
+Re-exports [CacheInstrumentation](../instrumentation/cache/cache/classes/CacheInstrumentation.md)
+
+***
+
 ### ContextInstrumentation
 
 Re-exports [ContextInstrumentation](../instrumentation/context/context/classes/ContextInstrumentation.md)
@@ -187,6 +193,18 @@ Re-exports [hasTraced](../trace/decorators/functions/hasTraced.md)
 
 ***
 
+### HostInstrumentation
+
+Re-exports [HostInstrumentation](../instrumentation/host/host/classes/HostInstrumentation.md)
+
+***
+
+### HTTPClientInstrumentation
+
+Re-exports [HTTPClientInstrumentation](../instrumentation/http-client/http-client/classes/HTTPClientInstrumentation.md)
+
+***
+
 ### LazyCounter
 
 Re-exports [LazyCounter](../metrics/lazy-counter/type-aliases/LazyCounter.md)
@@ -202,6 +220,12 @@ Re-exports [LazyHistogram](../metrics/lazy-counter/type-aliases/LazyHistogram.md
 ### LazyHistogramOptions
 
 Re-exports [LazyHistogramOptions](../metrics/lazy-counter/interfaces/LazyHistogramOptions.md)
+
+***
+
+### LockInstrumentation
+
+Re-exports [LockInstrumentation](../instrumentation/locks/locks/classes/LockInstrumentation.md)
 
 ***
 
@@ -253,6 +277,12 @@ Re-exports [MetricSnapshotProvider](../metrics/metric-snapshot/interfaces/Metric
 
 ***
 
+### RateLimitInstrumentation
+
+Re-exports [RateLimitInstrumentation](../instrumentation/rate-limit/rate-limit/classes/RateLimitInstrumentation.md)
+
+***
+
 ### registerMetricSnapshotProvider
 
 Re-exports [registerMetricSnapshotProvider](../metrics/metric-snapshot/functions/registerMetricSnapshotProvider.md)
@@ -277,6 +307,12 @@ Re-exports [renderPrometheusText](../metrics/prometheus-text/functions/renderPro
 
 ***
 
+### ResilienceInstrumentation
+
+Re-exports [ResilienceInstrumentation](../instrumentation/resilience/resilience/classes/ResilienceInstrumentation.md)
+
+***
+
 ### sanitizePrometheusName
 
 Re-exports [sanitizePrometheusName](../metrics/prometheus-text/functions/sanitizePrometheusName.md)
@@ -292,6 +328,12 @@ Re-exports [setFallbackMetricSnapshotProvider](../metrics/metric-snapshot/functi
 ### SpanConfig
 
 Re-exports [SpanConfig](../instrumentation/base/interfaces/SpanConfig.md)
+
+***
+
+### StompInstrumentation
+
+Re-exports [StompInstrumentation](../instrumentation/stomp/stomp/classes/StompInstrumentation.md)
 
 ***
 

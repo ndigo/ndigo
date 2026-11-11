@@ -12,6 +12,7 @@ import {
     numberComparator,
 } from './comparable.js';
 import { Null } from './null.js';
+import { Deque } from './deque.js';
 import { isString } from '@ndigo/util/types';
 import { Matchable } from './matchable.js';
 import { Equatable } from './equatable.js';
@@ -44,9 +45,9 @@ const { freeze, keys } = Object,
     PARAMETERIZED_CACHE_LIMIT = 128,
     PARAMETERLESS_CACHE_LIMIT = 256,
     parameterizedRegistry = new Map<string, MediaType>(),
-    parameterizedOrder: string[] = [],
+    parameterizedOrder: Deque<string> = new Deque<string>(),
     parameterlessRegistry = new Map<string, MediaType>(),
-    parameterlessOrder: string[] = [],
+    parameterlessOrder: Deque<string> = new Deque<string>(),
     WILDCARD: SupportedMediaType = '*',
     QUALITY_FACTOR_PARAM = 'q';
 
@@ -124,11 +125,8 @@ const sortParameters = (value: MediaTypeParameters): MediaTypeParameters => {
  * Removes `key` from a FIFO eviction order, if present — used when a
  * bounded-cache entry is promoted to the permanent registry (SEC-7).
  */
-const removeFromOrder = (order: string[], key: string): void => {
-    const index = order.indexOf(key);
-    if (index !== -1) {
-        order.splice(index, 1);
-    }
+const removeFromOrder = (order: Deque<string>, key: string): void => {
+    order.remove(key);
 };
 
 /**
@@ -165,13 +163,19 @@ const intern = (key: string, factory: () => MediaType, parameterized: boolean, p
         parameterizedRegistry.set(key, mediaType);
         parameterizedOrder.push(key);
         if (parameterizedOrder.length > PARAMETERIZED_CACHE_LIMIT) {
-            parameterizedRegistry.delete(parameterizedOrder.shift() as string);
+            const oldest = parameterizedOrder.shift();
+            if (oldest !== undefined) {
+                parameterizedRegistry.delete(oldest);
+            }
         }
     } else {
         parameterlessRegistry.set(key, mediaType);
         parameterlessOrder.push(key);
         if (parameterlessOrder.length > PARAMETERLESS_CACHE_LIMIT) {
-            parameterlessRegistry.delete(parameterlessOrder.shift() as string);
+            const oldest = parameterlessOrder.shift();
+            if (oldest !== undefined) {
+                parameterlessRegistry.delete(oldest);
+            }
         }
     }
     return mediaType;

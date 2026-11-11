@@ -13,6 +13,9 @@ export class ResilienceInstrumentation extends AbstractBaseInstrumentation {
         super('resilience');
     }
 
+    /**
+     * Wraps the instrumented methods.
+     */
     enable(): void {
         this._wrap(
             CircuitBreakerInterceptor.prototype,
@@ -26,6 +29,9 @@ export class ResilienceInstrumentation extends AbstractBaseInstrumentation {
         );
     }
 
+    /**
+     * Restores the original methods.
+     */
     disable(): void {
         this._unwrap(CircuitBreakerInterceptor.prototype, 'invoke');
         this._unwrap(RetryInterceptor.prototype, 'invoke');

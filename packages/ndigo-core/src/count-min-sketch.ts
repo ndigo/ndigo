@@ -50,10 +50,16 @@ export class CountMinSketch implements Serializable, Equatable<CountMinSketch> {
         return 'CountMinSketch';
     }
 
+    /**
+     * Number of hash rows.
+     */
     get depth(): number {
         return this.#depth;
     }
 
+    /**
+     * Number of counters per row.
+     */
     get width(): number {
         return this.#width;
     }
@@ -64,6 +70,13 @@ export class CountMinSketch implements Serializable, Equatable<CountMinSketch> {
         this.#table = Array.from({ length: this.#depth }, () => new Uint32Array(this.#width));
     }
 
+    /**
+     * Sizes a sketch for a target error bound.
+     *
+     * @param expectedItems - Expected distinct values (used for the width bound).
+     * @param falsePositiveRate - Target error rate in `(0, 1)`.
+     * @returns A sketch with the derived dimensions.
+     */
     static withTargetError(expectedItems: number, falsePositiveRate: number): CountMinSketch {
         // epsilon = 2/width, delta = 1/2^depth approximations
         const width = Math.max(1, Math.ceil(2 / falsePositiveRate));
@@ -89,6 +102,13 @@ export class CountMinSketch implements Serializable, Equatable<CountMinSketch> {
         return sketch;
     }
 
+    /**
+     * Records occurrences of a value.
+     *
+     * @param value - The value to count; hashed through its string form.
+     * @param count - How many occurrences to add; defaults to one.
+     * @returns This sketch, for chaining.
+     */
     add(value: unknown, count: number = 1): this {
         const key = toKey(value);
         const c = Math.max(0, Math.floor(count));
@@ -100,6 +120,12 @@ export class CountMinSketch implements Serializable, Equatable<CountMinSketch> {
         return this;
     }
 
+    /**
+     * Estimates occurrences of a value.
+     *
+     * @param value - The value to estimate.
+     * @returns A count that never undercounts and overcounts within the bound.
+     */
     estimate(value: unknown): number {
         const key = toKey(value);
         let min = Infinity;
@@ -110,15 +136,26 @@ export class CountMinSketch implements Serializable, Equatable<CountMinSketch> {
         return min === Infinity ? 0 : min;
     }
 
+    /**
+     * Total count added across every value.
+     */
     get total(): number {
         return this.#total;
     }
 
+    /**
+     * Resets every counter and the total.
+     */
     clear(): void {
         for (const row of this.#table) row.fill(0);
         this.#total = 0;
     }
 
+    /**
+     * Returns the JSON form.
+     *
+     * @returns The dimensions, counter table, and total.
+     */
     toJSON(): CountMinSketchJSON {
         return {
             depth: this.#depth,
@@ -128,10 +165,21 @@ export class CountMinSketch implements Serializable, Equatable<CountMinSketch> {
         };
     }
 
+    /**
+     * Summarizes the sketch.
+     *
+     * @returns The dimensions and total count.
+     */
     toString(): string {
         return `CountMinSketch(depth=${this.#depth}, width=${this.#width}, total=${this.#total})`;
     }
 
+    /**
+     * Compares the full serialized state.
+     *
+     * @param value - The candidate to compare against.
+     * @returns `true` when dimensions, counters, and total match.
+     */
     equals(value: unknown): boolean {
         if (!(value instanceof CountMinSketch)) return false;
         return JSON.stringify(value.toJSON()) === JSON.stringify(this.toJSON());

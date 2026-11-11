@@ -50,14 +50,23 @@ export class BloomFilter implements Serializable, Equatable<BloomFilter> {
         return 'BloomFilter';
     }
 
+    /**
+     * Bit width of the filter (rounded up to a 32-bit boundary).
+     */
     get bitSize(): number {
         return this.#bits;
     }
 
+    /**
+     * Number of hash functions applied per value.
+     */
     get hashCount(): number {
         return this.#hashes;
     }
 
+    /**
+     * Number of values added.
+     */
     get size(): number {
         return this.#count;
     }
@@ -71,6 +80,13 @@ export class BloomFilter implements Serializable, Equatable<BloomFilter> {
         this.#buckets = new Uint32Array(m / 32);
     }
 
+    /**
+     * Sizes a filter for an expected item count and false-positive rate.
+     *
+     * @param expectedItems - How many values the filter should hold.
+     * @param falsePositiveRate - Target false-positive rate in `(0, 1)`.
+     * @returns A filter sized by the standard Bloom bound.
+     */
     static withTargetError(expectedItems: number, falsePositiveRate: number): BloomFilter {
         if (!Number.isFinite(expectedItems) || expectedItems <= 0)
             throw new RangeError('expectedItems must be positive');
@@ -81,6 +97,12 @@ export class BloomFilter implements Serializable, Equatable<BloomFilter> {
         return new BloomFilter(m, k);
     }
 
+    /**
+     * Restores a filter from its serialized bits.
+     *
+     * @param json - The bit width, hash count, buckets, and optional insertion count.
+     * @returns A filter with the restored bits.
+     */
     static fromJSON(json: { bits: number; hashes: number; buckets: ArrayLike<number>; count?: number }): BloomFilter {
         const filter = new BloomFilter(json.bits, json.hashes);
         const src = json.buckets;
@@ -102,6 +124,12 @@ export class BloomFilter implements Serializable, Equatable<BloomFilter> {
         return out;
     }
 
+    /**
+     * Adds a value to the filter.
+     *
+     * @param value - The value to record; hashed through its string form.
+     * @returns This filter, for chaining.
+     */
     add(value: unknown): this {
         for (const loc of this.#locations(value)) {
             this.#buckets[loc >>> 5] |= 1 << (loc & 31);
@@ -110,6 +138,12 @@ export class BloomFilter implements Serializable, Equatable<BloomFilter> {
         return this;
     }
 
+    /**
+     * Tests whether a value may have been added.
+     *
+     * @param value - The value to test.
+     * @returns `false` when definitely absent; `true` when possibly present.
+     */
     has(value: unknown): boolean {
         for (const loc of this.#locations(value)) {
             if ((this.#buckets[loc >>> 5] & (1 << (loc & 31))) === 0) return false;
@@ -117,11 +151,19 @@ export class BloomFilter implements Serializable, Equatable<BloomFilter> {
         return true;
     }
 
+    /**
+     * Clears every bit and resets the insertion count.
+     */
     clear(): void {
         this.#buckets.fill(0);
         this.#count = 0;
     }
 
+    /**
+     * Returns the JSON form.
+     *
+     * @returns The bit width, hash count, packed buckets, and insertion count.
+     */
     toJSON(): BloomFilterJSON {
         return {
             bits: this.#bits,
@@ -131,10 +173,21 @@ export class BloomFilter implements Serializable, Equatable<BloomFilter> {
         };
     }
 
+    /**
+     * Summarizes the filter.
+     *
+     * @returns The bit width, hash count, and insertion count.
+     */
     toString(): string {
         return `BloomFilter(bits=${this.#bits}, hashes=${this.#hashes}, size=${this.#count})`;
     }
 
+    /**
+     * Compares bit width, hash count, buckets, and insertion count.
+     *
+     * @param value - The candidate to compare against.
+     * @returns `true` when both filters hold identical state.
+     */
     equals(value: unknown): boolean {
         if (!(value instanceof BloomFilter)) return false;
         return JSON.stringify(value.toJSON()) === JSON.stringify(this.toJSON());

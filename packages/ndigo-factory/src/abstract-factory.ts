@@ -417,6 +417,11 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
         return this.#constructorNames.has(name);
     }
 
+    /**
+     * Checks if the factory has an instance registered under the given name.
+     * @param name - The name of the instance.
+     * @returns `true` if an instance is registered, `false` otherwise.
+     */
     hasInstance(name: string): boolean {
         return this.#instanceNames.has(name);
     }

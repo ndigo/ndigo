@@ -18,6 +18,9 @@ export class DrizzleInstrumentation extends AbstractBaseInstrumentation {
         super('drizzle');
     }
 
+    /**
+     * Wraps the instrumented methods.
+     */
     enable(): void {
         this._wrap(
             DrizzleRepository.prototype,
@@ -127,6 +130,9 @@ export class DrizzleInstrumentation extends AbstractBaseInstrumentation {
         );
     }
 
+    /**
+     * Restores the original methods.
+     */
     disable(): void {
         this._unwrap(DrizzleRepository.prototype, 'save');
         this._unwrap(DrizzleRepository.prototype, 'findById');

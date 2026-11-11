@@ -13,6 +13,9 @@ export class StompInstrumentation extends AbstractBaseInstrumentation {
         super('stomp');
     }
 
+    /**
+     * Wraps the instrumented methods.
+     */
     enable(): void {
         this._wrap(
             StompBroker.prototype,
@@ -43,6 +46,9 @@ export class StompInstrumentation extends AbstractBaseInstrumentation {
         );
     }
 
+    /**
+     * Restores the original methods.
+     */
     disable(): void {
         this._unwrap(StompBroker.prototype, 'handleSocket');
         this._unwrap(StompBroker.prototype, 'publish');

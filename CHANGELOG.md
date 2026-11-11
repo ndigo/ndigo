@@ -338,9 +338,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   framework's `DefaultPrincipal` takes scopes as its fourth constructor
   argument.
 - `@ndigo/core`: `LRUCache.get`/`set` now perform one `Map` lookup instead of
-  two on the hit path. Measured by the refreshed serial lane: `get`
-  56.93 → 49.05 ns and `set` 29.48 → 24.07 ns on the reference host
-  (`BENCHMARKS.md`).
+  two on the hit path. Measured against the same-run `lru-cache` comparator,
+  `get` improved from 1.90× to 1.74× slower and `set` from 1.66× to 1.34×
+  slower; absolute values vary with host state (`BENCHMARKS.md`).
 - `apps/07-ndigo-island`: migrated from Web Awesome to the ndigo-ui registry
   items — the form now uses native `<input>`/`<button>` with copy-in CSS and no
   component-library dependency (AD-95).

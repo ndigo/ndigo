@@ -21,8 +21,9 @@ support honest public performance claims.
   query-string, cookies, and routers; production `like` regression (the local
   exploration was deleted); ORM insert/update/find/findAll lifecycle.
 - **Optimization loop — started:** `LRUCache.get`/`set` now use one `Map`
-  lookup instead of two (`get` 56.93 → 49.05 ns, `set` 29.48 → 24.07 ns on the
-  reference host), measured with the new lane and recorded in `BENCHMARKS.md`.
+  lookup instead of two. Against the same-run `lru-cache` comparator, `get`
+  improved from 1.90× to 1.74× slower and `set` from 1.66× to 1.34× slower;
+  absolute values moved with host state (`BENCHMARKS.md`).
 - **Phase 2 — partial:** router parity vs find-my-way/radix3 is separated from
   full handler resolution and verified. End-to-end HTTP, binding/validation,
   startup/RSS, and the `benchmarks/` macro workspace remain.

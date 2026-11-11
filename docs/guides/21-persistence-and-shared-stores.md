@@ -11,7 +11,7 @@ pnpm add @ndigo/redis @ndigo/orm-drizzle @ndigo/cache @ndigo/socket
 # node only: @ndigo/redis requires Node 24+; standalone Redis 7.2+
 ```
 
-**Audience:** Node application developers and operators · **Prerequisites:** Guides [19](19-caching.md) and [26](26-authentication-and-sessions.md) · **Reference app:** `[apps/16-ndigo-redis-fanout](https://github.com/ndigo/ndigo/tree/main/apps/16-ndigo-redis-fanout)`, `[apps/18-ndigo-auth-playground](https://github.com/ndigo/ndigo/tree/main/apps/18-ndigo-auth-playground)`
+**Audience:** Node application developers and operators · **Prerequisites:** Guides [19](19-caching.md) and [26](26-authentication-and-sessions.md) · **Reference app:** [apps/16-ndigo-redis-fanout](https://github.com/ndigo/ndigo/tree/main/apps/16-ndigo-redis-fanout), [apps/18-ndigo-auth-playground](https://github.com/ndigo/ndigo/tree/main/apps/18-ndigo-auth-playground)
 
 ## What you'll learn
 

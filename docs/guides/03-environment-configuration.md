@@ -10,7 +10,7 @@ The environment is a pipeline: **sources** provide raw values →
 (`@environment` zod schemas). It is the reference framework's environment model, ported to
 JavaScript-native structures with fail-loud semantics throughout.
 
-**Audience:** Node and browser application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) (Node) or [guide 02](02-building-a-browser-app.md) (browser) · **Reference app:** `[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)`
+**Audience:** Node and browser application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) (Node) or [guide 02](02-building-a-browser-app.md) (browser) · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)
 
 ## What you'll learn
 

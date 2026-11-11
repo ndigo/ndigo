@@ -9,7 +9,7 @@ show the two canonical flows.
 This guide stitches them together: server-rendered forms (PetClinic) and
 browser/API forms (Conduit), plus the upload and CSRF edges.
 
-**Audience:** Node and browser application developers · **Prerequisites:** Guides [06](06-argument-binding.md), [07](07-request-validation.md), and [09](09-views-and-content-negotiation.md) · **Reference app:** `[apps/12-ndigo-petclinic](https://github.com/ndigo/ndigo/tree/main/apps/12-ndigo-petclinic)`, `[apps/10-ndigo-conduit-web](https://github.com/ndigo/ndigo/tree/main/apps/10-ndigo-conduit-web)`
+**Audience:** Node and browser application developers · **Prerequisites:** Guides [06](06-argument-binding.md), [07](07-request-validation.md), and [09](09-views-and-content-negotiation.md) · **Reference app:** [apps/12-ndigo-petclinic](https://github.com/ndigo/ndigo/tree/main/apps/12-ndigo-petclinic), [apps/10-ndigo-conduit-web](https://github.com/ndigo/ndigo/tree/main/apps/10-ndigo-conduit-web)
 
 ## What you'll learn
 

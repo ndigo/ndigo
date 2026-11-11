@@ -11,7 +11,7 @@ piece (client-side **HTTP** caching) — see the `ndigo-views` client demo and
 the `@ndigo/http` package README; they are separate machinery with
 response-specific semantics.
 
-**Audience:** Node and browser application developers · **Prerequisites:** Workspace bootstrapped; [guide 21](21-persistence-and-shared-stores.md) for shared Redis · **Reference app:** `[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)`, `[apps/08-ndigo-views](https://github.com/ndigo/ndigo/tree/main/apps/08-ndigo-views)`
+**Audience:** Node and browser application developers · **Prerequisites:** Workspace bootstrapped; [guide 21](21-persistence-and-shared-stores.md) for shared Redis · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api), [apps/08-ndigo-views](https://github.com/ndigo/ndigo/tree/main/apps/08-ndigo-views)
 
 ## What you'll learn
 
@@ -173,7 +173,7 @@ await catalog.getCache('catalog').clear(); // whole-store eviction
 - **Bounded stores** — cap `maxSize` (or rely on TTL) where keys are
  user-controlled: unbounded caches grow with the key space.
 
-Reference: `[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)` (`GET /api/cached-report` demo gate, counter spec
+Reference: [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api) (`GET /api/cached-report` demo gate, counter spec
 in `app-bootstrap.spec.ts`) and the `ndigo-views` client demo (memoized
 payload derivation next to the HTTP cache-hit refresh). Design rationale:
 [caching decision](../decisions/2026-09-17_AD24_CACHING.md).

@@ -5,7 +5,7 @@ decides how long each one lives, injects the collaborators a bean asks for, and
 closes resources in a defined order when the app stops. This guide covers the
 registration surface, the scope strategies, and the lifecycle hooks.
 
-**Audience:** Node and browser application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) (Node) or [guide 02](02-building-a-browser-app.md) (browser) · **Reference app:** `[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)`
+**Audience:** Node and browser application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) (Node) or [guide 02](02-building-a-browser-app.md) (browser) · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)
 
 ## What you'll learn
 

@@ -6,7 +6,7 @@ server can update a running app. This guide covers those three surfaces; the
 source precedence, profiles, binding, and validation pipeline lives in
 [guide 03](03-environment-configuration.md).
 
-**Audience:** Node application developers and operators · **Prerequisites:** [Guide 03](03-environment-configuration.md) · **Reference app:** `[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)`
+**Audience:** Node application developers and operators · **Prerequisites:** [Guide 03](03-environment-configuration.md) · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)
 
 ## What you'll learn
 

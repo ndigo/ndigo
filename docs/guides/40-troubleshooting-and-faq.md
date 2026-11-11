@@ -5,7 +5,7 @@ parameter, a view name that does not resolve, a proxy that hides the client, or
 a stale build. This guide is the symptom → cause → fix index. Start with the
 status code or the error class, then follow the link into the owning guide.
 
-**Audience:** Node and browser application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) or 02 · **Reference app:** `[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)`, `[apps/09-ndigo-httpbin](https://github.com/ndigo/ndigo/tree/main/apps/09-ndigo-httpbin)`
+**Audience:** Node and browser application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) or 02 · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api), [apps/09-ndigo-httpbin](https://github.com/ndigo/ndigo/tree/main/apps/09-ndigo-httpbin)
 
 ## What you'll learn
 

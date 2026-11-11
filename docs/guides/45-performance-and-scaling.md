@@ -10,7 +10,7 @@ This guide gives the levers and the measurement workflow. It deliberately does
 not publish universal numbers: measure your app, on your hardware, with a
 production build.
 
-**Audience:** Node and browser application developers and operators · **Prerequisites:** Guides [01](01-building-a-node-api.md) and [02](02-building-a-browser-app.md) · **Reference app:** `[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)`, `[apps/19-ndigo-hn](https://github.com/ndigo/ndigo/tree/main/apps/19-ndigo-hn)`, `[apps/17-ndigo-telemetry-lab](https://github.com/ndigo/ndigo/tree/main/apps/17-ndigo-telemetry-lab)`
+**Audience:** Node and browser application developers and operators · **Prerequisites:** Guides [01](01-building-a-node-api.md) and [02](02-building-a-browser-app.md) · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api), [apps/19-ndigo-hn](https://github.com/ndigo/ndigo/tree/main/apps/19-ndigo-hn), [apps/17-ndigo-telemetry-lab](https://github.com/ndigo/ndigo/tree/main/apps/17-ndigo-telemetry-lab)
 
 ## What you'll learn
 

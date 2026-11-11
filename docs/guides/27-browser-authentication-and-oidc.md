@@ -10,7 +10,7 @@ and JWT). It shows the client state, the route guard, the authorization-code +
 PKCE flow, refresh handling, and the server callback bridge used by the
 playground app.
 
-**Audience:** Browser application developers · **Prerequisites:** [Guide 02](02-building-a-browser-app.md) and [guide 26](26-authentication-and-sessions.md) · **Reference app:** `[apps/18-ndigo-auth-playground](https://github.com/ndigo/ndigo/tree/main/apps/18-ndigo-auth-playground)`
+**Audience:** Browser application developers · **Prerequisites:** [Guide 02](02-building-a-browser-app.md) and [guide 26](26-authentication-and-sessions.md) · **Reference app:** [apps/18-ndigo-auth-playground](https://github.com/ndigo/ndigo/tree/main/apps/18-ndigo-auth-playground)
 
 ## What you'll learn
 

@@ -6,7 +6,7 @@ method metadata declares the HTTP call, a Zod schema validates the response, and
 transport and its interceptors still come from `@ndigo/http` (guide 11); this
 package is the domain façade over it.
 
-**Audience:** Node and browser application developers · **Prerequisites:** Guides [11](11-http-client.md) and [15](15-websockets.md) · **Reference app:** `[apps/07-ndigo-island](https://github.com/ndigo/ndigo/tree/main/apps/07-ndigo-island)`
+**Audience:** Node and browser application developers · **Prerequisites:** Guides [11](11-http-client.md) and [15](15-websockets.md) · **Reference app:** [apps/07-ndigo-island](https://github.com/ndigo/ndigo/tree/main/apps/07-ndigo-island)
 
 ## What you'll learn
 

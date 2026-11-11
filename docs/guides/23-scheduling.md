@@ -7,7 +7,7 @@ The design: the reference framework's declarative decorator shape with Nest/Adon
 semantics — async single-flight runs, error isolation, drain-on-close, and
 no catch-up after restarts.
 
-**Audience:** Node application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) · **Reference app:** `[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)`, `[apps/17-ndigo-telemetry-lab](https://github.com/ndigo/ndigo/tree/main/apps/17-ndigo-telemetry-lab)`
+**Audience:** Node application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api), [apps/17-ndigo-telemetry-lab](https://github.com/ndigo/ndigo/tree/main/apps/17-ndigo-telemetry-lab)
 
 ## What you'll learn
 

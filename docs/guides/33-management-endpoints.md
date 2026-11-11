@@ -8,9 +8,9 @@ point and the single access-guard model; the endpoints are **open by
 default**, so the security posture from [guide 26](26-authentication-and-sessions.md) (guard + boundary firewall)
 applies to everything below.
 
-Reference application: `[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)` (the demo exposes the full surface).
+Reference application: [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api) (the demo exposes the full surface).
 
-**Audience:** Node application developers and operators · **Prerequisites:** [Guide 01](01-building-a-node-api.md) · **Reference app:** `[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)`
+**Audience:** Node application developers and operators · **Prerequisites:** [Guide 01](01-building-a-node-api.md) · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)
 
 ## What you'll learn
 

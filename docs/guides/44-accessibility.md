@@ -8,7 +8,7 @@ app still has to keep its landmarks, focus, labels, and keyboard paths intact.
 This guide is the working checklist: what the framework guarantees, what the
 component libraries must prove, and how to test it.
 
-**Audience:** Browser application developers · **Prerequisites:** Guides [02](02-building-a-browser-app.md) and [30](30-component-integration.md) · **Reference app:** `[apps/07-ndigo-island](https://github.com/ndigo/ndigo/tree/main/apps/07-ndigo-island)`, `[apps/12-ndigo-petclinic](https://github.com/ndigo/ndigo/tree/main/apps/12-ndigo-petclinic)`
+**Audience:** Browser application developers · **Prerequisites:** Guides [02](02-building-a-browser-app.md) and [30](30-component-integration.md) · **Reference app:** [apps/07-ndigo-island](https://github.com/ndigo/ndigo/tree/main/apps/07-ndigo-island), [apps/12-ndigo-petclinic](https://github.com/ndigo/ndigo/tree/main/apps/12-ndigo-petclinic)
 
 ## What you'll learn
 

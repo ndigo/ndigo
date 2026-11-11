@@ -8,7 +8,7 @@ no hidden daemon, no required orchestrator — so the checklist is explicit.
 This guide collects the production decisions that are otherwise spread across
 the clustering, management, telemetry, TLS, and static-file guides.
 
-**Audience:** Node application developers and operators · **Prerequisites:** Guides [01](01-building-a-node-api.md), [24](24-distributed-locks.md), [33](33-management-endpoints.md), and [37](37-ndigo-cli.md) · **Reference app:** `[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)`, `[apps/16-ndigo-redis-fanout](https://github.com/ndigo/ndigo/tree/main/apps/16-ndigo-redis-fanout)`
+**Audience:** Node application developers and operators · **Prerequisites:** Guides [01](01-building-a-node-api.md), [24](24-distributed-locks.md), [33](33-management-endpoints.md), and [37](37-ndigo-cli.md) · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api), [apps/16-ndigo-redis-fanout](https://github.com/ndigo/ndigo/tree/main/apps/16-ndigo-redis-fanout)
 
 ## What you'll learn
 

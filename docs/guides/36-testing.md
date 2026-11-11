@@ -11,7 +11,7 @@ This is the layer between unit-testing a controller and driving a real browser
 with Playwright. It mirrors the `NodeHTTPServerAdapter` passing a real request
 into `NodeDispatcher`, but swaps the network for an in-memory `ResponseSink`.
 
-**Audience:** All application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) or [guide 02](02-building-a-browser-app.md) · **Reference app:** `[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)`, `[apps/08-ndigo-views](https://github.com/ndigo/ndigo/tree/main/apps/08-ndigo-views)`
+**Audience:** All application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) or [guide 02](02-building-a-browser-app.md) · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api), [apps/08-ndigo-views](https://github.com/ndigo/ndigo/tree/main/apps/08-ndigo-views)
 
 ## What you'll learn
 
@@ -147,7 +147,7 @@ promises so fake-timer suites stay deterministic.
 - Decision: — the
  in-process, socket-free harness.
 - Generated API: [`@ndigo/test` api](../../packages/ndigo-test/api/README.md).
-- Demo usage: [`[apps/03-ndigo-todo-web](https://github.com/ndigo/ndigo/tree/main/apps/03-ndigo-todo-web)`](../../[apps/03-ndigo-todo-web](https://github.com/ndigo/ndigo/tree/main/apps/03-ndigo-todo-web)/README.md) —
+- Demo usage: [[apps/03-ndigo-todo-web](https://github.com/ndigo/ndigo/tree/main/apps/03-ndigo-todo-web)](../../[apps/03-ndigo-todo-web](https://github.com/ndigo/ndigo/tree/main/apps/03-ndigo-todo-web)/README.md) —
  harness-driven controller and shell-router specs.
 
 [Back to guides](./README.md)

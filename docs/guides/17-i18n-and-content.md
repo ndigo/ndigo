@@ -14,7 +14,7 @@ ecosystem standard, and uses platform standard APIs directly** —
 | Date/number/list formatting | `Intl.*` formatters, cached, explicit locale/time zone | `@ndigo/core` wrappers (framework facade, Intl engine) |
 | Locale resolution | per-request language: header/cookie/navigator/fixed | `@ndigo/dispatcher` + platform packages |
 
-**Audience:** Node and browser application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) or [guide 02](02-building-a-browser-app.md) · **Reference app:** `[apps/12-ndigo-petclinic](https://github.com/ndigo/ndigo/tree/main/apps/12-ndigo-petclinic)`, `[apps/07-ndigo-island](https://github.com/ndigo/ndigo/tree/main/apps/07-ndigo-island)`
+**Audience:** Node and browser application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) or [guide 02](02-building-a-browser-app.md) · **Reference app:** [apps/12-ndigo-petclinic](https://github.com/ndigo/ndigo/tree/main/apps/12-ndigo-petclinic), [apps/07-ndigo-island](https://github.com/ndigo/ndigo/tree/main/apps/07-ndigo-island)
 
 ## What you'll learn
 

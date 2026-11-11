@@ -9,7 +9,7 @@ completion).
 Built on `@stricli/core` as an embedded library — commands, typed flags,
 `--help`, exit codes. Full tables below and in the package README.
 
-**Audience:** All application developers · **Prerequisites:** Workspace bootstrapped · **Reference app:** `[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)`
+**Audience:** All application developers · **Prerequisites:** Workspace bootstrapped · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)
 
 ## What you'll learn
 

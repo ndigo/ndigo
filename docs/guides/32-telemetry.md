@@ -5,7 +5,7 @@ Node and browser, the `configureTelemetry` knobs (sampling, exporters), and
 log↔trace correlation tooling. Node config lives in `@ndigo/telemetry-node`
 (OTel `NodeSDK` wrapper); browser config in `@ndigo/telemetry-web`.
 
-**Audience:** Node and browser application developers and operators · **Prerequisites:** [Guide 01](01-building-a-node-api.md) or [guide 02](02-building-a-browser-app.md) · **Reference app:** `[apps/17-ndigo-telemetry-lab](https://github.com/ndigo/ndigo/tree/main/apps/17-ndigo-telemetry-lab)`
+**Audience:** Node and browser application developers and operators · **Prerequisites:** [Guide 01](01-building-a-node-api.md) or [guide 02](02-building-a-browser-app.md) · **Reference app:** [apps/17-ndigo-telemetry-lab](https://github.com/ndigo/ndigo/tree/main/apps/17-ndigo-telemetry-lab)
 
 ## What you'll learn
 

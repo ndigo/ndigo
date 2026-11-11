@@ -291,8 +291,12 @@ links them rather than restating them.
 
 Tooling and generated surfaces:
 
-- **Benchmarks** — `pnpm test:bench` runs the vitest bench suites; the
-  todomvc Speedometer-3-style comparison runs via `pnpm test:benchmark:*`
+- **Benchmarks** — `pnpm bench` runs the serial micro suite and writes JSON
+  artifacts; `pnpm build && pnpm bench:http` runs the macro HTTP comparison.
+  Methodology, environment, and results live in
+  [`BENCHMARKS.md`](BENCHMARKS.md). The jsdom DOM approximations are
+  `pnpm test:benchmark:react` and `:vanilla`; the Svelte/Vue/Ndigo targets are
+  quarantined pending a real-browser runner.
 - **Repository graph** — `graft build` maintains the local `graft/` code
   graph used by context-aware tooling
 

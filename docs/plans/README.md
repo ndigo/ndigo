@@ -5,6 +5,20 @@ Implementation plans for features and technical specifications.
 Every implemented plan has its **decision recorded** in
 [docs/decisions/README.md](../decisions/README.md) (the ADR index).
 
+## Active Plans
+
+### 2026-11-10 - Benchmark refresh and expansion
+
+Repair the benchmark estate before adding to it: serialized, typechecked,
+fingerprinted runs with machine-readable artifacts; semantic-parity checks on
+every comparison; a corrected router comparison and a live browser lane; new
+request-path, binding, ORM, parser, startup, and coverage benchmarks; and a
+documentation/publication contract that supports honest “faster” claims.
+
+[Read plan](2026-11-10_BENCHMARK_REFRESH.md)
+
+---
+
 ## Completed Plans
 
 ### 2026-11-09 - Agent and LLM integration

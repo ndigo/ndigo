@@ -1,26 +1,20 @@
 /**
+ * InMemoryEntityManager lifecycle: insert, update, remove, find, findAll.
  *
- * Benchmark suite for InMemoryEntityManager CRUD operation throughput.
- *
- * Scenarios:
- *   1. persist (update path, single)   – upsert an already-persisted entity 1 000× per iteration
- *   2. persist (update path, batch ×10)– upsert 10 already-persisted entities 1 000× per iteration
- *   3. find hit (id = 1)               – find an entity that exists in the store
- *   4. find miss (id = 9 999)          – find an entity whose key is absent
- *   5. findAll small (5 entities)      – full-scan of a 5-record store
- *   6. findAll large (50 entities)     – full-scan of a 50-record store
- *   7. remove (repeat calls)           – remove on same entity; key absent after first call
+ * Stores are prepared outside the timed body. Update, find, and findAll use
+ * long-lived stores; insert and remove use a fresh store per iteration so the
+ * measured operation is the manager call, not unbounded growth. Map rows are a
+ * floor, not a persistence alternative.
  */
-
 import { test } from 'vitest';
 import '@tsmetadata/polyfill';
-import { entity, generatedColumn, primaryColumn, column } from '../src/decorators';
+import { column, entity, generatedColumn, primaryColumn } from '../src/decorators';
 import { InMemoryDataSource } from '../src/data-source';
 import { InMemoryEntityManager } from '../src/entity-manager';
+import { assertEquivalent, benchName, sink } from '../../../benchmarks/lib/verify';
 
-/* ------------------------------------------------------------------ */
-/*  Entity definition                                                  */
-/* ------------------------------------------------------------------ */
+const BATCH = 1_000;
+const retain = sink;
 
 @entity()
 class BenchUser {
@@ -31,127 +25,105 @@ class BenchUser {
     @column()
     name: string;
 
-    constructor(name: string) {
+    constructor(name: unknown = '') {
         this.id = undefined;
-        this.name = name;
+        this.name = String(name);
     }
 }
 
-/* ------------------------------------------------------------------ */
-/*  One-time data setup (module level – not per-iteration)            */
-/* ------------------------------------------------------------------ */
-
-// --- read-only store: 50 entities pre-populated (ids 1..50)
-const dsRead = new InMemoryDataSource();
-const emRead = new InMemoryEntityManager(dsRead);
-for (let i = 0; i < 50; i++) {
-    emRead.persist(new BenchUser(`user-${i + 1}`));
+function build(count: number): { dataSource: InMemoryDataSource; manager: InMemoryEntityManager } {
+    const dataSource = new InMemoryDataSource();
+    const manager = new InMemoryEntityManager(dataSource);
+    for (let i = 0; i < count; i++) manager.persist(new BenchUser(`user-${i + 1}`));
+    return { dataSource, manager };
 }
 
-// --- small read-only store: 5 entities (ids 1..5)
-const dsSmall = new InMemoryDataSource();
-const emSmall = new InMemoryEntityManager(dsSmall);
-for (let i = 0; i < 5; i++) {
-    emSmall.persist(new BenchUser(`small-${i + 1}`));
+const readStore = build(5);
+const largeStore = build(1_000);
+const hugeStore = build(10_000);
+
+const updateStore = build(1);
+const updateUser = updateStore.manager.findAll(BenchUser)[0];
+assertEquivalent('update fixture count', updateStore.manager.findAll(BenchUser).length, 1);
+
+const map = new Map<number, BenchUser>();
+for (const user of largeStore.manager.findAll(BenchUser) as BenchUser[]) map.set(user.id as number, user);
+
+let insertManager = new InMemoryEntityManager(new InMemoryDataSource());
+let removeManager = new InMemoryEntityManager(new InMemoryDataSource());
+let removeUser: BenchUser;
+let batchManager = new InMemoryEntityManager(new InMemoryDataSource());
+let batchUsers: BenchUser[] = [];
+
+function resetInsert(): void {
+    insertManager = new InMemoryEntityManager(new InMemoryDataSource());
 }
 
-// --- mutable store: single entity pre-persisted (id = 1)
-const dsMutable = new InMemoryDataSource();
-const emMutable = new InMemoryEntityManager(dsMutable);
-const mutableUser = new BenchUser('mutable');
-emMutable.persist(mutableUser); // id auto-assigned → 1
-
-// --- batch of 10 users pre-persisted into mutable store (ids 2..11)
-const batchUsers: BenchUser[] = [];
-for (let i = 0; i < 10; i++) {
-    const u = new BenchUser(`batch-${i + 1}`);
-    emMutable.persist(u);
-    batchUsers.push(u);
+function resetRemove(): void {
+    removeManager = new InMemoryEntityManager(new InMemoryDataSource());
+    removeUser = new BenchUser('remove-target');
+    removeManager.persist(removeUser);
 }
 
-// --- store for remove bench: single pre-persisted entity
-const dsRemove = new InMemoryDataSource();
-const emRemove = new InMemoryEntityManager(dsRemove);
-const removeUser = new BenchUser('remove-target');
-emRemove.persist(removeUser); // id auto-assigned → 1
+function resetBatch(): void {
+    batchManager = new InMemoryEntityManager(new InMemoryDataSource());
+    batchUsers = Array.from({ length: 100 }, (_, index) => new BenchUser(`batch-${index}`));
+}
 
-let _sink: unknown = 0;
-
-/* ------------------------------------------------------------------ */
-/*  Benchmarks                                                         */
-/* ------------------------------------------------------------------ */
-
-test('InMemoryEntityManager – persist (update path, single entity)', async ({ bench }) => {
-    await bench('persist(mutableUser)', () => {
-        let count = 0;
-        for (let i = 0; i < 1000; i++) {
-            emMutable.persist(mutableUser);
-            count++;
-        }
-        _sink = count;
-    }).run();
+test('persist — insert path', async ({ bench }) => {
+    resetInsert();
+    await bench(benchName('persist(new entity)', BATCH), { beforeEach: resetInsert }, () => {
+        for (let i = 0; i < BATCH; i++) insertManager.persist(new BenchUser(`insert-${i}`));
+        retain(insertManager.findAll(BenchUser).length);
+    }).run({ time: 2_000, warmupTime: 500 });
 });
 
-test('InMemoryEntityManager – persist (update path, batch × 10)', async ({ bench }) => {
-    await bench('persist × 10', () => {
-        let count = 0;
-        for (let i = 0; i < 1000; i++) {
-            for (const u of batchUsers) {
-                emMutable.persist(u);
-                count++;
-            }
-        }
-        _sink = count;
-    }).run();
+test('persist — update path', async ({ bench }) => {
+    await bench(benchName('persist(existing entity)', BATCH), () => {
+        for (let i = 0; i < BATCH; i++) updateStore.manager.persist(updateUser);
+        retain(updateStore.manager.find(BenchUser, 1));
+    }).run({ time: 2_000, warmupTime: 500 });
 });
 
-test('InMemoryEntityManager – find hit (id = 1)', async ({ bench }) => {
-    await bench('find(BenchUser, 1)', () => {
-        let count = 0;
-        for (let i = 0; i < 1000; i++) {
-            count += emRead.find(BenchUser, 1) ? 1 : 0;
-        }
-        _sink = count;
-    }).run();
+test('persist — batch insert (100 per iteration)', async ({ bench }) => {
+    resetBatch();
+    await bench(benchName('persist × 100', 100), { beforeEach: resetBatch }, () => {
+        for (const user of batchUsers) batchManager.persist(user);
+        retain(batchManager.findAll(BenchUser).length);
+    }).run({ time: 2_000, warmupTime: 500 });
 });
 
-test('InMemoryEntityManager – find miss (id = 9999)', async ({ bench }) => {
-    await bench('find(BenchUser, 9999)', () => {
-        let count = 0;
-        for (let i = 0; i < 1000; i++) {
-            count += emRead.find(BenchUser, 9999) ? 1 : 0;
-        }
-        _sink = count;
-    }).run();
+test('find — hit and miss', async ({ bench }) => {
+    assertEquivalent('find hit identity', largeStore.manager.find(BenchUser, 1), map.get(1));
+    assertEquivalent('find miss', largeStore.manager.find(BenchUser, 999_999), undefined);
+    await bench.compare(
+        bench(benchName('find(BenchUser, 1)', BATCH), () => {
+            for (let i = 0; i < BATCH; i++) retain(largeStore.manager.find(BenchUser, 1));
+        }),
+        bench(benchName('Map.get(id)', BATCH), () => {
+            for (let i = 0; i < BATCH; i++) retain(map.get(1));
+        }),
+        bench(benchName('find miss', BATCH), () => {
+            for (let i = 0; i < BATCH; i++) retain(largeStore.manager.find(BenchUser, 999_999));
+        })
+    );
 });
 
-test('InMemoryEntityManager – findAll small (5 entities)', async ({ bench }) => {
-    await bench('findAll(BenchUser) × 5', () => {
-        let count = 0;
-        for (let i = 0; i < 1000; i++) {
-            count += emSmall.findAll(BenchUser).length;
-        }
-        _sink = count;
-    }).run();
+test('findAll — 5 / 1,000 / 10,000 rows', async ({ bench }) => {
+    assertEquivalent('findAll small', readStore.manager.findAll(BenchUser).length, 5);
+    assertEquivalent('findAll large', largeStore.manager.findAll(BenchUser).length, 1_000);
+    assertEquivalent('findAll huge', hugeStore.manager.findAll(BenchUser).length, 10_000);
+    await bench.compare(
+        bench('findAll — 5 rows', () => retain(readStore.manager.findAll(BenchUser))),
+        bench('findAll — 1,000 rows', () => retain(largeStore.manager.findAll(BenchUser))),
+        bench('findAll — 10,000 rows', () => retain(hugeStore.manager.findAll(BenchUser)))
+    );
 });
 
-test('InMemoryEntityManager – findAll large (50 entities)', async ({ bench }) => {
-    await bench('findAll(BenchUser) × 50', () => {
-        let count = 0;
-        for (let i = 0; i < 1000; i++) {
-            count += emRead.findAll(BenchUser).length;
-        }
-        _sink = count;
-    }).run();
-});
-
-test('InMemoryEntityManager – remove (repeat calls on same entity)', async ({ bench }) => {
-    await bench('remove(removeUser)', () => {
-        let count = 0;
-        for (let i = 0; i < 1000; i++) {
-            emRemove.remove(removeUser);
-            count++;
-        }
-        _sink = count;
-    }).run();
+test('remove — existing entity', async ({ bench }) => {
+    resetRemove();
+    await bench(benchName('remove(existing)', 1), { beforeEach: resetRemove }, () => {
+        removeManager.remove(removeUser);
+        retain(removeManager.find(BenchUser, 1));
+    }).run({ time: 2_000, warmupTime: 500 });
 });

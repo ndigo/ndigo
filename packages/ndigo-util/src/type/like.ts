@@ -27,9 +27,11 @@ export type LikeDescriptor = { [key: string]: Function | true };
  *
  * **Performance:**
  *
- * - **Fresh descriptor**: 43x faster than (removed Ramda) (101,620 Hz vs 2,353 Hz)
- * - **Cached descriptor**: 201x faster than (removed Ramda) (473,061 Hz vs 2,353 Hz)
- * - **Typical usage** (module-level const): Benefits from caching on every call
+ * - **Fresh descriptor**: pays descriptor analysis on every call.
+ * - **Cached descriptor**: pays it once per descriptor (the common module-level
+ *   const pattern).
+ * - Published measurements live in `BENCHMARKS.md`; the benchmark is
+ *   `packages/ndigo-util/bench/like.bench.ts`.
  *
  * **Codebase Usage:**
  *

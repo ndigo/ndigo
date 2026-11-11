@@ -1,0 +1,57 @@
+name: Benchmarks
+
+# Non-gating trend lane: benchmarks run nightly and on demand only. They never
+# gate a PR (shared-host noise would create false alarms), and the artifact is
+# uploaded for comparison against the committed reference baseline.
+on:
+  schedule:
+    - cron: '0 4 * * *' # nightly 04:00 UTC
+  workflow_dispatch:
+    inputs:
+      quick:
+        description: 'Quick run (one pass, no baseline comparison)'
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+jobs:
+  benchmarks:
+    # The self-hosted runner shares the host with other work; treat numbers as a
+    # trend, not a reference-hardware claim (docs/reference/2026-11-09_CI_COST_AND_RUNNERS.md).
+    runs-on: ${{ fromJSON(vars.CI_RUNNER || '["ubuntu-latest"]') }}
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@fe02b34f77f8bc703788d5817da081398fad5dd2 # v4.0.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e # v4.3.0
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies (frozen lockfile)
+        run: pnpm install --frozen-lockfile
+
+      - name: Run benchmarks
+        run: pnpm ${{ inputs.quick && 'bench:quick' || 'bench' }}
+
+      - name: Upload artifact
+        if: always()
+        uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
+        with:
+          name: benchmark-results
+          path: benchmarks/results/
+          if-no-files-found: warn
+          retention-days: 30

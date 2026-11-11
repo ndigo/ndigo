@@ -25,14 +25,15 @@ production build.
 Define the budget in user terms first — p50/p95 request latency, TTFB, LCP/INP,
 bundle size per route, jobs per second, memory per slot — then measure:
 
-| Layer                 | Tool                                                        |
-| --------------------- | ----------------------------------------------------------- |
-| Micro hot paths       | `pnpm test:bench` (Vitest benchmarks, e.g. `like()`/errors) |
-| DOM/render comparison | `pnpm test:benchmark:react`, `:svelte`, `:vue`, `:vanilla`  |
-| Browser app baseline  | `pnpm test:benchmark` (todomvc preview)                     |
-| Node CPU              | `node --cpu-prof` / `--prof`, or `perf`                     |
-| Browser runtime       | Performance panel, `PerformanceObserver`, Lighthouse        |
-| Load                  | your HTTP load tool against a production build              |
+| Layer                 | Tool                                                                   |
+| --------------------- | ---------------------------------------------------------------------- |
+| Micro hot paths       | `pnpm test:bench` (serial Vitest benchmarks; JSON artifacts)           |
+| Baseline comparison   | `pnpm bench:compare` (newest artifact vs committed reference baseline) |
+| DOM/render comparison | `pnpm test:benchmark:react`, `:vanilla` (jsdom approximation)          |
+| Browser app baseline  | Quarantined until a real-browser runner lands; see `BENCHMARKS.md`     |
+| Node CPU              | `node --cpu-prof` / `--prof`, or `perf`                                |
+| Browser runtime       | Performance panel, `PerformanceObserver`, Lighthouse                   |
+| Load                  | your HTTP load tool against a production build                         |
 
 Rules:
 
@@ -152,18 +153,22 @@ Invalidation is the hard part:
 ## 7. Benchmark lanes
 
 ```bash
-pnpm test:bench                 # Vitest micro benchmarks (like(), errors, spread)
-pnpm test:benchmark             # todomvc browser preview baseline
-pnpm test:benchmark:react       # DOM implementation comparison
-pnpm test:benchmark:svelte
-pnpm test:benchmark:vue
-pnpm test:benchmark:vanilla
+pnpm test:bench                 # serial micro benchmarks; writes benchmarks/results/*.json
+pnpm bench:quick                # one run, no baseline comparison
+pnpm bench:compare              # compare the newest artifact to the reference baseline
+pnpm bench:report               # render the newest artifact as Markdown
+pnpm test:benchmark:react       # jsdom approximation (works for React)
+pnpm test:benchmark:vanilla     # jsdom approximation (works for vanilla JS)
+pnpm test:benchmark:ndigo       # quarantined: jsdom cannot run the module-script bundle
+pnpm test:benchmark:svelte      # quarantined
+pnpm test:benchmark:vue         # quarantined
 ```
 
-Read them for **relative** changes in the same run/environment. A micro
-benchmark does not predict HTTP throughput; a browser preview does not predict
-SSR server cost. Keep a small app-level load test for the path you actually
-ship.
+The authoritative methodology, environment, and published results live in
+[`BENCHMARKS.md`](../../BENCHMARKS.md). Read them for **relative** changes in the
+same run/environment. A micro benchmark does not predict HTTP throughput; a
+jsdom approximation does not predict browser layout or paint. Keep a small
+app-level load test for the path you actually ship.
 
 ## 8. Checklist
 

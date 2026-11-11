@@ -1,7 +1,7 @@
 /**
  */
 import { describe, test, expect } from 'vitest';
-import { Principal, AnonymousPrincipal, likePrincipal } from '../src/principal';
+import { Principal, AnonymousPrincipal, DefaultPrincipal, likePrincipal } from '../src/principal';
 
 describe('AnonymousPrincipal', () => {
     test('has correct default id', () => {
@@ -19,6 +19,11 @@ describe('AnonymousPrincipal', () => {
         expect(subject.roles).toEqual([]);
     });
 
+    test('has empty scopes array', () => {
+        const subject = new AnonymousPrincipal();
+        expect(subject.scopes).toEqual([]);
+    });
+
     test('hasRole returns false for any role', () => {
         const subject = new AnonymousPrincipal();
         expect(subject.hasRole('admin')).toBe(false);
@@ -30,6 +35,29 @@ describe('AnonymousPrincipal', () => {
         expect(subject.hasAnyRole('admin')).toBe(false);
         expect(subject.hasAnyRole('admin', 'user')).toBe(false);
     });
+
+    test('hasScope returns false for any scope', () => {
+        const subject = new AnonymousPrincipal();
+        expect(subject.hasScope('tools.read')).toBe(false);
+    });
+
+    test('hasAnyScope returns false for any scopes', () => {
+        const subject = new AnonymousPrincipal();
+        expect(subject.hasAnyScope('tools.read')).toBe(false);
+        expect(subject.hasAnyScope('tools.read', 'tools.write')).toBe(false);
+    });
+});
+
+describe('DefaultPrincipal', () => {
+    test('exposes scopes and scope predicates', () => {
+        const subject = new DefaultPrincipal('1', 'Test User', ['user'], ['tools.read', 'tools.write']);
+
+        expect(subject.scopes).toEqual(['tools.read', 'tools.write']);
+        expect(subject.hasScope('tools.read')).toBe(true);
+        expect(subject.hasScope('tools.admin')).toBe(false);
+        expect(subject.hasAnyScope('tools.admin', 'tools.write')).toBe(true);
+        expect(subject.hasAnyScope('tools.admin')).toBe(false);
+    });
 });
 
 describe('likePrincipal', () => {
@@ -37,13 +65,16 @@ describe('likePrincipal', () => {
         expect(likePrincipal(new AnonymousPrincipal())).toBe(true);
     });
 
-    test('returns true for object with id, name, roles', () => {
+    test('returns true for object with id, name, roles, scopes', () => {
         const principal: Principal = {
             id: '1',
             name: 'Test User',
             roles: ['admin'],
+            scopes: ['tools.read'],
             hasRole: () => true,
             hasAnyRole: () => false,
+            hasScope: () => true,
+            hasAnyScope: () => false,
         };
         expect(likePrincipal(principal)).toBe(true);
     });
@@ -72,6 +103,10 @@ describe('likePrincipal', () => {
 
     test('returns false for object missing roles', () => {
         expect(likePrincipal({ id: '1', name: 'Test' })).toBe(false);
+    });
+
+    test('returns false for object missing scopes', () => {
+        expect(likePrincipal({ id: '1', name: 'Test', roles: [] })).toBe(false);
     });
 
     test('returns false for empty object', () => {

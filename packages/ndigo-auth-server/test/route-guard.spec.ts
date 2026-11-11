@@ -3,7 +3,7 @@
 import { describe, test, expect, beforeEach } from 'vitest';
 import { AuthServer } from '../src/server';
 import { AuthRouteGuard } from '../src/route-guard';
-import { AuthRegistry, Principal, AUTH_REQUIRED_KEY, AUTH_ROLES_KEY } from '@ndigo/auth-core';
+import { AuthRegistry, Principal, AUTH_REQUIRED_KEY, AUTH_ROLES_KEY, AUTH_SCOPES_KEY } from '@ndigo/auth-core';
 import { type ModelAndView } from '@ndigo/dispatcher';
 import { type Route } from '@ndigo/router';
 
@@ -17,13 +17,16 @@ function createMockAdapter(id: string, validateResult: Principal | null = null) 
     };
 }
 
-function createMockPrincipal(id = '1', name = 'Test', roles: string[] = ['user']) {
+function createMockPrincipal(id = '1', name = 'Test', roles: string[] = ['user'], scopes: string[] = []) {
     return {
         id,
         name,
         roles,
+        scopes,
         hasRole: (role: string) => roles.includes(role),
         hasAnyRole: (...r: string[]) => r.some((role) => roles.includes(role)),
+        hasScope: (scope: string) => scopes.includes(scope),
+        hasAnyScope: (...s: string[]) => s.some((scope) => scopes.includes(scope)),
     };
 }
 
@@ -288,6 +291,76 @@ describe('AuthRouteGuard', () => {
             };
 
             const result = await guard.preHandle(route, handlerMethod);
+            expect(result).toMatchObject({ statusCode: 403 });
+        });
+    });
+
+    describe('preHandle - scope authorization', () => {
+        test('returns true when principal has the required scopes', async () => {
+            const mockAdapter = createMockAdapter(
+                'jwt',
+                createMockPrincipal('1', 'Reader', ['user'], ['tools.read', 'tools.write'])
+            );
+            AuthRegistry.register(mockAdapter);
+
+            function handlerFn() {
+                return {};
+            }
+            setHandlerMetadata(handlerFn, {
+                [`${AUTH_SCOPES_KEY}:listOrders`]: ['tools.read'],
+            });
+
+            const handlerMethod: object = { handler: handlerFn, method: 'listOrders', path: '/test' };
+            const result = await guard.preHandle(createMockRoute('token'), handlerMethod);
+            expect(result).toBe(true);
+        });
+
+        test('returns 403 when the principal lacks a required scope', async () => {
+            const mockAdapter = createMockAdapter('jwt', createMockPrincipal('1', 'Reader', ['user'], ['tools.read']));
+            AuthRegistry.register(mockAdapter);
+
+            function handlerFn() {
+                return {};
+            }
+            setHandlerMetadata(handlerFn, {
+                [`${AUTH_SCOPES_KEY}:listOrders`]: ['tools.admin'],
+            });
+
+            const handlerMethod: object = { handler: handlerFn, method: 'listOrders', path: '/test' };
+            const result = await guard.preHandle(createMockRoute('token'), handlerMethod);
+            expect(result).toMatchObject({ statusCode: 403 });
+        });
+
+        test('a scope requirement implies authentication', async () => {
+            const mockAdapter = createMockAdapter('jwt', createMockPrincipal('1', 'Reader', ['user'], ['tools.read']));
+            AuthRegistry.register(mockAdapter);
+
+            function handlerFn() {
+                return {};
+            }
+            setHandlerMetadata(handlerFn, {
+                [`${AUTH_SCOPES_KEY}:listOrders`]: ['tools.read'],
+            });
+
+            const handlerMethod: object = { handler: handlerFn, method: 'listOrders', path: '/test' };
+            const result = await guard.preHandle(createMockRoute(null), handlerMethod);
+            expect(result).toMatchObject({ statusCode: 401 });
+        });
+
+        test('class and method scopes are both required', async () => {
+            const mockAdapter = createMockAdapter('jwt', createMockPrincipal('1', 'Reader', ['user'], ['tools.read']));
+            AuthRegistry.register(mockAdapter);
+
+            function handlerFn() {
+                return {};
+            }
+            setHandlerMetadata(handlerFn, {
+                [AUTH_SCOPES_KEY]: ['tools.read'],
+                [`${AUTH_SCOPES_KEY}:listOrders`]: ['tools.write'],
+            });
+
+            const handlerMethod: object = { handler: handlerFn, method: 'listOrders', path: '/test' };
+            const result = await guard.preHandle(createMockRoute('token'), handlerMethod);
             expect(result).toMatchObject({ statusCode: 403 });
         });
     });

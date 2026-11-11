@@ -22,13 +22,16 @@ function createMockAdapter(
     };
 }
 
-function createMockPrincipal(id = '1', name = 'Test', roles: string[] = ['user']): Principal {
+function createMockPrincipal(id = '1', name = 'Test', roles: string[] = ['user'], scopes: string[] = []): Principal {
     return {
         id,
         name,
         roles,
+        scopes,
         hasRole: (role: string) => roles.includes(role),
         hasAnyRole: (...r: string[]) => r.some((role) => roles.includes(role)),
+        hasScope: (scope: string) => scopes.includes(scope),
+        hasAnyScope: (...s: string[]) => s.some((scope) => scopes.includes(scope)),
     };
 }
 

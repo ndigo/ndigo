@@ -28,6 +28,12 @@ Re-exports [AUTH_ROLES_KEY](../decorators/variables/AUTH_ROLES_KEY.md)
 
 ***
 
+### AUTH\_SCOPES\_KEY
+
+Re-exports [AUTH_SCOPES_KEY](../decorators/variables/AUTH_SCOPES_KEY.md)
+
+***
+
 ### AuthAdapter
 
 Re-exports [AuthAdapter](../adapter/interfaces/AuthAdapter.md)
@@ -49,6 +55,12 @@ Re-exports [AuthenticationState](../state/interfaces/AuthenticationState.md)
 ### authorized
 
 Re-exports [authorized](../decorators/functions/authorized.md)
+
+***
+
+### authorizedScopes
+
+Re-exports [authorizedScopes](../decorators/functions/authorizedScopes.md)
 
 ***
 

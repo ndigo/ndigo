@@ -5,6 +5,7 @@ import '@tsmetadata/polyfill';
 
 export const AUTH_REQUIRED_KEY = 'auth:required';
 export const AUTH_ROLES_KEY = 'auth:roles';
+export const AUTH_SCOPES_KEY = 'auth:scopes';
 
 /**
  * Marks a class or method as requiring authentication.
@@ -56,5 +57,37 @@ export function authorized(role: string) {
         const key = kind === 'class' ? AUTH_ROLES_KEY : `${AUTH_ROLES_KEY}:${String(context.name)}`;
         const existing = (context.metadata[key] as string[] | undefined) ?? [];
         context.metadata[key] = [...existing, role];
+    };
+}
+
+/**
+ * Marks a class or method as requiring specific OAuth scopes.
+ *
+ * Multiple `@authorizedScopes` decorators may be stacked — every declared
+ * scope must be present on the principal for access to be granted. A route
+ * with scope requirements also requires authentication.
+ *
+ * This is a passive metadata decorator.
+ *
+ * @param scopes - The scopes the principal must possess.
+ * @returns The class/method decorator.
+ *
+ * @example
+ * ```ts
+ * class OrderTools {
+ *     @authorizedScopes('tools.read')
+ *     listOrders(): void {}
+ * }
+ * ```
+ */
+export function authorizedScopes(...scopes: string[]) {
+    return function (target: unknown, context: ClassDecoratorContext | ClassMethodDecoratorContext): void {
+        const kind = context.kind;
+        if (kind !== 'class' && kind !== 'method') {
+            throw new TypeError(`@authorizedScopes can only be applied to a class or method — received '${kind}'.`);
+        }
+        const key = kind === 'class' ? AUTH_SCOPES_KEY : `${AUTH_SCOPES_KEY}:${String(context.name)}`;
+        const existing = (context.metadata[key] as string[] | undefined) ?? [];
+        context.metadata[key] = [...existing, ...scopes];
     };
 }

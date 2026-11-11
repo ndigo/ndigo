@@ -108,8 +108,8 @@ handle records which and serves both access styles:
 - `bytes` — read everything into memory (materializes a temp part); simplest for small uploads.
 - `stream` — a Node `Readable`; use for large parts or when piping straight to an object store.
 - `transferTo(dest)` — copy the part off its temp location to a caller-chosen path (creating parent
- directories). This is the recommended way to persist: it never writes `originalFilename` to disk,
- so a traversal payload can't escape the upload dir.
+  directories). This is the recommended way to persist: it never writes `originalFilename` to disk,
+  so a traversal payload can't escape the upload dir.
 
 Temp files are cleaned up on read-completion or request close/error; there is no daemon — cleanup is
 per-request.
@@ -119,13 +119,13 @@ per-request.
 Uploads carry their own bounds (`MultipartLimits`), separate from the global body cap, so a single
 upload can't exhaust memory or disk. Defaults are bounded but generous:
 
-| Limit | Default | Meaning |
+| Limit            | Default | Meaning                                                        |
 | ---------------- | ------- | -------------------------------------------------------------- |
-| `maxFileSize` | 10 MiB | bytes per file part |
-| `maxRequestSize` | 10 MiB | combined bytes for the whole request |
-| `maxFiles` | 100 | number of file parts |
-| `maxFields` | 100 | number of text-field parts |
-| `fileThreshold` | 128 KiB | at/below this, a part stays in memory; above it spills to disk |
+| `maxFileSize`    | 10 MiB  | bytes per file part                                            |
+| `maxRequestSize` | 10 MiB  | combined bytes for the whole request                           |
+| `maxFiles`       | 100     | number of file parts                                           |
+| `maxFields`      | 100     | number of text-field parts                                     |
+| `fileThreshold`  | 128 KiB | at/below this, a part stays in memory; above it spills to disk |
 
 Exceeding any limit throws a `RequestLimitError(413, …)` — the same class the body-limit path maps,
 so an oversized upload returns the identical RFC-9457 problem+json shape as an over-large JSON body.
@@ -147,13 +147,13 @@ the contract exposes bytes/stream so a caller pipes to their store unchanged. Wr
 ## 7. Pitfalls
 
 - **Don't write `originalFilename` to disk.** It's untrusted; use `transferTo` to a path you control,
- or rename under a random name (as the demo does). Path traversal lives in the filename.
+  or rename under a random name (as the demo does). Path traversal lives in the filename.
 - **`bytes` materializes temp parts into memory.** For large uploads prefer `stream` /
- `transferTo`; reserve `bytes` for small parts already in memory.
+  `transferTo`; reserve `bytes` for small parts already in memory.
 - **A missing part on a required parameter fails like any other missing value** — no special-casing;
- guard with `isEmpty` when an empty (but present) part should be rejected explicitly.
+  guard with `isEmpty` when an empty (but present) part should be rejected explicitly.
 - **The global body cap doesn't govern uploads.** Multipart parses before `#readBody`; tune the upload
- caps (`maxFileSize` / `maxRequestSize`) separately so one knob doesn't masquerade as both.
+  caps (`maxFileSize` / `maxRequestSize`) separately so one knob doesn't masquerade as both.
 
 Reference: [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api) (`POST /api/upload` demo gate in `upload-controller.ts`, round-trip +
 empty-file spec in `upload.spec.ts`). Design rationale: .

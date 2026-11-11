@@ -73,15 +73,15 @@ View resolver ── renders the representation
 ```
 
 - **Route** — the request-shaped value (`path`, `method`, query/params, headers,
- cookies, body, attributes).
+  cookies, body, attributes).
 - **Handler mapping** — the table that maps a route to a handler method. Ndigo
- uses metadata decorators (`@getMapping`, `@postMapping`, `@requestMapping`)
- plus optional conditions (query, matrix, method, access).
+  uses metadata decorators (`@getMapping`, `@postMapping`, `@requestMapping`)
+  plus optional conditions (query, matrix, method, access).
 - **Handler method** — the controller method plus its parameter metadata.
 - **Argument resolvers** — turn `@parameters` declarations into method
- arguments, then validation and conversion run.
+  arguments, then validation and conversion run.
 - **View** — the representation. A handler returns a `ModelAndView`, a view
- name, or a value the adapter knows how to render.
+  name, or a value the adapter knows how to render.
 
 Guides [05](05-routing-and-route-conditions.md) (routing), 06 (binding), 07 (validation), and 08 (errors) cover each
 stage. [Guide 09](09-views-and-content-negotiation.md) covers the view side.
@@ -91,7 +91,7 @@ stage. [Guide 09](09-views-and-content-negotiation.md) covers the view side.
 A view is a contract, not a template engine. The same handler can return:
 
 - a named view resolved by a configured view resolver (EJS on Node, a Web
- Component in the browser);
+  Component in the browser);
 - a serializing view (`JSONView`, `CSVView`, `TextView`, `OctetStreamView`);
 - a `ProducerView` that streams a body;
 - an `IslandView` that renders server HTML and hydrates on the client.
@@ -108,13 +108,13 @@ themes.
 The same application code runs on two platforms; the preset decides what
 "transport" and "render target" mean:
 
-| Concern | Node (`@ndigo/platform-node`) | Browser (`@ndigo/platform-web`) |
+| Concern       | Node (`@ndigo/platform-node`)      | Browser (`@ndigo/platform-web`)        |
 | ------------- | ---------------------------------- | -------------------------------------- |
-| Bootstrap | `runNodeApplication` | `createWebApplication` |
-| Transport | HTTP/1.1, HTTP/2, WebSocket server | hash/history routing, `fetch` |
-| View target | HTTP response | DOM element |
-| Static assets | filesystem handler / static views | Vite dev server and bundles |
-| Test harness | `bootApp` + `MockHTTP` | `bootBrowserApp` + `BrowserMockClient` |
+| Bootstrap     | `runNodeApplication`               | `createWebApplication`                 |
+| Transport     | HTTP/1.1, HTTP/2, WebSocket server | hash/history routing, `fetch`          |
+| View target   | HTTP response                      | DOM element                            |
+| Static assets | filesystem handler / static views  | Vite dev server and bundles            |
+| Test harness  | `bootApp` + `MockHTTP`             | `bootBrowserApp` + `BrowserMockClient` |
 
 Platform packages are adapters, not forks: `@ndigo/platform-node` and
 `@ndigo/platform-web` wire the shared contracts to a runtime. Guides [01](01-building-a-node-api.md) and [02](02-building-a-browser-app.md)
@@ -125,16 +125,16 @@ walk each preset end to end.
 The 47 packages group into layers. You do not need all of them; the ones you
 install are the ones your app imports.
 
-| Layer | Packages | What it gives you |
+| Layer         | Packages                                                                                                                                                | What it gives you                                     |
 | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
-| Foundation | `@ndigo/core`, `@ndigo/util`, `@ndigo/factory`, `@ndigo/context`, `@ndigo/boot` | primitives, DI, configuration, lifecycle, presets |
-| Web | `@ndigo/router`, `@ndigo/dispatcher`, `@ndigo/view`, `@ndigo/view-ejs`, `@ndigo/view-webcomponent`, `@ndigo/view-toon`, `@ndigo/http`, `@ndigo/openapi` | routes, binding, views, client, API docs |
-| Platforms | `@ndigo/platform-node`, `@ndigo/platform-web` | runtime adapters |
-| Data | `@ndigo/orm`, `@ndigo/orm-drizzle`, `@ndigo/cache`, `@ndigo/redis` | persistence, caching, shared stores |
-| Security | `@ndigo/auth-core`, `@ndigo/auth-server`, `@ndigo/auth-client`, `@ndigo/rate-limit` | credentials, sessions, JWT, OIDC, limits |
-| Async | `@ndigo/scheduler`, `@ndigo/jobs`, `@ndigo/locks`, `@ndigo/cluster`, `@ndigo/socket` | scheduled/background work, coordination, realtime |
-| Cross-cutting | `@ndigo/log`, `@ndigo/telemetry*`, `@ndigo/management`, `@ndigo/proxy`, `@ndigo/resilience`, `@ndigo/flags`, `@ndigo/content` | observability, interception, flags, i18n |
-| Browser | `@ndigo/signals`, `@ndigo/host`, `@ndigo/dom` | reactive state, micro-frontend shell, DOM integration |
+| Foundation    | `@ndigo/core`, `@ndigo/util`, `@ndigo/factory`, `@ndigo/context`, `@ndigo/boot`                                                                         | primitives, DI, configuration, lifecycle, presets     |
+| Web           | `@ndigo/router`, `@ndigo/dispatcher`, `@ndigo/view`, `@ndigo/view-ejs`, `@ndigo/view-webcomponent`, `@ndigo/view-toon`, `@ndigo/http`, `@ndigo/openapi` | routes, binding, views, client, API docs              |
+| Platforms     | `@ndigo/platform-node`, `@ndigo/platform-web`                                                                                                           | runtime adapters                                      |
+| Data          | `@ndigo/orm`, `@ndigo/orm-drizzle`, `@ndigo/cache`, `@ndigo/redis`                                                                                      | persistence, caching, shared stores                   |
+| Security      | `@ndigo/auth-core`, `@ndigo/auth-server`, `@ndigo/auth-client`, `@ndigo/rate-limit`                                                                     | credentials, sessions, JWT, OIDC, limits              |
+| Async         | `@ndigo/scheduler`, `@ndigo/jobs`, `@ndigo/locks`, `@ndigo/cluster`, `@ndigo/socket`                                                                    | scheduled/background work, coordination, realtime     |
+| Cross-cutting | `@ndigo/log`, `@ndigo/telemetry*`, `@ndigo/management`, `@ndigo/proxy`, `@ndigo/resilience`, `@ndigo/flags`, `@ndigo/content`                           | observability, interception, flags, i18n              |
+| Browser       | `@ndigo/signals`, `@ndigo/host`, `@ndigo/dom`                                                                                                           | reactive state, micro-frontend shell, DOM integration |
 
 The package READMEs are the per-package reference; the guides are the
 task-shaped paths through them.
@@ -144,14 +144,14 @@ task-shaped paths through them.
 One of the most common design questions is "where does this update live?". The
 framework deliberately separates four mechanisms:
 
-| Need | Use | Guide |
+| Need                                                      | Use                                                  | Guide  |
 | --------------------------------------------------------- | ---------------------------------------------------- | ------ |
-| Local, synchronous derived state in one component/service | signals (`signal`, `computed`, `effect`) | 29 |
-| Cross-context notification inside one application | application events (`context.emit` / `EventGateway`) | 04 |
-| Server → client live push | SSE (`ServerSentEventView`) or WebSockets | 15, 29 |
-| Work that must survive a restart or run later | jobs + outbox | 22 |
-| Work that runs on a clock | `@scheduled` | 23 |
-| Boot-time or request-time feature decision | `@whenFeature` / feature flags | 34 |
+| Local, synchronous derived state in one component/service | signals (`signal`, `computed`, `effect`)             | 29     |
+| Cross-context notification inside one application         | application events (`context.emit` / `EventGateway`) | 04     |
+| Server → client live push                                 | SSE (`ServerSentEventView`) or WebSockets            | 15, 29 |
+| Work that must survive a restart or run later             | jobs + outbox                                        | 22     |
+| Work that runs on a clock                                 | `@scheduled`                                         | 23     |
+| Boot-time or request-time feature decision                | `@whenFeature` / feature flags                       | 34     |
 
 Signals are **not** an event bus, and context events are **not** a durable
 queue. Picking the right one up front avoids most of the "why did this update

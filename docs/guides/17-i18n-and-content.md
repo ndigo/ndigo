@@ -7,12 +7,12 @@ that keeps server-rendered pages faithful on the client.
 The design follows one rule: **Ndigo owns the contract, wraps the
 ecosystem standard, and uses platform standard APIs directly** —
 
-| Layer | What it is | Who owns it |
+| Layer                       | What it is                                                           | Who owns it                                            |
 | --------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------ |
-| `MessageSource` contract | `getMessage(key, params?, language?)` over `ContentSource` | `@ndigo/content` (framework) |
-| Message translation | resources, interpolation, plurals, contexts, fallbacks, lazy loading | **i18next** (via `@ndigo/content-i18next`) |
-| Date/number/list formatting | `Intl.*` formatters, cached, explicit locale/time zone | `@ndigo/core` wrappers (framework facade, Intl engine) |
-| Locale resolution | per-request language: header/cookie/navigator/fixed | `@ndigo/dispatcher` + platform packages |
+| `MessageSource` contract    | `getMessage(key, params?, language?)` over `ContentSource`           | `@ndigo/content` (framework)                           |
+| Message translation         | resources, interpolation, plurals, contexts, fallbacks, lazy loading | **i18next** (via `@ndigo/content-i18next`)             |
+| Date/number/list formatting | `Intl.*` formatters, cached, explicit locale/time zone               | `@ndigo/core` wrappers (framework facade, Intl engine) |
+| Locale resolution           | per-request language: header/cookie/navigator/fixed                  | `@ndigo/dispatcher` + platform packages                |
 
 **Audience:** Node and browser application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) or [guide 02](02-building-a-browser-app.md) · **Reference app:** [apps/12-ndigo-petclinic](https://github.com/ndigo/ndigo/tree/main/apps/12-ndigo-petclinic), [apps/07-ndigo-island](https://github.com/ndigo/ndigo/tree/main/apps/07-ndigo-island)
 
@@ -78,11 +78,11 @@ context.setMessageSource(
 The contract is i18next-shaped but backend-agnostic — an ICU
 (`@formatjs/intl`) backend can satisfy the same interface later:
 
-| `MessageParams` field | i18next mapping | Purpose |
+| `MessageParams` field | i18next mapping                         | Purpose                                   |
 | --------------------- | --------------------------------------- | ----------------------------------------- |
-| `values` | interpolation `{{name}}` | named placeholders |
-| `count` | plural keys `items_one` / `items_other` | plural selection (via `Intl.PluralRules`) |
-| `context` | context suffix `items_male` | variant selection |
+| `values`              | interpolation `{{name}}`                | named placeholders                        |
+| `count`               | plural keys `items_one` / `items_other` | plural selection (via `Intl.PluralRules`) |
+| `context`             | context suffix `items_male`             | variant selection                         |
 
 Lookup falls back in order: message source → content source → parent
 context → the key itself.
@@ -135,14 +135,14 @@ no manual locale plumbing in the controller:
 <span><%= locale %></span>
 ```
 
-| Locale helper | Signature |
+| Locale helper                               | Signature                   |
 | ------------------------------------------- | --------------------------- |
-| `t(key, params?)` | message lookup + formatting |
-| `formatDate(value, options?)` | `Intl.DateTimeFormat` |
-| `formatNumber(value, options?)` | `Intl.NumberFormat` |
-| `formatRelativeTime(value, unit, options?)` | `Intl.RelativeTimeFormat` |
-| `formatList(values, options?)` | `Intl.ListFormat` |
-| `locale` | the request language |
+| `t(key, params?)`                           | message lookup + formatting |
+| `formatDate(value, options?)`               | `Intl.DateTimeFormat`       |
+| `formatNumber(value, options?)`             | `Intl.NumberFormat`         |
+| `formatRelativeTime(value, unit, options?)` | `Intl.RelativeTimeFormat`   |
+| `formatList(values, options?)`              | `Intl.ListFormat`           |
+| `locale`                                    | the request language        |
 
 ### The SSR parity rule
 
@@ -203,20 +203,20 @@ signal-driven re-rendering.
 
 ## 7. What you get out of the box
 
-| Concern | Default |
+| Concern            | Default                                                           |
 | ------------------ | ----------------------------------------------------------------- |
-| Server language | `Accept-Language` header (`NodeAutoConfiguration`) |
-| Client language | cookie `lang` → navigator → `en-US` (`WebAutoConfiguration`) |
-| Template messages | `t` helpers in every EJS render |
-| Island locale | `data-ndigo-locale` attribute, assigned on hydration |
-| Reactive switching | `changeLocale` → cookie + `currentLocale` signal |
-| Formatting | `Intl.*` via `@ndigo/core` formatters (explicit locale/time zone) |
+| Server language    | `Accept-Language` header (`NodeAutoConfiguration`)                |
+| Client language    | cookie `lang` → navigator → `en-US` (`WebAutoConfiguration`)      |
+| Template messages  | `t` helpers in every EJS render                                   |
+| Island locale      | `data-ndigo-locale` attribute, assigned on hydration              |
+| Reactive switching | `changeLocale` → cookie + `currentLocale` signal                  |
+| Formatting         | `Intl.*` via `@ndigo/core` formatters (explicit locale/time zone) |
 
 ## See also
 
 - [Content/i18n decision](../decisions/2026-09-13_AD19_CONTENT_I18N.md)
 - [Content/i18n implementation plan](../plans/2026-09-13_CONTENT_I18N.md)
-- [ndigo-island demo](../../[apps/07-ndigo-island](https://github.com/ndigo/ndigo/tree/main/apps/07-ndigo-island)/README.md) — localized SSR page
-- [ndigo-todo-web demo](../../[apps/03-ndigo-todo-web](https://github.com/ndigo/ndigo/tree/main/apps/03-ndigo-todo-web)/README.md) — reactive locale switcher
+- [ndigo-island demo](../../apps/07-ndigo-island/README.md) — localized SSR page
+- [ndigo-todo-web demo](../../apps/03-ndigo-todo-web/README.md) — reactive locale switcher
 - [`@ndigo/content-i18next`](../../packages/ndigo-content-i18next/README.md) —
- the i18next adapter
+  the i18next adapter

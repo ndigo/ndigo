@@ -33,14 +33,14 @@ No amount of ARIA repairs a page without structure. Use native elements first:
 
 - **One `<main>`** per page, with an `id` the skip link targets.
 - **Landmarks** (`header`, `nav`, `main`, `footer`) with an `aria-label` when
- more than one of the same kind exists.
+  more than one of the same kind exists.
 - **One `<h1>`**, then a logical heading order; do not choose heading levels by
- size.
+  size.
 - **Buttons for actions, links for navigation.** A clickable `<div>` is a bug
- even if it works with a mouse.
+  even if it works with a mouse.
 - **The skip link** is the first focusable element and moves focus to `<main>`
- (`tabindex="-1"` makes the target focusable without adding it to the tab
- order).
+  (`tabindex="-1"` makes the target focusable without adding it to the tab
+  order).
 
 ndigo-ui's `app-shell` encodes this baseline and its test asserts the landmark,
 skip-link, and heading contract. Use it as the starting point, not a substitute
@@ -51,14 +51,14 @@ for reviewing the actual page.
 Every interactive surface must be reachable and operable without a pointer:
 
 - **Visible focus** — style `:focus-visible`, never remove the outline without
- a replacement. ndigo-ui's base layer provides a tokenized focus ring.
+  a replacement. ndigo-ui's base layer provides a tokenized focus ring.
 - **No positive `tabindex`.** Let DOM order define the sequence.
 - **Focus moves with context** — opening a dialog moves focus inside; closing
- it returns focus to the trigger; a route change moves focus to the new
- heading or main region.
+  it returns focus to the trigger; a route change moves focus to the new
+  heading or main region.
 - **Escape closes** transient surfaces; arrows navigate composite widgets.
 - **No keyboard traps** except a modal dialog's intentional focus loop, which
- must still close with Escape.
+  must still close with Escape.
 
 The ndigo-ui dialog is the reference: the trigger gets
 `aria-haspopup="dialog"`/`aria-expanded`, the content gets `role="dialog"`,
@@ -89,14 +89,14 @@ A form control needs a programmatic name, a state, and a description:
 
 - **`label[for]` or a wrapping `<label>`** — placeholder text is not a label.
 - **Help and error text** are referenced with `aria-describedby`; the error is
- not just red styling.
+  not just red styling.
 - **`aria-invalid="true"`** on the invalid control; keep the message in the
- DOM, not only in a toast.
+  DOM, not only in a toast.
 - **Group related choices** in `<fieldset>` with a `<legend>`; use
- `aria-describedby` on the group when needed.
+  `aria-describedby` on the group when needed.
 - **Do not disable submit to hide validation errors.** Keep the control
- focusable; report the error and move focus to the summary or first invalid
- field after submit.
+  focusable; report the error and move focus to the summary or first invalid
+  field after submit.
 
 FACE custom elements submit standard form data through
 `AsFormAssociated`, so the server path is unchanged. The mixin also handles
@@ -125,35 +125,35 @@ composite (rating, combobox, tag input).
 ## 4. Motion, color, and direction
 
 - **Reduced motion** — gate transforms, parallax, and long transitions behind
- `@media (prefers-reduced-motion: reduce)`. A reduced-motion user still needs
- the state change, just without the movement.
+  `@media (prefers-reduced-motion: reduce)`. A reduced-motion user still needs
+  the state change, just without the movement.
 - **Color is not the only signal** — errors, required fields, and selected
- states need text/icon/ARIA, not just color.
+  states need text/icon/ARIA, not just color.
 - **Contrast** — the ndigo-ui token suite enforces AA (4.5:1) for every
- semantic foreground/background pair in both themes; component-specific colors
- still need a browser check.
+  semantic foreground/background pair in both themes; component-specific colors
+  still need a browser check.
 - **RTL/logical properties** — use `margin-inline`, `padding-inline`,
- `inset-inline`, and `text-align: start`; avoid hard-coded `left`/`right`.
- Test at least one component per library in `dir="rtl"`.
+  `inset-inline`, and `text-align: start`; avoid hard-coded `left`/`right`.
+  Test at least one component per library in `dir="rtl"`.
 - **Zoom/reflow** — test at 200% zoom and a narrow viewport; content must not
- require horizontal scrolling.
+  require horizontal scrolling.
 
 ## 5. SSR, hydration, and islands
 
 Server rendering changes when focus and ARIA are applied:
 
 - **First paint fallback** — the DSD fallback must carry the same semantics as
- the hydrated component (heading, label, role). A skeleton with unlabeled
- boxes is not an accessible fallback.
+  the hydrated component (heading, label, role). A skeleton with unlabeled
+  boxes is not an accessible fallback.
 - **Hydration must not steal focus.** Hydrating a root replaces event wiring,
- not the focused element; if a component re-renders on connect, preserve the
- active element and selection.
+  not the focused element; if a component re-renders on connect, preserve the
+  active element and selection.
 - **Route changes** — after navigation, move focus to the new `<h1>`/`<main>`
- and announce the page title; do not leave focus on the old link.
+  and announce the page title; do not leave focus on the old link.
 - **Live regions** — SSE/signal updates that matter to the user should announce
- through an `aria-live` region; do not announce every tick.
+  through an `aria-live` region; do not announce every tick.
 - **Islands** — each island is a component boundary; its fallback and hydrated
- state must expose the same accessible name and role.
+  state must expose the same accessible name and role.
 
 ## 6. Vetting a component library
 
@@ -176,11 +176,11 @@ own tests. A component that fails a gate is not made accessible by a wrapper.
 Two layers, both required:
 
 1. **Automated axe** — run `axe-core` over a fixture per component/surface.
- In jsdom, disable `color-contrast` and `region` (no layout); run the full
- rule set in a real browser or Playwright for the release gate.
+   In jsdom, disable `color-contrast` and `region` (no layout); run the full
+   rule set in a real browser or Playwright for the release gate.
 2. **Explicit behavior tests** — focus moves, Escape restores, arrows navigate,
- typeahead selects, invalid fields link to errors, the skip link targets
- `<main>`. These are assertions, not screenshots.
+   typeahead selects, invalid fields link to errors, the skip link targets
+   `<main>`. These are assertions, not screenshots.
 
 ```ts
 import axe from 'axe-core';
@@ -202,16 +202,16 @@ release.
 ## 8. Pitfalls
 
 - **ARIA is a patch, not a substitute.** Prefer native elements; a `role` on a
- `div` does not add keyboard behavior.
+  `div` does not add keyboard behavior.
 - **Placeholder-as-label.** It disappears and is not a programmatic name.
 - **Removing focus outlines.** Replace them with a visible ring, not `none`.
 - **Hiding errors in toasts.** Keep the message associated with the field.
 - **Hydration that remounts the focused element.** Preserve focus across
- connect/update.
+  connect/update.
 - **Disabled submit as validation.** It prevents the user from discovering why.
 - **Color-only state.** Add text/icon/ARIA.
 - **One axe run on the home page.** Audit the components and states you ship,
- including dialogs/menus open.
+  including dialogs/menus open.
 
 ## See also
 

@@ -10,7 +10,7 @@ The validation mechanism is a single pipeline: an extractor resolves
  `ParameterConversionError` and surface as a **422 problem document** with the
  structured issues.
 
-**Audience:** Node and browser application developers · **Prerequisites:** [Guide 06](06-argument-binding.md) · **Reference app:** `[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)`, `[apps/12-ndigo-petclinic](https://github.com/ndigo/ndigo/tree/main/apps/12-ndigo-petclinic)`
+**Audience:** Node and browser application developers · **Prerequisites:** [Guide 06](06-argument-binding.md) · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api), [apps/12-ndigo-petclinic](https://github.com/ndigo/ndigo/tree/main/apps/12-ndigo-petclinic)
 
 ## What you'll learn
 

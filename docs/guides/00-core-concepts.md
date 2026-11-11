@@ -11,7 +11,7 @@ flow through them, and points at the guide that teaches each surface. Read it
 before [guide 01](01-building-a-node-api.md) (Node) or [guide 02](02-building-a-browser-app.md) (browser) if the package names are still
 unfamiliar.
 
-**Audience:** New Ndigo developers · **Prerequisites:** Workspace bootstrapped (`pnpm install`) · **Reference app:** `[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)` (browser companion: `[apps/08-ndigo-views](https://github.com/ndigo/ndigo/tree/main/apps/08-ndigo-views)`)
+**Audience:** New Ndigo developers · **Prerequisites:** Workspace bootstrapped (`pnpm install`) · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api) (browser companion: [apps/08-ndigo-views](https://github.com/ndigo/ndigo/tree/main/apps/08-ndigo-views))
 
 ## What you'll learn
 

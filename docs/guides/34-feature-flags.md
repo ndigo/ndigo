@@ -6,7 +6,7 @@ of the framework . They are **not** `@whenProperty`:
 configuration class _registers_; `@whenFeature` decides at **request time**
 whether a route _is reachable_ — and can flip while the process runs.
 
-**Audience:** Node and browser application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) or [guide 02](02-building-a-browser-app.md) · **Reference app:** `[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)`
+**Audience:** Node and browser application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) or [guide 02](02-building-a-browser-app.md) · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)
 
 ## What you'll learn
 
@@ -219,7 +219,7 @@ registers on the web client with the same instance.
 - **Not** a caching layer — the local provider is read-through by design;
  caching is a provider concern (a follow-up behind the SPI).
 
-Reference application: `[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)` — the `/gated-report` demo route,
+Reference application: [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api) — the `/gated-report` demo route,
 grounded in `test/feature-flags.spec.ts`.
 
 ## See also

@@ -9,14 +9,14 @@ on it.
 
 This guide covers both paths: using ndigo-ui, and adopting any other Web
 Component library (Web Awesome is the worked example). The runnable ndigo-ui
-reference is [`[apps/20-ndigo-ui-lab](https://github.com/ndigo/ndigo/tree/main/apps/20-ndigo-ui-lab)`](../../[apps/20-ndigo-ui-lab](https://github.com/ndigo/ndigo/tree/main/apps/20-ndigo-ui-lab)/README.md);
-[`[apps/07-ndigo-island](https://github.com/ndigo/ndigo/tree/main/apps/07-ndigo-island)`](../../[apps/07-ndigo-island](https://github.com/ndigo/ndigo/tree/main/apps/07-ndigo-island)/README.md) is the migrated
+reference is [[apps/20-ndigo-ui-lab](https://github.com/ndigo/ndigo/tree/main/apps/20-ndigo-ui-lab)](../../[apps/20-ndigo-ui-lab](https://github.com/ndigo/ndigo/tree/main/apps/20-ndigo-ui-lab)/README.md);
+[[apps/07-ndigo-island](https://github.com/ndigo/ndigo/tree/main/apps/07-ndigo-island)](../../[apps/07-ndigo-island](https://github.com/ndigo/ndigo/tree/main/apps/07-ndigo-island)/README.md) is the migrated
 island app. The decision records are
 ,
  (which supersedes ), and
 the superseded .
 
-**Audience:** Browser application developers · **Prerequisites:** [Guide 02](02-building-a-browser-app.md) · **Reference app:** `[apps/20-ndigo-ui-lab](https://github.com/ndigo/ndigo/tree/main/apps/20-ndigo-ui-lab)`
+**Audience:** Browser application developers · **Prerequisites:** [Guide 02](02-building-a-browser-app.md) · **Reference app:** [apps/20-ndigo-ui-lab](https://github.com/ndigo/ndigo/tree/main/apps/20-ndigo-ui-lab)
 
 ## What you'll learn
 
@@ -251,7 +251,7 @@ budget; a third-party library's claim is not a measurement.
 
 ## 10. Web Awesome as a third-party example
 
-`[apps/07-ndigo-island](https://github.com/ndigo/ndigo/tree/main/apps/07-ndigo-island)` migrated from Web Awesome to ndigo-ui in Phase 3
+[apps/07-ndigo-island](https://github.com/ndigo/ndigo/tree/main/apps/07-ndigo-island) migrated from Web Awesome to ndigo-ui in Phase 3
 (issue #304); its source no longer imports `<wa-*>` components and the library
 is no longer installed anywhere in this repository. The migration sequence
 remains the worked example for moving a third-party library onto ndigo-ui:
@@ -277,6 +277,6 @@ current app dependency.
 - [Guide 28 — Security Hardening](28-security-hardening.md) — CSP
 - [Guide 41 — Custom View Engines](41-custom-view-engines.md) — React/Vue UI strategies
 - [`@ndigo/ui`](../../packages/ndigo-ui/README.md) — tokens, theme, registry
-- [`[apps/20-ndigo-ui-lab](https://github.com/ndigo/ndigo/tree/main/apps/20-ndigo-ui-lab)`](../../[apps/20-ndigo-ui-lab](https://github.com/ndigo/ndigo/tree/main/apps/20-ndigo-ui-lab)/README.md) — the runnable consumer
+- [[apps/20-ndigo-ui-lab](https://github.com/ndigo/ndigo/tree/main/apps/20-ndigo-ui-lab)](../../[apps/20-ndigo-ui-lab](https://github.com/ndigo/ndigo/tree/main/apps/20-ndigo-ui-lab)/README.md) — the runnable consumer
 - [ndigo-ui agent skill](../../agent-local/skills/ndigo-ui/SKILL.md) — the agent-facing usage and porting contract
 - , , and — component, selection, and ndigo-ui decisions

@@ -12,7 +12,7 @@ The architecture map for the island model itself lives in
 [Micro Frontends](../architecture/micro-frontends.md); this guide is the
 how-to.
 
-**Audience:** Browser application developers · **Prerequisites:** [Guide 02](02-building-a-browser-app.md) · **Reference app:** `[apps/07-ndigo-island](https://github.com/ndigo/ndigo/tree/main/apps/07-ndigo-island)`, `[apps/08-ndigo-views](https://github.com/ndigo/ndigo/tree/main/apps/08-ndigo-views)`
+**Audience:** Browser application developers · **Prerequisites:** [Guide 02](02-building-a-browser-app.md) · **Reference app:** [apps/07-ndigo-island](https://github.com/ndigo/ndigo/tree/main/apps/07-ndigo-island), [apps/08-ndigo-views](https://github.com/ndigo/ndigo/tree/main/apps/08-ndigo-views)
 
 ## What you'll learn
 
@@ -94,7 +94,7 @@ class SignalsCounter extends AbstractWebComponent {
 - When the class defines `destroy`/`dispose`, activation wraps them to
  dispose the effects and drop the signal maps.
 
-The runnable demo is `[apps/03-ndigo-todo-web](https://github.com/ndigo/ndigo/tree/main/apps/03-ndigo-todo-web)`'s `signals-counter-view.ts`.
+The runnable demo is [apps/03-ndigo-todo-web](https://github.com/ndigo/ndigo/tree/main/apps/03-ndigo-todo-web)'s `signals-counter-view.ts`.
 
 ## 4. Bridging streams and events
 
@@ -168,7 +168,7 @@ hydrateIslands(); // upgrades every [data-ndigo-island] marker; returns the coun
 each tag — which must already be defined; a tag with no registered component is
 left as inert markup — restores the locale and `.model`, and replaces the
 server markup, after which `connectedCallback`/`render` run. The demo app is
-`[apps/07-ndigo-island](https://github.com/ndigo/ndigo/tree/main/apps/07-ndigo-island)` (EJS shell + hydrated island + SSE).
+[apps/07-ndigo-island](https://github.com/ndigo/ndigo/tree/main/apps/07-ndigo-island) (EJS shell + hydrated island + SSE).
 
 ### Reactive islands: SSE → signal → render
 

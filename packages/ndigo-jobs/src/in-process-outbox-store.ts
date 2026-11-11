@@ -1,7 +1,7 @@
 /**
  * The in-process reference outbox store (development and tests).
  */
-import { FrameworkError, chainComparisons, compareBy, numberComparator, stringComparator } from '@ndigo/core';
+import { FrameworkError, Heap } from '@ndigo/core';
 import { randomUUID } from 'node:crypto';
 import type { JobId } from './job';
 import type { OutboxClaimOptions, OutboxEntry, OutboxStore } from './outbox';
@@ -97,19 +97,19 @@ export class InProcessOutboxStore implements OutboxStore {
         }
 
         const now = this.#clock();
-        const claimable = [...this.#entries.values()]
-            .filter(
-                (stored) =>
-                    stored.publishedAt === undefined &&
-                    (stored.leaseExpiresAt === undefined || stored.leaseExpiresAt <= now)
-            )
-            .sort(
-                chainComparisons(
-                    compareBy((stored) => stored.entry.occurredAt, numberComparator.compare),
-                    compareBy((stored) => stored.entry.id, stringComparator.compare)
-                )
-            )
-            .slice(0, limit);
+        const filtered = [...this.#entries.values()].filter(
+            (stored) =>
+                stored.publishedAt === undefined &&
+                (stored.leaseExpiresAt === undefined || stored.leaseExpiresAt <= now)
+        );
+        const heap = new Heap<typeof filtered[number]>((left, right) =>
+            left.entry.occurredAt - right.entry.occurredAt || left.entry.id.localeCompare(right.entry.id)
+        );
+        for (const stored of filtered) heap.push(stored);
+        const claimable = [];
+        for (let i = 0; i < limit && heap.size > 0; i++) {
+            claimable.push(heap.pop() as (typeof filtered)[number]);
+        }
 
         const claimed: OutboxEntry[] = [];
         for (const stored of claimable) {

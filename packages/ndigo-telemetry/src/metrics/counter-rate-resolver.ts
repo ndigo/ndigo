@@ -1,7 +1,7 @@
 /**
  * Counter rate-of-change sampling and threshold alerts.
  */
-import { IllegalStateError } from '@ndigo/core';
+import { IllegalStateError, Deque } from '@ndigo/core';
 import { FeatureMetricAggregator } from './feature-metric-aggregator';
 
 /**
@@ -50,7 +50,7 @@ export interface CounterRateResolverOptions {
  */
 export class CounterRateResolver {
     #aggregator: FeatureMetricAggregator;
-    #sampleHistory: Array<{ timestamp: number; values: Map<string, number> }>;
+    #sampleHistory: Deque<{ timestamp: number; values: Map<string, number> }>;
     #thresholdByCounterKey: Map<string, number>;
     #windowSize: number;
 
@@ -60,7 +60,7 @@ export class CounterRateResolver {
      */
     constructor(options: CounterRateResolverOptions) {
         this.#aggregator = options.aggregator;
-        this.#sampleHistory = [];
+        this.#sampleHistory = new Deque<{ timestamp: number; values: Map<string, number> }>();
         this.#thresholdByCounterKey = new Map(options.thresholds);
         this.#windowSize = options.windowSize ?? 1;
     }
@@ -85,7 +85,7 @@ export class CounterRateResolver {
      * Resets the internal sample history, effectively clearing all past counter data.
      */
     reset(): void {
-        this.#sampleHistory = [];
+        this.#sampleHistory = new Deque<{ timestamp: number; values: Map<string, number> }>();
     }
 
     /**
@@ -141,8 +141,8 @@ export class CounterRateResolver {
             return snapshots;
         }
 
-        const oldestSample = this.#sampleHistory[0];
-        const currentSample = this.#sampleHistory[this.#sampleHistory.length - 1];
+        const oldestSample = this.#sampleHistory.peekFront() as { timestamp: number; values: Map<string, number> };
+        const currentSample = this.#sampleHistory.peekBack() as { timestamp: number; values: Map<string, number> };
         const elapsedMilliseconds = currentSample.timestamp - oldestSample.timestamp;
         const elapsedSeconds = elapsedMilliseconds > 0 ? elapsedMilliseconds / 1000 : 0;
 

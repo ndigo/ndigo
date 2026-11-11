@@ -25,7 +25,7 @@ describe('HostInstrumentation', () => {
     afterEach(() => vi.restoreAllMocks());
     test('wraps HostManager.registerFeature as INTERNAL', () => {
         const original = HostManager.prototype.registerFeature;
-        HostManager.prototype.registerFeature = function (): unknown {
+        HostManager.prototype.registerFeature = function (): HostManager {
             return this;
         };
         try {

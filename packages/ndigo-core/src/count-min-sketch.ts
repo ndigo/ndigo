@@ -2,8 +2,23 @@
  * A Count-Min sketch: sub-linear-memory approximate frequency counting.
  * `estimate()` never undercounts and overcounts with bounded error.
  */
-import { Serializable, JSONObject } from './serializable.js';
+import { Serializable } from './serializable.js';
 import { Equatable } from './equatable.js';
+
+/**
+ * The JSON form of a {@link CountMinSketch}: its dimensions, counter table,
+ * and total observed count.
+ */
+export type CountMinSketchJSON = {
+    /** Number of hash rows. */
+    depth: number;
+    /** Number of counters per row. */
+    width: number;
+    /** One row of counters per hash function. */
+    table: number[][];
+    /** Total count added across every value. */
+    total: number;
+};
 
 function hash32(input: string, seed: number): number {
     let h = seed >>> 0;
@@ -56,6 +71,24 @@ export class CountMinSketch implements Serializable, Equatable<CountMinSketch> {
         return new CountMinSketch(depth, width);
     }
 
+    /**
+     * Restores a sketch from its {@link CountMinSketchJSON} form.
+     *
+     * @param json - The serialized state, as produced by {@link CountMinSketch.toJSON}.
+     * @returns A new sketch with the restored dimensions, counters, and total.
+     */
+    static fromJSON(json: CountMinSketchJSON): CountMinSketch {
+        const sketch = new CountMinSketch(json.depth, json.width);
+        for (let row = 0; row < sketch.#depth; row++) {
+            const source = json.table[row] ?? [];
+            for (let column = 0; column < sketch.#width; column++) {
+                sketch.#table[row][column] = source[column] >>> 0;
+            }
+        }
+        sketch.#total = json.total;
+        return sketch;
+    }
+
     add(value: unknown, count: number = 1): this {
         const key = toKey(value);
         const c = Math.max(0, Math.floor(count));
@@ -86,7 +119,7 @@ export class CountMinSketch implements Serializable, Equatable<CountMinSketch> {
         this.#total = 0;
     }
 
-    toJSON(): JSONObject {
+    toJSON(): CountMinSketchJSON {
         return {
             depth: this.#depth,
             width: this.#width,

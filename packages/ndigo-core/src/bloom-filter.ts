@@ -3,8 +3,23 @@
  * but never false negatives. Memory is O(bits) and independent of the
  * number of distinct values stored.
  */
-import { Serializable, JSONObject } from './serializable.js';
+import { Serializable } from './serializable.js';
 import { Equatable } from './equatable.js';
+
+/**
+ * The JSON form of a {@link BloomFilter}: the bit width, hash count, packed
+ * buckets, and insertion count.
+ */
+export type BloomFilterJSON = {
+    /** Number of bits in the filter. */
+    bits: number;
+    /** Number of hash functions per value. */
+    hashes: number;
+    /** The packed bitset, one 32-bit word per entry. */
+    buckets: number[];
+    /** Number of values added. */
+    count: number;
+};
 
 function fnv1a32(input: string): number {
     let hash = 0x811c9dc5;
@@ -107,7 +122,7 @@ export class BloomFilter implements Serializable, Equatable<BloomFilter> {
         this.#count = 0;
     }
 
-    toJSON(): JSONObject {
+    toJSON(): BloomFilterJSON {
         return {
             bits: this.#bits,
             hashes: this.#hashes,

@@ -42,6 +42,9 @@ class BenchController {
 
     @routeMapping('/api/v1/users/*/profile')
     getUserProfile() {}
+
+    @routeMapping({ value: '/method', method: 'GET', private: false })
+    methodConstrained() {}
 }
 
 @configuration
@@ -69,6 +72,8 @@ handlerMapping.init();
 const routeUsers = { path: '/users' } as unknown as Route;
 const routeUserId = { path: '/users/42' } as unknown as Route;
 const routeProfile = { path: '/api/v1/users/42/profile' } as unknown as Route;
+const routeMethod = { path: '/method', method: 'GET' } as unknown as Route;
+const routeMethodMismatch = { path: '/method', method: 'POST' } as unknown as Route;
 const routeMiss = { path: '/nonexistent' } as unknown as Route;
 const multiRoutes = [routeUsers, routeUserId, routeProfile] as const;
 
@@ -81,17 +86,15 @@ function verifyFull(route: Route, expectedPattern: string | null): void {
         expectedPattern === null ? null : 'handler'
     );
     if (expectedPattern !== null) {
-        assertEquivalent(
-            `full pattern ${route.path}`,
-            (route as Route & { pattern?: string }).pattern,
-            expectedPattern
-        );
+        assertEquivalent(`full pattern ${route.path}`, route.pattern, expectedPattern);
     }
 }
 
 verifyFull(routeUsers, '/users');
 verifyFull(routeUserId, '/users/*');
 verifyFull(routeProfile, '/api/v1/users/*/profile');
+verifyFull(routeMethod, '/method');
+verifyFull(routeMethodMismatch, null);
 verifyFull(routeMiss, null);
 
 /* ------------------------------------------------------------------ */
@@ -183,6 +186,28 @@ test('full resolution — deep nested route', async ({ bench }) => {
 test('full resolution — route miss', async ({ bench }) => {
     await bench(benchName('getHandler(/nonexistent)', OPS), () => {
         for (let i = 0; i < OPS; i++) retain(handlerMapping.getHandler(routeMiss));
+    }).run();
+});
+
+test('full resolution — fresh route object', async ({ bench }) => {
+    // Production adapters build a fresh route per request; this exposes the
+    // hidden-class cost of decorating it with a non-enumerable property.
+    await bench(benchName('getHandler(/users) — fresh route', OPS), () => {
+        for (let i = 0; i < OPS; i++) retain(handlerMapping.getHandler({ path: '/users' } as unknown as Route));
+    }).run();
+});
+
+test('full resolution — method-constrained route', async ({ bench }) => {
+    await bench(benchName('getHandler(/method GET)', OPS), () => {
+        for (let i = 0; i < OPS; i++) retain(handlerMapping.getHandler(routeMethod));
+    }).run();
+});
+
+test('full resolution — 405 method mismatch', async ({ bench }) => {
+    await bench(benchName('getHandler(/method POST) — 405', OPS), () => {
+        for (let i = 0; i < OPS; i++) {
+            retain(handlerMapping.getHandler({ path: '/method', method: 'POST' } as unknown as Route));
+        }
     }).run();
 });
 

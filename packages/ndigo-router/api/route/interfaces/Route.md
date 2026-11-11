@@ -84,6 +84,14 @@ The route path.
 
 ***
 
+### pattern?
+
+> `optional` **pattern?**: `string`
+
+The matched mapping pattern, when a handler mapping resolved this route.
+
+***
+
 ### raw
 
 > **raw**: `string`

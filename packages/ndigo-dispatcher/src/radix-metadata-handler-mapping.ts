@@ -216,13 +216,10 @@ export class RadixMetadataHandlerMapping
 
         this._handleMatch(winner.mapping, path, route);
 
-        // Store pattern with radix-tree precision.
-        Reflect.defineProperty(route, 'pattern', {
-            value: match.pattern,
-            configurable: true,
-            enumerable: false,
-            writable: true,
-        });
+        // Store pattern with radix-tree precision. Plain assignment keeps the
+        // route in V8 fast-property mode; a non-enumerable defineProperty
+        // forces dictionary mode and slows every later route access.
+        route.pattern = match.pattern;
 
         return winner.handlerMethod;
     }

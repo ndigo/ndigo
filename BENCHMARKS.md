@@ -115,6 +115,16 @@ candidate; the 405 no-match path is unchanged). Same-host A/B, RME < 0.4%:
 row remains radix/condition-bound — the next target is condition caching for
 static routes.
 
+**Optimization (this branch):** the matched pattern is now a normal optional
+`Route.pattern` property assigned directly, instead of a non-enumerable
+`Reflect.defineProperty`. The non-enumerable define forced every route object
+into V8 dictionary mode, slowing later `route.path` / `route.params` reads.
+Same-host A/B, RME < 0.4%: `getHandler(/users)` 306 → 197 ns (−36%), fresh
+route object 373 → 202 ns (−46%), `/users/42` 356 → 229 ns (−36%), deep
+430 → 320 ns (−26%), method-constrained 326 → 207 ns (−36%), rotation
+388 → 259 ns (−33%); the miss and 405 rows are unchanged. 46/46 mapping specs
+pass.
+
 ### Containers and parsers
 
 | Scenario                   |   Ndigo | Comparator                       |                                Ratio |

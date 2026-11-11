@@ -39,6 +39,8 @@ export interface Route<TParams extends Record<string, string> = Record<string, s
     params: TParams | null;
     /** The route path. */
     path: string;
+    /** The matched mapping pattern, when a handler mapping resolved this route. */
+    pattern?: string;
     /** The raw route text. */
     raw: string;
     /** Additional route attributes. */

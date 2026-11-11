@@ -8,7 +8,7 @@ no hidden daemon, no required orchestrator — so the checklist is explicit.
 This guide collects the production decisions that are otherwise spread across
 the clustering, management, telemetry, TLS, and static-file guides.
 
-**Audience:** Node application developers and operators · **Prerequisites:** Guides 01, 24, 33, and 37 · **Reference app:** `apps/05-ndigo-api`, `apps/16-ndigo-redis-fanout`
+**Audience:** Node application developers and operators · **Prerequisites:** Guides [01](01-building-a-node-api.md), [24](24-distributed-locks.md), [33](33-management-endpoints.md), and [37](37-ndigo-cli.md) · **Reference app:** `[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)`, `[apps/16-ndigo-redis-fanout](https://github.com/ndigo/ndigo/tree/main/apps/16-ndigo-redis-fanout)`
 
 ## What you'll learn
 
@@ -26,7 +26,7 @@ The standard lifecycle is build, then serve:
 ```bash
 pnpm install --frozen-lockfile
 pnpm build                     # packages and app build targets
-ndigo serve ./apps/05-ndigo-api --port 3000
+ndigo serve ./[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api) --port 3000
 ```
 
 `ndigo serve` runs the app's `start` script under the supervisor (guide 37);
@@ -64,7 +64,7 @@ Start with one process per container/pod. For more cores or a single-host
 deploy, the cluster supervisor replicates worker slots:
 
 ```bash
-ndigo serve ./apps/05-ndigo-api --port 3000 --cluster 4
+ndigo serve ./[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api) --port 3000 --cluster 4
 ```
 
 Each slot gets `NDIGO_CLUSTER_SLOT`, `NDIGO_CLUSTER_SIZE`, and
@@ -75,7 +75,7 @@ backoff; a crash loop fails closed instead of flapping forever (guide 24).
 What changes under clustering:
 
 - **In-process state is per slot.** Caches, rate-limit counters, and schedulers
- multiply unless you use the shared drivers (guides 19, 22, 23, 28).
+ multiply unless you use the shared drivers (Guides [19](19-caching.md), [22](22-jobs-and-outbox.md), [23](23-scheduling.md), [28](28-security-hardening.md)).
 - **Scheduled work needs single-executor arbitration** — `@scheduled({ lock })`
  or a cluster-wide leader; otherwise every slot runs the task.
 - **WebSocket fan-out needs the Redis pub/sub bridge** when clients may land on

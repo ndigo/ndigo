@@ -10,7 +10,7 @@ For the server side of an HTTP interaction (routing, binding, views), see
 [guide 01](./01-building-a-node-api.md); for exercising a client in tests, see
 [guide 36](./36-testing.md).
 
-**Audience:** Node and browser application developers · **Prerequisites:** Workspace bootstrapped; no prior guide required · **Reference app:** `apps/08-ndigo-views`, `apps/19-ndigo-hn`
+**Audience:** Node and browser application developers · **Prerequisites:** Workspace bootstrapped; no prior guide required · **Reference app:** `[apps/08-ndigo-views](https://github.com/ndigo/ndigo/tree/main/apps/08-ndigo-views)`, `[apps/19-ndigo-hn](https://github.com/ndigo/ndigo/tree/main/apps/19-ndigo-hn)`
 
 ## What you'll learn
 

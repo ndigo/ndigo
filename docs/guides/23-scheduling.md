@@ -7,7 +7,7 @@ The design: the reference framework's declarative decorator shape with Nest/Adon
 semantics — async single-flight runs, error isolation, drain-on-close, and
 no catch-up after restarts.
 
-**Audience:** Node application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) · **Reference app:** `apps/05-ndigo-api`, `apps/17-ndigo-telemetry-lab`
+**Audience:** Node application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) · **Reference app:** `[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)`, `[apps/17-ndigo-telemetry-lab](https://github.com/ndigo/ndigo/tree/main/apps/17-ndigo-telemetry-lab)`
 
 ## What you'll learn
 
@@ -67,7 +67,7 @@ class Maintenance {
 - stops/drains on context close.
 
 The `ndigo-api` demo ships a working heartbeat (`Heartbeat` in
-`apps/05-ndigo-api/src/heartbeat.ts`).
+`[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)/src/heartbeat.ts`).
 
 ## 2. Specs
 
@@ -147,5 +147,5 @@ class ReportController {
 
 - [scheduling decision](../../docs/decisions/2026-09-13_AD20_SCHEDULING.md)
 - [Implementation plan](../../docs/plans/2026-09-13_SCHEDULING.md)
-- [ndigo-api demo](../../apps/05-ndigo-api/README.md) — the heartbeat task
+- [ndigo-api demo](../../[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)/README.md) — the heartbeat task
 - [`@ndigo/scheduler`](../../packages/ndigo-scheduler/README.md) — package surface

@@ -4,7 +4,7 @@ Add a provider-neutral tool-calling loop to an application: define tools once,
 serve them over HTTP and MCP, run them against a local or hosted model, and
 stream the result over SSE with one GenAI trace.
 
-**Audience:** Node · **Prerequisites:** guides 01, 16, 32, 37 · **Reference app:** `apps/21-ndigo-agent-lab`
+**Audience:** Node · **Prerequisites:** Guides [01](01-building-a-node-api.md), [16](16-typed-service-clients-and-sse.md), [32](32-telemetry.md), [37](37-ndigo-cli.md) · **Reference app:** `[apps/21-ndigo-agent-lab](https://github.com/ndigo/ndigo/tree/main/apps/21-ndigo-agent-lab)`
 
 ## What you'll learn
 
@@ -211,5 +211,5 @@ Configuration lives under `ai.*`: `baseURL`, `model`, `apiKey`, `maxSteps`, and
 - [`@ndigo/mcp` README](../../packages/ndigo-mcp/README.md)
 - [Guide 48 — Agent-Facing Surfaces](48-agent-facing-surfaces.md) — the
  app→agent direction: `@toolMapping`, MCP Apps, A2UI, WebMCP.
-- Guides 16 (SSE), 32 (telemetry), 34 (flags), 35 (resilience), 37 (CLI)
-- `apps/21-ndigo-agent-lab`
+- Guides [16](16-typed-service-clients-and-sse.md) (SSE), 32 (telemetry), 34 (flags), 35 (resilience), 37 (CLI)
+- `[apps/21-ndigo-agent-lab](https://github.com/ndigo/ndigo/tree/main/apps/21-ndigo-agent-lab)`

@@ -5,7 +5,7 @@ parameter, a view name that does not resolve, a proxy that hides the client, or
 a stale build. This guide is the symptom → cause → fix index. Start with the
 status code or the error class, then follow the link into the owning guide.
 
-**Audience:** Node and browser application developers · **Prerequisites:** Guide 01 or 02 · **Reference app:** `apps/05-ndigo-api`, `apps/09-ndigo-httpbin`
+**Audience:** Node and browser application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) or 02 · **Reference app:** `apps/05-ndigo-api`, `apps/09-ndigo-httpbin`
 
 ## What you'll learn
 
@@ -16,18 +16,18 @@ status code or the error class, then follow the link into the owning guide.
 
 ## 1. HTTP status map
 
-| Symptom                       | Likely cause                                                               | Fix                                                                                                               |
+| Symptom | Likely cause | Fix |
 | ----------------------------- | -------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| **404** on a path you mapped  | Wrong prefix/pattern, class-level mapping missing, trailing-slash mismatch | Check the class + method mapping composition; use `ndigo routes` to list the table (guide 05)                     |
-| **404** after the handler ran | View name did not resolve                                                  | Check the resolver chain and the view name (guide 09)                                                             |
-| **405** with `Allow`          | Path matched, method did not                                               | Add the verb decorator or accept the method; OPTIONS is handled separately (guide 05)                             |
-| **400**                       | Missing/unconvertible parameter or malformed body                          | Check the `@parameters` name/type; read the `MissingParameterError`/`ParameterConversionError` message (guide 06) |
-| **422** with `errors[]`       | Zod validation failed                                                      | Read the field paths/messages; fix the schema or input (guide 07)                                                 |
-| **406**                       | Candidates exist but none serves `Accept`/extension                        | Add a representation or widen the accepted media type (guide 09)                                                  |
-| **415**                       | Wrong `Content-Type` (e.g., login is JSON-only)                            | Send the expected content type; do not form-post JSON endpoints (guide 26)                                        |
-| **403** on a mutation         | CSRF token/cookie mismatch, or missing role                                | Send `X-CSRF-Token` matching the cookie; check the auth metadata (guides 26/28)                                   |
-| **429** with `Retry-After`    | Rate-limit budget exhausted                                                | Wait for the window, raise the budget, or fix the client key (guide 28)                                           |
-| **500**                       | Unhandled error or misconfiguration                                        | Read the server log with the trace/request id; the body is deliberately sanitized (guide 08)                      |
+| **404** on a path you mapped | Wrong prefix/pattern, class-level mapping missing, trailing-slash mismatch | Check the class + method mapping composition; use `ndigo routes` to list the table (guide 05) |
+| **404** after the handler ran | View name did not resolve | Check the resolver chain and the view name (guide 09) |
+| **405** with `Allow` | Path matched, method did not | Add the verb decorator or accept the method; OPTIONS is handled separately (guide 05) |
+| **400** | Missing/unconvertible parameter or malformed body | Check the `@parameters` name/type; read the `MissingParameterError`/`ParameterConversionError` message (guide 06) |
+| **422** with `errors[]` | Zod validation failed | Read the field paths/messages; fix the schema or input (guide 07) |
+| **406** | Candidates exist but none serves `Accept`/extension | Add a representation or widen the accepted media type (guide 09) |
+| **415** | Wrong `Content-Type` (e.g., login is JSON-only) | Send the expected content type; do not form-post JSON endpoints (guide 26) |
+| **403** on a mutation | CSRF token/cookie mismatch, or missing role | Send `X-CSRF-Token` matching the cookie; check the auth metadata (guides 26/28) |
+| **429** with `Retry-After` | Rate-limit budget exhausted | Wait for the window, raise the budget, or fix the client key (guide 28) |
+| **500** | Unhandled error or misconfiguration | Read the server log with the trace/request id; the body is deliberately sanitized (guide 08) |
 
 ## 2. Routing and binding
 
@@ -43,7 +43,7 @@ Check the query string is URL-encoded and the route is the one you think.
 **A required parameter is always missing.** The extractor name must match the
 wire name (`queryValue('page')` reads `page`, not `Page`), and a whole-source
 binding (`dataBinderValue('body')`) is a different source from a named one.
-Missing values become 400; see guide 06.
+Missing values become 400; see [guide 06](06-argument-binding.md).
 
 **Validation returns 422 instead of re-rendering my form.** `validatedBy` /
 `validatedBody` are API semantics; parse explicitly with `safeParse` for HTML
@@ -51,48 +51,48 @@ forms (guide 18).
 
 ## 3. DI and lifecycle
 
-| Symptom                                | Cause                                                                          | Fix                                                                                |
+| Symptom | Cause | Fix |
 | -------------------------------------- | ------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------- |
-| `No value registered` / undefined bean | Entry not registered, wrong name/token, or child context without parent lookup | Register in the config class; resolve after `refresh()`; use the token (guide 04)  |
-| Circular dependency at refresh         | Constructor/field cycle                                                        | Break with a provider method, setter/aware callback, or a separate collaborator    |
-| `init()` never ran                     | Bean not context-managed (manually constructed, `setValue` instance)           | Register via `@entry`; aware/init hooks only run on container-created beans        |
-| `close()` not called                   | Bean is prototype-scoped or not registered                                     | Use a singleton/refresh scope; implement `Closeable` and let `context.close()` run |
-| Old config after refresh               | Holding a reference to a destroyed `@refreshScope` bean                        | Resolve again after `config:refresh`; do not cache the instance                    |
+| `No value registered` / undefined bean | Entry not registered, wrong name/token, or child context without parent lookup | Register in the config class; resolve after `refresh`; use the token (guide 04) |
+| Circular dependency at refresh | Constructor/field cycle | Break with a provider method, setter/aware callback, or a separate collaborator |
+| `init` never ran | Bean not context-managed (manually constructed, `setValue` instance) | Register via `@entry`; aware/init hooks only run on container-created beans |
+| `close` not called | Bean is prototype-scoped or not registered | Use a singleton/refresh scope; implement `Closeable` and let `context.close` run |
+| Old config after refresh | Holding a reference to a destroyed `@refreshScope` bean | Resolve again after `config:refresh`; do not cache the instance |
 
-`context.close()` is synchronous; async cleanup must be drained before it or
+`context.close` is synchronous; async cleanup must be drained before it or
 bridged to `Closeable` (guide 21).
 
 ## 4. Views, SSE, and the browser
 
 - **“View not found”** — the resolver chain did not produce a view for that
-  name. Check the name, the resolver order, and whether the package's view
-  module is imported (guide 09).
+ name. Check the name, the resolver order, and whether the package's view
+ module is imported (guide 09).
 - **JSON returned for a view name** — a plain `string` return is a JSON value,
-  not a view name. Wrap it in `new ModelAndView('name')`.
+ not a view name. Wrap it in `new ModelAndView('name')`.
 - **SSE arrives all at once** — a proxy buffers `text/event-stream`; disable
-  buffering/compression for that route and send heartbeats (guide 16).
+ buffering/compression for that route and send heartbeats (guide 16).
 - **SSE stops after reconnect** — the client has no automatic resume; restart
-  the call or move to the socket client (guide 15).
+ the call or move to the socket client (guide 15).
 - **CORS preflight fails** — the origin is not in `cors.allowedOrigins`; the
-  default is fail-closed (guide 28).
+ default is fail-closed (guide 28).
 - **CSRF rejects every mutation** — the token header and cookie are not
-  paired; GETs mint the cookie, then send `X-CSRF-Token` (guide 28).
+ paired; GETs mint the cookie, then send `X-CSRF-Token` (guide 28).
 
 ## 5. Migrations and builds
 
 - **`db:schema:check` drift** — regenerate and commit the snapshot with the
-  migration in the same change (guide 20).
+ migration in the same change (guide 20).
 - **Migration runs twice / at the wrong time** — `runOnBoot` is explicit; the
-  runner journals by version. Check the migration directory and the config key.
+ runner journals by version. Check the migration directory and the config key.
 - **`Cannot find module '@ndigo/...'`** — packages are not built or the
-  workspace link is stale; run `pnpm install` then `pnpm build` (the CLI tests
-  need the built `lib/`).
+ workspace link is stale; run `pnpm install` then `pnpm build` (the CLI tests
+ need the built `lib/`).
 - **Decorator metadata missing** — import `@tsmetadata/polyfill` before any
-  decorated class, and do not use legacy `experimentalDecorators` (guide 04).
+ decorated class, and do not use legacy `experimentalDecorators` (guide 04).
 - **TypeDoc fails on a link** — add the cross-package entry in
-  `scripts/external-symbol-links.json`; do not hand-edit the API tree.
+ `scripts/external-symbol-links.json`; do not hand-edit the API tree.
 - **A guide check fails** — run `pnpm guides:check`; the message names the
-  file and the missing block or stale link label.
+ file and the missing block or stale link label.
 
 ## 6. Operational checks
 

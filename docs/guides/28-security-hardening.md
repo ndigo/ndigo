@@ -25,11 +25,11 @@ configuration and wiring.
 
 - **Security headers** — `SecurityHeadersInterceptor` prepended (default-on).
 - **Rate limiting** — `RateLimitInterceptor` appended, enforced only on routes
-  with `@rateLimit` metadata.
+ with `@rateLimit` metadata.
 - **CORS** — `CORSInterceptor` appended and **fail-closed**: no origin is
-  allowed until `cors.allowedOrigins` is set.
+ allowed until `cors.allowedOrigins` is set.
 - **CSRF** — **not** wired by default; opt in for cookie-authenticated
-  mutations (§4).
+ mutations (§4).
 
 Other layers are explicit: sessions/auth (guide 26), static containment
 (guide 10), management exposure (guide 33), WebSocket origins (guide 15), and
@@ -81,12 +81,12 @@ enable the exact origins you trust:
 Rules:
 
 - `allowedOrigins: ['*']` is rejected with `allowCredentials: true` at
-  construction — browsers forbid the combination.
+ construction — browsers forbid the combination.
 - The allowed origin is echoed, not wildcarded, when credentials are allowed.
 - Preflight (`OPTIONS` + `Access-Control-Request-Method`) short-circuits with
-  204; actual responses receive the allow headers.
+ 204; actual responses receive the allow headers.
 - A CORS denial is a denial, not a hint: do not add a permissive catch-all to
-  make a failing client “work”.
+ make a failing client “work”.
 
 ## 4. CSRF
 
@@ -131,12 +131,12 @@ The default `FixedWindowRateLimiter` is **per process**. Under clustering or
 multiple nodes, register the Redis driver so every process shares one budget:
 
 - the key is `(window, client address)`, so different windows never share a
-  count;
+ count;
 - `RedisRateLimiter` is **fail-closed** — a store failure rejects rather than
-  allowing unthrottled traffic; `onError: 'fail-open'` is the documented
-  availability escape hatch;
+ allowing unthrottled traffic; `onError: 'fail-open'` is the documented
+ availability escape hatch;
 - always load-test the budget with the real request path; a limiter that counts
-  only successful logins does not stop credential stuffing.
+ only successful logins does not stop credential stuffing.
 
 ## 6. Trusted proxies
 
@@ -161,18 +161,18 @@ you trust too broadly. Trust only the exact proxy networks.
 ## 7. Cookies, sessions, and exposure
 
 - **Session cookies** — `HttpOnly`, `SameSite=Lax`, `Secure`, `Path=/`; the
-  `__Host-ndigo-session` prefix pins the origin. Never expose the session id to
-  JavaScript. Guide 26 covers rotation and revocation.
+ `__Host-ndigo-session` prefix pins the origin. Never expose the session id to
+ JavaScript. [Guide 26](26-authentication-and-sessions.md) covers rotation and revocation.
 - **JWT** — short access TTLs, rotating refresh tokens, `tokenVersion`
-  revocation; see guide 26.
+ revocation; see [guide 26](26-authentication-and-sessions.md).
 - **Management endpoints** — opt-in exposure; protect them with the same guard
-  as any privileged route (guide 33).
+ as any privileged route (guide 33).
 - **WebSockets** — validate `Origin` on upgrade (guide 15); a socket inherits
-  the same auth and rate-limit decisions as HTTP.
+ the same auth and rate-limit decisions as HTTP.
 - **Static files** — containment and method safety are on by default; do not
-  serve user-controlled roots (guide 10).
+ serve user-controlled roots (guide 10).
 - **Secrets** — use `{cipher:...}` values and keep `NDIGO_SECRET_KEY` out of
-  the repository and backups (guide 03).
+ the repository and backups (guide 03).
 
 ## 8. Production checklist
 
@@ -180,40 +180,40 @@ you trust too broadly. Trust only the exact proxy networks.
 - CSRF wired for every cookie-authenticated mutation.
 - Login and other credential endpoints have explicit `@rateLimit` budgets.
 - Trusted proxies match the actual edge network; `NDIGO_TRUSTED_PROXIES` is set
-  in production.
+ in production.
 - Security headers are not disabled; CSP `connect-src` names additional hosts
-  explicitly.
+ explicitly.
 - Management endpoints are guarded or not exposed; health probes are the only
-  public surface.
+ public surface.
 - Session/JWT lifetimes and cookie flags match the deployment’s TLS posture.
 - Secrets are encrypted at rest; the key is delivered by the environment, not
-  the repo.
+ the repo.
 
 ## 9. Pitfalls
 
 - **CORS is not auth.** It stops browser reads, not server-to-server requests.
 - **`allowedOrigins: ['*']` plus credentials fails at startup.** Use an explicit
-  list and echo the origin.
+ list and echo the origin.
 - **CSRF is opt-in.** A cookie-session app that never wires it is exposed on
-  logout and any non-JSON mutation.
+ logout and any non-JSON mutation.
 - **A per-process limiter multiplies under clustering.** Use the Redis driver
-  for multi-node budgets.
+ for multi-node budgets.
 - **Trusting all proxies trusts all headers.** Configure exact networks.
 - **Disabling headers to fix a CSP error hides the error.** Widen the specific
-  directive instead.
+ directive instead.
 - **Remote registries are a read surface, not a write surface.** The CLI
-  validates paths against the selected local registry and only accepts JSON
-  content that the registry source declared; remote content must not include
-  arbitrary local files or unregistered host references.
+ validates paths against the selected local registry and only accepts JSON
+ content that the registry source declared; remote content must not include
+ arbitrary local files or unregistered host references.
 - **Remote boot config never starts code silently.** `fromConfig` requires a
-  `sourceCatalog` mapping of configuration factories, so an allowlist replaces
-  direct module `import()` of remote specifiers.
+ `sourceCatalog` mapping of configuration factories, so an allowlist replaces
+ direct module `import` of remote specifiers.
 - **Do not render untrusted markup on A2UI surfaces.** `nd-a2ui-surface` only
-  writes safe attributes/props; pass explicit facts as data, not as markup,
-  and sanitize the source if the values are quotes from user input.
+ writes safe attributes/props; pass explicit facts as data, not as markup,
+ and sanitize the source if the values are quotes from user input.
 - **Use `trustedMarkup: true` only for MCP UI documents you own.** The MCP Apps
-  `ui://` resource renderer escapes the body by default; only set
-  `trustedMarkup` when the markup is author-owned, not user input.
+ `ui://` resource renderer escapes the body by default; only set
+ `trustedMarkup` when the markup is author-owned, not user input.
 
 ## See also
 
@@ -224,4 +224,4 @@ you trust too broadly. Trust only the exact proxy networks.
 - [Guide 10 — Static Files](10-static-files.md) — containment and method safety
 - [Guide 15 — WebSockets](15-websockets.md) — origin and socket auth
 - [`@ndigo/rate-limit`](../../packages/ndigo-rate-limit/README.md) and [`@ndigo/platform-node`](../../packages/ndigo-platform-node/README.md) — the enforcing surfaces
-- [AD-25](../decisions/2026-09-18_AD25_SECURITY_HEADERS.md), [AD-37](../decisions/2026-09-28_AD37_TRUSTED_PROXY.md), and [AD-79](../decisions/2026-10-08_AD79_SHARED_STORE_RATE_LIMITING.md) — headers, proxies, and shared limits
+- , , and — headers, proxies, and shared limits

@@ -37,11 +37,11 @@ const api = HTTP.create({
 ```
 
 - `baseURL` — base for relative inputs; a relative base is ignored (the
-  platform default applies) so absolute inputs never throw at parse time.
+ platform default applies) so absolute inputs never throw at parse time.
 - `headers` / `params` — instance defaults, merged with per-request values.
 - `fetch` — a custom Fetch implementation (defaults to `globalThis.fetch`).
 - `requestTransforms` / `responseTransforms` — body transform pipelines (added
-  as an internal `TransformInterceptor`).
+ as an internal `TransformInterceptor`).
 
 Under dependency injection, construct `new HTTP(interceptors, init, fetch)`
 directly (the `AsHTTPStrategy` pattern); `create` is a thin wrapper over it.
@@ -67,13 +67,13 @@ Verbs: `get`, `head`, `options`, `post`, `put`, `patch`, `delete`, `connect`,
 An interceptor declares which hooks it implements; the chain runs them in
 order:
 
-| Hook           | When                                                    |
-| :------------- | :------------------------------------------------------ |
-| `preInit`      | before the request is built — veto by returning `false` |
-| `preRequest`   | can replace the `Request` (auth/header rewrites)        |
-| `postResponse` | after Fetch resolves — can replace the `Response`       |
-| `postError`    | on a thrown fetch/transform error — can normalize it    |
-| `postComplete` | always, after the response/error is settled             |
+| Hook | When |
+|:------------- |:------------------------------------------------------ |
+| `preInit` | before the request is built — veto by returning `false` |
+| `preRequest` | can replace the `Request` (auth/header rewrites) |
+| `postResponse` | after Fetch resolves — can replace the `Response` |
+| `postError` | on a thrown fetch/transform error — can normalize it |
+| `postComplete` | always, after the response/error is settled |
 
 Built-in interceptors cover the common cases: `TimeoutInterceptor`,
 `ContentTypeInterceptor`, `HeaderInterceptor`, `RetryInterceptor`,
@@ -118,11 +118,11 @@ const params = QueryString.parse('a=1&a=2&b=3'); // { a: ['1','2'], b: '3' }
 ## See also
 
 - Generated API: [`@ndigo/http` api](../../packages/ndigo-http/api/README.md);
-  the full symbol surface is on the package README.
-- Decision: [AD-49](../decisions/2026-02-07_AD49_HTTP_TRANSFORM_PIPELINE.md) —
-  the body transform pipeline.
+ the full symbol surface is on the package README.
+- Decision: —
+ the body transform pipeline.
 - Related: [guide 19](./19-caching.md) (client `memoize`),
-  [guide 35](./35-method-interception-and-resilience.md) (retry/circuit-breaker policies),
-  [guide 36](./36-testing.md) (`@ndigo/test` exercises HTTP-boundary behavior).
+ [guide 35](./35-method-interception-and-resilience.md) (retry/circuit-breaker policies),
+ [guide 36](./36-testing.md) (`@ndigo/test` exercises HTTP-boundary behavior).
 
 [Back to guides](./README.md)

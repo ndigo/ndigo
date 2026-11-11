@@ -60,86 +60,86 @@ asks; heart-beat is negotiated off (`0,0`) because the registry ping/pong
 already owns liveness. The second wave rounds out the protocol:
 
 - **Transactions** — BEGIN/COMMIT/ABORT with per-session buffers: SEND/
-  ACK/NACK frames inside a transaction apply atomically on COMMIT, receipts
-  are held until then, ABORT discards. A frame on an unknown transaction
-  fails closed.
+ ACK/NACK frames inside a transaction apply atomically on COMMIT, receipts
+ are held until then, ABORT discards. A frame on an unknown transaction
+ fails closed.
 - **Ack tracking + NACK redelivery** — ack modes `client` /
-  `client-individual` track delivered-but-unacked messages per subscription.
-  `client` ACKs are cumulative (everything up to the named message);
-  `client-individual` ACKs exactly the named message — earlier unacked
-  deliveries stay tracked and NACK-able. NACK redelivers the named message
-  with `redelivered: true`. MESSAGE frames for these modes carry an `ack`
-  header, so a spec-conforming client can ack with `id` alone (the
-  `subscription` header is accepted too). Tracking is bounded by count
-  (`maxUnacked`, default 1000), by bytes per subscription (`maxUnackedBytes`,
-  default 1 MiB) and by bytes per session (`maxUnackedSessionBytes`, default
-  16 MiB) — oldest-first eviction on every bound, so a slow acker cannot pin
-  memory.
+ `client-individual` track delivered-but-unacked messages per subscription.
+ `client` ACKs are cumulative (everything up to the named message);
+ `client-individual` ACKs exactly the named message — earlier unacked
+ deliveries stay tracked and NACK-able. NACK redelivers the named message
+ with `redelivered: true`. MESSAGE frames for these modes carry an `ack`
+ header, so a spec-conforming client can ack with `id` alone (the
+ `subscription` header is accepted too). Tracking is bounded by count
+ (`maxUnacked`, default 1000), by bytes per subscription (`maxUnackedBytes`,
+ default 1 MiB) and by bytes per session (`maxUnackedSessionBytes`, default
+ 16 MiB) — oldest-first eviction on every bound, so a slow acker cannot pin
+ memory.
 - **Binary bodies** — the codec and transports are byte-exact:
-  `Uint8Array`/`ArrayBuffer` bodies flow as binary frames (headers always
-  text); `content-length` is emitted for binary bodies. Text frames stay
-  strings (`SocketSession`/`SocketClient` JSDoc updated).
+ `Uint8Array`/`ArrayBuffer` bodies flow as binary frames (headers always
+ text); `content-length` is emitted for binary bodies. Text frames stay
+ strings (`SocketSession`/`SocketClient` JSDoc updated).
 - **`/user` destinations** — principal-scoped routing: subscribe
-  `/user/queue/events`, then `broker.sendToUser('alice', '/queue/events',
-  …)` delivers to that user's scope (user-destination parity).
-  `resolveUser(session)` (default: `session.attributes.user`) binds the
-  scope; a client SEND to `/user/*` reaches only the sender's own scope,
-  and sessions with no resolved user cannot bind `/user/*` (1008).
+ `/user/queue/events`, then `broker.sendToUser('alice', '/queue/events',
+ …)` delivers to that user's scope (user-destination parity).
+ `resolveUser(session)` (default: `session.attributes.user`) binds the
+ scope; a client SEND to `/user/*` reaches only the sender's own scope,
+ and sessions with no resolved user cannot bind `/user/*` (1008).
 - **`/queue` destinations** — bounded store-and-forward: every SEND/
-  publish appends to the destination's backlog (`queueBacklog`, default
-  1000, FIFO eviction), and a new subscriber replays the backlog before
-  live traffic. `queueBacklog: 0` reduces the destination to live fan-out.
-  Retention is further bounded globally: the number of distinct `/queue`
-  destinations is capped (`maxBacklogDestinations`, default 1000 — the
-  oldest destination is evicted whole, releasing its retained messages, its
-  byte accounting **and its sequence entry**) and the retained bytes across
-  all destinations are capped (`maxBacklogBytes`, default 64 MiB — oldest
-  messages evicted first). Retained destination _keys_ are bounded by the
-  same cap, so a client cannot grow the server's memory by SENDing to
-  arbitrary `/queue/<name>` destinations; how much history one connection
-  may pull back is bounded separately by `maxReplayBytesPerSession`
-  (default 16 MiB, consumed by subscribe replays — exhaustion fails closed).
+ publish appends to the destination's backlog (`queueBacklog`, default
+ 1000, FIFO eviction), and a new subscriber replays the backlog before
+ live traffic. `queueBacklog: 0` reduces the destination to live fan-out.
+ Retention is further bounded globally: the number of distinct `/queue`
+ destinations is capped (`maxBacklogDestinations`, default 1000 — the
+ oldest destination is evicted whole, releasing its retained messages, its
+ byte accounting **and its sequence entry**) and the retained bytes across
+ all destinations are capped (`maxBacklogBytes`, default 64 MiB — oldest
+ messages evicted first). Retained destination _keys_ are bounded by the
+ same cap, so a client cannot grow the server's memory by SENDing to
+ arbitrary `/queue/<name>` destinations; how much history one connection
+ may pull back is bounded separately by `maxReplayBytesPerSession`
+ (default 16 MiB, consumed by subscribe replays — exhaustion fails closed).
 - **Durable-queue seam (store-read phase)** — the store is the single
-  source of truth for `/queue`: every append persists through it and
-  subscribe replay reads from it. The default is an
-  `InMemoryQueueMessageStore` built from the backlog caps above;
-  `LibSQLQueueMessageStore` from `@ndigo/orm-drizzle` provides durable storage
-  through the broker's `queueStore` option. This is separate from live Redis
-  fan-out, not a distributed queue — **a `RECEIPT` means
-  "persisted"** for `/queue` destinations (the receipt follows the append; a
-  store fault withholds it and fails closed with an `ERROR` frame followed
-  by a `1011` close, per the STOMP rule that an ERROR is always followed by
-  a close — the subscribe-replay path does the same).
+ source of truth for `/queue`: every append persists through it and
+ subscribe replay reads from it. The default is an
+ `InMemoryQueueMessageStore` built from the backlog caps above;
+ `LibSQLQueueMessageStore` from `@ndigo/orm-drizzle` provides durable storage
+ through the broker's `queueStore` option. This is separate from live Redis
+ fan-out, not a distributed queue — **a `RECEIPT` means
+ "persisted"** for `/queue` destinations (the receipt follows the append; a
+ store fault withholds it and fails closed with an `ERROR` frame followed
+ by a `1011` close, per the STOMP rule that an ERROR is always followed by
+ a close — the subscribe-replay path does the same).
 - **Message history** — `broker.history('/queue/x', { limit, afterSeq })`
-  reads the retained window (the same seam subscribe replay reads); the
-  `retention: { ttlMs, maxMessages }` broker option bounds both durable
-  retention and the subscribe-replay window (newest `N`, TTL-pruned before
-  replay). Backend-agnostic: works identically on the in-memory store.
+ reads the retained window (the same seam subscribe replay reads); the
+ `retention: { ttlMs, maxMessages }` broker option bounds both durable
+ retention and the subscribe-replay window (newest `N`, TTL-pruned before
+ replay). Backend-agnostic: works identically on the in-memory store.
 - **Resource caps** — the broker fails closed on client-driven growth:
-  `maxSubscriptionsPerSession` (1000), `maxTransactionsPerSession` (8)
-  with `maxTransactionOps` (1000) and `maxTransactionBytes` (16 MiB) per
-  open transaction (SEND **and** ACK/NACK ops), `maxIdentifierLength`
-  (1024 characters — destinations, subscription/transaction/receipt ids),
-  the unacked byte bounds above, and `maxReplayBytesPerSession` (16 MiB).
-  All caps fail closed per the protocol-error policy (ERROR + close on the
-  violating frame). Transaction-buffered SENDs to `/user/*` ride the same
-  principal-scope routing and policy check as live SENDs.
+ `maxSubscriptionsPerSession` (1000), `maxTransactionsPerSession` (8)
+ with `maxTransactionOps` (1000) and `maxTransactionBytes` (16 MiB) per
+ open transaction (SEND **and** ACK/NACK ops), `maxIdentifierLength`
+ (1024 characters — destinations, subscription/transaction/receipt ids),
+ the unacked byte bounds above, and `maxReplayBytesPerSession` (16 MiB).
+ All caps fail closed per the protocol-error policy (ERROR + close on the
+ violating frame). Transaction-buffered SENDs to `/user/*` ride the same
+ principal-scope routing and policy check as live SENDs.
 - **Policy seams** — `onMessage(destination, body, headers, session)` is the
-  app-routing hook: return `false` to suppress the default fan-out (the
-  frame still receipts — the app handled it). `authorize(destination,
-  action, session)` is the _denial_ gate, consulted on SUBSCRIBE (before any
-  replay) and on SEND in both the live and transactional paths; `false`
-  fails closed with ERROR + close `1008`. `verifyCredentials(login,
-  passcode, session)` validates CONNECT credentials — and a CONNECT that
-  carries `login`/`passcode` with **no** verifier configured is rejected
-  (fail closed) rather than silently trusting them.
+ app-routing hook: return `false` to suppress the default fan-out (the
+ frame still receipts — the app handled it). `authorize(destination,
+ action, session)` is the _denial_ gate, consulted on SUBSCRIBE (before any
+ replay) and on SEND in both the live and transactional paths; `false`
+ fails closed with ERROR + close `1008`. `verifyCredentials(login,
+ passcode, session)` validates CONNECT credentials — and a CONNECT that
+ carries `login`/`passcode` with **no** verifier configured is rejected
+ (fail closed) rather than silently trusting them.
 - **Spec conformance** — the codec accepts `EOL = [CR] LF`, treats undefined
-  header escapes as fatal, keeps the **first** of a repeated header, allows
-  trailing EOLs after the terminating NUL, and rejects anything after them.
-  A CONNECT without `accept-version` means STOMP 1.0 (negotiated as 1.0, not
-  refused). User-defined SEND headers pass through to MESSAGE frames. An
-  `ERROR` frame is always followed by a close (the stream is over when an
-  ERROR arrives).
+ header escapes as fatal, keeps the **first** of a repeated header, allows
+ trailing EOLs after the terminating NUL, and rejects anything after them.
+ A CONNECT without `accept-version` means STOMP 1.0 (negotiated as 1.0, not
+ refused). User-defined SEND headers pass through to MESSAGE frames. An
+ `ERROR` frame is always followed by a close (the stream is over when an
+ ERROR arrives).
 
 Still deferred: cross-node queue consumption/coordination and message history
 beyond the configured retained window. Durable LibSQL `/queue` storage and
@@ -240,4 +240,4 @@ channels; a namespace is isolation convention, not authorization.
 - [Guide 21 — Persistence & Shared Stores](21-persistence-and-shared-stores.md) — Redis ownership and shutdown
 - [`@ndigo/socket`](../../packages/ndigo-socket/README.md) — broker, client, and STOMP surface
 - [`@ndigo/redis`](../../packages/ndigo-redis/README.md) — the fan-out driver
-- [AD-23](../decisions/archive/2026-09-16_AD23_STOMP.md) — the STOMP decision
+- — the STOMP decision

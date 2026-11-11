@@ -5,7 +5,7 @@ usage, an inspection manifest that answers “what does this app expose?”, and
 validation lanes that keep the repository itself honest. This guide is the map
 to those checks and how to wire them into an app.
 
-**Audience:** Application developers and framework contributors · **Prerequisites:** Workspace bootstrapped; guide 01 or 02 · **Reference app:** `apps/05-ndigo-api`
+**Audience:** Application developers and framework contributors · **Prerequisites:** Workspace bootstrapped; [guide 01](01-building-a-node-api.md) or 02 · **Reference app:** `apps/05-ndigo-api`
 
 ## What you'll learn
 
@@ -17,12 +17,12 @@ to those checks and how to wire them into an app.
 
 ## 1. Two rule sets
 
-| Rule set         | Package                           | Scope                                  |
+| Rule set | Package | Scope |
 | ---------------- | --------------------------------- | -------------------------------------- |
-| Consumer guards  | `@ndigo/oxlint-plugin`            | Framework API misuse in any app        |
+| Consumer guards | `@ndigo/oxlint-plugin` | Framework API misuse in any app |
 | Repo-only guards | root `src/oxlint/` (`internal/*`) | This monorepo's layout and house style |
 
-The split is deliberate (AD-86): a rule belongs to the consumer plugin only if
+The split is deliberate: a rule belongs to the consumer plugin only if
 it guards use of the framework API. Rules keyed to `packages/ndigo-*`, the
 internal-file convention, doc headers, or repository naming stay internal.
 
@@ -43,14 +43,14 @@ internal-file convention, doc headers, or repository naming stay internal.
 }
 ```
 
-| Rule                           | Catches                                                    |
+| Rule | Catches |
 | ------------------------------ | ---------------------------------------------------------- |
-| `no-cross-paradigm-decorators` | Decorator families mixed outside their paradigm            |
-| `no-scheduled-in-browser`      | `@ndigo/scheduler` imports in browser-platform files       |
-| `no-signals-in-entity`         | `@ndigo/signals` reactivity leaking into ORM entities      |
-| `no-string-registry-lookup`    | String-literal registry lookups where a token is available |
-| `no-unsafe-view-name-literal`  | Absolute/`..`/NUL view names; invalid island tags          |
-| `no-duplicate-mapping-path`    | Duplicate same-method mappings in one class                |
+| `no-cross-paradigm-decorators` | Decorator families mixed outside their paradigm |
+| `no-scheduled-in-browser` | `@ndigo/scheduler` imports in browser-platform files |
+| `no-signals-in-entity` | `@ndigo/signals` reactivity leaking into ORM entities |
+| `no-string-registry-lookup` | String-literal registry lookups where a token is available |
+| `no-unsafe-view-name-literal` | Absolute/`..`/NUL view names; invalid island tags |
+| `no-duplicate-mapping-path` | Duplicate same-method mappings in one class |
 
 The duplicate-path rule is class-local and syntactic: it compares mapping
 decorators attached to methods of one class, groups by normalized path and
@@ -135,18 +135,18 @@ metadata. `pnpm doc:coverage` is the zero-tolerance member-docs gate.
 4. Run `pnpm doc:api` and commit the generated tree.
 5. Add the package to the API index and, if it has a guide, to the guide index.
 6. Run the validation lanes; `manifest:check` and the docs freshness diff are
-   the usual failures.
+ the usual failures.
 
 ## 7. Pitfalls
 
 - **Enabling a consumer rule as `warn` does not fail CI.** The lane runs with
-  `--deny-warnings`; use `error`.
+ `--deny-warnings`; use `error`.
 - **The internal rules are not published.** Do not reference `internal/*` from
-  an app's config.
+ an app's config.
 - **The manifest is not a config dump.** Values are deliberately absent; do not
-  add a “show values” switch.
+ add a “show values” switch.
 - **Duplicate-path lint is class-local.** A duplicate across base classes or
-  dynamic paths still reaches the dispatcher.
+ dynamic paths still reaches the dispatcher.
 - **Generated docs are not hand-edited.** Regenerate after API changes.
 
 ## See also
@@ -155,4 +155,4 @@ metadata. `pnpm doc:coverage` is the zero-tolerance member-docs gate.
 - [Guide 90 — Package Documentation](90-package-documentation.md) — README/API standard
 - [`@ndigo/oxlint-plugin`](../../packages/ndigo-oxlint-plugin/README.md) — the consumer rules
 - [`@ndigo/inspect`](../../packages/ndigo-inspect/README.md) — the manifest
-- [AD-86](../decisions/2026-10-31_AD86_LINT_RULE_SURFACE.md) — the rule-surface split
+- — the rule-surface split

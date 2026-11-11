@@ -9,7 +9,7 @@ This guide covers the path grammar, the mapping decorators, the condition
 builders, precedence and 404/405 behavior, and the router primitives used by
 browser shells.
 
-**Audience:** Node and browser application developers · **Prerequisites:** Guide 01 (Node) or guide 02 (browser) · **Reference app:** `apps/05-ndigo-api`, `apps/09-ndigo-httpbin`
+**Audience:** Node and browser application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) (Node) or [guide 02](02-building-a-browser-app.md) (browser) · **Reference app:** `apps/05-ndigo-api`, `apps/09-ndigo-httpbin`
 
 ## What you'll learn
 
@@ -41,10 +41,10 @@ Handlers and interceptors read it; they do not construct it.
 
 Three segment forms are supported:
 
-| Pattern           | Matches                                | Params     |
+| Pattern | Matches | Params |
 | ----------------- | -------------------------------------- | ---------- |
-| `/users/:id`      | one segment                            | `{ id }`   |
-| `/users/{id}`     | one segment (brace form)               | `{ id }`   |
+| `/users/:id` | one segment | `{ id }` |
+| `/users/{id}` | one segment (brace form) | `{ id }` |
 | `/assets/{*file}` | the rest of the path, slashes included | `{ file }` |
 
 `resolveParams(pattern)` returns `null` when the segment count does not match.
@@ -52,8 +52,8 @@ Wildcards are greedy and must be the last segment. Trailing-slash spelling is
 normalized (`/foo` and `/foo/` share one radix node), so choose one spelling for
 your own links and expect both to resolve.
 
-Query and matrix data are parsed into `route.data`; use `queryValue()` /
-`matrixValue()` (guide 06) rather than reading it by hand in a handler.
+Query and matrix data are parsed into `route.data`; use `queryValue` /
+`matrixValue` (guide 06) rather than reading it by hand in a handler.
 
 ## 3. Mapping decorators
 
@@ -112,12 +112,12 @@ getRedProduct() {
 }
 ```
 
-| Condition     | Configuration               | Expression syntax                            |
+| Condition | Configuration | Expression syntax |
 | ------------- | --------------------------- | -------------------------------------------- |
-| Query params  | `queryParams`               | `name`, `name=value`, `!name`, `name!=value` |
-| Matrix params | `matrixParams`              | same syntax, per path segment                |
-| HTTP method   | `method` / verb decorator   | fixed by the decorator                       |
-| Access        | `private` (default `false`) | public vs private mapping                    |
+| Query params | `queryParams` | `name`, `name=value`, `!name`, `name!=value` |
+| Matrix params | `matrixParams` | same syntax, per path segment |
+| HTTP method | `method` / verb decorator | fixed by the decorator |
+| Access | `private` (default `false`) | public vs private mapping |
 
 Multiple expressions are comma-separated and must **all** match. The builders
 (`queryParamCondition`, `matrixParamCondition`) produce the same strings with
@@ -131,12 +131,12 @@ pattern:
 
 1. The tree finds the path node and extracts path params.
 2. Candidates for that pattern are filtered by query, matrix, and method
-   conditions.
+ conditions.
 3. When several remain, the most specific mapping wins (`compareTo`); ties keep
-   the first registration.
+ the first registration.
 4. No path match → **404**. Path exists but no candidate accepts the method →
-   **405** with an `Allow` header (OPTIONS is exempt and reaches the
-   interceptors). No view for a resolved handler → **404**.
+ **405** with an `Allow` header (OPTIONS is exempt and reaches the
+ interceptors). No view for a resolved handler → **404**.
 
 This is why two mappings on the same path are safe: differ by a condition and
 the dispatcher picks the right one deterministically. Do not rely on
@@ -182,15 +182,15 @@ router (guide 02).
 ## 7. Pitfalls
 
 - **Verb decorators are method-only.** Put the shared prefix on the class with
-  `@requestMapping`.
+ `@requestMapping`.
 - **Wildcards must be last.** `{*file}` cannot be followed by another segment.
 - **Conditions are ANDed.** A comma means "all", not "any".
 - **405 is not 404.** A method mismatch keeps the path and returns `Allow`;
-  do not add a catch-all handler that masks it.
+ do not add a catch-all handler that masks it.
 - **Trailing-slash spelling is normalized.** Do not register both spellings
-  expecting different handlers.
+ expecting different handlers.
 - **Access `private` is routing metadata, not authentication.** Role checks
-  live in `@ndigo/auth-server` (guide 26).
+ live in `@ndigo/auth-server` (guide 26).
 
 ## See also
 
@@ -199,4 +199,4 @@ router (guide 02).
 - [Guide 08 — Errors & Problem Details](08-errors-and-problem-details.md) — 404/405/406 shapes
 - [`@ndigo/router`](../../packages/ndigo-router/README.md) — `Route`, `Router`, partitions
 - [`@ndigo/dispatcher`](../../packages/ndigo-dispatcher/README.md) — mappings and conditions
-- [AD-54](../decisions/2026-03-24_AD54_HIERARCHICAL_CONTEXTS_ROUTE_PARTITIONING.md) and [AD-61](../decisions/2026-09-03_AD61_ROUTE_REGISTRY.md) — partitioning and registry decisions
+- and — partitioning and registry decisions

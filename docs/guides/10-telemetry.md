@@ -1,6 +1,6 @@
 <!-- guide-redirect -->
 
-# Guide 10 — Telemetry (moved)
+# [Guide 10](10-static-files.md) — Telemetry (moved)
 
 This guide is now [Guide 32 — Telemetry](32-telemetry.md). The old path is kept so
 links from historical records (ADRs, plans, audits) continue to resolve. See the

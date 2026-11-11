@@ -22,11 +22,11 @@ names, serve assets — are the same for every renderer.
 
 ## 1. The three contracts
 
-| Contract       | Role                                                                |
+| Contract | Role |
 | -------------- | ------------------------------------------------------------------- |
-| `View`         | Renders a model into a `ViewTarget` (fragment or DOM)               |
+| `View` | Renders a model into a `ViewTarget` (fragment or DOM) |
 | `ProducerView` | Produces a complete response document (`{ status, headers, body }`) |
-| `ViewResolver` | Maps a logical view name to a `View`                                |
+| `ViewResolver` | Maps a logical view name to a `View` |
 
 A server-rendered page usually implements `ProducerView` (it owns the whole
 document); a client fragment or island implements `View` (it writes into a
@@ -177,10 +177,10 @@ needed for a new engine.
 different. Two options:
 
 - **Whole-page root** — the pattern above: server HTML contains `#root`, the
-  client hydrates the page.
+ client hydrates the page.
 - **Fragment/island** — implement `View.render(model, route, target)` and
-  commit the rendered HTML into the target, or wrap the React root in a custom
-  element and let `IslandView` hydrate it.
+ commit the rendered HTML into the target, or wrap the React root in a custom
+ element and let `IslandView` hydrate it.
 
 Do not mount two React roots over the same DOM. For mixed pages, render each
 fragment into its own element or use one root with a server-provided model that
@@ -189,16 +189,16 @@ describes all fragments.
 ## 6. Assets, CSP, and i18n
 
 - **Assets** — the client entry and its chunks are static files. Build them with
-  Vite, serve them through `StaticController`/a CDN, and fingerprint names.
-  Do not inline the bundle into `renderTo`.
+ Vite, serve them through `StaticController`/a CDN, and fingerprint names.
+ Do not inline the bundle into `renderTo`.
 - **CSP** — a React page usually needs a nonce on its inline model script. Pass
-  the request's nonce into the view and emit `<script nonce="…">`; never disable
-  CSP (guide 28).
+ the request's nonce into the view and emit `<script nonce="…">`; never disable
+ CSP (guide 28).
 - **i18n** — pass the negotiated locale (guide 17) into the component props and
-  keep message lookup on the server for the first paint; the client uses the
-  same message source or the serialized strings.
+ keep message lookup on the server for the first paint; the client uses the
+ same message source or the serialized strings.
 - **Forms** — React forms submit through the normal binding path (guide 18).
-  Keep the server as the validator; client state is convenience.
+ Keep the server as the validator; client state is convenience.
 
 ## 7. Streaming
 
@@ -217,29 +217,29 @@ and a static document; add streaming when the page is large enough to measure.
 ## 8. Testing
 
 - **Server** — `bootApp` + `MockHTTP` (guide 36) asserts the status, headers,
-  and root markup. The React component can be tested separately with its own
-  props.
+ and root markup. The React component can be tested separately with its own
+ props.
 - **Hydration** — run the client entry in jsdom, assert no hydration warning,
-  and assert one interactive update.
+ and assert one interactive update.
 - **Resolver** — unit-test that names map to the expected view and unknown
-  names return `null` (so the next resolver can try).
+ names return `null` (so the next resolver can try).
 - **Snapshot** — use a fixed model; do not snapshot timestamps or random ids.
 
 ## 9. Checklist and pitfalls
 
 - **Only `View`/`ProducerView` is public.** Do not import React types into
-  framework packages; the engine is an app concern.
+ framework packages; the engine is an app concern.
 - **One resolver order.** Put the React resolver where its names are unique;
-  a broad resolver masks EJS or Web Component views.
+ a broad resolver masks EJS or Web Component views.
 - **Serialize safely.** Escape `<` in the model script; never inject raw user
-  HTML into the document.
+ HTML into the document.
 - **Match server and client markup.** A mismatch throws away the first paint.
 - **Do not bundle per request.** Build the client once; the server renders
-  only markup and a model.
+ only markup and a model.
 - **A view engine is not a component library.** React components still follow
-  the UI-library rules (guide 30); the engine only renders them.
+ the UI-library rules (guide 30); the engine only renders them.
 - **Do not use a view engine for JSON.** Return data or a serializing view
-  (guide 09); a React engine is for HTML.
+ (guide 09); a React engine is for HTML.
 
 ## See also
 

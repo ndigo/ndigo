@@ -5,13 +5,13 @@ Browser apps run the same DI container as server apps — the same
 `@parameters` binding, and view resolution — with a browser runtime in
 place of the HTTP server: hash routing, in-page dispatch, and
 web-component rendering. The `createWebApplication` preset
-(`@ndigo/platform-web`, AD-90) wires that runtime in one call.
+(`@ndigo/platform-web`, ) wires that runtime in one call.
 
 Reference applications: [`apps/08-ndigo-views`](../../apps/08-ndigo-views/README.md)
 (views and resolver chains) and [`apps/19-ndigo-hn`](../../apps/19-ndigo-hn/README.md)
 (routing, services, offline cache, deep links).
 
-**Audience:** Browser application developers · **Prerequisites:** Workspace bootstrapped; guide 01 concepts recommended · **Reference app:** `apps/08-ndigo-views`, `apps/19-ndigo-hn`
+**Audience:** Browser application developers · **Prerequisites:** Workspace bootstrapped; [guide 01](01-building-a-node-api.md) concepts recommended · **Reference app:** `apps/08-ndigo-views`, `apps/19-ndigo-hn`
 
 ## What you'll learn
 
@@ -38,21 +38,21 @@ const app = await createWebApplication([AppConfiguration]);
 The preset composes, it does not replace:
 
 - registers `WebAutoConfiguration` plus your sources (`platform: false`
-  leaves the platform out);
+ leaves the platform out);
 - builds the environment from `BrowserEnvironment` — `VITE_`-prefixed
-  `import.meta.env` keys arrive as the `importMetaEnv` source — and
-  applies `profiles` / `properties`;
+ `import.meta.env` keys arrive as the `importMetaEnv` source — and
+ applies `profiles` / `properties`;
 - resolves `root` (an element or an element id, default `#app`) and
-  creates the `DOMElementViewTarget` (`eventMap` bridges DOM events to
-  context events);
+ creates the `DOMElementViewTarget` (`eventMap` bridges DOM events to
+ context events);
 - creates the `BrowserDispatcher` (strategies initialized from the
-  context) and the `HashRouter` that dispatches routes to it, and
-  registers them under `VIEW_TARGET` / `DISPATCHER` / `ROUTER`;
+ context) and the `HashRouter` that dispatches routes to it, and
+ registers them under `VIEW_TARGET` / `DISPATCHER` / `ROUTER`;
 - installs the `interceptors` you pass on the router;
 - runs `beforeNavigate(app)`, then performs the first navigation:
-  `initialPath` defaults to the path the URL already addresses, so a
-  reload of `#/item/123` restores that route (`autoNavigate: false`
-  skips it and navigation becomes yours to drive).
+ `initialPath` defaults to the path the URL already addresses, so a
+ reload of `#/item/123` restores that route (`autoNavigate: false`
+ skips it and navigation becomes yours to drive).
 
 The manual path stays fully supported — it is what the preset replaced:
 
@@ -115,7 +115,7 @@ export class AppConfiguration {
 The preset's hooks cover the edges: `beforeNavigate` runs once the
 runtime is wired (tokens set) and before the first dispatch — the place
 for post-boot setup; `autoNavigate: false` plus `app.router.navigate(path)`
-gives programmatic navigation; `app.destroy()` is the teardown (it is
+gives programmatic navigation; `app.destroy` is the teardown (it is
 idempotent, and the router stops listening immediately).
 
 ## 4. Testing
@@ -142,14 +142,14 @@ the app's `test` script (`vite build && vitest run`).
 ## See also
 
 - [01 — Building a Node API](01-building-a-node-api.md) — the server twin
-  of this guide, including the deployment topology notes.
+ of this guide, including the deployment topology notes.
 - [27 — Browser Authentication & OIDC](27-browser-authentication-and-oidc.md) —
-  client auth and the OIDC flow.
+ client auth and the OIDC flow.
 - [29 — Signals & Islands](29-signals-and-islands.md) — reactive state and
-  island hydration.
+ island hydration.
 - [31 — Micro Frontends with `@ndigo/host`](31-micro-frontends.md) — composing
-  feature contexts.
+ feature contexts.
 - [91 — Application Conventions](91-application-conventions.md) — file layout
-  and naming for the `apps/NN-ndigo-<slug>` ladder.
+ and naming for the `apps/NN-ndigo-<slug>` ladder.
 - [`@ndigo/platform-web`](../../packages/ndigo-platform-web/README.md) — the full
-  browser platform surface.
+ browser platform surface.

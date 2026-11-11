@@ -5,10 +5,10 @@ credential login, opaque cookie sessions, rate limiting and CSRF on
 auth mutations, and JWT issuance/refresh/revocation. The machinery spans
 `@ndigo/auth-core` (contracts), `@ndigo/auth-server` (credentials adapter,
 session/user stores, JWT adapter) and `@ndigo/platform-node` (cookies,
-session interceptor, rate limiting). Design decisions: [AD-33](../decisions/2026-09-26_AD33_AUTH_CREDENTIALS_AND_SESSIONS.md);
+session interceptor, rate limiting). Design decisions: ;
 landed via [the auth completion plan](../plans/2026-09-26_AUTH_COMPLETION.md).
 
-**Audience:** Node application developers · **Prerequisites:** Guide 01 · **Reference app:** `apps/18-ndigo-auth-playground`, `apps/05-ndigo-api`
+**Audience:** Node application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) · **Reference app:** `apps/18-ndigo-auth-playground`, `apps/05-ndigo-api`
 
 ## What you'll learn
 
@@ -63,12 +63,12 @@ an unknown scheme **throws** (fail closed — no plaintext fallthrough).
 stored scheme/params no longer match the configured default.
 
 - **scrypt** (`node:crypto`) is the reference implementation — zero
-  dependencies, platform-audited. Default `ln=17` (OWASP floor, ~128 MiB).
-- **argon2id is deliberately deferred** (AD-33 D-3): adding it later is a
-  new prefix + adapter + a config line; old hashes keep verifying and
-  `needsRehash` migrates logins.
+ dependencies, platform-audited. Default `ln=17` (OWASP floor, ~128 MiB).
+- **argon2id is deliberately deferred**: adding it later is a
+ new prefix + adapter + a config line; old hashes keep verifying and
+ `needsRehash` migrates logins.
 - `verify` derives with the **stored** parameters, never the encoder's
-  current ones — older, cheaper hashes stay valid until rehashed.
+ current ones — older, cheaper hashes stay valid until rehashed.
 
 ## 3. The user store is app-owned
 
@@ -108,9 +108,9 @@ without a hash never authenticate.
 `deleteForUser`) with TTL enforced on read. Opaque 32-byte tokens — not JWTs: trivially revocable,
 no replay window. `InMemorySessionStore` is the reference; the durable
 [`LibSQLSessionStore`](../../packages/ndigo-orm-drizzle/README.md) (`kind:
-'libsql'`) implements the same contract: explicit `initialize()` to
+'libsql'`) implements the same contract: explicit `initialize` to
 provision the `ndigo_sessions` table, atomic rotation (exactly one contender;
-absolute expiry preserved), strict record decoding, and `close()` for
+absolute expiry preserved), strict record decoding, and `close` for
 container shutdown (owned clients close exactly once; injected clients are
 borrowed unless `ownsClient: true`). Injected clients must use
 `intMode: 'number'` — strict decoding rejects bigint/string modes. Redis can
@@ -122,7 +122,7 @@ HttpOnly + SameSite=Lax + Secure, `Max-Age=0` clear on logout. Naming:
 `SESSION_COOKIE = '__Host-ndigo-session'` (the `__Host-` prefix mandates
 `Secure`; see §1).
 
-### Revoking a user everywhere (AD-68)
+### Revoking a user everywhere 
 
 ```ts
 import { AuthRegistry, type CredentialsAuthAdapter } from '@ndigo/auth-core';
@@ -180,7 +180,7 @@ in-process `FixedWindowRateLimiter` by default — one process, one budget.
 Under multiple processes the in-memory default multiplies the effective
 limit per node; override the bean with `@ndigo/redis/rate-limit`'s
 `RedisRateLimiter` so every node counts against the **same** budgets
-(shared store, **fail-closed** by default — AD-79; see
+(shared store, **fail-closed** by default — ; see
 [guide 21 §3](21-persistence-and-shared-stores.md)).
 
 ## 6. CSRF on auth mutations
@@ -217,66 +217,66 @@ SameSite=Lax session cookie and forces a logout (nuisance only — no state
 to mutate). Wire the interceptor for logout and any additional
 cookie-authenticated mutating route.
 
-## 7. JWT issuance, refresh and revocation (AD-33 D-7)
+## 7. JWT issuance, refresh and revocation 
 
 `JWTAdapter` validates external tokens (HMAC secret, PEM/JWKS asymmetric,
 issuer/audience/expiration) — and with a `userStore` wired it also owns
 first-party tokens:
 
 - `issueTokens(subject)` — access + refresh pairs (HS\* configs only;
-  asymmetric configs hold no signing key). The `ver` claim snapshots the
-  store's **current** `tokenVersion`.
+ asymmetric configs hold no signing key). The `ver` claim snapshots the
+ store's **current** `tokenVersion`.
 - `validate` — `ver` must equal the account's version. Tokens **without**
-  `ver` (external IdP) skip the check, so revocation never rejects tokens
-  the adapter didn't version. Cost: one user-record read per validation —
-  `revocationCacheTtlMs` trades revocation latency for throughput
-  (default 0 = always read, invalidated on refresh/logout). Only access
-  tokens authenticate: a framework refresh token (`token_use: 'refresh'`)
-  is rejected, as is any present claim that is not `'access'` (AD-68).
+ `ver` (external IdP) skip the check, so revocation never rejects tokens
+ the adapter didn't version. Cost: one user-record read per validation —
+ `revocationCacheTtlMs` trades revocation latency for throughput
+ (default 0 = always read, invalidated on refresh/logout). Only access
+ tokens authenticate: a framework refresh token (`token_use: 'refresh'`)
+ is rejected, as is any present claim that is not `'access'` .
 - `refresh(token)` — **version-advancing rotation**: every refresh bumps
-  `tokenVersion` and issues a new pair; all older tokens die. Reuse of a
-  rotated-out refresh is rejected by construction — no ledger. This means
-  concurrent access tokens also die on refresh: correct for short-lived
-  access tokens (refresh happens on expiry); long-lived access tokens
-  would need a `jti` ledger (follow-up).
+ `tokenVersion` and issues a new pair; all older tokens die. Reuse of a
+ rotated-out refresh is rejected by construction — no ledger. This means
+ concurrent access tokens also die on refresh: correct for short-lived
+ access tokens (refresh happens on expiry); long-lived access tokens
+ would need a `jti` ledger (follow-up).
 - `logout(token)` — verifies, then bumps the version: the whole family
-  dies at once. For an explicit user-wide revoke that also deletes every
-  live session, use `CredentialsAuthAdapter.logoutAll` (§4, AD-68).
+ dies at once. For an explicit user-wide revoke that also deletes every
+ live session, use `CredentialsAuthAdapter.logoutAll` (§4, ).
 
-## 8. Securing management endpoints (SEC-5, AD-36)
+## 8. Securing management endpoints (SEC-5, )
 
 `/health` and `/metrics` are **open by default** (documented posture), with
-two hardening layers on by default since AD-36:
+two hardening layers on by default since:
 
 - **Error redaction** — a throwing health indicator reports `DOWN` with the
-  stable marker `"error": "unavailable"`; the exception text never reaches
-  the wire. Opt into raw messages with
-  `ManagementAutoConfiguration({ redactHealthErrors: false })` — only
-  sensible behind a guard.
+ stable marker `"error": "unavailable"`; the exception text never reaches
+ the wire. Opt into raw messages with
+ `ManagementAutoConfiguration({ redactHealthErrors: false })` — only
+ sensible behind a guard.
 - **Guarded endpoints** — wire an _unconditional_ guard into
-  `ManagementAutoConfiguration({ accessGuard })`. The handlers carry no
-  `@authenticated`/`@authorized` metadata, so a metadata-driven guard such as
-  `AuthRouteGuard` would always permit them — use a guard that checks the
-  request itself (a token-presence or token-adapter guard) to actually require
-  authentication.
+ `ManagementAutoConfiguration({ accessGuard })`. The handlers carry no
+ `@authenticated`/`@authorized` metadata, so a metadata-driven guard such as
+ `AuthRouteGuard` would always permit them — use a guard that checks the
+ request itself (a token-presence or token-adapter guard) to actually require
+ authentication.
 
-**Bind-address separation (AD-36 D-2).** Management routes share the
+**Bind-address separation .** Management routes share the
 application listener and follow its bind address — the platform server
 binds `HTTPServerOptions.host` (default `127.0.0.1`, loopback). Documented
 posture:
 
 1. Bind the whole server to a private interface (`host` option) or firewall
-   the management paths at the network boundary (reverse proxy routing
-   `/health|/metrics` to an internal listener).
+ the management paths at the network boundary (reverse proxy routing
+ `/health|/metrics` to an internal listener).
 2. Never expose `/health`/`/metrics` on a public interface without the
-   `accessGuard`.
+ `accessGuard`.
 
 A dedicated management listener (the `management.server.port`
 equivalent) is recorded as the post-1.0 follow-up; it needs a second
 dispatch stack on the platform, and guard + redaction cover the exposure
 in the meantime.
 
-## 9. Real client IP behind trusted proxies (AD-37)
+## 9. Real client IP behind trusted proxies 
 
 `NodeRequest.remoteAddress` — the rate limiter's key and the address
 handlers read — is the **socket address** unless you name your proxies.
@@ -297,19 +297,19 @@ Or deploy-time, no code change:
 NDIGO_TRUSTED_PROXIES=10.0.0.0/8,2001:db8::/32 node server.js
 ```
 
-Rules (AD-37, following the MDN/Rails/Fastify industry approach):
+Rules:
 
 - **Default is trust nobody**; list proxy addresses/CIDRs explicitly where
-  they sit in front of the server.
+ they sit in front of the server.
 - The header is walked from the **rightmost** entry (the proxy closest to
-  the server appends last); trusted hops are skipped and the first
-  non-trusted valid IP wins — so a client's spoofed leftmost values can
-  never win.
+ the server appends last); trusted hops are skipped and the first
+ non-trusted valid IP wins — so a client's spoofed leftmost values can
+ never win.
 - Malformed config (hostnames, ports, bad prefixes) **fails at startup**,
-  not silently; RFC 7239 `Forwarded` and `X-Forwarded-Proto`/`-Host`
-  rewriting remain deferrals (AD-37 D-3).
+ not silently; RFC 7239 `Forwarded` and `X-Forwarded-Proto`/`-Host`
+ rewriting remain deferrals .
 - Everything reading `remoteAddress` benefits automatically: rate limiting
-  keys per resolved client instead of collapsing into one proxy bucket.
+ keys per resolved client instead of collapsing into one proxy bucket.
 
 ## 10. Deferrals (deliberate)
 
@@ -326,4 +326,4 @@ tokens). None blocks the 1.0 credential + session story.
 - [Guide 28 — Security Hardening](28-security-hardening.md) — CORS, CSRF, headers, and rate limits
 - [Guide 27 — Browser Authentication & OIDC](27-browser-authentication-and-oidc.md) — the browser client and OIDC flow
 - [apps/18-ndigo-auth-playground](../../apps/18-ndigo-auth-playground/README.md) — the runnable auth matrix
-- [AD-33](../decisions/2026-09-26_AD33_AUTH_CREDENTIALS_AND_SESSIONS.md) — the auth decision
+- — the auth decision

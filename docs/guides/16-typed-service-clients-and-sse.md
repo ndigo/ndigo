@@ -46,14 +46,14 @@ body. A method with no `responseSchema` returns the raw `Response`.
 
 ## 2. Calls and arguments
 
-| Decorator     | Method             |
+| Decorator | Method |
 | ------------- | ------------------ |
-| `@getCall`    | `GET`              |
-| `@postCall`   | `POST`             |
-| `@putCall`    | `PUT`              |
-| `@patchCall`  | `PATCH`            |
-| `@deleteCall` | `DELETE`           |
-| `@queryCall`  | `QUERY` (RFC 9889) |
+| `@getCall` | `GET` |
+| `@postCall` | `POST` |
+| `@putCall` | `PUT` |
+| `@patchCall` | `PATCH` |
+| `@deleteCall` | `DELETE` |
+| `@queryCall` | `QUERY` (RFC 9889) |
 
 Path slots (`:id`) are filled from the method arguments in order. For
 body-carrying methods, the first object argument becomes the JSON request body:
@@ -122,7 +122,7 @@ for await (const event of parseServerSentEvents(chunks())) {
 }
 ```
 
-`ServerSentEventParser.feed(chunk)` and `.finish()` expose the same incremental
+`ServerSentEventParser.feed(chunk)` and `.finish` expose the same incremental
 behavior. The parser handles multi-line `data:`, comments, `id:`, `retry:`, and
 the blank-line frame boundary; it does not reconnect.
 
@@ -131,11 +131,11 @@ the blank-line frame boundary; it does not reconnect.
 Three small adapters cover common operational needs:
 
 - `MapServiceRegistry` — token → endpoint lookup; register each service once
-  and resolve the base URL at wiring time.
+ and resolve the base URL at wiring time.
 - `EventEmitterTelemetryHooks` — emits `service:request:start`,
-  `service:request:end`, and `service:request:error` on a context emitter.
+ `service:request:end`, and `service:request:error` on a context emitter.
 - `CryptoRequestIdCorrelation` — generates a request id and exposes the header
-  to attach, so logs and downstream traces share one id.
+ to attach, so logs and downstream traces share one id.
 
 They are plain classes; wire them in a configuration entry and pass them to the
 code that builds the client. The service client itself stays transport-only.
@@ -151,18 +151,18 @@ caching compose around the service call. `ServiceExecutionChain` and the
 ## 7. Pitfalls
 
 - **Declare return types as never-implemented.** The decorated method body is
-  replaced by the proxy; throwing “not implemented” at call time means the
-  client was not built with `serviceClient`.
+ replaced by the proxy; throwing “not implemented” at call time means the
+ client was not built with `serviceClient`.
 - **Import the metadata polyfill first.** A decorated class evaluated before
-  the polyfill silently loses its metadata.
+ the polyfill silently loses its metadata.
 - **A missing `responseSchema` returns a `Response`, not data.** Parse and
-  validate it yourself or add the schema.
+ validate it yourself or add the schema.
 - **SSE is one-shot.** Reconnect/resume is the consumer's job; the parser only
-  decodes frames.
+ decodes frames.
 - **Do not put auth in the service decorator.** Use the HTTP client's header
-  interceptor so token refresh and retries see the current credential.
+ interceptor so token refresh and retries see the current credential.
 - **Paths are templates, not URLs.** `:name` slots are positional; encode
-  values before passing them.
+ values before passing them.
 
 ## See also
 
@@ -171,4 +171,4 @@ caching compose around the service call. `ServiceExecutionChain` and the
 - [Guide 29 — Signals & Islands](29-signals-and-islands.md) — `streamToSignal` over an SSE call
 - [`@ndigo/service`](../../packages/ndigo-service/README.md) — the full client/stream surface
 - [apps/07-ndigo-island](../../apps/07-ndigo-island/README.md) — SSE → signals in a real app
-- [AD-08](../decisions/2026-09-05_AD08_NDIGO_SERVICE_REBASE.md) and [AD-09](../decisions/2026-09-05_AD09_SERVER_PUSH.md) — the service and server-push decisions
+- and — the service and server-push decisions

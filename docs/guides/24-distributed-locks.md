@@ -2,10 +2,10 @@
 
 Fencing-token locks make a `@scheduled` task a **single-executor** across
 nodes: exactly one node runs the fire, others skip. They are the shared
-primitive behind multi-node scheduling (this guide, AD-73) and the future
+primitive behind multi-node scheduling (this guide, ) and the future
 cluster spine (GAP-2).
 
-**Audience:** Node application developers and operators · **Prerequisites:** Guide 23 · **Reference package:** `packages/ndigo-locks`
+**Audience:** Node application developers and operators · **Prerequisites:** [Guide 23](23-scheduling.md) · **Reference package:** `packages/ndigo-locks`
 
 ## What you'll learn
 
@@ -90,26 +90,26 @@ class PayrollController {
 
 Options (both spec forms, decoration-time validated):
 
-| Option         | Default  | Meaning                                                                                                        |
-| :------------- | :------- | :------------------------------------------------------------------------------------------------------------- |
-| `lock`         | —        | The lock key; run only while the lease is held.                                                                |
-| `lockWait`     | skip     | Wait budget for a contended lock before skipping the fire (`'5s'`, `500`).                                     |
-| `lockWaitStep` | `100 ms` | Poll interval while waiting.                                                                                   |
-| `lockTtl`      | `60 s`   | Lease duration. Must cover the whole run — a lapsed lease lets another node take over (at-least-once posture). |
+| Option | Default | Meaning |
+|:------------- |:------- |:------------------------------------------------------------------------------------------------------------- |
+| `lock` | — | The lock key; run only while the lease is held. |
+| `lockWait` | skip | Wait budget for a contended lock before skipping the fire (`'5s'`, `500`). |
+| `lockWaitStep` | `100 ms` | Poll interval while waiting. |
+| `lockTtl` | `60 s` | Lease duration. Must cover the whole run — a lapsed lease lets another node take over (at-least-once posture). |
 
 - Same-tick fires run concurrently: two tasks sharing a lock on the same
-  node resolve by registration order, the loser skips — that is the
-  contract, not a race.
+ node resolve by registration order, the loser skips — that is the
+ contract, not a race.
 - A fire that skipped on contention is logged (`lock 'x' is held`) and the
-  schedule continues; nothing is queued.
+ schedule continues; nothing is queued.
 - A locked task with **no** lock driver fails loud at run time — an
-  unguarded run would defeat the feature's purpose.
+ unguarded run would defeat the feature's purpose.
 
 ## See also
 
-- AD-73: `docs/decisions/2026-10-07_AD73_DISTRIBUTED_LOCKS.md`
+-: `docs/decisions/2026-10-07_AD73_DISTRIBUTED_LOCKS.md`
 - [Guide 38 — Deployment & Production Readiness](38-deployment-and-production-readiness.md) — clustered operation and the production checklist
 - The scheduler guide (05) for single-flight and `maxRunTime` semantics —
-  the lock is the cross-process half of the same wrapper.
+ the lock is the cross-process half of the same wrapper.
 - The jobs guide (22) — leases, at-least-once, and `NodeAutoConfiguration`
-  bean wiring share the same spine.
+ bean wiring share the same spine.

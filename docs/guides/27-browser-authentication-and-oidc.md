@@ -5,12 +5,12 @@ principal, a guard that redirects unauthenticated navigation, and a safe way to
 obtain tokens from an identity provider. `@ndigo/auth-client` supplies all
 three, with a fail-closed OIDC adapter and no claim-only shortcut.
 
-This guide is the browser counterpart to guide 26 (server credentials, sessions,
+This guide is the browser counterpart to [guide 26](26-authentication-and-sessions.md) (server credentials, sessions,
 and JWT). It shows the client state, the route guard, the authorization-code +
 PKCE flow, refresh handling, and the server callback bridge used by the
 playground app.
 
-**Audience:** Browser application developers · **Prerequisites:** Guide 02 and guide 26 · **Reference app:** `apps/18-ndigo-auth-playground`
+**Audience:** Browser application developers · **Prerequisites:** [Guide 02](02-building-a-browser-app.md) and [guide 26](26-authentication-and-sessions.md) · **Reference app:** `apps/18-ndigo-auth-playground`
 
 ## What you'll learn
 
@@ -79,7 +79,7 @@ unauthenticated user.
 
 - `jwksUrl` — verify signatures against the provider's JWKS.
 - `discovery: true` — fetch `{issuer}/.well-known/openid-configuration`; the
-  document's `issuer` must match exactly.
+ document's `issuer` must match exactly.
 - `tokenValidator` — a custom signature-verification callback.
 
 There is no claim-only mode. Construction throws if none is provided.
@@ -170,23 +170,23 @@ an opaque `HttpOnly` session cookie instead. The client then only calls
 `/auth/me`-style endpoints; it never sees the refresh token.
 
 Use the browser-only flow when the backend cannot hold the token; use the
-server bridge when it can. The server side is guide 26; the playground's
+server bridge when it can. The server side is [guide 26](26-authentication-and-sessions.md); the playground's
 `oidc-controller.ts` is the reference implementation.
 
 ## 7. Pitfalls
 
 - **No claim-only verification.** The adapter refuses to construct without
-  JWKS, discovery, or a custom validator.
+ JWKS, discovery, or a custom validator.
 - **The default pending store is instance-affine.** A page reload without a
-  shared store fails the state check.
+ shared store fails the state check.
 - **State and nonce are single-use.** Do not retry an exchange with the same
-  state; restart the flow.
+ state; restart the flow.
 - **A refresh token is not an access token.** Presenting an access/ID token to
-  `refresh` is rejected before any network call.
+ `refresh` is rejected before any network call.
 - **Client state is not authorization.** The server must still enforce roles;
-  the browser guard is UX, not a security boundary.
+ the browser guard is UX, not a security boundary.
 - **`sessionStorage` is not a vault.** Prefer an `HttpOnly` server session when
-  the backend can own the credential.
+ the backend can own the credential.
 
 ## See also
 
@@ -195,4 +195,4 @@ server bridge when it can. The server side is guide 26; the playground's
 - [Guide 28 — Security Hardening](28-security-hardening.md) — cookies, CORS, and CSRF
 - [`@ndigo/auth-client`](../../packages/ndigo-auth-client/README.md) — `AuthClient`, guard, OIDC adapter
 - [apps/18-ndigo-auth-playground](../../apps/18-ndigo-auth-playground/README.md) — six auth modes, including OIDC + PKCE
-- [AD-33](../decisions/2026-09-26_AD33_AUTH_CREDENTIALS_AND_SESSIONS.md) and [AD-68](../decisions/2026-10-06_AD68_USER_WIDE_REVOCATION.md) — auth and revocation decisions
+- and — auth and revocation decisions

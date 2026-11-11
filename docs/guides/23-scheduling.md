@@ -7,7 +7,7 @@ The design: the reference framework's declarative decorator shape with Nest/Adon
 semantics — async single-flight runs, error isolation, drain-on-close, and
 no catch-up after restarts.
 
-**Audience:** Node application developers · **Prerequisites:** Guide 01 · **Reference app:** `apps/05-ndigo-api`, `apps/17-ndigo-telemetry-lab`
+**Audience:** Node application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) · **Reference app:** `apps/05-ndigo-api`, `apps/17-ndigo-telemetry-lab`
 
 ## What you'll learn
 
@@ -71,13 +71,13 @@ The `ndigo-api` demo ships a working heartbeat (`Heartbeat` in
 
 ## 2. Specs
 
-| Spec                     | Meaning                                             | Extra                                                                                                                                      |
+| Spec | Meaning | Extra |
 | ------------------------ | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| `cron: '*/30 * * * * *'` | croner expression — 5, 6, or 7 fields auto-detected | `timeZone` (IANA identifier)                                                                                                               |
-| `{ fixedRate: '10s' }`   | every interval **from run start**                   | —                                                                                                                                          |
-| `{ fixedDelay: '5m' }`   | every interval **from run completion**              | —                                                                                                                                          |
-| both/formats             | `maxRunTime`                                        | caps a run; on expiry the single-flight slot is released with a warning (the task itself keeps running — Node has no cancellation)         |
-| both/formats             | `lock`                                              | distributed lock key (AD-73): one node executes each fire; see `lockWait`/`lockWaitStep`/`lockTtl` and [guide 24](24-distributed-locks.md) |
+| `cron: '*/30 * * * * *'` | croner expression — 5, 6, or 7 fields auto-detected | `timeZone` (IANA identifier) |
+| `{ fixedRate: '10s' }` | every interval **from run start** | — |
+| `{ fixedDelay: '5m' }` | every interval **from run completion** | — |
+| both/formats | `maxRunTime` | caps a run; on expiry the single-flight slot is released with a warning (the task itself keeps running — Node has no cancellation) |
+| both/formats | `lock` | distributed lock key: one node executes each fire; see `lockWait`/`lockWaitStep`/`lockTtl` and [guide 24](24-distributed-locks.md) |
 
 Bare string shorthand: `@scheduled('*/30 * * * * *')` ≡
 `@scheduled({ cron: '*/30 * * * * *' })`.
@@ -88,15 +88,15 @@ no `timeZone` is given — pass an explicit zone for deterministic schedules.
 ## 3. Semantics
 
 - **Single-flight**: a task whose previous run is still in-flight (its await
-  chain unresolved) is skipped that tick; the next fire slides forward.
+ chain unresolved) is skipped that tick; the next fire slides forward.
 - **Error isolation**: one failing task never stops the scheduler or other
-  tasks. Failures are recorded in the task stats and on the run's span.
+ tasks. Failures are recorded in the task stats and on the run's span.
 - **No overlap by default** — the Nest/AdonisJS default, not the reference framework's
-  thread-pool overlap.
+ thread-pool overlap.
 - **No catch-up**: schedules are declared in code, single-process, and
-  restart with the process.
-- **Drain on close**: `close()`/context teardown stops new runs and awaits
-  in-flight ones.
+ restart with the process.
+- **Drain on close**: `close`/context teardown stops new runs and awaits
+ in-flight ones.
 
 ## 4. Observability
 
@@ -113,12 +113,12 @@ scheduler.getStats('maintenance.purge'); // → { runs, failures, inFlight, … 
 
 ## 5. Guardrails
 
-| Where      | Behavior                                                                                                     |
+| Where | Behavior |
 | ---------- | ------------------------------------------------------------------------------------------------------------ |
-| Decoration | non-method → `TypeError`; invalid cron/duration/time zone → throws                                           |
-| Platform   | no `process` (browser) → `FrameworkError`                                                                    |
-| Refresh    | `@scheduled` class registered as a prototype (no instance) → `FrameworkError`                                |
-| Lint       | `no-scheduled-in-browser` flags `@ndigo/scheduler` imports in files also importing browser-platform packages |
+| Decoration | non-method → `TypeError`; invalid cron/duration/time zone → throws |
+| Platform | no `process` (browser) → `FrameworkError` |
+| Refresh | `@scheduled` class registered as a prototype (no instance) → `FrameworkError` |
+| Lint | `no-scheduled-in-browser` flags `@ndigo/scheduler` imports in files also importing browser-platform packages |
 
 ## 6. HTTP example
 

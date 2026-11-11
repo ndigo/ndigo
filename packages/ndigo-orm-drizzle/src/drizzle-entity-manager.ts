@@ -40,17 +40,15 @@ export class DrizzleEntityManager {
         const meta = getEntityMetadata(entityClass);
         const record = entity as Record<string, unknown>;
         const tableName = meta.entityName;
-
         const pkColumn = meta.columns.find((c) => c.fieldName === meta.primaryColumn);
         const pkValue = pkColumn ? record[pkColumn.fieldName] : undefined;
-        // A save is an update when the row already exists, matching the
-        // in-memory manager's store.has() check (DAT-F1). Generated keys are
-        // unset on first persist, so they are always inserts.
-        const exists =
+        const hasLifecycleHooks = meta.lifecycleHooks.length > 0;
+        const exists = hasLifecycleHooks &&
             pkColumn !== undefined &&
             pkValue !== undefined &&
-            pkValue !== null &&
-            (await this.existsById(entityClass, pkValue));
+            pkValue !== null
+                ? await this.existsById(entityClass, pkValue)
+                : false;
 
         // Lifecycle hooks run first (e.g. @prePersist fills createdAt), then
         // validation — matching the in-memory manager's order.

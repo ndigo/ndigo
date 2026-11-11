@@ -179,14 +179,15 @@ function resolveTypeConverter(sourceType: unknown, targetType: unknown): Argumen
 // Main resolver function
 // ---------------------------------------------------------------------------
 
+/** Converters resolved per source/target pair, keyed by the pair object. */
+const converterCache = new Map<object, ArgumentValueConverter>();
+
 /**
  * Resolves a converter based on convertType using ConversionService.
  *
  * @param convertType - The source/target type pair.
  * @returns The matching converter, or an identity converter.
  */
-const converterCache = new Map<object, ArgumentValueConverter>();
-
 export function resolveConverter(convertType?: { source: unknown; target: unknown }): ArgumentValueConverter {
     // Fast path: no conversion required.
     if (!convertType || !convertType.source || !convertType.target) {

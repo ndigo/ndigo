@@ -1,7 +1,7 @@
 # Guide 12 — OpenAPI & API Docs
 
 The framework generates an [OpenAPI 3.0.3](https://spec.openapis.org/oas/v3.0.3)
-document **from the dispatch metadata itself** (AD-35) — the same route table
+document **from the dispatch metadata itself** — the same route table
 and parameter maps that serve requests, so the spec cannot drift from
 behavior — and serves it with Swagger UI out of the box. No comments to
 write, no second source of truth.
@@ -36,10 +36,10 @@ const app = new ApplicationBuilder([
 ]);
 ```
 
-| Endpoint                  | Serves                                                  |
+| Endpoint | Serves |
 | ------------------------- | ------------------------------------------------------- |
-| `GET /v3/api-docs`        | The OpenAPI 3.0.3 document (JSON)                       |
-| `GET /swagger-ui/`        | Swagger UI, wired to the spec URL                       |
+| `GET /v3/api-docs` | The OpenAPI 3.0.3 document (JSON) |
+| `GET /swagger-ui/` | Swagger UI, wired to the spec URL |
 | `GET /swagger-ui/{*file}` | UI assets (`swagger-ui-bundle.js`, `swagger-ui.css`, …) |
 
 Both endpoints are **open by default** (same posture as `/health` +
@@ -79,34 +79,34 @@ new OpenAPIDocsAutoConfiguration({
 For every public handler method the generator emits an operation with:
 
 - **Path + method** — from the route mapping (`:name` → `{name}`, `{*name}`
-  greedy segments → `{name}`).
+ greedy segments → `{name}`).
 - **Parameters** — from `@parameters`: `queryValue`/`pathVariable`/
-  `headerValue`/`cookieValue` map to the matching OpenAPI locations; path
-  parameters are always required; `required`/`defaultValue` follow the
-  extractor. A path template variable with no matching extractor (a route
-  that matches on `:id` without binding it) is synthesized as a required
-  string path parameter — the spec declares every `{name}` the path uses.
+ `headerValue`/`cookieValue` map to the matching OpenAPI locations; path
+ parameters are always required; `required`/`defaultValue` follow the
+ extractor. A path template variable with no matching extractor (a route
+ that matches on `:id` without binding it) is synthesized as a required
+ string path parameter — the spec declares every `{name}` the path uses.
 - **Request bodies** — `validatedBody` / `validatedBy` carry the **Zod
-  schema** onto the parameter (the AD-35 seam), and the generator renders it
-  via zod's own `toJSONSchema`:
+ schema** onto the parameter (the seam), and the generator renders it
+ via zod's own `toJSONSchema`:
 
-    ```ts
+ ```ts
     @postMapping('/notes')
     @parameters({ data: validatedBody(insertSchemaForEntity(Note)) })
     create(data: Record<string, unknown>) { … }
     ```
 
-    produces `requestBody.content['application/json'].schema` with
-    `properties.title`, `required: ['title']`, `minLength: 1`, … — constraints
-    declared once on the entity, documented automatically. Recursive schemas
-    (zod's cycle `$ref`s) are hoisted into `components.schemas` and
-    referenced by pointer, so every pointer in the document resolves.
+ produces `requestBody.content['application/json'].schema` with
+ `properties.title`, `required: ['title']`, `minLength: 1`, … — constraints
+ declared once on the entity, documented automatically. Recursive schemas
+ (zod's cycle `$ref`s) are hoisted into `components.schemas` and
+ referenced by pointer, so every pointer in the document resolves.
 
 - **Multipart** — `fileValue`/`requestPart` parameters become
-  `multipart/form-data` parts (`type: string, format: binary` for files).
+ `multipart/form-data` parts (`type: string, format: binary` for files).
 - **Framework conditions with no OpenAPI equivalent** are preserved as
-  `x-ndigo-*` extensions (e.g. `x-ndigo-matrixParams: ['color=red']`) instead
-  of silently dropped.
+ `x-ndigo-*` extensions (e.g. `x-ndigo-matrixParams: ['color=red']`) instead
+ of silently dropped.
 
 Excluded by design: methodless catch-alls, `@privateMapping` routes, and
 `@apiDocs({ hidden: true })` handlers. The docs endpoints are excluded via
@@ -122,14 +122,14 @@ spec from self-referencing and changes nothing about live dispatch.
 > header parameters. Options:
 >
 > - `@apiDocs({ hidden: true })` on the handler — omit the operation from
->   the spec entirely (right for endpoints sensitive enough not to be
->   discoverable at all);
+> the spec entirely (right for endpoints sensitive enough not to be
+> discoverable at all);
 > - deploy the docs behind an `accessGuard` — the whole spec becomes
->   private, but is not redacted. The demo demonstrates this: it registers
->   `SecureDocsConfiguration` (`apps/05-ndigo-api/src/secure-docs-configuration.ts`),
->   whose guard accepts only an `Authorization: Bearer <token>` that
->   resolves through the same `lookupPrincipal` check the protected
->   handlers apply, so anonymous `/v3/api-docs` and `/swagger-ui/` are 401.
+> private, but is not redacted. The demo demonstrates this: it registers
+> `SecureDocsConfiguration` (`apps/05-ndigo-api/src/secure-docs-configuration.ts`),
+> whose guard accepts only an `Authorization: Bearer <token>` that
+> resolves through the same `lookupPrincipal` check the protected
+> handlers apply, so anonymous `/v3/api-docs` and `/swagger-ui/` are 401.
 >
 > Guarding the docs still leaves the in-handler routes' shapes discoverable
 > to anyone with the demo token — pair the guard with `@apiDocs({hidden:true})`
@@ -200,18 +200,18 @@ options, until it forwards them.)
 ## 4. Scope notes
 
 - **Spec generation is library-level**: `OpenAPISpecGenerator` in
-  `@ndigo/openapi` takes any `getHandlerMethods()`-providing mapping and
-  returns the document — use it for offline CI generation or serving under a
-  custom route without the auto-configuration.
+ `@ndigo/openapi` takes any `getHandlerMethods`-providing mapping and
+ returns the document — use it for offline CI generation or serving under a
+ custom route without the auto-configuration.
 - **Typed-client generation** is deferred (post-1.0): feed the served
-  document to the ecosystem generators (openapi-generator, openapi-typescript).
+ document to the ecosystem generators (openapi-generator, openapi-typescript).
 - **Response schemas** are not inferred (the framework keeps no return-type
-  metadata); declare them with `@apiDocs({ responses })`, otherwise the
-  operation documents `200 OK`. The RFC 9457 `application/problem+json` error
-  envelope as a `default` response is a recorded follow-up.
+ metadata); declare them with `@apiDocs({ responses })`, otherwise the
+ operation documents `200 OK`. The RFC 9457 `application/problem+json` error
+ envelope as a `default` response is a recorded follow-up.
 - **Assets are local** — no CDN; Swagger UI is served from
-  `swagger-ui-dist` with the platform's static-file machinery (ETag,
-  conditional GET, cache headers).
+ `swagger-ui-dist` with the platform's static-file machinery (ETag,
+ conditional GET, cache headers).
 
 ## See also
 

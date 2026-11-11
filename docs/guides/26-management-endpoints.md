@@ -1,6 +1,6 @@
 <!-- guide-redirect -->
 
-# Guide 26 — Management Endpoints (Actuator Parity) (moved)
+# [Guide 26](26-authentication-and-sessions.md) — Management Endpoints (Actuator Parity) (moved)
 
 This guide is now [Guide 33 — Management Endpoints](33-management-endpoints.md). The old path is kept so
 links from historical records (ADRs, plans, audits) continue to resolve. See the

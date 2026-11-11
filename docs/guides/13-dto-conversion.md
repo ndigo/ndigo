@@ -1,6 +1,6 @@
 # Guide 13 — DTO & Conversion
 
-How to project models into API shapes with `ConversionService` (AD-38):
+How to project models into API shapes with `ConversionService`:
 one service converts both leaf values and whole objects — schema targets are
 contract-enforced projection, fail-fast. Reference application: `apps/05-ndigo-api`.
 
@@ -71,11 +71,11 @@ const noteDtoSchema = schemaForEntity(Note)
 Two notes:
 
 - Entity-derived schemas erase to `Record<string, z.ZodType>` — annotate
-  the transform input from the entity's declared column types.
+ the transform input from the entity's declared column types.
 - **Transforms are not JSON-Schema-representable** (zod's native
-  `toJSONSchema` throws). Declare the transform's output as an explicit
-  `z.object` contract and `.pipe` the transform into it: the documented
-  schema _is_ the conversion target, and drift fails loud at `convert`.
+ `toJSONSchema` throws). Declare the transform's output as an explicit
+ `z.object` contract and `.pipe` the transform into it: the documented
+ schema _is_ the conversion target, and drift fails loud at `convert`.
 
 ## Request → entity (the other direction)
 
@@ -108,7 +108,7 @@ async list(token: string | undefined) {
 ```
 
 The generator embeds the schema via zod's native `toJSONSchema` (the
-AD-35 seam); bare schemas default to `description: 'OK'`, and the object
+ seam); bare schemas default to `description: 'OK'`, and the object
 form adds a description. Operations without `responses` keep the default
 `200: { description: 'OK' }`.
 
@@ -126,22 +126,22 @@ String fallback that environment binding uses), so registered converters
 serve both binding and projections.
 
 In Node apps the auto-configuration registers the shared
-`CONVERSION_SERVICE` bean (`createConversionService()`) — zero wiring;
+`CONVERSION_SERVICE` bean (`createConversionService`) — zero wiring;
 override the bean for custom converter registries.
 
 ## What conversion is not
 
 - No same-name conventions, decorators, or reflection — schema targets are
-  the explicit shape, nothing implicit.
+ the explicit shape, nothing implicit.
 - No mapping profiles/registries — schema reuse _is_ the profile.
 - Schema targets produce plain `z.infer` shapes — no class-instance targets
-  (instantiate entities via `Object.assign`, above).
+ (instantiate entities via `Object.assign`, above).
 - No async facade — call `schema.parseAsync` directly when needed.
 - Client-side reuse works out of the box (ndigo-core has no node
-  dependencies) though no formal web wiring exists.
+ dependencies) though no formal web wiring exists.
 
 ## See also
 
 - [Guide 12 — OpenAPI & API Docs](12-openapi-and-api-docs.md) — the generated spec
 - [Guide 20 — ORM & Migrations](20-orm-and-migrations.md) — entity metadata
-- [AD-38](../decisions/2026-09-29_AD38_DTO_MAPPING.md) — the conversion decision
+- — the conversion decision

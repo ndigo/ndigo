@@ -107,36 +107,39 @@ to optimize, not the external-router ratio.
 
 ### Containers and parsers
 
-| Scenario                   |   Ndigo | Comparator                       |                              Ratio |
-| :------------------------- | ------: | :------------------------------- | ---------------------------------: |
-| LRU `get` hit              |   55.78 | `lru-cache` 32.13                |                       1.74× slower |
-| LRU `set` existing         |   25.29 | `lru-cache` 18.87                |                       1.34× slower |
-| LRU `set` eviction         |  104.46 | `lru-cache` 105.97               |       parity (comparator RME > 2%) |
-| MultiValueMap `add`        |   13.74 | raw `Map` 13.34                  |                       1.03× slower |
-| MultiValueMap `get`        |    5.58 | raw `Map` 5.60                   |                             parity |
-| MultiValueMap `remove`     |   13.60 | raw `Map` 14.24                  |                       1.05× faster |
-| RingBuffer FIFO put+get    |    4.99 | `Array` push/shift 23.71         |                       4.75× faster |
-| RingBuffer bounded queue   |    4.52 | `Array` push/shift 8.20          |                       1.81× faster |
-| RingBuffer `peek`          |    1.28 | `Array[0]` 0.43                  |                        3.0× slower |
-| RingBuffer burst put       |    2.78 | circular array 0.29              |     9.6× slower (plain assignment) |
-| Path matcher, warm cache   |   43.01 | compile RegExp 364.17            |                       8.47× faster |
-| Path matcher, new instance |  130.90 | compile RegExp 375.92            |                       2.87× faster |
-| Query parse                |  237.55 | `URLSearchParams` adapter 180.88 |                       1.31× slower |
-| Query parse                |  237.55 | `qs` 1188.46                     |                       5.00× faster |
-| Query stringify            | 1348.34 | `qs` 1578.10                     |                       1.17× faster |
-| Cookie parse               |  825.63 | split+decode 253.60              |                       3.26× slower |
-| Cookie parse               |  825.63 | `cookie` (values only) 125.47    | 6.6× slower, different fixture set |
+| Scenario                   |   Ndigo | Comparator                       |                                Ratio |
+| :------------------------- | ------: | :------------------------------- | -----------------------------------: |
+| LRU `get` hit              |   31.07 | `lru-cache` 30.86                |                               parity |
+| LRU `set` existing         |    8.33 | `lru-cache` 17.69                |                         2.13× faster |
+| LRU `set` eviction         |  117.65 | `lru-cache` 102.52               | parity (both RME > 2%, inconclusive) |
+| MultiValueMap `add`        |   13.74 | raw `Map` 13.34                  |                         1.03× slower |
+| MultiValueMap `get`        |    5.58 | raw `Map` 5.60                   |                               parity |
+| MultiValueMap `remove`     |   13.60 | raw `Map` 14.24                  |                         1.05× faster |
+| RingBuffer FIFO put+get    |    4.99 | `Array` push/shift 23.71         |                         4.75× faster |
+| RingBuffer bounded queue   |    4.52 | `Array` push/shift 8.20          |                         1.81× faster |
+| RingBuffer `peek`          |    1.28 | `Array[0]` 0.43                  |                          3.0× slower |
+| RingBuffer burst put       |    2.78 | circular array 0.29              |       9.6× slower (plain assignment) |
+| Path matcher, warm cache   |   43.01 | compile RegExp 364.17            |                         8.47× faster |
+| Path matcher, new instance |  130.90 | compile RegExp 375.92            |                         2.87× faster |
+| Query parse                |  237.55 | `URLSearchParams` adapter 180.88 |                         1.31× slower |
+| Query parse                |  237.55 | `qs` 1188.46                     |                         5.00× faster |
+| Query stringify            | 1348.34 | `qs` 1578.10                     |                         1.17× faster |
+| Cookie parse               |  825.63 | split+decode 253.60              |                         3.26× slower |
+| Cookie parse               |  825.63 | `cookie` (values only) 125.47    |   6.6× slower, different fixture set |
 
 The cookie parser and LRU `get` remain the clearest commodity-level
 optimization targets. The ring buffer and path-matcher cache are clear wins
 within their intended workloads.
 
-`LRUCache.get`/`set` already include the first optimization from this harness:
-one `Map` lookup instead of two on the hit path. Relative to the same-run
-`lru-cache` comparator, `get` improved from 1.90× to 1.74× slower and `set`
-from 1.66× to 1.34× slower between the first and final clean baselines. The
-absolute values moved with host state; the ratio is the honest signal. The
-remaining gap is the recency `delete` + re-insert, not the presence check.
+**Baseline re-recorded on merged `main` after #382** (commit `0257ff63`, 186
+scenarios). #382 replaced the Map-insertion-order LRU — whose tombstone-driven
+eviction the estate's eviction row exposed — with a doubly-linked list. The
+re-measure is decisive: `get` is at **parity** with `lru-cache` (31.07 vs
+30.86 ns, previously 1.74× slower) and `set` on an existing key is **2.13×
+faster** (8.33 vs 17.69 ns, previously 1.34× slower). The eviction row is
+inconclusive (both runs RME > 2%). This is the estate's first
+benchmark-driven structural fix landing upstream: finding → fix (#382) →
+re-measure.
 
 ### Property index, context, bindings, and ORM
 
@@ -263,6 +266,27 @@ Notes: `get hit` is inconclusive at 2.73% RME; the eviction row is
 inconclusive at 5.78%. The throwing-reader path costs ~14× the normal
 evaluate path — the no-throw contract is not free. No comparator is
 published for either package (no upstream baseline in the estate).
+
+### Media-type interning / Deque eviction (PR #382)
+
+PR #382 replaced the array shift with a `Deque` for O(1) FIFO eviction in the
+media-type intern caches (`@ndigo/core`). The like-for-like row wraps an
+identical FIFO cache — same `Map` set/delete, same key workload — differing
+only in the order structure. Artifact
+`2026-11-11T03-05-47-0257ff63b2d7.json` (commit `0257ff63`, artifact run was dirty — file untracked at run time; values rerun clean in the estate lane).
+
+| Scenario                                             |    ns/op |                  RME |
+| :--------------------------------------------------- | -------: | -------------------: |
+| `parseMediaType` intern hit                          |   368.16 |                0.42% |
+| `parseMediaType` intern churn (512 keys, evict >128) | 1,057.09 | 6.11% (inconclusive) |
+| Deque FIFO (shift evict)                             |    36.06 |                0.93% |
+| array FIFO (shift evict)                             |    98.59 |                0.79% |
+
+**Verified:** the Deque eviction is **2.73× faster** than the array-shift
+under churn (36.06 vs 98.59 ns, both RME < 1%). The real intern path churn
+row is inconclusive (parse work dominates the eviction difference and RME is
+6.1%), so the claim rests on the like-for-like row. The `intern hit` row is
+parse+lookup, not lookup alone.
 
 ### View serializing views (Phase 4)
 

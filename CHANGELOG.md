@@ -338,10 +338,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   them (return `[]`/`false` when the identity has no OAuth scopes); the
   framework's `DefaultPrincipal` takes scopes as its fourth constructor
   argument.
-- `@ndigo/core`: `LRUCache.get`/`set` now perform one `Map` lookup instead of
-  two on the hit path. Measured against the same-run `lru-cache` comparator,
-  `get` improved from 1.90× to 1.74× slower and `set` from 1.66× to 1.34×
-  slower; absolute values vary with host state (`BENCHMARKS.md`).
+- `@ndigo/core`: the benchmark estate's LRU row exposed a structural flaw in
+  the Map-insertion-order cache (O(n) eviction once delete tombstones pile up
+  at the table front); main's #382 adopted a doubly-linked-list LRU in
+  response. Measured against the estate's pre-382 baseline: `get`
+  55.78 → 33.85 ns (−39%) and `set` 25.29 → 7.70 ns (−70%), both RME < 1%
+  (`BENCHMARKS.md`).
 - `apps/07-ndigo-island`: migrated from Web Awesome to the ndigo-ui registry
   items — the form now uses native `<input>`/`<button>` with copy-in CSS and no
   component-library dependency (AD-95).

@@ -20,10 +20,11 @@ support honest public performance claims.
   `@ops=N` units; `assertEquivalent` gates; external comparators for LRU,
   query-string, cookies, and routers; production `like` regression (the local
   exploration was deleted); ORM insert/update/find/findAll lifecycle.
-- **Optimization loop — started:** `LRUCache.get`/`set` now use one `Map`
-  lookup instead of two. Against the same-run `lru-cache` comparator, `get`
-  improved from 1.90× to 1.74× slower and `set` from 1.66× to 1.34× slower;
-  absolute values moved with host state (`BENCHMARKS.md`).
+- **Optimization loop — exercised:** the LRU row exposed the Map-order
+  cache's tombstone-driven O(n) eviction; main's #382 replaced it with a
+  doubly-linked list. Estate re-measure vs the pre-382 baseline: `get`
+  55.78 → 33.85 ns (−39%), `set` 25.29 → 7.70 ns (−70%), RME < 1%. The loop
+  worked: benchmark → structural finding → upstream fix → verified (`BENCHMARKS.md`).
 - **Phase 2 — partial:** router parity vs find-my-way/radix3 is separated from
   full handler resolution and verified; the end-to-end HTTP lane
   (`pnpm bench:http`) compares Ndigo, Fastify, Express, and Hono over four

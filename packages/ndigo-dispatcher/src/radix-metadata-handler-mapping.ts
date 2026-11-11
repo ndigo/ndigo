@@ -174,19 +174,22 @@ export class RadixMetadataHandlerMapping
         // registered candidate — identical winner semantics to the old
         // `reduce` (strictly-less-than replaces, so an equal `compareTo`
         // keeps the earlier candidate).
+        const methodMismatchCandidates: RadixEntry[] = [];
         let winner: RadixEntry | null = null;
         let winnerMapping: RadixEntry['mapping'] | null = null;
         for (const candidate of candidates) {
             const { mapping } = candidate;
             if (mapping.queryCondition.match(route) === null) continue;
             if (mapping.matrixCondition.match(route) === null) continue;
-            if (mapping.methodCondition.match(route) === null) continue;
+            if (mapping.methodCondition.match(route) === null) {
+                methodMismatchCandidates.push(candidate);
+                continue;
+            }
             if (winnerMapping === null || mapping.compareTo(winnerMapping, route) < 0) {
                 winner = candidate;
                 winnerMapping = mapping;
             }
         }
-
         if (winner === null) {
             // RFC 9110 §15.5.6: when the path exists but no handler accepts the
             // request method, that's 405 Method Not Allowed, not 404. Distinguish
@@ -195,14 +198,10 @@ export class RadixMetadataHandlerMapping
             // it is always allowable (RFC 9110 §9.3.7) and platform interceptors
             // (CORS preflight) finalize it, so it must reach dispatch.
             if (route.method !== 'OPTIONS') {
-                const nonMethodMatches = candidates.filter(
-                    ({ mapping }) =>
-                        mapping.queryCondition.match(route) !== null && mapping.matrixCondition.match(route) !== null
-                );
-                if (nonMethodMatches.length > 0) {
+                if (methodMismatchCandidates.length > 0) {
                     const allowed = [
                         ...new Set(
-                            nonMethodMatches
+                            methodMismatchCandidates
                                 .map(({ mapping }) => mapping.method())
                                 .filter((method: HTTPMethod | undefined): method is HTTPMethod => method !== undefined)
                         ),

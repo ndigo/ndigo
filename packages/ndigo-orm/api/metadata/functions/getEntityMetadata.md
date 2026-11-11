@@ -10,6 +10,8 @@
 
 Retrieves the entity metadata for a given class.
 
+The result is derived once per class and cached; treat it as immutable.
+
 ## Parameters
 
 ### target

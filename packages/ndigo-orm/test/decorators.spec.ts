@@ -231,6 +231,15 @@ describe('decorators', () => {
                 lifecycleHooks: [],
             });
         });
+
+        it('derives metadata once per class and reuses the same object', () => {
+            const first = getEntityMetadata(TestProduct);
+            const second = getEntityMetadata(TestProduct);
+            expect(second).toBe(first);
+
+            const other = getEntityMetadata(PlainClass as unknown as typeof TestProduct);
+            expect(other).not.toBe(first);
+        });
     });
 
     describe('relations', () => {

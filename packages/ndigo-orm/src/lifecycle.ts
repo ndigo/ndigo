@@ -18,9 +18,17 @@ import type { LifecycleEvent } from './metadata';
  */
 export function runLifecycleHooks<T extends object>(entity: T, event: LifecycleEvent): void {
     const entityClass = entity.constructor as Constructable<T>;
-    const hooks = getEntityMetadata(entityClass).lifecycleHooks.filter((hook) => hook.event === event);
+    const hooks = getEntityMetadata(entityClass).lifecycleHooks;
+    if (hooks.length === 0) {
+        return;
+    }
     const record = entity as Record<string, (...args: unknown[]) => unknown>;
+    // Iterate instead of filter(): this runs per entity on scans, and a filter
+    // would allocate an array even for classes with no matching hook.
     for (const hook of hooks) {
+        if (hook.event !== event) {
+            continue;
+        }
         const method = record[hook.methodName];
         if (typeof method === 'function') {
             method.call(entity);

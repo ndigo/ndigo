@@ -137,14 +137,29 @@ export function isEntity(target: Constructable): boolean {
 }
 
 /**
+ * Derived metadata per entity class. A class's metadata is fixed once its
+ * decorators have run, so the object is built once and shared; callers must
+ * treat the returned value (including its arrays) as immutable. A subclass is
+ * keyed separately, so it never inherits the parent's cached entry.
+ */
+const entityMetadataCache = new WeakMap<Constructable, EntityMetadata>();
+
+/**
  * Retrieves the entity metadata for a given class.
+ *
+ * The result is derived once per class and cached; treat it as immutable.
+ *
  * @param target - The class constructor for which to retrieve metadata.
  * @returns The entity metadata.
  */
 export function getEntityMetadata(target: Constructable): EntityMetadata {
-    const metadata = getMetadata(target);
+    const cached = entityMetadataCache.get(target);
+    if (cached !== undefined) {
+        return cached;
+    }
 
-    return {
+    const metadata = getMetadata(target);
+    const entityMetadata: EntityMetadata = {
         entityName: (metadata[entityNameMetadataKey] as string) ?? target.name,
         columns: (metadata[columnsMetadataKey] as ColumnDefinition[]) ?? [],
         primaryColumn: (metadata[primaryMetadataKey] as string) ?? '',
@@ -152,4 +167,6 @@ export function getEntityMetadata(target: Constructable): EntityMetadata {
         relations: (metadata[relationsMetadataKey] as RelationDefinition[]) ?? [],
         lifecycleHooks: (metadata[lifecycleHooksMetadataKey] as LifecycleHookDefinition[]) ?? [],
     };
+    entityMetadataCache.set(target, entityMetadata);
+    return entityMetadata;
 }

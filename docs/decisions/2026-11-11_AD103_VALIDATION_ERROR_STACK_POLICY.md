@@ -3,8 +3,8 @@
 **Date:** 2026-11-11
 **Status:** Proposed — recommends keeping the thrown
 `ParameterConversionError` stack and constructing its `ZodValidationError`
-cause without stack capture. No implementation until sign-off; PR #387 carries
-the empty-shape failure templates with the two-error shape unchanged.
+cause without stack capture. No implementation until sign-off; #387/#393
+landed the empty-shape failure templates with the two-error shape unchanged.
 
 ## Context
 

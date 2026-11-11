@@ -32,6 +32,14 @@ Human-readable display name.
 
 Roles assigned to this principal.
 
+***
+
+### scopes
+
+> `readonly` **scopes**: readonly `string`[]
+
+OAuth scopes granted to this principal.
+
 ## Methods
 
 ### hasAnyRole()
@@ -56,6 +64,28 @@ Whether any role is assigned.
 
 ***
 
+### hasAnyScope()
+
+> **hasAnyScope**(...`scopes`): `boolean`
+
+Returns `true` if this principal has **at least one** of the given scopes.
+
+#### Parameters
+
+##### scopes
+
+...`string`[]
+
+The scope names to test.
+
+#### Returns
+
+`boolean`
+
+Whether any scope is granted.
+
+***
+
 ### hasRole()
 
 > **hasRole**(`role`): `boolean`
@@ -75,3 +105,25 @@ The role name to test.
 `boolean`
 
 Whether the role is assigned.
+
+***
+
+### hasScope()
+
+> **hasScope**(`scope`): `boolean`
+
+Returns `true` if this principal has the given scope.
+
+#### Parameters
+
+##### scope
+
+`string`
+
+The scope name to test.
+
+#### Returns
+
+`boolean`
+
+Whether the scope is granted.

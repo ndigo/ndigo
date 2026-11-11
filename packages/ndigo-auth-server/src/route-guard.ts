@@ -9,7 +9,7 @@ import {
     denialOf,
 } from '@ndigo/dispatcher';
 import { type Route } from '@ndigo/router';
-import { AUTH_REQUIRED_KEY, AUTH_ROLES_KEY } from '@ndigo/auth-core';
+import { AUTH_REQUIRED_KEY, AUTH_ROLES_KEY, AUTH_SCOPES_KEY } from '@ndigo/auth-core';
 import { type AuthServer } from './server';
 
 /** Denial behavior overrides for {@link AuthRouteGuard}. */
@@ -90,9 +90,14 @@ export class AuthRouteGuard implements RouteHandlerInterceptor {
         const methodRoles = methodName
             ? ((metadata[`${AUTH_ROLES_KEY}:${methodName}`] as string[] | undefined) ?? [])
             : [];
+        const classScopes = (metadata[AUTH_SCOPES_KEY] as string[] | undefined) ?? [];
+        const methodScopes = methodName
+            ? ((metadata[`${AUTH_SCOPES_KEY}:${methodName}`] as string[] | undefined) ?? [])
+            : [];
 
-        const requiresAuth = classRequiresAuth || methodRequiresAuth;
         const requiredRoles = [...classRoles, ...methodRoles];
+        const requiredScopes = [...classScopes, ...methodScopes];
+        const requiresAuth = classRequiresAuth || methodRequiresAuth || requiredScopes.length > 0;
 
         if (!requiresAuth && requiredRoles.length === 0) {
             return true;
@@ -111,6 +116,10 @@ export class AuthRouteGuard implements RouteHandlerInterceptor {
         }
 
         if (requiredRoles.length > 0 && !requiredRoles.every((role) => principal.hasRole(role))) {
+            return this.#deny(this.#denialOptions.forbiddenStatus ?? 403);
+        }
+
+        if (requiredScopes.length > 0 && !requiredScopes.every((scope) => principal.hasScope(scope))) {
             return this.#deny(this.#denialOptions.forbiddenStatus ?? 403);
         }
 

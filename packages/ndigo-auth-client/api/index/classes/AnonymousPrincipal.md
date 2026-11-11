@@ -58,6 +58,18 @@ The empty role set.
 
 [`Principal`](../interfaces/Principal.md).[`roles`](../interfaces/Principal.md#roles)
 
+***
+
+### scopes
+
+> `readonly` **scopes**: readonly `string`[]
+
+The empty scope set.
+
+#### Implementation of
+
+[`Principal`](../interfaces/Principal.md).[`scopes`](../interfaces/Principal.md#scopes)
+
 ## Methods
 
 ### hasAnyRole()
@@ -86,6 +98,32 @@ Always `false`.
 
 ***
 
+### hasAnyScope()
+
+> **hasAnyScope**(...`_scopes`): `boolean`
+
+Always `false` for the anonymous sentinel.
+
+#### Parameters
+
+##### \_scopes
+
+...`string`[]
+
+Ignored.
+
+#### Returns
+
+`boolean`
+
+Always `false`.
+
+#### Implementation of
+
+[`Principal`](../interfaces/Principal.md).[`hasAnyScope`](../interfaces/Principal.md#hasanyscope)
+
+***
+
 ### hasRole()
 
 > **hasRole**(`_role`): `boolean`
@@ -109,3 +147,29 @@ Always `false`.
 #### Implementation of
 
 [`Principal`](../interfaces/Principal.md).[`hasRole`](../interfaces/Principal.md#hasrole)
+
+***
+
+### hasScope()
+
+> **hasScope**(`_scope`): `boolean`
+
+Always `false` for the anonymous sentinel.
+
+#### Parameters
+
+##### \_scope
+
+`string`
+
+Ignored.
+
+#### Returns
+
+`boolean`
+
+Always `false`.
+
+#### Implementation of
+
+[`Principal`](../interfaces/Principal.md).[`hasScope`](../interfaces/Principal.md#hasscope)

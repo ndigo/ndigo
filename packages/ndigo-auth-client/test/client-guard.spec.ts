@@ -6,13 +6,16 @@ import { AuthClient } from '../src/client';
 import { AuthRegistry, Principal } from '@ndigo/auth-core';
 import { AUTH_REQUIRED_KEY, AUTH_ROLES_KEY } from '@ndigo/auth-core';
 
-function createMockPrincipal(id = '1', name = 'Test', roles: string[] = ['user']) {
+function createMockPrincipal(id = '1', name = 'Test', roles: string[] = ['user'], scopes: string[] = []) {
     return {
         id,
         name,
         roles,
+        scopes,
         hasRole: (role: string) => roles.includes(role),
         hasAnyRole: (...r: string[]) => r.some((role) => roles.includes(role)),
+        hasScope: (scope: string) => scopes.includes(scope),
+        hasAnyScope: (...s: string[]) => s.some((scope) => scopes.includes(scope)),
     };
 }
 

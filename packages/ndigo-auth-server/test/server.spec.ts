@@ -5,16 +5,21 @@ import { AuthServer } from '../src/server';
 import { AuthRegistry } from '@ndigo/auth-core';
 import { AuthAdapter, Principal } from '@ndigo/auth-core';
 
-function createMockAdapter(
-    id: string,
-    validateResult: Principal | null = {
-        id: '1',
-        name: 'Test',
-        roles: [],
-        hasRole: () => false,
-        hasAnyRole: () => false,
-    }
-): AuthAdapter {
+/** Builds a complete principal for adapter mocks. */
+function principal(id: string, name: string, roles: string[], scopes: string[] = []): Principal {
+    return {
+        id,
+        name,
+        roles,
+        scopes,
+        hasRole: (role: string) => roles.includes(role),
+        hasAnyRole: (...wanted: string[]) => wanted.some((role) => roles.includes(role)),
+        hasScope: (scope: string) => scopes.includes(scope),
+        hasAnyScope: (...wanted: string[]) => wanted.some((scope) => scopes.includes(scope)),
+    };
+}
+
+function createMockAdapter(id: string, validateResult: Principal | null = principal('1', 'Test', [])): AuthAdapter {
     return {
         id,
         validate: async () => validateResult,
@@ -38,13 +43,7 @@ describe('AuthServer', () => {
         });
 
         test('delegates to adapter and returns principal', async () => {
-            const mockAdapter = createMockAdapter('jwt', {
-                id: '42',
-                name: 'Alice',
-                roles: ['admin'],
-                hasRole: () => true,
-                hasAnyRole: () => false,
-            });
+            const mockAdapter = createMockAdapter('jwt', principal('42', 'Alice', ['admin']));
             AuthRegistry.register(mockAdapter);
 
             const server = new AuthServer();
@@ -54,8 +53,11 @@ describe('AuthServer', () => {
                 id: '42',
                 name: 'Alice',
                 roles: ['admin'],
+                scopes: [],
                 hasRole: expect.any(Function),
                 hasAnyRole: expect.any(Function),
+                hasScope: expect.any(Function),
+                hasAnyScope: expect.any(Function),
             });
         });
 
@@ -79,13 +81,7 @@ describe('AuthServer', () => {
 
         test('returns principal from first successful listed adapter', async () => {
             const adapter1 = createMockAdapter('jwt', null);
-            const adapter2 = createMockAdapter('oidc', {
-                id: '99',
-                name: 'Bob',
-                roles: [],
-                hasRole: () => false,
-                hasAnyRole: () => false,
-            });
+            const adapter2 = createMockAdapter('oidc', principal('99', 'Bob', []));
             AuthRegistry.register(adapter1);
             AuthRegistry.register(adapter2);
 
@@ -96,19 +92,16 @@ describe('AuthServer', () => {
                 id: '99',
                 name: 'Bob',
                 roles: [],
+                scopes: [],
                 hasRole: expect.any(Function),
                 hasAnyRole: expect.any(Function),
+                hasScope: expect.any(Function),
+                hasAnyScope: expect.any(Function),
             });
         });
 
         test('does not try adapters outside the explicit list', async () => {
-            const unlisted = createMockAdapter('unlisted', {
-                id: '1',
-                name: 'U',
-                roles: [],
-                hasRole: () => true,
-                hasAnyRole: () => true,
-            });
+            const unlisted = createMockAdapter('unlisted', principal('1', 'U', []));
             const listed = createMockAdapter('listed', null);
             AuthRegistry.register(unlisted);
             AuthRegistry.register(listed);
@@ -137,13 +130,7 @@ describe('AuthServer', () => {
                 refresh: async () => ({ principal: null, token: null, expiresAt: null }),
                 logout: async () => {},
             };
-            const successAdapter = createMockAdapter('ok', {
-                id: '1',
-                name: 'OK',
-                roles: [],
-                hasRole: () => false,
-                hasAnyRole: () => false,
-            });
+            const successAdapter = createMockAdapter('ok', principal('1', 'OK', []));
             AuthRegistry.register(failingAdapter);
             AuthRegistry.register(successAdapter);
 
@@ -154,8 +141,11 @@ describe('AuthServer', () => {
                 id: '1',
                 name: 'OK',
                 roles: [],
+                scopes: [],
                 hasRole: expect.any(Function),
                 hasAnyRole: expect.any(Function),
+                hasScope: expect.any(Function),
+                hasAnyScope: expect.any(Function),
             });
         });
 

@@ -314,8 +314,9 @@ Rules (AD-37, following the MDN/Rails/Fastify industry approach):
 ## 10. Deferrals (deliberate)
 
 WebAuthn/passkeys, MFA, SAML, provider federation (OIDC client exists for
-authorization-code + PKCE), RBAC beyond `@authorized`'s role list,
-persistent session-store backends, argon2id (additive when needed),
+authorization-code + PKCE), RBAC beyond `@authorized`'s role list and
+`@authorizedScopes`' scope list, persistent session-store backends, argon2id
+(additive when needed),
 persistent JWT rotation ledger (needed only for long-lived access
 tokens). None blocks the 1.0 credential + session story.
 

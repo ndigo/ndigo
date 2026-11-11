@@ -18,7 +18,7 @@ materialize identities from user records (e.g.
 
 ### Constructor
 
-> **new DefaultPrincipal**(`id`, `name`, `roles?`): `DefaultPrincipal`
+> **new DefaultPrincipal**(`id`, `name`, `roles?`, `scopes?`): `DefaultPrincipal`
 
 #### Parameters
 
@@ -31,6 +31,10 @@ materialize identities from user records (e.g.
 `string`
 
 ##### roles?
+
+readonly `string`[] = `[]`
+
+##### scopes?
 
 readonly `string`[] = `[]`
 
@@ -74,6 +78,18 @@ Roles assigned to this principal.
 
 [`Principal`](../interfaces/Principal.md).[`roles`](../interfaces/Principal.md#roles)
 
+***
+
+### scopes
+
+> `readonly` **scopes**: readonly `string`[]
+
+OAuth scopes granted to this principal.
+
+#### Implementation of
+
+[`Principal`](../interfaces/Principal.md).[`scopes`](../interfaces/Principal.md#scopes)
+
 ## Methods
 
 ### hasAnyRole()
@@ -102,6 +118,32 @@ Whether any role is assigned.
 
 ***
 
+### hasAnyScope()
+
+> **hasAnyScope**(...`scopes`): `boolean`
+
+Returns `true` if this principal has at least one of the given scopes.
+
+#### Parameters
+
+##### scopes
+
+...`string`[]
+
+The scope names to test.
+
+#### Returns
+
+`boolean`
+
+Whether any scope is granted.
+
+#### Implementation of
+
+[`Principal`](../interfaces/Principal.md).[`hasAnyScope`](../interfaces/Principal.md#hasanyscope)
+
+***
+
 ### hasRole()
 
 > **hasRole**(`role`): `boolean`
@@ -125,3 +167,29 @@ Whether the role is assigned.
 #### Implementation of
 
 [`Principal`](../interfaces/Principal.md).[`hasRole`](../interfaces/Principal.md#hasrole)
+
+***
+
+### hasScope()
+
+> **hasScope**(`scope`): `boolean`
+
+Returns `true` if this principal has the given scope.
+
+#### Parameters
+
+##### scope
+
+`string`
+
+The scope name to test.
+
+#### Returns
+
+`boolean`
+
+Whether the scope is granted.
+
+#### Implementation of
+
+[`Principal`](../interfaces/Principal.md).[`hasScope`](../interfaces/Principal.md#hasscope)

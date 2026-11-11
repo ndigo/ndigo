@@ -2,7 +2,7 @@
  */
 // @vitest-environment node
 import { describe, test, beforeAll, afterAll, expect, vi } from 'vitest';
-import { authenticated, authorized } from '@ndigo/auth-core';
+import { authenticated, authorized, authorizedScopes } from '@ndigo/auth-core';
 import { MetadataConfigApplicationContext } from '@ndigo/context';
 import {
     getMapping,
@@ -573,6 +573,17 @@ describe('socket auth metadata enforcement (SEC-3)', () => {
             }
         }
 
+        // Scopes imply authentication too: a principal without the scope is
+        // denied, one with it proceeds.
+        @socketMapping('/scoped')
+        @authorizedScopes('tools.read')
+        @parameters({ session: socketSessionValue('session') })
+        async *scoped(session: SocketSession) {
+            for await (const message of session.messages) {
+                yield { event: 'scoped', user: session.attributes['user'] ?? null, data: message };
+            }
+        }
+
         // `queryValue()` binds the whole parsed query map, so the handler
         // observes exactly the map the adapter built from the URL.
         @socketMapping('/proto')
@@ -634,9 +645,12 @@ describe('socket auth metadata enforcement (SEC-3)', () => {
     };
 
     /** Demo identity: shape-checks like `@ndigo/auth-core`'s `Principal`. */
-    const principal = (id: string, roles: string[]) => ({
+    const principal = (id: string, roles: string[], scopes: string[] = []) => ({
         id,
+        roles,
+        scopes,
         hasRole: (role: string): boolean => roles.includes(role),
+        hasScope: (scope: string): boolean => scopes.includes(scope),
     });
 
     beforeAll(async () => {
@@ -658,6 +672,8 @@ describe('socket auth metadata enforcement (SEC-3)', () => {
                 if (token === '') return {};
                 if (token === 'alice') return { principal: principal('alice', ['user']), user: 'alice' };
                 if (token === 'root') return { principal: principal('root', ['admin']), user: 'root' };
+                if (token === 'reader')
+                    return { principal: principal('reader', ['user'], ['tools.read']), user: 'reader' };
                 // Never settles: exercises the SEC-9 authentication budget.
                 if (token === 'hang') {
                     await new Promise<void>(() => undefined);
@@ -722,6 +738,21 @@ describe('socket auth metadata enforcement (SEC-3)', () => {
         const reply = waitMessage(ws);
         ws.send('go');
         await expect(reply).resolves.toEqual({ event: 'admin', user: 'root', data: 'go' });
+        ws.close(1000, 'done');
+    });
+
+    test('a principal missing a required scope is closed with 1008', async () => {
+        const ws = new WebSocket(`${wsUrl}/gate/scoped?token=alice`);
+        ws.on('error', () => undefined);
+        await expect(waitClose(ws)).resolves.toMatchObject({ code: 1008, reason: 'insufficient scope' });
+    });
+
+    test('a principal holding the required scope proceeds', async () => {
+        const ws = new WebSocket(`${wsUrl}/gate/scoped?token=reader`);
+        await open(ws);
+        const reply = waitMessage(ws);
+        ws.send('go');
+        await expect(reply).resolves.toEqual({ event: 'scoped', user: 'reader', data: 'go' });
         ws.close(1000, 'done');
     });
 

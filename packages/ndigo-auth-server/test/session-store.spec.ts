@@ -6,7 +6,16 @@ import { InMemorySessionStore } from '../src/in-memory-session-store';
 
 describe('InMemorySessionStore', () => {
     const record = {
-        principal: { id: 'u1', name: 'alice', roles: ['user'], hasRole: () => true, hasAnyRole: () => true },
+        principal: {
+            id: 'u1',
+            name: 'alice',
+            roles: ['user'],
+            scopes: [],
+            hasRole: () => true,
+            hasAnyRole: () => true,
+            hasScope: () => false,
+            hasAnyScope: () => false,
+        },
         tokenVersion: 0,
         issuedAt: Date.now(),
     };

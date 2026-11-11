@@ -63,7 +63,7 @@ import {
     RequestLimitError,
 } from './http-request-limits';
 import { parseCookies } from './cookie-parser';
-import { AUTH_REQUIRED_KEY, AUTH_ROLES_KEY } from '@ndigo/auth-core';
+import { AUTH_REQUIRED_KEY, AUTH_ROLES_KEY, AUTH_SCOPES_KEY } from '@ndigo/auth-core';
 import { IllegalStateError, getSymbolMetadata } from '@ndigo/core';
 import { NotAcceptableError } from '@ndigo/view';
 import { getLogger } from '@ndigo/log';
@@ -92,6 +92,15 @@ const DEFAULT_AUTHENTICATE_TIMEOUT_MS = 10_000;
  */
 function likeRolePrincipal(value: unknown): value is { hasRole(role: string): boolean } {
     return like({ hasRole: Function })(value);
+}
+
+/**
+ * Shape guard for the identity bag's `principal` when a socket endpoint
+ * declares `@authorizedScopes`: the scope check needs the `hasScope` contract
+ * only, not the full `Principal` interface.
+ */
+function likeScopePrincipal(value: unknown): value is { hasScope(scope: string): boolean } {
+    return like({ hasScope: Function })(value);
 }
 
 /**
@@ -748,6 +757,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
     #socketAuthRequirements(target: { instance: object; method: string }): {
         requiresAuth: boolean;
         requiredRoles: string[];
+        requiredScopes: string[];
     } {
         const metadata = getSymbolMetadata(target.instance);
         const method = target.method;
@@ -755,9 +765,12 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
         const methodRequiresAuth = metadata[`${AUTH_REQUIRED_KEY}:${method}`] === true;
         const classRoles = (metadata[AUTH_ROLES_KEY] as string[] | undefined) ?? [];
         const methodRoles = (metadata[`${AUTH_ROLES_KEY}:${method}`] as string[] | undefined) ?? [];
+        const classScopes = (metadata[AUTH_SCOPES_KEY] as string[] | undefined) ?? [];
+        const methodScopes = (metadata[`${AUTH_SCOPES_KEY}:${method}`] as string[] | undefined) ?? [];
         return {
             requiresAuth: classRequiresAuth || methodRequiresAuth,
             requiredRoles: [...classRoles, ...methodRoles],
+            requiredScopes: [...classScopes, ...methodScopes],
         };
     }
 
@@ -886,8 +899,8 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
         // the `authenticate` hook / `socketRequestAuthenticator` bean whose
         // bag lands in `session.attributes`. No metadata ⇒ unchanged
         // behavior (a public socket endpoint).
-        const { requiresAuth, requiredRoles } = this.#socketAuthRequirements(target);
-        if (requiresAuth || requiredRoles.length > 0) {
+        const { requiresAuth, requiredRoles, requiredScopes } = this.#socketAuthRequirements(target);
+        if (requiresAuth || requiredRoles.length > 0 || requiredScopes.length > 0) {
             const principal = session.attributes['principal'];
             if (!likeRolePrincipal(principal)) {
                 ws.close(1008, 'authentication required');
@@ -895,6 +908,13 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
             }
             if (requiredRoles.length > 0 && !requiredRoles.every((role) => principal.hasRole(role))) {
                 ws.close(1008, 'insufficient role');
+                return;
+            }
+            if (
+                requiredScopes.length > 0 &&
+                (!likeScopePrincipal(principal) || !requiredScopes.every((scope) => principal.hasScope(scope)))
+            ) {
+                ws.close(1008, 'insufficient scope');
                 return;
             }
         }

@@ -36,6 +36,14 @@ Roles (store-less mode).
 
 ***
 
+### scopes?
+
+> `optional` **scopes?**: readonly `string`[]
+
+OAuth scopes (store-less mode; emitted as the `scope` claim).
+
+***
+
 ### tokenVersion?
 
 > `optional` **tokenVersion?**: `number`

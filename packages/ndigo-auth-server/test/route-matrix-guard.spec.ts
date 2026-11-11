@@ -3,7 +3,7 @@
 import { describe, test, expect, beforeEach } from 'vitest';
 import { AuthServer } from '../src/server';
 import { AuthMatrixGuard } from '../src/route-matrix-guard';
-import { AuthRegistry, Principal, AUTH_REQUIRED_KEY, AUTH_ROLES_KEY } from '@ndigo/auth-core';
+import { AuthRegistry, Principal, AUTH_REQUIRED_KEY, AUTH_ROLES_KEY, AUTH_SCOPES_KEY } from '@ndigo/auth-core';
 import { type ModelAndView } from '@ndigo/dispatcher';
 import { type Route } from '@ndigo/router';
 
@@ -19,13 +19,16 @@ function createMockAdapter(id: string, validateResult: Principal | null = null) 
     };
 }
 
-function createMockPrincipal(id = '1', name = 'Test', roles: string[] = ['user']) {
+function createMockPrincipal(id = '1', name = 'Test', roles: string[] = ['user'], scopes: string[] = []) {
     return {
         id,
         name,
         roles,
+        scopes,
         hasRole: (role: string) => roles.includes(role),
         hasAnyRole: (...r: string[]) => r.some((role) => roles.includes(role)),
+        hasScope: (scope: string) => scopes.includes(scope),
+        hasAnyScope: (...s: string[]) => s.some((scope) => scopes.includes(scope)),
     };
 }
 
@@ -235,6 +238,24 @@ describe('AuthMatrixGuard', () => {
 
             expect(result).toBe(true);
             expect(captured?.principal.hasRole('admin')).toBe(true);
+        });
+    });
+
+    describe('preHandle - scope authorization over a scheme', () => {
+        test('proceeds when the principal holds every required scope', async () => {
+            guard = matrixGuard(createMockPrincipal('1', 'Reader', ['user'], ['tools.read']), createMockPrincipal());
+            const handlerMethod = handlerWith({ [`${AUTH_SCOPES_KEY}:get`]: ['tools.read'] });
+
+            await expect(guard.preHandle(createMockRoute(), handlerMethod)).resolves.toBe(true);
+        });
+
+        test('denies 403 when a required scope is missing', async () => {
+            guard = matrixGuard(createMockPrincipal('1', 'Reader', ['user'], ['tools.read']), createMockPrincipal());
+            const handlerMethod = handlerWith({ [`${AUTH_SCOPES_KEY}:get`]: ['tools.admin'] });
+
+            await expect(guard.preHandle(createMockRoute(), handlerMethod)).resolves.toMatchObject({
+                statusCode: 403,
+            });
         });
     });
 

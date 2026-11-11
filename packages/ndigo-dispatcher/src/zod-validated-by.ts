@@ -27,6 +27,11 @@ export interface ValidationIssue {
  * `message`) alongside the machine-readable per-issue details (in `issues`),
  * so error resolvers can render either a flat detail string or a structured
  * `errors` array.
+ *
+ * This is a **structured payload, not an independently thrown error**: on V8
+ * its `.stack` carries only the `name: message` header, because the thrown
+ * `ParameterConversionError` already owns the single stack for the failure
+ * (AD-103). Engines without `Error.stackTraceLimit` keep their default capture.
  */
 export class ZodValidationError extends FrameworkError {
     /** The structured per-field failures from the Zod parse. */
@@ -139,9 +144,38 @@ function emptyShapeOutcome(schema: z.ZodType, shape: EmptyShape): EmptyShapeFail
 }
 
 /**
- * Builds the conversion error for a validation failure. A fresh
- * {@link ZodValidationError} (with its own stack) is created per request; only
- * the immutable message and issues are shared.
+ * V8's per-engine stack-trace limit. Other engines do not define the data
+ * property; the guard below then takes the default-capture path (AD-103 D-3).
+ */
+const stackTraceLimitHost = Error as typeof Error & { stackTraceLimit?: number };
+
+/**
+ * Constructs the cause with stack capture disabled, restoring the previous
+ * limit in `finally` so the global never stays toggled (AD-103 D-2). The
+ * window is synchronous and contains no user code.
+ *
+ * @param message - The flattened, human-readable failure message.
+ * @param issues - The structured per-field failures.
+ * @returns The structured cause, header-only on V8.
+ */
+function createValidationCause(message: string, issues: readonly ValidationIssue[]): ZodValidationError {
+    const previousLimit = stackTraceLimitHost.stackTraceLimit;
+    if (typeof previousLimit !== 'number') {
+        return new ZodValidationError(message, issues);
+    }
+    stackTraceLimitHost.stackTraceLimit = 0;
+    try {
+        return new ZodValidationError(message, issues);
+    } finally {
+        stackTraceLimitHost.stackTraceLimit = previousLimit;
+    }
+}
+
+/**
+ * Builds the conversion error for a validation failure. The thrown error keeps
+ * the only stack; the {@link ZodValidationError} cause is a structured payload
+ * constructed without capture (AD-103). Only the immutable message and issues
+ * are shared with the memoized templates.
  *
  * @param extractor - The extractor whose name labels the failure.
  * @param failure - The normalized validation failure.
@@ -151,7 +185,7 @@ function toConversionError(extractor: ParameterExtractor, failure: EmptyShapeFai
     return new ParameterConversionError(
         extractor.name,
         'validated',
-        new ZodValidationError(failure.message, failure.issues)
+        createValidationCause(failure.message, failure.issues)
     );
 }
 

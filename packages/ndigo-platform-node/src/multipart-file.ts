@@ -5,6 +5,7 @@ import { Readable } from 'node:stream';
 import { createReadStream } from 'node:fs';
 import { copyFile, mkdir, readFile, unlink, writeFile } from 'node:fs/promises';
 import { dirname } from 'node:path';
+import { MultiValueMap } from '@ndigo/core';
 
 /**
  * A single part of a `multipart/form-data` request — an uploaded file.
@@ -130,7 +131,7 @@ class NodeMultipartContext implements MultipartContext {
     // `__proto__` must land as an ordinary own key (see also the urlencoded
     // codec in http-request-limits.ts), never through the inherited accessor.
     readonly fields: Record<string, string | string[]> = Object.create(null);
-    readonly files = new Map<string, MultipartFile[]>();
+    readonly files = new MultiValueMap<string, MultipartFile>();
     #tempPaths = new Set<string>();
 
     setField(name: string, value: string): void {
@@ -147,9 +148,7 @@ class NodeMultipartContext implements MultipartContext {
     }
 
     addFile(name: string, part: MultipartFile): void {
-        const list = this.files.get(name) ?? [];
-        list.push(part);
-        this.files.set(name, list);
+        this.files.add(name, part);
     }
 
     trackTemp(path: string): void {

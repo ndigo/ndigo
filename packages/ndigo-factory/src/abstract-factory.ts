@@ -66,7 +66,16 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
      * The registry for managing different scopes.
      */
     #scopeRegistry!: ScopeRegistry;
-
+    /**
+     * Registered instance names, kept as a Set so `hasInstance` is a uniform,
+     * fast lookup instead of a per-name `hasOwnProperty` probe (which V8
+     * slows down unevenly depending on the property name).
+     */
+    #instanceNames = new Set<string>();
+    /**
+     * Registered constructor names (without the leading `$`).
+     */
+    #constructorNames = new Set<string>();
     /**
      * A list of entry processors applied to instances.
      */
@@ -211,6 +220,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
                 value.close();
             }
             deleteProperty(this, name);
+            this.#instanceNames.delete(name);
         }
 
         if (this.hasConstructor(name)) {
@@ -296,6 +306,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
                     enumerable: false,
                     writable: false,
                 });
+                this.#instanceNames.add(name);
             }
 
             return value;
@@ -403,21 +414,11 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
      * @returns `true` if a constructor is registered, `false` otherwise.
      */
     hasConstructor(name: string): boolean {
-        // Own-property check, not `in`: `in` also walks `Object.prototype`, so
-        // names like `toString`/`constructor` would be reported as registered
-        // factory values (KRN-REV-FACTORY-14).
-        return Object.prototype.hasOwnProperty.call(this, `$${name}`);
+        return this.#constructorNames.has(name);
     }
 
-    /**
-     * Checks if the factory has an instance registered under the given name.
-     * @param name - The name of the instance.
-     * @returns `true` if an instance is registered, `false` otherwise.
-     */
     hasInstance(name: string): boolean {
-        // Own-property check (see {@link hasConstructor}): `in` would treat
-        // `Object.prototype` members such as `toString` as registered values.
-        return Object.prototype.hasOwnProperty.call(this, name);
+        return this.#instanceNames.has(name);
     }
 
     /**
@@ -536,7 +537,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
                 enumerable: false,
                 writable: false,
             });
-            // Instance
+            this.#constructorNames.add(name);
         } else {
             defineProperty(this, name, {
                 value: value,
@@ -544,7 +545,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
                 enumerable: true,
                 writable: false,
             });
-
+            this.#instanceNames.add(name);
             const stored = this[name];
 
             if (likeEnumerable(stored)) {

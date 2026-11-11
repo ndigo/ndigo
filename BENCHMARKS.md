@@ -264,6 +264,26 @@ inconclusive at 5.78%. The throwing-reader path costs ~14× the normal
 evaluate path — the no-throw contract is not free. No comparator is
 published for either package (no upstream baseline in the estate).
 
+### Resilience woven interceptors (Phase 4)
+
+`@ndigo/resilience` retry and circuit-breaker interceptors, applied through
+`@ndigo/proxy` `interceptMethods` with method annotations — the application
+wiring path. Artifact `2026-11-11T02-54-44-84b94b208602.json` (commit
+`84b94b20`).
+
+| Scenario                                     |               ns/op |   RME |
+| :------------------------------------------- | ------------------: | ----: |
+| plain async call (unwoven)                   |               25.45 | 0.19% |
+| woven success (breaker + retry pass-through) |              695.32 | 0.20% |
+| retry exhaust (3 attempts)                   | 2,125,849 (2.13 ms) | 0.09% |
+| open circuit fast-fail                       |            4,319.63 | 0.25% |
+
+Notes: the woven pass-through costs ~27× the unwoven call (chain invocation,
+annotation resolution, per-method circuit cells, two interceptor layers — and
+the proxy wrapper). The retry-exhaust row is dominated by the 3 error
+constructions plus 2 backoff awaits, not the interception logic. The open
+circuit fast-fail is cheap (single cell lookup then `CircuitOpenError`).
+
 ### Socket STOMP frame codec (Phase 4)
 
 `@ndigo/socket` STOMP 1.2 message hot path. Every fixture is round-trip

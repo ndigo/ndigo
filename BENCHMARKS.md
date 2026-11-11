@@ -236,6 +236,16 @@ Valid binding is cheap; the **invalid path costs ~200× the valid path**
 because `safeParse` allocates the full issue list and throws a framework
 error. Request-rejection traffic pays that cost per request.
 
+**Optimization (this branch):** `validatedBy` memoizes the normalized failure
+for the three empty-body shapes per schema (`{}`, `null`, `undefined`). A
+nullish body fails from the template before parsing; a keyless plain object is
+classified only after the parse has already failed, so valid bodies pay no
+emptiness check. Same-host A/B, two serial runs per side: `{}` 10.47 → 9.46–9.71
+µs (−7 to −10%), `undefined` 10.23–10.44 → 8.90–9.00 µs (−12 to −14%), valid
+67–68 → 65–75 ns (run-to-run layout noise; no added cost on the valid path).
+The remaining ~8.9 µs is the two `Error` stack captures, the subject of the
+separate stack-policy decision (#389).
+
 Cold start (`pnpm bench:start`, 3 runs, median; artifact
 `startup-2026-11-11T01-56-06.json`, commit `3670f9ccc`):
 

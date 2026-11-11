@@ -22,6 +22,7 @@ pnpm bench:update     # run and replace the committed baseline
 pnpm bench:compare    # compare the newest artifact to the baseline
 pnpm bench:report     # render the newest artifact as Markdown
 pnpm build && pnpm bench:http  # macro HTTP lane (connection-close; see caveat)
+pnpm build && pnpm bench:start  # cold start and RSS for the four HTTP apps
 ```
 
 `pnpm test:bench` is an alias for `pnpm bench`.

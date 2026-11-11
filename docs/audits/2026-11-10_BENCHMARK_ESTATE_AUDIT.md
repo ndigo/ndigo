@@ -479,5 +479,5 @@ snapshot in §3 remains the **before** record; the current serial baseline is
 | D15 comparator provenance       | `lru-cache`, `qs`, and `cookie` are pinned devDependencies; router versions were already pinned in the dispatcher manifest.                           |
 
 **Still open:** a keep-alive/production-build variant of the macro HTTP lane,
-body/validation binding coverage, startup/RSS, the real-browser DOM runner,
-Phase 4 component coverage, and the nightly non-gating CI job.
+the real-browser DOM runner, and Phase 4 component coverage. The nightly
+non-gating CI lane is added (`.github/workflows/benchmarks.yml`).

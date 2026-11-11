@@ -30,7 +30,8 @@ support honest public performance claims.
   routes. It uses `Connection: close` because autocannon misclassifies Ndigo's
   chunked keep-alive responses, and Ndigo runs from source via `tsx`; a
   keep-alive lane and production bundling remain. Body/validation binding and
-  startup/RSS remain; the `benchmarks/` workspace is in place.
+  startup/RSS landed (`benchmarks/http` + `packages/ndigo-platform-node/bench`,
+  `pnpm bench:start`); the `benchmarks/` workspace is in place.
 - **Phase 3 — quarantined:** the jsdom DOM harness works for React and vanilla
   only; Svelte/Vue/Ndigo use module scripts that jsdom cannot execute.
 - **Phases 4–5 — pending.**

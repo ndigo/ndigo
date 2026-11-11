@@ -20,6 +20,7 @@
     "bench:report": "node scripts/bench-report.mjs",
     "bench:update": "node scripts/bench-run.mjs --update-baseline",
     "bench:http": "node benchmarks/http/run.mjs",
+    "bench:start": "node benchmarks/startup/run.mjs",
     "test:bench": "node scripts/bench-run.mjs",
     "test:e2e": "nx run @ndigo/todo-web:test:e2e",
     "test:internal": "vitest run src/oxlint",

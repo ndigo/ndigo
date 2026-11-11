@@ -19,6 +19,7 @@ pnpm bench:compare    # compare the newest artifact to benchmarks/baselines/refe
 pnpm bench:report     # render the newest artifact as Markdown
 pnpm build            # required once for the macro HTTP app's built packages
 pnpm bench:http       # Ndigo vs Fastify/Express/Hono, connection-close
+pnpm bench:start      # cold start and RSS for the four HTTP apps
 pnpm test:benchmark:react    # jsdom approximation (works for React)
 pnpm test:benchmark:vanilla  # jsdom approximation (works for vanilla JS)
 ```
@@ -202,6 +203,38 @@ routes. This is **not** a production throughput claim:
   `lib/` first. Fastify/Express/Hono run native JavaScript.
 - The ~750 ms mean latency reported by autocannon is dominated by connection
   setup in this mode, so only the request rate is shown.
+
+### Binding, validation, and cold start
+
+Binding rows measure the Node platform's argument resolvers with a pre-parsed
+body (no `JSON.parse` or socket I/O); the Zod rows run the `validatedBy`
+converter end to end through `NodeBodyValueMethodArgumentResolver`. The
+artifact is `2026-11-11T01-57-17-3670f9cccfca.json` (commit `3670f9ccc`).
+
+| Scenario                                         |       Metric |
+| :----------------------------------------------- | -----------: |
+| bind whole body                                  |  43.48 ns/op |
+| bind dotted body (`address.city`)                | 149.85 ns/op |
+| `validatedBy(Zod)` — valid object                |  71.90 ns/op |
+| `validatedBy(Zod)` — invalid object (error path) | 10,288 ns/op |
+| `validatedBy(Zod)` — dotted field                | 195.32 ns/op |
+
+Valid binding is cheap; the **invalid path costs ~200× the valid path**
+because `safeParse` allocates the full issue list and throws a framework
+error. Request-rejection traffic pays that cost per request.
+
+Cold start (`pnpm bench:start`, 3 runs, median; artifact
+`startup-2026-11-11T01-56-06.json`, commit `3670f9ccc`):
+
+| Target  | Time-to-listen | RSS after 200 requests |
+| :------ | -------------: | ---------------------: |
+| Ndigo   |         379 ms |                 127 MB |
+| Fastify |          75 ms |                  77 MB |
+| Express |          75 ms |                  71 MB |
+| Hono    |          50 ms |                  68 MB |
+
+The Ndigo number includes `tsx` source loading, not a bundled production
+build; it is an upper bound on startup cost, not a shipped-artifact claim.
 
 ## What this does not prove
 

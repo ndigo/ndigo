@@ -1953,6 +1953,9 @@ importers:
       '@types/semver':
         specifier: ^7.8.0
         version: 7.8.0
+      lru-cache:
+        specifier: ^11.5.3
+        version: 11.5.3
 
   packages/ndigo-dispatcher:
     dependencies:
@@ -2088,6 +2091,12 @@ importers:
       '@opentelemetry/sdk-trace-base':
         specifier: 'catalog:'
         version: 2.12.0(@opentelemetry/api@1.10.0)
+      '@types/qs':
+        specifier: ^6.15.1
+        version: 6.15.1
+      qs:
+        specifier: ^6.17.1
+        version: 6.17.1
 
   packages/ndigo-inspect:
     dependencies:
@@ -2469,6 +2478,9 @@ importers:
         specifier: ~0.0.1
         version: link:../ndigo-view-webcomponent
     devDependencies:
+      cookie:
+        specifier: ^2.0.1
+        version: 2.0.1
       zod:
         specifier: 'catalog:'
         version: 4.6.7
@@ -7681,10 +7693,6 @@ packages:
 
   lower-case@2.0.2:
     resolution: {integrity: sha512-7fm3l3NAF9WfN6W3JOmf5drwpVqX78JtoGJ3A6W0a6ZnldM41w2fV5D490psKFTpMds8TJse/eHLFFsNHHjHgg==}
-
-  lru-cache@11.5.2:
-    resolution: {integrity: sha512-4pfM1Ff0x50o0tQwb5ucw/RzNyD0/YJME6IVcStalZuMWxdt3sR3huStTtxz4PUmvZfRguvDejasvQ2kifR11g==}
-    engines: {node: 20 || >=22}
 
   lru-cache@11.5.3:
     resolution: {integrity: sha512-U4N8FgzmWxc8k1VH8Kr6lQg18U7Fjvby6wXHVRX/ZZ7IwWbRMgrRbP0Wrb5q5NVinryp4SQampHKdvtecItxUg==}
@@ -14087,7 +14095,7 @@ snapshots:
       decimal.js: 10.6.0
       html-encoding-sniffer: 6.0.0(@noble/hashes@1.8.0)
       is-potential-custom-element-name: 1.0.1
-      lru-cache: 11.5.2
+      lru-cache: 11.5.3
       parse5: 8.0.1
       saxes: 6.0.0
       symbol-tree: 3.2.4
@@ -14315,8 +14323,6 @@ snapshots:
   lower-case@2.0.2:
     dependencies:
       tslib: 2.8.1
-
-  lru-cache@11.5.2: {}
 
   lru-cache@11.5.3: {}
 

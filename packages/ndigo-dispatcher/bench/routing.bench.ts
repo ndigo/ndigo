@@ -1,38 +1,37 @@
 /**
+ * Route resolution benchmarks in two deliberately separate modes.
  *
- * Benchmark suite for `RadixMetadataHandlerMapping` route resolution throughput.
- * Includes external baselines: find-my-way and radix3.
+ * **Parity** — `RadixTree.lookup` against find-my-way and radix3 with identical
+ * `:param` routes. Handler and parameter extraction are verified before timing.
  *
- * Scenarios:
- *   1. Static route match          – GET /users
- *   2. Parameterised route match   – GET /users/42  (pattern: /users/:id)
- *   3. Deep nested route match     – GET /api/v1/users/42/profile
- *   4. Route miss                  – /nonexistent  (no handler registered)
- *   5. Multi-handler scan          – rotate through three distinct routes
+ * **Full resolution** — `RadixMetadataHandlerMapping.getHandler`, which adds
+ * candidate filtering, route conditions, mapping selection, and pattern
+ * decoration. This mode has no external comparator because the other routers do
+ * not implement those semantics.
  */
-
 import { test } from 'vitest';
-import { type Route } from '@ndigo/router';
+import type { Route } from '../../ndigo-router/src';
 import '@tsmetadata/polyfill';
 import { RadixMetadataHandlerMapping } from '../src/route-handler-mapping';
+import { routeMapping } from '../src/route-mapping';
 import {
     MetadataConfigApplicationContext,
+    ApplicationContextAwareProcessor,
     configuration,
     entry,
-    ApplicationContextAwareProcessor,
-} from '@ndigo/context';
-import { routeMapping } from '../src/route-mapping';
+} from '../../ndigo-context/src';
+import { RadixTree } from '../../ndigo-core/src/radix-tree';
 import Router from 'find-my-way';
 import { createRouter } from 'radix3';
+import { assertEquivalent, benchName, sink } from '../../../benchmarks/lib/verify';
+
+const OPS = 1_000;
+const retain = sink;
 
 /* ------------------------------------------------------------------ */
-/*  Test controller                                                     */
+/*  Full-resolution fixture                                             */
 /* ------------------------------------------------------------------ */
 
-// A class-level prefix is required (`_isHandler` looks for a class mapping), and
-// its default `/**` would compose to `/**/users` — a greedy segment that the
-// radix tree rejects mid-pattern. `/` keeps the routes at the root and lets each
-// scenario hit a real static/param/wildcard node instead of the greedy fallback.
 @routeMapping('/')
 class BenchController {
     @routeMapping('/users')
@@ -58,10 +57,6 @@ class BenchConfig {
     }
 }
 
-/* ------------------------------------------------------------------ */
-/*  One-time context setup (module level – not per-iteration)          */
-/* ------------------------------------------------------------------ */
-
 const ctx = new MetadataConfigApplicationContext('bench');
 ctx.addProcessor(new ApplicationContextAwareProcessor(ctx));
 ctx.register(BenchConfig);
@@ -71,209 +66,188 @@ const handlerMapping = new RadixMetadataHandlerMapping();
 handlerMapping.setApplicationContext(ctx);
 handlerMapping.init();
 
-const radixHandlerMapping = new RadixMetadataHandlerMapping();
-radixHandlerMapping.setApplicationContext(ctx);
-radixHandlerMapping.init();
-
-/* ------------------------------------------------------------------ */
-/*  External routers setup                                               */
-/* ------------------------------------------------------------------ */
-
-const fmw = Router();
-fmw.on('GET', '/users', () => {});
-fmw.on('GET', '/users/:id', () => {});
-fmw.on('GET', '/api/v1/users/:id/profile', () => {});
-
-const r3 = createRouter();
-r3.insert('/users', { handler: () => {} });
-r3.insert('/users/:id', { handler: () => {} });
-r3.insert('/api/v1/users/:id/profile', { handler: () => {} });
-
-/* ------------------------------------------------------------------ */
-/*  Route fixtures (minimal shape that satisfies getHandler)           */
-/* ------------------------------------------------------------------ */
-
 const routeUsers = { path: '/users' } as unknown as Route;
 const routeUserId = { path: '/users/42' } as unknown as Route;
 const routeProfile = { path: '/api/v1/users/42/profile' } as unknown as Route;
 const routeMiss = { path: '/nonexistent' } as unknown as Route;
 const multiRoutes = [routeUsers, routeUserId, routeProfile] as const;
 
-let _sink = 0;
+/** Verifies full resolution once before its scenarios are timed. */
+function verifyFull(route: Route, expectedPattern: string | null): void {
+    const handler = handlerMapping.getHandler(route);
+    assertEquivalent(
+        `full resolution ${route.path}`,
+        handler ? 'handler' : null,
+        expectedPattern === null ? null : 'handler'
+    );
+    if (expectedPattern !== null) {
+        assertEquivalent(
+            `full pattern ${route.path}`,
+            (route as Route & { pattern?: string }).pattern,
+            expectedPattern
+        );
+    }
+}
+
+verifyFull(routeUsers, '/users');
+verifyFull(routeUserId, '/users/*');
+verifyFull(routeProfile, '/api/v1/users/*/profile');
+verifyFull(routeMiss, null);
 
 /* ------------------------------------------------------------------ */
-/*  Benchmarks                                                         */
+/*  Parity fixture                                                      */
 /* ------------------------------------------------------------------ */
 
-test('RadixMetadataHandlerMapping – static route match (/users)', async ({ bench }) => {
+const usersHandler = (): string => 'users';
+const userHandler = (): string => 'user';
+const profileHandler = (): string => 'profile';
+
+const parityTree = new RadixTree<Function>();
+parityTree.insert('/users', usersHandler);
+parityTree.insert('/users/:id', userHandler);
+parityTree.insert('/api/v1/users/:id/profile', profileHandler);
+
+const fmw = Router();
+fmw.on('GET', '/users', usersHandler);
+fmw.on('GET', '/users/:id', userHandler);
+fmw.on('GET', '/api/v1/users/:id/profile', profileHandler);
+
+const radix3 = createRouter();
+radix3.insert('/users', { handler: usersHandler });
+radix3.insert('/users/:id', { handler: userHandler });
+radix3.insert('/api/v1/users/:id/profile', { handler: profileHandler });
+
+interface Lookup {
+    handler: string;
+    params: Record<string, string> | null;
+}
+
+function handlerName(handler: unknown): string {
+    return typeof handler === 'function' ? handler.name : String(handler);
+}
+
+function paramsOf(value: Record<string, string | undefined> | null | undefined): Record<string, string> | null {
+    if (!value) return null;
+    const entries: [string, string][] = [];
+    for (const [key, candidate] of Object.entries(value)) {
+        if (candidate !== undefined) entries.push([key, candidate]);
+    }
+    return entries.length > 0 ? Object.fromEntries(entries) : null;
+}
+
+function fromTree(path: string): Lookup | null {
+    const match = parityTree.lookup(path);
+    return match ? { handler: handlerName(match.value), params: paramsOf(match.params) } : null;
+}
+
+function fromFindMyWay(path: string): Lookup | null {
+    const match = fmw.find('GET', path);
+    return match ? { handler: handlerName(match.handler), params: paramsOf(match.params) } : null;
+}
+
+function fromRadix3(path: string): Lookup | null {
+    const match = radix3.lookup(path);
+    return match ? { handler: handlerName(match.handler), params: paramsOf(match.params) } : null;
+}
+
+function verifyParity(path: string): void {
+    const tree = fromTree(path);
+    assertEquivalent(`find-my-way parity ${path}`, fromFindMyWay(path), tree);
+    assertEquivalent(`radix3 parity ${path}`, fromRadix3(path), tree);
+}
+
+for (const path of ['/users', '/users/42', '/api/v1/users/42/profile', '/nonexistent']) verifyParity(path);
+
+/* ------------------------------------------------------------------ */
+/*  Full-resolution scenarios                                           */
+/* ------------------------------------------------------------------ */
+
+test('full resolution — static route', async ({ bench }) => {
+    await bench(benchName('getHandler(/users)', OPS), () => {
+        for (let i = 0; i < OPS; i++) retain(handlerMapping.getHandler(routeUsers));
+    }).run();
+});
+
+test('full resolution — parameterised route', async ({ bench }) => {
+    await bench(benchName('getHandler(/users/42)', OPS), () => {
+        for (let i = 0; i < OPS; i++) retain(handlerMapping.getHandler(routeUserId));
+    }).run();
+});
+
+test('full resolution — deep nested route', async ({ bench }) => {
+    await bench(benchName('getHandler(/api/v1/users/42/profile)', OPS), () => {
+        for (let i = 0; i < OPS; i++) retain(handlerMapping.getHandler(routeProfile));
+    }).run();
+});
+
+test('full resolution — route miss', async ({ bench }) => {
+    await bench(benchName('getHandler(/nonexistent)', OPS), () => {
+        for (let i = 0; i < OPS; i++) retain(handlerMapping.getHandler(routeMiss));
+    }).run();
+});
+
+test('full resolution — three-route rotation', async ({ bench }) => {
+    await bench(benchName('getHandler rotation', OPS), () => {
+        for (let i = 0; i < OPS; i++) retain(handlerMapping.getHandler(multiRoutes[i % multiRoutes.length]));
+    }).run();
+});
+
+/* ------------------------------------------------------------------ */
+/*  Parity scenarios                                                    */
+/* ------------------------------------------------------------------ */
+
+test('parity — static route', async ({ bench }) => {
     await bench.compare(
-        bench('getHandler', () => {
-            let accumulator = 0;
-            for (let i = 0; i < 1000; i++) {
-                accumulator += handlerMapping.getHandler(routeUsers) ? 1 : 0;
-            }
-            _sink = accumulator;
+        bench(benchName('RadixTree.lookup', OPS), () => {
+            for (let i = 0; i < OPS; i++) retain(fromTree('/users'));
         }),
-        bench('RadixMetadataHandlerMapping', () => {
-            let accumulator = 0;
-            for (let i = 0; i < 1000; i++) {
-                accumulator += radixHandlerMapping.getHandler(routeUsers) ? 1 : 0;
-            }
-            _sink = accumulator;
+        bench(benchName('find-my-way', OPS), () => {
+            for (let i = 0; i < OPS; i++) retain(fromFindMyWay('/users'));
         }),
-        bench('find-my-way', () => {
-            let accumulator = 0;
-            for (let i = 0; i < 1000; i++) {
-                accumulator += fmw.find('GET', '/users') ? 1 : 0;
-            }
-            _sink = accumulator;
-        }),
-        bench('radix3', () => {
-            let accumulator = 0;
-            for (let i = 0; i < 1000; i++) {
-                accumulator += r3.lookup('/users') ? 1 : 0;
-            }
-            _sink = accumulator;
+        bench(benchName('radix3', OPS), () => {
+            for (let i = 0; i < OPS; i++) retain(fromRadix3('/users'));
         })
     );
 });
 
-test('RadixMetadataHandlerMapping – parameterised route match (/users/42)', async ({ bench }) => {
+test('parity — parameterised route', async ({ bench }) => {
     await bench.compare(
-        bench('getHandler', () => {
-            let accumulator = 0;
-            for (let i = 0; i < 1000; i++) {
-                accumulator += handlerMapping.getHandler(routeUserId) ? 1 : 0;
-            }
-            _sink = accumulator;
+        bench(benchName('RadixTree.lookup', OPS), () => {
+            for (let i = 0; i < OPS; i++) retain(fromTree('/users/42'));
         }),
-        bench('RadixMetadataHandlerMapping', () => {
-            let accumulator = 0;
-            for (let i = 0; i < 1000; i++) {
-                accumulator += radixHandlerMapping.getHandler(routeUserId) ? 1 : 0;
-            }
-            _sink = accumulator;
+        bench(benchName('find-my-way', OPS), () => {
+            for (let i = 0; i < OPS; i++) retain(fromFindMyWay('/users/42'));
         }),
-        bench('find-my-way', () => {
-            let accumulator = 0;
-            for (let i = 0; i < 1000; i++) {
-                accumulator += fmw.find('GET', '/users/42') ? 1 : 0;
-            }
-            _sink = accumulator;
-        }),
-        bench('radix3', () => {
-            let accumulator = 0;
-            for (let i = 0; i < 1000; i++) {
-                accumulator += r3.lookup('/users/42') ? 1 : 0;
-            }
-            _sink = accumulator;
+        bench(benchName('radix3', OPS), () => {
+            for (let i = 0; i < OPS; i++) retain(fromRadix3('/users/42'));
         })
     );
 });
 
-test('RadixMetadataHandlerMapping – deep nested route match (/api/v1/users/42/profile)', async ({ bench }) => {
+test('parity — deep nested route', async ({ bench }) => {
     await bench.compare(
-        bench('getHandler', () => {
-            let accumulator = 0;
-            for (let i = 0; i < 1000; i++) {
-                accumulator += handlerMapping.getHandler(routeProfile) ? 1 : 0;
-            }
-            _sink = accumulator;
+        bench(benchName('RadixTree.lookup', OPS), () => {
+            for (let i = 0; i < OPS; i++) retain(fromTree('/api/v1/users/42/profile'));
         }),
-        bench('RadixMetadataHandlerMapping', () => {
-            let accumulator = 0;
-            for (let i = 0; i < 1000; i++) {
-                accumulator += radixHandlerMapping.getHandler(routeProfile) ? 1 : 0;
-            }
-            _sink = accumulator;
+        bench(benchName('find-my-way', OPS), () => {
+            for (let i = 0; i < OPS; i++) retain(fromFindMyWay('/api/v1/users/42/profile'));
         }),
-        bench('find-my-way', () => {
-            let accumulator = 0;
-            for (let i = 0; i < 1000; i++) {
-                accumulator += fmw.find('GET', '/api/v1/users/42/profile') ? 1 : 0;
-            }
-            _sink = accumulator;
-        }),
-        bench('radix3', () => {
-            let accumulator = 0;
-            for (let i = 0; i < 1000; i++) {
-                accumulator += r3.lookup('/api/v1/users/42/profile') ? 1 : 0;
-            }
-            _sink = accumulator;
+        bench(benchName('radix3', OPS), () => {
+            for (let i = 0; i < OPS; i++) retain(fromRadix3('/api/v1/users/42/profile'));
         })
     );
 });
 
-test('RadixMetadataHandlerMapping – route miss (/nonexistent)', async ({ bench }) => {
+test('parity — route miss', async ({ bench }) => {
     await bench.compare(
-        bench('getHandler', () => {
-            let accumulator = 0;
-            for (let i = 0; i < 1000; i++) {
-                accumulator += handlerMapping.getHandler(routeMiss) ? 1 : 0;
-            }
-            _sink = accumulator;
+        bench(benchName('RadixTree.lookup', OPS), () => {
+            for (let i = 0; i < OPS; i++) retain(fromTree('/nonexistent'));
         }),
-        bench('RadixMetadataHandlerMapping', () => {
-            let accumulator = 0;
-            for (let i = 0; i < 1000; i++) {
-                accumulator += radixHandlerMapping.getHandler(routeMiss) ? 1 : 0;
-            }
-            _sink = accumulator;
+        bench(benchName('find-my-way', OPS), () => {
+            for (let i = 0; i < OPS; i++) retain(fromFindMyWay('/nonexistent'));
         }),
-        bench('find-my-way', () => {
-            let accumulator = 0;
-            for (let i = 0; i < 1000; i++) {
-                accumulator += fmw.find('GET', '/nonexistent') ? 1 : 0;
-            }
-            _sink = accumulator;
-        }),
-        bench('radix3', () => {
-            let accumulator = 0;
-            for (let i = 0; i < 1000; i++) {
-                accumulator += r3.lookup('/nonexistent') ? 1 : 0;
-            }
-            _sink = accumulator;
-        })
-    );
-});
-
-test('RadixMetadataHandlerMapping – multi-handler rotation (3 routes × 1000)', async ({ bench }) => {
-    await bench.compare(
-        bench('getHandler', () => {
-            let accumulator = 0;
-            for (let i = 0; i < 1000; i++) {
-                for (const route of multiRoutes) {
-                    accumulator += handlerMapping.getHandler(route) ? 1 : 0;
-                }
-            }
-            _sink = accumulator;
-        }),
-        bench('RadixMetadataHandlerMapping', () => {
-            let accumulator = 0;
-            for (let i = 0; i < 1000; i++) {
-                for (const route of multiRoutes) {
-                    accumulator += radixHandlerMapping.getHandler(route) ? 1 : 0;
-                }
-            }
-            _sink = accumulator;
-        }),
-        bench('find-my-way', () => {
-            let accumulator = 0;
-            for (let i = 0; i < 1000; i++) {
-                accumulator += fmw.find('GET', '/users') ? 1 : 0;
-                accumulator += fmw.find('GET', '/users/42') ? 1 : 0;
-                accumulator += fmw.find('GET', '/api/v1/users/42/profile') ? 1 : 0;
-            }
-            _sink = accumulator;
-        }),
-        bench('radix3', () => {
-            let accumulator = 0;
-            for (let i = 0; i < 1000; i++) {
-                accumulator += r3.lookup('/users') ? 1 : 0;
-                accumulator += r3.lookup('/users/42') ? 1 : 0;
-                accumulator += r3.lookup('/api/v1/users/42/profile') ? 1 : 0;
-            }
-            _sink = accumulator;
+        bench(benchName('radix3', OPS), () => {
+            for (let i = 0; i < OPS; i++) retain(fromRadix3('/nonexistent'));
         })
     );
 });

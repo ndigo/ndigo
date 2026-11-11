@@ -21,6 +21,9 @@ import { FlatMergedIndex, PrototypeChainIndex } from '../src/property-resolver';
 import type { PropertyIndex } from '../src/property-resolver';
 import { wrapSource } from '../src/property-source';
 import type { PropertySource } from '../src/property-source';
+import { assertEquivalent, benchName, sink } from '../../../benchmarks/lib/verify';
+
+const retain = sink;
 
 /* ------------------------------------------------------------------ */
 /*  Fixtures                                                           */
@@ -69,30 +72,35 @@ const proto32 = built(new PrototypeChainIndex(), layeredSources(32, 100, 25));
 const flatMix = built(new FlatMergedIndex(), representative);
 const protoMix = built(new PrototypeChainIndex(), representative);
 
+for (const key of [...representativeKeys, ...mixedKeys]) {
+    assertEquivalent(`property parity ${key}`, flatMix.getProperty(key), protoMix.getProperty(key));
+}
+
 /* ------------------------------------------------------------------ */
 /*  Flat config (no overlap)                                           */
 /* ------------------------------------------------------------------ */
 
 test('flat config', async ({ bench }) => {
     await bench.compare(
-        bench('prototype — 10 keys', () => {
-            for (let i = 0; i < 10; i++) proto10.getProperty(`key${i}`);
+        bench(benchName('prototype — 10 keys', 10), () => {
+            for (let i = 0; i < 10; i++) retain(proto10.getProperty(`key${i}`));
         }),
-        bench('flat — 10 keys', () => {
-            for (let i = 0; i < 10; i++) flat10.getProperty(`key${i}`);
+        bench(benchName('flat — 10 keys', 10), () => {
+            for (let i = 0; i < 10; i++) retain(flat10.getProperty(`key${i}`));
         }),
-        bench('prototype — 100 keys', () => {
-            for (let i = 0; i < 100; i++) proto100.getProperty(`key${i}`);
+        bench(benchName('prototype — 100 keys', 100), () => {
+            for (let i = 0; i < 100; i++) retain(proto100.getProperty(`key${i}`));
         }),
-        bench('flat — 100 keys', () => {
-            for (let i = 0; i < 100; i++) flat100.getProperty(`key${i}`);
+        bench(benchName('flat — 100 keys', 100), () => {
+            for (let i = 0; i < 100; i++) retain(flat100.getProperty(`key${i}`));
         }),
-        bench('prototype — 1,000 keys', () => {
-            for (let i = 0; i < 1000; i++) proto1000.getProperty(`key${i}`);
+        bench(benchName('prototype — 1,000 keys', 1_000), () => {
+            for (let i = 0; i < 1_000; i++) retain(proto1000.getProperty(`key${i}`));
         }),
-        bench('flat — 1,000 keys', () => {
-            for (let i = 0; i < 1000; i++) flat1000.getProperty(`key${i}`);
-        })
+        bench(benchName('flat — 1,000 keys', 1_000), () => {
+            for (let i = 0; i < 1_000; i++) retain(flat1000.getProperty(`key${i}`));
+        }),
+        { time: 2_000, warmupTime: 500 }
     );
 });
 
@@ -102,22 +110,22 @@ test('flat config', async ({ bench }) => {
 
 test('layered config (8 sources, 25% overlap) — representative', async ({ bench }) => {
     await bench.compare(
-        bench('prototype', () => {
-            for (const key of representativeKeys) protoRep.getProperty(key);
+        bench(benchName('prototype — representative', representativeKeys.length), () => {
+            for (const key of representativeKeys) retain(protoRep.getProperty(key));
         }),
-        bench('flat', () => {
-            for (const key of representativeKeys) flatRep.getProperty(key);
+        bench(benchName('flat — representative', representativeKeys.length), () => {
+            for (const key of representativeKeys) retain(flatRep.getProperty(key));
         })
     );
 });
 
 test('layered config (32 sources, 25% overlap)', async ({ bench }) => {
     await bench.compare(
-        bench('prototype', () => {
-            for (const key of representativeKeys) proto32.getProperty(key);
+        bench(benchName('prototype — 32 sources', representativeKeys.length), () => {
+            for (const key of representativeKeys) retain(proto32.getProperty(key));
         }),
-        bench('flat', () => {
-            for (const key of representativeKeys) flat32.getProperty(key);
+        bench(benchName('flat — 32 sources', representativeKeys.length), () => {
+            for (const key of representativeKeys) retain(flat32.getProperty(key));
         })
     );
 });
@@ -128,11 +136,11 @@ test('layered config (32 sources, 25% overlap)', async ({ bench }) => {
 
 test('access mix', async ({ bench }) => {
     await bench.compare(
-        bench('prototype', () => {
-            for (const key of mixedKeys) protoMix.getProperty(key);
+        bench(benchName('prototype — access mix', mixedKeys.length), () => {
+            for (const key of mixedKeys) retain(protoMix.getProperty(key));
         }),
-        bench('flat', () => {
-            for (const key of mixedKeys) flatMix.getProperty(key);
+        bench(benchName('flat — access mix', mixedKeys.length), () => {
+            for (const key of mixedKeys) retain(flatMix.getProperty(key));
         })
     );
 });
@@ -143,17 +151,18 @@ test('access mix', async ({ bench }) => {
 
 test('mutation cost (sustained 1% mutation)', async ({ bench }) => {
     await bench.compare(
-        bench('prototype — lazily invalidated', () => {
+        bench(benchName('prototype — lazily invalidated', 100), () => {
             for (let i = 0; i < 100; i++) {
-                protoRep.getProperty(`key${i % 100}`); // 1 lookup
+                retain(protoRep.getProperty(`key${i % 100}`)); // 1 lookup
                 if (i % 100 === 0) protoRep.build(representative); // 1% rebuild
             }
         }),
-        bench('flat — rebuild on version bump', () => {
+        bench(benchName('flat — rebuild on version bump', 100), () => {
             for (let i = 0; i < 100; i++) {
-                flatRep.getProperty(`key${i % 100}`);
+                retain(flatRep.getProperty(`key${i % 100}`));
                 if (i % 100 === 0) flatRep.build(representative);
             }
-        })
+        }),
+        { time: 2_000, warmupTime: 500 }
     );
 });

@@ -1,0 +1,3428 @@
+{
+  "schemaVersion": 1,
+  "environment": {
+    "commit": "d972cddf90346e85bd3644f4c8ab8fd59120f2ee",
+    "dirty": true,
+    "date": "2026-11-11T00:24:16.714Z",
+    "node": "v24.22.0",
+    "pnpm": "12.16.1",
+    "platform": "linux",
+    "release": "7.0.0-42-generic",
+    "arch": "x64",
+    "cpu": "AMD RYZEN AI MAX+ 395 w/ Radeon 8060S",
+    "cores": 32,
+    "memoryGb": 119,
+    "governor": "performance",
+    "loadAverage": [
+      2.52,
+      2.26,
+      2.11
+    ]
+  },
+  "durationMs": 198851,
+  "quick": false,
+  "files": [
+    {
+      "file": "packages/ndigo-context/bench/context-lookup.bench.ts",
+      "scenarios": 10,
+      "durationMs": 13134
+    },
+    {
+      "file": "packages/ndigo-context/bench/property-lookup.bench.ts",
+      "scenarios": 14,
+      "durationMs": 20363
+    },
+    {
+      "file": "packages/ndigo-core/bench/error.bench.ts",
+      "scenarios": 4,
+      "durationMs": 5271
+    },
+    {
+      "file": "packages/ndigo-core/bench/lru-cache.bench.ts",
+      "scenarios": 8,
+      "durationMs": 10361
+    },
+    {
+      "file": "packages/ndigo-core/bench/multi-value-map.bench.ts",
+      "scenarios": 6,
+      "durationMs": 8430
+    },
+    {
+      "file": "packages/ndigo-core/bench/path-matcher.bench.ts",
+      "scenarios": 4,
+      "durationMs": 5626
+    },
+    {
+      "file": "packages/ndigo-core/bench/radix-tree.bench.ts",
+      "scenarios": 20,
+      "durationMs": 25498
+    },
+    {
+      "file": "packages/ndigo-core/bench/ring-buffer.bench.ts",
+      "scenarios": 8,
+      "durationMs": 11039
+    },
+    {
+      "file": "packages/ndigo-dispatcher/bench/argument-resolver.bench.ts",
+      "scenarios": 9,
+      "durationMs": 11759
+    },
+    {
+      "file": "packages/ndigo-dispatcher/bench/factory-lookup.bench.ts",
+      "scenarios": 6,
+      "durationMs": 8095
+    },
+    {
+      "file": "packages/ndigo-dispatcher/bench/routing.bench.ts",
+      "scenarios": 17,
+      "durationMs": 21803
+    },
+    {
+      "file": "packages/ndigo-http/bench/query-string.bench.ts",
+      "scenarios": 5,
+      "durationMs": 7248
+    },
+    {
+      "file": "packages/ndigo-orm/bench/entity-manager.bench.ts",
+      "scenarios": 10,
+      "durationMs": 32427
+    },
+    {
+      "file": "packages/ndigo-platform-web/bench/cookie-parser.bench.ts",
+      "scenarios": 4,
+      "durationMs": 5936
+    },
+    {
+      "file": "packages/ndigo-util/bench/like.bench.ts",
+      "scenarios": 8,
+      "durationMs": 11788
+    }
+  ],
+  "scenarios": [
+    {
+      "file": "packages/ndigo-context/bench/context-lookup.bench.ts",
+      "suite": "getValue — metadata beans (five registered)",
+      "name": "getValue(\"bean5\")",
+      "opsPerIteration": 1000,
+      "nsPerOp": 12.633185037330897,
+      "opsPerSecond": 79156602.000605,
+      "latency": {
+        "mean": 0.012633185037330897,
+        "min": 0.011040000000093642,
+        "max": 0.8836700000001656,
+        "p50": 0.012162999999873136,
+        "p75": 0.012543999999707012,
+        "p99": 0.027418599999982782,
+        "p999": 0.04616216399996293,
+        "rme": 0.2536334685612767,
+        "samples": 79157
+      },
+      "throughput": {
+        "mean": 81021.11243048501,
+        "p99": 88566.11460254632,
+        "rme": 0.06638463513027427
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-context/bench/context-lookup.bench.ts",
+      "suite": "getValue — metadata beans (five registered)",
+      "name": "getValue(\"bean1\")",
+      "opsPerIteration": 1000,
+      "nsPerOp": 13.572062322715286,
+      "opsPerSecond": 73680769.82127619,
+      "latency": {
+        "mean": 0.013572062322715286,
+        "min": 0.012213000000087959,
+        "max": 0.12273000000004686,
+        "p50": 0.013134999999920183,
+        "p75": 0.013485000000173386,
+        "p99": 0.02429780000002208,
+        "p999": 0.05339640000009254,
+        "rme": 0.17753136428696764,
+        "samples": 73681
+      },
+      "throughput": {
+        "mean": 75097.6912231332,
+        "p99": 80360.01285639536,
+        "rme": 0.061747549585329964
+      },
+      "rank": 2
+    },
+    {
+      "file": "packages/ndigo-context/bench/context-lookup.bench.ts",
+      "suite": "getValue — metadata beans (five registered)",
+      "name": "getValue(ContextToken)",
+      "opsPerIteration": 1000,
+      "nsPerOp": 13.74581943642586,
+      "opsPerSecond": 72749391.52409065,
+      "latency": {
+        "mean": 0.01374581943642586,
+        "min": 0.012493000000176835,
+        "max": 0.5944469999999455,
+        "p50": 0.013374999999996362,
+        "p75": 0.013836000000083004,
+        "p99": 0.02029309999981246,
+        "p999": 0.05653106000006369,
+        "rme": 0.19056867449337517,
+        "samples": 72750
+      },
+      "throughput": {
+        "mean": 73786.15259353367,
+        "p99": 78777.37513779575,
+        "rme": 0.05508904952820236
+      },
+      "rank": 3
+    },
+    {
+      "file": "packages/ndigo-context/bench/context-lookup.bench.ts",
+      "suite": "getValue — dynamic scale 1 / 10 / 100 / 1,000",
+      "name": "1 value",
+      "opsPerIteration": 1000,
+      "nsPerOp": 12.475840945666283,
+      "opsPerSecond": 80154917.36028975,
+      "latency": {
+        "mean": 0.012475840945666283,
+        "min": 0.010719999999309948,
+        "max": 0.3461109999998371,
+        "p50": 0.0118929999998727,
+        "p75": 0.012414000000717351,
+        "p99": 0.021661000000185594,
+        "p999": 0.06443484000031842,
+        "rme": 0.2281487177802955,
+        "samples": 80155
+      },
+      "throughput": {
+        "mean": 82196.67408416791,
+        "p99": 90244.56276795144,
+        "rme": 0.07263255129151908
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-context/bench/context-lookup.bench.ts",
+      "suite": "getValue — dynamic scale 1 / 10 / 100 / 1,000",
+      "name": "1,000 values",
+      "opsPerIteration": 1000,
+      "nsPerOp": 15.49137009898836,
+      "opsPerSecond": 64552069.54646984,
+      "latency": {
+        "mean": 0.01549137009898836,
+        "min": 0.013966000000436907,
+        "max": 0.2242210000003979,
+        "p50": 0.01515800000015588,
+        "p75": 0.015590000000884174,
+        "p99": 0.019681800000107573,
+        "p999": 0.06268651199985464,
+        "rme": 0.15644686362895488,
+        "samples": 64553
+      },
+      "throughput": {
+        "mean": 65296.50661237604,
+        "p99": 69027.4038775673,
+        "rme": 0.05131797464004567
+      },
+      "rank": 2
+    },
+    {
+      "file": "packages/ndigo-context/bench/context-lookup.bench.ts",
+      "suite": "getValue — dynamic scale 1 / 10 / 100 / 1,000",
+      "name": "10 values",
+      "opsPerIteration": 1000,
+      "nsPerOp": 28.151612409209577,
+      "opsPerSecond": 35521944.017418265,
+      "latency": {
+        "mean": 0.02815161240920958,
+        "min": 0.02716099999997823,
+        "max": 0.30583500000011554,
+        "p50": 0.027841999999509426,
+        "p75": 0.028153000000202155,
+        "p99": 0.031569790000221476,
+        "p999": 0.07648238899986226,
+        "rme": 0.12658604584867314,
+        "samples": 35522
+      },
+      "throughput": {
+        "mean": 35699.783033502135,
+        "p99": 36624.81858852649,
+        "rme": 0.04786499142995626
+      },
+      "rank": 3
+    },
+    {
+      "file": "packages/ndigo-context/bench/context-lookup.bench.ts",
+      "suite": "getValue — dynamic scale 1 / 10 / 100 / 1,000",
+      "name": "100 values",
+      "opsPerIteration": 1000,
+      "nsPerOp": 28.159833295786655,
+      "opsPerSecond": 35511573.86111453,
+      "latency": {
+        "mean": 0.028159833295786654,
+        "min": 0.02716099999997823,
+        "max": 0.370176000000356,
+        "p50": 0.02788200000031793,
+        "p75": 0.028172999999696913,
+        "p99": 0.031289000000369924,
+        "p999": 0.07633793899956534,
+        "rme": 0.1307151789111625,
+        "samples": 35512
+      },
+      "throughput": {
+        "mean": 35682.54579378488,
+        "p99": 36613.942589116254,
+        "rme": 0.046045828645323104
+      },
+      "rank": 4
+    },
+    {
+      "file": "packages/ndigo-context/bench/context-lookup.bench.ts",
+      "suite": "hasValue — hit and miss",
+      "name": "hasValue hit",
+      "opsPerIteration": 1000,
+      "nsPerOp": 4.060111518926555,
+      "opsPerSecond": 246298653.45777202,
+      "latency": {
+        "mean": 0.004060111518926555,
+        "min": 0.0038969999986875337,
+        "max": 0.09047000000100525,
+        "p50": 0.004027999999379972,
+        "p75": 0.004107000000658445,
+        "p99": 0.004307999999582535,
+        "p999": 0.008295701999872097,
+        "rme": 0.03436647805616296,
+        "samples": 246299
+      },
+      "throughput": {
+        "mean": 246927.2577602829,
+        "p99": 255297.42149595942,
+        "rme": 0.015410110617572787
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-context/bench/context-lookup.bench.ts",
+      "suite": "hasValue — hit and miss",
+      "name": "hasValue miss",
+      "opsPerIteration": 1000,
+      "nsPerOp": 16.363791134167574,
+      "opsPerSecond": 61110533.11551999,
+      "latency": {
+        "mean": 0.016363791134167575,
+        "min": 0.016039999998611165,
+        "max": 0.11006699999961711,
+        "p50": 0.016290999999910127,
+        "p75": 0.016360999999960768,
+        "p99": 0.01856310000002851,
+        "p999": 0.024580289999812484,
+        "rme": 0.03215684945785578,
+        "samples": 61111
+      },
+      "throughput": {
+        "mean": 61160.80043532916,
+        "p99": 61915.670857026525,
+        "rme": 0.01862848813294533
+      },
+      "rank": 2
+    },
+    {
+      "file": "packages/ndigo-context/bench/context-lookup.bench.ts",
+      "suite": "context startup — five metadata beans",
+      "name": "refresh()",
+      "opsPerIteration": 1,
+      "nsPerOp": 94798.45167709231,
+      "opsPerSecond": 10548.695493532477,
+      "latency": {
+        "mean": 0.0947984516770923,
+        "min": 0.04241999999976542,
+        "max": 61.44139400000131,
+        "p50": 0.0592610000003333,
+        "p75": 0.0654629999989993,
+        "p99": 0.11730456999994202,
+        "p999": 2.5537854369989543,
+        "rme": 22.3592812559549,
+        "samples": 10554
+      },
+      "throughput": {
+        "mean": 16847.331793556146,
+        "p99": 22500.22500265362,
+        "rme": 0.3201108613046246
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-context/bench/property-lookup.bench.ts",
+      "suite": "flat config",
+      "name": "flat — 10 keys",
+      "opsPerIteration": 10,
+      "nsPerOp": 29.08849558990601,
+      "opsPerSecond": 34377852.127457894,
+      "latency": {
+        "mean": 0.00029088495589906014,
+        "min": 0.00025999999979831045,
+        "max": 0.10035900000002584,
+        "p50": 0.0002809999996316037,
+        "p75": 0.0002899999999499414,
+        "p99": 0.0005410000003394089,
+        "p999": 0.0010419999998703133,
+        "rme": 0.05347423006393781,
+        "samples": 3437786
+      },
+      "throughput": {
+        "mean": 3501838.197064162,
+        "p99": 3831417.622512203,
+        "rme": 0.008957812955079032
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-context/bench/property-lookup.bench.ts",
+      "suite": "flat config",
+      "name": "prototype — 10 keys",
+      "opsPerIteration": 10,
+      "nsPerOp": 31.794420397269484,
+      "opsPerSecond": 31452059.433858413,
+      "latency": {
+        "mean": 0.0003179442039726948,
+        "min": 0.0002699999995456892,
+        "max": 7.335702999999967,
+        "p50": 0.0003000000001520675,
+        "p75": 0.00031099999978323467,
+        "p99": 0.000661000000036438,
+        "p999": 0.0011719999997694686,
+        "rme": 1.4387550137346536,
+        "samples": 3145206
+      },
+      "throughput": {
+        "mean": 3261402.202237006,
+        "p99": 3571428.574645213,
+        "rme": 0.01285955699141816
+      },
+      "rank": 2
+    },
+    {
+      "file": "packages/ndigo-context/bench/property-lookup.bench.ts",
+      "suite": "flat config",
+      "name": "flat — 100 keys",
+      "opsPerIteration": 100,
+      "nsPerOp": 36.36046519407553,
+      "opsPerSecond": 27502398.406138577,
+      "latency": {
+        "mean": 0.003636046519407553,
+        "min": 0.0029649999996763654,
+        "max": 0.9154140000000552,
+        "p50": 0.003236000000470085,
+        "p75": 0.0035069999994448153,
+        "p99": 0.009016999999403197,
+        "p999": 0.012202759999345532,
+        "rme": 0.27027545374823864,
+        "samples": 275025
+      },
+      "throughput": {
+        "mean": 289276.7247355167,
+        "p99": 330469.266422808,
+        "rme": 0.060998646750067116
+      },
+      "rank": 3
+    },
+    {
+      "file": "packages/ndigo-context/bench/property-lookup.bench.ts",
+      "suite": "flat config",
+      "name": "prototype — 100 keys",
+      "opsPerIteration": 100,
+      "nsPerOp": 37.29735830759847,
+      "opsPerSecond": 26811550.345008567,
+      "latency": {
+        "mean": 0.0037297358307598473,
+        "min": 0.00331599999935861,
+        "max": 0.3508590000001277,
+        "p50": 0.0036170000003039604,
+        "p75": 0.0037069999998493586,
+        "p99": 0.005700000000479122,
+        "p999": 0.008342814999378056,
+        "rme": 0.1329091586581529,
+        "samples": 268116
+      },
+      "throughput": {
+        "mean": 270850.5246171283,
+        "p99": 291800.4085506464,
+        "rme": 0.02783766720079579
+      },
+      "rank": 4
+    },
+    {
+      "file": "packages/ndigo-context/bench/property-lookup.bench.ts",
+      "suite": "flat config",
+      "name": "prototype — 1,000 keys",
+      "opsPerIteration": 1000,
+      "nsPerOp": 564.2078138747976,
+      "opsPerSecond": 1772396.5804945556,
+      "latency": {
+        "mean": 0.5642078138747976,
+        "min": 0.2171090000001641,
+        "max": 19.143076000000292,
+        "p50": 0.558390999999574,
+        "p75": 0.5953710000012506,
+        "p99": 0.7745374799993805,
+        "p999": 18.988582831999455,
+        "rme": 9.511351311297375,
+        "samples": 1773
+      },
+      "throughput": {
+        "mean": 2275.639128229601,
+        "p99": 4311.667680220195,
+        "rme": 1.6509715101077393
+      },
+      "rank": 5
+    },
+    {
+      "file": "packages/ndigo-context/bench/property-lookup.bench.ts",
+      "suite": "flat config",
+      "name": "flat — 1,000 keys",
+      "opsPerIteration": 1000,
+      "nsPerOp": 655.1279430255393,
+      "opsPerSecond": 1526419.3973802403,
+      "latency": {
+        "mean": 0.6551279430255392,
+        "min": 0.3465520000008837,
+        "max": 17.623055000000022,
+        "p50": 0.5662260000008246,
+        "p75": 0.5850770000006378,
+        "p99": 0.9923687600004997,
+        "p999": 16.635383159999378,
+        "rme": 8.468936213881426,
+        "samples": 1527
+      },
+      "throughput": {
+        "mean": 1763.6830788430077,
+        "p99": 2656.892265472859,
+        "rme": 0.6999020027845584
+      },
+      "rank": 6
+    },
+    {
+      "file": "packages/ndigo-context/bench/property-lookup.bench.ts",
+      "suite": "layered config (8 sources, 25% overlap) — representative",
+      "name": "flat — representative",
+      "opsPerIteration": 100,
+      "nsPerOp": 35.285484063293765,
+      "opsPerSecond": 28340265.878349233,
+      "latency": {
+        "mean": 0.0035285484063293767,
+        "min": 0.0016829999985930044,
+        "max": 0.10928600000079314,
+        "p50": 0.0034960000011778902,
+        "p75": 0.0035260000004200265,
+        "p99": 0.0058910000007017516,
+        "p999": 0.010460000000599393,
+        "rme": 0.06565946647071481,
+        "samples": 283403
+      },
+      "throughput": {
+        "mean": 287642.20235510194,
+        "p99": 482160.0771471821,
+        "rme": 0.044013590872516994
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-context/bench/property-lookup.bench.ts",
+      "suite": "layered config (8 sources, 25% overlap) — representative",
+      "name": "prototype — representative",
+      "opsPerIteration": 100,
+      "nsPerOp": 57.80705243073517,
+      "opsPerSecond": 17298927.344517477,
+      "latency": {
+        "mean": 0.005780705243073517,
+        "min": 0.004788999998709187,
+        "max": 0.5918949999995675,
+        "p50": 0.005661000001055072,
+        "p75": 0.005691000000297208,
+        "p99": 0.010529999999762367,
+        "p999": 0.015339329999596843,
+        "rme": 0.13604511605747738,
+        "samples": 172990
+      },
+      "throughput": {
+        "mean": 174758.59229442975,
+        "p99": 179823.7727045846,
+        "rme": 0.032544872946984105
+      },
+      "rank": 2
+    },
+    {
+      "file": "packages/ndigo-context/bench/property-lookup.bench.ts",
+      "suite": "layered config (32 sources, 25% overlap)",
+      "name": "flat — 32 sources",
+      "opsPerIteration": 100,
+      "nsPerOp": 36.206208525826156,
+      "opsPerSecond": 27619572.46328879,
+      "latency": {
+        "mean": 0.0036206208525826154,
+        "min": 0.002494000000297092,
+        "max": 0.10377499999958673,
+        "p50": 0.003576999999495456,
+        "p75": 0.0036069999987375923,
+        "p99": 0.004308000001401524,
+        "p999": 0.010911000001215143,
+        "rme": 0.05522059954987631,
+        "samples": 276196
+      },
+      "throughput": {
+        "mean": 278175.431498289,
+        "p99": 315855.969635981,
+        "rme": 0.022138357534507148
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-context/bench/property-lookup.bench.ts",
+      "suite": "layered config (32 sources, 25% overlap)",
+      "name": "prototype — 32 sources",
+      "opsPerIteration": 100,
+      "nsPerOp": 42.31691642018654,
+      "opsPerSecond": 23631211.453842316,
+      "latency": {
+        "mean": 0.004231691642018654,
+        "min": 0.0038979999990260694,
+        "max": 0.10345500000039465,
+        "p50": 0.004157999999733875,
+        "p75": 0.004188000000795,
+        "p99": 0.006782999998904415,
+        "p999": 0.011491687999528944,
+        "rme": 0.05966945390683513,
+        "samples": 236313
+      },
+      "throughput": {
+        "mean": 238084.42950528456,
+        "p99": 245218.2442412284,
+        "rme": 0.024332748567886538
+      },
+      "rank": 2
+    },
+    {
+      "file": "packages/ndigo-context/bench/property-lookup.bench.ts",
+      "suite": "access mix",
+      "name": "flat — access mix",
+      "opsPerIteration": 104,
+      "nsPerOp": 26.092334697818202,
+      "opsPerSecond": 38325432.03133211,
+      "latency": {
+        "mean": 0.0027136028085730933,
+        "min": 0.0011019999983545858,
+        "max": 0.0774249999994936,
+        "p50": 0.0035559999996621627,
+        "p75": 0.003616999998484971,
+        "p99": 0.004829000001336681,
+        "p999": 0.010139000001800014,
+        "rme": 0.14534051676327103,
+        "samples": 368515
+      },
+      "throughput": {
+        "mean": 471039.1894512913,
+        "p99": 891265.5959664893,
+        "rme": 0.17185316825441352
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-context/bench/property-lookup.bench.ts",
+      "suite": "access mix",
+      "name": "prototype — access mix",
+      "opsPerIteration": 104,
+      "nsPerOp": 63.51993577631954,
+      "opsPerSecond": 15743088.96535131,
+      "latency": {
+        "mean": 0.006606073320737232,
+        "min": 0.0025139999997918494,
+        "max": 0.07588299999952142,
+        "p50": 0.006601999999475083,
+        "p75": 0.006632999999055755,
+        "p99": 0.0114320000011503,
+        "p999": 0.014934249999214444,
+        "rme": 0.07779399826943383,
+        "samples": 151376
+      },
+      "throughput": {
+        "mean": 153832.10066356225,
+        "p99": 281928.39016875724,
+        "rme": 0.07463157929217429
+      },
+      "rank": 2
+    },
+    {
+      "file": "packages/ndigo-context/bench/property-lookup.bench.ts",
+      "suite": "mutation cost (sustained 1% mutation)",
+      "name": "prototype — lazily invalidated",
+      "opsPerIteration": 100,
+      "nsPerOp": 558.881755434902,
+      "opsPerSecond": 1789287.2513289247,
+      "latency": {
+        "mean": 0.055888175543490196,
+        "min": 0.017383000002155313,
+        "max": 19.61431299999822,
+        "p50": 0.05440199999793549,
+        "p75": 0.05705699999816716,
+        "p99": 0.07455088000089743,
+        "p999": 5.206390108000377,
+        "rme": 10.78569078649775,
+        "samples": 17893
+      },
+      "throughput": {
+        "mean": 30468.788618067792,
+        "p99": 56325.335134402645,
+        "rme": 0.7963013393245665
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-context/bench/property-lookup.bench.ts",
+      "suite": "mutation cost (sustained 1% mutation)",
+      "name": "flat — rebuild on version bump",
+      "opsPerIteration": 100,
+      "nsPerOp": 630.5000409809683,
+      "opsPerSecond": 1586042.7200673015,
+      "latency": {
+        "mean": 0.06305000409809683,
+        "min": 0.057618999999249354,
+        "max": 4.135898000000452,
+        "p50": 0.060203000000910833,
+        "p75": 0.06128499999977066,
+        "p99": 0.11126539999968353,
+        "p999": 0.2575383800023679,
+        "rme": 1.238112677156518,
+        "samples": 15861
+      },
+      "throughput": {
+        "mean": 16261.103083053113,
+        "p99": 17141.015709396037,
+        "rme": 0.1253843392913415
+      },
+      "rank": 2
+    },
+    {
+      "file": "packages/ndigo-core/bench/error.bench.ts",
+      "suite": "error construction — no cause",
+      "name": "native Error",
+      "opsPerIteration": 1000,
+      "nsPerOp": 2396.4629832535857,
+      "opsPerSecond": 417281.63839290285,
+      "latency": {
+        "mean": 2.3964629832535858,
+        "min": 2.3701430000000983,
+        "max": 2.4774539999998524,
+        "p50": 2.3920140000000174,
+        "p75": 2.404883750000124,
+        "p99": 2.4517196700001134,
+        "p999": 2.475891917999909,
+        "rme": 0.06737792125162374,
+        "samples": 418
+      },
+      "throughput": {
+        "mean": 417.30187062900995,
+        "p99": 421.06437594976245,
+        "rme": 0.0666794876938458
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-core/bench/error.bench.ts",
+      "suite": "error construction — no cause",
+      "name": "FrameworkError",
+      "opsPerIteration": 1000,
+      "nsPerOp": 2488.528470149251,
+      "opsPerSecond": 401843.9057440337,
+      "latency": {
+        "mean": 2.488528470149251,
+        "min": 2.3911319999999705,
+        "max": 2.776448000000073,
+        "p50": 2.4270899999999074,
+        "p75": 2.623838249999892,
+        "p99": 2.7362493299999575,
+        "p999": 2.775503645000041,
+        "rme": 0.4410723103774612,
+        "samples": 402
+      },
+      "throughput": {
+        "mean": 402.6284970916666,
+        "p99": 417.96963079965906,
+        "rme": 0.42590396052772683
+      },
+      "rank": 2
+    },
+    {
+      "file": "packages/ndigo-core/bench/error.bench.ts",
+      "suite": "error construction — with cause",
+      "name": "native Error with cause",
+      "opsPerIteration": 1000,
+      "nsPerOp": 2536.542711392381,
+      "opsPerSecond": 394237.398609019,
+      "latency": {
+        "mean": 2.5365427113923813,
+        "min": 2.4551229999997304,
+        "max": 3.272762999999941,
+        "p50": 2.5063200000004144,
+        "p75": 2.525154500000099,
+        "p99": 3.0355257000000897,
+        "p999": 3.2446097300002035,
+        "rme": 0.4430317362624528,
+        "samples": 395
+      },
+      "throughput": {
+        "mean": 394.91686365636417,
+        "p99": 405.6161287605763,
+        "rme": 0.3817378504656518
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-core/bench/error.bench.ts",
+      "suite": "error construction — with cause",
+      "name": "FrameworkError with cause",
+      "opsPerIteration": 1000,
+      "nsPerOp": 2776.2546897506813,
+      "opsPerSecond": 360197.50050014467,
+      "latency": {
+        "mean": 2.7762546897506812,
+        "min": 2.7199219999997695,
+        "max": 2.9578599999999824,
+        "p50": 2.7661889999999403,
+        "p75": 2.7862860000000182,
+        "p99": 2.903134799999952,
+        "p999": 2.951598519999952,
+        "rme": 0.13678110121661236,
+        "samples": 361
+      },
+      "throughput": {
+        "mean": 360.25865771567715,
+        "p99": 366.8247169989964,
+        "rme": 0.13335897104556846
+      },
+      "rank": 2
+    },
+    {
+      "file": "packages/ndigo-core/bench/lru-cache.bench.ts",
+      "suite": "LRUCache.get — hit",
+      "name": "lru-cache npm get",
+      "opsPerIteration": 1000,
+      "nsPerOp": 30.12405596891286,
+      "opsPerSecond": 33196061.01621809,
+      "latency": {
+        "mean": 0.03012405596891286,
+        "min": 0.029515999999603082,
+        "max": 0.05372099999999591,
+        "p50": 0.030036000000109198,
+        "p75": 0.030147000000397384,
+        "p99": 0.03283103999998275,
+        "p999": 0.03415616000016584,
+        "rme": 0.019270065844379684,
+        "samples": 33197
+      },
+      "throughput": {
+        "mean": 33205.362149988556,
+        "p99": 33640.58400055819,
+        "rme": 0.016967399347554608
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-core/bench/lru-cache.bench.ts",
+      "suite": "LRUCache.get — hit",
+      "name": "ndigo LRUCache.get",
+      "opsPerIteration": 1000,
+      "nsPerOp": 55.86555002513904,
+      "opsPerSecond": 17900119.117237873,
+      "latency": {
+        "mean": 0.05586555002513903,
+        "min": 0.04981399999996938,
+        "max": 1.4383179999999811,
+        "p50": 0.05304999999998472,
+        "p75": 0.054192000000057305,
+        "p99": 0.08411799999998948,
+        "p999": 0.8269642999999915,
+        "rme": 0.8879051522292789,
+        "samples": 17901
+      },
+      "throughput": {
+        "mean": 18471.285776078366,
+        "p99": 19532.77599812315,
+        "rme": 0.11485480959244423
+      },
+      "rank": 2
+    },
+    {
+      "file": "packages/ndigo-core/bench/lru-cache.bench.ts",
+      "suite": "LRUCache.get — miss",
+      "name": "ndigo LRUCache.get miss",
+      "opsPerIteration": 1000,
+      "nsPerOp": 18.90914724401941,
+      "opsPerSecond": 52884457.82854011,
+      "latency": {
+        "mean": 0.018909147244019413,
+        "min": 0.01845499999990352,
+        "max": 0.06385999999974956,
+        "p50": 0.018746000000191998,
+        "p75": 0.018845999999939522,
+        "p99": 0.02367575999996912,
+        "p999": 0.03564020399984296,
+        "rme": 0.05389089039264058,
+        "samples": 52885
+      },
+      "throughput": {
+        "mean": 53017.4780240579,
+        "p99": 53981.10661281913,
+        "rme": 0.03451566881372159
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-core/bench/lru-cache.bench.ts",
+      "suite": "LRUCache.get — miss",
+      "name": "lru-cache npm get miss",
+      "opsPerIteration": 1000,
+      "nsPerOp": 19.73600530896252,
+      "opsPerSecond": 50668814.90682817,
+      "latency": {
+        "mean": 0.01973600530896252,
+        "min": 0.019335999999384512,
+        "max": 0.045635999999831256,
+        "p50": 0.019667000000481494,
+        "p75": 0.019737999999961175,
+        "p99": 0.0217609999999695,
+        "p999": 0.026038880000007533,
+        "rme": 0.022068331359054512,
+        "samples": 50669
+      },
+      "throughput": {
+        "mean": 50692.94205201364,
+        "p99": 51221.32355230408,
+        "rme": 0.016735216839605653
+      },
+      "rank": 2
+    },
+    {
+      "file": "packages/ndigo-core/bench/lru-cache.bench.ts",
+      "suite": "LRUCache.set — existing key",
+      "name": "lru-cache npm set existing",
+      "opsPerIteration": 1000,
+      "nsPerOp": 17.665862578832602,
+      "opsPerSecond": 56606349.98928437,
+      "latency": {
+        "mean": 0.017665862578832604,
+        "min": 0.017041999999491964,
+        "max": 0.2568329999994603,
+        "p50": 0.01740299999983108,
+        "p75": 0.017533000000184984,
+        "p99": 0.020508999999947264,
+        "p999": 0.04621881999947255,
+        "rme": 0.12154647757809671,
+        "samples": 56607
+      },
+      "throughput": {
+        "mean": 57039.37075945847,
+        "p99": 58404.39200959874,
+        "rme": 0.04603929558630319
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-core/bench/lru-cache.bench.ts",
+      "suite": "LRUCache.set — existing key",
+      "name": "ndigo LRUCache.set existing",
+      "opsPerIteration": 1000,
+      "nsPerOp": 28.56469065097488,
+      "opsPerSecond": 35008255.89952157,
+      "latency": {
+        "mean": 0.028564690650974882,
+        "min": 0.024456000000100175,
+        "max": 0.8923699999995733,
+        "p50": 0.026239999999233987,
+        "p75": 0.027031000000533822,
+        "p99": 0.05299827999951957,
+        "p999": 0.6644227680002945,
+        "rme": 0.9506068667721569,
+        "samples": 35009
+      },
+      "throughput": {
+        "mean": 36984.33541782086,
+        "p99": 40004.800575365625,
+        "rme": 0.1175946616035469
+      },
+      "rank": 2
+    },
+    {
+      "file": "packages/ndigo-core/bench/lru-cache.bench.ts",
+      "suite": "LRUCache.set — eviction",
+      "name": "lru-cache npm set evict",
+      "opsPerIteration": 1000,
+      "nsPerOp": 103.76606933359719,
+      "opsPerSecond": 9637061.579205658,
+      "latency": {
+        "mean": 0.1037660693335972,
+        "min": 0.08836599999995087,
+        "max": 7.13091699999859,
+        "p50": 0.09349600000132341,
+        "p75": 0.09494900000026973,
+        "p99": 0.13217259999953976,
+        "p999": 3.461062015999997,
+        "rme": 3.776638821811281,
+        "samples": 9649
+      },
+      "throughput": {
+        "mean": 10568.676205054244,
+        "p99": 11179.55483012387,
+        "rme": 0.14069952198220456
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-core/bench/lru-cache.bench.ts",
+      "suite": "LRUCache.set — eviction",
+      "name": "ndigo LRUCache.set evict",
+      "opsPerIteration": 1000,
+      "nsPerOp": 108.50011099056866,
+      "opsPerSecond": 9216580.433608264,
+      "latency": {
+        "mean": 0.10850011099056867,
+        "min": 0.09161300000050687,
+        "max": 9.175235999999131,
+        "p50": 0.10038900000108697,
+        "p75": 0.10191200000008394,
+        "p99": 0.12719379999885866,
+        "p999": 3.5882732319981505,
+        "rme": 4.154313683726862,
+        "samples": 9217
+      },
+      "throughput": {
+        "mean": 9928.524508346896,
+        "p99": 10757.893604423629,
+        "rme": 0.12224584712684969
+      },
+      "rank": 2
+    },
+    {
+      "file": "packages/ndigo-core/bench/multi-value-map.bench.ts",
+      "suite": "add — 1,000 inserts across 10 keys",
+      "name": "MultiValueMap.add",
+      "opsPerIteration": 1000,
+      "nsPerOp": 12.31429997414045,
+      "opsPerSecond": 81206402.48328862,
+      "latency": {
+        "mean": 0.012314299974140451,
+        "min": 0.011180999999965024,
+        "max": 0.10802300000000287,
+        "p50": 0.01215300000001207,
+        "p75": 0.012423000000012507,
+        "p99": 0.015137999999979002,
+        "p999": 0.04494008599997313,
+        "rme": 0.10879025680839947,
+        "samples": 81207
+      },
+      "throughput": {
+        "mean": 81845.69177686017,
+        "p99": 87634.73841066861,
+        "rme": 0.03903339299306282
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-core/bench/multi-value-map.bench.ts",
+      "suite": "add — 1,000 inserts across 10 keys",
+      "name": "raw Map add",
+      "opsPerIteration": 1000,
+      "nsPerOp": 12.50425314793776,
+      "opsPerSecond": 79972789.11175299,
+      "latency": {
+        "mean": 0.01250425314793776,
+        "min": 0.010759999999891079,
+        "max": 0.5311500000000251,
+        "p50": 0.012432999999873573,
+        "p75": 0.012754000000313681,
+        "p99": 0.015970000000215805,
+        "p999": 0.04948608000022313,
+        "rme": 0.1730448231558236,
+        "samples": 79973
+      },
+      "throughput": {
+        "mean": 80807.70041354268,
+        "p99": 90163.1953830057,
+        "rme": 0.04822016833761752
+      },
+      "rank": 2
+    },
+    {
+      "file": "packages/ndigo-core/bench/multi-value-map.bench.ts",
+      "suite": "get — 1,000 reads on a pre-filled map",
+      "name": "MultiValueMap.get",
+      "opsPerIteration": 1000,
+      "nsPerOp": 5.161225312641439,
+      "opsPerSecond": 193752440.44291002,
+      "latency": {
+        "mean": 0.005161225312641439,
+        "min": 0.0050289999999222346,
+        "max": 0.09798499999988053,
+        "p50": 0.005130000000008295,
+        "p75": 0.0051600000001599255,
+        "p99": 0.005540999999993801,
+        "p999": 0.009067247999930252,
+        "rme": 0.03284363651953093,
+        "samples": 193753
+      },
+      "throughput": {
+        "mean": 194125.46639233,
+        "p99": 197238.65877090438,
+        "rme": 0.014618501392772489
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-core/bench/multi-value-map.bench.ts",
+      "suite": "get — 1,000 reads on a pre-filled map",
+      "name": "raw Map.get",
+      "opsPerIteration": 1000,
+      "nsPerOp": 5.1706847537213285,
+      "opsPerSecond": 193397982.59414336,
+      "latency": {
+        "mean": 0.005170684753721329,
+        "min": 0.005029999999351276,
+        "max": 0.0261899999995876,
+        "p50": 0.00513900000078138,
+        "p75": 0.0051499999999577994,
+        "p99": 0.005651270000380453,
+        "p999": 0.010025030000131692,
+        "rme": 0.030360963607689574,
+        "samples": 193398
+      },
+      "throughput": {
+        "mean": 193896.06361540974,
+        "p99": 196850.393704385,
+        "rme": 0.017135839289592947
+      },
+      "rank": 2
+    },
+    {
+      "file": "packages/ndigo-core/bench/multi-value-map.bench.ts",
+      "suite": "remove — 1,000 delete operations on a fresh pre-fill",
+      "name": "MultiValueMap.remove",
+      "opsPerIteration": 1000,
+      "nsPerOp": 12.837984889721763,
+      "opsPerSecond": 77893844.60178103,
+      "latency": {
+        "mean": 0.012837984889721763,
+        "min": 0.01264400000036403,
+        "max": 0.0706930000005741,
+        "p50": 0.012783999999555817,
+        "p75": 0.012805000000298605,
+        "p99": 0.01485800000045856,
+        "p999": 0.017303070000172775,
+        "rme": 0.02483995092534455,
+        "samples": 77894
+      },
+      "throughput": {
+        "mean": 77951.17472861124,
+        "p99": 78715.36523516009,
+        "rme": 0.0163125974372411
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-core/bench/multi-value-map.bench.ts",
+      "suite": "remove — 1,000 delete operations on a fresh pre-fill",
+      "name": "raw Map remove (indexOf + splice)",
+      "opsPerIteration": 1000,
+      "nsPerOp": 13.672680280013887,
+      "opsPerSecond": 73138549.24712569,
+      "latency": {
+        "mean": 0.013672680280013887,
+        "min": 0.013445999999930791,
+        "max": 0.1534380000002784,
+        "p50": 0.013595999999779451,
+        "p75": 0.013624999999592546,
+        "p99": 0.01599999999962165,
+        "p999": 0.022891620000329505,
+        "rme": 0.044780806084660806,
+        "samples": 73139
+      },
+      "throughput": {
+        "mean": 73230.95952084816,
+        "p99": 73935.0762276022,
+        "rme": 0.01985356014830186
+      },
+      "rank": 2
+    },
+    {
+      "file": "packages/ndigo-core/bench/path-matcher.bench.ts",
+      "suite": "match — warm cache vs compile every call",
+      "name": "cached matcher (warm)",
+      "opsPerIteration": 25,
+      "nsPerOp": 44.61420524305461,
+      "opsPerSecond": 22414385.60996616,
+      "latency": {
+        "mean": 0.0011153551310763652,
+        "min": 0.0009010000001126173,
+        "max": 1.7135050000000547,
+        "p50": 0.0009919999999965512,
+        "p75": 0.0010620000000471919,
+        "p99": 0.002243999999791413,
+        "p999": 0.0044480000000248765,
+        "rme": 0.826956903258063,
+        "samples": 896576
+      },
+      "throughput": {
+        "mean": 956256.9103716491,
+        "p99": 1074113.8560262003,
+        "rme": 0.03011550807634808
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-core/bench/path-matcher.bench.ts",
+      "suite": "match — warm cache vs compile every call",
+      "name": "compile RegExp every call",
+      "opsPerIteration": 25,
+      "nsPerOp": 348.31587701043844,
+      "opsPerSecond": 2870957.2718387214,
+      "latency": {
+        "mean": 0.00870789692526096,
+        "min": 0.007683999999926527,
+        "max": 0.18562900000006266,
+        "p50": 0.008526000000074418,
+        "p75": 0.008865999999670748,
+        "p99": 0.011340999999902124,
+        "p999": 0.04700804199989784,
+        "rme": 0.13304356645064117,
+        "samples": 114839
+      },
+      "throughput": {
+        "mean": 116011.8889470083,
+        "p99": 126823.08180108905,
+        "rme": 0.038109431212804995
+      },
+      "rank": 2
+    },
+    {
+      "file": "packages/ndigo-core/bench/path-matcher.bench.ts",
+      "suite": "match — cold matcher construction",
+      "name": "new matcher per iteration",
+      "opsPerIteration": 25,
+      "nsPerOp": 127.12401444127823,
+      "opsPerSecond": 7866334.33812716,
+      "latency": {
+        "mean": 0.0031781003610319557,
+        "min": 0.0029549999999289867,
+        "max": 0.15139500000032058,
+        "p50": 0.0030660000002171728,
+        "p75": 0.003176000000166823,
+        "p99": 0.004128000000036991,
+        "p999": 0.006160999999950491,
+        "rme": 0.12510360366600087,
+        "samples": 314654
+      },
+      "throughput": {
+        "mean": 317834.71262974956,
+        "p99": 332778.70215972577,
+        "rme": 0.023084005276564224
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-core/bench/path-matcher.bench.ts",
+      "suite": "match — cold matcher construction",
+      "name": "compile RegExp every call",
+      "opsPerIteration": 25,
+      "nsPerOp": 350.476387309287,
+      "opsPerSecond": 2853259.2671286697,
+      "latency": {
+        "mean": 0.008761909682732175,
+        "min": 0.007644000000254891,
+        "max": 0.6593510000002425,
+        "p50": 0.008576000000175554,
+        "p75": 0.008937000000514672,
+        "p99": 0.010890700000072681,
+        "p999": 0.016009239999818577,
+        "rme": 0.20325148551743,
+        "samples": 114131
+      },
+      "throughput": {
+        "mean": 115382.55750670735,
+        "p99": 126502.21379702687,
+        "rme": 0.03666880372717661
+      },
+      "rank": 2
+    },
+    {
+      "file": "packages/ndigo-core/bench/radix-tree.bench.ts",
+      "suite": "RadixTree lookup performance static route match — /users",
+      "name": "Map.get (flat)",
+      "opsPerIteration": 1000,
+      "nsPerOp": 2.8060262503645625,
+      "opsPerSecond": 356375853.5295522,
+      "latency": {
+        "mean": 0.0028060262503645625,
+        "min": 0.0026540000001205044,
+        "max": 0.05432299999984025,
+        "p50": 0.002735000000029686,
+        "p75": 0.0028250000000298314,
+        "p99": 0.004377999999860549,
+        "p999": 0.00611100000006104,
+        "rme": 0.03755921403940534,
+        "samples": 356376
+      },
+      "throughput": {
+        "mean": 358530.67185352807,
+        "p99": 373831.7756756158,
+        "rme": 0.018981372772833065
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-core/bench/radix-tree.bench.ts",
+      "suite": "RadixTree lookup performance static route match — /users",
+      "name": "RadixTree.lookup",
+      "opsPerIteration": 1000,
+      "nsPerOp": 43.96999696609974,
+      "opsPerSecond": 22742780.73685077,
+      "latency": {
+        "mean": 0.043969996966099746,
+        "min": 0.040446000000088134,
+        "max": 0.1320779999999786,
+        "p50": 0.04210899999998219,
+        "p75": 0.04261050000002342,
+        "p99": 0.07244657999996434,
+        "p999": 0.08395169599998792,
+        "rme": 0.20551988020940884,
+        "samples": 22743
+      },
+      "throughput": {
+        "mean": 23104.62038500246,
+        "p99": 24350.451700812715,
+        "rme": 0.12977801849139442
+      },
+      "rank": 2
+    },
+    {
+      "file": "packages/ndigo-core/bench/radix-tree.bench.ts",
+      "suite": "RadixTree lookup performance param route match — /users/42",
+      "name": "RadixTree.lookup",
+      "opsPerIteration": 1000,
+      "nsPerOp": 77.14328257347435,
+      "opsPerSecond": 12962891.474673247,
+      "latency": {
+        "mean": 0.07714328257347436,
+        "min": 0.07240599999977348,
+        "max": 0.16299700000035955,
+        "p50": 0.07490099999995437,
+        "p75": 0.07630349999999453,
+        "p99": 0.1139043799997762,
+        "p999": 0.1314715980001411,
+        "rme": 0.17147588990326892,
+        "samples": 12963
+      },
+      "throughput": {
+        "mean": 13054.37531696068,
+        "p99": 13629.920401209027,
+        "rme": 0.12229697633617188
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-core/bench/radix-tree.bench.ts",
+      "suite": "RadixTree lookup performance param route match — /users/42",
+      "name": "RegExp array scan",
+      "opsPerIteration": 1000,
+      "nsPerOp": 299.15634131020107,
+      "opsPerSecond": 3342733.7545991726,
+      "latency": {
+        "mean": 0.2991563413102011,
+        "min": 0.2841340000004493,
+        "max": 0.5681489999997211,
+        "p50": 0.29190899999957765,
+        "p75": 0.2973095000002104,
+        "p99": 0.42708898000042606,
+        "p999": 0.5234422319995845,
+        "rme": 0.27608532597679736,
+        "samples": 3343
+      },
+      "throughput": {
+        "mean": 3358.278254099706,
+        "p99": 3489.702241805783,
+        "rme": 0.19693030294551522
+      },
+      "rank": 2
+    },
+    {
+      "file": "packages/ndigo-core/bench/radix-tree.bench.ts",
+      "suite": "RadixTree lookup performance deep nested param route — /api/v1/users/42/profile",
+      "name": "RadixTree.lookup",
+      "opsPerIteration": 1000,
+      "nsPerOp": 150.63950143093922,
+      "opsPerSecond": 6638365.040383851,
+      "latency": {
+        "mean": 0.1506395014309392,
+        "min": 0.1429790000001958,
+        "max": 0.47545499999978347,
+        "p50": 0.14861000000018976,
+        "p75": 0.1501220000000103,
+        "p99": 0.18840257999958337,
+        "p999": 0.24567354199976038,
+        "rme": 0.1611884140177965,
+        "samples": 6639
+      },
+      "throughput": {
+        "mean": 6657.713633194396,
+        "p99": 6862.108678700021,
+        "rme": 0.11039371370745528
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-core/bench/radix-tree.bench.ts",
+      "suite": "RadixTree lookup performance deep nested param route — /api/v1/users/42/profile",
+      "name": "RegExp array scan",
+      "opsPerIteration": 1000,
+      "nsPerOp": 317.23255407547595,
+      "opsPerSecond": 3152261.604784987,
+      "latency": {
+        "mean": 0.31723255407547596,
+        "min": 0.3034109999998691,
+        "max": 0.5635500000007596,
+        "p50": 0.3126489999995101,
+        "p75": 0.3154739999999947,
+        "p99": 0.392331640000084,
+        "p999": 0.4989060479999161,
+        "rme": 0.19923846341635423,
+        "samples": 3153
+      },
+      "throughput": {
+        "mean": 3160.26654889687,
+        "p99": 3272.784636590772,
+        "rme": 0.1570318253665912
+      },
+      "rank": 2
+    },
+    {
+      "file": "packages/ndigo-core/bench/radix-tree.bench.ts",
+      "suite": "RadixTree lookup performance deep nested param route — /api/v1/users/42/profile",
+      "name": "Map.get (exact miss then regexp)",
+      "opsPerIteration": 1000,
+      "nsPerOp": 344.45838395315815,
+      "opsPerSecond": 2903108.318989231,
+      "latency": {
+        "mean": 0.34445838395315814,
+        "min": 0.3228580000013608,
+        "max": 0.7931129999997211,
+        "p50": 0.3351959999999963,
+        "p75": 0.34122200000069824,
+        "p99": 0.4878951600003339,
+        "p999": 0.567852707000958,
+        "rme": 0.3220084531350749,
+        "samples": 2904
+      },
+      "throughput": {
+        "mean": 2919.8325092334344,
+        "p99": 3059.1655174873263,
+        "rme": 0.24010890312421004
+      },
+      "rank": 3
+    },
+    {
+      "file": "packages/ndigo-core/bench/radix-tree.bench.ts",
+      "suite": "RadixTree lookup performance two-param route — /api/v1/users/42/posts/7",
+      "name": "RadixTree.lookup",
+      "opsPerIteration": 1000,
+      "nsPerOp": 189.49323721106325,
+      "opsPerSecond": 5277233.186354667,
+      "latency": {
+        "mean": 0.18949323721106323,
+        "min": 0.18325499999991735,
+        "max": 0.5001910000009957,
+        "p50": 0.18725199999971665,
+        "p75": 0.1887750000005326,
+        "p99": 0.22723553000052552,
+        "p999": 0.272767870000594,
+        "rme": 0.15001736787992737,
+        "samples": 5278
+      },
+      "throughput": {
+        "mean": 5288.352795189795,
+        "p99": 5412.192587432152,
+        "rme": 0.10720974128587614
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-core/bench/radix-tree.bench.ts",
+      "suite": "RadixTree lookup performance two-param route — /api/v1/users/42/posts/7",
+      "name": "RegExp array scan",
+      "opsPerIteration": 1000,
+      "nsPerOp": 433.80956808323094,
+      "opsPerSecond": 2305158.930492145,
+      "latency": {
+        "mean": 0.43380956808323096,
+        "min": 0.4223739999997633,
+        "max": 0.7560529999991559,
+        "p50": 0.4294880000006742,
+        "p75": 0.43321074999948905,
+        "p99": 0.4795224499986942,
+        "p999": 0.7216123049998029,
+        "rme": 0.17111804167146813,
+        "samples": 2306
+      },
+      "throughput": {
+        "mean": 2308.1022151344205,
+        "p99": 2354.977818189653,
+        "rme": 0.12723858824370646
+      },
+      "rank": 2
+    },
+    {
+      "file": "packages/ndigo-core/bench/radix-tree.bench.ts",
+      "suite": "RadixTree lookup performance route miss — /nonexistent",
+      "name": "Map.get (miss)",
+      "opsPerIteration": 1000,
+      "nsPerOp": 3.109618593024572,
+      "opsPerSecond": 321582846.9263652,
+      "latency": {
+        "mean": 0.003109618593024572,
+        "min": 0.0029949999989185017,
+        "max": 0.06005300000106217,
+        "p50": 0.0030459999998129206,
+        "p75": 0.0030750000005355105,
+        "p99": 0.0034660000001167646,
+        "p999": 0.0061557620004423835,
+        "rme": 0.0287346079637284,
+        "samples": 321583
+      },
+      "throughput": {
+        "mean": 322654.1862129951,
+        "p99": 330578.5123989206,
+        "rme": 0.015993003776480916
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-core/bench/radix-tree.bench.ts",
+      "suite": "RadixTree lookup performance route miss — /nonexistent",
+      "name": "RadixTree.lookup",
+      "opsPerIteration": 1000,
+      "nsPerOp": 43.879179376924746,
+      "opsPerSecond": 22789851.91153966,
+      "latency": {
+        "mean": 0.043879179376924746,
+        "min": 0.04056700000001001,
+        "max": 1.0697930000005726,
+        "p50": 0.042330000000220025,
+        "p75": 0.043061000000307104,
+        "p99": 0.07968880000071299,
+        "p999": 0.10842687100040162,
+        "rme": 0.2934150288602247,
+        "samples": 22790
+      },
+      "throughput": {
+        "mean": 23125.034941590882,
+        "p99": 24279.50566884108,
+        "rme": 0.1116742256174935
+      },
+      "rank": 2
+    },
+    {
+      "file": "packages/ndigo-core/bench/radix-tree.bench.ts",
+      "suite": "RadixTree lookup performance route miss — /nonexistent",
+      "name": "RegExp array scan (full miss)",
+      "opsPerIteration": 1000,
+      "nsPerOp": 51.55414563357014,
+      "opsPerSecond": 19397082.188262224,
+      "latency": {
+        "mean": 0.051554145633570136,
+        "min": 0.04950300000018615,
+        "max": 0.12473399999907997,
+        "p50": 0.05090600000039558,
+        "p75": 0.05133699999896635,
+        "p99": 0.06259920000040434,
+        "p999": 0.08626199999999334,
+        "rme": 0.09092743860847655,
+        "samples": 19398
+      },
+      "throughput": {
+        "mean": 19449.80376902516,
+        "p99": 19934.721778726394,
+        "rme": 0.060129274700479844
+      },
+      "rank": 3
+    },
+    {
+      "file": "packages/ndigo-core/bench/radix-tree.bench.ts",
+      "suite": "RadixTree lookup performance mixed rotation — three routes",
+      "name": "RadixTree.lookup",
+      "opsPerIteration": 1000,
+      "nsPerOp": 94.85679246892884,
+      "opsPerSecond": 10542207.616049832,
+      "latency": {
+        "mean": 0.09485679246892885,
+        "min": 0.09135199999946053,
+        "max": 0.221878000000288,
+        "p50": 0.09375600000021223,
+        "p75": 0.09442699999999604,
+        "p99": 0.13892740000024786,
+        "p999": 0.15394783599953074,
+        "rme": 0.13097873553541559,
+        "samples": 10543
+      },
+      "throughput": {
+        "mean": 10575.849602137941,
+        "p99": 10852.696352550582,
+        "rme": 0.08927135067153445
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-core/bench/radix-tree.bench.ts",
+      "suite": "RadixTree lookup performance mixed rotation — three routes",
+      "name": "RegExp array scan",
+      "opsPerIteration": 1000,
+      "nsPerOp": 216.23959632432314,
+      "opsPerSecond": 4624499.9389481265,
+      "latency": {
+        "mean": 0.21623959632432316,
+        "min": 0.21092700000008335,
+        "max": 0.31094499999744585,
+        "p50": 0.21461400000043795,
+        "p75": 0.21613599999909638,
+        "p99": 0.26794155999872604,
+        "p999": 0.296183135999716,
+        "rme": 0.11306974630944538,
+        "samples": 4625
+      },
+      "throughput": {
+        "mean": 4630.169129533969,
+        "p99": 4712.709462589572,
+        "rme": 0.09028891528154032
+      },
+      "rank": 2
+    },
+    {
+      "file": "packages/ndigo-core/bench/radix-tree.bench.ts",
+      "suite": "RadixTree lookup performance scale — 20 routes",
+      "name": "RadixTree.lookup",
+      "opsPerIteration": 1000,
+      "nsPerOp": 104.97855301280786,
+      "opsPerSecond": 9525755.226193635,
+      "latency": {
+        "mean": 0.10497855301280787,
+        "min": 0.09244399999806774,
+        "max": 0.22773900000174763,
+        "p50": 0.10396599999876344,
+        "p75": 0.10514799999873503,
+        "p99": 0.15127225000105682,
+        "p999": 0.17685322500065018,
+        "rme": 0.14589741614841917,
+        "samples": 9526
+      },
+      "throughput": {
+        "mean": 9561.30266340033,
+        "p99": 10444.109857889807,
+        "rme": 0.10460613211221838
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-core/bench/radix-tree.bench.ts",
+      "suite": "RadixTree lookup performance scale — 20 routes",
+      "name": "RegExp array scan",
+      "opsPerIteration": 1000,
+      "nsPerOp": 490.63668366848924,
+      "opsPerSecond": 2038168.0238888836,
+      "latency": {
+        "mean": 0.4906366836684892,
+        "min": 0.4799539999985427,
+        "max": 0.6236030000000028,
+        "p50": 0.48809800000162795,
+        "p75": 0.49038300000029267,
+        "p99": 0.5518851999999606,
+        "p999": 0.5840036939982747,
+        "rme": 0.10854476719383671,
+        "samples": 2039
+      },
+      "throughput": {
+        "mean": 2039.3075023113681,
+        "p99": 2074.903261002854,
+        "rme": 0.09729730065109889
+      },
+      "rank": 2
+    },
+    {
+      "file": "packages/ndigo-core/bench/radix-tree.bench.ts",
+      "suite": "RadixTree lookup performance scale — 50 routes",
+      "name": "RadixTree.lookup",
+      "opsPerIteration": 1000,
+      "nsPerOp": 91.52027711174976,
+      "opsPerSecond": 10926540.342299901,
+      "latency": {
+        "mean": 0.09152027711174976,
+        "min": 0.08737399999881745,
+        "max": 0.22682700000223122,
+        "p50": 0.09025000000110595,
+        "p75": 0.09165299999949639,
+        "p99": 0.13868540000024948,
+        "p999": 0.15565756200064135,
+        "rme": 0.14124211529404032,
+        "samples": 10927
+      },
+      "throughput": {
+        "mean": 10966.494380529408,
+        "p99": 11307.61228470143,
+        "rme": 0.09192986879411859
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-core/bench/radix-tree.bench.ts",
+      "suite": "RadixTree lookup performance scale — 50 routes",
+      "name": "RegExp array scan",
+      "opsPerIteration": 1000,
+      "nsPerOp": 999.1427072926928,
+      "opsPerSecond": 1000858.0282887018,
+      "latency": {
+        "mean": 0.9991427072926927,
+        "min": 0.9788819999994303,
+        "max": 1.1237450000007811,
+        "p50": 0.9969160000000556,
+        "p75": 1.0011040000026696,
+        "p99": 1.0835989999977755,
+        "p999": 1.1039479999999458,
+        "rme": 0.09070337099143767,
+        "samples": 1001
+      },
+      "throughput": {
+        "mean": 1001.0575429919583,
+        "p99": 1015.2768710799287,
+        "rme": 0.08467070632929986
+      },
+      "rank": 2
+    },
+    {
+      "file": "packages/ndigo-core/bench/radix-tree.bench.ts",
+      "suite": "RadixTree lookup performance scale — 100 routes",
+      "name": "RadixTree.lookup",
+      "opsPerIteration": 1000,
+      "nsPerOp": 91.38056542395621,
+      "opsPerSecond": 10943245.922812393,
+      "latency": {
+        "mean": 0.09138056542395621,
+        "min": 0.08740400000169757,
+        "max": 0.24114299999928335,
+        "p50": 0.0901899999989837,
+        "p75": 0.09084100000109174,
+        "p99": 0.1401991699993232,
+        "p999": 0.16839582699834893,
+        "rme": 0.15102486933805334,
+        "samples": 10944
+      },
+      "throughput": {
+        "mean": 10987.445479080097,
+        "p99": 11298.541358260767,
+        "rme": 0.09496226013944847
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-core/bench/radix-tree.bench.ts",
+      "suite": "RadixTree lookup performance scale — 100 routes",
+      "name": "RegExp array scan",
+      "opsPerIteration": 1000,
+      "nsPerOp": 1696.8050220339105,
+      "opsPerSecond": 589342.9044672023,
+      "latency": {
+        "mean": 1.6968050220339106,
+        "min": 1.676565000001574,
+        "max": 1.8216890000003332,
+        "p50": 1.694033000001582,
+        "p75": 1.699114500000178,
+        "p99": 1.7898295699990194,
+        "p999": 1.8116565630002832,
+        "rme": 0.08001398592667261,
+        "samples": 590
+      },
+      "throughput": {
+        "mean": 589.3980555358518,
+        "p99": 594.9661214732183,
+        "rme": 0.07660595772870742
+      },
+      "rank": 2
+    },
+    {
+      "file": "packages/ndigo-core/bench/ring-buffer.bench.ts",
+      "suite": "FIFO enqueue + dequeue",
+      "name": "RingBuffer put + get",
+      "opsPerIteration": 1000,
+      "nsPerOp": 4.882150560470054,
+      "opsPerSecond": 204827767.52049202,
+      "latency": {
+        "mean": 0.004882150560470053,
+        "min": 0.004618000000050415,
+        "max": 0.06389999999987594,
+        "p50": 0.004878999999846201,
+        "p75": 0.0048989999999093925,
+        "p99": 0.006823000000167667,
+        "p999": 0.00828599999999824,
+        "rme": 0.031606970631854886,
+        "samples": 204828
+      },
+      "throughput": {
+        "mean": 205461.1988037279,
+        "p99": 215146.29948482124,
+        "rme": 0.01975674537983397
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-core/bench/ring-buffer.bench.ts",
+      "suite": "FIFO enqueue + dequeue",
+      "name": "Array push + shift",
+      "opsPerIteration": 1000,
+      "nsPerOp": 22.995024627482955,
+      "opsPerSecond": 43487668.1456053,
+      "latency": {
+        "mean": 0.022995024627482954,
+        "min": 0.021250000000009095,
+        "max": 0.37118899999995847,
+        "p50": 0.022402000000056432,
+        "p75": 0.02269300000034491,
+        "p99": 0.04509759999996953,
+        "p999": 0.06646064999989103,
+        "rme": 0.1896589585076461,
+        "samples": 43488
+      },
+      "throughput": {
+        "mean": 44106.253107699136,
+        "p99": 46149.239230785926,
+        "rme": 0.0726441668654438
+      },
+      "rank": 2
+    },
+    {
+      "file": "packages/ndigo-core/bench/ring-buffer.bench.ts",
+      "suite": "burst put — 16-slot buffer",
+      "name": "Circular array assignment",
+      "opsPerIteration": 16000,
+      "nsPerOp": 0.28981521005765265,
+      "opsPerSecond": 3450474527.548333,
+      "latency": {
+        "mean": 0.0046370433609224425,
+        "min": 0.004318000000239408,
+        "max": 0.3375560000004043,
+        "p50": 0.004579000000376254,
+        "p75": 0.004589000000123633,
+        "p99": 0.005551000000195927,
+        "p999": 0.008045000000493019,
+        "rme": 0.07294250714480438,
+        "samples": 215655
+      },
+      "throughput": {
+        "mean": 216374.36448386667,
+        "p99": 219876.8689588933,
+        "rme": 0.018755689165696813
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-core/bench/ring-buffer.bench.ts",
+      "suite": "burst put — 16-slot buffer",
+      "name": "RingBuffer.put",
+      "opsPerIteration": 16000,
+      "nsPerOp": 2.645049124523937,
+      "opsPerSecond": 378064812.0023036,
+      "latency": {
+        "mean": 0.042320785992382995,
+        "min": 0.0409469999999601,
+        "max": 0.06301900000016758,
+        "p50": 0.04206899999962843,
+        "p75": 0.04217900000003283,
+        "p99": 0.045896000000084314,
+        "p999": 0.04881331099983879,
+        "rme": 0.027663240543700507,
+        "samples": 23630
+      },
+      "throughput": {
+        "mean": 23639.274001819,
+        "p99": 23912.57562350197,
+        "rme": 0.02546640713208399
+      },
+      "rank": 2
+    },
+    {
+      "file": "packages/ndigo-core/bench/ring-buffer.bench.ts",
+      "suite": "peek — non-destructive front read",
+      "name": "Array[0]",
+      "opsPerIteration": 1000,
+      "nsPerOp": 0.420320455980196,
+      "opsPerSecond": 2379137122.0988503,
+      "latency": {
+        "mean": 0.000420320455980196,
+        "min": 0.00038999999924271833,
+        "max": 0.03399399999943853,
+        "p50": 0.0004109999999855063,
+        "p75": 0.000420000000303844,
+        "p99": 0.0005309999996825354,
+        "p999": 0.0009120000004259055,
+        "rme": 0.02864129396640805,
+        "samples": 2379138
+      },
+      "throughput": {
+        "mean": 2395353.047527488,
+        "p99": 2499999.9949432095,
+        "rme": 0.006843218048299492
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-core/bench/ring-buffer.bench.ts",
+      "suite": "peek — non-destructive front read",
+      "name": "RingBuffer.peek",
+      "opsPerIteration": 1000,
+      "nsPerOp": 1.2598430992121972,
+      "opsPerSecond": 793749634.8754208,
+      "latency": {
+        "mean": 0.0012598430992121971,
+        "min": 0.001211999999213731,
+        "max": 0.06019300000025396,
+        "p50": 0.0012230000002091401,
+        "p75": 0.0012320000005274778,
+        "p99": 0.0014419999997699051,
+        "p999": 0.0029549999999289867,
+        "rme": 0.02485099340408239,
+        "samples": 793750
+      },
+      "throughput": {
+        "mean": 798042.889579799,
+        "p99": 825082.5081669379,
+        "rme": 0.013278810553512477
+      },
+      "rank": 2
+    },
+    {
+      "file": "packages/ndigo-core/bench/ring-buffer.bench.ts",
+      "suite": "bounded drop-oldest queue at capacity",
+      "name": "RingBuffer get + put at cap",
+      "opsPerIteration": 1000,
+      "nsPerOp": 4.504808023930047,
+      "opsPerSecond": 221985042.35649723,
+      "latency": {
+        "mean": 0.004504808023930047,
+        "min": 0.004427999998370069,
+        "max": 0.023994999999558786,
+        "p50": 0.004479000001083477,
+        "p75": 0.004499000000578235,
+        "p99": 0.004638999998860527,
+        "p999": 0.008295300001446146,
+        "rme": 0.023902127430063654,
+        "samples": 221986
+      },
+      "throughput": {
+        "mean": 222379.3924341133,
+        "p99": 224820.1439008733,
+        "rme": 0.013315104689050306
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-core/bench/ring-buffer.bench.ts",
+      "suite": "bounded drop-oldest queue at capacity",
+      "name": "Array push + shift at cap",
+      "opsPerIteration": 1000,
+      "nsPerOp": 7.814953282274268,
+      "opsPerSecond": 127959818.04116237,
+      "latency": {
+        "mean": 0.007814953282274268,
+        "min": 0.007324000000153319,
+        "max": 0.11607899999944493,
+        "p50": 0.007563999999547377,
+        "p75": 0.007944999999381253,
+        "p99": 0.01235299999900235,
+        "p999": 0.01636004099963611,
+        "rme": 0.06296720773621671,
+        "samples": 127960
+      },
+      "throughput": {
+        "mean": 128835.66137456238,
+        "p99": 135244.79307173594,
+        "rme": 0.03568649657873974
+      },
+      "rank": 2
+    },
+    {
+      "file": "packages/ndigo-dispatcher/bench/argument-resolver.bench.ts",
+      "suite": "resolver lookup — path param",
+      "name": "Map.get(type) — hypothetical",
+      "opsPerIteration": 1000,
+      "nsPerOp": 4.029822035059467,
+      "opsPerSecond": 248149916.1253267,
+      "latency": {
+        "mean": 0.004029822035059466,
+        "min": 0.003796999999849504,
+        "max": 0.3490360000000692,
+        "p50": 0.0039470000001529115,
+        "p75": 0.004057000000102562,
+        "p99": 0.006953000000066822,
+        "p999": 0.007915000000105237,
+        "rme": 0.08341263502119539,
+        "samples": 248150
+      },
+      "throughput": {
+        "mean": 250355.74409832974,
+        "p99": 261985.85276213993,
+        "rme": 0.028186525992587457
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-dispatcher/bench/argument-resolver.bench.ts",
+      "suite": "resolver lookup — path param",
+      "name": "Array.find + supportsParameter",
+      "opsPerIteration": 1000,
+      "nsPerOp": 30.538848011970828,
+      "opsPerSecond": 32745177.53937585,
+      "latency": {
+        "mean": 0.030538848011970827,
+        "min": 0.02855299999998806,
+        "max": 0.17154299999992872,
+        "p50": 0.029404999999997017,
+        "p75": 0.03025700000011966,
+        "p99": 0.049589049999906355,
+        "p999": 0.0878418050000627,
+        "rme": 0.16765637649736168,
+        "samples": 32746
+      },
+      "throughput": {
+        "mean": 33148.411702383644,
+        "p99": 34681.279045556905,
+        "rme": 0.09118109625221371
+      },
+      "rank": 2
+    },
+    {
+      "file": "packages/ndigo-dispatcher/bench/argument-resolver.bench.ts",
+      "suite": "resolver lookup — query param",
+      "name": "Map.get(type) — hypothetical",
+      "opsPerIteration": 1000,
+      "nsPerOp": 2.843057839161388,
+      "opsPerSecond": 351733962.7163436,
+      "latency": {
+        "mean": 0.002843057839161388,
+        "min": 0.0026349999998274143,
+        "max": 0.04138799999964249,
+        "p50": 0.002795000000332948,
+        "p75": 0.0028659999998126295,
+        "p99": 0.004667999999583117,
+        "p999": 0.006231000000298081,
+        "rme": 0.04276522503028067,
+        "samples": 351734
+      },
+      "throughput": {
+        "mean": 354510.9981315867,
+        "p99": 375234.52157893544,
+        "rme": 0.022166017182493468
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-dispatcher/bench/argument-resolver.bench.ts",
+      "suite": "resolver lookup — query param",
+      "name": "Array.find + supportsParameter",
+      "opsPerIteration": 1000,
+      "nsPerOp": 87.84121001317845,
+      "opsPerSecond": 11384178.335544037,
+      "latency": {
+        "mean": 0.08784121001317845,
+        "min": 0.08167300000013711,
+        "max": 1.1429209999996601,
+        "p50": 0.08709399999997913,
+        "p75": 0.08822600000030434,
+        "p99": 0.13879435999951964,
+        "p999": 0.1885967680000758,
+        "rme": 0.26718287592358025,
+        "samples": 11385
+      },
+      "throughput": {
+        "mean": 11454.004023661371,
+        "p99": 12200.478258752084,
+        "rme": 0.10680218429741177
+      },
+      "rank": 2
+    },
+    {
+      "file": "packages/ndigo-dispatcher/bench/argument-resolver.bench.ts",
+      "suite": "invoke — zero parameters",
+      "name": "invoke()",
+      "opsPerIteration": 1000,
+      "nsPerOp": 100.34786965682807,
+      "opsPerSecond": 9965333.628106136,
+      "latency": {
+        "mean": 0.10034786965682807,
+        "min": 0.09838500000023487,
+        "max": 0.2385889999995925,
+        "p50": 0.09974800000054529,
+        "p75": 0.10017900000002555,
+        "p99": 0.10679499999978363,
+        "p999": 0.18002349499974973,
+        "rme": 0.09075029767814659,
+        "samples": 9966
+      },
+      "throughput": {
+        "mean": 9977.732507293438,
+        "p99": 10117.770852713506,
+        "rme": 0.05431024278230702
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-dispatcher/bench/argument-resolver.bench.ts",
+      "suite": "invoke — one path parameter",
+      "name": "invoke()",
+      "opsPerIteration": 1000,
+      "nsPerOp": 173.3697408563023,
+      "opsPerSecond": 5768019.234849357,
+      "latency": {
+        "mean": 0.1733697408563023,
+        "min": 0.17000000000007276,
+        "max": 0.27497700000003533,
+        "p50": 0.17250499999954627,
+        "p75": 0.17364600000018982,
+        "p99": 0.17891912000017327,
+        "p999": 0.24762151999993512,
+        "rme": 0.07925184050148022,
+        "samples": 5769
+      },
+      "throughput": {
+        "mean": 5772.051167322768,
+        "p99": 5853.128618670899,
+        "rme": 0.05914748165269616
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-dispatcher/bench/argument-resolver.bench.ts",
+      "suite": "invoke — one query parameter",
+      "name": "invoke()",
+      "opsPerIteration": 1000,
+      "nsPerOp": 175.79689224819256,
+      "opsPerSecond": 5688382.696709938,
+      "latency": {
+        "mean": 0.17579689224819256,
+        "min": 0.17239400000107707,
+        "max": 0.27903499999956694,
+        "p50": 0.17452899999989313,
+        "p75": 0.17632199999934528,
+        "p99": 0.18564431999897346,
+        "p999": 0.25345090400062315,
+        "rme": 0.08940275822128171,
+        "samples": 5689
+      },
+      "throughput": {
+        "mean": 5693.408979412134,
+        "p99": 5781.931011224331,
+        "rme": 0.06728510258540184
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-dispatcher/bench/argument-resolver.bench.ts",
+      "suite": "invoke — three mixed parameters",
+      "name": "invoke()",
+      "opsPerIteration": 1000,
+      "nsPerOp": 325.9978135593176,
+      "opsPerSecond": 3067505.2359455256,
+      "latency": {
+        "mean": 0.3259978135593176,
+        "min": 0.3074980000001233,
+        "max": 0.600098999999318,
+        "p50": 0.32308800000100746,
+        "p75": 0.32611299999962284,
+        "p99": 0.400305059999191,
+        "p999": 0.4648385710011388,
+        "rme": 0.16068398021857927,
+        "samples": 3068
+      },
+      "throughput": {
+        "mean": 3072.540351704426,
+        "p99": 3219.7294785211825,
+        "rme": 0.1294774532111972
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-dispatcher/bench/argument-resolver.bench.ts",
+      "suite": "invoke — ten query parameters",
+      "name": "invoke()",
+      "opsPerIteration": 1000,
+      "nsPerOp": 846.5579390863114,
+      "opsPerSecond": 1181254.056963069,
+      "latency": {
+        "mean": 0.8465579390863114,
+        "min": 0.7925719999984722,
+        "max": 1.616892000000007,
+        "p50": 0.8185000000003129,
+        "p75": 0.8631122500000856,
+        "p99": 1.072028350000876,
+        "p999": 1.5532448029995574,
+        "rme": 0.42212647497259553,
+        "samples": 1182
+      },
+      "throughput": {
+        "mean": 1186.097430916126,
+        "p99": 1256.7325062245134,
+        "rme": 0.3239569359845636
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-dispatcher/bench/factory-lookup.bench.ts",
+      "suite": "getValue – warm singleton (fast path)",
+      "name": "getValue — warm singleton",
+      "opsPerIteration": 1000,
+      "nsPerOp": 3.5223957477685572,
+      "opsPerSecond": 283897685.4413651,
+      "latency": {
+        "mean": 0.0035223957477685574,
+        "min": 0.0032059999999773936,
+        "max": 0.10579900000004727,
+        "p50": 0.0035070000000132495,
+        "p75": 0.003547000000025946,
+        "p99": 0.0038369999999758875,
+        "p999": 0.0075241030000911474,
+        "rme": 0.03858738798092872,
+        "samples": 283898
+      },
+      "throughput": {
+        "mean": 284698.0323179524,
+        "p99": 308071.4725825795,
+        "rme": 0.014490792698404354
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-dispatcher/bench/factory-lookup.bench.ts",
+      "suite": "getValue – miss (undefined result)",
+      "name": "getValue — miss",
+      "opsPerIteration": 1000,
+      "nsPerOp": 19.96293378316403,
+      "opsPerSecond": 50092837.599018715,
+      "latency": {
+        "mean": 0.01996293378316403,
+        "min": 0.0195770000000266,
+        "max": 0.11285200000020268,
+        "p50": 0.019776999999976397,
+        "p75": 0.019957999999860476,
+        "p99": 0.022723000000041793,
+        "p999": 0.05142517200000478,
+        "rme": 0.06552050984330908,
+        "samples": 50093
+      },
+      "throughput": {
+        "mean": 50203.00488736855,
+        "p99": 50898.355983490685,
+        "rme": 0.028069153980437786
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-dispatcher/bench/factory-lookup.bench.ts",
+      "suite": "hasValue – present key",
+      "name": "hasValue — present",
+      "opsPerIteration": 1000,
+      "nsPerOp": 3.5163007349061424,
+      "opsPerSecond": 284389782.1574389,
+      "latency": {
+        "mean": 0.003516300734906142,
+        "min": 0.003396000000066124,
+        "max": 0.03269200000022465,
+        "p50": 0.003467000000000553,
+        "p75": 0.0035370000000511936,
+        "p99": 0.003827000000001135,
+        "p999": 0.006502611000111277,
+        "rme": 0.022603092601799327,
+        "samples": 284390
+      },
+      "throughput": {
+        "mean": 284964.6798226711,
+        "p99": 292740.04683706816,
+        "rme": 0.013658432787949922
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-dispatcher/bench/factory-lookup.bench.ts",
+      "suite": "hasValue – absent key",
+      "name": "hasValue — absent",
+      "opsPerIteration": 1000,
+      "nsPerOp": 15.284353630764837,
+      "opsPerSecond": 65426384.664848894,
+      "latency": {
+        "mean": 0.015284353630764837,
+        "min": 0.014917999999852327,
+        "max": 0.0525790000001507,
+        "p50": 0.01520899999923131,
+        "p75": 0.015328999999837833,
+        "p99": 0.017762999999831663,
+        "p999": 0.018874999999752617,
+        "rme": 0.02184862683534884,
+        "samples": 65427
+      },
+      "throughput": {
+        "mean": 65467.09022423384,
+        "p99": 66631.13006260192,
+        "rme": 0.017322974123848735
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-dispatcher/bench/factory-lookup.bench.ts",
+      "suite": "hasInstance – present key",
+      "name": "hasInstance — present",
+      "opsPerIteration": 1000,
+      "nsPerOp": 3.8562801926595203,
+      "opsPerSecond": 259317256.5374044,
+      "latency": {
+        "mean": 0.0038562801926595204,
+        "min": 0.0034069999992425437,
+        "max": 0.1808500000006461,
+        "p50": 0.003626000000622298,
+        "p75": 0.00369700000010198,
+        "p99": 0.008936999999605177,
+        "p999": 0.0093780000003635,
+        "rme": 0.10622661167869497,
+        "samples": 259318
+      },
+      "throughput": {
+        "mean": 267802.3723675986,
+        "p99": 284414.1069588631,
+        "rme": 0.047586968084556286
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-dispatcher/bench/factory-lookup.bench.ts",
+      "suite": "Object.keys(factory) – 10 entries",
+      "name": "Object.keys — 10 entries",
+      "opsPerIteration": 1000,
+      "nsPerOp": 7.206523680494575,
+      "opsPerSecond": 138763160.20533374,
+      "latency": {
+        "mean": 0.007206523680494575,
+        "min": 0.005380000000513974,
+        "max": 0.15691599999991013,
+        "p50": 0.006812999999965541,
+        "p75": 0.007254000000102678,
+        "p99": 0.013334999999642605,
+        "p999": 0.05394019699975019,
+        "rme": 0.27086159002140725,
+        "samples": 138764
+      },
+      "throughput": {
+        "mean": 146600.53103006855,
+        "p99": 174489.6178617627,
+        "rme": 0.08278759328845375
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-dispatcher/bench/routing.bench.ts",
+      "suite": "full resolution — static route",
+      "name": "getHandler(/users)",
+      "opsPerIteration": 1000,
+      "nsPerOp": 306.6908390064402,
+      "opsPerSecond": 3260612.5544525995,
+      "latency": {
+        "mean": 0.30669083900644023,
+        "min": 0.2939039999999977,
+        "max": 0.4129570000000058,
+        "p50": 0.30373099999997066,
+        "p75": 0.3086309999999912,
+        "p99": 0.3521889999999985,
+        "p999": 0.39689742000004774,
+        "rme": 0.1311281032063413,
+        "samples": 3261
+      },
+      "throughput": {
+        "mean": 3264.859678876074,
+        "p99": 3372.3286978154815,
+        "rme": 0.11736569491970837
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-dispatcher/bench/routing.bench.ts",
+      "suite": "full resolution — parameterised route",
+      "name": "getHandler(/users/42)",
+      "opsPerIteration": 1000,
+      "nsPerOp": 366.3312868131881,
+      "opsPerSecond": 2729769.5719611123,
+      "latency": {
+        "mean": 0.3663312868131881,
+        "min": 0.33201499999995576,
+        "max": 0.4343069999999898,
+        "p50": 0.3695049999997764,
+        "p75": 0.37188000000014654,
+        "p99": 0.4061472999998523,
+        "p999": 0.4143411790000769,
+        "rme": 0.14733111829968354,
+        "samples": 2730
+      },
+      "throughput": {
+        "mean": 2734.035077001856,
+        "p99": 2990.3787575937868,
+        "rme": 0.1495584339698615
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-dispatcher/bench/routing.bench.ts",
+      "suite": "full resolution — deep nested route",
+      "name": "getHandler(/api/v1/users/42/profile)",
+      "opsPerIteration": 1000,
+      "nsPerOp": 431.1289249999966,
+      "opsPerSecond": 2319491.785432879,
+      "latency": {
+        "mean": 0.4311289249999966,
+        "min": 0.40590400000019144,
+        "max": 0.842656000000261,
+        "p50": 0.4302499999998872,
+        "p75": 0.432396500000209,
+        "p99": 0.47697043999981353,
+        "p999": 0.7126585810000045,
+        "rme": 0.17226891099593916,
+        "samples": 2320
+      },
+      "throughput": {
+        "mean": 2322.3929159299823,
+        "p99": 2441.2131542841603,
+        "rme": 0.1256077794344405
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-dispatcher/bench/routing.bench.ts",
+      "suite": "full resolution — route miss",
+      "name": "getHandler(/nonexistent)",
+      "opsPerIteration": 1000,
+      "nsPerOp": 49.38155518245908,
+      "opsPerSecond": 20250476.03918339,
+      "latency": {
+        "mean": 0.04938155518245908,
+        "min": 0.046968000000561005,
+        "max": 0.15093399999932444,
+        "p50": 0.048271000000568165,
+        "p75": 0.048681000000215136,
+        "p99": 0.07952949999980774,
+        "p999": 0.0939542500002517,
+        "rme": 0.15650082349761746,
+        "samples": 20251
+      },
+      "throughput": {
+        "mean": 20412.099810965137,
+        "p99": 21142.096027472122,
+        "rme": 0.09723736125934956
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-dispatcher/bench/routing.bench.ts",
+      "suite": "full resolution — three-route rotation",
+      "name": "getHandler rotation",
+      "opsPerIteration": 1000,
+      "nsPerOp": 396.17032475249044,
+      "opsPerSecond": 2524166.848248302,
+      "latency": {
+        "mean": 0.3961703247524904,
+        "min": 0.35760300000038114,
+        "max": 0.4957940000003873,
+        "p50": 0.4032889999998588,
+        "p75": 0.40906100000029255,
+        "p99": 0.4478210000002582,
+        "p999": 0.46811623600017627,
+        "rme": 0.1972501174433338,
+        "samples": 2525
+      },
+      "throughput": {
+        "mean": 2530.6233199128847,
+        "p99": 2778.8769842719335,
+        "rme": 0.19745537677071
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-dispatcher/bench/routing.bench.ts",
+      "suite": "parity — static route",
+      "name": "radix3",
+      "opsPerIteration": 1000,
+      "nsPerOp": 28.708316903019718,
+      "opsPerSecond": 34833111.37250313,
+      "latency": {
+        "mean": 0.028708316903019716,
+        "min": 0.027501000000484055,
+        "max": 0.16689399999995658,
+        "p50": 0.028413000000000466,
+        "p75": 0.02873399999953108,
+        "p99": 0.03183669999973061,
+        "p999": 0.08776184700035815,
+        "rme": 0.12056036629111395,
+        "samples": 34834
+      },
+      "throughput": {
+        "mean": 34989.29602995531,
+        "p99": 36098.47664505686,
+        "rme": 0.04432588476305534
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-dispatcher/bench/routing.bench.ts",
+      "suite": "parity — static route",
+      "name": "find-my-way",
+      "opsPerIteration": 1000,
+      "nsPerOp": 52.60981060605057,
+      "opsPerSecond": 19007861.62277101,
+      "latency": {
+        "mean": 0.05260981060605057,
+        "min": 0.0498939999997674,
+        "max": 1.114939000000959,
+        "p50": 0.05123699999967357,
+        "p75": 0.05182025000112844,
+        "p99": 0.09095049999988991,
+        "p999": 0.11019139899849553,
+        "rme": 0.29527256764096865,
+        "samples": 19008
+      },
+      "throughput": {
+        "mean": 19206.119001790557,
+        "p99": 19851.483114631734,
+        "rme": 0.10086236593640284
+      },
+      "rank": 2
+    },
+    {
+      "file": "packages/ndigo-dispatcher/bench/routing.bench.ts",
+      "suite": "parity — static route",
+      "name": "RadixTree.lookup",
+      "opsPerIteration": 1000,
+      "nsPerOp": 52.6282022945005,
+      "opsPerSecond": 19001219.04989518,
+      "latency": {
+        "mean": 0.05262820229450049,
+        "min": 0.049492999999529275,
+        "max": 0.16218500000013591,
+        "p50": 0.05134699999962322,
+        "p75": 0.05211799999960931,
+        "p99": 0.08946761000011981,
+        "p999": 0.10026890999957139,
+        "rme": 0.16932974035199017,
+        "samples": 19002
+      },
+      "throughput": {
+        "mean": 19164.979047902005,
+        "p99": 19962.47055528741,
+        "rme": 0.10332861600197699
+      },
+      "rank": 3
+    },
+    {
+      "file": "packages/ndigo-dispatcher/bench/routing.bench.ts",
+      "suite": "parity — parameterised route",
+      "name": "RadixTree.lookup",
+      "opsPerIteration": 1000,
+      "nsPerOp": 143.07096781115214,
+      "opsPerSecond": 6989538.236156753,
+      "latency": {
+        "mean": 0.14307096781115214,
+        "min": 0.1308260000005248,
+        "max": 0.2917890000007901,
+        "p50": 0.14115600000150152,
+        "p75": 0.14245800000026065,
+        "p99": 0.1922841000001244,
+        "p999": 0.23296599399952825,
+        "rme": 0.16487830102070608,
+        "samples": 6990
+      },
+      "throughput": {
+        "mean": 7015.144493126755,
+        "p99": 7452.014618948454,
+        "rme": 0.12301768543733516
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-dispatcher/bench/routing.bench.ts",
+      "suite": "parity — parameterised route",
+      "name": "radix3",
+      "opsPerIteration": 1000,
+      "nsPerOp": 170.86582231333443,
+      "opsPerSecond": 5852545.50302164,
+      "latency": {
+        "mean": 0.17086582231333444,
+        "min": 0.15532300000086252,
+        "max": 3.3330340000011347,
+        "p50": 0.1662930000002234,
+        "p75": 0.16814700000031735,
+        "p99": 0.25085040000012665,
+        "p999": 0.3102647879997175,
+        "rme": 0.664659474120795,
+        "samples": 5853
+      },
+      "throughput": {
+        "mean": 5906.517332124047,
+        "p99": 6191.398437659294,
+        "rme": 0.17399205897726214
+      },
+      "rank": 2
+    },
+    {
+      "file": "packages/ndigo-dispatcher/bench/routing.bench.ts",
+      "suite": "parity — parameterised route",
+      "name": "find-my-way",
+      "opsPerIteration": 1000,
+      "nsPerOp": 187.95902631084854,
+      "opsPerSecond": 5320308.471625033,
+      "latency": {
+        "mean": 0.18795902631084854,
+        "min": 0.1779050000004645,
+        "max": 0.30146699999932025,
+        "p50": 0.18687099999988277,
+        "p75": 0.18811400000049616,
+        "p99": 0.2354389999989508,
+        "p999": 0.2601377600004346,
+        "rme": 0.10412676426428183,
+        "samples": 5321
+      },
+      "throughput": {
+        "mean": 5326.593745549519,
+        "p99": 5485.072441537652,
+        "rme": 0.08227344259198466
+      },
+      "rank": 3
+    },
+    {
+      "file": "packages/ndigo-dispatcher/bench/routing.bench.ts",
+      "suite": "parity — deep nested route",
+      "name": "radix3",
+      "opsPerIteration": 1000,
+      "nsPerOp": 191.04665711558107,
+      "opsPerSecond": 5234323.463691968,
+      "latency": {
+        "mean": 0.19104665711558105,
+        "min": 0.18443699999988894,
+        "max": 0.30979300000035437,
+        "p50": 0.1899779999985185,
+        "p75": 0.19103899999936402,
+        "p99": 0.23887959999956365,
+        "p999": 0.2579306240009456,
+        "rme": 0.10357507103411737,
+        "samples": 5235
+      },
+      "throughput": {
+        "mean": 5240.390647294433,
+        "p99": 5364.582397176363,
+        "rme": 0.08238496623654068
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-dispatcher/bench/routing.bench.ts",
+      "suite": "parity — deep nested route",
+      "name": "find-my-way",
+      "opsPerIteration": 1000,
+      "nsPerOp": 207.5777872561294,
+      "opsPerSecond": 4817471.142835259,
+      "latency": {
+        "mean": 0.2075777872561294,
+        "min": 0.20103799999924377,
+        "max": 0.3129989999997633,
+        "p50": 0.20632900000055088,
+        "p75": 0.2076809999998659,
+        "p99": 0.2565628000005199,
+        "p999": 0.2859688579998164,
+        "rme": 0.10387291371447965,
+        "samples": 4818
+      },
+      "throughput": {
+        "mean": 4822.683308189377,
+        "p99": 4922.845959628647,
+        "rme": 0.08333312680592189
+      },
+      "rank": 2
+    },
+    {
+      "file": "packages/ndigo-dispatcher/bench/routing.bench.ts",
+      "suite": "parity — deep nested route",
+      "name": "RadixTree.lookup",
+      "opsPerIteration": 1000,
+      "nsPerOp": 225.14140859974577,
+      "opsPerSecond": 4441652.942563713,
+      "latency": {
+        "mean": 0.22514140859974577,
+        "min": 0.2138730000006035,
+        "max": 0.3223869999983435,
+        "p50": 0.2236109999994369,
+        "p75": 0.22516400000131398,
+        "p99": 0.27400090000010097,
+        "p999": 0.2924697369996705,
+        "rme": 0.11604255776238445,
+        "samples": 4442
+      },
+      "throughput": {
+        "mean": 4447.420995061127,
+        "p99": 4604.833880683606,
+        "rme": 0.09695363442745576
+      },
+      "rank": 3
+    },
+    {
+      "file": "packages/ndigo-dispatcher/bench/routing.bench.ts",
+      "suite": "parity — route miss",
+      "name": "find-my-way",
+      "opsPerIteration": 1000,
+      "nsPerOp": 19.442207349083038,
+      "opsPerSecond": 51434488.99834737,
+      "latency": {
+        "mean": 0.019442207349083036,
+        "min": 0.018605000001116423,
+        "max": 0.15672500000073342,
+        "p50": 0.01911599999948521,
+        "p75": 0.019337000001542037,
+        "p99": 0.024114800000170248,
+        "p999": 0.06927452600005192,
+        "rme": 0.11950654372050717,
+        "samples": 51435
+      },
+      "throughput": {
+        "mean": 51746.976578183,
+        "p99": 53146.25850400046,
+        "rme": 0.04397718021940315
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-dispatcher/bench/routing.bench.ts",
+      "suite": "parity — route miss",
+      "name": "RadixTree.lookup",
+      "opsPerIteration": 1000,
+      "nsPerOp": 44.589979132279396,
+      "opsPerSecond": 22426563.534228794,
+      "latency": {
+        "mean": 0.0445899791322794,
+        "min": 0.04159799999979441,
+        "max": 0.1696300000003248,
+        "p50": 0.04386299999896437,
+        "p75": 0.04436399999758578,
+        "p99": 0.0870714000028238,
+        "p999": 0.09830493399937412,
+        "rme": 0.15766327590910892,
+        "samples": 22427
+      },
+      "throughput": {
+        "mean": 22589.46934981824,
+        "p99": 23474.178403383805,
+        "rme": 0.0802476321181008
+      },
+      "rank": 2
+    },
+    {
+      "file": "packages/ndigo-dispatcher/bench/routing.bench.ts",
+      "suite": "parity — route miss",
+      "name": "radix3",
+      "opsPerIteration": 1000,
+      "nsPerOp": 47.63309626561416,
+      "opsPerSecond": 20993806.374117438,
+      "latency": {
+        "mean": 0.047633096265614155,
+        "min": 0.045595999999932246,
+        "max": 0.329078999999183,
+        "p50": 0.04695899999933317,
+        "p75": 0.04729899999802001,
+        "p99": 0.06087686999908327,
+        "p999": 0.11590395700002167,
+        "rme": 0.1545613850280816,
+        "samples": 20994
+      },
+      "throughput": {
+        "mean": 21108.462580368847,
+        "p99": 21688.680678353576,
+        "rme": 0.07008431667892182
+      },
+      "rank": 3
+    },
+    {
+      "file": "packages/ndigo-http/bench/query-string.bench.ts",
+      "suite": "parse — query strings",
+      "name": "URLSearchParams adapter",
+      "opsPerIteration": 8,
+      "nsPerOp": 160.66193951534188,
+      "opsPerSecond": 6224249.520556225,
+      "latency": {
+        "mean": 0.0012852955161227351,
+        "min": 0.0011319999998704589,
+        "max": 0.3227080000001479,
+        "p50": 0.0012120000001232256,
+        "p75": 0.0012420000002748566,
+        "p99": 0.0023439999999936845,
+        "p999": 0.0039667209996663635,
+        "rme": 0.22487590236337568,
+        "samples": 778032
+      },
+      "throughput": {
+        "mean": 798841.4662748319,
+        "p99": 853242.3209869447,
+        "rme": 0.02227113956771885
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-http/bench/query-string.bench.ts",
+      "suite": "parse — query strings",
+      "name": "ndigo QueryString.parse",
+      "opsPerIteration": 8,
+      "nsPerOp": 204.24211789176596,
+      "opsPerSecond": 4896149.777147973,
+      "latency": {
+        "mean": 0.0016339369431341278,
+        "min": 0.0014629999999442589,
+        "max": 0.9451390000001538,
+        "p50": 0.0015630000000328437,
+        "p75": 0.0015930000001844746,
+        "p99": 0.0027549999999791908,
+        "p999": 0.004928819999951484,
+        "rme": 0.22879054878489377,
+        "samples": 612019
+      },
+      "throughput": {
+        "mean": 625032.8497552815,
+        "p99": 661375.6613547006,
+        "rme": 0.02028555255961796
+      },
+      "rank": 2
+    },
+    {
+      "file": "packages/ndigo-http/bench/query-string.bench.ts",
+      "suite": "parse — query strings",
+      "name": "qs.parse (equivalent options)",
+      "opsPerIteration": 8,
+      "nsPerOp": 1042.4163838249983,
+      "opsPerSecond": 959309.5575979366,
+      "latency": {
+        "mean": 0.008339331070599986,
+        "min": 0.00783499999988635,
+        "max": 0.43128200000001016,
+        "p50": 0.008185000000139553,
+        "p75": 0.008295000000089203,
+        "p99": 0.011471870000154918,
+        "p999": 0.015028957000224632,
+        "rme": 0.14858155369517956,
+        "samples": 119914
+      },
+      "throughput": {
+        "mean": 120814.06666108582,
+        "p99": 125391.84952997505,
+        "rme": 0.029395141584957693
+      },
+      "rank": 3
+    },
+    {
+      "file": "packages/ndigo-http/bench/query-string.bench.ts",
+      "suite": "stringify — sorted flat record",
+      "name": "ndigo QueryString.stringify",
+      "opsPerIteration": 1,
+      "nsPerOp": 1223.894584757482,
+      "opsPerSecond": 817063.8325016795,
+      "latency": {
+        "mean": 0.0012238945847574821,
+        "min": 0.0011219999996683327,
+        "max": 0.1968509999996968,
+        "p50": 0.0011920000006284681,
+        "p75": 0.0012320000005274778,
+        "p99": 0.00156299999980547,
+        "p999": 0.0035470000002533197,
+        "rme": 0.12362273511977895,
+        "samples": 817064
+      },
+      "throughput": {
+        "mean": 824317.9507773536,
+        "p99": 868055.5556912166,
+        "rme": 0.012423297776966092
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-http/bench/query-string.bench.ts",
+      "suite": "stringify — sorted flat record",
+      "name": "qs.stringify (sorted, repeated arrays)",
+      "opsPerIteration": 1,
+      "nsPerOp": 1591.2446092629286,
+      "opsPerSecond": 628438.8925365814,
+      "latency": {
+        "mean": 0.0015912446092629286,
+        "min": 0.00141299999995681,
+        "max": 0.4494960000001811,
+        "p50": 0.0015030000004117028,
+        "p75": 0.0016130000003613532,
+        "p99": 0.0023940000000948203,
+        "p999": 0.004657999999835738,
+        "rme": 0.10337406509451526,
+        "samples": 628439
+      },
+      "throughput": {
+        "mean": 636930.0102951837,
+        "p99": 688231.2453360542,
+        "rme": 0.022945292168281218
+      },
+      "rank": 2
+    },
+    {
+      "file": "packages/ndigo-orm/bench/entity-manager.bench.ts",
+      "suite": "persist — insert path",
+      "name": "persist(new entity)",
+      "opsPerIteration": 1000,
+      "nsPerOp": 15979.592874999997,
+      "opsPerSecond": 62579.81713442122,
+      "latency": {
+        "mean": 15.979592874999996,
+        "min": 13.057211000000052,
+        "max": 27.990220999999792,
+        "p50": 16.15361949999999,
+        "p75": 17.33839899999998,
+        "p99": 23.99382796999992,
+        "p999": 27.59058169699979,
+        "rme": 3.9613738221270545,
+        "samples": 64
+      },
+      "throughput": {
+        "mean": 63.91731297283777,
+        "p99": 76.40769528286981,
+        "rme": 3.460016999648345
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-orm/bench/entity-manager.bench.ts",
+      "suite": "persist — update path",
+      "name": "persist(existing entity)",
+      "opsPerIteration": 1000,
+      "nsPerOp": 14994.9859104478,
+      "opsPerSecond": 66688.95896082484,
+      "latency": {
+        "mean": 14.9949859104478,
+        "min": 12.805636999999933,
+        "max": 23.278481999999713,
+        "p50": 15.84449699999982,
+        "p75": 16.125450999999885,
+        "p99": 19.61424648000003,
+        "p999": 22.91205844799973,
+        "rme": 3.0080481153192076,
+        "samples": 67
+      },
+      "throughput": {
+        "mean": 67.62051705213892,
+        "p99": 78.05547316691543,
+        "rme": 2.818133111321739
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-orm/bench/entity-manager.bench.ts",
+      "suite": "persist — batch insert (100 per iteration)",
+      "name": "persist × 100",
+      "opsPerIteration": 100,
+      "nsPerOp": 15166.693651515123,
+      "opsPerSecond": 65933.94862301461,
+      "latency": {
+        "mean": 1.5166693651515122,
+        "min": 1.2477089999997588,
+        "max": 8.70507699999962,
+        "p50": 1.302312000000029,
+        "p75": 1.3423237499998777,
+        "p99": 4.6892366300001,
+        "p999": 6.427906453999768,
+        "rme": 3.8779641785570402,
+        "samples": 660
+      },
+      "throughput": {
+        "mean": 722.8463134448646,
+        "p99": 792.1593463527691,
+        "rme": 1.3821882675651254
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-orm/bench/entity-manager.bench.ts",
+      "suite": "find — hit and miss",
+      "name": "Map.get(id)",
+      "opsPerIteration": 1000,
+      "nsPerOp": 2.350263739026935,
+      "opsPerSecond": 425484163.0727042,
+      "latency": {
+        "mean": 0.002350263739026935,
+        "min": 0.00224400000024616,
+        "max": 0.03533700000025419,
+        "p50": 0.002343999999538937,
+        "p75": 0.002344999999877473,
+        "p99": 0.002375000000029104,
+        "p999": 0.004884159999943255,
+        "rme": 0.02256191834257652,
+        "samples": 425485
+      },
+      "throughput": {
+        "mean": 426437.96386457194,
+        "p99": 434027.7778456083,
+        "rme": 0.010001155303578469
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-orm/bench/entity-manager.bench.ts",
+      "suite": "find — hit and miss",
+      "name": "find miss",
+      "opsPerIteration": 1000,
+      "nsPerOp": 239.62285888836348,
+      "opsPerSecond": 4173224.560624595,
+      "latency": {
+        "mean": 0.2396228588883635,
+        "min": 0.23477099999945494,
+        "max": 0.5182450000002063,
+        "p50": 0.23888899999974456,
+        "p75": 0.24015200000030745,
+        "p99": 0.24365170000018224,
+        "p999": 0.30489163299943894,
+        "rme": 0.09251742798057255,
+        "samples": 4174
+      },
+      "throughput": {
+        "mean": 4175.332621911686,
+        "p99": 4210.047699836408,
+        "rme": 0.05156590851283578
+      },
+      "rank": 2
+    },
+    {
+      "file": "packages/ndigo-orm/bench/entity-manager.bench.ts",
+      "suite": "find — hit and miss",
+      "name": "find(BenchUser, 1)",
+      "opsPerIteration": 1000,
+      "nsPerOp": 438.95064370336104,
+      "opsPerSecond": 2278160.45914217,
+      "latency": {
+        "mean": 0.43895064370336107,
+        "min": 0.4272240000000238,
+        "max": 0.6821540000000823,
+        "p50": 0.4385549999997238,
+        "p75": 0.4403889999994135,
+        "p99": 0.4520600199993896,
+        "p999": 0.5867587860000734,
+        "rme": 0.10163601603563063,
+        "samples": 2279
+      },
+      "throughput": {
+        "mean": 2279.2277093100283,
+        "p99": 2324.6320813418142,
+        "rme": 0.0784147273544012
+      },
+      "rank": 3
+    },
+    {
+      "file": "packages/ndigo-orm/bench/entity-manager.bench.ts",
+      "suite": "findAll — 5 / 1,000 / 10,000 rows",
+      "name": "findAll — 5 rows",
+      "opsPerIteration": 1,
+      "nsPerOp": 1343.2638879940068,
+      "opsPerSecond": 744455.3590235887,
+      "latency": {
+        "mean": 0.0013432638879940068,
+        "min": 0.0012930000011692755,
+        "max": 0.27780299999903946,
+        "p50": 0.0013319999998202547,
+        "p75": 0.0013330000001587905,
+        "p99": 0.00156299999980547,
+        "p999": 0.0033170000006066402,
+        "rme": 0.09046843348194736,
+        "samples": 744456
+      },
+      "throughput": {
+        "mean": 747612.049104532,
+        "p99": 762195.1217621247,
+        "rme": 0.009262064290815374
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-orm/bench/entity-manager.bench.ts",
+      "suite": "findAll — 5 / 1,000 / 10,000 rows",
+      "name": "findAll — 1,000 rows",
+      "opsPerIteration": 1,
+      "nsPerOp": 212874.90953597726,
+      "opsPerSecond": 4697.594480156401,
+      "latency": {
+        "mean": 0.21287490953597726,
+        "min": 0.20489499999894178,
+        "max": 0.44959599999856437,
+        "p50": 0.21051599999918835,
+        "p75": 0.2116889999997511,
+        "p99": 0.2517563999989761,
+        "p999": 0.42501652400027956,
+        "rme": 0.21462888010224146,
+        "samples": 4698
+      },
+      "throughput": {
+        "mean": 4712.8219012559075,
+        "p99": 4827.652795200807,
+        "rme": 0.12582399440542208
+      },
+      "rank": 2
+    },
+    {
+      "file": "packages/ndigo-orm/bench/entity-manager.bench.ts",
+      "suite": "findAll — 5 / 1,000 / 10,000 rows",
+      "name": "findAll — 10,000 rows",
+      "opsPerIteration": 1,
+      "nsPerOp": 2104744.021008424,
+      "opsPerSecond": 475.11715915025167,
+      "latency": {
+        "mean": 2.104744021008424,
+        "min": 2.0798960000010993,
+        "max": 2.352638999998817,
+        "p50": 2.0940019999998185,
+        "p75": 2.1006139999999505,
+        "p99": 2.309810999999627,
+        "p999": 2.3439251249994864,
+        "rme": 0.18672961729103604,
+        "samples": 476
+      },
+      "throughput": {
+        "mean": 475.3047400053362,
+        "p99": 480.0452980873407,
+        "rme": 0.17183830925336285
+      },
+      "rank": 3
+    },
+    {
+      "file": "packages/ndigo-orm/bench/entity-manager.bench.ts",
+      "suite": "remove — existing entity",
+      "name": "remove(existing)",
+      "opsPerIteration": 1,
+      "nsPerOp": 1015.9682804657143,
+      "opsPerSecond": 984282.6978236028,
+      "latency": {
+        "mean": 0.0010159682804657144,
+        "min": 0.0008409999973082449,
+        "max": 3.4852310000023863,
+        "p50": 0.0008920000000216532,
+        "p75": 0.0009119999995164108,
+        "p99": 0.0015929999972286168,
+        "p999": 0.003964180000628338,
+        "rme": 3.081682999753905,
+        "samples": 984283
+      },
+      "throughput": {
+        "mean": 1093695.8442724696,
+        "p99": 1161440.185235571,
+        "rme": 0.01702705633464191
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-platform-web/bench/cookie-parser.bench.ts",
+      "suite": "parseCookieHeader — decoded",
+      "name": "cookie npm parse (values only)",
+      "opsPerIteration": 5,
+      "nsPerOp": 121.12409156974795,
+      "opsPerSecond": 8255995.872003393,
+      "latency": {
+        "mean": 0.0006056204578487398,
+        "min": 0.0005609999998341664,
+        "max": 0.13109700000040903,
+        "p50": 0.0006009999997331761,
+        "p75": 0.0006010000006426708,
+        "p99": 0.0006819999998697313,
+        "p999": 0.0017230000003110035,
+        "rme": 0.07399200826502944,
+        "samples": 1651200
+      },
+      "throughput": {
+        "mean": 1662677.1957557395,
+        "p99": 1721170.3951628932,
+        "rme": 0.007018306473582787
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-platform-web/bench/cookie-parser.bench.ts",
+      "suite": "parseCookieHeader — decoded",
+      "name": "split + decodeURIComponent",
+      "opsPerIteration": 6,
+      "nsPerOp": 242.70300873780272,
+      "opsPerSecond": 4120262.0651494334,
+      "latency": {
+        "mean": 0.0014562180524268162,
+        "min": 0.001362999999855674,
+        "max": 0.556376999999884,
+        "p50": 0.0014330000003610621,
+        "p75": 0.0014529999998558196,
+        "p99": 0.0017439999996895494,
+        "p999": 0.003647000000000844,
+        "rme": 0.12785969280588094,
+        "samples": 686711
+      },
+      "throughput": {
+        "mean": 690722.4476960058,
+        "p99": 713266.7618345835,
+        "rme": 0.010658182960673992
+      },
+      "rank": 2
+    },
+    {
+      "file": "packages/ndigo-platform-web/bench/cookie-parser.bench.ts",
+      "suite": "parseCookieHeader — decoded",
+      "name": "split without decode — floor",
+      "opsPerIteration": 6,
+      "nsPerOp": 247.69040156496442,
+      "opsPerSecond": 4037298.149955638,
+      "latency": {
+        "mean": 0.0014861424093897866,
+        "min": 0.0013619999999718857,
+        "max": 4.09703300000001,
+        "p50": 0.0014419999997699051,
+        "p75": 0.001453000000310567,
+        "p99": 0.002193999999690277,
+        "p999": 0.003687000000354601,
+        "rme": 0.9114649738606669,
+        "samples": 672884
+      },
+      "throughput": {
+        "mean": 686284.8268901594,
+        "p99": 717875.0897306215,
+        "rme": 0.015860307227311157
+      },
+      "rank": 3
+    },
+    {
+      "file": "packages/ndigo-platform-web/bench/cookie-parser.bench.ts",
+      "suite": "parseCookieHeader — decoded",
+      "name": "parseCookieHeader",
+      "opsPerIteration": 6,
+      "nsPerOp": 835.7740109453129,
+      "opsPerSecond": 1196495.687714598,
+      "latency": {
+        "mean": 0.005014644065671877,
+        "min": 0.004818999999997686,
+        "max": 0.9550879999999324,
+        "p50": 0.004928999999947337,
+        "p75": 0.0049500000000080036,
+        "p99": 0.006411999999954787,
+        "p999": 0.009269700000015584,
+        "rme": 0.2400355495550575,
+        "samples": 199416
+      },
+      "throughput": {
+        "mean": 201043.77705455583,
+        "p99": 206228.08825927132,
+        "rme": 0.021066762455820922
+      },
+      "rank": 4
+    },
+    {
+      "file": "packages/ndigo-util/bench/like.bench.ts",
+      "suite": "like — cached curried predicate",
+      "name": "hand-written typeof — valid",
+      "opsPerIteration": 1000,
+      "nsPerOp": 0.27588506573456617,
+      "opsPerSecond": 3624697833.2713284,
+      "latency": {
+        "mean": 0.0002758850657345662,
+        "min": 0.00025999999979831045,
+        "max": 0.03698900000017602,
+        "p50": 0.00027099999988422496,
+        "p75": 0.00028000000020256266,
+        "p99": 0.0003299999998489511,
+        "p999": 0.00048100000003614696,
+        "rme": 0.023565595999429773,
+        "samples": 3624698
+      },
+      "throughput": {
+        "mean": 3640522.3886606656,
+        "p99": 3703703.7099356763,
+        "rme": 0.003907518772467122
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-util/bench/like.bench.ts",
+      "suite": "like — cached curried predicate",
+      "name": "like cached — null",
+      "opsPerIteration": 1000,
+      "nsPerOp": 0.2929950143978434,
+      "opsPerSecond": 3413027358.350028,
+      "latency": {
+        "mean": 0.00029299501439784343,
+        "min": 0.00027000000000043656,
+        "max": 0.02372400000012931,
+        "p50": 0.0002899999999499414,
+        "p75": 0.0002909999998337298,
+        "p99": 0.0004210000001876324,
+        "p999": 0.0004310000003897585,
+        "rme": 0.02012502572923344,
+        "samples": 3413028
+      },
+      "throughput": {
+        "mean": 3436210.1686511287,
+        "p99": 3571428.574645213,
+        "rme": 0.0063491141675023535
+      },
+      "rank": 2
+    },
+    {
+      "file": "packages/ndigo-util/bench/like.bench.ts",
+      "suite": "like — cached curried predicate",
+      "name": "like cached — mismatch",
+      "opsPerIteration": 1000,
+      "nsPerOp": 1.9279848846202872,
+      "opsPerSecond": 518676265.554306,
+      "latency": {
+        "mean": 0.0019279848846202872,
+        "min": 0.0018430000000080327,
+        "max": 0.026450000000295404,
+        "p50": 0.001914000000397209,
+        "p75": 0.0019329999995534308,
+        "p99": 0.0020440000007511117,
+        "p999": 0.0038079999994806712,
+        "rme": 0.01582434279839343,
+        "samples": 518677
+      },
+      "throughput": {
+        "mean": 519432.2554816803,
+        "p99": 531067.4455918039,
+        "rme": 0.0077629714631338035
+      },
+      "rank": 3
+    },
+    {
+      "file": "packages/ndigo-util/bench/like.bench.ts",
+      "suite": "like — cached curried predicate",
+      "name": "like cached — valid",
+      "opsPerIteration": 1000,
+      "nsPerOp": 2.152305381398573,
+      "opsPerSecond": 464618082.8438935,
+      "latency": {
+        "mean": 0.002152305381398573,
+        "min": 0.0020230000000083237,
+        "max": 0.02620899999988069,
+        "p50": 0.0020939999999427528,
+        "p75": 0.0022349999999278225,
+        "p99": 0.002453999999943335,
+        "p999": 0.0043480000000231485,
+        "rme": 0.02227712255515212,
+        "samples": 464619
+      },
+      "throughput": {
+        "mean": 466305.0044067978,
+        "p99": 491642.08453966,
+        "rme": 0.015128339637292912
+      },
+      "rank": 4
+    },
+    {
+      "file": "packages/ndigo-util/bench/like.bench.ts",
+      "suite": "like — two-argument immediate call",
+      "name": "like(descriptor, value) — null",
+      "opsPerIteration": 1000,
+      "nsPerOp": 21.971699367231974,
+      "opsPerSecond": 45513093.15161003,
+      "latency": {
+        "mean": 0.021971699367231975,
+        "min": 0.021109000001160894,
+        "max": 0.19171099999948638,
+        "p50": 0.02169099999991886,
+        "p75": 0.021921000001384527,
+        "p99": 0.025126999999765757,
+        "p999": 0.03395782999941921,
+        "rme": 0.1263301462698241,
+        "samples": 45514
+      },
+      "throughput": {
+        "mean": 45685.72167495136,
+        "p99": 46904.31519736693,
+        "rme": 0.033494312175089344
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-util/bench/like.bench.ts",
+      "suite": "like — two-argument immediate call",
+      "name": "like(descriptor, value) — valid",
+      "opsPerIteration": 1000,
+      "nsPerOp": 23.443607980120003,
+      "opsPerSecond": 42655550.32518852,
+      "latency": {
+        "mean": 0.023443607980120004,
+        "min": 0.02267200000005687,
+        "max": 0.1806799999994837,
+        "p50": 0.023253000000295287,
+        "p75": 0.023404999999911524,
+        "p99": 0.025889000000461238,
+        "p999": 0.032209490000260604,
+        "rme": 0.11430941762218157,
+        "samples": 42656
+      },
+      "throughput": {
+        "mean": 42778.44427872575,
+        "p99": 43660.495982508815,
+        "rme": 0.02741784548338442
+      },
+      "rank": 2
+    },
+    {
+      "file": "packages/ndigo-util/bench/like.bench.ts",
+      "suite": "like — fresh descriptor (cache miss)",
+      "name": "fresh descriptor — null",
+      "opsPerIteration": 1000,
+      "nsPerOp": 431.48914106989787,
+      "opsPerSecond": 2317555.425660197,
+      "latency": {
+        "mean": 0.4314891410698979,
+        "min": 0.15905999999995402,
+        "max": 37.75317600000017,
+        "p50": 0.27372550000018236,
+        "p75": 0.3089592500004983,
+        "p99": 0.9391767199999593,
+        "p999": 37.423419048001115,
+        "rme": 21.125913942524875,
+        "samples": 2318
+      },
+      "throughput": {
+        "mean": 3858.0775360308535,
+        "p99": 6018.828758096199,
+        "rme": 1.0103460096671628
+      },
+      "rank": 1
+    },
+    {
+      "file": "packages/ndigo-util/bench/like.bench.ts",
+      "suite": "like — fresh descriptor (cache miss)",
+      "name": "fresh descriptor — valid",
+      "opsPerIteration": 1000,
+      "nsPerOp": 485.91513362488473,
+      "opsPerSecond": 2057972.5363564761,
+      "latency": {
+        "mean": 0.4859151336248847,
+        "min": 0.16245600000002014,
+        "max": 68.66181599999982,
+        "p50": 0.26891649999924994,
+        "p75": 0.29757750000044325,
+        "p99": 1.0288044600001378,
+        "p999": 61.375762317003904,
+        "rme": 28.396461812595913,
+        "samples": 2058
+      },
+      "throughput": {
+        "mean": 3846.3295564033874,
+        "p99": 5722.188967548004,
+        "rme": 0.9316012524023787
+      },
+      "rank": 2
+    }
+  ]
+}

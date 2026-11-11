@@ -80,7 +80,10 @@ progressive enhancement.
 
 ### Performance
 
-The todomvc benchmark suite (Speedometer-3 style workload in jsdom) measures the engine against other frameworks — model updates re-render in place without replacing the element.
+The browser comparison lane is quarantined until a real-browser runner lands;
+see [`BENCHMARKS.md`](../../BENCHMARKS.md). The jsdom harness cannot execute the
+module-script TodoMVC bundle, so no cross-framework numbers are published for
+this engine.
 
 ### WebMCP tools
 

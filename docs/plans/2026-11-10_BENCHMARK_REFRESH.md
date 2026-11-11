@@ -1,10 +1,32 @@
 # Benchmark Refresh and Expansion Plan — 2026-11-10
 
-**Status:** Proposed
+**Status:** In progress — Phase 0 and Phase 1 are implemented on this branch;
+Phase 2+ remains.
 **Input:** [Benchmark Estate Audit](../audits/2026-11-10_BENCHMARK_ESTATE_AUDIT.md)
 **Goal:** a benchmark estate that is reproducible, semantically fair, and
 useful as an optimization driver — and a documentation surface that can
 support honest public performance claims.
+
+---
+
+## Implementation progress (2026-11-10)
+
+- **Phase 0 — done:** serial `vitest.bench.config.ts`; `bench-run`,
+  `bench-compare`, and `bench-report` scripts; JSON artifacts with environment
+  fingerprint; benchmark files included in the spec typecheck lane; duplicates
+  removed; the dispatcher and view claims corrected; jsdom targets that cannot
+  execute module bundles quarantined with an explicit failure.
+- **Phase 1 — done:** every committed benchmark refreshed or replaced;
+  `@ops=N` units; `assertEquivalent` gates; external comparators for LRU,
+  query-string, cookies, and routers; production `like` regression (the local
+  exploration was deleted); ORM insert/update/find/findAll lifecycle.
+- **Phase 2 — partial:** router parity vs find-my-way/radix3 is separated from
+  full handler resolution and verified. End-to-end HTTP, binding/validation,
+  startup/RSS, and the `benchmarks/` macro workspace remain.
+- **Phase 3 — quarantined:** the jsdom DOM harness works for React and vanilla
+  only; Svelte/Vue/Ndigo use module scripts that jsdom cannot execute.
+- **Phases 4–5 — pending.**
+
 
 ---
 

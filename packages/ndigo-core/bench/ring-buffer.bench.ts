@@ -1,94 +1,96 @@
 /**
+ * RingBuffer throughput against a plain-array FIFO.
  *
- * Benchmark suite for RingBuffer.
- * Compares RingBuffer against a plain Array FIFO baseline.
- *
- * Scenarios:
- *   1. FIFO enqueue+dequeue throughput
- *   2. Burst put – fill to capacity
- *   3. peek – non-destructive front read
+ * Each measured iteration performs 1,000 logical operations. The FIFO order is
+ * verified on a fresh buffer before timing.
  */
 import { test } from 'vitest';
 import { RingBuffer } from '../src/ring-buffer';
+import { assertEquivalent, benchName, sink } from '../../../benchmarks/lib/verify';
 
-// module-level instances
-const rb = new RingBuffer<number>(16);
-const arr: number[] = [];
-const circArr = new Array(16).fill(0);
+const BATCH = 1_000;
+const CAPACITY = 16;
 
-let _sink: unknown = 0;
+const ring = new RingBuffer<number>(CAPACITY);
+const array: number[] = [];
+const retain = sink;
 
-test('FIFO enqueue+dequeue – 1000 ops', async ({ bench }) => {
+function verifyFifo(): void {
+    const fresh = new RingBuffer<number>(8);
+    fresh.put(1, 2, 3, 4);
+    assertEquivalent('RingBuffer FIFO order', [fresh.get(), fresh.get(), fresh.get(), fresh.get()], [1, 2, 3, 4]);
+    assertEquivalent('RingBuffer empty after drain', fresh.isEmpty, true);
+}
+
+test('FIFO enqueue + dequeue', async ({ bench }) => {
+    verifyFifo();
     await bench.compare(
-        bench('RingBuffer', () => {
-            for (let i = 0; i < 1000; i++) {
-                rb.put(i);
-                _sink = rb.get();
+        bench(benchName('RingBuffer put + get', BATCH), () => {
+            for (let i = 0; i < BATCH; i++) {
+                ring.put(i);
+                retain(ring.get());
             }
         }),
-        bench('Array (push/shift)', () => {
-            for (let i = 0; i < 1000; i++) {
-                arr.push(i);
-                _sink = arr.shift();
+        bench(benchName('Array push + shift', BATCH), () => {
+            for (let i = 0; i < BATCH; i++) {
+                array.push(i);
+                retain(array.shift());
             }
         })
     );
 });
 
-test('Burst put – fill 16-slot buffer 1000 times', async ({ bench }) => {
+test('burst put — 16-slot buffer', async ({ bench }) => {
+    const target = new RingBuffer<number>(CAPACITY);
+    const circular = new Array<number>(CAPACITY).fill(0);
     await bench.compare(
-        bench('RingBuffer', () => {
-            for (let i = 0; i < 16000; i++) {
-                rb.put(i);
-            }
+        bench(benchName('RingBuffer.put', 16_000), () => {
+            for (let i = 0; i < 16_000; i++) target.put(i);
+            retain(target.length);
         }),
-        bench('Circular Array simulation', () => {
-            let head = 0;
-            for (let i = 0; i < 16000; i++) {
-                circArr[head % 16] = i;
-                head++;
-            }
+        bench(benchName('Circular array assignment', 16_000), () => {
+            for (let i = 0; i < 16_000; i++) circular[i % CAPACITY] = i;
+            retain(circular[CAPACITY - 1]);
         })
     );
 });
 
-test('peek front – non-destructive read', async ({ bench }) => {
+test('peek — non-destructive front read', async ({ bench }) => {
+    const target = new RingBuffer<number>(CAPACITY);
+    const list: number[] = [];
     for (let i = 0; i < 8; i++) {
-        rb.put(i);
-        arr.push(i);
+        target.put(i);
+        list.push(i);
     }
+    assertEquivalent('RingBuffer.peek', target.peek(), list[0]);
     await bench.compare(
-        bench('RingBuffer.peek', () => {
-            for (let i = 0; i < 1000; i++) {
-                _sink = rb.peek();
-            }
+        bench(benchName('RingBuffer.peek', BATCH), () => {
+            for (let i = 0; i < BATCH; i++) retain(target.peek());
         }),
-        bench('Array[0]', () => {
-            for (let i = 0; i < 1000; i++) {
-                _sink = arr[0];
-            }
+        bench(benchName('Array[0]', BATCH), () => {
+            for (let i = 0; i < BATCH; i++) retain(list[0]);
         })
     );
 });
 
-test('bounded drop-oldest queue (socket envelope) – 1000 ops at cap', async ({ bench }) => {
-    const cappedRb = new RingBuffer<number>(16);
-    const cappedArr: number[] = [];
-    for (let i = 0; i < 16; i++) {
-        cappedRb.put(i);
-        cappedArr.push(i);
+test('bounded drop-oldest queue at capacity', async ({ bench }) => {
+    const target = new RingBuffer<number>(CAPACITY);
+    const list: number[] = [];
+    for (let i = 0; i < CAPACITY; i++) {
+        target.put(i);
+        list.push(i);
     }
     await bench.compare(
-        bench('RingBuffer (get + put at cap)', () => {
-            for (let i = 0; i < 1000; i++) {
-                cappedRb.get();
-                cappedRb.put(i);
+        bench(benchName('RingBuffer get + put at cap', BATCH), () => {
+            for (let i = 0; i < BATCH; i++) {
+                retain(target.get());
+                target.put(i);
             }
         }),
-        bench('Array (push + shift at cap)', () => {
-            for (let i = 0; i < 1000; i++) {
-                cappedArr.push(i);
-                cappedArr.shift();
+        bench(benchName('Array push + shift at cap', BATCH), () => {
+            for (let i = 0; i < BATCH; i++) {
+                list.push(i);
+                retain(list.shift());
             }
         })
     );

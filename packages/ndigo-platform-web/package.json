@@ -42,6 +42,7 @@
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "devDependencies": {
+    "cookie": "^2.0.1",
     "zod": "catalog:"
   },
   "dependencies": {

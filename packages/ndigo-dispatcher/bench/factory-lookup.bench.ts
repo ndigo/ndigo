@@ -33,7 +33,8 @@
 // packages/ndigo-context/bench/context-lookup.bench.ts's token case).
 
 import { test } from 'vitest';
-import { DefaultFactory } from '@ndigo/factory';
+import { DefaultFactory } from '../../ndigo-factory/src';
+import { assertEquivalent, benchName } from '../../../benchmarks/lib/verify';
 
 /* ------------------------------------------------------------------ */
 /*  Factory setup                                                       */
@@ -46,21 +47,6 @@ const singletonValue = { id: 42, name: 'test-service' };
 warmFactory.setValue('myService', singletonValue);
 // Force the fast path by triggering getValue once (caches as own property)
 warmFactory.getValue('myService');
-
-// Cold factory: constructor registered but no instance yet.
-// A fresh factory is created per outer-describe scope to avoid state
-// from leaking across scenarios.
-function _makeColdFactory() {
-    const f = new DefaultFactory();
-    // Register a trivial constructor so the constructor branch is taken
-    f.setValue(
-        'lazyService',
-        class {
-            value = 'lazy';
-        }
-    );
-    return f;
-}
 
 // Miss factory: nothing registered under 'unknown'.
 const missFactory = new DefaultFactory();
@@ -75,12 +61,17 @@ for (let i = 0; i < 10; i++) {
 
 let _sink: unknown = 0;
 
+assertEquivalent('factory getValue', warmFactory.getValue('myService'), singletonValue);
+assertEquivalent('factory hasValue', warmFactory.hasValue('myService'), true);
+assertEquivalent('factory hasInstance', warmFactory.hasInstance('myService'), true);
+assertEquivalent('factory keys count', Object.keys(multiFactory).length >= 10, true);
+
 /* ------------------------------------------------------------------ */
 /*  1. getValue – warm singleton (fast path)                           */
 /* ------------------------------------------------------------------ */
 
 test('getValue – warm singleton (fast path)', async ({ bench }) => {
-    await bench('getValue', () => {
+    await bench(benchName('getValue — warm singleton', 1000), () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             accumulator += warmFactory.getValue('myService') ? 1 : 0;
@@ -94,7 +85,7 @@ test('getValue – warm singleton (fast path)', async ({ bench }) => {
 /* ------------------------------------------------------------------ */
 
 test('getValue – miss (undefined result)', async ({ bench }) => {
-    await bench('getValue', () => {
+    await bench(benchName('getValue — miss', 1000), () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             const v = missFactory.getValue('unknown');
@@ -109,7 +100,7 @@ test('getValue – miss (undefined result)', async ({ bench }) => {
 /* ------------------------------------------------------------------ */
 
 test('hasValue – present key', async ({ bench }) => {
-    await bench('hasValue', () => {
+    await bench(benchName('hasValue — present', 1000), () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             accumulator += warmFactory.hasValue('myService') ? 1 : 0;
@@ -123,7 +114,7 @@ test('hasValue – present key', async ({ bench }) => {
 /* ------------------------------------------------------------------ */
 
 test('hasValue – absent key', async ({ bench }) => {
-    await bench('hasValue', () => {
+    await bench(benchName('hasValue — absent', 1000), () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             accumulator += warmFactory.hasValue('nope') ? 1 : 0;
@@ -137,7 +128,7 @@ test('hasValue – absent key', async ({ bench }) => {
 /* ------------------------------------------------------------------ */
 
 test('hasInstance – present key', async ({ bench }) => {
-    await bench('hasInstance', () => {
+    await bench(benchName('hasInstance — present', 1000), () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             accumulator += warmFactory.hasInstance('myService') ? 1 : 0;
@@ -151,7 +142,7 @@ test('hasInstance – present key', async ({ bench }) => {
 /* ------------------------------------------------------------------ */
 
 test('Object.keys(factory) – 10 entries', async ({ bench }) => {
-    await bench('keys', () => {
+    await bench(benchName('Object.keys — 10 entries', 1000), () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             accumulator += Object.keys(multiFactory).length;

@@ -7,7 +7,7 @@ resolver architecture — each parameter source is one resolver, first match
 wins — and the binding machinery reuses `DataBinder` (keypath-aware,
 core/isomorphic), `ConversionService`, and the Zod `convert` hook (guide 07).
 
-**Audience:** Node and browser application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) (Node) or [guide 02](02-building-a-browser-app.md) (browser); [guide 07](07-request-validation.md) for validation · **Reference app:** `[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)`
+**Audience:** Node and browser application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) (Node) or [guide 02](02-building-a-browser-app.md) (browser); [guide 07](07-request-validation.md) for validation · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)
 
 ## What you'll learn
 

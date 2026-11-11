@@ -6,7 +6,7 @@ file's role obvious before it is opened. They apply to new apps and to files
 touched while changing an existing app; the [migration backlog](#migration-backlog)
 lists the older shapes that are deliberately left for follow-up work.
 
-**Audience:** Framework contributors · **Prerequisites:** Workspace bootstrapped; [guide 37](37-ndigo-cli.md) · **Reference app:** `[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)`
+**Audience:** Framework contributors · **Prerequisites:** Workspace bootstrapped; [guide 37](37-ndigo-cli.md) · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)
 
 ## What you'll learn
 
@@ -29,8 +29,8 @@ apps/NN-ndigo-<slug>
 - `<slug>` is kebab-case and names the application, not its technology:
  `todo-web`, `todo-api`, `httpbin`, `petclinic`.
 - The package name is `@ndigo/<slug>` — the directory's `ndigo-` prefix and
- number are dropped. `[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)` is `@ndigo/api`;
- `[apps/04-ndigo-todo-api](https://github.com/ndigo/ndigo/tree/main/apps/04-ndigo-todo-api)` is `@ndigo/todo-api`.
+ number are dropped. [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api) is `@ndigo/api`;
+ [apps/04-ndigo-todo-api](https://github.com/ndigo/ndigo/tree/main/apps/04-ndigo-todo-api) is `@ndigo/todo-api`.
 - The package is always `private: true`; apps are not published.
 
 New apps append at the next free number. `ndigo new <slug> --kind node|browser`

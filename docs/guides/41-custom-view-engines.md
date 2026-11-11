@@ -9,7 +9,7 @@ This guide builds a React server-rendering engine as the worked example. The
 mechanics — render to HTML, serialize the model, hydrate on the client, resolve
 names, serve assets — are the same for every renderer.
 
-**Audience:** Node and browser application developers · **Prerequisites:** Guides [09](09-views-and-content-negotiation.md) and [30](30-component-integration.md) · **Reference app:** `[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)`, `[apps/08-ndigo-views](https://github.com/ndigo/ndigo/tree/main/apps/08-ndigo-views)`
+**Audience:** Node and browser application developers · **Prerequisites:** Guides [09](09-views-and-content-negotiation.md) and [30](30-component-integration.md) · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api), [apps/08-ndigo-views](https://github.com/ndigo/ndigo/tree/main/apps/08-ndigo-views)
 
 ## What you'll learn
 

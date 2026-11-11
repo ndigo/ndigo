@@ -9,7 +9,7 @@ The threat model and the rationale for each layer live in
 [Security Architecture](../architecture/security.md); this guide is the
 configuration and wiring.
 
-**Audience:** Node application developers and operators · **Prerequisites:** Guides [01](01-building-a-node-api.md) and [26](26-authentication-and-sessions.md) · **Reference app:** `[apps/09-ndigo-httpbin](https://github.com/ndigo/ndigo/tree/main/apps/09-ndigo-httpbin)`, `[apps/18-ndigo-auth-playground](https://github.com/ndigo/ndigo/tree/main/apps/18-ndigo-auth-playground)`
+**Audience:** Node application developers and operators · **Prerequisites:** Guides [01](01-building-a-node-api.md) and [26](26-authentication-and-sessions.md) · **Reference app:** [apps/09-ndigo-httpbin](https://github.com/ndigo/ndigo/tree/main/apps/09-ndigo-httpbin), [apps/18-ndigo-auth-playground](https://github.com/ndigo/ndigo/tree/main/apps/18-ndigo-auth-playground)
 
 ## What you'll learn
 

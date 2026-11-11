@@ -43,6 +43,7 @@
     "@ndigo/http": "~0.0.1",
     "@ndigo/log": "~0.0.1",
     "@ndigo/router": "~0.0.1",
+    "@ndigo/socket": "~0.0.1",
     "@opentelemetry/api": "catalog:",
     "@opentelemetry/instrumentation": "catalog:",
     "@tsmetadata/polyfill": "catalog:"

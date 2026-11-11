@@ -14,5 +14,6 @@ export * from './instrumentation/host/host';
 export * from './instrumentation/locks/locks';
 export * from './instrumentation/rate-limit/rate-limit';
 export * from './instrumentation/resilience/resilience';
+export * from './instrumentation/stomp/stomp';
 export * from './instrumentation/cache/cache';
 export * from './instrumentation/http-client/http-client';

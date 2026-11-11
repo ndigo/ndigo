@@ -1,3 +1,4 @@
+// oxlint-disable no-await-in-loop -- cache ops are sequential by contract; parallel calls change single-flight semantics.
 /**
  * `@ndigo/cache` MemoryCache and memoize throughput.
  *

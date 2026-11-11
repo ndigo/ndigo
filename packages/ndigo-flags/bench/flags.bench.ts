@@ -1,3 +1,4 @@
+// oxlint-disable no-await-in-loop -- evaluate is awaited sequentially to measure per-call cost.
 /**
  * `@ndigo/flags` PropertyFlagProvider evaluate throughput.
  *
@@ -98,8 +99,8 @@ test('PropertyFlagProvider — throwing reader (no-throw contract)', async ({ be
     await bench(benchName('evaluate throwing reader', BATCH), async () => {
         let acc = 0;
         for (let i = 0; i < BATCH; i++) {
-            const r = await provider.evaluate('flag', false);
-            if (r.reason === 'ERROR') acc++;
+            const ev = await provider.evaluate('flag', false);
+            if (ev.reason === 'ERROR') acc++;
         }
         retain(acc);
     }).run();

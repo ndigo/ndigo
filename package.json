@@ -52,7 +52,9 @@
     "agent-content:build": "node tools/agent-content/build.mjs",
     "agent-content:check": "node tools/agent-content/build.mjs --check",
     "ui:a2ui-map:build": "node packages/ndigo-ui/scripts/build-a2ui-map.mjs",
-    "ui:a2ui-map:check": "node packages/ndigo-ui/scripts/build-a2ui-map.mjs --check"
+    "ui:a2ui-map:check": "node packages/ndigo-ui/scripts/build-a2ui-map.mjs --check",
+    "storybook": "pnpm --filter @ndigo/ui-storybook storybook",
+    "build:storybook": "pnpm --filter @ndigo/ui-storybook build-storybook"
   },
   "keywords": [
     "ndigo",

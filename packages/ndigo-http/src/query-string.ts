@@ -62,7 +62,8 @@ const arrayStringifier = (key: string, value: string, index?: number): string =>
  */
 function parseQueryString(input: string): Record<string, string | string[]> {
     const result: Record<string, string | string[]> = Object.create(null);
-    for (const [key, value] of new URLSearchParams(input)) {
+    const params = new URLSearchParams(input);
+    params.forEach((value, key) => {
         const existing = result[key];
         if (existing === undefined) {
             result[key] = value;
@@ -71,7 +72,7 @@ function parseQueryString(input: string): Record<string, string | string[]> {
         } else {
             result[key] = [existing, value];
         }
-    }
+    });
     return result;
 }
 

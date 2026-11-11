@@ -92,9 +92,10 @@ treats a model or a tool result as trusted.
   same resolvers and validators as the HTTP route. A read-only registry omits
   mutating tools from `tools/list` **and** rejects them on call. `@whenFeature`
   removes gated tools entirely (fail closed without an evaluator). Bearer
-  validation and `@authorized` role checks run in the route interceptor chain
-  before the transport; `protectedResourceMetadata` publishes RFC 9728
-  metadata. Each call emits one `execute_tool` span.
+  validation, `@authorized` role checks, and `@authorizedScopes` scope checks
+  run in the route interceptor chain before the transport;
+  `protectedResourceMetadata` publishes RFC 9728 metadata. Each call emits one
+  `execute_tool` span.
 - **MCP Apps.** `createUiResource` escapes `body` by default;
   `trustedMarkup: true` is reserved for markup the application authored.
   CSS/script breakout sequences are rejected, CSP domains must be

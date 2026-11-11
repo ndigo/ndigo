@@ -22,6 +22,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- OAuth scope enforcement (issue #377): `Principal.scopes` with
+  `hasScope`/`hasAnyScope`, the `@authorizedScopes(...)` decorator, and
+  scope checks in `AuthRouteGuard`, `AuthMatrixGuard`, and the socket dispatch
+  path (403 on HTTP, `1008 insufficient scope` on sockets). The JWT and OIDC
+  adapters read the `scope` (space-delimited), `scp` (Azure AD), and `scopes`
+  (custom) claims; `TokenSubject.scopes` emits the `scope` claim for
+  store-less issuance. A scope requirement implies authentication.
 - `@ndigo/cli`: `ndigo routes --toon` — one TOON document on stdout for the
   route list, an experimental sibling beside the `--json` contract (issue
   #349). Measured first (`scripts/toon-measure.mjs`): on a real 20-route
@@ -320,6 +327,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- `@ndigo/auth-core`: the `Principal` contract gains `scopes`,
+  `hasScope`, and `hasAnyScope`. Custom principal implementations must add
+  them (return `[]`/`false` when the identity has no OAuth scopes); the
+  framework's `DefaultPrincipal` takes scopes as its fourth constructor
+  argument.
 - `apps/07-ndigo-island`: migrated from Web Awesome to the ndigo-ui registry
   items — the form now uses native `<input>`/`<button>` with copy-in CSS and no
   component-library dependency (AD-95).

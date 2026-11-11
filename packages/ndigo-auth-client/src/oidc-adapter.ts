@@ -471,6 +471,20 @@ function readRoles(payload: JWTPayload): string[] {
     return raw.filter((role): role is string => typeof role === 'string');
 }
 
+function readScopes(payload: JWTPayload): string[] {
+    // OAuth 2.0 `scope` is space-delimited; Azure AD's `scp` may be an array
+    // or a space-delimited string; `scopes` is the custom-IdP array.
+    const scopeClaim = payload.scope;
+    const scpClaim = payload.scp;
+    const scopesClaim = payload.scopes;
+    const parts = [
+        ...(typeof scopeClaim === 'string' ? scopeClaim.split(/\s+/u) : []),
+        ...(Array.isArray(scpClaim) ? scpClaim : typeof scpClaim === 'string' ? scpClaim.split(/\s+/u) : []),
+        ...(Array.isArray(scopesClaim) ? scopesClaim : []),
+    ];
+    return [...new Set(parts.filter((scope): scope is string => typeof scope === 'string' && scope.length > 0))];
+}
+
 function principalFromPayload(payload: JWTPayload): Principal {
     const sub = payload.sub;
     // #assertClaims rejects any token without a non-empty string `sub`; this guard
@@ -480,6 +494,7 @@ function principalFromPayload(payload: JWTPayload): Principal {
         throw new OIDCError('invalid_token', 'ID token is missing a non-empty subject (sub) claim');
     }
     const roles = readRoles(payload);
+    const scopes = readScopes(payload);
     return {
         id: sub,
         name:
@@ -487,8 +502,11 @@ function principalFromPayload(payload: JWTPayload): Principal {
             (typeof payload.preferred_username === 'string' && payload.preferred_username) ||
             'Unknown',
         roles,
+        scopes,
         hasRole: (role: string) => roles.includes(role),
         hasAnyRole: (...wanted: string[]) => wanted.some((role) => roles.includes(role)),
+        hasScope: (scope: string) => scopes.includes(scope),
+        hasAnyScope: (...wanted: string[]) => wanted.some((scope) => scopes.includes(scope)),
     };
 }
 

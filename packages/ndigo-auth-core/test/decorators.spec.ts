@@ -1,7 +1,14 @@
 /**
  */
 import { describe, test, expect } from 'vitest';
-import { authenticated, authorized, AUTH_REQUIRED_KEY, AUTH_ROLES_KEY } from '../src/decorators';
+import {
+    authenticated,
+    authorized,
+    authorizedScopes,
+    AUTH_REQUIRED_KEY,
+    AUTH_ROLES_KEY,
+    AUTH_SCOPES_KEY,
+} from '../src/decorators';
 
 type DecoratorContext = ClassDecoratorContext | ClassMethodDecoratorContext;
 
@@ -148,5 +155,48 @@ describe('@authorized decorator', () => {
         expect(classMetadata[AUTH_ROLES_KEY]).toEqual(['admin']);
         expect(methodAMetadata[`${AUTH_ROLES_KEY}:methodA`]).toEqual(['roleA']);
         expect(methodBMetadata[`${AUTH_ROLES_KEY}:methodB`]).toEqual(['roleB']);
+    });
+});
+
+describe('@authorizedScopes decorator', () => {
+    test('adds scopes to class metadata', () => {
+        const metadata: Record<PropertyKey, unknown> = {};
+
+        class DummyClass {}
+
+        authorizedScopes('tools.read', 'tools.write')(DummyClass, classContext(metadata));
+
+        expect(metadata[AUTH_SCOPES_KEY]).toEqual(['tools.read', 'tools.write']);
+    });
+
+    test('adds scopes to method metadata', () => {
+        const metadata: Record<PropertyKey, unknown> = {};
+
+        function dummyMethod() {}
+
+        authorizedScopes('tools.read')(dummyMethod, methodContext('handle', metadata));
+
+        expect(metadata[`${AUTH_SCOPES_KEY}:handle`]).toEqual(['tools.read']);
+    });
+
+    test('stacking decorators accumulates scopes on a method', () => {
+        const metadata: Record<PropertyKey, unknown> = {};
+
+        function dummyMethod() {}
+
+        authorizedScopes('tools.read')(dummyMethod, methodContext('handle', metadata));
+        authorizedScopes('tools.write')(dummyMethod, methodContext('handle', metadata));
+
+        expect(metadata[`${AUTH_SCOPES_KEY}:handle`]).toEqual(['tools.read', 'tools.write']);
+    });
+
+    test('throws on non-class, non-method contexts (anti-pattern detection)', () => {
+        const metadata: Record<PropertyKey, unknown> = {};
+
+        function dummyMethod() {}
+
+        expect(() => authorizedScopes('tools.read')(dummyMethod, fieldContext('prop', metadata))).toThrow(
+            '@authorizedScopes can only be applied to a class or method'
+        );
     });
 });

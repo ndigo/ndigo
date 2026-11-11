@@ -211,6 +211,16 @@ allocates a schema per write); the after rows are RME < 0.3%, and the delta is
 an order of magnitude beyond either error bar. Cached `safeParse` is the
 remaining cost at 31–52 ns per insert. 133/133 `@ndigo/orm` tests pass.
 
+**Optimization (#419):** entity metadata is derived once per class in a
+`WeakMap`, and lifecycle hooks are iterated instead of `filter`ed per entity.
+The hidden cost was the `Symbol.metadata` polyfill read behind every
+`getEntityMetadata` call — `findAll` paid it twice per row. Same-host A/B, two
+runs per side: `findAll` 10k rows 1.79–1.81 ms → 433–460 µs (−74 to −76%),
+1k rows 178.6–178.9 → 43.5–46.1 µs, `find` 360–375 → 116–122 ns, `find` miss
+202 → 76–78 ns, `persist(new)` 708–748 → 298–321 ns, `remove(existing)`
+719–774 → 283–325 ns. The schema cache above remains; this removes the
+metadata cost around it.
+
 **Optimization (this branch):** `RouteHandlerMethod.invoke` caches the resolved
 route mapping per handler instance and returns immediately for zero-parameter
 handlers (the whole error-handler path), before touching the polyfill metadata

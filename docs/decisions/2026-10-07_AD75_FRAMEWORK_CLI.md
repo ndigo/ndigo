@@ -1,7 +1,7 @@
 # AD-75: The framework CLI — `@ndigo/cli`
 
 **Date:** 2026-10-07
-**Status:** Accepted
+**Status:** Accepted (parser superseded)
 **Deciders:** Framework owner (GAP-6 of `docs/plans/2026-10-07_CODE_REVIEW_AND_MITIGATION.md` §6; foundation selected on the CLI research, 2026-10-07)
 
 ---

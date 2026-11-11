@@ -1,7 +1,9 @@
 # AD-02: `@ndigo/domain` vs `@ndigo/model` reconciliation — optional MVVM layer over a pure model
 
+> **Archived** — this decision is fully superseded and retained for history. See the superseding ADR linked below.
+
 **Date:** 2026-05-27
-**Status:** Accepted — ratified with the Wave roadmap; implemented Wave 5
+**Status:** Superseded — superseded by AD-07 (2026-09-05)
 (2026-05-28); **superseded by AD-07 (2026-09-05)** — `ndigo-model` retired,
 `ndigo-domain` archived, validation unified on Zod.
 
@@ -53,7 +55,7 @@ source.
 
 - Roadmap: `docs/plans/2026-05-27_FEATURE_COMPLETENESS_ROADMAP.md` (AD-02)
 - Wave 5 implementation: commit `b05a8dce` (2026-05-28)
-- Supersession: [AD-07 Zod canonical schema](2026-09-05_AD07_ZOD_VALIDATION.md)
+- Supersession: [AD-07 Zod canonical schema](../2026-09-05_AD07_ZOD_VALIDATION.md)
 - Domain archive: commit `2f014abc` (2026-09-05); validation retirement
   `06c51978` (2026-09-05)
 

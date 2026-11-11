@@ -1,7 +1,7 @@
 # AD-25: Security headers — wrap Helmet, default-on in `@ndigo/platform-node`
 
 **Date:** 2026-09-18
-**Status:** Accepted — implementation landed 2026-09-18 (reviewed in the
+**Status:** Superseded in part — D-3's CSP `connect-src` default superseded by SEC-4 (2026-09-29)
 2026-09-18 code review; still current, except D-3's CSP `connect-src`
 default, superseded by SEC-4 (2026-09-29) — see the Update note).
 

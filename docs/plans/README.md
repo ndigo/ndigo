@@ -568,7 +568,7 @@ Standardized all UPPER_SNAKE_CASE RegExp constants to camelCase with Rule suffix
 ### Pre-ADR era (records backfilled as AD-44..AD-65)
 
 - [2026-02-07 HTTP Transform Pipeline](2026-02-07_HTTP_TRANSFORM_PIPELINE.md) — body transform pipeline — [AD-49](../decisions/2026-02-07_AD49_HTTP_TRANSFORM_PIPELINE.md)
-- [2026-03-08 Validate Design](2026-03-08_VALIDATE_DESIGN.md) — superseded by AD-07 — [AD-52](../decisions/2026-03-08_AD52_VALIDATION_ARCHITECTURE_DESIGN.md)
+- [2026-03-08 Validate Design](2026-03-08_VALIDATE_DESIGN.md) — superseded by AD-07 — [AD-52](../decisions/archive/2026-03-08_AD52_VALIDATION_ARCHITECTURE_DESIGN.md)
 - [2026-03-30 ORM MVP](2026-03-30_ORM_MVP.md) — [AD-55](../decisions/2026-03-30_AD55_ORM_MVP.md)
 - [2026-05-28 Auth & ORM Post-MVP](2026-05-28_AUTH_DESIGN.md) — [AD-56](../decisions/2026-05-28_AD56_AUTH_ORM_POST_MVP.md)
 - [2026-06-02 Native-First Refactor](2026-06-02_NATIVE_FIRST_REFACTOR.md) — [AD-57](../decisions/2026-06-02_AD57_NATIVE_FIRST_REFACTOR.md)

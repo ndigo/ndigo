@@ -13,10 +13,20 @@ export class LockInstrumentation extends AbstractBaseInstrumentation {
         super('locks');
     }
 
+    /**
+     * Wraps the instrumented methods.
+     */
     enable(): void {
-        this._wrap(InProcessLockDriver.prototype, 'acquire', this._patch({ name: 'Lock.acquire', kind: SpanKind.INTERNAL }));
+        this._wrap(
+            InProcessLockDriver.prototype,
+            'acquire',
+            this._patch({ name: 'Lock.acquire', kind: SpanKind.INTERNAL })
+        );
     }
 
+    /**
+     * Restores the original methods.
+     */
     disable(): void {
         this._unwrap(InProcessLockDriver.prototype, 'acquire');
     }

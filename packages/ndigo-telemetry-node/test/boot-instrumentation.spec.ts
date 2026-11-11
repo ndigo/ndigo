@@ -7,7 +7,12 @@ import { BootInstrumentation } from '../src/instrumentation/boot/boot';
 function installFakeTracer() {
     const started: { name: string; kind?: SpanKind }[] = [];
     const span = { end() {}, recordException() {}, setStatus() {}, setAttribute() {} } as unknown as Span;
-    const tracer = { startActiveSpan: (name: string, opts: { kind?: SpanKind }, cb: (s: Span) => unknown) => { started.push({ name, kind: opts.kind }); return cb(span); } } as unknown as Tracer;
+    const tracer = {
+        startActiveSpan: (name: string, opts: { kind?: SpanKind }, cb: (s: Span) => unknown) => {
+            started.push({ name, kind: opts.kind });
+            return cb(span);
+        },
+    } as unknown as Tracer;
     vi.spyOn(trace, 'getTracer').mockReturnValue(tracer);
     return started;
 }
@@ -16,7 +21,8 @@ describe('BootInstrumentation', () => {
     afterEach(() => vi.restoreAllMocks());
     test('wraps Application.run as INTERNAL', async () => {
         const original = Application.prototype.run;
-        Application.prototype.run = async function (): Promise<unknown> { return undefined; };
+        // Test double: instrumentation only needs the wrapped call to complete.
+        Application.prototype.run = (async () => undefined) as unknown as Application['run'];
         try {
             const started = installFakeTracer();
             const inst = new BootInstrumentation();

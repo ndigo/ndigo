@@ -13,6 +13,9 @@ export class CacheInstrumentation extends AbstractBaseInstrumentation {
         super('cache');
     }
 
+    /**
+     * Wraps the instrumented methods.
+     */
     enable(): void {
         this._wrap(MemoryCache.prototype, 'get', this._patch({ name: 'Cache.get', kind: SpanKind.INTERNAL }));
         this._wrap(MemoryCache.prototype, 'set', this._patch({ name: 'Cache.set', kind: SpanKind.INTERNAL }));
@@ -22,6 +25,9 @@ export class CacheInstrumentation extends AbstractBaseInstrumentation {
         this._wrap(MemoryCache.prototype, 'size', this._patch({ name: 'Cache.size', kind: SpanKind.INTERNAL }));
     }
 
+    /**
+     * Restores the original methods.
+     */
     disable(): void {
         this._unwrap(MemoryCache.prototype, 'get');
         this._unwrap(MemoryCache.prototype, 'set');

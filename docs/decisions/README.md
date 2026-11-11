@@ -1,6 +1,6 @@
 # ndigo Decision Records (ADRs)
 
-Architecture Decision Records for the ndigo monorepo — **AD-01..AD-101**,
+Architecture Decision Records for the ndigo monorepo — **AD-01..AD-103**,
 contiguous. Every record captures a decision with its context, the evidence
 (plan, code, commits), the decided shape, consequences, and a revisit trigger.
 
@@ -128,3 +128,4 @@ contiguous. Every record captures a decision with its context, the evidence
 | **AD-100** | 2026-11-10    | Accepted                     | [`@ndigo/mcp` — application tools projected from dispatch metadata](2026-11-10_AD100_MCP_TOOL_PROJECTION.md)                                                                                                                   |
 | **AD-101** | 2026-11-10    | Accepted                     | [A2UI adoption — catalog, media type, renderer, MCP Apps, WebMCP](2026-11-10_AD101_A2UI_ADOPTION.md)                                                                                                                           |
 | **AD-102** | 2026-11-10    | Accepted                     | [TOON as an opt-in representation — `@ndigo/view-toon`, the prompt encoder, AD-66 D-3 narrowed in part](2026-11-10_AD102_TOON_REPRESENTATION.md)                                                                               |
+| **AD-103** | 2026-11-11    | Proposed                     | [Validation-error stack capture — one stack per failure](2026-11-11_AD103_VALIDATION_ERROR_STACK_POLICY.md)                                                                                                                    |

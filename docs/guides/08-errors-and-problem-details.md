@@ -35,16 +35,16 @@ Ndigo `errors[]` extension for field-level validation issues:
 
 The status mapping is deterministic:
 
-| Condition | Status |
+| Condition                                              | Status                       |
 | ------------------------------------------------------ | ---------------------------- |
-| Malformed URL/body, missing or unconvertible parameter | 400 |
-| Missing/invalid credentials | 401 + `WWW-Authenticate` |
-| Insufficient role | 403 |
-| No route or no view | 404 |
-| Path exists, method not allowed | 405 + `Allow` |
-| Zod validation failure | 422 + `errors[]` |
-| Unacceptable representation | 406 |
-| Anything unhandled | 500 (internals never leaked) |
+| Malformed URL/body, missing or unconvertible parameter | 400                          |
+| Missing/invalid credentials                            | 401 + `WWW-Authenticate`     |
+| Insufficient role                                      | 403                          |
+| No route or no view                                    | 404                          |
+| Path exists, method not allowed                        | 405 + `Allow`                |
+| Zod validation failure                                 | 422 + `errors[]`             |
+| Unacceptable representation                            | 406                          |
+| Anything unhandled                                     | 500 (internals never leaked) |
 
 `ProblemTypes` in `@ndigo/platform-node` holds the `urn:ndigo:*` slugs. They are
 placeholders; replace them with real HTTPS URIs before a public release.
@@ -54,11 +54,11 @@ placeholders; replace them with real HTTPS URIs before a public release.
 Ndigo's error vocabulary is small and deliberate:
 
 - `ApplicationError` — an application/domain denial (the request was understood
- but refused). Extend it for your own domain errors.
+  but refused). Extend it for your own domain errors.
 - `FrameworkError` — a framework or transport failure. Extend it only for
- framework-level bypass/protocol errors.
+  framework-level bypass/protocol errors.
 - `IllegalStateError` — a closed/disposed/not-ready guard; extends
- `FrameworkError`.
+  `FrameworkError`.
 
 Both bases are serializable, so the error shape survives the response boundary.
 Do not throw bare `new Error` for conditions the framework or an application
@@ -81,11 +81,11 @@ The Node platform registers an ordered chain when the app does not override
 `errorResolvers`:
 
 1. `NodeParameterBindingErrorResolver` — binding/conversion failures → 400,
- Zod failures → 422.
+   Zod failures → 422.
 2. `MetadataErrorResolver` — `@errorMapping` handlers on the failing handler
- or on a registered `@errorHandler` bean.
+   or on a registered `@errorHandler` bean.
 3. `NodeLastResortErrorResolver` — anything left → 500 (or a known framework
- error → its status).
+   error → its status).
 
 The first resolver that returns a `ModelAndView` wins; `null` continues the
 chain. Apps can replace or prepend entries:
@@ -156,11 +156,11 @@ chain sees it.
 Two failure families deserve their own shape:
 
 - **Validation** — `ZodValidationError` carries `ValidationIssue[]`
- (`path`, `message`). The binding resolver answers 422 with `errors[]`. If an
- app expects a different envelope, translate the issues in the first resolver.
+  (`path`, `message`). The binding resolver answers 422 with `errors[]`. If an
+  app expects a different envelope, translate the issues in the first resolver.
 - **Auth** — `AuthRouteGuard` denials are `401`/`403` problem documents; a
- handler can also return a `ResponseEntity<ProblemDetails>` directly. Keep
- `WWW-Authenticate` on 401 and `Allow` on 405.
+  handler can also return a `ResponseEntity<ProblemDetails>` directly. Keep
+  `WWW-Authenticate` on 401 and `Allow` on 405.
 
 A handler that wants full control over a success/failure response returns
 `new ResponseEntity(body, status, headers)`. The `ResponseEntityView` rewrites
@@ -170,17 +170,17 @@ any `>= 400` entity into problem+json, so a protocol-specific envelope must be a
 ## 7. Pitfalls
 
 - **Do not leak internals in 500s.** The last-resort resolver deliberately
- replaces the message; log the error with its trace id instead.
+  replaces the message; log the error with its trace id instead.
 - **Use `ApplicationError` for domain denials.** A plain `Error` skips the
- serializable shape and the catch-by-base-class seam.
+  serializable shape and the catch-by-base-class seam.
 - **Order resolvers from specific to broad.** A catch-all first hides every
- later resolver.
+  later resolver.
 - **Do not return a `ResponseEntity` for a custom envelope.** It is rewritten
- to problem+json.
+  to problem+json.
 - **Keep `detail` for humans and `errors[]` for machines.** Do not encode
- field paths in `title`.
+  field paths in `title`.
 - **406 is not 404.** The route resolved; only the representation is
- unacceptable.
+  unacceptable.
 
 ## See also
 

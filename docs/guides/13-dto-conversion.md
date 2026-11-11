@@ -71,11 +71,11 @@ const noteDtoSchema = schemaForEntity(Note)
 Two notes:
 
 - Entity-derived schemas erase to `Record<string, z.ZodType>` — annotate
- the transform input from the entity's declared column types.
+  the transform input from the entity's declared column types.
 - **Transforms are not JSON-Schema-representable** (zod's native
- `toJSONSchema` throws). Declare the transform's output as an explicit
- `z.object` contract and `.pipe` the transform into it: the documented
- schema _is_ the conversion target, and drift fails loud at `convert`.
+  `toJSONSchema` throws). Declare the transform's output as an explicit
+  `z.object` contract and `.pipe` the transform into it: the documented
+  schema _is_ the conversion target, and drift fails loud at `convert`.
 
 ## Request → entity (the other direction)
 
@@ -108,7 +108,7 @@ async list(token: string | undefined) {
 ```
 
 The generator embeds the schema via zod's native `toJSONSchema` (the
- seam); bare schemas default to `description: 'OK'`, and the object
+seam); bare schemas default to `description: 'OK'`, and the object
 form adds a description. Operations without `responses` keep the default
 `200: { description: 'OK' }`.
 
@@ -132,13 +132,13 @@ override the bean for custom converter registries.
 ## What conversion is not
 
 - No same-name conventions, decorators, or reflection — schema targets are
- the explicit shape, nothing implicit.
+  the explicit shape, nothing implicit.
 - No mapping profiles/registries — schema reuse _is_ the profile.
 - Schema targets produce plain `z.infer` shapes — no class-instance targets
- (instantiate entities via `Object.assign`, above).
+  (instantiate entities via `Object.assign`, above).
 - No async facade — call `schema.parseAsync` directly when needed.
 - Client-side reuse works out of the box (ndigo-core has no node
- dependencies) though no formal web wiring exists.
+  dependencies) though no formal web wiring exists.
 
 ## See also
 

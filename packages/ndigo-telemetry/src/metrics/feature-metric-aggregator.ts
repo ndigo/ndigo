@@ -1,12 +1,12 @@
 /**
  * Per-feature metric aggregation and snapshot projection.
  */
-import { compareBy, IllegalStateError, numberComparator, stringComparator } from '@ndigo/core';
+import { compareBy, IllegalStateError, numberComparator, stringComparator, Deque } from '@ndigo/core';
 import { type MetricSnapshot, type MetricSnapshotProvider } from './metric-snapshot';
 
 interface MutableFeatureMetrics {
     counters: Map<string, number>;
-    durations: Map<string, number[]>;
+    durations: Map<string, Deque<number>>;
     gauges: Map<string, number>;
     updatedAt: Date;
 }
@@ -175,14 +175,14 @@ export class FeatureMetricAggregator {
         let samples = metrics.durations.get(name);
 
         if (!samples) {
-            samples = [];
+            samples = new Deque<number>(this.#maxDurationSamples);
             metrics.durations.set(name, samples);
         }
 
         samples.push(durationMs);
 
         if (samples.length > this.#maxDurationSamples) {
-            samples.splice(0, samples.length - this.#maxDurationSamples);
+            samples.shift();
         }
 
         metrics.updatedAt = new Date();
@@ -217,7 +217,7 @@ export class FeatureMetricAggregator {
         return created;
     }
 
-    #summarizeDurations(durationsMap: Map<string, number[]>): ReadonlyMap<string, DurationSummary> {
+    #summarizeDurations(durationsMap: Map<string, Deque<number>>): ReadonlyMap<string, DurationSummary> {
         const result = new Map<string, DurationSummary>();
 
         for (const [name, samples] of durationsMap.entries()) {

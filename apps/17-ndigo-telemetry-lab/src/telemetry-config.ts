@@ -12,9 +12,14 @@
  *   providers would leak across a worker; nothing here touches the OTel API.
  */
 import { getEnv } from '@ndigo/context';
-import { DispatcherInstrumentation } from '@ndigo/telemetry';
+import { CacheInstrumentation, ContextInstrumentation, DispatcherInstrumentation, HTTPClientInstrumentation } from '@ndigo/telemetry';
 import {
+    AuthServerInstrumentation,
+    DrizzleInstrumentation,
+    HTTPResponseViewTargetInstrumentation,
     HTTPServerInstrumentation,
+    RedisInstrumentation,
+    ServerSentEventViewInstrumentation,
     WebSocketServerInstrumentation,
     type SamplerSpec,
     type TelemetryConfig,
@@ -118,7 +123,15 @@ export function resolveLabTelemetry(): ResolvedLabTelemetry {
             instrumentations: [
                 new HTTPServerInstrumentation(),
                 new WebSocketServerInstrumentation(),
+                new HTTPResponseViewTargetInstrumentation(),
+                new ServerSentEventViewInstrumentation(),
                 new DispatcherInstrumentation(),
+                new ContextInstrumentation(),
+                new AuthServerInstrumentation(),
+                new RedisInstrumentation(),
+                new DrizzleInstrumentation(),
+                new HTTPClientInstrumentation(),
+                new CacheInstrumentation(),
             ],
             traceExporter: otlpEndpoint ? { url: `${otlpEndpoint}/v1/traces` } : 'console',
             metricExporter: usePrometheusMetrics

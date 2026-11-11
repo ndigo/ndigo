@@ -8,8 +8,9 @@ import { AbstractBaseInstrumentation } from '../base';
 /**
  * An OpenTelemetry instrumentation for `GenericApplicationContext` lifecycle events.
  *
- * This instrumentation automatically creates spans for the `destroy` method,
- * providing visibility into application context teardown processes.
+ * This instrumentation automatically creates spans for the `destroy` and
+ * `refresh` methods, providing visibility into application context teardown
+ * and refresh processes.
  */
 export class ContextInstrumentation extends AbstractBaseInstrumentation {
     constructor() {
@@ -17,7 +18,7 @@ export class ContextInstrumentation extends AbstractBaseInstrumentation {
     }
 
     /**
-     * Patches `GenericApplicationContext#destroy` to record teardown spans.
+     * Patches `GenericApplicationContext#destroy` and `#refresh` to record spans.
      */
     enable(): void {
         this._wrap(
@@ -38,12 +39,29 @@ export class ContextInstrumentation extends AbstractBaseInstrumentation {
                 },
             })
         );
+
+        this._wrap(
+            GenericApplicationContext.prototype,
+            'refresh',
+            this._patchSync({
+                name: 'ApplicationContext.refresh',
+                kind: SpanKind.INTERNAL,
+                attributes: (ctx: unknown) => {
+                    const context = ctx as GenericApplicationContext;
+                    return {
+                        'context.name': context.name,
+                        'context.id': context.id,
+                    };
+                },
+            })
+        );
     }
 
     /**
-     * Restores the original `destroy` method.
+     * Restores the original `destroy` and `refresh` methods.
      */
     disable(): void {
         this._unwrap(GenericApplicationContext.prototype, 'destroy');
+        this._unwrap(GenericApplicationContext.prototype, 'refresh');
     }
 }

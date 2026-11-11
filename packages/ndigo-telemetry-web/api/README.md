@@ -10,5 +10,6 @@ Browser telemetry configuration and web instrumentations for Ndigo, built on the
 
 - [browser-config](browser-config/README.md)
 - [index](index/README.md)
+- [instrumentation/auth-client/auth-client](instrumentation/auth-client/auth-client/README.md)
 - [instrumentation/router/router](instrumentation/router/router/README.md)
 - [instrumentation/websocket-client/websocket-client](instrumentation/websocket-client/websocket-client/README.md)

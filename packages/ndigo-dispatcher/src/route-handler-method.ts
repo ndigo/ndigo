@@ -8,7 +8,7 @@ import { Serializable } from '@ndigo/core';
 import { HandlerMethodArgumentResolver } from './argument-resolver';
 import { ParameterBindingError } from './error';
 import { MethodParameter } from './parameters';
-import { getRouteMapping } from './route-mapping';
+import { getRouteMapping, type RouteMappingConfiguration } from './route-mapping';
 
 const { toString } = Object.prototype;
 
@@ -96,6 +96,15 @@ export class RouteHandlerMethod implements HandlerMethod, Serializable {
         byParameter: Map<MethodParameter, HandlerMethodArgumentResolver | null>;
     } | null = null;
 
+    /**
+     * Cached route mapping for this handler method. `null` means "not read
+     * yet"; `undefined` means the handler declares no mapping. Mapping
+     * metadata is fixed at class-definition time, so the first read is the
+     * final value for the instance's lifetime — the polyfill's metadata proxy
+     * otherwise charges a lookup on every invocation.
+     */
+    #routeMapping: RouteMappingConfiguration | undefined | null = null;
+
     constructor(handler: object, method: string, ...args: unknown[]);
     constructor(factory: Factory, name: string, method: string, ...args: unknown[]);
     constructor(factoryOrHandler: Factory | object, nameOrMethod: string, ...args: unknown[]) {
@@ -128,49 +137,55 @@ export class RouteHandlerMethod implements HandlerMethod, Serializable {
          * * Hardcoding route as a parameter is a bit of a cop-out. It would be better to allow them to pick parameters, etc. as arguments.
          */
         const { argumentResolvers, parameters } = this,
-            parametersLength = parameters.length,
-            args = new Array(parametersLength),
-            mapping = getRouteMapping(this.handler, this.method);
-        if (parametersLength) {
-            let selection = this.#resolverSelection;
-            if (selection === null || selection.resolvers !== argumentResolvers) {
-                selection = this.#resolverSelection = {
-                    resolvers: argumentResolvers,
-                    byParameter: new Map(),
-                };
+            parametersLength = parameters.length;
+        if (parametersLength === 0) {
+            // No @parameters metadata — no implicit injection and no mapping
+            // read. Handlers that want request-scoped data declare it
+            // explicitly via @parameters (e.g. pathVariable for a segment,
+            // pathValue for the full path); the Route object itself is not
+            // auto-injected. This is also the whole error-handler path.
+            return (this.handler as Record<string, Function>)[this.method]();
+        }
+
+        let mapping = this.#routeMapping;
+        if (mapping === null) {
+            mapping = this.#routeMapping = getRouteMapping(this.handler, this.method);
+        }
+
+        const args = new Array(parametersLength);
+        let selection = this.#resolverSelection;
+        if (selection === null || selection.resolvers !== argumentResolvers) {
+            selection = this.#resolverSelection = {
+                resolvers: argumentResolvers,
+                byParameter: new Map(),
+            };
+        }
+        for (let index = 0; index < parametersLength; index++) {
+            const parameter = parameters[index];
+            let resolver = selection.byParameter.get(parameter);
+            if (resolver === undefined) {
+                resolver = argumentResolvers.find((candidate) => candidate.supportsParameter(parameter)) ?? null;
+                selection.byParameter.set(parameter, resolver);
             }
-            for (let index = 0; index < parametersLength; index++) {
-                const parameter = parameters[index];
-                let resolver = selection.byParameter.get(parameter);
-                if (resolver === undefined) {
-                    resolver = argumentResolvers.find((candidate) => candidate.supportsParameter(parameter)) ?? null;
-                    selection.byParameter.set(parameter, resolver);
-                }
-                if (resolver === null) {
-                    // No registered resolver serves this parameter type — the
-                    // mapping uses a source the platform's resolver chain
-                    // cannot provide (e.g. dataBinderValue('body') on the
-                    // browser). Fail fast instead of silently binding
-                    // undefined, even for required extractors (the required
-                    // check lives inside resolvers).
-                    const argumentLabel =
-                        parameter.parameterName === parameter.name
-                            ? `'${parameter.name}'`
-                            : `'${parameter.name}' (argument '${parameter.parameterName}')`;
-                    throw new ParameterBindingError(
-                        `No argument resolver supports ${parameter.type} parameter ${argumentLabel}. ` +
-                            'Register an argument resolver for this type, or use a source the platform can serve.',
-                        parameter.name,
-                        this.method
-                    );
-                }
-                args[index] = resolver.resolveArgument(parameter, route, mapping);
+            if (resolver === null) {
+                // No registered resolver serves this parameter type — the
+                // mapping uses a source the platform's resolver chain
+                // cannot provide (e.g. dataBinderValue('body') on the
+                // browser). Fail fast instead of silently binding
+                // undefined, even for required extractors (the required
+                // check lives inside resolvers).
+                const argumentLabel =
+                    parameter.parameterName === parameter.name
+                        ? `'${parameter.name}'`
+                        : `'${parameter.name}' (argument '${parameter.parameterName}')`;
+                throw new ParameterBindingError(
+                    `No argument resolver supports ${parameter.type} parameter ${argumentLabel}. ` +
+                        'Register an argument resolver for this type, or use a source the platform can serve.',
+                    parameter.name,
+                    this.method
+                );
             }
-        } else {
-            // No @parameters metadata — no implicit injection. Handlers that
-            // want request-scoped data declare it explicitly via @parameters
-            // (e.g. pathVariable for a segment, pathValue for the full path);
-            // the Route object itself is not auto-injected.
+            args[index] = resolver.resolveArgument(parameter, route, mapping);
         }
 
         return (this.handler as Record<string, Function>)[this.method](...args);

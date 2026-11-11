@@ -353,6 +353,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   non-enumerable `Reflect.defineProperty` that pushed route objects into V8
   dictionary mode. Same-host bench: static 306 → 197 ns (−36%), fresh route
   373 → 202 ns (−46%), deep −26%, RME < 0.4% (`BENCHMARKS.md`).
+- `@ndigo/dispatcher`: `RouteHandlerMethod.invoke` caches the handler's route
+  mapping per instance and fast-paths zero-parameter handlers before the
+  metadata read. Same-host bench: zero-param 99 → 3 ns, one path 173 → 57 ns,
+  three mixed 329 → 220 ns, RME < 0.3% (`BENCHMARKS.md`).
 - `apps/07-ndigo-island`: migrated from Web Awesome to the ndigo-ui registry
   items — the form now uses native `<input>`/`<button>` with copy-in CSS and no
   component-library dependency (AD-95).

@@ -374,6 +374,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   instead of a megamorphic dictionary property. Same-host bench: bean lookups
   19.6 → 8.6–10.1 ns (−49 to −56%), dynamic 1/1,000 values −32 to −36%,
   `hasValue` hit 2.4 → 3.5–3.6 ns (`BENCHMARKS.md`).
+- `@ndigo/factory`: a sentinel marks values registered as `undefined`, so
+  `getValue` misses take one `Map.get` instead of two probes, and
+  `hasInstance` reads a companion `Set` again. Same-host bench: `getValue`
+  miss 6.30–6.36 → 4.55–4.57 ns (−28%), `hasValue` present 2.59 → 2.43 ns
+  (`BENCHMARKS.md`).
 - `@ndigo/orm`: `schemaForEntity` / `insertSchemaForEntity` memoize the
   derived Zod schema per entity class (module-level `WeakMap`s) instead of
   rebuilding it on every `persist`; the returned schema is shared and

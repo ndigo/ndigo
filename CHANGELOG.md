@@ -348,6 +348,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   selection is a single allocation-free pass (was `filter()`+`reduce()` per
   request, identical winner semantics). Same-host bench: −8% static, −8.5%
   single-param, −2.6% deep, RME < 0.4% (`BENCHMARKS.md`).
+- `@ndigo/orm`: `schemaForEntity` / `insertSchemaForEntity` memoize the
+  derived Zod schema per entity class (module-level `WeakMap`s) instead of
+  rebuilding it on every `persist`; the returned schema is shared and
+  documented as immutable. Same-host bench: insert 15.16 µs → 735 ns (20.6×),
+  update 14.64 µs → 441 ns (33.2×) (`BENCHMARKS.md`).
 - `apps/07-ndigo-island`: migrated from Web Awesome to the ndigo-ui registry
   items — the form now uses native `<input>`/`<button>` with copy-in CSS and no
   component-library dependency (AD-95).

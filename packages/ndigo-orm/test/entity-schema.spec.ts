@@ -80,6 +80,17 @@ describe('schemaForColumn', () => {
 });
 
 describe('schemaForEntity', () => {
+    test('caches one schema instance per entity class', () => {
+        expect(schemaForEntity(Product)).toBe(schemaForEntity(Product));
+    });
+
+    test('a subclass gets its own cache entry', () => {
+        @entity()
+        class SpecialProduct extends Product {}
+
+        expect(schemaForEntity(SpecialProduct)).not.toBe(schemaForEntity(Product));
+    });
+
     test('derives shape from column metadata', () => {
         const schema = schemaForEntity(Product);
         expect(schema.safeParse({ id: 1, name: 'Widget', rating: 5, note: 'extra' }).success).toBe(true);
@@ -102,6 +113,10 @@ describe('schemaForEntity', () => {
 });
 
 describe('insertSchemaForEntity', () => {
+    test('caches one schema instance per entity class', () => {
+        expect(insertSchemaForEntity(Product)).toBe(insertSchemaForEntity(Product));
+    });
+
     test('omits generated and primary columns from the writable shape', () => {
         const schema = insertSchemaForEntity(Product);
         expect(schema.safeParse({ name: 'Widget', rating: 5 }).success).toBe(true);
@@ -127,6 +142,12 @@ describe('validateEntity', () => {
 
     test('throws with failing field paths', () => {
         const product = Object.assign(new Product(), { id: 1, name: 'x', rating: 4 });
+        expect(() => validateEntity(Product, product)).toThrow('Entity validation failed for fields: name');
+    });
+
+    test('reports the same field paths once the schema is cached', () => {
+        const product = Object.assign(new Product(), { id: 1, name: 'x', rating: 4 });
+        expect(() => validateEntity(Product, product)).toThrow('Entity validation failed for fields: name');
         expect(() => validateEntity(Product, product)).toThrow('Entity validation failed for fields: name');
     });
 });

@@ -25,8 +25,12 @@ support honest public performance claims.
   improved from 1.90× to 1.74× slower and `set` from 1.66× to 1.34× slower;
   absolute values moved with host state (`BENCHMARKS.md`).
 - **Phase 2 — partial:** router parity vs find-my-way/radix3 is separated from
-  full handler resolution and verified. End-to-end HTTP, binding/validation,
-  startup/RSS, and the `benchmarks/` macro workspace remain.
+  full handler resolution and verified; the end-to-end HTTP lane
+  (`pnpm bench:http`) compares Ndigo, Fastify, Express, and Hono over four
+  routes. It uses `Connection: close` because autocannon misclassifies Ndigo's
+  chunked keep-alive responses, and Ndigo runs from source via `tsx`; a
+  keep-alive lane and production bundling remain. Body/validation binding and
+  startup/RSS remain; the `benchmarks/` workspace is in place.
 - **Phase 3 — quarantined:** the jsdom DOM harness works for React and vanilla
   only; Svelte/Vue/Ndigo use module scripts that jsdom cannot execute.
 - **Phases 4–5 — pending.**

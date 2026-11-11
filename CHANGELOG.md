@@ -32,7 +32,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Benchmarks: `pnpm bench` is now a serial lane with JSON artifacts and an
   environment fingerprint, a committed reference baseline, `pnpm bench:compare`,
   and a user-facing [`BENCHMARKS.md`](BENCHMARKS.md). Comparator rows verify
-  semantic equivalence before timing; jsdom DOM targets that cannot execute
+  semantic equivalence before timing; `pnpm bench:http` compares four routes
+  against Fastify, Express, and Hono; jsdom DOM targets that cannot execute
   module-script bundles fail fast with an explicit quarantine reason.
 - `@ndigo/cli`: `ndigo routes --toon` — one TOON document on stdout for the
   route list, an experimental sibling beside the `--json` contract (issue

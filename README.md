@@ -292,7 +292,8 @@ links them rather than restating them.
 Tooling and generated surfaces:
 
 - **Benchmarks** — `pnpm bench` runs the serial micro suite and writes JSON
-  artifacts; methodology, environment, and results live in
+  artifacts; `pnpm build && pnpm bench:http` runs the macro HTTP comparison.
+  Methodology, environment, and results live in
   [`BENCHMARKS.md`](BENCHMARKS.md). The jsdom DOM approximations are
   `pnpm test:benchmark:react` and `:vanilla`; the Svelte/Vue/Ndigo targets are
   quarantined pending a real-browser runner.

@@ -21,6 +21,7 @@ pnpm bench:quick      # one run, no baseline comparison
 pnpm bench:update     # run and replace the committed baseline
 pnpm bench:compare    # compare the newest artifact to the baseline
 pnpm bench:report     # render the newest artifact as Markdown
+pnpm build && pnpm bench:http  # macro HTTP lane (connection-close; see caveat)
 ```
 
 `pnpm test:bench` is an alias for `pnpm bench`.
@@ -54,6 +55,14 @@ percentiles, RME, and sample count.
 The lane runs one benchmark file per child process with
 `vitest.bench.config.ts` (Node environment, one worker, no file parallelism,
 no shuffled order). The JSON reporter supplies the raw task statistics.
+
+The macro HTTP lane (`benchmarks/http/`) is separate: it starts one app at a
+time, verifies the four routes, and runs autocannon with `Connection: close`.
+Close mode is deliberate — Ndigo's chunked responses make autocannon's
+keep-alive status counter report false 5xx results. Treat the resulting request
+rates as a connection-per-request comparison, not a production keep-alive
+throughput claim. Ndigo runs from source through `tsx`; run `pnpm build` first
+so the framework packages have `lib/` output.
 
 ## Known measurement caveat
 

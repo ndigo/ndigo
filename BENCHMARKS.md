@@ -17,6 +17,8 @@ pnpm bench            # full serial run; writes benchmarks/results/<date>-<commi
 pnpm bench:quick      # one run, no baseline comparison
 pnpm bench:compare    # compare the newest artifact to benchmarks/baselines/reference.json
 pnpm bench:report     # render the newest artifact as Markdown
+pnpm build            # required once for the macro HTTP app's built packages
+pnpm bench:http       # Ndigo vs Fastify/Express/Hono, connection-close
 pnpm test:benchmark:react    # jsdom approximation (works for React)
 pnpm test:benchmark:vanilla  # jsdom approximation (works for vanilla JS)
 ```
@@ -174,6 +176,32 @@ deep optimization pass.
 
 Scenarios above 2% RME are marked inconclusive and excluded from headline
 claims; they remain in the artifact and the baseline comparator skips them.
+
+### End-to-end HTTP (connection-close)
+
+The macro lane runs the same four routes in Ndigo, Fastify, Express, and Hono,
+one app at a time, with 50 concurrent connections for 3 s over two runs. The
+artifact is `http-2026-11-11T01-37-35.json`.
+
+| Scenario             |  Ndigo | Fastify | Express |   Hono |
+| :------------------- | -----: | ------: | ------: | -----: |
+| `GET /json`          | 24,835 |  39,957 |  29,973 | 20,805 |
+| `GET /users/:id`     | 24,035 |  39,925 |  16,827 | 21,403 |
+| `POST /echo` (1 KB)  | 19,933 |  38,464 |  13,584 | 19,312 |
+| `GET /missing` (404) | 36,939 |  40,117 |  16,667 | 24,936 |
+
+Values are requests per second. Fastify leads every scenario in this mode.
+Ndigo is second on `POST /echo` and the 404, and behind Express on the two GET
+routes. This is **not** a production throughput claim:
+
+- Connections use `Connection: close`. Ndigo's chunked responses make
+  autocannon's keep-alive status counter report false 5xx results, so the first
+  lane measures connection-per-request throughput for every target. A
+  keep-alive lane needs a load generator verified against chunked responses.
+- Ndigo runs from source through `tsx`; the framework packages are built to
+  `lib/` first. Fastify/Express/Hono run native JavaScript.
+- The ~750 ms mean latency reported by autocannon is dominated by connection
+  setup in this mode, so only the request rate is shown.
 
 ## What this does not prove
 

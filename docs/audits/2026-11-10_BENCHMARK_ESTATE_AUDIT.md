@@ -450,3 +450,34 @@ make benchmarks useful: **semantic parity**, **reproducibility**, and
 high-value optimization targets (dispatcher resolution, resolver selection,
 ORM persist, and bean lookup). Fix the harness first; then use it to drive
 those changes; then publish only what the artifacts support.
+
+---
+
+## 9. Refresh status (2026-11-10)
+
+Phase 0 and Phase 1 of the refresh plan landed in commit `b21c9f28d`. The
+snapshot in §3 remains the **before** record; the current serial baseline is
+`benchmarks/baselines/reference.json` and the user-facing results are in
+[`BENCHMARKS.md`](../../BENCHMARKS.md).
+
+| Defect                          | Resolution                                                                                                                                            |
+| :------------------------------ | :---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| D1 duplicate comparison row     | Removed; routing now separates verified parity from full resolution.                                                                                  |
+| D2 different work per iteration | Query-string and cookie rows now build the same records; `cookie` is compared only where key decoding matches.                                        |
+| D3 setup inside the body        | Fixtures moved to module scope or `beforeEach`; per-op units via `@ops=N`.                                                                            |
+| D4 no equivalence gate          | Every comparator calls `assertEquivalent` before timing.                                                                                              |
+| D5 batch units                  | `ns/op`/`ops/s` derived from `opsPerIteration`; runner normalizes.                                                                                    |
+| D6 no artifact/fingerprint      | `scripts/bench-run.mjs` writes JSON with commit, dirty flag, Node, pnpm, OS, CPU, governor, load, and per-scenario statistics.                        |
+| D7 parallel + jsdom             | `vitest.bench.config.ts` uses the Node environment, one worker, no file parallelism, no shuffle.                                                      |
+| D8 stale/duplicate benches      | `like` exploration replaced with the production export; duplicate micro-suite removed; dispatcher factory bench renamed.                              |
+| D9 browser lane                 | React/vanilla jsdom targets work; Svelte/Vue/Ndigo fail fast with an explicit quarantine reason.                                                      |
+| D10 typecheck gap               | `packages/*/bench/**` and `benchmarks/**` are in `tsconfig.spec.json`; `pnpm lint` passes.                                                            |
+| D11 no baseline gate            | `scripts/bench-compare.mjs` fails on >10% median regressions when RME ≤ 2%.                                                                           |
+| D12 unsupported claims          | Dispatcher and view claims corrected; Ramda audit marked historical; guide 45 and root README link to `BENCHMARKS.md`.                                |
+| D13 export-getter warnings      | Benchmark files import concrete modules; remaining warnings come from framework-internal barrel imports and are documented in `benchmarks/README.md`. |
+| D14 poor RME accepted           | Runner rejects comparisons above 2% RME; long-running scenarios use explicit time/warmup options.                                                     |
+| D15 comparator provenance       | `lru-cache`, `qs`, and `cookie` are pinned devDependencies; router versions were already pinned in the dispatcher manifest.                           |
+
+**Still open:** end-to-end HTTP macro benchmarks, body/validation binding
+coverage, startup/RSS, the real-browser DOM runner, Phase 4 component coverage,
+and the nightly non-gating CI job.

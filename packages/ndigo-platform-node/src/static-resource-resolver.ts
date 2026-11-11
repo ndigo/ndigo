@@ -3,7 +3,7 @@
  */
 import { readdir, realpath, stat } from 'node:fs/promises';
 import { sep, resolve, isAbsolute } from 'node:path';
-import { MediaType, MediaTypes } from '@ndigo/core';
+import { MediaType, MediaTypes, stringComparator } from '@ndigo/core';
 
 /** Outcome kinds for a static-resource lookup. */
 export type StaticResourceKind = 'forbidden' | 'not-found' | 'internal-error' | 'ok';
@@ -416,7 +416,7 @@ export class StaticResourceResolver {
         } catch {
             return { kind: 'internal-error' };
         }
-        names.sort((a, b) => a.localeCompare(b));
+        names.sort(stringComparator.compare);
         const displayPath = `/${relative}`;
         const items = names
             .map((name) => `      <li><a href="${escapeHtml(name)}">${escapeHtml(name)}</a></li>`)

@@ -1,7 +1,7 @@
 /**
  * The in-process reference outbox store (development and tests).
  */
-import { FrameworkError } from '@ndigo/core';
+import { FrameworkError, chainComparisons, compareBy, numberComparator, stringComparator } from '@ndigo/core';
 import { randomUUID } from 'node:crypto';
 import type { JobId } from './job';
 import type { OutboxClaimOptions, OutboxEntry, OutboxStore } from './outbox';
@@ -104,8 +104,10 @@ export class InProcessOutboxStore implements OutboxStore {
                     (stored.leaseExpiresAt === undefined || stored.leaseExpiresAt <= now)
             )
             .sort(
-                (left, right) =>
-                    left.entry.occurredAt - right.entry.occurredAt || left.entry.id.localeCompare(right.entry.id)
+                chainComparisons(
+                    compareBy((stored) => stored.entry.occurredAt, numberComparator.compare),
+                    compareBy((stored) => stored.entry.id, stringComparator.compare)
+                )
             )
             .slice(0, limit);
 

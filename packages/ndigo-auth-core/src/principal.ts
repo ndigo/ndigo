@@ -115,12 +115,18 @@ export class DefaultPrincipal implements Principal {
     readonly roles: ReadonlyArray<string>;
     /** OAuth scopes granted to this principal. */
     readonly scopes: ReadonlyArray<string>;
+    /** Cached role set for O(1) membership checks. */
+    readonly #roleSet: ReadonlySet<string>;
+    /** Cached scope set for O(1) membership checks. */
+    readonly #scopeSet: ReadonlySet<string>;
 
     constructor(id: string, name: string, roles: readonly string[] = [], scopes: readonly string[] = []) {
         this.id = id;
         this.name = name;
         this.roles = roles;
         this.scopes = scopes;
+        this.#roleSet = new Set(roles);
+        this.#scopeSet = new Set(scopes);
     }
 
     /**
@@ -130,7 +136,7 @@ export class DefaultPrincipal implements Principal {
      * @returns Whether the role is assigned.
      */
     hasRole(role: string): boolean {
-        return this.roles.includes(role);
+        return this.#roleSet.has(role);
     }
 
     /**
@@ -140,7 +146,7 @@ export class DefaultPrincipal implements Principal {
      * @returns Whether any role is assigned.
      */
     hasAnyRole(...roles: string[]): boolean {
-        return roles.some((role) => this.roles.includes(role));
+        return roles.some((role) => this.#roleSet.has(role));
     }
 
     /**
@@ -150,7 +156,7 @@ export class DefaultPrincipal implements Principal {
      * @returns Whether the scope is granted.
      */
     hasScope(scope: string): boolean {
-        return this.scopes.includes(scope);
+        return this.#scopeSet.has(scope);
     }
 
     /**
@@ -160,7 +166,7 @@ export class DefaultPrincipal implements Principal {
      * @returns Whether any scope is granted.
      */
     hasAnyScope(...scopes: string[]): boolean {
-        return scopes.some((scope) => this.scopes.includes(scope));
+        return scopes.some((scope) => this.#scopeSet.has(scope));
     }
 }
 

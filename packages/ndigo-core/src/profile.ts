@@ -19,6 +19,8 @@
  */
 import { IllegalStateError } from './error.js';
 import { evaluateProfileExpression } from './profile-expression.js';
+import { Serializable } from './serializable.js';
+import { Equatable } from './equatable.js';
 
 /**
  * The precedence-role a composed term plays in the grammar (loose → tight):
@@ -34,7 +36,7 @@ const namePattern = /^[a-zA-Z0-9_.:-]+$/u;
  * canonical expression string, so terms drop into `@whenProfile(...)` and
  * `acceptsProfiles(...)` seamlessly.
  */
-export class ProfileTerm {
+export class ProfileTerm implements Serializable, Equatable<ProfileTerm> {
     readonly #source: string;
     readonly #kind: TermKind;
 
@@ -48,6 +50,16 @@ export class ProfileTerm {
      */
     toString(): string {
         return this.#source;
+    }
+
+    /**
+     * Compares this term with another by canonical source.
+     *
+     * @param value - The value to compare.
+     * @returns `true` when both terms have the same canonical source.
+     */
+    equals(value: unknown): boolean {
+        return value instanceof ProfileTerm && value.#source === this.#source;
     }
 
     /** The kind of term (`name`, `not`, `and`, `or`, `compound`). */

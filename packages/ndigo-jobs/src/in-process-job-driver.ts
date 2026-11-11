@@ -1,7 +1,7 @@
 /**
  * The in-process reference driver: full contract semantics, no durability.
  */
-import { FrameworkError } from '@ndigo/core';
+import { FrameworkError, chainComparisons, compareBy, numberComparator } from '@ndigo/core';
 import type { ClaimOptions, JobId, JobRecord, JobRequest } from './job';
 import type { JobDriver } from './job-driver';
 import { parseJobPayload, resolveJobRequest, serializeJobPayload } from './request';
@@ -103,8 +103,10 @@ export class InProcessJobDriver implements JobDriver {
         const ready = [...this.#jobs.values()]
             .filter((stored) => stored.state === 'queued' && stored.record.runAt <= now)
             .sort(
-                (left, right) =>
-                    left.record.runAt - right.record.runAt || left.record.createdAt - right.record.createdAt
+                chainComparisons(
+                    compareBy((stored) => stored.record.runAt, numberComparator.compare),
+                    compareBy((stored) => stored.record.createdAt, numberComparator.compare)
+                )
             );
 
         const claimed: JobRecord[] = [];

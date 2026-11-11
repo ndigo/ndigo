@@ -1,16 +1,27 @@
 /**
- * A generic Least-Recently-Used (LRU) cache backed by insertion-order Map semantics.
+ * A generic Least-Recently-Used (LRU) cache backed by a hash map plus a
+ * doubly linked list, giving O(1) lookup, promotion, and eviction. (The
+ * previous Map-insertion-order implementation degraded to O(n) per eviction
+ * once deleted slots piled up at the front of the table.)
  */
+interface LRUNode<K, V> {
+    key: K;
+    value: V;
+    prev: LRUNode<K, V> | null;
+    next: LRUNode<K, V> | null;
+}
+
 export class LRUCache<K, V> {
     readonly #capacity: number;
-    readonly #map: Map<K, V>;
+    readonly #map: Map<K, LRUNode<K, V>> = new Map();
+    #head: LRUNode<K, V> | null = null;
+    #tail: LRUNode<K, V> | null = null;
 
     /**
      * @param capacity - Maximum number of entries before eviction occurs. Default: 256.
      */
     constructor(capacity = 256) {
         this.#capacity = capacity;
-        this.#map = new Map();
     }
 
     /** Maximum number of entries before eviction occurs. */
@@ -23,31 +34,78 @@ export class LRUCache<K, V> {
         return this.#map.size;
     }
 
+    #unlink(node: LRUNode<K, V>): void {
+        if (node.prev !== null) {
+            node.prev.next = node.next;
+        } else {
+            this.#head = node.next;
+        }
+        if (node.next !== null) {
+            node.next.prev = node.prev;
+        } else {
+            this.#tail = node.prev;
+        }
+        node.prev = null;
+        node.next = null;
+    }
+
+    #addToFront(node: LRUNode<K, V>): void {
+        node.prev = null;
+        node.next = this.#head;
+        if (this.#head !== null) {
+            this.#head.prev = node;
+        }
+        this.#head = node;
+        if (this.#tail === null) {
+            this.#tail = node;
+        }
+    }
+
     /**
      * Returns the cached value for `key`, or `undefined` if not present.
      * Promotes the entry to most-recently-used on hit.
      */
     get(key: K): V | undefined {
-        if (!this.#map.has(key)) return undefined;
-        const value = this.#map.get(key) as V;
-        // Promote to MRU by re-inserting at end
-        this.#map.delete(key);
-        this.#map.set(key, value);
-        return value;
+        const node = this.#map.get(key);
+        if (node === undefined) {
+            return undefined;
+        }
+        if (node !== this.#head) {
+            this.#unlink(node);
+            this.#addToFront(node);
+        }
+        return node.value;
     }
 
     /**
      * Sets a value in the cache. Evicts the least-recently-used entry if at capacity.
      */
     set(key: K, value: V): this {
-        if (this.#map.has(key)) {
-            // Remove first so re-insert moves it to MRU end
-            this.#map.delete(key);
-        } else if (this.#map.size >= this.#capacity) {
-            // Evict LRU: first key in insertion order
-            this.#map.delete(this.#map.keys().next().value as K);
+        const existing = this.#map.get(key);
+        if (existing !== undefined) {
+            existing.value = value;
+            if (existing !== this.#head) {
+                this.#unlink(existing);
+                this.#addToFront(existing);
+            }
+            return this;
         }
-        this.#map.set(key, value);
+
+        if (this.#capacity > 0 && this.#map.size >= this.#capacity) {
+            const oldest = this.#tail;
+            if (oldest !== null) {
+                this.#map.delete(oldest.key);
+                this.#unlink(oldest);
+            }
+        }
+
+        if (this.#capacity <= 0) {
+            return this;
+        }
+
+        const node: LRUNode<K, V> = { key, value, prev: null, next: null };
+        this.#map.set(key, node);
+        this.#addToFront(node);
         return this;
     }
 
@@ -62,7 +120,13 @@ export class LRUCache<K, V> {
      * Removes a specific entry from the cache.
      */
     delete(key: K): boolean {
-        return this.#map.delete(key);
+        const node = this.#map.get(key);
+        if (node === undefined) {
+            return false;
+        }
+        this.#map.delete(key);
+        this.#unlink(node);
+        return true;
     }
 
     /**
@@ -70,5 +134,7 @@ export class LRUCache<K, V> {
      */
     clear(): void {
         this.#map.clear();
+        this.#head = null;
+        this.#tail = null;
     }
 }

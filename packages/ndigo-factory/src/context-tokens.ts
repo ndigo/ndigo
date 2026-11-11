@@ -8,7 +8,9 @@
  * The generic parameter `T` provides compile-time type association.
  * @typeParam _T - The type of the value associated with this token.
  */
-export class ContextToken<_T> {
+import { Equatable, Serializable } from '@ndigo/core';
+
+export class ContextToken<_T> implements Equatable<ContextToken<_T>>, Serializable {
     /**
      * A descriptive string for the token, used as the backing key at runtime.
      */
@@ -37,6 +39,20 @@ export class ContextToken<_T> {
      */
     toString(): string {
         return `ContextToken(${this.description})`;
+    }
+
+    /**
+     * Compares this token with another by description and required version.
+     *
+     * @param value - The value to compare.
+     * @returns `true` when both tokens share the same description and required version.
+     */
+    equals(value: unknown): boolean {
+        return (
+            value instanceof ContextToken &&
+            value.description === this.description &&
+            value.requiredVersion === this.requiredVersion
+        );
     }
 }
 

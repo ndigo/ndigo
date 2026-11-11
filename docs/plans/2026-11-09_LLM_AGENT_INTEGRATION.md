@@ -524,9 +524,9 @@ The repo's existing gates apply unchanged: `pnpm lint`, `pnpm typecheck`,
 
 ## 9. Decisions to record
 
-| ADR                                                               | Subject                                              | Phase     |
-| :---------------------------------------------------------------- | :--------------------------------------------------- | :-------- |
-| [AD-96](../decisions/2026-11-10_AD96_LLM_AGENT_INTEGRATION.md)    | Agent integration umbrella: two audiences, D-1…D-8   | before P0 |
+| ADR                                                                       | Subject                                              | Phase     |
+| :------------------------------------------------------------------------ | :--------------------------------------------------- | :-------- |
+| [AD-96](../decisions/2026-11-10_AD96_LLM_AGENT_INTEGRATION.md)            | Agent integration umbrella: two audiences, D-1…D-8   | before P0 |
 | [AD-97](../decisions/archive/2026-11-10_AD97_CLI_JSON_CONTRACT.md)        | `--json` output contract for the CLI                 | P0        |
 | [AD-98](../decisions/archive/2026-11-10_AD98_AGENT_CONTENT_GENERATION.md) | Agent content generation and the two-store split     | P1        |
 | [AD-99](../decisions/archive/2026-11-10_AD99_MCP_HOST_EXTRACTION.md)      | MCP host extraction and `ndigo mcp` profiles         | P2        |

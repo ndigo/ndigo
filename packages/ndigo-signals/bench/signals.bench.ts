@@ -10,7 +10,7 @@
  */
 import { test } from 'vitest';
 import { signal as rawSignal } from '@preact/signals-core';
-import { reactive, signal } from '../src/_decorators';
+import { reactive, signal, effect } from '../src/_decorators';
 import { eventsToSignal, signalToEvents, type EventSink, type EventSource } from '../src/event-bridge';
 import { assertEquivalent, benchName, sink } from '../../../benchmarks/lib/verify';
 
@@ -56,6 +56,24 @@ test('signal — decorated field read', async ({ bench }) => {
             for (let i = 0; i < BATCH; i++) retain(decorated.value);
         })
     );
+});
+
+test('effect — fires on signal change', async ({ bench }) => {
+    let fires = 0;
+    @reactive
+    class Target {
+        @signal value = 0;
+        @effect tick(): void {
+            fires++;
+        }
+    }
+    const t = new Target();
+    // prime: effect runs once on activation
+    const baseline = fires;
+    await bench(benchName('effect fire on change', BATCH), () => {
+        for (let i = 0; i < BATCH; i++) t.value = i + 1;
+        retain(fires - baseline);
+    }).run();
 });
 
 test('eventsToSignal — bridge occurrence into signal', async ({ bench }) => {

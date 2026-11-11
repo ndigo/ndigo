@@ -236,6 +236,34 @@ Cold start (`pnpm bench:start`, 3 runs, median; artifact
 The Ndigo number includes `tsx` source loading, not a bundled production
 build; it is an upper bound on startup cost, not a shipped-artifact claim.
 
+### Cache and flags (Phase 4)
+
+`@ndigo/cache` `MemoryCache` (async contract) and `@ndigo/flags`
+`PropertyFlagProvider` (async, never-throw). Artifacts
+`2026-11-11T02-34-57-f71aea3202ca.json` (cache) and
+`2026-11-11T02-35-37-f71aea3202ca.json` (flags), commit `f71aea320`.
+
+| Scenario                                                 |   ns/op |                  RME |
+| :------------------------------------------------------- | ------: | -------------------: |
+| MemoryCache get hit                                      |  125.33 | 2.73% (inconclusive) |
+| MemoryCache get miss                                     |   72.47 |                0.25% |
+| MemoryCache set existing                                 |   59.76 |                0.18% |
+| MemoryCache delete hit                                   |  110.01 |                1.60% |
+| MemoryCache set evict (maxSize 16)                       |  127.75 | 5.78% (inconclusive) |
+| memoize hit                                              |  313.88 |                0.24% |
+| memoize miss                                             |  427.73 |                0.23% |
+| PropertyFlagProvider evaluate boolean true               |  167.97 |                0.20% |
+| PropertyFlagProvider evaluate boolean missing (default)  |  102.08 |                0.22% |
+| PropertyFlagProvider evaluate string                     |   94.20 |                0.21% |
+| PropertyFlagProvider evaluate number                     |  132.06 |                0.22% |
+| PropertyFlagProvider evaluate rollout (50% bucket)       |  334.70 |                0.27% |
+| PropertyFlagProvider evaluate throwing reader (no-throw) | 2299.54 |                0.25% |
+
+Notes: `get hit` is inconclusive at 2.73% RME; the eviction row is
+inconclusive at 5.78%. The throwing-reader path costs ~14× the normal
+evaluate path — the no-throw contract is not free. No comparator is
+published for either package (no upstream baseline in the estate).
+
 ### Signals event bridges (Phase 4)
 
 `@ndigo/signals` re-exports the `@preact/signals-core` engine, so these rows
@@ -247,13 +275,14 @@ measure only the shipped bridge wrappers. Artifact
 | `eventsToSignal` delivery |                                4.19 ns/event (238.4M events/s) |
 | `signalToEvents` delivery | 42.1 ns/change (23.7M changes/s; **RME 10.2% — inconclusive**) |
 
-Decorated read costs **5.66 ns/op vs 1.02 ns/op raw — a 5.5× wrapper
-overhead** (RME 0.06% / 0.03%). The earlier "context is undefined" failure
-was not a plugin bug: `@signal` is a decorator, not a factory, so the bench
-had to use `@signal` (no call parens) rather than `@signal()`. The
-`lowerDecorators()` plugin (esbuild, ES2022) lowers field decorators correctly.
-The remaining signals bench gap is `@effect` (still unmeasured) and a
-write-path row.
+Decorated read costs **5.70 ns/op vs 1.03 ns/op raw — a 5.5× wrapper
+overhead** (RME 0.05% / 0.03%). `@effect` fires at **43.37 ns/op per
+change** (RME 0.14%); `signalToEvents` is inconclusive at 48.06% RME.
+The earlier "context is undefined" failure was not a plugin bug: `@signal`
+is a decorator, not a factory, so the bench had to use `@signal` (no call
+parens) rather than `@signal()`. The `lowerDecorators()` plugin (esbuild,
+ES2022) lowers field decorators correctly. Artifact
+`2026-11-11T02-33-06-f8d35703af8d.json` (commit `f8d35703a`).
 
 ## What this does not prove
 

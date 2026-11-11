@@ -479,7 +479,7 @@ snapshot in §3 remains the **before** record; the current serial baseline is
 | D15 comparator provenance       | `lru-cache`, `qs`, and `cookie` are pinned devDependencies; router versions were already pinned in the dispatcher manifest.                           |
 
 **Still open:** a keep-alive/production-build variant of the macro HTTP lane,
-the real-browser DOM runner, Phase 4 component coverage (cache, resilience,
-rate-limit, flags, log/telemetry, socket, serialization), and the `@effect`
-row of the signals bench. The nightly non-gating CI lane is added
-(`.github/workflows/benchmarks.yml`).
+the real-browser DOM runner, and Phase 4 component coverage (resilience,
+rate-limit, log/telemetry, socket, serialization). Cache and flags benches
+landed; signals bench now covers `@signal` read/write and `@effect` fire.
+The nightly non-gating CI lane is added (`.github/workflows/benchmarks.yml`).

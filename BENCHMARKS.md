@@ -264,6 +264,31 @@ inconclusive at 5.78%. The throwing-reader path costs ~14× the normal
 evaluate path — the no-throw contract is not free. No comparator is
 published for either package (no upstream baseline in the estate).
 
+### Rate limit, locks, and log (Phase 4)
+
+`@ndigo/rate-limit` `FixedWindowRateLimiter`, `@ndigo/locks`
+`InProcessLockDriver`, and `@ndigo/log` dispatch. Artifacts
+`2026-11-11T02-44-57/02-45-01/02-45-07-9668994c6959.json` (commit
+`9668994c6`).
+
+| Scenario                                  |  ns/op |                  RME |
+| :---------------------------------------- | -----: | -------------------: |
+| RateLimit consume allowed (64 keys)       | 169.98 |                0.24% |
+| RateLimit consume denied (limit 1)        | 104.50 |                0.14% |
+| RateLimit consume distinct keys (10k cap) | 171.18 |                0.17% |
+| Locks acquire+release (uncontended)       | 557.50 | 2.68% (inconclusive) |
+| Locks acquire contended (null path)       |  97.09 |                0.18% |
+| Locks renew                               |  94.62 |                0.17% |
+| Log noop info()                           |   0.23 |                0.05% |
+| Log ConsoleLogger disabled info()         |  17.27 |                0.08% |
+| Log ConsoleLogger isEnabled (disabled)    |  16.73 |                0.05% |
+
+Notes: the lock acquire+release row is inconclusive at 2.68% RME. Log rows
+pin the **disabled** dispatch cost only — the enabled write path is
+synchronous console I/O and would be dominated by the sink, so it is not
+measured. No upstream comparators exist for these packages; all rows are
+internal cost.
+
 ### Signals event bridges (Phase 4)
 
 `@ndigo/signals` re-exports the `@preact/signals-core` engine, so these rows

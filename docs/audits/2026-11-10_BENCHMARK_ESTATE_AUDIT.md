@@ -480,6 +480,6 @@ snapshot in §3 remains the **before** record; the current serial baseline is
 
 **Still open:** a keep-alive/production-build variant of the macro HTTP lane,
 the real-browser DOM runner, and Phase 4 component coverage (resilience,
-rate-limit, log/telemetry, socket, serialization). Cache and flags benches
-landed; signals bench now covers `@signal` read/write and `@effect` fire.
+socket, serialization, view SSR, telemetry). Cache, flags, signals (incl.
+`@effect`), rate-limit, locks, and log-disabled-dispatch benches landed.
 The nightly non-gating CI lane is added (`.github/workflows/benchmarks.yml`).

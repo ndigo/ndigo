@@ -14,7 +14,7 @@ reference is [`apps/20-ndigo-ui-lab`](../../apps/20-ndigo-ui-lab/README.md);
 island app. The decision records are
 [AD-69](../decisions/2026-10-06_AD69_COMPONENT_INTEGRATION_CONTRACT.md),
 [AD-95](../decisions/2026-11-08_AD95_NDIGO_UI.md) (which supersedes AD-71), and
-the superseded [AD-71](../decisions/2026-10-07_AD71_COMPONENT_LIBRARY_SELECTION.md).
+the superseded [AD-71](../decisions/archive/2026-10-07_AD71_COMPONENT_LIBRARY_SELECTION.md).
 
 **Audience:** Browser application developers · **Prerequisites:** Guide 02 · **Reference app:** `apps/20-ndigo-ui-lab`
 
@@ -279,4 +279,4 @@ current app dependency.
 - [`@ndigo/ui`](../../packages/ndigo-ui/README.md) — tokens, theme, registry
 - [`apps/20-ndigo-ui-lab`](../../apps/20-ndigo-ui-lab/README.md) — the runnable consumer
 - [ndigo-ui agent skill](../../agent-local/skills/ndigo-ui/SKILL.md) — the agent-facing usage and porting contract
-- [AD-69](../decisions/2026-10-06_AD69_COMPONENT_INTEGRATION_CONTRACT.md), [AD-71](../decisions/2026-10-07_AD71_COMPONENT_LIBRARY_SELECTION.md), and [AD-95](../decisions/2026-11-08_AD95_NDIGO_UI.md) — component, selection, and ndigo-ui decisions
+- [AD-69](../decisions/2026-10-06_AD69_COMPONENT_INTEGRATION_CONTRACT.md), [AD-71](../decisions/archive/2026-10-07_AD71_COMPONENT_LIBRARY_SELECTION.md), and [AD-95](../decisions/2026-11-08_AD95_NDIGO_UI.md) — component, selection, and ndigo-ui decisions

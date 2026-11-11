@@ -1,7 +1,9 @@
 # AD-71: Component library selection — Web Awesome for the reference integration
 
+> **Archived** — this decision is fully superseded and retained for history. See the superseding ADR linked below.
+
 **Date:** 2026-10-07
-**Status:** Superseded by [AD-95](2026-11-08_AD95_NDIGO_UI.md) — Web Awesome is
+**Status:** Superseded by [AD-95](../2026-11-08_AD95_NDIGO_UI.md) — Web Awesome is
 no longer the reference integration; the framework packages stay
 dependency-free, and `apps/07-ndigo-island` keeps the library only until the
 migration milestone, when the dependency is removed from the workspace.

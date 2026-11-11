@@ -1,7 +1,7 @@
 # AD-56: Auth & ORM post-MVP — pluggable authentication plus ORM relations, lifecycle, transactions, Drizzle adapter
 
 **Date:** 2026-05-28
-**Status:** Accepted — implemented; `@ndigo/auth` split into
+**Status:** Superseded in part — auth/ORM post-MVP superseded in part by AD-33/AD-30/AD-31
 `ndigo-auth-core` / `ndigo-auth-server` / `ndigo-auth-client` (2026-06-24,
 commit `148c92e9`); superseded in part by
 [AD-33](2026-09-26_AD33_AUTH_CREDENTIALS_AND_SESSIONS.md) (credentials/

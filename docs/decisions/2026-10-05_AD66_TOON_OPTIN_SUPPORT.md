@@ -1,7 +1,7 @@
 # AD-66: TOON support as an opt-in authoring format
 
 **Date:** 2026-10-05
-**Status:** Accepted — Phase 0 (MediaType token) and Phase 1 (`.toon` config
+**Status:** Superseded in part — D-3 superseded by AD-102 (2026-11-10)
 files) landed 2026-10-05; **Phase 3 (`fromConfig`) landed 2026-11-10** (a
 `.toon` address suffix decodes as TOON, an explicit `format` overrides it,
 JSON stays the default; plan:

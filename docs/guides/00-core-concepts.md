@@ -11,7 +11,7 @@ flow through them, and points at the guide that teaches each surface. Read it
 before [guide 01](01-building-a-node-api.md) (Node) or [guide 02](02-building-a-browser-app.md) (browser) if the package names are still
 unfamiliar.
 
-**Audience:** New Ndigo developers · **Prerequisites:** Workspace bootstrapped (`pnpm install`) · **Reference app:** `apps/05-ndigo-api` (browser companion: `apps/08-ndigo-views`)
+**Audience:** New Ndigo developers · **Prerequisites:** Workspace bootstrapped (`pnpm install`) · **Reference app:** `[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)` (browser companion: `[apps/08-ndigo-views](https://github.com/ndigo/ndigo/tree/main/apps/08-ndigo-views)`)
 
 ## What you'll learn
 
@@ -83,7 +83,7 @@ View resolver ── renders the representation
 - **View** — the representation. A handler returns a `ModelAndView`, a view
  name, or a value the adapter knows how to render.
 
-Guides 05 (routing), 06 (binding), 07 (validation), and 08 (errors) cover each
+Guides [05](05-routing-and-route-conditions.md) (routing), 06 (binding), 07 (validation), and 08 (errors) cover each
 stage. [Guide 09](09-views-and-content-negotiation.md) covers the view side.
 
 ## 3. The view path
@@ -117,7 +117,7 @@ The same application code runs on two platforms; the preset decides what
 | Test harness | `bootApp` + `MockHTTP` | `bootBrowserApp` + `BrowserMockClient` |
 
 Platform packages are adapters, not forks: `@ndigo/platform-node` and
-`@ndigo/platform-web` wire the shared contracts to a runtime. Guides 01 and 02
+`@ndigo/platform-web` wire the shared contracts to a runtime. Guides [01](01-building-a-node-api.md) and [02](02-building-a-browser-app.md)
 walk each preset end to end.
 
 ## 5. The package families

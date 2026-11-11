@@ -11,7 +11,7 @@ Ndigo's resolver/interceptor model: parsing happens **before** argument binding,
 see parts directly rather than a buffered body. The one new runtime dependency is busboy —
 the canonical zero-dependency streaming parser; Ndigo owns the contract and wraps it.
 
-**Audience:** Node application developers · **Prerequisites:** Guides 01 and 06 · **Reference app:** `apps/05-ndigo-api`
+**Audience:** Node application developers · **Prerequisites:** Guides [01](01-building-a-node-api.md) and [06](06-argument-binding.md) · **Reference app:** `[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)`
 
 ## What you'll learn
 
@@ -155,7 +155,7 @@ the contract exposes bytes/stream so a caller pipes to their store unchanged. Wr
 - **The global body cap doesn't govern uploads.** Multipart parses before `#readBody`; tune the upload
  caps (`maxFileSize` / `maxRequestSize`) separately so one knob doesn't masquerade as both.
 
-Reference: `apps/05-ndigo-api` (`POST /api/upload` demo gate in `upload-controller.ts`, round-trip +
+Reference: `[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)` (`POST /api/upload` demo gate in `upload-controller.ts`, round-trip +
 empty-file spec in `upload.spec.ts`). Design rationale: .
 
 ## See also

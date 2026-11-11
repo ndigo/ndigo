@@ -14,7 +14,7 @@ ecosystem standard, and uses platform standard APIs directly** —
 | Date/number/list formatting | `Intl.*` formatters, cached, explicit locale/time zone | `@ndigo/core` wrappers (framework facade, Intl engine) |
 | Locale resolution | per-request language: header/cookie/navigator/fixed | `@ndigo/dispatcher` + platform packages |
 
-**Audience:** Node and browser application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) or [guide 02](02-building-a-browser-app.md) · **Reference app:** `apps/12-ndigo-petclinic`, `apps/07-ndigo-island`
+**Audience:** Node and browser application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) or [guide 02](02-building-a-browser-app.md) · **Reference app:** `[apps/12-ndigo-petclinic](https://github.com/ndigo/ndigo/tree/main/apps/12-ndigo-petclinic)`, `[apps/07-ndigo-island](https://github.com/ndigo/ndigo/tree/main/apps/07-ndigo-island)`
 
 ## What you'll learn
 
@@ -216,7 +216,7 @@ signal-driven re-rendering.
 
 - [Content/i18n decision](../decisions/2026-09-13_AD19_CONTENT_I18N.md)
 - [Content/i18n implementation plan](../plans/2026-09-13_CONTENT_I18N.md)
-- [ndigo-island demo](../../apps/07-ndigo-island/README.md) — localized SSR page
-- [ndigo-todo-web demo](../../apps/03-ndigo-todo-web/README.md) — reactive locale switcher
+- [ndigo-island demo](../../[apps/07-ndigo-island](https://github.com/ndigo/ndigo/tree/main/apps/07-ndigo-island)/README.md) — localized SSR page
+- [ndigo-todo-web demo](../../[apps/03-ndigo-todo-web](https://github.com/ndigo/ndigo/tree/main/apps/03-ndigo-todo-web)/README.md) — reactive locale switcher
 - [`@ndigo/content-i18next`](../../packages/ndigo-content-i18next/README.md) —
  the i18next adapter

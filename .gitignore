@@ -6,6 +6,7 @@
 # archive is build output only at the repo root; docs/decisions/archive is tracked
 /archive
 coverage
+storybook-static
 lerna-debug.log
 node_modules
 npm-debug.log

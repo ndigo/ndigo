@@ -1,6 +1,6 @@
 <!-- guide-redirect -->
 
-# Guide 08 — Multipart & File Upload (moved)
+# [Guide 08](08-errors-and-problem-details.md) — Multipart & File Upload (moved)
 
 This guide is now [Guide 14 — Multipart & File Upload](14-multipart-and-file-upload.md). The old path is kept so
 links from historical records (ADRs, plans, audits) continue to resolve. See the

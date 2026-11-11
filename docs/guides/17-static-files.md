@@ -1,6 +1,6 @@
 <!-- guide-redirect -->
 
-# Guide 17 — Static Files (moved)
+# [Guide 17](17-i18n-and-content.md) — Static Files (moved)
 
 This guide is now [Guide 10 — Static Files](10-static-files.md). The old path is kept so
 links from historical records (ADRs, plans, audits) continue to resolve. See the

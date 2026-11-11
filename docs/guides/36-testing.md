@@ -1,6 +1,6 @@
 # Guide 36 — Testing with `@ndigo/test`
 
-`@ndigo/test` is the in-process integration harness (AD-63): `bootApp` boots a
+`@ndigo/test` is the in-process integration harness: `bootApp` boots a
 real application context and dispatcher, and `MockHTTP` sends socket-free
 requests through the whole pipeline — interceptors, argument resolvers,
 validation, handler, view resolution, and the response contract. No port, no
@@ -11,7 +11,7 @@ This is the layer between unit-testing a controller and driving a real browser
 with Playwright. It mirrors the `NodeHTTPServerAdapter` passing a real request
 into `NodeDispatcher`, but swaps the network for an in-memory `ResponseSink`.
 
-**Audience:** All application developers · **Prerequisites:** Guide 01 or guide 02 · **Reference app:** `apps/05-ndigo-api`, `apps/08-ndigo-views`
+**Audience:** All application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) or [guide 02](02-building-a-browser-app.md) · **Reference app:** `apps/05-ndigo-api`, `apps/08-ndigo-views`
 
 ## What you'll learn
 
@@ -56,7 +56,7 @@ register them.
 
 Booting is the expensive part. `cachedBootApp(sources)` returns the **same**
 app for repeated calls with the same sources within a Vitest worker
-(ref-counted); `releaseCachedApp(sources)` (or `app.close()`) drops one
+(ref-counted); `releaseCachedApp(sources)` (or `app.close`) drops one
 reference and closes on the last:
 
 ```ts
@@ -76,11 +76,11 @@ trade-off, since a shared mutable context lets suites interfere.
 Construction takes the booted app (or a bare dispatcher). The fluent request
 builder mirrors the adapter's request surface:
 
-| Step     | Methods                                                                                  |
-| :------- | :--------------------------------------------------------------------------------------- |
-| Method   | `get(path)`, `post(path)`, `put(path)`, `delete(path)`, `patch(path)`, `query(path)`     |
-| Mutate   | `.query({...})`, `.body({...})`, `.headers({...})`, `.cookies({...})`, `.session({...})` |
-| Dispatch | `.exec()` → `Promise<MockResult>`                                                        |
+| Step | Methods |
+|:------- |:--------------------------------------------------------------------------------------- |
+| Method | `get(path)`, `post(path)`, `put(path)`, `delete(path)`, `patch(path)`, `query(path)` |
+| Mutate | `.query({...})`, `.body({...})`, `.headers({...})`, `.cookies({...})`, `.session({...})` |
+| Dispatch | `.exec` → `Promise<MockResult>` |
 
 ```ts
 const res = await http.get('/todos').query({ filter: 'active' }).exec();
@@ -88,7 +88,7 @@ const created = await http.post('/todos').body({ text: 'write docs' }).exec();
 const secured = await http.get('/me').headers({ Authorization: 'Bearer t' }).exec();
 ```
 
-`MockResult` is `{ response, route, json(), text() }`; `response` is a
+`MockResult` is `{ response, route, json, text }`; `response` is a
 `MemoryResponse` (`{ status, headers, body, completed }`):
 
 ```ts
@@ -128,7 +128,7 @@ app.close();
 `BrowserMockClient.dispatch(path)` returns the captured render (output element
 
 - model) and records it on `app.viewTarget`, so you can assert the view a
-  route renders — not just the response.
+ route renders — not just the response.
 
 ## 4. Timing helpers
 
@@ -144,10 +144,10 @@ promises so fake-timer suites stay deterministic.
 
 ## See also
 
-- Decision: [AD-63](../decisions/2026-09-04_AD63_NDIGO_TEST_HARNESS.md) — the
-  in-process, socket-free harness.
+- Decision: — the
+ in-process, socket-free harness.
 - Generated API: [`@ndigo/test` api](../../packages/ndigo-test/api/README.md).
 - Demo usage: [`apps/03-ndigo-todo-web`](../../apps/03-ndigo-todo-web/README.md) —
-  harness-driven controller and shell-router specs.
+ harness-driven controller and shell-router specs.
 
 [Back to guides](./README.md)

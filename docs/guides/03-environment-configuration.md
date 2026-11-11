@@ -10,7 +10,7 @@ The environment is a pipeline: **sources** provide raw values →
 (`@environment` zod schemas). It is the reference framework's environment model, ported to
 JavaScript-native structures with fail-loud semantics throughout.
 
-**Audience:** Node and browser application developers · **Prerequisites:** Guide 01 (Node) or guide 02 (browser) · **Reference app:** `apps/05-ndigo-api`
+**Audience:** Node and browser application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) (Node) or [guide 02](02-building-a-browser-app.md) (browser) · **Reference app:** `apps/05-ndigo-api`
 
 ## What you'll learn
 
@@ -43,19 +43,18 @@ JavaScript-native structures with fail-loud semantics throughout.
 
 Sources are **named and ordered** — higher wins:
 
-| Source             | Name                | How it's set                                                                       |
+| Source | Name | How it's set |
 | ------------------ | ------------------- | ---------------------------------------------------------------------------------- |
-| Command line       | `commandLine`       | `app.run('--server.port=9000', '--debug')`                                         |
-| Builder properties | `boot`              | `builder.properties({ server: { port: 8080 } })`                                   |
-| Process env        | `systemEnvironment` | `process.env` (snapshot at construction)                                           |
-| Config server      | `configServer`      | `builder.configServer({ url, pollMs })` — remote JSON (see §9)                     |
-| `.env` file        | `dotenv`            | reserved slot — **not auto-loaded** (no built-in reader; user-supplied, see below) |
-| Config files       | `application`       | `./config/application.json` + profile variants (`.toon` opt-in, see below)         |
-| Defaults           | `defaults`          | `builder.defaults({...})` (always present, lowest)                                 |
+| Command line | `commandLine` | `app.run('--server.port=9000', '--debug')` |
+| Builder properties | `boot` | `builder.properties({ server: { port: 8080 } })` |
+| Process env | `systemEnvironment` | `process.env` (snapshot at construction) |
+| Config server | `configServer` | `builder.configServer({ url, pollMs })` — remote JSON (see §9) |
+| `.env` file | `dotenv` | reserved slot — **not auto-loaded** (no built-in reader; user-supplied, see below) |
+| Config files | `application` | `./config/application.json` + profile variants (`.toon` opt-in, see below) |
+| Defaults | `defaults` | `builder.defaults({...})` (always present, lowest) |
 
 `dotenv` is a **reserved slot** in the documented chain (`PRECEDENCE` in
-`@ndigo/boot`), not an auto-loaded source: nothing reads `.env` today (AD-13
-D3 is not shipped — see its Update note). A stack that needs `.env` values
+`@ndigo/boot`), not an auto-loaded source: nothing reads `.env` today . A stack that needs `.env` values
 can parse the file in an environment customizer (§6) and register the values
 as a named source in the reserved slot.
 
@@ -98,12 +97,12 @@ isDevMode(); // true unless NODE_ENV === 'production'
 ```
 
 - `getEnv(name, fallback?)` returns `process.env[name]`, or `fallback` when
-  the variable is unset. It is safe where no `process` global exists
-  (browser/worker bundles) — the fallback (or `undefined`) is returned
-  instead of throwing.
-- `isDevMode()` is the same guard applied to `NODE_ENV`: true in any
-  environment except an explicit production build. It gates runtime
-  warnings and dev-only code paths.
+ the variable is unset. It is safe where no `process` global exists
+ (browser/worker bundles) — the fallback (or `undefined`) is returned
+ instead of throwing.
+- `isDevMode` is the same guard applied to `NODE_ENV`: true in any
+ environment except an explicit production build. It gates runtime
+ warnings and dev-only code paths.
 
 A direct `process.env.X` read bypasses this guard and breaks isomorphic
 bundles — route every read through `getEnv`.
@@ -143,7 +142,7 @@ env.addDefaultProfile('base');
 env.acceptsProfiles('base'); // true — nothing explicit set
 ```
 
-In-code gates compose with the `Profile` builder (AD-34 D5) — canonical
+In-code gates compose with the `Profile` builder — canonical
 strings, validated by the grammar at build time, parenthesized when
 precedence would change the meaning. Multiple arguments mean **either-of**
 and fold into one canonical expression at decoration time
@@ -165,7 +164,7 @@ env.acceptsProfiles(Profile.and(Profile.or('a', 'b'), 'c')); // '(a | b) & c'
 
 `application-prod.json` loads above `application.json` when `prod` is active.
 
-### TOON config files (opt-in, AD-66)
+### TOON config files (opt-in, )
 
 Config files may be authored in [TOON](https://github.com/toon-format/toon)
 (spec v4.4) instead of JSON — same files, same deep-merge, same profiles:
@@ -194,7 +193,7 @@ install it (`npm i @toon-format/toon@4.4.0`) to use TOON files. The
 `text/toon` media type is provisional (not IANA-registered) — this opt-in
 is a pre-1.0 authoring option, not a framework default.
 
-### TOON from a URL (`ApplicationBuilder.fromConfig`, AD-66 Phase 3)
+### TOON from a URL (`ApplicationBuilder.fromConfig`, Phase 3)
 
 `fromConfig(url)` follows the **address**: a `.toon` path suffix decodes the
 document as TOON, everything else as JSON — JSON stays the default.
@@ -215,7 +214,7 @@ strict mode, JSON-shaped rename hint, object shape guard — is identical to
 
 `sources` is a list of static source ids; `sourceCatalog` resolves them, so
 the same catalog keys can be reused across environments without exposing the
-`import()` seam to untrusted content. A source id absent from the catalog is
+`import` seam to untrusted content. A source id absent from the catalog is
 an `IllegalStateError` at boot, never a silent skip.
 
 ## 3. Bind configuration to typed classes
@@ -249,7 +248,7 @@ const port = serverConfig.getValue('serverConfig').port; // number, fail-loud
 - `@nestedConfig` binds a sub-object under the field name (`db` → `server.db.url`).
 - Missing-required or conversion failure **fails refresh** naming class.field.
 
-### 3.1 Schema mode (AD-34 D3)
+### 3.1 Schema mode 
 
 Declare the shape once as a zod schema and the class binds from it — keys,
 coercion, requiredness and defaults all come from the schema:
@@ -271,13 +270,13 @@ class ServerConfig {
 ```
 
 - Each schema key resolves `${prefix}.${key}`; `z.coerce` converts the
-  stringly env values, `z.default()` fills missing keys, required keys fail
-  boot naming the class (fail-loud, same as field mode).
+ stringly env values, `z.default` fills missing keys, required keys fail
+ boot naming the class (fail-loud, same as field mode).
 - `@property`/`@defaultValue`/`@nestedConfig` are ignored in schema mode — the
-  schema is the single source of truth.
+ schema is the single source of truth.
 - The relaxed (kebab/snake) fallback applies to kebab/snake _field paths_ in field-decorator mode; schema keys are camelCase shape keys resolved exactly as `${prefix}.${key}` — schema mode does not probe kebab spellings (D-3).
 
-### 3.2 Typed reads — `typedConfig` and `propertyKeys` (AD-34 D3/D4)
+### 3.2 Typed reads — `typedConfig` and `propertyKeys` 
 
 Programmatic reads get the same schema semantics on the context or
 environment:
@@ -344,8 +343,8 @@ builder.customizers({
 });
 ```
 
-`environment.refresh()` recomputes from current sources (clears caches +
-rebuilds); `NodeEnvironment.refresh()` also re-snapshots `process.env`. An
+`environment.refresh` recomputes from current sources (clears caches +
+rebuilds); `NodeEnvironment.refresh` also re-snapshots `process.env`. An
 environment refresh **emits `config:refresh`** — the trigger behind the live
 rebind (next section).
 
@@ -391,29 +390,29 @@ Documented framework keys. The **Read from** column is the authority: keys
 marked with a CLI/env/builder/argument channel are _not_ read from
 `config/application.json` (the `profiles` and `telemetry` sections are
 annotated `"x-ndigo-read-from-config": false`; `management.*` is read by
-`@ndigo/management`'s `ManagementProperties` reader — AD-76):
+`@ndigo/management`'s `ManagementProperties` reader — ):
 
-| Key                                     | Type                                 | Default                | Read from                                                   | Meaning                                                                                                                           |
+| Key | Type | Default | Read from | Meaning |
 | --------------------------------------- | ------------------------------------ | ---------------------- | ----------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| `server.name`                           | string                               | `ndigo-api`            | Application `@configurationProperties('server')` class      | Application/server name (the demo binds it; the framework does not).                                                              |
-| `server.port`                           | integer                              | `3000` (`PORT` env)    | Application `@configurationProperties('server')` class      | TCP port to listen on (`0` requests an ephemeral port).                                                                           |
-| `server.host`                           | string                               | `127.0.0.1`            | Not config-read — programmatic `HTTPServer({ host })`       | Host/interface to bind to (platform-node `HTTPServer` default).                                                                   |
-| `profiles.active`                       | string[]                             | —                      | CLI `--profiles.active` / `NDIGO_PROFILES_ACTIVE` / builder | Profiles to activate.                                                                                                             |
-| `profiles.default`                      | string[]                             | —                      | CLI `--profiles.default` / `NDIGO_PROFILES_DEFAULT`         | Fallback profiles used when nothing is active.                                                                                    |
-| `profiles.group.<name>`                 | string[]                             | —                      | CLI `--profiles.group.<name>` / `NDIGO_PROFILES_GROUPS`     | Profile group name → member profiles.                                                                                             |
-| `telemetry.sampler`                     | `'always'` \| `'off'` \| `{ ratio }` | `always`               | `configureTelemetry()` argument                             | Root-span sampling (ratio in `[0, 1]`).                                                                                           |
-| `telemetry.traceExporter`               | exporter spec                        | `console`              | `configureTelemetry()` argument                             | Trace export: `console` \| `none` \| `{ url, headers? }` (OTLP/HTTP).                                                             |
-| `telemetry.metricExporter`              | exporter spec                        | `console`              | `configureTelemetry()` argument                             | Metric export — same spec as `traceExporter`, plus the metric-only `'prometheus'` literal (AD-77): pull reader behind `/metrics`. |
-| `telemetry.logExporter`                 | exporter spec                        | `console`              | `configureTelemetry()` argument                             | Log export — same spec as `traceExporter`.                                                                                        |
-| `management.redactHealthErrors`         | boolean                              | `true`                 | `ManagementAutoConfiguration(options)` constructor argument | Redact thrown health-indicator errors on `/health`.                                                                               |
-| `management.endpoints.exposure.include` | string[]                             | `["health","metrics"]` | `@ndigo/management` `readManagementSettings` (config read)  | Management endpoint ids to serve (`*` = all; `loggers`/`env`/`configprops` are opt-in, AD-76).                                    |
-| `management.endpoints.exposure.exclude` | string[]                             | —                      | `@ndigo/management` `readManagementSettings` (config read)  | Management endpoint ids withheld; wins over `include` (AD-76).                                                                    |
-| `management.endpoints.env.showValues`   | boolean                              | `false`                | `@ndigo/management` `readManagementSettings` (config read)  | When true, `/env` emits the raw stored config text; decrypted plaintext is never served (AD-76).                                  |
-| `management.health.groups`              | `{ <name>: { include: string[] } }`  | —                      | `@ndigo/management` `readManagementSettings` (config read)  | Health groups served at `/health/<name>` aggregating the listed components (AD-76).                                               |
+| `server.name` | string | `ndigo-api` | Application `@configurationProperties('server')` class | Application/server name (the demo binds it; the framework does not). |
+| `server.port` | integer | `3000` (`PORT` env) | Application `@configurationProperties('server')` class | TCP port to listen on (`0` requests an ephemeral port). |
+| `server.host` | string | `127.0.0.1` | Not config-read — programmatic `HTTPServer({ host })` | Host/interface to bind to (platform-node `HTTPServer` default). |
+| `profiles.active` | string[] | — | CLI `--profiles.active` / `NDIGO_PROFILES_ACTIVE` / builder | Profiles to activate. |
+| `profiles.default` | string[] | — | CLI `--profiles.default` / `NDIGO_PROFILES_DEFAULT` | Fallback profiles used when nothing is active. |
+| `profiles.group.<name>` | string[] | — | CLI `--profiles.group.<name>` / `NDIGO_PROFILES_GROUPS` | Profile group name → member profiles. |
+| `telemetry.sampler` | `'always'` \| `'off'` \| `{ ratio }` | `always` | `configureTelemetry` argument | Root-span sampling (ratio in `[0, 1]`). |
+| `telemetry.traceExporter` | exporter spec | `console` | `configureTelemetry` argument | Trace export: `console` \| `none` \| `{ url, headers? }` (OTLP/HTTP). |
+| `telemetry.metricExporter` | exporter spec | `console` | `configureTelemetry` argument | Metric export — same spec as `traceExporter`, plus the metric-only `'prometheus'` literal: pull reader behind `/metrics`. |
+| `telemetry.logExporter` | exporter spec | `console` | `configureTelemetry` argument | Log export — same spec as `traceExporter`. |
+| `management.redactHealthErrors` | boolean | `true` | `ManagementAutoConfiguration(options)` constructor argument | Redact thrown health-indicator errors on `/health`. |
+| `management.endpoints.exposure.include` | string[] | `["health","metrics"]` | `@ndigo/management` `readManagementSettings` (config read) | Management endpoint ids to serve (`*` = all; `loggers`/`env`/`configprops` are opt-in, ). |
+| `management.endpoints.exposure.exclude` | string[] | — | `@ndigo/management` `readManagementSettings` (config read) | Management endpoint ids withheld; wins over `include` . |
+| `management.endpoints.env.showValues` | boolean | `false` | `@ndigo/management` `readManagementSettings` (config read) | When true, `/env` emits the raw stored config text; decrypted plaintext is never served . |
+| `management.health.groups` | `{ <name>: { include: string[] } }` | — | `@ndigo/management` `readManagementSettings` (config read) | Health groups served at `/health/<name>` aggregating the listed components . |
 
 ## See also
 
 - [Guide 43 — Live Configuration, Secrets & Remote Config](43-live-configuration-and-secrets.md) — refresh, secrets, and the config server
 - [Guide 01 — Building a Node API](01-building-a-node-api.md) for the surrounding bootstrap
 - [Environment API](../reference/2026-09-08_ENVIRONMENT_API.md) for the full surface
-- [AD-29](../decisions/2026-09-25_AD29_CONFIGURATION_REFRESH_SECRETS_CONFIG_SERVER.md) for the precedence, refresh, secrets, and config-server decisions
+- for the precedence, refresh, secrets, and config-server decisions

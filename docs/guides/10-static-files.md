@@ -3,11 +3,11 @@
 `@ndigo/platform-node` serves filesystem resources with the HTTP semantics a
 browser cache or CDN expects: ETag conditional GET, single-range requests,
 cache headers, precompressed variants, SPA history fallback, and directory
-control (AD-28). One class owns the whole decision flow — `StaticResourceHandler`
+control . One class owns the whole decision flow — `StaticResourceHandler`
 — and two thin entry points mount it: the ready-made `/static/{*file}`
 controller, or a `StaticFileView` on any route you choose.
 
-**Audience:** Node application developers · **Prerequisites:** Guide 01 · **Reference app:** `apps/05-ndigo-api`, `apps/12-ndigo-petclinic`
+**Audience:** Node application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) · **Reference app:** `apps/05-ndigo-api`, `apps/12-ndigo-petclinic`
 
 ## What you'll learn
 
@@ -48,16 +48,16 @@ when an on-disk file literally contains them.
 
 ## 2. What every response gets
 
-| Concern        | Behavior                                                                                                                                                                                                                              |
-| :------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Methods        | `GET` and `HEAD` (HEAD matches the GET mapping — Node suppresses the body). Any other method → `405` problem+json.                                                                                                                    |
-| Content type   | MIME allowlist by extension (`.html`, `.htm`, `.css`, `.js`, `.mjs`, `.json`, `.png`, `.jpg`, `.jpeg`, `.gif`, `.svg`, `.ico`, `.webp`, `.woff`, `.woff2`, `.ttf`, `.txt`, `.xml`, `.pdf`, `.wasm`); unknown extensions → `403`.      |
-| Sniffing       | `X-Content-Type-Options: nosniff` on every response.                                                                                                                                                                                  |
-| Cache          | `Cache-Control: public, max-age=3600` by default (`null` omits the header).                                                                                                                                                           |
-| Validators     | Strong ETag `"<hex size>-<hex mtime>"` — per-variant (`…-br`/`…-gzip`) so encodings never collide — plus `Last-Modified`; `If-None-Match` beats `If-Modified-Since` → `304` echoing the validators.                                   |
-| Ranges         | `Accept-Ranges: bytes`; single `bytes=a-b` / `bytes=a-` / `bytes=-n` → `206` + `Content-Range`; unsatisfiable → `416` + `Content-Range: bytes */N`; malformed or multi-range → plain `200`; a stale `If-Range` cancels the range.     |
-| Precompressed  | `<file>.br` / `<file>.gz` twins served when `Accept-Encoding` negotiates (q-values, ties prefer `br`); text-ish types always send `Vary: Accept-Encoding`, even when the original is served. Image/font/binary types never negotiate. |
-| Body streaming | Files stream from disk with stat-derived `Content-Length`; conditional GETs and HEAD are answered from metadata alone — the file is never opened.                                                                                     |
+| Concern | Behavior |
+|:------------- |:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Methods | `GET` and `HEAD` (HEAD matches the GET mapping — Node suppresses the body). Any other method → `405` problem+json. |
+| Content type | MIME allowlist by extension (`.html`, `.htm`, `.css`, `.js`, `.mjs`, `.json`, `.png`, `.jpg`, `.jpeg`, `.gif`, `.svg`, `.ico`, `.webp`, `.woff`, `.woff2`, `.ttf`, `.txt`, `.xml`, `.pdf`, `.wasm`); unknown extensions → `403`. |
+| Sniffing | `X-Content-Type-Options: nosniff` on every response. |
+| Cache | `Cache-Control: public, max-age=3600` by default (`null` omits the header). |
+| Validators | Strong ETag `"<hex size>-<hex mtime>"` — per-variant (`…-br`/`…-gzip`) so encodings never collide — plus `Last-Modified`; `If-None-Match` beats `If-Modified-Since` → `304` echoing the validators. |
+| Ranges | `Accept-Ranges: bytes`; single `bytes=a-b` / `bytes=a-` / `bytes=-n` → `206` + `Content-Range`; unsatisfiable → `416` + `Content-Range: bytes */N`; malformed or multi-range → plain `200`; a stale `If-Range` cancels the range. |
+| Precompressed | `<file>.br` / `<file>.gz` twins served when `Accept-Encoding` negotiates (q-values, ties prefer `br`); text-ish types always send `Vary: Accept-Encoding`, even when the original is served. Image/font/binary types never negotiate. |
+| Body streaming | Files stream from disk with stat-derived `Content-Length`; conditional GETs and HEAD are answered from metadata alone — the file is never opened. |
 
 Failures keep the framework's problem+json contract: `403` (containment
 escape, unknown extension, size cap), `404` (missing file), `405` (method),
@@ -76,13 +76,13 @@ new StaticController(resolve('dist'), {
 });
 ```
 
-| Option             | Default                  | Semantics                                                                                                     |
-| :----------------- | :----------------------- | :------------------------------------------------------------------------------------------------------------ |
-| `cacheControl`     | `'public, max-age=3600'` | `null` omits the header entirely.                                                                             |
-| `indexNames`       | `['index.html']`         | Directory requests try each name in order; each candidate is re-verified by containment.                      |
-| `listDirectories`  | `false`                  | No index match → generated HTML listing: names HTML-escaped, relative hrefs, parent link only below the root. |
-| `spaFallback`      | `false`                  | A 404 file miss on an HTML-accepting `GET`/`HEAD` serves the base index and extends `Vary` with `Accept`.     |
-| `maxFileSizeBytes` | `0` (unlimited)          | Rejected at stat time, before the file is opened; oversized → `403`.                                          |
+| Option | Default | Semantics |
+|:----------------- |:----------------------- |:------------------------------------------------------------------------------------------------------------ |
+| `cacheControl` | `'public, max-age=3600'` | `null` omits the header entirely. |
+| `indexNames` | `['index.html']` | Directory requests try each name in order; each candidate is re-verified by containment. |
+| `listDirectories` | `false` | No index match → generated HTML listing: names HTML-escaped, relative hrefs, parent link only below the root. |
+| `spaFallback` | `false` | A 404 file miss on an HTML-accepting `GET`/`HEAD` serves the base index and extends `Vary` with `Accept`. |
+| `maxFileSizeBytes` | `0` (unlimited) | Rejected at stat time, before the file is opened; oversized → `403`. |
 
 ## 4. The view variant
 
@@ -106,28 +106,28 @@ assets() {
 `resolve(requestPath, options)` returns a classified result
 (`ok`/`forbidden`/`not-found`/`internal-error`) carrying MIME type, validators,
 encoding, and the absolute file path, never throws for expected failures, and
-never reads payload bytes. `negotiateEncoding()` and `statusForKind()` are
+never reads payload bytes. `negotiateEncoding` and `statusForKind` are
 exported for tools that need the pieces separately.
 
 ## 5. Security model
 
 - **Containment:** the base directory is canonicalized (`realpath`); every
-  candidate and its resolved symlink target must stay under `base + separator`,
-  otherwise `403`.
+ candidate and its resolved symlink target must stay under `base + separator`,
+ otherwise `403`.
 - **Undecoded paths:** request paths are never percent-decoded — `%2F` can
-  never become `/`.
+ never become `/`.
 - **Allowlist:** only known extensions are served; unknown → `403`.
 - **No sniffing:** `nosniff` on every response.
 - **Streaming:** resolution never buffers payloads; responses stream, and
-  conditional GETs/HEAD read `stat` metadata only.
+ conditional GETs/HEAD read `stat` metadata only.
 - **Size cap:** optional and enforced before any open.
 
 ## See also
 
-- Decision: [AD-28](../decisions/2026-09-24_AD28_STATIC_FILES.md) — ETag/Range,
-  precompressed variants, SPA fallback, directory control (D-1..D-9).
+- Decision: — ETag/Range,
+ precompressed variants, SPA fallback, directory control (D-1..D-9).
 - Package: `@ndigo/platform-node` README — `StaticController`,
-  `StaticFileView`, `StaticResourceHandler`, `StaticResourceResolver`.
+ `StaticFileView`, `StaticResourceHandler`, `StaticResourceResolver`.
 - Guides: [01 — Building a Node API](01-building-a-node-api.md) (the server
-  that mounts it), [14 — Multipart & File Upload](14-multipart-and-file-upload.md)
-  (the upload counterpart).
+ that mounts it), [14 — Multipart & File Upload](14-multipart-and-file-upload.md)
+ (the upload counterpart).

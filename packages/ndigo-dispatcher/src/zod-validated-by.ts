@@ -45,6 +45,117 @@ export class ZodValidationError extends FrameworkError {
 }
 
 /**
+ * The empty payload shapes an unset request body reaches `convert` as. Each
+ * shape produces different Zod issues ("received null" vs "received undefined"
+ * vs one issue per required field), so each gets its own memoized failure.
+ */
+type EmptyShape = 'object' | 'null' | 'undefined';
+
+/**
+ * A precomputed failure for one schema and empty-input shape. Zod parses are
+ * deterministic for a fixed schema and input, so the message and normalized
+ * issues can be built once and reused.
+ */
+interface EmptyShapeFailure {
+    /** The flattened, human-readable failure message. */
+    readonly message: string;
+    /** The normalized per-field issues. */
+    readonly issues: readonly ValidationIssue[];
+}
+
+/**
+ * Memoized empty-shape outcomes per schema: a {@link EmptyShapeFailure} when
+ * the shape is rejected, `null` when the schema accepts it. Acceptance is
+ * recorded only to avoid re-probing on every request — the real parse still
+ * runs, because defaults and transforms may produce request-specific data that
+ * must not be shared between requests.
+ */
+const emptyShapeOutcomes = new WeakMap<z.ZodType, Map<EmptyShape, EmptyShapeFailure | null>>();
+
+/**
+ * Whether a value is a plain object (`Object.prototype` or a null prototype)
+ * with no own keys, i.e. the empty-object payload shape.
+ *
+ * A keyless class instance can still satisfy a schema through prototype
+ * accessors or a custom parser, so it must take the real parse.
+ *
+ * @param value - The resolved parameter value.
+ * @returns `true` when the value is a plain object with no own keys.
+ */
+function isEmptyPlainObject(value: unknown): boolean {
+    if (typeof value !== 'object' || value === null) {
+        return false;
+    }
+    const prototype = Object.getPrototypeOf(value);
+    if (prototype !== Object.prototype && prototype !== null) {
+        return false;
+    }
+    // Own keys includes non-enumerable and symbol keys, which Zod can read even
+    // though `Object.keys` would not report them.
+    return Object.keys(value).length === 0 && Reflect.ownKeys(value).length === 0;
+}
+
+/**
+ * Normalizes a Zod error into the message and issues pair carried by
+ * {@link ZodValidationError}.
+ *
+ * @param error - The failed parse error.
+ * @returns The flattened message and normalized issues.
+ */
+function toValidationFailure(error: z.ZodError): EmptyShapeFailure {
+    const issues = error.issues.map((issue) => ({
+        path: issue.path,
+        message: issue.message,
+        code: issue.code,
+    }));
+    return {
+        message: issues.map((issue) => `${issue.path.join('.') || 'value'}: ${issue.message}`).join(', '),
+        issues,
+    };
+}
+
+/**
+ * Resolves the memoized outcome for one schema and empty shape, parsing the
+ * canonical empty value on first use.
+ *
+ * @param schema - The validation schema.
+ * @param shape - The empty payload shape.
+ * @returns The failure template, or `null` when the schema accepts that shape.
+ */
+function emptyShapeOutcome(schema: z.ZodType, shape: EmptyShape): EmptyShapeFailure | null {
+    let outcomes = emptyShapeOutcomes.get(schema);
+    if (outcomes?.has(shape)) {
+        return outcomes.get(shape) ?? null;
+    }
+    const emptyValue = shape === 'object' ? {} : shape === 'null' ? null : undefined;
+    const result = schema.safeParse(emptyValue);
+    const outcome = result.success ? null : toValidationFailure(result.error);
+    if (!outcomes) {
+        outcomes = new Map();
+        emptyShapeOutcomes.set(schema, outcomes);
+    }
+    outcomes.set(shape, outcome);
+    return outcome;
+}
+
+/**
+ * Builds the conversion error for a validation failure. A fresh
+ * {@link ZodValidationError} (with its own stack) is created per request; only
+ * the immutable message and issues are shared.
+ *
+ * @param extractor - The extractor whose name labels the failure.
+ * @param failure - The normalized validation failure.
+ * @returns The conversion error to throw.
+ */
+function toConversionError(extractor: ParameterExtractor, failure: EmptyShapeFailure): ParameterConversionError {
+    return new ParameterConversionError(
+        extractor.name,
+        'validated',
+        new ZodValidationError(failure.message, failure.issues)
+    );
+}
+
+/**
  * Wraps a parameter extractor with a Zod schema for validation and coercion.
  *
  * @example
@@ -67,18 +178,28 @@ export class ZodValidationError extends FrameworkError {
  */
 export function validatedBy<T>(schema: z.ZodType<T>, extractor: ParameterExtractor): ParameterExtractor {
     const convert: (value: unknown) => unknown = (value: unknown) => {
+        // A missing body is the common invalid case: fail from the memoized
+        // template before paying a parse.
+        if (value === undefined || value === null) {
+            const failure = emptyShapeOutcome(schema, value === null ? 'null' : 'undefined');
+            if (failure !== null) {
+                throw toConversionError(extractor, failure);
+            }
+        }
         const result = schema.safeParse(value);
         if (!result.success) {
-            const issues = result.error.issues.map((issue) => ({
-                path: issue.path,
-                message: issue.message,
-                code: issue.code,
-            }));
-            const message = issues.map((issue) => `${issue.path.join('.') || 'value'}: ${issue.message}`).join(', ');
+            // Keyless plain objects are the other empty-body shape. This check
+            // sits on the failure path only, so valid bodies pay nothing for it.
+            if (isEmptyPlainObject(value)) {
+                const failure = emptyShapeOutcome(schema, 'object');
+                if (failure !== null) {
+                    throw toConversionError(extractor, failure);
+                }
+            }
             // The cause is a ZodValidationError: it preserves the flattened
             // human message AND the structured per-field issues, so error
             // resolvers can render either (Phase 4A).
-            throw new ParameterConversionError(extractor.name, 'validated', new ZodValidationError(message, issues));
+            throw toConversionError(extractor, toValidationFailure(result.error));
         }
         return result.data;
     };

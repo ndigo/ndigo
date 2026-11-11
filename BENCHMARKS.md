@@ -262,7 +262,7 @@ artifact is `2026-11-11T01-57-17-3670f9cccfca.json` (commit `3670f9ccc`).
 | `validatedBy(Zod)` — invalid object (error path) | 10,288 ns/op |
 | `validatedBy(Zod)` — dotted field                | 195.32 ns/op |
 
-Valid binding is cheap; the **invalid path costs ~200× the valid path**
+Valid binding is cheap; the **invalid path costs ~110× the valid path**
 because `safeParse` allocates the full issue list and throws a framework
 error. Request-rejection traffic pays that cost per request.
 
@@ -273,8 +273,16 @@ classified only after the parse has already failed, so valid bodies pay no
 emptiness check. Same-host A/B, two serial runs per side: `{}` 10.47 → 9.46–9.71
 µs (−7 to −10%), `undefined` 10.23–10.44 → 8.90–9.00 µs (−12 to −14%), valid
 67–68 → 65–75 ns (run-to-run layout noise; no added cost on the valid path).
-The remaining ~8.9 µs is the two `Error` stack captures, the subject of the
-separate stack-policy decision (#389).
+The remaining ~8.9 µs was the two `Error` stack captures, addressed below.
+
+**Optimization (AD-103, #403):** the `ZodValidationError` cause is built with
+`Error.stackTraceLimit` scoped to zero and restored in `finally`, so the
+failure carries one stack — the thrown `ParameterConversionError`'s. Same-host
+A/B, serial lane, two runs on the after side: invalid non-empty 10.95 →
+7.33–7.39 µs (−33%), empty `{}` 9.69 → 6.23–6.47 µs (−33 to −36%),
+`undefined` body 9.33 → 5.69–5.80 µs (−38 to −39%), valid 66–68 → 66–68 ns
+(unchanged). The rejection/valid ratio falls from ~166× to ~110×. The empty
+`{}` after row carries RME 1.7–2.1%; the others are RME < 2.4%.
 
 Cold start (`pnpm bench:start`, 3 runs, median; artifact
 `startup-2026-11-11T01-56-06.json`, commit `3670f9ccc`):

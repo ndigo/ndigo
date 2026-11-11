@@ -12,6 +12,11 @@ The `cause` carried by a `ParameterConversionError` thrown from
 so error resolvers can render either a flat detail string or a structured
 `errors` array.
 
+This is a **structured payload, not an independently thrown error**: on V8
+its `.stack` carries only the `name: message` header, because the thrown
+`ParameterConversionError` already owns the single stack for the failure
+(AD-103). Engines without `Error.stackTraceLimit` keep their default capture.
+
 ## Extends
 
 - [`FrameworkError`](#)

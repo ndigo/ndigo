@@ -362,6 +362,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   before parsing; keyless plain objects are classified after a failed parse,
   so valid bodies pay nothing. Same-host bench: `{}` −7 to −10%, `undefined`
   −12 to −14%, valid unchanged (`BENCHMARKS.md`).
+- `@ndigo/dispatcher`: validation failures carry one stack instead of two
+  (AD-103): the `ZodValidationError` cause is built with
+  `Error.stackTraceLimit` scoped to zero and restored in `finally`, leaving
+  the thrown `ParameterConversionError`'s stack as the only one. Same-host
+  bench: invalid 10.95 → ~7.36 µs (−33%), empty `{}` −33 to −36%,
+  `undefined` −38 to −39%, valid unchanged; rejection/valid ratio ~166× →
+  ~110× (`BENCHMARKS.md`).
 - `@ndigo/orm`: `schemaForEntity` / `insertSchemaForEntity` memoize the
   derived Zod schema per entity class (module-level `WeakMap`s) instead of
   rebuilding it on every `persist`; the returned schema is shared and

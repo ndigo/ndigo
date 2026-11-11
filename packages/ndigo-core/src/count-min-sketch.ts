@@ -18,7 +18,11 @@ function hash32(input: string, seed: number): number {
 function toKey(value: unknown): string {
     if (typeof value === 'string') return value;
     if (typeof value === 'number' || typeof value === 'boolean' || value === null) return String(value);
-    try { return JSON.stringify(value) ?? String(value); } catch { return String(value); }
+    try {
+        return JSON.stringify(value) ?? String(value);
+    } catch {
+        return String(value);
+    }
 }
 
 export class CountMinSketch implements Serializable, Equatable<CountMinSketch> {

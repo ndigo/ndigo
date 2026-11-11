@@ -2,7 +2,7 @@
 
 **Date:** 2026-09-15
 **Status:** Accepted — decision recorded; implementation sequenced (see
-[plan](../plans/2026-09-15_WEBSOCKET_CLIENT.md))
+[plan](../../plans/2026-09-15_WEBSOCKET_CLIENT.md))
 
 ## Background
 

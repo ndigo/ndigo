@@ -1,7 +1,7 @@
 # Agent and LLM integration — implementation plan
 
 **Status:** Accepted — P0–P5 shipped 2026-11-10
-**Decision:** [AD-96](../decisions/2026-11-10_AD96_LLM_AGENT_INTEGRATION.md) (umbrella), with [AD-97](../decisions/2026-11-10_AD97_CLI_JSON_CONTRACT.md), [AD-98](../decisions/2026-11-10_AD98_AGENT_CONTENT_GENERATION.md), [AD-99](../decisions/2026-11-10_AD99_MCP_HOST_EXTRACTION.md), [AD-100](../decisions/2026-11-10_AD100_MCP_TOOL_PROJECTION.md), and [AD-101](../decisions/2026-11-10_AD101_A2UI_ADOPTION.md)
+**Decision:** [AD-96](../decisions/2026-11-10_AD96_LLM_AGENT_INTEGRATION.md) (umbrella), with [AD-97](../decisions/archive/2026-11-10_AD97_CLI_JSON_CONTRACT.md), [AD-98](../decisions/archive/2026-11-10_AD98_AGENT_CONTENT_GENERATION.md), [AD-99](../decisions/archive/2026-11-10_AD99_MCP_HOST_EXTRACTION.md), [AD-100](../decisions/archive/2026-11-10_AD100_MCP_TOOL_PROJECTION.md), and [AD-101](../decisions/archive/2026-11-10_AD101_A2UI_ADOPTION.md)
 **Scope:** `@ndigo/cli`, `create-ndigo-app`, `tools/agent-content` (new),
 `@ndigo/mcp` (new), `@ndigo/ai` (new), `@ndigo/core`, `@ndigo/view`,
 `@ndigo/view-webcomponent`, `@ndigo/ui` registry, `docs/guides`, `ndigo-site`
@@ -524,14 +524,14 @@ The repo's existing gates apply unchanged: `pnpm lint`, `pnpm typecheck`,
 
 ## 9. Decisions to record
 
-| ADR                                                               | Subject                                              | Phase     |
-| :---------------------------------------------------------------- | :--------------------------------------------------- | :-------- |
-| [AD-96](../decisions/2026-11-10_AD96_LLM_AGENT_INTEGRATION.md)    | Agent integration umbrella: two audiences, D-1…D-8   | before P0 |
-| [AD-97](../decisions/2026-11-10_AD97_CLI_JSON_CONTRACT.md)        | `--json` output contract for the CLI                 | P0        |
-| [AD-98](../decisions/2026-11-10_AD98_AGENT_CONTENT_GENERATION.md) | Agent content generation and the two-store split     | P1        |
-| [AD-99](../decisions/2026-11-10_AD99_MCP_HOST_EXTRACTION.md)      | MCP host extraction and `ndigo mcp` profiles         | P2        |
-| [AD-100](../decisions/2026-11-10_AD100_MCP_TOOL_PROJECTION.md)    | `@ndigo/mcp` decorator surface and schema projection | P3        |
-| [AD-101](../decisions/2026-11-10_AD101_A2UI_ADOPTION.md)          | A2UI adoption: catalog, media type, renderer         | P4        |
+| ADR                                                                       | Subject                                              | Phase     |
+| :------------------------------------------------------------------------ | :--------------------------------------------------- | :-------- |
+| [AD-96](../decisions/2026-11-10_AD96_LLM_AGENT_INTEGRATION.md)            | Agent integration umbrella: two audiences, D-1…D-8   | before P0 |
+| [AD-97](../decisions/archive/2026-11-10_AD97_CLI_JSON_CONTRACT.md)        | `--json` output contract for the CLI                 | P0        |
+| [AD-98](../decisions/archive/2026-11-10_AD98_AGENT_CONTENT_GENERATION.md) | Agent content generation and the two-store split     | P1        |
+| [AD-99](../decisions/archive/2026-11-10_AD99_MCP_HOST_EXTRACTION.md)      | MCP host extraction and `ndigo mcp` profiles         | P2        |
+| [AD-100](../decisions/archive/2026-11-10_AD100_MCP_TOOL_PROJECTION.md)    | `@ndigo/mcp` decorator surface and schema projection | P3        |
+| [AD-101](../decisions/archive/2026-11-10_AD101_A2UI_ADOPTION.md)          | A2UI adoption: catalog, media type, renderer         | P4        |
 
 ---
 

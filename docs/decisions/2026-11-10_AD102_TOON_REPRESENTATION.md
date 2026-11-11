@@ -105,6 +105,6 @@ the constant and this package are the entire rename surface pre-1.0.
   visible on `main`.
 - **Companion records:** [ADR-66](2026-10-05_AD66_TOON_OPTIN_SUPPORT.md)
   (amended authoring-format decision),
-  [AD-101](2026-11-10_AD101_A2UI_ADOPTION.md) (the A2UI adoption this record
+  [AD-101](archive/2026-11-10_AD101_A2UI_ADOPTION.md) (the A2UI adoption this record
   aligns the representation policy with),
   [spec v4.4 §17–§19](https://github.com/toon-format/spec/blob/main/SPEC.md).

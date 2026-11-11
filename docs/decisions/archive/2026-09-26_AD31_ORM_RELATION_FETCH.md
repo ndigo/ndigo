@@ -3,7 +3,7 @@
 **Date:** 2026-09-26
 **Status:** Accepted — decisions D-1..D-3 ratified by the owner (2026-09-26);
 Wave 3 of the ORM completion plan landed (see
-[plan](../plans/2026-09-26_ORM_COMPLETION.md)).
+[plan](../../plans/2026-09-26_ORM_COMPLETION.md)).
 
 ## Background
 

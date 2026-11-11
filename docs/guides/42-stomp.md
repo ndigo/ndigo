@@ -240,4 +240,4 @@ channels; a namespace is isolation convention, not authorization.
 - [Guide 21 — Persistence & Shared Stores](21-persistence-and-shared-stores.md) — Redis ownership and shutdown
 - [`@ndigo/socket`](../../packages/ndigo-socket/README.md) — broker, client, and STOMP surface
 - [`@ndigo/redis`](../../packages/ndigo-redis/README.md) — the fan-out driver
-- [AD-23](../decisions/2026-09-16_AD23_STOMP.md) — the STOMP decision
+- [AD-23](../decisions/archive/2026-09-16_AD23_STOMP.md) — the STOMP decision

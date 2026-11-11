@@ -5,6 +5,7 @@ import RouteHandlerExecutionChain from '../src/route-handler-execution-chain';
 import { RouteHandlerMethod } from '../src/route-handler-method';
 import { routeMapping } from '../src/route-mapping';
 import { canonicalizeRouteMappingPath, RadixMetadataHandlerMapping } from '../src/radix-metadata-handler-mapping';
+import { getMethodNotAllowed } from '../src/route-handler-denial';
 import { HTTPMethodCondition } from '../src/http-method-condition';
 import {
     MatrixParamCondition,
@@ -144,10 +145,94 @@ describe('RadixMetadataHandlerMapping', () => {
         mapping.setApplicationContext(ctx);
         mapping.init();
 
-        const route = { path: '/users/42' };
-        mapping.getHandler(route as unknown as Route);
+        const route = { path: '/users/42' } as unknown as Route;
+        mapping.getHandler(route);
 
-        expect((route as unknown as { pattern: string }).pattern).toBe('/users/:id');
+        expect(route.pattern).toBe('/users/:id');
+    });
+
+    test('route pattern is an own enumerable property', () => {
+        @routeMapping('/users')
+        class UsersController {
+            @routeMapping('/:id')
+            getUser() {
+                return 'user';
+            }
+        }
+
+        ctx.setValue('usersController', new UsersController());
+
+        const mapping = new RadixMetadataHandlerMapping();
+        mapping.setApplicationContext(ctx);
+        mapping.init();
+
+        const route = { path: '/users/42' } as unknown as Route;
+        mapping.getHandler(route);
+
+        // Plain assignment keeps the route a fast-mode object; the property is
+        // visible to Object.keys/spread (the old defineProperty hid it).
+        expect(Object.keys(route)).toContain('pattern');
+        expect({ ...route }).toMatchObject({ pattern: '/users/:id' });
+    });
+
+    test('method mismatch records a 405 Allow value', () => {
+        @routeMapping('/only-get')
+        class OnlyGetController {
+            @routeMapping({ value: '/method', method: 'GET', private: false })
+            read() {
+                return 'read';
+            }
+        }
+
+        ctx.setValue('onlyGetController', new OnlyGetController());
+
+        const mapping = new RadixMetadataHandlerMapping();
+        mapping.setApplicationContext(ctx);
+        mapping.init();
+
+        const route = { path: '/only-get/method', method: 'POST' } as unknown as Route;
+        expect(mapping.getHandler(route)).toBeNull();
+        expect(getMethodNotAllowed(route)).toBe('GET');
+    });
+
+    test('a failed non-method condition produces 404, not 405', () => {
+        @routeMapping('/conditional')
+        class ConditionalController {
+            @routeMapping({ value: '/method', method: 'GET', queryParams: 'filter=active', private: false })
+            read() {
+                return 'read';
+            }
+        }
+
+        ctx.setValue('conditionalController', new ConditionalController());
+
+        const mapping = new RadixMetadataHandlerMapping();
+        mapping.setApplicationContext(ctx);
+        mapping.init();
+
+        const route = { path: '/conditional/method', method: 'POST', data: {} } as unknown as Route;
+        expect(mapping.getHandler(route)).toBeNull();
+        expect(getMethodNotAllowed(route)).toBeNull();
+    });
+
+    test('HEAD request resolves a GET-only mapping', () => {
+        @routeMapping('/only-get')
+        class OnlyGetController {
+            @routeMapping({ value: '/method', method: 'GET', private: false })
+            read() {
+                return 'read';
+            }
+        }
+
+        ctx.setValue('onlyGetController', new OnlyGetController());
+
+        const mapping = new RadixMetadataHandlerMapping();
+        mapping.setApplicationContext(ctx);
+        mapping.init();
+
+        const route = { path: '/only-get/method', method: 'HEAD' } as unknown as Route;
+        expect(mapping.getHandler(route)).not.toBeNull();
+        expect(route.pattern).toBe('/only-get/method');
     });
 
     test('no match returns null', () => {

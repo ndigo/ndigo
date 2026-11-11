@@ -102,8 +102,9 @@ export class InProcessOutboxStore implements OutboxStore {
                 stored.publishedAt === undefined &&
                 (stored.leaseExpiresAt === undefined || stored.leaseExpiresAt <= now)
         );
-        const heap = new Heap<typeof filtered[number]>((left, right) =>
-            left.entry.occurredAt - right.entry.occurredAt || left.entry.id.localeCompare(right.entry.id)
+        const heap = new Heap<(typeof filtered)[number]>(
+            (left, right) =>
+                left.entry.occurredAt - right.entry.occurredAt || left.entry.id.localeCompare(right.entry.id)
         );
         for (const stored of filtered) heap.push(stored);
         const claimable = [];

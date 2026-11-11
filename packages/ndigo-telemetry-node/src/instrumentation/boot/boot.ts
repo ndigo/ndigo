@@ -13,13 +13,23 @@ export class BootInstrumentation extends AbstractBaseInstrumentation {
         super('boot');
     }
 
+    /**
+     * Wraps the instrumented methods.
+     */
     enable(): void {
-        this._wrap(Application.prototype, 'run', this._patch({
-            name: 'Application.run',
-            kind: SpanKind.INTERNAL,
-        }));
+        this._wrap(
+            Application.prototype,
+            'run',
+            this._patch({
+                name: 'Application.run',
+                kind: SpanKind.INTERNAL,
+            })
+        );
     }
 
+    /**
+     * Restores the original methods.
+     */
     disable(): void {
         this._unwrap(Application.prototype, 'run');
     }

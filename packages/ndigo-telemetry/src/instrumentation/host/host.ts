@@ -13,11 +13,25 @@ export class HostInstrumentation extends AbstractBaseInstrumentation {
         super('host');
     }
 
+    /**
+     * Wraps the instrumented methods.
+     */
     enable(): void {
-        this._wrap(HostManager.prototype, 'registerFeature', this._patchSync({ name: 'HostManager.registerFeature', kind: SpanKind.INTERNAL }));
-        this._wrap(HostManager.prototype, 'unregister', this._patchSync({ name: 'HostManager.unregister', kind: SpanKind.INTERNAL }));
+        this._wrap(
+            HostManager.prototype,
+            'registerFeature',
+            this._patchSync({ name: 'HostManager.registerFeature', kind: SpanKind.INTERNAL })
+        );
+        this._wrap(
+            HostManager.prototype,
+            'unregister',
+            this._patchSync({ name: 'HostManager.unregister', kind: SpanKind.INTERNAL })
+        );
     }
 
+    /**
+     * Restores the original methods.
+     */
     disable(): void {
         this._unwrap(HostManager.prototype, 'registerFeature');
         this._unwrap(HostManager.prototype, 'unregister');

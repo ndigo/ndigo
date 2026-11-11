@@ -3,7 +3,12 @@
 import 'node:process';
 import { getEnv } from '@ndigo/context';
 import { AESGCMCipher, runNodeApplication } from '@ndigo/platform-node';
-import { CacheInstrumentation, ContextInstrumentation, DispatcherInstrumentation, HTTPClientInstrumentation } from '@ndigo/telemetry';
+import {
+    CacheInstrumentation,
+    ContextInstrumentation,
+    DispatcherInstrumentation,
+    HTTPClientInstrumentation,
+} from '@ndigo/telemetry';
 import {
     AuthServerInstrumentation,
     configureTelemetry,

@@ -10,6 +10,11 @@ A composed profile expression. Immutable; `String(term)` yields the
 canonical expression string, so terms drop into `@whenProfile(...)` and
 `acceptsProfiles(...)` seamlessly.
 
+## Implements
+
+- [`Serializable`](../../serializable/interfaces/Serializable.md)
+- [`Equatable`](../../equatable/interfaces/Equatable.md)\<`ProfileTerm`\>
+
 ## Constructors
 
 ### Constructor
@@ -46,6 +51,32 @@ The kind of term (`name`, `not`, `and`, `or`, `compound`).
 
 ## Methods
 
+### equals()
+
+> **equals**(`value`): `boolean`
+
+Compares this term with another by canonical source.
+
+#### Parameters
+
+##### value
+
+`unknown`
+
+The value to compare.
+
+#### Returns
+
+`boolean`
+
+`true` when both terms have the same canonical source.
+
+#### Implementation of
+
+[`Equatable`](../../equatable/interfaces/Equatable.md).[`equals`](../../equatable/interfaces/Equatable.md#equals)
+
+***
+
 ### toString()
 
 > **toString**(): `string`
@@ -55,3 +86,7 @@ The canonical expression string, e.g. `'dev & !ci'`.
 #### Returns
 
 `string`
+
+#### Implementation of
+
+[`Serializable`](../../serializable/interfaces/Serializable.md).[`toString`](../../serializable/interfaces/Serializable.md#tostring)

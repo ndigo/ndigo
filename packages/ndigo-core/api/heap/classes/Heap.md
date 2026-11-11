@@ -55,6 +55,8 @@ A value that can safely be converted to a string or JSON payload.
 
 > **get** **size**(): `number`
 
+Number of stored values.
+
 ##### Returns
 
 `number`
@@ -64,6 +66,8 @@ A value that can safely be converted to a string or JSON payload.
 ### \[iterator\]()
 
 > **\[iterator\]**(): `Iterator`\<`T`\>
+
+Yields values in internal heap order.
 
 #### Returns
 
@@ -75,6 +79,8 @@ A value that can safely be converted to a string or JSON payload.
 
 > **clear**(): `void`
 
+Removes every value.
+
 #### Returns
 
 `void`
@@ -85,7 +91,7 @@ A value that can safely be converted to a string or JSON payload.
 
 > **equals**(`value`): `boolean`
 
-Determines if this object is equal to the specified value.
+Compares the sorted contents, independent of internal layout.
 
 #### Parameters
 
@@ -93,13 +99,13 @@ Determines if this object is equal to the specified value.
 
 `unknown`
 
-The value to compare with this object.
+The candidate to compare against.
 
 #### Returns
 
 `boolean`
 
-`true` if the objects are equal, `false` otherwise.
+`true` when both heaps hold equal values in comparator order.
 
 #### Implementation of
 
@@ -111,9 +117,13 @@ The value to compare with this object.
 
 > **peek**(): `T` \| `undefined`
 
+Returns the root without removing it.
+
 #### Returns
 
 `T` \| `undefined`
+
+The root value, or `undefined` when the heap is empty.
 
 ***
 
@@ -121,9 +131,13 @@ The value to compare with this object.
 
 > **pop**(): `T` \| `undefined`
 
+Removes and returns the root (smallest by the comparator).
+
 #### Returns
 
 `T` \| `undefined`
+
+The root value, or `undefined` when the heap is empty.
 
 ***
 
@@ -131,15 +145,21 @@ The value to compare with this object.
 
 > **push**(`value`): `this`
 
+Inserts a value.
+
 #### Parameters
 
 ##### value
 
 `T`
 
+The value to insert.
+
 #### Returns
 
 `this`
+
+This heap, for chaining.
 
 ***
 
@@ -147,9 +167,13 @@ The value to compare with this object.
 
 > **toArray**(): `T`[]
 
+Copies the values in internal heap order.
+
 #### Returns
 
 `T`[]
+
+A new array of the stored values.
 
 ***
 
@@ -157,11 +181,13 @@ The value to compare with this object.
 
 > **toJSON**(): [`JSONArray`](../../serializable/interfaces/JSONArray.md)
 
-Returns a JSON-safe representation of the value.
+Returns the JSON form in internal heap order.
 
 #### Returns
 
 [`JSONArray`](../../serializable/interfaces/JSONArray.md)
+
+A JSON array of the stored values.
 
 #### Implementation of
 
@@ -173,9 +199,13 @@ Returns a JSON-safe representation of the value.
 
 > **toSorted**(): `T`[]
 
+Copies and sorts the values by the heap's comparator.
+
 #### Returns
 
 `T`[]
+
+A new array in comparator order.
 
 ***
 
@@ -183,11 +213,13 @@ Returns a JSON-safe representation of the value.
 
 > **toString**(): `string`
 
-Returns a string representation of the value.
+Renders the values as a comma-separated string.
 
 #### Returns
 
 `string`
+
+The serialized values.
 
 #### Implementation of
 

@@ -39,6 +39,8 @@ guaranteed for equal priorities (use a chained comparator to break ties).
 
 > **get** **size**(): `number`
 
+Number of queued values.
+
 ##### Returns
 
 `number`
@@ -48,6 +50,8 @@ guaranteed for equal priorities (use a chained comparator to break ties).
 ### \[iterator\]()
 
 > **\[iterator\]**(): `Iterator`\<`T`\>
+
+Yields values in internal heap order.
 
 #### Returns
 
@@ -59,6 +63,8 @@ guaranteed for equal priorities (use a chained comparator to break ties).
 
 > **clear**(): `void`
 
+Removes every queued value.
+
 #### Returns
 
 `void`
@@ -69,9 +75,13 @@ guaranteed for equal priorities (use a chained comparator to break ties).
 
 > **dequeue**(): `T` \| `undefined`
 
+Removes and returns the highest-priority value.
+
 #### Returns
 
 `T` \| `undefined`
+
+The value that compares lowest, or `undefined` when empty.
 
 ***
 
@@ -79,15 +89,21 @@ guaranteed for equal priorities (use a chained comparator to break ties).
 
 > **enqueue**(`value`): `this`
 
+Adds a value to the queue.
+
 #### Parameters
 
 ##### value
 
 `T`
 
+The value to enqueue.
+
 #### Returns
 
 `this`
+
+This queue, for chaining.
 
 ***
 
@@ -95,9 +111,13 @@ guaranteed for equal priorities (use a chained comparator to break ties).
 
 > **peek**(): `T` \| `undefined`
 
+Returns the highest-priority value without removing it.
+
 #### Returns
 
 `T` \| `undefined`
+
+The value that compares lowest, or `undefined` when empty.
 
 ***
 
@@ -105,9 +125,13 @@ guaranteed for equal priorities (use a chained comparator to break ties).
 
 > **toArray**(): `T`[]
 
+Copies the values in internal heap order.
+
 #### Returns
 
 `T`[]
+
+A new array of the queued values.
 
 ***
 
@@ -115,9 +139,13 @@ guaranteed for equal priorities (use a chained comparator to break ties).
 
 > **toJSON**(): [`JSONArray`](../../serializable/interfaces/JSONArray.md)
 
+Returns the JSON form in internal heap order.
+
 #### Returns
 
 [`JSONArray`](../../serializable/interfaces/JSONArray.md)
+
+A JSON array of the queued values.
 
 ***
 
@@ -125,9 +153,13 @@ guaranteed for equal priorities (use a chained comparator to break ties).
 
 > **toSorted**(): `T`[]
 
+Copies and sorts the values by priority.
+
 #### Returns
 
 `T`[]
+
+A new array in comparator order.
 
 ***
 
@@ -135,6 +167,10 @@ guaranteed for equal priorities (use a chained comparator to break ties).
 
 > **toString**(): `string`
 
+Renders the values as a comma-separated string.
+
 #### Returns
 
 `string`
+
+The serialized values.

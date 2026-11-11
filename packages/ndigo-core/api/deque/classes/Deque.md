@@ -61,6 +61,8 @@ A value that can safely be converted to a string or JSON payload.
 
 > **get** **capacity**(): `number`
 
+Allocated slots before the buffer grows.
+
 ##### Returns
 
 `number`
@@ -72,6 +74,8 @@ A value that can safely be converted to a string or JSON payload.
 #### Get Signature
 
 > **get** **length**(): `number`
+
+Number of values in the deque.
 
 ##### Returns
 
@@ -87,6 +91,8 @@ A value that can safely be converted to a string or JSON payload.
 
 > **\[iterator\]**(): `Iterator`\<`T`, `undefined`, `undefined`\>
 
+Yields values front to back.
+
 #### Returns
 
 `Iterator`\<`T`, `undefined`, `undefined`\>
@@ -101,6 +107,8 @@ A value that can safely be converted to a string or JSON payload.
 
 > **clear**(): `void`
 
+Removes every value, keeping the allocated capacity.
+
 #### Returns
 
 `void`
@@ -111,7 +119,7 @@ A value that can safely be converted to a string or JSON payload.
 
 > **equals**(`value`): `boolean`
 
-Determines if this object is equal to the specified value.
+Compares values position by position.
 
 #### Parameters
 
@@ -119,13 +127,13 @@ Determines if this object is equal to the specified value.
 
 `unknown`
 
-The value to compare with this object.
+The candidate to compare against.
 
 #### Returns
 
 `boolean`
 
-`true` if the objects are equal, `false` otherwise.
+`true` when both deques hold equal values in the same order.
 
 #### Implementation of
 
@@ -137,15 +145,21 @@ The value to compare with this object.
 
 > **get**(`index`): `T` \| `undefined`
 
+Reads a value by position.
+
 #### Parameters
 
 ##### index
 
 `number`
 
+Zero-based position from the front.
+
 #### Returns
 
 `T` \| `undefined`
+
+The value at `index`, or `undefined` when out of range.
 
 ***
 
@@ -153,9 +167,13 @@ The value to compare with this object.
 
 > **peekBack**(): `T` \| `undefined`
 
+Returns the back value without removing it.
+
 #### Returns
 
 `T` \| `undefined`
+
+The back value, or `undefined` when the deque is empty.
 
 ***
 
@@ -163,9 +181,13 @@ The value to compare with this object.
 
 > **peekFront**(): `T` \| `undefined`
 
+Returns the front value without removing it.
+
 #### Returns
 
 `T` \| `undefined`
+
+The front value, or `undefined` when the deque is empty.
 
 ***
 
@@ -173,9 +195,13 @@ The value to compare with this object.
 
 > **pop**(): `T` \| `undefined`
 
+Removes and returns the back value.
+
 #### Returns
 
 `T` \| `undefined`
+
+The back value, or `undefined` when the deque is empty.
 
 ***
 
@@ -183,15 +209,21 @@ The value to compare with this object.
 
 > **push**(`value`): `this`
 
+Appends a value to the back.
+
 #### Parameters
 
 ##### value
 
 `T`
 
+The value to append.
+
 #### Returns
 
 `this`
+
+This deque, for chaining.
 
 ***
 
@@ -208,6 +240,8 @@ rare removals (e.g. promoting a cached entry to permanent storage).
 
 `T`
 
+The value to remove.
+
 #### Returns
 
 `boolean`
@@ -220,9 +254,13 @@ rare removals (e.g. promoting a cached entry to permanent storage).
 
 > **shift**(): `T` \| `undefined`
 
+Removes and returns the front value.
+
 #### Returns
 
 `T` \| `undefined`
+
+The front value, or `undefined` when the deque is empty.
 
 ***
 
@@ -230,9 +268,13 @@ rare removals (e.g. promoting a cached entry to permanent storage).
 
 > **toArray**(): `T`[]
 
+Copies the values into a plain array, front to back.
+
 #### Returns
 
 `T`[]
+
+A new array of the deque's values.
 
 ***
 
@@ -240,11 +282,13 @@ rare removals (e.g. promoting a cached entry to permanent storage).
 
 > **toJSON**(): [`JSONArray`](../../serializable/interfaces/JSONArray.md)
 
-Returns a JSON-safe representation of the value.
+Returns the JSON form, front to back.
 
 #### Returns
 
 [`JSONArray`](../../serializable/interfaces/JSONArray.md)
+
+A JSON array of the deque's values.
 
 #### Implementation of
 
@@ -256,11 +300,13 @@ Returns a JSON-safe representation of the value.
 
 > **toString**(): `string`
 
-Returns a string representation of an object.
+Renders the values front to back as a comma-separated string.
 
 #### Returns
 
 `string`
+
+The serialized values.
 
 #### Implementation of
 
@@ -272,12 +318,18 @@ Returns a string representation of an object.
 
 > **unshift**(`value`): `this`
 
+Prepends a value to the front.
+
 #### Parameters
 
 ##### value
 
 `T`
 
+The value to prepend.
+
 #### Returns
 
 `this`
+
+This deque, for chaining.

@@ -49,6 +49,8 @@ A value that can safely be converted to a string or JSON payload.
 
 > **get** **size**(): `number`
 
+Number of stored words.
+
 ##### Returns
 
 `number`
@@ -58,6 +60,8 @@ A value that can safely be converted to a string or JSON payload.
 ### clear()
 
 > **clear**(): `void`
+
+Removes every word.
 
 #### Returns
 
@@ -69,15 +73,21 @@ A value that can safely be converted to a string or JSON payload.
 
 > **delete**(`word`): `boolean`
 
+Removes a word and prunes now-empty branches.
+
 #### Parameters
 
 ##### word
 
 `string`
 
+The exact key to remove.
+
 #### Returns
 
 `boolean`
+
+`true` when the word was present.
 
 ***
 
@@ -85,7 +95,7 @@ A value that can safely be converted to a string or JSON payload.
 
 > **equals**(`value`): `boolean`
 
-Determines if this object is equal to the specified value.
+Compares every stored word and value.
 
 #### Parameters
 
@@ -93,13 +103,13 @@ Determines if this object is equal to the specified value.
 
 `unknown`
 
-The value to compare with this object.
+The candidate to compare against.
 
 #### Returns
 
 `boolean`
 
-`true` if the objects are equal, `false` otherwise.
+`true` when both tries hold the same words and values.
 
 #### Implementation of
 
@@ -111,15 +121,21 @@ The value to compare with this object.
 
 > **has**(`word`): `boolean`
 
+Tests for a complete word.
+
 #### Parameters
 
 ##### word
 
 `string`
 
+The exact key to test.
+
 #### Returns
 
 `boolean`
+
+`true` when the word was inserted.
 
 ***
 
@@ -127,19 +143,27 @@ The value to compare with this object.
 
 > **insert**(`word`, `value`): `this`
 
+Adds a word or replaces its value.
+
 #### Parameters
 
 ##### word
 
 `string`
 
+The key to store.
+
 ##### value
 
 `V`
 
+The value to associate with the key.
+
 #### Returns
 
 `this`
+
+This trie, for chaining.
 
 ***
 
@@ -147,15 +171,21 @@ The value to compare with this object.
 
 > **search**(`word`): `V` \| `undefined`
 
+Looks up a complete word.
+
 #### Parameters
 
 ##### word
 
 `string`
 
+The exact key to find.
+
 #### Returns
 
 `V` \| `undefined`
+
+The stored value, or `undefined` when the word is absent.
 
 ***
 
@@ -163,15 +193,21 @@ The value to compare with this object.
 
 > **startsWith**(`prefix`): `boolean`
 
+Tests whether any word begins with the prefix.
+
 #### Parameters
 
 ##### prefix
 
 `string`
 
+The prefix to test.
+
 #### Returns
 
 `boolean`
+
+`true` when a stored word starts with `prefix`.
 
 ***
 
@@ -179,11 +215,13 @@ The value to compare with this object.
 
 > **toJSON**(): [`JSONArray`](../../serializable/interfaces/JSONArray.md)
 
-Returns a JSON-safe representation of the value.
+Returns the entries as `[word, value]` pairs.
 
 #### Returns
 
 [`JSONArray`](../../serializable/interfaces/JSONArray.md)
+
+A JSON array of word/value pairs.
 
 #### Implementation of
 
@@ -195,11 +233,13 @@ Returns a JSON-safe representation of the value.
 
 > **toString**(): `string`
 
-Returns a string representation of the value.
+Summarizes the trie.
 
 #### Returns
 
 `string`
+
+The stored word count.
 
 #### Implementation of
 
@@ -211,12 +251,18 @@ Returns a string representation of the value.
 
 > **wordsWithPrefix**(`prefix`): `Generator`\<\[`string`, `V`\]\>
 
+Yields every word starting with the prefix, depth first.
+
 #### Parameters
 
 ##### prefix
 
 `string`
 
+The prefix to expand; `''` yields every word.
+
 #### Returns
 
 `Generator`\<\[`string`, `V`\]\>
+
+A generator of `[word, value]` pairs.

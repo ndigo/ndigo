@@ -947,15 +947,21 @@ The name of the constructor.
 
 > **hasInstance**(`name`): `boolean`
 
+Checks if the factory has an instance registered under the given name.
+
 #### Parameters
 
 ##### name
 
 `string`
 
+The name of the instance.
+
 #### Returns
 
 `boolean`
+
+`true` if an instance is registered, `false` otherwise.
 
 #### Inherited from
 

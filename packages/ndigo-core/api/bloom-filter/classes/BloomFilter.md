@@ -53,6 +53,8 @@ A value that can safely be converted to a string or JSON payload.
 
 > **get** **bitSize**(): `number`
 
+Bit width of the filter (rounded up to a 32-bit boundary).
+
 ##### Returns
 
 `number`
@@ -64,6 +66,8 @@ A value that can safely be converted to a string or JSON payload.
 #### Get Signature
 
 > **get** **hashCount**(): `number`
+
+Number of hash functions applied per value.
 
 ##### Returns
 
@@ -77,6 +81,8 @@ A value that can safely be converted to a string or JSON payload.
 
 > **get** **size**(): `number`
 
+Number of values added.
+
 ##### Returns
 
 `number`
@@ -87,21 +93,29 @@ A value that can safely be converted to a string or JSON payload.
 
 > **add**(`value`): `this`
 
+Adds a value to the filter.
+
 #### Parameters
 
 ##### value
 
 `unknown`
 
+The value to record; hashed through its string form.
+
 #### Returns
 
 `this`
+
+This filter, for chaining.
 
 ***
 
 ### clear()
 
 > **clear**(): `void`
+
+Clears every bit and resets the insertion count.
 
 #### Returns
 
@@ -113,7 +127,7 @@ A value that can safely be converted to a string or JSON payload.
 
 > **equals**(`value`): `boolean`
 
-Determines if this object is equal to the specified value.
+Compares bit width, hash count, buckets, and insertion count.
 
 #### Parameters
 
@@ -121,13 +135,13 @@ Determines if this object is equal to the specified value.
 
 `unknown`
 
-The value to compare with this object.
+The candidate to compare against.
 
 #### Returns
 
 `boolean`
 
-`true` if the objects are equal, `false` otherwise.
+`true` when both filters hold identical state.
 
 #### Implementation of
 
@@ -139,15 +153,21 @@ The value to compare with this object.
 
 > **has**(`value`): `boolean`
 
+Tests whether a value may have been added.
+
 #### Parameters
 
 ##### value
 
 `unknown`
 
+The value to test.
+
 #### Returns
 
 `boolean`
+
+`false` when definitely absent; `true` when possibly present.
 
 ***
 
@@ -155,11 +175,13 @@ The value to compare with this object.
 
 > **toJSON**(): [`BloomFilterJSON`](../type-aliases/BloomFilterJSON.md)
 
-Returns a JSON-safe representation of the value.
+Returns the JSON form.
 
 #### Returns
 
 [`BloomFilterJSON`](../type-aliases/BloomFilterJSON.md)
+
+The bit width, hash count, packed buckets, and insertion count.
 
 #### Implementation of
 
@@ -171,11 +193,13 @@ Returns a JSON-safe representation of the value.
 
 > **toString**(): `string`
 
-Returns a string representation of the value.
+Summarizes the filter.
 
 #### Returns
 
 `string`
+
+The bit width, hash count, and insertion count.
 
 #### Implementation of
 
@@ -187,9 +211,13 @@ Returns a string representation of the value.
 
 > `static` **fromJSON**(`json`): `BloomFilter`
 
+Restores a filter from its serialized bits.
+
 #### Parameters
 
 ##### json
+
+The bit width, hash count, buckets, and optional insertion count.
 
 ###### bits
 
@@ -211,11 +239,15 @@ Returns a string representation of the value.
 
 `BloomFilter`
 
+A filter with the restored bits.
+
 ***
 
 ### withTargetError()
 
 > `static` **withTargetError**(`expectedItems`, `falsePositiveRate`): `BloomFilter`
+
+Sizes a filter for an expected item count and false-positive rate.
 
 #### Parameters
 
@@ -223,10 +255,16 @@ Returns a string representation of the value.
 
 `number`
 
+How many values the filter should hold.
+
 ##### falsePositiveRate
 
 `number`
 
+Target false-positive rate in `(0, 1)`.
+
 #### Returns
 
 `BloomFilter`
+
+A filter sized by the standard Bloom bound.

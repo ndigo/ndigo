@@ -53,6 +53,8 @@ A value that can safely be converted to a string or JSON payload.
 
 > **get** **depth**(): `number`
 
+Number of hash rows.
+
 ##### Returns
 
 `number`
@@ -64,6 +66,8 @@ A value that can safely be converted to a string or JSON payload.
 #### Get Signature
 
 > **get** **total**(): `number`
+
+Total count added across every value.
 
 ##### Returns
 
@@ -77,6 +81,8 @@ A value that can safely be converted to a string or JSON payload.
 
 > **get** **width**(): `number`
 
+Number of counters per row.
+
 ##### Returns
 
 `number`
@@ -87,25 +93,35 @@ A value that can safely be converted to a string or JSON payload.
 
 > **add**(`value`, `count?`): `this`
 
+Records occurrences of a value.
+
 #### Parameters
 
 ##### value
 
 `unknown`
 
+The value to count; hashed through its string form.
+
 ##### count?
 
 `number` = `1`
 
+How many occurrences to add; defaults to one.
+
 #### Returns
 
 `this`
+
+This sketch, for chaining.
 
 ***
 
 ### clear()
 
 > **clear**(): `void`
+
+Resets every counter and the total.
 
 #### Returns
 
@@ -117,7 +133,7 @@ A value that can safely be converted to a string or JSON payload.
 
 > **equals**(`value`): `boolean`
 
-Determines if this object is equal to the specified value.
+Compares the full serialized state.
 
 #### Parameters
 
@@ -125,13 +141,13 @@ Determines if this object is equal to the specified value.
 
 `unknown`
 
-The value to compare with this object.
+The candidate to compare against.
 
 #### Returns
 
 `boolean`
 
-`true` if the objects are equal, `false` otherwise.
+`true` when dimensions, counters, and total match.
 
 #### Implementation of
 
@@ -143,15 +159,21 @@ The value to compare with this object.
 
 > **estimate**(`value`): `number`
 
+Estimates occurrences of a value.
+
 #### Parameters
 
 ##### value
 
 `unknown`
 
+The value to estimate.
+
 #### Returns
 
 `number`
+
+A count that never undercounts and overcounts within the bound.
 
 ***
 
@@ -159,11 +181,13 @@ The value to compare with this object.
 
 > **toJSON**(): [`CountMinSketchJSON`](../type-aliases/CountMinSketchJSON.md)
 
-Returns a JSON-safe representation of the value.
+Returns the JSON form.
 
 #### Returns
 
 [`CountMinSketchJSON`](../type-aliases/CountMinSketchJSON.md)
+
+The dimensions, counter table, and total.
 
 #### Implementation of
 
@@ -175,11 +199,13 @@ Returns a JSON-safe representation of the value.
 
 > **toString**(): `string`
 
-Returns a string representation of the value.
+Summarizes the sketch.
 
 #### Returns
 
 `string`
+
+The dimensions and total count.
 
 #### Implementation of
 
@@ -213,16 +239,24 @@ A new sketch with the restored dimensions, counters, and total.
 
 > `static` **withTargetError**(`expectedItems`, `falsePositiveRate`): `CountMinSketch`
 
+Sizes a sketch for a target error bound.
+
 #### Parameters
 
 ##### expectedItems
 
 `number`
 
+Expected distinct values (used for the width bound).
+
 ##### falsePositiveRate
 
 `number`
 
+Target error rate in `(0, 1)`.
+
 #### Returns
 
 `CountMinSketch`
+
+A sketch with the derived dimensions.

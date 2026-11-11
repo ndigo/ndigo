@@ -10,11 +10,13 @@
  */
 import { test } from 'vitest';
 import { signal as rawSignal } from '@preact/signals-core';
+import { reactive, signal } from '../src/_decorators';
 import { eventsToSignal, signalToEvents, type EventSink, type EventSource } from '../src/event-bridge';
 import { assertEquivalent, benchName, sink } from '../../../benchmarks/lib/verify';
 
 const BATCH = 1_000;
 const retain = sink;
+const raw = rawSignal(1);
 
 class RecordingSource implements EventSource {
     listeners = new Map<string, (...args: unknown[]) => void>();
@@ -38,6 +40,23 @@ class RecordingSink implements EventSink {
         return this;
     }
 }
+
+test('signal — decorated field read', async ({ bench }) => {
+    @reactive
+    class Target {
+        @signal value = 1;
+    }
+    const decorated = new Target();
+    if (decorated.value !== 1) throw new Error('bad decorated value: ' + decorated.value);
+    await bench.compare(
+        bench(benchName('raw signal read', BATCH), () => {
+            for (let i = 0; i < BATCH; i++) retain(raw.value);
+        }),
+        bench(benchName('decorated signal read', BATCH), () => {
+            for (let i = 0; i < BATCH; i++) retain(decorated.value);
+        })
+    );
+});
 
 test('eventsToSignal — bridge occurrence into signal', async ({ bench }) => {
     const source = new RecordingSource();

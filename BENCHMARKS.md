@@ -247,13 +247,13 @@ measure only the shipped bridge wrappers. Artifact
 | `eventsToSignal` delivery |                                4.19 ns/event (238.4M events/s) |
 | `signalToEvents` delivery | 42.1 ns/change (23.7M changes/s; **RME 10.2% — inconclusive**) |
 
-**Blocked row:** decorated `@signal`/`@effect` class fields are not measurable
-in the bench lane — `scripts/vite-plugin-lower-decorators.mjs` (esbuild, ES2022)
-does not deliver the TC39 `ClassFieldDecoratorContext` to `@signal`, so
-`context` is `undefined` at decoration time. Class/method decorators (context,
-ORM benches) lower fine; the field-decorator transform path is the open Phase 4
-item. No engine claim is made or supportable: raw and wrapped rows run on the
-same engine.
+Decorated read costs **5.66 ns/op vs 1.02 ns/op raw — a 5.5× wrapper
+overhead** (RME 0.06% / 0.03%). The earlier "context is undefined" failure
+was not a plugin bug: `@signal` is a decorator, not a factory, so the bench
+had to use `@signal` (no call parens) rather than `@signal()`. The
+`lowerDecorators()` plugin (esbuild, ES2022) lowers field decorators correctly.
+The remaining signals bench gap is `@effect` (still unmeasured) and a
+write-path row.
 
 ## What this does not prove
 

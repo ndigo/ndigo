@@ -105,6 +105,8 @@ export interface TokenSubject {
     name?: string;
     /** Roles (store-less mode). */
     roles?: readonly string[];
+    /** OAuth scopes (store-less mode; emitted as the `scope` claim). */
+    scopes?: readonly string[];
     /** Token version (store-less mode; store mode reads the live value). */
     tokenVersion?: number;
 }
@@ -322,6 +324,7 @@ export class JWTAdapter implements AuthAdapter {
                   id: subject.id,
                   name: subject.name ?? subject.id,
                   roles: subject.roles ?? [],
+                  scopes: subject.scopes ?? [],
                   tokenVersion: subject.tokenVersion ?? 0,
               };
         const now = Date.now();
@@ -330,6 +333,7 @@ export class JWTAdapter implements AuthAdapter {
                 sub: identity.id,
                 name: identity.name,
                 roles: [...identity.roles],
+                ...(identity.scopes.length === 0 ? {} : { scope: identity.scopes.join(' ') }),
                 ver: identity.tokenVersion,
                 token_use: 'access',
             },
@@ -429,6 +433,7 @@ export class JWTAdapter implements AuthAdapter {
         id: string;
         name: string;
         roles: readonly string[];
+        scopes: readonly string[];
         tokenVersion: number;
     }> {
         const store = this.#userStore;
@@ -445,6 +450,7 @@ export class JWTAdapter implements AuthAdapter {
             id: user.id,
             name: user.username,
             roles: user.roles ?? [],
+            scopes: [],
             tokenVersion: user.tokenVersion ?? 0,
         };
     }
@@ -540,11 +546,27 @@ function principalFromPayload(payload: JWTPayload): Principal | null {
     // matching `ndigo-auth-client/oidc-adapter.ts`'s `readRoles`.
     const rawRoles = Array.isArray(payload.roles) ? (payload.roles as unknown[]) : [];
     const roles = rawRoles.filter((role): role is string => typeof role === 'string');
+    // OAuth 2.0 `scope` is a space-delimited string; Azure AD's `scp` is an
+    // array (or a space-delimited string); `scopes` is the custom-IdP array.
+    const scopeClaim = payload.scope;
+    const scpClaim = payload.scp;
+    const scopesClaim = payload.scopes;
+    const scopeParts = [
+        ...(typeof scopeClaim === 'string' ? scopeClaim.split(/\s+/u) : []),
+        ...(Array.isArray(scpClaim) ? scpClaim : typeof scpClaim === 'string' ? scpClaim.split(/\s+/u) : []),
+        ...(Array.isArray(scopesClaim) ? scopesClaim : []),
+    ];
+    const scopes = [
+        ...new Set(scopeParts.filter((scope): scope is string => typeof scope === 'string' && scope.length > 0)),
+    ];
     return {
         id: sub,
         name: String(payload.name ?? payload.email ?? 'Unknown'),
         roles,
+        scopes,
         hasRole: (role: string) => roles.includes(role),
         hasAnyRole: (...asked: string[]) => asked.some((r) => roles.includes(r)),
+        hasScope: (scope: string) => scopes.includes(scope),
+        hasAnyScope: (...asked: string[]) => asked.some((s) => scopes.includes(s)),
     };
 }

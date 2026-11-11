@@ -112,6 +112,26 @@ describe('JWTAdapter', () => {
             expect(result.hasAnyRole('moderator', 'admin')).toBe(true);
         });
 
+        test('maps OAuth scope claims to the principal', async () => {
+            const futureTime = Math.floor(Date.now() / 1000) + 3600;
+            const token = createJWT({
+                sub: '42',
+                iss: 'https://auth.example.com',
+                aud: 'my-app',
+                scope: 'tools.read tools.write',
+                scp: ['tools.admin', 42],
+                scopes: ['tools.read'],
+                exp: futureTime,
+            });
+
+            const result = (await adapter.validate(token)) as Principal;
+
+            expect(result.scopes).toEqual(['tools.read', 'tools.write', 'tools.admin']);
+            expect(result.hasScope('tools.read')).toBe(true);
+            expect(result.hasScope('tools.delete')).toBe(false);
+            expect(result.hasAnyScope('tools.delete', 'tools.write')).toBe(true);
+        });
+
         test('SEC-AUD2-SEC-4/6: non-string role claims are filtered so roles and predicates agree', async () => {
             const futureTime = Math.floor(Date.now() / 1000) + 3600;
             const cases: unknown[][] = [[['admin']], [1], [null], ['admin', 1, null, 'user'], [undefined], [true]];

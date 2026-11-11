@@ -110,8 +110,8 @@ Notes:
 - **Read-only by default.** Pass `readOnly: true` unless the application
   deliberately exposes mutations; the policy applies to both list and call.
 - **OAuth 2.1.** Serve `protectedResourceMetadata(...)` beside the endpoint and
-  let `AuthRouteGuard` validate the bearer token and `@authorized` roles. The
-  guard denies before the transport runs.
+  let `AuthRouteGuard` validate the bearer token, `@authorized` roles, and
+  `@authorizedScopes` scopes. The guard denies before the transport runs.
 - **Limits.** Apply per-tool or per-principal budgets through
   `@ndigo/rate-limit`; wrap downstream calls in `@circuitBreaker` / `@retry`.
 - **Telemetry.** Every call emits one `execute_tool <name>` span with
@@ -128,9 +128,20 @@ export const metadata = protectedResourceMetadata({
 });
 ```
 
-`scopesSupported` is advertised RFC 9728 metadata. The framework's
-`AuthRouteGuard` enforces `@authorized` roles, not scopes; enforce scopes in
-your adapter or a custom guard when the deployment requires them.
+`scopesSupported` is advertised RFC 9728 metadata and is enforced with
+`@authorizedScopes(...)` on the handler. The guard reads the `scope` (OAuth
+2.0 string), `scp` (Azure AD array/string), or `scopes` (custom array) claim
+into the principal and denies with 403 when a required scope is missing. A
+scope requirement also implies authentication.
+
+```ts
+@getMapping('/tools/orders')
+@authorizedScopes('tools.read')
+@toolMapping({ name: 'list_orders', readOnly: true })
+listOrders(): readonly Order[] {
+    return ORDERS;
+}
+```
 
 ## 5. MCP Apps
 

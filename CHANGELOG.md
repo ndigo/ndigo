@@ -362,6 +362,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   before parsing; keyless plain objects are classified after a failed parse,
   so valid bodies pay nothing. Same-host bench: `{}` −7 to −10%, `undefined`
   −12 to −14%, valid unchanged (`BENCHMARKS.md`).
+- `@ndigo/orm`: `schemaForEntity` / `insertSchemaForEntity` memoize the
+  derived Zod schema per entity class (module-level `WeakMap`s) instead of
+  rebuilding it on every `persist`; the returned schema is shared and
+  documented as immutable. Same-host bench: insert 15.16 µs → 735 ns (20.6×),
+  update 14.64 µs → 441 ns (33.2×) (`BENCHMARKS.md`).
 - `apps/07-ndigo-island`: migrated from Web Awesome to the ndigo-ui registry
   items — the form now uses native `<input>`/`<button>` with copy-in CSS and no
   component-library dependency (AD-95).

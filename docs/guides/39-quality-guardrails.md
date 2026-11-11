@@ -5,7 +5,7 @@ usage, an inspection manifest that answers “what does this app expose?”, and
 validation lanes that keep the repository itself honest. This guide is the map
 to those checks and how to wire them into an app.
 
-**Audience:** Application developers and framework contributors · **Prerequisites:** Workspace bootstrapped; [guide 01](01-building-a-node-api.md) or 02 · **Reference app:** `[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)`
+**Audience:** Application developers and framework contributors · **Prerequisites:** Workspace bootstrapped; [guide 01](01-building-a-node-api.md) or 02 · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)
 
 ## What you'll learn
 

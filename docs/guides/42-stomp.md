@@ -6,7 +6,7 @@ contracts: destinations, subscriptions, transactions, receipts, `/user` and
 The socket guide covers the transport, sessions, rooms, and the client; this
 guide covers the protocol and the cross-node path.
 
-**Audience:** Node and browser application developers · **Prerequisites:** Guides [15](15-websockets.md) and [21](21-persistence-and-shared-stores.md) · **Reference app:** `[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)`, `[apps/16-ndigo-redis-fanout](https://github.com/ndigo/ndigo/tree/main/apps/16-ndigo-redis-fanout)`
+**Audience:** Node and browser application developers · **Prerequisites:** Guides [15](15-websockets.md) and [21](21-persistence-and-shared-stores.md) · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api), [apps/16-ndigo-redis-fanout](https://github.com/ndigo/ndigo/tree/main/apps/16-ndigo-redis-fanout)
 
 ## What you'll learn
 

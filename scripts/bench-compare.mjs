@@ -24,7 +24,7 @@ const explicit = argv.find((arg) => !arg.startsWith('--'));
 /** Returns the newest result artifact. */
 function latestArtifact() {
     const files = readdirSync(RESULTS_DIR)
-        .filter((file) => file.endsWith('.json'))
+        .filter((file) => file.endsWith('.json') && !file.startsWith('http-'))
         .map((file) => join(RESULTS_DIR, file))
         .sort((a, b) => statSync(b).mtimeMs - statSync(a).mtimeMs);
     return files[0];

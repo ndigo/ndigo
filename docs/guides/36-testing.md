@@ -76,11 +76,11 @@ trade-off, since a shared mutable context lets suites interfere.
 Construction takes the booted app (or a bare dispatcher). The fluent request
 builder mirrors the adapter's request surface:
 
-| Step | Methods |
-|:------- |:--------------------------------------------------------------------------------------- |
-| Method | `get(path)`, `post(path)`, `put(path)`, `delete(path)`, `patch(path)`, `query(path)` |
-| Mutate | `.query({...})`, `.body({...})`, `.headers({...})`, `.cookies({...})`, `.session({...})` |
-| Dispatch | `.exec` → `Promise<MockResult>` |
+| Step     | Methods                                                                                  |
+| :------- | :--------------------------------------------------------------------------------------- |
+| Method   | `get(path)`, `post(path)`, `put(path)`, `delete(path)`, `patch(path)`, `query(path)`     |
+| Mutate   | `.query({...})`, `.body({...})`, `.headers({...})`, `.cookies({...})`, `.session({...})` |
+| Dispatch | `.exec` → `Promise<MockResult>`                                                          |
 
 ```ts
 const res = await http.get('/todos').query({ filter: 'active' }).exec();
@@ -128,7 +128,7 @@ app.close();
 `BrowserMockClient.dispatch(path)` returns the captured render (output element
 
 - model) and records it on `app.viewTarget`, so you can assert the view a
- route renders — not just the response.
+  route renders — not just the response.
 
 ## 4. Timing helpers
 
@@ -145,9 +145,9 @@ promises so fake-timer suites stay deterministic.
 ## See also
 
 - Decision: — the
- in-process, socket-free harness.
+  in-process, socket-free harness.
 - Generated API: [`@ndigo/test` api](../../packages/ndigo-test/api/README.md).
 - Demo usage: [[apps/03-ndigo-todo-web](https://github.com/ndigo/ndigo/tree/main/apps/03-ndigo-todo-web)](../../[apps/03-ndigo-todo-web](https://github.com/ndigo/ndigo/tree/main/apps/03-ndigo-todo-web)/README.md) —
- harness-driven controller and shell-router specs.
+  harness-driven controller and shell-router specs.
 
 [Back to guides](./README.md)

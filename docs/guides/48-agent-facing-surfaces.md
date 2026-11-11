@@ -18,14 +18,14 @@ Node surfaces and [apps/20-ndigo-ui-lab](https://github.com/ndigo/ndigo/tree/mai
 
 ## 1. One handler, many surfaces
 
-| Surface | Declaration | Consumer |
-|:--------- |:------------------------------------------ |:---------------------- |
-| REST route | `@getMapping` / `@postMapping` | HTTP clients |
-| OpenAPI | the same route metadata | generated document |
-| MCP tool | `@toolMapping` | stdio, Streamable HTTP |
-| MCP App | `ui` on `@toolMapping` + `createUiResource` | MCP host iframe |
-| A2UI | `ModelAndView` + `a2uiViewResolver` | `application/a2ui+json` |
-| WebMCP | `@parameters` + `webMcpToolForHandler` | browser agent |
+| Surface    | Declaration                                 | Consumer                |
+| :--------- | :------------------------------------------ | :---------------------- |
+| REST route | `@getMapping` / `@postMapping`              | HTTP clients            |
+| OpenAPI    | the same route metadata                     | generated document      |
+| MCP tool   | `@toolMapping`                              | stdio, Streamable HTTP  |
+| MCP App    | `ui` on `@toolMapping` + `createUiResource` | MCP host iframe         |
+| A2UI       | `ModelAndView` + `a2uiViewResolver`         | `application/a2ui+json` |
+| WebMCP     | `@parameters` + `webMcpToolForHandler`      | browser agent           |
 
 The invariant is the metadata: `@parameters` declares the extractors and
 `validatedBy` declares the Zod schema. Every surface above reads that one
@@ -56,14 +56,14 @@ export class OrderTools {
 ```
 
 - The name must be snake_case starting with a letter; the method name is the
- default.
+  default.
 - `readOnly: true` marks the tool as non-mutating. A read-only registry omits
- mutating tools from `tools/list` **and** rejects them on call.
+  mutating tools from `tools/list` **and** rejects them on call.
 - `description` defaults to the route summary.
 - `ui` is an MCP Apps resource URI (`ui://…`); it is projected as
- `_meta.ui.resourceUri`.
+  `_meta.ui.resourceUri`.
 - `@whenFeature('flag')` removes a gated tool from `tools/list` entirely — fail
- closed when the evaluator is absent.
+  closed when the evaluator is absent.
 
 ## 3. Serve it over stdio and HTTP
 
@@ -98,27 +98,27 @@ Notes:
 
 - `@requestMapping('/mcp')` with no HTTP method handles any method.
 - `routeValue` with no name binds the whole `Route`; without it the handler
- receives no arguments.
+  receives no arguments.
 - Build the endpoint lazily in the real app: the registry projects the
- dispatcher's mappings, so it must run after every controller is registered
- (see `#resolveEndpoint` in the demo).
+  dispatcher's mappings, so it must run after every controller is registered
+  (see `#resolveEndpoint` in the demo).
 - `ndigo add @ndigo/mcp` installs the package and runs the `mcp-setup`
- generator: a wiring module, a `scripts.mcp` entry, and one sample tool.
+  generator: a wiring module, a `scripts.mcp` entry, and one sample tool.
 
 ## 4. Policy, auth, and telemetry
 
 - **Read-only by default.** Pass `readOnly: true` unless the application
- deliberately exposes mutations; the policy applies to both list and call.
+  deliberately exposes mutations; the policy applies to both list and call.
 - **OAuth 2.1.** Serve `protectedResourceMetadata(...)` beside the endpoint and
- let `AuthRouteGuard` validate the bearer token, `@authorized` roles, and
- `@authorizedScopes` scopes. The guard denies before the transport runs.
+  let `AuthRouteGuard` validate the bearer token, `@authorized` roles, and
+  `@authorizedScopes` scopes. The guard denies before the transport runs.
 - **Limits.** Apply per-tool or per-principal budgets through
- `@ndigo/rate-limit`; wrap downstream calls in `@circuitBreaker` / `@retry`.
+  `@ndigo/rate-limit`; wrap downstream calls in `@circuitBreaker` / `@retry`.
 - **Telemetry.** Every call emits one `execute_tool <name>` span with
- `gen_ai.tool.name` and `gen_ai.tool.call.id`; outbound HTTP spans nest under
- it.
+  `gen_ai.tool.name` and `gen_ai.tool.call.id`; outbound HTTP spans nest under
+  it.
 - **Audit.** Log the tool name and principal in an interceptor; never log
- arguments that may carry secrets.
+  arguments that may carry secrets.
 
 ```ts
 export const metadata = protectedResourceMetadata({
@@ -161,15 +161,15 @@ export const ordersUi = createUiResource({
 ```
 
 - `createUiResource` inlines CSS and one script into a self-contained document
- and rejects `</style>` / `</script>` breakouts.
+  and rejects `</style>` / `</script>` breakouts.
 - `body` is HTML-escaped by default; set `trustedMarkup: true` only for markup
- the application authored.
+  the application authored.
 - The server advertises `io.modelcontextprotocol/ui`, serves the document as
- `text/html;profile=mcp-app`, and carries `_meta.ui` (CSP domains,
- permissions, border, domain).
+  `text/html;profile=mcp-app`, and carries `_meta.ui` (CSP domains,
+  permissions, border, domain).
 - Declare every external origin in `csp`; never use `*`.
 - Pass the resource to both transports: `startStdioServer(registry, {
- uiResources })` and `new McpHTTPEndpoint(registry, { uiResources })`.
+   uiResources })` and `new McpHTTPEndpoint(registry, { uiResources })`.
 
 ## 6. A2UI
 
@@ -270,10 +270,10 @@ export class WebMcpDemo extends AsWebMcpElement(NdElement) {
 ```
 
 - `AsWebMcpElement` registers the tools on connect and aborts the registration
- on disconnect; a reconnect registers again.
+  on disconnect; a reconnect registers again.
 - The input schema comes from the same `@parameters` + `validatedBy` metadata.
 - Browsers without `document.modelContext` get a no-op registration
- (`supported: false`), so the element ships everywhere.
+  (`supported: false`), so the element ships everywhere.
 - `exposedTo` lists secure origins allowed to call a cross-origin tool.
 - Non-element code uses `provideWebMcpTools` or `declareWebMcpTool`.
 
@@ -298,8 +298,8 @@ installed-component rendering and unknown-component rejection.
 ## See also
 
 - Package references: [`@ndigo/mcp`](../../packages/ndigo-mcp/README.md),
- [`@ndigo/view`](../../packages/ndigo-view/README.md),
- [`@ndigo/view-webcomponent`](../../packages/ndigo-view-webcomponent/README.md)
+  [`@ndigo/view`](../../packages/ndigo-view/README.md),
+  [`@ndigo/view-webcomponent`](../../packages/ndigo-view-webcomponent/README.md)
 - [Guide 09 — Views, Targets & Content Negotiation](09-views-and-content-negotiation.md)
 - [Guide 30 — Component Integration](30-component-integration.md)
 - [Guide 37 — The `ndigo` CLI](37-ndigo-cli.md)

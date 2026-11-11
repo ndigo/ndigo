@@ -16,11 +16,11 @@ stream the result over SSE with one GenAI trace.
 
 ## 1. The pieces
 
-| Package | Role |
-|:--------------- |:---------------------------------------------------------------- |
-| `@ndigo/ai` | `AIMessage`, `AIModel`, `AIAgent`, stream events, SSE framing. |
-| `@ndigo/ai-sdk` | The only package that imports the Vercel AI SDK. |
-| `@ndigo/mcp` | Projects `@toolMapping` handlers into an `McpToolRegistry`. |
+| Package          | Role                                                              |
+| :--------------- | :---------------------------------------------------------------- |
+| `@ndigo/ai`      | `AIMessage`, `AIModel`, `AIAgent`, stream events, SSE framing.    |
+| `@ndigo/ai-sdk`  | The only package that imports the Vercel AI SDK.                  |
+| `@ndigo/mcp`     | Projects `@toolMapping` handlers into an `McpToolRegistry`.       |
 | provider package | App-owned, e.g. `@ai-sdk/openai-compatible` for LM Studio/Ollama. |
 
 The loop is deliberately outside the adapter. A model step returns text, tool
@@ -100,13 +100,13 @@ export interface AIModel {
 ```
 
 - `AIModel.info` supplies `provider` and `model` for telemetry and the
- rate-limit key.
+  rate-limit key.
 - Adapters declare tools but never execute them; `AIAgent` does.
 - `signal` on `AIStepRequest` / `AIObjectRequest` cancels the provider call.
 - Typed failures surface before the provider is reached: `AIModelDisabledError`
- (rollout flag) and `AIRateLimitError` (`retryAfterMs`).
+  (rollout flag) and `AIRateLimitError` (`retryAfterMs`).
 - `@ndigo/ai-sdk` is the only package that imports the Vercel AI SDK; follow the
- same integration-layer rule for any other adapter.
+  same integration-layer rule for any other adapter.
 
 ## 5. Stream over SSE
 
@@ -160,12 +160,12 @@ const agent = new AIAgent({
 ```
 
 - The rate-limit key defaults to `provider:model` and throws
- `AIRateLimitError` with `retryAfterMs`.
+  `AIRateLimitError` with `retryAfterMs`.
 - The rollout flag is a boolean with a `false` default — a missing flag fails
- closed.
+  closed.
 - Put `@circuitBreaker` / `@retry` on the controller method that calls the
- agent so a provider outage trips the existing interceptor chain instead of
- surfacing raw SDK errors.
+  agent so a provider outage trips the existing interceptor chain instead of
+  surfacing raw SDK errors.
 
 ## 8. Secrets
 
@@ -203,13 +203,13 @@ Configuration lives under `ai.*`: `baseURL`, `model`, `apiKey`, `maxSteps`, and
 - Fake `AIModel` implementations prove loop behavior without a provider.
 - `MockLanguageModelV4` from `ai/test` proves adapter mapping.
 - The demo's MCP smoke test lists `lookup_order` and `list_orders` with the same
- schemas the agent receives.
+  schemas the agent receives.
 
 ## See also
 
 - [`@ndigo/ai` README](../../packages/ndigo-ai/README.md), [`@ndigo/ai-sdk` README](../../packages/ndigo-ai-sdk/README.md)
 - [`@ndigo/mcp` README](../../packages/ndigo-mcp/README.md)
 - [Guide 48 — Agent-Facing Surfaces](48-agent-facing-surfaces.md) — the
- app→agent direction: `@toolMapping`, MCP Apps, A2UI, WebMCP.
+  app→agent direction: `@toolMapping`, MCP Apps, A2UI, WebMCP.
 - Guides [16](16-typed-service-clients-and-sse.md) (SSE), 32 (telemetry), 34 (flags), 35 (resilience), 37 (CLI)
 - [apps/21-ndigo-agent-lab](https://github.com/ndigo/ndigo/tree/main/apps/21-ndigo-agent-lab)

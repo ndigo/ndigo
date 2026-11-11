@@ -21,25 +21,25 @@ pnpm add @ndigo/redis @ndigo/orm-drizzle @ndigo/cache @ndigo/socket
 - Respect owned vs borrowed client lifecycle.
 - Observe backend failures instead of hiding them.
 
-## 1. The doctrine 
+## 1. The doctrine
 
 - **Capability-owned contracts, no universal store.** Sessions implement
- `SessionStore` (`@ndigo/auth-core`), messages implement `QueueMessageStore`,
- caches implement `Cache` — there is no generic storage superclass and no
- `@ndigo/store` package. Add a backend where a contract already exists.
+  `SessionStore` (`@ndigo/auth-core`), messages implement `QueueMessageStore`,
+  caches implement `Cache` — there is no generic storage superclass and no
+  `@ndigo/store` package. Add a backend where a contract already exists.
 - **Memory is the default; backends are explicit.** Installing `@ndigo/redis`
- never connects to anything and never changes auto-configuration.
+  never connects to anything and never changes auto-configuration.
 - **Ownership is explicit.** Created clients are _owned_ (you close them);
- injected clients are _borrowed_ unless `ownsClient: true` transfers
- ownership. Disposal is idempotent; disposing an adapter never closes a
- client another adapter uses. Stop/drain producers before disposal —
- disposal does not guarantee pending writes complete.
+  injected clients are _borrowed_ unless `ownsClient: true` transfers
+  ownership. Disposal is idempotent; disposing an adapter never closes a
+  client another adapter uses. Stop/drain producers before disposal —
+  disposal does not guarantee pending writes complete.
 - **Failures are observed, never hidden.** Backend faults are not empty
- history, memory fallback, or unhandled rejections; initialization failures
- surface on first use (operations await the original initialization
- promise).
+  history, memory fallback, or unhandled rejections; initialization failures
+  surface on first use (operations await the original initialization
+  promise).
 - **No bean auto-registration.** Container wiring is application-owned;
- lifecycle must bridge to the container's `Closeable` teardown explicitly.
+  lifecycle must bridge to the container's `Closeable` teardown explicitly.
 
 ## 2. Durable sessions with LibSQL
 
@@ -69,21 +69,21 @@ const auth = new CredentialsAuthAdapter({
 Guarantees (verified in ):
 
 - **Explicit provisioning.** `initialize` idempotently creates only
- `ndigo_sessions` and its expiry index — never drops or migrates application
- tables. An application-owned migration may provision the same layout.
+  `ndigo_sessions` and its expiry index — never drops or migrates application
+  tables. An application-owned migration may provision the same layout.
 - **Atomic rotation.** Refresh issues a new id via one conditional
- `UPDATE … WHERE session_id = ? AND expires_at > ?` — exactly one
- contender wins; expired or unknown ids never resurrect; the _original_
- absolute expiry is preserved and reported (no TTL reset on refresh).
+  `UPDATE … WHERE session_id = ? AND expires_at > ?` — exactly one
+  contender wins; expired or unknown ids never resurrect; the _original_
+  absolute expiry is preserved and reported (no TTL reset on refresh).
 - **Strict decode.** Records contain only principal id/name/roles, token
- version, issue timestamp, absolute expiry; malformed rows reject rather
- than becoming silent auth misses.
+  version, issue timestamp, absolute expiry; malformed rows reject rather
+  than becoming silent auth misses.
 - **Cap + purge.** Creation purges expired rows and enforces
- `maxSessions` atomically; instances sharing a database should agree on the
- cap and keep clocks synchronized.
+  `maxSessions` atomically; instances sharing a database should agree on the
+  cap and keep clocks synchronized.
 - **Lifecycle.** `close` bridges `dispose` to the container's
- `Closeable` teardown; owned clients close exactly once, borrowed clients
- stay usable. LibSQL close is synchronous — drain consumers first.
+  `Closeable` teardown; owned clients close exactly once, borrowed clients
+  stay usable. LibSQL close is synchronous — drain consumers first.
 
 Namespaces: the fixed table is a **database-wide namespace** — isolate
 applications/envs by database (or by migration-owned schema), exactly like
@@ -166,40 +166,40 @@ recognizes `Closeable`; a dispose-only object is not proof of cleanup.
 ## 6. Deployment policy
 
 - **Redis 7.2+ standalone**; no modules, no cluster/sentinel guarantees, no
- Redis 8.4-only commands. Base client `@redis/client` pinned at 6.3.0.
+  Redis 8.4-only commands. Base client `@redis/client` pinned at 6.3.0.
 - **Namespaces** are your isolation unit: cache namespaces
- (`app:production`) separate keys; pubsub namespaces
- (`[A-Za-z0-9][A-Za-z0-9._-]{0,127}`, no colon) separate channels and are
- **not authorization** — protect channels with Redis ACLs and trusted
- network/TLS.
+  (`app:production`) separate keys; pubsub namespaces
+  (`[A-Za-z0-9][A-Za-z0-9._-]{0,127}`, no colon) separate channels and are
+  **not authorization** — protect channels with Redis ACLs and trusted
+  network/TLS.
 - **Message limits**: pubsub envelopes ≤ 1 MiB (complete UTF-8 JSON,
- including base64 + headers); keys 1–1024 chars; ≤ 128 headers, values
- ≤ 8192 chars; invalid outbound envelopes reject before I/O.
+  including base64 + headers); keys 1–1024 chars; ≤ 128 headers, values
+  ≤ 8192 chars; invalid outbound envelopes reject before I/O.
 - No localhost defaults anywhere — URLs are explicit (`redis://`/`rediss://`,
- file paths for LibSQL); adapters never connect automatically.
+  file paths for LibSQL); adapters never connect automatically.
 
-## 7. Deferred, deliberately 
+## 7. Deferred, deliberately
 
 Not built, with an explicit decision and revisit triggers:
 
 - **Distributed scheduling** — no leader election, no durable job queue; the
- in-process `TaskScheduler` remains (guide 23). Revisit only when a real
- consumer needs at-most-once-per-schedule across workers, restart-surviving
- queued jobs, deployable schedule definitions, or cross-process task
- observation — then the precedent is 's hook seam plus the
- `@ndigo/redis` / SQL-store patterns above.
+  in-process `TaskScheduler` remains (guide 23). Revisit only when a real
+  consumer needs at-most-once-per-schedule across workers, restart-surviving
+  queued jobs, deployable schedule definitions, or cross-process task
+  observation — then the precedent is 's hook seam plus the
+  `@ndigo/redis` / SQL-store patterns above.
 - **Cross-node queue consumption** — LibSQL `/queue` persistence is storage,
- not distributed consumption; durable pub/sub replay, offline queues, and
- global ordering are out of scope for the live fan-out.
+  not distributed consumption; durable pub/sub replay, offline queues, and
+  global ordering are out of scope for the live fan-out.
 
 ## See also
 
 - Decisions: ,
- ,
- (async cutover)
+  ,
+  (async cutover)
 - Roadmap: `docs/plans/2026-10-01_SHARED_PERSISTENCE_ROADMAP.md`
 - Related guides: [15 — WebSockets](15-websockets.md) (fan-out),
- [19 — Caching](19-caching.md) §6, [26 — Auth & Sessions](26-authentication-and-sessions.md)
+  [19 — Caching](19-caching.md) §6, [26 — Auth & Sessions](26-authentication-and-sessions.md)
 - Packages: `@ndigo/redis` (README), `@ndigo/orm-drizzle` (README:
- `LibSQLSessionStore`, `LibSQLQueueMessageStore`), `@ndigo/socket`,
- `@ndigo/cache`
+  `LibSQLSessionStore`, `LibSQLQueueMessageStore`), `@ndigo/socket`,
+  `@ndigo/cache`

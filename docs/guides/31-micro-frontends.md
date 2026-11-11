@@ -22,10 +22,10 @@ contexts. This guide is the host/feature path.
 
 ## 1. Two shapes
 
-| Shape | What it is | Boundary |
+| Shape          | What it is                                                | Boundary                                                  |
 | -------------- | --------------------------------------------------------- | --------------------------------------------------------- |
 | Hosted feature | A child `ApplicationContext` mounted under a route prefix | Context tree + shared-dependency contract + event gateway |
-| Island | A server-rendered Web Component hydrated in place | Serialized model + Zod schema + tag name |
+| Island         | A server-rendered Web Component hydrated in place         | Serialized model + Zod schema + tag name                  |
 
 Use a hosted feature for an application slice with its own services and
 lifecycle (catalog, checkout, reports). Use an island for a presentation unit
@@ -73,14 +73,14 @@ host.registerFeature({
 
 - `prefix` — the URL partition that activates the feature.
 - `loader` — a dynamic import resolving to a module with
- `createContext(parent)`; omit it and provide `createContext` for an eager
- feature.
+  `createContext(parent)`; omit it and provide `createContext` for an eager
+  feature.
 - `dependencies.requires` — semver ranges validated against the shell's shared
- registry at mount; a missing or mismatched required dependency fails the
- mount. `optional` warns instead.
+  registry at mount; a missing or mismatched required dependency fails the
+  mount. `optional` warns instead.
 - `relays` — allowlisted event relays (see §5).
 - `unmountPolicy` — `preserve` keeps the context alive across activation
- changes; `close` destroys it and its gateway.
+  changes; `close` destroys it and its gateway.
 
 Duplicate names throw. `registerFeature` returns the manager, so registrations
 chain.
@@ -154,28 +154,28 @@ cross-feature communication — that is the isolation guarantee, not a bug.
 ## 6. Features vs islands
 
 - A feature owns a **context**, services, and a route partition. It is the right
- unit for an application slice with its own lifecycle.
+  unit for an application slice with its own lifecycle.
 - An island owns a **model** and a tag. It is the right unit for a presentation
- component embedded in a server-rendered page; [guide 29](29-signals-and-islands.md) covers hydration and
- SSE.
+  component embedded in a server-rendered page; [guide 29](29-signals-and-islands.md) covers hydration and
+  SSE.
 - They compose: a feature's page can contain islands; an island never mounts a
- feature. Keep the boundary at data contracts (context values, serialized
- model), not shared imports.
+  feature. Keep the boundary at data contracts (context values, serialized
+  model), not shared imports.
 
 ## 7. Pitfalls
 
 - **A feature is not a module.** It has its own context and lifecycle; do not
- reach into another feature's context.
+  reach into another feature's context.
 - **Required dependencies fail the mount.** Declare the exact semver range and
- the shared registry entry; an optional dependency only warns.
+  the shared registry entry; an optional dependency only warns.
 - **`preserve` keeps state across navigations.** Choose `close` when the feature
- should reset, and remember that `close` destroys the gateway too.
+  should reset, and remember that `close` destroys the gateway too.
 - **Relays are allowlisted.** An event that “doesn't arrive” is usually a
- missing relay or a namespace rejection.
+  missing relay or a namespace rejection.
 - **The loader contract is `createContext(parent)`.** A module that exports a
- different shape fails at mount, not at import.
+  different shape fails at mount, not at import.
 - **Do not duplicate the shell in each feature.** Shared singletons belong in
- the shell registry; features resolve them.
+  the shell registry; features resolve them.
 
 ## See also
 

@@ -2,7 +2,7 @@ packages:
   - 'packages/*'
   - 'apps/*'
   - 'tools/*'
-  - '../todomvc/examples/ndigo'
+  - 'benchmarks'
   - '../todomvc/examples/svelte'
   - '../todomvc/examples/vue'
   - '../todomvc/examples/react'

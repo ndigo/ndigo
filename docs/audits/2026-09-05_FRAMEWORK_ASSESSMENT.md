@@ -80,7 +80,7 @@ Surfaced two framework gaps while wiring the SQL path:
 
 **A1 — Six handler-mapping strategies.** ✅ _RESOLVED 2026-09-05_
 
-Reworked to radix-only: the duplicate `radix-route-handler-mapping.ts`/`radix-metadata-handler-mapping.ts` files (byte-identical, both exporting `RadixMetadataHandlerMapping`) were consolidated; `LinearMetadataHandlerMapping` was **deleted** after the repo's own benchmark (`bench/routing.bench.ts`) showed radix is 40–63× faster on every hit scenario and isomorphic (no node-only code) — so both browser and node now default to radix. `NamePathHandlerMapping` stays as the strategy-chain fallback; `SimplePathHandlerMapping` is internal. Docs updated (ARCHITECTURE §Paradigm Selection Rules).
+Reworked to radix-only: the duplicate `radix-route-handler-mapping.ts`/`radix-metadata-handler-mapping.ts` files (byte-identical, both exporting `RadixMetadataHandlerMapping`) were consolidated; `LinearMetadataHandlerMapping` was **deleted** after the repo's own benchmark (`bench/routing.bench.ts`) showed radix is 40–63× faster on every hit scenario and isomorphic (no node-only code) — so both browser and node now default to radix. This comparison was radix against the deleted linear mapping; it is not evidence about external router libraries. `NamePathHandlerMapping` stays as the strategy-chain fallback; `SimplePathHandlerMapping` is internal. Docs updated (ARCHITECTURE §Paradigm Selection Rules).
 
 **A2 — Paradigm selection is not enforced.** ✅ _RESOLVED 2026-09-05 — two-tier enforcement_
 

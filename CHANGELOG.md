@@ -29,6 +29,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   adapters read the `scope` (space-delimited), `scp` (Azure AD), and `scopes`
   (custom) claims; `TokenSubject.scopes` emits the `scope` claim for
   store-less issuance. A scope requirement implies authentication.
+- Benchmarks: `pnpm bench` is now a serial lane with JSON artifacts and an
+  environment fingerprint, a committed reference baseline, `pnpm bench:compare`,
+  and a user-facing [`BENCHMARKS.md`](BENCHMARKS.md). Comparator rows verify
+  semantic equivalence before timing; `pnpm bench:http` compares four routes
+  against Fastify, Express, and Hono; jsdom DOM targets that cannot execute
+  module-script bundles fail fast with an explicit quarantine reason.
 - `@ndigo/cli`: `ndigo routes --toon` — one TOON document on stdout for the
   route list, an experimental sibling beside the `--json` contract (issue
   #349). Measured first (`scripts/toon-measure.mjs`): on a real 20-route
@@ -332,6 +338,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   them (return `[]`/`false` when the identity has no OAuth scopes); the
   framework's `DefaultPrincipal` takes scopes as its fourth constructor
   argument.
+- `@ndigo/core`: the benchmark estate's LRU row exposed a structural flaw in
+  the Map-insertion-order cache (O(n) eviction once delete tombstones pile up
+  at the table front); main's #382 adopted a doubly-linked-list LRU in
+  response. Measured against the estate's pre-382 baseline: `get`
+  55.78 → 33.85 ns (−39%) and `set` 25.29 → 7.70 ns (−70%), both RME < 1%
+  (`BENCHMARKS.md`).
+- `@ndigo/dispatcher`: `RadixMetadataHandlerMapping._getHandler` candidate
+  selection is a single allocation-free pass (was `filter()`+`reduce()` per
+  request, identical winner semantics). Same-host bench: −8% static, −8.5%
+  single-param, −2.6% deep, RME < 0.4% (`BENCHMARKS.md`).
 - `apps/07-ndigo-island`: migrated from Web Awesome to the ndigo-ui registry
   items — the form now uses native `<input>`/`<button>` with copy-in CSS and no
   component-library dependency (AD-95).

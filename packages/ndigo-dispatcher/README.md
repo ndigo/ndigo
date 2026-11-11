@@ -43,7 +43,7 @@ class AppConfig {
 
 ### Conditions, interceptors, errors
 
-Handlers match on route conditions (matrix params, query params, patterns), run interceptor chains (`applyPreHandle`/`applyPostHandle`), and resolve errors through pluggable resolvers (401/403 denials, binding errors, last-resort 500). Route lookup through a radix tree is 3–6x faster than popular router libraries on parameterized paths.
+Handlers match on route conditions (matrix params, query params, patterns), run interceptor chains (`applyPreHandle`/`applyPostHandle`), and resolve errors through pluggable resolvers (401/403 denials, binding errors, last-resort 500). Route resolution looks up the radix tree, then filters candidates by route conditions and selects the most specific mapping. The benchmark suite measures raw lookup parity and full handler resolution separately; see [`BENCHMARKS.md`](../../BENCHMARKS.md) for the numbers, environment, and limitations.
 
 Route conditions and `RouteMappingInfo` implement the core
 `ResultMatcher<Route, Result>` contract: `match(route)` returns a narrowed result

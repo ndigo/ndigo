@@ -1,5 +1,11 @@
 # Ramda vs Native JavaScript Benchmark Analysis
 
+> **Historical record.** The benchmark files behind this analysis were deleted
+> in AD-84 when `@ndigo/util` was pruned to its consumed surface. The numbers
+> below are retained as the record of the Ramda retirement decision; they are
+> not current benchmarks and must not be cited as current performance. Current
+> benchmarks live in `packages/*/bench` and are documented in `BENCHMARKS.md`.
+
 ## 1. Executive Summary
 
 This audit evaluates the performance characteristics of Ramda utility functions compared to native JavaScript equivalents across the `@ndigo/util` categories. The goal is to establish data-driven guidelines for when to leverage Ramda's functional API and when to prefer native JavaScript for performance-critical paths.

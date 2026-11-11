@@ -1114,6 +1114,9 @@ importers:
       '@ndigo/context':
         specifier: ~0.0.1
         version: link:../../packages/ndigo-context
+      '@ndigo/core':
+        specifier: ~0.0.1
+        version: link:../../packages/ndigo-core
       '@ndigo/dispatcher':
         specifier: ~0.0.1
         version: link:../../packages/ndigo-dispatcher
@@ -1917,6 +1920,9 @@ importers:
 
   packages/ndigo-cluster:
     dependencies:
+      '@ndigo/core':
+        specifier: ~0.0.1
+        version: link:../ndigo-core
       '@ndigo/log':
         specifier: ~0.0.1
         version: link:../ndigo-log

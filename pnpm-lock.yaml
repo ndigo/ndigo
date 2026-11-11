@@ -746,6 +746,9 @@ importers:
       '@ndigo/socket':
         specifier: ~0.0.1
         version: link:../../packages/ndigo-socket
+      '@ndigo/telemetry':
+        specifier: ~0.0.1
+        version: link:../../packages/ndigo-telemetry
       '@ndigo/telemetry-node':
         specifier: ~0.0.1
         version: link:../../packages/ndigo-telemetry-node
@@ -2658,6 +2661,9 @@ importers:
 
   packages/ndigo-telemetry:
     dependencies:
+      '@ndigo/cache':
+        specifier: ~0.0.1
+        version: link:../ndigo-cache
       '@ndigo/context':
         specifier: ~0.0.1
         version: link:../ndigo-context
@@ -2667,6 +2673,9 @@ importers:
       '@ndigo/dispatcher':
         specifier: ~0.0.1
         version: link:../ndigo-dispatcher
+      '@ndigo/http':
+        specifier: ~0.0.1
+        version: link:../ndigo-http
       '@ndigo/log':
         specifier: ~0.0.1
         version: link:../ndigo-log
@@ -2737,12 +2746,21 @@ importers:
         specifier: ^8.22.1
         version: 8.22.1
     devDependencies:
+      '@ndigo/auth-server':
+        specifier: ~0.0.1
+        version: link:../ndigo-auth-server
       '@ndigo/context':
         specifier: ~0.0.1
         version: link:../ndigo-context
       '@ndigo/dispatcher':
         specifier: ~0.0.1
         version: link:../ndigo-dispatcher
+      '@ndigo/orm-drizzle':
+        specifier: ~0.0.1
+        version: link:../ndigo-orm-drizzle
+      '@ndigo/redis':
+        specifier: ~0.0.1
+        version: link:../ndigo-redis
       '@ndigo/test':
         specifier: ~0.0.1
         version: link:../ndigo-test
@@ -2794,6 +2812,10 @@ importers:
       '@opentelemetry/sdk-trace-base':
         specifier: 'catalog:'
         version: 2.12.0(@opentelemetry/api@1.10.0)
+    devDependencies:
+      '@ndigo/auth-client':
+        specifier: ~0.0.1
+        version: link:../ndigo-auth-client
 
   packages/ndigo-test:
     dependencies:

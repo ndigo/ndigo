@@ -115,6 +115,16 @@ candidate; the 405 no-match path is unchanged). Same-host A/B, RME < 0.4%:
 row remains radix/condition-bound — the next target is condition caching for
 static routes.
 
+**Optimization (this branch):** the matched pattern is now a normal optional
+`Route.pattern` property assigned directly, instead of a non-enumerable
+`Reflect.defineProperty`. The non-enumerable define forced every route object
+into V8 dictionary mode, slowing later `route.path` / `route.params` reads.
+Same-host A/B, RME < 0.4%: `getHandler(/users)` 306 → 197 ns (−36%), fresh
+route object 373 → 202 ns (−46%), `/users/42` 356 → 229 ns (−36%), deep
+430 → 320 ns (−26%), method-constrained 326 → 207 ns (−36%), rotation
+388 → 259 ns (−33%); the miss and 405 rows are unchanged. 46/46 mapping specs
+pass.
+
 ### Containers and parsers
 
 | Scenario                   |   Ndigo | Comparator                       |                                Ratio |
@@ -174,9 +184,26 @@ re-measure.
 | ORM `remove` existing                              |                                      963.24 | —                |               RME > 2%; indicative |
 
 The flat merged property index clears the AD-11 decision rule on the
-representative, 32-source, and access-mix workloads. ORM writes remain the
-largest per-operation cost in the estate and the best candidate for the next
-deep optimization pass.
+representative, 32-source, and access-mix workloads. ORM writes were the
+largest per-operation cost in the estate and the target of the next deep
+optimization pass; the schema-cache change below removes that cost.
+
+**Optimization (this branch):** `schemaForEntity` / `insertSchemaForEntity`
+memoize the derived Zod schema per entity class in module-level `WeakMap`s
+instead of rebuilding `z.object` from metadata on every `persist`. Same-host
+A/B, serial lane: `persist(new entity)` 15.16 µs → 735 ns (20.6×),
+`persist(existing entity)` 14.64 µs → 441 ns (33.2×), `persist × 100`
+14.91 µs → 692 ns (21.5×). The before rows carry RME 2.2–2.8% (the old path
+allocates a schema per write); the after rows are RME < 0.3%, and the delta is
+an order of magnitude beyond either error bar. Cached `safeParse` is the
+remaining cost at 31–52 ns per insert. 133/133 `@ndigo/orm` tests pass.
+
+**Optimization (this branch):** `RouteHandlerMethod.invoke` caches the resolved
+route mapping per handler instance and returns immediately for zero-parameter
+handlers (the whole error-handler path), before touching the polyfill metadata
+proxy. Same-host A/B, RME < 0.3%: `invoke` 0 params 99 → 3 ns (33×), 1 path
+param 173 → 57 ns (−67%), 1 query param 176 → 61 ns (−65%), 3 mixed
+329 → 220 ns (−33%), 10 query 849 → 700 ns (−17%).
 
 ### `like` and error construction
 
@@ -235,6 +262,16 @@ artifact is `2026-11-11T01-57-17-3670f9cccfca.json` (commit `3670f9ccc`).
 Valid binding is cheap; the **invalid path costs ~200× the valid path**
 because `safeParse` allocates the full issue list and throws a framework
 error. Request-rejection traffic pays that cost per request.
+
+**Optimization (this branch):** `validatedBy` memoizes the normalized failure
+for the three empty-body shapes per schema (`{}`, `null`, `undefined`). A
+nullish body fails from the template before parsing; a keyless plain object is
+classified only after the parse has already failed, so valid bodies pay no
+emptiness check. Same-host A/B, two serial runs per side: `{}` 10.47 → 9.46–9.71
+µs (−7 to −10%), `undefined` 10.23–10.44 → 8.90–9.00 µs (−12 to −14%), valid
+67–68 → 65–75 ns (run-to-run layout noise; no added cost on the valid path).
+The remaining ~8.9 µs is the two `Error` stack captures, the subject of the
+separate stack-policy decision (#389).
 
 Cold start (`pnpm bench:start`, 3 runs, median; artifact
 `startup-2026-11-11T01-56-06.json`, commit `3670f9ccc`):

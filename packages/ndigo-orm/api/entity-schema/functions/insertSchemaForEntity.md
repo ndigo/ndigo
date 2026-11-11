@@ -21,6 +21,9 @@ Use this for request-body validation of create endpoints:
 create(note: z.infer<ReturnType<typeof insertSchemaForEntity<Note>>>) { … }
 ```
 
+The schema is cached per entity class and shared across calls: treat the
+returned instance as immutable.
+
 ## Type Parameters
 
 ### T

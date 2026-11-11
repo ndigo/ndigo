@@ -1,6 +1,6 @@
 # 2026-09-15 WebSocket Client & `@ndigo/socket` Package
 
-**Status:** Implemented (ratified by [AD-22](../decisions/2026-09-15_AD22_WEBSOCKET_CLIENT.md);
+**Status:** Implemented (ratified by [AD-22](../decisions/archive/2026-09-15_AD22_WEBSOCKET_CLIENT.md);
 shipped in `5472171a`, `6e7ddbf9`, `d2aa32d1`, `184c5ceb`, `f0718252`, `af3857ab`)
 **As-built deviations (surface changed after this plan was written):**
 
@@ -12,7 +12,7 @@ shipped in `5472171a`, `6e7ddbf9`, `d2aa32d1`, `184c5ceb`, `f0718252`, `af3857ab
   **Scope:** new `packages/ndigo-socket/` (contracts + client, isomorphic),
   `ndigo-dispatcher` (re-export seam), `ndigo-platform-web` (online trigger),
   `apps/ndigo-api` (demo gate)
-  **Companion docs:** [AD-22](../decisions/2026-09-15_AD22_WEBSOCKET_CLIENT.md),
+  **Companion docs:** [AD-22](../decisions/archive/2026-09-15_AD22_WEBSOCKET_CLIENT.md),
   [AD-21](../decisions/2026-09-15_AD21_WEBSOCKET_SESSION_REGISTRY.md),
   [broadcast plan](2026-09-15_WEBSOCKET_BROADCAST.md)
 
@@ -178,7 +178,7 @@ feature.
 
 ## 8. References
 
-- AD-22: `docs/decisions/2026-09-15_AD22_WEBSOCKET_CLIENT.md`
+- AD-22: `docs/decisions/archive/2026-09-15_AD22_WEBSOCKET_CLIENT.md`
 - Server surface: AD-21 + `2026-09-15_WEBSOCKET_BROADCAST.md`
 - Existing shapes: `packages/ndigo-platform-node/src/node-socket-session.ts`
   (AsyncReader), `packages/ndigo-scheduler/src/task-scheduler.ts`

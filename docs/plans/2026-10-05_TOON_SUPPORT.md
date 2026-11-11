@@ -196,8 +196,8 @@ detection.
 ## 6. Companion docs
 
 [ADR-66](../decisions/2026-10-05_AD66_TOON_OPTIN_SUPPORT.md) (decision),
-[AD-13](../decisions/2026-09-08_AD13_ENVIRONMENT_STANDARD_SOURCES.md)
+[AD-13](../decisions/archive/2026-09-08_AD13_ENVIRONMENT_STANDARD_SOURCES.md)
 (JSON-only baseline this amends additively),
 [spec v4.1 §17-19](https://github.com/toon-format/spec/blob/main/SPEC.md).
 
-[AD-13]: ../decisions/2026-09-08_AD13_ENVIRONMENT_STANDARD_SOURCES.md
+[AD-13]: ../decisions/archive/2026-09-08_AD13_ENVIRONMENT_STANDARD_SOURCES.md

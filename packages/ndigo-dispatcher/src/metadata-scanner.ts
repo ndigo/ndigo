@@ -75,7 +75,7 @@ export class MetadataScanner {
         // We need to identify which keys are "base" keys (class-level) vs "extended" keys (method-level)
         // Strategy: A key is method-level if there exists another key that is a prefix of it
         const baseKeys = new Set<string>();
-        const methodKeys = new Map<string, string[]>(); // baseKey -> [propertyName, ...]
+        const methodKeys = new MultiValueMap<string, string>(); // baseKey -> [propertyName, ...]
 
         // First pass: identify all unique base keys
         for (let i = 0; i < allMetadataKeysLength; i++) {
@@ -105,12 +105,7 @@ export class MetadataScanner {
                     const propertyName = fullKey.substring(lastColonIndex + 1);
 
                     // Add to method keys
-                    const names = methodKeys.get(potentialBase);
-                    if (names) {
-                        names.push(propertyName);
-                    } else {
-                        methodKeys.set(potentialBase, [propertyName]);
-                    }
+                    methodKeys.add(potentialBase, propertyName);
                 } else {
                     // No colon: standalone class-level key
                     cache.add(fullKey, '');

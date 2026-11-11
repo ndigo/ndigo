@@ -13,6 +13,9 @@ export class HostInstrumentation extends AbstractBaseInstrumentation {
         super('host');
     }
 
+    /**
+     * Wraps the instrumented methods.
+     */
     enable(): void {
         this._wrap(
             HostManager.prototype,
@@ -26,6 +29,9 @@ export class HostInstrumentation extends AbstractBaseInstrumentation {
         );
     }
 
+    /**
+     * Restores the original methods.
+     */
     disable(): void {
         this._unwrap(HostManager.prototype, 'registerFeature');
         this._unwrap(HostManager.prototype, 'unregister');

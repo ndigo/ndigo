@@ -76,8 +76,10 @@ describe('resolveLabTelemetry', () => {
         expect(telemetry.otlpEndpoint).toBeUndefined();
         expect(telemetry.browserTraceUrl).toBeUndefined();
         expect(telemetry.sampler).toContain('always');
-        // HTTP server, WebSocket server, and dispatcher instrumentations.
-        expect(telemetry.config.instrumentations).toHaveLength(3);
+        // The lab deliberately registers every Node instrumentation it can
+        // exercise: HTTP server, WebSocket server, view targets, SSE,
+        // dispatcher, context, auth server, Redis, Drizzle, HTTP client, cache.
+        expect(telemetry.config.instrumentations).toHaveLength(11);
     });
 
     test('the collector endpoint switches every signal to OTLP/HTTP', () => {

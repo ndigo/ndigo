@@ -74,7 +74,18 @@ const NDIGO_PREFIX = '@ndigo/';
  */
 const PEER_ALLOWLIST = {
     '@ndigo/oxlint-plugin': ['oxlint'],
-    '@ndigo/telemetry-node': ['ws'],
+    // Optional instrumentation drivers: each wraps a sibling package's
+    // contract when the app installs it, so they are app-provided peers —
+    // never hard dependencies of the telemetry package.
+    '@ndigo/telemetry-node': [
+        'ws',
+        '@ndigo/auth-server',
+        '@ndigo/boot',
+        '@ndigo/cluster',
+        '@ndigo/orm-drizzle',
+        '@ndigo/redis',
+    ],
+    '@ndigo/telemetry-web': ['@ndigo/auth-client'],
     // Asset-only runtime feature dep for the OpenAPI docs UI (see AD-35):
     // the platform serves the files but code never imports the module.
     '@ndigo/platform-node': ['swagger-ui-dist'],

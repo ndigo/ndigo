@@ -1,6 +1,8 @@
 /**
- * A type-safe key used for value registration and retrieval in a `Registry`.
+ * Type-safe registry keys with compile-time value types.
  */
+import { Equatable, Serializable } from '@ndigo/core';
+
 /**
  * A type-safe key used for value registration and retrieval in a `Registry`.
  *
@@ -8,8 +10,6 @@
  * The generic parameter `T` provides compile-time type association.
  * @typeParam _T - The type of the value associated with this token.
  */
-import { Equatable, Serializable } from '@ndigo/core';
-
 export class ContextToken<_T> implements Equatable<ContextToken<_T>>, Serializable {
     /**
      * A descriptive string for the token, used as the backing key at runtime.

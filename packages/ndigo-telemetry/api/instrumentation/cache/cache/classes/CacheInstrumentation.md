@@ -32,7 +32,7 @@ OpenTelemetry instrumentation for `CacheInstrumentation`.
 
 > **disable**(): `void`
 
-Hook for subclasses to wire up `_unwrap` calls.
+Restores the original methods.
 
 #### Returns
 
@@ -48,7 +48,7 @@ Hook for subclasses to wire up `_unwrap` calls.
 
 > **enable**(): `void`
 
-Hook for subclasses to wire up `_wrap` calls.
+Wraps the instrumented methods.
 
 #### Returns
 

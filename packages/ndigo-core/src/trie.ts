@@ -19,10 +19,20 @@ export class Trie<V = unknown> implements Serializable, Equatable<Trie<V>> {
         return 'Trie';
     }
 
+    /**
+     * Number of stored words.
+     */
     get size(): number {
         return this.#size;
     }
 
+    /**
+     * Adds a word or replaces its value.
+     *
+     * @param word - The key to store.
+     * @param value - The value to associate with the key.
+     * @returns This trie, for chaining.
+     */
     insert(word: string, value: V): this {
         let node = this.#root;
         for (const ch of word) {
@@ -41,11 +51,23 @@ export class Trie<V = unknown> implements Serializable, Equatable<Trie<V>> {
         return this;
     }
 
+    /**
+     * Looks up a complete word.
+     *
+     * @param word - The exact key to find.
+     * @returns The stored value, or `undefined` when the word is absent.
+     */
     search(word: string): V | undefined {
         const node = this.#findNode(word);
         return node !== null && node.terminal ? node.value : undefined;
     }
 
+    /**
+     * Tests for a complete word.
+     *
+     * @param word - The exact key to test.
+     * @returns `true` when the word was inserted.
+     */
     has(word: string): boolean {
         const node = this.#findNode(word);
         return node !== null && node.terminal;
@@ -61,10 +83,22 @@ export class Trie<V = unknown> implements Serializable, Equatable<Trie<V>> {
         return node;
     }
 
+    /**
+     * Tests whether any word begins with the prefix.
+     *
+     * @param prefix - The prefix to test.
+     * @returns `true` when a stored word starts with `prefix`.
+     */
     startsWith(prefix: string): boolean {
         return this.#findNode(prefix) !== null;
     }
 
+    /**
+     * Removes a word and prunes now-empty branches.
+     *
+     * @param word - The exact key to remove.
+     * @returns `true` when the word was present.
+     */
     delete(word: string): boolean {
         // recursive deletion
         const remove = (node: TrieNode<V>, target: string, depth: number): boolean => {
@@ -88,6 +122,12 @@ export class Trie<V = unknown> implements Serializable, Equatable<Trie<V>> {
         return remove(this.#root, word, 0);
     }
 
+    /**
+     * Yields every word starting with the prefix, depth first.
+     *
+     * @param prefix - The prefix to expand; `''` yields every word.
+     * @returns A generator of `[word, value]` pairs.
+     */
     *wordsWithPrefix(prefix: string): Generator<[string, V]> {
         const node = this.#findNode(prefix);
         if (node === null) return;
@@ -103,11 +143,19 @@ export class Trie<V = unknown> implements Serializable, Equatable<Trie<V>> {
         }
     }
 
+    /**
+     * Removes every word.
+     */
     clear(): void {
         this.#root = { children: new Map(), value: undefined, terminal: false };
         this.#size = 0;
     }
 
+    /**
+     * Returns the entries as `[word, value]` pairs.
+     *
+     * @returns A JSON array of word/value pairs.
+     */
     toJSON(): JSONArray {
         const entries: Array<[string, V]> = [];
         for (const [word, value] of this.wordsWithPrefix('')) {
@@ -117,10 +165,21 @@ export class Trie<V = unknown> implements Serializable, Equatable<Trie<V>> {
         return entries.map(([w, v]) => [w, serialize(v)] as unknown as JSONArray[number]) as JSONArray;
     }
 
+    /**
+     * Summarizes the trie.
+     *
+     * @returns The stored word count.
+     */
     toString(): string {
         return `${this.#size} entries`;
     }
 
+    /**
+     * Compares every stored word and value.
+     *
+     * @param value - The candidate to compare against.
+     * @returns `true` when both tries hold the same words and values.
+     */
     equals(value: unknown): boolean {
         if (!(value instanceof Trie)) return false;
         if (value.size !== this.#size) return false;

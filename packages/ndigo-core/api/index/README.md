@@ -64,6 +64,18 @@ Re-exports [BindError](../data-binder/classes/BindError.md)
 
 ***
 
+### BloomFilter
+
+Re-exports [BloomFilter](../bloom-filter/classes/BloomFilter.md)
+
+***
+
+### BloomFilterJSON
+
+Re-exports [BloomFilterJSON](../bloom-filter/type-aliases/BloomFilterJSON.md)
+
+***
+
 ### BooleanConverter
 
 Re-exports [BooleanConverter](../converter/classes/BooleanConverter.md)
@@ -160,6 +172,18 @@ Re-exports [ConverterRegistry](../converter/classes/ConverterRegistry.md)
 
 ***
 
+### CountMinSketch
+
+Re-exports [CountMinSketch](../count-min-sketch/classes/CountMinSketch.md)
+
+***
+
+### CountMinSketchJSON
+
+Re-exports [CountMinSketchJSON](../count-min-sketch/type-aliases/CountMinSketchJSON.md)
+
+***
+
 ### createConversionService
 
 Re-exports [createConversionService](../converter/functions/createConversionService.md)
@@ -211,6 +235,12 @@ Re-exports [DateTimeFormatterOptions](../formatter/interfaces/DateTimeFormatterO
 ### DefaultableFormatOptions
 
 Re-exports [DefaultableFormatOptions](../formatter/interfaces/DefaultableFormatOptions.md)
+
+***
+
+### Deque
+
+Re-exports [Deque](../deque/classes/Deque.md)
 
 ***
 
@@ -343,6 +373,12 @@ Re-exports [getSymbolMetadata](../metadata/functions/getSymbolMetadata.md)
 ### GlobPatternInfo
 
 Re-exports [GlobPatternInfo](../path-matcher/classes/GlobPatternInfo.md)
+
+***
+
+### Heap
+
+Re-exports [Heap](../heap/classes/Heap.md)
 
 ***
 
@@ -730,6 +766,12 @@ Re-exports [primitive](../primitive/type-aliases/primitive.md)
 
 ***
 
+### PriorityQueue
+
+Re-exports [PriorityQueue](../heap/classes/PriorityQueue.md)
+
+***
+
 ### Profile
 
 Re-exports [Profile](../profile/variables/Profile.md)
@@ -895,6 +937,12 @@ Re-exports [TermKind](../profile/type-aliases/TermKind.md)
 ### TreeNode
 
 Re-exports [TreeNode](../tree-node/interfaces/TreeNode.md)
+
+***
+
+### Trie
+
+Re-exports [Trie](../trie/classes/Trie.md)
 
 ***
 

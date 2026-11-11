@@ -13,6 +13,9 @@ export class BootInstrumentation extends AbstractBaseInstrumentation {
         super('boot');
     }
 
+    /**
+     * Wraps the instrumented methods.
+     */
     enable(): void {
         this._wrap(
             Application.prototype,
@@ -24,6 +27,9 @@ export class BootInstrumentation extends AbstractBaseInstrumentation {
         );
     }
 
+    /**
+     * Restores the original methods.
+     */
     disable(): void {
         this._unwrap(Application.prototype, 'run');
     }

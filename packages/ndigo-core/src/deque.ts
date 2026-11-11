@@ -20,10 +20,16 @@ export class Deque<T> implements ArrayLike<T | undefined>, Iterable<T>, Serializ
         return 'Deque';
     }
 
+    /**
+     * Number of values in the deque.
+     */
     get length(): number {
         return this.#size;
     }
 
+    /**
+     * Allocated slots before the buffer grows.
+     */
     get capacity(): number {
         return this.#capacity;
     }
@@ -49,6 +55,12 @@ export class Deque<T> implements ArrayLike<T | undefined>, Iterable<T>, Serializ
         this.#head = 0;
     }
 
+    /**
+     * Appends a value to the back.
+     *
+     * @param value - The value to append.
+     * @returns This deque, for chaining.
+     */
     push(value: T): this {
         if (this.#size === this.#capacity) this.#grow();
         this.#buffer[(this.#head + this.#size) & this.#mask] = value;
@@ -56,6 +68,12 @@ export class Deque<T> implements ArrayLike<T | undefined>, Iterable<T>, Serializ
         return this;
     }
 
+    /**
+     * Prepends a value to the front.
+     *
+     * @param value - The value to prepend.
+     * @returns This deque, for chaining.
+     */
     unshift(value: T): this {
         if (this.#size === this.#capacity) this.#grow();
         this.#head = (this.#head - 1 + this.#capacity) & this.#mask;
@@ -64,6 +82,11 @@ export class Deque<T> implements ArrayLike<T | undefined>, Iterable<T>, Serializ
         return this;
     }
 
+    /**
+     * Removes and returns the back value.
+     *
+     * @returns The back value, or `undefined` when the deque is empty.
+     */
     pop(): T | undefined {
         if (this.#size === 0) return undefined;
         const idx = (this.#head + this.#size - 1) & this.#mask;
@@ -73,6 +96,11 @@ export class Deque<T> implements ArrayLike<T | undefined>, Iterable<T>, Serializ
         return value;
     }
 
+    /**
+     * Removes and returns the front value.
+     *
+     * @returns The front value, or `undefined` when the deque is empty.
+     */
     shift(): T | undefined {
         if (this.#size === 0) return undefined;
         const value = this.#buffer[this.#head];
@@ -82,14 +110,30 @@ export class Deque<T> implements ArrayLike<T | undefined>, Iterable<T>, Serializ
         return value;
     }
 
+    /**
+     * Returns the front value without removing it.
+     *
+     * @returns The front value, or `undefined` when the deque is empty.
+     */
     peekFront(): T | undefined {
         return this.#size === 0 ? undefined : this.#buffer[this.#head];
     }
 
+    /**
+     * Returns the back value without removing it.
+     *
+     * @returns The back value, or `undefined` when the deque is empty.
+     */
     peekBack(): T | undefined {
         return this.#size === 0 ? undefined : this.#buffer[(this.#head + this.#size - 1) & this.#mask];
     }
 
+    /**
+     * Reads a value by position.
+     *
+     * @param index - Zero-based position from the front.
+     * @returns The value at `index`, or `undefined` when out of range.
+     */
     get(index: number): T | undefined {
         if (index < 0 || index >= this.#size) return undefined;
         return this.#buffer[(this.#head + index) & this.#mask];
@@ -97,6 +141,9 @@ export class Deque<T> implements ArrayLike<T | undefined>, Iterable<T>, Serializ
 
     [n: number]: T | undefined;
 
+    /**
+     * Removes every value, keeping the allocated capacity.
+     */
     clear(): void {
         this.#buffer = new Array(this.#capacity);
         this.#head = 0;
@@ -107,6 +154,7 @@ export class Deque<T> implements ArrayLike<T | undefined>, Iterable<T>, Serializ
      * Removes the first occurrence of `value` (by `===`). O(n). Intended for
      * rare removals (e.g. promoting a cached entry to permanent storage).
      *
+     * @param value - The value to remove.
      * @returns `true` when a value was removed.
      */
     remove(value: T): boolean {
@@ -129,6 +177,11 @@ export class Deque<T> implements ArrayLike<T | undefined>, Iterable<T>, Serializ
         return true;
     }
 
+    /**
+     * Copies the values into a plain array, front to back.
+     *
+     * @returns A new array of the deque's values.
+     */
     toArray(): T[] {
         const out: T[] = [];
         for (let i = 0; i < this.#size; i++) {
@@ -137,20 +190,39 @@ export class Deque<T> implements ArrayLike<T | undefined>, Iterable<T>, Serializ
         return out;
     }
 
+    /**
+     * Yields values front to back.
+     */
     *[Symbol.iterator](): Iterator<T, undefined, undefined> {
         for (let i = 0; i < this.#size; i++) {
             yield this.#buffer[(this.#head + i) & this.#mask] as T;
         }
     }
 
+    /**
+     * Returns the JSON form, front to back.
+     *
+     * @returns A JSON array of the deque's values.
+     */
     toJSON(): JSONArray {
         return this.toArray().map((v) => serialize(v)) as JSONArray;
     }
 
+    /**
+     * Renders the values front to back as a comma-separated string.
+     *
+     * @returns The serialized values.
+     */
     toString(): string {
         return this.toJSON().join(',');
     }
 
+    /**
+     * Compares values position by position.
+     *
+     * @param value - The candidate to compare against.
+     * @returns `true` when both deques hold equal values in the same order.
+     */
     equals(value: unknown): boolean {
         if (!(value instanceof Deque)) return false;
         if (value.length !== this.#size) return false;

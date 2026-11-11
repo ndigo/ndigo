@@ -33,6 +33,7 @@ mt.qualityFactor; // 1
 
 - [`Serializable`](../../serializable/interfaces/Serializable.md)
 - [`StringComparable`](../../comparable/interfaces/StringComparable.md)\<`MediaType`\>
+- [`Equatable`](../../equatable/interfaces/Equatable.md)\<`MediaType`\>
 - [`Matchable`](../../matchable/interfaces/Matchable.md)\<`MediaType`\>
 
 ## Constructors
@@ -369,6 +370,10 @@ The media type to compare.
 `boolean`
 
 `true` when equal.
+
+#### Implementation of
+
+[`Equatable`](../../equatable/interfaces/Equatable.md).[`equals`](../../equatable/interfaces/Equatable.md#equals)
 
 ***
 

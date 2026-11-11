@@ -6,7 +6,7 @@
 
 # context-tokens
 
-A type-safe key used for value registration and retrieval in a `Registry`.
+Type-safe registry keys with compile-time value types.
 
 ## Classes
 

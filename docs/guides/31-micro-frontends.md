@@ -10,7 +10,7 @@ tree, the shared singletons, and the route partitions.
 shape: presentation units hydrated inside a page rather than full application
 contexts. This guide is the host/feature path.
 
-**Audience:** Browser application developers · **Prerequisites:** Guides 02, 05, and 29 · **Reference app:** `apps/06-ndigo-host-demo`, `apps/03-ndigo-todo-web`
+**Audience:** Browser application developers · **Prerequisites:** Guides [02](02-building-a-browser-app.md), [05](05-routing-and-route-conditions.md), and [29](29-signals-and-islands.md) · **Reference app:** `[apps/06-ndigo-host-demo](https://github.com/ndigo/ndigo/tree/main/apps/06-ndigo-host-demo)`, `[apps/03-ndigo-todo-web](https://github.com/ndigo/ndigo/tree/main/apps/03-ndigo-todo-web)`
 
 ## What you'll learn
 
@@ -184,5 +184,5 @@ cross-feature communication — that is the isolation guarantee, not a bug.
 - [Guide 29 — Signals & Islands](29-signals-and-islands.md) — the island shape
 - [Micro Frontends architecture](../architecture/micro-frontends.md) — the full map and design decisions
 - [`@ndigo/host`](../../packages/ndigo-host/README.md) — `HostManager`
-- [apps/06-ndigo-host-demo](../../apps/06-ndigo-host-demo/README.md) — three lazy feature chunks
+- [[apps/06-ndigo-host-demo](https://github.com/ndigo/ndigo/tree/main/apps/06-ndigo-host-demo)](../../[apps/06-ndigo-host-demo](https://github.com/ndigo/ndigo/tree/main/apps/06-ndigo-host-demo)/README.md) — three lazy feature chunks
 - and — host runtime and shared dependencies

@@ -10,7 +10,7 @@ This guide gives the levers and the measurement workflow. It deliberately does
 not publish universal numbers: measure your app, on your hardware, with a
 production build.
 
-**Audience:** Node and browser application developers and operators · **Prerequisites:** Guides 01 and 02 · **Reference app:** `apps/05-ndigo-api`, `apps/19-ndigo-hn`, `apps/17-ndigo-telemetry-lab`
+**Audience:** Node and browser application developers and operators · **Prerequisites:** Guides [01](01-building-a-node-api.md) and [02](02-building-a-browser-app.md) · **Reference app:** `[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)`, `[apps/19-ndigo-hn](https://github.com/ndigo/ndigo/tree/main/apps/19-ndigo-hn)`, `[apps/17-ndigo-telemetry-lab](https://github.com/ndigo/ndigo/tree/main/apps/17-ndigo-telemetry-lab)`
 
 ## What you'll learn
 
@@ -139,7 +139,7 @@ Invalidation is the hard part:
 - **Cluster slots** — `ndigo serve --cluster N` uses the cores; each slot is a
  separate process with its own memory and in-process state (guide 25).
 - **Shared state** — caches, rate-limit counters, locks, jobs, and WebSocket
- fan-out need the shared drivers when slots/nodes must agree (guides 16/21/24/28).
+ fan-out need the shared drivers when slots/nodes must agree (guides [16](16-typed-service-clients-and-sse.md)/[21](21-persistence-and-shared-stores.md)/[24](24-distributed-locks.md)/[28](28-security-hardening.md)).
 - **Connection pools** — one owned pool per process, not per request; borrowed
  clients stay open for the app lifetime and close once.
 - **Node memory** — set a realistic `--max-old-space-size` per slot; measure

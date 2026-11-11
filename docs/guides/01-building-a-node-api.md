@@ -4,11 +4,11 @@ This guide walks through the primary Ndigo server-side workflow end-to-end:
 DI-scaffolded bootstrap, dependency configuration, controllers, request
 binding, validation, the error contract, and graceful shutdown.
 
-The finished shape of every pattern here lives in `apps/05-ndigo-api` — use it as
+The finished shape of every pattern here lives in `[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)` — use it as
 the canonical reference. Concepts link to the relevant decision record where the rationale
 is worth reading.
 
-**Audience:** Node application developers · **Prerequisites:** Workspace bootstrapped (`pnpm install`) and the Node platform packages built (`pnpm --filter @ndigo/platform-node build:lib`) · **Reference app:** `apps/05-ndigo-api` (minimal companion: `apps/02-ndigo-hello-node`)
+**Audience:** Node application developers · **Prerequisites:** Workspace bootstrapped (`pnpm install`) and the Node platform packages built (`pnpm --filter @ndigo/platform-node build:lib`) · **Reference app:** `[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)` (minimal companion: `[apps/02-ndigo-hello-node](https://github.com/ndigo/ndigo/tree/main/apps/02-ndigo-hello-node)`)
 
 ## What you'll learn
 
@@ -271,7 +271,7 @@ dispatch on either platform.
 
 ## 7. Putting it together
 
-`apps/02-ndigo-hello-node/src/index.ts` is the minimal complete app — the
+`[apps/02-ndigo-hello-node](https://github.com/ndigo/ndigo/tree/main/apps/02-ndigo-hello-node)/src/index.ts` is the minimal complete app — the
 snippet below is that file:
 
 ```ts
@@ -324,7 +324,7 @@ the Node listener as the public origin.
  `validatedBody`, and entity-derived schemas.
 - [Guide 10 — Static Files](10-static-files.md): serving a directory over
  HTTP — ETag/Range, precompressed variants, SPA fallback (the reference demo
- is `apps/05-ndigo-api`'s `/static/`).
+ is `[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)`'s `/static/`).
 - Package READMEs: `@ndigo/platform-node`, `@ndigo/dispatcher`, `@ndigo/boot`,
  `@ndigo/orm` for the full symbol surface.
 - Decision records: [Zod validation](../decisions/2026-09-05_AD07_ZOD_VALIDATION.md),

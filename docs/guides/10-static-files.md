@@ -7,7 +7,7 @@ control . One class owns the whole decision flow — `StaticResourceHandler`
 — and two thin entry points mount it: the ready-made `/static/{*file}`
 controller, or a `StaticFileView` on any route you choose.
 
-**Audience:** Node application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) · **Reference app:** `apps/05-ndigo-api`, `apps/12-ndigo-petclinic`
+**Audience:** Node application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) · **Reference app:** `[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)`, `[apps/12-ndigo-petclinic](https://github.com/ndigo/ndigo/tree/main/apps/12-ndigo-petclinic)`
 
 ## What you'll learn
 
@@ -38,7 +38,7 @@ class AppConfiguration {
 }
 ```
 
-`apps/05-ndigo-api` registers exactly this and serves `/static/assets/logo.png`
+`[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)` registers exactly this and serves `/static/assets/logo.png`
 from `./public/assets/logo.png`.
 
 Greedy capture is raw and **undecoded**: nothing percent-decodes request

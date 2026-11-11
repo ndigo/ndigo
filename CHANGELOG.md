@@ -379,6 +379,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   rebuilding it on every `persist`; the returned schema is shared and
   documented as immutable. Same-host bench: insert 15.16 µs → 735 ns (20.6×),
   update 14.64 µs → 441 ns (33.2×) (`BENCHMARKS.md`).
+- `@ndigo/orm`: entity metadata is derived once per class (module-level
+  `WeakMap`) and lifecycle hooks are iterated instead of filtered per entity.
+  The `Symbol.metadata` polyfill read behind each `getEntityMetadata` call
+  dominated scans. Same-host bench: `findAll` 10k rows 1.80 ms → 0.45 ms
+  (−75%), `find` 367 → 119 ns, `persist(new)` 728 → 309 ns, `remove` 747 →
+  304 ns (`BENCHMARKS.md`).
 - `apps/07-ndigo-island`: migrated from Web Awesome to the ndigo-ui registry
   items — the form now uses native `<input>`/`<button>` with copy-in CSS and no
   component-library dependency (AD-95).

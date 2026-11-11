@@ -144,7 +144,7 @@ boundaries.
 ## Companion docs
 
 [Plan](../plans/2026-10-05_TOON_SUPPORT.md),
-[AD-13](../decisions/2026-09-08_AD13_ENVIRONMENT_STANDARD_SOURCES.md)
+[AD-13](archive/2026-09-08_AD13_ENVIRONMENT_STANDARD_SOURCES.md)
 (additively amended: "JSON only" → "JSON default; TOON optional per AD-66"),
 [TOON spec v4.1](https://github.com/toon-format/spec/blob/main/SPEC.md)
 (§2 data model, §9 forms, §14 strict mode, §15 security, §17 IANA, §19 IP).

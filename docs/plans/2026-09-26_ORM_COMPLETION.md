@@ -3,7 +3,7 @@
 **Status:** ✅ **All four waves implemented 2026-09-26** — Wave 1
 (migrations) ratified by [AD-30](../decisions/2026-09-26_AD30_ORM_MIGRATIONS.md);
 Wave 3 (relation fetch) ratified by
-[AD-31](../decisions/2026-09-26_AD31_ORM_RELATION_FETCH.md) (owner-confirmed
+[AD-31](../decisions/archive/2026-09-26_AD31_ORM_RELATION_FETCH.md) (owner-confirmed
 decisions: explicit join-column metadata, explicit opt-in loading). Waves 2
 and 4 landed without ADRs (contract additions only, decided in this plan).
 
@@ -143,7 +143,7 @@ and query-composition** layer on top.
 
 ### Wave 3 — Relation fetch semantics ✅ (implemented 2026-09-26)
 
-Ratified by [AD-31](../decisions/2026-09-26_AD31_ORM_RELATION_FETCH.md);
+Ratified by [AD-31](../decisions/archive/2026-09-26_AD31_ORM_RELATION_FETCH.md);
 owner-confirmed 2026-09-26 (explicit metadata + explicit opt-in).
 
 - `RelationDefinition` gains `joinColumn` (owning side) /

@@ -1,4 +1,4 @@
-# AD-21: WebSocket Session Registry — per-kind sessions, context-owned lifecycle
+# AD-21: WebSocket, STOMP & the `@ndigo/socket` package (consolidated)
 
 **Date:** 2026-09-15
 **Status:** Accepted — decision recorded; implementation sequenced (see
@@ -104,3 +104,7 @@ the feature exists to fix.
 
 **Decision record:** this ADR. **Implementation plan:**
 `docs/plans/2026-09-15_WEBSOCKET_BROADCAST.md`.
+
+## Consolidated decisions
+
+This ADR consolidates AD-21 through AD-23 (WebSocket session registry, client, STOMP). Archived records: [AD-22](archive/2026-09-15_AD22_WEBSOCKET_CLIENT.md), [AD-23](archive/2026-09-16_AD23_STOMP.md).

@@ -562,8 +562,8 @@ Standardized all UPPER_SNAKE_CASE RegExp constants to camelCase with Rule suffix
 [isomorphic client](2026-09-15_WEBSOCKET_CLIENT.md), and
 [STOMP 1.2 protocol layer](2026-09-16_STOMP.md) — ratified by
 [AD-21](../decisions/2026-09-15_AD21_WEBSOCKET_SESSION_REGISTRY.md),
-[AD-22](../decisions/2026-09-15_AD22_WEBSOCKET_CLIENT.md),
-[AD-23](../decisions/2026-09-16_AD23_STOMP.md).
+[AD-22](../decisions/archive/2026-09-15_AD22_WEBSOCKET_CLIENT.md),
+[AD-23](../decisions/archive/2026-09-16_AD23_STOMP.md).
 
 ### Pre-ADR era (records backfilled as AD-44..AD-65)
 
@@ -581,7 +581,7 @@ Standardized all UPPER_SNAKE_CASE RegExp constants to camelCase with Rule suffix
 - [2026-09-04 Package Separation](2026-09-04_PACKAGE_SEPARATION.md) — [AD-64](../decisions/2026-09-04_AD64_PLATFORM_SEPARATION.md)
 - [2026-09-06 View Resolution Strategy](2026-09-06_VIEW_RESOLUTION_STRATEGY.md) — [AD-65](../decisions/2026-09-06_AD65_VIEW_RESOLUTION_STRATEGY.md)
 - [2026-09-06 Telemetry Gaps](2026-09-06_TELEMETRY_GAPS.md) — folded into [AD-32](../decisions/2026-09-26_AD32_TELEMETRY_COMPLETION.md)
-- [2026-09-08 Environment Phases 0–6](2026-09-08_ENVIRONMENT_PHASE0.md) — [P1](2026-09-08_ENVIRONMENT_PHASE1.md) (placeholders, typed lookup, CLI args), [P2](2026-09-08_ENVIRONMENT_PHASE2.md) (config files, `.env`, browser sources, precedence), [P3](2026-09-08_ENVIRONMENT_PHASE3.md) (profile defaults/expressions/activation), [P4](2026-09-08_ENVIRONMENT_PHASE4.md) (typed binding v2), [P5](2026-09-08_ENVIRONMENT_PHASE5.md) (origins, customizers, refresh), [P6](2026-09-08_ENVIRONMENT_PHASE6.md) (zod validation) — [AD-11](../decisions/2026-09-08_AD11_ENVIRONMENT_PROPERTY_SOURCES.md)–[AD-17](../decisions/2026-09-08_AD17_ENVIRONMENT_VALIDATION.md)
+- [2026-09-08 Environment Phases 0–6](2026-09-08_ENVIRONMENT_PHASE0.md) — [P1](2026-09-08_ENVIRONMENT_PHASE1.md) (placeholders, typed lookup, CLI args), [P2](2026-09-08_ENVIRONMENT_PHASE2.md) (config files, `.env`, browser sources, precedence), [P3](2026-09-08_ENVIRONMENT_PHASE3.md) (profile defaults/expressions/activation), [P4](2026-09-08_ENVIRONMENT_PHASE4.md) (typed binding v2), [P5](2026-09-08_ENVIRONMENT_PHASE5.md) (origins, customizers, refresh), [P6](2026-09-08_ENVIRONMENT_PHASE6.md) (zod validation) — [AD-11](../decisions/2026-09-08_AD11_ENVIRONMENT_PROPERTY_SOURCES.md)–[AD-17](../decisions/archive/2026-09-08_AD17_ENVIRONMENT_VALIDATION.md)
 
 ## Completed Reviews
 

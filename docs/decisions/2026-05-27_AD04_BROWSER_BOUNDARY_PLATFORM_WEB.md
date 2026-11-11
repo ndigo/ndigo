@@ -53,7 +53,7 @@ enforcement.
   (origin: `@ndigo/eslint-plugin`, commit `e043ece3`)
 - Browser surface: `packages/ndigo-platform-web/src/browser-router.ts`,
   `hash-router.ts`, `online-reconnect-trigger.ts`
-- Cross-reference: [AD-22](2026-09-15_AD22_WEBSOCKET_CLIENT.md) (isomorphic
+- Cross-reference: [AD-22](archive/2026-09-15_AD22_WEBSOCKET_CLIENT.md) (isomorphic
   socket client placed by this boundary)
 
 ## Revisit Trigger

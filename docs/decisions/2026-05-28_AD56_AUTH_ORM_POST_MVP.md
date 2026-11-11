@@ -82,7 +82,7 @@ refresh/revocation — building on the `AuthAdapter` seam and `AuthRegistry`
 that the split produced. The `@authenticated`/`@authorized` guard contract
 survives (`ndigo-auth-core` `_decorators.ts`); the ORM post-MVP surface was
 carried by AD-55's successors ([AD-30](2026-09-26_AD30_ORM_MIGRATIONS.md) /
-[AD-31](2026-09-26_AD31_ORM_RELATION_FETCH.md)).
+[AD-31](archive/2026-09-26_AD31_ORM_RELATION_FETCH.md)).
 
 ## Consequences
 
@@ -108,7 +108,7 @@ carried by AD-55's successors ([AD-30](2026-09-26_AD30_ORM_MIGRATIONS.md) /
   `ndigo-auth-client/src/`
 - Related: [AD-33](2026-09-26_AD33_AUTH_CREDENTIALS_AND_SESSIONS.md),
   [AD-30](2026-09-26_AD30_ORM_MIGRATIONS.md),
-  [AD-31](2026-09-26_AD31_ORM_RELATION_FETCH.md)
+  [AD-31](archive/2026-09-26_AD31_ORM_RELATION_FETCH.md)
 
 ## Revisit Trigger
 

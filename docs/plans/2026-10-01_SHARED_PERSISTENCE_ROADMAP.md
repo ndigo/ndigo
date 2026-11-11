@@ -2,7 +2,7 @@
 
 **Status:** Complete (2026-10-03) — Phases 0–3 implemented, Phase 4 decision recorded, Phase 5 review closed. See [AD-40](../decisions/2026-10-01_AD40_PERSISTENCE_BASELINE.md) and [AD-41](../decisions/2026-10-03_AD41_DISTRIBUTED_SCHEDULING_DEFERRED.md).
 **Scope:** Close the deferred persistent/distributed backend seams across sessions, STOMP message storage, caching, WebSocket cross-node fan-out, and scheduled jobs. Deliver in dependency order, validating each contract against the real consumer before extracting common infrastructure.
-**Related:** [Framework Gap Analysis](../audits/2026-09-13_FRAMEWORK_GAP_ANALYSIS.md), [Caching](2026-09-17_CACHING.md), [Auth Completion](2026-09-26_AUTH_COMPLETION.md), [WebSocket Broadcast](2026-09-15_WEBSOCKET_BROADCAST.md), [AD-20 Scheduling](../decisions/2026-09-13_AD20_SCHEDULING.md), [AD-22 WebSocket Client](../decisions/2026-09-15_AD22_WEBSOCKET_CLIENT.md).
+**Related:** [Framework Gap Analysis](../audits/2026-09-13_FRAMEWORK_GAP_ANALYSIS.md), [Caching](2026-09-17_CACHING.md), [Auth Completion](2026-09-26_AUTH_COMPLETION.md), [WebSocket Broadcast](2026-09-15_WEBSOCKET_BROADCAST.md), [AD-20 Scheduling](../decisions/2026-09-13_AD20_SCHEDULING.md), [AD-22 WebSocket Client](../decisions/archive/2026-09-15_AD22_WEBSOCKET_CLIENT.md).
 
 ---
 

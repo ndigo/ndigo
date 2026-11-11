@@ -1,4 +1,4 @@
-# AD-96: Agent and LLM integration — two audiences, one derived surface
+# AD-96: Agent and LLM integration — two audiences, one derived surface (consolidated)
 
 **Date:** 2026-11-10
 **Status:** Accepted — umbrella record for AD-97..AD-101.
@@ -110,3 +110,7 @@ AD-98 (agent content), AD-99 (MCP host), AD-100 (`@ndigo/mcp`), and AD-101
 - AD-70 — introspection first
 - AD-75 — the CLI as a thin front
 - AD-95 — ndigo-ui registry and the per-application allowlist
+
+## Consolidated decisions
+
+This ADR consolidates AD-96 through AD-101 (agent/LLM integration). Archived records: [AD-97](archive/2026-11-10_AD97_CLI_JSON_CONTRACT.md), [AD-98](archive/2026-11-10_AD98_AGENT_CONTENT_GENERATION.md), [AD-99](archive/2026-11-10_AD99_MCP_HOST_EXTRACTION.md), [AD-100](archive/2026-11-10_AD100_MCP_TOOL_PROJECTION.md), [AD-101](archive/2026-11-10_AD101_A2UI_ADOPTION.md).

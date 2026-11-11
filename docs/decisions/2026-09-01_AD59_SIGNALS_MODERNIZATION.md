@@ -69,7 +69,7 @@ hierarchy patterns.
   `packages/ndigo-signals/src/decorators/index.ts`, commit `d7f93e84` (2026-09-01)
 - Related: [AD-09](2026-09-05_AD09_SERVER_PUSH.md),
   [AD-19](2026-09-13_AD19_CONTENT_I18N.md),
-  [AD-22](2026-09-15_AD22_WEBSOCKET_CLIENT.md)
+  [AD-22](archive/2026-09-15_AD22_WEBSOCKET_CLIENT.md)
 
 ## Revisit Trigger
 

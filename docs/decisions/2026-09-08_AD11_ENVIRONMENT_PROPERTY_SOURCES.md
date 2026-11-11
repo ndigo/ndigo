@@ -1,4 +1,4 @@
-# AD-11: Environment property sources — named, ordered, JS-native (Phase 0)
+# AD-11: Environment & configuration (Phases 0–6 consolidated)
 
 **Date:** 2026-09-08
 **Status:** Accepted — decisions D1–D8 + Q1–Q7 closed; implementation tracked in `docs/plans/2026-09-08_ENVIRONMENT_PHASE0.md`
@@ -138,3 +138,7 @@ evidence appears (flip the browser default per D6's rule — a package-constant
 change, not an API change); (c) a user requirement needs browser allow-list
 prefix exposure (P2 `exposePrefix` — revisit radix); or (d) Phase 5 origin
 tracking finds the retained per-key winner insufficient.
+
+## Consolidated decisions
+
+This ADR consolidates AD-11 through AD-17 (environment phases 0–6). Archived records: [AD-12](archive/2026-09-08_AD12_ENVIRONMENT_RESOLUTION_SEMANTICS.md), [AD-13](archive/2026-09-08_AD13_ENVIRONMENT_STANDARD_SOURCES.md), [AD-14](archive/2026-09-08_AD14_ENVIRONMENT_PROFILES.md), [AD-15](archive/2026-09-08_AD15_CONFIGURATION_PROPERTIES.md), [AD-16](archive/2026-09-08_AD16_ENVIRONMENT_OBSERVABILITY.md), [AD-17](archive/2026-09-08_AD17_ENVIRONMENT_VALIDATION.md).

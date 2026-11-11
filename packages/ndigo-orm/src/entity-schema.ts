@@ -44,7 +44,23 @@ export function schemaForColumn(column: ColumnDefinition): z.ZodType {
 }
 
 /**
+ * Derived full-entity schemas, one per entity class. Metadata is fixed at
+ * decoration time and Zod schemas are immutable, so the cached instance can be
+ * shared across every call and request.
+ */
+const entitySchemaCache = new WeakMap<Constructable, z.ZodObject<Record<string, z.ZodType>>>();
+
+/**
+ * Derived insert schemas, one per entity class (a distinct shape from the full
+ * entity schema).
+ */
+const insertSchemaCache = new WeakMap<Constructable, z.ZodObject<Record<string, z.ZodType>>>();
+
+/**
  * Derives a Zod object schema for an entity class from its `@column` metadata.
+ *
+ * The schema is cached per entity class and shared across calls: treat the
+ * returned instance as immutable.
  *
  * @param entityClass - The entity constructor (must be decorated with `@entity`).
  * @returns A Zod object schema keyed by field name.
@@ -52,12 +68,18 @@ export function schemaForColumn(column: ColumnDefinition): z.ZodType {
 export function schemaForEntity<T extends object>(
     entityClass: Constructable<T>
 ): z.ZodObject<Record<string, z.ZodType>> {
+    const cached = entitySchemaCache.get(entityClass);
+    if (cached) {
+        return cached;
+    }
     const metadata = getEntityMetadata(entityClass);
     const shape: Record<string, z.ZodType> = {};
     for (const column of metadata.columns) {
         shape[column.fieldName] = schemaForColumn(column);
     }
-    return z.object(shape);
+    const schema = z.object(shape);
+    entitySchemaCache.set(entityClass, schema);
+    return schema;
 }
 
 /**
@@ -74,12 +96,19 @@ export function schemaForEntity<T extends object>(
  * create(note: z.infer<ReturnType<typeof insertSchemaForEntity<Note>>>) { … }
  * ```
  *
+ * The schema is cached per entity class and shared across calls: treat the
+ * returned instance as immutable.
+ *
  * @param entityClass - The entity constructor (must be decorated with `@entity`).
  * @returns A Zod object schema over the writable columns.
  */
 export function insertSchemaForEntity<T extends object>(
     entityClass: Constructable<T>
 ): z.ZodObject<Record<string, z.ZodType>> {
+    const cached = insertSchemaCache.get(entityClass);
+    if (cached) {
+        return cached;
+    }
     const metadata = getEntityMetadata(entityClass);
     const shape: Record<string, z.ZodType> = {};
     for (const column of metadata.columns) {
@@ -97,7 +126,9 @@ export function insertSchemaForEntity<T extends object>(
         }
         shape[column.fieldName] = schema;
     }
-    return z.object(shape);
+    const insertSchema = z.object(shape);
+    insertSchemaCache.set(entityClass, insertSchema);
+    return insertSchema;
 }
 
 /**

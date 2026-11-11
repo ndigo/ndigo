@@ -5,6 +5,9 @@ import { SpanKind } from '@opentelemetry/api';
 import { Application } from '@ndigo/boot';
 import { AbstractBaseInstrumentation } from '@ndigo/telemetry';
 
+/**
+ * OpenTelemetry instrumentation for `BootInstrumentation`.
+ */
 export class BootInstrumentation extends AbstractBaseInstrumentation {
     constructor() {
         super('boot');

@@ -5,6 +5,9 @@ import { SpanKind } from '@opentelemetry/api';
 import { HostManager } from '@ndigo/host';
 import { AbstractBaseInstrumentation } from '../base';
 
+/**
+ * OpenTelemetry instrumentation for `HostInstrumentation`.
+ */
 export class HostInstrumentation extends AbstractBaseInstrumentation {
     constructor() {
         super('host');

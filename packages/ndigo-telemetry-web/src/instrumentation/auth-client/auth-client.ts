@@ -5,6 +5,9 @@ import { SpanKind } from '@opentelemetry/api';
 import { AuthClient, OIDCAdapter } from '@ndigo/auth-client';
 import { AbstractBaseInstrumentation } from '@ndigo/telemetry';
 
+/**
+ * OpenTelemetry instrumentation for `AuthClientInstrumentation`.
+ */
 export class AuthClientInstrumentation extends AbstractBaseInstrumentation {
     constructor() {
         super('auth-client');

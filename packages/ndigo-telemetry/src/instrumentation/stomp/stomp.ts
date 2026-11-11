@@ -5,6 +5,9 @@ import { SpanKind } from '@opentelemetry/api';
 import { StompBroker, StompClient } from '@ndigo/socket';
 import { AbstractBaseInstrumentation } from '../base';
 
+/**
+ * OpenTelemetry instrumentation for `StompInstrumentation`.
+ */
 export class StompInstrumentation extends AbstractBaseInstrumentation {
     constructor() {
         super('stomp');

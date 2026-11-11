@@ -5,6 +5,9 @@ import { SpanKind } from '@opentelemetry/api';
 import { DrizzleDataSource, DrizzleEntityManager, DrizzleRepository, DrizzleTransactionManager } from '@ndigo/orm-drizzle';
 import { AbstractBaseInstrumentation } from '@ndigo/telemetry';
 
+/**
+ * OpenTelemetry instrumentation for `DrizzleInstrumentation`.
+ */
 export class DrizzleInstrumentation extends AbstractBaseInstrumentation {
     constructor() {
         super('drizzle');

@@ -5,6 +5,9 @@ import { SpanKind } from '@opentelemetry/api';
 import { FixedWindowRateLimiter } from '@ndigo/rate-limit';
 import { AbstractBaseInstrumentation } from '../base';
 
+/**
+ * OpenTelemetry instrumentation for `RateLimitInstrumentation`.
+ */
 export class RateLimitInstrumentation extends AbstractBaseInstrumentation {
     constructor() {
         super('rate-limit');

@@ -15,6 +15,12 @@ Browser telemetry configuration and web instrumentations.
 
 ## References
 
+### AuthClientInstrumentation
+
+Re-exports [AuthClientInstrumentation](../instrumentation/auth-client/auth-client/classes/AuthClientInstrumentation.md)
+
+***
+
 ### BrowserTelemetryConfig
 
 Re-exports [BrowserTelemetryConfig](../browser-config/interfaces/BrowserTelemetryConfig.md)

@@ -5,6 +5,9 @@ import { SpanKind } from '@opentelemetry/api';
 import { AuthRouteGuard, CredentialsAuthAdapter, JWTAdapter } from '@ndigo/auth-server';
 import { AbstractBaseInstrumentation } from '@ndigo/telemetry';
 
+/**
+ * OpenTelemetry instrumentation for `AuthServerInstrumentation`.
+ */
 export class AuthServerInstrumentation extends AbstractBaseInstrumentation {
     constructor() {
         super('auth-server');

@@ -5,6 +5,9 @@ import { SpanKind } from '@opentelemetry/api';
 import { InProcessLockDriver } from '@ndigo/locks';
 import { AbstractBaseInstrumentation } from '../base';
 
+/**
+ * OpenTelemetry instrumentation for `LockInstrumentation`.
+ */
 export class LockInstrumentation extends AbstractBaseInstrumentation {
     constructor() {
         super('locks');

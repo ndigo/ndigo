@@ -10,6 +10,9 @@ import { RedisRateLimiter } from '@ndigo/redis/rate-limit';
 import { RedisSocketFanout } from '@ndigo/redis/pubsub';
 import { AbstractBaseInstrumentation } from '@ndigo/telemetry';
 
+/**
+ * OpenTelemetry instrumentation for `RedisInstrumentation`.
+ */
 export class RedisInstrumentation extends AbstractBaseInstrumentation {
     constructor() {
         super('redis');

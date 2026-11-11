@@ -5,6 +5,9 @@ import { SpanKind } from '@opentelemetry/api';
 import { MemoryCache } from '@ndigo/cache';
 import { AbstractBaseInstrumentation } from '../base';
 
+/**
+ * OpenTelemetry instrumentation for `CacheInstrumentation`.
+ */
 export class CacheInstrumentation extends AbstractBaseInstrumentation {
     constructor() {
         super('cache');

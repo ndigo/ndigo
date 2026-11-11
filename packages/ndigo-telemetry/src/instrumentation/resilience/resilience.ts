@@ -5,6 +5,9 @@ import { SpanKind } from '@opentelemetry/api';
 import { CircuitBreakerInterceptor, RetryInterceptor } from '@ndigo/resilience';
 import { AbstractBaseInstrumentation } from '../base';
 
+/**
+ * OpenTelemetry instrumentation for `ResilienceInstrumentation`.
+ */
 export class ResilienceInstrumentation extends AbstractBaseInstrumentation {
     constructor() {
         super('resilience');

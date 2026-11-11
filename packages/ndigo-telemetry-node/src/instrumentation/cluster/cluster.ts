@@ -5,6 +5,9 @@ import { SpanKind } from '@opentelemetry/api';
 import { ClusterRunner } from '@ndigo/cluster';
 import { AbstractBaseInstrumentation } from '@ndigo/telemetry';
 
+/**
+ * OpenTelemetry instrumentation for `ClusterInstrumentation`.
+ */
 export class ClusterInstrumentation extends AbstractBaseInstrumentation {
     constructor() {
         super('cluster');

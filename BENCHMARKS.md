@@ -264,6 +264,25 @@ inconclusive at 5.78%. The throwing-reader path costs ~14× the normal
 evaluate path — the no-throw contract is not free. No comparator is
 published for either package (no upstream baseline in the estate).
 
+### View serializing views (Phase 4)
+
+`@ndigo/view` whole-document (`renderTo`) mode for JSONView and CSVView.
+Artifact `2026-11-11T02-57-50-b171f4607c0c.json` (commit `b171f460`).
+`renderTo` is async, so rows include one promise per render.
+
+| Scenario                              |    ns/op |   RME |
+| :------------------------------------ | -------: | ----: |
+| JSON.stringify (same work)            |   243.01 | 0.21% |
+| JSONView.renderTo                     |   277.48 | 0.41% |
+| CSVView.renderTo (1 row)              |   295.87 | 0.17% |
+| CSVView.renderTo (20 rows)            | 2,853.88 | 0.34% |
+| template floor (20 rows, no escaping) |   447.65 | 0.29% |
+
+Notes: the JSON view costs ~14% over `JSON.stringify` — the async wrapper
+and `RenderResult` construction, an attributable view-layer overhead. CSV
+cost scales ~linearly with rows and is ~6.4× the no-escaping floor on this
+no-special-characters fixture; escaping is the cost.
+
 ### Resilience woven interceptors (Phase 4)
 
 `@ndigo/resilience` retry and circuit-breaker interceptors, applied through

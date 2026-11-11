@@ -13,6 +13,9 @@ export class AuthClientInstrumentation extends AbstractBaseInstrumentation {
         super('auth-client');
     }
 
+    /**
+     * Wraps the instrumented methods.
+     */
     enable(): void {
         this._wrap(
             OIDCAdapter.prototype,
@@ -59,6 +62,9 @@ export class AuthClientInstrumentation extends AbstractBaseInstrumentation {
         this._wrap(AuthClient.prototype, 'logout', this._patch({ name: 'AuthClient.logout', kind: SpanKind.INTERNAL }));
     }
 
+    /**
+     * Restores the original methods.
+     */
     disable(): void {
         this._unwrap(OIDCAdapter.prototype, 'createAuthorizationRequest');
         this._unwrap(OIDCAdapter.prototype, 'exchangeCodeForTokens');

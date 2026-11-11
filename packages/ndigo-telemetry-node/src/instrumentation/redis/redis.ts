@@ -18,6 +18,9 @@ export class RedisInstrumentation extends AbstractBaseInstrumentation {
         super('redis');
     }
 
+    /**
+     * Wraps the instrumented methods.
+     */
     enable(): void {
         this._wrap(RedisCache.prototype, 'get', this._patch({ name: 'RedisCache.get', kind: SpanKind.CLIENT }));
         this._wrap(RedisCache.prototype, 'set', this._patch({ name: 'RedisCache.set', kind: SpanKind.CLIENT }));
@@ -95,6 +98,9 @@ export class RedisInstrumentation extends AbstractBaseInstrumentation {
         );
     }
 
+    /**
+     * Restores the original methods.
+     */
     disable(): void {
         this._unwrap(RedisCache.prototype, 'get');
         this._unwrap(RedisCache.prototype, 'set');

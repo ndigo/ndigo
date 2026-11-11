@@ -13,6 +13,9 @@ export class AuthServerInstrumentation extends AbstractBaseInstrumentation {
         super('auth-server');
     }
 
+    /**
+     * Wraps the instrumented methods.
+     */
     enable(): void {
         this._wrap(
             JWTAdapter.prototype,
@@ -72,6 +75,9 @@ export class AuthServerInstrumentation extends AbstractBaseInstrumentation {
         );
     }
 
+    /**
+     * Restores the original methods.
+     */
     disable(): void {
         this._unwrap(JWTAdapter.prototype, 'validate');
         this._unwrap(JWTAdapter.prototype, 'issueTokens');

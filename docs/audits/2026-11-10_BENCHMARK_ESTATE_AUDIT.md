@@ -478,6 +478,6 @@ snapshot in §3 remains the **before** record; the current serial baseline is
 | D14 poor RME accepted           | Runner rejects comparisons above 2% RME; long-running scenarios use explicit time/warmup options.                                                     |
 | D15 comparator provenance       | `lru-cache`, `qs`, and `cookie` are pinned devDependencies; router versions were already pinned in the dispatcher manifest.                           |
 
-**Still open:** end-to-end HTTP macro benchmarks, body/validation binding
-coverage, startup/RSS, the real-browser DOM runner, Phase 4 component coverage,
-and the nightly non-gating CI job.
+**Still open:** a keep-alive/production-build variant of the macro HTTP lane,
+body/validation binding coverage, startup/RSS, the real-browser DOM runner,
+Phase 4 component coverage, and the nightly non-gating CI job.

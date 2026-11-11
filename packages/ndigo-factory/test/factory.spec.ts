@@ -115,6 +115,17 @@ describe('DefaultFactory', () => {
         expect(f.getInstance('missing')).toBeUndefined();
     });
 
+    test('it should treat a registered undefined instance as present', () => {
+        const f = defined(factory);
+
+        f.setValue('undefinedValue', undefined);
+
+        expect(f.hasInstance('undefinedValue')).toBe(true);
+        expect(f.hasValue('undefinedValue')).toBe(true);
+        expect(f.getValue('undefinedValue')).toBeUndefined();
+        expect(f.getValue('missing')).toBeUndefined();
+    });
+
     test('it should respect singleton scope metadata in getValue', () => {
         const f = defined(factory);
 

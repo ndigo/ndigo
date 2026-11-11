@@ -103,6 +103,32 @@ export class Deque<T> implements ArrayLike<T | undefined>, Iterable<T>, Serializ
         this.#size = 0;
     }
 
+    /**
+     * Removes the first occurrence of `value` (by `===`). O(n). Intended for
+     * rare removals (e.g. promoting a cached entry to permanent storage).
+     *
+     * @returns `true` when a value was removed.
+     */
+    remove(value: T): boolean {
+        let index = -1;
+        for (let i = 0; i < this.#size; i++) {
+            if (this.get(i) === value) {
+                index = i;
+                break;
+            }
+        }
+        if (index === -1) {
+            return false;
+        }
+        const items = this.toArray();
+        items.splice(index, 1);
+        this.clear();
+        for (const item of items) {
+            this.push(item);
+        }
+        return true;
+    }
+
     toArray(): T[] {
         const out: T[] = [];
         for (let i = 0; i < this.#size; i++) {

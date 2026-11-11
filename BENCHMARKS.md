@@ -236,6 +236,25 @@ Cold start (`pnpm bench:start`, 3 runs, median; artifact
 The Ndigo number includes `tsx` source loading, not a bundled production
 build; it is an upper bound on startup cost, not a shipped-artifact claim.
 
+### Signals event bridges (Phase 4)
+
+`@ndigo/signals` re-exports the `@preact/signals-core` engine, so these rows
+measure only the shipped bridge wrappers. Artifact
+`2026-11-11T02-13-13-efa2f92b06e5.json` (commit `efa2f92b0`).
+
+| Scenario                  |                                                         Metric |
+| :------------------------ | -------------------------------------------------------------: |
+| `eventsToSignal` delivery |                                4.19 ns/event (238.4M events/s) |
+| `signalToEvents` delivery | 42.1 ns/change (23.7M changes/s; **RME 10.2% — inconclusive**) |
+
+**Blocked row:** decorated `@signal`/`@effect` class fields are not measurable
+in the bench lane — `scripts/vite-plugin-lower-decorators.mjs` (esbuild, ES2022)
+does not deliver the TC39 `ClassFieldDecoratorContext` to `@signal`, so
+`context` is `undefined` at decoration time. Class/method decorators (context,
+ORM benches) lower fine; the field-decorator transform path is the open Phase 4
+item. No engine claim is made or supportable: raw and wrapped rows run on the
+same engine.
+
 ## What this does not prove
 
 - **Micro ≠ macro.** A dispatcher lookup benchmark does not predict HTTP

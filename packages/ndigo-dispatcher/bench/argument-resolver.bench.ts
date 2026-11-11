@@ -1,43 +1,28 @@
 /**
+ * Argument resolution throughput.
  *
- * Benchmark suite for argument resolution throughput.
- *
- * Two layers are measured separately:
- *
- *   1. Resolver lookup — `argumentResolvers.find()` (current) vs `Map.get()` (potential
- *      optimisation) for a single parameter.  This isolates the selector overhead from the
- *      actual data-extraction work.
- *
- *   2. Full `RouteHandlerMethod.invoke()` — end-to-end cost including the `getRouteMapping`
- *      call, `new Array(n)` allocation, and the handler dispatch, across three handler shapes:
- *        a. 0 params  – baseline invocation cost with no argument resolution
- *        b. 1 path param  – PATH is index 0 in the default resolver list (best-case find)
- *        c. 1 query param – QUERY is index 2 in the default resolver list (slower find)
- *        d. 3 mixed params – path + query + attribute (worst-case find, 3 × scan)
- *
- * Key things to watch for:
- *   - Gap between find() and Map.get() reveals how much the linear resolver scan costs.
- *   - Gap between 0-param and N-param invoke() is the pure argument-resolution overhead.
- *   - Any unexpectedly large gap between b and c points to resolver-ordering issues.
+ * Two layers: selector lookup (`Array.find` vs a hypothetical type-keyed Map)
+ * and full `RouteHandlerMethod.invoke`. The Map rows bound the selector
+ * overhead; they are not a drop-in replacement because the resolver contract is
+ * a predicate, not a type key. Extracted values are verified before timing.
  */
-
 import { test } from 'vitest';
-import { type Route } from '@ndigo/router';
+import type { Route } from '../../ndigo-router/src';
 import '@tsmetadata/polyfill';
 import { routeMapping } from '../src/route-mapping';
 import { RouteHandlerMethod } from '../src/route-handler-method';
 import {
+    AttributeValueMethodArgumentResolver,
+    HandlerMethodArgumentResolver,
+    MatrixValueMethodArgumentResolver,
     PathValueMethodArgumentResolver,
     QueryValueMethodArgumentResolver,
-    AttributeValueMethodArgumentResolver,
-    MatrixValueMethodArgumentResolver,
-    HandlerMethodArgumentResolver,
 } from '../src/argument-resolver';
 import { MethodParameter, MethodParameterType } from '../src/parameters';
+import { assertEquivalent, benchName, sink } from '../../../benchmarks/lib/verify';
 
-/* ------------------------------------------------------------------ */
-/*  Handler under test                                                  */
-/* ------------------------------------------------------------------ */
+const BATCH = 1_000;
+const retain = sink;
 
 @routeMapping()
 class BenchController {
@@ -47,28 +32,28 @@ class BenchController {
     }
 
     @routeMapping('/users/:id')
-    withPathParam() {
-        return 'ok';
+    withPathParam(id?: string) {
+        return id;
     }
 
     @routeMapping('/search')
-    withQueryParam() {
-        return 'ok';
+    withQueryParam(name?: string) {
+        return name;
     }
 
     @routeMapping('/api/:id/data')
-    withMixedParams() {
-        return 'ok';
+    withMixedParams(id?: string, name?: string, token?: string) {
+        return `${id}|${name}|${token}`;
+    }
+
+    @routeMapping('/many')
+    withManyParams(...values: (string | undefined)[]) {
+        return values.join('|');
     }
 }
 
-/* ------------------------------------------------------------------ */
-/*  Shared fixtures                                                     */
-/* ------------------------------------------------------------------ */
-
 const controller = new BenchController();
 
-// Default resolver list – same order as MetadataHandlerAdapter.defaultArgumentResolvers
 const defaultResolvers: HandlerMethodArgumentResolver[] = [
     new PathValueMethodArgumentResolver(),
     new MatrixValueMethodArgumentResolver(),
@@ -76,7 +61,6 @@ const defaultResolvers: HandlerMethodArgumentResolver[] = [
     new AttributeValueMethodArgumentResolver(),
 ];
 
-// Pre-indexed Map – potential optimisation: O(1) lookup by type
 const resolverMap = new Map<MethodParameterType, HandlerMethodArgumentResolver>([
     [MethodParameterType.PATH, new PathValueMethodArgumentResolver()],
     [MethodParameterType.MATRIX, new MatrixValueMethodArgumentResolver()],
@@ -84,12 +68,14 @@ const resolverMap = new Map<MethodParameterType, HandlerMethodArgumentResolver>(
     [MethodParameterType.ATTRIBUTE, new AttributeValueMethodArgumentResolver()],
 ]);
 
-// Pre-built MethodParameter instances
 const pathParam = new MethodParameter(MethodParameterType.PATH, 'id');
 const queryParam = new MethodParameter(MethodParameterType.QUERY, 'name');
 const attrParam = new MethodParameter(MethodParameterType.ATTRIBUTE, 'token');
+const manyParams = Array.from(
+    { length: 10 },
+    (_, index) => new MethodParameter(MethodParameterType.QUERY, `q${index}`)
+);
 
-// Route fixtures
 const routeWithPath = { path: '/users/42', params: { id: '42' }, data: {}, attributes: {} } as unknown as Route;
 const routeWithQuery = { path: '/search', params: null, data: { name: 'Alice' }, attributes: {} } as unknown as Route;
 const routeWithAll = {
@@ -98,8 +84,13 @@ const routeWithAll = {
     data: { name: 'Alice' },
     attributes: { token: 'xyz' },
 } as unknown as Route;
+const routeWithMany = {
+    path: '/many',
+    params: null,
+    data: Object.fromEntries(manyParams.map((parameter, index) => [parameter.name, `v${index}`])),
+    attributes: {},
+} as unknown as Route;
 
-// RouteHandlerMethod instances
 const noParamMethod = new RouteHandlerMethod(controller, 'noParams');
 noParamMethod.parameters = [];
 noParamMethod.argumentResolvers = defaultResolvers;
@@ -116,94 +107,85 @@ const mixedParamMethod = new RouteHandlerMethod(controller, 'withMixedParams');
 mixedParamMethod.parameters = [pathParam, queryParam, attrParam];
 mixedParamMethod.argumentResolvers = defaultResolvers;
 
-let _sink: unknown = 0;
+const manyParamMethod = new RouteHandlerMethod(controller, 'withManyParams');
+manyParamMethod.parameters = manyParams;
+manyParamMethod.argumentResolvers = defaultResolvers;
 
-/* ------------------------------------------------------------------ */
-/*  1. Resolver lookup in isolation                                     */
-/* ------------------------------------------------------------------ */
+function resolverName(resolver: HandlerMethodArgumentResolver | undefined): string | null {
+    return resolver ? resolver.constructor.name : null;
+}
 
-test('resolver lookup – path param (find vs Map)', async ({ bench }) => {
+test('resolver lookup — path param', async ({ bench }) => {
+    assertEquivalent(
+        'path resolver selector',
+        resolverName(defaultResolvers.find((resolver) => resolver.supportsParameter(pathParam))),
+        resolverName(resolverMap.get(pathParam.type))
+    );
     await bench.compare(
-        bench('Array.find()', () => {
-            let accumulator = 0;
-            for (let i = 0; i < 1000; i++) {
-                const r = defaultResolvers.find((resolver) => resolver.supportsParameter(pathParam));
-                accumulator += r ? 1 : 0;
+        bench(benchName('Array.find + supportsParameter', BATCH), () => {
+            for (let i = 0; i < BATCH; i++) {
+                retain(defaultResolvers.find((resolver) => resolver.supportsParameter(pathParam)));
             }
-            _sink = accumulator;
         }),
-        bench('Map.get()', () => {
-            let accumulator = 0;
-            for (let i = 0; i < 1000; i++) {
-                const r = resolverMap.get(pathParam.type);
-                accumulator += r ? 1 : 0;
-            }
-            _sink = accumulator;
+        bench(benchName('Map.get(type) — hypothetical', BATCH), () => {
+            for (let i = 0; i < BATCH; i++) retain(resolverMap.get(pathParam.type));
         })
     );
 });
 
-test('resolver lookup – query param (find vs Map)', async ({ bench }) => {
+test('resolver lookup — query param', async ({ bench }) => {
+    assertEquivalent(
+        'query resolver selector',
+        resolverName(defaultResolvers.find((resolver) => resolver.supportsParameter(queryParam))),
+        resolverName(resolverMap.get(queryParam.type))
+    );
     await bench.compare(
-        bench('Array.find()', () => {
-            let accumulator = 0;
-            for (let i = 0; i < 1000; i++) {
-                const r = defaultResolvers.find((resolver) => resolver.supportsParameter(queryParam));
-                accumulator += r ? 1 : 0;
+        bench(benchName('Array.find + supportsParameter', BATCH), () => {
+            for (let i = 0; i < BATCH; i++) {
+                retain(defaultResolvers.find((resolver) => resolver.supportsParameter(queryParam)));
             }
-            _sink = accumulator;
         }),
-        bench('Map.get()', () => {
-            let accumulator = 0;
-            for (let i = 0; i < 1000; i++) {
-                const r = resolverMap.get(queryParam.type);
-                accumulator += r ? 1 : 0;
-            }
-            _sink = accumulator;
+        bench(benchName('Map.get(type) — hypothetical', BATCH), () => {
+            for (let i = 0; i < BATCH; i++) retain(resolverMap.get(queryParam.type));
         })
     );
 });
 
-/* ------------------------------------------------------------------ */
-/*  2. Full RouteHandlerMethod.invoke()                                 */
-/* ------------------------------------------------------------------ */
-
-test('invoke() – 0 params (baseline)', async ({ bench }) => {
-    await bench('invoke', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += noParamMethod.invoke(routeWithPath) ? 1 : 0;
-        }
-        _sink = accumulator;
+test('invoke — zero parameters', async ({ bench }) => {
+    assertEquivalent('invoke zero params', noParamMethod.invoke(routeWithPath), 'ok');
+    await bench(benchName('invoke()', BATCH), () => {
+        for (let i = 0; i < BATCH; i++) retain(noParamMethod.invoke(routeWithPath));
     }).run();
 });
 
-test('invoke() – 1 path param (find index 0)', async ({ bench }) => {
-    await bench('invoke', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += pathParamMethod.invoke(routeWithPath) ? 1 : 0;
-        }
-        _sink = accumulator;
+test('invoke — one path parameter', async ({ bench }) => {
+    assertEquivalent('invoke path param', pathParamMethod.invoke(routeWithPath), '42');
+    await bench(benchName('invoke()', BATCH), () => {
+        for (let i = 0; i < BATCH; i++) retain(pathParamMethod.invoke(routeWithPath));
     }).run();
 });
 
-test('invoke() – 1 query param (find index 2)', async ({ bench }) => {
-    await bench('invoke', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += queryParamMethod.invoke(routeWithQuery) ? 1 : 0;
-        }
-        _sink = accumulator;
+test('invoke — one query parameter', async ({ bench }) => {
+    assertEquivalent('invoke query param', queryParamMethod.invoke(routeWithQuery), 'Alice');
+    await bench(benchName('invoke()', BATCH), () => {
+        for (let i = 0; i < BATCH; i++) retain(queryParamMethod.invoke(routeWithQuery));
     }).run();
 });
 
-test('invoke() – 3 mixed params (path + query + attribute)', async ({ bench }) => {
-    await bench('invoke', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += mixedParamMethod.invoke(routeWithAll) ? 1 : 0;
-        }
-        _sink = accumulator;
+test('invoke — three mixed parameters', async ({ bench }) => {
+    assertEquivalent('invoke mixed params', mixedParamMethod.invoke(routeWithAll), '42|Alice|xyz');
+    await bench(benchName('invoke()', BATCH), () => {
+        for (let i = 0; i < BATCH; i++) retain(mixedParamMethod.invoke(routeWithAll));
+    }).run();
+});
+
+test('invoke — ten query parameters', async ({ bench }) => {
+    assertEquivalent(
+        'invoke ten params',
+        manyParamMethod.invoke(routeWithMany),
+        manyParams.map((_, index) => `v${index}`).join('|')
+    );
+    await bench(benchName('invoke()', BATCH), () => {
+        for (let i = 0; i < BATCH; i++) retain(manyParamMethod.invoke(routeWithMany));
     }).run();
 });

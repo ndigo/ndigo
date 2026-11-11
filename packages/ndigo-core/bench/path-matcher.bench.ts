@@ -1,52 +1,70 @@
 /**
+ * URLGlobPathMatcher: steady-state cache hit vs compile-every-call.
  *
- * Benchmark: URLGlobPathMatcher.match() — LRU cache vs no-cache baseline.
- *
- * Both scenarios perform the same amount of work per iteration:
- *   - Round 1: first pass over all pattern×path combinations (cold miss for cached, compile for baseline)
- *   - Round 2: second pass over the same combinations (cache hit for cached, recompile for baseline)
- *
- * This measures the real per-match cost of the LRU cache vs. always recompiling.
+ * The cached matcher is constructed and warmed once. The baseline re-parses the
+ * glob and constructs a RegExp for every call. One measured iteration performs
+ * all 25 pattern×path pairs (`@ops=25`).
  */
 import { test } from 'vitest';
 import { URLGlobPathMatcher } from '../src/path-matcher';
 import { parseUrlGlob } from '../src/url-glob';
+import { assertEquivalent, benchName, sink } from '../../../benchmarks/lib/verify';
 
 const patterns = ['/api/v1/users', '/api/*/users', '/api/**', '/api/v[12]/users', '*/man*/bash.*'];
-
 const paths = ['/api/v1/users', '/api/v2/users', '/api/v1/users/42', '/api/v1/posts', 'man/man1/bash.1'];
+const parse = parseUrlGlob;
+const retain = sink;
 
-// Two full passes = equal work: 50 match calls total per iteration.
-const ROUNDS = 2;
+const matcher = new URLGlobPathMatcher();
+for (const pattern of patterns) {
+    for (const path of paths) matcher.match(pattern, path);
+}
 
-test('URLGlobPathMatcher.match() — LRU cache vs no-cache', async ({ bench }) => {
+function compileAndTest(pattern: string, path: string): boolean {
+    const source = parse(pattern);
+    return source === null ? false : new RegExp(source).test(path);
+}
+
+test('match — warm cache vs compile every call', async ({ bench }) => {
+    for (const pattern of patterns) {
+        for (const path of paths) {
+            assertEquivalent(`glob ${pattern} ${path}`, matcher.match(pattern, path), compileAndTest(pattern, path));
+        }
+    }
     await bench.compare(
-        bench('with LRU cache (round 1 = miss, round 2 = hit)', () => {
-            const matcher = new URLGlobPathMatcher();
-            let acc = 0;
-            for (let r = 0; r < ROUNDS; r++) {
-                for (const pattern of patterns) {
-                    for (const path of paths) {
-                        acc += matcher.match(pattern, path) ? 1 : 0;
-                    }
-                }
+        bench(benchName('cached matcher (warm)', patterns.length * paths.length), () => {
+            let matched = 0;
+            for (const pattern of patterns) {
+                for (const path of paths) matched += matcher.match(pattern, path) ? 1 : 0;
             }
-            if (acc < 0) throw new Error();
+            retain(matched);
         }),
-        bench('no cache (compile RegExp on every call)', () => {
-            let acc = 0;
-            for (let r = 0; r < ROUNDS; r++) {
-                for (const pattern of patterns) {
-                    const re = parseUrlGlob(pattern);
-                    if (re !== null) {
-                        const regex = new RegExp(re);
-                        for (const path of paths) {
-                            acc += regex.test(path) ? 1 : 0;
-                        }
-                    }
-                }
+        bench(benchName('compile RegExp every call', patterns.length * paths.length), () => {
+            let matched = 0;
+            for (const pattern of patterns) {
+                for (const path of paths) matched += compileAndTest(pattern, path) ? 1 : 0;
             }
-            if (acc < 0) throw new Error();
+            retain(matched);
+        })
+    );
+});
+
+test('match — cold matcher construction', async ({ bench }) => {
+    await bench.compare(
+        bench(benchName('new matcher per iteration', patterns.length * paths.length), () => {
+            const cold = new URLGlobPathMatcher();
+            let matched = 0;
+            for (const pattern of patterns) {
+                for (const path of paths) matched += cold.match(pattern, path) ? 1 : 0;
+            }
+            retain(matched);
+        }),
+        bench(benchName('compile RegExp every call', patterns.length * paths.length), () => {
+            let matched = 0;
+            for (const pattern of patterns) {
+                for (const path of paths) matched += compileAndTest(pattern, path) ? 1 : 0;
+            }
+            retain(matched);
         })
     );
 });

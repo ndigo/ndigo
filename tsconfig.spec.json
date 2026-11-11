@@ -143,11 +143,13 @@
     "apps/*/src/**/*.ts",
     "apps/*/test/**/*.ts",
     "apps/*/client/**/*.ts",
-    "apps/*/client/**/*.d.ts"
+    "apps/*/client/**/*.d.ts",
+    "packages/*/bench/**/*.ts",
+    "benchmarks/**/*.ts"
   ],
   // Exclusions are anchored to BUILT OUTPUTS (SWP-M1): the old `**/lib/**`
   // also hid genuine sources like apps/10-ndigo-conduit-web/src/lib from the
   // lane. Playwright e2e specs stay excluded — they are not covered by any
   // tsc pass (deliberate: their globals are not in the 'types' array).
-  "exclude": ["**/node_modules/**", "packages/*/lib/**", "apps/*/dist/**", "**/coverage/**", "**/e2e/**", "**/bench/**"]
+  "exclude": ["**/node_modules/**", "packages/*/lib/**", "apps/*/dist/**", "**/coverage/**", "**/e2e/**"]
 }

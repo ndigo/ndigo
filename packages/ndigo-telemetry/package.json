@@ -33,9 +33,13 @@
   "license": "ISC",
   "dependencies": {
     "@ndigo/context": "~0.0.1",
+    "@ndigo/locks": "~0.0.1",
+    "@ndigo/resilience": "~0.0.1",
+    "@ndigo/rate-limit": "~0.0.1",
     "@ndigo/cache": "~0.0.1",
     "@ndigo/core": "~0.0.1",
     "@ndigo/dispatcher": "~0.0.1",
+    "@ndigo/host": "~0.0.1",
     "@ndigo/http": "~0.0.1",
     "@ndigo/log": "~0.0.1",
     "@ndigo/router": "~0.0.1",

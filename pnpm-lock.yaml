@@ -2673,12 +2673,24 @@ importers:
       '@ndigo/dispatcher':
         specifier: ~0.0.1
         version: link:../ndigo-dispatcher
+      '@ndigo/host':
+        specifier: ~0.0.1
+        version: link:../ndigo-host
       '@ndigo/http':
         specifier: ~0.0.1
         version: link:../ndigo-http
+      '@ndigo/locks':
+        specifier: ~0.0.1
+        version: link:../ndigo-locks
       '@ndigo/log':
         specifier: ~0.0.1
         version: link:../ndigo-log
+      '@ndigo/rate-limit':
+        specifier: ~0.0.1
+        version: link:../ndigo-rate-limit
+      '@ndigo/resilience':
+        specifier: ~0.0.1
+        version: link:../ndigo-resilience
       '@ndigo/router':
         specifier: ~0.0.1
         version: link:../ndigo-router
@@ -2752,6 +2764,9 @@ importers:
       '@ndigo/boot':
         specifier: ~0.0.1
         version: link:../ndigo-boot
+      '@ndigo/cluster':
+        specifier: ~0.0.1
+        version: link:../ndigo-cluster
       '@ndigo/context':
         specifier: ~0.0.1
         version: link:../ndigo-context

@@ -48,6 +48,7 @@
   "peerDependencies": {
     "@ndigo/auth-server": "~0.0.1",
     "@ndigo/boot": "~0.0.1",
+    "@ndigo/cluster": "~0.0.1",
     "@ndigo/orm-drizzle": "~0.0.1",
     "@ndigo/redis": "~0.0.1",
     "ws": "^8.22.1"
@@ -55,6 +56,7 @@
   "devDependencies": {
     "@ndigo/auth-server": "~0.0.1",
     "@ndigo/boot": "~0.0.1",
+    "@ndigo/cluster": "~0.0.1",
     "@ndigo/orm-drizzle": "~0.0.1",
     "@ndigo/redis": "~0.0.1",
     "@ndigo/context": "~0.0.1",

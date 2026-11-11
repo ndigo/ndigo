@@ -13,7 +13,7 @@ reference is [[apps/20-ndigo-ui-lab](https://github.com/ndigo/ndigo/tree/main/ap
 [[apps/07-ndigo-island](https://github.com/ndigo/ndigo/tree/main/apps/07-ndigo-island)](../../[apps/07-ndigo-island](https://github.com/ndigo/ndigo/tree/main/apps/07-ndigo-island)/README.md) is the migrated
 island app. The decision records are
 ,
- (which supersedes ), and
+(which supersedes ), and
 the superseded .
 
 **Audience:** Browser application developers · **Prerequisites:** [Guide 02](02-building-a-browser-app.md) · **Reference app:** [apps/20-ndigo-ui-lab](https://github.com/ndigo/ndigo/tree/main/apps/20-ndigo-ui-lab)
@@ -28,12 +28,12 @@ the superseded .
 
 ## 1. Choose a strategy
 
-| Strategy | Use when | Cost |
+| Strategy                              | Use when                                                            | Cost                                                                      |
 | ------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| **ndigo-ui** (first-party, optional) | You want the Ndigo design language and a copy-in registry | You own the installed source; components arrive via `ndigo ui add` |
+| **ndigo-ui** (first-party, optional)  | You want the Ndigo design language and a copy-in registry           | You own the installed source; components arrive via `ndigo ui add`        |
 | **Third-party Web Component library** | You already have a design system (Web Awesome, Shoelace, Lit-based) | You own the adoption/fallback/i18n work; the framework stays library-free |
-| **View-engine UI** (React/Vue/Svelte) | The UI is a full framework app or a React design system | You implement or adopt a view engine (guide 41) |
-| **Hand-rolled / native** | Small surfaces, maximum control | You build accessibility, forms, and theming yourself |
+| **View-engine UI** (React/Vue/Svelte) | The UI is a full framework app or a React design system             | You implement or adopt a view engine (guide 41)                           |
+| **Hand-rolled / native**              | Small surfaces, maximum control                                     | You build accessibility, forms, and theming yourself                      |
 
 The framework packages never import a UI library. Each application selects
 independently, and two apps in one monorepo may choose differently.
@@ -119,14 +119,14 @@ into the package.
 Ownership rules:
 
 - **Installed source is yours.** Read it, edit it, and keep it in your repo;
- updates are deliberate (`ui add --overwrite`), not automatic.
+  updates are deliberate (`ui add --overwrite`), not automatic.
 - **The package is not a runtime.** `@ndigo/ui` ships tokens, theme CSS, and the
- typed catalog; the element code is copy-in.
+  typed catalog; the element code is copy-in.
 - **Behaviour comes from Zag.js**, markup/styles from the registry. No styled
- component library is a dependency.
+  component library is a dependency.
 - **Conformance precedes a component**: axe-clean, keyboard/focus contract,
- logical properties for RTL, reduced motion, light-DOM first paint, form
- participation (native/hidden inputs or FACE), and a measured gzip budget.
+  logical properties for RTL, reduced motion, light-DOM first paint, form
+  participation (native/hidden inputs or FACE), and a measured gzip budget.
 
 ndigo-ui knows no consumer. The site/Astro adapter and Ndigo-specific blocks
 live outside the package; if a reusable integration emerges, it becomes an
@@ -137,12 +137,12 @@ opt-in `integrations/` registry item.
 The contract is the Web Component, not the library:
 
 - The framework imports no UI package. `@ndigo/platform-web` and
- `@ndigo/view-webcomponent` provide the bridge, not components.
+  `@ndigo/view-webcomponent` provide the bridge, not components.
 - `@ndigo/ui` is optional; `pnpm remove @ndigo/ui` leaves a working app.
 - A third-party library is an **application** dependency; the framework
- packages stay library-free .
+  packages stay library-free .
 - A view engine (React/Vue) is a presentation choice, not a framework
- dependency. [Guide 41](41-custom-view-engines.md) covers adding one.
+  dependency. [Guide 41](41-custom-view-engines.md) covers adding one.
 
 This is the difference between “the framework recommends ndigo-ui” and “the
 framework requires ndigo-ui”. Keep the app's imports at the component boundary
@@ -152,18 +152,18 @@ so swapping libraries is a localized change.
 
 Reuse the checklist and record the evidence in a selecting ADR:
 
-| # | Criterion | Gate |
+| #   | Criterion     | Gate                                                                  |
 | --- | ------------- | --------------------------------------------------------------------- |
-| 1 | License | OSI-approved; commercial tiers optional |
-| 2 | DSD/SSR | Real shadow content server-renders, or the fallback pattern covers it |
-| 3 | FACE/forms | Controls submit standard name/value form data |
-| 4 | Accessibility | Keyboard + axe-clean on the components you use |
-| 5 | Theming | CSS custom properties, no shadow-piercing hacks; logical properties |
-| 6 | i18n | Chrome strings localizable |
-| 7 | Packaging | ESM, per-component imports, tree-shakable, no global side effects |
-| 8 | Maintenance | Recent releases, multiple maintainers, responsive issues |
-| 9 | Bundle budget | Measured per-component cost fits the budget |
-| 10 | Wrapping | Usable without per-component wrappers |
+| 1   | License       | OSI-approved; commercial tiers optional                               |
+| 2   | DSD/SSR       | Real shadow content server-renders, or the fallback pattern covers it |
+| 3   | FACE/forms    | Controls submit standard name/value form data                         |
+| 4   | Accessibility | Keyboard + axe-clean on the components you use                        |
+| 5   | Theming       | CSS custom properties, no shadow-piercing hacks; logical properties   |
+| 6   | i18n          | Chrome strings localizable                                            |
+| 7   | Packaging     | ESM, per-component imports, tree-shakable, no global side effects     |
+| 8   | Maintenance   | Recent releases, multiple maintainers, responsive issues              |
+| 9   | Bundle budget | Measured per-component cost fits the budget                           |
+| 10  | Wrapping      | Usable without per-component wrappers                                 |
 
 If a library fails a gate, use it as inspiration, not as a dependency. The
 framework's preference is a library that passes the gates, not a particular
@@ -217,28 +217,28 @@ Keep the existing binding + Zod path (guides [06](06-argument-binding.md)/[07](0
 submit ordinary name/value pairs:
 
 - ndigo-ui's native-first items (`button`, `input`, `field`, `checkbox`,
- `table`, ...) are CSS over native elements, so they submit standard data
- automatically. `field` owns the label; `input` also covers `<textarea>`.
+  `table`, ...) are CSS over native elements, so they submit standard data
+  automatically. `field` owns the label; `input` also covers `<textarea>`.
 - `select`, `switch`, `tags-input`, and `date-picker` render hidden native
- inputs carrying the value. Keep them in the markup and let the form
- serialize them.
+  inputs carrying the value. Keep them in the markup and let the form
+  serialize them.
 - `slider` and `combobox` expose their value through the element API and
- `nd-value-change`; add a native input when the form must submit them.
+  `nd-value-change`; add a native input when the form must submit them.
 - A custom form control can use `AsFormAssociated(Base)` from
- `@ndigo/view-webcomponent` when a hidden input is not appropriate.
+  `@ndigo/view-webcomponent` when a hidden input is not appropriate.
 - Web Awesome controls are FACE; set `name` and let the form serialize them.
 - Do not add a second binding path per component library. If a control cannot
- submit standard form data, it fails the vetting gate.
+  submit standard form data, it fails the vetting gate.
 
 ## 8. Theming and i18n
 
 - **ndigo-ui** — consume `--nd-*`; do not hard-code colors/spacing. The token
- catalog (`TOKENS`, `resolveToken`) is the typed contract.
+  catalog (`TOKENS`, `resolveToken`) is the typed contract.
 - **Third-party** — theme through the library's CSS custom properties; map
- your brand tokens onto its variables at the app boundary.
+  your brand tokens onto its variables at the app boundary.
 - **i18n** — component chrome strings must be localizable. Pass the negotiated
- locale (guide 17) into the component's label/aria attributes; do not rely on
- hard-coded English defaults.
+  locale (guide 17) into the component's label/aria attributes; do not rely on
+  hard-coded English defaults.
 - **RTL** — require logical properties; test one component per library.
 
 ## 9. CSP and bundle budget
@@ -257,9 +257,9 @@ is no longer installed anywhere in this repository. The migration sequence
 remains the worked example for moving a third-party library onto ndigo-ui:
 
 1. Install the equivalent registry items (`theme`, `lib`, `button`, `input`,
- `field`, ...).
+   `field`, ...).
 2. Replace `<wa-*>` with the native element or `<nd-*>`, keeping
- `name`/attributes/events.
+   `name`/attributes/events.
 3. Map Web Awesome CSS variables onto `--nd-*` at the app boundary.
 4. Remove the Web Awesome dependency and its per-component imports.
 5. Re-check form submission, fallback markup, and the bundle delta.

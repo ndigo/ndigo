@@ -39,19 +39,19 @@ const app = await runNodeApplication([AppConfiguration], { port: 3000 });
 The preset composes, it does not replace:
 
 - registers `NodeAutoConfiguration` plus your sources (`platform: false`
- leaves the platform out);
+  leaves the platform out);
 - builds the environment from `NodeEnvironment` (`process.env` arrives in
- the `systemEnvironment` source) and applies `profiles` / `properties`;
+  the `systemEnvironment` source) and applies `profiles` / `properties`;
 - loads `config/application*.json` through the platform reader by default
- (`configFiles: false` disables file loading; a
- `StandardConfigFileLoader` instance overrides it);
+  (`configFiles: false` disables file loading; a
+  `StandardConfigFileLoader` instance overrides it);
 - runs `configureBuilder(builder)` before refresh — the seam for secrets,
- the remote config source, interception processors, and defaults;
+  the remote config source, interception processors, and defaults;
 - runs `beforeStart(context)` after refresh and before the socket binds —
- the seam for migrations and pre-listen wiring;
+  the seam for migrations and pre-listen wiring;
 - starts the managed `HTTP_SERVER` and installs the `SIGINT`/`SIGTERM`
- teardown (`shutdown: false` opts out; `resources` adds teardown
- resources).
+  teardown (`shutdown: false` opts out; `resources` adds teardown
+  resources).
 
 When you need to own the sequence, the manual path stays fully supported:
 
@@ -66,11 +66,11 @@ const context = await new ApplicationBuilder([NodeAutoConfiguration, AppConfigur
 `ApplicationBuilder.run`:
 
 1. prepares a `StandardEnvironment` (Node apps can pass their own — see
- `NodeEnvironment`), applying any `@propertySource` / profiles,
+   `NodeEnvironment`), applying any `@propertySource` / profiles,
 2. registers each source conditionally (`@whenNode` gates platform
- configs),
+   configs),
 3. `refresh`es the context: entries are created, and the lifecycle
- processor initializes managed beans (see 5),
+   processor initializes managed beans (see 5),
 4. returns the ready `ApplicationContext`.
 
 `NodeAutoConfiguration` provisions the server-side stack: the 6 argument
@@ -140,10 +140,10 @@ export class GreetingController {
 Notes:
 
 - Plain object returns are serialized as JSON — no view name is applied to
- non-`ModelAndView` returns.
+  non-`ModelAndView` returns.
 - The handler mapping discovers controllers at refresh time and
- auto-initializes, so routes are live as soon as `run` returns (no manual
- `init` calls).
+  auto-initializes, so routes are live as soon as `run` returns (no manual
+  `init` calls).
 
 ## 4. Request binding: extractors
 
@@ -151,17 +151,17 @@ Notes:
 the argument's value. The Node platform resolves them through
 `AbstractPlatformArgumentResolver` subclasses.
 
-| Extractor | Source | Whole-source |
-| --------------------------- | --------------------------- | ----------------------------------------- |
-| `queryValue(name)` | query string (`route.data`) | `queryValue` |
-| `pathVariable(name)` | path parameter | — |
-| `matrixValue(name)` | segment matrix params | — |
-| `headerValue(name)` | request header | — |
-| `cookieValue(name)` | cookie | — |
-| `requestSessionValue(name)` | server session bag | — |
-| `bodyValue(name)` | request body field | `bodyValue` binds the whole parsed body |
-| `dataBinderValue('body')` | whole body → DTO object | binds flat fields into a nested object |
-| `requestPart(name)` | multipart JSON/text part | — |
+| Extractor                   | Source                      | Whole-source                            |
+| --------------------------- | --------------------------- | --------------------------------------- |
+| `queryValue(name)`          | query string (`route.data`) | `queryValue`                            |
+| `pathVariable(name)`        | path parameter              | —                                       |
+| `matrixValue(name)`         | segment matrix params       | —                                       |
+| `headerValue(name)`         | request header              | —                                       |
+| `cookieValue(name)`         | cookie                      | —                                       |
+| `requestSessionValue(name)` | server session bag          | —                                       |
+| `bodyValue(name)`           | request body field          | `bodyValue` binds the whole parsed body |
+| `dataBinderValue('body')`   | whole body → DTO object     | binds flat fields into a nested object  |
+| `requestPart(name)`         | multipart JSON/text part    | —                                       |
 
 Omitting the name binds the entire source object (`queryValue` =
 whole query, `bodyValue` = whole body — the `*Value(name)` whole-source
@@ -215,15 +215,15 @@ Every 4xx/5xx response is an `application/problem+json` document:
 
 The framework maps errors deterministically:
 
-| Condition | Status |
-| -------------------------------------------------------- | ------------------------------- |
-| Malformed URL / body, missing or unconvertible parameter | 400 |
-| Missing/invalid credentials (handler or guard) | 401 + `WWW-Authenticate` |
-| Insufficient role | 403 |
-| No route / no view | 404 |
-| Path exists, method not allowed | 405 + `Allow` |
-| Zod validation failure | 422 + `errors[]` (see [guide 07](07-request-validation.md)) |
-| Anything unhandled | 500 (internals never leaked) |
+| Condition                                                | Status                                                      |
+| -------------------------------------------------------- | ----------------------------------------------------------- |
+| Malformed URL / body, missing or unconvertible parameter | 400                                                         |
+| Missing/invalid credentials (handler or guard)           | 401 + `WWW-Authenticate`                                    |
+| Insufficient role                                        | 403                                                         |
+| No route / no view                                       | 404                                                         |
+| Path exists, method not allowed                          | 405 + `Allow`                                               |
+| Zod validation failure                                   | 422 + `errors[]` (see [guide 07](07-request-validation.md)) |
+| Anything unhandled                                       | 500 (internals never leaked)                                |
 
 Handlers can return a `ResponseEntity<ProblemDetails>` for full control, or
 rely on the default chain. The `urn:ndigo:*` problem-type scheme is a
@@ -257,11 +257,11 @@ extractors work across `@routeMapping`, `@requestMapping`, and
 binder without a source for its mapping is a configuration error — the
 framework throws at registration:
 
-| Mapping kind | Available `*Value` sources |
+| Mapping kind                  | Available `*Value` sources                                                                                                               |
 | ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
 | `@routeMapping` (method-less) | any source (transport-agnostic: query, path, matrix, header, cookie, request-session, attribute, body, history-state, storage, `data-*`) |
-| `@requestMapping` / verbs | query, path, matrix, header, cookie, request-session, attribute, body, `data-body`, `data-cookie`, `request-part`, multipart-file |
-| `@socketMapping` | query, path, header, cookie (no body; no browser state) |
+| `@requestMapping` / verbs     | query, path, matrix, header, cookie, request-session, attribute, body, `data-body`, `data-cookie`, `request-part`, multipart-file        |
+| `@socketMapping`              | query, path, header, cookie (no body; no browser state)                                                                                  |
 
 So `bodyValue` on a socket mapping is rejected (no body on an upgrade), as is
 `historyStateValue`/`sessionStorageValue`/`localStorageValue` on a verbed HTTP
@@ -321,11 +321,11 @@ the Node listener as the public origin.
 ## See also
 
 - [Guide 07 — Request Validation](07-request-validation.md): coercion,
- `validatedBody`, and entity-derived schemas.
+  `validatedBody`, and entity-derived schemas.
 - [Guide 10 — Static Files](10-static-files.md): serving a directory over
- HTTP — ETag/Range, precompressed variants, SPA fallback (the reference demo
- is [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)'s `/static/`).
+  HTTP — ETag/Range, precompressed variants, SPA fallback (the reference demo
+  is [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)'s `/static/`).
 - Package READMEs: `@ndigo/platform-node`, `@ndigo/dispatcher`, `@ndigo/boot`,
- `@ndigo/orm` for the full symbol surface.
+  `@ndigo/orm` for the full symbol surface.
 - Decision records: [Zod validation](../decisions/2026-09-05_AD07_ZOD_VALIDATION.md),
- [RFC 9457 problem+json error model](../decisions/2026-09-07_AD10_RFC9457_ERROR_MODEL.md).
+  [RFC 9457 problem+json error model](../decisions/2026-09-07_AD10_RFC9457_ERROR_MODEL.md).

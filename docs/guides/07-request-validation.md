@@ -7,8 +7,8 @@ derived directly from `@ndigo/orm` entity metadata.
 The validation mechanism is a single pipeline: an extractor resolves
 
 - converts a value, then a Zod schema runs over it. Failures are reported as
- `ParameterConversionError` and surface as a **422 problem document** with the
- structured issues.
+  `ParameterConversionError` and surface as a **422 problem document** with the
+  structured issues.
 
 **Audience:** Node and browser application developers · **Prerequisites:** [Guide 06](06-argument-binding.md) · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api), [apps/12-ndigo-petclinic](https://github.com/ndigo/ndigo/tree/main/apps/12-ndigo-petclinic)
 
@@ -149,9 +149,9 @@ A `POST` with `{ title: '' }` now yields:
 ```
 
 - 400 stays reserved for **transport/binding** problems; 422 is for
- **schema (Zod) failures**.
+  **schema (Zod) failures**.
 - The full entity schema (`schemaForEntity`) is for reads/validation of
- persisted instances; always use `insertSchemaForEntity` for create bodies.
+  persisted instances; always use `insertSchemaForEntity` for create bodies.
 
 ## 6. Browser parity
 
@@ -164,7 +164,7 @@ browser request "bodies" are form/model sources.)
 ## See also
 
 - Full API: JSDoc in `packages/ndigo-dispatcher/src/zod-validated-by.ts`
- (docstring includes all four usage forms) and
- `packages/ndigo-orm/src/entity-schema.ts`.
+  (docstring includes all four usage forms) and
+  `packages/ndigo-orm/src/entity-schema.ts`.
 - Rationale: [Zod as the canonical schema primitive](../decisions/2026-09-05_AD07_ZOD_VALIDATION.md)
- and [RFC 9457 problem+json error contract](../decisions/2026-09-07_AD10_RFC9457_ERROR_MODEL.md).
+  and [RFC 9457 problem+json error contract](../decisions/2026-09-07_AD10_RFC9457_ERROR_MODEL.md).

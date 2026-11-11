@@ -79,7 +79,7 @@ unauthenticated user.
 
 - `jwksUrl` — verify signatures against the provider's JWKS.
 - `discovery: true` — fetch `{issuer}/.well-known/openid-configuration`; the
- document's `issuer` must match exactly.
+  document's `issuer` must match exactly.
 - `tokenValidator` — a custom signature-verification callback.
 
 There is no claim-only mode. Construction throws if none is provided.
@@ -176,17 +176,17 @@ server bridge when it can. The server side is [guide 26](26-authentication-and-s
 ## 7. Pitfalls
 
 - **No claim-only verification.** The adapter refuses to construct without
- JWKS, discovery, or a custom validator.
+  JWKS, discovery, or a custom validator.
 - **The default pending store is instance-affine.** A page reload without a
- shared store fails the state check.
+  shared store fails the state check.
 - **State and nonce are single-use.** Do not retry an exchange with the same
- state; restart the flow.
+  state; restart the flow.
 - **A refresh token is not an access token.** Presenting an access/ID token to
- `refresh` is rejected before any network call.
+  `refresh` is rejected before any network call.
 - **Client state is not authorization.** The server must still enforce roles;
- the browser guard is UX, not a security boundary.
+  the browser guard is UX, not a security boundary.
 - **`sessionStorage` is not a vault.** Prefer an `HttpOnly` server session when
- the backend can own the credential.
+  the backend can own the credential.
 
 ## See also
 

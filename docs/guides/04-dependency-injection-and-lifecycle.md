@@ -82,13 +82,13 @@ value; both are beans.
 Scopes decide **how long a bean lives**. Declare one with a class decorator from
 `@ndigo/factory`:
 
-| Scope | Lifespan | Use |
+| Scope                 | Lifespan                                                  | Use                            |
 | --------------------- | --------------------------------------------------------- | ------------------------------ |
-| `singleton` (default) | One instance per factory | Services, configuration, pools |
-| `prototype` | A new instance on every `getValue` | Short-lived collaborators |
-| `hash` / route | One instance per active scope key, torn down at route end | Per-route request state |
-| `refresh` | Cached until `config:refresh`, then re-created | Configuration-derived clients |
-| custom | Whatever the registered `Scope` implements | App-specific lifetimes |
+| `singleton` (default) | One instance per factory                                  | Services, configuration, pools |
+| `prototype`           | A new instance on every `getValue`                        | Short-lived collaborators      |
+| `hash` / route        | One instance per active scope key, torn down at route end | Per-route request state        |
+| `refresh`             | Cached until `config:refresh`, then re-created            | Configuration-derived clients  |
+| custom                | Whatever the registered `Scope` implements                | App-specific lifetimes         |
 
 ```ts
 import { singletonScope, prototypeScope, refreshScope, hashScope } from '@ndigo/factory';
@@ -124,11 +124,11 @@ Scope pitfalls:
 
 - A scope decorator belongs on the class, not on the `@entry` method.
 - `prototype` beans are not cached, so nothing calls their `destroy`/`close`
- automatically; the caller owns them.
+  automatically; the caller owns them.
 - `hash` scope requires an active key (`HashScope.setCurrentKey`); resolving
- outside a route scope fails loudly.
+  outside a route scope fails loudly.
 - `refresh` destroys the old instance; do not hold a reference to it across a
- refresh.
+  refresh.
 
 ## 4. Aware callbacks
 
@@ -158,12 +158,12 @@ framework object is genuinely ambient.
 
 Four contracts cover the common lifecycle shapes:
 
-| Contract | Method | When it runs |
-| ---------------- | -------------------- | ------------------------------------------------ |
-| `Initializable` | `init` | After construction and aware processing |
-| `Destroyable` | `destroy` | When the bean is destroyed or the context closes |
-| `Closeable` | `close` | Same as destroy, for close-shaped APIs |
-| `SmartLifecycle` | `start` / `stop` | On context refresh/close, by phase |
+| Contract         | Method           | When it runs                                     |
+| ---------------- | ---------------- | ------------------------------------------------ |
+| `Initializable`  | `init`           | After construction and aware processing          |
+| `Destroyable`    | `destroy`        | When the bean is destroyed or the context closes |
+| `Closeable`      | `close`          | Same as destroy, for close-shaped APIs           |
+| `SmartLifecycle` | `start` / `stop` | On context refresh/close, by phase               |
 
 ```ts
 import type { Initializable, Closeable, SmartLifecycle } from '@ndigo/factory';
@@ -242,17 +242,17 @@ safe no-op after the first call.
 ## 7. Pitfalls
 
 - **Registering an instance with `setValue` bypasses scopes.** It is an
- instance value for the lifetime of the context; use `@entry` for scoped
- beans.
+  instance value for the lifetime of the context; use `@entry` for scoped
+  beans.
 - **Circular constructor dependencies fail at refresh.** Break the cycle with a
- setter/aware callback, a provider method, or a separate collaborator.
+  setter/aware callback, a provider method, or a separate collaborator.
 - **A bean captured before `refresh` is not initialized.** Resolve beans after
- the context is active; boot presets return the refreshed context.
+  the context is active; boot presets return the refreshed context.
 - **Async cleanup is not automatic.** Bridge to `Closeable` and drain before
- `context.close`.
+  `context.close`.
 - **Do not use the context as a global.** Pass it only to infrastructure that
- genuinely needs the container; application services should take their
- collaborators as constructor arguments.
+  genuinely needs the container; application services should take their
+  collaborators as constructor arguments.
 
 ## See also
 

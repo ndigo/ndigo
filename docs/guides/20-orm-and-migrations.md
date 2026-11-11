@@ -71,10 +71,10 @@ across both.
 
 - a clean tree generates nothing (`no schema changes`);
 - renaming/adding/dropping **columns or tables** emits the matching
- `ALTER`/`CREATE`/`DROP` statements as a new versioned file;
+  `ALTER`/`CREATE`/`DROP` statements as a new versioned file;
 - the snapshot (`db/schema.json`) is rewritten on every run — regeneration
- is byte-identical, which is what the root `pnpm db:schema:check` gate
- asserts in CI.
+  is byte-identical, which is what the root `pnpm db:schema:check` gate
+  asserts in CI.
 
 The generator lives in the app (entities and snapshot path are app-owned):
 
@@ -101,24 +101,24 @@ name, SQLite storage type, primary key/generated, nullability. Everything
 else stays **hand-written migration SQL**:
 
 - defaults, `UNIQUE`, indexes, CHECK constraints, and FK DDL from relation
- metadata are not expressed by `@ndigo/orm` column metadata today;
+  metadata are not expressed by `@ndigo/orm` column metadata today;
 - a column **type/nullability/PK change** is unsupported (it needs a table
- rebuild) — write it by hand;
+  rebuild) — write it by hand;
 - the snapshot format carries a `predicate` version; growing the metadata
- later bumps it so committed snapshots fail the freshness check instead of
- silently diverging.
+  later bumps it so committed snapshots fail the freshness check instead of
+  silently diverging.
 
 `db generate` **fails loud instead of emitting what the operator has not
 reviewed**; the patterns below exit non-zero with the offending statements
 on stderr until acknowledged (REV-002/REV-006):
 
 - **destructive drops** (dropped columns, dropped tables) — an entity
- rename would otherwise render `DROP TABLE IF EXISTS` into a migration
- unseen; re-run with `NDIGO_DB_ACCEPT_DROPS=true` after reviewing;
+  rename would otherwise render `DROP TABLE IF EXISTS` into a migration
+  unseen; re-run with `NDIGO_DB_ACCEPT_DROPS=true` after reviewing;
 - **unexpressible changes** — reported as unsupported; the snapshot still
- advances (the entities are the source of truth), so without the
- acknowledgment a hand-written migration could be forgotten while the
- freshness gate stays silent; re-run with `NDIGO_DB_ACCEPT_UNSUPPORTED=true`.
+  advances (the entities are the source of truth), so without the
+  acknowledgment a hand-written migration could be forgotten while the
+  freshness gate stays silent; re-run with `NDIGO_DB_ACCEPT_UNSUPPORTED=true`.
 
 Both flags follow the repo's env-flag convention (`present`/`true`/`1`
 enables, `false`/`0`/`''` does not) and are read from the environment.
@@ -157,14 +157,14 @@ if (migrationsConfig.runOnBoot) {
 One runner at a time: concurrent migrators fail loud on the journal primary
 key (operator contract, not a lock).
 
-## 4. The `ndigo db` surface 
+## 4. The `ndigo db` surface
 
-| Command | Runs | Owner |
-|:-------------------------- |:----------------------------------------------- |:-------------------------- |
+| Command                     | Runs                                             | Owner                       |
+| :-------------------------- | :----------------------------------------------- | :-------------------------- |
 | `ndigo db new [dir] [slug]` | scaffolds `<NNNN>-<slug>.ts` at the next version | CLI (`db/migrations` probe) |
-| `ndigo db generate [dir]` | the app's `scripts.db:generate` | app (entities + snapshot) |
-| `ndigo db migrate [dir]` | the app's `scripts.db:migrate` (journaled apply) | app (data source + dir) |
-| `ndigo db status [dir]` | the app's `scripts.db:status` (journal readback) | app (data source + dir) |
+| `ndigo db generate [dir]`   | the app's `scripts.db:generate`                  | app (entities + snapshot)   |
+| `ndigo db migrate [dir]`    | the app's `scripts.db:migrate` (journaled apply) | app (data source + dir)     |
+| `ndigo db status [dir]`     | the app's `scripts.db:status` (journal readback) | app (data source + dir)     |
 
 ## 5. Reference consumer
 
@@ -182,10 +182,10 @@ The data source's parent directory is created on demand
 ## See also
 
 - — the journaled
- runner contract (versions, journal, D-2 atomicity, D-3 DDL sharing).
+  runner contract (versions, journal, D-2 atomicity, D-3 DDL sharing).
 - — file
- migrations, the committed snapshot, generation, `migrateOnBoot`.
+  migrations, the committed snapshot, generation, `migrateOnBoot`.
 - — the `db:*` CLI
- surface.
+  surface.
 - [Guide 03](03-environment-configuration.md) — property sources and config
- files (the dotted-key carrier for `migrations.*`).
+  files (the dotted-key carrier for `migrations.*`).

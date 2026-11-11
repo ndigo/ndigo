@@ -45,18 +45,18 @@ builder properties, `process.env`, config files, `configServer`, defaults.
 Production rules:
 
 - **Profiles** — activate `prod` explicitly (`NDIGO_PROFILES_ACTIVE=prod` or
- `--profiles.active prod`); do not rely on a default profile for production values.
+  `--profiles.active prod`); do not rely on a default profile for production values.
 - **One source of truth per key** — a config file for stable defaults, the
- environment for deploy-specific values, a config server for fleet-wide live
- values.
+  environment for deploy-specific values, a config server for fleet-wide live
+  values.
 - **Secrets** — use `{cipher:...}` values and deliver `NDIGO_SECRET_KEY` from
- the platform's secret store, never the repo, image, or logs. A missing key
- fails at lookup, not silently.
+  the platform's secret store, never the repo, image, or logs. A missing key
+  fails at lookup, not silently.
 - **Validation** — declare `@environment` schemas so a missing/malformed key
- fails at boot, before the port binds.
+  fails at boot, before the port binds.
 - **Live refresh** — `@refreshScope` rebuilds configuration-derived clients
- after `config:refresh`; verify the remote source's ETag/poll behavior before
- relying on it.
+  after `config:refresh`; verify the remote source's ETag/poll behavior before
+  relying on it.
 
 ## 3. Process model
 
@@ -75,13 +75,13 @@ backoff; a crash loop fails closed instead of flapping forever (guide 24).
 What changes under clustering:
 
 - **In-process state is per slot.** Caches, rate-limit counters, and schedulers
- multiply unless you use the shared drivers (Guides [19](19-caching.md), [22](22-jobs-and-outbox.md), [23](23-scheduling.md), [28](28-security-hardening.md)).
+  multiply unless you use the shared drivers (Guides [19](19-caching.md), [22](22-jobs-and-outbox.md), [23](23-scheduling.md), [28](28-security-hardening.md)).
 - **Scheduled work needs single-executor arbitration** — `@scheduled({ lock })`
- or a cluster-wide leader; otherwise every slot runs the task.
+  or a cluster-wide leader; otherwise every slot runs the task.
 - **WebSocket fan-out needs the Redis pub/sub bridge** when clients may land on
- different slots (guide 15).
+  different slots (guide 15).
 - **Health probes** must target a single slot (the supervisor's port mapping)
- or the platform's load balancer, not an arbitrary child.
+  or the platform's load balancer, not an arbitrary child.
 
 ## 4. Graceful shutdown
 
@@ -91,10 +91,10 @@ transports, then close the context (guide 04 and
 
 1. Stop accepting new requests (server stop).
 2. `registry.close` / broker close — unsubscribe, stop heartbeat, drop
- sessions.
+   sessions.
 3. `fanout.close` / publisher close by its owner.
 4. `context.close` — lifecycle `stop` in descending phase order, then bean
- `destroy`/`close`.
+   `destroy`/`close`.
 
 `runNodeApplication` and `ndigo serve` install the `SIGINT`/`SIGTERM` handler;
 a second signal, a throwing close, or a teardown past `timeoutMs` (default 10s)
@@ -106,15 +106,15 @@ drain time. A clustered supervisor waits for children and reaps stragglers.
 Expose the management surface deliberately (guide 33):
 
 - `GET /health` — liveness/readiness groups; use a component check for the
- database/Redis when the app cannot serve without it.
+  database/Redis when the app cannot serve without it.
 - `GET /metrics` — the meter snapshot (Prometheus text if configured); scrape
- it from the platform, not the public internet.
+  it from the platform, not the public internet.
 - `GET /loggers`, `/env`, `/configprops` — opt-in operational reads; guard them
- or keep them off the public listener.
+  or keep them off the public listener.
 - **Probes** — point readiness at `/health/readiness` (or the group that
- includes dependencies) and liveness at a cheap `/health/liveness`.
+  includes dependencies) and liveness at a cheap `/health/liveness`.
 - **Telemetry** — export traces/metrics/logs (guide 32); correlate request,
- job, and scheduled-task spans; flush on shutdown.
+  job, and scheduled-task spans; flush on shutdown.
 
 Do not expose the management surface on the same public listener without a
 guard. If the platform supports a separate management port, prefer it.
@@ -141,14 +141,14 @@ and `X-Forwarded-Proto`; keep the proxy's hop count minimal.
 ## 7. Static assets and caching
 
 - Serve precompressed twins (`.br`/`.gz`) with `Vary: Accept-Encoding`; the
- static handler negotiates them (guide 10).
+  static handler negotiates them (guide 10).
 - Give hashed assets a long `Cache-Control` and HTML a short/no-cache policy.
 - Use a CDN in front of static assets when the app is multi-region; the
- framework's ETag/Range semantics survive a caching proxy.
+  framework's ETag/Range semantics survive a caching proxy.
 - Do not serve user-uploaded files from the app's source tree; use a dedicated
- root or object storage.
+  root or object storage.
 - SPA history fallback belongs at the edge or the static controller, not in a
- catch-all controller that shadows 404s.
+  catch-all controller that shadows 404s.
 
 ## 8. Production checklist
 
@@ -162,20 +162,20 @@ and `X-Forwarded-Proto`; keep the proxy's hop count minimal.
 - [ ] TLS at the edge or `NDIGO_TLS_*` on the listener; trusted proxies set.
 - [ ] Static assets cached/precompressed; uploads on a durable volume.
 - [ ] Rate limits, CORS, CSRF, and security headers verified in the deployed
- origin (guide 28).
+      origin (guide 28).
 - [ ] A rollback path exists (previous image + migration compatibility).
 
 ## 9. Pitfalls
 
 - **A dev server in production.** `tsx src/index.ts` is fine for a demo, not a
- release; build and run the output.
+  release; build and run the output.
 - **Secrets in the image.** `{cipher:...}` values are safe; the key is not.
 - **No readiness dependency check.** A pod that accepts traffic before the
- database is ready returns 500s instead of waiting.
+  database is ready returns 500s instead of waiting.
 - **Cluster without shared state.** In-memory caches/locks/rate limits multiply
- per slot.
+  per slot.
 - **Killing before draining.** A short termination grace period truncates
- in-flight requests; set it above the shutdown timeout.
+  in-flight requests; set it above the shutdown timeout.
 - **Trusting every proxy.** Configure the exact networks (guide 28).
 
 ## See also

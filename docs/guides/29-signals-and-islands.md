@@ -85,14 +85,14 @@ class SignalsCounter extends AbstractWebComponent {
 ```
 
 - `@reactive` is a class decorator that activates the `@signal` fields,
- `@computed` getters, and `@effect` methods declared on that class.
+  `@computed` getters, and `@effect` methods declared on that class.
 - Decorators are **not inherited**: a subclass declaring reactive members
- needs its own `@reactive`; otherwise the pending metadata never activates and
- `getSignal` throws instead of leaving silently inert fields.
+  needs its own `@reactive`; otherwise the pending metadata never activates and
+  `getSignal` throws instead of leaving silently inert fields.
 - `getSignal(instance, field)` returns the backing `Signal` when one is needed
- outside the field accessors.
+  outside the field accessors.
 - When the class defines `destroy`/`dispose`, activation wraps them to
- dispose the effects and drop the signal maps.
+  dispose the effects and drop the signal maps.
 
 The runnable demo is [apps/03-ndigo-todo-web](https://github.com/ndigo/ndigo/tree/main/apps/03-ndigo-todo-web)'s `signals-counter-view.ts`.
 
@@ -222,13 +222,13 @@ signal, so the island renders only well-formed models.
 
 - [Guide 16 — Typed Service Clients & SSE](16-typed-service-clients-and-sse.md) — the stream the signal consumes
 - Decisions: (SSE server
- push), 
- (view resolution).
+  push),
+  (view resolution).
 - Architecture: [Micro Frontends](../architecture/micro-frontends.md) — the
- host/island map, shared dependencies, event isolation.
+  host/island map, shared dependencies, event isolation.
 - [Guide 31 — Micro Frontends with `@ndigo/host`](31-micro-frontends.md) — the
- hosted-feature shape.
+  hosted-feature shape.
 - Packages: `@ndigo/signals`, `@ndigo/view` (`IslandView`),
- `@ndigo/view-webcomponent` (`hydrateIslands`, `@TagMapping`),
- `@ndigo/service` (`stream: true`), `@ndigo/platform-node`
- (`ServerSentEventView`).
+  `@ndigo/view-webcomponent` (`hydrateIslands`, `@TagMapping`),
+  `@ndigo/service` (`stream: true`), `@ndigo/platform-node`
+  (`ServerSentEventView`).

@@ -36,10 +36,10 @@ const app = new ApplicationBuilder([
 ]);
 ```
 
-| Endpoint | Serves |
+| Endpoint                  | Serves                                                  |
 | ------------------------- | ------------------------------------------------------- |
-| `GET /v3/api-docs` | The OpenAPI 3.0.3 document (JSON) |
-| `GET /swagger-ui/` | Swagger UI, wired to the spec URL |
+| `GET /v3/api-docs`        | The OpenAPI 3.0.3 document (JSON)                       |
+| `GET /swagger-ui/`        | Swagger UI, wired to the spec URL                       |
 | `GET /swagger-ui/{*file}` | UI assets (`swagger-ui-bundle.js`, `swagger-ui.css`, …) |
 
 Both endpoints are **open by default** (same posture as `/health` +
@@ -79,34 +79,34 @@ new OpenAPIDocsAutoConfiguration({
 For every public handler method the generator emits an operation with:
 
 - **Path + method** — from the route mapping (`:name` → `{name}`, `{*name}`
- greedy segments → `{name}`).
+  greedy segments → `{name}`).
 - **Parameters** — from `@parameters`: `queryValue`/`pathVariable`/
- `headerValue`/`cookieValue` map to the matching OpenAPI locations; path
- parameters are always required; `required`/`defaultValue` follow the
- extractor. A path template variable with no matching extractor (a route
- that matches on `:id` without binding it) is synthesized as a required
- string path parameter — the spec declares every `{name}` the path uses.
+  `headerValue`/`cookieValue` map to the matching OpenAPI locations; path
+  parameters are always required; `required`/`defaultValue` follow the
+  extractor. A path template variable with no matching extractor (a route
+  that matches on `:id` without binding it) is synthesized as a required
+  string path parameter — the spec declares every `{name}` the path uses.
 - **Request bodies** — `validatedBody` / `validatedBy` carry the **Zod
- schema** onto the parameter (the seam), and the generator renders it
- via zod's own `toJSONSchema`:
+  schema** onto the parameter (the seam), and the generator renders it
+  via zod's own `toJSONSchema`:
 
- ```ts
-    @postMapping('/notes')
-    @parameters({ data: validatedBody(insertSchemaForEntity(Note)) })
-    create(data: Record<string, unknown>) { … }
-    ```
+````ts
+   @postMapping('/notes')
+   @parameters({ data: validatedBody(insertSchemaForEntity(Note)) })
+   create(data: Record<string, unknown>) { … }
+   ```
 
- produces `requestBody.content['application/json'].schema` with
- `properties.title`, `required: ['title']`, `minLength: 1`, … — constraints
- declared once on the entity, documented automatically. Recursive schemas
- (zod's cycle `$ref`s) are hoisted into `components.schemas` and
- referenced by pointer, so every pointer in the document resolves.
+produces `requestBody.content['application/json'].schema` with
+`properties.title`, `required: ['title']`, `minLength: 1`, … — constraints
+declared once on the entity, documented automatically. Recursive schemas
+(zod's cycle `$ref`s) are hoisted into `components.schemas` and
+referenced by pointer, so every pointer in the document resolves.
 
 - **Multipart** — `fileValue`/`requestPart` parameters become
- `multipart/form-data` parts (`type: string, format: binary` for files).
+`multipart/form-data` parts (`type: string, format: binary` for files).
 - **Framework conditions with no OpenAPI equivalent** are preserved as
- `x-ndigo-*` extensions (e.g. `x-ndigo-matrixParams: ['color=red']`) instead
- of silently dropped.
+`x-ndigo-*` extensions (e.g. `x-ndigo-matrixParams: ['color=red']`) instead
+of silently dropped.
 
 Excluded by design: methodless catch-alls, `@privateMapping` routes, and
 `@apiDocs({ hidden: true })` handlers. The docs endpoints are excluded via
@@ -144,16 +144,16 @@ want richer operations:
 @getMapping('/reports')
 @parameters({ from: queryValue('from') })
 @apiDocs({
-    summary: 'List reports',
-    description: 'Paged report feed; returned newest first.',
-    tags: ['reports'],
-    operationId: 'listReports',
-    deprecated: true,
-    responses: { '200': reportPageSchema, '404': { description: 'Not found' } },
-    security: ['bearerAuth'],
+   summary: 'List reports',
+   description: 'Paged report feed; returned newest first.',
+   tags: ['reports'],
+   operationId: 'listReports',
+   deprecated: true,
+   responses: { '200': reportPageSchema, '404': { description: 'Not found' } },
+   security: ['bearerAuth'],
 })
 list(from: string | undefined) { … }
-```
+````
 
 `hidden: true` drops the operation from the spec entirely.
 
@@ -200,18 +200,18 @@ options, until it forwards them.)
 ## 4. Scope notes
 
 - **Spec generation is library-level**: `OpenAPISpecGenerator` in
- `@ndigo/openapi` takes any `getHandlerMethods`-providing mapping and
- returns the document — use it for offline CI generation or serving under a
- custom route without the auto-configuration.
+  `@ndigo/openapi` takes any `getHandlerMethods`-providing mapping and
+  returns the document — use it for offline CI generation or serving under a
+  custom route without the auto-configuration.
 - **Typed-client generation** is deferred (post-1.0): feed the served
- document to the ecosystem generators (openapi-generator, openapi-typescript).
+  document to the ecosystem generators (openapi-generator, openapi-typescript).
 - **Response schemas** are not inferred (the framework keeps no return-type
- metadata); declare them with `@apiDocs({ responses })`, otherwise the
- operation documents `200 OK`. The RFC 9457 `application/problem+json` error
- envelope as a `default` response is a recorded follow-up.
+  metadata); declare them with `@apiDocs({ responses })`, otherwise the
+  operation documents `200 OK`. The RFC 9457 `application/problem+json` error
+  envelope as a `default` response is a recorded follow-up.
 - **Assets are local** — no CDN; Swagger UI is served from
- `swagger-ui-dist` with the platform's static-file machinery (ETag,
- conditional GET, cache headers).
+  `swagger-ui-dist` with the platform's static-file machinery (ETag,
+  conditional GET, cache headers).
 
 ## See also
 

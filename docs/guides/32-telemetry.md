@@ -57,17 +57,17 @@ Ratios outside `[0, 1]` and NaN fail loud at configuration time.
 
 Each signal (`traceExporter` / `metricExporter` / `logExporter`) accepts:
 
-| Spec | Effect |
-| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `undefined` or `'console'` or `{ console: true }` | console exporter — the safe dev default; a missing url can no longer silently phone the default collector |
-| `'none'` | the signal's export path is disabled |
-| `'prometheus'` | **metric signal only**: registers the pull reader instead of the periodic push exporter; the management `/metrics` endpoint serves the meter snapshot |
-| `{ url, headers? }` | OTLP/HTTP; headers (e.g. bearer auth) are forwarded and never logged |
+| Spec                                              | Effect                                                                                                                                                |
+| ------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `undefined` or `'console'` or `{ console: true }` | console exporter — the safe dev default; a missing url can no longer silently phone the default collector                                             |
+| `'none'`                                          | the signal's export path is disabled                                                                                                                  |
+| `'prometheus'`                                    | **metric signal only**: registers the pull reader instead of the periodic push exporter; the management `/metrics` endpoint serves the meter snapshot |
+| `{ url, headers? }`                               | OTLP/HTTP; headers (e.g. bearer auth) are forwarded and never logged                                                                                  |
 
 OTLP urls are validated at configuration time — typos fail loud instead of
 failing at export time.
 
-### The metrics pull view — Prometheus and `/metrics` 
+### The metrics pull view — Prometheus and `/metrics`
 
 `metricExporter: 'prometheus'` replaces the push pipeline for metrics with a
 **pull reader over the SDK `MeterProvider`** — the same instruments, exposed
@@ -83,25 +83,25 @@ configureTelemetry({
 ```
 
 - `GET /metrics` serves the **Prometheus text exposition** document by
- default (`text/plain; version=0.0.4`) — the scraper contract. An
- `Accept: application/json` (or `application/*+json`) header returns the
- same snapshot as JSON (`{ metrics: { <name>: { type, unit, points } } }`);
- both views derive from the one meter snapshot, so the exported and the
- scraped picture can never diverge. Without a telemetry pull reader the
- endpoint serves the management auto-configuration's **feature-aggregator
- fallback** (REV-003): counters/gauges/durations from `counted` /
- `FeatureMetricAggregator` render as `{feature}.{name}` snapshots (durations
- as the histogram count/sum pair). With neither a reader nor the
- auto-configuration present, the endpoint answers
- `{ "error": "No metric source wired" }`.
+  default (`text/plain; version=0.0.4`) — the scraper contract. An
+  `Accept: application/json` (or `application/*+json`) header returns the
+  same snapshot as JSON (`{ metrics: { <name>: { type, unit, points } } }`);
+  both views derive from the one meter snapshot, so the exported and the
+  scraped picture can never diverge. Without a telemetry pull reader the
+  endpoint serves the management auto-configuration's **feature-aggregator
+  fallback** (REV-003): counters/gauges/durations from `counted` /
+  `FeatureMetricAggregator` render as `{feature}.{name}` snapshots (durations
+  as the histogram count/sum pair). With neither a reader nor the
+  auto-configuration present, the endpoint answers
+  `{ "error": "No metric source wired" }`.
 - Histograms render as the `<name>_count` counter + `<name>_sum` gauge pair
- (the exposition format has no histogram type); averages derive the
- usual way (`sum / count`).
+  (the exposition format has no histogram type); averages derive the
+  usual way (`sum / count`).
 - `HTTPServerInstrumentation` records the semconv
- **`http.server.request.duration`** histogram (seconds, explicit semconv
- buckets, `http.request.method` + `http.response.status_code` attributes)
- for every completed request — in **every** export mode, Prometheus or
- OTLP alike.
+  **`http.server.request.duration`** histogram (seconds, explicit semconv
+  buckets, `http.request.method` + `http.response.status_code` attributes)
+  for every completed request — in **every** export mode, Prometheus or
+  OTLP alike.
 
 `'prometheus'` is rejected for `traceExporter` / `logExporter` at
 configuration time (fail loud, naming the signal). One exporter per signal
@@ -169,18 +169,18 @@ processors had not yet exported.
 ## Limits
 
 - **Node**: `@ndigo/telemetry-node` manufacturers the exporter/processor
- plumbing; OTel env vars (`OTEL_*`) keep native precedence for raw OTel
- consumers — mixing the Ndigo options with `OTEL_*` is unsupported (one
- source of truth per deployment).
+  plumbing; OTel env vars (`OTEL_*`) keep native precedence for raw OTel
+  consumers — mixing the Ndigo options with `OTEL_*` is unsupported (one
+  source of truth per deployment).
 - See `docs/plans/2026-09-26_TELEMETRY_COMPLETION.md` and
- `docs/decisions/2026-09-26_AD32_TELEMETRY_COMPLETION.md` for decisions
- and known edge semantics.
+  `docs/decisions/2026-09-26_AD32_TELEMETRY_COMPLETION.md` for decisions
+  and known edge semantics.
 
 ## Package surfaces
 
 - `@ndigo/log` — loggers, severity mappings (dependency-light leaf)
 - `@ndigo/telemetry` — `currentTraceContext`, metrics, tracing decorators,
- framework instrumentations; re-exports the logging surface from `@ndigo/log`
+  framework instrumentations; re-exports the logging surface from `@ndigo/log`
 - `@ndigo/telemetry-node` — `configureTelemetry`, node instrumentations
 - `@ndigo/telemetry-web` — `configureBrowserTelemetry`
 

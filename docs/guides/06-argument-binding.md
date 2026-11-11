@@ -23,22 +23,22 @@ One coherent set of bindings, all read from the Route/dispatch context. Source
 is encoded in the type only where a whole source is bound into an object
 (`data-{source}:value`); otherwise each wire source is its own `*:value` type.
 
-| Binding | Factory | Type | Source | Nested? | Platform |
+| Binding         | Factory                                | Type                    | Source                                            | Nested? | Platform |
 | --------------- | -------------------------------------- | ----------------------- | ------------------------------------------------- | ------- | -------- |
-| Path variable | `pathVariable('id')` | `path:variable` | Route params (`:id`) | no | both |
-| Query | `queryValue(name)` | `query:value` | Route query | no | both |
-| Matrix | `matrixValue(name)` | `matrix:value` | Segment matrix | no | both |
-| Header | `headerValue(name)` | `header:value` | Request header | no | node |
-| Body | `bodyValue(name)`; no-arg = whole body | `body:value` | request body (JSON / urlencoded) | yes | node |
-| Cookie | `cookieValue(name)` | `cookie:value` | `document.cookie` / `request.cookies` | no | both |
-| History state | `historyStateValue(name)` | `history-state:value` | `history.state` | yes | browser |
-| Session storage | `sessionStorageValue(name)` | `session-storage:value` | `sessionStorage` | no | browser |
-| Local storage | `localStorageValue(name)` | `local-storage:value` | `localStorage` | no | browser |
-| Request session | `requestSessionValue(name)` | `request-session:value` | `request.session` | yes | node |
-| Attribute | `attributeValue(name)` | `attribute:value` | Framework context (`route.attributes`) | yes | both |
-| Data binding | `dataBinderValue(source, Target?)` | `data-{source}:value` | whole flat source → object (per-platform set, §2) | builds | both |
-| Request part | `requestPart(part?, Target?)` | `request-part:value` | multipart JSON/text part | JSON | node |
-| Socket session | `socketSessionValue(name)` | `socket-session:value` | Socket session | — | socket |
+| Path variable   | `pathVariable('id')`                   | `path:variable`         | Route params (`:id`)                              | no      | both     |
+| Query           | `queryValue(name)`                     | `query:value`           | Route query                                       | no      | both     |
+| Matrix          | `matrixValue(name)`                    | `matrix:value`          | Segment matrix                                    | no      | both     |
+| Header          | `headerValue(name)`                    | `header:value`          | Request header                                    | no      | node     |
+| Body            | `bodyValue(name)`; no-arg = whole body | `body:value`            | request body (JSON / urlencoded)                  | yes     | node     |
+| Cookie          | `cookieValue(name)`                    | `cookie:value`          | `document.cookie` / `request.cookies`             | no      | both     |
+| History state   | `historyStateValue(name)`              | `history-state:value`   | `history.state`                                   | yes     | browser  |
+| Session storage | `sessionStorageValue(name)`            | `session-storage:value` | `sessionStorage`                                  | no      | browser  |
+| Local storage   | `localStorageValue(name)`              | `local-storage:value`   | `localStorage`                                    | no      | browser  |
+| Request session | `requestSessionValue(name)`            | `request-session:value` | `request.session`                                 | yes     | node     |
+| Attribute       | `attributeValue(name)`                 | `attribute:value`       | Framework context (`route.attributes`)            | yes     | both     |
+| Data binding    | `dataBinderValue(source, Target?)`     | `data-{source}:value`   | whole flat source → object (per-platform set, §2) | builds  | both     |
+| Request part    | `requestPart(part?, Target?)`          | `request-part:value`    | multipart JSON/text part                          | JSON    | node     |
+| Socket session  | `socketSessionValue(name)`             | `socket-session:value`  | Socket session                                    | —       | socket   |
 
 **Nested-capable** sources (`body`, `request-session`, `history-state`,
 `attribute`) support dotted reads — `bodyValue('address.city')` walks the JSON
@@ -97,21 +97,21 @@ class ProfileController {
 Semantics to know:
 
 - **Plain object vs instance.** With no target, `dataBinderValue('body')`
- binds into a plain nested object. With a target constructor,
- `dataBinderValue('body', ProfileForm)`, the handler receives a real
- `instanceof ProfileForm` — `instanceof` checks require the target.
+  binds into a plain nested object. With a target constructor,
+  `dataBinderValue('body', ProfileForm)`, the handler receives a real
+  `instanceof ProfileForm` — `instanceof` checks require the target.
 - **Validation + whitelist.** The Zod `convert` hook runs after binding.
- Object schemas strip unknown keys by default (zod ^4.5.4 — there is no
- `.stripUnknown`); the no-schema path (`dataBinderValue(source)` without
- `validatedBy`) binds **everything** in the source.
+  Object schemas strip unknown keys by default (zod ^4.5.4 — there is no
+  `.stripUnknown`); the no-schema path (`dataBinderValue(source)` without
+  `validatedBy`) binds **everything** in the source.
 - **Coercion.** Binding is string-typed (form fields arrive as strings); the
- pipeline has no per-property conversion hook — `z.coerce.number` is the
- coercion surface.
+  pipeline has no per-property conversion hook — `z.coerce.number` is the
+  coercion surface.
 - **Missing value.** An absent whole source with `{ required: true }` throws
- `MissingParameterError` (→ 400). An empty-but-present source binds to an
- empty object.
+  `MissingParameterError` (→ 400). An empty-but-present source binds to an
+  empty object.
 - **Form + query stay separate** in v1 — query fields do not fold into form
- binding (a documented divergence from the reference framework's combined model-attribute binding).
+  binding (a documented divergence from the reference framework's combined model-attribute binding).
 
 Nested scalar reads coexist: `bodyValue('address.city')` reads one value out
 of the JSON body without binding.
@@ -145,7 +145,7 @@ path segment (`/books;color=red`). Repeated params (`;tag=a;tag=b`) and
 comma-joined values (`;id=1,2,3`) bind as arrays; the single-value path is
 unchanged.
 
-### 4.1 Typed condition builders 
+### 4.1 Typed condition builders
 
 Mapping conditions stay canonical expression strings (`queryParams:
 'filter=all'` — mapping tables deserialize from JSON and the registry
@@ -185,14 +185,14 @@ registerArgumentResolvers(context, resolvers);
 ```
 
 - `registerArgumentResolvers(applicationContext, resolvers)` writes the array
- to `ARGUMENT_RESOLVERS` and returns it — the single registration entry point
- both platform configure functions share, so custom registration behaves
- identically on Node and browser.
+  to `ARGUMENT_RESOLVERS` and returns it — the single registration entry point
+  both platform configure functions share, so custom registration behaves
+  identically on Node and browser.
 - **Resolution order is array order.** The adapter discovers the registered
- resolvers (then a stand-alone resolver under the `ARGUMENT_RESOLVER` token)
- and appends its built-ins — path, matrix, query, attribute, route. The first
- `supportsParameter` match wins, so prepending a resolver is how you
- specialize an existing source without replacing the chain:
+  resolvers (then a stand-alone resolver under the `ARGUMENT_RESOLVER` token)
+  and appends its built-ins — path, matrix, query, attribute, route. The first
+  `supportsParameter` match wins, so prepending a resolver is how you
+  specialize an existing source without replacing the chain:
 
 ```ts
 import { ARGUMENT_RESOLVERS, registerArgumentResolvers } from '@ndigo/dispatcher';

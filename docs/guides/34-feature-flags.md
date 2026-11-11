@@ -109,9 +109,9 @@ deterministically (FNV-1a) into the rollout:
 - keyed request with `bucket < rollout` → on (`reason: 'SPLIT'`);
 - keyed request outside the fraction → off (404, like any closed gate);
 - **untargeted requests** (no address) → off, unless rollout is `1` —
- experimental traffic is closed for anonymous callers;
+  experimental traffic is closed for anonymous callers;
 - invalid rollout values (non-number, outside [0, 1]) are ignored — the
- flag behaves statically.
+  flag behaves statically.
 
 The same key always lands in the same bucket, across processes and
 restarts. Rollouts compose with refresh: bump the fraction, refresh, and
@@ -159,28 +159,28 @@ reason/variant/error vocabulary is already OpenFeature's, and
 `flagMetadata` (config version, bucket info, …) rides the evaluation.
 
 - **Readiness**: `setProviderAndWait` resolves once the provider is ready;
- before that, evaluations return your defaults (never-throw holds).
+  before that, evaluations return your defaults (never-throw holds).
 - **Targeting**: providers target on the evaluation context — the gate
- seeds the session principal when a session/identity interceptor ran
- first, else the client IP; pass `{ targetingKey, attributes }` for
- programmatic checks. Apps register their own **`FLAG_CONTEXT_RESOLVER`**
- bean for tenant/attribute targeting from elsewhere in the request (the
- default resolver is `SessionPrincipalFlagContextResolver`; order your
- session interceptor before the gate to make principals visible).
+  seeds the session principal when a session/identity interceptor ran
+  first, else the client IP; pass `{ targetingKey, attributes }` for
+  programmatic checks. Apps register their own **`FLAG_CONTEXT_RESOLVER`**
+  bean for tenant/attribute targeting from elsewhere in the request (the
+  default resolver is `SessionPrincipalFlagContextResolver`; order your
+  session interceptor before the gate to make principals visible).
 - **Domains and clients**: `new OpenFeatureFlagEvaluator({ domain:
- 'checkout' })` reads that domain's provider; `{ client }` takes an
- explicitly built client.
+   'checkout' })` reads that domain's provider; `{ client }` takes an
+  explicitly built client.
 - **Telemetry**: register `FeatureFlagTelemetryHook` (this package) on a
- client or globally — one `feature_flag.evaluation` span per evaluation
- with the semconv attributes (key, provider, reason, variant,
- `error.type`); inert until `@ndigo/telemetry-node`/`-web` providers are
- wired, and the same instance works on the web SDK.
+  client or globally — one `feature_flag.evaluation` span per evaluation
+  with the semconv attributes (key, provider, reason, variant,
+  `error.type`); inert until `@ndigo/telemetry-node`/`-web` providers are
+  wired, and the same instance works on the web SDK.
 - **Provider choice**: flagd (`@openfeature/flagd-provider`) and OFREP
- (`@openfeature/ofrep-provider` — the vendor-neutral HTTP protocol)
- install the same way; both still carry maturity badges upstream, and JS
- push (SSE) is not implemented yet, so they poll.
+  (`@openfeature/ofrep-provider` — the vendor-neutral HTTP protocol)
+  install the same way; both still carry maturity badges upstream, and JS
+  push (SSE) is not implemented yet, so they poll.
 - **Tests**: the OpenFeature SDK's in-memory provider is the zero-infra
- stub — no vendor service needed.
+  stub — no vendor service needed.
 
 ## Browser apps (the web SDK)
 
@@ -213,11 +213,11 @@ registers on the web client with the same instance.
 ## What this is not
 
 - **Not** a registration gate — `@whenProperty` / `@whenProfile`
- (`@ndigo/core`) still decide what boots.
+  (`@ndigo/core`) still decide what boots.
 - **Not** automatic for service methods — non-route gating is an explicit
- `evaluate` check (or an interceptor when one is needed).
+  `evaluate` check (or an interceptor when one is needed).
 - **Not** a caching layer — the local provider is read-through by design;
- caching is a provider concern (a follow-up behind the SPI).
+  caching is a provider concern (a follow-up behind the SPI).
 
 Reference application: [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api) — the `/gated-report` demo route,
 grounded in `test/feature-flags.spec.ts`.

@@ -57,9 +57,11 @@ export class BloomFilter implements Serializable, Equatable<BloomFilter> {
     }
 
     static withTargetError(expectedItems: number, falsePositiveRate: number): BloomFilter {
-        if (!Number.isFinite(expectedItems) || expectedItems <= 0) throw new RangeError('expectedItems must be positive');
-        if (!Number.isFinite(falsePositiveRate) || falsePositiveRate <= 0 || falsePositiveRate >= 1) throw new RangeError('falsePositiveRate must be in (0,1)');
-        const m = Math.ceil(-(expectedItems * Math.log(falsePositiveRate)) / (Math.log(2) ** 2));
+        if (!Number.isFinite(expectedItems) || expectedItems <= 0)
+            throw new RangeError('expectedItems must be positive');
+        if (!Number.isFinite(falsePositiveRate) || falsePositiveRate <= 0 || falsePositiveRate >= 1)
+            throw new RangeError('falsePositiveRate must be in (0,1)');
+        const m = Math.ceil(-(expectedItems * Math.log(falsePositiveRate)) / Math.log(2) ** 2);
         const k = Math.max(1, Math.round((m / expectedItems) * Math.log(2)));
         return new BloomFilter(m, k);
     }

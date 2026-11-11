@@ -13,11 +13,7 @@
     "cores": 32,
     "memoryGb": 119,
     "governor": "performance",
-    "loadAverage": [
-      3.2,
-      3.35,
-      3
-    ]
+    "loadAverage": [3.2, 3.35, 3]
   },
   "durationMs": 354080,
   "quick": false,

@@ -405,7 +405,10 @@ function internComponents(
  * mt.qualityFactor; // 1
  * ```
  */
-export class MediaType extends Null implements Serializable, StringComparable<MediaType>, Equatable<MediaType>, Matchable<MediaType> {
+export class MediaType
+    extends Null
+    implements Serializable, StringComparable<MediaType>, Equatable<MediaType>, Matchable<MediaType>
+{
     /** Whether the subtype carries the experimental `x-` facet (RFC 6838 §4.2). */
     readonly experimental: boolean;
     /** Dot-separated subtype facets (e.g. `vnd.api+json` → `['vnd', 'api']`). */

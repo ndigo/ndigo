@@ -14,8 +14,16 @@ export class ResilienceInstrumentation extends AbstractBaseInstrumentation {
     }
 
     enable(): void {
-        this._wrap(CircuitBreakerInterceptor.prototype, 'invoke', this._patch({ name: 'CircuitBreaker.invoke', kind: SpanKind.INTERNAL }));
-        this._wrap(RetryInterceptor.prototype, 'invoke', this._patch({ name: 'Retry.invoke', kind: SpanKind.INTERNAL }));
+        this._wrap(
+            CircuitBreakerInterceptor.prototype,
+            'invoke',
+            this._patch({ name: 'CircuitBreaker.invoke', kind: SpanKind.INTERNAL })
+        );
+        this._wrap(
+            RetryInterceptor.prototype,
+            'invoke',
+            this._patch({ name: 'Retry.invoke', kind: SpanKind.INTERNAL })
+        );
     }
 
     disable(): void {

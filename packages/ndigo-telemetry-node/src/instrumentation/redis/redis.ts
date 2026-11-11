@@ -26,28 +26,73 @@ export class RedisInstrumentation extends AbstractBaseInstrumentation {
         this._wrap(RedisCache.prototype, 'clear', this._patch({ name: 'RedisCache.clear', kind: SpanKind.CLIENT }));
         this._wrap(RedisCache.prototype, 'size', this._patch({ name: 'RedisCache.size', kind: SpanKind.CLIENT }));
 
-        this._wrap(RedisLockDriver.prototype, 'acquire', this._patch({ name: 'RedisLock.acquire', kind: SpanKind.CLIENT }));
+        this._wrap(
+            RedisLockDriver.prototype,
+            'acquire',
+            this._patch({ name: 'RedisLock.acquire', kind: SpanKind.CLIENT })
+        );
         this._wrap(RedisLockDriver.prototype, 'close', this._patch({ name: 'RedisLock.close', kind: SpanKind.CLIENT }));
 
-        this._wrap(RedisRateLimiter.prototype, 'consume', this._patch({ name: 'RedisRateLimit.consume', kind: SpanKind.CLIENT }));
-        this._wrap(RedisRateLimiter.prototype, 'close', this._patch({ name: 'RedisRateLimit.close', kind: SpanKind.CLIENT }));
+        this._wrap(
+            RedisRateLimiter.prototype,
+            'consume',
+            this._patch({ name: 'RedisRateLimit.consume', kind: SpanKind.CLIENT })
+        );
+        this._wrap(
+            RedisRateLimiter.prototype,
+            'close',
+            this._patch({ name: 'RedisRateLimit.close', kind: SpanKind.CLIENT })
+        );
 
-        this._wrap(RedisJobDriver.prototype, 'enqueue', this._patch({ name: 'RedisJob.enqueue', kind: SpanKind.CLIENT }));
+        this._wrap(
+            RedisJobDriver.prototype,
+            'enqueue',
+            this._patch({ name: 'RedisJob.enqueue', kind: SpanKind.CLIENT })
+        );
         this._wrap(RedisJobDriver.prototype, 'claim', this._patch({ name: 'RedisJob.claim', kind: SpanKind.CLIENT }));
-        this._wrap(RedisJobDriver.prototype, 'complete', this._patch({ name: 'RedisJob.complete', kind: SpanKind.CLIENT }));
+        this._wrap(
+            RedisJobDriver.prototype,
+            'complete',
+            this._patch({ name: 'RedisJob.complete', kind: SpanKind.CLIENT })
+        );
         this._wrap(RedisJobDriver.prototype, 'retry', this._patch({ name: 'RedisJob.retry', kind: SpanKind.CLIENT }));
         this._wrap(RedisJobDriver.prototype, 'fail', this._patch({ name: 'RedisJob.fail', kind: SpanKind.CLIENT }));
-        this._wrap(RedisJobDriver.prototype, 'heartbeat', this._patch({ name: 'RedisJob.heartbeat', kind: SpanKind.CLIENT }));
+        this._wrap(
+            RedisJobDriver.prototype,
+            'heartbeat',
+            this._patch({ name: 'RedisJob.heartbeat', kind: SpanKind.CLIENT })
+        );
         this._wrap(RedisJobDriver.prototype, 'size', this._patch({ name: 'RedisJob.size', kind: SpanKind.CLIENT }));
         this._wrap(RedisJobDriver.prototype, 'close', this._patch({ name: 'RedisJob.close', kind: SpanKind.CLIENT }));
 
-        this._wrap(RedisSocketFanout.prototype, 'publish', this._patch({ name: 'RedisFanout.publish', kind: SpanKind.CLIENT }));
-        this._wrap(RedisSocketFanout.prototype, 'subscribe', this._patch({ name: 'RedisFanout.subscribe', kind: SpanKind.CLIENT }));
+        this._wrap(
+            RedisSocketFanout.prototype,
+            'publish',
+            this._patch({ name: 'RedisFanout.publish', kind: SpanKind.CLIENT })
+        );
+        this._wrap(
+            RedisSocketFanout.prototype,
+            'subscribe',
+            this._patch({ name: 'RedisFanout.subscribe', kind: SpanKind.CLIENT })
+        );
 
-        // eslint-disable-next-line typescript/no-explicit-any
-        this._wrap(RedisConnection.prototype as any, 'run' as any, this._patch({ name: 'RedisConnection.run', kind: SpanKind.CLIENT }) as any);
-        this._wrap(RedisConnection.prototype, 'connect', this._patch({ name: 'RedisConnection.connect', kind: SpanKind.CLIENT }));
-        this._wrap(RedisConnection.prototype, 'close', this._patch({ name: 'RedisConnection.close', kind: SpanKind.CLIENT }));
+        /* oxlint-disable typescript/no-explicit-any -- `run` receives a callback whose parameter types are generic; instrumentation patches the method by name */
+        this._wrap(
+            RedisConnection.prototype as any,
+            'run' as any,
+            this._patch({ name: 'RedisConnection.run', kind: SpanKind.CLIENT }) as any
+        );
+        /* oxlint-enable typescript/no-explicit-any */
+        this._wrap(
+            RedisConnection.prototype,
+            'connect',
+            this._patch({ name: 'RedisConnection.connect', kind: SpanKind.CLIENT })
+        );
+        this._wrap(
+            RedisConnection.prototype,
+            'close',
+            this._patch({ name: 'RedisConnection.close', kind: SpanKind.CLIENT })
+        );
     }
 
     disable(): void {

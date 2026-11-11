@@ -47,7 +47,8 @@
   },
   "peerDependencies": {
     "@ndigo/auth-client": "~0.0.1"
-  },  "files": [
+  },
+  "files": [
     "api",
     "lib"
   ]

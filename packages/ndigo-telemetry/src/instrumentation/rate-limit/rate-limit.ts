@@ -14,7 +14,11 @@ export class RateLimitInstrumentation extends AbstractBaseInstrumentation {
     }
 
     enable(): void {
-        this._wrap(FixedWindowRateLimiter.prototype, 'consume', this._patch({ name: 'RateLimit.consume', kind: SpanKind.INTERNAL }));
+        this._wrap(
+            FixedWindowRateLimiter.prototype,
+            'consume',
+            this._patch({ name: 'RateLimit.consume', kind: SpanKind.INTERNAL })
+        );
     }
 
     disable(): void {

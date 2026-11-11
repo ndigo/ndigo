@@ -14,10 +14,14 @@ export class BootInstrumentation extends AbstractBaseInstrumentation {
     }
 
     enable(): void {
-        this._wrap(Application.prototype, 'run', this._patch({
-            name: 'Application.run',
-            kind: SpanKind.INTERNAL,
-        }));
+        this._wrap(
+            Application.prototype,
+            'run',
+            this._patch({
+                name: 'Application.run',
+                kind: SpanKind.INTERNAL,
+            })
+        );
     }
 
     disable(): void {

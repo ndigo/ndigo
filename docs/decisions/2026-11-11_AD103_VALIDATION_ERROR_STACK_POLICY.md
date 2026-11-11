@@ -1,10 +1,10 @@
 # AD-103: Validation-error stack capture — one stack per failure
 
 **Date:** 2026-11-11
-**Status:** Proposed — recommends keeping the thrown
-`ParameterConversionError` stack and constructing its `ZodValidationError`
-cause without stack capture. No implementation until sign-off; #387/#393
-landed the empty-shape failure templates with the two-error shape unchanged.
+**Status:** Accepted (2026-11-11) — keeps the thrown
+`ParameterConversionError` stack and constructs its `ZodValidationError`
+cause without stack capture. Implementation tracked in #403; #387/#393 landed
+the empty-shape failure templates with the two-error shape unchanged.
 
 ## Context
 
@@ -118,10 +118,9 @@ Neutral: on engines without `Error.stackTraceLimit`, the cause keeps a stack.
   share for the cause stack. Keeping the cause with a suppressed stack costs
   0.18 µs over dropping it entirely, so D-1 retains the structured `issues` at
   essentially the single-error price.
-- **On acceptance:** file the implementation issue against
-  `@ndigo/dispatcher`. The change is confined to `toConversionError` /
-  `validatedBy` plus a V8-guarded test asserting the thrown error has a stack
-  and the cause does not.
+- **Implementation:** filed as #403 against `@ndigo/dispatcher`. The change is
+  confined to `toConversionError` / `validatedBy` plus a V8-guarded test
+  asserting the thrown error has a stack and the cause does not.
 - **Companions:** [AD-07](2026-09-05_AD07_ZOD_VALIDATION.md) (Zod binding),
   [AD-91](2026-11-02_AD91_1_0_API_FREEZE.md) (error-surface freeze),
   [AD-94](2026-11-06_AD94_ERROR_LINEAGE.md) (error lineage).

@@ -65,9 +65,12 @@ committed reference class.
 
 The clean serial baseline is
 [`benchmarks/baselines/reference.json`](benchmarks/baselines/reference.json)
-(run artifact `2026-11-11T01-03-43-b8cc6b3788f0.json`, commit `b8cc6b37`,
-`dirty: false`, 133 scenarios, 247 s). All values are `ns/op` (lower is
-better); ratios use the same artifact. Absolute numbers move with host state;
+(run artifact `2026-11-11T17-32-40-d3fc4f3445fd.json`, commit `d3fc4f34`,
+`dirty: false`, 191 scenarios, 319 s). It supersedes the pre-serial-harness
+recording; regenerate it with `pnpm bench:update` whenever the harness or the
+estate changes materially. All values are `ns/op` (lower is better); ratios use
+the same artifact. The curated tables below are drawn from their own targeted
+artifacts, named in each section; absolute numbers move with host state, so
 compare ratios within a run.
 
 ### Routing parity — same work

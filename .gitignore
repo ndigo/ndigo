@@ -4,6 +4,8 @@
 .scratch/
 .vscode
 archive
+!docs/decisions/archive/
+!docs/decisions/archive/**
 coverage
 lerna-debug.log
 node_modules

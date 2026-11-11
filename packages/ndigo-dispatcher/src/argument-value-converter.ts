@@ -185,18 +185,22 @@ function resolveTypeConverter(sourceType: unknown, targetType: unknown): Argumen
  * @param convertType - The source/target type pair.
  * @returns The matching converter, or an identity converter.
  */
-export function resolveConverter(convertType?: { source: unknown; target: unknown }): ArgumentValueConverter {
-    // Use type-based conversion via ConversionService
-    if (convertType && convertType.source && convertType.target) {
-        const typeConverter = resolveTypeConverter(convertType.source, convertType.target);
+const converterCache = new Map<object, ArgumentValueConverter>();
 
-        if (typeConverter) {
-            return typeConverter;
-        }
+export function resolveConverter(convertType?: { source: unknown; target: unknown }): ArgumentValueConverter {
+    // Fast path: no conversion required.
+    if (!convertType || !convertType.source || !convertType.target) {
+        return identityArgumentValueConverter;
     }
 
-    // Default to identity converter when no conversion is needed
-    return identityArgumentValueConverter;
+    const cached = converterCache.get(convertType);
+    if (cached) return cached;
+
+    // Use type-based conversion via ConversionService
+    const typeConverter = resolveTypeConverter(convertType.source, convertType.target);
+    const result = typeConverter ?? identityArgumentValueConverter;
+    converterCache.set(convertType, result);
+    return result;
 }
 
 function getParameterTypeName(parameter: MethodParameter): string {

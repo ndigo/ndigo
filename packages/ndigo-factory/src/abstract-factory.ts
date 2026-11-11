@@ -67,11 +67,13 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
      */
     #scopeRegistry!: ScopeRegistry;
     /**
-     * Registered instance names, kept as a Set so `hasInstance` is a uniform,
-     * fast lookup instead of a per-name `hasOwnProperty` probe (which V8
-     * slows down unevenly depending on the property name).
+     * Registered instances by name. A Map (not just a name Set) so `getValue`
+     * reads the value without a megamorphic own-property lookup: with many
+     * factory shapes in one process, `this[name]` degrades to a dictionary
+     * probe, while `Map.get` stays shape-independent. Keys are registered
+     * names; `undefined` is a legal registered value (presence is `has`).
      */
-    #instanceNames = new Set<string>();
+    #instances = new Map<string, unknown>();
     /**
      * Registered constructor names (without the leading `$`).
      */
@@ -212,7 +214,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
         }
 
         if (this.hasInstance(name)) {
-            const value = this[name];
+            const value = this.#instances.get(name);
             if (likeDestroyable(value)) {
                 this._applyProcessorsBeforeDestruction(name, value);
                 value.destroy();
@@ -220,7 +222,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
                 value.close();
             }
             deleteProperty(this, name);
-            this.#instanceNames.delete(name);
+            this.#instances.delete(name);
         }
 
         if (this.hasConstructor(name)) {
@@ -279,9 +281,11 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
     getValue<T = unknown>(nameOrToken: string | ContextToken<T>, argumentsList: unknown[] = []): T {
         const name = typeof nameOrToken === 'string' ? nameOrToken : nameOrToken.description;
 
-        if (this.hasInstance(name)) {
-            // The value was stored under `name` via `setValue<T>`, so it is `T`.
-            return this[name] as T;
+        // Hot path: one shape-independent Map probe. `undefined` is a legal
+        // registered value, so presence needs the second check only then.
+        const cached = this.#instances.get(name);
+        if (cached !== undefined || this.#instances.has(name)) {
+            return cached as T;
         }
 
         if (this.hasConstructor(name)) {
@@ -306,7 +310,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
                     enumerable: false,
                     writable: false,
                 });
-                this.#instanceNames.add(name);
+                this.#instances.set(name, value);
             }
 
             return value;
@@ -423,7 +427,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
      * @returns `true` if an instance is registered, `false` otherwise.
      */
     hasInstance(name: string): boolean {
-        return this.#instanceNames.has(name);
+        return this.#instances.has(name);
     }
 
     /**
@@ -553,7 +557,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
                 enumerable: true,
                 writable: false,
             });
-            this.#instanceNames.add(name);
+            this.#instances.set(name, value);
             const stored = this[name];
 
             if (likeEnumerable(stored)) {

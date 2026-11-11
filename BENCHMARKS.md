@@ -191,6 +191,16 @@ representative, 32-source, and access-mix workloads. ORM writes were the
 largest per-operation cost in the estate and the target of the next deep
 optimization pass; the schema-cache change below removes that cost.
 
+**Optimization (#402):** instance registrations now keep a `Map<string, unknown>`
+alongside the own property, so `getValue`'s hot path reads the Map instead of a
+megamorphic own-property lookup (factory shapes vary with the context's value
+count). Same-host A/B, serial lane, two runs: bean lookups 19.6 → 8.6–10.1 ns
+(−49 to −56%), `ContextToken` 19.75 → 10.2 ns, dynamic 1/1,000 values
+17.4–19.3 → 11.8–13.1 ns (−32 to −36%), 10/100 values −45 to −51%.
+`hasValue` hit moves 2.4 → 3.5–3.6 ns (still under 4.5), miss unchanged. The
+Map shares lifetime with the property: `destroyValue` and the proxy delete
+trap remove both.
+
 **Optimization (this branch):** `schemaForEntity` / `insertSchemaForEntity`
 memoize the derived Zod schema per entity class in module-level `WeakMap`s
 instead of rebuilding `z.object` from metadata on every `persist`. Same-host

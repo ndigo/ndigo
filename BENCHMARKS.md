@@ -264,6 +264,25 @@ inconclusive at 5.78%. The throwing-reader path costs ~14× the normal
 evaluate path — the no-throw contract is not free. No comparator is
 published for either package (no upstream baseline in the estate).
 
+### Socket STOMP frame codec (Phase 4)
+
+`@ndigo/socket` STOMP 1.2 message hot path. Every fixture is round-trip
+verified before timing; byte-wire frames keep binary bodies (codec D8).
+Artifact `2026-11-11T02-49-…json` (see `bench:report`), commit `850f92983`.
+
+| Scenario                            |   ns/op |                  RME |
+| :---------------------------------- | ------: | -------------------: |
+| serializeStompFrame (text body)     |  907.67 |                0.24% |
+| template floor (no escape/validate) |    0.55 |                0.05% |
+| parseStompFrame (text wire)         | 1090.23 |                0.50% |
+| parseStompFrame (byte wire)         | 2223.72 | 2.22% (inconclusive) |
+| serialize 2KiB body                 |  999.95 |                0.15% |
+| parse 2KiB body                     | 1075.32 |                0.13% |
+
+Notes: escaping/validation/codec work makes serialization ~1650× the
+template floor — expected, the floor is less work, not an alternative.
+Body size barely moves the cost (validation dominates, not copying).
+
 ### Rate limit, locks, and log (Phase 4)
 
 `@ndigo/rate-limit` `FixedWindowRateLimiter`, `@ndigo/locks`

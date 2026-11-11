@@ -479,7 +479,9 @@ snapshot in §3 remains the **before** record; the current serial baseline is
 | D15 comparator provenance       | `lru-cache`, `qs`, and `cookie` are pinned devDependencies; router versions were already pinned in the dispatcher manifest.                           |
 
 **Still open:** a keep-alive/production-build variant of the macro HTTP lane,
-the real-browser DOM runner, and Phase 4 component coverage (resilience,
-socket, serialization, view SSR, telemetry). Cache, flags, signals (incl.
-`@effect`), rate-limit, locks, and log-disabled-dispatch benches landed.
-The nightly non-gating CI lane is added (`.github/workflows/benchmarks.yml`).
+the real-browser DOM runner, and Phase 4 coverage for resilience, view SSR,
+and telemetry. The serialization row was dropped as not measurable (TOON is a
+config-file-only peer seam, not a hot path). Landed: cache, flags, signals
+(incl. `@effect`), rate-limit, locks, log-disabled dispatch, socket STOMP
+codec. The nightly non-gating CI lane is added
+(`.github/workflows/benchmarks.yml`).

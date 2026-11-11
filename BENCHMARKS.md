@@ -105,9 +105,9 @@ ratio.
 
 | Scenario                   |   Ndigo | Comparator                       |                              Ratio |
 | :------------------------- | ------: | :------------------------------- | ---------------------------------: |
-| LRU `get` hit              |   56.93 | `lru-cache` 30.00                |                       1.90× slower |
-| LRU `set` existing         |   29.48 | `lru-cache` 17.74                |                       1.66× slower |
-| LRU `set` eviction         |  101.55 | `lru-cache` 102.45               |                  parity (RME > 2%) |
+| LRU `get` hit              |   49.05 | `lru-cache` 30.57                |                       1.60× slower |
+| LRU `set` existing         |   24.07 | `lru-cache` 17.39                |                       1.38× slower |
+| LRU `set` eviction         |  107.08 | `lru-cache` 101.47               |                  parity (RME > 2%) |
 | MultiValueMap `add`        |   13.91 | raw `Map` 13.75                  |                       1.01× slower |
 | MultiValueMap `get`        |    6.11 | raw `Map` 6.11                   |                             parity |
 | MultiValueMap `remove`     |   15.02 | raw `Map` 15.41                  |                       1.03× faster |
@@ -126,6 +126,12 @@ ratio.
 The cookie parser and LRU `get` are the clearest commodity-level optimization
 targets. The ring buffer and path-matcher cache are clear wins within their
 intended workloads.
+
+The first optimization from this harness landed in `@ndigo/core`: `LRUCache.get`
+and `set` now perform one `Map` lookup instead of two on the hit path
+(`get` 56.93 → 49.05 ns, `set` 29.48 → 24.07 ns on the reference host). The
+remaining gap to `lru-cache` is the recency `delete` + re-insert, not the
+presence check.
 
 ### Property index, context, bindings, and ORM
 

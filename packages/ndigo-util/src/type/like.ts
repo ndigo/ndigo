@@ -130,17 +130,17 @@ function checkLike(cached: { keys: string[]; types: (Function | true)[]; isTrue:
             // Undefined property values fail
             if (prop == null) return false;
 
-            // Type checking using typeof and Object.prototype.toString for common types
             const type = types[i];
             if (type === Function) {
                 if (typeof prop !== 'function') return false;
-            } else if (type === Boolean || type === Number || type === String || type === Object) {
-                // toString for reliable primitive + boxed detection
-                const tag = Object.prototype.toString.call(prop);
-                if (type === Boolean && tag !== '[object Boolean]') return false;
-                else if (type === Number && tag !== '[object Number]') return false;
-                else if (type === String && tag !== '[object String]') return false;
-                else if (type === Object && tag !== '[object Object]') return false;
+            } else if (type === Boolean) {
+                if (typeof prop !== 'boolean' && !(prop instanceof Boolean)) return false;
+            } else if (type === Number) {
+                if (typeof prop !== 'number' && !(prop instanceof Number)) return false;
+            } else if (type === String) {
+                if (typeof prop !== 'string' && !(prop instanceof String)) return false;
+            } else if (type === Object) {
+                if (Object.prototype.toString.call(prop) !== '[object Object]') return false;
             } else {
                 // Descriptor values are Function | true; the isTrue branch handled `true`
                 const Ctor = type as Function;

@@ -140,10 +140,19 @@ const APP_DEV_DIRS = new Set(['test', 'e2e']);
  * invoked by name from package scripts (never imported) and asset-only runtime
  * deps copied by the bundler rather than imported by code.
  */
-const APP_TOOLING = new Set([...TOOLING, 'vite', '@playwright/test']);
+const APP_TOOLING = new Set([
+    ...TOOLING,
+    'vite',
+    '@playwright/test',
+    'storybook',
+    '@storybook/addon-a11y',
+    '@storybook/web-components-vite',
+    'lit',
+]);
 const APP_ASSET_DEPS = new Set([
     'swagger-ui-dist', // ndigo-api serves the docs UI assets (asset-only, like the platform peer)
     'todomvc-app-css', // ndigo-todo-web copies the TodoMVC stylesheet
+    '@ndigo/ui', // Storybook consumes tokens/base CSS only
 ]);
 
 /**

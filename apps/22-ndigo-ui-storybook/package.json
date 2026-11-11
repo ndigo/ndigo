@@ -1,0 +1,29 @@
+{
+  "name": "@ndigo/ui-storybook",
+  "version": "0.0.1",
+  "description": "Storybook for the Ndigo UI registry components",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "storybook": "storybook dev -p 6007",
+    "build-storybook": "storybook build",
+    "test": "vitest run --config vitest.config.ts"
+  },
+  "keywords": [
+    "ndigo",
+    "ndigo-ui",
+    "storybook"
+  ],
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@ndigo/ui": "~0.0.1"
+  },
+  "devDependencies": {
+    "@storybook/addon-a11y": "^10.6.7",
+    "@storybook/web-components-vite": "^10.6.7",
+    "lit": "^3.3.0",
+    "storybook": "^10.6.7",
+    "vite": "catalog:"
+  }
+}

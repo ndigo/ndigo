@@ -167,14 +167,27 @@ export class RadixMetadataHandlerMapping
         // Candidates are keyed by the canonical pattern, so registrations whose
         // spellings normalize to this node all participate.
         const candidates = this.#candidatesByPattern.get(match.value.canonicalKey) ?? [];
-        const matching = candidates.filter(
-            ({ mapping }) =>
-                mapping.queryCondition.match(route) !== null &&
-                mapping.matrixCondition.match(route) !== null &&
-                mapping.methodCondition.match(route) !== null
-        );
+        // Single-pass candidate selection: the hot path is usually one
+        // candidate, but filter()+reduce() cost an array allocation and two
+        // closures per request even then. One loop tracks the most-specific
+        // mapping that passes all three conditions, and ties keep the first
+        // registered candidate — identical winner semantics to the old
+        // `reduce` (strictly-less-than replaces, so an equal `compareTo`
+        // keeps the earlier candidate).
+        let winner: RadixEntry | null = null;
+        let winnerMapping: RadixEntry['mapping'] | null = null;
+        for (const candidate of candidates) {
+            const { mapping } = candidate;
+            if (mapping.queryCondition.match(route) === null) continue;
+            if (mapping.matrixCondition.match(route) === null) continue;
+            if (mapping.methodCondition.match(route) === null) continue;
+            if (winnerMapping === null || mapping.compareTo(winnerMapping, route) < 0) {
+                winner = candidate;
+                winnerMapping = mapping;
+            }
+        }
 
-        if (matching.length === 0) {
+        if (winner === null) {
             // RFC 9110 §15.5.6: when the path exists but no handler accepts the
             // request method, that's 405 Method Not Allowed, not 404. Distinguish
             // "path + params match, only the method differs" from a true no-match:
@@ -200,11 +213,7 @@ export class RadixMetadataHandlerMapping
             return this._handleNoMatch([], path, route);
         }
 
-        // When multiple candidates pass, pick the most specific via compareTo.
-        const winner =
-            matching.length === 1
-                ? matching[0]
-                : matching.reduce((best, c) => (c.mapping.compareTo(best.mapping, route) < 0 ? c : best));
+        // `winner` holds the single most-specific candidate from the pass above.
 
         this._handleMatch(winner.mapping, path, route);
 

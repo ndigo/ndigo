@@ -105,6 +105,16 @@ Full resolution costs roughly 2.5–6.0× the raw lookup on the hit scenarios;
 the miss is 1.3×. That is the price of the framework semantics and the number
 to optimize, not the external-router ratio.
 
+**Optimization (this branch):** candidate selection in
+`RadixMetadataHandlerMapping._getHandler` was rewritten from
+`filter()`+`reduce()` (an array allocation and two closures per request) to a
+single-pass loop with identical winner semantics (ties keep the first
+candidate; the 405 no-match path is unchanged). Same-host A/B, RME < 0.4%:
+`getHandler(/users)` −8.1%, `(/users/42)` −8.5%, deep route −2.6%, rotation
+−3.1%; the miss row is unchanged. 42/42 mapping specs pass. The deep-route
+row remains radix/condition-bound — the next target is condition caching for
+static routes.
+
 ### Containers and parsers
 
 | Scenario                   |   Ndigo | Comparator                       |                                Ratio |

@@ -495,6 +495,8 @@ function principalFromPayload(payload: JWTPayload): Principal {
     }
     const roles = readRoles(payload);
     const scopes = readScopes(payload);
+    const roleSet = new Set(roles);
+    const scopeSet = new Set(scopes);
     return {
         id: sub,
         name:
@@ -503,10 +505,10 @@ function principalFromPayload(payload: JWTPayload): Principal {
             'Unknown',
         roles,
         scopes,
-        hasRole: (role: string) => roles.includes(role),
-        hasAnyRole: (...wanted: string[]) => wanted.some((role) => roles.includes(role)),
-        hasScope: (scope: string) => scopes.includes(scope),
-        hasAnyScope: (...wanted: string[]) => wanted.some((scope) => scopes.includes(scope)),
+        hasRole: (role: string) => roleSet.has(role),
+        hasAnyRole: (...wanted: string[]) => wanted.some((role) => roleSet.has(role)),
+        hasScope: (scope: string) => scopeSet.has(scope),
+        hasAnyScope: (...wanted: string[]) => wanted.some((scope) => scopeSet.has(scope)),
     };
 }
 

@@ -19,7 +19,7 @@
  * strictly FIFO.
  * @internal
  */
-import { RingBuffer } from '@ndigo/core';
+import { RingBuffer, Deque } from '@ndigo/core';
 
 /**
  * Push-to-pull adapter: producers `push()` inbound values, consumers iterate or
@@ -36,7 +36,7 @@ export class AsyncReader<T> {
      * message of every session and client stream).
      */
     readonly #queue: RingBuffer<T>;
-    readonly #waiter: Array<() => void> = [];
+    readonly #waiter: Deque<() => void> = new Deque<() => void>();
     #completed = false;
     readonly #maxQueue: number;
     readonly #maxBytes: number | null;

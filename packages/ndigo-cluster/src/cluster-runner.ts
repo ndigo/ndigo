@@ -17,6 +17,7 @@
  */
 import { spawn } from 'node:child_process';
 import { getLogger } from '@ndigo/log';
+import { Deque } from '@ndigo/core';
 
 const logger = getLogger('ndigo-cluster:runner');
 
@@ -217,7 +218,7 @@ interface SlotState {
     exitCode: number | null;
     restarts: number;
     /** Clock timestamps of this slot's respawns within the current window. */
-    restartTimes: number[];
+    restartTimes: Deque<number>;
     /** The supervised lifecycle loop; resolved when the slot settles. */
     readonly loop: Promise<void>;
 }
@@ -451,7 +452,7 @@ export class ClusterRunner {
             status: 'starting',
             exitCode: null,
             restarts: 0,
-            restartTimes: [],
+            restartTimes: new Deque<number>(),
             loop: Promise.resolve().then(() => this.#supervise(state)),
         };
         return state;
@@ -520,7 +521,9 @@ export class ClusterRunner {
     async #scheduleRestart(state: SlotState): Promise<boolean> {
         const now = this.#clock();
         const windowStart = now - this.#options.restartWindowMs;
-        state.restartTimes = state.restartTimes.filter((at) => at > windowStart);
+        while (state.restartTimes.length > 0 && (state.restartTimes.peekFront() as number) <= windowStart) {
+            state.restartTimes.shift();
+        }
         if (state.restartTimes.length >= this.#options.maxRestartsPerWindow) {
             // The trip message is logged once by #teardown in #supervise.
             return false;

@@ -3,9 +3,12 @@
  */
 import { decodeURIComponent as decode } from '@ndigo/util/string';
 
-const cookieValueRule = /^[^;,\s]*/,
-    percentEncodedRule = /(%[0-9A-Za-z]{2})+/g,
-    percentDecode = (value: string): string => value.replace(percentEncodedRule, decode);
+const percentEncodedRule = /(%[0-9A-Za-z]{2})+/g;
+
+const percentDecode = (value: string): string => {
+    if (value.indexOf('%') === -1) return value;
+    return value.replace(percentEncodedRule, decode);
+};
 
 /**
  * Parses a `Cookie` header string into a name→value record, percent-decoding
@@ -26,7 +29,18 @@ export function parseCookieHeader(input: string): Record<string, string> {
         const eqIdx = pair.indexOf('=');
         if (eqIdx >= 0) {
             const rawKey = pair.slice(0, eqIdx);
-            const rawValue = (cookieValueRule.exec(pair.slice(eqIdx + 1)) ?? [''])[0];
+
+            const valueStart = eqIdx + 1;
+            let valueEnd = valueStart;
+            const pairLen = pair.length;
+            while (valueEnd < pairLen) {
+                const ch = pair.charCodeAt(valueEnd);
+                // `;` `,` or whitespace terminates the value.
+                if (ch === 59 || ch === 44 || ch === 32 || ch === 9 || ch === 10 || ch === 13 || ch === 12) break;
+                valueEnd++;
+            }
+            const rawValue = pair.slice(valueStart, valueEnd);
+
             result[percentDecode(rawKey)] = percentDecode(rawValue);
         }
         pos = end + 2; // advance past '; '

@@ -17,6 +17,9 @@ export class Heap<T> implements Serializable, Equatable<Heap<T>> {
         return 'Heap';
     }
 
+    /**
+     * Number of stored values.
+     */
     get size(): number {
         return this.#items.length;
     }
@@ -64,12 +67,23 @@ export class Heap<T> implements Serializable, Equatable<Heap<T>> {
         }
     }
 
+    /**
+     * Inserts a value.
+     *
+     * @param value - The value to insert.
+     * @returns This heap, for chaining.
+     */
     push(value: T): this {
         this.#items.push(value);
         this.#siftUp(this.#items.length - 1);
         return this;
     }
 
+    /**
+     * Removes and returns the root (smallest by the comparator).
+     *
+     * @returns The root value, or `undefined` when the heap is empty.
+     */
     pop(): T | undefined {
         const n = this.#items.length;
         if (n === 0) return undefined;
@@ -82,36 +96,73 @@ export class Heap<T> implements Serializable, Equatable<Heap<T>> {
         return root;
     }
 
+    /**
+     * Returns the root without removing it.
+     *
+     * @returns The root value, or `undefined` when the heap is empty.
+     */
     peek(): T | undefined {
         return this.#items.length === 0 ? undefined : this.#items[0];
     }
 
+    /**
+     * Removes every value.
+     */
     clear(): void {
         this.#items = [];
     }
 
+    /**
+     * Copies the values in internal heap order.
+     *
+     * @returns A new array of the stored values.
+     */
     toArray(): T[] {
         return [...this.#items];
     }
 
+    /**
+     * Copies and sorts the values by the heap's comparator.
+     *
+     * @returns A new array in comparator order.
+     */
     toSorted(): T[] {
         const copy = [...this.#items];
         copy.sort(this.#compare);
         return copy;
     }
 
+    /**
+     * Yields values in internal heap order.
+     */
     *[Symbol.iterator](): Iterator<T> {
         for (const item of this.#items) yield item;
     }
 
+    /**
+     * Returns the JSON form in internal heap order.
+     *
+     * @returns A JSON array of the stored values.
+     */
     toJSON(): JSONArray {
         return this.toArray().map((v) => serialize(v)) as JSONArray;
     }
 
+    /**
+     * Renders the values as a comma-separated string.
+     *
+     * @returns The serialized values.
+     */
     toString(): string {
         return this.toJSON().join(',');
     }
 
+    /**
+     * Compares the sorted contents, independent of internal layout.
+     *
+     * @param value - The candidate to compare against.
+     * @returns `true` when both heaps hold equal values in comparator order.
+     */
     equals(value: unknown): boolean {
         if (!(value instanceof Heap)) return false;
         if (value.size !== this.#items.length) return false;
@@ -131,6 +182,9 @@ export class Heap<T> implements Serializable, Equatable<Heap<T>> {
 export class PriorityQueue<T> {
     #heap: Heap<T>;
 
+    /**
+     * Number of queued values.
+     */
     get size(): number {
         return this.#heap.size;
     }
@@ -139,39 +193,81 @@ export class PriorityQueue<T> {
         this.#heap = new Heap<T>(compare);
     }
 
+    /**
+     * Adds a value to the queue.
+     *
+     * @param value - The value to enqueue.
+     * @returns This queue, for chaining.
+     */
     enqueue(value: T): this {
         this.#heap.push(value);
         return this;
     }
 
+    /**
+     * Removes and returns the highest-priority value.
+     *
+     * @returns The value that compares lowest, or `undefined` when empty.
+     */
     dequeue(): T | undefined {
         return this.#heap.pop();
     }
 
+    /**
+     * Returns the highest-priority value without removing it.
+     *
+     * @returns The value that compares lowest, or `undefined` when empty.
+     */
     peek(): T | undefined {
         return this.#heap.peek();
     }
 
+    /**
+     * Removes every queued value.
+     */
     clear(): void {
         this.#heap.clear();
     }
 
+    /**
+     * Copies the values in internal heap order.
+     *
+     * @returns A new array of the queued values.
+     */
     toArray(): T[] {
         return this.#heap.toArray();
     }
 
+    /**
+     * Copies and sorts the values by priority.
+     *
+     * @returns A new array in comparator order.
+     */
     toSorted(): T[] {
         return this.#heap.toSorted();
     }
 
+    /**
+     * Yields values in internal heap order.
+     */
     [Symbol.iterator](): Iterator<T> {
         return this.#heap[Symbol.iterator]();
     }
 
+    /**
+     * Returns the JSON form in internal heap order.
+     *
+     * @returns A JSON array of the queued values.
+     */
     toJSON(): JSONArray {
         return this.#heap.toJSON();
     }
 
+    /**
+     * Renders the values as a comma-separated string.
+     *
+     * @returns The serialized values.
+     */
     toString(): string {
         return this.#heap.toString();
     }

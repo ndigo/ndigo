@@ -45,7 +45,7 @@ export class HTTPClientInstrumentation extends AbstractBaseInstrumentation {
                         span.setAttribute('error.type', 'http');
                     }
                 },
-            // eslint-disable-next-line typescript/no-explicit-any
+                // eslint-disable-next-line typescript/no-explicit-any
             }) as any
         );
     }

@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { beforeEach, afterEach, describe, test, expect } from 'vitest';
 import { configuration, entry } from '@ndigo/context';
-import { bootApp, MockHTTP } from '@ndigo/test';
+import { bootNodeApp, MockHTTP } from '@ndigo/test';
 import { StaticController } from '@ndigo/platform-node';
 
 /**
@@ -26,7 +26,7 @@ function bootStatic(dir: string): { mockHTTP: MockHTTP; close: () => void } {
             return new StaticController(dir);
         }
     }
-    const app = bootApp([StaticFixtureConfiguration]);
+    const app = bootNodeApp([StaticFixtureConfiguration]);
     return { mockHTTP: new MockHTTP(app), close: app.close };
 }
 

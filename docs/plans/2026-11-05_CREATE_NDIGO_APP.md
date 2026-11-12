@@ -46,7 +46,7 @@ is exercisable today.
   inheritance, `moduleResolution: bundler`, `rewriteRelativeImportExtensions`).
 - `src/index.ts` — `createNodeApplication([AppConfiguration], { port: 3000 })`.
 - `src/app-configuration.ts`, `src/app-controller.ts` (one handler).
-- `test/app.smoke.spec.ts` — `bootApp` + `MockHTTP` against `/hello`.
+- `test/app.smoke.spec.ts` — `bootNodeApp` + `MockHTTP` against `/hello`.
 - `README.md`.
 
 ### browser

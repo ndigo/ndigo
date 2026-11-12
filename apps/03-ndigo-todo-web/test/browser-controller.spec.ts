@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import '@tsmetadata/polyfill';
 import { describe, test, beforeAll, afterAll, expect } from 'vitest';
-import { bootBrowserApp, BrowserMockClient } from '@ndigo/test';
+import { bootWebApp, BrowserMockClient } from '@ndigo/test';
 import AccountController from '../src/account-controller';
 
 /**
@@ -15,7 +15,7 @@ describe('ndigo-todo-web AccountController via BrowserMockClient', () => {
     let close: () => void;
 
     beforeAll(async () => {
-        const app = await bootBrowserApp([AccountController]);
+        const app = await bootWebApp([AccountController]);
         browser = new BrowserMockClient(app);
         close = app.close;
     });

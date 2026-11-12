@@ -213,7 +213,7 @@ graft refreshed.
 ### Phase 3 — Platform integration + telemetry
 
 7. `NodeAutoConfiguration.taskScheduler()` entry + registry wiring;
-   bootApp/`bootApp`-style integration tests (scheduled class registered →
+   bootNodeApp/`bootNodeApp`-style integration tests (scheduled class registered →
    ticks after refresh).
 8. Run span + counter metric per task (`@ndigo/telemetry` peer dep, the
    service-call span pattern); tests: mock OTel provider captures span +

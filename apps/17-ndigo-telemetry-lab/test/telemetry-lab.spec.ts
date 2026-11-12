@@ -12,7 +12,7 @@
 // @vitest-environment node
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 import { ManagementAutoConfiguration } from '@ndigo/management';
-import { bootApp, MockHTTP } from '@ndigo/test';
+import { bootNodeApp, MockHTTP } from '@ndigo/test';
 import type { NdigoTestApp } from '@ndigo/test';
 import { LAB_FEATURE } from '../src/lab-metrics';
 import { MetricSnapshot, registerMetricSnapshotProvider, unregisterMetricSnapshotProvider } from '@ndigo/telemetry';
@@ -45,7 +45,7 @@ describe('ndigo-telemetry-lab HTTP surface', () => {
     let mockHTTP: MockHTTP;
 
     beforeAll(() => {
-        app = bootApp([ManagementAutoConfiguration, TelemetryLabConfiguration]);
+        app = bootNodeApp([ManagementAutoConfiguration, TelemetryLabConfiguration]);
         // Same widening the bootstrap applies, so the served page carries the
         // CSP the browser half needs (WebSocket on 'self').
         applyLabSecurityHeaders(app.context, resolveLabTelemetry());

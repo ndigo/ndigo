@@ -2,7 +2,7 @@
 import '@tsmetadata/polyfill';
 import { describe, test, beforeAll, afterAll, expect } from 'vitest';
 import { configuration, entry } from '@ndigo/context';
-import { bootBrowserApp, BrowserMockClient } from '@ndigo/test';
+import { bootWebApp, BrowserMockClient } from '@ndigo/test';
 import IndexController from '../src/index-controller';
 import TodoService from '../src/todo-service';
 
@@ -34,7 +34,7 @@ describe('IndexController through BrowserMockClient', () => {
     let close: () => void;
 
     beforeAll(async () => {
-        const app = await bootBrowserApp([IndexTestConfiguration]);
+        const app = await bootWebApp([IndexTestConfiguration]);
         browser = new BrowserMockClient(app);
         close = app.close;
     });

@@ -14,6 +14,6 @@ Boot helpers for `@ndigo/test` — boot a Ndigo application context and wire a.
 
 ## Functions
 
-- [bootApp](functions/bootApp.md)
-- [cachedBootApp](functions/cachedBootApp.md)
-- [releaseCachedApp](functions/releaseCachedApp.md)
+- [bootNodeApp](functions/bootNodeApp.md)
+- [cachedBootNodeApp](functions/cachedBootNodeApp.md)
+- [releaseCachedNodeApp](functions/releaseCachedNodeApp.md)

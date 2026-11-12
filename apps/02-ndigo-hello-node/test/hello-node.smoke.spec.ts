@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
-import { bootApp, MockHTTP } from '@ndigo/test';
+import { bootNodeApp, MockHTTP } from '@ndigo/test';
 import type { NdigoTestApp } from '@ndigo/test';
 import { HelloConfiguration } from '../src/hello-configuration';
 
@@ -13,7 +13,7 @@ describe('ndigo-hello-node smoke', () => {
     let mockHTTP: MockHTTP;
 
     beforeAll(() => {
-        app = bootApp([HelloConfiguration]);
+        app = bootNodeApp([HelloConfiguration]);
         mockHTTP = new MockHTTP(app);
     });
 

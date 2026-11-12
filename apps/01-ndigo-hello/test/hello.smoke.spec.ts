@@ -3,18 +3,18 @@
  * `WebAutoConfiguration` path and dispatches the root route through the
  * framework pipeline (handler mapping → controller → WebComponentView),
  * driven by the shared `@ndigo/test` browser harness (`bootWebApp` +
- * `BrowserMockClient`; guide 36 §3).
+ * `MockWebClient`; guide 36 §3).
  */
 // @vitest-environment jsdom
 import '@tsmetadata/polyfill';
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
-import { bootWebApp, BrowserMockClient, installSynchronousAnimationFrames } from '@ndigo/test';
+import { bootWebApp, MockWebClient, installSynchronousAnimationFrames } from '@ndigo/test';
 // Side effect: registers the `hello-app` custom element.
 import '../src/hello-app-view';
 import HelloController from '../src/hello-controller';
 
 describe('ndigo-hello smoke', () => {
-    let browser: BrowserMockClient;
+    let browser: MockWebClient;
     let close: () => void;
 
     beforeAll(async () => {
@@ -22,7 +22,7 @@ describe('ndigo-hello smoke', () => {
         // fires in jsdom — fire it synchronously (same as the other app specs).
         installSynchronousAnimationFrames();
         const app = await bootWebApp([HelloController]);
-        browser = new BrowserMockClient(app);
+        browser = new MockWebClient(app);
         close = app.close;
     });
 

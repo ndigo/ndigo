@@ -1,22 +1,22 @@
 // @vitest-environment jsdom
 import '@tsmetadata/polyfill';
 import { describe, test, beforeAll, afterAll, expect } from 'vitest';
-import { bootWebApp, BrowserMockClient } from '@ndigo/test';
+import { bootWebApp, MockWebClient } from '@ndigo/test';
 import AccountController from '../src/account-controller';
 
 /**
- * Real ndigo-todo-web controller through BrowserMockClient: dispatches `/account`
+ * Real ndigo-todo-web controller through MockWebClient: dispatches `/account`
  * and `/account/settings` through the real BrowserDispatcher and asserts the
  * model produced by the actual AccountController — no stubbed context.
  */
 
-describe('ndigo-todo-web AccountController via BrowserMockClient', () => {
-    let browser: BrowserMockClient;
+describe('ndigo-todo-web AccountController via MockWebClient', () => {
+    let browser: MockWebClient;
     let close: () => void;
 
     beforeAll(async () => {
         const app = await bootWebApp([AccountController]);
-        browser = new BrowserMockClient(app);
+        browser = new MockWebClient(app);
         close = app.close;
     });
 

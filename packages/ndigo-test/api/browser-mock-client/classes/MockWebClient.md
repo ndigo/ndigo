@@ -2,9 +2,9 @@
 
 ***
 
-[@ndigo/test](../../README.md) / [browser-mock-client](../README.md) / BrowserMockClient
+[@ndigo/test](../../README.md) / [browser-mock-client](../README.md) / MockWebClient
 
-# Class: BrowserMockClient
+# Class: MockWebClient
 
 Socket-free mock MVC client for browser applications. Dispatches routes
 through the real `BrowserDispatcher` and captures the rendered view.
@@ -13,7 +13,7 @@ through the real `BrowserDispatcher` and captures the rendered view.
 
 ### Constructor
 
-> **new BrowserMockClient**(`app`): `BrowserMockClient`
+> **new MockWebClient**(`app`): `MockWebClient`
 
 Creates a client around a booted browser app.
 
@@ -27,7 +27,7 @@ A booted browser app.
 
 #### Returns
 
-`BrowserMockClient`
+`MockWebClient`
 
 ## Accessors
 

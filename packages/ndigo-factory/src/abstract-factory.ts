@@ -39,6 +39,13 @@ import { getLogger } from '@ndigo/log';
 const logger = getLogger('ndigo-factory:abstract-factory');
 
 /**
+ * Stored in the instance map for a value registered as `undefined`, so
+ * `getValue` distinguishes "registered undefined" from "absent" with the same
+ * single `Map.get` a hit uses.
+ */
+const registeredUndefined = Symbol('registeredUndefined');
+
+/**
  * `true` when `value` is a function usable with `new`. The `Reflect.construct`
  * probe rejects arrow functions and shorthand methods, which `typeof` alone
  * cannot distinguish from constructors.
@@ -70,10 +77,17 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
      * Registered instances by name. A Map (not just a name Set) so `getValue`
      * reads the value without a megamorphic own-property lookup: with many
      * factory shapes in one process, `this[name]` degrades to a dictionary
-     * probe, while `Map.get` stays shape-independent. Keys are registered
-     * names; `undefined` is a legal registered value (presence is `has`).
+     * probe, while `Map.get` stays shape-independent. A registered `undefined`
+     * is stored as {@link registeredUndefined}, so presence never needs a
+     * second probe.
      */
     #instances = new Map<string, unknown>();
+    /**
+     * Registered instance names. Kept alongside the Map because `Map.has` is
+     * slower than `Set.has`, and presence checks (`hasValue`/`hasInstance`)
+     * outnumber reads in guard-heavy code.
+     */
+    #instanceNames = new Set<string>();
     /**
      * Registered constructor names (without the leading `$`).
      */
@@ -215,14 +229,17 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
 
         if (this.hasInstance(name)) {
             const value = this.#instances.get(name);
-            if (likeDestroyable(value)) {
-                this._applyProcessorsBeforeDestruction(name, value);
-                value.destroy();
-            } else if (likeCloseable(value)) {
-                value.close();
+            if (value !== undefined && value !== registeredUndefined) {
+                if (likeDestroyable(value)) {
+                    this._applyProcessorsBeforeDestruction(name, value);
+                    value.destroy();
+                } else if (likeCloseable(value)) {
+                    value.close();
+                }
             }
             deleteProperty(this, name);
             this.#instances.delete(name);
+            this.#instanceNames.delete(name);
         }
 
         if (this.hasConstructor(name)) {
@@ -281,11 +298,11 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
     getValue<T = unknown>(nameOrToken: string | ContextToken<T>, argumentsList: unknown[] = []): T {
         const name = typeof nameOrToken === 'string' ? nameOrToken : nameOrToken.description;
 
-        // Hot path: one shape-independent Map probe. `undefined` is a legal
-        // registered value, so presence needs the second check only then.
+        // Hot path: one shape-independent Map probe for both hits and misses.
+        // A registered `undefined` is stored as the sentinel.
         const cached = this.#instances.get(name);
-        if (cached !== undefined || this.#instances.has(name)) {
-            return cached as T;
+        if (cached !== undefined) {
+            return (cached === registeredUndefined ? undefined : cached) as T;
         }
 
         if (this.hasConstructor(name)) {
@@ -310,7 +327,8 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
                     enumerable: false,
                     writable: false,
                 });
-                this.#instances.set(name, value);
+                this.#instances.set(name, value === undefined ? registeredUndefined : value);
+                this.#instanceNames.add(name);
             }
 
             return value;
@@ -427,7 +445,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
      * @returns `true` if an instance is registered, `false` otherwise.
      */
     hasInstance(name: string): boolean {
-        return this.#instances.has(name);
+        return this.#instanceNames.has(name);
     }
 
     /**
@@ -557,7 +575,8 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
                 enumerable: true,
                 writable: false,
             });
-            this.#instances.set(name, value);
+            this.#instances.set(name, value === undefined ? registeredUndefined : value);
+            this.#instanceNames.add(name);
             const stored = this[name];
 
             if (likeEnumerable(stored)) {

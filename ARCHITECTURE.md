@@ -2,28 +2,6 @@
 
 Ndigo is a JavaScript-first application framework built on the enduring architectural principles that modern DI-and-dispatch frameworks share — inversion of control, declarative metadata, a layered object graph, and platform portability — adapted for the multi-paradigm (OOP + FP) JavaScript ecosystem.
 
-## Table of Contents
-
-1. [Core Philosophy](#core-philosophy)
-2. [Foundational Principles](#foundational-principles)
-    - [SOLID Principles](#solid-principles)
-    - [DRY Principle](#dry-principle)
-3. [Layered Architecture](#layered-architecture)
-4. [Paradigm Selection Rules](#paradigm-selection-rules)
-5. [Dependency Management Strategy](#dependency-management-strategy)
-6. [Design Patterns](#design-patterns)
-7. [Decorators & Separation of Concerns](#decorators--separation-of-concerns)
-    - [Cross-Cutting Concerns](#cross-cutting-concerns)
-    - [Decorator Metadata](#decorator-metadata)
-    - [Performance Considerations](#performance-considerations)
-    - [Creating Custom Decorators](#creating-custom-decorators)
-    - [Standards Compliance](#standards-compliance)
-8. [Naming Conventions](#naming-conventions)
-9. [Module Visibility & API Design](#module-visibility--api-design)
-10. [Contract-First Patterns](#contract-first-patterns)
-11. [Node Platform & Application Lifecycle](#node-platform--application-lifecycle)
-12. [Roadmap](#roadmap)
-
 ## Core Philosophy
 
 1. **Universal JavaScript**: Designed to run anywhere—browser, Node.js, or hybrid environments.
@@ -568,7 +546,7 @@ Mark Seemann's formula: **Cost of duplication = C × p** where:
 
 If **p ≈ 0**, duplication cost is effectively zero.
 
-#### AHA Programming: Avoid Hasty Abstractions
+#### AHA Programming
 
 Coined by Cher Scarlett, popularized by Kent C. Dodds. **AHA programming** recognizes that both WET (Write Everything Twice) and overly-DRY solutions can create rigid, difficult-to-maintain software.
 
@@ -699,7 +677,7 @@ Don't create abstractions for hypothetical future use. Abstract when you have ac
 
 #### Utility Function Organization
 
-From STYLE_GUIDE.md Section 4.5, Ndigo uses a hierarchical approach:
+From [Utility Function Organization](./STYLE_GUIDE.md#44-utility-function-organization), Ndigo uses a hierarchical approach:
 
 1. **1 file uses** → Keep inline (regex patterns, constants)
 2. **3+ files (same category)** → Extract to dedicated file (`email-validator.ts`)
@@ -708,7 +686,7 @@ From STYLE_GUIDE.md Section 4.5, Ndigo uses a hierarchical approach:
 
 **Critical Rule:** Internal files must contain **actual local utility functions**, not just pass-through re-exports.
 
-**See also:** STYLE_GUIDE.md Section 4.5 for detailed examples and file size guidelines.
+**See also:** [Utility Function Organization](./STYLE_GUIDE.md#44-utility-function-organization) for detailed examples and file size guidelines.
 
 ---
 
@@ -851,7 +829,7 @@ This architecture supports multiple deployment topologies:
 
 Future platform bindings (for example `@ndigo/platform-node`) can provide server-specific router/environment/resource implementations without changing isomorphic core contracts.
 
-### Architecture Overview
+### Dependency Diagram
 
 The following diagram illustrates dependency flow and major package groupings:
 
@@ -1111,92 +1089,92 @@ graph TD
 
 Canonical reference for every publishable package: purpose · layer · platform · runtime dependencies. The **Runtime deps** column lists Ndigo dependencies only; notable external libraries appear in parentheses in the **Purpose** column (illustrative, not exhaustive — the package manifest is the source of truth for externals). `scripts/check-manifests.mjs` (CI, `pnpm manifest:check`) enforces that every runtime import is declared and every declared dependency is used; the columns below are maintained by hand from the manifests — update this table whenever manifests or imports change.
 
-| Package                                                                       | Layer   | Platform | Purpose                                                                                                                                                                    | Runtime deps                                                                                      |
-| :---------------------------------------------------------------------------- | :------ | :------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------ |
-| `@ndigo/util`                                                                 | 0       | iso      | Zero-dependency leaf toolkit: type guards, strings, environment, crypto                                                                                                    | —                                                                                                 |
-| `@ndigo/dom`                                                                  | 0       | iso      | Isomorphic DOM parsing/creation (`linkedom`)                                                                                                                               | —                                                                                                 |
-| `@ndigo/core`                                                                 | 1       | iso      | Primitives, collections, radix tree, metadata, events (`semver`, `zod`)                                                                                                    | `util`                                                                                            |
-| `@ndigo/signals`                                                              | 1       | iso      | Reactive state: signals, computed, effects (`@preact/signals-core`)                                                                                                        | `log`                                                                                             |
-| `@ndigo/log`                                                                  | 1       | iso      | Logging core: logger abstraction, severity mappings, threshold filtering (`@opentelemetry/api`)                                                                            | —                                                                                                 |
-| `@ndigo/factory`                                                              | 2       | iso      | IoC container: scopes, lifecycle, entry/aware processors                                                                                                                   | `core`, `log`, `util`                                                                             |
-| `@ndigo/content`                                                              | 2       | iso      | i18n content keys, themes, `MessageSource` contract                                                                                                                        | `core`, `factory`, `util`                                                                         |
-| `@ndigo/content-i18next`                                                      | 2       | iso      | i18next `MessageSource` adapter (`i18next`)                                                                                                                                | `content`                                                                                         |
-| `@ndigo/cache`                                                                | 2       | iso      | Cache manager + `@cached` decorator (AD-24)                                                                                                                                | `context`, `factory`, `log`                                                                       |
-| `@ndigo/orm`                                                                  | 2       | iso      | Repository/data-mapper persistence abstractions, `@entity` decorators (`zod`)                                                                                              | `core`, `factory`                                                                                 |
-| `@ndigo/orm-drizzle`                                                          | 2       | node     | Drizzle ORM adapter for `@ndigo/orm` (`drizzle-orm`, `drizzle-zod`, `@libsql/client`)                                                                                      | `auth-core`, `core`, `jobs`, `orm`, `socket`, `util`                                              |
-| `@ndigo/proxy`                                                                | 2       | iso      | Method interception: annotation-driven advice weaving (`@tsmetadata/polyfill`)                                                                                             | `core`, `factory`, `log`                                                                          |
-| `@ndigo/resilience`                                                           | 2       | iso      | Resilience policies: `@retry` + `@circuitBreaker` interceptors                                                                                                             | `proxy`                                                                                           |
-| `@ndigo/rate-limit`                                                           | 2       | iso      | Fixed-window rate limiting: `RateLimiter` SPI (async, AD-79), `FixedWindowRateLimiter`, `RATE_LIMITER` token (AD-33/AD-79)                                                 | `factory`                                                                                         |
-| `@ndigo/flags`                                                                | 2       | iso      | Feature flags (AD-82): `FlagEvaluator` SPI (typed, async, never-throw), `PropertyFlagProvider`, `@whenFeature` gate metadata, `FLAG_EVALUATOR` token                       | `factory`                                                                                         |
-| `@ndigo/flags-openfeature`                                                    | 2       | node     | OpenFeature bridge (`@openfeature/server-sdk`, peer): `FlagEvaluator` over an OpenFeature client — vendors (flagd, OFREP, LaunchDarkly, …) behind the SPI (AD-87)          | `flags`                                                                                           |
-| `@ndigo/context`                                                              | 3       | iso      | Application context, environments, configuration, events (`zod`)                                                                                                           | `content`, `core`, `factory`, `log`, `util`                                                       |
-| `@ndigo/http`                                                                 | 4       | iso      | Fetch client, interceptors, content parsing, transforms (`@opentelemetry/api`)                                                                                             | `core`, `factory`, `util`                                                                         |
-| `@ndigo/router`                                                               | 4       | iso      | Route registry, path partitions, feature routing                                                                                                                           | `core`, `factory`, `http`, `log`, `util`                                                          |
-| `@ndigo/telemetry`                                                            | 4       | iso      | OTel surface: metrics, tracing decorators, framework instrumentations; re-exports `@ndigo/log`                                                                             | `context`, `core`, `dispatcher`, `log`, `router`                                                  |
-| `@ndigo/socket`                                                               | 4       | iso      | WebSocket domain: STOMP client, session contracts (AD-21/22/23)                                                                                                            | `core`, `signals`                                                                                 |
-| `@ndigo/scheduler`                                                            | 4       | node     | Cron scheduling: `@scheduled`, task registry, tracing (`croner`)                                                                                                           | `context`, `core`, `factory`, `locks`, `log`, `util`                                              |
-| `@ndigo/jobs`                                                                 | 4       | node     | Durable job queues, worker execution, transactional outbox (AD-72) (`@opentelemetry/api`)                                                                                  | `context`, `core`, `factory`, `log`, `util`                                                       |
-| `@ndigo/locks`                                                                | 4       | node     | Distributed locks + fencing tokens (AD-73): in-process default driver, `@scheduled({lock})` seam                                                                           | `core`, `factory`                                                                                 |
-| `@ndigo/redis`                                                                | 4       | node     | Redis backends: shared cache + pub/sub fan-out + jobs/lock/rate-limit drivers (AD-79) (`@redis/client`; peers `cache`, `factory`, `jobs`, `locks`, `rate-limit`, `socket`) | `core`, `log`                                                                                     |
-| `@ndigo/view`                                                                 | 5       | iso      | Views, `ViewTarget`s, content negotiation, serialization                                                                                                                   | `context`, `core`, `factory`, `http`, `router`, `util`                                            |
-| `@ndigo/view-webcomponent`                                                    | 5       | browser  | Web Component view technology plus WebMCP tool declaration                                                                                                                 | `context`, `core`, `dispatcher`, `factory`, `log`, `router`, `view`                               |
-| `@ndigo/view-ejs`                                                             | 5       | node     | EJS server-side template view technology (`ejs`)                                                                                                                           | `view`, `content`, `context`, `core`, `router`                                                    |
-| `@ndigo/view-toon`                                                            | 5       | iso      | TOON view technology: `text/toon` output, negotiation resolver, prompt encoder (AD-102) (`@toon-format/toon`)                                                              | `view`, `core`                                                                                    |
-| `@ndigo/dispatcher`                                                           | 5       | iso      | Front controller: request dispatch, parameter binding, radix handler mappings (`zod`)                                                                                      | `view`, `router`, `http`, `socket`, `context`, `content`, `core`, `factory`, `log`, `util`        |
-| `@ndigo/service`                                                              | 6       | iso      | Typed service clients, SSE/streaming (`zod`)                                                                                                                               | `http`, `context`, `core`, `factory`, `util`                                                      |
-| `@ndigo/management`                                                           | 6       | node     | Actuator endpoints: `/health`, `/metrics` (meter snapshot — Prometheus text + JSON, AD-77)                                                                                 | `context`, `core`, `dispatcher`, `http`, `log`, `platform-node`, `telemetry`, `util`              |
-| `@ndigo/openapi`                                                              | 6       | iso      | OpenAPI 3.0.3 generation from dispatch metadata (`zod`)                                                                                                                    | `core`, `dispatcher`, `http`                                                                      |
-| `@ndigo/mcp`                                                                  | 6       | node     | MCP tools projected from dispatch metadata: stdio + Streamable HTTP, resources, GenAI spans (`@modelcontextprotocol/sdk`)                                                  | `core`, `dispatcher`, `flags`, `inspect`, `platform-node`, `router`                               |
-| `@ndigo/ai`                                                                   | 4       | iso      | Provider-neutral agent contracts and a bounded tool-calling loop over MCP tools                                                                                            | `core`, `flags`, `rate-limit`                                                                     |
-| `@ndigo/ai-sdk`                                                               | 5       | iso      | Vercel AI SDK integration layer (`ai`): the only package that imports the SDK                                                                                              | `ai`                                                                                              |
-| `@ndigo/host`                                                                 | 6       | browser  | Micro-frontend shell orchestration, feature mounting (AD-18)                                                                                                               | `context`, `core`, `router`                                                                       |
-| `@ndigo/auth-core`                                                            | 6       | iso      | Auth contracts: principal, sessions, password encoders, `@authenticated`/`@authorized`                                                                                     | —                                                                                                 |
-| `@ndigo/auth-client`                                                          | 6       | browser  | Client auth: `AuthClient`, `ClientAuthGuard`, OIDC (`jose`)                                                                                                                | `auth-core`, `http`, `util`                                                                       |
-| `@ndigo/auth-server`                                                          | 6       | node     | Server auth: `AuthServer`, `AuthRouteGuard`, JWT (`jose`)                                                                                                                  | `auth-core`, `dispatcher`, `router`, `util`                                                       |
-| `@ndigo/platform-node`                                                        | 6       | node     | Node platform: HTTP server adapter, auto-configuration, static files, multipart (`busboy`, `helmet`, `ws`)                                                                 | 18 Ndigo deps — hub                                                                               |
-| `@ndigo/cluster`                                                              | 6       | node     | Process supervisor: replicated worker slots, signal relay, bounded restarts (AD-74)                                                                                        | `log`                                                                                             |
-| `@ndigo/cli`                                                                  | 6       | node     | Framework CLI: serve/build/test/db/generate/inspect/doctor, the UI registry and MCP server (`ui`), on `@stricli/core` + `@modelcontextprotocol/sdk` (AD-75)                | `cluster`, `@stricli/core`                                                                        |
-| `@ndigo/platform-web`                                                         | 6       | browser  | Browser platform glue: dispatcher, history/cookie/data-binding resolvers, theme                                                                                            | 12 Ndigo deps — hub                                                                               |
-| `@ndigo/telemetry-node`                                                       | 6       | node     | OTel NodeSDK wiring + Node instrumentations (10 OTel packages; peer `ws`)                                                                                                  | `telemetry`, `platform-node`, `router`, `socket`, `view`, `log`                                   |
-| `@ndigo/telemetry-web`                                                        | 6       | browser  | Browser SDK wiring + web instrumentations (8 OTel packages)                                                                                                                | `log`, `platform-web`, `socket`, `telemetry`                                                      |
-| `@ndigo/test`                                                                 | 6       | iso      | In-process request dispatch test harness (MockMVC-style)                                                                                                                   | `platform-node`, `platform-web`, `dispatcher`, `router`, `view`, `context`, `http`, `log`, `util` |
-| `@ndigo/boot`                                                                 | 7       | node     | Application bootstrap: profiles, typed config, `run()` (`zod`; peer `@toon-format/toon`)                                                                                   | `context`, `core`, `factory`, `log`, `router`, `util`                                             |
-| `@ndigo/oxlint-plugin`                                                        | tooling | —        | Consumer-facing oxlint rules (CI) (`@oxlint/plugins`; peer `oxlint`); repo-only rules live in root `src/oxlint/`                                                           | —                                                                                                 |
-| `@ndigo/inspect`                                                              | tooling | —        | App manifest: routes, handler mappings, declared configuration keys (programmatic API + demo script)                                                                       | `context`, `core`, `dispatcher`, `router`                                                         |
-| `@ndigo/ui`                                                                   | tooling | iso      | Design-system tokens, opt-in base layer, typed token catalog, and the copy-in registry contract                                                                            | —                                                                                                 |
-| `create-ndigo-app`                                                            | tooling | —        | Standalone Ndigo application scaffolder (node or browser)                                                                                                                  | —                                                                                                 |
-| Repo-only tooling lives outside `packages/` (AD-93): the internal lint rules  |
-| in root [`src/oxlint/`](src/oxlint/README.md), the Nx generator collection in |
-| [`tools/generators/`](tools/generators/README.md), and one-shot probes in     |
-| `scripts/`.                                                                   |
+| Package                    | Layer   | Platform | Purpose                                                                                                                                                            | Runtime deps                                                                                      |
+| :------------------------- | :------ | :------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------ |
+| `@ndigo/util`              | 0       | iso      | Zero-dependency leaf toolkit: type guards, strings, environment, crypto                                                                                            | —                                                                                                 |
+| `@ndigo/dom`               | 0       | iso      | Isomorphic DOM parsing/creation (`linkedom`)                                                                                                                       | —                                                                                                 |
+| `@ndigo/core`              | 1       | iso      | Primitives, collections, radix tree, metadata, events (`semver`, `zod`)                                                                                            | `util`                                                                                            |
+| `@ndigo/signals`           | 1       | iso      | Reactive state: signals, computed, effects (`@preact/signals-core`)                                                                                                | `log`                                                                                             |
+| `@ndigo/log`               | 1       | iso      | Logging core: logger abstraction, severity mappings, threshold filtering (`@opentelemetry/api`)                                                                    | —                                                                                                 |
+| `@ndigo/factory`           | 2       | iso      | IoC container: scopes, lifecycle, entry/aware processors                                                                                                           | `core`, `log`, `util`                                                                             |
+| `@ndigo/content`           | 2       | iso      | i18n content keys, themes, `MessageSource` contract                                                                                                                | `core`, `factory`, `util`                                                                         |
+| `@ndigo/content-i18next`   | 2       | iso      | i18next `MessageSource` adapter (`i18next`)                                                                                                                        | `content`                                                                                         |
+| `@ndigo/cache`             | 2       | iso      | Cache manager + `@cached` decorator                                                                                                                                | `context`, `factory`, `log`                                                                       |
+| `@ndigo/orm`               | 2       | iso      | Repository/data-mapper persistence abstractions, `@entity` decorators (`zod`)                                                                                      | `core`, `factory`                                                                                 |
+| `@ndigo/orm-drizzle`       | 2       | node     | Drizzle ORM adapter for `@ndigo/orm` (`drizzle-orm`, `drizzle-zod`, `@libsql/client`)                                                                              | `auth-core`, `core`, `jobs`, `orm`, `socket`, `util`                                              |
+| `@ndigo/proxy`             | 2       | iso      | Method interception: annotation-driven advice weaving (`@tsmetadata/polyfill`)                                                                                     | `core`, `factory`, `log`                                                                          |
+| `@ndigo/resilience`        | 2       | iso      | Resilience policies: `@retry` + `@circuitBreaker` interceptors                                                                                                     | `proxy`                                                                                           |
+| `@ndigo/rate-limit`        | 2       | iso      | Fixed-window rate limiting: `RateLimiter` SPI (async), `FixedWindowRateLimiter`, `RATE_LIMITER` token                                                              | `factory`                                                                                         |
+| `@ndigo/flags`             | 2       | iso      | Feature flags: `FlagEvaluator` SPI (typed, async, never-throw), `PropertyFlagProvider`, `@whenFeature` gate metadata, `FLAG_EVALUATOR` token                       | `factory`                                                                                         |
+| `@ndigo/flags-openfeature` | 2       | node     | OpenFeature bridge (`@openfeature/server-sdk`, peer): `FlagEvaluator` over an OpenFeature client — vendors (flagd, OFREP, LaunchDarkly, …) behind the SPI          | `flags`                                                                                           |
+| `@ndigo/context`           | 3       | iso      | Application context, environments, configuration, events (`zod`)                                                                                                   | `content`, `core`, `factory`, `log`, `util`                                                       |
+| `@ndigo/http`              | 4       | iso      | Fetch client, interceptors, content parsing, transforms (`@opentelemetry/api`)                                                                                     | `core`, `factory`, `util`                                                                         |
+| `@ndigo/router`            | 4       | iso      | Route registry, path partitions, feature routing                                                                                                                   | `core`, `factory`, `http`, `log`, `util`                                                          |
+| `@ndigo/telemetry`         | 4       | iso      | OTel surface: metrics, tracing decorators, framework instrumentations; re-exports `@ndigo/log`                                                                     | `context`, `core`, `dispatcher`, `log`, `router`                                                  |
+| `@ndigo/socket`            | 4       | iso      | WebSocket domain: STOMP client, session contracts                                                                                                                  | `core`, `signals`                                                                                 |
+| `@ndigo/scheduler`         | 4       | node     | Cron scheduling: `@scheduled`, task registry, tracing (`croner`)                                                                                                   | `context`, `core`, `factory`, `locks`, `log`, `util`                                              |
+| `@ndigo/jobs`              | 4       | node     | Durable job queues, worker execution, transactional outbox (`@opentelemetry/api`)                                                                                  | `context`, `core`, `factory`, `log`, `util`                                                       |
+| `@ndigo/locks`             | 4       | node     | Distributed locks + fencing tokens: in-process default driver, `@scheduled({lock})` seam                                                                           | `core`, `factory`                                                                                 |
+| `@ndigo/redis`             | 4       | node     | Redis backends: shared cache + pub/sub fan-out + jobs/lock/rate-limit drivers (`@redis/client`; peers `cache`, `factory`, `jobs`, `locks`, `rate-limit`, `socket`) | `core`, `log`                                                                                     |
+| `@ndigo/view`              | 5       | iso      | Views, `ViewTarget`s, content negotiation, serialization                                                                                                           | `context`, `core`, `factory`, `http`, `router`, `util`                                            |
+| `@ndigo/view-webcomponent` | 5       | browser  | Web Component view technology plus WebMCP tool declaration                                                                                                         | `context`, `core`, `dispatcher`, `factory`, `log`, `router`, `view`                               |
+| `@ndigo/view-ejs`          | 5       | node     | EJS server-side template view technology (`ejs`)                                                                                                                   | `view`, `content`, `context`, `core`, `router`                                                    |
+| `@ndigo/view-toon`         | 5       | iso      | TOON view technology: `text/toon` output, negotiation resolver, prompt encoder (`@toon-format/toon`)                                                               | `view`, `core`                                                                                    |
+| `@ndigo/dispatcher`        | 5       | iso      | Front controller: request dispatch, parameter binding, radix handler mappings (`zod`)                                                                              | `view`, `router`, `http`, `socket`, `context`, `content`, `core`, `factory`, `log`, `util`        |
+| `@ndigo/service`           | 6       | iso      | Typed service clients, SSE/streaming (`zod`)                                                                                                                       | `http`, `context`, `core`, `factory`, `util`                                                      |
+| `@ndigo/management`        | 6       | node     | Actuator endpoints: `/health`, `/metrics` (meter snapshot — Prometheus text + JSON)                                                                                | `context`, `core`, `dispatcher`, `http`, `log`, `platform-node`, `telemetry`, `util`              |
+| `@ndigo/openapi`           | 6       | iso      | OpenAPI 3.0.3 generation from dispatch metadata (`zod`)                                                                                                            | `core`, `dispatcher`, `http`                                                                      |
+| `@ndigo/mcp`               | 6       | node     | MCP tools projected from dispatch metadata: stdio + Streamable HTTP, resources, GenAI spans (`@modelcontextprotocol/sdk`)                                          | `core`, `dispatcher`, `flags`, `inspect`, `platform-node`, `router`                               |
+| `@ndigo/ai`                | 4       | iso      | Provider-neutral agent contracts and a bounded tool-calling loop over MCP tools                                                                                    | `core`, `flags`, `rate-limit`                                                                     |
+| `@ndigo/ai-sdk`            | 5       | iso      | Vercel AI SDK integration layer (`ai`): the only package that imports the SDK                                                                                      | `ai`                                                                                              |
+| `@ndigo/host`              | 6       | browser  | Micro-frontend shell orchestration, feature mounting                                                                                                               | `context`, `core`, `router`                                                                       |
+| `@ndigo/auth-core`         | 6       | iso      | Auth contracts: principal, sessions, password encoders, `@authenticated`/`@authorized`                                                                             | —                                                                                                 |
+| `@ndigo/auth-client`       | 6       | browser  | Client auth: `AuthClient`, `ClientAuthGuard`, OIDC (`jose`)                                                                                                        | `auth-core`, `http`, `util`                                                                       |
+| `@ndigo/auth-server`       | 6       | node     | Server auth: `AuthServer`, `AuthRouteGuard`, JWT (`jose`)                                                                                                          | `auth-core`, `dispatcher`, `router`, `util`                                                       |
+| `@ndigo/platform-node`     | 6       | node     | Node platform: HTTP server adapter, auto-configuration, static files, multipart (`busboy`, `helmet`, `ws`)                                                         | 18 Ndigo deps — hub                                                                               |
+| `@ndigo/cluster`           | 6       | node     | Process supervisor: replicated worker slots, signal relay, bounded restarts                                                                                        | `log`                                                                                             |
+| `@ndigo/cli`               | 6       | node     | Framework CLI: serve/build/test/db/generate/inspect/doctor, the UI registry and MCP server (`ui`), on `@stricli/core` + `@modelcontextprotocol/sdk`                | `cluster`, `@stricli/core`                                                                        |
+| `@ndigo/platform-web`      | 6       | browser  | Browser platform glue: dispatcher, history/cookie/data-binding resolvers, theme                                                                                    | 12 Ndigo deps — hub                                                                               |
+| `@ndigo/telemetry-node`    | 6       | node     | OTel NodeSDK wiring + Node instrumentations (10 OTel packages; peer `ws`)                                                                                          | `telemetry`, `platform-node`, `router`, `socket`, `view`, `log`                                   |
+| `@ndigo/telemetry-web`     | 6       | browser  | Browser SDK wiring + web instrumentations (8 OTel packages)                                                                                                        | `log`, `platform-web`, `socket`, `telemetry`                                                      |
+| `@ndigo/test`              | 6       | iso      | In-process request dispatch test harness (MockMVC-style)                                                                                                           | `platform-node`, `platform-web`, `dispatcher`, `router`, `view`, `context`, `http`, `log`, `util` |
+| `@ndigo/boot`              | 7       | node     | Application bootstrap: profiles, typed config, `run()` (`zod`; peer `@toon-format/toon`)                                                                           | `context`, `core`, `factory`, `log`, `router`, `util`                                             |
+| `@ndigo/oxlint-plugin`     | tooling | —        | Consumer-facing oxlint rules (CI) (`@oxlint/plugins`; peer `oxlint`); repo-only rules live in root `src/oxlint/`                                                   | —                                                                                                 |
+| `@ndigo/inspect`           | tooling | —        | App manifest: routes, handler mappings, declared configuration keys (programmatic API + demo script)                                                               | `context`, `core`, `dispatcher`, `router`                                                         |
+| `@ndigo/ui`                | tooling | iso      | Design-system tokens, opt-in base layer, typed token catalog, and the copy-in registry contract                                                                    | —                                                                                                 |
+| `create-ndigo-app`         | tooling | —        | Standalone Ndigo application scaffolder (node or browser)                                                                                                          | —                                                                                                 |
+
+Repo-only tooling lives outside `packages/`: the internal lint rules in root
+`src/oxlint/`, the Nx generator collection in `tools/generators/`, and
+one-shot probes in `scripts/`.
 
 **Standalone use:** every package resolves its own install closure — `npm install @ndigo/http` pulls exactly `core`, `factory`, `util` and its external deps; no hand-assembled peer list. `peerDependencies` is allowlisted per package for host-provided contracts (`oxlint-plugin → oxlint`, `telemetry-node → ws`, `platform-node → swagger-ui-dist`, `boot → @toon-format/toon`, `flags-openfeature → @openfeature/server-sdk`, `redis → cache`/`factory`/`jobs`/`locks`/`rate-limit`/`socket`). See [Manifest Dependency Sections](#manifest-dependency-sections).
 
 ## Paradigm Selection Rules
 
-> The framework offers multiple facilities that can, superficially, solve the same problem. These rules define the single canonical use for each so developers do not invent competing idioms (see `docs/audits/2026-09-05_FRAMEWORK_ASSESSMENT.md`).
+> The framework offers multiple facilities that can, superficially, solve the same problem. These rules define the single canonical use for each so developers do not invent competing idioms.
 
-### Reactive state vs. application events
+### Reactive State vs. Application Events
 
-| Facility                                                                      | Canonical use                                                                                                                                           | Anti-pattern                                                                                        |
-| ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| `@ndigo/signals` (`signal`/`computed`/`effect`)                               | **Local, synchronous, derived state** within one component or service — a value that other code reads and reacts to immediately.                        | Using signals to broadcast asynchronous cross-component notifications (a "signal as an event bus"). |
-| `@ndigo/context` `EventEmitter` (`Emitter`, `AsEventEmitter`)                 | **Cross-component, asynchronous application events** — decoupled publish/subscribe with `:`-hierarchy dispatch (`ApplicationEvent` style).              | Using an emitter to model derived/inline state that components read synchronously.                  |
-| SSE (`ServerSentEventView`, `serviceClient` `stream: true`)                   | **Server→client one-way event stream** — the island-reactivity channel; handler-owned, per-request state (AD-09).                                       | Using WebSockets for one-way notifications that SSE already covers.                                 |
-| WebSocket + STOMP (`@socketMapping`, `SocketSession` rooms, STOMP `/topic/*`) | **Bidirectional, session-scoped channels** — rooms/broadcast, heartbeat reaping, STOMP destinations; cross-node via opt-in fanout (AD-21/22/23, AD-40). | Broadcasting application-wide events over a socket channel instead of the context event bus.        |
-| Async iterables (`ServiceClient.stream`, `SocketSession.messages`)            | **Consumer-driven consumption of an open stream** — typed, backpressured iteration over pushed values.                                                  | Materializing a whole stream into an array before reading it.                                       |
+| Facility                                                                      | Canonical use                                                                                                                              | Anti-pattern                                                                                        |
+| ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------- |
+| `@ndigo/signals` (`signal`/`computed`/`effect`)                               | **Local, synchronous, derived state** within one component or service — a value that other code reads and reacts to immediately.           | Using signals to broadcast asynchronous cross-component notifications (a "signal as an event bus"). |
+| `@ndigo/context` `EventEmitter` (`Emitter`, `AsEventEmitter`)                 | **Cross-component, asynchronous application events** — decoupled publish/subscribe with `:`-hierarchy dispatch (`ApplicationEvent` style). | Using an emitter to model derived/inline state that components read synchronously.                  |
+| SSE (`ServerSentEventView`, `serviceClient` `stream: true`)                   | **Server→client one-way event stream** — the island-reactivity channel; handler-owned, per-request state.                                  | Using WebSockets for one-way notifications that SSE already covers.                                 |
+| WebSocket + STOMP (`@socketMapping`, `SocketSession` rooms, STOMP `/topic/*`) | **Bidirectional, session-scoped channels** — rooms/broadcast, heartbeat reaping, STOMP destinations; cross-node via opt-in fanout.         | Broadcasting application-wide events over a socket channel instead of the context event bus.        |
+| Async iterables (`ServiceClient.stream`, `SocketSession.messages`)            | **Consumer-driven consumption of an open stream** — typed, backpressured iteration over pushed values.                                     | Materializing a whole stream into an array before reading it.                                       |
 
 **Rule of thumb:** derived value you read → signal; thing that happened that others should react to → event.
 
-> **Removed (2026-09-05):** `@ndigo/model`'s `EventModel`/`asMinimalEventEmitter` — the legacy pre-signals "observable model" emitter — has been deleted. Reactive models are now `@ndigo/signals`' `@reactive`/`@signal` decorators, with validation via Zod schemas (AD-07).
+> **Removed (2026-09-05):** `@ndigo/model`'s `EventModel`/`asMinimalEventEmitter` — the legacy pre-signals "observable model" emitter — has been deleted. Reactive models are now `@ndigo/signals`' `@reactive`/`@signal` decorators, with validation via Zod schemas.
 
 ### Validation
 
-- **Zod is the canonical runtime-schema primitive** (`safeParse`/`parse` + `z.infer`). Schemas validate DTOs, route params, domain value objects, and signal state; `drizzle-zod` derives entity schemas from `ndigo-orm`'s decorator metadata so persistence, validation, and typing share one definition. See `docs/decisions/2026-09-05_AD07_ZOD_VALIDATION.md`.
+- **Zod is the canonical runtime-schema primitive** (`safeParse`/`parse` + `z.infer`). Schemas validate DTOs, route params, domain value objects, and signal state; `drizzle-zod` derives entity schemas from `ndigo-orm`'s decorator metadata so persistence, validation, and typing share one definition. See [Guide 07 — Request Validation](./docs/guides/07-request-validation.md).
 - `ndigo-orm` entities stay decorator-annotated (`@entity`/`@column`/`@primaryColumn`); validation is _derived from_ those annotations, not a parallel decorator API.
-- `ndigo-validate` (constraint/decorator system) and `ndigo-model` (objectmodel) were retired 2026-09-05 per AD-07; do not re-add them.
+- `ndigo-validate` (constraint/decorator system) and `ndigo-model` (objectmodel) were retired 2026-09-05; do not re-add them.
 
-### Route → handler mapping
+### Route → Handler Mapping
 
 - **Radix** mapping (`RadixMetadataHandlerMapping`) is the **only** handler mapping — trie lookup, deterministic precedence, 40–63× faster than the retired linear scan (measured in `bench/routing.bench.ts`).
 - `NamePathHandlerMapping` remains the first element of the default strategy chain (name-based lookup fallback); `SimplePathHandlerMapping` is internal.
@@ -1237,7 +1215,7 @@ sections (`scripts/check-manifests.mjs` — CI, `pnpm manifest:check`):
    → oxlint` (plugin contract), `@ndigo/telemetry-node → ws` (host-provided
    types), `@ndigo/platform-node → swagger-ui-dist` (asset-only docs UI),
    `@ndigo/redis → @ndigo/cache`/`@ndigo/factory`/`@ndigo/socket` (node-only
-   capability subpaths), and `@ndigo/boot → @toon-format/toon` (optional; AD-66).
+   capability subpaths), and `@ndigo/boot → @toon-format/toon` (optional).
    Any new peer needs a deliberate decision + allowlist entry in the checker.
 
 **Rule of thumb:** if a package cannot run right after `npm install <pkg>`,
@@ -1317,7 +1295,7 @@ When adding or modifying integration layer rules, remember to update:
 - The "Library Integration Layer Pattern" section in `AGENTS.md`
 - The "Dependency Management Strategy" section in `ARCHITECTURE.md`
 
-**See also:** [STYLE_GUIDE.md §4.5](./STYLE_GUIDE.md#45-utility-function-organization-convention-code-review) for concrete implementation guidelines on organizing utilities within packages, including the critical rule that internal files (`_util.ts`, `_parser.ts`) must contain actual local utilities, not just re-exports.
+**See also:** [Utility Function Organization](./STYLE_GUIDE.md#44-utility-function-organization) for concrete implementation guidelines on organizing utilities within packages, including the critical rule that internal files (`_util.ts`, `_parser.ts`) must contain actual local utilities, not just re-exports.
 
 ## Design Patterns
 
@@ -1529,7 +1507,7 @@ class RequestHandler {
 
 #### 4. Data Validation
 
-Entity decorators carry validation metadata that the framework derives into a Zod schema — validation logic is co-located with the field it protects, and the derived schema is the single source of truth (AD-07).
+Entity decorators carry validation metadata that the framework derives into a Zod schema — validation logic is co-located with the field it protects, and the derived schema is the single source of truth.
 
 - **Decorators**: `@column({ schema })`, `@primaryColumn`, `@generatedColumn`
 - **Problem Solved**: Keeps validation with the data it protects while producing a runtime schema _and_ a static type (`z.infer`) from one declaration. Route params use `validatedBy(schema, dataBinderValue('query'))` from `@ndigo/dispatcher`; domain components override `validationSchemas`.
@@ -1678,9 +1656,9 @@ Ndigo is fully compliant with modern JavaScript standards for decorators:
 
 **For comprehensive naming guidelines, see:**
 
-- **STYLE_GUIDE.md Section 3.12** - Properties vs Methods (when to use properties, get-methods, or to-methods)
-- **STYLE_GUIDE.md Section 3.13** - Method Naming Conventions (get\*, is\*, has\*, set\*, from\*, to\*, with\*, etc.)
-- **STYLE_GUIDE.md Section 8** - Self-Documenting Code (names carry meaning, comments carry rationale; _why_-not-_what_ comments; assertion rationale; `// NOTE:` as technical debt; one public type per file under 300 lines)
+- **[Properties vs Methods](./STYLE_GUIDE.md#312-properties-vs-methods)** - when to use properties, get-methods, or to-methods
+- **[Method Naming Conventions](./STYLE_GUIDE.md#313-method-naming-conventions)** - get\*, is\*, has\*, set\*, from\*, to\*, with\*, etc.
+- **[Self-Documenting Code](./STYLE_GUIDE.md#8-self-documenting-code)** - names carry meaning, comments carry rationale; _why_-not-_what_ comments; assertion rationale; `// NOTE:` as technical debt; one public type per file under 300 lines
 
 These sections provide detailed decision matrices, examples from the codebase, and rationale for choosing between different API design patterns.
 
@@ -1694,7 +1672,7 @@ Each package defines its public API through `src/index.ts`. Only modules explici
 - **Documented**: Included in API documentation
 - **Supported**: Safe for cross-package and external use
 
-### Internal Modules (Underscore-Prefix Convention)
+### Internal Modules
 
 Files beginning with underscore (`_`) are **internal implementation details**:
 
@@ -1728,8 +1706,7 @@ capability: `Equatable`/`Comparable`/`Comparator` (+ `stringComparator`,
 family, and — in `@ndigo/factory` — the lifecycle set (`Initializable`,
 `Destroyable`/`AsyncDestroyable`, `Closeable`/`AsyncCloseable`,
 `Lifecycle`/`Phased`/`SmartLifecycle`) with the `Aware` mixins. The
-2026-11-06 contract-reuse survey ([audit](./docs/audits/2026-11-06_CONTRACT_REUSE_AUDIT.md))
-grounded this vocabulary in usage: every `equals()`-carrying class declares
+2026-11-06 contract-reuse survey grounded this vocabulary in usage: every `equals()`-carrying class declares
 `Equatable`, the container's bean shutdown is duck-typed through the `like*`
 guards, and `ConversionService`/`FormattingService` are wired through the
 context as beans.
@@ -1757,7 +1734,7 @@ The working rules:
 4. **Errors carry their lineage.** Closed-state guards throw
    `IllegalStateError`; framework/denial errors extend `FrameworkError`;
    application-domain failures extend `ApplicationError`
-   ([AD-94](./docs/decisions/2026-11-06_AD94_ERROR_LINEAGE.md)). Dependency-free
+   . Dependency-free
    contract packages (`@ndigo/auth-core`) keep plain `Error` by design.
 
 ## Node Platform & Application Lifecycle
@@ -1776,7 +1753,7 @@ auto-configuration (`NodeAutoConfiguration`) plus the app's
 `@configuration` classes, and refreshes the context. Registration is
 conditional on platform (`@whenNode`) and environment.
 
-### Lifecycle model
+### Lifecycle Model
 
 The context drives two lifecycle passes:
 
@@ -1787,11 +1764,11 @@ The context drives two lifecycle passes:
 - **Close** (`context.close()`) — the processor stops running lifecycle
   beans in reverse order, then `_destroyValues()` tears down values that
   implement `Destroyable`/`Closeable` (including plain `@entry`/`setValue`
-  instances, AD-10 fix). `HTTPServer` is a managed entry created by
+  instances). `HTTPServer` is a managed entry created by
   `NodeAutoConfiguration` (not manually); see
-  `docs/reference/2026-08-22_CONTEXT_LIFECYCLE.md` for the full sequence.
+  [Guide 04 — Dependency Injection, Scopes & Lifecycle](./docs/guides/04-dependency-injection-and-lifecycle.md) for the full sequence.
 
-### Request pipeline
+### Request Pipeline
 
 ```
 NodeHTTPServerAdapter → NodeDispatcher → handler mapping → interceptors
@@ -1806,17 +1783,17 @@ NodeHTTPServerAdapter → NodeDispatcher → handler mapping → interceptors
   the last-resort resolver guarantees a deterministic status for anything
   unhandled.
 
-### The HTTP error contract (RFC 9457)
+### HTTP Error Contract
 
-Every 4xx/5xx response is an [`application/problem+json`][rfc9457] document
-(decision: AD-10): `type` (`urn:ndigo:*` placeholder), `title`, `status`,
-`detail`, `instance`, plus the `errors` extension for validation issues.
+Every 4xx/5xx response is an [`application/problem+json`][rfc9457] document:
+`type` (`urn:ndigo:*` placeholder), `title`, `status`, `detail`, `instance`,
+plus the `errors` extension for validation issues.
 Status conventions are canonical — 400 binding, 401 + `WWW-Authenticate`,
 403, 404, 405 + `Allow`, 413/408 transport, 415, 422 validation, 429, 503,
 500 last-resort. Real HTTPS problem-type URIs replace the `urn:` scheme
 before first public release.
 
-### Modules at a glance (Node path)
+### Modules at a Glance
 
 | Package                | Responsibilities         | Key exported concepts                                                                                             |
 | ---------------------- | ------------------------ | ----------------------------------------------------------------------------------------------------------------- |
@@ -1829,99 +1806,93 @@ before first public release.
 | `@ndigo/orm`           | Persistence + schema     | `@entity`/`@column`, `insertSchemaForEntity`                                                                      |
 | `@ndigo/telemetry`     | Logging/tracing/metrics  | `getLogger`, `LoggerFactory`                                                                                      |
 
-Guides: [`docs/guides/`](docs/guides/README.md).
+Guides: start with [Guide 00 — Core Concepts](./docs/guides/00-core-concepts.md).
 
 **Environment/configuration docs** (sources, profiles, binding, validation):
-[guide 03](docs/guides/03-environment-configuration.md),
-[API reference](docs/reference/2026-09-08_ENVIRONMENT_API.md),
-[architecture](docs/architecture/environment.md).
+[Guide 03 — Environment & Configuration](docs/guides/03-environment-configuration.md),
+[Environment & Configuration](docs/architecture/environment.md).
 
 [rfc9457]: https://www.rfc-editor.org/rfc/rfc9457.html
 
 ## Roadmap
 
-### Current Status (2026-11-02)
+### Current Status
+
+_As of November 2026._
 
 - **The 10-wave program shipped.** Foundation (`@ndigo/util`, `@ndigo/core`,
   `@ndigo/signals`), IoC/context, the web stack (`@ndigo/http`,
   `@ndigo/router`, `@ndigo/dispatcher`), observability, and the
   view/application layers are complete; the 1.0 checkpoint (Wave 10) is
-  reached and the decision records are indexed in
-  [`docs/decisions/README.md`](docs/decisions/README.md).
-- **Auth shipped** (AD-33, AD-56): credentials + session stores (memory
-  and durable LibSQL), OIDC authorization-code + PKCE, JWTs, role guards,
-  rate limiting, trusted-proxy client-IP resolution.
-- **ORM shipped** (AD-30/31/55): decorator entities, Drizzle adapter,
-  relations, journaled migrations, Zod-derived schemas (AD-07).
-- **Persistence baseline landed** (AD-40): durable sessions, shared Redis
-  cache, cross-node WebSocket/STOMP fan-out; distributed scheduling
-  explicitly deferred (AD-41).
-- **The framework CLI shipped** (AD-75): `@ndigo/cli` (bin `ndigo`) on
-  `@stricli/core` as an embedded library — `serve` (with the AD-74
-  `--cluster` surface), `dev`, `generate` (fronting `@ndigo/generators`),
-  `db:migrate`, `inspect` (the AD-70 entry), and `doctor`; scripts run
-  shell-free so signals reach the app. The command surface has since grown to
-  the full lifecycle (`build`/`test`/`lint`/`format`/`typecheck`/`clean`),
-  scaffolding (`new --preset`, `add`, ten `generate` kinds), the
-  engine-agnostic `db` family (backed by the `NdigoDatabaseAdapter` contract
-  in `@ndigo/orm`), and maintenance/DX (`info`, `update`, `config`, `env`,
-  `openapi`, `routes`, `logs`, `completion`).
-- **Clustering shipped** (AD-74): `@ndigo/cluster` supervises replicated
-  worker slots — `SIGINT`/`SIGTERM` relay into each child's own graceful
-  shutdown, bounded-backoff respawns behind a fail-closed crash-loop guard,
+  reached.
+- **Auth shipped:** credentials + session stores (memory and durable LibSQL),
+  OIDC authorization-code + PKCE, JWTs, role guards, rate limiting,
+  trusted-proxy client-IP resolution.
+- **ORM shipped:** decorator entities, Drizzle adapter, relations, journaled
+  migrations, Zod-derived schemas.
+- **Persistence baseline landed:** durable sessions, shared Redis cache,
+  cross-node WebSocket/STOMP fan-out; distributed scheduling is explicitly
+  deferred.
+- **The framework CLI shipped:** `@ndigo/cli` (bin `ndigo`) on
+  `@stricli/core` as an embedded library — `serve` (with the `--cluster`
+  surface), `dev`, `generate` (fronting `@ndigo/generators`), `db:migrate`,
+  `inspect`, and `doctor`; scripts run shell-free so signals reach the app.
+  The command surface has since grown to the full lifecycle
+  (`build`/`test`/`lint`/`format`/`typecheck`/`clean`), scaffolding
+  (`new --preset`, `add`, ten `generate` kinds), the engine-agnostic `db`
+  family (backed by the `NdigoDatabaseAdapter` contract in `@ndigo/orm`), and
+  maintenance/DX (`info`, `update`, `config`, `env`, `openapi`, `routes`,
+  `logs`, `completion`).
+- **Clustering shipped:** `@ndigo/cluster` supervises replicated worker slots —
+  `SIGINT`/`SIGTERM` relay into each child's own graceful shutdown,
+  bounded-backoff respawns behind a fail-closed crash-loop guard,
   `NDIGO_CLUSTER_SLOT`/`SIZE` + `PORT` derivation. Coordination stays in the
-  leases and locks (AD-72/73); the supervisor owns only the processes.
-- **Distributed locks shipped** (AD-73): `@ndigo/locks` owns the `LockDriver`
-  SPI (non-blocking acquire, TTL leases, monotonic fencing tokens) with the
+  leases and locks; the supervisor owns only the processes.
+- **Distributed locks shipped:** `@ndigo/locks` owns the `LockDriver` SPI
+  (non-blocking acquire, TTL leases, monotonic fencing tokens) with the
   in-process driver and Redis driver (`@ndigo/redis/locks`, Lua
   compare-and-delete); `@scheduled({ lock })` runs one node per fire.
-- **Jobs and the transactional outbox shipped** (AD-72): `@ndigo/jobs` owns the
+- **Jobs and the transactional outbox shipped:** `@ndigo/jobs` owns the
   `JobDriver` SPI (lease-based at-least-once claims, retries, spans) with
   in-process, LibSQL, and Redis drivers, plus the outbox relay whose LibSQL
   store joins `@transactional` commits on the application's data source.
-- **ConversionService shipped** (AD-38) — schema-target conversion is the
-  supported binding/conversion path; the former handwritten
-  `Converter<S,T>` design note is obsolete.
-- **Feature flags shipped** (AD-82, AD-87): `@ndigo/flags` owns the
-  `FlagEvaluator` SPI, the zero-config `PropertyFlagProvider` (live-refresh,
-  percentage rollouts) and the `@whenFeature` route gate;
-  `@ndigo/flags-openfeature` bridges the standard on both the server and
-  `/web` entries, so vendors arrive as providers behind the SPI.
-- **Scaffolding shipped** (AD-85): `ndigo new` plus the `@ndigo/generators`
-  `app` generator stand up an in-repo app; the standalone
-  `create-ndigo-app` scaffold waits on the 1.0 publish.
-- **Pre-1.0 consistency closed** (AD-83, AD-84, AD-86): the decorator
-  taxonomy with its renames, the `@ndigo/util` prune to the consumed surface,
-  and the lint-rule split — repo-only rules live in root `src/`, `packages/`
-  stays the consumer surface.
-- **Runtime floor is Node ≥ 24** (`engines` with `engine-strict`; CI runs 24) — the floor every package README and the README template state.
-- **Work tracking is issue-based** (`AGENTS.md` §8): one issue = one branch =
-  one worktree = one PR, trunk-based releases, incomplete features merged
-  behind `@ndigo/flags`.
+- **ConversionService shipped** — schema-target conversion is the supported
+  binding/conversion path; the former handwritten `Converter<S,T>` design note
+  is obsolete.
+- **Feature flags shipped:** `@ndigo/flags` owns the `FlagEvaluator` SPI, the
+  zero-config `PropertyFlagProvider` (live-refresh, percentage rollouts) and
+  the `@whenFeature` route gate; `@ndigo/flags-openfeature` bridges the
+  standard on both the server and `/web` entries, so vendors arrive as
+  providers behind the SPI.
+- **Scaffolding shipped:** `ndigo new` plus the `@ndigo/generators` `app`
+  generator stand up an in-repo app; the standalone `create-ndigo-app`
+  scaffold waits on the 1.0 publish.
+- **Pre-1.0 consistency closed:** the decorator taxonomy with its renames, the
+  `@ndigo/util` prune to the consumed surface, and the lint-rule split —
+  repo-only rules live in root `src/`, `packages/` stays the consumer surface.
+- **Runtime floor is Node ≥ 24** (`engines` with `engine-strict`; CI runs 24) —
+  the floor every package README and the README template state.
 
-### Near-Term (1.0)
+### Near-Term
 
-- **Full time-zone catalog generator** — conditional (AD-20 D6): only if
-  the curated `@ndigo/scheduler` constants prove insufficient.
-- **Page concept design** — the open AD-03 question (independently
-  bootable presentation container) on its own design conversation if a
+- **Full time-zone catalog generator** — conditional: only if the curated
+  `@ndigo/scheduler` constants prove insufficient.
+- **Page concept design** — the open Page concept question (independently
+  bootable presentation container) gets its own design conversation if a
   concrete consumer appears.
-- **Release gate** — changelog cuts `1.0.0`
-  ([Keep a Changelog](./CHANGELOG.md)), package README/API docs
-  re-verified (`pnpm doc:check`), CI gates green. The frozen surface is
-  recorded (AD-91); the gate itself is tracked in the issue tracker.
+- **Release gate** — changelog cuts `1.0.0` ([Keep a Changelog](./CHANGELOG.md)),
+  package README/API docs re-verified (`pnpm doc:check`), CI gates green. The
+  frozen surface is recorded.
 
-### Closed / Deferred
+### Deferred Work
 
-- API-freeze consistency review (AD-20 D8) — completed 2026-10-31: the full
-  decorator taxonomy and naming conventions (AD-83); profile gates unified
-  on `@whenProfile`. The freeze record itself is AD-91 (2026-11-02).
-- Distributed scheduling (AD-41) and cross-node queue consumption — closed
-  with revisit triggers; not speculative scope.
-- The 2026-03-08 architecture roadmap reference and the 2026-05-27
-  feature-completeness roadmap (10-wave program) are archived history —
-  the decision records carry the current design intent
-  ([ADR index](./docs/decisions/README.md), [plans](./docs/plans/README.md)).
+- API-freeze consistency review — completed 2026-10-31: the full decorator
+  taxonomy and naming conventions; profile gates unified on `@whenProfile`.
+- Distributed scheduling and cross-node queue consumption — closed with
+  revisit triggers; not speculative scope.
+- The 2026-03-08 architecture roadmap and the 2026-05-27 feature-completeness
+  roadmap (10-wave program) are archived history. The current design intent
+  lives in this document.
 
 ---
 

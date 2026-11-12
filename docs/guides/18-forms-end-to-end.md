@@ -151,5 +151,5 @@ try {
 - [Guide 14 — Multipart & File Upload](14-multipart-and-file-upload.md) — file fields
 - [Guide 44 — Accessibility](44-accessibility.md) — labels, errors, and focus
 - [Guide 28 — Security Hardening](28-security-hardening.md) — CSRF
-- [[apps/12-ndigo-petclinic](https://github.com/ndigo/ndigo/tree/main/apps/12-ndigo-petclinic)](../../[apps/12-ndigo-petclinic](https://github.com/ndigo/ndigo/tree/main/apps/12-ndigo-petclinic)/README.md) — the server form reference
-- [[apps/10-ndigo-conduit-web](https://github.com/ndigo/ndigo/tree/main/apps/10-ndigo-conduit-web)](../../[apps/10-ndigo-conduit-web](https://github.com/ndigo/ndigo/tree/main/apps/10-ndigo-conduit-web)/README.md) — the browser form reference
+- [apps/12-ndigo-petclinic](https://github.com/ndigo/ndigo/tree/main/apps/12-ndigo-petclinic) — the server form reference
+- [apps/10-ndigo-conduit-web](https://github.com/ndigo/ndigo/tree/main/apps/10-ndigo-conduit-web) — the browser form reference

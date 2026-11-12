@@ -1,5 +1,5 @@
 /**
- * BrowserMockClient — drive `BrowserDispatcher` with a DOM-free capture target.
+ * MockWebClient — drive `BrowserDispatcher` with a DOM-free capture target.
  *
  * Mirrors `MockHTTP` for the client side: boots a browser application context
  * (`WebAutoConfiguration` + user configs), registers a {@link MemoryViewTarget}
@@ -53,7 +53,7 @@ async function loadWebAutoConfiguration(): Promise<WebAutoConfigurationLike> {
  * @example
  * ```ts
  * const app = await bootWebApp([ToDoconfiguration]);
- * const browser = new BrowserMockClient(app);
+ * const browser = new MockWebClient(app);
  * await browser.dispatch('/account');
  * expect(app.viewTarget.lastRender?.model).toEqual({ section: 'overview' });
  * ```
@@ -117,7 +117,7 @@ function isConfiguration(source: Function): boolean {
  * Socket-free mock MVC client for browser applications. Dispatches routes
  * through the real `BrowserDispatcher` and captures the rendered view.
  */
-export class BrowserMockClient {
+export class MockWebClient {
     #app: BrowserTestApp;
 
     /**

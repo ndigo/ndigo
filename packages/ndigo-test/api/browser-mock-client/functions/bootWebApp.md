@@ -29,7 +29,7 @@ A booted browser app exposing the context, dispatcher, and capture target.
 
 ```ts
 const app = await bootWebApp([ToDoconfiguration]);
-const browser = new BrowserMockClient(app);
+const browser = new MockWebClient(app);
 await browser.dispatch('/account');
 expect(app.viewTarget.lastRender?.model).toEqual({ section: 'overview' });
 ```

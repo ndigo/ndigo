@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import '@tsmetadata/polyfill';
 import { describe, expect, it, vi } from 'vitest';
-import { bootWebApp, BrowserMockClient, installSynchronousAnimationFrames } from '@ndigo/test';
+import { bootWebApp, MockWebClient, installSynchronousAnimationFrames } from '@ndigo/test';
 import type { ConfigurableApplicationContext } from '@ndigo/context';
 import { StaticContentSource, StaticThemeResolver } from '@ndigo/content';
 import { propagation, trace } from '@opentelemetry/api';
@@ -37,7 +37,7 @@ function renderText(output: unknown): string {
 describe('ndigo-views composite resolver demo', () => {
     it('resolves a component-module view by name', async () => {
         const app = await bootWebApp([ViewsAppConfiguration]);
-        const mvc = new BrowserMockClient(app);
+        const mvc = new MockWebClient(app);
 
         await mvc.dispatch('/');
         const output = app.viewTarget.lastRender?.output;
@@ -51,7 +51,7 @@ describe('ndigo-views composite resolver demo', () => {
 
     it('resolves a context-entry view by name', async () => {
         const app = await bootWebApp([ViewsAppConfiguration]);
-        const mvc = new BrowserMockClient(app);
+        const mvc = new MockWebClient(app);
 
         await mvc.dispatch('/widget');
         expect(renderText(app.viewTarget.lastRender?.output)).toContain('NameViewResolver');
@@ -61,7 +61,7 @@ describe('ndigo-views composite resolver demo', () => {
 
     it('resolves a module-on-disk view by name (lazy import)', async () => {
         const app = await bootWebApp([ViewsAppConfiguration]);
-        const mvc = new BrowserMockClient(app);
+        const mvc = new MockWebClient(app);
 
         await mvc.dispatch('/report');
         expect(renderText(app.viewTarget.lastRender?.output)).toContain('Report');
@@ -71,7 +71,7 @@ describe('ndigo-views composite resolver demo', () => {
 
     it('falls through the chain and errors for an unsupported name', async () => {
         const app = await bootWebApp([ViewsAppConfiguration]);
-        const mvc = new BrowserMockClient(app);
+        const mvc = new MockWebClient(app);
 
         await expect(mvc.dispatch('/nope')).rejects.toThrow();
 
@@ -80,7 +80,7 @@ describe('ndigo-views composite resolver demo', () => {
 
     it('localizes the context-entry view through the ContentSource', async () => {
         const app = await bootWebApp([ViewsAppConfiguration]);
-        const mvc = new BrowserMockClient(app);
+        const mvc = new MockWebClient(app);
 
         await mvc.dispatch('/widget/de');
         expect(renderText(app.viewTarget.lastRender?.output)).toContain('Gebaut mit Ndigo');
@@ -119,7 +119,7 @@ describe('ndigo-views composite resolver demo', () => {
         vi.stubGlobal('fetch', fetchMock);
 
         const app = await bootWebApp([ViewsAppConfiguration]);
-        const mvc = new BrowserMockClient(app);
+        const mvc = new MockWebClient(app);
 
         await mvc.dispatch('/client');
         await vi.waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
@@ -160,7 +160,7 @@ describe('ndigo-views composite resolver demo', () => {
 
         Object.defineProperty(navigator, 'onLine', { configurable: true, value: false });
         const app = await bootWebApp([ViewsAppConfiguration]);
-        const mvc = new BrowserMockClient(app);
+        const mvc = new MockWebClient(app);
 
         await mvc.dispatch('/client');
         expect(fetchMock).not.toHaveBeenCalled();

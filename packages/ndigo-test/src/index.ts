@@ -8,7 +8,7 @@ export { createMemoryResponse } from './memory-response';
 export type { MemoryResponse, ResponseSink } from './memory-response';
 export { bootNodeApp, cachedBootNodeApp, releaseCachedNodeApp } from './ndigo-test';
 export type { NdigoTestApp } from './ndigo-test';
-export { bootWebApp, BrowserMockClient } from './browser-mock-client';
+export { bootWebApp, MockWebClient } from './browser-mock-client';
 export type { BrowserTestApp } from './browser-mock-client';
 export { MemoryViewTarget } from './memory-view-target';
 export type { CapturedRender } from './memory-view-target';

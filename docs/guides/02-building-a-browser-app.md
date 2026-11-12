@@ -121,17 +121,17 @@ idempotent, and the router stops listening immediately).
 ## 4. Testing
 
 The `@ndigo/test` harness boots a browser app without a DOM root
-(`MemoryViewTarget`) and drives dispatches through `BrowserMockClient` —
+(`MemoryViewTarget`) and drives dispatches through `MockWebClient` —
 the preset deliberately stays out of it, because production composition
 and the test double are different jobs:
 
 ```ts
-import { bootWebApp, BrowserMockClient, installSynchronousAnimationFrames } from '@ndigo/test';
+import { bootWebApp, MockWebClient, installSynchronousAnimationFrames } from '@ndigo/test';
 import { AppConfiguration } from '../src/app-configuration';
 
 installSynchronousAnimationFrames(); // rAF never fires in jsdom
 const app = await bootWebApp([AppConfiguration]);
-const browser = new BrowserMockClient(app);
+const browser = new MockWebClient(app);
 const render = await browser.dispatch('/');
 ```
 

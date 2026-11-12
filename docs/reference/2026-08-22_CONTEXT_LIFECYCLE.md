@@ -155,43 +155,22 @@ child.setParent(newParent)
 
 ---
 
-## 6. Event Propagation
+## 6. Event Addressing
 
-### 6.1 Bubble (Upward)
+A context is a local event emitter. Cross-context notification is explicit:
 
-```
-child.bubble(type, ...data)
-```
+| Scope                   | API                                                               |
+| ----------------------- | ----------------------------------------------------------------- |
+| Local                   | `context.emit(type, ...data)`                                     |
+| Shared root channel     | `context.root.emit(type, ...data)`; listeners use `root.on(...)`  |
+| Child → direct owner    | `context.parent?.emit(type, ...data)`                             |
+| Owner → direct children | `for (const child of context.children) child.emit(type, ...data)` |
+| Isolated relay          | `ContextEventGateway(source, target, relays)`                     |
 
-- Emits on the origin context (inclusive), then climbs the parent chain
-- Uses `escalate()` from `@ndigo/core`:
-    - First call: `escalate(origin, callback, true)` — emits on origin
-    - Subsequent calls: `escalate(parent, callback)` — emits on each ancestor
-- Stops at the root (context with no parent)
-- Does **not** skip intermediate parents — every ancestor receives the event
-
-**Example:** `grandchild.bubble('up:event')` fires on `grandchild`, then `child`, then `root`.
-
-### 6.2 Broadcast (Downward)
-
-```
-parent.broadcast(type, ...data)
-```
-
-- Emits on the origin context, then recursively on all descendants
-- Visits children depth-first
-- Does **not** skip intermediate levels — every descendant receives the event
-
-### 6.3 Event Gateway (Cross-Context)
-
-```
-ContextEventGateway(source, target, relays)
-```
-
-- Relays selected events from one context to another
-- Supports namespace-based validation (`NamespaceRelayValidationStrategy`)
-- Used for `createFeatureContext()` to allow event flow between shell and feature contexts
-- Can be destroyed independently to stop relaying
+- No recursive propagation is built into the context API; a deeper walk is application code.
+- `children` is plural: a shell may host several live features.
+- A listener registered on `root` must be removed on close. `ContextEventGateway` owns its subscriptions and `destroy()` detaches them.
+- `ContextEventGateway` relays selected events and supports namespace validation (`NamespaceRelayValidationStrategy`); `createFeatureContext()` uses it for shell/feature event flow.
 
 ---
 
@@ -239,19 +218,20 @@ ContextEventGateway(source, target, relays)
 
 The lifecycle is covered by the following tests in `context.spec.ts` and `context-edge-cases.spec.ts`:
 
-| Test                                                                  | File                       | Description                                                     |
-| --------------------------------------------------------------------- | -------------------------- | --------------------------------------------------------------- |
-| `it should refresh and initialize constructor entries`                | context.spec.ts            | `refresh()` initializes constructor entries                     |
-| `it should refresh only once when already active`                     | context.spec.ts            | Repeated `refresh()` is a no-op                                 |
-| `it should run registry processors during refresh`                    | context.spec.ts            | `EntryRegistryProcessor` runs during refresh                    |
-| `it should emit lifecycle events during refresh and close`            | context.spec.ts            | Correct event ordering: `preparing → refresh → close → destroy` |
-| `it should close and cascade destruction to child contexts`           | context.spec.ts            | Close propagates to children                                    |
-| `it should close only once when already destroyed`                    | context.spec.ts            | Repeated `close()` is a no-op                                   |
-| `close propagates to grandchildren (depth > 1)`                       | context-edge-cases.spec.ts | Close cascades through multiple levels                          |
-| `close removes the context from its parent children list`             | context-edge-cases.spec.ts | Parent-child bookkeeping                                        |
-| `close on a never-refreshed context completes`                        | context-edge-cases.spec.ts | Close works without prior refresh                               |
-| `repeated close on already-closed child is no-op`                     | context-edge-cases.spec.ts | Idempotent close                                                |
-| `removeChild returns false when child is not in children list`        | context-edge-cases.spec.ts | Edge case for missing child                                     |
-| `bubble on root context emits only on self`                           | context-edge-cases.spec.ts | No parent to climb                                              |
-| `broadcast on leaf context with no children emits only on self`       | context-edge-cases.spec.ts | No children to descend                                          |
-| `bubble from grandchild emits on self, intermediate parent, and root` | context-edge-cases.spec.ts | Full upward propagation chain                                   |
+| Test                                                               | File                       | Description                                                     |
+| ------------------------------------------------------------------ | -------------------------- | --------------------------------------------------------------- |
+| `it should refresh and initialize constructor entries`             | context.spec.ts            | `refresh()` initializes constructor entries                     |
+| `it should refresh only once when already active`                  | context.spec.ts            | Repeated `refresh()` is a no-op                                 |
+| `it should run registry processors during refresh`                 | context.spec.ts            | `EntryRegistryProcessor` runs during refresh                    |
+| `it should emit lifecycle events during refresh and close`         | context.spec.ts            | Correct event ordering: `preparing → refresh → close → destroy` |
+| `it should close and cascade destruction to child contexts`        | context.spec.ts            | Close propagates to children                                    |
+| `it should close only once when already destroyed`                 | context.spec.ts            | Repeated `close()` is a no-op                                   |
+| `close propagates to grandchildren (depth > 1)`                    | context-edge-cases.spec.ts | Close cascades through multiple levels                          |
+| `close removes the context from its parent children list`          | context-edge-cases.spec.ts | Parent-child bookkeeping                                        |
+| `close on a never-refreshed context completes`                     | context-edge-cases.spec.ts | Close works without prior refresh                               |
+| `repeated close on already-closed child is no-op`                  | context-edge-cases.spec.ts | Idempotent close                                                |
+| `removeChild returns false when child is not in children list`     | context-edge-cases.spec.ts | Edge case for missing child                                     |
+| `it should keep local events local to the emitting context`        | context.spec.ts            | `emit` does not reach the parent                                |
+| `it should use the root context as the shared channel`             | context.spec.ts            | Cross-context events are addressed through `root`               |
+| `it should address a direct parent explicitly`                     | context.spec.ts            | `parent.emit` is one level, not a climb                         |
+| `it should address direct children without reaching grandchildren` | context.spec.ts            | The `children` loop is one level, not a broadcast               |

@@ -106,7 +106,7 @@ established `Default*` convention for interface implementations.
 
 Add two additive entrypoint presets:
 
-- `runNodeApplication(sources, options)` in `@ndigo/platform-node`.
+- `createNodeApplication(sources, options)` in `@ndigo/platform-node`.
 - `createWebApplication(sources, options)` in `@ndigo/platform-web`.
 
 Both:
@@ -132,7 +132,7 @@ duplicate the platform hubs and drift.
 
 Add `nodeConfigFileReader: ConfigFileReader` to `@ndigo/platform-node` (the
 `ConfigFileReader` seam already lives in `@ndigo/context` for exactly this
-split). `runNodeApplication` defaults `configFiles: true`, which constructs
+split). `createNodeApplication` defaults `configFiles: true`, which constructs
 `new StandardConfigFileLoader({ reader: nodeConfigFileReader })`; `false`
 disables file loading and a loader instance overrides it.
 
@@ -145,7 +145,7 @@ an app without config files. Missing files stay silent.
 Replace the direct `process.env` reads in `Application._configureProfiles` /
 `#profileGroups` with `getEnv` from `@ndigo/util`. This makes the documented
 browser path true and lets `createWebApplication` use the same
-`ApplicationBuilder` as `runNodeApplication` — one bootstrap story, profiles
+`ApplicationBuilder` as `createNodeApplication` — one bootstrap story, profiles
 and properties included.
 
 `StandardConfigFileLoader` remains Node-construction-only; the browser preset
@@ -216,7 +216,7 @@ without changing its public API; the fallback is recorded in the plan.
 Phases 0–2 landed as planned; three implementation findings were folded back
 into this record:
 
-- `configureBuilder` was added to `RunNodeApplicationOptions` — app 05's
+- `configureBuilder` was added to `CreateNodeApplicationOptions` — app 05's
   secrets, config-server, and method-interception wiring must land before
   refresh, which the post-refresh `beforeStart` cannot cover. The web preset
   deliberately has no such hook yet (no consumer needs one).

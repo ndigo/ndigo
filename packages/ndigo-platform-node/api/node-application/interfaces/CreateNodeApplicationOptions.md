@@ -2,11 +2,11 @@
 
 ***
 
-[@ndigo/platform-node](../../README.md) / [run-node-application](../README.md) / RunNodeApplicationOptions
+[@ndigo/platform-node](../../README.md) / [node-application](../README.md) / CreateNodeApplicationOptions
 
-# Interface: RunNodeApplicationOptions
+# Interface: CreateNodeApplicationOptions
 
-Options for [runNodeApplication](../functions/runNodeApplication.md). Every implicit action has an
+Options for [createNodeApplication](../functions/createNodeApplication.md). Every implicit action has an
 opt-out; app-specific wiring belongs in the hooks and the returned context.
 
 ## Properties

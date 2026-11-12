@@ -125,7 +125,7 @@ npm create ndigo-app@latest <name>          # node kind by default
 npm create ndigo-app@latest <name> -- --kind browser
 ```
 
-Both paths use the AD-90 lifecycle presets (`runNodeApplication` /
+Both paths use the AD-90 lifecycle presets (`createNodeApplication` /
 `createWebApplication`) and follow the conventions in
 [guide 91](docs/guides/91-application-conventions.md).
 

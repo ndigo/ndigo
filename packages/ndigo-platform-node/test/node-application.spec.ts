@@ -6,12 +6,12 @@ import { mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { HTTP_SERVER } from '../src/context-tokens';
-import { runNodeApplication } from '../src/run-node-application';
-import type { NodeApplication, RunNodeApplicationOptions } from '../src/run-node-application';
+import { createNodeApplication } from '../src/node-application';
+import type { NodeApplication, CreateNodeApplicationOptions } from '../src/node-application';
 
 class EmptyConfiguration {}
 
-describe('runNodeApplication', () => {
+describe('createNodeApplication', () => {
     let apps: NodeApplication[] = [];
     let savedPort: string | undefined;
 
@@ -32,8 +32,8 @@ describe('runNodeApplication', () => {
         }
     });
 
-    async function boot(options: Partial<RunNodeApplicationOptions> = {}): Promise<NodeApplication> {
-        const app = await runNodeApplication([EmptyConfiguration], { shutdown: false, port: 0, ...options });
+    async function boot(options: Partial<CreateNodeApplicationOptions> = {}): Promise<NodeApplication> {
+        const app = await createNodeApplication([EmptyConfiguration], { shutdown: false, port: 0, ...options });
         apps.push(app);
         return app;
     }
@@ -103,7 +103,7 @@ describe('runNodeApplication', () => {
     });
 
     test('platform: false leaves HTTP_SERVER unregistered and fails loud', async () => {
-        await expect(runNodeApplication([EmptyConfiguration], { platform: false, shutdown: false })).rejects.toThrow(
+        await expect(createNodeApplication([EmptyConfiguration], { platform: false, shutdown: false })).rejects.toThrow(
             /no HTTP_SERVER/
         );
     });
@@ -111,7 +111,7 @@ describe('runNodeApplication', () => {
     test('shutdown wiring is installed by default and removed by close()', async () => {
         const baseline = process.listenerCount('SIGINT');
 
-        const app = await runNodeApplication([EmptyConfiguration], { port: 0 });
+        const app = await createNodeApplication([EmptyConfiguration], { port: 0 });
         apps.push(app);
         expect(process.listenerCount('SIGINT')).toBe(baseline + 1);
 

@@ -18,10 +18,10 @@ import { nodeConfigFileReader } from './node-config-file-reader';
 const logger = getLogger('ndigo-platform-node:run-node-application');
 
 /**
- * Options for {@link runNodeApplication}. Every implicit action has an
+ * Options for {@link createNodeApplication}. Every implicit action has an
  * opt-out; app-specific wiring belongs in the hooks and the returned context.
  */
-export interface RunNodeApplicationOptions {
+export interface CreateNodeApplicationOptions {
     /** Port used when `PORT` is unset; applied as the `server.port` property. */
     port?: number;
     /** Active profiles. `NDIGO_PROFILES_ACTIVE` and `--profiles.active` still take precedence. */
@@ -83,7 +83,7 @@ export interface NodeApplication {
  *
  * @example
  * ```ts
- * const app = await runNodeApplication([AppConfiguration], { port: 3000 });
+ * const app = await createNodeApplication([AppConfiguration], { port: 3000 });
  * logger.info(`listening on http://127.0.0.1:${app.port}`);
  * ```
  *
@@ -91,9 +91,9 @@ export interface NodeApplication {
  * @param options - Preset options; every implicit action has an opt-out.
  * @returns The booted application.
  */
-export async function runNodeApplication(
+export async function createNodeApplication(
     sources: readonly Function[],
-    options: RunNodeApplicationOptions = {}
+    options: CreateNodeApplicationOptions = {}
 ): Promise<NodeApplication> {
     const builder = new ApplicationBuilder([
         ...((options.platform ?? true) ? [NodeAutoConfiguration] : []),
@@ -139,7 +139,7 @@ export async function runNodeApplication(
     if (!context.hasValue(HTTP_SERVER)) {
         context.close();
         throw new IllegalStateError(
-            'runNodeApplication: no HTTP_SERVER entry in the context — register NodeAutoConfiguration (the default) or provide your own `httpServer` entry'
+            'createNodeApplication: no HTTP_SERVER entry in the context — register NodeAutoConfiguration (the default) or provide your own `httpServer` entry'
         );
     }
 

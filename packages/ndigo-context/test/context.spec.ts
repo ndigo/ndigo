@@ -123,7 +123,7 @@ describe('GenericApplicationContext', () => {
         context.on('shared:event', rootListener);
         child.on('shared:event', childListener);
 
-        child.root.emit('shared:event', 1);
+        (child as unknown as { root: GenericApplicationContext }).root.emit('shared:event', 1);
 
         expect(rootListener).toHaveBeenCalledTimes(1);
         expect(childListener).not.toHaveBeenCalled();

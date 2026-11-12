@@ -11,7 +11,7 @@ import type { ConfigFileReader } from '@ndigo/context';
  * a real filesystem problem fails boot instead of silently skipping
  * configuration.
  *
- * `runNodeApplication` wires it by default; callers assembling the loader
+ * `createNodeApplication` wires it by default; callers assembling the loader
  * themselves pass it explicitly:
  * `new StandardConfigFileLoader({ reader: nodeConfigFileReader })`.
  *

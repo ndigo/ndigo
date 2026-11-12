@@ -306,7 +306,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   in `ws`/browsers). Plaintext, edge-terminated stays the default posture
   (AD-80); a half-configured env pair throws rather than silently serving
   plaintext.
-- `@ndigo/platform-node` (AD-90): the **`runNodeApplication(sources, options)`**
+- `@ndigo/platform-node` (AD-90): the **`createNodeApplication(sources, options)`**
   lifecycle preset — composes `NodeAutoConfiguration` and `NodeEnvironment`
   with config files (new default reader `nodeConfigFileReader`), the
   `configureBuilder` / `beforeStart` hooks, extra teardown `resources`, and
@@ -327,12 +327,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `MetadataConfigApplicationContext` path stays public and unchanged.
 - `create-ndigo-app` (AD-92): an unscoped `npm create ndigo-app` bin that
   scaffolds a standalone pnpm project (node or browser kind) using the
-  AD-90 presets (`runNodeApplication` / `createWebApplication`), with
+  AD-90 presets (`createNodeApplication` / `createWebApplication`), with
   `--local` dev mode against the workspace, a copied decorator-lowering
   plugin, and a smoke + bundle guard in the generated app. Ships at 1.0.
 
 ### Changed
 
+- `@ndigo/platform-node`: rename `runNodeApplication` to `createNodeApplication`
+  (and `RunNodeApplicationOptions` to `CreateNodeApplicationOptions`) for naming
+  parity with `@ndigo/platform-web`'s `createWebApplication`. Hard cutover, no
+  deprecated aliases (pre-1.0). Internal file renamed `run-node-application.ts`
+  → `node-application.ts`.
 - `@ndigo/auth-core`: the `Principal` contract gains `scopes`,
   `hasScope`, and `hasAnyScope`. Custom principal implementations must add
   them (return `[]`/`false` when the identity has no OAuth scopes); the
@@ -488,7 +493,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   had been checking the wrong reflection kinds and could never fire) and the 62
   public symbols it flagged are documented.
 - `apps/02-ndigo-hello-node`, `apps/05-ndigo-api`, `@ndigo/generators`
-  (AD-90): the Node entrypoints adopt the `runNodeApplication` preset — no
+  (AD-90): the Node entrypoints adopt the `createNodeApplication` preset — no
   more `process.env['PORT']` mutation or hand-written start/shutdown
   assembly, and `05-ndigo-api` drops its hand-written config-file reader.
   Generated node apps infer the dev port from `{ port: … }` and no longer

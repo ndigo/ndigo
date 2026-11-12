@@ -14,7 +14,7 @@ Ship `create-ndigo-app` as part of the 1.0 release rather than after it. The
 package is a thin, zero-dependency Node bin that scaffolds a **standalone**
 pnpm project (no monorepo, no Nx, no `apps/NN-*` numbering, no
 `vitest.aliases.ts`) from templates that use the AD-90 presets
-(`runNodeApplication` / `createWebApplication`) for both the `node` and
+(`createNodeApplication` / `createWebApplication`) for both the `node` and
 `browser` kinds. `@ndigo/*` versions are pinned to `~0.0.1`; a `--local`
 dev mode rewrites them to `file:` links against the workspace so the scaffold
 is exercisable today.
@@ -44,7 +44,7 @@ is exercisable today.
   devDeps `@ndigo/test`, `tsx`, `typescript`; scripts `start`/`test`.
 - `tsconfig.json`, `tsconfig.build.json` — standalone (no monorepo
   inheritance, `moduleResolution: bundler`, `rewriteRelativeImportExtensions`).
-- `src/index.ts` — `runNodeApplication([AppConfiguration], { port: 3000 })`.
+- `src/index.ts` — `createNodeApplication([AppConfiguration], { port: 3000 })`.
 - `src/app-configuration.ts`, `src/app-controller.ts` (one handler).
 - `test/app.smoke.spec.ts` — `bootApp` + `MockHTTP` against `/hello`.
 - `README.md`.

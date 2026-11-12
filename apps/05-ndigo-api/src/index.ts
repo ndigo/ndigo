@@ -2,7 +2,7 @@
  */
 import 'node:process';
 import { getEnv } from '@ndigo/context';
-import { AESGCMCipher, runNodeApplication } from '@ndigo/platform-node';
+import { AESGCMCipher, createNodeApplication } from '@ndigo/platform-node';
 import {
     CacheInstrumentation,
     ContextInstrumentation,
@@ -75,7 +75,7 @@ async function main() {
     // same Bearer-token check the protected handlers apply, so anonymous
     // `/v3/api-docs` + `/swagger-ui/` are denied 401. Management endpoints
     // are wired in `NodeAppConfiguration`.
-    const app = await runNodeApplication(
+    const app = await createNodeApplication(
         [
             ManagementConfiguration,
             SecureDocsConfiguration,

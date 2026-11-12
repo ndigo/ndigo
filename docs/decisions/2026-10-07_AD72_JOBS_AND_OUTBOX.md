@@ -45,7 +45,7 @@ What the repository already provides, and what is missing:
   `./cache` | `./pubsub` subpath shape in `packages/ndigo-redis/package.json`.
 - `@entry` methods execute eagerly at configuration parse; a sibling
   `this.otherEntry()` call inside an entry method creates a _fresh_ instance
-  (probe, 2026-10-07) rather than returning the registered bean. Wiring must
+  (probe, 2026-10-07) rather than returning the registered entry. Wiring must
   therefore resolve collaborators through the `ApplicationContext`, as
   `ScheduleRegistry` already does (`context.getValue(TASK_SCHEDULER)`).
 - Delivery-model comparison (peer frameworks): the reference framework has no queue of its own
@@ -64,7 +64,7 @@ the producer facade. Backends are adapters owned by the package that owns the
 underlying client — `@ndigo/orm-drizzle` (libSQL) and `@ndigo/redis` (subpath
 `@ndigo/redis/jobs`, per AD-51). The default driver is explicitly in-process and
 non-durable, exactly like the default rate limiter and the memory cache manager;
-durability is opt-in by registering a durable driver bean.
+durability is opt-in by registering a durable driver entry.
 
 ### D-2 — `JobDriver` SPI: at-least-once, lease-based, crash-self-healing
 
@@ -124,7 +124,7 @@ input. Producers never see `claim`/`complete`.
 
 - `@jobHandler('type', options?)` writes `jobs:handler:<method>` metadata
   (Node-guarded at decoration like `@scheduled`).
-- `JobHandlerRegistry` scans context beans at refresh (`SmartLifecycle`,
+- `JobHandlerRegistry` scans context entries at refresh (`SmartLifecycle`,
   phase 0, auto-start), binds each handler to its owner instance, and fails
   loud on: handler declared on a class (not instance), non-callable member,
   or duplicate `type`.
@@ -136,7 +136,7 @@ input. Producers never see `claim`/`complete`.
   `autoStart: true` to opt into refresh-driven start (phase 10 — after the
   registry has scanned). The runner and queue resolve collaborators from the
   `ApplicationContext` (D-5 note above: sibling entry calls are not shared
-  beans); direct construction with explicit options remains the
+  entries); direct construction with explicit options remains the
   test/standalone path.
 
 ### D-6 — Transactional outbox: store contract + relay
@@ -191,7 +191,7 @@ No new config-file namespace: driver/runner options are programmatic (the
 
 - GAP-1's "driver SPI (Redis/SQL) + outbox wired to the ORM UoW" is satisfied by
   contract + three drivers + the LibSQL outbox bridge and relay.
-- `NodeAutoConfiguration` gains four beans; the runner does **not**
+- `NodeAutoConfiguration` gains four entries; the runner does **not**
   self-start, so no Node app's process-liveness or shutdown behavior changes
   until it calls `JOB_RUNNER.start()` (or opts into `autoStart: true`). The
   registry's refresh scan arms no timer.

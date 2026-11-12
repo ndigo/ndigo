@@ -36,8 +36,8 @@ export class ApplicationContextAwareProcessor implements InitializationAwareProc
 
     /**
      * Returns the value unchanged after initialization.
-     * @param name - The bean name.
-     * @param value - The bean value.
+     * @param name - The entry name.
+     * @param value - The entry value.
      * @returns The unchanged value.
      */
     processAfterInitialization<T = unknown>(name: string, value: T): T {

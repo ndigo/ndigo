@@ -8,4 +8,4 @@
 
 > `const` **JOB\_QUEUE**: [`ContextToken`](#)\<[`JobQueue`](../../job-queue/classes/JobQueue.md)\>
 
-Token for the producer-facing [JobQueue](../../job-queue/classes/JobQueue.md) bean.
+Token for the producer-facing [JobQueue](../../job-queue/classes/JobQueue.md) entry.

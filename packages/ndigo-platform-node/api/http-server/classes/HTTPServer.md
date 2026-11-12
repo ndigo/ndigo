@@ -25,7 +25,7 @@ context.close(); // stops the server
 ```
 
 Deliberately NOT `Closeable`: shutdown is owned by `SmartLifecycle` — the
-adapter's close is invoked through `stop()`, not the context bean close.
+adapter's close is invoked through `stop()`, not the context entry close.
 
 ## Implements
 

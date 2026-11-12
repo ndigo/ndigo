@@ -113,7 +113,7 @@ Stop producers and serving first, then await registry/broker `close()`
 close), and `publisher.close()` in that order, before synchronous
 `context.close()`. Use `try`/`finally` so a failure does not skip later
 resource cleanup; startup failure also requires cleanup. Closing the fanout
-never closes its borrowed publisher. There is no automatic bean registration
+never closes its borrowed publisher. There is no automatic entry registration
 or Redis auto-configuration.
 
 The transport-neutral `SocketFanout` contract has

@@ -13,7 +13,7 @@
  * integration spec.
  *
  * The endpoint is `@authenticated` (SEC-3): the upgrade must carry a token
- * the `socketRequestAuthenticator` bean resolves (`?token=<login token>`);
+ * the `socketRequestAuthenticator` entry resolves (`?token=<login token>`);
  * without a principal the dispatch fails closed with `1008`. The raw
  * `/ws/chat` socket endpoint next door stays unauthenticated as the
  * public-socket contrast.
@@ -29,7 +29,7 @@ export const CHAT_DESTINATION = '/topic/chat';
 
 /**
  * The STOMP chat broker — sockets (`stompMapping`) and scheduled pushes
- * (`scheduled`) on one registered bean.
+ * (`scheduled`) on one registered entry.
  */
 @requestMapping('/stomp')
 export class StompChatController {

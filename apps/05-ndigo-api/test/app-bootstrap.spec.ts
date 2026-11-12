@@ -54,8 +54,8 @@ describe('ndigo-api full bootstrap (ApplicationBuilder path)', () => {
         expect(serverConfig.port).toBe(3010);
     });
 
-    test('it should activate the dev-profile bean (AD-14)', () => {
-        expect(context.getValue('devInfo')).toEqual({ flavor: 'dev', note: 'profile-gated bean (AD-14)' });
+    test('it should activate the dev-profile entry (AD-14)', () => {
+        expect(context.getValue('devInfo')).toEqual({ flavor: 'dev', note: 'profile-gated entry (AD-14)' });
     });
 
     test('GET /health reports the registry status', async () => {
@@ -109,12 +109,12 @@ describe('ndigo-api full bootstrap (ApplicationBuilder path)', () => {
         await scheduler.tick(new Date(Date.now() + 3_600_000));
         expect(scheduler.getStats('heartbeat.ping')?.runs).toBe(1);
 
-        // The ping ran the real bean: the counter incremented.
+        // The ping ran the real entry: the counter incremented.
         const heartbeat = context.getValue<Heartbeat>('heartbeat');
         expect(heartbeat.pings).toBe(1);
     });
 
-    test('the cacheManager bean is provisioned zero-wiring (AD-24)', () => {
+    test('the cacheManager entry is provisioned zero-wiring (AD-24)', () => {
         expect(context.hasValue('cacheManager')).toBe(true);
     });
 

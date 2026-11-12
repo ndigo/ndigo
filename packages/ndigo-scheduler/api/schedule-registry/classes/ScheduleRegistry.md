@@ -6,17 +6,17 @@
 
 # Class: ScheduleRegistry
 
-Discovers `@scheduled` methods on application-context beans, registers
-them (telemetry-wrapped) with the context's `taskScheduler` bean, and
+Discovers `@scheduled` methods on application-context entries, registers
+them (telemetry-wrapped) with the context's `taskScheduler` entry, and
 manages the scheduler's lifecycle.
 
-As a container bean it is driven by the factory lifecycle (AD-20 D2):
+As a container entry it is driven by the factory lifecycle (AD-20 D2):
 registered by `NodeAutoConfiguration`, injected with the context via
 `ApplicationContextAware`, **auto-started on refresh** (`SmartLifecycle`),
 and stopped/destroyed on context close — zero extra wiring for Node apps.
 
 Scan model mirrors the handler-mapping scan (`Object.keys(context)` →
-per-name value): every bean instance's class metadata is read through
+per-name value): every entry instance's class metadata is read through
 `Symbol.metadata`, and each `schedule:<method>` entry is bound to its
 owner instance. A `@scheduled` class registered as a prototype (not an
 instance) has no resolvable owner and fails start loudly (AD-20 D5.5).
@@ -126,7 +126,7 @@ Scans the application context and registers every scheduled method
 with the given scheduler (manual alternative to the lifecycle start).
 
 Named `scan`, not `init` — the DI container auto-invokes `init` on
-any bean implementing that shape (Initializable), which would collide.
+any entry implementing that shape (Initializable), which would collide.
 
 #### Parameters
 
@@ -134,7 +134,7 @@ any bean implementing that shape (Initializable), which would collide.
 
 `ApplicationContext`
 
-The context whose beans are scanned.
+The context whose entries are scanned.
 
 ##### scheduler
 
@@ -178,7 +178,7 @@ The application context.
 > **start**(): `void`
 
 SmartLifecycle start: scans the context, registers telemetry-wrapped
-tasks with the `taskScheduler` bean, and starts the timer loop.
+tasks with the `taskScheduler` entry, and starts the timer loop.
 
 Idempotent; scans once per lifecycle (double-init guard on the
 underlying scan).
@@ -190,7 +190,7 @@ underlying scan).
 #### Throws
 
 When no context is bound or the context has
-  no `taskScheduler` bean (the node platform provides one).
+  no `taskScheduler` entry (the node platform provides one).
 
 ***
 

@@ -5,15 +5,16 @@ one or two sentences; follow the guide link for the full treatment.
 
 ## Foundations
 
-- **Application context** — The named dependency container that owns beans,
+- **Application context** — The named dependency container that owns entries,
   configuration, lifecycle, and child contexts. See [guide 04](../guides/04-dependency-injection-and-lifecycle.md).
-- **Bean** — Any value the context owns under a name or `ContextToken`.
+- **Entry** — A named value the context owns under a name or `ContextToken`. A
+  configuration class contributes entries; an `@entry` method is the factory
+  that creates one.
 - **Configuration class** — A class marked `@configuration` that contributes
   entries and property bindings.
-- **Entry** — An `@entry` method whose return value becomes a bean.
 - **Factory** — The IoC container implementation behind a context; resolves
   constructors, instances, scopes, and aware callbacks.
-- **Scope** — How long a bean lives: singleton, prototype, hash/route,
+- **Scope** — How long an entry lives: singleton, prototype, hash/route,
   refresh, or a custom scope.
 - **Aware callback** — An interface that receives a framework object (context,
   name, factory) after construction.
@@ -28,7 +29,7 @@ one or two sentences; follow the guide link for the full treatment.
   merged from another environment. It contributes values, not lifecycle.
 - **Profile** — A named activation set that selects profile-specific config
   files and gates entries. A profile changes values; it is not a context.
-- **Context boundary** — A parent/child edge that owns bean lookup and
+- **Context boundary** — A parent/child edge that owns entry lookup and
   lifecycle. It is not a configuration layer.
 - **Application event** — A context-local notification (`emit`). Cross-context
   notifications use the shared root channel, explicit parent/child addressing,

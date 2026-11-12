@@ -81,9 +81,9 @@ export interface TaskSchedulerOptions {
     warn?: (message: string) => void;
     /**
      * The distributed lock driver for `@scheduled({ lock })` tasks
-     * (AD-73). `undefined` (default) resolves the `lockDriver` bean from
+     * (AD-73). `undefined` (default) resolves the `lockDriver` entry from
      * the injected application context; pass `null` to leave locked tasks
-     * failing loudly when no bean exists.
+     * failing loudly when no entry exists.
      */
     lockDriver?: LockDriver | null;
 }
@@ -181,7 +181,7 @@ export class TaskScheduler implements AsyncCloseable, AsyncDestroyable {
     destroyed = false;
     /** Constructor-provided lock driver; `undefined` = resolve from context. */
     readonly #lockDriverOption: LockDriver | null | undefined;
-    /** The injected application context (lockDriver bean resolution). */
+    /** The injected application context (lockDriver entry resolution). */
     #context: ApplicationContext | null = null;
 
     /**
@@ -197,7 +197,7 @@ export class TaskScheduler implements AsyncCloseable, AsyncDestroyable {
 
     /**
      * Container injection (`ApplicationContextAware`): the context is used
-     * to resolve the `lockDriver` bean for locked tasks when no driver was
+     * to resolve the `lockDriver` entry for locked tasks when no driver was
      * passed to the constructor (AD-73).
      *
      * @param context - The application context.
@@ -487,7 +487,7 @@ export class TaskScheduler implements AsyncCloseable, AsyncDestroyable {
         if (driver === null) {
             throw new FrameworkError(
                 `TaskScheduler: task '${definition.name}' declares lock '${definition.lockKey}' but no LockDriver is ` +
-                    "configured — register a lockDriver bean or pass one to the scheduler's options"
+                    "configured — register a lockDriver entry or pass one to the scheduler's options"
             );
         }
         if (definition.lockKey === undefined) {
@@ -538,7 +538,7 @@ export class TaskScheduler implements AsyncCloseable, AsyncDestroyable {
 
     /**
      * Resolves the lock driver: constructor option wins, then the
-     * application context's `lockDriver` bean.
+     * application context's `lockDriver` entry.
      *
      * @returns The driver, or `null` when none is configured.
      */
@@ -550,7 +550,7 @@ export class TaskScheduler implements AsyncCloseable, AsyncDestroyable {
         if (context !== null && context.hasValue(LOCK_DRIVER)) {
             const driver = context.getValue(LOCK_DRIVER);
             if (!likeLockDriver(driver)) {
-                throw new FrameworkError(`TaskScheduler: the '${LOCK_DRIVER.description}' bean is not a LockDriver`);
+                throw new FrameworkError(`TaskScheduler: the '${LOCK_DRIVER.description}' entry is not a LockDriver`);
             }
             return driver;
         }

@@ -220,7 +220,7 @@ http.ts (600 lines) - Core HTTP logic
 **Current Structure:**
 
 - Dependency injection container
-- Bean registration and resolution
+- Entry registration and resolution
 - Lifecycle management
 - Scope handling
 

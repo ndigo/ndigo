@@ -65,7 +65,7 @@ host.registerFeature({
   (`SHARED_DEPENDENCY_REGISTRY_TOKEN` in the shell context); features declare
   `requires`/`optional` ranges; validation runs at mount time (missing or
   [semver](https://semver.org/)-mismatched required deps throw).
-- `@sharedDependency()` decorator marks a bean shell-managed: child contexts
+- `@sharedDependency()` decorator marks an entry shell-managed: child contexts
   skip registration and resolve from the parent chain (enforced in
   `AbstractFactory`).
 - This is the runtime equivalent of [import maps](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/importmap)

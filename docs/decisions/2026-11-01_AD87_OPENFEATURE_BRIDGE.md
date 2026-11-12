@@ -72,7 +72,7 @@ variant?, errorCode?, errorMessage?}` vs `EvaluationDetails` (plus
 ### D-1 — The SPI stays the contract; the standard arrives behind it
 
 Apps keep `FlagEvaluator`, `FLAG_EVALUATOR`, and `@whenFeature`; vendor reach
-is a **bean swap** to an OpenFeature-backed evaluator. `@ndigo/flags` remains
+is a **entry swap** to an OpenFeature-backed evaluator. `@ndigo/flags` remains
 SDK-free — the dependency lives only in the bridge package (the
 `@ndigo/telemetry` → `telemetry-node` split, applied to flags). The
 never-throw contract is preserved at the bridge boundary: SDK surprises
@@ -158,7 +158,7 @@ Phase 2 (no consumer in Phase 1).
 - **Adopt the OpenFeature client API as the app-facing surface.** Rejected:
   the typed, async, never-throw SPI is the framework surface, shared by DI
   wiring and `@whenFeature`; the OpenFeature client is an implementation
-  detail behind the bean.
+  detail behind the entry.
 - **Provider-direction only (Ndigo as an OpenFeature provider).** Rejected
   as a deliverable: we vend no evaluation engine. Recorded as a possible
   test aid — running OF vectors against `PropertyFlagProvider` via a reverse
@@ -176,7 +176,7 @@ Phase 2 (no consumer in Phase 1).
 ## Consequences
 
 - Vendor flagging becomes: install the bridge + a provider, await
-  `setProviderAndWait`, override the `FLAG_EVALUATOR` bean. App code —
+  `setProviderAndWait`, override the `FLAG_EVALUATOR` entry. App code —
   including `@whenFeature` routes — is unchanged.
 - `@ndigo/flags` grows three reasons, two error codes, and one optional
   field; `PropertyFlagProvider` behavior is untouched.

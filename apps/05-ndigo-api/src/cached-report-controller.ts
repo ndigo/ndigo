@@ -17,7 +17,7 @@ export const REPORTS = new ContextToken<Cache<{ invocations: number; value: stri
 /**
  * `@cached` zero-wiring demo (AD-24):
  *
- * - The bean resolves the platform's `cacheManager` bean through
+ * - The entry resolves the platform's `cacheManager` entry through
  *   `ApplicationContextAware` (the same DI seam `ScheduleRegistry` uses) —
  *   no manual cache construction.
  * - `report()` is cached for 60 s under the token-identified `reports` cache
@@ -35,7 +35,7 @@ export class CachedReportController extends AsApplicationContextAware(Object) {
     #invocations = 0;
 
     /**
-     * Injected by the framework before bean init (ApplicationContextAware).
+     * Injected by the framework before entry init (ApplicationContextAware).
      */
     cacheManager?: CacheManager;
 

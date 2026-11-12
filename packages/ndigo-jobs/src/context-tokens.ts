@@ -1,5 +1,5 @@
 /**
- * Type-safe bean handles for the ndigo-jobs contracts.
+ * Type-safe entry handles for the ndigo-jobs contracts.
  */
 import { ContextToken } from '@ndigo/factory';
 import type { JobDriver } from './job-driver';
@@ -8,25 +8,25 @@ import type { JobHandlerRegistry } from './job-handler-registry';
 import type { JobRunner } from './job-runner';
 
 /**
- * Token for the active {@link JobDriver} bean. `NodeAutoConfiguration`
+ * Token for the active {@link JobDriver} entry. `NodeAutoConfiguration`
  * registers the in-process default; apps register a durable driver to
  * replace it.
  */
 export const JOB_DRIVER = new ContextToken<JobDriver>('jobDriver');
 
 /**
- * Token for the producer-facing {@link JobQueue} bean.
+ * Token for the producer-facing {@link JobQueue} entry.
  */
 export const JOB_QUEUE = new ContextToken<JobQueue>('jobQueue');
 
 /**
- * Token for the {@link JobHandlerRegistry} bean that scans `@jobHandler`
+ * Token for the {@link JobHandlerRegistry} entry that scans `@jobHandler`
  * methods and holds the registered handlers.
  */
 export const JOB_HANDLER_REGISTRY = new ContextToken<JobHandlerRegistry>('jobHandlerRegistry');
 
 /**
- * Token for the {@link JobRunner} bean that polls the driver and executes
+ * Token for the {@link JobRunner} entry that polls the driver and executes
  * handlers.
  */
 export const JOB_RUNNER = new ContextToken<JobRunner>('jobRunner');

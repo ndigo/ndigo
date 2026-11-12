@@ -21,7 +21,7 @@ import { RedisCacheManager } from '@ndigo/redis/cache';
 import { BackendHealthIndicator } from './backend-health-indicator';
 import { FANOUT_CACHE_NAME } from './board-message';
 
-/** Context token for the shared {@link FanoutBackend} bean. */
+/** Context token for the shared {@link FanoutBackend} entry. */
 export const FANOUT_BACKEND = new ContextToken<FanoutBackend>('fanoutBackend');
 
 /** Redis namespace both nodes must agree on (cache keys and fan-out channels). */
@@ -62,7 +62,7 @@ export interface FanoutBackendStatus {
  * broken Redis from silently degrading to local-only delivery.
  */
 export class FanoutBackend extends AsApplicationContextAware(Object) {
-    /** Injected by the context-aware processor at bean creation. */
+    /** Injected by the context-aware processor at entry creation. */
     readonly applicationContext!: ApplicationContext;
     /** This process's instance id; `NDIGO_INSTANCE_ID` wins over `host:port`. */
     readonly instanceId: string;
@@ -128,7 +128,7 @@ export class FanoutBackend extends AsApplicationContextAware(Object) {
     /**
      * Registers the backend's health indicator once the context is available.
      *
-     * Runs at bean creation, so `ManagementAutoConfiguration` must be
+     * Runs at entry creation, so `ManagementAutoConfiguration` must be
      * registered first — the composition root guarantees that ordering.
      *
      * @param context - The application context that owns this backend.

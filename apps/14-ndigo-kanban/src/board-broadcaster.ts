@@ -5,7 +5,7 @@
  * It is the only component that knows both halves — the domain (the service's
  * events) and the transport (the platform's `SocketSessionRegistry`) — so
  * neither side has to import the other. The registry is read from the
- * application context *at publish time*, because the bean lives in
+ * application context *at publish time*, because the entry lives in
  * `NodeAutoConfiguration` and may be created after this class.
  */
 import '@tsmetadata/polyfill';
@@ -27,7 +27,7 @@ const logger = getLogger('ndigo-kanban');
  * client's reconnect reconciliation is what repairs a missed event.
  */
 export class BoardBroadcaster extends AsApplicationContextAware(Object) {
-    /** Injected by the context-aware processor at bean creation. */
+    /** Injected by the context-aware processor at entry creation. */
     readonly applicationContext!: ApplicationContext;
 
     /**
@@ -59,7 +59,7 @@ export class BoardBroadcaster extends AsApplicationContextAware(Object) {
     }
 
     /**
-     * @returns The socket registry bean, or `null` when none is configured
+     * @returns The socket registry entry, or `null` when none is configured
      *   (unit instantiation, or a context without the node platform).
      */
     #registry(): SocketSessionRegistry | null {

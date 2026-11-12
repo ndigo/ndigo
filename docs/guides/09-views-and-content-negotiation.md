@@ -173,7 +173,7 @@ A view resolver maps a logical name to a view. The platform composes them:
 | Resolver                         | Role                                    |
 | -------------------------------- | --------------------------------------- |
 | `ImportViewResolver`             | Loads a view module by path (Node)      |
-| `NameViewResolver`               | Looks up a view bean by name            |
+| `NameViewResolver`               | Looks up a view entry by name           |
 | `ViewResolverComposite`          | Runs an ordered chain, first match wins |
 | `ContentNegotiationViewResolver` | Negotiates among candidate views        |
 | `IslandViewResolver`             | Maps a name to an `IslandView`          |

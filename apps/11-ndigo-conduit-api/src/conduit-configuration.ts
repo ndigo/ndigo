@@ -34,7 +34,7 @@ import { UserController } from './user-controller';
 /** The app's dev port (the reserved 3040 slot in `apps/README.md`). */
 export const DEFAULT_PORT = 3040;
 
-/** The Conduit app's beans. */
+/** The Conduit app's entries. */
 @configuration
 export class ConduitConfiguration {
     readonly #store = new ConduitStore();

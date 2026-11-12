@@ -8,4 +8,4 @@
 
 > `const` **SOCKET\_REQUEST\_AUTHENTICATOR**: [`ContextToken`](#)\<[`SocketRequestAuthenticator`](../../node-http-server-adapter/interfaces/SocketRequestAuthenticator.md)\>
 
-Token for the socket upgrade authenticator bean (SEC-3).
+Token for the socket upgrade authenticator entry (SEC-3).

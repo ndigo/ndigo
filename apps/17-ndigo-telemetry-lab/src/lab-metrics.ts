@@ -48,7 +48,7 @@ export class LabMetrics implements ApplicationContextAware {
 
     /**
      * @param aggregator - Optional aggregator wired at construction (the seam
-     *   tests use); otherwise the context bean is resolved lazily on first use.
+     *   tests use); otherwise the context entry is resolved lazily on first use.
      */
     constructor(aggregator: FeatureMetricAggregator | null = null) {
         this.#aggregator = aggregator;
@@ -66,7 +66,7 @@ export class LabMetrics implements ApplicationContextAware {
      * Injects the owning application context (the lazy `METRIC_AGGREGATOR`
      * lookup path).
      *
-     * @param context - The application context that owns this bean.
+     * @param context - The application context that owns this entry.
      */
     setApplicationContext(context: ApplicationContext): void {
         this.#context = context;
@@ -74,7 +74,7 @@ export class LabMetrics implements ApplicationContextAware {
 
     /**
      * The context-level aggregator, resolved on first use: the management
-     * bean is created during refresh, after this bean's constructor ran.
+     * entry is created during refresh, after this entry's constructor ran.
      *
      * @returns The shared aggregator, or `null` when none is wired.
      */
@@ -139,7 +139,7 @@ export class LabMetrics implements ApplicationContextAware {
 
     /**
      * A plain-object snapshot of every observed metric. Counters and gauges
-     * come from this bean's tallies (always current); duration summaries come
+     * come from this entry's tallies (always current); duration summaries come
      * from the aggregator's sample history.
      *
      * @returns The snapshot the lab routes serialize.

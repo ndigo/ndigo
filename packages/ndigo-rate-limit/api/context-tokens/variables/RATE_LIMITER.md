@@ -8,7 +8,7 @@
 
 > `const` **RATE\_LIMITER**: [`ContextToken`](#)\<[`RateLimiter`](../../rate-limiter/interfaces/RateLimiter.md)\>
 
-Token for the application context's shared [RateLimiter](../../rate-limiter/interfaces/RateLimiter.md) bean —
+Token for the application context's shared [RateLimiter](../../rate-limiter/interfaces/RateLimiter.md) entry —
 `NodeAutoConfiguration` registers the in-process default under it; apps
-needing a shared store override the bean (e.g. with the
+needing a shared store override the entry (e.g. with the
 `@ndigo/redis/rate-limit` driver).

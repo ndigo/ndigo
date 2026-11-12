@@ -22,7 +22,7 @@ Attempts allowed before terminal failure, when declared.
 
 > **name**: `string`
 
-`<beanName>.<methodName>` — diagnostics and spans.
+`<entryName>.<methodName>` — diagnostics and spans.
 
 ***
 

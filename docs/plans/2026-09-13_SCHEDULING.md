@@ -113,8 +113,8 @@ manifest + format clean, graft refreshed.
    guard), `scheduleFromSpec`; 11 tests (5/6/7-field detection, time-zone
    shift, malformed rejection).
 5. `schedule-registry.ts` — `ScheduleRegistry` scans `Object.keys(context)`
-   bean values (handler-mapping scan model), binds each `schedule:<method>`
-   to its owner instance, names tasks `<bean>.<method>`, fails loudly on
+   entry values (handler-mapping scan model), binds each `schedule:<method>`
+   to its owner instance, names tasks `<entry>.<method>`, fails loudly on
    `@scheduled` classes registered as prototypes (AD-20 D5.5 — note: the
    context proxies class values, so the guard is exercised through
    raw-value contexts), and `close()` unregisters its tasks; 6 tests.
@@ -136,11 +136,11 @@ lint + manifest + format clean, graft refreshed.
 **Platform integration + telemetry — Done.**
 
 7. **`NodeAutoConfiguration` wiring — DONE.** `taskScheduler()` and
-   `scheduleRegistry()` entries. `ScheduleRegistry` is the container bean:
+   `scheduleRegistry()` entries. `ScheduleRegistry` is the container entry:
    context-injected (`ApplicationContextAware`), **auto-started on refresh**
    (`SmartLifecycle` — the factory's `DefaultLifecycleProcessor` runs it),
    stopped on close, `destroy()`ed at teardown. Zero-config: any
-   `@scheduled` bean registered before refresh just runs. `@ndigo/scheduler`
+   `@scheduled` entry registered before refresh just runs. `@ndigo/scheduler`
    became a platform-node peer dep. Integration test in platform-node:
    auto-start + discovery + deterministic tick execution (2 tests).
 8. **Per-run telemetry — DONE.** `instrumentTask` wraps each run in an
@@ -156,7 +156,7 @@ lint + manifest + format clean, graft refreshed.
    provider).
 
 Also fixed: the registry's manual scan is named `scan`, **not `init`** —
-the DI container auto-invokes `init` on any bean implementing that shape
+the DI container auto-invokes `init` on any entry implementing that shape
 (Initializable), which collided at registration.
 
 Verification: build 31/31, tests 36/36, lint + manifest + format clean,
@@ -170,10 +170,10 @@ graft refreshed.
    `@ndigo/scheduler` imports alongside browser-platform imports
    (`@ndigo/platform-web`, `@ndigo/view-webcomponent`), registered + enabled;
    5 rule tests.
-10. `apps/ndigo-api` demo gate — `Heartbeat` bean (`@scheduled
+10. `apps/ndigo-api` demo gate — `Heartbeat` entry (`@scheduled
     '*/30 * * * * *'`) auto-discovered + auto-started through the real
     ApplicationBuilder path; 8 bootstrap tests including deterministic
-    scheduler ticks + real bean invocation.
+    scheduler ticks + real entry invocation.
 11. `docs/guides/05-scheduling.md` (quickstart, specs, semantics,
     observability, guardrails, HTTP example); guides index; audit §2.1
     scheduling row marked IMPLEMENTED; apps README note.

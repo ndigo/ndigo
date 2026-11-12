@@ -20,7 +20,7 @@ type HeaderMiddleware = (req: IncomingMessage, res: ServerResponse, next: (err?:
  * `headers` mirrors Helmet's option surface: each key accepts `false` to
  * disable that header, `true`/omitted for the framework default, or the
  * header's own option object. Construction validates (malformed options
- * throw a TypeError — Helmet's behavior, moved to bean startup).
+ * throw a TypeError — Helmet's behavior, moved to entry startup).
  */
 export interface SecurityHeadersInterceptorOptions {
     /**

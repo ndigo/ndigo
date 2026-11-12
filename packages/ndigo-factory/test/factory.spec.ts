@@ -152,7 +152,7 @@ describe('DefaultFactory', () => {
         expect(a).not.toBe(b);
     });
 
-    test('it reports which beans a boot finish sweep may eagerly instantiate (KRN-REV-FACTORY-12)', () => {
+    test('it reports which entries a boot finish sweep may eagerly instantiate (KRN-REV-FACTORY-12)', () => {
         const f = defined(factory);
 
         @scope('route')
@@ -190,25 +190,25 @@ describe('DefaultFactory', () => {
         expect(f.getInstance('constructor')).toBeUndefined();
     });
 
-    test('it destroys lifecycle-bearing hash-scoped beans on endScope (KRN-REV-FACTORY-13)', () => {
+    test('it destroys lifecycle-bearing hash-scoped entries on endScope (KRN-REV-FACTORY-13)', () => {
         const f = defined(factory);
 
         @scope('hash')
-        class RouteBean {
+        class RouteEntry {
             destroyed = false;
             destroy = (): void => {
                 this.destroyed = true;
             };
         }
 
-        f.setValue('bean', RouteBean);
+        f.setValue('entry', RouteEntry);
 
         const hash = f.getScope('hash') as HashScope;
         hash.setCurrentKey('route-1');
-        const bean = f.getValue<RouteBean>('bean');
+        const entry = f.getValue<RouteEntry>('entry');
         hash.endScope('route-1');
 
-        expect(bean.destroyed).toBe(true);
+        expect(entry.destroyed).toBe(true);
     });
 
     test('it should manage processors', () => {

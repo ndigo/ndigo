@@ -8,4 +8,4 @@
 
 > `const` **VIEW\_TARGET**: [`ContextToken`](#)\<[`ViewTarget`](#)\>
 
-Context token for the application's view target bean (rendered view output).
+Context token for the application's view target entry (rendered view output).

@@ -64,7 +64,7 @@ Execution slots (max claimed per pass); default 1.
 
 > `optional` **driver?**: [`JobDriver`](../../job-driver/interfaces/JobDriver.md)
 
-The driver to claim from; resolved from the `jobDriver` bean when omitted.
+The driver to claim from; resolved from the `jobDriver` entry when omitted.
 
 ***
 
@@ -96,4 +96,4 @@ Delay between empty polls; default 1000.
 
 > `optional` **registry?**: [`JobHandlerRegistry`](../../job-handler-registry/classes/JobHandlerRegistry.md)
 
-The handler registry; resolved from the `jobHandlerRegistry` bean when omitted.
+The handler registry; resolved from the `jobHandlerRegistry` entry when omitted.

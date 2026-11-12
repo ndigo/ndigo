@@ -11,7 +11,7 @@ TypeScript already provides types, hover, and JSDoc for framework code. The
 features only a bespoke language server could add are: route ↔ handler
 navigation and rename, mapping-conflict diagnostics, config-key
 completion/validation across `config/application.json` + environment + CLI
-args, DI token/bean graphs, and embedded-language support for EJS templates.
+args, DI token/entry graphs, and embedded-language support for EJS templates.
 
 Two facts bound the decision:
 
@@ -82,7 +82,7 @@ is _introspection_, which is CLI/artifact-shaped, not server-shaped.
 
 - No editor navigation for routes/mappings/config yet; diagnostics remain
   lint-only.
-- Manifest v1 covers routes, mappings, and config keys. DI token/bean
+- Manifest v1 covers routes, mappings, and config keys. DI token/entry
   enumeration and ORM entity discovery are **not** included: the factory
   registry exposes no enumerator today, and entity metadata needs either a
   registration list or a new seam. Both are prerequisites for LSP v1's token

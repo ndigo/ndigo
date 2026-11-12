@@ -9,7 +9,7 @@ status refresh; this ADR) closes the row.
 
 The Framework Gap Analysis's Configuration row (§3) recorded three missing
 capabilities over the AD-11..17 environment stack: no secret
-encryption/decryption, no live bean rebind (`@RefreshScope` equivalent), and
+encryption/decryption, no live entry rebind (`@RefreshScope` equivalent), and
 no config-server integration. This ADR ratifies the decisions that closed
 all three (plan `docs/plans/2026-09-24_CONFIGURATION_COMPLETION.md`, owner
 decisions confirmed 2026-09-25).
@@ -114,7 +114,7 @@ registry) — this is the AD-13 D6 "doc and test cannot drift" enforcement.
 
 On a detected change the source `replace`s its own registry entry (position
 preserved, version bumped) then calls `environment.refresh()` →
-`config:refresh` → `@refreshScope` beans rebind. No change → no event → no
+`config:refresh` → `@refreshScope` entries rebind. No change → no event → no
 rebinding (no storms). Proven end-to-end by the boot full-loop spec.
 
 ### D-9 — Emitter↔Signals reconciliation is a follow-up ADR (owner-confirmed)

@@ -8,5 +8,5 @@
 
 > `const` **CONVERSION\_SERVICE**: [`ContextToken`](#)\<`ConversionService`\>
 
-Token for the shared conversion service bean (schema targets included,
-AD-38) — leaf conversions and schema-driven DTO projection in one bean.
+Token for the shared conversion service entry (schema targets included,
+AD-38) — leaf conversions and schema-driven DTO projection in one entry.

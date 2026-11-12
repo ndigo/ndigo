@@ -8,5 +8,5 @@
 
 > `const` **FLAG\_CONTEXT\_RESOLVER**: [`ContextToken`](#)\<[`FlagEvaluationContextResolver`](../../flag-context-resolver/interfaces/FlagEvaluationContextResolver.md)\>
 
-Token for the flag targeting-context resolver bean (AD-87 companion):
+Token for the flag targeting-context resolver entry (AD-87 companion):
 the default resolves the session-bag principal, then the client address.

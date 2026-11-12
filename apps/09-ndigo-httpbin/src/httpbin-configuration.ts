@@ -1,5 +1,5 @@
 /**
- * Application configuration: registers the httpbin controllers as beans so the
+ * Application configuration: registers the httpbin controllers as entries so the
  * platform handler mapping discovers their routes on refresh.
  */
 import '@tsmetadata/polyfill';

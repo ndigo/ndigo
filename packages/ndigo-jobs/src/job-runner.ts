@@ -26,9 +26,9 @@ function defaultBackoffMs(attempt: number): number {
  * Options for {@link JobRunner}.
  */
 export interface JobRunnerOptions {
-    /** The driver to claim from; resolved from the `jobDriver` bean when omitted. */
+    /** The driver to claim from; resolved from the `jobDriver` entry when omitted. */
     driver?: JobDriver;
-    /** The handler registry; resolved from the `jobHandlerRegistry` bean when omitted. */
+    /** The handler registry; resolved from the `jobHandlerRegistry` entry when omitted. */
     registry?: JobHandlerRegistry;
     /** Execution slots (max claimed per pass); default 1. */
     concurrency?: number;
@@ -360,13 +360,13 @@ export class JobRunner implements AsyncCloseable {
         if (context !== null && context.hasValue(JOB_DRIVER)) {
             const driver = context.getValue(JOB_DRIVER);
             if (!likeJobDriver(driver)) {
-                throw new FrameworkError(`JobRunner: '${JOB_DRIVER.description}' bean is not a JobDriver`);
+                throw new FrameworkError(`JobRunner: '${JOB_DRIVER.description}' entry is not a JobDriver`);
             }
             this.#driver = driver;
             return driver;
         }
         throw new FrameworkError(
-            `JobRunner: no job driver — pass one to the constructor or register a '${JOB_DRIVER.description}' bean ` +
+            `JobRunner: no job driver — pass one to the constructor or register a '${JOB_DRIVER.description}' entry ` +
                 '(NodeAutoConfiguration provides the in-process default)'
         );
     }
@@ -380,7 +380,7 @@ export class JobRunner implements AsyncCloseable {
             const registry = context.getValue(JOB_HANDLER_REGISTRY);
             if (!likeJobHandlerRegistry(registry)) {
                 throw new FrameworkError(
-                    `JobRunner: '${JOB_HANDLER_REGISTRY.description}' bean is not a JobHandlerRegistry`
+                    `JobRunner: '${JOB_HANDLER_REGISTRY.description}' entry is not a JobHandlerRegistry`
                 );
             }
             this.#registry = registry;
@@ -388,7 +388,7 @@ export class JobRunner implements AsyncCloseable {
         }
         throw new FrameworkError(
             `JobRunner: no handler registry — pass one to the constructor or register a ` +
-                `'${JOB_HANDLER_REGISTRY.description}' bean (NodeAutoConfiguration provides one)`
+                `'${JOB_HANDLER_REGISTRY.description}' entry (NodeAutoConfiguration provides one)`
         );
     }
 }

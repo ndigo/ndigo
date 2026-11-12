@@ -22,7 +22,7 @@ import type { ClaimOptions, JobId, JobRecord, JobRequest } from './job';
  *   `fail` records the error in the caller's telemetry/log, not in storage
  *   (dead-letter inspection is out of scope — AD-72 D-2).
  *
- * Implementations are registered under the `jobDriver` bean; the default is
+ * Implementations are registered under the `jobDriver` entry; the default is
  * {@link "in-process-job-driver".InProcessJobDriver | InProcessJobDriver}, which is explicitly non-durable.
  */
 export interface JobDriver extends AsyncCloseable {

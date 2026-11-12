@@ -23,7 +23,7 @@ class ScheduledWorker {
     }
 }
 
-describe('@ndigo/scheduler lifecycle (container bean)', () => {
+describe('@ndigo/scheduler lifecycle (container entry)', () => {
     let context: GenericApplicationContext;
     let scheduler: TaskScheduler;
 
@@ -44,7 +44,7 @@ describe('@ndigo/scheduler lifecycle (container bean)', () => {
         expect(() => registry.start()).toThrow(/no application context/);
     });
 
-    test('start without a taskScheduler bean fails loudly', () => {
+    test('start without a taskScheduler entry fails loudly', () => {
         const bare = new GenericApplicationContext('bare');
         const registry = new ScheduleRegistry();
         registry.setApplicationContext(bare);
@@ -52,7 +52,7 @@ describe('@ndigo/scheduler lifecycle (container bean)', () => {
         expect(() => registry.start()).toThrow(/taskScheduler/);
     });
 
-    test('start discovers registered beans, registers tasks, and starts the loop', () => {
+    test('start discovers registered entries, registers tasks, and starts the loop', () => {
         const worker = new ScheduledWorker();
         context.setValue('worker', worker);
         const registry = new ScheduleRegistry();

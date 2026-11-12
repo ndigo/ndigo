@@ -83,7 +83,7 @@ describe('ndigo-api STOMP chat via StompClient (AD-23 D6)', () => {
         wsUrl = `ws://127.0.0.1:${port}`;
 
         // `/stomp/chat` is `@authenticated` (SEC-3): the socket
-        // authenticator bean resolves the token from the upgrade URL, so the
+        // authenticator entry resolves the token from the upgrade URL, so the
         // suite logs in once through the app's own endpoint.
         const login = await fetch(`http://127.0.0.1:${port}/auth/login`, {
             method: 'POST',

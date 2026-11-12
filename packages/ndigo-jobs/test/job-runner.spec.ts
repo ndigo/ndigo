@@ -198,7 +198,7 @@ describe('JobRunner', () => {
         await expect(runner.tick()).rejects.toThrow(/closed/);
     });
 
-    test('start resolves the container beans and polls; stop halts claiming', async () => {
+    test('start resolves the container entries and polls; stop halts claiming', async () => {
         const context = new GenericApplicationContext('jobs');
         const now = T0;
         const driver = new InProcessJobDriver({ clock: () => now });
@@ -222,7 +222,7 @@ describe('JobRunner', () => {
         context.close();
     });
 
-    test('start without container beans fails loud', () => {
+    test('start without container entries fails loud', () => {
         const runner = new JobRunner();
 
         expect(() => runner.start()).toThrow(/no job driver/);

@@ -18,14 +18,14 @@ ndigo ports Spring solutions deliberately; the evaluation found the framework al
 | Runtime SpEL engine                                    | **Rejected** — `key: string \| ((args) => string)` + no expression language                                                                                                                                                         | `ndigo-cache/src/cached.ts:26-33` (D-5)                                                              |
 | Reflection parameter binding / `@Autowired` proxies    | **Rejected** — extractor factories + explicit `new` in `@entry` are strictly better                                                                                                                                                 | `ndigo-dispatcher/src/parameter-factories.ts`, `apps/ndigo-api/src/node-app-configuration.ts:61-130` |
 | `@Primary` / `@Qualifier` string selectors             | **Rejected** — `ContextToken<T>` (S1) is the TS answer; qualifier strings would reimport the Java flaw                                                                                                                              | `ndigo-factory/src/context-token.ts`                                                                 |
-| Bean-presence `@Conditional`                           | **Rejected** — `@profile` gate + plain `if` in the `@entry` method covers the real cases                                                                                                                                            | `node-app-configuration.ts:172-176`                                                                  |
+| Entry-presence `@Conditional`                          | **Rejected** — `@profile` gate + plain `if` in the `@entry` method covers the real cases                                                                                                                                            | `node-app-configuration.ts:172-176`                                                                  |
 | Java-style annotation strings for route mapping tables | **Kept (strings stay canonical)** — mappings deserialize from JSON (`builder.fromConfig`), and the registry needs merge/compareTo ordering; typed forms are programmatic conveniences producing the same canonical strings (D5, D8) | `request-mapping.ts:35-39`, `route-condition.ts:216-304`                                             |
 
 ### 1.2 The seven items
 
 | #   | Suggestion                                              | Where the TS layer lands                                                                                   |
 | --- | ------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| S1  | Typed bean graph — tokens first, strings default-off    | `ndigo-context` (`@entry`), `ndigo-dispatcher` (`resolveHandlerWithContext`), `ndigo-oxlint-plugin` (rule) |
+| S1  | Typed entry graph — tokens first, strings default-off   | `ndigo-context` (`@entry`), `ndigo-dispatcher` (`resolveHandlerWithContext`), `ndigo-oxlint-plugin` (rule) |
 | S2  | Typed context events                                    | `ndigo-context` (typed overlay over `EventEmitter`)                                                        |
 | S3  | Schema-derived `@configurationProperties`               | `ndigo-boot`                                                                                               |
 | S4  | Typed property paths + typed programmatic config access | `ndigo-context`                                                                                            |
@@ -37,9 +37,9 @@ ndigo ports Spring solutions deliberately; the evaluation found the framework al
 
 ## 2. Specifications
 
-### S1 — Typed bean graph: tokens first
+### S1 — Typed entry graph: tokens first
 
-**Problem.** Every app bean is registered and looked up by unchecked string: `@entry cacheManager()` → `'cacheManager'`; app code casts at the call site — `context.getValue<CacheManager>('cacheManager')` (`apps/ndigo-api/src/cached-report-controller.ts:36-42`). Renames and typos fail at dispatch time, not compile time. `ContextToken<T>` + the dual `string | ContextToken<T>` registry API already exist (`ndigo-factory/src/registry.ts:11-27`); only 7 framework beans use tokens.
+**Problem.** Every app entry is registered and looked up by unchecked string: `@entry cacheManager()` → `'cacheManager'`; app code casts at the call site — `context.getValue<CacheManager>('cacheManager')` (`apps/ndigo-api/src/cached-report-controller.ts:36-42`). Renames and typos fail at dispatch time, not compile time. `ContextToken<T>` + the dual `string | ContextToken<T>` registry API already exist (`ndigo-factory/src/registry.ts:11-27`); only 7 framework entries use tokens.
 
 **Shape.**
 
@@ -50,7 +50,7 @@ ndigo ports Spring solutions deliberately; the evaluation found the framework al
     ```
     Decorator metadata records the token; `ConfigurationParser.processEntry` registers under the token (registry is description-keyed — `setValue(token)`/`getValue(token)` already resolve; verified in `factory.spec.ts:256-276`). String form stays.
 2. `resolveHandlerWithContext` (ndigo-dispatcher `_shared.ts:19-22`) accepts `ContextToken<object>`; `MaybeHandler` widens. String handlers stay for deserialized mapping tables.
-3. Framework beans migrate to tokens: existing 7 (`DISPATCHER`, `ROUTER`, `HOST_MANAGER_TOKEN`, `HEALTH_REGISTRY`, `METRIC_AGGREGATOR`, `SHARED_DEPENDENCY_REGISTRY_TOKEN`) + beans from auto-configurations discovered in the task (`cacheManager`, `rateLimiter`, …). App lookups in `apps/ndigo-api` migrate (S1 demo gate).
+3. Framework entries migrate to tokens: existing 7 (`DISPATCHER`, `ROUTER`, `HOST_MANAGER_TOKEN`, `HEALTH_REGISTRY`, `METRIC_AGGREGATOR`, `SHARED_DEPENDENCY_REGISTRY_TOKEN`) + entries from auto-configurations discovered in the task (`cacheManager`, `rateLimiter`, …). App lookups in `apps/ndigo-api` migrate (S1 demo gate).
 4. New oxlint rule `no-string-registry-lookup` (`ndigo-oxlint-plugin`), v1 semantics: flag string-literal `getValue`/`getInstance`/`hasValue`/`destroyValue` calls (any receiver; no declaration scan — the same-module declaration-scan scope from the plan draft was dropped at implementation; documented `oxlint-disable-next-line` for intentional dynamic lookups; v2 candidates: receiver/declaration awareness + static template-literal args).
 
 **Tasks**
@@ -67,9 +67,9 @@ ndigo ports Spring solutions deliberately; the evaluation found the framework al
     - **Verify:** dispatcher spec with token-handler mapping.
     - **Files:** `packages/ndigo-dispatcher/src/_shared.ts`, `abstract-*-mapping.ts` (type-only), `route-handler-mapping.ts` export.
     - **Depends:** T1.1.
-- [ ] T1.3 Framework bean migration
-    - **Objective:** all framework `@entry` beans + their lookup sites use tokens; no string lookup of a known bean remains in `packages/ndigo-*/src` except documented mapping-data paths.
-    - **Acceptance:** `grep` over framework src shows zero string-literal `getValue('…')` for migrated beans; suites green.
+- [ ] T1.3 Framework entry migration
+    - **Objective:** all framework `@entry` entries + their lookup sites use tokens; no string lookup of a known entry remains in `packages/ndigo-*/src` except documented mapping-data paths.
+    - **Acceptance:** `grep` over framework src shows zero string-literal `getValue('…')` for migrated entries; suites green.
     - **Verify:** `pnpm run test` (affected: ndigo-context, ndigo-factory, ndigo-dispatcher, ndigo-management, ndigo-host, ndigo-router).
     - **Files:** auto-configurations, token modules, lookup call sites.
     - **Depends:** T1.1, T1.2.
@@ -271,7 +271,7 @@ await cacheManager.getCache(REPORTS).delete(key);   // typed store
 
 ## 4. Verification
 
-1. **Per-task:** acceptance criteria above; behavior changes smoke-tested via `pnpm --filter <pkg> test` plus the demo gate for user-facing surfaces (ndigo-api `/api/cached-report`, profile-gated bean, conditional mapping).
+1. **Per-task:** acceptance criteria above; behavior changes smoke-tested via `pnpm --filter <pkg> test` plus the demo gate for user-facing surfaces (ndigo-api `/api/cached-report`, profile-gated entry, conditional mapping).
 2. **Per-wave gates:** lint / format:check / build / manifest:check repo-wide + all affected suites.
 3. **Type-level guardrail:** T2.1 adds a type-error fixture (a file that must fail `tsc`) so the typed overlay cannot silently degrade to `unknown[]`.
 4. **Regression guard:** demo apps (ndigo-api) exercise S1/S3/S5/S6/S7 end-to-end; `apps/ndigo-hello-node` untouched (documents the string form still works).
@@ -289,14 +289,14 @@ await cacheManager.getCache(REPORTS).delete(key);   // typed store
 
 ## 6. Decisions for ADR-34
 
-- **D1** Tokens are the canonical bean handle; strings remain a compatibility + data path (JSON mapping tables).
+- **D1** Tokens are the canonical entry handle; strings remain a compatibility + data path (JSON mapping tables).
 - **D2** Typed events are an additive overlay on the two framework emitters; the core `Emitter` stays string-typed.
 - **D3** Schema-derived configuration is opt-in beside the field-iteration path.
 - **D4** Property defaults stay env strings; the deliverable is typed paths (T4.1) and typed programmatic access (T4.2).
 - **D5** DSL builders produce canonical strings; no predicate/function form for mapping tables (serialize/merge/compare requirements); SpEL remains rejected.
 - **D6** No `@Primary`/`@Qualifier`/`@Conditional` ports.
 - **D7** oxlint rule v1 = same-module token declarations; package-scope analysis is v2.
-- **D8** `ndigo-generators` token codegen deferred (v2); tokens are declared once per bean root, not per lookup.
+- **D8** `ndigo-generators` token codegen deferred (v2); tokens are declared once per entry root, not per lookup.
 
 ## 7. Follow-ups (deliberate deferrals)
 

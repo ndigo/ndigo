@@ -45,7 +45,7 @@ What the repository already provides (verified at HEAD, 2026-10-08):
 - **No consumer exists.** No app declares `db:migrate` or constructs a
   migrator. `apps/04-ndigo-api` — the only Drizzle app — lazy-inits a
   `:memory:` data source (`drizzle-note-controller.ts:28-35`) and relies on
-  `init`'s `IF NOT EXISTS`; there is no ORM auto-configuration bean in the
+  `init`'s `IF NOT EXISTS`; there is no ORM auto-configuration entry in the
   platform (the assembly is app-owned by convention).
 
 ## Evidence
@@ -115,8 +115,8 @@ loads pending migrations and runs them through the plain
 The app binds `migrations.{runOnBoot, dir}` through its own
 `@configurationProperties` and calls the helper in its start path before
 serving — the same ownership split AD-75's CLI enforces ("the migrator
-assembly belongs to the app"): no ORM auto-configuration bean in v1
-(AD-64 platform separation; no data-source bean exists to hang one on).
+assembly belongs to the app"): no ORM auto-configuration entry in v1
+(AD-64 platform separation; no data-source entry exists to hang one on).
 Single-flight stays the operator's contract (AD-30 risk: concurrent
 migrators fail loud on the journal PK).
 
@@ -208,6 +208,6 @@ Substrate defects the reference cutover surfaced, fixed in the same pass
   table.
 - AD-30 (runner + D-3 predicate), AD-75 D-2 (the `db:*` surface),
   AD-72..75 follow-up review (the `db:new` gap row), AD-31 (relation
-  metadata — no DDL today), AD-64 (platform separation — no auto-bean).
+  metadata — no DDL today), AD-64 (platform separation — no auto-entry).
 - Companion plan: `docs/plans/2026-10-08_MIGRATION_GENERATION.md` (guide 27
   ships at execution).

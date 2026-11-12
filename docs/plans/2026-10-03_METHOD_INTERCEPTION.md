@@ -44,8 +44,8 @@ pointcut expressions, introductions, or migrating existing method decorators.
 
 - `RegistryProxyHandler` forwards property access to the registry, binding
   functions (`packages/ndigo-factory/src/registry.ts:42-69`) — registry-level,
-  not bean-method-level
-- `serviceClient()` builds a Proxy over a bean target with a `get` trap
+  not entry-method-level
+- `serviceClient()` builds a Proxy over an entry target with a `get` trap
   intercepting declared methods (`packages/ndigo-service/src/service-client.ts:204-246`)
 
 **Prior art (archived)**
@@ -233,7 +233,7 @@ Caller
 
 ### Phase 5 — Demo gate (ndigo-api)
 
-- `AuditInterceptor` + `OrderService` demo bean, registered in the app entry
+- `AuditInterceptor` + `OrderService` demo entry, registered in the app entry
   (`apps/ndigo-api/src/index.ts`, AD-42 D-8 pattern: processor first, class
   second); spec mirroring that flow asserts audit records for advised calls,
   silence for plain methods, and preserved private state; smoke: full boot

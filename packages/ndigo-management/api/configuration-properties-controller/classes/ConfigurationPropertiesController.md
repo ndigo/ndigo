@@ -15,7 +15,7 @@ The class list is the explicit `configurationClasses` option (mirroring
 `@ndigo/inspect`'s `configurationClasses` input) — the framework keeps no
 registry of bound classes to scan.
 
-Payload shape: `{ beans: [{ name, properties: [{ key, type? }] }] }`,
+Payload shape: `{ entries: [{ name, properties: [{ key, type? }] }] }`,
 deterministically sorted.
 
 ## Extends
@@ -82,15 +82,15 @@ The application context injected by the aware mixin.
 
 ### configprops()
 
-> **configprops**(): `ResponseEntity`\<`void`\> \| \{ `beans`: `object`[]; \}
+> **configprops**(): `ResponseEntity`\<`void`\> \| \{ `entries`: `object`[]; \}
 
 The configuration-properties document.
 
 #### Returns
 
-`ResponseEntity`\<`void`\> \| \{ `beans`: `object`[]; \}
+`ResponseEntity`\<`void`\> \| \{ `entries`: `object`[]; \}
 
-`{ beans: […] }` — never values.
+`{ entries: […] }` — never values.
 
 ***
 

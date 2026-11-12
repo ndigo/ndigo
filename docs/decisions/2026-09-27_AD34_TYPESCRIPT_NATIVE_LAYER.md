@@ -8,7 +8,7 @@ waves; see [docs/plans/2026-09-27_TYPESCRIPT_NATIVE_LAYER.md](../plans/2026-09-2
 
 ndigo ports reference solutions deliberately. The 2026-09-27 evaluation found
 the framework already TS-native where it replaced Java machinery (Zod over
-Bean Validation, extractor-factory parameter binding over reflection,
+Entry Validation, extractor-factory parameter binding over reflection,
 wrapper decorators over AOP proxies — self-invocation is intercepted,
 stronger than the reference; SpEL rejected at AD-24 D-5). The remaining reference carry-overs
 were **stringly-typed handles and expression DSLs** — exactly where
@@ -17,7 +17,7 @@ for those surfaces and records what stays deliberately Java-shaped.
 
 ## Decisions
 
-### D-1 — `ContextToken<T>` is the canonical bean handle; strings are a compat/data path
+### D-1 — `ContextToken<T>` is the canonical entry handle; strings are a compat/data path
 
 The registry (`Registry` in `ndigo-factory`) is description-keyed, so a
 token lookup and its string alias resolve the same value — the token is pure
@@ -28,9 +28,9 @@ handle, zero runtime cost. The TS layer:
 - Typed handler resolution: mapping handlers accept
   `string | ContextToken<object>` (`ndigo-dispatcher/_shared.ts`); JSON
   deserialized mapping tables keep strings — **mapping data is data**.
-- Framework beans migrate to tokens: dispatcher, handler mapping, argument
+- Framework entries migrate to tokens: dispatcher, handler mapping, argument
   resolvers, view target, http server, socket registry/authenticator, cache
-  manager, health registry, metric aggregator (plus app beans in the demos).
+  manager, health registry, metric aggregator (plus app entries in the demos).
 - New oxlint rule `no-string-registry-lookup` flags string-literal lookups
   (`getValue`/`getInstance`/`hasValue`/`destroyValue`) in non-test files,
   with justified disables for the benchmark fixtures (the string hot path is
@@ -116,14 +116,14 @@ Softer grammars rejected: mapping conditions and profile expressions keep
 their string forms because they participate in registry ordering/merging
 and JSON serialization — functions would break `merge`/`compareTo` and
 deserialization. `ndigo-generators` token codegen is deferred to v2: tokens
-are declared once per bean root, not per lookup. `@parameters` keys cannot
+are declared once per entry root, not per lookup. `@parameters` keys cannot
 be statically checked against handler parameter names (decorator evaluation
 precedes the method signature; TS has no remedy in decorator position) —
 documented in guide 09 with the runtime error path as the guard.
 
 ## Consequences
 
-- Rename-safe bean/cache/store handles with autocomplete; typo drift fails
+- Rename-safe entry/cache/store handles with autocomplete; typo drift fails
   at build, not dispatch.
 - Lifecycle/config contracts typed at the compile boundary (typed-events
   spec doubles as the compile gate: payload regressing to `unknown[]`

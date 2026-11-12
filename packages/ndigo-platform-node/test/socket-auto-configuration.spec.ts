@@ -92,7 +92,7 @@ describe('resolveSocketLimits', () => {
 
     test('HTTPServer rejects adapter + socketRegistry together (O7)', () => {
         // A custom adapter owns its registry; silently accepting both would
-        // leave the context bean and the adapter's registry disjoint.
+        // leave the context entry and the adapter's registry disjoint.
         const dispatcher = {} as unknown as NodeDispatcher;
         const adapter = {} as unknown as HTTPServer['server'];
         expect(
@@ -106,7 +106,7 @@ describe('resolveSocketLimits', () => {
 });
 
 @requestMapping('/')
-class BeanSocketController {
+class EntrySocketController {
     @socketMapping('/echo')
     @parameters({ session: socketSessionValue('session') })
     async *echo(session: SocketSession) {
@@ -117,7 +117,7 @@ class BeanSocketController {
 }
 
 describe('socket auto-configuration wiring (AD-21 D4)', () => {
-    const context = new MetadataConfigApplicationContext('ws-bean-wiring');
+    const context = new MetadataConfigApplicationContext('ws-entry-wiring');
     let server: HTTPServer;
     let wsUrl: string;
 
@@ -126,13 +126,13 @@ describe('socket auto-configuration wiring (AD-21 D4)', () => {
         context.close();
     });
 
-    test('registry bean and the server adapter share one instance', async () => {
+    test('registry entry and the server adapter share one instance', async () => {
         context.register(NodeAutoConfiguration);
-        context.setValue(BeanSocketController.name, new BeanSocketController());
+        context.setValue(EntrySocketController.name, new EntrySocketController());
         context.refresh();
 
-        const bean = context.getValue<NodeSocketSessionRegistry>('socketSessionRegistry');
-        expect(bean).toBeInstanceOf(NodeSocketSessionRegistry);
+        const entry = context.getValue<NodeSocketSessionRegistry>('socketSessionRegistry');
+        expect(entry).toBeInstanceOf(NodeSocketSessionRegistry);
 
         const dispatcher = context.getValue<NodeDispatcher>('dispatcher');
         server = new HTTPServer(dispatcher, { port: 0 });
@@ -149,14 +149,14 @@ describe('socket auto-configuration wiring (AD-21 D4)', () => {
         });
         await opened;
 
-        // Push through the *bean* — reaches the adapter's session only if
+        // Push through the *entry* — reaches the adapter's session only if
         // both sides hold the same registry instance.
         const received = new Promise<unknown>((resolve) => {
             ws.once('message', (data: unknown) => resolve(JSON.parse(String(data))));
         });
-        await bean.broadcast('/echo', { event: 'server', data: 'via-bean' });
-        expect(await received).toEqual({ event: 'server', data: 'via-bean' });
-        expect(bean.count('/echo')).toBe(1);
+        await entry.broadcast('/echo', { event: 'server', data: 'via-entry' });
+        expect(await received).toEqual({ event: 'server', data: 'via-entry' });
+        expect(entry.count('/echo')).toBe(1);
         ws.close(1000, 'done');
     });
 });

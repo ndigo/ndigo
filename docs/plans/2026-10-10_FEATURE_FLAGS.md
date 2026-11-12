@@ -26,7 +26,7 @@ percentage rollouts, vendor portability) need a runtime abstraction; the
 | Registration conditions    | `@whenProperty`/`@whenProfile`/`@whenBrowser`/`@whenMissingEntry` (`ndigo-core/src/conditional.ts`) — boot-time class gates                        | runtime, per-request evaluation                          |
 | Metadata decorator pattern | `@scheduled` (`schedule:<method>`), `@rateLimit` (`rate:limit:<method>`) — decoration-time validation, `Symbol.metadata`                           | a flag gate decorator                                    |
 | Per-request enforcement    | `RouteHandlerInterceptor` chain in `RadixMetadataHandlerMapping`; `RateLimitInterceptor` (async `preHandle`, `denialOf`, problem doc)              | a feature-gate interceptor                               |
-| Bean wiring                | `@entry(TOKEN)` + `NodeAutoConfiguration` (AD-79/73); `AsApplicationContextAware` gives beans the environment (`ManagementAutoConfiguration`)      | a `FLAG_EVALUATOR` bean                                  |
+| Entry wiring               | `@entry(TOKEN)` + `NodeAutoConfiguration` (AD-79/73); `AsApplicationContextAware` gives entries the environment (`ManagementAutoConfiguration`)    | a `FLAG_EVALUATOR` entry                                 |
 | Config refresh             | `CONFIG_REFRESH_EVENT` (`environment.ts:25`) — AD-29 rebind                                                                                        | flag read-through (no cache — provider reads live state) |
 | Schema                     | `application.schema.json` framework namespaces (`management` READ from config, `profiles`/`telemetry` annotated `x-ndigo-read-from-config: false`) | the `feature` namespace                                  |
 
@@ -128,14 +128,14 @@ edge).
 - **`@ndigo/platform-node`** (8 specs in `feature-gate.spec.ts`): gate
   interceptor unit contract (404 `urn:ndigo:not-found` problem doc, method
   over class, un-gated pass-through, missing-flag fail-closed) _and_ the
-  real wiring: `FLAG_EVALUATOR` bean + **live refresh flip** over
+  real wiring: `FLAG_EVALUATOR` entry + **live refresh flip** over
   `StandardEnvironment` (`addFirst` source + `environment.refresh()` →
   gated route 200, restored 404 control).
 - **Substrate learning (documented in AD-82.D-5):** parser-created
   configuration values get container processing (aware injection) only as
-  registered bean values — `handlerMapping()`'s nested evaluator needed the
-  same instance the bean registers, so `NodeAutoConfiguration` memoizes
-  one `EnvironmentFlagEvaluator` serving both the bean and the interceptor
+  registered entry values — `handlerMapping()`'s nested evaluator needed the
+  same instance the entry registers, so `NodeAutoConfiguration` memoizes
+  one `EnvironmentFlagEvaluator` serving both the entry and the interceptor
   (injection mutates the shared instance in place).
 - **Demo** (`apps/04-ndigo-api`): `FeatureFlagController` (`/gated-report`,
   `@whenFeature('gated.report')`), flat dotted `feature.gated.report` key

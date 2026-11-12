@@ -138,7 +138,7 @@ async function main() {
             },
             // OP-9: batched telemetry is dropped on exit unless the SDK shuts
             // down. The preset closes it after the server (capturing its
-            // shutdown spans) and before the context tears its beans down.
+            // shutdown spans) and before the context tears its entries down.
             resources: sdk ? [{ close: () => sdk.shutdown() }] : [],
         }
     );

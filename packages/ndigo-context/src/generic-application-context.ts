@@ -226,7 +226,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
      *
      * Exception-safe (CTX-06): a throwing listener or teardown hook is
      * reported and swallowed so the remaining steps still run — `destroyed`
-     * is always set and children/beans are still torn down. Exceptions from
+     * is always set and children/entries are still torn down. Exceptions from
      * `context:close`/`context:destroy` listeners otherwise abort teardown
      * mid-way (the emitter re-throws when no `error` listener is attached).
      */
@@ -488,7 +488,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
 
     /**
      * Wires the registered `refresh` scope's `clear()` to the environment's
-     * `config:refresh` event (AD-29 D-2): refresh-scoped beans re-create from
+     * `config:refresh` event (AD-29 D-2): refresh-scoped entries re-create from
      * their factories when the environment refreshes. Re-subscribing on a new
      * environment detaches the previous subscription (listener identity
      * tracked).
@@ -620,7 +620,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
             }
 
             if (key.startsWith('$')) {
-                // Constructor-registered beans (`$name` holds the constructor);
+                // Constructor-registered entries (`$name` holds the constructor);
                 // destroyValue resolves the instance from the scope.
                 names.add(key.slice(1));
             } else if (this.hasInstance(key)) {
@@ -637,7 +637,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
 
         for (const name of names) {
             if (!name) continue;
-            // CTX-06: one bean's destroy failure must not strand the rest of
+            // CTX-06: one entry's destroy failure must not strand the rest of
             // the managed values — isolate and report each.
             try {
                 this.destroyValue(name);
@@ -658,7 +658,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
 
             // FACTORY-12: only eagerly instantiate scopes that support it —
             // hash/route scopes have no active key at refresh (getValue would
-            // throw) and prototype beans would be created then discarded.
+            // throw) and prototype entries would be created then discarded.
             // Singleton/refresh/custom scopes stay eager (AD-29 D-2).
             if (name && this.hasValue(name) && this.shouldEagerlyInstantiate(name)) {
                 this.getValue(name);

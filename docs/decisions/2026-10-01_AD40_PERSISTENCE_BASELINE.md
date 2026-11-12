@@ -70,7 +70,7 @@ sockets. Await publisher `connect()`, fanout `connect()`, and consumer
 `topic`. One consumer per scope per transport; additional consumers require
 separate transports. Use `new HTTPServer(dispatcher, { socketRegistry: registry })`
 for its default adapter, or pass the registry to a custom adapter directly.
-No bean registration or external auto-configuration is implied.
+No entry registration or external auto-configuration is implied.
 
 Registry broadcasts are awaitable. Configured fanout failure rejects before
 local delivery; inbound STOMP topic SEND fails with ERROR then `1011`, never

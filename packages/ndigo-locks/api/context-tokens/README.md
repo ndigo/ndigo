@@ -6,7 +6,7 @@
 
 # context-tokens
 
-Context tokens for the `@ndigo/locks` beans (AD-73 D-4).
+Context tokens for the `@ndigo/locks` entries (AD-73 D-4).
 
 ## Variables
 

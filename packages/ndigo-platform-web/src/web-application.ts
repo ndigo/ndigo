@@ -82,7 +82,7 @@ export interface CreateWebApplicationOptions {
  * a programmatic teardown.
  */
 export interface WebApplication {
-    /** The refreshed context — every bean stays reachable. */
+    /** The refreshed context — every entry stays reachable. */
     readonly context: ConfigurableApplicationContext;
     /** The started browser dispatcher (strategies initialized). */
     readonly dispatcher: BrowserDispatcher;
@@ -103,7 +103,7 @@ export interface WebApplication {
  *
  * Composes the existing pieces rather than replacing them — the returned
  * context is the same container `ApplicationBuilder` would have produced, so
- * every bean stays reachable and full manual control remains one
+ * every entry stays reachable and full manual control remains one
  * `ApplicationBuilder` away. Startup failures are logged, the context is
  * torn down, and the error is rethrown.
  *

@@ -19,17 +19,17 @@ Questions this plan answers:
 
 - Controllers return **logical view names**: `"order/list"`, `new ModelAndView("order/list", model)`, or no view at all (default name from request path/`RequestToViewNameTranslator`).
 - `DispatcherServlet.render()` iterates the ordered `viewResolvers`; first non-null wins; none → `ServletException`.
-- Resolver family: `InternalResourceViewResolver` (prefix/suffix/path), `BeanNameViewResolver` (name = Spring bean), `ContentNegotiatingViewResolver` (media-type negotiation over candidates), `AbstractCachingViewResolver` (cache keyed by name+locale).
+- Resolver family: `InternalResourceViewResolver` (prefix/suffix/path), `EntryNameViewResolver` (name = Spring entry), `ContentNegotiatingViewResolver` (media-type negotiation over candidates), `AbstractCachingViewResolver` (cache keyed by name+locale).
 - **Imperative exceptions stay in the handler**: `RedirectView`, `SseEmitter`, streaming bodies — constructed per request _with per-request state_, never resolved by name (`SseEmitterMethodReturnValueHandler` streams the handler-returned emitter directly).
 
 ### ndigo today
 
-- Pipeline parity exists: `AbstractDispatcher._resolveViewName` (ordered, first-match), `AbstractCachingViewResolver`, `ImportViewResolver` (prefix/suffix + dynamic `import`), `NameViewResolver` (name = context bean), `ContentNegotiationViewResolver`, `PathViewController` (route → view name), `DefaultRouteToViewNameTranslator` (view-less ModelAndView), `NoViewFoundError`.
+- Pipeline parity exists: `AbstractDispatcher._resolveViewName` (ordered, first-match), `AbstractCachingViewResolver`, `ImportViewResolver` (prefix/suffix + dynamic `import`), `NameViewResolver` (name = context entry), `ContentNegotiationViewResolver`, `PathViewController` (route → view name), `DefaultRouteToViewNameTranslator` (view-less ModelAndView), `NoViewFoundError`.
 - **Production gap:** no resolver produces component views. `WebAutoConfiguration` registers only `NameViewResolver`; `NodeAutoConfiguration` registers none (falls back to `ImportViewResolver`, which would `import('todo-app')` → MODULE_NOT_FOUND). So every demo constructs views inline:
     - `ndigo-todo`: 7× `new WebComponentView('todo-app'|'account-app')`
     - `ndigo-hello`: 1× `new WebComponentView('hello-app')`
     - `ndigo-island`: `StringTemplateView` (shell) + `EventStreamView` (`/events`)
-- **Half-wired intent found in `ndigo-todo`:** `ToDoconfiguration` registers `MyTodoApp`/`AccountApp` **custom-element classes** as beans (`todoApp`, `accountApp`) plus a `NameViewResolver` — but element classes are not `View`s (no `render(model, route, target)` contract), so a `new ModelAndView('todoApp')` would resolve to a non-View and fail. The beans are dead for view resolution; controllers bypass them. The machinery for _bean-name_ resolution exists; what's missing is a resolver for _component_ views.
+- **Half-wired intent found in `ndigo-todo`:** `ToDoconfiguration` registers `MyTodoApp`/`AccountApp` **custom-element classes** as entries (`todoApp`, `accountApp`) plus a `NameViewResolver` — but element classes are not `View`s (no `render(model, route, target)` contract), so a `new ModelAndView('todoApp')` would resolve to a non-View and fail. The entries are dead for view resolution; controllers bypass them. The machinery for _entry-name_ resolution exists; what's missing is a resolver for _component_ views.
 - The `@ViewMapping(name)` decorator metadata exists in `ndigo-view-webcomponent` (name stored on a class) — no consumer yet. Extension point, not prerequisite.
 
 ## Architecture clarification: View, ViewEngine, ViewTarget
@@ -43,7 +43,7 @@ ndigo's rendering stack is a four-concern split; Spring conflates the first thre
 | Technology  | `ViewEngine` (`render(view, model, target, route)`)                                 | owns the rendering format — element creation, DOM patching, template binding | fused into the View (JSP view renders itself) |
 | Destination | `ViewTarget` (`DOMElementViewTarget`, `HTTPResponseViewTarget`, `MemoryViewTarget`) | the surface receiving output                                                 | absent                                        |
 
-- **ViewEngine continues, formalized.** Today `WebComponentView` hardcodes the engine lookup by bean name (`webComponentViewEngine`) and `WebComponentViewEngine.render` rejects non-`WebComponentView` inputs — a 1:1 hardwire blocking a `ReactViewEngine`/`HandlebarsViewEngine` family. Formalization: engines declare support (`supports(view)` or technology key), a registry selects the engine, views stay thin descriptors. The chain ends `name → resolver → View`, then `View + engine → render → target`.
+- **ViewEngine continues, formalized.** Today `WebComponentView` hardcodes the engine lookup by entry name (`webComponentViewEngine`) and `WebComponentViewEngine.render` rejects non-`WebComponentView` inputs — a 1:1 hardwire blocking a `ReactViewEngine`/`HandlebarsViewEngine` family. Formalization: engines declare support (`supports(view)` or technology key), a registry selects the engine, views stay thin descriptors. The chain ends `name → resolver → View`, then `View + engine → render → target`.
 - **ViewTarget continues unchanged** — ndigo's differentiator (test harnesses, node streams, browser nodes all via one surface abstraction).
 
 ### Web components: what the resolver does (and doesn't)
@@ -60,7 +60,7 @@ ndigo's rendering stack is a four-concern split; Spring conflates the first thre
 | Location                                          | Resolver                   | Example route                                                         |
 | ------------------------------------------------- | -------------------------- | --------------------------------------------------------------------- |
 | Component module (self-registering element)       | `WebComponentViewResolver` | `'todo-app'` → class → `TagMapping` → `WebComponentView`              |
-| Application context (registered View bean)        | `NameViewResolver`         | `'footer'` → plain View bean                                          |
+| Application context (registered View entry)       | `NameViewResolver`         | `'footer'` → plain View entry                                         |
 | View module on disk (default export = View class) | `ImportViewResolver`       | `'report'` → `views/report-view.ts` (a `StringTemplateView` subclass) |
 
 New demo app **`ndigo-views`** (browser, built on `WebAutoConfiguration`): routes `/`, `/report` (imported module view), plus a context-registered view composed into the shell; composite resolver `[WebComponentViewResolver, NameViewResolver, ImportViewResolver]` demonstrates first-match fall-through and three view locations. `ndigo-todo`/`ndigo-hello` adopt the component-name path separately.
@@ -72,9 +72,9 @@ New demo app **`ndigo-views`** (browser, built on `WebAutoConfiguration`): route
 **Honest scope first:** for `name === tag`, `new WebComponentView(name)` needs no lookup at all — the resolver degenerates to construction + caching. The distinct logic exists only for the **name → tagName → module** mapping, and there are two viable shapes:
 
 - **Configuration registry (chosen)**: `WebComponentViewResolver` takes an optional registry — `{ 'todo': './components/todo-app.ts' }` (lazy module path) or `{ 'todo': TodoAppClass }` (eager, class already imported) — and derives the tag via `TagMapping.get(cls)` (fallback: `${name}-app`-style convention only if the registry entry carries no metadata). No registry entry → `name === tag` construction (the zero-config default).
-- **Context-bean alternative (zero new code, documented)**: register `WebComponentView` instances as beans and let the existing `NameViewResolver` resolve them — `@entry todoApp() { return new WebComponentView('todo-app'); }`. This is the config-bind path; the resolver class is the declarative replacement for that boilerplate.
+- **Context-entry alternative (zero new code, documented)**: register `WebComponentView` instances as entries and let the existing `NameViewResolver` resolve them — `@entry todoApp() { return new WebComponentView('todo-app'); }`. This is the config-bind path; the resolver class is the declarative replacement for that boilerplate.
 
-**Why it is not Import or Name**: `ImportViewResolver` does `new ViewClass()` on a module's default export (the module _is_ the View); a component module's export is an `HTMLElement` class with no `render` contract — the resolver must extract the tag and build the descriptor instead. `NameViewResolver` resolves instantiated beans; it cannot wrap element classes (ndigo-todo's current dead beans prove it) — only pre-built `WebComponentView` beans, which is the boilerplate we're replacing.
+**Why it is not Import or Name**: `ImportViewResolver` does `new ViewClass()` on a module's default export (the module _is_ the View); a component module's export is an `HTMLElement` class with no `render` contract — the resolver must extract the tag and build the descriptor instead. `NameViewResolver` resolves instantiated entries; it cannot wrap element classes (ndigo-todo's current dead entries prove it) — only pre-built `WebComponentView` entries, which is the boilerplate we're replacing.
 
 **Loading modes**: **lazy is the default** — the resolver `import()`s the module on first resolution (Vite code-split point; the app's load-time story is a handful of eager shell imports + everything else on demand). The constructor accepts an eager registry (`name → class`) for the already-imported shell views. Components are never registered by the resolver — `customElements.define` is the module's own side effect.
 
@@ -92,26 +92,26 @@ New **`IslandViewResolver`** (in `ndigo-view`): same contract, resolves a name t
 
 ### D3 — Resolver registration (auto-configuration defaults, app-overridable)
 
-- `WebAutoConfiguration.viewResolver`: `new NameViewResolver()` → `new ViewResolverComposite([new WebComponentViewResolver(), new NameViewResolver()])`. Component names first, arbitrary bean views second, `ImportViewResolver` semantics unchanged (dynamic-import resolver remains available when explicitly configured).
+- `WebAutoConfiguration.viewResolver`: `new NameViewResolver()` → `new ViewResolverComposite([new WebComponentViewResolver(), new NameViewResolver()])`. Component names first, arbitrary entry views second, `ImportViewResolver` semantics unchanged (dynamic-import resolver remains available when explicitly configured).
 - `NodeAutoConfiguration`: add `viewResolver` entry = `new IslandViewResolver()` (replaces the implicit `ImportViewResolver` default for node apps; unresolvable names still 404 via `NoViewFoundError`).
-- ViewEngine **continuation (formalization)**: keep `ViewEngine.render(view, model, target, route)`; add engine capability selection (`supports(view)`) so views stop hardcoding the `webComponentViewEngine` bean name and a `ReactViewEngine`/`HandlebarsViewEngine` family can coexist. Note: WebComponentViewEngine's job is not library loading (Web Components are browser-native) but element reuse across renders, model transport, DOM-event → app-event bridging, and lifecycle wiring. **This is a separate, follow-on slice** (engines exist and work today via the named lookup; the registry is an evolution, not a prerequisite for the resolvers).
+- ViewEngine **continuation (formalization)**: keep `ViewEngine.render(view, model, target, route)`; add engine capability selection (`supports(view)`) so views stop hardcoding the `webComponentViewEngine` entry name and a `ReactViewEngine`/`HandlebarsViewEngine` family can coexist. Note: WebComponentViewEngine's job is not library loading (Web Components are browser-native) but element reuse across renders, model transport, DOM-event → app-event bridging, and lifecycle wiring. **This is a separate, follow-on slice** (engines exist and work today via the named lookup; the registry is an evolution, not a prerequisite for the resolvers).
 - ViewTarget: keep; **not required for every engine** — engines negotiate via `supportsTarget` (see D7). Single `DOMElementViewTarget` stays for this slice; target family is follow-on.
 
 ### D4 — Complex demo: `ndigo-views`
 
 New browser app demonstrating **three resolvers, three view locations, one composite**:
 
-| Location                                                                                       | Resolver                                                                     | Route                                   |
-| ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | --------------------------------------- |
-| Component module (self-registering element)                                                    | `WebComponentViewResolver` (eager metadata registry)                         | `/` → `'todo-app'`                      |
-| Application context (registered View bean)                                                     | `NameViewResolver`                                                           | composed shell footer → `'footer'` bean |
-| View module on disk (`views/report-view.ts` default-exporting a `StringTemplateView` subclass) | `ImportViewResolver` (`prefix: 'views/', suffix: '-view'` or full specifier) | `/report` → `'report'`                  |
+| Location                                                                                       | Resolver                                                                     | Route                                    |
+| ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------- |
+| Component module (self-registering element)                                                    | `WebComponentViewResolver` (eager metadata registry)                         | `/` → `'todo-app'`                       |
+| Application context (registered View entry)                                                    | `NameViewResolver`                                                           | composed shell footer → `'footer'` entry |
+| View module on disk (`views/report-view.ts` default-exporting a `StringTemplateView` subclass) | `ImportViewResolver` (`prefix: 'views/', suffix: '-view'` or full specifier) | `/report` → `'report'`                   |
 
-`viewResolver` entry: `new ViewResolverComposite([WebComponentViewResolver, NameViewResolver, ImportViewResolver])`; a known-unsupported name (e.g. `'nope'`) proves chain fall-through to 404. Reuses `WebAutoConfiguration` (argument resolvers, engines, targets) — the app configuration only adds the composite resolver, the view bean, the routes, and the component module.
+`viewResolver` entry: `new ViewResolverComposite([WebComponentViewResolver, NameViewResolver, ImportViewResolver])`; a known-unsupported name (e.g. `'nope'`) proves chain fall-through to 404. Reuses `WebAutoConfiguration` (argument resolvers, engines, targets) — the app configuration only adds the composite resolver, the view entry, the routes, and the component module.
 
 ### D5 — Demo migrations
 
-- **`ndigo-todo`** (the rich example): controllers return `new ModelAndView('todo-app')` / `new ModelAndView('account-app')`; inline `WebComponentView` constructions deleted; **drop the redundant `viewResolver` + `webComponentViewEngine` entries** (identical to `WebAutoConfiguration` defaults — only `handlerMapping` [logging interceptor] and `viewTarget` are app-specific); **remove the dead `todoApp`/`accountApp` element-class beans** (zero consumers — the module imports stay, their `customElements.define` side effect is the registration); **migrate component modules to `@TagMapping`** for metadata consistency with the resolver.
+- **`ndigo-todo`** (the rich example): controllers return `new ModelAndView('todo-app')` / `new ModelAndView('account-app')`; inline `WebComponentView` constructions deleted; **drop the redundant `viewResolver` + `webComponentViewEngine` entries** (identical to `WebAutoConfiguration` defaults — only `handlerMapping` [logging interceptor] and `viewTarget` are app-specific); **remove the dead `todoApp`/`accountApp` element-class entries** (zero consumers — the module imports stay, their `customElements.define` side effect is the registration); **migrate component modules to `@TagMapping`** for metadata consistency with the resolver.
 - **`ndigo-hello`** (the simple example): **keeps `new WebComponentView('hello-app')` intentionally** — the documented "concrete view is always an option" sample (code comment pointing at the name alternative). Its hand-rolled bootstrap is replaced by `ApplicationBuilder([WebAutoConfiguration, HelloConfiguration])`, keeping only the app-specific `viewTarget` (`#app`) + controller (the `handlerMapping`/`viewResolver`/`webComponentViewEngine` entries are identical auto-config defaults).
 - **`ndigo-island`**: `/events` becomes `return new SSEEmitter(events)` (direct View return); shell untouched. Island-by-name adoption (`ModelAndView('todo-app')` → `IslandView`) is available via `NodeAutoConfiguration` for future SSR routes — not forced onto the shell.
 
@@ -175,14 +175,14 @@ if (likeView(mv)) {
 4. Rename `EventStreamView` → `SSEEmitter` (`ndigo-platform-node`; update index export, `event-stream-view.spec.ts`, AD-09 doc, island demo).
 5. `NodeDispatcher.render` direct-View branch + test (real HTTP: SSEEmitter returned directly).
 6. `WebAutoConfiguration` composite resolver (`[WebComponentViewResolver, NameViewResolver]`); `NodeAutoConfiguration` `IslandViewResolver` entry.
-7. Migrate `ndigo-todo` controllers to names; audit/remove dead element-class beans; drop `ToDoconfiguration.viewResolver` override.
+7. Migrate `ndigo-todo` controllers to names; audit/remove dead element-class entries; drop `ToDoconfiguration.viewResolver` override.
 8. `ndigo-island /events` → direct `SSEEmitter` return.
 9. `ndigo-hello`: keep concrete view; add pointing comment.
-10. **New demo app `ndigo-views`** (browser): `WebAutoConfiguration` + composite `[WebComponentViewResolver, NameViewResolver, ImportViewResolver]`; routes `/` (component name), `/report` (imported module view `views/report-view.ts`), context-bean footer view composed into the shell; a `'nope'` route proving chain fall-through. Tests: three resolutions + fall-through.
+10. **New demo app `ndigo-views`** (browser): `WebAutoConfiguration` + composite `[WebComponentViewResolver, NameViewResolver, ImportViewResolver]`; routes `/` (component name), `/report` (imported module view `views/report-view.ts`), context-entry footer view composed into the shell; a `'nope'` route proving chain fall-through. Tests: three resolutions + fall-through.
 11. Docs: AD-09 follow-up amendment (SSEEmitter rename + imperative rationale); optional AD-10 recording this strategy.
 12. `graft build` refresh.
 
-**Follow-on (not in this slice):** engine capability negotiation — `ViewEngine`/`TargetingViewEngine` split (D7) + `supports(view)` registry selection (so engines stop being bean-name-hardwired and React/Handlebars engines coexist) **and** target negotiation (`supportsTarget`) with the target family (shadow-root, iframe, document targets). All are engine-capability work; none is a prerequisite for the resolvers.
+**Follow-on (not in this slice):** engine capability negotiation — `ViewEngine`/`TargetingViewEngine` split (D7) + `supports(view)` registry selection (so engines stop being entry-name-hardwired and React/Handlebars engines coexist) **and** target negotiation (`supportsTarget`) with the target family (shadow-root, iframe, document targets). All are engine-capability work; none is a prerequisite for the resolvers.
 
 ## Testing strategy
 
@@ -194,10 +194,10 @@ if (likeView(mv)) {
 
 ## Acceptance criteria
 
-1. `ndigo-todo` controllers contain **zero** view-construction imports; they return names; rendered output byte-identical (same tags/models); `viewResolver`/`webComponentViewEngine` overrides removed; dead beans removed; components use `@TagMapping`. `ndigo-hello` builds on `WebAutoConfiguration`, registering only its view target + controller.
+1. `ndigo-todo` controllers contain **zero** view-construction imports; they return names; rendered output byte-identical (same tags/models); `viewResolver`/`webComponentViewEngine` overrides removed; dead entries removed; components use `@TagMapping`. `ndigo-hello` builds on `WebAutoConfiguration`, registering only its view target + controller.
 2. `WebComponentViewResolver` + `IslandViewResolver` resolve names to cached, state-free views; chain fall-through on unknown names; lazy loader imports + caches on first resolution.
 3. `ndigo-hello` still constructs `WebComponentView` inline, with a comment marking it the intentional concrete-view sample.
-4. `ndigo-views` renders all three routes: component name (WebComponentViewResolver), context bean (NameViewResolver), module-on-disk (ImportViewResolver); `'nope'` falls through the composite to 404.
+4. `ndigo-views` renders all three routes: component name (WebComponentViewResolver), context entry (NameViewResolver), module-on-disk (ImportViewResolver); `'nope'` falls through the composite to 404.
 5. `SSEEmitter` replaces `EventStreamView` everywhere (no stale export/import); `/events` returns it directly; SSE tests green.
 6. Handler-returned Views render; scalar string returns still JSON.
 7. Non-goals honored: no string-return view names, no engine registry (follow-on), no `ws`/WebSocket, no shell refactor.
@@ -219,8 +219,8 @@ All resolvers, the direct-View return, the auto-config chains, and both demo mig
 3. **`IslandViewResolver`** (`ndigo-view`) — name → `IslandView` marker for node rendering.
 4. **`SSEEmitter`** (renamed from `EventStreamView`, per the acronym rule) — imperative emitter owned by the handler; `NodeDispatcher.render` gained the direct-View branch (`likeView`) so `return new SSEEmitter(events)` works (Spring `ViewMethodReturnValueHandler` parity). AD-09 updated.
 5. **Auto-config chains** — `WebAutoConfiguration.viewResolver` → `ViewResolverComposite([WebComponentViewResolver, NameViewResolver])`; `NodeAutoConfiguration` gained an `IslandViewResolver` entry.
-6. **ndigo-todo migrated** — controllers return names; dead element-class beans removed; component modules moved from manual `customElements.define` to `@TagMapping`; redundant `viewResolver`/`webComponentViewEngine` overrides deleted.
+6. **ndigo-todo migrated** — controllers return names; dead element-class entries removed; component modules moved from manual `customElements.define` to `@TagMapping`; redundant `viewResolver`/`webComponentViewEngine` overrides deleted.
 7. **ndigo-hello migrated** — builds on `WebAutoConfiguration`; keeps one intentionally-concrete `WebComponentView` with a pointing comment (the "concrete is an option" sample).
-8. **`ndigo-views`** — new demo app: composite `[WebComponentViewResolver (eager+filter), NameViewResolver, ReportViewResolver (path import)]` resolving `shell` (component class → tag), `footer` (context bean), `report` (module on disk, lazy import); `nope` proves chain fall-through → error. All controller returns are names.
+8. **`ndigo-views`** — new demo app: composite `[WebComponentViewResolver (eager+filter), NameViewResolver, ReportViewResolver (path import)]` resolving `shell` (component class → tag), `footer` (context entry), `report` (module on disk, lazy import); `nope` proves chain fall-through → error. All controller returns are names.
 
 **Framework fix discovered during the migration:** `AbstractDispatcher` destroyed the previously-rendered view after every dispatch — correct for handler-created ephemeral views, fatal for resolver-cached (shared) instances (the first render poisoned the cache). Resolved views are now tracked in a `WeakSet` and excluded from destruction; the cache contract holds.

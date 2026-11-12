@@ -34,9 +34,9 @@ What the repository already provides (verified at HEAD, 2026-10-08):
   for distributed backends (Redis) later — the in-memory reference
   implementation ships now". The gap is the implementation, not the seam.
 - **The wiring anticipates an override.** `NodeAutoConfiguration.rateLimiter()`
-  — the bean injected into the interceptor — documents "apps needing a
+  — the entry injected into the interceptor — documents "apps needing a
   distributed backend provide their own `RateLimiter` implementation";
-  it is registered with a bare `@entry()` while the AD-73 bean family
+  it is registered with a bare `@entry()` while the AD-73 entry family
   (AD-34 TypeScript-native layer) registers under `ContextToken`s.
 - **The constraint is the sync SPI.** `consume(key, policy): RateLimitResult`
   is synchronous; node-redis is inherently async. The interceptor chain
@@ -48,7 +48,7 @@ What the repository already provides (verified at HEAD, 2026-10-08):
   governs the naming/marking conventions.
 - **The integration precedent is AD-73.** GAP-3 shipped the same topology:
   a leaf SPI package (`@ndigo/locks`) with the in-process driver and a
-  `ContextToken`, the platform bean registered under the token, and the
+  `ContextToken`, the platform entry registered under the token, and the
   Redis driver as an optional subpath of `@ndigo/redis` (`@ndigo/redis/locks`,
   peer-optional on the SPI package). REU-9 fixed the inverse mistake the
   same week (`@ndigo/inspect` pulling the boot tier transitively) — a Redis
@@ -94,8 +94,8 @@ New package (AD-73's topology; layer 2, isomorphic): `RateLimitPolicy`,
 `likeRateLimiter` guard, `FixedWindowRateLimiter` (moved unchanged), and
 the `RATE_LIMITER` context token. `@ndigo/platform-node` keeps the
 enforcement surface — `@rateLimit` metadata, `RATE_LIMIT_KEY`, the
-interceptor — and registers its bean under `@entry(RATE_LIMITER)` (AD-34
-token alignment; the AD-73 `lockDriver` bean is the template). The
+interceptor — and registers its entry under `@entry(RATE_LIMITER)` (AD-34
+token alignment; the AD-73 `lockDriver` entry is the template). The
 decorator's options type and the interceptor's limiter type come from the
 SPI package. A driver in `@ndigo/redis` therefore peers on a dependency-
 light contract instead of pulling the dispatcher/router web tier
@@ -169,7 +169,7 @@ live Redis lane asserts the cross-node property the memory driver cannot:
   process restarts (server-held TTL counters).
 - Public API break in `@ndigo/platform-node`: `RateLimiter`/`RateLimitPolicy`/
   `RateLimitResult`/`validateRateLimitPolicy`/`FixedWindowRateLimiter` move
-  to `@ndigo/rate-limit`; `consume` is async; the bean registers under
+  to `@ndigo/rate-limit`; `consume` is async; the entry registers under
   `RATE_LIMITER`. Apps importing `RateLimitPolicy` migrate to
   `@ndigo/rate-limit`; the `@rateLimit` decorator and the 429 behavior are
   unchanged.
@@ -180,7 +180,7 @@ live Redis lane asserts the cross-node property the memory driver cannot:
   optional `@ndigo/rate-limit` peer; `@ndigo/platform-node` gains
   `@ndigo/rate-limit` as a dependency.
 - The in-process limiter keeps its SEC-2 bound and per-instance state;
-  "one budget per process" is the documented wiring contract (one bean).
+  "one budget per process" is the documented wiring contract (one entry).
 
 ## Execution notes (2026-10-08)
 
@@ -221,7 +221,7 @@ live Redis lane asserts the cross-node property the memory driver cannot:
   deferred table.
 - AD-33 (rate limiting, SEC-6), AD-37 (trusted-proxy keying), AD-39
   (async by default), AD-73 (leaf-SPI topology + `@ndigo/redis/locks`
-  driver + token bean), AD-34 (TypeScript-native tokens), AD-40
+  driver + token entry), AD-34 (TypeScript-native tokens), AD-40
   (`@ndigo/redis` connection/namespace doctrine), AD-67 (`@ndigo/log`
   leaf).
 - Companion plan: `docs/plans/2026-10-08_SHARED_STORE_RATE_LIMITING.md`;

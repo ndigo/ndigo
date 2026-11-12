@@ -10,7 +10,7 @@
 
 Memoizes a function: results are cached by (serialized) arguments — the
 client-side half of the caching story, usable in browsers and Node with no
-DI or beans (unlike the [cached](../../cached/README.md) decorator, which resolves a
+DI or entries (unlike the [cached](../../cached/README.md) decorator, which resolves a
 [CacheManager](../../cache-manager/interfaces/CacheManager.md) from the instance).
 
 Semantics:

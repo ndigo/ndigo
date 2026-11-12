@@ -172,7 +172,7 @@ re-measure.
 | Property index, 32 sources                         |                                       12.49 | prototype 19.89  |                       1.59× faster |
 | Property index, access mix                         |                                       12.74 | prototype 21.03  |                       1.65× faster |
 | Property index, 1,000 keys                         |                                      542.91 | prototype 526.35 |                  parity (RME > 5%) |
-| `getValue` bean1 / bean5                           |                               14.08 / 13.00 | —                |                           absolute |
+| `getValue` entry1 / entry5                         |                               14.08 / 13.00 | —                |                           absolute |
 | `getValue` via token                               |                                       14.16 | string 14.08     |                             parity |
 | `hasValue` hit / miss                              |                                4.20 / 18.17 | —                |                           absolute |
 | Dynamic context, 1 / 1,000 values                  |                               12.35 / 16.20 | —                |                           absolute |
@@ -194,7 +194,7 @@ optimization pass; the schema-cache change below removes that cost.
 **Optimization (#402):** instance registrations now keep a `Map<string, unknown>`
 alongside the own property, so `getValue`'s hot path reads the Map instead of a
 megamorphic own-property lookup (factory shapes vary with the context's value
-count). Same-host A/B, serial lane, two runs: bean lookups 19.6 → 8.6–10.1 ns
+count). Same-host A/B, serial lane, two runs: entry lookups 19.6 → 8.6–10.1 ns
 (−49 to −56%), `ContextToken` 19.75 → 10.2 ns, dynamic 1/1,000 values
 17.4–19.3 → 11.8–13.1 ns (−32 to −36%), 10/100 values −45 to −51%.
 `hasValue` hit moves 2.4 → 3.5–3.6 ns (still under 4.5), miss unchanged. The
@@ -226,7 +226,7 @@ registered as `undefined`, so a lookup miss takes one `Map.get` instead of
 `Map.get`+`Map.has`; presence checks (`hasInstance`/`hasValue`) read a
 companion `Set` again, since `Map.has` was slower than `Set.has`. Same-host
 A/B, two runs per side: dispatcher `getValue — miss` 6.30–6.36 → 4.55–4.57 ns
-(−28%), `hasValue — present` 2.59 → 2.43 ns; context bean lookups unchanged at
+(−28%), `hasValue — present` 2.59 → 2.43 ns; context entry lookups unchanged at
 8.5–10.6 ns and `hasValue` hit unchanged. The dispatcher warm-singleton row
 sits at ~3.8 ns on both sides; its older 2.62 ns baseline does not reproduce on
 this host.

@@ -21,8 +21,18 @@ one or two sentences; follow the guide link for the full treatment.
   on refresh and shutdown.
 - **Smart lifecycle** — A `Lifecycle` with a phase and auto-start flag; starts
   ascending, stops descending.
-- **Application event** — A context-local notification (`emit`), broadcast to
-  descendants, or bubbled to ancestors.
+- **Environment** — The named, ordered property sources plus profiles,
+  placeholders, and secrets that resolve configuration for one context. Each
+  context owns one; a child context does not inherit its parent's environment.
+- **Configuration layer** — A named, ordered property source, or a snapshot
+  merged from another environment. It contributes values, not lifecycle.
+- **Profile** — A named activation set that selects profile-specific config
+  files and gates entries. A profile changes values; it is not a context.
+- **Context boundary** — A parent/child edge that owns bean lookup and
+  lifecycle. It is not a configuration layer.
+- **Application event** — A context-local notification (`emit`). Cross-context
+  notifications use the shared root channel, explicit parent/child addressing,
+  or an allowlisted event gateway.
 - **Event gateway** — An allowlisted relay that carries selected events between
   a feature context and its shell.
 

@@ -39,6 +39,13 @@ JavaScript-native structures with fail-loud semantics throughout.
         @environment zod schema → fail-loud boot if invalid
 ```
 
+> **One environment at a time.** This guide covers the configuration of a single
+> application context. For platform→application layers, multiple contexts, or
+> several apps in one process, see
+> [Guide 49](49-configuration-layering-and-context-composition.md). Profiles
+> remain the mechanism for dev/qa/ist/prod; contexts are lifecycle boundaries,
+> not config layers.
+
 ## 1. The precedence chain
 
 Sources are **named and ordered** — higher wins:
@@ -61,9 +68,9 @@ as a named source in the reserved slot.
 `getProperty('server.port')` consults this order; `originOf('server')` tells
 you _which source won_ (the observability payoff). Origin tracking is a
 **flat-index** feature — the default prototype-chain index retains no origins,
-so the environment must be constructed with `{ index: 'flat' }` first (a
-`NodeEnvironment` for a real app), and `originOf` reports at **top-level
-granularity** (`server`, not `server.port`):
+so the environment must be constructed with `{ index: 'flat' }` first
+(`new NodeEnvironment([], { index: 'flat' })` for a real app), and `originOf`
+reports at **top-level granularity** (`server`, not `server.port`):
 
 ```ts
 import { StandardEnvironment } from '@ndigo/context';

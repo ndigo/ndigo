@@ -8,7 +8,7 @@ the browser.
 
 This guide is the map. It names the pieces, shows how a request and a render
 flow through them, and points at the guide that teaches each surface. Read it
-before [guide 01](01-building-a-node-api.md) (Node) or [guide 02](02-building-a-browser-app.md) (browser) if the package names are still
+before [Guide 01](01-building-a-node-api.md) (Node) or [Guide 02](02-building-a-browser-app.md) (browser) if the package names are still
 unfamiliar.
 
 **Audience:** New Ndigo developers · **Prerequisites:** Workspace bootstrapped (`pnpm install`) · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api) (browser companion: [apps/08-ndigo-views](https://github.com/ndigo/ndigo/tree/main/apps/08-ndigo-views))
@@ -182,9 +182,9 @@ covers the hooks and ordering in detail; the reference doc is
 
 ## 8. Where to go next
 
-- **Build a Node API:** [guide 01](01-building-a-node-api.md), then [03](03-environment-configuration.md) → [05](05-routing-and-route-conditions.md) → [06](06-argument-binding.md) → [07](07-request-validation.md) → [08](08-errors-and-problem-details.md) → [09](09-views-and-content-negotiation.md).
-- **Build a browser app:** [guide 02](02-building-a-browser-app.md), then [29](29-signals-and-islands.md) → [30](30-component-integration.md) → [31](31-micro-frontends.md).
-- **Learn the container:** [guide 04](04-dependency-injection-and-lifecycle.md).
+- **Build a Node API:** [Guide 01](01-building-a-node-api.md), then [03](03-environment-configuration.md) → [05](05-routing-and-route-conditions.md) → [06](06-argument-binding.md) → [07](07-request-validation.md) → [08](08-errors-and-problem-details.md) → [09](09-views-and-content-negotiation.md).
+- **Build a browser app:** [Guide 02](02-building-a-browser-app.md), then [29](29-signals-and-islands.md) → [30](30-component-integration.md) → [31](31-micro-frontends.md).
+- **Learn the container:** [Guide 04](04-dependency-injection-and-lifecycle.md).
 - **See the full map:** [ARCHITECTURE.md](../../ARCHITECTURE.md).
 
 ## See also

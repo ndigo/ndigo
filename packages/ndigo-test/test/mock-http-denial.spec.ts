@@ -15,7 +15,7 @@ import {
     type RadixMetadataHandlerMapping,
     type RouteHandlerInterceptor,
 } from '@ndigo/dispatcher';
-import { bootApp, MockHTTP, type NdigoTestApp } from '../src/index';
+import { bootNodeApp, MockHTTP, type NdigoTestApp } from '../src/index';
 
 /**
  * Self-tests for `@ndigo/test`: interceptor denials must not surface as the
@@ -41,7 +41,7 @@ function denyingGuard(outcome: () => InterceptorDenial): RouteHandlerInterceptor
 
 /** Boots the guarded controller app and wires the denying guard into the mapping. */
 function bootGuarded(outcome: () => InterceptorDenial): { app: NdigoTestApp; mockHTTP: MockHTTP } {
-    const app = bootApp([SecureController]);
+    const app = bootNodeApp([SecureController]);
     const mapping = app.context.getValue<RadixMetadataHandlerMapping>(HANDLER_MAPPING);
     mapping.interceptors.push(denyingGuard(outcome));
     return { app, mockHTTP: new MockHTTP(app) };

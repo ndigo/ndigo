@@ -11,7 +11,7 @@
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 import { ManagementAutoConfiguration } from '@ndigo/management';
 import { SOCKET_SESSION_REGISTRY } from '@ndigo/platform-node';
-import { bootApp, MockHTTP } from '@ndigo/test';
+import { bootNodeApp, MockHTTP } from '@ndigo/test';
 import type { NdigoTestApp } from '@ndigo/test';
 import { BACKEND_HEALTH_COMPONENT } from '../src/backend-health-indicator';
 import { FANOUT_BACKEND } from '../src/fanout-backend';
@@ -35,7 +35,7 @@ describe('redis-fanout HTTP surface (no Redis: memory mode)', () => {
         // is absent, so make the absence explicit rather than inherited.
         delete process.env['NDIGO_REDIS_URL'];
         process.env['NDIGO_INSTANCE_ID'] = INSTANCE;
-        app = bootApp([ManagementAutoConfiguration, RedisFanoutConfiguration]);
+        app = bootNodeApp([ManagementAutoConfiguration, RedisFanoutConfiguration]);
         http = new MockHTTP(app);
     });
 

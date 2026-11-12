@@ -19,7 +19,7 @@ import { afterEach, beforeEach, describe, expect, test } from 'vitest';
 import { z } from 'zod';
 import type { Fetch } from '@ndigo/http';
 import { ManagementAutoConfiguration, METRIC_AGGREGATOR } from '@ndigo/management';
-import { bootApp, MockHTTP } from '@ndigo/test';
+import { bootNodeApp, MockHTTP } from '@ndigo/test';
 import type { NdigoTestApp } from '@ndigo/test';
 import {
     FeatureMetricAggregator,
@@ -196,7 +196,7 @@ describe('ndigo-resilience-lab', () => {
     let lab: ResilienceLab;
 
     beforeEach(() => {
-        app = bootApp([ManagementAutoConfiguration, ResilienceLabConfiguration]);
+        app = bootNodeApp([ManagementAutoConfiguration, ResilienceLabConfiguration]);
         http = new MockHTTP(app);
         lab = app.context.getValue(RESILIENCE_LAB);
         lab.setUpstreamFetch(inProcessFetch(app));

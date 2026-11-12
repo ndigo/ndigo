@@ -715,7 +715,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   instrumentations (AD-32).
 - API docs: OpenAPI 3.0.3 generation from dispatch metadata + Swagger UI,
   DTO/schema-target conversion (AD-35, AD-38).
-- Tooling: `@ndigo/test` integration harness (bootApp/MockHTTP), oxlint
+- Tooling: `@ndigo/test` integration harness (bootNodeApp/MockHTTP), oxlint
   plugin architectural rules (AD-45, AD-46, AD-63).
 - Example applications `08`–`19`: `08-ndigo-httpbin` (HTTP semantics
   playground), `09-ndigo-todobackend` (Todo-Backend REST spec + CORS/HEAD/

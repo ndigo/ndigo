@@ -8,7 +8,7 @@
  */
 // @vitest-environment node
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
-import { MockHTTP, bootApp } from '@ndigo/test';
+import { MockHTTP, bootNodeApp } from '@ndigo/test';
 import { ConduitConfiguration } from '../src/conduit-configuration';
 
 /** The dispatch result returned by `MockHTTP#exec()` (its `MockResult` type
@@ -119,7 +119,7 @@ describe('RealWorld Conduit API through @ndigo/test', () => {
         // Cheap scrypt cost keeps the lane fast; the production default (17)
         // stays untouched. Read when the configuration is constructed below.
         process.env.NDIGO_CONDUIT_SCRYPT_LN = '14';
-        const app = bootApp([ConduitConfiguration]);
+        const app = bootNodeApp([ConduitConfiguration]);
         mockHTTP = new MockHTTP(app);
         close = app.close;
     });

@@ -17,7 +17,7 @@ Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥12.
 ```ts
 // @vitest-environment node
 import { describe, test, beforeAll, afterAll, expect } from 'vitest';
-import { bootApp, MockHTTP } from '@ndigo/test';
+import { bootNodeApp, MockHTTP } from '@ndigo/test';
 import { TodoController } from '../src/todo-controller';
 
 describe('Todo API', () => {
@@ -25,7 +25,7 @@ describe('Todo API', () => {
     let close: () => void;
 
     beforeAll(() => {
-        const app = bootApp([TodoController]); // boots context + dispatcher
+        const app = bootNodeApp([TodoController]); // boots context + dispatcher
         mockHTTP = new MockHTTP(app);
         close = app.close;
     });
@@ -50,7 +50,7 @@ describe('Todo API', () => {
 });
 ```
 
-`bootApp` accepts `@configuration` classes (registered via `context.register`) or plain `@getMapping` controller classes (stored by class name).
+`bootNodeApp` accepts `@configuration` classes (registered via `context.register`) or plain `@getMapping` controller classes (stored by class name).
 
 ## Usage
 
@@ -70,8 +70,8 @@ Interceptor denials are finalized by the same helper as the live `NodeHTTPServer
 
 Complete generated reference (all exports): [`api/README.md`](api/README.md).
 
-- **`bootApp(sources: Function[]): NdigoTestApp`** — boots a real `MetadataConfigApplicationContext` with `NodeAutoConfiguration`, wires the handler mapping + dispatcher. Returns `{ context, dispatcher, close }`.
-- **`cachedBootApp(sources)` / `releaseCachedApp(sources)`** — same-sources dedupe within a worker: multiple suites booting the same sources share one context (ref-counted; released via `releaseCachedApp` or `app.close()`).
+- **`bootNodeApp(sources: Function[]): NdigoTestApp`** — boots a real `MetadataConfigApplicationContext` with `NodeAutoConfiguration`, wires the handler mapping + dispatcher. Returns `{ context, dispatcher, close }`.
+- **`cachedBootNodeApp(sources)` / `releaseCachedNodeApp(sources)`** — same-sources dedupe within a worker: multiple suites booting the same sources share one context (ref-counted; released via `releaseCachedNodeApp` or `app.close()`).
 - **`MockHTTP(dispatcher | app)`** — socket-free request client. Methods `get/post/put/delete/patch/query`, then fluent `.query()/.body()/.headers()/.cookies()/.session()`, then `.exec()` → `MockResult`.
 - **`MockResult`** — `{ response, route, json(), text() }`. `response` is a `MemoryResponse` `{ status, headers, body, completed }`.
 - **`delay(ms)`** — shared promise-based timing helper for specs awaiting real or fake timers; re-exported from `@ndigo/util` (where packages the harness itself depends on import it directly).

@@ -9,7 +9,7 @@
 import '@tsmetadata/polyfill';
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from 'vitest';
 import { configuration, entry } from '@ndigo/context';
-import { bootBrowserApp, BrowserMockClient } from '@ndigo/test';
+import { bootWebApp, BrowserMockClient } from '@ndigo/test';
 import '../src/views/hn-item';
 import '../src/views/hn-list';
 import ItemController from '../src/controllers/item-controller';
@@ -60,7 +60,7 @@ beforeAll(async () => {
     server.server.listen({ onUnhandledFrame: 'error' });
     api = createHnApiClient({ base: HN_TEST_BASE });
     service = new HnService(api);
-    const app = await bootBrowserApp([HnTestConfiguration]);
+    const app = await bootWebApp([HnTestConfiguration]);
     browser = new BrowserMockClient(app);
     close = app.close;
 });

@@ -33,7 +33,7 @@ import {
 } from '@opentelemetry/sdk-trace-base';
 import { ManagementAutoConfiguration } from '@ndigo/management';
 import { HTTPServer } from '@ndigo/platform-node';
-import { bootApp, delay } from '@ndigo/test';
+import { bootNodeApp, delay } from '@ndigo/test';
 import type { NdigoTestApp } from '@ndigo/test';
 import { HTTPServerInstrumentation } from '@ndigo/telemetry-node';
 import { TelemetryLabConfiguration } from '../src/telemetry-lab-configuration';
@@ -85,7 +85,7 @@ describe('browser → server trace continuation', () => {
         instrumentation = new HTTPServerInstrumentation();
         instrumentation.enable();
 
-        app = bootApp([ManagementAutoConfiguration, TelemetryLabConfiguration]);
+        app = bootNodeApp([ManagementAutoConfiguration, TelemetryLabConfiguration]);
 
         // A real listener on an ephemeral port, wired to the app's dispatcher —
         // the exact path `pnpm start` takes, minus a fixed port.

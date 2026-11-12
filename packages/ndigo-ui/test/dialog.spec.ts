@@ -59,10 +59,15 @@ describe('<nd-dialog>', () => {
         trigger.click();
         await flush();
 
+        // Open: the trigger is aria-hidden background content, so it must not
+        // stay tabbable while the modal owns the page.
+        expect(trigger.hasAttribute('inert')).toBe(true);
+
         document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
         await flush();
 
         expect(dialog.hasAttribute('open')).toBe(false);
+        expect(trigger.hasAttribute('inert')).toBe(false);
         expect(document.activeElement).toBe(trigger);
     });
 

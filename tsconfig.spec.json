@@ -18,6 +18,10 @@
       "@ndigo/util/crypto": ["./packages/ndigo-util/src/crypto"],
       "@ndigo/util/crypto/*": ["./packages/ndigo-util/src/crypto/*"],
       "@/lib/*": ["./packages/ndigo-ui/registry/base/*"],
+      // Storybook stories import the blocks' `init*` controllers from the
+      // canonical registry sources (app-local alias in the Storybook Vite
+      // config); the spec lane typechecks those stories from the repo root.
+      "@registry/*": ["./packages/ndigo-ui/registry/*"],
       "@ndigo/util/math": ["./packages/ndigo-util/src/math"],
       "@ndigo/util/math/*": ["./packages/ndigo-util/src/math/*"],
       "@ndigo/util/string": ["./packages/ndigo-util/src/string"],

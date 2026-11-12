@@ -35,6 +35,7 @@ Authored parts also work:
 | `required` | `boolean` | Mark the hidden checkbox required                  |
 | `invalid`  | `boolean` | Mark the hidden checkbox invalid                   |
 | `name`     | `string`  | Form field name                                    |
+| `label`    | `string`  | Label text used when no label content is authored  |
 
 ## Events
 

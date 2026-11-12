@@ -75,6 +75,12 @@ export class NdDrawer extends NdElement {
         const close = content.querySelector<HTMLElement>('[data-part="close-trigger"]');
 
         spreadProps(trigger, api.getTriggerProps());
+        // Zag hides everything outside the content — the authored trigger
+        // included — with `aria-hidden` while the modal is open. An
+        // aria-hidden control that is still tabbable is an axe violation, so
+        // take the trigger out of the page for as long as it is hidden. It is
+        // re-enabled on close, before Zag restores focus to it.
+        trigger.toggleAttribute('inert', api.open);
         if (backdrop) spreadProps(backdrop, api.getBackdropProps());
         spreadProps(positioner, api.getPositionerProps());
         spreadProps(content, api.getContentProps());

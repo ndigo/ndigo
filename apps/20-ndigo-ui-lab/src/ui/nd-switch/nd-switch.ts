@@ -2,7 +2,8 @@
  * `<nd-switch>` — toggle built on the Zag.js switch machine.
  *
  * Markup can be just text: the element creates the `<label>` root, hidden
- * checkbox, control, thumb, and label span. Authored parts are respected.
+ * checkbox, control, thumb, and label span. Authored parts are respected, and
+ * a `label` attribute supplies the text when no label content is authored.
  */
 import { connect as connectSwitch, machine as switchMachine } from '@zag-js/switch';
 import type { Api as SwitchApi } from '@zag-js/switch';
@@ -14,9 +15,10 @@ import { ownPart } from '@/lib/structure-element';
 let nextId = 0;
 
 export class NdSwitch extends NdElement {
-    static observedAttributes = ['checked', 'disabled', 'readonly', 'required', 'invalid', 'name'];
+    static observedAttributes = ['checked', 'disabled', 'readonly', 'required', 'invalid', 'name', 'label'];
 
     #machineId = '';
+    #labelFromAttribute = false;
     #controller = createZagElement({
         machine: switchMachine,
         connect: (service) => connectSwitch(service, normalizeProps),
@@ -39,6 +41,7 @@ export class NdSwitch extends NdElement {
     protected onConnect(): void {
         this.#machineId ||= this.id || `nd-switch-${++nextId}`;
         this.#ensureStructure();
+        this.#syncLabelText();
         this.#controller.start();
     }
 
@@ -47,6 +50,10 @@ export class NdSwitch extends NdElement {
     }
 
     attributeChangedCallback(name: string, _previous: string | null, value: string | null): void {
+        if (name === 'label') {
+            this.#syncLabelText();
+            return;
+        }
         if (name === 'checked') {
             this.#controller.updateProps({ checked: value !== null });
             return;
@@ -94,6 +101,28 @@ export class NdSwitch extends NdElement {
             input.dataset.part = 'hidden-input';
             root.prepend(input);
         }
+    }
+
+    /**
+     * Falls back to the `label` attribute when the element has no authored
+     * label content, so protocol renderers (A2UI) can name the switch without
+     * injecting child nodes. Authored label content always wins.
+     */
+    #syncLabelText(): void {
+        const root = ownPart<HTMLElement>(this, 'root');
+        const label = root?.querySelector<HTMLElement>('[data-part="label"]');
+        if (!label) return;
+        const text = this.getAttribute('label');
+        if (text === null) {
+            if (!this.#labelFromAttribute) return;
+            label.textContent = '';
+            this.#labelFromAttribute = false;
+            return;
+        }
+        if (label.childElementCount > 0) return;
+        if (!this.#labelFromAttribute && (label.textContent ?? '').trim() !== '') return;
+        label.textContent = text;
+        this.#labelFromAttribute = true;
     }
 
     #render(api: SwitchApi): void {

@@ -146,6 +146,7 @@ const APP_TOOLING = new Set([
     '@playwright/test',
     'storybook',
     '@storybook/addon-a11y',
+    '@storybook/addon-docs',
     '@storybook/web-components-vite',
     'lit',
 ]);
@@ -452,10 +453,19 @@ for (const dir of readdirSync(APPS)) {
     const used = new Set([...runtime, ...dev]);
 
     // Undeclared: every app-source import must resolve from the manifest.
-    // `@/` is the app-local alias the registry installs target (see
-    // `ndigo ui add`); it is never an npm package.
+    // `@/` and `@registry/` are in-repo aliases: the first is the app-local
+    // alias the registry installs target (see `ndigo ui add`), the second
+    // points Storybook stories at the un-installed registry sources. Neither
+    // is ever an npm package.
     for (const spec of used) {
-        if (APP_TOOLING.has(spec) || spec.startsWith('@types/') || spec.startsWith('@/')) continue;
+        if (
+            APP_TOOLING.has(spec) ||
+            spec.startsWith('@types/') ||
+            spec.startsWith('@/') ||
+            spec.startsWith('@registry/')
+        ) {
+            continue;
+        }
         if (!dependencies[spec] && !devDependencies[spec]) {
             fail(name, `app import "${spec}" is not declared in dependencies or devDependencies`);
         }

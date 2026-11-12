@@ -224,6 +224,12 @@ jobs:
         # regenerate it with `pnpm ui:a2ui-map:build`.
         run: pnpm ui:a2ui-map:check
 
+      - name: Storybook story coverage
+        # One hand-authored story file per registry item, no orphans, a stable
+        # `Default` export in every file (scripts/check-stories.mjs). Generated
+        # stories are retired; a new registry item without a story fails here.
+        run: pnpm storybook:check
+
       - name: Strict type-check
         # Per-project tsc -b with the build config over every package and
         # app (`pnpm typecheck`). Scoped with --filter so out-of-tree
@@ -352,7 +358,9 @@ jobs:
     #   gh variable set CI_RUNNER_E2E --body '["self-hosted","linux","x64"]'
     # after provisioning the deps (see ~/bin/ci-runner-install.sh).
     runs-on: ${{ fromJSON(vars.CI_RUNNER_E2E || '["ubuntu-latest"]') }}
-    timeout-minutes: 20
+    # 20 was too tight once the Storybook build and its 190-check render gate
+    # joined the lane; the extra ten minutes cover a cold browser cache.
+    timeout-minutes: 30
     needs: [quality]
     # Skipped when no browser-facing path changed (issue #276); the weekly
     # sweep always sets the output true, so the lane is still covered there.
@@ -413,6 +421,17 @@ jobs:
         # form submit -> SSE. The browsers installed above are shared through
         # the Playwright cache, so this lane adds no install cost.
         run: pnpm --filter @ndigo/island test:e2e
+
+      - name: Build Storybook
+        # The hand-authored story suite for every registry item. The build
+        # proves the bundle compiles with the docs pages enabled.
+        run: pnpm build:storybook
+
+      - name: Storybook render + accessibility gate
+        # Renders every built story in Chromium in both themes and fails on
+        # blank stories, page errors, and serious or critical axe violations.
+        # The browser installed above is reused from the Playwright cache.
+        run: pnpm --filter @ndigo/ui-storybook test:storybook
 
       - name: Upload Playwright report
         if: always()

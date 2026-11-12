@@ -33,6 +33,8 @@ export class NdFileUpload extends NdElement {
 
     #machineId = '';
     #items = new Map<File, HTMLElement>();
+    /** An `aria-label` the author put on the dropzone before the machine ran. */
+    #authoredDropzoneLabel: string | null = null;
     #controller = createZagElement({
         machine: fileUploadMachine,
         connect: (service): FileUploadApi => connectFileUpload(service, normalizeProps),
@@ -60,6 +62,8 @@ export class NdFileUpload extends NdElement {
 
     protected onConnect(): void {
         this.#machineId ||= this.id || `nd-file-upload-${++nextId}`;
+        this.#authoredDropzoneLabel =
+            this.querySelector<HTMLElement>('[data-part="dropzone"]')?.getAttribute('aria-label') ?? null;
         this.#ensureHiddenInput();
         this.#ensureItemGroup();
         this.#controller.start();
@@ -221,7 +225,18 @@ export class NdFileUpload extends NdElement {
         const group = this.querySelector<HTMLElement>('[data-part="item-group"]');
 
         if (label) spreadProps(label, api.getLabelProps());
-        if (dropzone) spreadProps(dropzone, api.getDropzoneProps());
+        if (dropzone) {
+            spreadProps(dropzone, api.getDropzoneProps());
+            // Zag names every dropzone with its generic "dropzone" string. A
+            // dropzone with visible text would then expose a name that omits
+            // that text (label-in-name), so let the content name it instead.
+            // An author-supplied aria-label is restored over the default.
+            if (this.#authoredDropzoneLabel !== null) {
+                dropzone.setAttribute('aria-label', this.#authoredDropzoneLabel);
+            } else if ((dropzone.textContent ?? '').trim() !== '') {
+                dropzone.removeAttribute('aria-label');
+            }
+        }
         if (trigger) spreadProps(trigger, api.getTriggerProps());
         if (clear) spreadProps(clear, api.getClearTriggerProps());
         if (hidden) spreadProps(hidden, api.getHiddenInputProps());

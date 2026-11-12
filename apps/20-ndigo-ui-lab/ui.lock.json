@@ -18,7 +18,7 @@
           "sha256": "6a298af62b01122adea3a480b6c04c2711035b5bd558c8187ee2e51572beb1d3"
         }
       ],
-      "installedAt": "2026-11-10T03:07:31.826Z"
+      "installedAt": "2026-11-12T18:25:01.028Z"
     },
     "dialog": {
       "registry": "../../registry.json",
@@ -30,10 +30,10 @@
         },
         {
           "target": "src/ui/nd-dialog/nd-dialog.ts",
-          "sha256": "472e07e0e88ebee78f1f95d5da73935c1da1419bfaaef00909482d8f6c927308"
+          "sha256": "b3283bdd3e525ccc311c011c5b86fcca1ca31be69f222c214dfe478f80108c33"
         }
       ],
-      "installedAt": "2026-11-09T21:04:37.663Z"
+      "installedAt": "2026-11-12T18:25:01.028Z"
     },
     "menu": {
       "registry": "../../registry.json",
@@ -194,10 +194,10 @@
         },
         {
           "target": "src/ui/nd-switch/nd-switch.ts",
-          "sha256": "eff179e939e86a829eb1691082f5ca7df26b4effcc9ee747d55933e4652ba193"
+          "sha256": "000c7ef201ac23a9ede95f07959cb724c866e21f37e4423261e8686c866bcc91"
         }
       ],
-      "installedAt": "2026-11-09T21:04:37.663Z"
+      "installedAt": "2026-11-12T18:25:01.028Z"
     },
     "slider": {
       "registry": "../../registry.json",
@@ -269,10 +269,10 @@
         },
         {
           "target": "src/ui/nd-drawer/nd-drawer.ts",
-          "sha256": "92fd7c36b1a23f88b7fd4f79581839fe46f4dd219ca98b80c0decfe7b77c5bab"
+          "sha256": "4a453e7062c7434e2c02c8a191135e3f89193547ec8fec8c74b5f1cfe721f15a"
         }
       ],
-      "installedAt": "2026-11-09T21:04:37.663Z"
+      "installedAt": "2026-11-12T18:25:01.028Z"
     },
     "command": {
       "registry": "../../registry.json",
@@ -374,10 +374,10 @@
         },
         {
           "target": "src/ui/nd-file-upload/nd-file-upload.ts",
-          "sha256": "a679356533e89975faef782adb5531d7717a42df3a51612e9fccf7f2e50b2949"
+          "sha256": "3c46f6ead21d56f06acdf298738cc4778894e95923f004f5470b1b321df5e949"
         }
       ],
-      "installedAt": "2026-11-09T21:04:37.663Z"
+      "installedAt": "2026-11-12T18:25:01.028Z"
     },
     "table": {
       "registry": "../../registry.json",

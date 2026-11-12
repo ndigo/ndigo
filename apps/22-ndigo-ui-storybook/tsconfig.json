@@ -3,7 +3,12 @@
   "compilerOptions": {
     "outDir": "dist",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      // Stories import the registry's `init*` controllers straight from the
+      // canonical source; the registry files themselves resolve their base
+      // classes through this alias (mirrored in `.storybook/main.ts`).
+      "@/lib/*": ["../../packages/ndigo-ui/registry/base/*"],
+      "@registry/*": ["../../packages/ndigo-ui/registry/*"]
     }
   },
   "include": ["src/**/*", ".storybook/**/*"]

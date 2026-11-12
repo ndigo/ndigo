@@ -5,8 +5,11 @@
   "type": "module",
   "private": true,
   "scripts": {
+    "prestorybook": "pnpm --filter @ndigo/ui build:lib",
     "storybook": "storybook dev -p 6007",
-    "build-storybook": "storybook build"
+    "prebuild-storybook": "pnpm --filter @ndigo/ui build:lib",
+    "build-storybook": "storybook build",
+    "test:storybook": "node test/smoke-stories.mjs"
   },
   "keywords": [
     "ndigo",
@@ -19,7 +22,10 @@
     "@ndigo/ui": "~0.0.1"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
+    "@playwright/test": "^1.64.1",
     "@storybook/addon-a11y": "^10.6.7",
+    "@storybook/addon-docs": "^10.6.7",
     "@storybook/web-components-vite": "^10.6.7",
     "lit": "^3.3.0",
     "storybook": "^10.6.7",

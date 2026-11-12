@@ -95,8 +95,7 @@ consumer shape.
 
 - AD-91 — the 1.0 API freeze and the no-alias position.
 - #437 — implementation.
-- Guide 49 — Configuration Layering & Context Composition
-  (`docs/guides/49-configuration-layering-and-context-composition.md`) — the
-  composition and event patterns.
+- [Guide 49 — Configuration Layering & Context Composition](../guides/49-configuration-layering-and-context-composition.md)
+  — the composition and event patterns.
 - `docs/plans/2026-03-24_SCALE2_CONTEXT_ROUTING_ARCHITECTURE.md` — the explicit
   feature relay model.

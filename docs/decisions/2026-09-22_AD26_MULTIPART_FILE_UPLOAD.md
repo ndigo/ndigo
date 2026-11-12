@@ -148,7 +148,7 @@ resolver (Wave 3), demo gates + docs (Wave 4). All waves landed — see below.
   `request.body`.
 - **Wave 3** — `fileValue(partName?)` extractor factory + `MethodParameterType.MULTIPART_FILE`;
   `NodeMultipartFileMethodArgumentResolver` (single + array), registered in the
-  `argumentResolvers()` `@entry` bean on `NodeAutoConfiguration`.
+  `argumentResolvers()` `@entry` entry on `NodeAutoConfiguration`.
 - **Wave 4** — `apps/ndigo-api` `POST /api/upload` demo gate (`UploadController`, persists
   to a temp dir under a random filename, returns `{ size, name }`); `upload.spec.ts`
   round-trip + empty-file-400 spec; guide [`docs/guides/08-multipart-and-file-upload.md`](../guides/08-multipart-and-file-upload.md);

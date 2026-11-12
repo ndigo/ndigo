@@ -37,7 +37,7 @@ export interface McpToolRegistryOptions {
     readonly isFeatureEnabled?: (flag: string) => boolean | Promise<boolean>;
     /**
      * The dispatcher's argument-resolver chain (the `ARGUMENT_RESOLVERS`
-     * context bean). Tool calls bind path/query/header/body arguments through
+     * context entry). Tool calls bind path/query/header/body arguments through
      * the same resolvers as HTTP; without them, tools that declare parameters
      * fail with a clear error.
      */

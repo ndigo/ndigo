@@ -16,7 +16,7 @@ navigation — and performs the first navigation.
 
 Composes the existing pieces rather than replacing them — the returned
 context is the same container `ApplicationBuilder` would have produced, so
-every bean stays reachable and full manual control remains one
+every entry stays reachable and full manual control remains one
 `ApplicationBuilder` away. Startup failures are logged, the context is
 torn down, and the error is rethrown.
 

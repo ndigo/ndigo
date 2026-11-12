@@ -452,7 +452,7 @@ describe('refresh scope wiring (AD-29 D-2)', () => {
     @refreshScope
     class RefreshScoped {}
 
-    test('refresh-scoped beans re-create when the environment refreshes', () => {
+    test('refresh-scoped entries re-create when the environment refreshes', () => {
         const env = new MockEnvironment();
         const context = new GenericApplicationContext('test');
         context.setEnvironment(env);
@@ -471,7 +471,7 @@ describe('refresh scope wiring (AD-29 D-2)', () => {
         context.destroy();
     });
 
-    test('unscoped (singleton) beans keep identity across refresh', () => {
+    test('unscoped (singleton) entries keep identity across refresh', () => {
         class PlainSingleton {}
 
         const env = new MockEnvironment();

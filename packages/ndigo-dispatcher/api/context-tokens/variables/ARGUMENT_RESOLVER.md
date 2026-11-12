@@ -8,4 +8,4 @@
 
 > `const` **ARGUMENT\_RESOLVER**: [`ContextToken`](#)\<[`HandlerMethodArgumentResolver`](../../argument-resolver/interfaces/HandlerMethodArgumentResolver.md)\>
 
-Context token for a single stand-alone argument-resolver bean.
+Context token for a single stand-alone argument-resolver entry.

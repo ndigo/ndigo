@@ -40,7 +40,7 @@ same `ApplicationBuilder` as the Node preset (AD-90 D-5).
   entrypoints repeat the dispatcher/router/view-target wiring. The app
   generator now **canonicalises** the long form into every new project, so
   the cost compounds.
-- Bean defaults are already solved (`NodeAutoConfiguration`,
+- Entry defaults are already solved (`NodeAutoConfiguration`,
   `WebAutoConfiguration`). The missing piece is sequencing after `refresh()`,
   which a `@configuration` class cannot own: `HTTPServer` must not bind on
   refresh (`packages/ndigo-platform-node/src/http-server.ts:218-219`).
@@ -125,7 +125,7 @@ export function createWebApplication(
 Design rules for both:
 
 - **Compose, do not replace.** The preset registers the platform
-  auto-configuration and then the caller's sources; it never forks the bean
+  auto-configuration and then the caller's sources; it never forks the entry
   graph.
 - **No process exits.** The preset logs and rethrows startup failures; the
   caller's top-level `await` (or `main().catch`) decides the exit code.
@@ -134,7 +134,7 @@ Design rules for both:
   exporters in the defaults. Those stay explicit.
 - **No hidden globals.** `port` is applied as `server.port`, not by mutating
   `process.env`. `configFiles` is a boolean/loader, not an environment hack.
-- **Everything reachable.** The returned `context` exposes every bean; the
+- **Everything reachable.** The returned `context` exposes every entry; the
   returned `server` / `dispatcher` / `router` expose the runtime objects.
 
 ## 4. Phases and deliverables

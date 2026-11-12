@@ -79,7 +79,7 @@ API.
 first use and returns the same instance thereafter (non-empty string
 required). `getCache(ContextToken<Cache<V>>)` uses the token description as
 the name, exactly as the string form does. The `CACHE_MANAGER` token resolves
-the shared manager bean: `context.getValue(CACHE_MANAGER)`. `hasCache` checks
+the shared manager entry: `context.getValue(CACHE_MANAGER)`. `hasCache` checks
 only the local registry — it neither creates nor performs I/O.
 
 ### Client-side memoization

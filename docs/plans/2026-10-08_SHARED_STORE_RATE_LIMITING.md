@@ -28,7 +28,7 @@ itself.
 | Enforcement   | `RateLimitInterceptor` (default-on, metadata-gated), 429 + `Retry-After`, keyed on the AD-37 client IP               | an async store call (chain already awaits)           |
 | SPI           | `RateLimiter.consume` (sync), `RateLimitPolicy`, `RateLimitResult`, `validateRateLimitPolicy` in ndigo-platform-node | async contract (AD-39); a dependency-light leaf home |
 | Counter store | `FixedWindowRateLimiter` (in-memory, SEC-2 bound)                                                                    | shared store; restart survival                       |
-| Wiring        | `NodeAutoConfiguration.rateLimiter()` bean (bare `@entry()`)                                                         | `RATE_LIMITER` token registration (AD-73 pattern)    |
+| Wiring        | `NodeAutoConfiguration.rateLimiter()` entry (bare `@entry()`)                                                        | `RATE_LIMITER` token registration (AD-73 pattern)    |
 | Backends      | `RedisConnection` (borrowed; subpaths `./cache`, `./locks`, `./jobs`, `./pubsub`)                                    | a rate-limit driver                                  |
 
 ## 3. Change
@@ -38,7 +38,7 @@ itself.
    `validateRateLimitPolicy`, `likeRateLimiter` guard,
    `FixedWindowRateLimiter` (moved unchanged; instance-scoped, SEC-2
    bound), `RATE_LIMITER` context token.
-2. **`@ndigo/platform-node`**: interceptor awaits `consume`; bean
+2. **`@ndigo/platform-node`**: interceptor awaits `consume`; entry
    registered as `@entry(RATE_LIMITER)`; `src/rate-limit.ts` deleted —
    clean cutover, no re-exports; `@rateLimit` metadata and the 429
    behavior unchanged.
@@ -54,8 +54,8 @@ itself.
    hub count 16 → 17); guide 11 §5 + guide 16; security architecture row;
    audit-row note; CHANGELOG; generated API docs.
 
-Per-process "one budget" is unchanged and remains the default (the bean);
-multi-process deployments override the bean with `RedisRateLimiter`.
+Per-process "one budget" is unchanged and remains the default (the entry);
+multi-process deployments override the entry with `RedisRateLimiter`.
 
 ## 4. Deliberately out of scope
 

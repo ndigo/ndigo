@@ -103,7 +103,7 @@ is flushed instead of dropped (guide 32 §6).
 | `Dispatcher.dispatch`                   | server  | `INTERNAL`, carries `route.path` / `http.route`                            |
 | `lab.work.compute`                      | server  | `@traced` on the work service — nests under the request that caused it     |
 | `lab.ticker.tick`                       | server  | `@traced` on the `@scheduled` ticker — a **root** span (no request around) |
-| `scheduler.task.<bean>.<method>`        | server  | `@ndigo/scheduler`'s own task spans, with `task.outcome`                   |
+| `scheduler.task.<entry>.<method>`       | server  | `@ndigo/scheduler`'s own task spans, with `task.outcome`                   |
 | `SocketSession.connect`                 | server  | `WebSocketServerInstrumentation`                                           |
 | `HTTPServer.start` / `HTTPServer.close` | server  | server lifecycle                                                           |
 

@@ -51,13 +51,13 @@ forms (guide 18).
 
 ## 3. DI and lifecycle
 
-| Symptom                                | Cause                                                                          | Fix                                                                              |
-| -------------------------------------- | ------------------------------------------------------------------------------ | -------------------------------------------------------------------------------- |
-| `No value registered` / undefined bean | Entry not registered, wrong name/token, or child context without parent lookup | Register in the config class; resolve after `refresh`; use the token (guide 04)  |
-| Circular dependency at refresh         | Constructor/field cycle                                                        | Break with a provider method, setter/aware callback, or a separate collaborator  |
-| `init` never ran                       | Bean not context-managed (manually constructed, `setValue` instance)           | Register via `@entry`; aware/init hooks only run on container-created beans      |
-| `close` not called                     | Bean is prototype-scoped or not registered                                     | Use a singleton/refresh scope; implement `Closeable` and let `context.close` run |
-| Old config after refresh               | Holding a reference to a destroyed `@refreshScope` bean                        | Resolve again after `config:refresh`; do not cache the instance                  |
+| Symptom                                 | Cause                                                                          | Fix                                                                              |
+| --------------------------------------- | ------------------------------------------------------------------------------ | -------------------------------------------------------------------------------- |
+| `No value registered` / undefined entry | Entry not registered, wrong name/token, or child context without parent lookup | Register in the config class; resolve after `refresh`; use the token (guide 04)  |
+| Circular dependency at refresh          | Constructor/field cycle                                                        | Break with a provider method, setter/aware callback, or a separate collaborator  |
+| `init` never ran                        | Entry not context-managed (manually constructed, `setValue` instance)          | Register via `@entry`; aware/init hooks only run on container-created entries    |
+| `close` not called                      | Entry is prototype-scoped or not registered                                    | Use a singleton/refresh scope; implement `Closeable` and let `context.close` run |
+| Old config after refresh                | Holding a reference to a destroyed `@refreshScope` entry                       | Resolve again after `config:refresh`; do not cache the instance                  |
 
 `context.close` is synchronous; async cleanup must be drained before it or
 bridged to `Closeable` (guide 21).

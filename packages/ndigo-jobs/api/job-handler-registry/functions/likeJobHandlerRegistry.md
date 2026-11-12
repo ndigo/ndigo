@@ -9,7 +9,7 @@
 > **likeJobHandlerRegistry**(`value`): `value is JobHandlerRegistry`
 
 Structural type guard for [JobHandlerRegistry](../classes/JobHandlerRegistry.md) — the `like*`
-convention used where a bean or option is verified before use (sibling of
+convention used where an entry or option is verified before use (sibling of
 [likeJobDriver](../../job-driver/functions/likeJobDriver.md)).
 
 ## Parameters

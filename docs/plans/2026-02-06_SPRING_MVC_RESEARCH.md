@@ -837,7 +837,7 @@ Each domain will be researched using the template in [Appendix: Research Templat
 
 - `@WebMvcTest` for controller slice testing
 - `MockMvc` for simulating HTTP requests
-- `@MockBean` for mocking dependencies
+- `@MockEntry` for mocking dependencies
 - `@AutoConfigureMockMvc` for auto-configuration
 - `WebTestClient` for reactive testing
 - Request builders and result matchers
@@ -957,7 +957,7 @@ Beyond the 10 feature domains, analyze these cross-cutting concerns:
 **Ndigo Current State:**
 
 - ✅ `ApplicationContext` for DI container
-- ✅ `@configuration` and `@entry` for bean registration
+- ✅ `@configuration` and `@entry` for entry registration
 - ✅ `@profile` for environment-based configuration
 - ✅ Context-aware processors
 

@@ -6,7 +6,7 @@
 
 # context-tokens
 
-Type-safe bean handles for the ndigo-scheduler contracts (AD-34 D1).
+Type-safe entry handles for the ndigo-scheduler contracts (AD-34 D1).
 
 ## Variables
 

@@ -44,7 +44,7 @@ path.
   (`ndigo-dispatcher/src/abstract-platform-resolver.ts:38`) runs the shared pipeline
   `resolveName → default → convertType → Zod convert hook → nil/required check`; platforms implement
   only `resolveName()` + `supportsParameter()`.
-- **Bean binding already exists — browser-only.** `MethodParameterType.BIND = 'bind:value'`
+- **Entry binding already exists — browser-only.** `MethodParameterType.BIND = 'bind:value'`
   (`ndigo-dispatcher/src/parameters.ts:131`) and the extractor factory `bindBrowserValue(source)`
   (`parameters.ts:342`). On the Node path BIND is **not** an allowed source (it is in the `route`
   set but not the `request` set, `parameters.ts:618-656`). The `BrowserBindMethodArgumentResolver`
@@ -90,11 +90,11 @@ ndigo already mirrors most of this; the bullets note where it does and where for
   (default constructor, or reuses an existing model attribute), then a `WebDataBinder` populates its
   properties from **all matching request parameters** (form fields + query) by property name, delegating
   type conversion to the global `ConversionService`, supporting nested keypaths, and optionally running
-  Bean validation (`@Valid`/`@Validated`) into a `BindingResult`. `@ModelAttribute` on _methods_ also
+  Entry validation (`@Valid`/`@Validated`) into a `BindingResult`. `@ModelAttribute` on _methods_ also
   populates the shared model for later handlers/views.
 - **`@RequestBody`.** `RequestResponseBodyMethodProcessor` deserializes the body (JSON/XML) straight to
   the typed parameter via `HttpMessageConverters` — no form binding. ndigo's `bodyValue('*')` already
-  does the JSON half; the gap is the _bean_ side, not the raw-body side.
+  does the JSON half; the gap is the _entry_ side, not the raw-body side.
 - **Per-source resolvers.** `@RequestParam`, `@PathVariable`, `@MatrixVariable`, `@RequestPart`,
   `@CookieValue`, `@RequestHeader` are each a dedicated resolver — exactly ndigo's per-extractor model.
   `@MatrixVariable` reads semicolon-separated matrix params from a path segment and can pair with a
@@ -125,7 +125,7 @@ ndigo already mirrors most of this; the bullets note where it does and where for
 ### 3.3 Takeaways for ndigo
 
 1. The resolver pattern is shared — **add resolvers**, don't touch the engine.
-2. Bean binding = `DataBinder` + `ConversionService`, both owned and present — **reuse, never rebuild**.
+2. Entry binding = `DataBinder` + `ConversionService`, both owned and present — **reuse, never rebuild**.
 3. plain→class: NestJS wraps `class-transformer`; ndigo can lean on `DataBinder` (builds nested objects
    from keypaths) + optional target-constructor instantiation + Zod for validation/whitelist — **no new
    runtime dependency**, consistent with the "own-the-contract" pattern (`ndigo-signals`, AD-07, AD-24).

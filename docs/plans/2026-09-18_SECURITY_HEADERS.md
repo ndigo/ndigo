@@ -36,7 +36,7 @@ hardening item safe to ship enabled; management-endpoints precedent).
   `mapping.interceptors`; the fallback chain runs interceptors for unmatched
   routes too (adapter), so headers cover 404s/errors when written pre-finalize.
 - `NodeAutoConfiguration.handlerMapping()`: `new RadixMetadataHandlerMapping()`
-  — nothing default-registered today; the mapping bean is the assembly point.
+  — nothing default-registered today; the mapping entry is the assembly point.
 - Demo pages use external scripts only (`/static/client.js`, `src/index.ts`)
   — no inline JS; `ndigo-api` serves the STOMP demo over `ws://` (CSP
   `connect-src` must allow it; `'self'`-matching-WebSocket is
@@ -62,7 +62,7 @@ never denies. `postHandle`/`completeHandle` are no-ops per the contract.
 headers run before CORS preflight short-circuit and CSRF denial, so every
 finalized response carries them). Escape hatches, in order of granularity:
 per-header `false` in the options; whole-interceptor disable; replace the
-`handlerMapping` bean (documented) for full control. Apps additionally
+`handlerMapping` entry (documented) for full control. Apps additionally
 reaching for `mapping.interceptors` (CORS/CSRF pattern) compose with the
 default — header-writing is idempotent with app-level duplicate sets
 (`setHeader` overwrites; Helmet's per-header config is the single source).
@@ -96,7 +96,7 @@ Opt-in only (Helmet parity — both are the breaking ones): `Cross-Origin-Embedd
 top-level `enabled: false` switch; each header accepts `false` to disable and
 the header's own option shape (e.g. CSP `{ useDefaults: true, directives: {…} }`,
 HSTS `{ maxAge, includeSubDomains, preload }`). Constructor validates —
-TypeError on malformed options, exactly Helmet's behavior, moved to bean
+TypeError on malformed options, exactly Helmet's behavior, moved to entry
 startup instead of first request.
 
 ### D-5 — Non-goals (v1)

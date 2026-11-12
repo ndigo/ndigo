@@ -15,7 +15,7 @@ unfamiliar.
 
 ## What you'll learn
 
-- The five nouns every Ndigo application uses: context, bean, route, handler, view.
+- The five nouns every Ndigo application uses: context, entry, route, handler, view.
 - How a request becomes a handler result and a rendered representation.
 - Which package family owns which concern.
 - When to use signals, context events, SSE/WebSockets, jobs, or flags.
@@ -24,7 +24,7 @@ unfamiliar.
 
 An application is assembled around an **application context** — a dependency
 container with a lifecycle. You register configuration classes and entries; the
-context creates the beans, injects their collaborators, and closes them in
+context creates the entries, injects their collaborators, and closes them in
 order when the app stops.
 
 ```ts
@@ -43,9 +43,9 @@ const app = await createWebApplication([AppConfiguration]);
 // app.context, plus the router and DOM view target
 ```
 
-Everything else in this guide is reachable from that context. A **bean** is a
+Everything else in this guide is reachable from that context. An **entry** is a
 named value the context owns. A **configuration class** contributes entries; an
-**entry** is the factory method that creates a bean. [Guide 04](04-dependency-injection-and-lifecycle.md) covers the
+`@entry` method is the factory that creates one. [Guide 04](04-dependency-injection-and-lifecycle.md) covers the
 registration and lifecycle rules in depth.
 
 ## 2. The request path
@@ -166,13 +166,13 @@ create builder
 register configuration classes
     │
     ▼
-refresh() ── create beans, inject aware values, run init hooks, start lifecycles
+refresh() ── create entries, inject aware values, run init hooks, start lifecycles
     │
     ▼
 serve / render
     │
     ▼
-close() ── stop lifecycles (reverse phase order), destroy beans, close children
+close() ── stop lifecycles (reverse phase order), destroy entries, close children
 ```
 
 `refresh` is idempotent while active; `close` is idempotent after

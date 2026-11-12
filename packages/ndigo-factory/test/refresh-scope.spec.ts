@@ -10,7 +10,7 @@ import { DefaultFactory } from '../src/factory';
 import { RefreshScope, refreshScope, singletonScope } from '../src/scope';
 
 @refreshScope
-class DestroyableRefreshBean {
+class DestroyableRefreshEntry {
     destroyed = false;
     destroy = vi.fn(() => {
         this.destroyed = true;
@@ -18,7 +18,7 @@ class DestroyableRefreshBean {
 }
 
 @refreshScope
-class CloseableRefreshBean {
+class CloseableRefreshEntry {
     closed = false;
     close = vi.fn(() => {
         this.closed = true;
@@ -26,12 +26,12 @@ class CloseableRefreshBean {
 }
 
 @refreshScope
-class PlainRefreshBean {
+class PlainRefreshEntry {
     value = Math.random();
 }
 
 @singletonScope
-class DestroyableSingletonBean {
+class DestroyableSingletonEntry {
     destroyed = false;
     destroy = vi.fn(() => {
         this.destroyed = true;
@@ -54,40 +54,40 @@ describe('refresh scope teardown (CF-3, AD-29 D-2)', () => {
     };
 
     test('tears down a refresh-scoped destroyable exactly once on refresh (clear)', () => {
-        factory.setValue('bean', DestroyableRefreshBean);
+        factory.setValue('entry', DestroyableRefreshEntry);
 
-        const bean = factory.getValue<DestroyableRefreshBean>('bean');
+        const entry = factory.getValue<DestroyableRefreshEntry>('entry');
 
         // Repeated resolution returns the cached instance and must not stack
         // destruction callbacks.
-        expect(factory.getValue('bean')).toBe(bean);
-        expect(factory.getValue('bean')).toBe(bean);
+        expect(factory.getValue('entry')).toBe(entry);
+        expect(factory.getValue('entry')).toBe(entry);
 
         refreshScopeOf(factory).clear();
 
-        expect(bean.destroy).toHaveBeenCalledTimes(1);
-        expect(bean.destroyed).toBe(true);
+        expect(entry.destroy).toHaveBeenCalledTimes(1);
+        expect(entry.destroyed).toBe(true);
     });
 
     test('tears down a refresh-scoped closeable exactly once on clear', () => {
-        factory.setValue('bean', CloseableRefreshBean);
+        factory.setValue('entry', CloseableRefreshEntry);
 
-        const bean = factory.getValue<CloseableRefreshBean>('bean');
-        expect(factory.getValue('bean')).toBe(bean);
+        const entry = factory.getValue<CloseableRefreshEntry>('entry');
+        expect(factory.getValue('entry')).toBe(entry);
 
         refreshScopeOf(factory).clear();
 
-        expect(bean.close).toHaveBeenCalledTimes(1);
-        expect(bean.closed).toBe(true);
+        expect(entry.close).toHaveBeenCalledTimes(1);
+        expect(entry.closed).toBe(true);
     });
 
     test('registers teardown for each recreated refresh-scoped instance, exactly once', () => {
-        factory.setValue('bean', DestroyableRefreshBean);
+        factory.setValue('entry', DestroyableRefreshEntry);
 
-        const first = factory.getValue<DestroyableRefreshBean>('bean');
+        const first = factory.getValue<DestroyableRefreshEntry>('entry');
         refreshScopeOf(factory).clear();
 
-        const second = factory.getValue<DestroyableRefreshBean>('bean');
+        const second = factory.getValue<DestroyableRefreshEntry>('entry');
         expect(second).not.toBe(first);
         expect(second.destroy).not.toHaveBeenCalled();
 
@@ -100,36 +100,36 @@ describe('refresh scope teardown (CF-3, AD-29 D-2)', () => {
     });
 
     test('destroyValue tears a refresh-scoped destroyable down exactly once', () => {
-        factory.setValue('bean', DestroyableRefreshBean);
+        factory.setValue('entry', DestroyableRefreshEntry);
 
-        const bean = factory.getValue<DestroyableRefreshBean>('bean');
+        const entry = factory.getValue<DestroyableRefreshEntry>('entry');
 
-        factory.destroyValue('bean');
+        factory.destroyValue('entry');
 
-        expect(bean.destroy).toHaveBeenCalledTimes(1);
+        expect(entry.destroy).toHaveBeenCalledTimes(1);
 
-        const recreated = factory.getValue<DestroyableRefreshBean>('bean');
-        expect(recreated).not.toBe(bean);
+        const recreated = factory.getValue<DestroyableRefreshEntry>('entry');
+        expect(recreated).not.toBe(entry);
         expect(recreated.destroy).not.toHaveBeenCalled();
     });
 
     test('refresh scope still clears values without lifecycle hooks', () => {
-        factory.setValue('plain', PlainRefreshBean);
+        factory.setValue('plain', PlainRefreshEntry);
 
-        const first = factory.getValue<PlainRefreshBean>('plain');
+        const first = factory.getValue<PlainRefreshEntry>('plain');
 
         refreshScopeOf(factory).clear();
 
-        expect(factory.getValue<PlainRefreshBean>('plain')).not.toBe(first);
+        expect(factory.getValue<PlainRefreshEntry>('plain')).not.toBe(first);
     });
 
     test('keeps singleton teardown unchanged: destroyValue destroys exactly once', () => {
-        factory.setValue('bean', DestroyableSingletonBean);
+        factory.setValue('entry', DestroyableSingletonEntry);
 
-        const bean = factory.getValue<DestroyableSingletonBean>('bean');
+        const entry = factory.getValue<DestroyableSingletonEntry>('entry');
 
-        factory.destroyValue('bean');
+        factory.destroyValue('entry');
 
-        expect(bean.destroy).toHaveBeenCalledTimes(1);
+        expect(entry.destroy).toHaveBeenCalledTimes(1);
     });
 });

@@ -5,14 +5,14 @@ import { ContextToken } from '@ndigo/context';
 import { z } from 'zod';
 
 /**
- * Type-safe handle for the bound `ServerConfig` bean (AD-34 D1). The bean is
+ * Type-safe handle for the bound `ServerConfig` entry (AD-34 D1). The entry is
  * auto-registered as `serverConfig` by `ApplicationBuilder`; consumers
  * resolve it with the token instead of the string.
  */
 export const SERVER_CONFIG = new ContextToken<ServerConfig>('serverConfig');
 
 /**
- * Type-safe handle for the bound `SecretsConfig` bean (AD-34 D1).
+ * Type-safe handle for the bound `SecretsConfig` entry (AD-34 D1).
  */
 export const SECRETS_CONFIG = new ContextToken<SecretsConfig>('secretsConfig');
 
@@ -32,7 +32,7 @@ const serverSchema = z.object({
  * the previous per-field `@property`/`@defaultValue` decorations).
  *
  * The `@configurationProperties` decorator auto-registers the bound instance
- * as the `serverConfig` bean when the application runs through
+ * as the `serverConfig` entry when the application runs through
  * `ApplicationBuilder` (add the class to the builder sources).
  */
 @configurationProperties('server', { schema: serverSchema })
@@ -106,7 +106,7 @@ const migrationsSchema = z.object({
 });
 
 /**
- * Type-safe handle for the bound `MigrationsConfig` bean (AD-34 D1).
+ * Type-safe handle for the bound `MigrationsConfig` entry (AD-34 D1).
  */
 export const MIGRATIONS_CONFIG = new ContextToken<MigrationsConfig>('migrationsConfig');
 

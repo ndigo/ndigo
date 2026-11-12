@@ -8,7 +8,7 @@
 
 > **likeRateLimiter**(`value`): `value is RateLimiter`
 
-Structural type guard for [RateLimiter](../interfaces/RateLimiter.md) — used where a bean or
+Structural type guard for [RateLimiter](../interfaces/RateLimiter.md) — used where an entry or
 option is resolved by shape instead of the [RATE\_LIMITER](../../context-tokens/variables/RATE_LIMITER.md) token.
 
 ## Parameters

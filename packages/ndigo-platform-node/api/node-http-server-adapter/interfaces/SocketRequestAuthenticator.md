@@ -15,8 +15,8 @@ carry a `principal` with a `hasRole(role)` method — authentication or
 authorization failures close the socket with `1008`.
 
 [NodeHTTPServerAdapterOptions.authenticate](NodeHTTPServerAdapterOptions.md#authenticate) is the direct wiring;
-`HTTPServer` also resolves an application-context bean named
-`socketRequestAuthenticator` implementing this interface, so bean-based
+`HTTPServer` also resolves an application-context entry named
+`socketRequestAuthenticator` implementing this interface, so entry-based
 applications wire identity without constructing the adapter.
 
 ## Methods

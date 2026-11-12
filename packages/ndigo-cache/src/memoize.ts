@@ -32,7 +32,7 @@ export interface MemoizeOptions<A extends unknown[] = unknown[]> {
 /**
  * Memoizes a function: results are cached by (serialized) arguments — the
  * client-side half of the caching story, usable in browsers and Node with no
- * DI or beans (unlike the {@link cached} decorator, which resolves a
+ * DI or entries (unlike the {@link cached} decorator, which resolves a
  * {@link "cache-manager".CacheManager | CacheManager} from the instance).
  *
  * Semantics:

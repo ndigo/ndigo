@@ -147,7 +147,7 @@ default value + reason/error-code on abnormal execution), the zero-config
 `environment.refresh()` flips flags live), `@whenFeature` route gates
 enforced by `FeatureGateInterceptor` (404 problem doc when off; the
 `@FeatureGate`/`DisabledFeaturesHandler` analog), the `FLAG_EVALUATOR`
-bean + `feature` config-schema namespace, and the gated `/gated-report`
+entry + `feature` config-schema namespace, and the gated `/gated-report`
 demo route. Vendor flagging (Split/LaunchDarkly/flagd via OpenFeature
 providers) stays a documented provider bridge behind the SPI.
 
@@ -161,7 +161,7 @@ providers) stays a documented provider bridge behind the SPI.
 closing GAP-8: the `RateLimiter` SPI moves to a leaf package with an
 **async** `consume` (AD-39) plus `validateRateLimitPolicy`,
 `likeRateLimiter`, `FixedWindowRateLimiter` and the `RATE_LIMITER` token;
-the platform interceptor awaits and the bean registers under the token
+the platform interceptor awaits and the entry registers under the token
 (`src/rate-limit.ts` deleted — clean cutover); `@ndigo/redis/rate-limit`
 ships `RedisRateLimiter` (one Lua script per consume:
 INCR/PEXPIRE-on-first/PTTL, keys `ndigo:rl:<ns>:<windowMs>:<key>`,
@@ -243,7 +243,7 @@ can renew/release), the process-wide `InProcessLockDriver` (single-node
 truth), `RedisLockDriver` (`@ndigo/redis/locks`, Lua `SET NX PX` +
 compare-and-delete), and `@scheduled({ lock, lockWait, lockWaitStep,
 lockTtl })` for cross-process single-executor. `NodeAutoConfiguration`
-registers a `lockDriver` bean (in-process default, Redis override).
+registers a `lockDriver` entry (in-process default, Redis override).
 PG advisory locks documented-deferred in the ADR.
 
 [Read plan](2026-10-07_DISTRIBUTED_LOCKS.md)
@@ -381,7 +381,7 @@ limiter keys on the real client (AD-37).
 
 ### 2026-09-27 - TypeScript-Native Layer
 
-TypeScript layer for Spring-heritage surfaces (AD-34): token-first bean
+TypeScript layer for Spring-heritage surfaces (AD-34): token-first entry
 handles (`@entry(TOKEN)`, typed handler resolution, framework + demo
 migration, `no-string-registry-lookup` oxlint rule), typed context and
 environment events (`ContextEvents`/`EnvironmentEvents` overlays),
@@ -491,7 +491,7 @@ frame/referrer/sniffing controls and no `X-Powered-By` (AD-25; the CSP
 ### 2026-09-17 - Caching
 
 `@ndigo/cache`: `Cache`/`MemoryCache` (TTL + LRU/FIFO eviction), `CacheManager`
-bean (zero-wiring node auto-config), `memoize` (client-side, single-flight),
+entry (zero-wiring node auto-config), `memoize` (client-side, single-flight),
 `@cached` decorator (no-AOP wrapper, graceful degradation) — demo gates in
 ndigo-api (`/api/cached-report` counter) and ndigo-views (client memoize).
 

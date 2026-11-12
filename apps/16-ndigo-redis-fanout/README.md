@@ -173,7 +173,7 @@ now counts the only clients that can possibly receive the message.
   closed by the object that created it (`src/fanout-backend.ts`).
 - **`@ndigo/socket` / `@ndigo/platform-node`** — the `SocketFanout` contract plugged
   into `NodeSocketSessionRegistry`, which `HTTPServer` resolves as its adapter's
-  registry (the app overrides the `socketSessionRegistry` bean in
+  registry (the app overrides the `socketSessionRegistry` entry in
   `src/redis-fanout-configuration.ts`; last-write-wins is the documented seam).
   Room membership stays local; only serialized payloads cross Redis.
 - **`@ndigo/cache`** — one `CacheManager` contract, two implementations

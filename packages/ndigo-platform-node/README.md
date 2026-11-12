@@ -189,28 +189,28 @@ Auto-configuration for Node.js-based applications that provisions:
   default `en-US`) — the negotiated language reaches views, templates,
   and islands via the route's `language` attribute
   :- A `taskScheduler` + `scheduleRegistry` pair: `@scheduled` methods on
-  registered beans are auto-discovered and auto-started with zero wiring
+  registered entries are auto-discovered and auto-started with zero wiring
   :- A `jobDriver` + `jobQueue` + `jobHandlerRegistry` + `jobRunner` set
   (`@ndigo/jobs`): `@jobHandler` methods are discovered at refresh, and the
   runner starts explicitly (worker processes call `start()`; an unstarted
   runner arms no timer) — see
   [guide 22](../../docs/guides/22-jobs-and-outbox.md)
-  :- A `lockDriver` bean (`@ndigo/locks`): the default in-process driver
+  :- A `lockDriver` entry (`@ndigo/locks`): the default in-process driver
   coordinates schedulers within one process; register a `RedisLockDriver`
-  bean to make `@scheduled({ lock })` arbitrate across nodes — see
+  entry to make `@scheduled({ lock })` arbitrate across nodes — see
   [guide 24](../../docs/guides/24-distributed-locks.md)
   :- A `flagEvaluator` + `flagContextResolver` pair (`@ndigo/flags`): the
   `@whenFeature` gate is default-on and evaluates through them — the default
   evaluator reads `feature.*` properties live, the default context resolver
   targets the session principal (else the client address); override either
-  bean for vendor flagging and tenant/attribute targeting — see
+  entry for vendor flagging and tenant/attribute targeting — see
   [guide 34](../../docs/guides/34-feature-flags.md)
-  :- A managed `httpServer` entry (`HTTPServer`, a `SmartLifecycle` bean)
-  :- A `socketSessionRegistry` bean (`SocketSessionRegistry`): rooms, path
+  :- A managed `httpServer` entry (`HTTPServer`, a `SmartLifecycle` entry)
+  :- A `socketSessionRegistry` entry (`SocketSessionRegistry`): rooms, path
   broadcast, heartbeat, and backpressure for `@socketMapping` endpoints —
   shared with the managed server's adapter, so any service can push to a
   socket room
-  :- An optional `socketRequestAuthenticator` bean: upgrade-time identity for
+  :- An optional `socketRequestAuthenticator` entry: upgrade-time identity for
   sockets, and with it the socket-side `@authenticated`/`@authorized`
   enforcement — see [Socket authentication](#socket-authentication)
 
@@ -222,7 +222,7 @@ with the header-negotiated locale (`en-US` default) — see the
 
 The managed server serves WebSocket endpoints alongside HTTP routes with
 the same dispatcher, `@parameters` binding, and Zod validation. The
-registry bean auto-joins every session to its endpoint path and offers
+registry entry auto-joins every session to its endpoint path and offers
 broadcast, named rooms, heartbeats, and a slow-consumer guard.
 
 Transport bounds and behavior are env-tunable:
@@ -280,7 +280,7 @@ await registry.broadcastTo('lobby', new Uint8Array([0, 1, 255]));
 `dispatcher` is your existing `NodeDispatcher`. The `socketRegistry` option is
 for the default adapter only; a custom adapter must receive its registry itself.
 Without the explicit option, the managed server resolves the
-`socketSessionRegistry` context bean. Either way, services must publish through
+`socketSessionRegistry` context entry. Either way, services must publish through
 the **same** registry used by the adapter. Joins, counts and socket ownership
 remain local; only path/room payloads cross nodes. `broadcast` and `broadcastTo`
 return `Promise<void>` even in local mode; await them. Configured transport
@@ -319,10 +319,10 @@ Identity comes from one of two places:
 1. the `authenticate(sources)` option (`NodeHTTPServerAdapter` /
    `HTTPServer`) — return the attribute bag to merge into
    `session.attributes`, or `null` to refuse the upgrade with `1008`;
-2. an application-context bean named `socketRequestAuthenticator`
+2. an application-context entry named `socketRequestAuthenticator`
    implementing the exported `SocketRequestAuthenticator` interface
    (`authenticate(sources)`, same contract). `HTTPServer` resolves it at
-   start, so bean-based applications wire identity declaratively; the
+   start, so entry-based applications wire identity declaratively; the
    explicit option wins when both are present.
 
 The returned bag MUST carry `principal` for `@authenticated` /
@@ -332,7 +332,7 @@ string id), which the STOMP broker uses for its `/user/*` scope. With no
 authenticator configured, sockets accept any client: the explicit
 public-endpoint posture.
 
-`apps/05-ndigo-api` is the reference wiring: a `socketRequestAuthenticator` bean
+`apps/05-ndigo-api` is the reference wiring: a `socketRequestAuthenticator` entry
 resolves a demo token from `?token=` on the upgrade URL or an
 `Authorization: Bearer …` header (through the app's own
 `lookupPrincipal`), and `/stomp/chat` is marked `@authenticated` while the

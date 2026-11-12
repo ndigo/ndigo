@@ -69,7 +69,7 @@ import { getMapping, requestMapping } from '@ndigo/dispatcher';
 
 @requestMapping('/api')
 export class ProductController {
-    // Server apps: NodeAutoConfiguration provisions the `cacheManager` bean;
+    // Server apps: NodeAutoConfiguration provisions the `cacheManager` entry;
     // resolve it with the ApplicationContextAware mixin
     cacheManager: CacheManager;
 
@@ -129,7 +129,7 @@ Semantics:
 
 ## 3. Client: `memoize`
 
-Plain-function memoization for browsers and Node — no DI, no beans. The
+Plain-function memoization for browsers and Node — no DI, no entries. The
 wrapper always returns `Promise<Awaited<R>>`, even for synchronous inputs:
 
 ```ts

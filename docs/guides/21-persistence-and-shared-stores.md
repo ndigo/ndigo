@@ -38,7 +38,7 @@ pnpm add @ndigo/redis @ndigo/orm-drizzle @ndigo/cache @ndigo/socket
   history, memory fallback, or unhandled rejections; initialization failures
   surface on first use (operations await the original initialization
   promise).
-- **No bean auto-registration.** Container wiring is application-owned;
+- **No entry auto-registration.** Container wiring is application-owned;
   lifecycle must bridge to the container's `Closeable` teardown explicitly.
 
 ## 2. Durable sessions with LibSQL
@@ -119,7 +119,7 @@ windows anchored at the first request, expiry server-side by TTL). It is
 **fail-closed by default** — an unreachable store rejects the request
 instead of passing it unthrottled; `onError: 'fail-open'` logs through
 `@ndigo/log` and allows (the documented availability escape hatch).
-Override the platform's `RATE_LIMITER` bean with it:
+Override the platform's `RATE_LIMITER` entry with it:
 
 ```ts
 import { RedisConnection } from '@ndigo/redis';

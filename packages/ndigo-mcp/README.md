@@ -67,7 +67,7 @@ and projects every `@toolMapping` handler:
 
 - `readOnly: true` omits mutating tools from `tools/list` and rejects them on
   call.
-- `argumentResolvers` is the dispatcher's `ARGUMENT_RESOLVERS` bean. Tools
+- `argumentResolvers` is the dispatcher's `ARGUMENT_RESOLVERS` entry. Tools
   without parameters work without it; parameterized tools need it to bind
   path/query/header/body values.
 - `@whenFeature('flag')` hides the tool unless `isFeatureEnabled(flag)` returns

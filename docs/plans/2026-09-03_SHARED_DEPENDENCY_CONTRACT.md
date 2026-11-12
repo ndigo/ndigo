@@ -9,11 +9,11 @@
 
 ## 1. Problem
 
-A Ndigo micro frontend shell may host multiple feature contexts, each with its own bean registry. Without guardrails, two features can each register their own copy of a singleton bean (router, dispatcher, auth client, telemetry), and the application behaves incorrectly — duplicate router subscriptions, conflicting state, wasted memory.
+A Ndigo micro frontend shell may host multiple feature contexts, each with its own entry registry. Without guardrails, two features can each register their own copy of a singleton entry (router, dispatcher, auth client, telemetry), and the application behaves incorrectly — duplicate router subscriptions, conflicting state, wasted memory.
 
 Module Federation solves this at the **build level** with its `shared` / `shareScope` config. Ndigo needs an equivalent at the **runtime level**, using its existing context hierarchy as the dependency resolution chain.
 
-**The core insight:** Ndigo's context hierarchy is already a shared-scope tree. A child context's `getValue()` walks up to the parent. The gap is that **nothing prevents a child from registering its own copy** of a bean that was intended to be a shell-wide singleton. The fix is a declaration system: "this bean is shared by the shell; features must not shadow it."
+**The core insight:** Ndigo's context hierarchy is already a shared-scope tree. A child context's `getValue()` walks up to the parent. The gap is that **nothing prevents a child from registering its own copy** of an entry that was intended to be a shell-wide singleton. The fix is a declaration system: "this entry is shared by the shell; features must not shadow it."
 
 ---
 
@@ -21,14 +21,14 @@ Module Federation solves this at the **build level** with its `shared` / `shareS
 
 ### 2.1 The `@shared` Decorator
 
-A decorator that marks a bean class as "shell-managed singleton — features resolve this from the parent, never create locally."
+A decorator that marks an entry class as "shell-managed singleton — features resolve this from the parent, never create locally."
 
 ```ts
 import { shared } from '@ndigo/core';
 
 @shared()
 class ShellRouter implements Router {
-    // this bean lives in the shell context only
+    // this entry lives in the shell context only
 }
 
 @shared({ singleton: true, version: '^1.0.0' })
@@ -37,18 +37,18 @@ class TelemetryService {
 }
 ```
 
-**Behavior at registration time** (in `_prepareFactory` or `registerBean`):
+**Behavior at registration time** (in `_prepareFactory` or `registerEntry`):
 
-- If `@shared` is present on a bean registered in a feature (child) context, the factory skips registration and logs a warning: the instance is resolved from the parent chain at use time.
-- The bean is **not duplicated** — it's resolved upward when injected via constructor or `getValue()`.
+- If `@shared` is present on an entry registered in a feature (child) context, the factory skips registration and logs a warning: the instance is resolved from the parent chain at use time.
+- The entry is **not duplicated** — it's resolved upward when injected via constructor or `getValue()`.
 
 **Edge cases:**
 
-| Scenario                                                    | Behavior                                                                                             |
-| ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| Feature registers `@shared` bean that parent doesn't have   | Warning, but registration proceeds (no parent to resolve from → feature needs its own)               |
-| Feature registers non-`@shared` bean with same key as shell | Feature's copy shadows shell — **this is the current behavior**, preserved for intentional overrides |
-| Two features declare the same `@shared` dependency          | Neither creates a copy; both resolve from shell                                                      |
+| Scenario                                                     | Behavior                                                                                             |
+| ------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------- |
+| Feature registers `@shared` entry that parent doesn't have   | Warning, but registration proceeds (no parent to resolve from → feature needs its own)               |
+| Feature registers non-`@shared` entry with same key as shell | Feature's copy shadows shell — **this is the current behavior**, preserved for intentional overrides |
+| Two features declare the same `@shared` dependency           | Neither creates a copy; both resolve from shell                                                      |
 
 **Implementation sketch:**
 
@@ -90,7 +90,7 @@ export const ROUTER = new ContextToken<Router>('router');
 export const ROUTER = new ContextToken<Router>('router', { requiredVersion: '^1.0.0' });
 ```
 
-**During `getValue()`,** the factory checks the resolved bean's version against the token's `requiredVersion`. If the version is missing or mismatched, a warning fires. The bean is still used (soft enforcement — like Module Federation).
+**During `getValue()`,** the factory checks the resolved entry's version against the token's `requiredVersion`. If the version is missing or mismatched, a warning fires. The entry is still used (soft enforcement — like Module Federation).
 
 ```ts
 export class ContextToken<_T> {
@@ -104,7 +104,7 @@ export class ContextToken<_T> {
 }
 ```
 
-**Version source:** Beans can carry their version via a static property or metadata:
+**Version source:** Entries can carry their version via a static property or metadata:
 
 ```ts
 @shared({ version: '1.2.0' })
@@ -116,7 +116,7 @@ MyService.version = '1.2.0';
 
 ### 2.3 Shell's Shared Dependency Manifest
 
-The shell declares which beans are shared singletons. Features declare what they consume. This is a **declared contract**, validated at mount time.
+The shell declares which entries are shared singletons. Features declare what they consume. This is a **declared contract**, validated at mount time.
 
 **Shell manifest:**
 
@@ -301,13 +301,13 @@ When a feature uses a custom `createContext` factory (instead of `parent.newChil
 
 ### Modified Files
 
-| File                                                          | Change                                                      |
-| ------------------------------------------------------------- | ----------------------------------------------------------- |
-| `packages/ndigo-factory/src/context-token.ts`                 | Add optional `requiredVersion` to constructor               |
-| `packages/ndigo-factory/src/factory.ts`                       | `getValue()` checks `requiredVersion` against resolved bean |
-| `packages/ndigo-context/src/feature-context-mount-manager.ts` | `mount()` validates deps before proceeding                  |
-| `packages/ndigo-context/src/context-hierarchy.ts`             | `FeatureContextOptions` gains `dependencies` field          |
-| `packages/ndigo-context/src/index.ts`                         | Export new symbols                                          |
+| File                                                          | Change                                                       |
+| ------------------------------------------------------------- | ------------------------------------------------------------ |
+| `packages/ndigo-factory/src/context-token.ts`                 | Add optional `requiredVersion` to constructor                |
+| `packages/ndigo-factory/src/factory.ts`                       | `getValue()` checks `requiredVersion` against resolved entry |
+| `packages/ndigo-context/src/feature-context-mount-manager.ts` | `mount()` validates deps before proceeding                   |
+| `packages/ndigo-context/src/context-hierarchy.ts`             | `FeatureContextOptions` gains `dependencies` field           |
+| `packages/ndigo-context/src/index.ts`                         | Export new symbols                                           |
 
 ### Unchanged
 
@@ -347,14 +347,14 @@ The version check requires semver parsing. Options:
 
 ## 8. Acceptance Criteria
 
-| Gate                                                          | Verification                                                         |
-| ------------------------------------------------------------- | -------------------------------------------------------------------- |
-| `@shared()` decorator marks a class as shared                 | `isShared(MyService)` returns `true`                                 |
-| Factory skips registration of `@shared` bean on child context | Bean not duplicated in child; `getValue()` resolves from parent      |
-| `ContextToken` with `requiredVersion` warns on mismatch       | Token with `^1.0.0` + bean at `2.0.0` triggers console.warn          |
-| `FeatureRegistrationOptions.dependencies` accepted            | Type check passes                                                    |
-| `mount()` validates deps against `SharedDependencyRegistry`   | Missing required dep throws; missing optional dep warns              |
-| `SharedDependencyRegistry` accepts shell manifest             | `registry.declare({...})` + `registry.validate({...})` returns valid |
-| Existing features without `dependencies` field work unchanged | `mount()` skips validation when deps omitted                         |
-| `pnpm build && pnpm test` passes                              | All 29 targets green                                                 |
-| Existing `ndigo-demo` Todo feature compiles without change    | No regression                                                        |
+| Gate                                                           | Verification                                                         |
+| -------------------------------------------------------------- | -------------------------------------------------------------------- |
+| `@shared()` decorator marks a class as shared                  | `isShared(MyService)` returns `true`                                 |
+| Factory skips registration of `@shared` entry on child context | Entry not duplicated in child; `getValue()` resolves from parent     |
+| `ContextToken` with `requiredVersion` warns on mismatch        | Token with `^1.0.0` + entry at `2.0.0` triggers console.warn         |
+| `FeatureRegistrationOptions.dependencies` accepted             | Type check passes                                                    |
+| `mount()` validates deps against `SharedDependencyRegistry`    | Missing required dep throws; missing optional dep warns              |
+| `SharedDependencyRegistry` accepts shell manifest              | `registry.declare({...})` + `registry.validate({...})` returns valid |
+| Existing features without `dependencies` field work unchanged  | `mount()` skips validation when deps omitted                         |
+| `pnpm build && pnpm test` passes                               | All 29 targets green                                                 |
+| Existing `ndigo-demo` Todo feature compiles without change     | No regression                                                        |

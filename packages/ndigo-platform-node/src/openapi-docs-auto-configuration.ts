@@ -151,14 +151,14 @@ export class OpenAPIDocsAutoConfiguration {
 
     constructor(options: OpenAPIDocsAutoConfigurationOptions = {}) {
         this.#options = resolveOpenAPIDocsOptions(options);
-        // Single instances: the entry beans (context-aware injection) and
+        // Single instances: the entries (context-aware injection) and
         // the mapping registration must address the same controllers.
         this.#docs = new OpenAPIDocsController(this.#options);
         this.#ui = new SwaggerUIController(this.#options);
     }
 
     /**
-     * The spec controller bean (context-aware: reads the dispatcher at
+     * The spec controller entry (context-aware: reads the dispatcher at
      * request time; generation is lazy + memoized).
      *
      * @returns The docs controller.
@@ -169,7 +169,7 @@ export class OpenAPIDocsAutoConfiguration {
     }
 
     /**
-     * The Swagger UI controller bean (page + assets).
+     * The Swagger UI controller entry (page + assets).
      *
      * @returns The UI controller.
      */

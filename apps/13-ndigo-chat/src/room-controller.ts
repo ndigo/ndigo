@@ -37,7 +37,7 @@ const logger = getLogger('ndigo-chat');
 
 /**
  * The per-room socket endpoint — sockets (`@socketMapping`) and the room
- * history/presence bean on one registered controller.
+ * history/presence entry on one registered controller.
  */
 @requestMapping('/ws/rooms')
 export class RoomController implements ApplicationContextAware {
@@ -51,7 +51,7 @@ export class RoomController implements ApplicationContextAware {
         this.#rooms = rooms;
     }
 
-    /** Marks this bean for aware injection (the registry is resolved lazily). */
+    /** Marks this entry for aware injection (the registry is resolved lazily). */
     get [$aware](): boolean {
         return true;
     }
@@ -64,7 +64,7 @@ export class RoomController implements ApplicationContextAware {
     }
 
     /**
-     * Lazily resolves the socket registry — the bean is owned by
+     * Lazily resolves the socket registry — the entry is owned by
      * `NodeAutoConfiguration`, so entry creation order never matters.
      *
      * @returns The registry, or `null` when unavailable (unit instantiation).

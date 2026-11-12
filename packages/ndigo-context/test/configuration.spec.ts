@@ -84,7 +84,7 @@ describe('MetadataConfigApplicationContext', () => {
         class BaseOnlyConfiguration {
             @entry()
             alpha() {
-                return 'alpha-bean';
+                return 'alpha-entry';
             }
 
             @entry('beta')
@@ -98,8 +98,8 @@ describe('MetadataConfigApplicationContext', () => {
         const context = new MetadataConfigApplicationContext('test');
         context.register(BareSubConfiguration);
 
-        // Both base-declared beans register on the subclass instance.
-        expect(context.getValue<string>('alpha')).toBe('alpha-bean');
+        // Both base-declared entries register on the subclass instance.
+        expect(context.getValue<string>('alpha')).toBe('alpha-entry');
         expect(context.getValue<number>('beta')).toBe(21);
     });
 
@@ -112,7 +112,7 @@ describe('MetadataConfigApplicationContext', () => {
             @entry()
             outline() {
                 baseCalls += 1;
-                return 'outline-bean';
+                return 'outline-entry';
             }
         }
 
@@ -120,7 +120,7 @@ describe('MetadataConfigApplicationContext', () => {
             @entry()
             works() {
                 subCalls += 1;
-                return 'works-bean';
+                return 'works-entry';
             }
         }
 
@@ -128,8 +128,8 @@ describe('MetadataConfigApplicationContext', () => {
         context.register(WorkingConfiguration);
 
         // Subclass-declared and inherited base entries both resolve...
-        expect(context.getValue<string>('outline')).toBe('outline-bean');
-        expect(context.getValue<string>('works')).toBe('works-bean');
+        expect(context.getValue<string>('outline')).toBe('outline-entry');
+        expect(context.getValue<string>('works')).toBe('works-entry');
 
         // ...and each factory runs exactly once (no double registration from
         // the prototype-chain enumerability walk).
@@ -143,7 +143,7 @@ describe('MetadataConfigApplicationContext', () => {
             @whenProfile('prod')
             @entry()
             prodEntry() {
-                return 'prod-bean';
+                return 'prod-entry';
             }
         }
 
@@ -157,7 +157,7 @@ describe('MetadataConfigApplicationContext', () => {
         context.setEnvironment(prodEnvironment);
         context.register(ProdConfiguration);
 
-        expect(context.getValue<string>('prodEntry')).toBe('prod-bean');
+        expect(context.getValue<string>('prodEntry')).toBe('prod-entry');
     });
 
     test('CF-9: binds @property fields without @propertySource against the current environment', () => {

@@ -8,4 +8,4 @@
 
 > `const` **HTTP\_SERVER**: [`ContextToken`](#)\<[`HTTPServer`](../../http-server/classes/HTTPServer.md)\>
 
-Token for the managed [HTTPServer](../../http-server/classes/HTTPServer.md) bean.
+Token for the managed [HTTPServer](../../http-server/classes/HTTPServer.md) entry.

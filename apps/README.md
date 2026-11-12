@@ -131,7 +131,7 @@ cd apps/07-ndigo-island && pnpm dev
 ### 08-ndigo-views
 
 View-resolution demo: one ordered resolver chain over three view locations
-(component module, context bean, module on disk). Content negotiation — one
+(component module, context entry, module on disk). Content negotiation — one
 logical view served as JSON or CSV — lives in
 [05-ndigo-api](05-ndigo-api/README.md).
 

@@ -27,7 +27,7 @@ defaults you chose.
 
 ## Zero-config start: flags from config
 
-The default `FLAG_EVALUATOR` bean (registered by `NodeAutoConfiguration`)
+The default `FLAG_EVALUATOR` entry (registered by `NodeAutoConfiguration`)
 is a `PropertyFlagProvider` reading the environment's **resolved
 properties** live — no cache, so an `environment.refresh` makes changes
 visible immediately. Flag `name` resolves `feature.<name>`; in
@@ -124,7 +124,7 @@ the local algorithm is intentionally independent .
 `@ndigo/flags` ships no vendor SDK; vendors arrive as **OpenFeature
 providers** behind the same `FlagEvaluator` contract. The bridge
 (`@ndigo/flags-openfeature`) evaluates through an OpenFeature client, so app
-code never imports a vendor and swapping vendors is a bootstrap + bean
+code never imports a vendor and swapping vendors is a bootstrap + entry
 change:
 
 ```bash
@@ -154,7 +154,7 @@ class AppConfiguration {
 ```
 
 Everything above keeps working: `@whenFeature` gates, rollouts, and
-programmatic checks evaluate through the same bean; the
+programmatic checks evaluate through the same entry; the
 reason/variant/error vocabulary is already OpenFeature's, and
 `flagMetadata` (config version, bucket info, …) rides the evaluation.
 
@@ -164,7 +164,7 @@ reason/variant/error vocabulary is already OpenFeature's, and
   seeds the session principal when a session/identity interceptor ran
   first, else the client IP; pass `{ targetingKey, attributes }` for
   programmatic checks. Apps register their own **`FLAG_CONTEXT_RESOLVER`**
-  bean for tenant/attribute targeting from elsewhere in the request (the
+  entry for tenant/attribute targeting from elsewhere in the request (the
   default resolver is `SessionPrincipalFlagContextResolver`; order your
   session interceptor before the gate to make principals visible).
 - **Domains and clients**: `new OpenFeatureFlagEvaluator({ domain:

@@ -26,14 +26,14 @@ Non-goals (explicit): P5 origin tracking + customizers, P6 validation (zod) — 
 | `@property(path)`                           | `ndigo-context/src/configuration.ts:126` — field decorator storing path metadata                    | Shared with `@profile`/`@entry` machinery; binding reads raw values   |
 | `getPropertyAs` (P1)                        | Conversion via ndigo-core `ConversionService` + identity short-circuit + fail-loud                  | Not wired into binding                                                |
 | `@defaultValue` / `@nested`                 | Absent                                                                                              | Spring's `@DefaultValue`/`@NestedConfigurationProperties` equivalents |
-| Registration                                | `ConfigurationProcessor` registers `@entry` beans; env consumed via `EnvironmentAware`              | No auto-registration of config-properties instances                   |
+| Registration                                | `ConfigurationProcessor` registers `@entry` entries; env consumed via `EnvironmentAware`            | No auto-registration of config-properties instances                   |
 
 ## 3 · Decisions (proposed — review Q1–Q8)
 
 ### D1 — `@configurationProperties` (renamed) + automatic registration
 
 - Rename `ConfigurationProperties` → `configurationProperties` (**clean cutover (Q1)** — ndigo is pre-1.0, no backward-compat alias; the PascalCase export is removed outright, module docs/exports updated to camelCase).
-- **Automatic binding**: the `ConfigurationProcessor` (already processes `@configuration` classes) detects `@configurationProperties` on a registered class and **registers the bound instance as an entry bean** at refresh — keyed by the **camelCase-derived class name (Q2)** (`ServerConfig` → `serverConfig`, matching the repo's `@entry serverConfig()` bean-naming idiom; deterministic derivation, consumers bind once at bootstrap), so DI consumers resolve it via `context.getValue('serverConfig')` (Q6 — it's an entry; no new injection machinery).
+- **Automatic binding**: the `ConfigurationProcessor` (already processes `@configuration` classes) detects `@configurationProperties` on a registered class and **registers the bound instance as an entry** at refresh — keyed by the **camelCase-derived class name (Q2)** (`ServerConfig` → `serverConfig`, matching the repo's `@entry serverConfig()` entry-naming idiom; deterministic derivation, consumers bind once at bootstrap), so DI consumers resolve it via `context.getValue('serverConfig')` (Q6 — it's an entry; no new injection machinery).
 - Binding reads through the environment's **`getPropertyAs`** (P1 conversion + fail-loud) — not raw `getProperty`.
 - `resolveConfigurationProperties` becomes the manual escape hatch (kept (Q7), delegating to the same binder — it's the binder's callable core for ad-hoc/off-refresh binding, not a competing API).
 
@@ -106,10 +106,10 @@ Matches P0–P3 (tsdoc, `#private`, no `any`, camelCase decorators). Binding reu
 ## 10 · Open questions
 
 - **Q1 — PascalCase alias (resolved → clean cutover)**: ndigo is pre-1.0; the `ConfigurationProperties` export is removed outright, camelCase everywhere — no backward-compat alias.
-- **Q2 — Bound-instance entry name (resolved → camelCase-derived)**: `ServerConfig` → `serverConfig` (the repo's `@entry serverConfig()` bean-naming idiom; deterministic; consumers bind at bootstrap so rename-breakage is minimal).
+- **Q2 — Bound-instance entry name (resolved → camelCase-derived)**: `ServerConfig` → `serverConfig` (the repo's `@entry serverConfig()` entry-naming idiom; deterministic; consumers bind at bootstrap so rename-breakage is minimal).
 - **Q3 — `@nested` contract (resolved → option b)**: bare `@nested` flag + `@property('prefix')` — the sub-prefix comes from `@property`, `@nested` means "bind recursively into this plain-class field"; nested classes undecorated. One prefix mechanism, one recursion flag; deep nesting repeats the pair.
 - **Q4 — Failure mode (resolved → fail-fast)**: first error throws (Spring parity); binding errors are usually dependent (wrong prefix breaks every field beneath it), so aggregate reporting lists cascading noise; the first error explains the rest.
 - **Q5 — Default-value type (resolved → string-then-convert)**: defaults are property-shaped (strings, like env/files/CLI) and ride the same `getPropertyAs` conversion path — one conversion semantics for real values and defaults; typed defaults would create an asymmetry and invite aliased object literals.
-- **Q6 — Bound instance injection (resolved → it's an entry)**: `context.getValue('serverConfig')` — the auto-registered instance is a normal entry bean; no field-injection machinery (config classes are consumed once at bootstrap).
+- **Q6 — Bound instance injection (resolved → it's an entry)**: `context.getValue('serverConfig')` — the auto-registered instance is a normal entry; no field-injection machinery (config classes are consumed once at bootstrap).
 - **Q7 — `resolveConfigurationProperties` fate (resolved → keep)**: it's the binder's callable core — the auto path delegates to it; removing forces a workaround for ad-hoc/off-refresh binding (libraries, tests). Not a competing API.
 - **Q8 — Relaxed binding (resolved → opt-in per class)**: `@configurationProperties('server', { relaxed: true })`; exact keypaths default (`@property('host-name')` already declares kebab explicitly); silent kebab→camel matching would reintroduce the "typo silently doesn't bind" failure mode the arc eliminates.

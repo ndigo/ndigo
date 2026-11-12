@@ -61,7 +61,7 @@ describe('redis-fanout HTTP surface (no Redis: memory mode)', () => {
         expect(backend?.details).toMatchObject({ mode: 'memory', connected: true, instanceId: INSTANCE });
     });
 
-    test('the server adopts the backend registry as its socket registry bean', () => {
+    test('the server adopts the backend registry as its socket registry entry', () => {
         const backend = app.context.getValue(FANOUT_BACKEND);
 
         expect(app.context.getValue(SOCKET_SESSION_REGISTRY)).toBe(backend.registry);

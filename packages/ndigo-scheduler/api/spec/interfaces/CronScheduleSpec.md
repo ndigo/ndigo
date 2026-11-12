@@ -24,7 +24,7 @@ Cron expression (croner syntax — 5, 6, or 7 fields auto-detected).
 
 Distributed lock key (AD-73): the runner acquires the named lock
 before each run and releases it after (finally-style), so only one
-node executes this schedule at a time. Requires a `lockDriver` bean
+node executes this schedule at a time. Requires a `lockDriver` entry
 (in-process or `@ndigo/redis/locks`).
 
 ***

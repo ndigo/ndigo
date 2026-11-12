@@ -11,7 +11,7 @@
 Hash (route) scope implementation — one instance per scope key.
 Activate a scope context by calling `setCurrentKey(key)` before `getValue()`.
 
-Values are cached per key, so a route-scoped bean lives as long as its
+Values are cached per key, so a route-scoped entry lives as long as its
 bucket: `destroyValue(name)` tears one down within the active key, and
 `endScope(key)` tears down the whole bucket. Lifecycle-bearing values
 (`@destroyable`/`@closeable`) register a destruction callback (see

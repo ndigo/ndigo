@@ -7,7 +7,7 @@
 # Class: StompBroker
 
 STOMP 1.2 broker — transport-agnostic, one instance per destination
-namespace (app-scoped bean, AD-23 D1).
+namespace (app-scoped entry, AD-23 D1).
 
 ## Example
 

@@ -153,7 +153,7 @@ await mockHTTP.get('/todos').expect(200).json().toHaveLen(2);
   not the default.)
 - **No browser** — that is Playwright's job.
 - **No new assertion API** — it returns shaped values for Vitest's `expect`.
-- **No mocking framework** — you still hand `@ndigo/context` normal beans; but now
+- **No mocking framework** — you still hand `@ndigo/context` normal entries; but now
   the _dispatcher and pipeline_ are real.
 
 ---

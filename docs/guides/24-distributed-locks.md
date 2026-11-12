@@ -27,7 +27,7 @@ no coordinator.
 ## Single node: nothing to configure
 
 The default driver is in-process with a **process-wide lease table** — every
-`InProcessLockDriver` in the process coordinates, so two scheduler beans can
+`InProcessLockDriver` in the process coordinates, so two scheduler entries can
 never double-run a locked task:
 
 ```ts
@@ -48,7 +48,7 @@ if (lease === null) {
 
 ## Multi node: one Redis connection
 
-Register a durable driver under the `lockDriver` bean to replace the default
+Register a durable driver under the `lockDriver` entry to replace the default
 (which is in-process — correct on one node, meaningless across nodes):
 
 ```ts
@@ -113,4 +113,4 @@ Options (both spec forms, decoration-time validated):
 - The scheduler guide (05) for single-flight and `maxRunTime` semantics —
   the lock is the cross-process half of the same wrapper.
 - The jobs guide (22) — leases, at-least-once, and `NodeAutoConfiguration`
-  bean wiring share the same spine.
+  entry wiring share the same spine.

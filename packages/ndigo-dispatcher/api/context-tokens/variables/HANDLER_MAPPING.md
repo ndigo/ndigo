@@ -8,4 +8,4 @@
 
 > `const` **HANDLER\_MAPPING**: [`ContextToken`](#)\<[`RadixMetadataHandlerMapping`](../../radix-metadata-handler-mapping/classes/RadixMetadataHandlerMapping.md)\>
 
-Context token for the metadata handler mapping bean.
+Context token for the metadata handler mapping entry.

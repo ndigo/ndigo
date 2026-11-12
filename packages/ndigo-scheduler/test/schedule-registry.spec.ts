@@ -27,7 +27,7 @@ class Housekeeping {
     }
 }
 
-class PlainBean {
+class PlainEntry {
     plain() {
         // not scheduled
     }
@@ -49,7 +49,7 @@ describe('@ndigo/scheduler ScheduleRegistry', () => {
         registry.close();
     });
 
-    test('discovers scheduled methods on bean instances and names them <bean>.<method>', () => {
+    test('discovers scheduled methods on entry instances and names them <entry>.<method>', () => {
         context.setValue('housekeeping', new Housekeeping());
         registry.scan(context, scheduler);
 
@@ -96,8 +96,8 @@ describe('@ndigo/scheduler ScheduleRegistry', () => {
         expect(scheduler.taskNames()).toEqual([]);
     });
 
-    test('ignores non-object values and beans without schedules', () => {
-        context.setValue('plain', new PlainBean());
+    test('ignores non-object values and entries without schedules', () => {
+        context.setValue('plain', new PlainEntry());
         context.setValue('meaningless', 'just a string');
         registry.scan(context, scheduler);
 

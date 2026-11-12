@@ -12,7 +12,7 @@ Sessions are registered by the server adapter on connection and removed on
 close. Every session auto-joins the set keyed by its endpoint path, so
 `broadcast('/ws/room', …)` reaches all open sessions at that path with zero
 setup; named rooms via `SocketSession.join`/`leave` provide finer grouping.
-The implementation is registered as a context bean by
+The implementation is registered as a context entry by
 `NodeAutoConfiguration`; any service can inject it and push to a room.
 
 ## Implements

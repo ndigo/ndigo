@@ -68,7 +68,7 @@ local lane with no CI step, so nothing had executed them since the framework
 APIs they exercise changed):
 
 - `packages/ndigo-context/bench/context-lookup.bench.ts` called
-  `ContextToken('bean1')` without `new` (it has been a class for a while); the
+  `ContextToken('entry1')` without `new` (it has been a class for a while); the
   call now constructs the token.
 - `packages/ndigo-dispatcher/bench/routing.bench.ts` annotated its controller
   with a bare `@routeMapping()`, whose default value is `/**`; composed with the

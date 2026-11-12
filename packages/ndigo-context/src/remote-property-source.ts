@@ -11,7 +11,7 @@
  *
  * On a detected change the source `replace`s its own registry entry (keeping
  * its precedence position), then calls `environment.refresh()` → emits
- * `config:refresh` → `@refreshScope` beans rebind (the full loop, D-8). No
+ * `config:refresh` → `@refreshScope` entries rebind (the full loop, D-8). No
  * change → no event → no rebinding (no storms).
  *
  * Failure semantics mirror the config-file loader's `optional:`/`required:`

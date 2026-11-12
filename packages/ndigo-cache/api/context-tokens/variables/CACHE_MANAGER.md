@@ -8,6 +8,6 @@
 
 > `const` **CACHE\_MANAGER**: [`ContextToken`](#)\<[`CacheManager`](../../cache-manager/interfaces/CacheManager.md)\>
 
-Token for the shared [CacheManager](../../cache-manager/interfaces/CacheManager.md) bean. The Node platform
+Token for the shared [CacheManager](../../cache-manager/interfaces/CacheManager.md) entry. The Node platform
 auto-configuration registers the entry; consumers resolve it without a
 string: `context.getValue(CACHE_MANAGER)`.

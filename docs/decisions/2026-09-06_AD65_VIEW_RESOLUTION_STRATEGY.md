@@ -38,7 +38,7 @@ mixed-case acronym convention).
   follow-up).
 - **Demo app `apps/ndigo-views`** (`2026-09-06`): `src/views-app-configuration.ts`
   configures a composite
-  `[WebComponentViewResolver (eager registry { shell, clientDemo }), NameViewResolver (footer bean), ReportViewResolver (report → ./views/report-view.ts)]` —
+  `[WebComponentViewResolver (eager registry { shell, clientDemo }), NameViewResolver (footer entry), ReportViewResolver (report → ./views/report-view.ts)]` —
   three view locations behind one chain; `src/report-view-resolver.ts`
   resolves `report` by `import()`ing `./views/report-view.ts`. App dirs
   verified: `components/` (shell-component, client-demo), `views/`
@@ -61,11 +61,11 @@ mixed-case acronym convention).
   name (landed `ServerSentEventView`), handler-owned, rendered via a direct
   `likeView` View return in `NodeDispatcher.render`.
 - **D-3** Auto-config defaults are app-overridable: web resolves component
-  names first, then bean views; node resolves via `IslandViewResolver`.
+  names first, then entry views; node resolves via `IslandViewResolver`.
 - **D-4** `ndigo-views` demonstrates three locations (component module /
-  context bean / view module on disk) with chain fall-through.
+  context entry / view module on disk) with chain fall-through.
 - **D-5** Demo migrations: `ndigo-todo` controllers return names (dead
-  element-class beans and redundant `viewResolver`/`webComponentViewEngine`
+  element-class entries and redundant `viewResolver`/`webComponentViewEngine`
   overrides removed); `ndigo-hello` keeps one intentionally-concrete
   `WebComponentView` as the "concrete is an option" sample; `ndigo-island`
   `/events` returns the SSE view directly. **String handler returns stay

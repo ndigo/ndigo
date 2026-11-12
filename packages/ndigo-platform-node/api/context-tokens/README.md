@@ -6,7 +6,7 @@
 
 # context-tokens
 
-Type-safe bean handles for the Node platform's shared beans (AD-34 D1).
+Type-safe entry handles for the Node platform's shared entries (AD-34 D1).
 
 ## Variables
 

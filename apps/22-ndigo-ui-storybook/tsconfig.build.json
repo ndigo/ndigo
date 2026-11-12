@@ -4,9 +4,12 @@
     "composite": true,
     "declaration": true,
     "outDir": "dist",
-    "rootDir": ".",
+    // Stories import the registry controllers from `packages/ndigo-ui`, so the
+    // project root spans both trees. Emitted output stays under the app's
+    // gitignored dist/.
+    "rootDir": "../..",
     "skipLibCheck": true
   },
   "exclude": ["node_modules/**/*", "**/*.spec.ts", "**/*.test.ts", "vite.config.ts", "vitest.config.ts"],
-  "include": ["src/**/*"]
+  "include": ["src/**/*", "../../packages/ndigo-ui/registry/**/*.ts"]
 }

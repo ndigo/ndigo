@@ -60,10 +60,14 @@ describe('<nd-drawer>', () => {
         trigger.click();
         await flush();
         expect(content.hasAttribute('hidden')).toBe(false);
+        // Open: the trigger is aria-hidden background content, so it must not
+        // stay tabbable while the modal owns the page.
+        expect(trigger.hasAttribute('inert')).toBe(true);
 
         document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
         await flush();
         expect(content.hasAttribute('hidden')).toBe(true);
+        expect(trigger.hasAttribute('inert')).toBe(false);
         expect(document.activeElement).toBe(trigger);
     });
 

@@ -56,6 +56,20 @@ describe('<nd-file-upload>', () => {
         expect(hidden.name).toBe('attachments');
         expect(clear.hasAttribute('hidden')).toBe(true);
         expect(getPart<HTMLElement>(upload, '[data-part="item-group"]')).not.toBeNull();
+        // Visible dropzone text is the accessible name; the machine's generic
+        // "dropzone" label would omit it from the name.
+        expect(dropzone.hasAttribute('aria-label')).toBe(false);
+    });
+
+    it('restores an authored dropzone aria-label', async () => {
+        const upload = mountElement<NdFileUpload>(
+            'nd-file-upload',
+            '<label data-part="label">Attachments</label><div data-part="dropzone" aria-label="Choose attachments">Drop files here.</div>'
+        );
+        await flush();
+        expect(getPart<HTMLElement>(upload, '[data-part="dropzone"]').getAttribute('aria-label')).toBe(
+            'Choose attachments'
+        );
     });
 
     it('lists selected files and emits nd-file-change', async () => {

@@ -410,7 +410,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   out of `packages/` to `tools/generators/` (`private: true`) — it hard-codes
   this repository's layout and is never published. `packages/` now contains
   consumer packages only; `ndigo new` / `ndigo generate` are unchanged.
-- **The project is renamed: BlueJS → ndigo** (issue #78, AD-88): packages
+- **The project is renamed to ndigo** (issue #78, AD-88): packages
   publish under `@ndigo/*`, the CLI is `ndigo`, problem-type URIs are
   `urn:ndigo:*`, env vars are `NDIGO_*`, Redis keys are `ndigo:*`, session
   cookies are `ndigo-session` / `__Host-ndigo-session`, and the durable tables

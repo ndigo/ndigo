@@ -1,4 +1,4 @@
-# AD-88: Project rename — BlueJS → ndigo
+# AD-88: Project rename to ndigo
 
 **Date:** 2026-11-03
 **Status:** Accepted
@@ -8,7 +8,7 @@
 
 ## Context
 
-The project cannot publish as **BlueJS**:
+The project cannot publish under its previous name:
 
 - The `blue` name carries historical ties to a company — not worth the risk.
 - The npm `@blue` scope and the GitHub `blue` namespace are both unavailable.

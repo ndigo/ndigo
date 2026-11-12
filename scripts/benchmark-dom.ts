@@ -66,8 +66,8 @@ const TARGETS: Record<string, BenchmarkTarget> = {
         bundleDir: '../todomvc/examples/bluejs/dist/assets',
         bundle: 'index-*.js',
         html: '<!DOCTYPE html><html><body><div id="app"></div></body></html>',
-        label: 'Ndigo (BlueJS TodoMVC example)',
-        postId: 'todomvc-bluejs-1.0.0',
+        label: 'Ndigo (TodoMVC example)',
+        postId: 'todomvc-ndigo-1.0.0',
     },
 };
 

@@ -83,7 +83,7 @@ View resolver ── renders the representation
 - **View** — the representation. A handler returns a `ModelAndView`, a view
   name, or a value the adapter knows how to render.
 
-Guides [05](05-routing-and-route-conditions.md) (routing), 06 (binding), 07 (validation), and 08 (errors) cover each
+Guides [05](05-routing-and-route-conditions.md) (routing), [06](06-argument-binding.md) (binding), [07](07-request-validation.md) (validation), and [08](08-errors-and-problem-details.md) (errors) cover each
 stage. [Guide 09](09-views-and-content-negotiation.md) covers the view side.
 
 ## 3. The view path
@@ -182,8 +182,8 @@ covers the hooks and ordering in detail; the reference doc is
 
 ## 8. Where to go next
 
-- **Build a Node API:** [guide 01](01-building-a-node-api.md), then 03 → 05 → 06 → 07 → 08 → 09.
-- **Build a browser app:** [guide 02](02-building-a-browser-app.md), then 29 → 30 → 31.
+- **Build a Node API:** [guide 01](01-building-a-node-api.md), then [03](03-environment-configuration.md) → [05](05-routing-and-route-conditions.md) → [06](06-argument-binding.md) → [07](07-request-validation.md) → [08](08-errors-and-problem-details.md) → [09](09-views-and-content-negotiation.md).
+- **Build a browser app:** [guide 02](02-building-a-browser-app.md), then [29](29-signals-and-islands.md) → [30](30-component-integration.md) → [31](31-micro-frontends.md).
 - **Learn the container:** [guide 04](04-dependency-injection-and-lifecycle.md).
 - **See the full map:** [ARCHITECTURE.md](../../ARCHITECTURE.md).
 

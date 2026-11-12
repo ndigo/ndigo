@@ -4,7 +4,7 @@ Conceptual and hands-on guides for building applications with Ndigo. These
 complement the API reference; they explain the _how_ with runnable patterns
 grounded in the demo apps.
 
-The numbering is stable: **00–46** are application guides, **90–91** are
+The numbering is stable: **00–49** are application guides, **90–91** are
 contributor guides. Numbers are reading order within a section.
 
 > **Renumbered 2026-11-08.** Historical records (ADRs, plans, audits) still use
@@ -40,6 +40,10 @@ contributor guides. Numbers are reading order within a section.
 - [04 — Dependency Injection, Scopes & Lifecycle](04-dependency-injection-and-lifecycle.md)
   — factory scopes, aware interfaces, init/destroy/close, smart lifecycle,
   parent/child contexts, and application events.
+- [49 — Configuration Layering & Context Composition](49-configuration-layering-and-context-composition.md)
+  — profiles vs config layers vs context boundaries: platform config packages,
+  static `merge()` layering, parent/child contexts, multiple apps in one process,
+  and explicit cross-context events.
 - [05 — Routing & Route Conditions](05-routing-and-route-conditions.md) — path
   patterns, query and matrix conditions, method/access conditions, precedence,
   404/405, partitions, and feature routing.

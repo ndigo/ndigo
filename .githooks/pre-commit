@@ -17,3 +17,12 @@ if [ "$git_dir" = "$common_dir" ]; then
         'Releases: ALLOW_PRIMARY_COMMIT=1 git commit ...' >&2
     exit 1
 fi
+
+# Catch formatting drift at commit time instead of in CI (issue #452). oxfmt
+# checks the whole tree in ~30 ms, so this adds no perceptible latency.
+if ! pnpm format:check; then
+    printf '%s\n' \
+        'pre-commit: oxfmt formatting drift detected (see above).' \
+        'Run `pnpm format` and re-stage.' >&2
+    exit 1
+fi

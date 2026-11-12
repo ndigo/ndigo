@@ -5,7 +5,7 @@
 ## Usage
 
 ```html
-<ul class="nd-list">
+<ul>
     <li class="nd-item nd-item--bordered">
         <span class="nd-item__media">AL</span>
         <div class="nd-item__content">

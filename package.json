@@ -54,7 +54,8 @@
     "ui:a2ui-map:build": "node packages/ndigo-ui/scripts/build-a2ui-map.mjs",
     "ui:a2ui-map:check": "node packages/ndigo-ui/scripts/build-a2ui-map.mjs --check",
     "storybook": "pnpm --filter @ndigo/ui-storybook storybook",
-    "build:storybook": "pnpm --filter @ndigo/ui-storybook build-storybook"
+    "build:storybook": "pnpm --filter @ndigo/ui-storybook build-storybook",
+    "storybook:check": "node scripts/check-stories.mjs"
   },
   "keywords": [
     "ndigo",

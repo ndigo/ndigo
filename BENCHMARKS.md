@@ -221,6 +221,16 @@ runs per side: `findAll` 10k rows 1.79–1.81 ms → 433–460 µs (−74 to −
 719–774 → 283–325 ns. The schema cache above remains; this removes the
 metadata cost around it.
 
+**Optimization (#420):** the instance registry stores a sentinel for a value
+registered as `undefined`, so a lookup miss takes one `Map.get` instead of
+`Map.get`+`Map.has`; presence checks (`hasInstance`/`hasValue`) read a
+companion `Set` again, since `Map.has` was slower than `Set.has`. Same-host
+A/B, two runs per side: dispatcher `getValue — miss` 6.30–6.36 → 4.55–4.57 ns
+(−28%), `hasValue — present` 2.59 → 2.43 ns; context bean lookups unchanged at
+8.5–10.6 ns and `hasValue` hit unchanged. The dispatcher warm-singleton row
+sits at ~3.8 ns on both sides; its older 2.62 ns baseline does not reproduce on
+this host.
+
 **Optimization (this branch):** `RouteHandlerMethod.invoke` caches the resolved
 route mapping per handler instance and returns immediately for zero-parameter
 handlers (the whole error-handler path), before touching the polyfill metadata

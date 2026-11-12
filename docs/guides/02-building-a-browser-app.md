@@ -68,6 +68,11 @@ context.refresh();
 // then create the view target, dispatcher, and router by hand
 ```
 
+The preset uses `DOMElementViewTarget` for the root. For isolated surfaces
+(shadow DOM, an iframe, a micro-frontend host) construct
+`ShadowRootViewTarget` or `IframeViewTarget` (from `@ndigo/view-webcomponent`)
+instead and register it as `VIEW_TARGET` — see [Guide 09 §7](09-views-and-content-negotiation.md).
+
 ## 2. Configuration and routes
 
 Browser `@configuration` classes and `@routeMapping` controllers are the

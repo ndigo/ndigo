@@ -257,24 +257,22 @@ const target = new MemoryViewTarget();
 
 ### 7.3 Custom targets
 
-For a surface the built-ins do not cover (a shadow-DOM host, an iframe, a
-stream, a non-DOM host), implement `ViewTarget` (or `EventBridgeViewTarget`):
+For a surface the built-ins do not cover (a stream, a non-DOM host, or another
+custom destination), implement `ViewTarget` (or `EventBridgeViewTarget`).
+Shadow-DOM and iframe surfaces are already covered by `ShadowRootViewTarget` and
+`IframeViewTarget` (section 7.2):
 
 ```ts
 import type { ViewTarget } from '@ndigo/view';
 import type { Route } from '@ndigo/router';
 
-class ShadowRootViewTarget implements ViewTarget {
-    constructor(private readonly shadow: ShadowRoot) {}
-    prepare(_route: Route) {
-        this.shadow.replaceChildren();
-    }
+class StreamViewTarget implements ViewTarget {
+    constructor(private readonly sink: WritableStream) {}
+    prepare(_route: Route) {}
     async commit(output: unknown, _model: unknown, _route: Route) {
-        if (output instanceof Node) this.shadow.append(output);
+        if (output instanceof Uint8Array) await this.sink.getWriter().write(output);
     }
-    clear() {
-        this.shadow.replaceChildren();
-    }
+    clear() {}
 }
 ```
 
@@ -282,7 +280,7 @@ Register it as the `VIEW_TARGET` token in the context so the dispatcher and view
 resolve it the same way they resolve the built-ins:
 
 ```ts
-context.setValue(VIEW_TARGET, new ShadowRootViewTarget(host.shadowRoot!));
+context.setValue(VIEW_TARGET, new StreamViewTarget(sink));
 ```
 
 Guidelines for a custom target:

@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { describe, test, beforeAll, afterAll, expect } from 'vitest';
 import type { AddressInfo } from 'node:net';
-import { bootApp, MockHTTP } from '@ndigo/test';
+import { bootNodeApp, MockHTTP } from '@ndigo/test';
 import { ConfigurableApplicationContext, MetadataConfigApplicationContext } from '@ndigo/context';
 import { NodeAutoConfiguration, NodeDispatcher, NodeHTTPServerAdapter } from '@ndigo/platform-node';
 import { parseModel, serializeModel } from '@ndigo/view';
@@ -20,7 +20,7 @@ describe('ndigo-island hybrid demo', () => {
     let close: () => void;
 
     beforeAll(() => {
-        const app = bootApp([IslandConfiguration]);
+        const app = bootNodeApp([IslandConfiguration]);
         // Same wiring as the app bootstrap: entry-resolved message source.
         (app.context as ConfigurableApplicationContext).setMessageSource(app.context.getValue('messageSource'));
         mockHTTP = new MockHTTP(app);

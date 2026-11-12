@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { deflateSync, gunzipSync, inflateSync, gzipSync } from 'node:zlib';
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
-import { bootApp, MockHTTP } from '@ndigo/test';
+import { bootNodeApp, MockHTTP } from '@ndigo/test';
 import type { NdigoTestApp } from '@ndigo/test';
 import { HTTPBinConfiguration } from '../src/httpbin-configuration';
 
@@ -46,7 +46,7 @@ describe('ndigo-httpbin', () => {
     let http: MockHTTP;
 
     beforeAll(() => {
-        app = bootApp([HTTPBinConfiguration]);
+        app = bootNodeApp([HTTPBinConfiguration]);
         http = new MockHTTP(app);
     });
 

@@ -18,7 +18,7 @@ Reference applications: [apps/08-ndigo-views](https://github.com/ndigo/ndigo/tre
 - Bootstrap a browser app with `createWebApplication`.
 - Wire hash routing, in-page dispatch, and DOM view targets.
 - Register app-specific tokens, services, and router interceptors.
-- Test the app through the `bootBrowserApp` harness.
+- Test the app through the `bootWebApp` harness.
 
 ## 1. Bootstrap: `createWebApplication`
 
@@ -126,11 +126,11 @@ the preset deliberately stays out of it, because production composition
 and the test double are different jobs:
 
 ```ts
-import { bootBrowserApp, BrowserMockClient, installSynchronousAnimationFrames } from '@ndigo/test';
+import { bootWebApp, BrowserMockClient, installSynchronousAnimationFrames } from '@ndigo/test';
 import { AppConfiguration } from '../src/app-configuration';
 
 installSynchronousAnimationFrames(); // rAF never fires in jsdom
-const app = await bootBrowserApp([AppConfiguration]);
+const app = await bootWebApp([AppConfiguration]);
 const browser = new BrowserMockClient(app);
 const render = await browser.dispatch('/');
 ```

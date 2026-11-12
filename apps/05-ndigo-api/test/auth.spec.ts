@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { describe, test, beforeAll, afterAll, expect } from 'vitest';
-import { bootApp, MockHTTP } from '@ndigo/test';
+import { bootNodeApp, MockHTTP } from '@ndigo/test';
 import { ManagementAutoConfiguration } from '@ndigo/management';
 import { SESSION_COOKIE, CSRFInterceptor } from '@ndigo/platform-node';
 import { RadixMetadataHandlerMapping } from '@ndigo/dispatcher';
@@ -18,7 +18,7 @@ describe('ndigo-api cookie sessions (AD-33 Wave 2)', () => {
 
     beforeAll(() => {
         initAuth();
-        const app = bootApp([ManagementAutoConfiguration, NodeAppConfiguration]);
+        const app = bootNodeApp([ManagementAutoConfiguration, NodeAppConfiguration]);
         mockHTTP = new MockHTTP(app);
         close = app.close;
     });
@@ -181,7 +181,7 @@ describe('ndigo-api cookie sessions (AD-33 Wave 2)', () => {
         // Dedicated boot: push the double-submit-cookie interceptor onto the
         // platform mapping (application-owned wiring; the default demo boot
         // stays without it because the mapping has one owner).
-        const app = bootApp([ManagementAutoConfiguration, NodeAppConfiguration]);
+        const app = bootNodeApp([ManagementAutoConfiguration, NodeAppConfiguration]);
         const mapping = app.context.getValue<RadixMetadataHandlerMapping>('handlerMapping');
         mapping.interceptors.push(new CSRFInterceptor());
         const mvc = new MockHTTP(app);

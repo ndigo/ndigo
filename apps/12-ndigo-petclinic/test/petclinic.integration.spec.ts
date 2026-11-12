@@ -16,7 +16,7 @@
  */
 // @vitest-environment node
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
-import { bootApp, MockHTTP, type NdigoTestApp } from '@ndigo/test';
+import { bootNodeApp, MockHTTP, type NdigoTestApp } from '@ndigo/test';
 import type { ConfigurableApplicationContext } from '@ndigo/context';
 import { MESSAGE_SOURCE } from '../src/context-tokens';
 import { PetClinicConfiguration } from '../src/petclinic-configuration';
@@ -28,7 +28,7 @@ describe('ndigo-petclinic', () => {
     let http: MockHTTP;
 
     beforeAll(() => {
-        app = bootApp([PetClinicConfiguration]);
+        app = bootNodeApp([PetClinicConfiguration]);
         // Same wiring as the app bootstrap: the templates resolve messages
         // through the context's message source.
         (app.context as ConfigurableApplicationContext).setMessageSource(app.context.getValue(MESSAGE_SOURCE));

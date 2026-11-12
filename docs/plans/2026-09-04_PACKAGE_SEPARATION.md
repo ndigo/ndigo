@@ -37,7 +37,7 @@ OTel models the right shape: `api` (isomorphic), `sdk-trace-web`, `sdk-trace-nod
 ### 2.2 `@ndigo/boot` — browser-coupled but consumed by node apps
 
 - `index.ts` re-exports `web-auto-configuration` → `@ndigo/view-webcomponent` → `AbstractWebComponent` (extends `HTMLElement`).
-- **Consequence:** node apps that import `ApplicationBuilder` from `@ndigo/boot` drag DOM (recorded in `@ndigo/test`'s bootApp workaround: "uses `MetadataConfigApplicationContext` directly … keeps `@ndigo/test` free of DOM-coupled imports").
+- **Consequence:** node apps that import `ApplicationBuilder` from `@ndigo/boot` drag DOM (recorded in `@ndigo/test`'s bootNodeApp workaround: "uses `MetadataConfigApplicationContext` directly … keeps `@ndigo/test` free of DOM-coupled imports").
 - **Fix:** move `WebAutoConfiguration` + `DOMElementViewTarget`-sourcing into `@ndigo/platform-web`; `@ndigo/boot` keeps only isomorphic `Application`/`ApplicationBuilder`/`ConfigurationProperties`. (The §6.2 node-auto-register revisit from `NODE_PLATFORM_FOUNDATION.md` becomes possible once boot is node-free.)
 
 ### 2.3 `@ndigo/dispatcher.BrowserDispatcher` — a browser-named class in an isomorphic package
@@ -46,9 +46,9 @@ OTel models the right shape: `api` (isomorphic), `sdk-trace-web`, `sdk-trace-nod
 - **Fix:** extract an isomorphic `AbstractDispatcher` (or `RouteDispatcher`) base holding `dispatch`/`_processDispatchResult`/`_applyDefaultViewName`; `BrowserDispatcher extends` it in `@ndigo/platform-web`; `NodeDispatcher extends` the base in `@ndigo/platform-node` (currently `extends BrowserDispatcher` — a shortcut).
 - This was flagged as a TODO in the original SSR plan (§2.1) and unblocks removing `telemetry → dispatcher`'s browser coupling.
 
-### 2.4 `@ndigo/test` — bootApp workaround + node-pure-by-construction
+### 2.4 `@ndigo/test` — bootNodeApp workaround + node-pure-by-construction
 
-- Documents the boot coupling (§2.2). Once boot is split, `bootApp` can use `ApplicationBuilder` again (or stay node-pure — either is fine).
+- Documents the boot coupling (§2.2). Once boot is split, `bootNodeApp` can use `ApplicationBuilder` again (or stay node-pure — either is fine).
 - `@ndigo/test` is node-only by design (MockMVC, node dispatch) — classification is correct, just unblocked by 2.2.
 
 ### 2.5 Platform-package hygiene

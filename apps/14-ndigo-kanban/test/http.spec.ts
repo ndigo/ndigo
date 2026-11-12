@@ -4,7 +4,7 @@
 // @vitest-environment node
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 import { ManagementAutoConfiguration } from '@ndigo/management';
-import { bootApp, MockHTTP, type NdigoTestApp } from '@ndigo/test';
+import { bootNodeApp, MockHTTP, type NdigoTestApp } from '@ndigo/test';
 import { KanbanConfiguration } from '../src/kanban-configuration';
 
 describe('ndigo-kanban HTTP surface', () => {
@@ -12,7 +12,7 @@ describe('ndigo-kanban HTTP surface', () => {
     let http: MockHTTP;
 
     beforeAll(() => {
-        app = bootApp([ManagementAutoConfiguration, KanbanConfiguration]);
+        app = bootNodeApp([ManagementAutoConfiguration, KanbanConfiguration]);
         http = new MockHTTP(app);
     });
 

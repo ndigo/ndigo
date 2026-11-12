@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { describe, test, beforeAll, afterAll, expect } from 'vitest';
-import { bootApp, MockHTTP } from '@ndigo/test';
+import { bootNodeApp, MockHTTP } from '@ndigo/test';
 import { ManagementAutoConfiguration } from '@ndigo/management';
 import { NodeAppConfiguration } from '../src/node-app-configuration';
 import { SecureDocsConfiguration } from '../src/secure-docs-configuration';
@@ -21,7 +21,7 @@ describe('ndigo-api OpenAPI docs (AD-35)', () => {
 
     beforeAll(async () => {
         initAuth();
-        const app = bootApp([ManagementAutoConfiguration, SecureDocsConfiguration, NodeAppConfiguration]);
+        const app = bootNodeApp([ManagementAutoConfiguration, SecureDocsConfiguration, NodeAppConfiguration]);
         mockHTTP = new MockHTTP(app);
         close = app.close;
         // The same demo-login fixture the auth spec uses.

@@ -86,13 +86,13 @@ tests fast and deterministic (no ports, no process, no teardown).
 
 ```ts
 // Composable API (the canonical, Vitest-friendly form):
-import { bootApp, MockHTTP } from '@ndigo/test';
+import { bootNodeApp, MockHTTP } from '@ndigo/test';
 
 describe('Todo API', () => {
     let mockHTTP: MockHTTP;
 
     beforeAll(() => {
-        const app = bootApp([TodoConfiguration]);  // boots the real context + dispatcher
+        const app = bootNodeApp([TodoConfiguration]);  // boots the real context + dispatcher
         mockMvc = new MockHTTP(app);
     });
     afterAll(() => { /* app.close() */ });
@@ -163,8 +163,8 @@ await mockHTTP.get('/todos').expect(200).json().toHaveLen(2);
 ```
 packages/ndigo-test/
   src/
-    index.ts              # exports bootApp, MockHTTP, ResponseSink, memoryServer
-    ndigo-test.ts          # bootApp(): context-boot + dispatcher wiring
+    index.ts              # exports bootNodeApp, MockHTTP, ResponseSink, memoryServer
+    ndigo-test.ts          # bootNodeApp(): context-boot + dispatcher wiring
     mock-mvc.ts           # MockHTTP: request builder → dispatch(route)
     request-builder.ts    # method/path/query/body/headers → Route (reuses NodeHTTPServerAdapter shape)
     response-sink.ts      # in-memory ServerResponse capture (writeHead/end)
@@ -189,12 +189,12 @@ packages/ndigo-test/
 
 | Question                                                            | Recommendation                                                                                                                                                                                              |
 | ------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `@ndigoTest` fixture as decorator vs. explicit `bootApp()` helper?  | **Explicit `bootApp()` + `MockHTTP`** — the composable core matches Vitest's `beforeAll`/`afterAll`; no decorator ceremony. Decorator sugar may return if useful.                                           |
+| `@ndigoTest` fixture as decorator vs. explicit `bootNodeApp()` helper?  | **Explicit `bootNodeApp()` + `MockHTTP`** — the composable core matches Vitest's `beforeAll`/`afterAll`; no decorator ceremony. Decorator sugar may return if useful.                                           |
 | Should `MockHTTP.exec()` build a real `ServerResponse` or the sink? | **In-memory sink** (fast, deterministic). Real socket only via `live: true`.                                                                                                                                |
-| Where do fixtures live — `@ndigo/test` or a per-app `test/helpers`? | In `@ndigo/test`; apps just `import { bootApp, MockHTTP } from '@ndigo/test'`.                                                                                                                              |
+| Where do fixtures live — `@ndigo/test` or a per-app `test/helpers`? | In `@ndigo/test`; apps just `import { bootNodeApp, MockHTTP } from '@ndigo/test'`.                                                                                                                              |
 | Does `@ndigo/test` boot the server or just the dispatcher?          | **Dispatcher only** — booting the listener adds nothing for in-process testing.                                                                                                                             |
 | Vitest env                                                          | `// @vitest-environment node` (global config is jsdom).                                                                                                                                                     |
-| `@ndigo/test` use `@ndigo/boot`?                                    | **No** — `@ndigo/boot`'s index re-exports browser `web-auto-configuration` → `@ndigo/view-webcomponent` (DOM). `bootApp` uses `MetadataConfigApplicationContext` directly, keeping `@ndigo/test` node-pure. |
+| `@ndigo/test` use `@ndigo/boot`?                                    | **No** — `@ndigo/boot`'s index re-exports browser `web-auto-configuration` → `@ndigo/view-webcomponent` (DOM). `bootNodeApp` uses `MetadataConfigApplicationContext` directly, keeping `@ndigo/test` node-pure. |
 
 ---
 
@@ -202,7 +202,7 @@ packages/ndigo-test/
 
 | Gate                                                                                               | Verification                                                    |
 | -------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
-| `bootApp` boots a real `MetadataConfigApplicationContext` + `NodeAutoConfiguration` once per suite | Two tests share the same cached context (ndigo-test.spec.ts)    |
+| `bootNodeApp` boots a real `MetadataConfigApplicationContext` + `NodeAutoConfiguration` once per suite | Two tests share the same cached context (ndigo-test.spec.ts)    |
 | `mockHTTP.get('/todos')` hits a `@getMapping` controller via the real dispatcher                   | Controller invoked; status 200 (ndigo-test.spec.ts)             |
 | JSON API response returns `res.json()`                                                             | Plain-object handler → parsed JSON body                         |
 | SSR view response returns `res.text()`                                                             | `StringTemplateView` → HTML string body                         |
@@ -215,10 +215,10 @@ packages/ndigo-test/
 
 ## 7. Follow-ups (post-MVP)
 
-- ~~**Test context caching**~~ ✅ `cachedBootApp`/`releaseCachedApp` — per-worker
+- ~~**Test context caching**~~ ✅ `cachedBootNodeApp`/`releaseCachedNodeApp` — per-worker
   dedupe across suites booting the same sources; cross-file sharing requires
   `isolate: false` (documented safety trade-off).
-- ~~**`@ndigo/test` for browser apps**~~ ✅ `BrowserMockHTTP` + `bootBrowserApp` +
+- ~~**`@ndigo/test` for browser apps**~~ ✅ `BrowserMockHTTP` + `bootWebApp` +
   `MemoryViewTarget` (drives `BrowserDispatcher`, captures rendered output).
 - **`@ndigo/test`-driven e2e breadcrumbs** — assert the API contract headlessly,
   then use Playwright only for render assertions.

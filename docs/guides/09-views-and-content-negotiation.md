@@ -201,10 +201,107 @@ the browser. That is the "same name, resolver picks representation" rule
 
 ## 7. View targets and themes
 
-A **view target** is the platform half of rendering: an HTTP response on Node,
-a DOM element in the browser. Fragment rendering (a partial inside a layout, an
-island inside a page) goes through the target abstraction, so a view does not
-hard-code its host.
+A **view target** is the platform half of rendering: the destination a view
+writes its output to. An HTTP response on Node, a DOM element in the browser,
+a captured buffer in a test — all go through the same `ViewTarget` interface,
+so a view never hard-codes its host. Fragment rendering (a partial inside a
+layout, an island inside a page) goes through the target abstraction too.
+
+### 7.1 The contract
+
+`ViewTarget` (from `@ndigo/view`) has three methods:
+
+- `prepare(route)` — clear/ready the destination before rendering.
+- `commit(output, model, route)` — write the rendered output (type depends on
+  the engine: an `HTMLElement`, a string, bytes, …).
+- `clear()` — release resources when rendering is done or fails.
+
+`EventBridgeViewTarget` extends it with `setEventMap(...)` so a surface can
+forward DOM/surface events back into the application layer. A target that only
+renders and never forwards events implements the base interface; one that also
+bridges events implements `EventBridgeViewTarget`.
+
+Targets are registered as the `VIEW_TARGET` context token (from
+`@ndigo/dispatcher`) and read by the dispatcher when it renders. The platform
+presets (`createNodeApplication` / `createWebApplication`) provision the right
+target for the runtime; you only construct one yourself for a custom surface or
+a test.
+
+### 7.2 Built-in targets
+
+| Target                      | Package                    | Host                                   | When to use                                                                                                                     |
+| --------------------------- | -------------------------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `HTTPResponseViewTarget`    | `@ndigo/platform-node`     | An HTTP response (`ServerResponse`)    | Server-side rendering: the default target on Node; writes status, headers, and body through the response.                       |
+| `DOMElementViewTarget`      | `@ndigo/view-webcomponent` | A DOM element (by id or element ref)   | Browser rendering: the default target in the browser; renders into `#app` (or a passed root) and bridges events via `eventMap`. |
+| `MemoryViewTarget`          | `@ndigo/test`              | An in-memory capture                   | Tests: captures the last rendered output + model with no real DOM or socket; used by `bootWebApp`/`MockWebClient`.              |
+| `DOMViewTarget` (interface) | `@ndigo/view-webcomponent` | A DOM surface that also bridges events | Implement when a target renders into the DOM **and** forwards surface events.                                                   |
+
+Constructors:
+
+```ts
+// Node — usually provided by the platform; construct manually only for tests/custom hosts
+import { HTTPResponseViewTarget } from '@ndigo/platform-node';
+const target = new HTTPResponseViewTarget(response);
+
+// Browser — root is an element or an id (with or without '#'); defaults to '#app'
+import { DOMElementViewTarget } from '@ndigo/view-webcomponent';
+const target = new DOMElementViewTarget(root, { eventMap: { submit: 'form:submit' } });
+
+// Test — captures rendered output for assertions
+import { MemoryViewTarget } from '@ndigo/test';
+const target = new MemoryViewTarget();
+// app.viewTarget.lastRender?.model / .output
+```
+
+### 7.3 Custom targets
+
+For a surface the built-ins do not cover (a shadow-DOM host, an iframe, a
+stream, a non-DOM host), implement `ViewTarget` (or `EventBridgeViewTarget`):
+
+```ts
+import type { ViewTarget } from '@ndigo/view';
+import type { Route } from '@ndigo/router';
+
+class ShadowRootViewTarget implements ViewTarget {
+    constructor(private readonly shadow: ShadowRoot) {}
+    prepare(_route: Route) {
+        this.shadow.replaceChildren();
+    }
+    async commit(output: unknown, _model: unknown, _route: Route) {
+        if (output instanceof Node) this.shadow.append(output);
+    }
+    clear() {
+        this.shadow.replaceChildren();
+    }
+}
+```
+
+Register it as the `VIEW_TARGET` token in the context so the dispatcher and views
+resolve it the same way they resolve the built-ins:
+
+```ts
+context.setValue(VIEW_TARGET, new ShadowRootViewTarget(host.shadowRoot!));
+```
+
+Guidelines for a custom target:
+
+- `prepare` must be idempotent and safe to call before every render.
+- `commit` must handle the output type the engine produces (DOM node, string,
+  bytes) and degrade gracefully when it does not match.
+- `clear` must not throw; it runs on error paths too.
+- Implement `EventBridgeViewTarget` only if the surface emits events that should
+  reach the application layer; otherwise the base interface is enough.
+
+### 7.4 Testing with targets
+
+- Use `MemoryViewTarget` (via `bootWebApp`/`MockWebClient`) to assert on rendered
+  model/output without a real DOM.
+- Use a real `DOMElementViewTarget` in a jsdom suite only when you need to assert
+  on actual DOM structure or event bridging.
+- On Node, `MockHTTP` exercises the full `HTTPResponseViewTarget` contract
+  in-process, including headers, status, and interceptor denials.
+
+### 7.5 Themes
 
 Themes are resolved per route before rendering; the platform's theme resolver
 selects the theme name, and templates/components read it from the context. Do

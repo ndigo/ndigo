@@ -146,12 +146,12 @@ framework deliberately separates four mechanisms:
 
 | Need                                                      | Use                                                  | Guide  |
 | --------------------------------------------------------- | ---------------------------------------------------- | ------ |
-| Local, synchronous derived state in one component/service | signals (`signal`, `computed`, `effect`)             | 29     |
-| Cross-context notification inside one application         | application events (`context.emit` / `EventGateway`) | 04     |
-| Server → client live push                                 | SSE (`ServerSentEventView`) or WebSockets            | 15, 29 |
-| Work that must survive a restart or run later             | jobs + outbox                                        | 22     |
-| Work that runs on a clock                                 | `@scheduled`                                         | 23     |
-| Boot-time or request-time feature decision                | `@whenFeature` / feature flags                       | 34     |
+| Local, synchronous derived state in one component/service | signals (`signal`, `computed`, `effect`)             | [29](29-signals-and-islands.md)     |
+| Cross-context notification inside one application         | application events (`context.emit` / `EventGateway`) | [04](04-dependency-injection-and-lifecycle.md)     |
+| Server → client live push                                 | SSE (`ServerSentEventView`) or WebSockets            | [15](15-websockets.md), [29](29-signals-and-islands.md) |
+| Work that must survive a restart or run later             | jobs + outbox                                        | [22](22-jobs-and-outbox.md)     |
+| Work that runs on a clock                                 | `@scheduled`                                         | [23](23-scheduling.md)     |
+| Boot-time or request-time feature decision                | `@whenFeature` / feature flags                       | [34](34-feature-flags.md)     |
 
 Signals are **not** an event bus, and context events are **not** a durable
 queue. Picking the right one up front avoids most of the "why did this update

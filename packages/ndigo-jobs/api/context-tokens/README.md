@@ -6,7 +6,7 @@
 
 # context-tokens
 
-Type-safe bean handles for the ndigo-jobs contracts.
+Type-safe entry handles for the ndigo-jobs contracts.
 
 ## Variables
 

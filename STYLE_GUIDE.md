@@ -1897,7 +1897,7 @@ class MediaType {
 **Influenced By:**
 
 - JavaScript ecosystem conventions (Array.length, String.length, Map.size)
-- Java Bean conventions (getters for properties, methods for operations)
+- Java Entry conventions (getters for properties, methods for operations)
 - TypeScript guidance (properties for data access, methods for operations)
 - Enterprise patterns (get\* methods for external lookups)
 
@@ -1918,7 +1918,7 @@ If still unsure, **prefer a method** - it's safer and more flexible for future c
 
 **Pattern:** Use conventional prefixes to signal method behavior and return expectations
 
-Method names should clearly communicate their purpose, behavior, and expected return values. Ndigo uses standardized prefixes inspired by JavaBeans, Java enterprise, and JavaScript ecosystem conventions.
+Method names should clearly communicate their purpose, behavior, and expected return values. Ndigo uses standardized prefixes inspired by JavaEntries, Java enterprise, and JavaScript ecosystem conventions.
 
 This section establishes clear rules for method naming across the entire codebase.
 
@@ -2798,7 +2798,7 @@ class GoodMediaType {
 
 **Influenced By:**
 
-- JavaBeans naming conventions (get\*, set\*, is\*)
+- JavaEntries naming conventions (get\*, set\*, is\*)
 - Enterprise patterns (get\* for external lookups)
 - JavaScript standard library (Array.from, Array.of, toString, toJSON)
 - TypeScript type guard conventions (is\* predicates)

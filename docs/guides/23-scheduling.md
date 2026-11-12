@@ -19,7 +19,7 @@ no catch-up after restarts.
 
 ## 1. Quickstart
 
-Add a `@scheduled` method to **any registered bean**, and the node platform
+Add a `@scheduled` method to **any registered entry**, and the node platform
 does the rest:
 
 ```ts
@@ -57,10 +57,10 @@ class Maintenance {
 }
 ```
 
-`NodeAutoConfiguration` provisions a `taskScheduler` bean and a
-`scheduleRegistry` bean that:
+`NodeAutoConfiguration` provisions a `taskScheduler` entry and a
+`scheduleRegistry` entry that:
 
-- scans every bean's `Symbol.metadata` for `schedule:` entries at refresh,
+- scans every entry's `Symbol.metadata` for `schedule:` entries at refresh,
 - binds each run to its owner instance,
 - wraps each run in an OpenTelemetry span,
 - **auto-starts** (SmartLifecycle), and
@@ -122,7 +122,7 @@ scheduler.getStats('maintenance.purge'); // → { runs, failures, inFlight, … 
 
 ## 6. HTTP example
 
-Scheduling integrates with the dispatcher like any bean — controllers park
+Scheduling integrates with the dispatcher like any entry — controllers park
 tasks too:
 
 ```ts

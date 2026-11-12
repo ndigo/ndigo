@@ -451,7 +451,7 @@ export class MetadataConfigApplicationContext extends GenericApplicationContext 
     constructor(name?: string) {
         super(name);
         // Register the ApplicationContextAwareProcessor before any @entry
-        // configs are parsed, so entry-created aware beans receive context
+        // configs are parsed, so entry-created aware entries receive context
         // injection when they are eagerly configured in register().
         // (refresh()/_prepareFactory() also guard against duplicates.)
         if (!this.processors.some((p) => p instanceof ApplicationContextAwareProcessor)) {

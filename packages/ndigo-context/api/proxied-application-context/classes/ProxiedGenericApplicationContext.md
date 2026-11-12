@@ -392,7 +392,7 @@ from the parent, mark `destroyed`/`destroyedTimestamp`, emit
 
 Exception-safe (CTX-06): a throwing listener or teardown hook is
 reported and swallowed so the remaining steps still run — `destroyed`
-is always set and children/beans are still torn down. Exceptions from
+is always set and children/entries are still torn down. Exceptions from
 `context:close`/`context:destroy` listeners otherwise abort teardown
 mid-way (the emitter re-throws when no `error` listener is attached).
 

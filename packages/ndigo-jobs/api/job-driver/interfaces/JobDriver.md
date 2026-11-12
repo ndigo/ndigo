@@ -21,7 +21,7 @@ Semantics every driver must preserve:
   `fail` records the error in the caller's telemetry/log, not in storage
   (dead-letter inspection is out of scope — AD-72 D-2).
 
-Implementations are registered under the `jobDriver` bean; the default is
+Implementations are registered under the `jobDriver` entry; the default is
 [InProcessJobDriver](../../in-process-job-driver/classes/InProcessJobDriver.md), which is explicitly non-durable.
 
 ## Extends

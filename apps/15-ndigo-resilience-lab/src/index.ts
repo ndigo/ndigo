@@ -15,7 +15,7 @@ import { getLogger } from '@ndigo/log';
 import { getErrorMessage } from '@ndigo/util';
 import { ResilienceLabConfiguration } from './lab-configuration';
 
-// The managed server reads its port from `process.env.PORT`, and the lab bean
+// The managed server reads its port from `process.env.PORT`, and the lab entry
 // (created when the configuration is registered) reads it to aim its loopback
 // transport — so surface the default before any context is built.
 process.env['PORT'] ??= '3080';

@@ -21,7 +21,7 @@ Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥12.
 ## Getting Started
 
 Single node, zero config — `NodeAutoConfiguration` registers a
-`PropertyFlagProvider` bean (reading `feature.*` from the environment) and
+`PropertyFlagProvider` entry (reading `feature.*` from the environment) and
 the gate interceptor on the default mapping. Declare a gate:
 
 ```ts
@@ -75,7 +75,7 @@ interface FlagEvaluator {
   `reason: 'ERROR'` and an `errorCode` (`FLAG_NOT_FOUND`,
   `PARSE_ERROR`, `TYPE_MISMATCH`, `GENERAL`, …) — flags cannot crash
   requests.
-- **Provider-pluggable**: the bean is the seam.
+- **Provider-pluggable**: the entry is the seam.
   `@ndigo/flags-openfeature` bridges vendor providers (flagd, OFREP,
   LaunchDarkly, …) through the same contract; app code never imports a
   vendor SDK.
@@ -112,7 +112,7 @@ ISC — see the repository license.
 
 Declare gates on routes (`@whenFeature`, enforced by the platform's
 `FeatureGateInterceptor`), check flags programmatically via the
-`FLAG_EVALUATOR` bean, or implement a custom provider behind the
+`FLAG_EVALUATOR` entry, or implement a custom provider behind the
 `FlagEvaluator` SPI. See [guide 34](../../docs/guides/34-feature-flags.md)
 for the full walk-through (config shapes, refresh semantics, the 404
 denial, vendor bridging).

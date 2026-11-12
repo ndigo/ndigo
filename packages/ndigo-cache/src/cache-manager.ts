@@ -55,7 +55,7 @@ export interface CacheManagerOptions {
 /**
  * In-memory {@link CacheManager}: auto-creates {@link MemoryCache} stores on
  * first `getCache(name)` with the manager defaults. Caches are owned for the
- * manager's lifetime — the auto-configuration `cacheManager` bean is a
+ * manager's lifetime — the auto-configuration `cacheManager` entry is a
  * singleton per application context.
  */
 export class MemoryCacheManager implements CacheManager {

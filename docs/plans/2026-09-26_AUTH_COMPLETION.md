@@ -174,9 +174,9 @@ unsafe to ship.
   All six sites fixed with `await`; sync handlers became async. The socket
   authenticator returns the promise (the platform awaits it, and its
   `authenticate` signature already allows `Promise<…>`).
-- **Mapping-level `AuthRouteGuard` wiring is one-owner-per-bean:** the
+- **Mapping-level `AuthRouteGuard` wiring is one-owner-per-entry:** the
   strategy reads the `handlerMappings` collection via `setValue`-style
-  registration — a second `handlerMappings` bean would clobber
+  registration — a second `handlerMappings` entry would clobber
   `ManagementAutoConfiguration`'s. The demo therefore enforces `/auth/me`
   in-handler through the adapter and exercises `@authenticated` +
   `AuthRouteGuard` in the auth-server spec suite (existing). Mapping wiring
@@ -211,7 +211,7 @@ unsafe to ship.
   (seconds)** problem documents (`ProblemTypes.rateLimited`, which already
   existed).
 - **Default-on, metadata-gated:** `NodeAutoConfiguration.handlerMapping`
-  pushes the interceptor plus a `rateLimiter()` bean — same posture as
+  pushes the interceptor plus a `rateLimiter()` entry — same posture as
   `SecurityHeadersInterceptor`; routes without `@rateLimit` pass through
   untouched (zero behavior change for existing apps).
 - `NodeRequest.remoteAddress` (new field) populated by the adapter from

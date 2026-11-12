@@ -8,12 +8,12 @@ different needs show up and are easy to confuse:
 - **Ownership layers** — a platform team provides defaults and contracts that
   application teams extend or override.
 - **Lifecycle boundaries** — a shell owns shared infrastructure while features,
-  plugins, or sibling applications own their own beans and teardown.
+  plugins, or sibling applications own their own entries and teardown.
 
 Ndigo already has a mechanism for each: profiles, property sources, and
 parent/child contexts. This guide maps each need to the right one, shows the
 composition patterns that work today, and calls out the boundary that is _not_
-automatic — a child context inherits bean lookups, but not its parent's
+automatic — a child context inherits entry lookups, but not its parent's
 environment.
 
 **Audience:** application and platform architects, and developers composing
@@ -30,7 +30,7 @@ more than one context · **Prerequisites:** [Guide 03](03-environment-configurat
 - Choose profiles, config layers, or context boundaries for the right problem.
 - Reuse platform configuration through a package instead of a parent context.
 - Layer static property sources without accidentally changing precedence.
-- Compose parent/child contexts for beans and lifecycle, not for config.
+- Compose parent/child contexts for entries and lifecycle, not for config.
 - Run multiple applications in one process without sharing environments, and
   address cross-context events explicitly.
 
@@ -40,7 +40,7 @@ more than one context · **Prerequisites:** [Guide 03](03-environment-configurat
 | ---------------- | ------------------------------------------------- | ------------------------------------------------- |
 | Deployment value | Which values apply in _this_ deployment?          | Profiles + `application-{profile}` files          |
 | Config layer     | Which team owns this value, and who may override? | Named property sources, a platform config package |
-| Context boundary | Which lifecycle and DI owner owns these beans?    | Parent/child contexts                             |
+| Context boundary | Which lifecycle and DI owner owns these entries?  | Parent/child contexts                             |
 
 > **Short rule:** a profile changes values, a config layer contributes values,
 > and a context changes ownership and lifecycle. Do not use one to solve
@@ -86,12 +86,12 @@ the programmatic list. Profile gates such as `@whenProfile('prod')` and
 
 ### Why not a context per environment?
 
-Every context has its own lifecycle, beans, and teardown. An environment is a
+Every context has its own lifecycle, entries, and teardown. An environment is a
 value set, not a lifecycle boundary. A context per environment also tends to
 become a build per environment, which defeats artifact promotion, and it hides
 the source precedence the reader needs to understand.
 
-If two deployments need genuinely different _beans_, use profile-gated
+If two deployments need genuinely different _entries_, use profile-gated
 configuration classes or two applications — not one context per environment.
 
 ## 3. Platform configuration as a package
@@ -211,8 +211,8 @@ is deliberate. See [Guide 43](43-live-configuration-and-secrets.md).
 
 ## 5. Parent/child contexts: ownership, not config
 
-A child context inherits **bean lookups** and **shared dependencies** from its
-parent. It keeps its own values, beans, and lifecycle. It also gets its **own
+A child context inherits **entry lookups** and **shared dependencies** from its
+parent. It keeps its own values, entries, and lifecycle. It also gets its **own
 environment** — it does not see the parent's property values.
 
 ```ts
@@ -235,12 +235,12 @@ children at once; `close()` cascades through all of them.
 
 ### Config options for a child context
 
-| Option                        | What it does                                                               | Trade-off                                       |
-| ----------------------------- | -------------------------------------------------------------------------- | ----------------------------------------------- |
-| Fresh environment (default)   | `parent.newChild(name)` creates a child with its own `StandardEnvironment` | Child does not see platform values              |
-| Copy a snapshot               | Build a `ConfigurableEnvironment`, `merge(...)`, then `setEnvironment`     | Static; later parent refreshes do not propagate |
-| Share one environment         | `setEnvironment(shared)` on a constructed child                            | Child writes affect the parent; no isolation    |
-| Pass resolved values as beans | Parent registers the value; child resolves the bean                        | Explicit and type-safe; no config coupling      |
+| Option                          | What it does                                                               | Trade-off                                       |
+| ------------------------------- | -------------------------------------------------------------------------- | ----------------------------------------------- |
+| Fresh environment (default)     | `parent.newChild(name)` creates a child with its own `StandardEnvironment` | Child does not see platform values              |
+| Copy a snapshot                 | Build a `ConfigurableEnvironment`, `merge(...)`, then `setEnvironment`     | Static; later parent refreshes do not propagate |
+| Share one environment           | `setEnvironment(shared)` on a constructed child                            | Child writes affect the parent; no isolation    |
+| Pass resolved values as entries | Parent registers the value; child resolves the entry                       | Explicit and type-safe; no config coupling      |
 
 `newChild` always creates a fresh environment. To copy or share one, construct
 the child explicitly:
@@ -255,7 +255,7 @@ feature.setEnvironment(featureEnvironment);
 feature.refresh();
 ```
 
-If the platform layer exists only to own beans (a pool, telemetry, a cache), the
+If the platform layer exists only to own entries (a pool, telemetry, a cache), the
 shell example above is enough. It is DI and lifecycle inheritance; it does not
 bring boot's config-file loading, profile activation, or
 `@configurationProperties` binding into the child. If the application needs
@@ -357,7 +357,7 @@ teardown genuinely differs.
 | dev / qa / ist / prod values                        | Profiles + `application-{profile}` files                     | No             |
 | Platform defaults and typed contracts for one app   | Platform config package + one `ApplicationBuilder`           | No             |
 | Static snapshot of another environment              | `merge()` or named sources                                   | No             |
-| Platform-owned beans with app/feature lifecycles    | Parent/child contexts                                        | No             |
+| Platform-owned entries with app/feature lifecycles  | Parent/child contexts                                        | No             |
 | Live inheritance of config values from a parent     | Not a supported context semantic today; use merge/compose    | Future work    |
 | Shell + features with isolated lifecycle and events | `@ndigo/host` + child contexts + `ContextEventGateway`       | No             |
 | Browser + Node deployment                           | Separate builds/processes + shared config package            | No             |
@@ -385,7 +385,7 @@ teardown genuinely differs.
 - [Guide 03 — Environment & Configuration](03-environment-configuration.md) — the
   precedence chain, profiles, binding, and validation for one environment.
 - [Guide 04 — Dependency Injection, Scopes & Lifecycle](04-dependency-injection-and-lifecycle.md)
-  — bean ownership, parent/child contexts, and close order.
+  — entry ownership, parent/child contexts, and close order.
 - [Guide 31 — Micro Frontends with `@ndigo/host`](31-micro-frontends.md) — shell
   and feature composition, shared dependencies, and event relays.
 - [Guide 43 — Live Configuration, Secrets & Remote Config](43-live-configuration-and-secrets.md)

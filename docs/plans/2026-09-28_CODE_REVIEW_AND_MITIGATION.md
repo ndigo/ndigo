@@ -451,7 +451,7 @@ re-check freshness if those files land on a review path.
 auto-configurations register silently.** `[code]` discovered while wiring the
 demo's `SecureDocsConfiguration extends OpenAPIDocsAutoConfiguration`:
 `@entry` initializers are only enumerable on the _defining_ class's
-prototype, so a subclass that adds no factories registers **zero** beans
+prototype, so a subclass that adds no factories registers **zero** entries
 (docs mapping 404) unless a base-class instance was constructed earlier in
 the same worker (test order masks it — all prior subclass usages were
 shielded accidentally). The demo re-declares the three `@entry` factories
@@ -612,7 +612,7 @@ narrowing — the two calls are the type-safe dispatch, not duplication
 - **AD-34:** typed-event `on/off/emit` overloads match every emit site
   (verified all four `ContextEvents` + `CONFIG_REFRESH_EVENT`); profile
   grammar precedence/parenthesization correct; parse→String→parse stable;
-  single `ContextToken` kind (no cache-store/bean split); zero remaining
+  single `ContextToken` kind (no cache-store/entry split); zero remaining
   string-literal registry lookups in `packages/*/src` and `apps/*/src`
   (migration complete); schema-mode fail-loud boot path spec'd.
 - **Prior remediations re-verified in tree** (2026-09-25/27): `RETRY_AFTER`

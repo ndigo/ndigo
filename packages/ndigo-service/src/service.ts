@@ -443,7 +443,7 @@ export class Service implements AsyncDestroyable {
         // shared `RequestIdCorrelation` state. Concurrent (or nested) calls
         // therefore each carry their own id with no save/restore window to
         // clobber or leak one another's value (PLN-F7). Apps that need an
-        // ambient id can still get/set one on the correlation bean directly;
+        // ambient id can still get/set one on the correlation entry directly;
         // per-call stamping must not mutate it.
         const correlationId = this.#correlation.generateRequestId();
 

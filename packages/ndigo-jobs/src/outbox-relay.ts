@@ -41,7 +41,7 @@ export interface OutboxRelayOptions {
  * at-least-once and consumers must be idempotent.
  *
  * Lifecycle: `SmartLifecycle`, phase 10, auto-start when registered as a
- * bean; `close()` stops and awaits the pass in flight. Direct construction is
+ * entry; `close()` stops and awaits the pass in flight. Direct construction is
  * the standalone/test path.
  */
 export class OutboxRelay implements AsyncCloseable {

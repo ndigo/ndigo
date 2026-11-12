@@ -85,7 +85,7 @@ The cookie-backed language resolver.
 > **viewResolver**(): `ViewResolverComposite`
 
 Provides the default view resolver chain: web-component descriptors
-first, then name-registered view beans. Can be overridden by
+first, then name-registered view entries. Can be overridden by
 registering a custom `configuration` with a viewResolver entry.
 
 #### Returns

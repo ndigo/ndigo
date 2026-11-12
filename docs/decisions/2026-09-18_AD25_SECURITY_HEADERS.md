@@ -37,14 +37,14 @@ auto-configuration machinery.
 - **D-1 — Wrap Helmet behind `SecurityHeadersInterceptor`**
   (`RouteHandlerInterceptor` in `ndigo-platform-node`). Constructor builds
   the per-header Helmet middlewares (construction-time validation — unknown
-  options throw at bean startup, not first request); `preHandle` invokes
+  options throw at entry startup, not first request); `preHandle` invokes
   each against the route's `ServerResponse`, skipping when absent or
   `headersSent` (e.g. socket upgrades). Never denies — returns `true`.
 - **D-2 — Default-on via `NodeAutoConfiguration`**: `handlerMapping()`
   prepends a default `SecurityHeadersInterceptor` (runs before CORS
   preflight short-circuit and CSRF denial, so every finalized response
   carries headers). Escape hatches in granularity order: per-header
-  `false`, whole-interceptor disable, replace the `handlerMapping` bean
+  `false`, whole-interceptor disable, replace the `handlerMapping` entry
   (documented). App-level `mapping.interceptors` sets compose; `setHeader`
   is last-write-wins, Helmet config is the single source.
 - **D-3 — Default set = Helmet defaults minus COEP, plus WebSocket-aware

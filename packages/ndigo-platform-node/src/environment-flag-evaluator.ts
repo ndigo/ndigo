@@ -1,11 +1,11 @@
 /**
- * The default `FLAG_EVALUATOR` bean (AD-82 D-5): a
+ * The default `FLAG_EVALUATOR` entry (AD-82 D-5): a
  * `PropertyFlagProvider` whose property reader resolves the
  * **application environment at read time**.
  *
  * The container injects the application context (`ApplicationContextAware`)
- * into this bean value at creation; the reader stays lazy (per
- * evaluation), so bean-creation ordering can never capture a stale or
+ * into this entry value at creation; the reader stays lazy (per
+ * evaluation), so entry-creation ordering can never capture a stale or
  * undefined environment. `environment.refresh()` (AD-29) therefore flips
  * flags live through the read-through provider — no cache, no restart.
  */

@@ -38,7 +38,7 @@ delegated review pass, cross-checked against the cited lines.
   `@authenticated`/`@authorized` (class or method) requires a principal at
   `session.attributes.principal` and fails closed with close `1008` when it is
   missing or lacks a required role. The adapter's `authenticate` hook (or the
-  context-resolved socket authenticator bean) is the identity source that must
+  context-resolved socket authenticator entry) is the identity source that must
   populate it. `apps/ndigo-api` wires this as the reference implementation.
 
 ---
@@ -535,8 +535,8 @@ COR-11), then client (COR-12), then the error-posture decision (COR-8).
     required and `session.attributes.principal` is absent or lacks a required
     role (`principal.hasRole`). Identity comes from the adapter's
     `authenticate` hook; `HTTPServer` additionally resolves an optional
-    `socketRequestAuthenticator` context bean (mirroring the
-    `socketSessionRegistry` pattern) so bean-based apps wire it without
+    `socketRequestAuthenticator` context entry (mirroring the
+    `socketSessionRegistry` pattern) so entry-based apps wire it without
     constructing the server. `apps/ndigo-api` supplies the reference
     authenticator (demo token → principal, published as
     `attributes.principal` + `attributes.user`) and marks the STOMP endpoint
@@ -713,7 +713,7 @@ COR-11), then client (COR-12), then the error-posture decision (COR-8).
 - **Platform/security (SEC-3/8/9/10, decision D-B):** `@authenticated` /
   `@authorized` metadata is enforced in the socket dispatch (close `1008`),
   identity via the `authenticate` hook or a new `socketRequestAuthenticator`
-  context bean, `maxConnections` + `authenticateTimeoutMs` added, upgrade
+  context entry, `maxConnections` + `authenticateTimeoutMs` added, upgrade
   handshakes respect the header limits, query maps are null-prototype.
   `ndigo-api` wires the reference authenticator + `@authenticated` on its STOMP
   endpoint (e2e authenticates; `/ws/chat` stays the public contrast).

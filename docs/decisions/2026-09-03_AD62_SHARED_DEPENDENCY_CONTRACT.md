@@ -7,7 +7,7 @@ micro-frontend integration.
 ## Context
 
 A Ndigo micro-frontend shell may host multiple feature contexts, each with its
-own bean registry. Without guardrails, two features could each register their
+own entry registry. Without guardrails, two features could each register their
 own copy of a singleton (router, dispatcher, auth client, telemetry) —
 duplicate subscriptions, conflicting state, wasted memory. Module Federation
 solves this at build level (`shared`/`shareScope`); Ndigo needs the runtime
@@ -35,16 +35,16 @@ host-runtime design references without itself deciding.
 
 ## Decision
 
-- **D-1** `@shared` marks a bean class "shell-managed singleton — features
+- **D-1** `@shared` marks an entry class "shell-managed singleton — features
   resolve this from the parent chain, never create locally." A feature that
-  registers an `@shared` bean the parent lacks gets a warning but proceeds
+  registers an `@shared` entry the parent lacks gets a warning but proceeds
   (needs its own copy); duplicate `@shared` declarations in sibling features
   resolve upward instead of shadowing.
 - **D-2** `SharedDependencyRegistry` (in the shell context) declares the shell
   manifest and validates feature `requires`/`optional` dependency manifests
   (with semver ranges via `satisfiesVersion`) at mount time — missing required
   deps throw, missing optional deps warn.
-- **D-3** Enforcement is soft — a non-`@shared` bean with the same key still
+- **D-3** Enforcement is soft — a non-`@shared` entry with the same key still
   shadows the shell (intentional-override path preserved); version mismatches
   warn, not fail. This mirrors Module Federation's declarative, soft-checked
   model.

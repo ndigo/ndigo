@@ -65,7 +65,7 @@ GET  /swagger-ui/              Swagger UI (AD-35; Bearer-gated, SEC-4)
   (path/query/body/attribute binding)
 - Content negotiation by path extension and `Accept` header
 - `ResponseEntity` for status/header control and static file serving
-- Opaque session-token auth (`@ndigo/auth-server`, AD-33) and profile-gated dev beans (`@whenProfile('dev')`)
+- Opaque session-token auth (`@ndigo/auth-server`, AD-33) and profile-gated dev entries (`@whenProfile('dev')`)
 - In-memory and Drizzle ORM entity managers
 - RFC 9457 problem+json error envelope
 - Scheduled heartbeat task (`@scheduled`, auto-discovered and auto-started; see the [scheduling guide](../../docs/guides/23-scheduling.md))
@@ -73,7 +73,7 @@ GET  /swagger-ui/              Swagger UI (AD-35; Bearer-gated, SEC-4)
 ## Socket authentication
 
 The app wires socket identity declaratively: `NodeAppConfiguration`'s
-`socketRequestAuthenticator` bean resolves a demo token from `?token=` on the
+`socketRequestAuthenticator` entry resolves a demo token from `?token=` on the
 upgrade URL (the only channel a WHATWG `WebSocket` client has) or an
 `Authorization: Bearer …` header, through the same `lookupPrincipal` the HTTP
 side uses. It returns `{ principal, user }` — which also makes the STOMP

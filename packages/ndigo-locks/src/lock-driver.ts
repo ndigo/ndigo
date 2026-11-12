@@ -92,7 +92,7 @@ export interface LockDriver extends AsyncCloseable {
 }
 
 /**
- * Structural type guard for {@link LockDriver} — used where a bean or
+ * Structural type guard for {@link LockDriver} — used where an entry or
  * option is declared as an unknown collaborator and must be verified.
  *
  * @param value - The value to test.

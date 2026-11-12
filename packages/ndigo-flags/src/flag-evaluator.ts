@@ -121,7 +121,7 @@ export interface FlagEvaluator {
 }
 
 /**
- * Structural type guard for {@link FlagEvaluator} — used where a bean or
+ * Structural type guard for {@link FlagEvaluator} — used where an entry or
  * option is resolved by shape instead of the {@link "context-tokens".FLAG_EVALUATOR | FLAG_EVALUATOR} token.
  *
  * @param value - The value to inspect.

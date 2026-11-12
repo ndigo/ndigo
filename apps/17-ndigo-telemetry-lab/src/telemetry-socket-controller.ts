@@ -70,7 +70,7 @@ export class TelemetrySocketController implements ApplicationContextAware {
     }
 
     /**
-     * Lazy registry resolution: the registry bean is owned by
+     * Lazy registry resolution: the registry entry is owned by
      * `NodeAutoConfiguration`, so entry creation order never matters.
      *
      * @returns The socket session registry, or `null` when unavailable

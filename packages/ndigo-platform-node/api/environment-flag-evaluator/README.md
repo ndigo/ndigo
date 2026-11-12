@@ -6,7 +6,7 @@
 
 # environment-flag-evaluator
 
-The default `FLAG_EVALUATOR` bean (AD-82 D-5): a
+The default `FLAG_EVALUATOR` entry (AD-82 D-5): a
 
 ## Classes
 

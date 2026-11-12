@@ -19,7 +19,7 @@ import { ReportViewResolver } from './report-view-resolver';
  *
  *   1. WebComponentViewResolver — component module (eager registry:
  *      logical name `shell` → class → `@TagMapping` tag).
- *   2. NameViewResolver — a plain View bean registered in the context
+ *   2. NameViewResolver — a plain View entry registered in the context
  *      (`footer`).
  *   3. ReportViewResolver — a path-based resolver that imports a view module
  *      on first resolution (`report` → `views/report-view.ts`).
@@ -41,7 +41,7 @@ export class ViewsAppConfiguration {
         );
     }
 
-    /** Context-bean view for NameViewResolver. */
+    /** Context-entry view for NameViewResolver. */
     @entry()
     footer() {
         return new FooterView();

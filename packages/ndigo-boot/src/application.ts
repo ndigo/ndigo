@@ -30,7 +30,7 @@ import { getEnv } from '@ndigo/util';
 const logger = getLogger('ndigo-boot:application');
 
 /**
- * Derives the entry bean name from a class name (`ServerConfig` →
+ * Derives the entry name from a class name (`ServerConfig` →
  * `serverConfig` — the repo's `@entry()` `serverConfig()` idiom).
  */
 const camelCaseName = (className: string): string => className.charAt(0).toLowerCase() + className.slice(1);
@@ -125,7 +125,7 @@ export class Application extends Emitter {
             return context;
         } catch (error: unknown) {
             // CF-6: a boot failure after context creation (binding, validation,
-            // route scan) must not leak the context's listeners/beans — close
+            // route scan) must not leak the context's listeners/entries — close
             // it first, then run the remaining cleanup.
             this.#pendingContext?.close();
             this.#pendingContext = null;
@@ -436,7 +436,7 @@ export class Application extends Emitter {
         }
         context.refresh();
 
-        // Auto-register @configurationProperties classes as bound entry beans
+        // Auto-register @configurationProperties classes as bound entries
         // (AD-15 D1): after refresh so the environment is fully prepared.
         for (const source of activeSources) {
             if (isConfigurationProperties(source)) {

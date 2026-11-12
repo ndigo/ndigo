@@ -45,7 +45,7 @@ async function main() {
     ]).run();
 
     // SEC-C: widen `connect-src` for the page's WebSocket (and the collector,
-    // when one is configured) — the handler mapping bean exists post-refresh.
+    // when one is configured) — the handler mapping entry exists post-refresh.
     applyLabSecurityHeaders(context, telemetry);
 
     const server = context.getValue(HTTP_SERVER);
@@ -60,7 +60,7 @@ async function main() {
     //
     // OP-9: batched telemetry is dropped on exit unless the SDK shuts down —
     // flush after the server stops (capturing its shutdown spans) and before
-    // the context tears its beans down. `configureTelemetry` returns
+    // the context tears its entries down. `configureTelemetry` returns
     // `undefined` only when a provider was already registered in this process.
     const schedules = context.getValue(TASK_SCHEDULER);
     gracefulShutdown(context, {

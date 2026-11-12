@@ -240,12 +240,12 @@ Feature router receives only sub-route within partition:
 ## Lifecycle Model
 
 1. Shell creates feature context on first mount (or eagerly if configured).
-2. Feature context refresh initializes feature beans.
+2. Feature context refresh initializes feature entries.
 3. Route rendering uses feature-owned `ViewTarget` and event map.
 4. Route transition away from feature may:
     - keep feature context warm (cache policy), or
     - close feature context (strict isolation policy).
-5. `close()` cascades destroy through feature beans and listeners.
+5. `close()` cascades destroy through feature entries and listeners.
 
 ---
 

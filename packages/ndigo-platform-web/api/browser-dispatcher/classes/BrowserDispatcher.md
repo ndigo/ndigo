@@ -779,7 +779,7 @@ Runs on refresh, after every configuration has registered.
 > **stop**(): `void`
 
 `SmartLifecycle` — strategies are immutable once initialized; nothing to
-release. Present so this type is a well-behaved lifecycle bean.
+release. Present so this type is a well-behaved lifecycle entry.
 
 #### Returns
 

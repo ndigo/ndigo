@@ -14,21 +14,21 @@ import type { ViewTarget } from '@ndigo/view';
 export const DISPATCHER = new ContextToken<AbstractDispatcher>('dispatcher');
 
 /**
- * Context token for the metadata handler mapping bean.
+ * Context token for the metadata handler mapping entry.
  */
 export const HANDLER_MAPPING = new ContextToken<RadixMetadataHandlerMapping>('handlerMapping');
 
 /**
- * Context token for the application's view target bean (rendered view output).
+ * Context token for the application's view target entry (rendered view output).
  */
 export const VIEW_TARGET = new ContextToken<ViewTarget>('viewTarget');
 
 /**
- * Context token for the argument-resolver collection bean (AD-34 D1).
+ * Context token for the argument-resolver collection entry (AD-34 D1).
  */
 export const ARGUMENT_RESOLVERS = new ContextToken<HandlerMethodArgumentResolver[]>('argumentResolvers');
 
 /**
- * Context token for a single stand-alone argument-resolver bean.
+ * Context token for a single stand-alone argument-resolver entry.
  */
 export const ARGUMENT_RESOLVER = new ContextToken<HandlerMethodArgumentResolver>('argumentResolver');

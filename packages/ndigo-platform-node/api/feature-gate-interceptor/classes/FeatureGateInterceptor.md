@@ -28,7 +28,7 @@ the body survives.
 [`FeatureGateInterceptorOptions`](../interfaces/FeatureGateInterceptorOptions.md) = `{}`
 
 Optional evaluator/resolver overrides; omit both to
-  resolve the beans from the application context.
+  resolve the entries from the application context.
 
 #### Returns
 

@@ -8,7 +8,7 @@
 
 > **likeLockDriver**(`value`): `value is LockDriver`
 
-Structural type guard for [LockDriver](../interfaces/LockDriver.md) — used where a bean or
+Structural type guard for [LockDriver](../interfaces/LockDriver.md) — used where an entry or
 option is declared as an unknown collaborator and must be verified.
 
 ## Parameters

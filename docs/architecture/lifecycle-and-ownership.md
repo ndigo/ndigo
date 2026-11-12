@@ -12,7 +12,7 @@ guides cover each surface in detail.
    synchronous fast path with different semantics — one contract per
    capability.
 2. **Memory is the default; backends are explicit.** Installing a backend
-   package never connects, never auto-registers beans, and never changes
+   package never connects, never auto-registers entries, and never changes
    auto-configuration.
 3. **Ownership is explicit, never ambiguous.** A resource you _created_ is
    **owned** — you close it. An **injected** resource is **borrowed** —
@@ -49,7 +49,7 @@ guides cover each surface in detail.
    heartbeat, drop sessions.
 3. `fanout.close()` — unsubscribe its owned subscriber.
 4. `publisher.close()` by its **owner**.
-5. Synchronous `context.close()` — the container tears down beans
+5. Synchronous `context.close()` — the container tears down entries
    (`Closeable`), the application's synchronous close semantics.
 
 Every step is awaited where awaitable; a startup failure runs the same

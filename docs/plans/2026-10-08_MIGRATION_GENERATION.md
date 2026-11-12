@@ -84,7 +84,7 @@ metadata; `migrations.runOnBoot`" — is unimplemented and ADR-gated.
   and its own decision point.
 - `--from-db` snapshot seed for existing databases — v1.1.
 - Non-SQLite dialects — the projector is the seam; nothing else extends.
-- An ORM auto-configuration bean for run-on-boot — app-owned by design
+- An ORM auto-configuration entry for run-on-boot — app-owned by design
   (AD-64).
 
 ## 5. Verification

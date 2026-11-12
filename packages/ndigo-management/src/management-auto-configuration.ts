@@ -65,7 +65,7 @@ export class ManagementAutoConfiguration extends AsApplicationContextAware(Null)
         // REV-003: this configuration's aggregator doubles as the process's
         // fallback metric snapshot source — eager (constructor, not the
         // entry resolution), so `/metrics` never dead-ends before the
-        // aggregator bean is first requested. A telemetry pull reader
+        // aggregator entry is first requested. A telemetry pull reader
         // registered via `configureTelemetry` (current slot) wins over it.
         setFallbackMetricSnapshotProvider(new FeatureMetricAggregatorProvider(this.#metricAggregator));
         // Scoped to the management paths (computed at refresh — the guard
@@ -74,9 +74,9 @@ export class ManagementAutoConfiguration extends AsApplicationContextAware(Null)
         this.#accessGuard = options.accessGuard;
         this.#redactHealthErrors = options.redactHealthErrors ?? true;
         this.#exposure = options.exposure;
-        // (The controller beans are constructed per entry call below — the
+        // (The controller entries are constructed per entry call below — the
         // container processes the values it receives and dispatches the
-        // processed beans, so the mapping never holds raw instances.)
+        // processed entries, so the mapping never holds raw instances.)
         this.#configurationClasses = options.configurationClasses ?? [];
     }
 
@@ -126,7 +126,7 @@ export class ManagementAutoConfiguration extends AsApplicationContextAware(Null)
     }
 
     /**
-     * The `/loggers` controller bean (AD-76 D-8): decorator-registered, so
+     * The `/loggers` controller entry (AD-76 D-8): decorator-registered, so
      * handler detection dispatches the context-processed instance.
      *
      * @returns The loggers controller.
@@ -137,7 +137,7 @@ export class ManagementAutoConfiguration extends AsApplicationContextAware(Null)
     }
 
     /**
-     * The `/env` controller bean (AD-76 D-8).
+     * The `/env` controller entry (AD-76 D-8).
      *
      * @returns The environment controller.
      */
@@ -147,7 +147,7 @@ export class ManagementAutoConfiguration extends AsApplicationContextAware(Null)
     }
 
     /**
-     * The `/configprops` controller bean (AD-76 D-8).
+     * The `/configprops` controller entry (AD-76 D-8).
      *
      * @returns The configuration-properties controller.
      */
@@ -163,7 +163,7 @@ export class ManagementAutoConfiguration extends AsApplicationContextAware(Null)
      * *platform* mapping), the management-path guard pushed onto the
      * interceptor chain when present, and the controllers detected through
      * it like every other decorator-driven handler (AD-76 D-8: detection
-     * registers the *processed* bean, so the handlers run with their
+     * registers the *processed* entry, so the handlers run with their
      * context wired). Declared as the `handlerMappings` collection (the
      * resolution the strategy checks first), so it is immune to
      * registration-order clobbering by `NodeAutoConfiguration.handlerMapping`.

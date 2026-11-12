@@ -90,7 +90,7 @@ All four implementation-order items are built and proven by the hybrid demo (`ap
 
 3. **Client `EventSource`→signals bridge** — instead of the DOM `EventSource` (no fetch, no typed contracts), the demo consumes the typed service stream; `streamToSignal(source, signal)` (`@ndigo/signals`) writes each yielded value into a `Signal`, and an `effect` re-renders the island. `stop()` cancels consumption and closes the source.
 
-4. **Island demo wired** — `TodoModelStore` (server-owned snapshot + push channel with unsubscribe) feeds `GET /events`; the shell's initial model and the pushed models share one store instance (composition root in `IslandConfiguration` — cross-entry `this.method()` calls do NOT share beans, so a private field is the single source). The client subscribes via a `@service('ndigo-island')` typed stream (`responseSchema` zod — AD-07) and re-renders on each push.
+4. **Island demo wired** — `TodoModelStore` (server-owned snapshot + push channel with unsubscribe) feeds `GET /events`; the shell's initial model and the pushed models share one store instance (composition root in `IslandConfiguration` — cross-entry `this.method()` calls do NOT share entries, so a private field is the single source). The client subscribes via a `@service('ndigo-island')` typed stream (`responseSchema` zod — AD-07) and re-renders on each push.
 
 ## Consequences (updated)
 

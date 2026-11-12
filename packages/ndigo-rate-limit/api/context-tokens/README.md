@@ -6,7 +6,7 @@
 
 # context-tokens
 
-Context tokens for the `@ndigo/rate-limit` beans (AD-79 D-2).
+Context tokens for the `@ndigo/rate-limit` entries (AD-79 D-2).
 
 ## Variables
 

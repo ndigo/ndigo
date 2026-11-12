@@ -38,7 +38,7 @@ const logger = getLogger('ndigo-api:inspect');
 /**
  * The app's route-decorated controllers. Boot scans only the builder's
  * source classes into its `routeRegistry`, and these are registered as
- * `@entry` beans rather than sources — so the inspect demo scans them
+ * `@entry` entries rather than sources — so the inspect demo scans them
  * explicitly, the same way `apps/03-ndigo-todo-web` supplements a missing registry.
  */
 const CONTROLLERS = [

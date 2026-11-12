@@ -1,5 +1,5 @@
 /**
- * Rule that flags string-typed registry lookups — the untyped bean handle.
+ * Rule that flags string-typed registry lookups — the untyped entry handle.
  */
 import type { Context, ESTree } from '@oxlint/plugins';
 
@@ -96,10 +96,10 @@ function bindPatternNames(pattern: ESTree.BindingPattern, bind: Scope): void {
  * identifiers that resolve (within this file, lexically) to a `const` that
  * was initialized directly from a string literal.
  *
- * Strings are invisible at compile time: a renamed or mistyped bean name
+ * Strings are invisible at compile time: a renamed or mistyped entry name
  * fails at dispatch, not at build. `ContextToken<T>` is the canonical
  * handle (ADR-34 D1); the rule points authors at it, and an oxlint-disable
- * comment documents intentional dynamic lookups (bean names computed from
+ * comment documents intentional dynamic lookups (entry names computed from
  * data or re-exported constants).
  *
  * Identifier resolution is deliberately conservative to stay false-positive

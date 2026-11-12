@@ -166,7 +166,7 @@ order with their flattened dotted keys:
 
 ## 6. `/configprops` — declared configuration, never values
 
-`GET /configprops` → `{ beans: [{ name, properties: [{ key, type? }] }] }`
+`GET /configprops` → `{ entries: [{ name, properties: [{ key, type? }] }] }`
 for the `@configurationProperties` classes the app hands over:
 
 ```ts
@@ -177,7 +177,7 @@ new ManagementAutoConfiguration({
 
 The endpoint emits declared keys and conversion types only — **values are
 never read**, the same value-free contract `@ndigo/inspect` codifies, so a
-secret cannot leak by construction. Bean names come from the shared key
+secret cannot leak by construction. Entry names come from the shared key
 prefix (`ROOT` for prefix-less classes).
 
 ## 7. Reference

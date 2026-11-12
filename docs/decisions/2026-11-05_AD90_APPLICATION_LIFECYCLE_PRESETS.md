@@ -8,7 +8,7 @@
 
 ## Context
 
-Ndigo already ships meaningful defaults at the **bean** layer:
+Ndigo already ships meaningful defaults at the **entry** layer:
 
 - `NodeAutoConfiguration` provisions the Node argument resolvers, converter
   registry, handler mapping (security headers, feature gate, rate limit,
@@ -95,7 +95,7 @@ changes would also silently change handler inputs. The existing
 
 ### D-2 — No `DefaultNodeConfiguration` / `DefaultWebConfiguration` classes
 
-`NodeAutoConfiguration` and `WebAutoConfiguration` **are** the bean defaults;
+`NodeAutoConfiguration` and `WebAutoConfiguration` **are** the entry defaults;
 a `Default*Configuration` wrapper would duplicate them. A class that also
 gathered management, OpenAPI docs, auth, or ORM would silently turn on
 security-sensitive surfaces (management endpoints are open by default).
@@ -115,7 +115,7 @@ Both:
   `WebAutoConfiguration`) by default, with **`platform: false`** to opt out;
 - compose the lower-order defaults rather than reimplementing them;
 - return both the refreshed context and a runtime handle, so callers can
-  reach every bean and service; the Node handle's `port` is the bound port
+  reach every entry and service; the Node handle's `port` is the bound port
   (the ephemeral port when `port: 0` is requested), not just the requested
   value;
 - expose explicit hooks for app-specific behavior (`configureBuilder` /
@@ -170,7 +170,7 @@ without changing its public API; the fallback is recorded in the plan.
   test usage.
 - **Adding dispatcher/router entries to `WebAutoConfiguration` instead of a
   preset** — rejected. The DOM root, event map, and first navigation are
-  runtime inputs, not bean configuration; a configuration class would have to
+  runtime inputs, not entry configuration; a configuration class would have to
   invent defaults (`#app`, hash routing) that the preset can expose explicitly.
 
 ## Consequences

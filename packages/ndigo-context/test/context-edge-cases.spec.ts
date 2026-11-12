@@ -4,31 +4,31 @@ import { describe, test, expect, vi } from 'vitest';
 import { GenericApplicationContext } from '../src/context';
 
 describe('GenericApplicationContext — teardown of managed values on close', () => {
-    test('a plain setValue bean implementing Destroyable is destroyed on close', () => {
+    test('a plain setValue entry implementing Destroyable is destroyed on close', () => {
         const context = new GenericApplicationContext('t1');
-        const bean = {
+        const entry = {
             destroyed: false,
             destroy() {
                 this.destroyed = true;
             },
         };
-        context.setValue('destroyableBean', bean);
+        context.setValue('destroyableEntry', entry);
 
-        expect(bean.destroyed).toBe(false);
+        expect(entry.destroyed).toBe(false);
         context.close();
-        expect(bean.destroyed).toBe(true);
+        expect(entry.destroyed).toBe(true);
     });
 
-    test('a plain setValue bean implementing Closeable is closed on close', () => {
+    test('a plain setValue entry implementing Closeable is closed on close', () => {
         const context = new GenericApplicationContext('t2');
         const closed = vi.fn();
-        context.setValue('closeableBean', { close: closed });
+        context.setValue('closeableEntry', { close: closed });
 
         context.close();
         expect(closed).toHaveBeenCalledTimes(1);
     });
 
-    test('a constructor-registered Destroyable bean is destroyed on close', () => {
+    test('a constructor-registered Destroyable entry is destroyed on close', () => {
         class DestroyMe {
             destroyed = false;
             destroy() {
@@ -37,23 +37,23 @@ describe('GenericApplicationContext — teardown of managed values on close', ()
         }
 
         const context = new GenericApplicationContext('t3');
-        context.setValue('lazyBean', DestroyMe);
-        const bean = context.getValue<DestroyMe>('lazyBean');
+        context.setValue('lazyEntry', DestroyMe);
+        const entry = context.getValue<DestroyMe>('lazyEntry');
 
         context.close();
-        expect(bean.destroyed).toBe(true);
+        expect(entry.destroyed).toBe(true);
     });
 
     test('internal state fields and non-lifecycle values are not torn down', () => {
         const context = new GenericApplicationContext('t4');
-        context.setValue('scalarBean', 42);
+        context.setValue('scalarEntry', 42);
 
         context.close();
 
         // A scalar is not lifecycle-bearing, so it is neither destroyed nor
         // removed — and internal context state survives intact.
         expect(context.destroyed).toBe(true);
-        expect((context as unknown as { scalarBean: number }).scalarBean).toBe(42);
+        expect((context as unknown as { scalarEntry: number }).scalarEntry).toBe(42);
     });
 });
 
@@ -93,13 +93,13 @@ describe('GenericApplicationContext — remaining branch coverage', () => {
     test('close() completes teardown when a context:close listener throws (CTX-06)', () => {
         const context = new GenericApplicationContext('throwing-close');
         const child = context.newChild('child') as GenericApplicationContext;
-        const bean = {
+        const entry = {
             destroyed: false,
             destroy() {
                 this.destroyed = true;
             },
         };
-        context.setValue('bean', bean);
+        context.setValue('entry', entry);
         // No 'error' listener → the emitter re-throws the listener failure out
         // of emit(), which previously aborted close() before any teardown.
         context.on('context:close', () => {
@@ -111,7 +111,7 @@ describe('GenericApplicationContext — remaining branch coverage', () => {
 
         expect(context.destroyed).toBe(true);
         expect(child.destroyed).toBe(true);
-        expect(bean.destroyed).toBe(true);
+        expect(entry.destroyed).toBe(true);
         expect(context.children).toHaveLength(0);
         expect(consoleError).toHaveBeenCalled();
         consoleError.mockRestore();

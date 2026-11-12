@@ -1707,9 +1707,9 @@ family, and — in `@ndigo/factory` — the lifecycle set (`Initializable`,
 `Destroyable`/`AsyncDestroyable`, `Closeable`/`AsyncCloseable`,
 `Lifecycle`/`Phased`/`SmartLifecycle`) with the `Aware` mixins. The
 2026-11-06 contract-reuse survey grounded this vocabulary in usage: every `equals()`-carrying class declares
-`Equatable`, the container's bean shutdown is duck-typed through the `like*`
+`Equatable`, the container's entry shutdown is duck-typed through the `like*`
 guards, and `ConversionService`/`FormattingService` are wired through the
-context as beans.
+context as entries.
 
 The working rules:
 
@@ -1758,11 +1758,11 @@ conditional on platform (`@whenNode`) and environment.
 The context drives two lifecycle passes:
 
 - **Refresh** (`context.refresh()`) — after entries are created, the
-  `LifecycleProcessor` starts `SmartLifecycle` beans that are
+  `LifecycleProcessor` starts `SmartLifecycle` entries that are
   `isAutoStartup` (mapping, dispatcher). Ordering is by phase; the mapping
   and dispatcher initialize before the server would start.
 - **Close** (`context.close()`) — the processor stops running lifecycle
-  beans in reverse order, then `_destroyValues()` tears down values that
+  entries in reverse order, then `_destroyValues()` tears down values that
   implement `Destroyable`/`Closeable` (including plain `@entry`/`setValue`
   instances). `HTTPServer` is a managed entry created by
   `NodeAutoConfiguration` (not manually); see
@@ -1799,7 +1799,7 @@ before first public release.
 | ---------------------- | ------------------------ | ----------------------------------------------------------------------------------------------------------------- |
 | `@ndigo/boot`          | Bootstrap primitives     | `ApplicationBuilder`, `Application`                                                                               |
 | `@ndigo/context`       | DI container + lifecycle | `Configuration`, `@entry`, context hierarchy                                                                      |
-| `@ndigo/factory`       | Bean lifecycle           | `SmartLifecycle`, `Destroyable`, `Closeable`                                                                      |
+| `@ndigo/factory`       | Entry lifecycle          | `SmartLifecycle`, `Destroyable`, `Closeable`                                                                      |
 | `@ndigo/dispatcher`    | Routing + dispatch       | mappings, `@parameters` extractors, validation, interceptors, error resolvers                                     |
 | `@ndigo/platform-node` | Node adapter             | `NodeAutoConfiguration`, `HTTPServer`, `NodeDispatcher`, argument resolvers, `ProblemDetails`, `gracefulShutdown` |
 | `@ndigo/http`          | HTTP vocabulary          | `ResponseStatuses`, `HTTPHeaders`                                                                                 |

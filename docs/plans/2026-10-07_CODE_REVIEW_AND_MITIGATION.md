@@ -437,7 +437,7 @@ only until a consumer exists. Each requires an ADR + owner sign-off before code.
 **Movement:** GAP-1 closed by AD-72 (`d950ad5c`); GAP-3 **executed** —
 [AD-73](../decisions/2026-10-07_AD73_DISTRIBUTED_LOCKS.md) (accepted and
 implemented 2026-10-07: `@ndigo/locks` SPI + `InProcessLockDriver`,
-`@ndigo/redis/locks` driver, `@scheduled({ lock })`, `lockDriver` bean —
+`@ndigo/redis/locks` driver, `@scheduled({ lock })`, `lockDriver` entry —
 see the [companion plan](2026-10-07_DISTRIBUTED_LOCKS.md)); GAP-2
 **executed** — [AD-74](../decisions/2026-10-07_AD74_CLUSTERING.md)
 (`@ndigo/cluster` supervisor: N worker slots, signal relay into each child's
@@ -471,7 +471,7 @@ new|generate|status` closing the AD-75 `db:*` remainder. **GAP-8 executed**
 - the [companion plan](2026-10-08_SHARED_STORE_RATE_LIMITING.md): the
   `RateLimiter` SPI (`consume` async per AD-39) moves to the new
   `@ndigo/rate-limit` leaf (policy/result/guard/`FixedWindowRateLimiter`/
-  `RATE_LIMITER` token), the interceptor awaits and the bean is
+  `RATE_LIMITER` token), the interceptor awaits and the entry is
   token-registered, and `@ndigo/redis/rate-limit` ships the shared-store
   fixed-window driver (one Lua script per consume: INCR/PEXPIRE-on-first/
   PTTL, namespace-scoped keys, windows anchored at first request,
@@ -619,7 +619,7 @@ full gate set including the new spec-typecheck lane is green.
       (`LockDriver` SPI + `InProcessLockDriver`), `@ndigo/redis/locks`
       (`RedisLockDriver`, Lua, live-lane verified), `@scheduled({ lock })`
       (runner acquire/finally-release, decoration-time validation), and the
-      `lockDriver` bean — the Wave-6 dependency cluster's second item lands.
+      `lockDriver` entry — the Wave-6 dependency cluster's second item lands.
 - **GAP-2 (Wave 6)** — executed on ADR sign-off: [AD-74](../decisions/2026-10-07_AD74_CLUSTERING.md)
     - [companion plan](2026-10-07_CLUSTERING.md) + guide 24. `@ndigo/cluster`
       (`ClusterRunner`: N replicated worker slots with `NDIGO_CLUSTER_SLOT`/`SIZE`
@@ -639,7 +639,7 @@ full gate set including the new spec-typecheck lane is green.
       guide 11 §5/guide 16. `@ndigo/rate-limit` (`RateLimiter` SPI with async
       `consume`, `validateRateLimitPolicy`, `likeRateLimiter`,
       `FixedWindowRateLimiter`, `RATE_LIMITER` token), the platform cutover
-      (interceptor awaits, bean `@entry(RATE_LIMITER)`, `src/rate-limit.ts`
+      (interceptor awaits, entry `@entry(RATE_LIMITER)`, `src/rate-limit.ts`
       deleted), and `@ndigo/redis/rate-limit` (`RedisRateLimiter`: Lua
       INCR/PEXPIRE-on-first/PTTL fixed windows keyed
       `ndigo:rl:<ns>:<windowMs>:<key>`, fail-closed default, `fail-open` logs

@@ -35,7 +35,7 @@ classes only** (`@refreshScope` coverage), **static header via env**
 composition), **follow-up ADR** (Emitter↔Signals unification, D-9).
 **Scope:** The Configuration row of the Framework Gap Analysis (gap
 analysis `docs/audits/2026-09-13_FRAMEWORK_GAP_ANALYSIS.md` §3): closes the
-three missing pieces — secret encryption/decryption, live bean rebind
+three missing pieces — secret encryption/decryption, live entry rebind
 (`@RefreshScope` equivalent), and config-server integration. Builds directly
 on the AD-11..17 environment stack.
 **Companion docs:**
@@ -45,8 +45,8 @@ on the AD-11..17 environment stack.
 (environment phases 0–6 — the stack this completes),
 [AD-16](../decisions/archive/2026-09-08_AD16_ENVIRONMENT_OBSERVABILITY.md) (refresh
 semantics, the contract this extends),
-[AD-20](../decisions/2026-09-13_AD20_SCHEDULING.md) (auto-config bean
-pattern), [AD-24](../decisions/2026-09-17_AD24_CACHING.md) (managed-bean +
+[AD-20](../decisions/2026-09-13_AD20_SCHEDULING.md) (auto-config entry
+pattern), [AD-24](../decisions/2026-09-17_AD24_CACHING.md) (managed-entry +
 demo-gate pattern), [AD-09](../decisions/2026-09-05_AD09_SERVER_PUSH.md)
 (`streamToSignal` — the Emitter↔Signals bridge), Feature Assessment
 `docs/reference/2026-09-01_FEATURE_ASSESSMENT.md` (status refresh).
@@ -59,7 +59,7 @@ The gap analysis §3 Configuration row:
 
 > **Configuration** | Property sources, profiles, placeholders, typed binding,
 > validation, origins/customizers, refresh (AD-11..17) | No secret
-> encryption/decryption, no live bean rebind (`@RefreshScope` equivalent), no
+> encryption/decryption, no live entry rebind (`@RefreshScope` equivalent), no
 > config-server integration.
 
 Three verifiable gaps:
@@ -70,9 +70,9 @@ Three verifiable gaps:
    binding.
 2. **Live rebind.** `AbstractEnvironment.refresh()` (AD-16 D3, minimal) clears
    the placeholder cache and rebuilds the index — nothing more. Bound
-   `@configurationProperties` instances and scoped beans are boot-time
+   `@configurationProperties` instances and scoped entries are boot-time
    snapshots; nobody observes an environment refresh, so dynamic config
-   cannot reach running beans.
+   cannot reach running entries.
 3. **Config server.** All sources are local and synchronous. There is no
    remote/async source, no polling, no change signal. The last
    Spring-Cloud-Config-tier capability is absent.
@@ -148,7 +148,7 @@ the ladder (D-3).
     - `node-file-reader.ts`, boot stays isomorphic) and its
       `optional:`/`required:` file convention; `TtlContentSource`
       (`ndigo-content/src/async.ts`) TTL pattern; AD-24's demo-gate counter test
-      (`cached-report`); AD-20's `NodeAutoConfiguration` `@entry` beans.
+      (`cached-report`); AD-20's `NodeAutoConfiguration` `@entry` entries.
 - **Crypto posture:** zero crypto deps in-tree; `jose` is a dependency of
   the auth packages only (never `ndigo-context`). `node:crypto` is the
   platform standard (Node ≥ 22 per the i18n note; `Intl` precedent AD-19
@@ -183,7 +183,7 @@ distinct from the context's lifecycle events `context:prepare` /
 - `@refreshScope` on a **`@configurationProperties` class** additionally
   re-binds: Wave 1's boot rebind listener (architecture table) re-runs
   `resolveConfigurationProperties` and `setValue`s the fresh instance. This
-  is the missing "live bean rebind".
+  is the missing "live entry rebind".
 - **Coverage (owner-confirmed 2026-09-25): config classes only.** `@entry`
   method results (eager stored instances) are NOT re-run in Wave 1 — they'd
   need method-level spec metadata (the `@scheduled` model). Documented as the
@@ -370,7 +370,7 @@ On a detected change (ETag/body digest), the source `replace`s its own
 properties (registry mutation bumps the version → index rebuild + placeholder
 cache clear per AD-12 D1), then calls `environment.refresh()` → emits
 `config:refresh` → boot's listener (D-3) re-binds `@refreshScope`
-`@configurationProperties` classes and refresh-scoped beans re-create. No
+`@configurationProperties` classes and refresh-scoped entries re-create. No
 change → no event → no rebinding (no storms). Spring Cloud Config publishing
 `RefreshScopeRefreshedEvent` on change — same shape, JS-native.
 
@@ -426,7 +426,7 @@ builder.configServer({
     optional: true,
 });
 // PrecedenceDoc: commandLine > boot > systemEnvironment > configServer > dotenv > …
-// change at the server → poll detects → refresh() → @refreshScope beans rebind
+// change at the server → poll detects → refresh() → @refreshScope entries rebind
 ```
 
 Package deps: **zero new runtime dependencies.** `node:crypto` and global
@@ -501,7 +501,7 @@ class receives the decrypted value. Gates: package vitest + `tsc -b`.
 **Wave 3 — config server.** `RemotePropertySource` (+ fetch seam, ETag,
 body-digest, `optional`), boot wiring + `PrecedenceDoc` update + order
 assertion spec, **full-loop integration spec**: stub HTTPS endpoint → changed
-document → poll → refresh event → `@refreshScope` bean rebinds with the new
+document → poll → refresh event → `@refreshScope` entry rebinds with the new
 value (the wave's payoff spec); 304 → no event; `optional:false` fetch
 failure fails boot; `context:close` stops polling (fake-timer spec);
 **secrets × remote composition**: fetched document carrying `{cipher:…}`

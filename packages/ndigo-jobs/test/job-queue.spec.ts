@@ -25,7 +25,7 @@ describe('JobQueue', () => {
         expect(record.maxAttempts).toBe(1);
     });
 
-    test('resolves the jobDriver bean from its application context', async () => {
+    test('resolves the jobDriver entry from its application context', async () => {
         const context = new GenericApplicationContext('jobs');
         const driver = new InProcessJobDriver();
         context.setValue(JOB_DRIVER, driver);

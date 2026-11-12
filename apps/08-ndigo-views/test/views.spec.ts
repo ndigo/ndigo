@@ -19,7 +19,7 @@ installSynchronousAnimationFrames();
  *
  *  1. `/`        → 'shell'  → component module → WebComponentViewResolver
  *                              (eager registry + @TagMapping metadata + viewNames filter)
- *  2. `/widget`  → 'footer' → context bean     → NameViewResolver
+ *  2. `/widget`  → 'footer' → context entry     → NameViewResolver
  *  3. `/report`  → 'report' → module on disk   → ReportViewResolver (path import)
  *  4. `/nope`    → 'nope'   → no resolver      → chain fall-through → NoViewFound
  *
@@ -49,7 +49,7 @@ describe('ndigo-views composite resolver demo', () => {
         app.close();
     });
 
-    it('resolves a context-bean view by name', async () => {
+    it('resolves a context-entry view by name', async () => {
         const app = await bootBrowserApp([ViewsAppConfiguration]);
         const mvc = new BrowserMockClient(app);
 
@@ -78,7 +78,7 @@ describe('ndigo-views composite resolver demo', () => {
         app.close();
     });
 
-    it('localizes the context-bean view through the ContentSource', async () => {
+    it('localizes the context-entry view through the ContentSource', async () => {
         const app = await bootBrowserApp([ViewsAppConfiguration]);
         const mvc = new BrowserMockClient(app);
 

@@ -165,7 +165,7 @@ export class AbstractDispatcher
 
     /**
      * `SmartLifecycle` — strategies are immutable once initialized; nothing to
-     * release. Present so this type is a well-behaved lifecycle bean.
+     * release. Present so this type is a well-behaved lifecycle entry.
      */
     stop(): void {
         this.#lifecycleStarted = false;
@@ -186,7 +186,7 @@ export class AbstractDispatcher
     }
 
     private _isDestroyableView(view: View): view is View & { destroy(): void | Promise<void> } {
-        // Not likeDestroyable(): views are not lifecycle beans — they carry no
+        // Not likeDestroyable(): views are not lifecycle entries — they carry no
         // `destroyed` flag, so the destroy-callable shape alone is the contract.
         return like({ destroy: Function })(view);
     }

@@ -147,9 +147,18 @@ host.registerFeature({
 });
 ```
 
-`ContextEventGateway` validates relay names (shell-owned `site:*`,
-feature-owned `<feature>:*`) and blocks the rest. No relay means no
-cross-feature communication — that is the isolation guarantee, not a bug.
+`ContextEventGateway` relays only the allowlisted pairs. With a
+`NamespaceRelayValidationStrategy` it also validates the shell/feature
+namespaces (shell-owned `site:*`, feature-owned `<feature>:*`) and blocks the
+rest. No relay means no cross-feature communication — that is the isolation
+guarantee, not a bug.
+
+The same isolation applies to configuration: a feature context has its own
+environment and does not see the shell's property sources. `@sharedDependency`
+shares beans, not config values. Platform values belong in a config package or,
+when they are runtime values, in shell-registered beans.
+[Guide 49](49-configuration-layering-and-context-composition.md) covers the
+layering options and the boundary.
 
 ## 6. Features vs islands
 
@@ -179,6 +188,8 @@ cross-feature communication — that is the isolation guarantee, not a bug.
 
 ## See also
 
+- [Guide 49 — Configuration Layering & Context Composition](49-configuration-layering-and-context-composition.md)
+  — profiles vs config layers vs context boundaries, and the shell/feature event model.
 - [Guide 02 — Building a Browser App](02-building-a-browser-app.md) — the browser preset and router
 - [Guide 05 — Routing & Route Conditions](05-routing-and-route-conditions.md) — partitions and feature routing
 - [Guide 29 — Signals & Islands](29-signals-and-islands.md) — the island shape

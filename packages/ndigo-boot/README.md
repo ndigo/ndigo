@@ -60,6 +60,8 @@ pnpm --filter @ndigo/boot test
 
 ## See Also
 
+- [Guide 49 — Configuration Layering & Context Composition](../../docs/guides/49-configuration-layering-and-context-composition.md)
+  — profiles vs config layers vs context boundaries, and platform config composition
 - [@ndigo/context](../ndigo-context/README.md) — the context underneath
 - [@ndigo/platform-node](../ndigo-platform-node/README.md) — the Node auto-configuration provisions this on Node
 - [@ndigo/platform-web](../ndigo-platform-web/README.md) — the browser platform composes this package (`createWebApplication`)

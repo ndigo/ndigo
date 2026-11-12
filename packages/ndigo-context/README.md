@@ -84,6 +84,8 @@ pnpm --filter @ndigo/context test
 
 ## See Also
 
+- [Guide 49 — Configuration Layering & Context Composition](../../docs/guides/49-configuration-layering-and-context-composition.md)
+  — profiles vs config layers vs context boundaries
 - [@ndigo/factory](../ndigo-factory/README.md) — factory scope and lifecycle
 - [@ndigo/boot](../ndigo-boot/README.md) — `ApplicationBuilder` on top of the context
 - [@ndigo/test](../ndigo-test/README.md) — boots real contexts in tests

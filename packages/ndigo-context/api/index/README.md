@@ -426,18 +426,6 @@ Re-exports [FeatureUnmountPolicy](../context-hierarchy/type-aliases/FeatureUnmou
 
 ***
 
-### findAncestor
-
-Re-exports [findAncestor](../context-hierarchy/functions/findAncestor.md)
-
-***
-
-### findDescendants
-
-Re-exports [findDescendants](../context-hierarchy/functions/findDescendants.md)
-
-***
-
 ### FlatMergedIndex
 
 Re-exports [FlatMergedIndex](../property-resolver/classes/FlatMergedIndex.md)
@@ -879,18 +867,6 @@ Re-exports [StandardEnvironment](../environment/classes/StandardEnvironment.md)
 ### toLookupKey
 
 Re-exports [toLookupKey](../configuration-metadata/functions/toLookupKey.md)
-
-***
-
-### traverseSubtree
-
-Re-exports [traverseSubtree](../context-hierarchy/functions/traverseSubtree.md)
-
-***
-
-### traverseToRoot
-
-Re-exports [traverseToRoot](../context-hierarchy/functions/traverseToRoot.md)
 
 ***
 

@@ -1,7 +1,7 @@
 /**
  * Generic application context implementation.
  */
-import { JSONObject, direct, escalate } from '@ndigo/core';
+import { JSONObject } from '@ndigo/core';
 import {
     ContentSource,
     LanguageCode,
@@ -12,7 +12,7 @@ import {
     ThemeResolver,
     StaticThemeResolver,
 } from '@ndigo/content';
-import { AsEventEmitter, EventType } from './event-emitter';
+import { AsEventEmitter } from './event-emitter';
 import {
     DefaultLifecycleProcessor,
     LifecycleProcessor,
@@ -213,26 +213,6 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
                 this.setValue(key, data[key]);
             }
         }
-    }
-
-    /**
-     * Broadcasts an event to all descendants.
-     *
-     * @param type - The event type.
-     * @param data - Event payload values.
-     */
-    broadcast(type: EventType, ...data: unknown[]): void {
-        direct<ApplicationContext>(this, (targetContext) => targetContext.emit(type, ...data), true);
-    }
-
-    /**
-     * Emits an event to parent contexts.
-     *
-     * @param type - The event type.
-     * @param data - Event payload values.
-     */
-    bubble(type: EventType, ...data: unknown[]): void {
-        escalate<ApplicationContext>(this, (parentContext) => parentContext.emit(type, ...data), true);
     }
 
     /**

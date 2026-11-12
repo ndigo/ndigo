@@ -1,13 +1,12 @@
-# Micro Frontends in Ndigo — architecture map
+# Micro Frontends
 
-**Status:** Live — the patterns below are implemented (`@ndigo/host` since
-2026-09-13) and demonstrated by `apps/06-ndigo-host-demo` and `apps/03-ndigo-todo-web`.
+**Status:** Implemented and demonstrated in the example applications.
 
 This is the cross-cutting map for Ndigo micro frontends: how the shell
-hosts feature contexts, how islands fit in, and where the seams,
-contracts, and decision records live.
+hosts feature contexts, how islands fit in, and where the seams and
+contracts sit.
 
-## Two complementary mechanisms
+## Two Mechanisms
 
 Ndigo has **two** micro frontend shapes, used independently or together:
 
@@ -20,7 +19,7 @@ The host/feature path is for _application slices_ with their own services and
 lifecycle; the island path is for _presentation units_ that should render
 fast and stay independent.
 
-## Host stack
+## Host Stack
 
 ```
 HashRouter / BrowserDispatcher        ← URL source of truth (platform)
@@ -34,7 +33,7 @@ HostManager  (resolvable via HOST_MANAGER_TOKEN from the shell context)
         context tree:  shell ─ newChild → feature contexts (relay gateways, event isolation)
 ```
 
-## Registration and lifecycle
+## Registration and Lifecycle
 
 One call per feature (`@ndigo/host`):
 
@@ -60,19 +59,19 @@ host.registerFeature({
 | remove     | `unregister(name)`       | close + remove from both registries; name is free again             |
 | teardown   | `destroy()`              | unregister everything                                               |
 
-## Shared dependencies
+## Shared Dependencies
 
 - Shell declares shared singletons via `SharedDependencyRegistry`
   (`SHARED_DEPENDENCY_REGISTRY_TOKEN` in the shell context); features declare
   `requires`/`optional` ranges; validation runs at mount time (missing or
-  semver-mismatched required deps throw).
-- `@sharedDependency()` decorator marks a bean shell-managed: child contexts skip
-  registration and resolve from the parent chain (enforced in
+  [semver](https://semver.org/)-mismatched required deps throw).
+- `@sharedDependency()` decorator marks a bean shell-managed: child contexts
+  skip registration and resolve from the parent chain (enforced in
   `AbstractFactory`).
-- This is the runtime equivalent of import maps — no build-level module
-  deduplication by design (features stay standalone).
+- This is the runtime equivalent of [import maps](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/importmap)
+  — no build-level module deduplication by design (features stay standalone).
 
-## Event isolation
+## Event Isolation
 
 - Each feature context is a child of the shell; cross-context events flow
   **only** through explicitly allowlisted relays
@@ -87,25 +86,27 @@ host.registerFeature({
 - Server: `IslandView` emits `<tag data-ndigo-island data-ndigo-model="…">`;
   `IslandViewResolver` resolves a view name → island marker (the
   controller↔client link).
-- Client: `hydrateIslands()` upgrades markers to live custom elements
+- Client: `hydrateIslands()` upgrades markers to live
+  [custom elements](https://developer.mozilla.org/en-US/docs/Web/API/Web_components)
   (`@TagMapping`-registered), restores `.model`, replaces inert markup.
-- Reactive half: server pushes model updates over SSE
+- Reactive half: the server pushes model updates over
+  [server-sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events)
   (`ServerSentEventView`/`SSEEmitter`); the island subscribes via a typed
   service-stream into `@ndigo/signals` (`streamToSignal`) and re-renders.
-- The integration contract is the **name ↔ tag ↔ zod schema triple** —
-  documented in the view-resolution strategy, not yet enforced by a
+- The integration contract is the **name ↔ tag ↔ [zod](https://zod.dev/) schema**
+  triple — documented in the view-resolution strategy, not yet enforced by a
   registry.
 
-## Standalone doctrine
+## Standalone Principles
 
-Minimize integration testing: features/islands must not import one
+Minimize integration testing: features and islands must not import one
 another's code. Their boundaries are **data contracts** (context values and
 the serialized island model), so an integration surface is one schema, not
 a graph of call sites. Both demo hosts exercise this discipline.
 
-## Single-SPA comparison (condensed)
+## Comparison with single-SPA
 
-| Single-SPA                                    | Ndigo                                                              | Note                                 |
+| [single-SPA](https://single-spa.js.org/)      | Ndigo                                                              | Note                                 |
 | --------------------------------------------- | ------------------------------------------------------------------ | ------------------------------------ |
 | `registerApplication` + activity fn           | `HostManager.registerFeature({name, prefix, …})`                   | Prefix partitions; single call       |
 | bootstrap/mount/unmount                       | `mount`/`mountLazy`/`unmount(policy)`/`unregister`                 | No separate bootstrap phase          |
@@ -114,30 +115,22 @@ a graph of call sites. Both demo hosts exercise this discipline.
 | framework-agnostic apps                       | Web components + context values                                    | Islands = data-bound components      |
 | standalone apps / minimal integration testing | Island model contracts; feature contexts with gateways             | Same doctrine                        |
 
-## Documentation pointers
+## See Also
 
-- **host runtime** — host orchestration decision + implementation
-  status: `docs/decisions/2026-09-13_AD18_HOST_RUNTIME.md`
-- **Site/Page model** — legacy Site/Page lineage; the open **Page concept / TTFB-vs-TTI**
-  question: `docs/decisions/2026-09-07_AD03_SITE_PAGE_MODEL.md`
-- **SSE server push** — SSE-first island reactivity: `docs/decisions/2026-09-05_AD09_SERVER_PUSH.md`
-- **Shared dependency contract** (AD-62): `docs/decisions/2026-09-03_AD62_SHARED_DEPENDENCY_CONTRACT.md`
-- **Scale 2 context + routing** (AD-54): `docs/decisions/2026-03-24_AD54_HIERARCHICAL_CONTEXTS_ROUTE_PARTITIONING.md`
-- **View resolution strategy** (AD-65): `docs/decisions/2026-09-06_AD65_VIEW_RESOLUTION_STRATEGY.md`
-- **Signals & islands how-to** — [Guide 29](../guides/29-signals-and-islands.md):
+- [Guide 29 — Signals & Islands](../guides/29-signals-and-islands.md) —
   the reactive half in detail (`@ndigo/signals` primitives and decorators,
-  stream/event bridges, `hydrateIslands()` + SSE-driven re-render).
-- **Route registry** (AD-61): `docs/decisions/2026-09-03_AD61_ROUTE_REGISTRY.md`
-- **Framework assessment** (partial hydration ✅, MFE shell status):
-  `docs/reference/2026-09-01_FEATURE_ASSESSMENT.md`
-- **Demo hosts**: `apps/06-ndigo-host-demo` (@ndigo/host-demo), `apps/03-ndigo-todo-web`,
-  reactive island: `apps/07-ndigo-island`
+  stream/event bridges, `hydrateIslands()` and SSE-driven re-render).
+- [Guide 31 — Micro Frontends with `@ndigo/host`](../guides/31-micro-frontends.md)
+  — the host and feature tutorial.
+- [Package index](https://ndigo.dev/reference/packages/) — `@ndigo/host`, `@ndigo/context`,
+  `@ndigo/router`, `@ndigo/view`, and `@ndigo/view-webcomponent`.
+- [Examples](https://ndigo.dev/examples/) — the host demos and the reactive island demo.
 
-## Known gaps (deliberate)
+## Known Gaps
 
-1. **Page concept / TTFB-vs-TTI contract** — the open design
-   conversation; its registration-API half was answered by the host runtime only.
+1. **Page concept / TTFB-vs-TTI contract** — the open design conversation;
+   its registration-API half was answered by the host runtime only.
 2. **Island name ↔ tag ↔ schema triple** — documented contract, no
-   enforcement/registry yet.
+   enforcement or registry yet.
 3. **Runtime self-registration** — the `HOST_MANAGER_TOKEN` seam makes it
    possible; the deployment model stays compile-time.

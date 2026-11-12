@@ -184,5 +184,5 @@ cross-feature communication — that is the isolation guarantee, not a bug.
 - [Guide 29 — Signals & Islands](29-signals-and-islands.md) — the island shape
 - [Micro Frontends architecture](../architecture/micro-frontends.md) — the full map and design decisions
 - [`@ndigo/host`](../../packages/ndigo-host/README.md) — `HostManager`
-- [[apps/06-ndigo-host-demo](https://github.com/ndigo/ndigo/tree/main/apps/06-ndigo-host-demo)](../../[apps/06-ndigo-host-demo](https://github.com/ndigo/ndigo/tree/main/apps/06-ndigo-host-demo)/README.md) — three lazy feature chunks
+- [apps/06-ndigo-host-demo](https://github.com/ndigo/ndigo/tree/main/apps/06-ndigo-host-demo) — three lazy feature chunks
 - and — host runtime and shared dependencies

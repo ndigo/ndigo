@@ -9,8 +9,8 @@ on it.
 
 This guide covers both paths: using ndigo-ui, and adopting any other Web
 Component library (Web Awesome is the worked example). The runnable ndigo-ui
-reference is [[apps/20-ndigo-ui-lab](https://github.com/ndigo/ndigo/tree/main/apps/20-ndigo-ui-lab)](../../[apps/20-ndigo-ui-lab](https://github.com/ndigo/ndigo/tree/main/apps/20-ndigo-ui-lab)/README.md);
-[[apps/07-ndigo-island](https://github.com/ndigo/ndigo/tree/main/apps/07-ndigo-island)](../../[apps/07-ndigo-island](https://github.com/ndigo/ndigo/tree/main/apps/07-ndigo-island)/README.md) is the migrated
+reference is [apps/20-ndigo-ui-lab](https://github.com/ndigo/ndigo/tree/main/apps/20-ndigo-ui-lab);
+[apps/07-ndigo-island](https://github.com/ndigo/ndigo/tree/main/apps/07-ndigo-island) is the migrated
 island app. The decision records are
 ,
 (which supersedes ), and
@@ -277,6 +277,6 @@ current app dependency.
 - [Guide 28 — Security Hardening](28-security-hardening.md) — CSP
 - [Guide 41 — Custom View Engines](41-custom-view-engines.md) — React/Vue UI strategies
 - [`@ndigo/ui`](../../packages/ndigo-ui/README.md) — tokens, theme, registry
-- [[apps/20-ndigo-ui-lab](https://github.com/ndigo/ndigo/tree/main/apps/20-ndigo-ui-lab)](../../[apps/20-ndigo-ui-lab](https://github.com/ndigo/ndigo/tree/main/apps/20-ndigo-ui-lab)/README.md) — the runnable consumer
+- [apps/20-ndigo-ui-lab](https://github.com/ndigo/ndigo/tree/main/apps/20-ndigo-ui-lab) — the runnable consumer
 - [ndigo-ui agent skill](../../agent-local/skills/ndigo-ui/SKILL.md) — the agent-facing usage and porting contract
 - , , and — component, selection, and ndigo-ui decisions

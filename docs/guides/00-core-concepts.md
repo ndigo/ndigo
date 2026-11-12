@@ -108,13 +108,13 @@ themes.
 The same application code runs on two platforms; the preset decides what
 "transport" and "render target" mean:
 
-| Concern       | Node (`@ndigo/platform-node`)      | Browser (`@ndigo/platform-web`)        |
-| ------------- | ---------------------------------- | -------------------------------------- |
-| Bootstrap     | `createNodeApplication`               | `createWebApplication`                 |
-| Transport     | HTTP/1.1, HTTP/2, WebSocket server | hash/history routing, `fetch`          |
-| View target   | HTTP response                      | DOM element                            |
-| Static assets | filesystem handler / static views  | Vite dev server and bundles            |
-| Test harness  | `bootNodeApp` + `MockHTTP`             | `bootWebApp` + `MockWebClient` |
+| Concern       | Node (`@ndigo/platform-node`)      | Browser (`@ndigo/platform-web`) |
+| ------------- | ---------------------------------- | ------------------------------- |
+| Bootstrap     | `createNodeApplication`            | `createWebApplication`          |
+| Transport     | HTTP/1.1, HTTP/2, WebSocket server | hash/history routing, `fetch`   |
+| View target   | HTTP response                      | DOM element                     |
+| Static assets | filesystem handler / static views  | Vite dev server and bundles     |
+| Test harness  | `bootNodeApp` + `MockHTTP`         | `bootWebApp` + `MockWebClient`  |
 
 Platform packages are adapters, not forks: `@ndigo/platform-node` and
 `@ndigo/platform-web` wire the shared contracts to a runtime. Guides [01](01-building-a-node-api.md) and [02](02-building-a-browser-app.md)
@@ -144,14 +144,14 @@ task-shaped paths through them.
 One of the most common design questions is "where does this update live?". The
 framework deliberately separates four mechanisms:
 
-| Need                                                      | Use                                                  | Guide  |
-| --------------------------------------------------------- | ---------------------------------------------------- | ------ |
-| Local, synchronous derived state in one component/service | signals (`signal`, `computed`, `effect`)             | [29](29-signals-and-islands.md)     |
-| Cross-context notification inside one application         | application events (`context.emit` / `EventGateway`) | [04](04-dependency-injection-and-lifecycle.md)     |
+| Need                                                      | Use                                                  | Guide                                                   |
+| --------------------------------------------------------- | ---------------------------------------------------- | ------------------------------------------------------- |
+| Local, synchronous derived state in one component/service | signals (`signal`, `computed`, `effect`)             | [29](29-signals-and-islands.md)                         |
+| Cross-context notification inside one application         | application events (`context.emit` / `EventGateway`) | [04](04-dependency-injection-and-lifecycle.md)          |
 | Server → client live push                                 | SSE (`ServerSentEventView`) or WebSockets            | [15](15-websockets.md), [29](29-signals-and-islands.md) |
-| Work that must survive a restart or run later             | jobs + outbox                                        | [22](22-jobs-and-outbox.md)     |
-| Work that runs on a clock                                 | `@scheduled`                                         | [23](23-scheduling.md)     |
-| Boot-time or request-time feature decision                | `@whenFeature` / feature flags                       | [34](34-feature-flags.md)     |
+| Work that must survive a restart or run later             | jobs + outbox                                        | [22](22-jobs-and-outbox.md)                             |
+| Work that runs on a clock                                 | `@scheduled`                                         | [23](23-scheduling.md)                                  |
+| Boot-time or request-time feature decision                | `@whenFeature` / feature flags                       | [34](34-feature-flags.md)                               |
 
 Signals are **not** an event bus, and context events are **not** a durable
 queue. Picking the right one up front avoids most of the "why did this update

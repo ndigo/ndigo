@@ -187,7 +187,7 @@ contributor guides. Numbers are reading order within a section.
   paths, weaving semantics, and retry + circuit breaking (`@ndigo/resilience`).
 - [36 — Testing with `@ndigo/test`](36-testing.md) — the in-process harness
   : `bootNodeApp`/`cachedBootNodeApp`, the `MockHTTP` request builder and
-  `MockResult`, browser apps via `BrowserMockClient` + `MemoryViewTarget`, and
+  `MockResult`, browser apps via `MockWebClient` + `MemoryViewTarget`, and
   what the harness deliberately is not.
 - [37 — The `ndigo` CLI](37-ndigo-cli.md) — `@ndigo/cli`: the app lifecycle
   (`serve`/`dev` — serve replicates across worker slots), scaffolding

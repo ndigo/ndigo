@@ -592,7 +592,7 @@ orm-drizzle specs, guides 11 and 16, and the auth-core README.
 
 **Smaller findings, resolved.** `01-ndigo-hello`'s smoke spec hand-rolled the
 context boot and a bespoke capture target (with an incorrect justification);
-it now uses `bootWebApp` + `BrowserMockClient`. `03`'s route-registry
+it now uses `bootWebApp` + `MockWebClient`. `03`'s route-registry
 comment described removed `@ndigo/boot` auto-registration and was rewritten.
 
 **Findings deliberately not actioned.** `03` declares runtime packages in both

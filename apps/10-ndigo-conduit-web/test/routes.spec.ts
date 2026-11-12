@@ -2,7 +2,7 @@
 import '@tsmetadata/polyfill';
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from 'vitest';
 import { configuration, entry } from '@ndigo/context';
-import { bootWebApp, BrowserMockClient } from '@ndigo/test';
+import { bootWebApp, MockWebClient } from '@ndigo/test';
 import ArticleController from '../src/controllers/article-controller';
 import { LoginController, RegisterController } from '../src/controllers/auth-controller';
 import EditorController from '../src/controllers/editor-controller';
@@ -132,13 +132,13 @@ class RoutesTestConfiguration {
     }
 }
 
-describe('route wiring through BrowserMockClient', () => {
-    let browser: BrowserMockClient;
+describe('route wiring through MockWebClient', () => {
+    let browser: MockWebClient;
     let close: () => void;
 
     beforeAll(async () => {
         const app = await bootWebApp([RoutesTestConfiguration]);
-        browser = new BrowserMockClient(app);
+        browser = new MockWebClient(app);
         close = app.close;
     });
 

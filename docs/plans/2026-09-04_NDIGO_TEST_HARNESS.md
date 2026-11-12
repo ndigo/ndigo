@@ -187,29 +187,29 @@ packages/ndigo-test/
 
 ## 5. Open Questions
 
-| Question                                                            | Recommendation                                                                                                                                                                                              |
-| ------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `@ndigoTest` fixture as decorator vs. explicit `bootNodeApp()` helper?  | **Explicit `bootNodeApp()` + `MockHTTP`** — the composable core matches Vitest's `beforeAll`/`afterAll`; no decorator ceremony. Decorator sugar may return if useful.                                           |
-| Should `MockHTTP.exec()` build a real `ServerResponse` or the sink? | **In-memory sink** (fast, deterministic). Real socket only via `live: true`.                                                                                                                                |
-| Where do fixtures live — `@ndigo/test` or a per-app `test/helpers`? | In `@ndigo/test`; apps just `import { bootNodeApp, MockHTTP } from '@ndigo/test'`.                                                                                                                              |
-| Does `@ndigo/test` boot the server or just the dispatcher?          | **Dispatcher only** — booting the listener adds nothing for in-process testing.                                                                                                                             |
-| Vitest env                                                          | `// @vitest-environment node` (global config is jsdom).                                                                                                                                                     |
-| `@ndigo/test` use `@ndigo/boot`?                                    | **No** — `@ndigo/boot`'s index re-exports browser `web-auto-configuration` → `@ndigo/view-webcomponent` (DOM). `bootNodeApp` uses `MetadataConfigApplicationContext` directly, keeping `@ndigo/test` node-pure. |
+| Question                                                               | Recommendation                                                                                                                                                                                                  |
+| ---------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@ndigoTest` fixture as decorator vs. explicit `bootNodeApp()` helper? | **Explicit `bootNodeApp()` + `MockHTTP`** — the composable core matches Vitest's `beforeAll`/`afterAll`; no decorator ceremony. Decorator sugar may return if useful.                                           |
+| Should `MockHTTP.exec()` build a real `ServerResponse` or the sink?    | **In-memory sink** (fast, deterministic). Real socket only via `live: true`.                                                                                                                                    |
+| Where do fixtures live — `@ndigo/test` or a per-app `test/helpers`?    | In `@ndigo/test`; apps just `import { bootNodeApp, MockHTTP } from '@ndigo/test'`.                                                                                                                              |
+| Does `@ndigo/test` boot the server or just the dispatcher?             | **Dispatcher only** — booting the listener adds nothing for in-process testing.                                                                                                                                 |
+| Vitest env                                                             | `// @vitest-environment node` (global config is jsdom).                                                                                                                                                         |
+| `@ndigo/test` use `@ndigo/boot`?                                       | **No** — `@ndigo/boot`'s index re-exports browser `web-auto-configuration` → `@ndigo/view-webcomponent` (DOM). `bootNodeApp` uses `MetadataConfigApplicationContext` directly, keeping `@ndigo/test` node-pure. |
 
 ---
 
 ## 6. Acceptance Criteria
 
-| Gate                                                                                               | Verification                                                    |
-| -------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| Gate                                                                                                   | Verification                                                    |
+| ------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------- |
 | `bootNodeApp` boots a real `MetadataConfigApplicationContext` + `NodeAutoConfiguration` once per suite | Two tests share the same cached context (ndigo-test.spec.ts)    |
-| `mockHTTP.get('/todos')` hits a `@getMapping` controller via the real dispatcher                   | Controller invoked; status 200 (ndigo-test.spec.ts)             |
-| JSON API response returns `res.json()`                                                             | Plain-object handler → parsed JSON body                         |
-| SSR view response returns `res.text()`                                                             | `StringTemplateView` → HTML string body                         |
-| `ResponseEntity.notFound()` → 404                                                                  | Status code + headers honored                                   |
-| Query/body/path params bound                                                                       | Argument resolvers run against `NodeRequest` (mock-mvc.spec.ts) |
-| Context torn down after suite                                                                      | `afterAll` calls `app.close()`                                  |
-| Runs under `pnpm test`                                                                             | New package's specs pass in the normal run                      |
+| `mockHTTP.get('/todos')` hits a `@getMapping` controller via the real dispatcher                       | Controller invoked; status 200 (ndigo-test.spec.ts)             |
+| JSON API response returns `res.json()`                                                                 | Plain-object handler → parsed JSON body                         |
+| SSR view response returns `res.text()`                                                                 | `StringTemplateView` → HTML string body                         |
+| `ResponseEntity.notFound()` → 404                                                                      | Status code + headers honored                                   |
+| Query/body/path params bound                                                                           | Argument resolvers run against `NodeRequest` (mock-mvc.spec.ts) |
+| Context torn down after suite                                                                          | `afterAll` calls `app.close()`                                  |
+| Runs under `pnpm test`                                                                                 | New package's specs pass in the normal run                      |
 
 ---
 

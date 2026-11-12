@@ -68,7 +68,7 @@ ecosystem standard, use platform standard APIs (`Intl`) directly.**
 | Auth             | `ndigo-auth-core` (principal, registry, session), `ndigo-auth-client` (OIDC authorization-code + PKCE + nonce, fail-closed), `ndigo-auth-server` (JWT via `jose`, `AuthRouteGuard` with 401/403 denials, explicit scheme selection)                                     |
 | Telemetry        | OpenTelemetry traces/metrics/logging; node + web instrumentations (HTTP server, dispatcher, router, SSE, view resolution, service client)                                                                                                                               |
 | Micro frontends  | `ndigo-host` `HostManager` (AD-18, one-call feature registration), shared dependency registry                                                                                                                                                                           |
-| Tooling          | `ndigo-test` (MockHTTP/MockWebClient), `ndigo-oxlint-plugin`, `ndigo-generators`, CI lanes (audit, format, manifest, strict types)                                                                                                                                  |
+| Tooling          | `ndigo-test` (MockHTTP/MockWebClient), `ndigo-oxlint-plugin`, `ndigo-generators`, CI lanes (audit, format, manifest, strict types)                                                                                                                                      |
 
 ---
 

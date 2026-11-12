@@ -133,7 +133,7 @@ validity (no raw TC39 decorators in `dist/`, HI-1) is a gate here.
 
 | Suite                             | Covers                                                                                                                    |
 | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `routes.spec.ts`                  | Every route through `MockWebClient` — real controllers, real services, stub API                                       |
+| `routes.spec.ts`                  | Every route through `MockWebClient` — real controllers, real services, stub API                                           |
 | `auth-router-interceptor.spec.ts` | The guard driven through a real `HashRouter` (redirect, allowed, public)                                                  |
 | `conduit-client.spec.ts`          | Auth header, no-header anonymous, 422 envelope, 401 hook, 204, unreachable API, query building                            |
 | `session-service.spec.ts`         | Login/register/update envelopes, token persistence, restore, logout, 401 drop                                             |

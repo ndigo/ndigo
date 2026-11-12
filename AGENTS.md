@@ -22,7 +22,7 @@ pnpm lint            # Check code quality
 
 ⚠️ **Section 4.4 (Library Integration Layer)** - Most common error: importing linkedom directly instead of through @ndigo/dom
 
-⚠️ **Section 4.7 (Decorator Naming)** - All decorators MUST use camelCase; each decorator category fixes its name's form (STYLE_GUIDE.md §3.17)
+⚠️ **Section 3.8 (Decorator Naming)** - All decorators MUST use camelCase; each decorator category fixes its name's form (STYLE_GUIDE.md §3.17)
 
 ⚠️ **STYLE_GUIDE.md Predicate (is\*) vs Duck-Typing (like\*) Functions** - `is*` for type/identity checks (`typeof`, `instanceof`); `like*` for structural/duck-typing checks (property shape). Never use `instanceof` in a `like*` function.
 
@@ -413,7 +413,7 @@ When organizing helper functions and utilities, follow the extraction hierarchy:
 
 **Important:** Once a package has `_util.ts`, add new cross-file utilities there directly instead of waiting for the 4-file threshold.
 
-**See:** STYLE_GUIDE.md Sections 4.5 and 4.6 for detailed patterns and examples.
+**See:** STYLE_GUIDE.md Sections 4.4 and 4.5 for detailed patterns and examples.
 
 #### Phase 3: Ongoing Practice (Not a Scanning Task)
 
@@ -431,7 +431,7 @@ When organizing helper functions and utilities, follow the extraction hierarchy:
 - Follow thresholds: 4+ files for cross-category utilities within a package
 - Use appropriate naming: `_util.ts` (mixed), `_validators.ts` (domain), `_natural-sort.ts` (algorithm)
 
-**Example:** While working in `@ndigo/telemetry`, you notice `formatTimestamp` appears in 5 files → create `_formatters.ts` following the guidelines in STYLE_GUIDE.md Section 4.5.
+**Example:** While working in `@ndigo/telemetry`, you notice `formatTimestamp` appears in 5 files → create `_formatters.ts` following the guidelines in STYLE_GUIDE.md Section 4.4.
 
 ## 5. Workflows
 

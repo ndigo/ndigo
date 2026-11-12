@@ -225,5 +225,5 @@ grounded in `test/feature-flags.spec.ts`.
 ## See also
 
 - [Guide 01 — Building a Node API](01-building-a-node-api.md) — the app lifecycle
-- [[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)](../../[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)/README.md) — the `/gated-report` demo
+- [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api) — the `/gated-report` demo
 - — the flags decision

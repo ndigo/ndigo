@@ -1,21 +1,21 @@
 # Ndigo Style Guide
 
-This document defines the concrete implementation rules, naming conventions, and formatting standards for the Ndigo codebase. For architectural principles and design patterns, see [ARCHITECTURE.md](./ARCHITECTURE.md).
+This document defines the concrete implementation rules, naming conventions, and formatting standards for the Ndigo codebase. For architectural principles and design patterns, see the [Architecture Overview](./ARCHITECTURE.md).
 
 ## Purpose and Scope
 
 **This guide answers:** "How do I name this file/variable/class?" and "How should this code be formatted?"
 
-**See ARCHITECTURE.md for:** "Why is the system designed this way?" and "What are the architectural patterns?"
+**See the [Architecture Overview](./ARCHITECTURE.md) for:** "Why is the system designed this way?" and "What are the architectural patterns?"
 
-**Enforcement markers:** Section headings carry a marker describing how the rule is checked.
+**Enforcement markers:** Headings marked `[AUTOMATED: …]` name the tool that enforces the rule.
 
 - `[AUTOMATED: oxfmt]` — enforced by oxfmt (`pnpm format:check`, `.oxfmtrc.json`).
 - `[AUTOMATED: oxlint]` — enforced by oxlint (`pnpm lint`, `.oxlintrc.json`); the lane runs
   `oxlint --type-aware --deny-warnings`, so a `warn`-level rule fails CI exactly like an `error`.
   The enforcing rule names (for example `internal/no-internal-file-exports`) are named inline.
-- `[CONVENTION: Code Review]` — enforced by review; no lint rule. Some of these sections also carry
-  a partial oxlint rule, named inline.
+
+Every other rule is checked in code review.
 
 ## 1. Formatting Rules
 
@@ -28,7 +28,7 @@ These rules are enforced by oxfmt (`.oxfmtrc.json`). When the oxfmt configuratio
 > config). `pnpm format:check` cannot hold a formatting contract for a file a
 > generator rewrites.
 
-### Indentation [AUTOMATED: oxfmt]
+### 1.1. Indentation [AUTOMATED: oxfmt]
 
 - **TypeScript/JavaScript:** 4 spaces
 - **JSON/YAML:** 2 spaces
@@ -51,13 +51,13 @@ function example() {
 }
 ```
 
-### Line Endings [AUTOMATED: oxfmt]
+### 1.2. Line Endings [AUTOMATED: oxfmt]
 
 - **Always use LF** (`\n`) on all platforms
 - **Never use CRLF** (`\r\n`)
 - Configured: `endOfLine: 'lf'`
 
-### Semicolons [AUTOMATED: oxfmt]
+### 1.3. Semicolons [AUTOMATED: oxfmt]
 
 - **Always required** at the end of statements
 - Configured: `semi: true`
@@ -72,7 +72,7 @@ const value = 42;
 export default MyClass;
 ```
 
-### Quotes [AUTOMATED: oxfmt]
+### 1.4. Quotes [AUTOMATED: oxfmt]
 
 - **Single quotes** for strings in TypeScript/JavaScript
 - **Double quotes** for JSX attributes
@@ -88,7 +88,7 @@ const message = 'Hello, world!';
 import { foo } from '@ndigo/util';
 ```
 
-### Trailing Commas [AUTOMATED: oxfmt]
+### 1.5. Trailing Commas [AUTOMATED: oxfmt]
 
 - **ES5 style** - Use trailing commas where valid in ES5
 - Helps with cleaner git diffs
@@ -114,13 +114,13 @@ function example(
 ) {}
 ```
 
-### Print Width [AUTOMATED: oxfmt]
+### 1.6. Print Width [AUTOMATED: oxfmt]
 
 - **Maximum 120 characters** per line
 - oxfmt will automatically wrap at this width
 - Configured: `printWidth: 120`
 
-### Arrow Functions [AUTOMATED: oxfmt]
+### 1.7. Arrow Functions [AUTOMATED: oxfmt]
 
 - **Always use parentheses** around parameters
 - Configured: `arrowParens: 'always'`
@@ -134,7 +134,7 @@ const fn2 = (x, y) => x + y;
 const fn = (x) => x * 2;
 ```
 
-### Bracket Spacing [AUTOMATED: oxfmt]
+### 1.8. Bracket Spacing [AUTOMATED: oxfmt]
 
 - **Use spaces inside object literal braces**
 - **Arrays do not get spaces** (standard JavaScript)
@@ -150,7 +150,7 @@ const obj = { name: 'example', value: 42 }; // missing spaces
 const arr = [1, 2, 3]; // extra spaces
 ```
 
-### Markdown Files [AUTOMATED: oxfmt]
+### 1.9. Markdown Files [AUTOMATED: oxfmt]
 
 - **Preserve prose wrapping** - Do not reflow markdown text
 - Configured: `proseWrap: 'preserve'`
@@ -159,7 +159,7 @@ const arr = [1, 2, 3]; // extra spaces
 
 ## 2. File Naming Conventions
 
-### Source Files [CONVENTION: Code Review]
+### 2.1. Source Files
 
 **Pattern:** `kebab-case.ts`
 
@@ -177,7 +177,7 @@ All TypeScript source files use lowercase with hyphens separating words.
 
 **Rationale:** Kebab-case is URL-friendly, avoids case-sensitivity issues across file systems, and is widely adopted in JavaScript/TypeScript ecosystems.
 
-### Internal/Private Files [AUTOMATED: oxlint]
+### 2.2. Internal/Private Files [AUTOMATED: oxlint]
 
 **Pattern:** `_kebab-case.ts`
 
@@ -214,7 +214,7 @@ import { helper } from '../_util';
 import { helper } from '@ndigo/util/_util'; // NEVER DO THIS
 ```
 
-### Test Files [CONVENTION: Code Review]
+### 2.3. Test Files
 
 **Unit Tests:**
 
@@ -244,7 +244,7 @@ import { helper } from '@ndigo/util/_util'; // NEVER DO THIS
 ✅ benchmark/logging.js
 ```
 
-### Test Helper Files [CONVENTION: Code Review]
+### 2.4. Test Helper Files
 
 **Pattern:** `_kebab-case.ts` (preferred) or `testCamelCase.ts` (legacy)
 
@@ -277,7 +277,7 @@ export const expectSuccess = <T>(parser: Parser<T>, input: string) => {
 };
 ```
 
-### Type Declaration Files [CONVENTION: Code Review]
+### 2.5. Type Declaration Files
 
 **Pattern:** `kebab-case.d.ts`
 
@@ -290,7 +290,7 @@ TypeScript declaration files use kebab-case with `.d.ts` extension.
 ✅ _safe-regex.d.ts
 ```
 
-### Configuration Files [CONVENTION: Code Review]
+### 2.6. Configuration Files
 
 **Pattern:** `kebab-case.config.ts` or `kebab-case.json`
 
@@ -308,7 +308,7 @@ Configuration files use kebab-case with appropriate extensions.
 ✅ .oxlintrc.json
 ```
 
-### Documentation Files [CONVENTION: Code Review]
+### 2.7. Documentation Files
 
 **Pattern:** `UPPER_SNAKE_CASE.md` (root), `YYYY-MM-DD_DESCRIPTION.md` (dated), or `kebab-case-slug.md` (living)
 
@@ -358,13 +358,13 @@ Docs updated in place rather than frozen by date use a stable kebab-case slug wi
 ❌ docs/guides/2026-10-06-testing.md   // Wrong: living docs do not carry a date
 ```
 
-Guide files carry a zero-padded numeric ordering prefix (`NN-slug.md`); `docs/architecture/` and the root documents use a bare slug. See [docs/README.md](./docs/README.md) (Conventions) for which directories are dated (history) and which are living (updated in place).
+Guide files carry a zero-padded numeric ordering prefix (`NN-slug.md`); `docs/architecture/` and the root documents use a bare slug. See [Contributing](./CONTRIBUTING.md) for which directories are dated (history) and which are living (updated in place).
 
 ---
 
 ## 3. Code Naming Conventions
 
-### Constants [CONVENTION: Code Review]
+### 3.1. Constants
 
 **Pattern:** `UPPER_SNAKE_CASE` for primitive constants and semantic enum-like values, `camelCase` for all other constants
 
@@ -443,7 +443,7 @@ const upperCaseCount: Counter = pipe(toString, removeLowerCase, lengthOf);
 
 **Rationale:** Distinguishes true primitive values (per `@ndigo/core/src/primitive.ts`: string, number, boolean, null, undefined, symbol, bigint) from all other constants. RegExp objects, arrays, and object literals are not primitives—they have methods and are mutable in structure—so they use camelCase. Semantic enum-like constants (HTTPHeader, MediaType instances) use UPPER_SNAKE_CASE as a special case because they represent immutable enum values in the public API. This follows JavaScript's semantic distinction: primitives use uppercase (Math.PI, Number.MAX_VALUE), objects use camelCase.
 
-### Variables and Functions [CONVENTION: Code Review]
+### 3.2. Variables and Functions
 
 **Pattern:** `camelCase`
 
@@ -486,9 +486,9 @@ can rather than asserting the whole signature — the cast hides the narrowing
 from readers and from TypeDoc. Do not add `@function` to make the page render
 as a function: the API reference classifies function-typed constants with the
 repo-local plugin described in
-[`docs/guides/90-package-documentation.md`](docs/guides/90-package-documentation.md).
+[Guide 90 — Package Documentation](./docs/guides/90-package-documentation.md).
 
-### Predicate Functions [CONVENTION: Code Review]
+### 3.3. Predicate Functions
 
 **Pattern:** `isType` prefix for type/identity checks
 
@@ -516,7 +516,7 @@ function isValidDate(value: temporal, format: string): boolean {
 const isContextToken = (value: unknown): value is ContextToken<unknown> => value instanceof ContextToken;
 ```
 
-### Duck Typing Functions [CONVENTION: Code Review]
+### 3.4. Duck Typing Functions
 
 **Pattern:** `likeType` prefix for structural/interface checks
 
@@ -571,7 +571,7 @@ const isContextToken = (value: unknown): value is ContextToken<unknown> => value
 
 **Rationale:** `is*` asks "Is this value _an instance of_ type X?" — it checks identity. `like*` asks "Does this value _behave like_ type X?" — it checks structural compatibility. This mirrors the duck-typing philosophy: "If it walks like a duck and quacks like a duck, it's `like` a duck." An `instanceof` check, by contrast, verifies the value _is_ a duck.
 
-### Classes and Interfaces [CONVENTION: Code Review]
+### 3.5. Classes and Interfaces
 
 **Pattern:** `PascalCase`
 
@@ -607,7 +607,7 @@ interface Serializable {}
 interface ControllerLike {}
 ```
 
-### Private Fields [CONVENTION: Code Review]
+### 3.6. Private Fields
 
 **Pattern:** `#privateField` (modern) or `_legacyPrivate` (legacy)
 
@@ -649,7 +649,7 @@ class OldComponent {
 
 **Rationale:** `#` provides true privacy at the language level (ES2022+), while `_` is just a convention. New code should use `#`.
 
-### Type Definitions [CONVENTION: Code Review]
+### 3.7. Type Definitions
 
 **Pattern:** `PascalCase` for complex types, `camelCase` for simple type aliases
 
@@ -685,7 +685,7 @@ type serializable = string | number | boolean | null | undefined;
 
 **Rationale:** Complex structural types are treated like interfaces (PascalCase), while simple type aliases and functional types use camelCase for consistency with function naming.
 
-### 3.8. Decorators [CONVENTION: Code Review]
+### 3.8. Decorators
 
 **Automated:** `@ndigo/no-cross-paradigm-decorators` (error) rejects mixing service-call and route-mapping decorators on one class; decorator naming itself remains a review concern.
 
@@ -832,7 +832,7 @@ Examples from the codebase (not an exhaustive list):
 
 **Note:** This rule applies to ALL code contexts—classes, interfaces, types, variables, functions, parameters, and constants.
 
-### 3.10. Interfaces and Abstract Classes [CONVENTION: Code Review]
+### 3.10. Interfaces and Abstract Classes
 
 **Automated:** `internal/no-abstract-class-without-prefix` (error) requires the `Abstract` prefix on abstract classes; interface naming remains a review concern.
 
@@ -1059,7 +1059,7 @@ class TemplateViewResolver implements ViewResolver, ResourceLoader {
 3. **Consistent with established enterprise patterns** - Follows long-standing conventions (e.g., `AbstractHandlerMapping`, `AbstractPathMatchingResourcePatternResolver`)
 4. **Autocomplete-friendly** - Modern IDEs make long names effortless; clarity trumps brevity
 
-### 3.11. Role-Based Suffixes [CONVENTION: Code Review]
+### 3.11. Role-Based Suffixes
 
 **Pattern:** Use semantic suffixes to convey component responsibility
 
@@ -1322,7 +1322,7 @@ class UserResolver {
 2. Choose the suffix that best matches that responsibility
 3. If no standard suffix fits, consider if the class has too many responsibilities (SRP violation)
 
-### 3.12. Properties vs Methods [CONVENTION: Code Review]
+### 3.12. Properties vs Methods
 
 **Pattern:** Choose based on computation cost, side effects, and semantic meaning
 
@@ -1813,7 +1813,7 @@ class BadExample {
 }
 ```
 
-#### Complete Example: MediaType (Current + Proposed API)
+#### Complete Example: MediaType
 
 ```typescript
 class MediaType {
@@ -1914,7 +1914,7 @@ Ask yourself:
 
 If still unsure, **prefer a method** - it's safer and more flexible for future changes.
 
-### 3.13. Method Naming Conventions [CONVENTION: Code Review]
+### 3.13. Method Naming Conventions
 
 **Pattern:** Use conventional prefixes to signal method behavior and return expectations
 
@@ -2820,13 +2820,13 @@ If still unsure, **check similar methods in the codebase** for established patte
 
 ---
 
-### 3.14. Type-Safe Enums [CONVENTION: Code Review]
+### 3.14. Type-Safe Enums
 
 **Pattern:** `PascalCase` for class names, `UPPER_SNAKE_CASE` for enum constants
 
 Type-safe enums use classes to create enumeration constants with enhanced capabilities beyond built-in TypeScript enums. This pattern provides methods, inheritance, factory functions, and full serialization control.
 
-**See also:** [Type-Safe Enums](#314-type-safe-enums-convention-code-review) — the pattern's home in this guide.
+**See also:** [Type-Safe Enums](#314-type-safe-enums) — the pattern's home in this guide.
 
 #### Class Naming
 
@@ -3350,7 +3350,7 @@ export class SyslogLevel extends Level {
 - ✅ Small value sets (2-5 values)
 - ✅ No methods or logic needed
 
-**See:** ARCHITECTURE.md Type-Safe Enum Pattern for detailed decision guide.
+**See:** the examples below for the full contract.
 
 #### Documentation
 
@@ -3402,9 +3402,9 @@ export class HttpMethod implements Equatable, Serializable {
 
 ---
 
-### 3.15. Validation [CONVENTION: Code Review]
+### 3.15. Validation
 
-**Pattern:** Zod is the single runtime-schema primitive. There is exactly one way to validate a value at each level — no parallel constraint/decorator APIs. (`ndigo-validate` and `ndigo-model`/objectmodel were retired 2026-09-05 per AD-07; do not re-introduce them.)
+**Pattern:** Zod is the single runtime-schema primitive. There is exactly one way to validate a value at each level — no parallel constraint/decorator APIs. (`ndigo-validate` and `ndigo-model`/objectmodel were retired 2026-09-05; do not re-introduce them.)
 
 **Pick the shape by what you are validating:**
 
@@ -3436,7 +3436,7 @@ create(user: z.infer<typeof UserSchema>) { /* ... */ }
 
 ---
 
-### 3.16. Loop Iteration [CONVENTION: Code Review]
+### 3.16. Loop Iteration
 
 **Pattern:** Index-based `for` loops over a list that does not change during the loop cache the length in a constant.
 
@@ -3477,7 +3477,7 @@ stand out as intentional.
 
 ---
 
-### 3.17. Decorator Categories & Naming [CONVENTION: Code Review]
+### 3.17. Decorator Categories & Naming
 
 **Pattern:** Every decorator belongs to one category; the category fixes the name's grammatical form. Pick the category first — the form follows.
 
@@ -3496,19 +3496,92 @@ stand out as intentional.
 
 1. Determine the category from the annotated element's role — not from the mechanism. "When" phrasing → condition; "registers a …" → registration; a noun for what something _is_ → stereotype; a verb root + `-ed` for what it participates in → behavior.
 2. Take the category's form. Do not invent a new morphology for one decorator.
-3. Straddling categories: prefer the category matching the annotated element's role, and record the deviation (with rationale) in the exception list of [AD-83](docs/decisions/2026-10-31_AD83_DECORATOR_CATEGORIES.md) — do not bend the category.
+3. Straddling categories: prefer the category matching the annotated element's role, and record the deviation (with rationale) in the recorded exceptions below — do not bend the category.
 
-**Recorded exceptions (do not "fix" without an ADR):** the signals family keeps its ecosystem vocabulary (`@signal`, `@computed`, `@effect`, `@reactive`); policies stay policy nouns (`retried` would misdescribe on-failure semantics); `@whenProfile` is the single profile gate — there is no `@profile`.
-
-**Reference:** [AD-83](docs/decisions/2026-10-31_AD83_DECORATOR_CATEGORIES.md) — full taxonomy, member map, rename verdicts, and the profile unification. §3.8 (camelCase) remains the base rule for every category.
+**Recorded exceptions (do not "fix" without a recorded decision):** the signals family keeps its ecosystem vocabulary (`@signal`, `@computed`, `@effect`, `@reactive`); policies stay policy nouns (`retried` would misdescribe on-failure semantics); `@whenProfile` is the single profile gate — there is no `@profile`.
 
 **Rationale:** A single global convention could not describe the repository's decorator surface — conditions and registrations already ran their own forms deliberately. Role-keyed categories give every existing decorator a documented home, give new decorators a decision procedure ("pick the category; the form follows"), and make deviations explicit records instead of accidental drift.
+
+### 3.18. Mixin Naming
+
+**Pattern:** `As*` for class mixins, `as*` for function mixins
+
+**Class Mixins (PascalCase with `As` prefix):**
+
+```typescript
+// ✅ Correct: Class mixins
+const EventEmitterMixin = AsEventEmitter(Base);
+
+class MyService extends AsEventEmitter(BaseService) {
+    constructor() {
+        super();
+        this.emit('initialized'); // From mixin
+    }
+}
+
+// Pattern: AsEventEmitter(Component) produces new class
+```
+
+**Function Mixins (camelCase with `as` prefix):**
+
+```typescript
+// ✅ Correct: Function mixins
+const component = {};
+asEventEmitter(component); // Adds event emitter methods to instance
+
+component.on('event', handler);
+component.emit('event', data);
+
+// Pattern: asEventEmitter(target) adds methods to existing object
+```
+
+**Rationale:** Capitalized `As*` indicates class-level composition (returns new class), lowercase `as*` indicates instance-level augmentation (modifies existing object).
+
+### 3.19. Configurable Suffix
+
+**Pattern:** `*Configurable` for interfaces/classes with setters
+
+Interfaces or classes that provide setters for normally readonly properties.
+
+```typescript
+// ✅ Correct: Configurable suffix
+interface MediaTypeConfigurable extends MediaType {
+    setType(type: string): void;
+    setSubtype(subtype: string): void;
+    setParameters(params: MediaTypeParameters): void;
+}
+
+interface ViewResolverConfigurable extends ViewResolver {
+    setPrefix(prefix: string): void;
+    setSuffix(suffix: string): void;
+}
+```
+
+**Rationale:** Clear signal that this variant allows mutation of normally immutable properties.
+
+### 3.20. Legacy Code Markers
+
+**Pattern:** `*.legacy.js` or `Old*` prefix
+
+Files or classes marked as deprecated/legacy code.
+
+```typescript
+// ⚠️ Legacy marker in filename
+old - component.legacy.js;
+
+// ⚠️ Legacy marker in class name
+class OldComponent {
+    // Deprecated implementation
+}
+```
+
+**Rationale:** Clearly identifies code scheduled for removal or refactoring. New code should not follow this pattern.
 
 ---
 
 ## 4. Module Organization
 
-### Directory Structure [CONVENTION: Code Review]
+### 4.1. Directory Structure
 
 ```
 packages/
@@ -3533,9 +3606,9 @@ packages/
 
 Applications (`apps/NN-ndigo-<slug>`) use a role-based variant of this layout
 (`controllers/`, `services/`, `entities/`, `views/`) and are not published — see
-[guide 91 — Application Conventions](docs/guides/91-application-conventions.md).
+[Guide 91 — Application Conventions](./docs/guides/91-application-conventions.md).
 
-### Barrel Exports (index.ts) [CONVENTION: Code Review]
+### 4.2. Barrel Exports (index.ts)
 
 **Public API Definition:**
 
@@ -3566,7 +3639,7 @@ export { slugify } from './slugify';
 // (no export for _helpers.ts)
 ```
 
-### Internal vs Public Modules [AUTOMATED: oxlint]
+### 4.3. Internal vs Public Modules [AUTOMATED: oxlint]
 
 **Automated:** `internal/no-internal-file-exports` (error) — underscore-prefixed modules must not be
 re-exported from public entry points; `internal/no-internal-file-imports` (error) — they must not be
@@ -3586,7 +3659,7 @@ imported across package boundaries.
 - Can change without notice
 - Package-private only
 
-### 4.5 Utility Function Organization [CONVENTION: Code Review]
+### 4.4. Utility Function Organization
 
 Organizing helper functions and utilities follows a clear hierarchy based on usage patterns found across the codebase.
 
@@ -3869,8 +3942,6 @@ export const parseAcceptHeader = (header: string) => header.split(',').map(trim)
 
 **Note:** The hybrid naming approach (generic `_util.ts` + specific domain files) will be reviewed at a future date to determine if it should be kept, standardized, or evolved to directory-based organization.
 
-**See:** `docs/plans/2026-02-01_INTERNAL_FILE_NAMING_REVIEW.md` for the evaluation framework.
-
 **Triggers for review:**
 
 - > 5 internal files per package (indicates need for directory structure)
@@ -4028,9 +4099,9 @@ import { utility } from './_util'; // CIRCULAR!
 // ✅ Correct: Extract shared code to third file or inline in one
 ```
 
-**See also:** [ARCHITECTURE.md - Dependency Management Strategy](./ARCHITECTURE.md#dependency-management-strategy) for guidance on when to promote utilities to `@ndigo/util`.
+**See also:** [Dependency Management Strategy](./ARCHITECTURE.md#dependency-management-strategy) for guidance on when to promote utilities to `@ndigo/util`.
 
-### 4.6 File Size and Module Breakdown [CONVENTION: Code Review]
+### 4.5. File Size and Module Breakdown
 
 Maintaining appropriate file sizes improves code readability, testability, and maintainability.
 
@@ -4372,7 +4443,7 @@ git commit -m "refactor(validate): split large constraints file
 - Move shared helpers to _util.ts (80 lines)
 - Update tests and maintain 100% coverage
 
-Ref: STYLE_GUIDE.md Section 4.6"
+Ref: STYLE_GUIDE.md Section 4.5"
 ```
 
 **Best Practices:**
@@ -4419,7 +4490,7 @@ the `header` generator adds/replaces it on existing files:
   deliberately not used.
 - ❌ No `@module` tag: TypeDoc derives each module's name from its source path,
   and a package-wide tag collapses every file of the package into one module
-  (see `docs/guides/90-package-documentation.md`)
+  (see [Guide 90 — Package Documentation](./docs/guides/90-package-documentation.md))
 - ❌ Headings (`#`) inside doc blocks
 - ❌ `TODO:` summary placeholders — describe what the file does
 - ✅ Generate with:
@@ -4446,7 +4517,7 @@ a doc comment, any method with parameters omits a parameter's `@param`, or any
 function with a non-`void` return omits `@returns`. Document members too —
 variables and enum members are the only exemptions, because their names
 self-document. `@internal` and `_`-prefixed internal files are exempt. See
-`docs/guides/90-package-documentation.md`.
+[Guide 90 — Package Documentation](./docs/guides/90-package-documentation.md).
 
 **Standard tags.** Use only TSDoc-standard tags: `@remarks`, `@example`,
 `@param`, `@typeParam`, `@returns`, `@throws`, `@defaultValue`,
@@ -4476,81 +4547,6 @@ short:
 Class members qualify with `#` (`{@link cache.CacheOptions#maxSize}`). A link
 to another package goes in `scripts/external-symbol-links.json` — never
 inline.
-
-### Mixin Naming [CONVENTION: Code Review]
-
-**Pattern:** `As*` for class mixins, `as*` for function mixins
-
-**Class Mixins (PascalCase with `As` prefix):**
-
-```typescript
-// ✅ Correct: Class mixins
-const EventEmitterMixin = AsEventEmitter(Base);
-
-class MyService extends AsEventEmitter(BaseService) {
-    constructor() {
-        super();
-        this.emit('initialized'); // From mixin
-    }
-}
-
-// Pattern: AsEventEmitter(Component) produces new class
-```
-
-**Function Mixins (camelCase with `as` prefix):**
-
-```typescript
-// ✅ Correct: Function mixins
-const component = {};
-asEventEmitter(component); // Adds event emitter methods to instance
-
-component.on('event', handler);
-component.emit('event', data);
-
-// Pattern: asEventEmitter(target) adds methods to existing object
-```
-
-**Rationale:** Capitalized `As*` indicates class-level composition (returns new class), lowercase `as*` indicates instance-level augmentation (modifies existing object).
-
-### Configurable Suffix [CONVENTION: Code Review]
-
-**Pattern:** `*Configurable` for interfaces/classes with setters
-
-Interfaces or classes that provide setters for normally readonly properties.
-
-```typescript
-// ✅ Correct: Configurable suffix
-interface MediaTypeConfigurable extends MediaType {
-    setType(type: string): void;
-    setSubtype(subtype: string): void;
-    setParameters(params: MediaTypeParameters): void;
-}
-
-interface ViewResolverConfigurable extends ViewResolver {
-    setPrefix(prefix: string): void;
-    setSuffix(suffix: string): void;
-}
-```
-
-**Rationale:** Clear signal that this variant allows mutation of normally immutable properties.
-
-### Legacy Code Markers [CONVENTION: Code Review]
-
-**Pattern:** `*.legacy.js` or `Old*` prefix
-
-Files or classes marked as deprecated/legacy code.
-
-```typescript
-// ⚠️ Legacy marker in filename
-old - component.legacy.js;
-
-// ⚠️ Legacy marker in class name
-class OldComponent {
-    // Deprecated implementation
-}
-```
-
-**Rationale:** Clearly identifies code scheduled for removal or refactoring. New code should not follow this pattern.
 
 ---
 
@@ -4664,7 +4660,7 @@ export type { MediaTypeParams, Comparable };
 
 ## 7. Maintenance
 
-### When oxfmt Config Changes
+### 7.1. When oxfmt Config Changes
 
 **IMPORTANT:** When `.oxfmtrc.json` is modified, update Section 1 of this guide to reflect the new formatting rules.
 
@@ -4683,7 +4679,7 @@ export type { MediaTypeParams, Comparable };
     Updated STYLE_GUIDE.md Section 1 to document the new formatting rule.
     ```
 
-### When Establishing New Patterns
+### 7.2. When Establishing New Patterns
 
 If a new naming pattern or convention is established:
 
@@ -4693,7 +4689,7 @@ If a new naming pattern or convention is established:
 4. Update `README.md` if it affects user-facing conventions
 5. Note the change in commit message
 
-### Style Decisions
+### 7.3. Style Decisions
 
 When making style decisions, document the rationale in git commit messages and consider adding to this guide if it establishes a precedent.
 
@@ -4703,7 +4699,7 @@ When making style decisions, document the rationale in git commit messages and c
 
 Code is read more often than it is written. Self-documenting code minimizes the gap between what the code says and what the author intended.
 
-### Principle: Names carry meaning, comments carry rationale
+### 8.1. Names Carry Meaning, Comments Carry Rationale
 
 | Category   | What to document                                       | What NOT to document                               |
 | ---------- | ------------------------------------------------------ | -------------------------------------------------- |
@@ -4712,7 +4708,7 @@ Code is read more often than it is written. Self-documenting code minimizes the 
 | Assertions | _Why_ the compiler is wrong (one-liner with assertion) | _That_ it's wrong (the `as any` already says that) |
 | Dead code  | `@deprecated` with migration path, or delete           | Commented-out blocks ("I'll need this later")      |
 
-### Property/Method naming tells readers cost and semantics
+### 8.2. Properties and Methods Signal Cost and Semantics
 
 As established in Section 3.12:
 
@@ -4722,7 +4718,7 @@ As established in Section 3.12:
 | `getSomething()`  | get-method | May be expensive, may fail, may return `null`  |
 | `toSomething()`   | to-method  | Returns a new representation, source unchanged |
 
-### Comment structure: say _why_ not _what_
+### 8.3. Comments Explain Why, Not What
 
 ```typescript
 // ❌ WHAT — the code already says this
@@ -4736,7 +4732,7 @@ counter.add(1, config.attributes);
 const RETRY_ATTEMPT_HEADER = 'x-retry-attempt';
 ```
 
-### Type assertions must explain why the compiler is wrong
+### 8.4. Type Assertions Explain the Compiler Contract
 
 Every `as any`, `as unknown as T`, or `// @ts-ignore` must carry a one-line reason:
 
@@ -4758,7 +4754,7 @@ When a module has many similar assertions (e.g., a library whose types end at `a
 // this is accepted for the integration layer.
 ```
 
-### `// NOTE:` comments are technical debt
+### 8.5. `// NOTE:` Comments Are Technical Debt
 
 A `// NOTE:` comment usually means "this is not right but I'm shipping it anyway." It obscures the fact that the code is knowingly incomplete. Prefer:
 
@@ -4769,7 +4765,7 @@ A `// NOTE:` comment usually means "this is not right but I'm shipping it anyway
 | "In production, do X" | Remove the comment and do X, or mark with `@deprecated`            |
 | "This should be X"    | Do X, or open a ticket                                             |
 
-### File size is documentation
+### 8.6. File Size Is Documentation
 
 A file containing one public type documents the relationship between name and content. A file containing seven classes documents nothing — the reader must reverse-engineer the grouping. Follow the one-public-type-per-file convention:
 
@@ -4778,16 +4774,16 @@ A file containing one public type documents the relationship between name and co
 
 **Guideline:** Keep files under 300 lines. Files over 300 lines should have a clear single-responsibility justification. Split by public type, not by author convenience.
 
-### Dead code must carry its tombstone
+### 8.7. Dead Code Carries Its Tombstone
 
 | State                               | Treatment                                                                                              |
 | ----------------------------------- | ------------------------------------------------------------------------------------------------------ |
 | Intentionally unused                | Delete it. Source control remembers it.                                                                |
 | Kept for future activation          | `@deprecated` with a `@remarks` explaining when it will be needed, or move to an `_archive/` directory |
 | Commented-out                       | Delete it.                                                                                             |
-| Optional path you chose not to take | Document the decision in `docs/decisions/` or a commit message                                         |
+| Optional path you chose not to take | Document the decision in a decision record or the commit message                                       |
 
-### Reuse the contract before hand-rolling
+### 8.8. Reuse the Contract Before Hand-Rolling
 
 `@ndigo/core`, `@ndigo/factory`, and `@ndigo/util` carry a shared contract
 vocabulary. When a new piece of code reaches for an ad-hoc implementation of
@@ -4805,7 +4801,7 @@ Rules of engagement:
 - A class that structurally matches a contract names the contract in its
   `implements` clause — the compiler then enforces future changes.
 - Closed-resource guards throw `IllegalStateError`; domain errors extend
-  `FrameworkError`/`ApplicationError` (see AD-94).
+  `FrameworkError`/`ApplicationError` (see [Contract-First Patterns](./ARCHITECTURE.md#contract-first-patterns)).
 - Exclusions are documented at the exclusion site (e.g. `HTTPServer` closes
   through `SmartLifecycle.stop()`; `SocketSession.close(code, reason)` takes
   per-session parameters).

@@ -147,7 +147,7 @@ promises so fake-timer suites stay deterministic.
 - Decision: — the
   in-process, socket-free harness.
 - Generated API: [`@ndigo/test` api](../../packages/ndigo-test/api/README.md).
-- Demo usage: [[apps/03-ndigo-todo-web](https://github.com/ndigo/ndigo/tree/main/apps/03-ndigo-todo-web)](../../[apps/03-ndigo-todo-web](https://github.com/ndigo/ndigo/tree/main/apps/03-ndigo-todo-web)/README.md) —
+- Demo usage: [apps/03-ndigo-todo-web](https://github.com/ndigo/ndigo/tree/main/apps/03-ndigo-todo-web) —
   harness-driven controller and shell-router specs.
 
 [Back to guides](./README.md)

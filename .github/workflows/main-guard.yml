@@ -1,0 +1,94 @@
+name: Main guard
+
+# Post-merge drift catch. Squash merges skip the post-merge CI push run by
+# design (MIN-1), which means a tree validated as a PR can still land beside a
+# concurrent merge and leave `main` red — formatting, generated indexes,
+# manifests, or a missing build config. This lane is the cheap backstop:
+# deterministic checks only, no unit tests and no TypeDoc generation (the
+# weekly CI sweep remains the full authority).
+#
+# Non-gating: not a required check for PRs.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: main-guard
+  cancel-in-progress: true
+
+env:
+  CI: true
+  NX_NO_CLOUD: 'true'
+
+jobs:
+  drift:
+    # Same runner switch as ci.yml: self-hosted when the repository variable
+    # is set, GitHub-hosted otherwise.
+    runs-on: ${{ fromJSON(vars.CI_RUNNER || '["ubuntu-latest"]') }}
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@fe02b34f77f8bc703788d5817da081398fad5dd2 # v4.0.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e # v4.3.0
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies (frozen lockfile)
+        run: pnpm install --frozen-lockfile
+
+      - name: Build libraries
+        # The smoke lane boots the example apps against built packages.
+        run: pnpm build
+
+      - name: Root-tooling lane (node:test)
+        run: pnpm test:tooling
+
+      - name: Internal lint rules (vitest)
+        run: pnpm test:internal
+
+      - name: Maintained-file formatting
+        run: pnpm format:check
+
+      - name: Docs relative-link integrity
+        run: pnpm docs:links
+
+      - name: Migration schema freshness (AD-78 D-6)
+        run: pnpm db:schema:check
+
+      - name: Manifest conformance
+        run: pnpm manifest:check
+
+      - name: Agent config integrity
+        run: pnpm agents:check
+
+      - name: Consumer agent content integrity
+        run: pnpm agent-content:check
+
+      - name: A2UI component map integrity
+        run: pnpm ui:a2ui-map:check
+
+      - name: TSDoc coverage (zero tolerance)
+        run: pnpm doc:coverage
+
+      - name: Strict type-check
+        run: pnpm typecheck
+
+      - name: Example apps boot + probe (smoke)
+        # Probe ports shift on the shared self-hosted runner (issue #283).
+        env:
+          APPS_SMOKE_PORT_OFFSET: ${{ vars.CI_RUNNER != '' && '10000' || '0' }}
+        run: pnpm apps:smoke

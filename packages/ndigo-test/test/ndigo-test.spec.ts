@@ -3,7 +3,13 @@
 // @vitest-environment node
 import { describe, test, beforeAll, afterAll, expect } from 'vitest';
 import { requestMapping, getMapping } from '@ndigo/dispatcher';
-import { bootNodeApp, cachedBootNodeApp, installSynchronousAnimationFrames, releaseCachedNodeApp, MockHTTP } from '../src/index';
+import {
+    bootNodeApp,
+    cachedBootNodeApp,
+    installSynchronousAnimationFrames,
+    releaseCachedNodeApp,
+    MockHTTP,
+} from '../src/index';
 
 /**
  * Canonical usage: a real app context is booted once per suite (beforeAll) and

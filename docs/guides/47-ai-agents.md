@@ -173,7 +173,7 @@ Provider keys travel through ordinary configuration. A `{cipher:…}` value in
 any property source decrypts at lookup time when the app registers a cipher:
 
 ```ts
-await runNodeApplication([AgentLabConfiguration, AgentLabConfig], {
+await createNodeApplication([AgentLabConfiguration, AgentLabConfig], {
     configureBuilder: (builder) => builder.secrets(new AESGCMCipher(getEnv('NDIGO_SECRET_KEY')!)),
 });
 ```

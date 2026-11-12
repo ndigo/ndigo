@@ -8,7 +8,7 @@
  * conventions in use across the ladder:
  *
  * - vite `server: { port: 3001 }`
- * - a `{ port: 3010 }` preset option (AD-90; `runNodeApplication`)
+ * - a `{ port: 3010 }` preset option (AD-90; `createNodeApplication`)
  * - `process.env.PORT ??= '3200'` (dot and bracket forms)
  * - `getEnv('PORT', '3050')`
  * - a `DEFAULT_PORT = 3040` constant

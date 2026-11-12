@@ -2,11 +2,11 @@
 
 ***
 
-[@ndigo/platform-node](../../README.md) / [run-node-application](../README.md) / runNodeApplication
+[@ndigo/platform-node](../../README.md) / [node-application](../README.md) / createNodeApplication
 
-# Function: runNodeApplication()
+# Function: createNodeApplication()
 
-> **runNodeApplication**(`sources`, `options?`): `Promise`\<[`NodeApplication`](../interfaces/NodeApplication.md)\>
+> **createNodeApplication**(`sources`, `options?`): `Promise`\<[`NodeApplication`](../interfaces/NodeApplication.md)\>
 
 Runs a Node application: builds the context (`NodeAutoConfiguration` and
 `NodeEnvironment` by default), loads config files, starts the managed
@@ -28,7 +28,7 @@ Application source classes (configurations, controllers, …).
 
 ### options?
 
-[`RunNodeApplicationOptions`](../interfaces/RunNodeApplicationOptions.md) = `{}`
+[`CreateNodeApplicationOptions`](../interfaces/CreateNodeApplicationOptions.md) = `{}`
 
 Preset options; every implicit action has an opt-out.
 
@@ -41,6 +41,6 @@ The booted application.
 ## Example
 
 ```ts
-const app = await runNodeApplication([AppConfiguration], { port: 3000 });
+const app = await createNodeApplication([AppConfiguration], { port: 3000 });
 logger.info(`listening on http://127.0.0.1:${app.port}`);
 ```

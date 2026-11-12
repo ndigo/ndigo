@@ -2,7 +2,7 @@
 
 ***
 
-[@ndigo/platform-node](../../README.md) / [run-node-application](../README.md) / NodeApplication
+[@ndigo/platform-node](../../README.md) / [node-application](../README.md) / NodeApplication
 
 # Interface: NodeApplication
 

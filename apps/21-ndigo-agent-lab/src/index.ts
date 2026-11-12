@@ -10,7 +10,7 @@
 import 'node:process';
 import '@tsmetadata/polyfill';
 import { getLogger } from '@ndigo/log';
-import { runNodeApplication } from '@ndigo/platform-node';
+import { createNodeApplication } from '@ndigo/platform-node';
 import { configureTelemetry } from '@ndigo/telemetry-node';
 import { AgentLabConfiguration } from './agent-lab-configuration';
 import { AgentLabConfig } from './agent-lab-config';
@@ -23,7 +23,7 @@ configureTelemetry({ traceExporter: 'console', metricExporter: 'none', logExport
 
 const logger = getLogger('ndigo-agent-lab');
 
-await runNodeApplication([AgentLabConfiguration, AgentLabConfig], {
+await createNodeApplication([AgentLabConfiguration, AgentLabConfig], {
     properties: { 'feature.ai.chat': true },
 });
 

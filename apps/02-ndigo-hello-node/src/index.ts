@@ -2,7 +2,7 @@
  * Ndigo Hello Node — minimal HTTP server.
  */
 import 'node:process';
-import { runNodeApplication } from '@ndigo/platform-node';
+import { createNodeApplication } from '@ndigo/platform-node';
 import { getLogger } from '@ndigo/log';
 import { getErrorMessage } from '@ndigo/util';
 import { HelloConfiguration } from './hello-configuration';
@@ -14,7 +14,7 @@ async function main() {
     // config files by default; the managed server is started before this
     // returns, and `app.port` is the port the socket actually bound (`PORT`
     // still wins over the app default).
-    const app = await runNodeApplication([HelloConfiguration], { port: 3010 });
+    const app = await createNodeApplication([HelloConfiguration], { port: 3010 });
 
     logger.info(`listening on http://127.0.0.1:${app.port}`);
 }

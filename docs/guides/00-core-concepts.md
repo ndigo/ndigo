@@ -28,9 +28,9 @@ context creates the entries, injects their collaborators, and closes them in
 order when the app stops.
 
 ```ts
-import { runNodeApplication } from '@ndigo/platform-node';
+import { createNodeApplication } from '@ndigo/platform-node';
 
-const app = await runNodeApplication([AppConfiguration], { port: 3000 });
+const app = await createNodeApplication([AppConfiguration], { port: 3000 });
 // app.context is the live container; app.server is the bound HTTP server
 ```
 
@@ -110,7 +110,7 @@ The same application code runs on two platforms; the preset decides what
 
 | Concern       | Node (`@ndigo/platform-node`)      | Browser (`@ndigo/platform-web`)        |
 | ------------- | ---------------------------------- | -------------------------------------- |
-| Bootstrap     | `runNodeApplication`               | `createWebApplication`                 |
+| Bootstrap     | `createNodeApplication`               | `createWebApplication`                 |
 | Transport     | HTTP/1.1, HTTP/2, WebSocket server | hash/history routing, `fetch`          |
 | View target   | HTTP response                      | DOM element                            |
 | Static assets | filesystem handler / static views  | Vite dev server and bundles            |

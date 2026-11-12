@@ -8,7 +8,7 @@
 import 'node:process';
 import '@tsmetadata/polyfill';
 import { bodyValue, getMapping, parameters, pathVariable, postMapping, requestMapping } from '@ndigo/dispatcher';
-import { runNodeApplication } from '@ndigo/platform-node';
+import { createNodeApplication } from '@ndigo/platform-node';
 import { configuration, entry } from '@ndigo/context';
 
 @requestMapping('/')
@@ -39,5 +39,5 @@ class BenchConfiguration {
     }
 }
 
-const app = await runNodeApplication([BenchConfiguration], { port: Number(process.env.PORT ?? 4313) });
+const app = await createNodeApplication([BenchConfiguration], { port: Number(process.env.PORT ?? 4313) });
 console.log(`ndigo listening on ${app.port}`);

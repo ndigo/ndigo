@@ -68,7 +68,7 @@ pnpm exec ndigo ui list
 `ndigo ui add theme` is the copy-in alternative to the `@ndigo/ui` token
 import — an application uses one or the other, never both.
 
-The scaffolded app uses the AD-90 lifecycle presets (`runNodeApplication` /
+The scaffolded app uses the AD-90 lifecycle presets (`createNodeApplication` /
 `createWebApplication`), ships a smoke test and (for the browser kind) the
 bundle guard, and follows the conventions in
 [guide 91](../../docs/guides/91-application-conventions.md).

@@ -117,6 +117,18 @@ Re-exports [CORSInterceptorOptions](../cors-interceptor/interfaces/CORSIntercept
 
 ***
 
+### createNodeApplication
+
+Re-exports [createNodeApplication](../node-application/functions/createNodeApplication.md)
+
+***
+
+### CreateNodeApplicationOptions
+
+Re-exports [CreateNodeApplicationOptions](../node-application/interfaces/CreateNodeApplicationOptions.md)
+
+***
+
 ### createNodeArgumentResolvers
 
 Re-exports [createNodeArgumentResolvers](../configure-argument-resolvers/functions/createNodeArgumentResolvers.md)
@@ -341,7 +353,7 @@ Re-exports [NODE_RESPONSE_ATTRIBUTE](../node-request/variables/NODE_RESPONSE_ATT
 
 ### NodeApplication
 
-Re-exports [NodeApplication](../run-node-application/interfaces/NodeApplication.md)
+Re-exports [NodeApplication](../node-application/interfaces/NodeApplication.md)
 
 ***
 
@@ -642,18 +654,6 @@ Re-exports [ResponseEntity](../response-entity/classes/ResponseEntity.md)
 ### ResponseEntityView
 
 Re-exports [ResponseEntityView](../response-entity-view/classes/ResponseEntityView.md)
-
-***
-
-### runNodeApplication
-
-Re-exports [runNodeApplication](../run-node-application/functions/runNodeApplication.md)
-
-***
-
-### RunNodeApplicationOptions
-
-Re-exports [RunNodeApplicationOptions](../run-node-application/interfaces/RunNodeApplicationOptions.md)
 
 ***
 

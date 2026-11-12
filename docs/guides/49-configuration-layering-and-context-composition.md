@@ -71,10 +71,10 @@ profile file wins. See [Guide 03](03-environment-configuration.md) for the full
 precedence chain and the opt-in TOON variants.
 
 ```ts
-import { runNodeApplication } from '@ndigo/platform-node';
+import { createNodeApplication } from '@ndigo/platform-node';
 import { AppConfiguration, PlatformConfiguration } from './configuration';
 
-const app = await runNodeApplication([PlatformConfiguration, AppConfiguration], {
+const app = await createNodeApplication([PlatformConfiguration, AppConfiguration], {
     profiles: ['prod'],
 });
 ```

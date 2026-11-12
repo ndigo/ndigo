@@ -14,7 +14,7 @@ entrypoint story.
 Add two thin, overridable entrypoint presets on top of the existing
 auto-configurations:
 
-1. **`runNodeApplication(sources, options)`** in `@ndigo/platform-node` —
+1. **`createNodeApplication(sources, options)`** in `@ndigo/platform-node` —
    builds the context with `NodeAutoConfiguration` and `NodeEnvironment`,
    loads config files through the new default reader, starts `HTTP_SERVER`,
    installs `gracefulShutdown`, and returns `{ context, server, port, close }`.
@@ -54,7 +54,7 @@ same `ApplicationBuilder` as the Node preset (AD-90 D-5).
 
 ```ts
 // @ndigo/platform-node
-export interface RunNodeApplicationOptions {
+export interface CreateNodeApplicationOptions {
     /** Port used when `PORT` is unset; applied as `server.port`. */
     port?: number;
     profiles?: readonly string[];
@@ -81,9 +81,9 @@ export interface NodeApplication {
     close(): Promise<void>;
 }
 
-export function runNodeApplication(
+export function createNodeApplication(
     sources: readonly Function[],
-    options?: RunNodeApplicationOptions
+    options?: CreateNodeApplicationOptions
 ): Promise<NodeApplication>;
 ```
 
@@ -157,7 +157,7 @@ Design rules for both:
 | ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
 | 1.1  | `nodeConfigFileReader: ConfigFileReader` — `readFile` + `ENOENT → null`, other errors rethrow                                                                                                                                                                                  | `packages/ndigo-platform-node/src/node-config-file-reader.ts`                                                  |
 | 1.2  | Unit test: existing file, missing file, permission/other error                                                                                                                                                                                                                 | `packages/ndigo-platform-node/test/node-config-file-reader.spec.ts`                                            |
-| 1.3  | `runNodeApplication` + `RunNodeApplicationOptions` + `NodeApplication`                                                                                                                                                                                                         | `packages/ndigo-platform-node/src/run-node-application.ts`                                                     |
+| 1.3  | `createNodeApplication` + `CreateNodeApplicationOptions` + `NodeApplication`                                                                                                                                                                                                         | `packages/ndigo-platform-node/src/run-node-application.ts`                                                     |
 | 1.4  | Default `NodeEnvironment`; dedupe `NodeAutoConfiguration`; `configFiles` default `true`; `port` via `server.port`; `configureBuilder`; `beforeStart`; `resources`; `shutdown`; `close()`                                                                                       | same file                                                                                                      |
 | 1.5  | Bound-port reporting: `HTTPServer.port` returns the bound port after a successful `listen` (the kernel-assigned port for `port: 0`) via a bound-port field that resets on `close()`, so a restart re-binds the configured port                                                 | `packages/ndigo-platform-node/src/http-server.ts`, `packages/ndigo-platform-node/test/http-boundaries.spec.ts` |
 | 1.6  | Remove `@ndigo/boot`'s devDependencies on the platform packages (the platform-integration specs reach the platform sources relatively) — a manifest edge of any kind closes an Nx build cycle now that `platform-node`/`platform-web` depend on boot (AD-67's acyclicity gate) | `packages/ndigo-boot/package.json`, `packages/ndigo-boot/test/`                                                |
@@ -238,7 +238,7 @@ and record the reason in this plan and AD-90 D-5.
 
 ## 7. Open questions
 
-- **Should `runNodeApplication` return the `Application` as well?** Current
+- **Should `createNodeApplication` return the `Application` as well?** Current
   plan: no — the context and server are enough; callers needing the builder
   stay on `ApplicationBuilder`.
 - **Should the preset log the listening URL?** Current plan: no. The preset
@@ -259,7 +259,7 @@ and record the reason in this plan and AD-90 D-5.
 ## 8. Definition of done
 
 - [x] Phase 0–2 landed; Phase 3 gates green.
-- [x] App 02 and app 05 use `runNodeApplication` with no behavior loss.
+- [x] App 02 and app 05 use `createNodeApplication` with no behavior loss.
 - [x] App 08 and app 19 use `createWebApplication`; app 19 no longer carries
       `currentPath`.
 - [x] Generator templates emit the presets, not the long form.

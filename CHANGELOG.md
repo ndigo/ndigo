@@ -203,7 +203,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   providers are wired. Guide 28 gains the browser recipe and provider
   notes (flagd/OFREP).
 - `@ndigo/platform-node` (AD-87 companion): the flag targeting-context
-  seam — the **`FLAG_CONTEXT_RESOLVER`** bean
+  seam — the **`FLAG_CONTEXT_RESOLVER`** entry
   (`FlagEvaluationContextResolver`; default
   `SessionPrincipalFlagContextResolver`: the session-bag principal's id as
   the targeting key with its roles as attributes, falling back to the
@@ -211,7 +211,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   address-only targeting), and **late-bound gate dependencies**: the
   `FeatureGateInterceptor` now resolves `FLAG_EVALUATOR` /
   `FLAG_CONTEXT_RESOLVER` from the application context per check, so
-  app-level bean overrides (the vendor-bridge recipe included) reach
+  app-level entry overrides (the vendor-bridge recipe included) reach
   `@whenFeature` routes instead of pinning the auto-configuration
   defaults.
 - `@ndigo/flags` (AD-87): the evaluation vocabulary widens to the full
@@ -247,13 +247,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   read-through so `environment.refresh()` flips flags live; **percentage
   rollouts** via `feature.rollout.<flag>` ∈ [0, 1] bucketed per targeting
   key — `SPLIT` reason), the **`@whenFeature`** class/method gate metadata
-  (flag-key validated at decoration time), and the `FLAG_EVALUATOR` bean
+  (flag-key validated at decoration time), and the `FLAG_EVALUATOR` entry
   token.
 - `@ndigo/platform-node` (AD-82): the **`FeatureGateInterceptor`** —
   default-on in the node mapping, evaluates `@whenFeature` gates per
   request and denies an off flag with a 404 problem document
   (`urn:ndigo:not-found`; the `@FeatureGate`/`DisabledFeaturesHandler`
-  analog); the default `FLAG_EVALUATOR` bean reads the application
+  analog); the default `FLAG_EVALUATOR` entry reads the application
   environment.
 - `apps/04-ndigo-api` (AD-82): the gated `/gated-report` demo route
   (`@whenFeature('gated.report')`, `feature.gated.report` in
@@ -284,7 +284,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   async `consume` (AD-39), `RateLimitPolicy`/`RateLimitResult`,
   `validateRateLimitPolicy`, `likeRateLimiter`, `FixedWindowRateLimiter`
   (moved from `@ndigo/platform-node`), and the `RATE_LIMITER` context
-  token. The platform interceptor awaits, the bean registers under the
+  token. The platform interceptor awaits, the entry registers under the
   token, and apps import `RateLimitPolicy` from the new package (clean
   cutover — no re-exports).
 - `@ndigo/redis/rate-limit` (AD-79): `RedisRateLimiter` — the shared-store
@@ -371,7 +371,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ~110× (`BENCHMARKS.md`).
 - `@ndigo/factory`: instance values are tracked in a name→value `Map` as well
   as the own property, so `getValue` reads a shape-independent Map entry
-  instead of a megamorphic dictionary property. Same-host bench: bean lookups
+  instead of a megamorphic dictionary property. Same-host bench: entry lookups
   19.6 → 8.6–10.1 ns (−49 to −56%), dynamic 1/1,000 values −32 to −36%,
   `hasValue` hit 2.4 → 3.5–3.6 ns (`BENCHMARKS.md`).
 - `@ndigo/factory`: a sentinel marks values registered as `undefined`, so
@@ -755,7 +755,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `@scheduled({ lock })` (AD-73): one node executes each fire of a locked
   schedule — the runner acquires before the run and releases in the `finally`
   (contended fires skip with a logged warning; `lockWait`/`lockWaitStep`/
-  `lockTtl` tune the waiting, polling, and lease duration). `lockDriver` bean
+  `lockTtl` tune the waiting, polling, and lease duration). `lockDriver` entry
   wired through `NodeAutoConfiguration` (in-process default, Redis override).
 - Spec-typecheck lane (TST-A): `pnpm typecheck` now runs
   `tsc -p tsconfig.spec.json` after the per-project build checks, typechecking
@@ -887,7 +887,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   no longer maps to the shared `'unknown'` id), with an optional
   `clockToleranceSeconds`; HMAC configs now reject secrets shorter than
   32 bytes at construction (SE-1, SE-2).
-- Refresh-scoped beans with `destroy()`/`close()` now tear down when the
+- Refresh-scoped entries with `destroy()`/`close()` now tear down when the
   refresh scope clears on environment refresh (`config:refresh`): the
   container registers the destruction callback at creation time, exactly once
   per instance (AD-29).
@@ -938,7 +938,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   matching the API-docs mapping) (SE-4).
 - Boot: nested `@defaultValue` converts like top-level defaults (numbers and
   booleans bind typed), and a failure after context creation closes the
-  context instead of leaking listeners/beans (CF-4, CF-6).
+  context instead of leaking listeners/entries (CF-4, CF-6).
 - `@ndigo/factory`: `init()` failures now propagate as `FrameworkError`
   instead of warning and serving the half-initialized instance (CF-5).
 - HTTP client: `TimeoutInterceptor` releases its timer when a request settles

@@ -1,5 +1,5 @@
 /**
- * The service layer's public surface: the beans the container registers and the
+ * The service layer's public surface: the entries the container registers and the
  * state/model types controllers and views share.
  */
 export { ArticleService, FEED_PAGE_SIZE } from './article-service';

@@ -5,7 +5,7 @@
  * `tick` is decorated three times:
  *
  * - `@scheduled` with the every-five-seconds cron registers it with the scheduler
- *   auto-discovery (`ScheduleRegistry`) — zero wiring on a registered bean
+ *   auto-discovery (`ScheduleRegistry`) — zero wiring on a registered entry
  *   (AD-20, guides 23).
  * - `@counted('telemetry-lab.scheduled.ticks')` records one OpenTelemetry
  *   counter per run (push view).

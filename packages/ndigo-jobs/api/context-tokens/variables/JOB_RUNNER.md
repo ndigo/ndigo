@@ -8,5 +8,5 @@
 
 > `const` **JOB\_RUNNER**: [`ContextToken`](#)\<[`JobRunner`](../../job-runner/classes/JobRunner.md)\>
 
-Token for the [JobRunner](../../job-runner/classes/JobRunner.md) bean that polls the driver and executes
+Token for the [JobRunner](../../job-runner/classes/JobRunner.md) entry that polls the driver and executes
 handlers.

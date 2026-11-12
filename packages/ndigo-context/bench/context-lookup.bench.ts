@@ -1,7 +1,7 @@
 /**
- * ApplicationContext bean lookup and context startup.
+ * ApplicationContext entry lookup and context startup.
  *
- * The metadata beans pin the `@entry` path and the AD-34 D1 string/token
+ * The metadata entries pin the `@entry` path and the AD-34 D1 string/token
  * same-cost claim. The dynamic contexts pin scale: 1, 10, 100, and 1,000
  * registered values. Each measured iteration performs 1,000 lookups.
  */
@@ -27,37 +27,37 @@ const retain = sink;
 @configuration
 class BenchConfig {
     @entry()
-    bean1() {
-        return { id: 1, name: 'bean1' };
+    entry1() {
+        return { id: 1, name: 'entry1' };
     }
 
     @entry()
-    bean2() {
-        return { id: 2, name: 'bean2' };
+    entry2() {
+        return { id: 2, name: 'entry2' };
     }
 
     @entry()
-    bean3() {
-        return { id: 3, name: 'bean3' };
+    entry3() {
+        return { id: 3, name: 'entry3' };
     }
 
     @entry()
-    bean4() {
-        return { id: 4, name: 'bean4' };
+    entry4() {
+        return { id: 4, name: 'entry4' };
     }
 
     @entry()
-    bean5() {
-        return { id: 5, name: 'bean5' };
+    entry5() {
+        return { id: 5, name: 'entry5' };
     }
 }
 
 const context = new MetadataConfigApplicationContext('bench');
 context.addProcessor(new ApplicationContextAwareProcessor(context));
 context.register(BenchConfig);
-for (const name of ['bean1', 'bean2', 'bean3', 'bean4', 'bean5']) context.getValue(name);
+for (const name of ['entry1', 'entry2', 'entry3', 'entry4', 'entry5']) context.getValue(name);
 
-const bean1Token = new ContextToken<{ id: number; name: string }>('bean1');
+const entry1Token = new ContextToken<{ id: number; name: string }>('entry1');
 
 /** Builds a context with `count` directly registered values. */
 function dynamicContext(count: number): MetadataConfigApplicationContext {
@@ -72,19 +72,19 @@ const ctx10 = dynamicContext(10);
 const ctx100 = dynamicContext(100);
 const ctx1000 = dynamicContext(1_000);
 
-test('getValue — metadata beans (five registered)', async ({ bench }) => {
-    assertEquivalent('bean1 identity', context.getValue('bean1'), context.getValue('bean1'));
-    assertEquivalent('bean5 identity', context.getValue('bean5'), context.getValue('bean5'));
-    assertEquivalent('bean1 token identity', context.getValue(bean1Token), context.getValue('bean1'));
+test('getValue — metadata entries (five registered)', async ({ bench }) => {
+    assertEquivalent('entry1 identity', context.getValue('entry1'), context.getValue('entry1'));
+    assertEquivalent('entry5 identity', context.getValue('entry5'), context.getValue('entry5'));
+    assertEquivalent('entry1 token identity', context.getValue(entry1Token), context.getValue('entry1'));
     await bench.compare(
-        bench(benchName('getValue("bean1")', BATCH), () => {
-            for (let i = 0; i < BATCH; i++) retain(context.getValue('bean1'));
+        bench(benchName('getValue("entry1")', BATCH), () => {
+            for (let i = 0; i < BATCH; i++) retain(context.getValue('entry1'));
         }),
-        bench(benchName('getValue("bean5")', BATCH), () => {
-            for (let i = 0; i < BATCH; i++) retain(context.getValue('bean5'));
+        bench(benchName('getValue("entry5")', BATCH), () => {
+            for (let i = 0; i < BATCH; i++) retain(context.getValue('entry5'));
         }),
         bench(benchName('getValue(ContextToken)', BATCH), () => {
-            for (let i = 0; i < BATCH; i++) retain(context.getValue(bean1Token));
+            for (let i = 0; i < BATCH; i++) retain(context.getValue(entry1Token));
         })
     );
 });
@@ -119,11 +119,11 @@ test('getValue — dynamic scale 1 / 10 / 100 / 1,000', async ({ bench }) => {
 });
 
 test('hasValue — hit and miss', async ({ bench }) => {
-    assertEquivalent('hasValue hit', context.hasValue('bean1'), true);
+    assertEquivalent('hasValue hit', context.hasValue('entry1'), true);
     assertEquivalent('hasValue miss', context.hasValue('missing'), false);
     await bench.compare(
         bench(benchName('hasValue hit', BATCH), () => {
-            for (let i = 0; i < BATCH; i++) retain(context.hasValue('bean1'));
+            for (let i = 0; i < BATCH; i++) retain(context.hasValue('entry1'));
         }),
         bench(benchName('hasValue miss', BATCH), () => {
             for (let i = 0; i < BATCH; i++) retain(context.hasValue('missing'));
@@ -131,12 +131,12 @@ test('hasValue — hit and miss', async ({ bench }) => {
     );
 });
 
-test('context startup — five metadata beans', async ({ bench }) => {
+test('context startup — five metadata entries', async ({ bench }) => {
     await bench('refresh()', () => {
         const ctx = new MetadataConfigApplicationContext('bench-startup');
         ctx.addProcessor(new ApplicationContextAwareProcessor(ctx));
         ctx.register(BenchConfig);
         ctx.refresh();
-        retain(ctx.getValue('bean1'));
+        retain(ctx.getValue('entry1'));
     }).run({ time: 2_000, warmupTime: 500 });
 });

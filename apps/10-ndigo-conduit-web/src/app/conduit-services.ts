@@ -1,5 +1,5 @@
 /**
- * The app's object graph, wired once and registered as container beans.
+ * The app's object graph, wired once and registered as container entries.
  *
  * The only non-obvious edge is the cycle between the session and the HTTP
  * client: the client needs the session's token (outgoing) *and* must drop the

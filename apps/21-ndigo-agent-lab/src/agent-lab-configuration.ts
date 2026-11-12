@@ -1,6 +1,6 @@
 /**
  * Demo wiring: order tools, the SSE chat controller, the Streamable HTTP MCP
- * endpoint, and the A2UI report. Controllers are beans so `@routeMapping`
+ * endpoint, and the A2UI report. Controllers are entries so `@routeMapping`
  * scans their handlers; the view resolver makes the report negotiable.
  */
 import '@tsmetadata/polyfill';

@@ -13,7 +13,7 @@ is worth reading.
 ## What you'll learn
 
 - Bootstrap with `runNodeApplication` and control the manual `ApplicationBuilder` path.
-- Bind configuration classes and register `@entry` beans.
+- Bind configuration classes and register `@entry` entries.
 - Map controllers and bind request arguments across every source.
 - Return the RFC 9457 error contract and shut the server down cleanly.
 
@@ -30,7 +30,7 @@ import 'node:process';
 import { runNodeApplication } from '@ndigo/platform-node';
 
 const app = await runNodeApplication([AppConfiguration], { port: 3000 });
-// app.context — the refreshed DI container (every bean stays reachable)
+// app.context — the refreshed DI container (every entry stays reachable)
 // app.server  — the started HTTPServer
 // app.port    — the bound port
 // app.close() — programmatic teardown
@@ -70,7 +70,7 @@ const context = await new ApplicationBuilder([NodeAutoConfiguration, AppConfigur
 2. registers each source conditionally (`@whenNode` gates platform
    configs),
 3. `refresh`es the context: entries are created, and the lifecycle
-   processor initializes managed beans (see 5),
+   processor initializes managed entries (see 5),
 4. returns the ready `ApplicationContext`.
 
 `NodeAutoConfiguration` provisions the server-side stack: the 6 argument
@@ -79,7 +79,7 @@ and the managed `httpServer` entry.
 
 ## 2. Configuration classes and entries
 
-A `@configuration` class declares beans with `@entry` methods. Each entry
+A `@configuration` class declares entries with `@entry` methods. Each entry
 method is called eagerly during `register` and its return value becomes a
 named context value — the factory names it after the method.
 
@@ -98,7 +98,7 @@ export class AppConfiguration {
 }
 ```
 
-Beans that implement framework awareness contracts are injected automatically
+Entries that implement framework awareness contracts are injected automatically
 when they are entries — e.g. `ApplicationContextAware` values receive the
 context during registration (`ApplicationContextAwareProcessor`). Your own
 entries typically don't need this; controllers are plain classes.
@@ -171,12 +171,12 @@ covered in guide [06 — Argument Binding](06-argument-binding.md). Follow
 guide [07 — Request Validation](07-request-validation.md) for coercion and
 validation on top of extractors.
 
-## 5. Managed beans and the server
+## 5. Managed entries and the server
 
-Beans can participate in the context lifecycle by implementing
+Entries can participate in the context lifecycle by implementing
 `SmartLifecycle` (from `@ndigo/factory`): on `refresh` the lifecycle
-processor starts beans that are `isAutoStartup`; on `close` it stops them.
-`HTTPServer` is such a bean — `NodeAutoConfiguration` provisions it as the
+processor starts entries that are `isAutoStartup`; on `close` it stops them.
+`HTTPServer` is such an entry — `NodeAutoConfiguration` provisions it as the
 `httpServer` entry.
 
 Because `refresh` must never bind sockets, the server is

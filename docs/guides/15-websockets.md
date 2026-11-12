@@ -9,7 +9,7 @@ a **connection** contract instead of a request/response pair.
 The design: per-kind sessions with no generic base class. The dispatcher
 owns the types handlers sign against; the Node platform implements the
 machinery; the application context composes it — a Node app can run socket
-sessions and HTTP sessions side by side as separate beans bound through
+sessions and HTTP sessions side by side as separate entries bound through
 separate extractors (`socketSessionValue` / `requestSessionValue`).
 
 **Audience:** Node and browser application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api), [apps/13-ndigo-chat](https://github.com/ndigo/ndigo/tree/main/apps/13-ndigo-chat)
@@ -64,15 +64,15 @@ adapter option rejects forged origins with `403` before the connection (in
 
 ## 2. The session registry
 
-`NodeAutoConfiguration` provisions a `socketSessionRegistry` bean
+`NodeAutoConfiguration` provisions a `socketSessionRegistry` entry
 (`SocketSessionRegistry` contract in `@ndigo/dispatcher`, implementation in
-`@ndigo/platform-node`). The HTTP server resolves it at start, so the bean
+`@ndigo/platform-node`). The HTTP server resolves it at start, so the entry
 **is the adapter's registry** — any service can push to live sessions:
 
 ```ts
 import { type SocketSessionRegistry } from '@ndigo/dispatcher';
 
-// any bean: fetch the registry from the context (or inject it)
+// any entry: fetch the registry from the context (or inject it)
 const registry = context.getValue<SocketSessionRegistry>('socketSessionRegistry');
 await registry.broadcast('/ws/room', { event: 'server', data: 'maintenance window' });
 registry.count('/ws/room'); // 0 if nobody is connected
@@ -220,7 +220,7 @@ new HTTPServer(dispatcher, {
     },
 });
 
-// or as a context bean (bean-based apps never construct the server):
+// or as a context entry (entry-based apps never construct the server):
 class SocketAuthConfiguration {
     @entry
     socketRequestAuthenticator(): SocketRequestAuthenticator {
@@ -234,7 +234,7 @@ class SocketAuthConfiguration {
 }
 ```
 
-`HTTPServer` resolves a `socketRequestAuthenticator` bean when no explicit
+`HTTPServer` resolves a `socketRequestAuthenticator` entry when no explicit
 option is passed (the same pattern as `socketSessionRegistry`). The
 attribute bag is merged into `session.attributes`, so `{ user }` also
 drives STOMP `/user/*` routing (`resolveUser`). `authenticateTimeoutMs`

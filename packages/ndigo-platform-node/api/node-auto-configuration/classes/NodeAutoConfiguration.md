@@ -87,7 +87,7 @@ The Node.js argument-value converter registry.
 The shared named-cache manager for `@cached` methods (AD-24):
 `@cached` resolves the manager off the method's `this.cacheManager`
 (constructor or aware-injection) — zero wiring for Node apps, mirror
-of the scheduler beans above.
+of the scheduler entries above.
 
 #### Returns
 
@@ -103,8 +103,8 @@ The cache manager.
 
 The shared conversion service (AD-38): leaf conversions (string ↔
 typed) and schema-driven DTO projection (`convert(value, schema)`)
-in one bean — zero wiring for Node apps, mirror of the cache manager
-beans above. Apps with custom converter registries override the bean
+in one entry — zero wiring for Node apps, mirror of the cache manager
+entries above. Apps with custom converter registries override the entry
 with their own `createConversionService`.
 
 #### Returns
@@ -171,7 +171,7 @@ The error resolvers.
 The feature-gate interceptor — **one instance**, registered as an
 entry so the aware processor injects the application context
 (`HTTPServer` precedent): the interceptor resolves the
-`FLAG_EVALUATOR`/`FLAG_CONTEXT_RESOLVER` beans per check, and the
+`FLAG_EVALUATOR`/`FLAG_CONTEXT_RESOLVER` entries per check, and the
 mapping holds that same injected instance.
 
 #### Returns
@@ -189,7 +189,7 @@ The shared [FeatureGateInterceptor](../../feature-gate-interceptor/classes/Featu
 The default flag targeting-context resolver (AD-87 companion): the
 session-bag principal when a session/identity interceptor ran first
 (targeting key = principal id, roles as attributes), else the AD-37
-client address. Apps override this bean for tenant/attribute
+client address. Apps override this entry for tenant/attribute
 targeting.
 
 #### Returns
@@ -209,7 +209,7 @@ from the application environment, **live on every evaluation** — an
 `environment.refresh()` (AD-29) flips flags without a redeploy.
 Apps needing vendor flagging (flagd / OFREP / LaunchDarkly via the
 `@ndigo/flags-openfeature` bridge) provide their own `FlagEvaluator`
-bean; this is the zero-config default. The gate resolves the bean
+entry; this is the zero-config default. The gate resolves the entry
 per check (AD-87), so an override reaches `@whenFeature` routes too.
 
 #### Returns
@@ -262,9 +262,9 @@ The managed HTTP server.
 > **jobDriver**(): `InProcessJobDriver`
 
 The default job driver (AD-72): in-process and **not durable** — jobs
-vanish with the process. Apps register their own `JobDriver` bean
+vanish with the process. Apps register their own `JobDriver` entry
 (`LibSQLJobStore`, `RedisJobDriver`) for work that must survive a
-restart; the queue, registry and runner follow whichever driver bean is
+restart; the queue, registry and runner follow whichever driver entry is
 registered here.
 
 #### Returns
@@ -279,7 +279,7 @@ The default in-process job driver.
 
 > **jobHandlerRegistry**(): `JobHandlerRegistry`
 
-Discovers `@jobHandler` methods on registered beans and holds the
+Discovers `@jobHandler` methods on registered entries and holds the
 registrations. Scans on refresh (`SmartLifecycle`, phase 0); arms no
 timer.
 
@@ -295,7 +295,7 @@ The job handler registry.
 
 > **jobQueue**(): `JobQueue`
 
-The producer-facing job queue (AD-72): resolves the `jobDriver` bean
+The producer-facing job queue (AD-72): resolves the `jobDriver` entry
 through the injected context at first use.
 
 #### Returns
@@ -344,8 +344,8 @@ The accept-header language resolver.
 The default lock driver (AD-73): in-process and **single-node** — the
 process-wide lease table gives `@scheduled({ lock })` tasks exactly
 one holder per process. Apps that run multiple nodes register their
-own `LockDriver` bean (`RedisLockDriver`) for cross-process
-coordination; the task scheduler resolves whichever bean is
+own `LockDriver` entry (`RedisLockDriver`) for cross-process
+coordination; the task scheduler resolves whichever entry is
 registered here.
 
 #### Returns
@@ -363,7 +363,7 @@ The default in-process lock driver.
 The shared in-memory rate limiter (SEC-6). Apps needing a
 distributed backend provide their own [RateLimiter](#)
 implementation (the `@ndigo/redis/rate-limit` driver is the
-shared-store option, AD-79); the bean is the default.
+shared-store option, AD-79); the entry is the default.
 
 #### Returns
 
@@ -377,7 +377,7 @@ The default fixed-window rate limiter.
 
 > **scheduleRegistry**(): `ScheduleRegistry`
 
-Discovers `@scheduled` methods on registered beans and runs them on
+Discovers `@scheduled` methods on registered entries and runs them on
 the task scheduler. Auto-started on refresh (SmartLifecycle) and torn
 down with the context — zero wiring for Node apps (AD-20 D2).
 
@@ -421,7 +421,7 @@ The ApplicationContext to be used by this object.
 
 Tracks open WebSocket sessions — broadcast, rooms, heartbeat (AD-21).
 
-The HTTP server resolves this bean when it starts, so broadcasts from
+The HTTP server resolves this entry when it starts, so broadcasts from
 any service reach the adapter's live sessions. Heartbeat defaults to
 on; tune via `NDIGO_SOCKET_HEARTBEAT_INTERVAL_MS` /
 `NDIGO_SOCKET_IDLE_TIMEOUT_MS` (heartbeat `0` disables it).
@@ -439,7 +439,7 @@ The socket session registry.
 > **taskScheduler**(): `TaskScheduler`
 
 The shared task scheduler for `@scheduled` methods (AD-20). The
-registry bean discovers and starts scheduled tasks on refresh.
+registry entry discovers and starts scheduled tasks on refresh.
 
 #### Returns
 

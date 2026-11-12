@@ -1,5 +1,5 @@
 /**
- * The container configuration: what the app registers as beans.
+ * The container configuration: what the app registers as entries.
  *
  * One instance owns the data port and the state service and exposes both under
  * their tokens; the route controllers are entries too, because the dispatcher

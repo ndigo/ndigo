@@ -6,7 +6,7 @@ import { MetadataConfigApplicationContext } from '@ndigo/context';
 import { scheduled, TASK_SCHEDULER, TaskScheduler } from '@ndigo/scheduler';
 import { NodeAutoConfiguration } from '../src/node-auto-configuration';
 
-/** A `@scheduled` bean registered before refresh (AD-20 demo shape). */
+/** A `@scheduled` entry registered before refresh (AD-20 demo shape). */
 class Heartbeat {
     beats = 0;
 
@@ -42,7 +42,7 @@ describe('NodeAutoConfiguration scheduler wiring (AD-20)', () => {
         expect(running).toBe(true); // SmartLifecycle auto-start on refresh
     });
 
-    test('discovers the scheduled bean and runs it on demand', async () => {
+    test('discovers the scheduled entry and runs it on demand', async () => {
         const names = scheduler.taskNames();
         expect(names).toContain('heartbeat.beat');
 

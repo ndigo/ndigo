@@ -8,7 +8,7 @@
 
 In-memory [CacheManager](../interfaces/CacheManager.md): auto-creates [MemoryCache](../../cache/classes/MemoryCache.md) stores on
 first `getCache(name)` with the manager defaults. Caches are owned for the
-manager's lifetime — the auto-configuration `cacheManager` bean is a
+manager's lifetime — the auto-configuration `cacheManager` entry is a
 singleton per application context.
 
 ## Implements

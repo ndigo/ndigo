@@ -58,7 +58,7 @@ The application context injected by the aware mixin.
 
 > **configurationPropertiesController**(): [`ConfigurationPropertiesController`](../../configuration-properties-controller/classes/ConfigurationPropertiesController.md)
 
-The `/configprops` controller bean (AD-76 D-8).
+The `/configprops` controller entry (AD-76 D-8).
 
 #### Returns
 
@@ -72,7 +72,7 @@ The configuration-properties controller.
 
 > **environmentController**(): [`EnvironmentController`](../../environment-controller/classes/EnvironmentController.md)
 
-The `/env` controller bean (AD-76 D-8).
+The `/env` controller entry (AD-76 D-8).
 
 #### Returns
 
@@ -92,7 +92,7 @@ management routes otherwise bypass the interceptor attached to the
 *platform* mapping), the management-path guard pushed onto the
 interceptor chain when present, and the controllers detected through
 it like every other decorator-driven handler (AD-76 D-8: detection
-registers the *processed* bean, so the handlers run with their
+registers the *processed* entry, so the handlers run with their
 context wired). Declared as the `handlerMappings` collection (the
 resolution the strategy checks first), so it is immune to
 registration-order clobbering by `NodeAutoConfiguration.handlerMapping`.
@@ -144,7 +144,7 @@ The registry.
 
 > **loggersController**(): [`LoggersController`](../../loggers-controller/classes/LoggersController.md)
 
-The `/loggers` controller bean (AD-76 D-8): decorator-registered, so
+The `/loggers` controller entry (AD-76 D-8): decorator-registered, so
 handler detection dispatches the context-processed instance.
 
 #### Returns

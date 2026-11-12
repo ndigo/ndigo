@@ -8,7 +8,7 @@ import { TodoConfiguration } from '../src/todo-configuration';
 
 /** A booted todo-api app wired exactly like the running server. */
 export interface TodoAPIHarness {
-    /** The application context (store + controller beans). */
+    /** The application context (store + controller entries). */
     context: ApplicationContext;
     /** The in-process HTTP client. */
     mockHTTP: MockHTTP;

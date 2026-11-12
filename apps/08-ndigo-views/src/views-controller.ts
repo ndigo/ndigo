@@ -21,14 +21,14 @@ class ViewsController {
         return new ModelAndView('shell', { message: 'Ndigo Views' });
     }
 
-    /** Context-bean location → NameViewResolver (English footer default). */
+    /** Context-entry location → NameViewResolver (English footer default). */
     @routeMapping('/widget')
     async handleWidget() {
         return this.#footerModel('en');
     }
 
     /**
-     * Same bean view, language from the path segment — the i18n demo:
+     * Same entry view, language from the path segment — the i18n demo:
      * `ContentSource.getContent('footer', lang)` resolves the key with
      * fallback to the default language.
      */

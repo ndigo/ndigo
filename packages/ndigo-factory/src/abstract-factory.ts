@@ -156,7 +156,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
         this.registerScope('route', new HashScope());
         this.registerScope('hash', this.getScope('route'));
         this.registerScope('singleton', new SingletonScope());
-        // AD-29 D-2: refresh-scoped beans re-create on environment refresh.
+        // AD-29 D-2: refresh-scoped entries re-create on environment refresh.
         // Registered by default so @refreshScope works with zero wiring; the
         // owning context wires the config:refresh event to scope.clear().
         this.registerScope('refresh', new RefreshScope());
@@ -554,7 +554,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
     setValue<T = unknown>(nameOrToken: string | ContextToken<T>, value: T): void {
         const name = typeof nameOrToken === 'string' ? nameOrToken : nameOrToken.description;
 
-        // Skip @sharedDependency beans in child factories — resolved from parent chain
+        // Skip @sharedDependency entries in child factories — resolved from parent chain
         if (isConstructor(value) && isShared(value as Function) && this.#parent) {
             return;
         }

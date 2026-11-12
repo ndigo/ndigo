@@ -195,7 +195,7 @@ describe('@whenFeature through the real NodeAutoConfiguration wiring (AD-82 D-5)
         context?.close();
     });
 
-    test('boots the FLAG_EVALUATOR bean and flips a gated route live on refresh', async () => {
+    test('boots the FLAG_EVALUATOR entry and flips a gated route live on refresh', async () => {
         const environment = new StandardEnvironment([{ 'feature.noteFlags': false }]);
         context = new MetadataConfigApplicationContext('feature-gate');
         context.setEnvironment(environment);
@@ -233,7 +233,7 @@ describe('@whenFeature through the real NodeAutoConfiguration wiring (AD-82 D-5)
         expect(await on.json()).toEqual({ gated: true });
     });
 
-    test('a config-seeded flag is served by the default bean from the start', async () => {
+    test('a config-seeded flag is served by the default entry from the start', async () => {
         const seeded = new MetadataConfigApplicationContext('feature-seeded');
         seeded.setEnvironment(new StandardEnvironment([{ 'feature.greeting.flag': true }]));
         @requestMapping('/')
@@ -345,7 +345,7 @@ describe('targeting-context resolvers (AD-87 companion)', () => {
         });
     });
 
-    test('the interceptor uses the built-in default when no bean or override is present', async () => {
+    test('the interceptor uses the built-in default when no entry or override is present', async () => {
         let received: FlagEvaluationContext | undefined;
         const spy: FlagEvaluator = {
             kind: 'spy',
@@ -398,7 +398,7 @@ describe('targeting-context resolvers (AD-87 companion)', () => {
     });
 });
 
-describe('app bean overrides reach the gate (AD-87 companion)', () => {
+describe('app entry overrides reach the gate (AD-87 companion)', () => {
     test('FLAG_EVALUATOR and FLAG_CONTEXT_RESOLVER entries apply to @whenFeature routes', async () => {
         const seen: (FlagEvaluationContext | undefined)[] = [];
         const override: FlagEvaluator = {

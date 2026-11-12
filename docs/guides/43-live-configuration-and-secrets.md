@@ -1,6 +1,6 @@
 # Guide 43 — Live Configuration, Secrets & Remote Config
 
-Configuration is more than the boot-time source chain: beans can rebind on
+Configuration is more than the boot-time source chain: entries can rebind on
 `config:refresh`, secret values can stay encrypted at rest, and a remote config
 server can update a running app. This guide covers those three surfaces; the
 source precedence, profiles, binding, and validation pipeline lives in
@@ -19,7 +19,7 @@ source precedence, profiles, binding, and validation pipeline lives in
 ## 1. Live rebind — `@refreshScope`
 
 Configuration is no longer a boot-time snapshot: environments emit
-`config:refresh` after every `refresh`, and beans opt in to re-binding on
+`config:refresh` after every `refresh`, and entries opt in to re-binding on
 it. Mark a `@configurationProperties` class:
 
 ```ts
@@ -39,9 +39,9 @@ class ServerConfig {
   `setValue` for refresh-scoped classes — `getValue('serverConfig')` returns
   the fresh snapshot; unmarked classes keep the boot-time instance
   (snapshot identity).
-- Scope-level beans (constructor-registered classes) clear their caches on
+- Scope-level entries (constructor-registered classes) clear their caches on
   the event too.
-- **Freshness is on re-fetch, not on the reference**: a bean that captured
+- **Freshness is on re-fetch, not on the reference**: an entry that captured
   a config object in its constructor keeps the old object until it
   re-looks up. No proxy machinery (repo posture) — documented, deliberate.
 - Coverage is config classes only in v1 ; `@entry` method
@@ -52,11 +52,11 @@ class ServerConfig {
 `config:refresh` re-binds the opt-in surface only — it does **not**
 re-inject consumers. After a refresh:
 
-- singleton beans and consumers that captured a value **at construction**
+- singleton entries and consumers that captured a value **at construction**
   keep the **old** value for their lifetime;
-- only `@refreshScope` beans and re-bound `@configurationProperties` names
+- only `@refreshScope` entries and re-bound `@configurationProperties` names
   see the new values (from their next lookup);
-- a bean that injects the environment / property accessor (or reads
+- an entry that injects the environment / property accessor (or reads
   `environment.getPropertyAs(...)` at call time) always observes the
   current source state.
 
@@ -108,7 +108,7 @@ app.secrets(AESGCMCipher.fromEnvironment()); // reads NDIGO_SECRET_KEY
 ## 3. Config server — remote sources and the poll loop
 
 Fetch a plain JSON document over HTTPS and make it a named source — changes
-merge live and rebind refresh-scoped beans:
+merge live and rebind refresh-scoped entries:
 
 ```ts
 builder.configServer({
@@ -125,7 +125,7 @@ builder.configServer({
   slot — nothing reads `.env`, see §1).
 - **Change detection**: ETag/`If-None-Match` (304 → nothing happens) or
   body-text comparison. A real change replaces the source in place and
-  fires `environment.refresh` → `config:refresh` → `@refreshScope` beans
+  fires `environment.refresh` → `config:refresh` → `@refreshScope` entries
   rebind. No change → no event → no rebinding.
 - `optional: true` (default): a dead server at boot warns and proceeds on
   local sources; later poll failures keep last-good. `optional: false`

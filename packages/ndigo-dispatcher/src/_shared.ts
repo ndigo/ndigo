@@ -16,7 +16,7 @@ const kindOf = (value: unknown): string | undefined => kind.exec(toString.call(v
 type Maybe<T> = string | T;
 
 /**
- * A handler reference: a live object, a bean-name string (deserialized mapping
+ * A handler reference: a live object, an entry-name string (deserialized mapping
  * tables), or a {@link ContextToken} (typed programmatic mappings — AD-34 D1).
  */
 type MaybeHandler = Maybe<object> | ContextToken<object>;

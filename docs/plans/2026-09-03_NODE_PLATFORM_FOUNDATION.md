@@ -19,7 +19,7 @@ The goal is a Spring Boot–like experience: register a `@configuration` class, 
 
 ### 2.1 Decision: reuse `BrowserDispatcher`
 
-`BrowserDispatcher`'s `render()` is **DOM-free** — it resolves the view, pulls the `ViewTarget` bean from the application context, and calls `view.render(model, route, viewTarget)`. The browser-ness lives entirely in `@ndigo/platform-web`'s `DOMElementViewTarget` bean, not in the dispatcher.
+`BrowserDispatcher`'s `render()` is **DOM-free** — it resolves the view, pulls the `ViewTarget` entry from the application context, and calls `view.render(model, route, viewTarget)`. The browser-ness lives entirely in `@ndigo/platform-web`'s `DOMElementViewTarget` entry, not in the dispatcher.
 
 So `BrowserDispatcher` **stays in `@ndigo/dispatcher`** for this work. `NodeDispatcher` extends it in `@ndigo/platform-node`, inheriting the full dispatch/interceptor/error pipeline and overriding only `render()` for server semantics.
 
@@ -32,7 +32,7 @@ So `BrowserDispatcher` **stays in `@ndigo/dispatcher`** for this work. `NodeDisp
 export class BrowserDispatcher extends AsViewResolverStrategy(/* … mixins … */)
     implements RouteDispatcher, RouteRenderer {
     async dispatch(route: Route): Promise<void> { /* handler mapping, interceptors, error handling */ }
-    async render(mv: ModelAndView, route: Route): Promise<void> { /* resolves view, uses ViewTarget bean */ }
+    async render(mv: ModelAndView, route: Route): Promise<void> { /* resolves view, uses ViewTarget entry */ }
 }
 
 // @ndigo/platform-node — new
@@ -96,11 +96,11 @@ class NodeServerConfiguration {
 
 ### 3.3 Lifecycle
 
-| Event                       | Action                                       |
-| --------------------------- | -------------------------------------------- |
-| `context.refresh()`         | `HTTPServer` bean created, not yet listening |
-| `context started` event     | `server.listen()` — auto-starts              |
-| `context close` / `destroy` | `server.close()` — graceful shutdown         |
+| Event                       | Action                                        |
+| --------------------------- | --------------------------------------------- |
+| `context.refresh()`         | `HTTPServer` entry created, not yet listening |
+| `context started` event     | `server.listen()` — auto-starts               |
+| `context close` / `destroy` | `server.close()` — graceful shutdown          |
 
 ---
 
@@ -426,7 +426,7 @@ The Node foundation overlaps with `@ndigo/http` — reuse its HTTP vocabulary in
 | Where should `@getMapping`/`@postMapping` live?   | (a) `@ndigo/dispatcher`, (b) `@ndigo/platform-node`, (c) `@ndigo/router`                                | **`@ndigo/dispatcher`** — they work on both platforms; the method is just metadata                                                                                                                                |
 | Where should `BrowserDispatcher` ultimately live? | (a) Move to `@ndigo/platform-web` now, (b) Keep in `@ndigo/dispatcher`, defer move                      | **(b)** — defer (TODO in §2.1). `NodeDispatcher extends BrowserDispatcher` works today; the move needs an `AbstractDispatcher` extraction and package re-arrangement                                              |
 | `@requestMapping` alias vs own decorator?         | (a) Pure alias of `@routeMapping`, (b) Own decorator extending the shared metadata config with `method` | **(b)** — it carries HTTP request semantics (`method` now, `headers`/`consumes`/`produces` later) that a client route never has. Shares the metadata key so the mapping stack and hybrid controllers stay unified |
-| Should `@ndigo/boot` auto-start the HTTP server?  | (a) Auto-start on context refresh, (b) Manual `.start()` call                                           | **(a) Auto-start** — Spring Boot does this. The `HTTPServer` bean listens after context refresh                                                                                                                   |
+| Should `@ndigo/boot` auto-start the HTTP server?  | (a) Auto-start on context refresh, (b) Manual `.start()` call                                           | **(a) Auto-start** — Spring Boot does this. The `HTTPServer` entry listens after context refresh                                                                                                                  |
 | Port configuration?                               | (a) Hardcoded in `@entry`, (b) `@ConfigurationProperties`, (c) `process.env.PORT`                       | **(b) + (c)** — `@ConfigurationProperties` for explicit config, fallback to `PORT` env var                                                                                                                        |
 
 ---

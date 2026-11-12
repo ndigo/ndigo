@@ -3,7 +3,7 @@
  * for the shell, the static controller for the built client bundle, and the
  * socket identity source.
  *
- * Registered after `NodeAutoConfiguration`, so it contributes beans without
+ * Registered after `NodeAutoConfiguration`, so it contributes entries without
  * replacing platform defaults (the handler mapping, the error-resolver chain and
  * the rate limiter stay the platform's — the app *splices* its session
  * restoration and authorization guard onto that mapping, see
@@ -59,7 +59,7 @@ function upgradeToken(sources: SocketRequestSources): string | null {
 }
 
 /**
- * The playground's beans: one stack (published runtime) behind six controllers,
+ * The playground's entries: one stack (published runtime) behind six controllers,
  * the view resolver and the static bundle.
  */
 @configuration
@@ -150,7 +150,7 @@ export class PlaygroundConfiguration {
     }
 
     /**
-     * Socket identity source (SEC-3): the HTTP server resolves this bean and
+     * Socket identity source (SEC-3): the HTTP server resolves this entry and
      * hands its `authenticate` to the adapter's upgrade hook.
      *
      * The handshake credential (`?token=` or a Bearer header) is validated

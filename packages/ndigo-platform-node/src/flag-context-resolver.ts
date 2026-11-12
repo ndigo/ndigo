@@ -1,6 +1,6 @@
 /**
  * The flag targeting-context seam (AD-87 companion): the
- * `FLAG_CONTEXT_RESOLVER` bean builds the `FlagEvaluationContext` for a
+ * `FLAG_CONTEXT_RESOLVER` entry builds the `FlagEvaluationContext` for a
  * `@whenFeature` gate check. The platform default resolves the session-bag
  * principal when one is present, falling back to the client address; apps
  * register their own resolver for tenant/attribute targeting from anywhere

@@ -28,9 +28,9 @@ bookkeeping (next-fire anchors, completion times).
 > `optional` **lockDriver?**: [`LockDriver`](#) \| `null`
 
 The distributed lock driver for `@scheduled({ lock })` tasks
-(AD-73). `undefined` (default) resolves the `lockDriver` bean from
+(AD-73). `undefined` (default) resolves the `lockDriver` entry from
 the injected application context; pass `null` to leave locked tasks
-failing loudly when no bean exists.
+failing loudly when no entry exists.
 
 ***
 

@@ -60,9 +60,9 @@ describe('ConfigurationPropertiesController (AD-76 D-3)', () => {
         const res = await fetch(`${base}/configprops`);
         expect(res.status).toBe(200);
         const body = (await res.json()) as {
-            beans: Array<{ name: string; properties: Array<{ key: string; type?: string }> }>;
+            entries: Array<{ name: string; properties: Array<{ key: string; type?: string }> }>;
         };
-        expect(body.beans).toEqual([
+        expect(body.entries).toEqual([
             {
                 name: 'demo',
                 properties: [

@@ -130,7 +130,7 @@ host.registerFeature({
 });
 ```
 
-A bean marked `@sharedDependency` is shell-managed: child contexts skip
+An entry marked `@sharedDependency` is shell-managed: child contexts skip
 registration and resolve it from the parent chain. This is the runtime
 equivalent of import maps; features stay standalone and no build-level module
 deduplication is required.
@@ -155,8 +155,8 @@ guarantee, not a bug.
 
 The same isolation applies to configuration: a feature context has its own
 environment and does not see the shell's property sources. `@sharedDependency`
-shares beans, not config values. Platform values belong in a config package or,
-when they are runtime values, in shell-registered beans.
+shares entries, not config values. Platform values belong in a config package or,
+when they are runtime values, in shell-registered entries.
 [Guide 49](49-configuration-layering-and-context-composition.md) covers the
 layering options and the boundary.
 

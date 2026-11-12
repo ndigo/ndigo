@@ -13,7 +13,7 @@ contributor guides. Numbers are reading order within a section.
 
 ## Start here
 
-1. [00 — Core Concepts & Mental Model](00-core-concepts.md) — context/factory/bean,
+1. [00 — Core Concepts & Mental Model](00-core-concepts.md) — context/factory/entry,
    dispatcher/route/mapping, views and targets, platform presets, and how the
    packages fit together.
 2. [01 — Building a Node API](01-building-a-node-api.md) — the primary server
@@ -83,7 +83,7 @@ contributor guides. Numbers are reading order within a section.
   `fileValue` binding, threshold-to-disk streaming, limits → 413, and
   filename-safety.
 - [15 — WebSockets](15-websockets.md) — the `@socketMapping` contract, the
-  session registry (`SocketSessionRegistry` bean: rooms, broadcast, heartbeat),
+  session registry (`SocketSessionRegistry` entry: rooms, broadcast, heartbeat),
   the isomorphic client, and STOMP destinations/subscriptions/receipts.
 - [42 — STOMP & Cross-Node Fan-Out](42-stomp.md) — STOMP destinations,
   transactions, ack modes, `/user` and `/queue` semantics, resource caps, and

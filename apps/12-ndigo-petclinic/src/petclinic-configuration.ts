@@ -4,7 +4,7 @@
  * One composition root: the seeded, in-memory clinic behind every page, the
  * message source the EJS locale helpers read, the four controllers, the static
  * asset controller, and the view resolver. Registered after
- * `NodeAutoConfiguration`, so it contributes beans without replacing any
+ * `NodeAutoConfiguration`, so it contributes entries without replacing any
  * platform default (the port comes from `process.env.PORT`, the error-resolver
  * chain and the argument resolvers stay the platform's).
  */
@@ -31,7 +31,7 @@ const VIEWS = fileURLToPath(new URL('../views/', import.meta.url));
 /** Absolute path of the `public/` directory the static controller serves. */
 const PUBLIC = fileURLToPath(new URL('../public/', import.meta.url));
 
-/** The PetClinic app's beans. */
+/** The PetClinic app's entries. */
 @configuration
 export class PetClinicConfiguration {
     // The composition root: one seeded repository, one service over it, shared

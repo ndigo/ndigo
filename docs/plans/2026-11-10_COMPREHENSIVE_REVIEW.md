@@ -150,9 +150,9 @@ Fix: require a non-empty host/path segment, e.g.
 but not generated defaults from `defaultToolName`.
 Fix: validate generated names too.
 
-**R-19 — Agent lab caches a stale agent bean (Medium).**
+**R-19 — Agent lab caches a stale agent entry (Medium).**
 `apps/21-ndigo-agent-lab/src/chat-controller.ts:87-123` caches `#agent` for the
-bean lifetime; config/flag changes will not take effect.
+entry lifetime; config/flag changes will not take effect.
 Fix: resolve per request or invalidate on context refresh.
 
 **R-20 — Unhandled async cleanup in agent lab (Low).**

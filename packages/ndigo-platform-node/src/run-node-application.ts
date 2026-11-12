@@ -60,7 +60,7 @@ export interface RunNodeApplicationOptions {
  * bound port, and a programmatic teardown.
  */
 export interface NodeApplication {
-    /** The refreshed context — every bean stays reachable. */
+    /** The refreshed context — every entry stays reachable. */
     readonly context: ConfigurableApplicationContext;
     /** The started managed server. */
     readonly server: HTTPServer;
@@ -77,7 +77,7 @@ export interface NodeApplication {
  *
  * Composes the existing pieces rather than replacing them — the returned
  * context is the same container `ApplicationBuilder` would have produced, so
- * every bean stays reachable and full manual control remains one
+ * every entry stays reachable and full manual control remains one
  * `ApplicationBuilder` away. Startup failures are logged and rethrown (never
  * `process.exit`); the caller's top-level `await` decides the exit code.
  *
@@ -139,7 +139,7 @@ export async function runNodeApplication(
     if (!context.hasValue(HTTP_SERVER)) {
         context.close();
         throw new IllegalStateError(
-            'runNodeApplication: no HTTP_SERVER bean in the context — register NodeAutoConfiguration (the default) or provide your own `httpServer` entry'
+            'runNodeApplication: no HTTP_SERVER entry in the context — register NodeAutoConfiguration (the default) or provide your own `httpServer` entry'
         );
     }
 

@@ -51,7 +51,7 @@ inspect demo) and 13-ndigo-chat/14-ndigo-kanban/15-ndigo-resilience-lab.
 | `GET /loggers/{name}`  | `{configuredLevel?, effectiveLevel}`; 404 unknown                                                                                                                                                         | same                                                                                                                                                 |
 | `POST /loggers/{name}` | body `{"configuredLevel":"debug"}`; `{}` clears; invalid level 400                                                                                                                                        | same (levels = ndigo's severity vocabulary, OTel `SeverityNumber`-derived)                                                                           |
 | `GET /env`             | `{activeProfiles, propertySources: [{name, properties: {key: {value, origin}}}]}`; `?toMatch=` filter; **values sanitized by default** (`show-values` never / always / when-authorized; default `******`) | same; default `showValues: false`; origin at source granularity (flat-index `originOf` semantics)                                                    |
-| `GET /configprops`     | collated `@ConfigurationProperties` beans, sanitized                                                                                                                                                      | declared keys + conversion types **only, never values** (framework contract — see §6 D-3)                                                            |
+| `GET /configprops`     | collated `@ConfigurationProperties` entries, sanitized                                                                                                                                                    | declared keys + conversion types **only, never values** (framework contract — see §6 D-3)                                                            |
 | Exposure               | `management.endpoints.web.exposure.include/exclude`; default **`health` only**; `*` = all; `management.endpoint.<id>.access` (read-only / none / default)                                                 | `management.endpoints.exposure.include` default `["health","metrics"]`; `*` supported; single `accessGuard` applies to every exposed management path |
 
 Deliberate divergences (to ratify in AD-76): no `/actuator` prefix migration
@@ -125,7 +125,7 @@ Deliberate divergences (to ratify in AD-76): no `/actuator` prefix migration
   (schema-bound classes include `type` — REU-12 regression coverage). **Values
   are never read** — the endpoint cannot leak a secret by construction.
 - **Acceptance:** declared keys + types for a schema-bound and a field-bound
-  class; sorted/deduplicated; empty list → `{beans: []}`-style empty document,
+  class; sorted/deduplicated; empty list → `{entries: []}`-style empty document,
   not an error. Fail-before/pass-after.
 
 ### Wave 5 — `/env`
@@ -162,7 +162,7 @@ Deliberate divergences (to ratify in AD-76): no `/actuator` prefix migration
 
 - `/metrics` parity (GAP-5, in parallel — the roadmap's own split; both touch
   `ManagementAutoConfiguration` registration, order-independent).
-- `/actuator` prefix + hypermedia discovery page, `/beans`, `/mappings`,
+- `/actuator` prefix + hypermedia discovery page, `/entries`, `/mappings`,
   `/conditions`, `/scheduledtasks`, `/caches`, `/threaddump`, `/heapdump`,
   `/logfile` — no consumer before the four target endpoint types land.
 - `POST`/`DELETE` environment overrides (conflicts with the config-file model;
@@ -228,7 +228,7 @@ green below with regenerated API docs.
   `management`; the BOOT-4 parity spec now compares only the annotated
   constructor-option keys). Exposure defaults to `["health","metrics"]`;
   options win over the file. Two container facts shaped the final shape:
-  handler detection dispatches only the context-processed bean, so the three
+  handler detection dispatches only the context-processed entry, so the three
   new controllers are decorator-registered (health/metrics pattern) with the
   gate enforced per request (`404` when unexposed — same wire behavior as no
   route); the absent-query binding is `null`, normalized before use.
@@ -249,7 +249,7 @@ green below with regenerated API docs.
 - **Wave 4 — Configprops.** `ConfigurationPropertiesController` enumerates
   the explicit `configurationClasses` option through
   `declaredConfigurationProperties` — keys + conversion types only (values
-  never read, the inspect contract); bean names from the shared key prefix.
+  never read, the inspect contract); entry names from the shared key prefix.
 - **Wave 5 — Env.** `EnvironmentController` walks the sources in precedence
   order, flattens each document to dotted keys, redacts values by default
   (`showValues` opt-in emits raw stored text — never decrypted plaintext),

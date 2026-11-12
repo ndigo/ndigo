@@ -59,8 +59,8 @@ The material findings:
    iteration, which hides the steady-state cache benefit.
 6. **The largest optimization leads are visible in the data**: dispatcher
    resolution is ~525 ns/op versus ~22–27 ns/op for raw routers; ORM update
-   persist is ~22.8 µs/op; `getValue('bean5')` is 2.5× slower than
-   `getValue('bean1')`; resolver lookup by `Array.find` is 8–27× slower than a
+   persist is ~22.8 µs/op; `getValue('entry5')` is 2.5× slower than
+   `getValue('entry1')`; resolver lookup by `Array.find` is 8–27× slower than a
    `Map` lookup; LRU `get` costs ~96 ns/op.
 7. **No benchmark results are documented.** The only prose artifacts are a
    Ramda-era audit whose benchmark files were deleted (AD-84) and a guide that
@@ -90,7 +90,7 @@ rows, 288.34 s**. 52 of the 153 rows (34%) are the local `like` exploration.
 | `packages/ndigo-core/bench/radix-tree.bench.ts`              |   18 | lookup: static/param/deep/two-param/miss/scale       | `Map`, RegExp array                | Keep + expand     |
 | `packages/ndigo-core/bench/ring-buffer.bench.ts`             |    8 | FIFO, burst, peek, bounded drop-oldest               | `Array` push/shift                 | Keep              |
 | `packages/ndigo-core/test/benchmarks/bench.bench.ts`         |    6 | production `like`, error construction, object merge  | none / none / spread vs assign     | Move + refresh    |
-| `packages/ndigo-context/bench/context-lookup.bench.ts`       |    6 | bean lookup, miss, `hasValue`, `keys`                | none                               | Refresh           |
+| `packages/ndigo-context/bench/context-lookup.bench.ts`       |    6 | entry lookup, miss, `hasValue`, `keys`               | none                               | Refresh           |
 | `packages/ndigo-context/bench/property-lookup.bench.ts`      |   13 | flat vs prototype index, 10/100/1,000 keys, mutation | strategy vs strategy               | **Keep as model** |
 | `packages/ndigo-dispatcher/bench/argument-resolver.bench.ts` |    8 | resolver lookup, full invoke                         | Array.find vs Map, no external     | Refresh           |
 | `packages/ndigo-dispatcher/bench/context-lookup.bench.ts`    |    6 | factory lookup, miss, `hasValue`, `keys`             | none                               | Consolidate       |
@@ -170,9 +170,9 @@ scan exits after one or two patterns. Both facts belong in the documentation.
 | resolver lookup, path param           |     6.2 ns/op | `Map.get` (hypothetical optimisation)  |
 | resolver lookup, query param          |   139.8 ns/op | `Array.find`                           |
 | resolver lookup, query param          |     5.3 ns/op | `Map.get`                              |
-| bean lookup `bean1`                   |    6.72 ns/op | warm singleton                         |
-| bean lookup `bean5`                   |   16.85 ns/op | **2.5× slower than bean1**             |
-| bean lookup via `ContextToken`        |    6.75 ns/op | pins the AD-34 D1 same-cost claim      |
+| entry lookup `entry1`                 |    6.72 ns/op | warm singleton                         |
+| entry lookup `entry5`                 |   16.85 ns/op | **2.5× slower than entry1**            |
+| entry lookup via `ContextToken`       |    6.75 ns/op | pins the AD-34 D1 same-cost claim      |
 | `hasValue` hit / miss                 | 6.6 / 27.8 ns | miss is 4.2× slower                    |
 
 The resolver `Map.get` rows are not semantically equivalent to
@@ -374,7 +374,7 @@ These are hypotheses to validate with the refreshed harness, not conclusions.
 | P0       | Full handler resolution is 4.6–23.5× slower than raw routers on hit scenarios | 525–710 ns/op versus 22–153 ns/op                                 | Fast path for one candidate with no conditions; avoid `Reflect.defineProperty`; avoid the filter array; cache the comparator | ≥2× reduction on static/param    |
 | P1       | Resolver selection scans the resolver list per parameter                      | `Array.find` 48–140 ns vs `Map` 5–6 ns; 3-param invoke 473 ns     | Cache the resolved resolver per `MethodParameter` (verify the documented cache actually exists)                              | 3-param invoke < 350 ns          |
 | P1       | ORM update-persist is 22.8 µs/op                                              | 43.8k updates/s; insert path unmeasured                           | Cache schema validators/metadata; skip redundant re-derivation; fast path for unchanged fields                               | update < 5 µs/op                 |
-| P2       | `getValue('bean5')` is 2.5× slower than `bean1`                               | 16.85 vs 6.72 ns/op                                               | Normalize instance storage (separate `Map`) or investigate property-shape transitions                                        | all beans within 20%             |
+| P2       | `getValue('entry5')` is 2.5× slower than `entry1`                             | 16.85 vs 6.72 ns/op                                               | Normalize instance storage (separate `Map`) or investigate property-shape transitions                                        | all entries within 20%           |
 | P2       | LRU `get` performs four Map operations                                        | 96.5 ns/op; `Map.get` baseline far cheaper                        | Single `get`; sentinel for stored `undefined`; compare with `lru-cache` npm                                                  | get < 50 ns/op                   |
 | P3       | Cookie parser is 4.7× slower than an undecoded split                          | 1.3 µs vs 278 ns; no equivalent baseline                          | Fast path when `%` is absent; fewer regex passes                                                                             | within 2× of decoded baseline    |
 | P3       | Query parser is 2.9× slower than a partial URLSearchParams path               | 443 ns vs 156 ns; different work                                  | Equivalent adapter first, then profile                                                                                       | within 2× of equivalent baseline |
@@ -410,7 +410,7 @@ Ranked by user-visible impact and framework differentiation:
 6. **Browser/DOM** — the only comparative lane that could show a framework
    advantage is broken; SSR/island rendering is unmeasured.
 7. **Startup, memory, and scale-out** — cold time-to-listen, RSS, 100/1,000
-   routes, 10/100/1,000 beans, and 1/2/4 cluster slots are unmeasured.
+   routes, 10/100/1,000 entries, and 1/2/4 cluster slots are unmeasured.
 8. **Signals and view** — the signals package is a re-export of
    `@preact/signals-core`; only the decorator/event-bridge wrapper is
    Ndigo-specific and unmeasured. Claiming an engine win would be dishonest.
@@ -448,7 +448,7 @@ and dispatcher microbenches are worth keeping. It lacks the three things that
 make benchmarks useful: **semantic parity**, **reproducibility**, and
 **publication discipline**. The current data already points to four
 high-value optimization targets (dispatcher resolution, resolver selection,
-ORM persist, and bean lookup). Fix the harness first; then use it to drive
+ORM persist, and entry lookup). Fix the harness first; then use it to drive
 those changes; then publish only what the artifacts support.
 
 ---

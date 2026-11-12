@@ -22,8 +22,8 @@ ruleTester.run('no-string-registry-lookup', noStringRegistryLookup, {
         // Re-exported alias (imported constant) — cannot prove it is a raw
         // string across modules, so it must not be flagged.
         {
-            code: `import { SCHEDULER_BEAN } from '@ndigo/scheduler';
-                    const scheduler = context.getValue(SCHEDULER_BEAN);`,
+            code: `import { SCHEDULER_ENTRY } from '@ndigo/scheduler';
+                    const scheduler = context.getValue(SCHEDULER_ENTRY);`,
             filename: '/packages/ndigo-api/src/cached-report-controller.ts',
         },
         // Token alias of a string (a const whose initializer is not a raw
@@ -36,44 +36,44 @@ ruleTester.run('no-string-registry-lookup', noStringRegistryLookup, {
         // A parameter shadows an outer string const — resolves to the param,
         // not the const, so no false positive.
         {
-            code: `const BEAN = 'cacheManager';
-                    function resolve(context, BEAN) {
-                        return context.getValue(BEAN);
+            code: `const ENTRY = 'cacheManager';
+                    function resolve(context, ENTRY) {
+                        return context.getValue(ENTRY);
                     }`,
             filename: '/packages/ndigo-api/src/cached-report-controller.ts',
         },
         // let/var are reassignable — never provably a raw-string lookup.
         {
-            code: `let BEAN = 'cacheManager';
-                    const manager = context.getValue(BEAN);`,
+            code: `let ENTRY = 'cacheManager';
+                    const manager = context.getValue(ENTRY);`,
             filename: '/packages/ndigo-api/src/cached-report-controller.ts',
         },
         // Import-namespace member — unresolved, must not be flagged.
         {
-            code: `import * as beans from './beans';
-                    const manager = context.getValue(beans.CACHE_MANAGER);`,
+            code: `import * as entries from './entries';
+                    const manager = context.getValue(entries.CACHE_MANAGER);`,
             filename: '/packages/ndigo-api/src/cached-report-controller.ts',
         },
         // A string const that is later reassigned via a catch/block shadow is
         // resolved to the shadow, not the outer const.
         {
-            code: `const BEAN = 'cacheManager';
+            code: `const ENTRY = 'cacheManager';
                     try {
                         risky();
-                    } catch (BEAN) {
-                        context.getValue(BEAN);
+                    } catch (ENTRY) {
+                        context.getValue(ENTRY);
                     }`,
             filename: '/packages/ndigo-api/src/cached-report-controller.ts',
         },
-        // Dynamic (non-literal) bean name — data-driven lookups stay legal.
+        // Dynamic (non-literal) entry name — data-driven lookups stay legal.
         {
-            code: `const name = 'bean' + index;
-                    const bean = context.getValue(name);`,
+            code: `const name = 'entry' + index;
+                    const entry = context.getValue(name);`,
             filename: '/packages/ndigo-api/src/registry.ts',
         },
         // Registration is not a lookup.
         {
-            code: `context.setValue('customName', new Bean());`,
+            code: `context.setValue('customName', new Entry());`,
             filename: '/packages/ndigo-api/src/configuration.ts',
         },
         // Test files are exempt (they exercise string registration freely).
@@ -135,8 +135,8 @@ ruleTester.run('no-string-registry-lookup', noStringRegistryLookup, {
         // const string used through a function-local reference.
         {
             code: `function resolve(context) {
-                        const BEAN = 'argumentResolvers';
-                        return context.getValue(BEAN);
+                        const ENTRY = 'argumentResolvers';
+                        return context.getValue(ENTRY);
                     }`,
             filename: '/packages/ndigo-dispatcher/src/route-handler-adapter.ts',
             errors: [
@@ -147,9 +147,9 @@ ruleTester.run('no-string-registry-lookup', noStringRegistryLookup, {
         },
         // Also catches hasValue/getInstance/destroyValue identifier lookups.
         {
-            code: `const BEAN = 'cacheManager';
-                    if (context.hasValue(BEAN)) {
-                        context.destroyValue(BEAN);
+            code: `const ENTRY = 'cacheManager';
+                    if (context.hasValue(ENTRY)) {
+                        context.destroyValue(ENTRY);
                     }`,
             filename: '/packages/ndigo-api/src/cached-report-controller.ts',
             errors: [

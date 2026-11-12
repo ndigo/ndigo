@@ -8,7 +8,7 @@
 
 Holds the job-type → handler mapping. Two registration paths (AD-72 D-5):
 
-- **Declarative** — `@jobHandler('type')` methods on beans are discovered
+- **Declarative** — `@jobHandler('type')` methods on entries are discovered
   when the registry starts (container lifecycle: `SmartLifecycle`, phase 0,
   auto-start; the runner starts in phase 10, after the scan).
 - **Programmatic** — [register](#register) for functional handlers and tests.
@@ -210,7 +210,7 @@ When no context is bound or a registration is
 
 SmartLifecycle stop: clears the discovered registrations. Programmatic
 registrations made before `start` are re-added on the next scan only if
-they live on scanned beans; functional handlers must be re-registered.
+they live on scanned entries; functional handlers must be re-registered.
 
 #### Returns
 

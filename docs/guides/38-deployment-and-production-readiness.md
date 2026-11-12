@@ -93,7 +93,7 @@ transports, then close the context (guide 04 and
 2. `registry.close` / broker close — unsubscribe, stop heartbeat, drop
    sessions.
 3. `fanout.close` / publisher close by its owner.
-4. `context.close` — lifecycle `stop` in descending phase order, then bean
+4. `context.close` — lifecycle `stop` in descending phase order, then entry
    `destroy`/`close`.
 
 `runNodeApplication` and `ndigo serve` install the `SIGINT`/`SIGTERM` handler;

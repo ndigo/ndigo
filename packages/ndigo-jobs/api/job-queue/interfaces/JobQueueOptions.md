@@ -15,7 +15,7 @@ Options for [JobQueue](../classes/JobQueue.md).
 > `optional` **driver?**: [`JobDriver`](../../job-driver/interfaces/JobDriver.md)
 
 The driver jobs are enqueued on. When omitted, the queue resolves the
-`jobDriver` bean from its application context at first use.
+`jobDriver` entry from its application context at first use.
 
 ***
 

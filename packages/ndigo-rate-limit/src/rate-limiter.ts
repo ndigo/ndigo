@@ -59,7 +59,7 @@ export interface RateLimiter {
 }
 
 /**
- * Structural type guard for {@link RateLimiter} — used where a bean or
+ * Structural type guard for {@link RateLimiter} — used where an entry or
  * option is resolved by shape instead of the {@link "context-tokens".RATE_LIMITER | RATE_LIMITER} token.
  *
  * @param value - The candidate value to inspect.

@@ -1,7 +1,7 @@
 /**
  * `@whenFeature` route-gate enforcement (AD-82 D-4): per request, when the
  * handler method (or its class) carries `@whenFeature` metadata, the flag
- * is evaluated via the `FLAG_EVALUATOR` bean; an off/errored flag denies
+ * is evaluated via the `FLAG_EVALUATOR` entry; an off/errored flag denies
  * the route with a 404 problem document — the repository's
  * `DisabledFeaturesHandler` analog (Azure's `@FeatureGate` default).
  *
@@ -14,7 +14,7 @@
  * entry values are created while sources register — before an app's own
  * configuration registers its entries — so an eager capture would pin the
  * auto-configuration defaults and a `FLAG_EVALUATOR` or
- * `FLAG_CONTEXT_RESOLVER` bean override (the vendor-bridge recipe, AD-87)
+ * `FLAG_CONTEXT_RESOLVER` entry override (the vendor-bridge recipe, AD-87)
  * would never reach the gate. `HTTPServer`'s late `getValue` resolution is
  * the precedent; the interceptor registers as an entry so the aware
  * processor injects the application context into it.
@@ -38,15 +38,15 @@ import { FLAG_CONTEXT_RESOLVER } from './context-tokens';
 import { SessionPrincipalFlagContextResolver, type FlagEvaluationContextResolver } from './flag-context-resolver';
 
 /**
- * Constructor overrides for the interceptor's beans — embedding and unit
+ * Constructor overrides for the interceptor's entries — embedding and unit
  * tests. In the wired application the `FLAG_EVALUATOR` /
- * `FLAG_CONTEXT_RESOLVER` beans are the source, resolved per check so
+ * `FLAG_CONTEXT_RESOLVER` entries are the source, resolved per check so
  * app-level overrides apply.
  */
 export interface FeatureGateInterceptorOptions {
-    /** The evaluator to use instead of the `FLAG_EVALUATOR` bean. */
+    /** The evaluator to use instead of the `FLAG_EVALUATOR` entry. */
     readonly evaluator?: FlagEvaluator;
-    /** The context resolver to use instead of the `FLAG_CONTEXT_RESOLVER` bean. */
+    /** The context resolver to use instead of the `FLAG_CONTEXT_RESOLVER` entry. */
     readonly contextResolver?: FlagEvaluationContextResolver;
 }
 
@@ -63,7 +63,7 @@ export class FeatureGateInterceptor implements RouteHandlerInterceptor, Applicat
 
     /**
      * @param options - Optional evaluator/resolver overrides; omit both to
-     *   resolve the beans from the application context.
+     *   resolve the entries from the application context.
      */
     constructor(options: FeatureGateInterceptorOptions = {}) {
         this.#evaluatorOverride = options.evaluator;
@@ -161,7 +161,7 @@ export class FeatureGateInterceptor implements RouteHandlerInterceptor, Applicat
 
     /**
      * The evaluator for this check: the explicit override, else the
-     * `FLAG_EVALUATOR` bean — resolved late so bean overrides apply.
+     * `FLAG_EVALUATOR` entry — resolved late so entry overrides apply.
      */
     #evaluator(): FlagEvaluator {
         if (this.#evaluatorOverride !== undefined) {
@@ -171,13 +171,13 @@ export class FeatureGateInterceptor implements RouteHandlerInterceptor, Applicat
             return this.#applicationContext.getValue(FLAG_EVALUATOR);
         }
         throw new IllegalStateError(
-            'FeatureGateInterceptor: no evaluator — pass one or register the FLAG_EVALUATOR bean'
+            'FeatureGateInterceptor: no evaluator — pass one or register the FLAG_EVALUATOR entry'
         );
     }
 
     /**
      * The targeting-context resolver for this check: the explicit
-     * override, else the `FLAG_CONTEXT_RESOLVER` bean, else the built-in
+     * override, else the `FLAG_CONTEXT_RESOLVER` entry, else the built-in
      * default (context-less construction — tests and embeddings).
      */
     #contextResolver(): FlagEvaluationContextResolver {

@@ -39,11 +39,11 @@ Do not change the `@routeMapping` decorator. It is the single source of truth. A
        ↓
 ApplicationBuilder.run() → ApplicationContext
        ↓
-RouteRegistry scans beans' constructor metadata
+RouteRegistry scans entries' constructor metadata
        ↓
 RouteRegistry builds nested RouteDefinition tree
        ↓
-RouteRegistry registers itself as a bean
+RouteRegistry registers itself as an entry
        ↓
 User injects RouteRegistry → routes.users.byId.url({id: '123'})
 ```
@@ -246,17 +246,17 @@ class RouteRegistry {
         this.#defs = new Map();
         this.#tree = {};
 
-        // Scan all beans for @routeMapping metadata
-        for (const bean of context.getBeans()) {
-            this.#registerBean(bean);
+        // Scan all entries for @routeMapping metadata
+        for (const entry of context.getEntries()) {
+            this.#registerEntry(entry);
         }
 
         // Build nested tree from flat def map
         this.#tree = this.#buildTree();
     }
 
-    #registerBean(bean: object): void {
-        const ctor = bean.constructor;
+    #registerEntry(entry: object): void {
+        const ctor = entry.constructor;
         const classMeta = getRouteMapping(ctor);
         const classPath = classMeta?.value ?? '/';
 
@@ -418,7 +418,7 @@ parse(path: string): Route<RouteParams<TPattern>> | null {
 
 ### Boot-Time Registration
 
-The `RouteRegistry` is constructed during `ApplicationBuilder.run()` after all beans are registered:
+The `RouteRegistry` is constructed during `ApplicationBuilder.run()` after all entries are registered:
 
 ```ts
 // In ApplicationBuilder or an auto-configuration class
@@ -461,7 +461,7 @@ routes
 | File                                                        | Description                                                                                   |
 | ----------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
 | `packages/ndigo-router/src/route-definition.ts`             | `RouteDefinition<T>` class with `.url()`, `.href()`, `.redirect()`, `.navigate()`, `.parse()` |
-| `packages/ndigo-router/src/route-registry.ts`               | `RouteRegistry` class — scans bean metadata, builds route tree                                |
+| `packages/ndigo-router/src/route-registry.ts`               | `RouteRegistry` class — scans entry metadata, builds route tree                               |
 | `packages/ndigo-router/src/route-registry-configuration.ts` | Auto-configuration `@configuration` that creates and registers the `RouteRegistry`            |
 
 ### Modified Code
@@ -488,7 +488,7 @@ routes
 | `RoteDef.href()` adds hash refix                               | `.href()` → `"#/..."`                                           |
 | `RoteDef.redirect()` returns `ModelAndView` with `RerouteView` | Type check + runtime check                                      |
 | `RoteDef.parse()` parses a path back                           | `.parse('/users/123').params.id` → `"123"`                      |
-| `RoeRegistry` scans `@routeMapping` metadata                   | Unit test with mock beans                                       |
+| `RoeRegistry` scans `@routeMapping` metadata                   | Unit test with mock entries                                     |
 | `RouteRegistry` drives keys by convention                      | `'/'` → `'index'`, `'/users'` → `'users'`, `'/{id}'` → `'byId'` |
 | `Routeegistry` supports `name` override                        | `@routeMapping({ value:'/x', name:'customKey' })`               |
 

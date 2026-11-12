@@ -61,7 +61,7 @@ describe('JobHandlerRegistry', () => {
         expect(() => registry.start()).toThrow(/no application context/);
     });
 
-    test('start scans beans, binds owners, and exposes handlers', async () => {
+    test('start scans entries, binds owners, and exposes handlers', async () => {
         const worker = new EmailWorker();
         context.setValue('emailWorker', worker);
         registry.setApplicationContext(context);

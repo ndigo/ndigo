@@ -59,7 +59,7 @@ export type NoteDTO = z.infer<typeof noteDtoSchema>;
 
 /**
  * The app's conversion service — stateless, safe to share module-wide
- * (AD-38 D-5). In a Node app the `CONVERSION_SERVICE` bean provides the
+ * (AD-38 D-5). In a Node app the `CONVERSION_SERVICE` entry provides the
  * same instance shape; the demo keeps a module-level one for zero wiring.
  */
 export const conversionService = createConversionService();

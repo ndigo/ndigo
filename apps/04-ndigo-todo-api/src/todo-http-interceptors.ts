@@ -67,7 +67,7 @@ class JSONBodyInterceptor implements RouteHandlerInterceptor {
  * same-origin and a browser client on another origin (here the public
  * Todo-Backend runner at `todobackend.com`) is blocked with no configuration
  * knob. Cross-origin policy deserves a first-class registration (a
- * `@configurationProperties`-bound interceptor bean) rather than an app-side
+ * `@configurationProperties`-bound interceptor entry) rather than an app-side
  * splice. `allowedOrigins: ['*']` is correct here because the API is public and
  * credential-free; `Location` is exposed so browser JS can read the `201`
  * create's url.

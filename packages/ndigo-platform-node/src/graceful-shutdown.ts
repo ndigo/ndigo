@@ -89,7 +89,7 @@ export function gracefulShutdown(context: ApplicationContext, options: GracefulS
         void (async () => {
             try {
                 for (const resource of resources) {
-                    // eslint-disable-next-line no-await-in-loop -- sequential teardown is intentional: resources must close in order (e.g. stop the server before the context destroys its beans)
+                    // eslint-disable-next-line no-await-in-loop -- sequential teardown is intentional: resources must close in order (e.g. stop the server before the context destroys its entries)
                     await resource.close();
                 }
                 context.close();

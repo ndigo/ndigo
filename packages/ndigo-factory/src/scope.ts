@@ -131,7 +131,7 @@ export const prototypeScope = scope('prototype');
 /**
  * Decorator for hash/route scope (convenience factory): one cached instance
  * per active scope key (`HashScope.setCurrentKey`), torn down when the route
- * ends (`HashScope.endScope`) or the bean is destroyed (`destroyValue`).
+ * ends (`HashScope.endScope`) or the entry is destroyed (`destroyValue`).
  */
 export const hashScope = scope('hash');
 
@@ -175,7 +175,7 @@ export class PrototypeScope implements Scope {
  * Hash (route) scope implementation — one instance per scope key.
  * Activate a scope context by calling `setCurrentKey(key)` before `getValue()`.
  *
- * Values are cached per key, so a route-scoped bean lives as long as its
+ * Values are cached per key, so a route-scoped entry lives as long as its
  * bucket: `destroyValue(name)` tears one down within the active key, and
  * `endScope(key)` tears down the whole bucket. Lifecycle-bearing values
  * (`@destroyable`/`@closeable`) register a destruction callback (see

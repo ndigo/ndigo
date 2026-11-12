@@ -1,7 +1,7 @@
 # ndigo-views — View Resolution Demo
 
 > View-resolution demo: one ordered resolver chain over three view locations —
-> a component module, a context bean, and a module on disk.
+> a component module, a context entry, and a module on disk.
 
 The demo's controllers return view **names** only; an ordered
 `ViewResolverComposite` decides where each name comes from. The app also
@@ -17,8 +17,8 @@ cd apps/08-ndigo-views && pnpm dev
 | Route           | View name    | Resolver (location)                                |
 | --------------- | ------------ | -------------------------------------------------- |
 | `/`             | `shell`      | `WebComponentViewResolver` (component module)      |
-| `/widget`       | `footer`     | `NameViewResolver` (context bean)                  |
-| `/widget/:lang` | `footer`     | same bean — localized through `@ndigo/content`     |
+| `/widget`       | `footer`     | `NameViewResolver` (context entry)                 |
+| `/widget/:lang` | `footer`     | same entry — localized through `@ndigo/content`    |
 | `/report`       | `report`     | `ReportViewResolver` (module on disk, lazy import) |
 | `/client`       | `clientDemo` | `WebComponentViewResolver` (component module)      |
 | `/nope`         | —            | chain fall-through → `NoViewFoundError`            |
@@ -30,8 +30,8 @@ cd apps/08-ndigo-views && pnpm dev
        name and mapped through `@TagMapping` metadata (`shell` →
        `ndigo-views-shell`, `clientDemo` → `ndigo-views-client`); the `viewNames`
        filter lets unmatched names fall through.
-    2. `NameViewResolver` — a plain view bean registered in the context
-       (`footer`): bean-name resolution.
+    2. `NameViewResolver` — a plain view entry registered in the context
+       (`footer`): entry-name resolution.
     3. `ReportViewResolver` — a path-based resolver that dynamic-imports
        `views/report-view.ts` on first resolution; the module's default export
        is the view class, loaded lazily.

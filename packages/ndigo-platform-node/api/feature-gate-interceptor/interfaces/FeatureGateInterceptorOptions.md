@@ -6,9 +6,9 @@
 
 # Interface: FeatureGateInterceptorOptions
 
-Constructor overrides for the interceptor's beans — embedding and unit
+Constructor overrides for the interceptor's entries — embedding and unit
 tests. In the wired application the `FLAG_EVALUATOR` /
-`FLAG_CONTEXT_RESOLVER` beans are the source, resolved per check so
+`FLAG_CONTEXT_RESOLVER` entries are the source, resolved per check so
 app-level overrides apply.
 
 ## Properties
@@ -17,7 +17,7 @@ app-level overrides apply.
 
 > `readonly` `optional` **contextResolver?**: [`FlagEvaluationContextResolver`](../../flag-context-resolver/interfaces/FlagEvaluationContextResolver.md)
 
-The context resolver to use instead of the `FLAG_CONTEXT_RESOLVER` bean.
+The context resolver to use instead of the `FLAG_CONTEXT_RESOLVER` entry.
 
 ***
 
@@ -25,4 +25,4 @@ The context resolver to use instead of the `FLAG_CONTEXT_RESOLVER` bean.
 
 > `readonly` `optional` **evaluator?**: `FlagEvaluator`
 
-The evaluator to use instead of the `FLAG_EVALUATOR` bean.
+The evaluator to use instead of the `FLAG_EVALUATOR` entry.

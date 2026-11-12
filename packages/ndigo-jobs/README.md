@@ -22,7 +22,7 @@ Durable backends are optional and owned by their integration packages:
 
 ## Getting Started
 
-Register a handler on any bean, enqueue a job, and start a runner:
+Register a handler on any entry, enqueue a job, and start a runner:
 
 ```ts
 import { jobHandler, JobRunner, JOB_QUEUE, JOB_RUNNER } from '@ndigo/jobs';
@@ -55,7 +55,7 @@ await context.getValue(JOB_QUEUE).enqueue({
 
 `NodeAutoConfiguration` provides `jobDriver` (in-process), `jobQueue`,
 `jobHandlerRegistry`, and `jobRunner`; the registry discovers `@jobHandler`
-methods on every registered bean at refresh.
+methods on every registered entry at refresh.
 
 ## Usage
 
@@ -101,7 +101,7 @@ re-surface after their lease expires), so handlers must be idempotent.
 | `RedisJobDriver`     | `@ndigo/redis/jobs`  | Durable multi-node; atomic claim via one Lua script.           |
 
 Implement `JobDriver` (enqueue / claim / complete / retry / fail / heartbeat /
-size / close) and register it under the `jobDriver` bean to plug in a backend;
+size / close) and register it under the `jobDriver` entry to plug in a backend;
 `resolveJobRequest`, `serializeJobPayload`, and `parseJobPayload` are the
 driver-authoring helpers.
 

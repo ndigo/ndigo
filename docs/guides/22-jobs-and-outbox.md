@@ -21,7 +21,7 @@ last gap — "send the email only if the order actually committed."
 
 ## 1. Quickstart
 
-Add a `@jobHandler` method to any registered bean, enqueue a job, and start a
+Add a `@jobHandler` method to any registered entry, enqueue a job, and start a
 runner:
 
 ```ts
@@ -53,14 +53,14 @@ await context.getValue(JOB_QUEUE).enqueue({
 });
 ```
 
-`NodeAutoConfiguration` provides four beans:
+`NodeAutoConfiguration` provides four entries:
 
 - `jobDriver` — the default `InProcessJobDriver` (reference semantics,
   **not durable**: jobs vanish with the process),
-- `jobQueue` — the producer facade (resolves the driver bean through the
+- `jobQueue` — the producer facade (resolves the driver entry through the
   context),
 - `jobHandlerRegistry` — discovers `@jobHandler` methods on every registered
-  bean at refresh (SmartLifecycle phase 0),
+  entry at refresh (SmartLifecycle phase 0),
 - `jobRunner` — the worker engine (phase 10, explicitly started).
 
 The runner starts explicitly because a pending poll timer keeps the process
@@ -105,7 +105,7 @@ warning and terminal failures an error through `@ndigo/log`.
 | `LibSQLJobStore`     | `@ndigo/orm-drizzle` | One `UPDATE … RETURNING` statement (SQLite)           |
 | `RedisJobDriver`     | `@ndigo/redis/jobs`  | One Lua script over ready/lease ZSETs + record hashes |
 
-Register a durable driver under the `jobDriver` bean to replace the default:
+Register a durable driver under the `jobDriver` entry to replace the default:
 
 ```ts
 import { JOB_DRIVER } from '@ndigo/jobs';
@@ -174,7 +174,7 @@ be idempotent. Set `retainPublishedMs` to prune published history.
 
 - `jobHandlerRegistry` scans on refresh; `jobRunner.start` arms the poll
   loop; `stop` stops claiming while in-flight executions continue;
-  `close` drains — the container closes both beans on context close
+  `close` drains — the container closes both entries on context close
   (register them as container values, or leave them to
   `NodeAutoConfiguration`).
 - Drivers close only clients they own; borrowed clients stay open. Stop and

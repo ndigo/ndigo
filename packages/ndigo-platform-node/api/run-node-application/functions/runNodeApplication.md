@@ -14,7 +14,7 @@ Runs a Node application: builds the context (`NodeAutoConfiguration` and
 
 Composes the existing pieces rather than replacing them — the returned
 context is the same container `ApplicationBuilder` would have produced, so
-every bean stays reachable and full manual control remains one
+every entry stays reachable and full manual control remains one
 `ApplicationBuilder` away. Startup failures are logged and rethrown (never
 `process.exit`); the caller's top-level `await` decides the exit code.
 

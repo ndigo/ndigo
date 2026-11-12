@@ -8,6 +8,6 @@
 
 > `const` **JOB\_DRIVER**: [`ContextToken`](#)\<[`JobDriver`](../../job-driver/interfaces/JobDriver.md)\>
 
-Token for the active [JobDriver](../../job-driver/interfaces/JobDriver.md) bean. `NodeAutoConfiguration`
+Token for the active [JobDriver](../../job-driver/interfaces/JobDriver.md) entry. `NodeAutoConfiguration`
 registers the in-process default; apps register a durable driver to
 replace it.

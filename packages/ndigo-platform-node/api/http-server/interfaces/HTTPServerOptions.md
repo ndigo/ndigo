@@ -36,7 +36,7 @@ socket endpoints).
 Upgrade-time authentication hook for the default adapter — see
 [NodeHTTPServerAdapterOptions.authenticate](../../node-http-server-adapter/interfaces/NodeHTTPServerAdapterOptions.md#authenticate). When omitted, the
 default adapter uses the application-context
-`socketRequestAuthenticator` bean.
+`socketRequestAuthenticator` entry.
 
 Authenticates an accepted WebSocket upgrade from its request sources.
 
@@ -106,8 +106,8 @@ are honored by the default adapter.
 
 Socket session registry shared with the default adapter (AD-21 D4).
 When omitted, the registry is resolved from the application context
-(`socketSessionRegistry` bean) at start, falling back to a fresh
-instance — so broadcasts from the bean reach the adapter's sessions.
+(`socketSessionRegistry` entry) at start, falling back to a fresh
+instance — so broadcasts from the entry reach the adapter's sessions.
 
 ***
 

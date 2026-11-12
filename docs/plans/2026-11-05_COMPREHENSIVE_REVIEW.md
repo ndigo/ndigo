@@ -103,13 +103,13 @@ docs consistency.
 - **F-10 — Web preset registers runtime services after context refresh.**
   `packages/ndigo-platform-web/src/web-application.ts:174-176` calls
   `context.setValue(VIEW_TARGET/DISPATCHER/ROUTER, …)` _after_ `builder.run()`.
-  Beans that inject these tokens at construction time (the `@ndigo/test` browser
+  Entries that inject these tokens at construction time (the `@ndigo/test` browser
   harness already notes `WebAutoConfiguration` provides no dispatcher entry)
   cannot resolve them; they must use late resolution. This is an architectural
-  inconsistency with the Node preset, where `DISPATCHER` is a bean.
-  Fix: either register the three as late beans via a post-refresh phase, or
+  inconsistency with the Node preset, where `DISPATCHER` is an entry.
+  Fix: either register the three as late entries via a post-refresh phase, or
   document the late-resolution contract and provide a `context.getValue` helper;
-  add a test that a bean depending on `ROUTER` resolves.
+  add a test that an entry depending on `ROUTER` resolves.
 
 - **F-11 — Node preset `close()` is not exception-safe and double-closes.**
   `run-node-application.ts:164-174` awaits `server.close()` then resources then
@@ -304,7 +304,7 @@ Implemented in two commits on `docs/comprehensive-review-2026-11-05`:
 
 Remaining (documented, intentionally deferred as design decisions):
 
-- F-10 (web late binding): the late-resolution contract is documented in `web-application.ts`; changing to eager beans would require a post-refresh registration phase and is tracked separately.
+- F-10 (web late binding): the late-resolution contract is documented in `web-application.ts`; changing to eager entries would require a post-refresh registration phase and is tracked separately.
 - F-21 (flag memo): providers are expected to cache; per-request evaluation is by design for live flags (AD-82). Opt-in memoization deferred to a follow-up if profiling shows need.
 - F-26 (historical doc refs): historical plans/migrations/decisions intentionally retain old app numbers; live guides already use current numbers.
 - Each wave is intended to be one PR per AGENTS.md §8 (one issue = one branch =

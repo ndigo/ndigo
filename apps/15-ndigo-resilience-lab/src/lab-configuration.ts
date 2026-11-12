@@ -13,7 +13,7 @@ import { UpstreamController } from './upstream-controller';
 /**
  * Wires the lab runtime and its three controllers.
  *
- * The lab bean is created once (a field, not per entry call) and returned both
+ * The lab entry is created once (a field, not per entry call) and returned both
  * from the `RESILIENCE_LAB` entry and to each controller constructor: the
  * container registers exactly one instance, and `context.getValue(RESILIENCE_LAB)`
  * hands out that same one.

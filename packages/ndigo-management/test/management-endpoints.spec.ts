@@ -159,7 +159,7 @@ describe('GET /metrics with the aggregator-backed fallback (REV-003)', () => {
         context.register(ManagementAutoConfiguration);
         context.refresh();
 
-        // Seed feature metrics through the same bean the endpoint projects.
+        // Seed feature metrics through the same entry the endpoint projects.
         const aggregator = context.getValue<FeatureMetricAggregator>(METRIC_AGGREGATOR);
         aggregator.incrementCounter('gate', 'opens', 2);
         aggregator.recordDuration('gate', 'latencyMs', 150);

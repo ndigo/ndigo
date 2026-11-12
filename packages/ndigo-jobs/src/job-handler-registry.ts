@@ -13,7 +13,7 @@ import { JOB_HANDLER_METADATA_PREFIX, type JobHandler, type JobHandlerMetadata }
 export interface RegisteredJobHandler {
     /** The job type served. */
     type: string;
-    /** `<beanName>.<methodName>` — diagnostics and spans. */
+    /** `<entryName>.<methodName>` — diagnostics and spans. */
     name: string;
     /** Attempts allowed before terminal failure, when declared. */
     maxAttempts?: number;
@@ -26,7 +26,7 @@ export interface RegisteredJobHandler {
 /**
  * Holds the job-type → handler mapping. Two registration paths (AD-72 D-5):
  *
- * - **Declarative** — `@jobHandler('type')` methods on beans are discovered
+ * - **Declarative** — `@jobHandler('type')` methods on entries are discovered
  *   when the registry starts (container lifecycle: `SmartLifecycle`, phase 0,
  *   auto-start; the runner starts in phase 10, after the scan).
  * - **Programmatic** — {@link register} for functional handlers and tests.
@@ -144,7 +144,7 @@ export class JobHandlerRegistry implements AsyncDestroyable {
     /**
      * SmartLifecycle stop: clears the discovered registrations. Programmatic
      * registrations made before `start` are re-added on the next scan only if
-     * they live on scanned beans; functional handlers must be re-registered.
+     * they live on scanned entries; functional handlers must be re-registered.
      */
     stop(): void {
         if (!this.isRunning) {
@@ -179,7 +179,7 @@ export class JobHandlerRegistry implements AsyncDestroyable {
             const hasHandlers = Object.keys(metadata).some((key) => key.startsWith(JOB_HANDLER_METADATA_PREFIX));
             if (hasHandlers) {
                 throw new FrameworkError(
-                    `JobHandlerRegistry: bean '${name}' has @jobHandler methods but is registered as a class, not an ` +
+                    `JobHandlerRegistry: entry '${name}' has @jobHandler methods but is registered as a class, not an ` +
                         'instance — register an instance so the handler owner can be resolved'
                 );
             }
@@ -215,7 +215,7 @@ export class JobHandlerRegistry implements AsyncDestroyable {
 
 /**
  * Structural type guard for {@link JobHandlerRegistry} — the `like*`
- * convention used where a bean or option is verified before use (sibling of
+ * convention used where an entry or option is verified before use (sibling of
  * {@link "job-driver".likeJobDriver | likeJobDriver}).
  *
  * @param value - The candidate value.

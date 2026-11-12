@@ -15,7 +15,7 @@ zero setup); finer grouping is available through named rooms via
 
 This is a **type-only contract**: the dispatcher's execution path never
 references it. Implementations (e.g. the Node transport) are registered
-as application-context beans; any service with the registry can push to
+as application-context entries; any service with the registry can push to
 a room (scheduler → room, HTTP → room) — AD-21 D4.
 
 ## Methods

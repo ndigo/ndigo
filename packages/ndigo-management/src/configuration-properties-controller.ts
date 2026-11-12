@@ -19,7 +19,7 @@ import { isEndpointExposed } from './management-properties';
  * `@ndigo/inspect`'s `configurationClasses` input) — the framework keeps no
  * registry of bound classes to scan.
  *
- * Payload shape: `{ beans: [{ name, properties: [{ key, type? }] }] }`,
+ * Payload shape: `{ entries: [{ name, properties: [{ key, type? }] }] }`,
  * deterministically sorted.
  */
 @requestMapping('/configprops')
@@ -44,14 +44,14 @@ export class ConfigurationPropertiesController extends AsApplicationContextAware
     /**
      * The configuration-properties document.
      *
-     * @returns `{ beans: […] }` — never values.
+     * @returns `{ entries: […] }` — never values.
      */
     @getMapping('/')
     configprops() {
         if (!isEndpointExposed(this.applicationContext?.environment, this.#exposure, 'configprops')) {
             return ResponseEntity.notFound();
         }
-        const beans: Array<{
+        const entries: Array<{
             name: string;
             properties: Array<{ key: string; type?: string }>;
         }> = [];
@@ -60,26 +60,26 @@ export class ConfigurationPropertiesController extends AsApplicationContextAware
             if (declared.length === 0) {
                 continue;
             }
-            beans.push({
-                name: beanPrefix(declared.map((entry) => entry.key)),
+            entries.push({
+                name: entryPrefix(declared.map((entry) => entry.key)),
                 properties: declared.map((entry) =>
                     entry.type === undefined ? { key: entry.key } : { key: entry.key, type: entry.type }
                 ),
             });
         }
-        return { beans };
+        return { entries };
     }
 }
 
 /**
- * Derives a deterministic bean name for a class's declared keys: the common
+ * Derives a deterministic entry name for a class's declared keys: the common
  * first key segment when every key shares it, otherwise `ROOT` (a
  * prefix-less class).
  *
  * @param keys - The declared dotted keys.
- * @returns The bean name.
+ * @returns The entry name.
  */
-function beanPrefix(keys: readonly string[]): string {
+function entryPrefix(keys: readonly string[]): string {
     const dotted = keys.filter((key) => key.includes('.'));
     if (dotted.length === 0) {
         return 'ROOT';

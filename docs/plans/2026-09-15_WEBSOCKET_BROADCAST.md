@@ -56,15 +56,15 @@ normal radix mapping. The missing layer is _session tracking and fan-out_.
 WebSockets are added the same way HTTP sessions are handled in this stack: the
 dispatcher defines the **types handlers sign against**, the platform implements the
 **machinery**, and the **application context composes** the two. A Node application
-runs socket sessions and HTTP sessions side by side as separate beans bound through
+runs socket sessions and HTTP sessions side by side as separate entries bound through
 separate extractors — no unified "session layer" exists or is proposed.
 
-| Role                 | Home                                                                                         | Contents                                                                             | Runtime coupling to dispatcher                               |
-| -------------------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------------------ |
-| Signature vocabulary | `ndigo-dispatcher` (type-only)                                                               | `SocketSession` (+ `attributes`), `SocketSessionRegistry` contract, extractor types  | None — dispatcher execution path never references registries |
-| Implementation       | `ndigo-platform-node`                                                                        | `NodeSocketSessionRegistry` (membership, broadcast, heartbeat sweep), adapter hookup | Implements the contract                                      |
-| Composition          | `NodeAutoConfiguration` (`@entry` beans, mirroring `TaskScheduler`/`ScheduleRegistry` AD-20) | Registry bean + configuration properties (heartbeat intervals)                       | Through DI only                                              |
-| Application          | any app config (e.g. `NodeAppConfiguration`)                                                 | Controllers + services inject the registry; nothing to wire                          | Through DI only                                              |
+| Role                 | Home                                                                                           | Contents                                                                             | Runtime coupling to dispatcher                               |
+| -------------------- | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------------------ |
+| Signature vocabulary | `ndigo-dispatcher` (type-only)                                                                 | `SocketSession` (+ `attributes`), `SocketSessionRegistry` contract, extractor types  | None — dispatcher execution path never references registries |
+| Implementation       | `ndigo-platform-node`                                                                          | `NodeSocketSessionRegistry` (membership, broadcast, heartbeat sweep), adapter hookup | Implements the contract                                      |
+| Composition          | `NodeAutoConfiguration` (`@entry` entries, mirroring `TaskScheduler`/`ScheduleRegistry` AD-20) | Registry entry + configuration properties (heartbeat intervals)                      | Through DI only                                              |
+| Application          | any app config (e.g. `NodeAppConfiguration`)                                                   | Controllers + services inject the registry; nothing to wire                          | Through DI only                                              |
 
 Coexistence example (the question this model answers — a Node app with both kinds):
 
@@ -83,7 +83,7 @@ export class NodeAppConfiguration {
 
 The chat handler binds `SocketSession`; the HTTP handler binds the state bag via
 `requestSessionValue()`; a scheduler-driven task pushes into a room through the injected
-`SocketSessionRegistry` bean. All three coexist as ordinary DI.
+`SocketSessionRegistry` entry. All three coexist as ordinary DI.
 
 ## 4. Decisions
 
@@ -122,10 +122,10 @@ store, and the seed of the future shared contract.
 
 ### D4 — Registry lifecycle is application-context-owned
 
-Registry, heartbeat, and broadcast are beans registered by `NodeAutoConfiguration`;
+Registry, heartbeat, and broadcast are entries registered by `NodeAutoConfiguration`;
 `ndigo-dispatcher` contributes types only. This is the existing auto-configuration
 pattern (AD-20 D2: scheduler zero-wiring) and the industry pattern (Spring
-`SimpMessagingTemplate`, Micronaut `SessionStore` are context beans). The adapter
+`SimpMessagingTemplate`, Micronaut `SessionStore` are context entries). The adapter
 still owns the `WebSocketServer`; the registry attaches to it at server start.
 
 ### D5 — Rooms: auto-join to endpoint path + explicit named rooms
@@ -187,7 +187,7 @@ interface SocketSessionRegistry {
 - Adapter: construct/accept the registry (from context at server start, mirroring
   how `HTTPServer` resolves the dispatcher); wire `attributes`/`join`/`leave` through
   `nodeSocketSession`.
-- `NodeAutoConfiguration`: `@entry socketSessionRegistry()` bean + configuration
+- `NodeAutoConfiguration`: `@entry socketSessionRegistry()` entry + configuration
   properties (`socket.heartbeat-interval-ms`, `socket.idle-timeout-ms`).
 - `HTTPServer` start passes registry + options to the adapter; stop closes all
   sessions (graceful shutdown integration).
@@ -218,14 +218,14 @@ interface SocketSessionRegistry {
 
 ### Phase 3 — Auto-configuration
 
-- `NodeAutoConfiguration` `@entry` registry bean + environment options
+- `NodeAutoConfiguration` `@entry` registry entry + environment options
   (`NDIGO_SOCKET_HEARTBEAT_INTERVAL_MS`, `NDIGO_SOCKET_IDLE_TIMEOUT_MS`; D6
   defaults — resolved via `resolveSocketRegistryOptions`, the
   `resolveHTTPRequestLimits` pattern).
-- `HTTPServer`/adapter wiring: the server resolves the registry bean at
-  start, so bean broadcasts reach adapter sessions (one shared instance);
+- `HTTPServer`/adapter wiring: the server resolves the registry entry at
+  start, so entry broadcasts reach adapter sessions (one shared instance);
   graceful shutdown closes sessions and stops the sweep.
-- Spec: bean present in a booted context; options flow through.
+- Spec: entry present in a booted context; options flow through.
 
 ### Phase 4 — Demo gate (apps/ndigo-api)
 
@@ -234,7 +234,7 @@ interface SocketSessionRegistry {
 - Scheduler-driven push: `ChatController` itself carries a `@scheduled`
   tick broadcasting into the room every 2s (controller-parked task, AD-20
   D1) — proving registry reachability from outside handlers with
-  zero-wiring. (The AD-20 `Heartbeat` bean stays the scheduling demo.)
+  zero-wiring. (The AD-20 `Heartbeat` entry stays the scheduling demo.)
 - e2e (Playwright-style or `ndigo-test` harness): two sockets, message fan-out,
   scheduler tick received.
 - Docs: `docs/guides/06-websockets.md` + plans README index (this doc).
@@ -264,7 +264,7 @@ session-base abstractions are introduced (D1/D3 guardrails).
 | ----------------------------------------------------------- | ----------------------------------------------------------------------------- |
 | Broadcast fan-out races with close                          | `remove()` is idempotent; broadcast skips `isClosed`; best-effort (D5)        |
 | Heartbeat sweeps interfere with active low-traffic sessions | `ws` pong tracking is per-connection; pings do not consume application frames |
-| Registry bean lifetime vs server restart                    | Registry cleared on context close (Phase 3 graceful shutdown)                 |
+| Registry entry lifetime vs server restart                   | Registry cleared on context close (Phase 3 graceful shutdown)                 |
 | `Session` → `AuthSession` rename churn                      | Verified single consumer + specs; isolated commit (Phase 0)                   |
 
 Open: none blocking. Alternative considered and rejected: hosting the registry

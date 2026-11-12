@@ -37,14 +37,14 @@ evidence and reasoning: AD-87.
 
 ## 3. Phase 1 deliverables (pre-1.0 — #56)
 
-| #    | Deliverable                                                                                                                        | Where                                                                    |
-| ---- | ---------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| P1-1 | SPI widening: 3 reasons, 2 error codes, optional `flagMetadata`; `DISABLED`-as-success documented; tests                           | `packages/ndigo-flags/src/flag-evaluator.ts`, `test/`                    |
-| P1-2 | `@ndigo/flags-openfeature`: `OpenFeatureFlagEvaluator` (global + domain clients), never-throw boundary, `close()` policy           | `packages/ndigo-flags-openfeature/` (new)                                |
-| P1-3 | Catalog pins + peer allowlist (SDKs as peers per OF library guidance)                                                              | `pnpm-workspace.yaml`, `scripts/check-manifests.mjs`                     |
-| P1-4 | Tests: in-test in-memory provider + OF **Gherkin spec vectors** (`@standard-reasons`, `@object`, `@disabled-flags`)                | `packages/ndigo-flags-openfeature/test/`                                 |
-| P1-5 | Docs: bridge README, guide 28 §Vendors recipe (`setProviderAndWait` + bean override; flagd/OFREP examples), Package Map, CHANGELOG | `packages/ndigo-flags-openfeature/README.md`, `docs/`, `ARCHITECTURE.md` |
-| P1-6 | Companion: `FlagEvaluationContextResolver` seam (principal/tenant → context)                                                       | `packages/ndigo-platform-node/` — **#55**, implemented 2026-11-02        |
+| #    | Deliverable                                                                                                                         | Where                                                                    |
+| ---- | ----------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| P1-1 | SPI widening: 3 reasons, 2 error codes, optional `flagMetadata`; `DISABLED`-as-success documented; tests                            | `packages/ndigo-flags/src/flag-evaluator.ts`, `test/`                    |
+| P1-2 | `@ndigo/flags-openfeature`: `OpenFeatureFlagEvaluator` (global + domain clients), never-throw boundary, `close()` policy            | `packages/ndigo-flags-openfeature/` (new)                                |
+| P1-3 | Catalog pins + peer allowlist (SDKs as peers per OF library guidance)                                                               | `pnpm-workspace.yaml`, `scripts/check-manifests.mjs`                     |
+| P1-4 | Tests: in-test in-memory provider + OF **Gherkin spec vectors** (`@standard-reasons`, `@object`, `@disabled-flags`)                 | `packages/ndigo-flags-openfeature/test/`                                 |
+| P1-5 | Docs: bridge README, guide 28 §Vendors recipe (`setProviderAndWait` + entry override; flagd/OFREP examples), Package Map, CHANGELOG | `packages/ndigo-flags-openfeature/README.md`, `docs/`, `ARCHITECTURE.md` |
+| P1-6 | Companion: `FlagEvaluationContextResolver` seam (principal/tenant → context)                                                        | `packages/ndigo-platform-node/` — **#55**, implemented 2026-11-02        |
 
 Explicit non-goals for Phase 1: no web entry (`/web`), no telemetry hook, no
 provider implementations, no provider-TCK adoption, no `@openfeature/*`
@@ -63,7 +63,7 @@ imports outside the bridge package.
 - Recipe smoke: the guide's recipe decomposes into the bridge mapping tests
   (this package) plus the existing gate tests (`apps/04-ndigo-api`'s
   feature-flags lane) — the interceptor evaluates through whatever
-  `FLAG_EVALUATOR` bean is registered, so no new app dependency is needed.
+  `FLAG_EVALUATOR` entry is registered, so no new app dependency is needed.
 
 Performed 2026-11-01 (#56): flags + bridge lanes green — 62 tests across
 the SPI and the bridge, including the 11 adapted spec-vector scenarios,

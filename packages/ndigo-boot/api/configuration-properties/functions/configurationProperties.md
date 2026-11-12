@@ -15,7 +15,7 @@ When the application starts, every field decorated with `@property` on the
 class is bound from the environment (converted via `getPropertyAs`). If a
 prefix is given, property paths are prefixed with it (e.g. prefix = 'server')
 makes `@property('port')` resolve `server.port`. The bound
-instance is auto-registered as an entry bean keyed by the camelCase-derived
+instance is auto-registered as an entry keyed by the camelCase-derived
 class name (`ServerConfig` → `serverConfig`).
 
 **Conversion target (CTX-11).** A field's target type is, in order: the

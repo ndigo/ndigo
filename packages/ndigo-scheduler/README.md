@@ -84,7 +84,7 @@ pnpm --filter @ndigo/scheduler test
 
 ## See Also
 
-- [@ndigo/platform-node](../ndigo-platform-node/README.md) — auto-provisions the scheduler in a Node app via its `taskScheduler` bean
+- [@ndigo/platform-node](../ndigo-platform-node/README.md) — auto-provisions the scheduler in a Node app via its `taskScheduler` entry
 
 ## Contributing
 

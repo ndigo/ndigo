@@ -41,7 +41,7 @@ if (lease === null) {
 }
 ```
 
-Multi node: register a `RedisLockDriver` bean (see [guide 24](../../docs/guides/24-distributed-locks.md)); the same code coordinates across processes.
+Multi node: register a `RedisLockDriver` entry (see [guide 24](../../docs/guides/24-distributed-locks.md)); the same code coordinates across processes.
 
 ## Usage
 
@@ -49,7 +49,7 @@ Multi node: register a `RedisLockDriver` bean (see [guide 24](../../docs/guides/
   the named lock before each fire and releases it in the `finally`, so one
   node executes the schedule while others skip (contended fires are logged).
   Tune with `lockWait` / `lockWaitStep` / `lockTtl`.
-- `NodeAutoConfiguration` registers a `lockDriver` bean automatically
+- `NodeAutoConfiguration` registers a `lockDriver` entry automatically
   (in-process default; replace with the Redis driver for multi-node).
 
 ## API
@@ -59,8 +59,8 @@ The full API is at [`api/`](api/README.md). Primary exports:
 - `LockDriver` / `LockHandle` / `LockAcquireOptions` — the contract
   (`acquire` is non-blocking; `renew`/`release` are token-checked).
 - `InProcessLockDriver` — the process-wide default.
-- `likeLockDriver` — structural guard for beans and options.
-- `LOCK_DRIVER` — the context token for bean resolution.
+- `likeLockDriver` — structural guard for entries and options.
+- `LOCK_DRIVER` — the context token for entry resolution.
 
 ## Driver parity notes (AD-73)
 

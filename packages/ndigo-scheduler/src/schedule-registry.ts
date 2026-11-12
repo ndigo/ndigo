@@ -28,17 +28,17 @@ const likeNormalizedSpec = (value: unknown): value is NormalizedScheduledSpec =>
 };
 
 /**
- * Discovers `@scheduled` methods on application-context beans, registers
- * them (telemetry-wrapped) with the context's `taskScheduler` bean, and
+ * Discovers `@scheduled` methods on application-context entries, registers
+ * them (telemetry-wrapped) with the context's `taskScheduler` entry, and
  * manages the scheduler's lifecycle.
  *
- * As a container bean it is driven by the factory lifecycle (AD-20 D2):
+ * As a container entry it is driven by the factory lifecycle (AD-20 D2):
  * registered by `NodeAutoConfiguration`, injected with the context via
  * `ApplicationContextAware`, **auto-started on refresh** (`SmartLifecycle`),
  * and stopped/destroyed on context close — zero extra wiring for Node apps.
  *
  * Scan model mirrors the handler-mapping scan (`Object.keys(context)` →
- * per-name value): every bean instance's class metadata is read through
+ * per-name value): every entry instance's class metadata is read through
  * `Symbol.metadata`, and each `schedule:<method>` entry is bound to its
  * owner instance. A `@scheduled` class registered as a prototype (not an
  * instance) has no resolvable owner and fails start loudly (AD-20 D5.5).
@@ -86,13 +86,13 @@ export class ScheduleRegistry implements AsyncDestroyable {
 
     /**
      * SmartLifecycle start: scans the context, registers telemetry-wrapped
-     * tasks with the `taskScheduler` bean, and starts the timer loop.
+     * tasks with the `taskScheduler` entry, and starts the timer loop.
      *
      * Idempotent; scans once per lifecycle (double-init guard on the
      * underlying scan).
      *
      * @throws When no context is bound or the context has
-     *   no `taskScheduler` bean (the node platform provides one).
+     *   no `taskScheduler` entry (the node platform provides one).
      */
     start(): void {
         if (this.isRunning) {
@@ -109,7 +109,7 @@ export class ScheduleRegistry implements AsyncDestroyable {
         }
         if (!context.hasValue(TASK_SCHEDULER)) {
             throw new FrameworkError(
-                `ScheduleRegistry: no '${TASK_SCHEDULER.description}' bean — register the Node auto-configuration (NodeAutoConfiguration) to provision the scheduler`
+                `ScheduleRegistry: no '${TASK_SCHEDULER.description}' entry — register the Node auto-configuration (NodeAutoConfiguration) to provision the scheduler`
             );
         }
         const scheduler = context.getValue(TASK_SCHEDULER);
@@ -161,9 +161,9 @@ export class ScheduleRegistry implements AsyncDestroyable {
      * with the given scheduler (manual alternative to the lifecycle start).
      *
      * Named `scan`, not `init` — the DI container auto-invokes `init` on
-     * any bean implementing that shape (Initializable), which would collide.
+     * any entry implementing that shape (Initializable), which would collide.
      *
-     * @param applicationContext - The context whose beans are scanned.
+     * @param applicationContext - The context whose entries are scanned.
      * @param scheduler - The scheduler tasks are registered with.
      * @throws When already initialized or a scheduled
      *   method's owner cannot be resolved.
@@ -217,8 +217,8 @@ export class ScheduleRegistry implements AsyncDestroyable {
      * Reads one context value's schedule metadata and registers matched
      * methods, binding each run to its owner instance.
      *
-     * @param name - The context bean name (task names are `<name>.<method>`).
-     * @param value - The bean value.
+     * @param name - The context entry name (task names are `<name>.<method>`).
+     * @param value - The entry value.
      * @param scheduler - The scheduler to register with.
      */
     #scanValue(name: string, value: unknown, scheduler: TaskScheduler): void {
@@ -228,7 +228,7 @@ export class ScheduleRegistry implements AsyncDestroyable {
             const hasScheduledMethods = Object.keys(metadata).some((key) => key.startsWith(SCHEDULED_METADATA_PREFIX));
             if (hasScheduledMethods) {
                 throw new FrameworkError(
-                    `ScheduleRegistry: bean '${name}' has @scheduled methods but is registered as a class, not an ` +
+                    `ScheduleRegistry: entry '${name}' has @scheduled methods but is registered as a class, not an ` +
                         'instance — register an instance so the task owner can be resolved (AD-20 D5.5)'
                 );
             }

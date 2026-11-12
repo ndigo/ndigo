@@ -113,8 +113,8 @@ function likeScopePrincipal(value: unknown): value is { hasScope(scope: string):
  * authorization failures close the socket with `1008`.
  *
  * {@link NodeHTTPServerAdapterOptions.authenticate} is the direct wiring;
- * `HTTPServer` also resolves an application-context bean named
- * `socketRequestAuthenticator` implementing this interface, so bean-based
+ * `HTTPServer` also resolves an application-context entry named
+ * `socketRequestAuthenticator` implementing this interface, so entry-based
  * applications wire identity without constructing the adapter.
  */
 export interface SocketRequestAuthenticator {
@@ -896,7 +896,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
         // the interceptor chain (`AuthRouteGuard`); sockets are dispatched
         // directly, so without this check the decorators are inert and every
         // socket endpoint is open by construction. The identity source is
-        // the `authenticate` hook / `socketRequestAuthenticator` bean whose
+        // the `authenticate` hook / `socketRequestAuthenticator` entry whose
         // bag lands in `session.attributes`. No metadata ⇒ unchanged
         // behavior (a public socket endpoint).
         const { requiresAuth, requiredRoles, requiredScopes } = this.#socketAuthRequirements(target);

@@ -47,7 +47,7 @@ a socket.
   `HTTPResponseViewTarget` response contract (status/headers/JSON-or-HTML).
 - **D-4** Thin, not a new assertion framework — returns shaped values for
   Vitest's `expect`; no browser (Playwright's job), no mocking framework
-  (real beans, real dispatch).
+  (real entries, real dispatch).
 - **D-5** Caching via `cachedBootApp`/`releaseCachedApp` (per-worker dedupe)
   boots the heavy context once.
 

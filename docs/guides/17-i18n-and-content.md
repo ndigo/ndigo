@@ -42,7 +42,7 @@ ecosystem standard, and uses platform standard APIs directly** —
 ## 2. The message source
 
 Register a `MessageSource` on the application context — the context itself
-becomes a `MessageSource`, so any `ApplicationContextAware` bean can format
+becomes a `MessageSource`, so any `ApplicationContextAware` entry can format
 messages:
 
 ```ts

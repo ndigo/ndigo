@@ -152,7 +152,7 @@ Fetches a plain JSON document over HTTPS at boot (and optionally polls
 it) into the `configServer` precedence slot:
 commandLine \> boot \> systemEnvironment \> configServer \> dotenv \>
 application-(profile) \> application \> defaults. Changes merge at
-poll time and trigger `environment.refresh()` to `\@refreshScope` beans
+poll time and trigger `environment.refresh()` to `\@refreshScope` entries
 rebind (D-8 loop). cipher values in a fetched document decrypt
 when `secrets(...)` is also wired (the "remote values decrypt too"
 decision).

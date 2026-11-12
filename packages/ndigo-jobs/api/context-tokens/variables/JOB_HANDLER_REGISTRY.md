@@ -8,5 +8,5 @@
 
 > `const` **JOB\_HANDLER\_REGISTRY**: [`ContextToken`](#)\<[`JobHandlerRegistry`](../../job-handler-registry/classes/JobHandlerRegistry.md)\>
 
-Token for the [JobHandlerRegistry](../../job-handler-registry/classes/JobHandlerRegistry.md) bean that scans `@jobHandler`
+Token for the [JobHandlerRegistry](../../job-handler-registry/classes/JobHandlerRegistry.md) entry that scans `@jobHandler`
 methods and holds the registered handlers.

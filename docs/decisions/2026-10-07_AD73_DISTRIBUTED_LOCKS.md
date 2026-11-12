@@ -48,11 +48,11 @@ What the repository already provides, and what is missing:
   repo's idiom for "who may act next".
 - Registry discovery precedent: `ScheduleRegistry` (AD-20 D2) — `@scheduled`
   metadata written at decoration time, discovered on refresh, executed through
-  the `TaskScheduler` bean. A `lock` option rides the same decoration-time
+  the `TaskScheduler` entry. A `lock` option rides the same decoration-time
   validation path.
 - Contention behavior precedent: `InProcessJobDriver` is the explicit
   non-durable default; durability is opt-in by registering a durable driver
-  bean (`NodeAutoConfiguration`'s `jobDriver` family). Locks mirror this: the
+  entry (`NodeAutoConfiguration`'s `jobDriver` family). Locks mirror this: the
   default is in-process (correct on one node), Redis is the opt-in durable
   mode.
 - Peer comparison: Redis `SET NX PX` + Lua release is the common implementation
@@ -71,7 +71,7 @@ Backends are adapters owned by the package that owns the client —
 `@ndigo/redis/locks` (AD-51 subpath) for the Redis driver. The default driver is
 explicitly in-process and non-durable, exactly like `InProcessJobDriver` and
 the memory cache manager; cross-process guarantees are opt-in by registering
-the Redis driver bean.
+the Redis driver entry.
 
 ### D-2 — `LockDriver` SPI: lease-based, fencing-enabled, crash-self-healing
 
@@ -139,7 +139,7 @@ like today's cron/interval spec):
 
 `NodeAutoConfiguration` provides `lockDriver` (and, when registered, the
 scheduler resolves it from the context the same way it resolves
-`TASK_SCHEDULER`): zero-import single-node setup, one-bean Redis wiring for
+`TASK_SCHEDULER`): zero-import single-node setup, one-entry Redis wiring for
 multi-node. Anything already wired for `jobDriver` gains `lockDriver` the same
 way.
 
@@ -176,7 +176,7 @@ way.
   (`@scheduled({lock})` + `@jobHandler` lease-holder is the AD-72 → AD-73 →
   GAP-2 spine).
 - Opt-in durability: single-node apps keep running with zero config; the Redis
-  bean is one registration, following every prior durable-option precedent.
+  entry is one registration, following every prior durable-option precedent.
 - Cost: TTL-lease clock-skew caveat enters the surface (documented); Redis is
   a runtime dependency only for apps that want multi-node execution.
 
@@ -185,7 +185,7 @@ way.
 - `docs/plans/2026-10-07_CODE_REVIEW_AND_MITIGATION.md` §6 GAP-3 row and the
   Wave-6 dependency cluster note.
 - AD-72 (durable jobs): the `RedisJobDriver` Lua-claim template and
-  `NodeAutoConfiguration` bean wiring.
+  `NodeAutoConfiguration` entry wiring.
 - AD-20 D2 (`@scheduled` registry + `TaskScheduler` single-flight).
 - AD-41 (distributed scheduling deferred — unchanged; locks do not reopen it).
 - AD-51 (`@ndigo/redis` subpath layout: `./cache`, `./pubsub`, `./jobs`).

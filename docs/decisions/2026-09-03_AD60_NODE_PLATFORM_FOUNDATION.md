@@ -12,7 +12,7 @@ dispatcher, and no server view rendering. Every Node app hand-wrote 50+ lines
 of raw `node:http` boilerplate, built route objects manually, and bypassed the
 dispatcher/interceptor/error/view pipeline. The browser side already had a
 DOM-free `BrowserDispatcher` (in `@ndigo/dispatcher`) whose `render()` resolves
-a view and commits through a `ViewTarget` bean; the browser-ness lived only in
+a view and commits through a `ViewTarget` entry; the browser-ness lived only in
 `@ndigo/platform-web`'s `DOMElementViewTarget`. This AD completes the
 server-pipeline design that AD-05 scoped at MVP level.
 
@@ -45,7 +45,7 @@ server-pipeline design that AD-05 scoped at MVP level.
   `dispatch()`/`_processDispatchResult()`/`_processHandlerError()` and
   overriding only `render()` for HTTP semantics; no base-class extraction yet
   (deferred `AbstractDispatcher` follow-up).
-- **D-2** `HTTPServer` is a `SmartLifecycle` bean auto-started on context
+- **D-2** `HTTPServer` is a `SmartLifecycle` entry auto-started on context
   refresh over a pluggable `HTTPServerAdapter`, default
   `NodeHTTPServerAdapter` wrapping raw `node:http` (zero deps — Hono/Express
   were considered and rejected).

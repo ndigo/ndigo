@@ -68,7 +68,7 @@ export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo>
     /**
      * Set of handler instances already scanned by {@link init}. Guards against
      * duplicate registrations when init runs more than once: the DI container
-     * auto-initializes Initializable beans at registration time, and the
+     * auto-initializes Initializable entries at registration time, and the
      * lifecycle processor re-runs init on refresh — the same controllers must
      * not be registered twice.
      */
@@ -103,7 +103,7 @@ export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo>
 
     /**
      * `SmartLifecycle` — mappings are immutable once initialized; nothing to
-     * release. Present so this type is a well-behaved lifecycle bean.
+     * release. Present so this type is a well-behaved lifecycle entry.
      */
     stop(): void {
         this.#lifecycleStarted = false;
@@ -113,7 +113,7 @@ export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo>
      * Detect and register handler methods from the application context.
      *
      * No-op when the application context has not been injected yet (the DI
-     * container auto-initializes initializable beans during refresh, which can
+     * container auto-initializes initializable entries during refresh, which can
      * run before `setApplicationContext`). Idempotent: handlers already
      * detected on a previous init are skipped.
      */

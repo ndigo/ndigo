@@ -17,16 +17,16 @@
 
 ### 1.1 Industry landscape (research, 2026-09-28)
 
-| Approach                                        | Mechanism                                                             | Verdict for Ndigo                                                                                                                                                                                                                                                                            |
-| ----------------------------------------------- | --------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Spring `BeanUtils.copyProperties` / ModelMapper | Reflection, name-matching conventions                                 | Implicit, dynamic, **silently partial** on mismatch. Java's answer to erased types — TS does not have this problem.                                                                                                                                                                          |
-| MapStruct (Java)                                | Compile-time codegen                                                  | Type-safe but a build-time generator for a language whose types die at runtime; AD-34 D-8 already declined generator codegen on principle.                                                                                                                                                   |
-| .NET AutoMapper                                 | Reflection conventions + fluent config                                | Same implicit-mapping model; the TS port (`@automapper/core`/`pojos`) forces declaring types/properties twice and is "opinionated tooling" per community reports.                                                                                                                            |
-| `class-transformer` (NestJS staple)             | Decorators + classes + reflection metadata                            | Class-based, decorator-driven; maintenance is slow (open "is class-transformer abandoned?" discussion in 2025); depends on class-instance targets and `reflect-metadata`-style machinery Ndigo removed in favor of tokens/`Symbol.metadata` (AD-34).                                         |
-| `typia`                                         | AOT compiler plugin                                                   | Fast, but a build-time compiler layer — rejected in the same spirit as AD-34 D-8.                                                                                                                                                                                                            |
-| `effect/schema`                                 | Schema runtime + extensive library                                    | Powerful; drags the Effect ecosystem gravity into the core.                                                                                                                                                                                                                                  |
-| Mapstronaut (new)                               | MapStruct-inspired declarative                                        | Unproven, August 2025 release.                                                                                                                                                                                                                                                               |
-| **Zod**                                         | Schema: `pick/omit/extend/transform/default/coerce` + `z.infer` types | **Already Ndigo's validation stack** (AD-07), already a direct dependency of 9 packages, already drives request DTOs (`validatedBody(insertSchemaForEntity(Note))`), ORM schemas (`schemaForEntity`), config binding (AD-34 D-3), and OpenAPI schema derivation (`toJSONSchema`, AD-35 D-3). |
+| Approach                                         | Mechanism                                                             | Verdict for Ndigo                                                                                                                                                                                                                                                                            |
+| ------------------------------------------------ | --------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Spring `EntryUtils.copyProperties` / ModelMapper | Reflection, name-matching conventions                                 | Implicit, dynamic, **silently partial** on mismatch. Java's answer to erased types — TS does not have this problem.                                                                                                                                                                          |
+| MapStruct (Java)                                 | Compile-time codegen                                                  | Type-safe but a build-time generator for a language whose types die at runtime; AD-34 D-8 already declined generator codegen on principle.                                                                                                                                                   |
+| .NET AutoMapper                                  | Reflection conventions + fluent config                                | Same implicit-mapping model; the TS port (`@automapper/core`/`pojos`) forces declaring types/properties twice and is "opinionated tooling" per community reports.                                                                                                                            |
+| `class-transformer` (NestJS staple)              | Decorators + classes + reflection metadata                            | Class-based, decorator-driven; maintenance is slow (open "is class-transformer abandoned?" discussion in 2025); depends on class-instance targets and `reflect-metadata`-style machinery Ndigo removed in favor of tokens/`Symbol.metadata` (AD-34).                                         |
+| `typia`                                          | AOT compiler plugin                                                   | Fast, but a build-time compiler layer — rejected in the same spirit as AD-34 D-8.                                                                                                                                                                                                            |
+| `effect/schema`                                  | Schema runtime + extensive library                                    | Powerful; drags the Effect ecosystem gravity into the core.                                                                                                                                                                                                                                  |
+| Mapstronaut (new)                                | MapStruct-inspired declarative                                        | Unproven, August 2025 release.                                                                                                                                                                                                                                                               |
+| **Zod**                                          | Schema: `pick/omit/extend/transform/default/coerce` + `z.infer` types | **Already Ndigo's validation stack** (AD-07), already a direct dependency of 9 packages, already drives request DTOs (`validatedBody(insertSchemaForEntity(Note))`), ORM schemas (`schemaForEntity`), config binding (AD-34 D-3), and OpenAPI schema derivation (`toJSONSchema`, AD-35 D-3). |
 
 **Naming (2026-09-29, user-steered):** "mapping" is the wrong word for the
 operation — `Array.map`, the JS `Map` type, Jackson's `ObjectMapper`, and
@@ -76,7 +76,7 @@ plain `z.infer` shape, never a class instance.
 ### D-3 — Fail-fast, never silent
 
 `schema.parse` semantics — structured `ZodError`, no partial result.
-Deliberate deviation from BeanUtils' silent partial copy. Request side:
+Deliberate deviation from EntryUtils' silent partial copy. Request side:
 400/422 via `validatedBody` (unchanged). Response side: handler bug → the
 existing RFC 9457 error path.
 
@@ -88,7 +88,7 @@ metadata; the generator embeds the schema via zod's native `toJSONSchema`
 default unchanged. No return-type inference — the schema the handler
 converts through _is_ the documented shape.
 
-### D-5 — Node zero-wiring bean
+### D-5 — Node zero-wiring entry
 
 `CONVERSION_SERVICE` (`createConversionService()`) registered by
 `NodeAutoConfiguration` — the AD-24 `CacheManager` pattern.
@@ -148,7 +148,7 @@ response entry (separate AD-35 follow-up).
 
 ### Wave 4 — Wiring, docs, gates
 
-- `CONVERSION_SERVICE` token + bean in `NodeAutoConfiguration`; bean spec
+- `CONVERSION_SERVICE` token + entry in `NodeAutoConfiguration`; entry spec
   (schema target + leaf target).
 - AD-38 (as amended); this plan; guide 14 (`docs/guides/14-dto-conversion.md`);
   gap-analysis §2.2 row + references; guides README; root README package

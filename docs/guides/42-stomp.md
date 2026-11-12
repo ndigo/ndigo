@@ -27,7 +27,7 @@ isomorphic (`@ndigo/socket`) and transport-agnostic:
 ```ts
 // server: a broker owns the destination namespace; the handler runs the
 // protocol for each connection
-const broker = new StompBroker();   // app-scoped bean
+const broker = new StompBroker();   // app-scoped entry
 
 @stompMapping('/chat')
 @parameters({ session: socketSessionValue('session') })
@@ -202,8 +202,8 @@ try {
 ```
 
 `HTTPServer`'s `socketRegistry` option passes this registry to its **default**
-adapter; it does not register beans or discover the broker. Without that option,
-the managed server resolves the `socketSessionRegistry` context bean. For a custom
+adapter; it does not register entries or discover the broker. Without that option,
+the managed server resolves the `socketSessionRegistry` context entry. For a custom
 adapter pass the registry to that adapter, not simultaneously to `HTTPServer`.
 Startup failure also requires the same owner-managed cleanup before exiting.
 

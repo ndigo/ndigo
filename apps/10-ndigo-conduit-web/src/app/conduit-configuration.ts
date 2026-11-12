@@ -1,12 +1,12 @@
 /**
- * The container configuration: what the app registers as beans.
+ * The container configuration: what the app registers as entries.
  *
  * One instance owns the whole object graph (`ConduitServices`) and exposes each
  * service under its token plus the assembled graph under
  * {@link CONDUIT_SERVICES}, so the composition root can reach the services
  * without re-deriving them. Controllers and the handler mapping are entries too
  * — the dispatcher discovers `@routeMapping` handlers by scanning the context,
- * which is why they must be beans rather than module-level instances.
+ * which is why they must be entries rather than module-level instances.
  */
 import { configuration, entry } from '@ndigo/context';
 import { LoggingRouteHandlerInterceptor, RadixMetadataHandlerMapping } from '@ndigo/dispatcher';

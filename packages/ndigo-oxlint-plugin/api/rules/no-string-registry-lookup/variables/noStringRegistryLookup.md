@@ -12,10 +12,10 @@ Reports string-keyed registry lookups — both string literals and
 identifiers that resolve (within this file, lexically) to a `const` that
 was initialized directly from a string literal.
 
-Strings are invisible at compile time: a renamed or mistyped bean name
+Strings are invisible at compile time: a renamed or mistyped entry name
 fails at dispatch, not at build. `ContextToken<T>` is the canonical
 handle (ADR-34 D1); the rule points authors at it, and an oxlint-disable
-comment documents intentional dynamic lookups (bean names computed from
+comment documents intentional dynamic lookups (entry names computed from
 data or re-exported constants).
 
 Identifier resolution is deliberately conservative to stay false-positive

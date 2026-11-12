@@ -8,4 +8,4 @@
 
 > `const` **SOCKET\_SESSION\_REGISTRY**: [`ContextToken`](#)\<[`NodeSocketSessionRegistry`](../../node-socket-session-registry/classes/NodeSocketSessionRegistry.md)\>
 
-Token for the shared WebSocket session registry bean (AD-21).
+Token for the shared WebSocket session registry entry (AD-21).

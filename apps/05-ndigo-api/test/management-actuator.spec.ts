@@ -101,18 +101,18 @@ describe('actuator parity demo (AD-76)', () => {
         const res = await fetch(`${base}/configprops`);
         expect(res.status).toBe(200);
         const body = (await res.json()) as {
-            beans: Array<{ name: string; properties: Array<{ key: string; type?: string }> }>;
+            entries: Array<{ name: string; properties: Array<{ key: string; type?: string }> }>;
         };
-        const names = body.beans.map((bean) => bean.name);
+        const names = body.entries.map((entry) => entry.name);
         expect(names).toEqual(expect.arrayContaining(['server', 'api']));
-        for (const bean of body.beans) {
-            for (const property of bean.properties) {
+        for (const entry of body.entries) {
+            for (const property of entry.properties) {
                 // Every entry is `{ key, type? }` — a value can never ride here.
                 expect(Object.keys(property).sort()).toEqual(property.type ? ['key', 'type'] : ['key']);
             }
         }
         // The secrets class's key is present (declaration), its value never is.
-        const apiBean = body.beans.find((bean) => bean.name === 'api');
-        expect(apiBean?.properties.map((property) => property.key)).toContain('api.secretToken');
+        const apiEntry = body.entries.find((entry) => entry.name === 'api');
+        expect(apiEntry?.properties.map((property) => property.key)).toContain('api.secretToken');
     });
 });

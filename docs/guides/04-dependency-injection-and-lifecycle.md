@@ -1,7 +1,7 @@
 # Guide 04 — Dependency Injection, Scopes & Lifecycle
 
-The application context is Ndigo's dependency container. It owns every bean,
-decides how long each one lives, injects the collaborators a bean asks for, and
+The application context is Ndigo's dependency container. It owns every entry,
+decides how long each one lives, injects the collaborators an entry asks for, and
 closes resources in a defined order when the app stops. This guide covers the
 registration surface, the scope strategies, and the lifecycle hooks.
 
@@ -9,15 +9,15 @@ registration surface, the scope strategies, and the lifecycle hooks.
 
 ## What you'll learn
 
-- Register beans with `@configuration` classes, `@entry` methods, and tokens.
+- Register entries with `@configuration` classes, `@entry` methods, and tokens.
 - Choose between singleton, prototype, hash, refresh, and custom scopes.
 - Use the aware callbacks to receive the context and value name.
 - Implement `init`, `destroy`/`close`, and smart-lifecycle phases.
 - Use parent/child contexts and application events without leaking state.
 
-## 1. The container and the bean
+## 1. The container and the entry
 
-An **application context** is a named, hierarchical container. A **bean** is any
+An **application context** is a named, hierarchical container. An **entry** is any
 value the context owns under a name or a `ContextToken`. The boot presets create
 the root context for you; the container API is the same everywhere.
 
@@ -37,11 +37,11 @@ collisions between packages. `getValue` on a name that is not registered throws;
 `hasValue` is the guard. Values registered with `setValue` are instance values —
 they are not re-created by a scope.
 
-## 2. Registering beans
+## 2. Registering entries
 
-Most beans are declared in a configuration class. `@configuration` marks the
-class as a source; `@entry` marks a method whose return value becomes a bean.
-The method name is the bean name unless a token or explicit name is supplied.
+Most entries are declared in a configuration class. `@configuration` marks the
+class as a source; `@entry` marks a method whose return value becomes an entry.
+The method name is the entry name unless a token or explicit name is supplied.
 
 ```ts
 import { configuration, entry } from '@ndigo/context';
@@ -75,11 +75,11 @@ const app = await runNodeApplication([AppConfiguration], { port: 3000 });
 A class can also act as its own factory — the **constructor-factory dual
 pattern**: register the class and let the container construct it, or register a
 factory that returns it. The container does not care which shape produced the
-value; both are beans.
+value; both are entries.
 
 ## 3. Scopes
 
-Scopes decide **how long a bean lives**. Declare one with a class decorator from
+Scopes decide **how long an entry lives**. Declare one with a class decorator from
 `@ndigo/factory`:
 
 | Scope                 | Lifespan                                                  | Use                            |
@@ -123,7 +123,7 @@ re-creates it. A custom scope is registered on the factory with
 Scope pitfalls:
 
 - A scope decorator belongs on the class, not on the `@entry` method.
-- `prototype` beans are not cached, so nothing calls their `destroy`/`close`
+- `prototype` entries are not cached, so nothing calls their `destroy`/`close`
   automatically; the caller owns them.
 - `hash` scope requires an active key (`HashScope.setCurrentKey`); resolving
   outside a route scope fails loudly.
@@ -132,8 +132,8 @@ Scope pitfalls:
 
 ## 4. Aware callbacks
 
-An **aware** bean receives a framework object after construction. The context
-runs the aware processors before the bean's `init` hook. The common one is the
+An **aware** entry receives a framework object after construction. The context
+runs the aware processors before the entry's `init` hook. The common one is the
 application context itself:
 
 ```ts
@@ -158,12 +158,12 @@ framework object is genuinely ambient.
 
 Four contracts cover the common lifecycle shapes:
 
-| Contract         | Method           | When it runs                                     |
-| ---------------- | ---------------- | ------------------------------------------------ |
-| `Initializable`  | `init`           | After construction and aware processing          |
-| `Destroyable`    | `destroy`        | When the bean is destroyed or the context closes |
-| `Closeable`      | `close`          | Same as destroy, for close-shaped APIs           |
-| `SmartLifecycle` | `start` / `stop` | On context refresh/close, by phase               |
+| Contract         | Method           | When it runs                                      |
+| ---------------- | ---------------- | ------------------------------------------------- |
+| `Initializable`  | `init`           | After construction and aware processing           |
+| `Destroyable`    | `destroy`        | When the entry is destroyed or the context closes |
+| `Closeable`      | `close`          | Same as destroy, for close-shaped APIs            |
+| `SmartLifecycle` | `start` / `stop` | On context refresh/close, by phase                |
 
 ```ts
 import type { Initializable, Closeable, SmartLifecycle } from '@ndigo/factory';
@@ -197,10 +197,10 @@ class Heartbeat implements SmartLifecycle {
 }
 ```
 
-`SmartLifecycle` beans start in **ascending** phase order on refresh and stop in
+`SmartLifecycle` entries start in **ascending** phase order on refresh and stop in
 **descending** phase order on close. Use a lower phase for infrastructure that
 others depend on and a higher phase for consumers. `isAutoStartup: false` opts
-out of automatic start; the context still calls `stop` if the bean is running.
+out of automatic start; the context still calls `stop` if the entry is running.
 
 Teardown is idempotent: `destroy`/`close` may run more than once, so guard
 the body. The container calls `destroy` when present, otherwise `close`;
@@ -211,8 +211,8 @@ context.
 
 ## 6. Parent/child contexts and events
 
-A child context inherits **bean lookups** and shared dependencies from its
-parent but keeps its own values, beans, and lifecycle. It also has its **own
+A child context inherits **entry lookups** and shared dependencies from its
+parent but keeps its own values, entries, and lifecycle. It also has its **own
 environment**: it does not see the parent's property values. Micro-frontend
 features use this shape:
 
@@ -248,17 +248,17 @@ not for local derived state — that is signals (guide 29).
 composition and event model end to end.
 
 Closing a context closes its children depth-first, then stops its lifecycle
-processor, destroys its beans, and detaches from the parent. `close` is a
+processor, destroys its entries, and detaches from the parent. `close` is a
 safe no-op after the first call.
 
 ## 7. Pitfalls
 
 - **Registering an instance with `setValue` bypasses scopes.** It is an
   instance value for the lifetime of the context; use `@entry` for scoped
-  beans.
+  entries.
 - **Circular constructor dependencies fail at refresh.** Break the cycle with a
   setter/aware callback, a provider method, or a separate collaborator.
-- **A bean captured before `refresh` is not initialized.** Resolve beans after
+- **An entry captured before `refresh` is not initialized.** Resolve entries after
   the context is active; boot presets return the refreshed context.
 - **Async cleanup is not automatic.** Bridge to `Closeable` and drain before
   `context.close`.

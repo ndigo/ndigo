@@ -22,7 +22,7 @@ import { scheduled } from '@ndigo/scheduler';
 
 /**
  * The chat room controller — sockets (`,`socketMapping`) and scheduled
- * pushes (`,`scheduled`) on one registered bean.
+ * pushes (`,`scheduled`) on one registered entry.
  */
 @requestMapping('/ws')
 export class ChatController implements ApplicationContextAware {
@@ -46,7 +46,7 @@ export class ChatController implements ApplicationContextAware {
     }
 
     /**
-     * Lazy registry resolution: the registry bean is owned by
+     * Lazy registry resolution: the registry entry is owned by
      * `NodeAutoConfiguration`, so entry creation order never matters — the
      * first socket connection (or tick) resolves it.
      *

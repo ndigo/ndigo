@@ -62,10 +62,10 @@ expose it).
 ### D4 — Session lifecycle is application-context-owned
 
 The dispatcher contributes **types only**; registries, heartbeat, and
-broadcast are beans registered by `NodeAutoConfiguration` (the AD-20
+broadcast are entries registered by `NodeAutoConfiguration` (the AD-20
 zero-wiring pattern), with the implementation in `ndigo-platform-node`. A
 Node app runs socket sessions and HTTP sessions side by side as separate
-beans bound through separate extractors (`socketSessionValue()` /
+entries bound through separate extractors (`socketSessionValue()` /
 `requestSessionValue()`) — ordinary DI, no unified session layer. The adapter
 keeps owning the `WebSocketServer`; the registry attaches at server start
 and is reachable from any service (scheduler → room, HTTP → room).
@@ -95,7 +95,7 @@ the feature exists to fix.
 - **Implementation:** `NodeSocketSessionRegistry` (membership, rooms,
   broadcast, heartbeat sweep) + adapter registration/removal + graceful
   shutdown close-all.
-- **Composition:** `NodeAutoConfiguration` `@entry` bean + configuration
+- **Composition:** `NodeAutoConfiguration` `@entry` entry + configuration
   properties (`socket.heartbeat-interval-ms`, `socket.idle-timeout-ms`).
 - **Deferred:** cross-node pub/sub (needs a store contract), STOMP/SockJS,
   client reconnect/backoff (ndigo-platform-web/ndigo-service), generic

@@ -48,7 +48,7 @@ how it fits with the rest of Ndigo.
 - `HealthRegistry` — `register/unregister/checkAll`; `HealthIndicator` interface.
 - `TelemetryHealthIndicator` — reports telemetry health from the aggregator.
 - `MetricsController` / `HealthController` — the two endpoints.
-- `METRIC_AGGREGATOR` / `HEALTH_REGISTRY` — context tokens for the shared beans.
+- `METRIC_AGGREGATOR` / `HEALTH_REGISTRY` — context tokens for the shared entries.
 
 `HealthRegistry` implements `Enumerable<string, HealthIndicator>`: `entries`,
 `keys`, `values`, and `forEach` enumerate registrations in order without exposing

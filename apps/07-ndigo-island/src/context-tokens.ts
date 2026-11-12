@@ -1,5 +1,5 @@
 /**
- * App-local type-safe bean handles (AD-34 D1).
+ * App-local type-safe entry handles (AD-34 D1).
  */
 import { ContextToken } from '@ndigo/context';
 import type { I18nextMessageSource } from '@ndigo/content-i18next';

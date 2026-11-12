@@ -121,7 +121,7 @@ share it. Nodes agree on namespace and envelope schema.
 `StompBroker({ fanout })` subscribes only `/topic/*`. Await publisher, transport,
 registry and broker `connect()` before serving. `HTTPServer`'s explicit
 `socketRegistry` option shares the registry with its default adapter; no magic
-bean registration or Redis startup is added. Registry broadcasts now return
+entry registration or Redis startup is added. Registry broadcasts now return
 promises and callers await them. Topic publish/SEND is awaitable; failures
 reject before local delivery, with inbound STOMP ERROR followed by close
 `1011`, never local-only fallback. Queues/users, membership and MESSAGE/ACK IDs

@@ -812,22 +812,22 @@ describe('socket auth metadata enforcement (SEC-3)', () => {
         });
     });
 
-    test('an explicit authenticate option wins over the socketRequestAuthenticator bean', async () => {
-        // The managed server resolves the bean only as a fallback: an app
+    test('an explicit authenticate option wins over the socketRequestAuthenticator entry', async () => {
+        // The managed server resolves the entry only as a fallback: an app
         // that passes its own hook keeps it.
-        const beanContext = new MetadataConfigApplicationContext('ws-auth-precedence');
-        beanContext.register(NodeAutoConfiguration);
-        beanContext.setValue(GatedSocketController.name, new GatedSocketController());
-        beanContext.setValue('socketRequestAuthenticator', {
-            authenticate: () => ({ principal: principal('bean', ['admin']), user: 'bean' }),
+        const entryContext = new MetadataConfigApplicationContext('ws-auth-precedence');
+        entryContext.register(NodeAutoConfiguration);
+        entryContext.setValue(GatedSocketController.name, new GatedSocketController());
+        entryContext.setValue('socketRequestAuthenticator', {
+            authenticate: () => ({ principal: principal('entry', ['admin']), user: 'entry' }),
         });
-        beanContext.refresh();
+        entryContext.refresh();
 
-        const managed = new HTTPServer(beanContext.getValue<NodeDispatcher>('dispatcher'), {
+        const managed = new HTTPServer(entryContext.getValue<NodeDispatcher>('dispatcher'), {
             port: 0,
             authenticate: () => ({ principal: principal('option', ['admin']), user: 'option' }),
         });
-        managed.setApplicationContext(beanContext);
+        managed.setApplicationContext(entryContext);
         await managed.start();
         try {
             const port = (managed.server as { address: () => { port: number } | null }).address()?.port;

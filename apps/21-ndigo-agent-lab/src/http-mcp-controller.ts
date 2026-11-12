@@ -20,7 +20,7 @@ export class McpHTTPController implements ApplicationContextAware {
     #endpoint: McpHTTPEndpoint | null = null;
 
     /**
-     * Marks this bean for aware injection; the endpoint is resolved lazily so
+     * Marks this entry for aware injection; the endpoint is resolved lazily so
      * the dispatcher mappings are registered before the registry is built.
      */
     get [$aware](): boolean {

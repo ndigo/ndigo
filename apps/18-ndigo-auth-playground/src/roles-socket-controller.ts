@@ -4,8 +4,8 @@
  *
  * HTTP gets its authorization from the interceptor chain; sockets are dispatched
  * directly, so `@ndigo/platform-node` enforces the same metadata at upgrade time
- * against the identity the `socketRequestAuthenticator` bean resolved. The
- * playground's bean validates the handshake credential (`?token=` or
+ * against the identity the `socketRequestAuthenticator` entry resolved. The
+ * playground's entry validates the handshake credential (`?token=` or
  * `Authorization: Bearer …`) through `AuthServer.validateAny`, so a session id
  * **or** an access token opens this socket.
  *

@@ -299,7 +299,7 @@ A snapshot array of the registered mapping entries.
 Detect and register handler methods from the application context.
 
 No-op when the application context has not been injected yet (the DI
-container auto-initializes initializable beans during refresh, which can
+container auto-initializes initializable entries during refresh, which can
 run before `setApplicationContext`). Idempotent: handlers already
 detected on a previous init are skipped.
 
@@ -451,7 +451,7 @@ context. Runs on refresh, after every configuration has registered.
 > **stop**(): `void`
 
 `SmartLifecycle` — mappings are immutable once initialized; nothing to
-release. Present so this type is a well-behaved lifecycle bean.
+release. Present so this type is a well-behaved lifecycle entry.
 
 #### Returns
 

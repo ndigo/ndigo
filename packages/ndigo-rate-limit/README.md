@@ -21,7 +21,7 @@ Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥12.
 ## Getting Started
 
 Single node (default, zero config — `NodeAutoConfiguration` registers a
-`FixedWindowRateLimiter` bean automatically):
+`FixedWindowRateLimiter` entry automatically):
 
 ```ts
 import { FixedWindowRateLimiter } from '@ndigo/rate-limit';
@@ -41,7 +41,7 @@ The SPI is **async** (AD-39): the in-process limiter resolves immediately,
 a shared backend resolves over its network hop. All implementations share
 one contract — the interceptor awaits it.
 
-Multi node: register a `RedisRateLimiter` bean (see
+Multi node: register a `RedisRateLimiter` entry (see
 [guide 21](../../docs/guides/21-persistence-and-shared-stores.md));
 every process counts against the **same** budgets.
 
@@ -65,8 +65,8 @@ The full API is at [`api/`](api/README.md). Primary exports:
 - `FixedWindowRateLimiter` — the process-local default; bounded memory
   with deterministic oldest-bucket eviction (SEC-2).
 - `validateRateLimitPolicy` — shared decoration/call-time validation.
-- `likeRateLimiter` — structural guard for beans and options.
-- `RATE_LIMITER` — the context token for bean resolution
+- `likeRateLimiter` — structural guard for entries and options.
+- `RATE_LIMITER` — the context token for entry resolution
   (`NodeAutoConfiguration.rateLimiter()` registers under it).
 
 ## Driver parity notes (AD-79)
@@ -79,8 +79,8 @@ The full API is at [`api/`](api/README.md). Primary exports:
   unreachable (the request fails with a platform error rather than passing
   unthrottled or looking like a 429); `onError: 'fail-open'` is the
   documented availability escape hatch and logs every allowance.
-- **Per-process default = one bean.** `FixedWindowRateLimiter` state is
-  per instance; the platform's single default mapping exports one bean, so
+- **Per-process default = one entry.** `FixedWindowRateLimiter` state is
+  per instance; the platform's single default mapping exports one entry, so
   one process shares one budget. More than one process — or multiple
   mappings with separate limiters — needs the Redis driver.
 

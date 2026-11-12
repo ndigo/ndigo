@@ -15,7 +15,7 @@ bound port, and a programmatic teardown.
 
 > `readonly` **context**: `ConfigurableApplicationContext`
 
-The refreshed context — every bean stays reachable.
+The refreshed context — every entry stays reachable.
 
 ***
 

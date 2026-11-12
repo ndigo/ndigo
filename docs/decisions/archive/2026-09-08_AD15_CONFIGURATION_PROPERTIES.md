@@ -22,9 +22,9 @@ explicit call) — consistent with the repo's `@property`, `@entry`, `@profile`.
 `ConfigurationProperties` → `configurationProperties` — **clean cutover (Q1)**:
 ndigo is pre-1.0, no backward-compat alias; the PascalCase export is removed
 outright. The `ConfigurationProcessor` detects the decorator on registered
-`@configuration` classes and registers the bound instance as an **entry bean**
+`@configuration` classes and registers the bound instance as an **entry**
 at refresh, keyed by the **camelCase-derived class name (Q2)** (`ServerConfig`
-→ `serverConfig` — the repo's `@entry serverConfig()` bean idiom) — consumed
+→ `serverConfig` — the repo's `@entry serverConfig()` entry idiom) — consumed
 via `context.getValue('serverConfig')` (Q6: it's an entry; no injection
 machinery). Binding reads through the environment's **`getPropertyAs`** (P1
 conversion + fail-loud). `resolveConfigurationProperties` is **kept (Q7)** as

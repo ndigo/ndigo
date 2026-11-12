@@ -1,7 +1,7 @@
 # Guide 02 — Building a Browser App
 
 Browser apps run the same DI container as server apps — the same
-`@configuration` classes, `@entry` beans, `@routeMapping` controllers,
+`@configuration` classes, `@entry` entries, `@routeMapping` controllers,
 `@parameters` binding, and view resolution — with a browser runtime in
 place of the HTTP server: hash routing, in-page dispatch, and
 web-component rendering. The `createWebApplication` preset
@@ -28,7 +28,7 @@ import { AppConfiguration } from './app-configuration';
 import './app-view'; // side effect: registers the `app-view` custom element
 
 const app = await createWebApplication([AppConfiguration]);
-// app.context    — the refreshed DI container (every bean stays reachable)
+// app.context    — the refreshed DI container (every entry stays reachable)
 // app.dispatcher — the BrowserDispatcher, strategies initialized
 // app.router     — the HashRouter driving navigation
 // app.viewTarget — the DOM view target routes render into
@@ -95,7 +95,7 @@ through `app.router.addInterceptor(...)`.
 
 ## 3. App-specific state and services
 
-Beans are plain entries; cross-bean reads go through `ContextToken`s so a
+Entries are plain entries; cross-entry reads go through `ContextToken`s so a
 rename cannot silently miss (`[apps/19-ndigo-hn](https://github.com/ndigo/ndigo/tree/main/apps/19-ndigo-hn)/src/app/hn-tokens.ts`):
 
 ```ts

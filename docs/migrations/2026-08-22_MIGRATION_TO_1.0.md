@@ -32,7 +32,7 @@ class UsersController {}
 - Replace `@ErrorHandler` → `@errorHandler`
 - Replace `@ErrorMapping` → `@errorMapping`
 - Replace `@Configuration` → `@configuration`
-- Replace `@Bean` / `@Entry` → `@entry`
+- Replace `@Entry` / `@Entry` → `@entry`
 - Remove `reflect-metadata` imports; use `@tsmetadata/polyfill` instead
 
 ### Validation Decorators

@@ -3,11 +3,11 @@
  *
  * Semantics deliberately mirror a one-node deployment: the lease table is
  * **shared at module scope**, so every `InProcessLockDriver` instance in the
- * process coordinates — two schedulers (or two beans) in the same process
+ * process coordinates — two schedulers (or two entries) in the same process
  * cannot run the same locked task. Leases expire by clock, there is no
  * sweeper (an expired lease is simply expired), and fencing tokens are
  * monotonic per key. Locks do **not** survive the process — durability is
- * opt-in by registering a durable driver bean (`RedisLockDriver`), exactly
+ * opt-in by registering a durable driver entry (`RedisLockDriver`), exactly
  * like the in-process job driver.
  *
  * The clock is injectable so expiry behavior is testable deterministically.

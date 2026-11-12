@@ -49,7 +49,7 @@ const makeFetch = () => {
 let sequence = 0;
 
 describe('config-server full loop (AD-29 Wave 3)', () => {
-    test('remote change through the poll path rebinds @refreshScope beans', async () => {
+    test('remote change through the poll path rebinds @refreshScope entries', async () => {
         // Boot applies the remote document; the wired source's poll cycle
         // (load → body differs → replace + refresh) re-binds the config
         // class through the boot rebind listener.

@@ -4,8 +4,8 @@
  *
  * Semantics deliberately mirror a one-node deployment: one counter per
  * (key, window) pair, sliding to a fresh window once `windowMs` elapses.
- * Budgets are **per instance** — the platform wires a single bean into
- * the default mapping, so one process shares one budget; replace the bean
+ * Budgets are **per instance** — the platform wires a single entry into
+ * the default mapping, so one process shares one budget; replace the entry
  * with the Redis driver (`@ndigo/redis/rate-limit`) when more than one
  * process must share (AD-79).
  *

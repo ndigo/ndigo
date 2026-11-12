@@ -23,8 +23,8 @@ import { lookupPrincipal } from './auth-store';
 export class ConfigSecretsController extends AsApplicationContextAware(Object) implements ApplicationContextAware {
     /**
      * The owning context, injected before refresh. The `secretsConfig`
-     * bean binds AFTER context refresh (AD-15: `@configurationProperties`
-     * beans register post-refresh in `_prepareContext`), so the value is
+     * entry binds AFTER context refresh (AD-15: `@configurationProperties`
+     * entries register post-refresh in `_prepareContext`), so the value is
      * resolved lazily at dispatch time rather than during injection.
      */
     #context?: ApplicationContext;

@@ -218,7 +218,7 @@ Deliberately simplified or replaced:
 | JPA + HSQLDB/MySQL/PostgreSQL schema       | `@ndigo/orm` in-memory entities seeded from the reference's `data.sql`; no external service                       |
 | Thymeleaf templates + fragments            | EJS templates + partial includes                                                                                  |
 | `MessageSource` + `messages_*.properties`  | `@ndigo/content-i18next` bundles in `src/messages.ts` (`en`, `fr`)                                                |
-| Bean Validation on the entity/DTO          | Zod schemas shared with the entity column metadata as the write-time gate                                         |
+| Entry Validation on the entity/DTO         | Zod schemas shared with the entity column metadata as the write-time gate                                         |
 | `spring-petclinic-rest`'s separate modules | The same JSON shapes, served by the same app under `/api`                                                         |
 | Vet CRUD (`spring-petclinic-rest`)         | Read-only vet list — the reference web app's own scope, where vets are not editable                               |
 | Owner "find" autocomplete, spring-security | Out of scope: this port covers the classic server-rendered flows, not authentication or the REST deployment shape |

@@ -49,7 +49,7 @@ describe('Todo API', () => {
 ```
 
 `app.context` is the live `MetadataConfigApplicationContext` — reach in for
-beans (`app.context.getValue(...)`), or pass `@configuration` classes that
+entries (`app.context.getValue(...)`), or pass `@configuration` classes that
 register them.
 
 ### Reuse one booted context across suites
@@ -140,7 +140,7 @@ promises so fake-timer suites stay deterministic.
 
 - No real listener — sockets are Playwright's job.
 - No assertion library — it returns shaped values for Vitest's `expect`.
-- No mocking framework — it exercises real beans and real dispatch.
+- No mocking framework — it exercises real entries and real dispatch.
 
 ## See also
 

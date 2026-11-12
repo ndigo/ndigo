@@ -39,7 +39,7 @@ What the repository already provides, and what is missing:
   `RateLimitInterceptor` is the reference: async `preHandle`, metadata gate,
   `denialOf(status, ...)` + problem-document write, registered by
   `NodeAutoConfiguration.handlerMapping()`.
-- **Beans reach the environment.** `AsApplicationContextAware(Null)` +
+- **Entries reach the environment.** `AsApplicationContextAware(Null)` +
   `this.applicationContext?.environment` is the established pattern
   (`ManagementAutoConfiguration`, the `/env` and `/health` controllers in
   `@ndigo/management`); the `CONFIG_REFRESH_EVENT` (`environment.ts:25`)
@@ -69,7 +69,7 @@ What the repository already provides, and what is missing:
   **fallback handler** (default 404 via `DisabledFeaturesHandler`). Togglz
   fills the self-hosted niche (FeatureManager + activation strategies +
   actuator `/togglz`), vendor SDKs the SaaS niche. The reference enterprise
-  pattern is: **annotation for the declaration, a manager bean for programmatic
+  pattern is: **annotation for the declaration, a manager entry for programmatic
   checks, a provider/state-repo for change, a management surface for ops** —
   vendors swappable by design.
 - **Split.io** is a popular commercial system (treatments, percentage
@@ -135,7 +135,7 @@ interface FlagEvaluator {
   both.
 - **`kind`** identifies the backend for log/troubleshooting, matching the
   `RateLimiter.kind` / `LockDriver.kind` convention.
-- **`FLAG_EVALUATOR` ContextToken** (`@ndigo/factory`) for bean wiring.
+- **`FLAG_EVALUATOR` ContextToken** (`@ndigo/factory`) for entry wiring.
 
 ### D-3 — `PropertyFlagProvider`: the zero-config local provider
 
@@ -191,7 +191,7 @@ class TodoService {
 - **Enforcement is the `FeatureGateInterceptor`** in `@ndigo/platform-node`
   (default-on in the node mapping, like `RateLimitInterceptor`): per
   request, when the handler method carries the metadata, evaluate the flag
-  via the `FLAG_EVALUATOR` bean; when the flag is off → **404 problem
+  via the `FLAG_EVALUATOR` entry; when the flag is off → **404 problem
   document** (`ProblemTypes.notFound`, the repository's `DisabledFeaturesHandler`
   analog — Azure's default). Un-gated routes are untouched.
 - `@ndigo/flags` stays isomorphic: the decorator/metadata/SPI carry no
@@ -201,7 +201,7 @@ class TodoService {
 ### D-5 — Wiring mirrors AD-79/AD-73
 
 `NodeAutoConfiguration` (via `AsApplicationContextAware`) registers the
-`FLAG_EVALUATOR` bean — default `PropertyFlagProvider` backed by
+`FLAG_EVALUATOR` entry — default `PropertyFlagProvider` backed by
 `this.applicationContext.environment` — and pushes `FeatureGateInterceptor`
 into the mapping chain (after security headers, before rate limiting).
 Precedence: feature gate first (a disabled feature is not rate-limited;
@@ -233,7 +233,7 @@ unmade (the SPI is the seam).
   pulls the full SDK into the leaf tier, and the SDK's own spec
   conformance is still rolling (v0.9.0 compliance tracking across SDKs).
   The SPI keeps us SDK-free; the bridge provider is additive later.
-- **Method-scope gate for service beans** — deferred: automatic weaving of
+- **Method-scope gate for service entries** — deferred: automatic weaving of
   non-route methods is AD-42's `@ndigo/proxy` interception territory, and no
   1.0 consumer needs it. Route-level gates + programmatic
   `evaluator.evaluate()` cover the documented patterns; service-method

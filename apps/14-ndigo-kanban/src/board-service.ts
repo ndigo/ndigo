@@ -85,7 +85,7 @@ export const DEMO_BOARD: BoardSeed = {
     ],
 };
 
-/** Context token for the shared {@link BoardService} bean. */
+/** Context token for the shared {@link BoardService} entry. */
 export const BOARD_SERVICE = new ContextToken<BoardService>('boardService');
 
 /**

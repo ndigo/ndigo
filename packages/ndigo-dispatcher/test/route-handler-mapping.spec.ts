@@ -156,7 +156,7 @@ describe('RouteHandlerMapping', () => {
             const handlerMapping = new RadixMetadataHandlerMapping();
             handlerMapping.setApplicationContext(ctx);
             // First init (the DI container auto-initializes Initializable
-            // beans at registration).
+            // entries at registration).
             handlerMapping.init();
             // Second init (the lifecycle processor re-runs on refresh).
             handlerMapping.start();

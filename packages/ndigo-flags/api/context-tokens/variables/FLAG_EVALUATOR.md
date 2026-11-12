@@ -8,7 +8,7 @@
 
 > `const` **FLAG\_EVALUATOR**: [`ContextToken`](#)\<[`FlagEvaluator`](../../flag-evaluator/interfaces/FlagEvaluator.md)\>
 
-The application's flag evaluator bean (default:
+The application's flag evaluator entry (default:
 `PropertyFlagProvider` over the environment, registered by
-`NodeAutoConfiguration`). Apps override the bean with a remote or
+`NodeAutoConfiguration`). Apps override the entry with a remote or
 OpenFeature-backed evaluator for vendor flagging.

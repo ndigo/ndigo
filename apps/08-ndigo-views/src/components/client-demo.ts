@@ -43,7 +43,7 @@ function itemsOf(payload: unknown): string[] {
 /**
  * The client-side memoization half of the caching story (AD-24): the payload
  * derivation is memoized with a TTL, so repeat loads of the same data skip
- * the items extraction. Browser-side, no DI, no beans — the same ttl/maxSize
+ * the items extraction. Browser-side, no DI, no entries — the same ttl/maxSize
  * behavior the `@cached` decorator provides server-side.
  */
 const derivePayload = memoize(

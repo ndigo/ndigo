@@ -159,7 +159,7 @@ text was fixed). Fix: drop the value from the message or mirror the resolver's
 redaction; add a secrets-field-mode spec.
 
 **CF-3 (CORE REV-003, Wave 2) — RefreshScope destruction callbacks are never
-registered; refresh-scoped lifecycle beans never tear down.** `[code]`
+registered; refresh-scoped lifecycle entries never tear down.** `[code]`
 `ndigo-factory/src/scope.ts:230-232,273-286` promises container-registered
 destruction callbacks (AD-29 D-2); `registerDestructionCallback` is never wired
 where values are created. Fix: register a `() => value.destroy()/close()`
@@ -323,7 +323,7 @@ add a spec.
 **CF-6 (CORE REV-006, W2) — A boot failure after context creation leaves the
 context unclosed.** `[code]` `application.ts:105-127` can throw after
 `_prepareContext` (validation `:469-486`, route scan) without
-`context.close()`, leaking listeners/beans. Fix: close in the catch; spec
+`context.close()`, leaking listeners/entries. Fix: close in the catch; spec
 asserting `destroyed` + no refresh listener.
 
 **CF-7 (CORE REV-007, W2, docs) — Guide 03 claims `.env` is auto-loaded (no

@@ -63,7 +63,7 @@ const audit = new AuditInterceptor();
 const builder = new ApplicationBuilder([NodeAppConfiguration]).processors(interception([audit])); // advised before any entry is created
 ```
 
-Registered beans whose methods carry `@audited` are replaced by one proxy;
+Registered entries whose methods carry `@audited` are replaced by one proxy;
 every other entry keeps its identity. This is the [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api) demo gate
 .
 

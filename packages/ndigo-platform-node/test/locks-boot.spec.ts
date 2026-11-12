@@ -1,6 +1,6 @@
 /**
  * Locks stack through the real `NodeAutoConfiguration` (AD-73): the
- * `lockDriver` bean exists, a `@scheduled({ lock })` task runs through the
+ * `lockDriver` entry exists, a `@scheduled({ lock })` task runs through the
  * real registry→scheduler→driver wiring, and its lease is released after
  * the run.
  */
@@ -42,7 +42,7 @@ async function waitFor(predicate: () => boolean | Promise<boolean>): Promise<voi
 }
 
 describe('locks stack through NodeAutoConfiguration', () => {
-    test('boots a locked scheduled task through the real beans', async () => {
+    test('boots a locked scheduled task through the real entries', async () => {
         const context = new MetadataConfigApplicationContext('locks-app');
         context.register(NodeAutoConfiguration);
         context.register(TaskConfiguration);

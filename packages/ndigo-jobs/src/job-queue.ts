@@ -14,7 +14,7 @@ import { JOB_DRIVER } from './context-tokens';
 export interface JobQueueOptions {
     /**
      * The driver jobs are enqueued on. When omitted, the queue resolves the
-     * `jobDriver` bean from its application context at first use.
+     * `jobDriver` entry from its application context at first use.
      */
     driver?: JobDriver;
     /** Default `maxAttempts` for requests that do not set one; default 3. */
@@ -93,13 +93,13 @@ export class JobQueue {
         if (context !== null && context.hasValue(JOB_DRIVER)) {
             const driver = context.getValue(JOB_DRIVER);
             if (!likeJobDriver(driver)) {
-                throw new FrameworkError(`JobQueue: '${JOB_DRIVER.description}' bean is not a JobDriver`);
+                throw new FrameworkError(`JobQueue: '${JOB_DRIVER.description}' entry is not a JobDriver`);
             }
             this.#driver = driver;
             return driver;
         }
         throw new FrameworkError(
-            `JobQueue: no job driver — pass one to the constructor or register a '${JOB_DRIVER.description}' bean ` +
+            `JobQueue: no job driver — pass one to the constructor or register a '${JOB_DRIVER.description}' entry ` +
                 '(NodeAutoConfiguration provides the in-process default)'
         );
     }

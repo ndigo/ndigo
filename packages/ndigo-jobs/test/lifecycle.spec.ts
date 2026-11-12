@@ -23,7 +23,7 @@ class WiredWorker {
 }
 
 /**
- * The NodeAutoConfiguration wiring shape: one `@entry` per jobs bean, all
+ * The NodeAutoConfiguration wiring shape: one `@entry` per jobs entry, all
  * collaborators resolved through the injected context.
  */
 @configuration
@@ -90,7 +90,7 @@ describe('jobs container wiring', () => {
         runner.start();
         expect(runner.isRunning).toBe(true);
 
-        // The queue resolves the jobDriver bean through the injected context.
+        // The queue resolves the jobDriver entry through the injected context.
         await queue.enqueue({ type: 'wired.work', payload: 'one' });
         await waitFor(() => worker.processed.length === 1);
         await waitFor(async () => (await driver.size()) === 0);

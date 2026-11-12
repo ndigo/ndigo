@@ -65,7 +65,7 @@ its own model spans.
 - `@ndigo/mcp` is Node-only: stdio and Streamable HTTP transports, plus
   `node:crypto` for call ids.
 - Consumers that call parameterized tools must pass the
-  `ARGUMENT_RESOLVERS` bean (or use an initialized dispatcher). The registry
+  `ARGUMENT_RESOLVERS` entry (or use an initialized dispatcher). The registry
   errors clearly instead of crashing inside argument binding.
 - Tool schemas are exactly the route schemas; a tool cannot hide a required
   parameter from the model.

@@ -35,7 +35,7 @@ the access condition).
 
 > **docsController**(): [`OpenAPIDocsController`](../../openapi-docs-controller/classes/OpenAPIDocsController.md)
 
-The spec controller bean (context-aware: reads the dispatcher at
+The spec controller entry (context-aware: reads the dispatcher at
 request time; generation is lazy + memoized).
 
 #### Returns
@@ -67,7 +67,7 @@ The docs mapping.
 
 > **swaggerUiController**(): [`SwaggerUIController`](../../swagger-ui-controller/classes/SwaggerUIController.md)
 
-The Swagger UI controller bean (page + assets).
+The Swagger UI controller entry (page + assets).
 
 #### Returns
 

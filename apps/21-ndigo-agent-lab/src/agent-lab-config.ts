@@ -8,7 +8,7 @@ import { ContextToken } from '@ndigo/context';
 import { z } from 'zod';
 
 /**
- * Type-safe handle for the bound `AgentLabConfig` bean.
+ * Type-safe handle for the bound `AgentLabConfig` entry.
  */
 export const AGENT_LAB_CONFIG = new ContextToken<AgentLabConfig>('agentLabConfig');
 

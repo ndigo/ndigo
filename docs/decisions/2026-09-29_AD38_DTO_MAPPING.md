@@ -21,7 +21,7 @@ The industry options were surveyed against the repo's established pattern
 (**own the contract, wrap the ecosystem standard, use platform APIs
 directly** — AD-07 Zod, AD-19 i18n, AD-24 caching, AD-35 OpenAPI):
 
-- **`BeanUtils`/ModelMapper, .NET AutoMapper** — implicit
+- **`EntryUtils`/ModelMapper, .NET AutoMapper** — implicit
   reflection conventions; Java's workaround for erased types; silently
   partial on mismatch. TypeScript does not have this problem.
 - **MapStruct** — compile-time codegen; declined on the AD-34 D-8
@@ -79,7 +79,7 @@ conversion.convert('2026-09-29', Date); // leaf: registered converters (unchange
 
 ### D-2 — Explicit schema-driven projection only
 
-No same-name auto-copy conventions (BeanUtils, automapper-ts),
+No same-name auto-copy conventions (EntryUtils, automapper-ts),
 `@Transform`-style decorators (class-transformer), or named mapping
 profiles. Target schemas derive from existing seams
 (`schemaForEntity(E).pick(...).transform(...).pipe(contract)` or standalone
@@ -91,7 +91,7 @@ No `instanceof`/class-instance targets — conversion produces plain
 
 Schema targets are `schema.parse` semantics: missing field / wrong type /
 failed transform → the structured `z.ZodError` propagates; no partial
-result ever returns. Deliberate deviation from BeanUtils' silent partial
+result ever returns. Deliberate deviation from EntryUtils' silent partial
 copy. Direction-aware: request side already 400/422 via `validatedBody`
 (unchanged); response side failure is a handler bug → the existing RFC 9457
 error path.
@@ -106,11 +106,11 @@ function, version-exact). Without `responses`, the current
 is attempted — the schema the handler converts through _is_ the documented
 shape.
 
-### D-5 — Node zero-wiring bean
+### D-5 — Node zero-wiring entry
 
 `NodeAutoConfiguration` registers `CONVERSION_SERVICE`
 (`createConversionService()`) — the AD-24 `CacheManager` pattern. Apps with
-custom converter registries override the bean.
+custom converter registries override the entry.
 
 ### D-6 — Out of scope (v1), documented
 
@@ -135,7 +135,7 @@ RFC 9457 `default` response entry in the spec (separate AD-35 follow-up).
    package with `ObjectMapper` composing `ConversionService`) was replaced
    same-day by the unified design above before anything published; the
    package, its docs, and the `OBJECT_MAPPER` token were removed. `convert`
-   is the single verb; `CONVERSION_SERVICE` the single bean.
+   is the single verb; `CONVERSION_SERVICE` the single entry.
 
 ## Consequences
 

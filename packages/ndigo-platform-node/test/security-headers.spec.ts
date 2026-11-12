@@ -39,7 +39,7 @@ async function boot(options?: SecurityHeadersInterceptorOptions): Promise<{
     const dispatcher = context.getValue<NodeDispatcher>('dispatcher');
 
     // Escape-hatch seam: replace the auto-config default instance with a
-    // customized one (the documented bean-replacement posture; the array
+    // customized one (the documented entry-replacement posture; the array
     // entry is the default-on instance).
     if (options) {
         handlerMapping.interceptors.splice(0, 1, new SecurityHeadersInterceptor(options));

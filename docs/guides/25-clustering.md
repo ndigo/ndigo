@@ -59,7 +59,7 @@ through `env`.
 
 ## What single-executor needs AFTER clustering
 
-The cluster gives you N copies; the guarantees come from the beans you
+The cluster gives you N copies; the guarantees come from the entries you
 already have:
 
 - `@scheduled({ lock: '…' })` runs a schedule once per fire cluster-wide.

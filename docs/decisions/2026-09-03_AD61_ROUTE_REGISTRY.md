@@ -16,9 +16,9 @@ that existing metadata rather than change the decorator.
 
 ## Evidence
 
-- `packages/ndigo-router/src/route-registry.ts` — `RouteRegistry` (scans bean
+- `packages/ndigo-router/src/route-registry.ts` — `RouteRegistry` (scans entry
   constructor metadata, builds a nested `RouteDefinition` tree, registers
-  itself as a bean).
+  itself as an entry).
 - `packages/ndigo-router/src/route-definition.ts` — `RouteDefinition<TPattern>`
   with `url()`, `href()`, `redirect()`, `navigate()`, `parse()`, `matches()`
   overloads keyed off `RouteParams<TPattern>`; `RouteParams`/`IsEmptyObject`

@@ -1,11 +1,11 @@
 /**
- * App-local type-safe bean handles (AD-34 D1).
+ * App-local type-safe entry handles (AD-34 D1).
  */
 import { ContextToken } from '@ndigo/context';
 import type { I18nextMessageSource } from '@ndigo/content-i18next';
 
 /**
- * Token for the application message source entry — the bean the bootstrap
+ * Token for the application message source entry — the entry the bootstrap
  * installs on the context (`context.setMessageSource(...)`) so the EJS locale
  * helpers can resolve `t('...')` for the request's negotiated language.
  */

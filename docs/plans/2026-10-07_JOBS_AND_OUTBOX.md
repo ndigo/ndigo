@@ -25,12 +25,12 @@ may email a rolled-back order; send it after `COMMIT` and a crash loses it.
 | Durable stores | `LibSQLSessionStore`, `LibSQLQueueMessageStore` in `@ndigo/orm-drizzle` (`{client?, ownsClient?, url?}` + awaited schema + idempotent dispose) | a job store                  |
 | Redis          | `RedisConnection` (owned/borrowed, `run()`, drain-close); subpaths `./cache`, `./pubsub`                                                       | a job driver                 |
 | Transactions   | `DrizzleTransactionManager.run()` brackets BEGIN/COMMIT/ROLLBACK on one libSQL connection; anything on that client inside `run()` joins it     | an outbox store that uses it |
-| Wiring         | `NodeAutoConfiguration` + `SmartLifecycle` auto-start (`ScheduleRegistry` = the template)                                                      | job beans                    |
+| Wiring         | `NodeAutoConfiguration` + `SmartLifecycle` auto-start (`ScheduleRegistry` = the template)                                                      | job entries                  |
 | Contracts      | `JobDriver`/`OutboxStore`/runner/registry                                                                                                      | everything                   |
 
 Probe finding (2026-10-07): `@entry` methods run eagerly, and a sibling
 `this.otherEntry()` call inside one returns a **fresh** instance, not the
-registered bean — collaborators must be resolved through the context (the
+registered entry — collaborators must be resolved through the context (the
 `ScheduleRegistry` pattern).
 
 ## 3. Decisions
@@ -61,7 +61,7 @@ Packages:
   `DrizzleDataSource` client so appends join `@transactional`).
 - `@ndigo/redis/jobs` — `RedisJobDriver` (atomic claim via one Lua script).
 - `@ndigo/platform-node` — `JOB_DRIVER`/`JOB_QUEUE`/`JOB_HANDLER_REGISTRY`/
-  `JOB_RUNNER` beans; registry phase 0 (refresh scan), runner phase 10 with
+  `JOB_RUNNER` entries; registry phase 0 (refresh scan), runner phase 10 with
   explicit `start()` (a poll timer keeps the process alive — the HTTPServer
   precedent; `autoStart: true` opts into refresh-driven start).
 
@@ -82,15 +82,15 @@ Packages:
 
 ## 6. Sequencing
 
-| Phase | Deliverable                                                                                          | Verify                                  |
-| :---- | :--------------------------------------------------------------------------------------------------- | :-------------------------------------- |
-| 0     | Package scaffold `@ndigo/jobs` (generator), tokens, types                                            | `pnpm --filter @ndigo/jobs build:lib`   |
-| 1     | `InProcessJobDriver` + `JobQueue` (RED-first specs)                                                  | package tests                           |
-| 2     | `@jobHandler` + `JobHandlerRegistry` + `JobRunner` (+ spans, timeout, backoff, heartbeat)            | package tests incl. deterministic clock |
-| 3     | Outbox: contract + `InProcessOutboxStore` + `OutboxRelay` + `JobOutboxPublisher`                     | package tests incl. lease re-claim      |
-| 4     | `LibSQLJobStore` + `LibSQLOutboxStore`; transactional rollback/commit proof                          | `@ndigo/orm-drizzle` tests              |
-| 5     | `RedisJobDriver` (`@ndigo/redis/jobs`)                                                               | Redis-gated tests (existing lane)       |
-| 6     | `NodeAutoConfiguration` beans + runner/registry lifecycle; guide 22; READMEs; CHANGELOG; Package Map | full gate set (§7)                      |
+| Phase | Deliverable                                                                                            | Verify                                  |
+| :---- | :----------------------------------------------------------------------------------------------------- | :-------------------------------------- |
+| 0     | Package scaffold `@ndigo/jobs` (generator), tokens, types                                              | `pnpm --filter @ndigo/jobs build:lib`   |
+| 1     | `InProcessJobDriver` + `JobQueue` (RED-first specs)                                                    | package tests                           |
+| 2     | `@jobHandler` + `JobHandlerRegistry` + `JobRunner` (+ spans, timeout, backoff, heartbeat)              | package tests incl. deterministic clock |
+| 3     | Outbox: contract + `InProcessOutboxStore` + `OutboxRelay` + `JobOutboxPublisher`                       | package tests incl. lease re-claim      |
+| 4     | `LibSQLJobStore` + `LibSQLOutboxStore`; transactional rollback/commit proof                            | `@ndigo/orm-drizzle` tests              |
+| 5     | `RedisJobDriver` (`@ndigo/redis/jobs`)                                                                 | Redis-gated tests (existing lane)       |
+| 6     | `NodeAutoConfiguration` entries + runner/registry lifecycle; guide 22; READMEs; CHANGELOG; Package Map | full gate set (§7)                      |
 
 ## 7. Verification
 
@@ -125,7 +125,7 @@ Landed in this cycle, all phases:
   transactional proof: `@transactional` commit publishes, rollback discards.
 - **Phase 5** — `RedisJobDriver` (`@ndigo/redis/jobs`): ready/lease ZSETs +
   record hash, Lua-script atomic claim/reclaim, owned/borrowed connection.
-- **Phase 6** — `NodeAutoConfiguration` beans (`jobDriver`, `jobQueue`,
+- **Phase 6** — `NodeAutoConfiguration` entries (`jobDriver`, `jobQueue`,
   `jobHandlerRegistry`, `jobRunner`); guide 22; package READMEs (jobs, redis
   subpath, orm-drizzle); ARCHITECTURE Package Map; CHANGELOG; indexes.
 
@@ -138,5 +138,5 @@ track, GAP-4, owns that surface — the runner is introspectable through
 
 Related finding (out of scope, for a follow-up): `NodeAutoConfiguration`'s
 `handlerMapping()` calls `this.rateLimiter()`, but sibling entry calls are not
-shared beans (probe, §2) — the `rateLimiter` bean and the interceptor's limiter
+shared entries (probe, §2) — the `rateLimiter` entry and the interceptor's limiter
 are distinct instances, contradicting the "shared in-memory rate limiter" JSDoc.

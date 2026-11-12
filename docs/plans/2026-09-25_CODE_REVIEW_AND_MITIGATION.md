@@ -100,7 +100,7 @@ Out of scope note: bare package-level `tsc -b` fails on pre-existing `@ndigo/uti
 **Mitigation:** fall back to `addBefore("defaults", name, document)`; add a no-platform/no-loader precedence test.
 
 **ARC-3 (Should Fix) — consumers keep stale references after refresh.**
-`[code]` Refresh re-creates bound entries (`scope.ts:289-295`) and re-binds `@configurationProperties` names (`application.ts:447-457`), but never re-injects dependents: a controller that captured `serverConfig` at construction keeps the old value forever — silent divergence between `env.getProperty`, the bean, and the consumer's captured value. `refresh-scope.spec.ts` asserts only the bound entry's identity change.
+`[code]` Refresh re-creates bound entries (`scope.ts:289-295`) and re-binds `@configurationProperties` names (`application.ts:447-457`), but never re-injects dependents: a controller that captured `serverConfig` at construction keeps the old value forever — silent divergence between `env.getProperty`, the entry, and the consumer's captured value. `refresh-scope.spec.ts` asserts only the bound entry's identity change.
 **Mitigation:** document the snapshot semantics in the refresh guide now; design a dependency re-injection pass (or documented "inject the environment" consumer pattern) as follow-up.
 
 **ARC-4 (Should Fix) — no in-flight guard on polling; out-of-order apply possible.**
@@ -223,7 +223,7 @@ Out of scope note: bare package-level `tsc -b` fails on pre-existing `@ndigo/uti
 - SEC-2/SEC-3/ARC-4: new specs firing a rejecting fetch at boot (optional) and mid-poll (keep-last-good, no rejection, no out-of-order apply).
 - SEC-5: 413 before body read for over-cap `Content-Length`; streaming cap test.
 - SEC-6: upload >128 KiB leaves no temp file after dispatch (assert tmpdir empty of `ndigo-upload-*`).
-- ARC-1: refresh with a throwing rebind listener leaves no stale bean bound, error surfaced.
+- ARC-1: refresh with a throwing rebind listener leaves no stale entry bound, error surfaced.
 - TST-3: encoded-traversal matrix → 403/404 through the real handler.
 - DRY checks for DSG-3/DSG-4/RUS-1: grep counts of the dump loop / converter registry / sniff pattern decrease to one.
 

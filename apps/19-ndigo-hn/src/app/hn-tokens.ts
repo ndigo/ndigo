@@ -1,7 +1,7 @@
 /**
- * The context tokens this app's beans are registered and looked up under.
+ * The context tokens this app's entries are registered and looked up under.
  *
- * Every read goes through a token, never a string: the token carries the bean's
+ * Every read goes through a token, never a string: the token carries the entry's
  * compile-time type to the call site, so `context.getValue(HN_SERVICE)` is an
  * `HnService` at the type level and a rename cannot silently miss.
  */

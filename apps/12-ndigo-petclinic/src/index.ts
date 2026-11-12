@@ -3,7 +3,7 @@
  *
  * The port is defaulted into `process.env` before the context is created: the
  * managed `HTTPServer` reads it at construction time and `NodeAutoConfiguration`
- * builds that bean during refresh.
+ * builds that entry during refresh.
  */
 import 'node:process';
 import { ApplicationBuilder } from '@ndigo/boot';

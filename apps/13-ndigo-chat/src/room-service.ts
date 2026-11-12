@@ -3,7 +3,7 @@
  * presence roster.
  *
  * The transport fan-out itself belongs to the platform's
- * `SocketSessionRegistry` (rooms + `broadcastTo`); this bean owns only the
+ * `SocketSessionRegistry` (rooms + `broadcastTo`); this entry owns only the
  * application data a newcomer needs — the last N messages to replay and who is
  * currently connected. Both maps are bounded by application policy, so a busy
  * room cannot grow the process without limit.

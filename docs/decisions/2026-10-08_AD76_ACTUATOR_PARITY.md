@@ -64,7 +64,7 @@ What the repository already provides:
   `@ndigo/context/src/redaction.ts`.
 - Route gating ship-shape: `AbstractHandlerMethodMapping.init()` detection
   scans **context values** for route metadata, so a controller that is a
-  context bean with decorator routes cannot be gated per-endpoint — the
+  context entry with decorator routes cannot be gated per-endpoint — the
   metadata-free registration pattern (openapi) is the only clean vehicle.
 
 ## Decision
@@ -153,7 +153,7 @@ names the loose `detectSeverityScheme` fallback would silently map to INFO.
 ### D-8 — New controllers register without route decorators
 
 `LoggersController`, `EnvironmentController`, `ConfigurationPropertiesController`
-are context-aware beans with **no** `@requestMapping`/`@getMapping` metadata;
+are context-aware entries with **no** `@requestMapping`/`@getMapping` metadata;
 `ManagementAutoConfiguration.handlerMappings()` registers each route
 explicitly (`RouteMappingInfo` + `HTTPMethodCondition`), gated by exposure —
 the AD-35 openapi pattern. Health/metrics stay decorator-driven and

@@ -26,7 +26,7 @@ GAP-2; GAP-1 landed as AD-72).
 | :-------------- | :------------------------------------------------------------------------------------------------------- | :-------------------------------------------- |
 | Lease mechanics | AD-72's `RedisJobDriver` Lua claim/heartbeat (the atomic-claim template)                                 | fencing (token-checked release/renew)         |
 | Scheduling      | `@scheduled` spec validation at decoration time (AD-20 D5.2); registry → `TaskScheduler` → single-flight | a cross-process gate in the run wrapper       |
-| Wiring          | `NodeAutoConfiguration` beans (`jobDriver` family = the template)                                        | a `lockDriver` bean                           |
+| Wiring          | `NodeAutoConfiguration` entries (`jobDriver` family = the template)                                      | a `lockDriver` entry                          |
 | Backends        | `RedisConnection` (borrowed; subpaths `./cache`, `./pubsub`, `./jobs`)                                   | a lock driver                                 |
 | Contracts       | —                                                                                                        | `LockDriver`/`LockHandle` + in-process driver |
 
@@ -43,7 +43,7 @@ GAP-2; GAP-1 landed as AD-72).
    on both spec forms — decoration-time validated; the runner acquires before
    the run and releases in the `finally` (a skip on contention is logged, the
    schedule continues); fail-loud when a locked task has no driver.
-4. **`@ndigo/platform-node`**: `NodeAutoConfiguration` `lockDriver` bean
+4. **`@ndigo/platform-node`**: `NodeAutoConfiguration` `lockDriver` entry
    (in-process default, redis override), injected into `TaskScheduler` via
    `ApplicationContextAware`.
 

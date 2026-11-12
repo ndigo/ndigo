@@ -118,7 +118,7 @@ export interface HTTPServerOptions {
      * Upgrade-time authentication hook for the default adapter — see
      * {@link NodeHTTPServerAdapterOptions.authenticate}. When omitted, the
      * default adapter uses the application-context
-     * `socketRequestAuthenticator` bean.
+     * `socketRequestAuthenticator` entry.
      */
     authenticate?: NodeHTTPServerAdapterOptions['authenticate'];
     /**
@@ -143,8 +143,8 @@ export interface HTTPServerOptions {
     /**
      * Socket session registry shared with the default adapter (AD-21 D4).
      * When omitted, the registry is resolved from the application context
-     * (`socketSessionRegistry` bean) at start, falling back to a fresh
-     * instance — so broadcasts from the bean reach the adapter's sessions.
+     * (`socketSessionRegistry` entry) at start, falling back to a fresh
+     * instance — so broadcasts from the entry reach the adapter's sessions.
      */
     socketRegistry?: NodeSocketSessionRegistry;
 }
@@ -168,7 +168,7 @@ export interface HTTPServerOptions {
  * ```
  *
  * Deliberately NOT `Closeable`: shutdown is owned by `SmartLifecycle` — the
- * adapter's close is invoked through `stop()`, not the context bean close.
+ * adapter's close is invoked through `stop()`, not the context entry close.
  */
 export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
     #adapter: HTTPServerAdapter | null;
@@ -234,8 +234,8 @@ export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
         if (options.adapter !== undefined && options.socketRegistry !== undefined) {
             // The registry is passed to the DEFAULT adapter; a custom adapter
             // owns its own registry. Accepting both silently would leave the
-            // context bean and the adapter's registry disjoint — broadcasts
-            // via the bean would reach no live sessions, with no warning.
+            // context entry and the adapter's registry disjoint — broadcasts
+            // via the entry would reach no live sessions, with no warning.
             throw new RangeError(
                 'HTTPServer: socketRegistry is shared with the default adapter only — pass it to your custom adapter instead'
             );
@@ -388,8 +388,8 @@ export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
     /**
      * Resolves the upgrade authentication hook for the default adapter: the
      * explicit `authenticate` option wins; otherwise the
-     * `socketRequestAuthenticator` application-context bean supplies
-     * identity (SEC-3). The bean's method is invoked on its own receiver, so
+     * `socketRequestAuthenticator` application-context entry supplies
+     * identity (SEC-3). The entry's method is invoked on its own receiver, so
      * a class-based authenticator keeps `this`.
      *
      * @returns The hook to hand the adapter, or `undefined` (public sockets).

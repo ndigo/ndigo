@@ -5,7 +5,7 @@
 Bridges OpenFeature clients into the `@ndigo/flags` SPI, so vendor flag
 providers (flagd, OFREP, LaunchDarkly, Unleash, …) arrive behind the
 framework contract: app code, `@whenFeature` gates, and DI wiring never
-change — only the `FLAG_EVALUATOR` bean does. The `./web` entry does the
+change — only the `FLAG_EVALUATOR` entry does. The `./web` entry does the
 same for browser apps (`@openfeature/web-sdk`), and
 `FeatureFlagTelemetryHook` records an evaluation span per call.
 
@@ -25,7 +25,7 @@ the web SDK has its own provider set, e.g. `@openfeature/flagd-web-provider`).
 ## Getting Started
 
 Register a provider once at bootstrap, then point the framework's flag
-bean at the bridge:
+entry at the bridge:
 
 ```ts
 // bootstrap: the provider, before the application context is built
@@ -54,7 +54,7 @@ class AppConfiguration {
 
 `@whenFeature('todo.dueDates')` routes, programmatic `evaluate()` checks,
 and percentage rollouts all keep working — the interceptor evaluates
-through the same bean.
+through the same entry.
 
 ## Usage
 

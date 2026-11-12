@@ -189,7 +189,7 @@ demo + lint rule + docs.
 - Phase 2: `Schedule` contract, `ScheduleRegistry`, `TaskScheduler` engine
   (injectable clock, single-flight, error isolation, `maxRunTime` race,
   drain).
-- Phase 3: `ScheduleRegistry` as the container bean (aware-injected,
+- Phase 3: `ScheduleRegistry` as the container entry (aware-injected,
   auto-started on refresh, destroyed on close); `NodeAutoConfiguration`
   provisions `taskScheduler` + `scheduleRegistry`; per-run OTel spans.
 - Phase 4: `no-scheduled-in-browser` lint rule (enabled), `ndigo-api`

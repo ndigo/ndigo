@@ -61,13 +61,13 @@ Returns the value unchanged after initialization.
 
 `string`
 
-The bean name.
+The entry name.
 
 ##### value
 
 `T`
 
-The bean value.
+The entry value.
 
 #### Returns
 

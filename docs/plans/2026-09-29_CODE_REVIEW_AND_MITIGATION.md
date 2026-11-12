@@ -421,14 +421,14 @@ additive, structural. Adds the matcher family a single name.
 
 ### 1.5 Naming
 
-**NAME-1 (Should Fix) — `ScheduleRegistry` still uses a string-keyed bean
+**NAME-1 (Should Fix) — `ScheduleRegistry` still uses a string-keyed entry
 lookup; the AD-34 token rule can't catch it.**
 `[code]` `packages/ndigo-scheduler/src/schedule-registry.ts:34,116-121`
-(`TASK_SCHEDULER_BEAN = 'taskScheduler'` + `getValue(TASK_SCHEDULER_BEAN)`);
+(`TASK_SCHEDULER_ENTRY = 'taskScheduler'` + `getValue(TASK_SCHEDULER_ENTRY)`);
 the `@ndigo/no-string-registry-lookup` lint only flags string _literals_, so an
 identifier constant passes silently — the exact ADR-34 gap. **Fix:** export
 `const TASK_SCHEDULER = new ContextToken<TaskScheduler>('taskScheduler')` (the
-description matches the `@entry taskScheduler()` bean); optionally extend the
+description matches the `@entry taskScheduler()` entry); optionally extend the
 lint rule to constant references. **Verify:** schedulder suite + lint still 0.
 
 **NAME-2 (Optional) — public API typo `getAllFileExtenstions`.**
@@ -507,19 +507,19 @@ per-entry backoff.
 ### 1.9 FOLLOW-1 (Should Fix, verified OPEN at HEAD — 4 slices concur)
 
 **`@entry` factories on subclassed auto-configurations still register zero
-beans.** `[code]` root cause at `packages/ndigo-context/src/configuration.ts:
+entries.** `[code]` root cause at `packages/ndigo-context/src/configuration.ts:
 293-304`: the decorator's `addInitializer` upgrades enumerability via
 `getOwnPropertyDescriptor(instance, name) || getOwnPropertyDescriptor(Object
 .getPrototypeOf(instance), name)` — for an inherited method both miss (the
 descriptor lives on the base prototype, two levels up), so the initializer
-silently does nothing and the parser's `for...in` (`:400`) never sees the bean.
+silently does nothing and the parser's `for...in` (`:400`) never sees the entry.
 Carried since 2026-09-28 (d9dba13f commit message) with the only workaround in
 the demo (`apps/ndigo-api/src/secure-docs-configuration.ts:69-93` re-declares
 three forwarding factories). **Fix:** walk the prototype chain
 (`Object.getOwnPropertyDescriptors` per level) in the initializer, then delete
 the demo workaround. **Verify:** new `ndigo-context` spec constructing a bare
 subclass of a `@configuration` class with base-only `@entry` methods, asserting
-all beans register; ndigo-api suite still green with the re-declarations removed.
+all entries register; ndigo-api suite still green with the re-declarations removed.
 
 ---
 
@@ -871,7 +871,7 @@ full-repo gates green at HEAD.
   sites adopted (oidc adapter, in-memory session store, CSRF — csrf site by
   integrator, platform-node already depended on @ndigo/util).
 - **NAME-1:** `TASK_SCHEDULER` ContextToken in ndigo-scheduler
-  `context-tokens.ts`; `TASK_SCHEDULER_BEAN` kept as deprecated alias
+  `context-tokens.ts`; `TASK_SCHEDULER_ENTRY` kept as deprecated alias
   (documented public export). Oxlint rule extended to flag identifier-backed
   string lookups (lexical scope stack; conservative — tokens/aliases/shadowing
   never flagged; 10 new rule cases).

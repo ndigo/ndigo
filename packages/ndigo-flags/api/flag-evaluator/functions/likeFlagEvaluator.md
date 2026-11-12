@@ -8,7 +8,7 @@
 
 > **likeFlagEvaluator**(`value`): `value is FlagEvaluator`
 
-Structural type guard for [FlagEvaluator](../interfaces/FlagEvaluator.md) — used where a bean or
+Structural type guard for [FlagEvaluator](../interfaces/FlagEvaluator.md) — used where an entry or
 option is resolved by shape instead of the [FLAG\_EVALUATOR](../../context-tokens/variables/FLAG_EVALUATOR.md) token.
 
 ## Parameters

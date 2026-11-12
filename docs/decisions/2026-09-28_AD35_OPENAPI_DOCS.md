@@ -79,7 +79,7 @@ registration path. Per `RouteMappingInfo`:
   (framework-internal), as are `@apiDocs({ hidden: true })` handlers (D-4)
   and mappings excluded by an `include` filter option.
 - **Deduplication**: mappings overlap (each mapping detects the same handler
-  beans; dispatch order decides). Generation keys on
+  entries; dispatch order decides). Generation keys on
   `{method} {canonicalPath}` and keeps the first — identical to dispatch
   precedence.
 
@@ -196,7 +196,7 @@ documentation (Risks).
   metadata, so it cannot drift — but it inherits metadata's limits
   (no return-type inference, no methodless mappings, no greedy segments).
   Each is documented and recorded as follow-ups rather than papered over.
-- **Multi-mapping duplication**: every mapping detects all handler beans;
+- **Multi-mapping duplication**: every mapping detects all handler entries;
   without dedup, operations would repeat. Generation keying
   (`{method} {path}`, first-wins) matches dispatch precedence exactly.
 

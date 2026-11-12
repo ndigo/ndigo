@@ -83,7 +83,7 @@ The Node platform registers an ordered chain when the app does not override
 1. `NodeParameterBindingErrorResolver` — binding/conversion failures → 400,
    Zod failures → 422.
 2. `MetadataErrorResolver` — `@errorMapping` handlers on the failing handler
-   or on a registered `@errorHandler` bean.
+   or on a registered `@errorHandler` entry.
 3. `NodeLastResortErrorResolver` — anything left → 500 (or a known framework
    error → its status).
 
@@ -107,7 +107,7 @@ binding resolver early so 400/422 semantics stay consistent.
 
 ## 4. `@errorHandler` and `@errorMapping`
 
-A class-wide handler is a bean marked `@errorHandler`; each method declares the
+A class-wide handler is an entry marked `@errorHandler`; each method declares the
 error classes it owns with `@errorMapping`:
 
 ```ts
@@ -125,8 +125,8 @@ class ApiErrorHandler {
 
 The method signature is `(route, error, handlerMethod)` and the return is a
 `ModelAndView` (or `null` to continue). A method-level mapping on the failing
-controller is checked first, then beans marked `@errorHandler`; the most
-specific error class wins. Register the handler as an `@entry` bean so the
+controller is checked first, then entries marked `@errorHandler`; the most
+specific error class wins. Register the handler as an `@entry` entry so the
 metadata resolver can find it.
 
 ## 5. A custom resolver

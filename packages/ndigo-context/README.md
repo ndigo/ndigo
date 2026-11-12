@@ -70,10 +70,10 @@ preserves its position. These methods use native map iteration, while the
 existing value-only iterator retains its snapshot behavior.
 
 `ApplicationContext` extends the read-only core `ParentNode<ApplicationContext>`
-and `ChildNode<ApplicationContext>` navigation contracts. `traverseToRoot` shares
-the iterative core ancestor traversal. Context visitors still ignore return
-values; subtree traversal retains live child iteration so appended siblings
-are visited.
+and `ChildNode<ApplicationContext>` navigation contracts. Use `parent`,
+`children`, and `root` for direct navigation. Cross-context events are explicit:
+local `emit`, the shared `root` channel, `parent`/`children` addressing, or an
+allowlisted `ContextEventGateway`.
 
 ## Development
 

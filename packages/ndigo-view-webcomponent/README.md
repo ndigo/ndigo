@@ -128,6 +128,7 @@ how it fits with the rest of Ndigo.
 
 - **`AbstractWebComponent`** — base class with the `create`/`emit` lifecycle for component-backed views; acquire a shadow root with `ensureShadowRoot()` so a parser-created declarative root is adopted (not re-attached) at upgrade — the acquired root is cached, so a **closed** root is reused on later calls, and a mode mismatch throws instead of silently returning the wrong root
 - **Engine** — per-element mount logic, model binding, DOM target (`DOMElementViewTarget`), and event bridging to Ndigo signals
+- **View targets** — `DOMElementViewTarget` (element host), `ShadowRootViewTarget` (open shadow root), `IframeViewTarget` (same-origin iframe document)
 - **Hydration** — `hydrateIslands` upgrades declarative-shadow islands in place (keeping the parser-created root) and replaces light-DOM markers otherwise; each marker is isolated (a throwing component is logged and skipped), a malformed `data-ndigo-model` keeps the server fallback, and hydrated markers (`data-ndigo-hydrated`) are skipped on a repeat scan
 - **Forms** — `AsFormAssociated(Base)` marks a component form-associated, routes its value through `ElementInternals.setFormValue`, and implements the FACE lifecycle (`formResetCallback`/`formDisabledCallback`/`formStateRestoreCallback`) plus `value`-attribute reflection, so native form submission and the existing server binding/Zod path work unchanged
 - **Mapping** — tag-name ↔ component mapping and view mapping layers

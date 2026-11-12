@@ -64,6 +64,12 @@ Re-exports [hydrateIslands](../hydrate/functions/hydrateIslands.md)
 
 ***
 
+### IframeViewTarget
+
+Re-exports [IframeViewTarget](../iframe-view-target/classes/IframeViewTarget.md)
+
+***
+
 ### likeDOMViewTarget
 
 Re-exports [likeDOMViewTarget](../engine/functions/likeDOMViewTarget.md)
@@ -91,6 +97,12 @@ Re-exports [provideWebMcpTools](../webmcp/functions/provideWebMcpTools.md)
 ### RenderHost
 
 Re-exports [RenderHost](../engine/type-aliases/RenderHost.md)
+
+***
+
+### ShadowRootViewTarget
+
+Re-exports [ShadowRootViewTarget](../shadow-root-view-target/classes/ShadowRootViewTarget.md)
 
 ***
 

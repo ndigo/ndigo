@@ -229,12 +229,14 @@ a test.
 
 ### 7.2 Built-in targets
 
-| Target                      | Package                    | Host                                   | When to use                                                                                                                     |
-| --------------------------- | -------------------------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| `HTTPResponseViewTarget`    | `@ndigo/platform-node`     | An HTTP response (`ServerResponse`)    | Server-side rendering: the default target on Node; writes status, headers, and body through the response.                       |
-| `DOMElementViewTarget`      | `@ndigo/view-webcomponent` | A DOM element (by id or element ref)   | Browser rendering: the default target in the browser; renders into `#app` (or a passed root) and bridges events via `eventMap`. |
-| `MemoryViewTarget`          | `@ndigo/test`              | An in-memory capture                   | Tests: captures the last rendered output + model with no real DOM or socket; used by `bootWebApp`/`MockWebClient`.              |
-| `DOMViewTarget` (interface) | `@ndigo/view-webcomponent` | A DOM surface that also bridges events | Implement when a target renders into the DOM **and** forwards surface events.                                                   |
+| Target                      | Package                    | Host                                   | When to use                                                                                                                                    |
+| --------------------------- | -------------------------- | -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `HTTPResponseViewTarget`    | `@ndigo/platform-node`     | An HTTP response (`ServerResponse`)    | Server-side rendering: the default target on Node; writes status, headers, and body through the response.                                      |
+| `DOMElementViewTarget`      | `@ndigo/view-webcomponent` | A DOM element (by id or element ref)   | Browser rendering: the default target in the browser; renders into `#app` (or a passed root) and bridges events via `eventMap`.                |
+| `ShadowRootViewTarget`      | `@ndigo/view-webcomponent` | An element's (open) shadow root        | Shadow-DOM rendering: attaches/reuses an open shadow root on a host element and renders into it; throws on a closed shadow root.               |
+| `IframeViewTarget`          | `@ndigo/view-webcomponent` | A same-origin `<iframe>`'s document    | Isolated rendering: renders into an iframe's document (empty iframe, `srcdoc`, or same-origin `src`); throws on cross-origin/sandboxed frames. |
+| `MemoryViewTarget`          | `@ndigo/test`              | An in-memory capture                   | Tests: captures the last rendered output + model with no real DOM or socket; used by `bootWebApp`/`MockWebClient`.                             |
+| `DOMViewTarget` (interface) | `@ndigo/view-webcomponent` | A DOM surface that also bridges events | Implement when a target renders into the DOM **and** forwards surface events.                                                                  |
 
 Constructors:
 

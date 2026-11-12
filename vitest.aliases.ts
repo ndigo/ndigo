@@ -28,6 +28,11 @@ export const ndigoAliases: { find: RegExp; replacement: string }[] = [
     // package's registry tree.
     { find: '@/lib', replacement: resolve(repoRoot, 'packages/ndigo-ui/registry/base') },
 
+    // The block controllers are imported from the canonical, un-installed
+    // registry sources by the Storybook app; the spec typecheck lane needs the
+    // same mapping so those story files resolve.
+    { find: /^@registry\//, replacement: resolve(repoRoot, 'packages/ndigo-ui/registry') },
+
     // Live `@ndigo/util` subpaths only — `function`/`list`/`logic`/`object`/`relation`
     // were aspirational imports with no `src/` directory (and no manifest export).
     { find: /^@ndigo\/util\/crypto/, replacement: resolve(repoRoot, 'packages/ndigo-util/src/crypto') },

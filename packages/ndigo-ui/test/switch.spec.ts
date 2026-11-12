@@ -33,6 +33,30 @@ describe('<nd-switch>', () => {
         expect(control.querySelector('[data-part="label"]')?.textContent).toBe('Notifications');
     });
 
+    it('uses the label attribute when no label content is authored', async () => {
+        const control = mountElement<NdSwitch>('nd-switch', '', { label: 'Notifications', checked: '' });
+        await flush();
+        const label = getPart<HTMLElement>(control, '[data-part="label"]');
+        const input = getPart<HTMLInputElement>(control, '[data-part="hidden-input"]');
+
+        expect(label.textContent).toBe('Notifications');
+        expect(input.getAttribute('aria-labelledby')).toBe(label.id);
+
+        control.setAttribute('label', 'Product updates');
+        await flush();
+        expect(label.textContent).toBe('Product updates');
+
+        control.removeAttribute('label');
+        await flush();
+        expect(label.textContent).toBe('');
+    });
+
+    it('keeps authored label content over the label attribute', async () => {
+        const control = mountElement<NdSwitch>('nd-switch', '<span>Authored</span>', { label: 'Attribute' });
+        await flush();
+        expect(getPart<HTMLElement>(control, '[data-part="label"]').textContent).toBe('Authored');
+    });
+
     it('toggles on click and reflects the checked attribute', async () => {
         const control = mountElement<NdSwitch>('nd-switch', '<span>Notifications</span>');
         await flush();

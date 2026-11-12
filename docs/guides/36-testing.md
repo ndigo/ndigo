@@ -17,7 +17,7 @@ into `NodeDispatcher`, but swaps the network for an in-memory `ResponseSink`.
 
 - Boot a real application with `bootNodeApp`.
 - Drive requests through `MockHTTP`.
-- Test browser apps with `BrowserMockClient`.
+- Test browser apps with `MockWebClient`.
 - Use the timing helpers for async work.
 - Know what the harness deliberately is not.
 
@@ -115,17 +115,17 @@ For browser apps (jsdom), `bootWebApp` (async) wires the real
 
 ```ts
 // @vitest-environment jsdom
-import { bootWebApp, BrowserMockClient } from '@ndigo/test';
+import { bootWebApp, MockWebClient } from '@ndigo/test';
 
 const app = await bootWebApp([TodoConfiguration]);
-const browser = new BrowserMockClient(app);
+const browser = new MockWebClient(app);
 await browser.dispatch('/account/settings');
 
 expect(app.viewTarget.lastRender?.model).toEqual({ section: 'settings' });
 app.close();
 ```
 
-`BrowserMockClient.dispatch(path)` returns the captured render (output element
+`MockWebClient.dispatch(path)` returns the captured render (output element
 
 - model) and records it on `app.viewTarget`, so you can assert the view a
   route renders — not just the response.

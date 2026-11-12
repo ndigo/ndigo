@@ -26,12 +26,6 @@ Re-exports [bootWebApp](../browser-mock-client/functions/bootWebApp.md)
 
 ***
 
-### BrowserMockClient
-
-Re-exports [BrowserMockClient](../browser-mock-client/classes/BrowserMockClient.md)
-
-***
-
 ### BrowserTestApp
 
 Re-exports [BrowserTestApp](../browser-mock-client/interfaces/BrowserTestApp.md)
@@ -95,6 +89,12 @@ Re-exports [MockHTTPRequestBuilder](../mock-http/classes/MockHTTPRequestBuilder.
 ### MockRequest
 
 Re-exports [MockRequest](../request-builder/interfaces/MockRequest.md)
+
+***
+
+### MockWebClient
+
+Re-exports [MockWebClient](../browser-mock-client/classes/MockWebClient.md)
 
 ***
 

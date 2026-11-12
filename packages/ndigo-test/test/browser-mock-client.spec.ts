@@ -4,10 +4,10 @@
 import { describe, test, beforeAll, afterAll, expect } from 'vitest';
 import { routeMapping, ModelAndView } from '@ndigo/dispatcher';
 import { WebComponentView } from '@ndigo/view-webcomponent';
-import { bootWebApp, BrowserMockClient } from '../src/index';
+import { bootWebApp, MockWebClient } from '../src/index';
 
 /**
- * BrowserMockClient: dispatches routes through the real BrowserDispatcher and
+ * MockWebClient: dispatches routes through the real BrowserDispatcher and
  * captures the rendered view (output element + model) with no DOM container
  * assertions — just the model produced by the handler.
  */
@@ -31,13 +31,13 @@ class AccountController {
     }
 }
 
-describe('BrowserMockClient', () => {
-    let browser: BrowserMockClient;
+describe('MockWebClient', () => {
+    let browser: MockWebClient;
     let close: () => void;
 
     beforeAll(async () => {
         const app = await bootWebApp([AccountController]);
-        browser = new BrowserMockClient(app);
+        browser = new MockWebClient(app);
         close = app.close;
     });
 

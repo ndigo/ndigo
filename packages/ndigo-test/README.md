@@ -62,7 +62,7 @@ Interceptor denials are finalized by the same helper as the live `NodeHTTPServer
 
 ### Not included
 
-- No browser for `MockHTTP` (use Playwright for E2E; `BrowserMockClient` for jsdom).
+- No browser for `MockHTTP` (use Playwright for E2E; `MockWebClient` for jsdom).
 - No real listener by default.
 - No assertion library — MockHTTP returns shaped values for Vitest's `expect`.
 

@@ -2,7 +2,7 @@
  * Shared MockHTTP harness for the Todo-Backend app lanes.
  */
 import type { ApplicationContext } from '@ndigo/context';
-import { bootApp, MockHTTP } from '@ndigo/test';
+import { bootNodeApp, MockHTTP } from '@ndigo/test';
 import { applyHttpInterceptors } from '../src/todo-http-interceptors';
 import { TodoConfiguration } from '../src/todo-configuration';
 
@@ -17,7 +17,7 @@ export interface TodoAPIHarness {
 }
 
 /**
- * Boots the real composition (`bootApp` registers `NodeAutoConfiguration` plus
+ * Boots the real composition (`bootNodeApp` registers `NodeAutoConfiguration` plus
  * `TodoConfiguration`), applies the pipeline interceptors `src/index.ts`
  * applies at boot (CORS + the JSON-body gate), and wraps the dispatcher in
  * MockHTTP — so the lanes below exercise the same interceptor chain and routes
@@ -26,7 +26,7 @@ export interface TodoAPIHarness {
  * @returns The harness (context, client, teardown).
  */
 export function bootTodoApi(): TodoAPIHarness {
-    const app = bootApp([TodoConfiguration]);
+    const app = bootNodeApp([TodoConfiguration]);
     applyHttpInterceptors(app.context);
     return { context: app.context, mockHTTP: new MockHTTP(app), close: app.close };
 }

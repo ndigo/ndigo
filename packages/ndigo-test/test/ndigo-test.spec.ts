@@ -3,7 +3,7 @@
 // @vitest-environment node
 import { describe, test, beforeAll, afterAll, expect } from 'vitest';
 import { requestMapping, getMapping } from '@ndigo/dispatcher';
-import { bootApp, cachedBootApp, installSynchronousAnimationFrames, releaseCachedApp, MockHTTP } from '../src/index';
+import { bootNodeApp, cachedBootNodeApp, installSynchronousAnimationFrames, releaseCachedNodeApp, MockHTTP } from '../src/index';
 
 /**
  * Canonical usage: a real app context is booted once per suite (beforeAll) and
@@ -24,12 +24,12 @@ class MathController {
     }
 }
 
-describe('bootApp + MockHTTP (canonical app test)', () => {
+describe('bootNodeApp + MockHTTP (canonical app test)', () => {
     let mockHTTP: MockHTTP;
     let close: () => void;
 
     beforeAll(() => {
-        const app = bootApp([MathController]);
+        const app = bootNodeApp([MathController]);
         mockHTTP = new MockHTTP(app);
         close = app.close;
     });
@@ -51,33 +51,33 @@ describe('bootApp + MockHTTP (canonical app test)', () => {
     });
 });
 
-describe('cachedBootApp', () => {
+describe('cachedBootNodeApp', () => {
     test('returns the same app for the same sources', () => {
-        const a = cachedBootApp([MathController]);
-        const b = cachedBootApp([MathController]);
+        const a = cachedBootNodeApp([MathController]);
+        const b = cachedBootNodeApp([MathController]);
         try {
             expect(b).toBe(a);
             expect(b.context).toBe(a.context);
         } finally {
-            releaseCachedApp([MathController]);
-            releaseCachedApp([MathController]);
+            releaseCachedNodeApp([MathController]);
+            releaseCachedNodeApp([MathController]);
         }
     });
 
     test('releasing all references removes the cached app', () => {
-        const a = cachedBootApp([MathController]);
-        const b = cachedBootApp([MathController]);
+        const a = cachedBootNodeApp([MathController]);
+        const b = cachedBootNodeApp([MathController]);
         expect(b).toBe(a);
 
-        releaseCachedApp([MathController]);
-        releaseCachedApp([MathController]);
+        releaseCachedNodeApp([MathController]);
+        releaseCachedNodeApp([MathController]);
 
         // Cache is cleared; a fresh boot creates a new app instance.
-        const c = cachedBootApp([MathController]);
+        const c = cachedBootNodeApp([MathController]);
         try {
             expect(c).not.toBe(a);
         } finally {
-            releaseCachedApp([MathController]);
+            releaseCachedNodeApp([MathController]);
         }
     });
 
@@ -90,13 +90,13 @@ describe('cachedBootApp', () => {
             }
         }
 
-        const a = cachedBootApp([MathController]);
-        const b = cachedBootApp([OtherController]);
+        const a = cachedBootNodeApp([MathController]);
+        const b = cachedBootNodeApp([OtherController]);
         try {
             expect(b).not.toBe(a);
         } finally {
-            releaseCachedApp([MathController]);
-            releaseCachedApp([OtherController]);
+            releaseCachedNodeApp([MathController]);
+            releaseCachedNodeApp([OtherController]);
         }
     });
 });

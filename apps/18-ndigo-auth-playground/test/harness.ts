@@ -19,7 +19,7 @@ import { join } from 'node:path';
 import { ApplicationBuilder } from '@ndigo/boot';
 import { ManagementAutoConfiguration } from '@ndigo/management';
 import { HTTP_SERVER, NodeAutoConfiguration } from '@ndigo/platform-node';
-import { bootApp, MockHTTP, type NdigoTestApp } from '@ndigo/test';
+import { bootNodeApp, MockHTTP, type NdigoTestApp } from '@ndigo/test';
 import { SESSION_DB_URL_ENV, type PlaygroundConfig } from '../src/config';
 import { applyAuthPipeline } from '../src/http-pipeline';
 import { startEmbeddedIssuer, type EmbeddedIssuer } from '../src/oidc-issuer';
@@ -129,7 +129,7 @@ export async function bootMockPlayground(options: HarnessOptions = {}): Promise<
     const { dir, sessionDbUrl } = tempDir(options);
     applyEnv(options, sessionDbUrl, null, null);
     const runtime = await createRuntime();
-    const app = bootApp([ManagementAutoConfiguration, PlaygroundConfiguration]);
+    const app = bootNodeApp([ManagementAutoConfiguration, PlaygroundConfiguration]);
     applyAuthPipeline(app.context, runtime.stack, runtime.config);
     return {
         app,

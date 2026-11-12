@@ -2,17 +2,17 @@
 
 ***
 
-[@ndigo/test](../../README.md) / [ndigo-test](../README.md) / cachedBootApp
+[@ndigo/test](../../README.md) / [ndigo-test](../README.md) / cachedBootNodeApp
 
-# Function: cachedBootApp()
+# Function: cachedBootNodeApp()
 
-> **cachedBootApp**(`sources`): [`NdigoTestApp`](../interfaces/NdigoTestApp.md)
+> **cachedBootNodeApp**(`sources`): [`NdigoTestApp`](../interfaces/NdigoTestApp.md)
 
 Boots (or reuses a cached) application for the given sources.
 
-Within a vitest worker, calling `cachedBootApp` twice with the same sources
+Within a vitest worker, calling `cachedBootNodeApp` twice with the same sources
 returns the SAME app — the context is booted once, not per suite. Each call
-increments a reference; release one with [releaseCachedApp](releaseCachedApp.md) (or by
+increments a reference; release one with [releaseCachedNodeApp](releaseCachedNodeApp.md) (or by
 closing the app). The app is closed when the last reference is released.
 
 NOTE: Vitest isolates modules per file by default, so the cache is scoped to
@@ -37,7 +37,7 @@ A booted app.
 ## Example
 
 ```ts
-const app = cachedBootApp([TodoConfiguration]); // boots once
-const app2 = cachedBootApp([TodoConfiguration]); // reuses app
+const app = cachedBootNodeApp([TodoConfiguration]); // boots once
+const app2 = cachedBootNodeApp([TodoConfiguration]); // reuses app
 expect(app2).toBe(app); // same context
 ```

@@ -2,13 +2,13 @@
  * Smoke test (APP-N10): the browser entry app boots through the real
  * bootstrap path and dispatches the root route through the framework
  * pipeline (handler mapping → controller → Web Component view), driven by
- * the shared `@ndigo/test` browser harness (`bootBrowserApp` +
+ * the shared `@ndigo/test` browser harness (`bootWebApp` +
  * `BrowserMockClient`; guide 36 §3).
  */
 // @vitest-environment jsdom
 import '@tsmetadata/polyfill';
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
-import { bootBrowserApp, BrowserMockClient, installSynchronousAnimationFrames } from '@ndigo/test';
+import { bootWebApp, BrowserMockClient, installSynchronousAnimationFrames } from '@ndigo/test';
 // Side effect: registers the `{{name}}-app` custom element.
 import '../src/{{name}}-app-view';
 import {{className}}Controller from '../src/{{name}}-controller';
@@ -19,7 +19,7 @@ describe('{{name}} smoke', () => {
 
     beforeAll(async () => {
         installSynchronousAnimationFrames();
-        const app = await bootBrowserApp([{{className}}Controller]);
+        const app = await bootWebApp([{{className}}Controller]);
         browser = new BrowserMockClient(app);
         close = app.close;
     });

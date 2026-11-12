@@ -4,7 +4,7 @@
 // @vitest-environment node
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 import { ManagementAutoConfiguration } from '@ndigo/management';
-import { bootApp, MockHTTP, type NdigoTestApp } from '@ndigo/test';
+import { bootNodeApp, MockHTTP, type NdigoTestApp } from '@ndigo/test';
 import { ChatConfiguration } from '../src/chat-configuration';
 
 describe('ndigo-chat HTTP surface', () => {
@@ -12,7 +12,7 @@ describe('ndigo-chat HTTP surface', () => {
     let http: MockHTTP;
 
     beforeAll(() => {
-        app = bootApp([ManagementAutoConfiguration, ChatConfiguration]);
+        app = bootNodeApp([ManagementAutoConfiguration, ChatConfiguration]);
         http = new MockHTTP(app);
     });
 

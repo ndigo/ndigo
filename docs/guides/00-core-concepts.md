@@ -114,7 +114,7 @@ The same application code runs on two platforms; the preset decides what
 | Transport     | HTTP/1.1, HTTP/2, WebSocket server | hash/history routing, `fetch`          |
 | View target   | HTTP response                      | DOM element                            |
 | Static assets | filesystem handler / static views  | Vite dev server and bundles            |
-| Test harness  | `bootApp` + `MockHTTP`             | `bootBrowserApp` + `BrowserMockClient` |
+| Test harness  | `bootNodeApp` + `MockHTTP`             | `bootWebApp` + `BrowserMockClient` |
 
 Platform packages are adapters, not forks: `@ndigo/platform-node` and
 `@ndigo/platform-web` wire the shared contracts to a runtime. Guides [01](01-building-a-node-api.md) and [02](02-building-a-browser-app.md)

@@ -249,7 +249,7 @@ and record the reason in this plan and AD-90 D-5.
   does today) and matches the documented precedence chain.
 - **Should `createWebApplication` auto-navigate by default?** Current plan:
   yes; `autoNavigate: false` plus `router.navigate()` is the escape hatch.
-- **Should the test harness (`bootBrowserApp`) adopt the preset?** Current
+- **Should the test harness (`bootWebApp`) adopt the preset?** Current
   plan: no. It uses `MemoryViewTarget` and deliberately diverges from the DOM
   runtime; the preset is production composition, not a test double.
 - **Should the presets be subpath exports?** Current plan: root exports. The

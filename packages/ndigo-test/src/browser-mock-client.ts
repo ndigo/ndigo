@@ -52,13 +52,13 @@ async function loadWebAutoConfiguration(): Promise<WebAutoConfigurationLike> {
  *
  * @example
  * ```ts
- * const app = await bootBrowserApp([ToDoconfiguration]);
+ * const app = await bootWebApp([ToDoconfiguration]);
  * const browser = new BrowserMockClient(app);
  * await browser.dispatch('/account');
  * expect(app.viewTarget.lastRender?.model).toEqual({ section: 'overview' });
  * ```
  */
-export async function bootBrowserApp(sources: Function[]): Promise<BrowserTestApp> {
+export async function bootWebApp(sources: Function[]): Promise<BrowserTestApp> {
     const context = new MetadataConfigApplicationContext('ndigo-test-browser');
 
     const WebAutoConfiguration = await loadWebAutoConfiguration();

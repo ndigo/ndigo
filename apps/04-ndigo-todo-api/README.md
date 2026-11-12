@@ -96,7 +96,7 @@ silently recycled.
 pnpm --filter @ndigo/todo-api test
 ```
 
-Two lanes, both against the real composition (`bootApp` + the app's
+Two lanes, both against the real composition (`bootNodeApp` + the app's
 configuration + the CORS wiring the server applies at boot):
 
 - `test/todo-api.spec.ts` — the documented surface: create/read/update/delete

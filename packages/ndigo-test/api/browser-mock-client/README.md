@@ -18,4 +18,4 @@ BrowserMockClient — drive `BrowserDispatcher` with a DOM-free capture target.
 
 ## Functions
 
-- [bootBrowserApp](functions/bootBrowserApp.md)
+- [bootWebApp](functions/bootWebApp.md)

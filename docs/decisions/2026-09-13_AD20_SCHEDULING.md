@@ -67,7 +67,7 @@ engine: next-fire computation, single-flight bookkeeping, injectable clock +
 manual `tick()` for deterministic tests), `TimeZones` constants + validation
 (D6). The registry resolves owner instances through the same path handler
 mappings use (`setApplicationContext` + `init()` re-scan of registered
-classes, `bootApp` precedent).
+classes, `bootNodeApp` precedent).
 
 ### D2 — Node-only
 

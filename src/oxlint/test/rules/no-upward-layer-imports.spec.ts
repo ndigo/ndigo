@@ -34,7 +34,7 @@ ruleTester.run('no-upward-layer-imports', noUpwardLayerImports, {
         },
         {
             // Tooling targets are outside the layer system.
-            code: "import { bootApp } from '@ndigo/test';",
+            code: "import { bootNodeApp } from '@ndigo/test';",
             filename: '/packages/ndigo-auth-server/test/flow.spec.ts',
         },
         {

@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { describe, test, beforeAll, afterAll, expect } from 'vitest';
-import { bootApp, MockHTTP } from '@ndigo/test';
+import { bootNodeApp, MockHTTP } from '@ndigo/test';
 import { ManagementAutoConfiguration } from '@ndigo/management';
 import { NodeAppConfiguration } from '../src/node-app-configuration';
 import { initAuth } from '../src/auth-store';
@@ -26,7 +26,7 @@ describe('ndigo-api through @ndigo/test', () => {
 
     beforeAll(() => {
         initAuth();
-        const app = bootApp([ManagementAutoConfiguration, NodeAppConfiguration]);
+        const app = bootNodeApp([ManagementAutoConfiguration, NodeAppConfiguration]);
         mockHTTP = new MockHTTP(app);
         close = app.close;
     });

@@ -1,7 +1,7 @@
 # AD-63: `@ndigo/test` — in-process, socket-free integration test harness
 
 **Date:** 2026-09-04
-**Status:** Accepted — implemented; `bootApp` + `MockHTTP` on Vitest.
+**Status:** Accepted — implemented; `bootNodeApp` + `MockHTTP` on Vitest.
 
 ## Context
 
@@ -18,25 +18,25 @@ a socket.
 
 ## Evidence
 
-- `packages/ndigo-test/src/ndigo-test.ts` — `export function bootApp(sources:
+- `packages/ndigo-test/src/ndigo-test.ts` — `export function bootNodeApp(sources:
   Function[]): NdigoTestApp` (line 43), plus
-  `export function cachedBootApp(sources: Function[]): NdigoTestApp` (line 124,
+  `export function cachedBootNodeApp(sources: Function[]): NdigoTestApp` (line 124,
   per-worker context dedupe). Born `17a4dd85` (2026-09-04).
 - `packages/ndigo-test/src/mock-http.ts` — `MockHTTP` + `MockHTTPRequestBuilder`
   (request builder → `dispatch(route)`), born `b03d2831` (2026-09-08).
 - `packages/ndigo-test/src/index.ts` exports `MockHTTP, MockHTTPRequestBuilder`
-  from `./mock-http` and `bootApp, cachedBootApp, releaseCachedApp` from
+  from `./mock-http` and `bootNodeApp, cachedBootNodeApp, releaseCachedNodeApp` from
   `./ndigo-test`; supporting `request-builder.ts`, `memory-response.ts`
   (`MemoryResponse`/`ResponseSink`), `memory-view-target.ts`,
   `browser-mock-client.ts` (`BrowserMockHTTP`).
-- `@ndigo/test` is node-pure: `bootApp` uses `MetadataConfigApplicationContext`
+- `@ndigo/test` is node-pure: `bootNodeApp` uses `MetadataConfigApplicationContext`
   directly rather than `@ndigo/boot` (whose index re-exports DOM-coupled
   `web-auto-configuration`); runs under Vitest.
 
 ## Decision
 
 - **D-1** `@ndigo/test` is a Vitest helper library, not a competing runner —
-  an explicit `bootApp()` (not a decorator) boots a real context + dispatcher
+  an explicit `bootNodeApp()` (not a decorator) boots a real context + dispatcher
   once per suite; `MockHTTP` sends in-process requests against the real
   pipeline.
 - **D-2** Socket-free: the response sink swaps the real `ServerResponse` for
@@ -48,7 +48,7 @@ a socket.
 - **D-4** Thin, not a new assertion framework — returns shaped values for
   Vitest's `expect`; no browser (Playwright's job), no mocking framework
   (real entries, real dispatch).
-- **D-5** Caching via `cachedBootApp`/`releaseCachedApp` (per-worker dedupe)
+- **D-5** Caching via `cachedBootNodeApp`/`releaseCachedNodeApp` (per-worker dedupe)
   boots the heavy context once.
 
 ## Consequences
@@ -73,5 +73,5 @@ a socket.
 
 Revisit if a consumer needs cross-file context sharing (requires
 `isolate: false` today) or real-socket smoke coverage as a default rather than
-the opt-in `live: true` mode. Until then in-process `bootApp` + `MockHTTP`
+the opt-in `live: true` mode. Until then in-process `bootNodeApp` + `MockHTTP`
 stand.

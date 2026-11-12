@@ -216,7 +216,7 @@ and a static document; add streaming when the page is large enough to measure.
 
 ## 8. Testing
 
-- **Server** — `bootApp` + `MockHTTP` (guide 36) asserts the status, headers,
+- **Server** — `bootNodeApp` + `MockHTTP` (guide 36) asserts the status, headers,
   and root markup. The React component can be tested separately with its own
   props.
 - **Hydration** — run the client entry in jsdom, assert no hydration warning,

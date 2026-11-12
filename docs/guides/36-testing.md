@@ -1,6 +1,6 @@
 # Guide 36 — Testing with `@ndigo/test`
 
-`@ndigo/test` is the in-process integration harness: `bootApp` boots a
+`@ndigo/test` is the in-process integration harness: `bootNodeApp` boots a
 real application context and dispatcher, and `MockHTTP` sends socket-free
 requests through the whole pipeline — interceptors, argument resolvers,
 validation, handler, view resolution, and the response contract. No port, no
@@ -15,7 +15,7 @@ into `NodeDispatcher`, but swaps the network for an in-memory `ResponseSink`.
 
 ## What you'll learn
 
-- Boot a real application with `bootApp`.
+- Boot a real application with `bootNodeApp`.
 - Drive requests through `MockHTTP`.
 - Test browser apps with `BrowserMockClient`.
 - Use the timing helpers for async work.
@@ -23,7 +23,7 @@ into `NodeDispatcher`, but swaps the network for an in-memory `ResponseSink`.
 
 ## 1. Boot the application
 
-`bootApp(sources)` accepts `@configuration` classes (registered with the
+`bootNodeApp(sources)` accepts `@configuration` classes (registered with the
 context) and/or plain controller classes (stored by class name for the handler
 mapping). It wires `NodeAutoConfiguration`, the handler mapping, and the
 dispatcher, returning `{ context, dispatcher, close }`:
@@ -31,7 +31,7 @@ dispatcher, returning `{ context, dispatcher, close }`:
 ```ts
 // @vitest-environment node
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
-import { bootApp, MockHTTP } from '@ndigo/test';
+import { bootNodeApp, MockHTTP } from '@ndigo/test';
 import type { NdigoTestApp } from '@ndigo/test';
 import { TodoController } from '../src/todo-controller';
 
@@ -40,7 +40,7 @@ describe('Todo API', () => {
     let http: MockHTTP;
 
     beforeAll(() => {
-        app = bootApp([TodoController]); // register the sources
+        app = bootNodeApp([TodoController]); // register the sources
         http = new MockHTTP(app);
     });
 
@@ -54,17 +54,17 @@ register them.
 
 ### Reuse one booted context across suites
 
-Booting is the expensive part. `cachedBootApp(sources)` returns the **same**
+Booting is the expensive part. `cachedBootNodeApp(sources)` returns the **same**
 app for repeated calls with the same sources within a Vitest worker
-(ref-counted); `releaseCachedApp(sources)` (or `app.close`) drops one
+(ref-counted); `releaseCachedNodeApp(sources)` (or `app.close`) drops one
 reference and closes on the last:
 
 ```ts
-import { cachedBootApp, releaseCachedApp, MockHTTP } from '@ndigo/test';
+import { cachedBootNodeApp, releaseCachedNodeApp, MockHTTP } from '@ndigo/test';
 
-const app = cachedBootApp([TodoController]); // boots once per worker
+const app = cachedBootNodeApp([TodoController]); // boots once per worker
 // ... suite A ...
-releaseCachedApp([TodoController]); // suite B's cachedBootApp reuses it
+releaseCachedNodeApp([TodoController]); // suite B's cachedBootNodeApp reuses it
 ```
 
 Vitest isolates modules per file by default, so the cache is per file. Sharing
@@ -110,14 +110,14 @@ expect(denied.json()).toMatchObject({ status: 403 });
 
 ## 3. Browser applications
 
-For browser apps (jsdom), `bootBrowserApp` (async) wires the real
+For browser apps (jsdom), `bootWebApp` (async) wires the real
 `BrowserDispatcher` plus a `MemoryViewTarget` that captures the rendered view:
 
 ```ts
 // @vitest-environment jsdom
-import { bootBrowserApp, BrowserMockClient } from '@ndigo/test';
+import { bootWebApp, BrowserMockClient } from '@ndigo/test';
 
-const app = await bootBrowserApp([TodoConfiguration]);
+const app = await bootWebApp([TodoConfiguration]);
 const browser = new BrowserMockClient(app);
 await browser.dispatch('/account/settings');
 

@@ -14,7 +14,7 @@ through it, capturing the resulting HTTP response in memory.
 ## Example
 
 ```ts
-const boot = await bootApp([MyConfiguration]);
+const boot = await bootNodeApp([MyConfiguration]);
 const mockHTTP = new MockHTTP(boot.dispatcher);
 const res = await mockHTTP.get('/todos').exec();
 ```

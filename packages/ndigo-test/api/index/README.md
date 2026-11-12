@@ -14,15 +14,15 @@ Ndigo integration test harness — MockHTTP-style in-process dispatch.
 
 ## References
 
-### bootApp
+### bootNodeApp
 
-Re-exports [bootApp](../ndigo-test/functions/bootApp.md)
+Re-exports [bootNodeApp](../ndigo-test/functions/bootNodeApp.md)
 
 ***
 
-### bootBrowserApp
+### bootWebApp
 
-Re-exports [bootBrowserApp](../browser-mock-client/functions/bootBrowserApp.md)
+Re-exports [bootWebApp](../browser-mock-client/functions/bootWebApp.md)
 
 ***
 
@@ -44,9 +44,9 @@ Re-exports [buildRoute](../request-builder/functions/buildRoute.md)
 
 ***
 
-### cachedBootApp
+### cachedBootNodeApp
 
-Re-exports [cachedBootApp](../ndigo-test/functions/cachedBootApp.md)
+Re-exports [cachedBootNodeApp](../ndigo-test/functions/cachedBootNodeApp.md)
 
 ***
 
@@ -110,9 +110,9 @@ Re-exports [PreparedRoute](../request-builder/interfaces/PreparedRoute.md)
 
 ***
 
-### releaseCachedApp
+### releaseCachedNodeApp
 
-Re-exports [releaseCachedApp](../ndigo-test/functions/releaseCachedApp.md)
+Re-exports [releaseCachedNodeApp](../ndigo-test/functions/releaseCachedNodeApp.md)
 
 ***
 

@@ -236,7 +236,7 @@ Deliberately simplified or replaced:
   sources, template helpers, locale negotiation
 - [10 — Static Files](../../docs/guides/10-static-files.md) — `StaticController`
   semantics
-- [36 — Testing](../../docs/guides/36-testing.md) — `bootApp` + `MockHTTP`
+- [36 — Testing](../../docs/guides/36-testing.md) — `bootNodeApp` + `MockHTTP`
 - [@ndigo/orm](../../packages/ndigo-orm/README.md) — entities, relations, paging
 - [@ndigo/view-ejs](../../packages/ndigo-view-ejs/README.md) — the EJS view
   technology

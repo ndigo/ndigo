@@ -131,7 +131,7 @@ The stale "Vitest needs no plugin: its own esbuild transform already lowers
 decorators" claims in the plugin docblock, the app `vite.config.ts` comments
 and four app `vitest.config.ts` headers were corrected in the same change. The
 regression is covered by the specs that caught it — `packages/ndigo-cache/test/cached.spec.ts`
-(a `@cached` class body) and the `bootBrowserApp` smoke specs that load
+(a `@cached` class body) and the `bootWebApp` smoke specs that load
 decorated controllers.
 
 ### 4. `global.customElements` assignment replaced with a stub

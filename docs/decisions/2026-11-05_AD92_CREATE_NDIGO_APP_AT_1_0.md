@@ -75,7 +75,7 @@ numbering, no `vitest.aliases.ts`, no root tsconfig inheritance, no Nx).
 - Scripts: `start`/`dev`, `build`, `test` (`vite build && vitest run` for
   browser, `vitest run` for node).
 - `@ndigo/cli` as a dev dependency (so the app gets `ndigo serve`/`dev`/
-  `inspect`/`doctor`); `@ndigo/test` as a dev dependency (so `bootApp` and
+  `inspect`/`doctor`); `@ndigo/test` as a dev dependency (so `bootNodeApp` and
   the smoke/bundle tests work).
 - `@ndigo/*` runtime dependencies pinned to `~0.0.1` (the 1.0 line), with
   `catalog:`-equivalent concrete versions for the tooling (`vite`, `tsx`,

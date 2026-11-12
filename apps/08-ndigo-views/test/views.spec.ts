@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import '@tsmetadata/polyfill';
 import { describe, expect, it, vi } from 'vitest';
-import { bootBrowserApp, BrowserMockClient, installSynchronousAnimationFrames } from '@ndigo/test';
+import { bootWebApp, BrowserMockClient, installSynchronousAnimationFrames } from '@ndigo/test';
 import type { ConfigurableApplicationContext } from '@ndigo/context';
 import { StaticContentSource, StaticThemeResolver } from '@ndigo/content';
 import { propagation, trace } from '@opentelemetry/api';
@@ -36,7 +36,7 @@ function renderText(output: unknown): string {
 
 describe('ndigo-views composite resolver demo', () => {
     it('resolves a component-module view by name', async () => {
-        const app = await bootBrowserApp([ViewsAppConfiguration]);
+        const app = await bootWebApp([ViewsAppConfiguration]);
         const mvc = new BrowserMockClient(app);
 
         await mvc.dispatch('/');
@@ -50,7 +50,7 @@ describe('ndigo-views composite resolver demo', () => {
     });
 
     it('resolves a context-entry view by name', async () => {
-        const app = await bootBrowserApp([ViewsAppConfiguration]);
+        const app = await bootWebApp([ViewsAppConfiguration]);
         const mvc = new BrowserMockClient(app);
 
         await mvc.dispatch('/widget');
@@ -60,7 +60,7 @@ describe('ndigo-views composite resolver demo', () => {
     });
 
     it('resolves a module-on-disk view by name (lazy import)', async () => {
-        const app = await bootBrowserApp([ViewsAppConfiguration]);
+        const app = await bootWebApp([ViewsAppConfiguration]);
         const mvc = new BrowserMockClient(app);
 
         await mvc.dispatch('/report');
@@ -70,7 +70,7 @@ describe('ndigo-views composite resolver demo', () => {
     });
 
     it('falls through the chain and errors for an unsupported name', async () => {
-        const app = await bootBrowserApp([ViewsAppConfiguration]);
+        const app = await bootWebApp([ViewsAppConfiguration]);
         const mvc = new BrowserMockClient(app);
 
         await expect(mvc.dispatch('/nope')).rejects.toThrow();
@@ -79,7 +79,7 @@ describe('ndigo-views composite resolver demo', () => {
     });
 
     it('localizes the context-entry view through the ContentSource', async () => {
-        const app = await bootBrowserApp([ViewsAppConfiguration]);
+        const app = await bootWebApp([ViewsAppConfiguration]);
         const mvc = new BrowserMockClient(app);
 
         await mvc.dispatch('/widget/de');
@@ -92,7 +92,7 @@ describe('ndigo-views composite resolver demo', () => {
     });
 
     it('resolves themes through the context theme machinery', async () => {
-        const app = await bootBrowserApp([ViewsAppConfiguration]);
+        const app = await bootWebApp([ViewsAppConfiguration]);
         const themeContent = new StaticContentSource();
         const ctx = app.context as ConfigurableApplicationContext;
         ctx.setThemeName('night');
@@ -118,7 +118,7 @@ describe('ndigo-views composite resolver demo', () => {
         const fetchMock = vi.fn().mockResolvedValue(body);
         vi.stubGlobal('fetch', fetchMock);
 
-        const app = await bootBrowserApp([ViewsAppConfiguration]);
+        const app = await bootWebApp([ViewsAppConfiguration]);
         const mvc = new BrowserMockClient(app);
 
         await mvc.dispatch('/client');
@@ -159,7 +159,7 @@ describe('ndigo-views composite resolver demo', () => {
         vi.stubGlobal('fetch', fetchMock);
 
         Object.defineProperty(navigator, 'onLine', { configurable: true, value: false });
-        const app = await bootBrowserApp([ViewsAppConfiguration]);
+        const app = await bootWebApp([ViewsAppConfiguration]);
         const mvc = new BrowserMockClient(app);
 
         await mvc.dispatch('/client');

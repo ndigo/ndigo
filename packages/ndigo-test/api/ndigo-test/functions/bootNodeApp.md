@@ -2,11 +2,11 @@
 
 ***
 
-[@ndigo/test](../../README.md) / [ndigo-test](../README.md) / bootApp
+[@ndigo/test](../../README.md) / [ndigo-test](../README.md) / bootNodeApp
 
-# Function: bootApp()
+# Function: bootNodeApp()
 
-> **bootApp**(`sources`): [`NdigoTestApp`](../interfaces/NdigoTestApp.md)
+> **bootNodeApp**(`sources`): [`NdigoTestApp`](../interfaces/NdigoTestApp.md)
 
 Boot a Ndigo application from configuration/controller classes and wire the
 dispatcher.
@@ -33,7 +33,7 @@ A booted app exposing the context and configured dispatcher.
 ## Example
 
 ```ts
-const app = bootApp([HelloConfiguration]);
+const app = bootNodeApp([HelloConfiguration]);
 const mockHTTP = new MockHTTP(app);
 const res = await mockHTTP.get('/').exec();
 ```

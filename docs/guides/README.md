@@ -23,7 +23,7 @@ contributor guides. Numbers are reading order within a section.
 3. [02 — Building a Browser App](02-building-a-browser-app.md) — the browser
    twin: the `createWebApplication` preset (`@ndigo/platform-web`, ) —
    context bootstrap, hash routing, DOM view targets, router interceptors,
-   app-specific tokens, and the `bootBrowserApp` test harness. Reference
+   app-specific tokens, and the `bootWebApp` test harness. Reference
    applications: `apps/08-ndigo-views`, `apps/19-ndigo-hn`.
 
 ## Fundamentals
@@ -186,7 +186,7 @@ contributor guides. Numbers are reading order within a section.
   — metadata annotations, the interceptor chain (`@ndigo/proxy`), registration
   paths, weaving semantics, and retry + circuit breaking (`@ndigo/resilience`).
 - [36 — Testing with `@ndigo/test`](36-testing.md) — the in-process harness
-  : `bootApp`/`cachedBootApp`, the `MockHTTP` request builder and
+  : `bootNodeApp`/`cachedBootNodeApp`, the `MockHTTP` request builder and
   `MockResult`, browser apps via `BrowserMockClient` + `MemoryViewTarget`, and
   what the harness deliberately is not.
 - [37 — The `ndigo` CLI](37-ndigo-cli.md) — `@ndigo/cli`: the app lifecycle

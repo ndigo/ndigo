@@ -2,11 +2,11 @@
 
 ***
 
-[@ndigo/test](../../README.md) / [ndigo-test](../README.md) / releaseCachedApp
+[@ndigo/test](../../README.md) / [ndigo-test](../README.md) / releaseCachedNodeApp
 
-# Function: releaseCachedApp()
+# Function: releaseCachedNodeApp()
 
-> **releaseCachedApp**(`sources`): `void`
+> **releaseCachedNodeApp**(`sources`): `void`
 
 Releases one cached-app reference for the given sources, closing the app
 when the last reference is released.
@@ -26,6 +26,6 @@ The sources the app was booted with.
 ## Example
 
 ```ts
-const app = bootApp([AppConfiguration]);
-releaseCachedApp([AppConfiguration]);
+const app = bootNodeApp([AppConfiguration]);
+releaseCachedNodeApp([AppConfiguration]);
 ```

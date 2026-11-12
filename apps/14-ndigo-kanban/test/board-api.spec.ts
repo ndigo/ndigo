@@ -9,7 +9,7 @@
 // @vitest-environment node
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from 'vitest';
 import { z } from 'zod';
-import { bootApp, MockHTTP, type NdigoTestApp } from '@ndigo/test';
+import { bootNodeApp, MockHTTP, type NdigoTestApp } from '@ndigo/test';
 import { BoardSnapshotSchema, CardSchema } from '../src/board-model';
 import type { BoardSnapshot, CardRecord } from '../src/board-model';
 import { BOARD_SERVICE, DEMO_BOARD, type BoardEvent, type BoardService } from '../src/board-service';
@@ -45,7 +45,7 @@ describe('ndigo-kanban REST surface', () => {
     let published: Array<{ boardId: string; event: BoardEvent }>;
 
     beforeAll(() => {
-        app = bootApp([KanbanConfiguration]);
+        app = bootNodeApp([KanbanConfiguration]);
         http = new MockHTTP(app);
         boards = app.context.getValue(BOARD_SERVICE);
         published = [];

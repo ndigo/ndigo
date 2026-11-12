@@ -17,7 +17,7 @@ import {
 } from '@ndigo/dispatcher';
 import { CORSInterceptor } from '@ndigo/platform-node';
 import { IslandView } from '@ndigo/view';
-import { bootApp, MockHTTP } from '../src/index';
+import { bootNodeApp, MockHTTP } from '../src/index';
 
 /**
  * Self-tests for `@ndigo/test`: a real controller is dispatched through the
@@ -85,7 +85,7 @@ describe('MockHTTP', () => {
     let mockHTTP: MockHTTP;
 
     beforeAll(() => {
-        mockHTTP = new MockHTTP(bootApp([GreetingController]));
+        mockHTTP = new MockHTTP(bootNodeApp([GreetingController]));
     });
 
     afterAll(() => {
@@ -160,7 +160,7 @@ describe('MockHTTP', () => {
     });
 
     test('unmatched OPTIONS dispatches through interceptors so preflights finalize (IN-5)', async () => {
-        const app = bootApp([GreetingController]);
+        const app = bootNodeApp([GreetingController]);
         const mapping = app.context.getValue<RadixMetadataHandlerMapping>(HANDLER_MAPPING);
         mapping.interceptors.push(new CORSInterceptor({ allowedOrigins: ['https://example.com'] }));
         try {
@@ -192,7 +192,7 @@ describe('MockHTTP', () => {
     });
 
     test('unmatched OPTIONS with no error resolver falls back to the adapter 404 default (IN-5)', async () => {
-        const app = bootApp([GreetingController]);
+        const app = bootNodeApp([GreetingController]);
         // Without the Node error chain nothing finalizes the method-less
         // dispatch, so the adapter's documented 404 default is what lands.
         app.dispatcher.errorResolvers = [];
@@ -206,7 +206,7 @@ describe('MockHTTP', () => {
     });
 
     test('a socket-only endpoint 404s over plain HTTP (IN-5, adapter parity)', async () => {
-        const app = bootApp([SocketOnlyController]);
+        const app = bootNodeApp([SocketOnlyController]);
         try {
             const mock = new MockHTTP(app);
             const res = await mock.get('/socket/channel').exec();
@@ -222,7 +222,7 @@ describe('MockHTTP', () => {
     });
 
     test('multipart part-limit rejection maps to the live 413 problem document (SEC-13)', async () => {
-        const app = bootApp([GreetingController]);
+        const app = bootNodeApp([GreetingController]);
         const limitingMock = new MockHTTP(app, { multipartLimits: { maxParts: 1 } });
         try {
             const boundary = '----ndigoMockLimitTest';
@@ -284,7 +284,7 @@ describe('MockHTTP', () => {
     });
 
     test('multipart rawBody parses with a canonical-case Content-Type header (HTT-REV-013)', async () => {
-        const app = bootApp([GreetingController]);
+        const app = bootNodeApp([GreetingController]);
         try {
             const mock = new MockHTTP(app);
             const boundary = '----ndigoCanonicalCase';
@@ -323,7 +323,7 @@ describe('MockHTTP', () => {
     });
 
     test('an oversized body maps to 413 under the configured limit (HTT-REV-014)', async () => {
-        const app = bootApp([GreetingController]);
+        const app = bootNodeApp([GreetingController]);
         try {
             const mock = new MockHTTP(app, { limits: { maxBodyBytes: 16 } });
             const res = await mock
@@ -375,7 +375,7 @@ describe('IslandView through MockHTTP dispatch (SSR islands)', () => {
     }
 
     test('server dispatches island markup with the serialized model', async () => {
-        const app = bootApp([IslandsController]);
+        const app = bootNodeApp([IslandsController]);
         try {
             const mockHTTP = new MockHTTP(app);
             const res = await mockHTTP.get('/islands/todo').exec();

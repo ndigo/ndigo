@@ -211,8 +211,10 @@ context.
 
 ## 6. Parent/child contexts and events
 
-A child context inherits lookups from its parent but keeps its own values and
-lifecycle. Micro-frontend features use this shape:
+A child context inherits **bean lookups** and shared dependencies from its
+parent but keeps its own values, beans, and lifecycle. It also has its **own
+environment**: it does not see the parent's property values. Micro-frontend
+features use this shape:
 
 ```ts
 import { GenericApplicationContext } from '@ndigo/context';
@@ -221,19 +223,29 @@ const shell = new GenericApplicationContext('shell');
 const feature = shell.newChild('catalog');
 feature.setValue('catalogTitle', 'Catalog');
 shell.hasValue('catalogTitle'); // false — children do not leak upward
+feature.getValue('catalogTitle'); // 'Catalog' — local value
 ```
 
-Events travel through the tree explicitly:
+`children` is plural: a shell normally hosts several features, and a preserved
+feature stays alive across navigations. `close()` cascades depth-first through
+all of them.
 
-- `context.emit(type, payload)` — local listeners.
-- `context.broadcast(type, payload)` — every descendant.
-- `context.bubble(type, payload)` — every ancestor.
+Events are addressed explicitly:
+
+- `context.emit(type, payload)` — local listeners only.
+- `context.root.emit(type, payload)` — the shared application-wide channel; the
+  root is an ordinary context, so listeners subscribe with `root.on(...)`.
+- `context.parent?.emit(type, payload)` — a child notifying its direct owner.
+- `for (const child of context.children) child.emit(...)` — an owner notifying
+  its direct children.
+- `ContextEventGateway` — an allowlisted relay with managed teardown.
 
 Use application events for cross-context notification (a feature mounted, a
 configuration refreshed), not for durable work — that is jobs (guide 22) — and
-not for local derived state — that is signals (guide 29). `ContextEventGateway`
-adds an allowlisted relay between a child and a shell; [guide 31](31-micro-frontends.md) covers the
-micro-frontend wiring.
+not for local derived state — that is signals (guide 29).
+[Guide 31](31-micro-frontends.md) covers the micro-frontend relay wiring, and
+[guide 49](49-configuration-layering-and-context-composition.md) covers the
+composition and event model end to end.
 
 Closing a context closes its children depth-first, then stops its lifecycle
 processor, destroys its beans, and detaches from the parent. `close` is a

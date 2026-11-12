@@ -46,6 +46,10 @@ pnpm lint            # Check code quality
 pnpm lint   # enforces integration-layer imports, internal-file imports/exports
 ```
 
+The tracked `.githooks/pre-commit` hook (enabled via `pnpm hooks:install`) also
+runs `pnpm format:check` on every commit, so formatting drift is caught before
+it reaches CI. Releases bypass both with `ALLOW_PRIMARY_COMMIT=1`.
+
 Naming conventions live in STYLE_GUIDE.md §3 and are enforced mechanically
 where a rule exists: acronym casing (`internal/no-mixed-case-acronyms`), the
 `Abstract` prefix (`internal/no-abstract-class-without-prefix`), UPPER_SNAKE_CASE

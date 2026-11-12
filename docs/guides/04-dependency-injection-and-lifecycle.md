@@ -67,9 +67,9 @@ constructor and let the scope strategy create instances lazily. The boot presets
 accept an array of configuration classes:
 
 ```ts
-import { runNodeApplication } from '@ndigo/platform-node';
+import { createNodeApplication } from '@ndigo/platform-node';
 
-const app = await runNodeApplication([AppConfiguration], { port: 3000 });
+const app = await createNodeApplication([AppConfiguration], { port: 3000 });
 ```
 
 A class can also act as its own factory — the **constructor-factory dual

@@ -12,12 +12,12 @@ is worth reading.
 
 ## What you'll learn
 
-- Bootstrap with `runNodeApplication` and control the manual `ApplicationBuilder` path.
+- Bootstrap with `createNodeApplication` and control the manual `ApplicationBuilder` path.
 - Bind configuration classes and register `@entry` entries.
 - Map controllers and bind request arguments across every source.
 - Return the RFC 9457 error contract and shut the server down cleanly.
 
-## 1. Bootstrap: `runNodeApplication`
+## 1. Bootstrap: `createNodeApplication`
 
 An application is assembled around a DI container. The Node preset
 (`@ndigo/platform-node`, ) wires the standard assembly — platform
@@ -27,9 +27,9 @@ handle:
 
 ```ts
 import 'node:process';
-import { runNodeApplication } from '@ndigo/platform-node';
+import { createNodeApplication } from '@ndigo/platform-node';
 
-const app = await runNodeApplication([AppConfiguration], { port: 3000 });
+const app = await createNodeApplication([AppConfiguration], { port: 3000 });
 // app.context — the refreshed DI container (every entry stays reachable)
 // app.server  — the started HTTPServer
 // app.port    — the bound port
@@ -181,7 +181,7 @@ processor starts entries that are `isAutoStartup`; on `close` it stops them.
 
 Because `refresh` must never bind sockets, the server is
 `isAutoStartup = false`: the app starts it explicitly and awaits readiness.
-`runNodeApplication` (1) does this for you and returns the started server;
+`createNodeApplication` (1) does this for you and returns the started server;
 on the manual path:
 
 ```ts

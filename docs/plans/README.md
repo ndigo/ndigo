@@ -71,7 +71,7 @@ the version manifest behind `update`, `writeOpenAPISpec`, and log following.
 
 `create-ndigo-app` (AD-92): an unscoped `npm create ndigo-app` bin that
 scaffolds a standalone pnpm project (node + browser kinds) using the AD-90
-presets (`runNodeApplication` / `createWebApplication`), with `--local` dev
+presets (`createNodeApplication` / `createWebApplication`), with `--local` dev
 mode against the workspace and a copied decorator-lowering plugin. Templates
 follow guide 29 conventions; scaffolded apps pass `pnpm install` + `pnpm
 build` + `pnpm test` (smoke + bundle guard) in dev mode. Supersedes AD-85
@@ -85,7 +85,7 @@ D-2's "post-1.0" gate — ships at 1.0.
 
 `@ndigo/boot` + `@ndigo/platform-node` + `@ndigo/platform-web` (AD-90):
 additive entrypoint presets that compose the existing auto-configurations —
-**`runNodeApplication`** (NodeAutoConfiguration + NodeEnvironment + config
+**`createNodeApplication`** (NodeAutoConfiguration + NodeEnvironment + config
 files via the new `nodeConfigFileReader` + the managed `HTTP_SERVER` start +
 `gracefulShutdown`, with `configureBuilder` / `beforeStart` / `resources` /
 `shutdown` / `platform` / `configFiles` / `port` opt-outs) and

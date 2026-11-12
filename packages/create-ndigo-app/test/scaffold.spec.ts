@@ -34,7 +34,7 @@ describe('create-ndigo-app scaffold', () => {
         expect(existsSync(join(targetDir, 'test', 'scaffoldtest.smoke.spec.ts'))).toBe(true);
 
         const index = await readFile(join(targetDir, 'src', 'index.ts'), 'utf8');
-        expect(index).toContain('runNodeApplication');
+        expect(index).toContain('createNodeApplication');
         expect(index).toContain('port: 3000');
 
         const manifest = JSON.parse(readFileSync(join(targetDir, 'package.json'), 'utf8'));

@@ -96,7 +96,7 @@ transports, then close the context (guide 04 and
 4. `context.close` — lifecycle `stop` in descending phase order, then entry
    `destroy`/`close`.
 
-`runNodeApplication` and `ndigo serve` install the `SIGINT`/`SIGTERM` handler;
+`createNodeApplication` and `ndigo serve` install the `SIGINT`/`SIGTERM` handler;
 a second signal, a throwing close, or a teardown past `timeoutMs` (default 10s)
 force-exits non-zero. Set the platform's termination grace period above your
 drain time. A clustered supervisor waits for children and reaps stragglers.

@@ -99,7 +99,7 @@ describe('GenericApplicationContext', () => {
         expect(context.getValue<number>('fromProcessor')).toBe(123);
     });
 
-    test('it should bubble events up the context tree', () => {
+    test('it should keep local events local to the emitting context', () => {
         const parent = new GenericApplicationContext('parent');
         context.setParent(parent);
 
@@ -109,24 +109,57 @@ describe('GenericApplicationContext', () => {
         parent.on('test:event', parentListener);
         context.on('test:event', childListener);
 
-        context.bubble('test:event', { hello: 'world' });
+        context.emit('test:event', { hello: 'world' });
 
         expect(childListener).toHaveBeenCalledTimes(1);
-        expect(parentListener).toHaveBeenCalledTimes(1);
+        expect(parentListener).not.toHaveBeenCalled();
     });
 
-    test('it should broadcast events down the context tree', () => {
+    test('it should use the root context as the shared channel', () => {
         const child = context.newChild('child') as GenericApplicationContext;
-        const parentListener = vi.fn();
+        const rootListener = vi.fn();
         const childListener = vi.fn();
 
-        context.on('broadcast:event', parentListener);
-        child.on('broadcast:event', childListener);
+        context.on('shared:event', rootListener);
+        child.on('shared:event', childListener);
 
-        context.broadcast('broadcast:event', 1, 2, 3);
+        (child as unknown as { root: GenericApplicationContext }).root.emit('shared:event', 1);
+
+        expect(rootListener).toHaveBeenCalledTimes(1);
+        expect(childListener).not.toHaveBeenCalled();
+    });
+
+    test('it should address a direct parent explicitly', () => {
+        const parent = new GenericApplicationContext('parent');
+        context.setParent(parent);
+
+        const parentListener = vi.fn();
+        const localListener = vi.fn();
+
+        parent.on('up:event', parentListener);
+        context.on('up:event', localListener);
+
+        context.parent?.emit('up:event', 'data');
 
         expect(parentListener).toHaveBeenCalledTimes(1);
+        expect(localListener).not.toHaveBeenCalled();
+    });
+
+    test('it should address direct children without reaching grandchildren', () => {
+        const child = context.newChild('child') as GenericApplicationContext;
+        const grandchild = child.newChild('grandchild') as GenericApplicationContext;
+        const childListener = vi.fn();
+        const grandchildListener = vi.fn();
+
+        child.on('down:event', childListener);
+        grandchild.on('down:event', grandchildListener);
+
+        for (const directChild of context.children) {
+            directChild.emit('down:event');
+        }
+
         expect(childListener).toHaveBeenCalledTimes(1);
+        expect(grandchildListener).not.toHaveBeenCalled();
     });
 
     test('it should close and cascade destruction to child contexts', () => {
@@ -272,69 +305,6 @@ describe('GenericApplicationContext', () => {
 });
 
 describe('GenericApplicationContext — propagation edge cases', () => {
-    test('broadcast reaches grandchildren (depth > 1)', () => {
-        const root = new GenericApplicationContext('root');
-        const child = root.newChild('child') as GenericApplicationContext;
-        const grandchild = child.newChild('grandchild') as GenericApplicationContext;
-
-        const rootListener = vi.fn();
-        const childListener = vi.fn();
-        const grandchildListener = vi.fn();
-
-        root.on('deep:event', rootListener);
-        child.on('deep:event', childListener);
-        grandchild.on('deep:event', grandchildListener);
-
-        root.broadcast('deep:event', 42);
-
-        expect(rootListener).toHaveBeenCalledTimes(1);
-        expect(childListener).toHaveBeenCalledTimes(1);
-        expect(grandchildListener).toHaveBeenCalledTimes(1);
-
-        root.destroy();
-    });
-
-    test('broadcast does not fire on sibling contexts', () => {
-        const root = new GenericApplicationContext('root');
-        const siblingA = root.newChild('siblingA') as GenericApplicationContext;
-        const siblingB = root.newChild('siblingB') as GenericApplicationContext;
-
-        const listenerA = vi.fn();
-        const listenerB = vi.fn();
-
-        siblingA.on('sibling:event', listenerA);
-        siblingB.on('sibling:event', listenerB);
-
-        siblingA.broadcast('sibling:event');
-
-        expect(listenerA).toHaveBeenCalledTimes(1); // fires on broadcaster itself
-        expect(listenerB).not.toHaveBeenCalled();
-
-        root.destroy();
-    });
-
-    test('bubble reaches grandparent (depth > 1)', () => {
-        const grandparent = new GenericApplicationContext('grandparent');
-        const parent = grandparent.newChild('parent') as GenericApplicationContext;
-        const child = parent.newChild('child') as GenericApplicationContext;
-
-        const grandparentListener = vi.fn();
-        const parentListener = vi.fn();
-        const childListener = vi.fn();
-
-        grandparent.on('up:event', grandparentListener);
-        parent.on('up:event', parentListener);
-        child.on('up:event', childListener);
-
-        child.bubble('up:event', 'data');
-
-        expect(childListener).toHaveBeenCalledTimes(1);
-        expect(parentListener).toHaveBeenCalledTimes(1);
-        expect(grandparentListener).toHaveBeenCalledTimes(1);
-
-        grandparent.destroy();
-    });
-
     test('close propagates to grandchildren (depth > 1)', () => {
         const root = new GenericApplicationContext('root');
         const child = root.newChild('child') as GenericApplicationContext;
@@ -452,69 +422,6 @@ describe('ApplicationContextAwareProcessor', () => {
 });
 
 describe('GenericApplicationContext — propagation edge cases', () => {
-    test('broadcast reaches grandchildren (depth > 1)', () => {
-        const root = new GenericApplicationContext('root');
-        const child = root.newChild('child') as GenericApplicationContext;
-        const grandchild = child.newChild('grandchild') as GenericApplicationContext;
-
-        const rootListener = vi.fn();
-        const childListener = vi.fn();
-        const grandchildListener = vi.fn();
-
-        root.on('deep:event', rootListener);
-        child.on('deep:event', childListener);
-        grandchild.on('deep:event', grandchildListener);
-
-        root.broadcast('deep:event', 42);
-
-        expect(rootListener).toHaveBeenCalledTimes(1);
-        expect(childListener).toHaveBeenCalledTimes(1);
-        expect(grandchildListener).toHaveBeenCalledTimes(1);
-
-        root.destroy();
-    });
-
-    test('broadcast does not fire on sibling contexts', () => {
-        const root = new GenericApplicationContext('root');
-        const siblingA = root.newChild('siblingA') as GenericApplicationContext;
-        const siblingB = root.newChild('siblingB') as GenericApplicationContext;
-
-        const listenerA = vi.fn();
-        const listenerB = vi.fn();
-
-        siblingA.on('sibling:event', listenerA);
-        siblingB.on('sibling:event', listenerB);
-
-        siblingA.broadcast('sibling:event');
-
-        expect(listenerA).toHaveBeenCalledTimes(1); // fires on broadcaster itself
-        expect(listenerB).not.toHaveBeenCalled();
-
-        root.destroy();
-    });
-
-    test('bubble reaches grandparent (depth > 1)', () => {
-        const grandparent = new GenericApplicationContext('grandparent');
-        const parent = grandparent.newChild('parent') as GenericApplicationContext;
-        const child = parent.newChild('child') as GenericApplicationContext;
-
-        const grandparentListener = vi.fn();
-        const parentListener = vi.fn();
-        const childListener = vi.fn();
-
-        grandparent.on('up:event', grandparentListener);
-        parent.on('up:event', parentListener);
-        child.on('up:event', childListener);
-
-        child.bubble('up:event', 'data');
-
-        expect(childListener).toHaveBeenCalledTimes(1);
-        expect(parentListener).toHaveBeenCalledTimes(1);
-        expect(grandparentListener).toHaveBeenCalledTimes(1);
-
-        grandparent.destroy();
-    });
-
     test('close propagates to grandchildren (depth > 1)', () => {
         const root = new GenericApplicationContext('root');
         const child = root.newChild('child') as GenericApplicationContext;

@@ -2,7 +2,7 @@
  * Parent/child application context hierarchy.
  */
 import { ContentSource, ThemeResolver } from '@ndigo/content';
-import { JSONObject, escalate } from '@ndigo/core';
+import { JSONObject } from '@ndigo/core';
 import { likeCloseable } from '@ndigo/factory';
 import { ConfigurableEnvironment } from './environment';
 import { ApplicationContext, GenericApplicationContext } from './context';
@@ -152,81 +152,4 @@ export const unmountFeatureContext = (
     if (policy === 'close' && likeCloseable(feature.context)) {
         feature.context.close();
     }
-};
-
-/**
- * Walk from `context` up to root (inclusive), invoking `visitor` for each node.
- *
- * @param context - The starting context.
- * @param visitor - A callback invoked for each visited context; its return value is ignored.
- */
-export const traverseToRoot = (context: ApplicationContext, visitor: (context: ApplicationContext) => void): void => {
-    escalate(
-        context,
-        (node) => {
-            visitor(node);
-        },
-        true
-    );
-};
-
-/**
- * Walk a subtree depth-first from `context` (inclusive), invoking `visitor` for each node.
- *
- * @param context - The subtree root.
- * @param visitor - A callback invoked for each visited context; its return value is ignored.
- */
-export const traverseSubtree = (context: ApplicationContext, visitor: (context: ApplicationContext) => void): void => {
-    // Keep live child iteration: visitors may append siblings that must also be visited.
-    visitor(context);
-
-    for (const child of context.children) {
-        traverseSubtree(child, visitor);
-    }
-};
-
-/**
- * Find the first ancestor (excluding self) that matches `predicate`.
- *
- * @param context - The starting context.
- * @param predicate - Matching predicate.
- * @returns The first matching ancestor, if found.
- */
-export const findAncestor = (
-    context: ApplicationContext,
-    predicate: (context: ApplicationContext) => boolean
-): ApplicationContext | undefined => {
-    let node = context.parent;
-
-    while (node) {
-        if (predicate(node)) {
-            return node;
-        }
-
-        node = node.parent;
-    }
-
-    return undefined;
-};
-
-/**
- * Find descendants (excluding root `context`) that match `predicate`.
- *
- * @param context - The subtree root.
- * @param predicate - Matching predicate.
- * @returns Matching descendants.
- */
-export const findDescendants = (
-    context: ApplicationContext,
-    predicate: (context: ApplicationContext) => boolean
-): ApplicationContext[] => {
-    const descendants: ApplicationContext[] = [];
-
-    traverseSubtree(context, (node) => {
-        if (node !== context && predicate(node)) {
-            descendants.push(node);
-        }
-    });
-
-    return descendants;
 };

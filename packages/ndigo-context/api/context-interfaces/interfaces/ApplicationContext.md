@@ -154,58 +154,6 @@ The entry processor to add.
 
 ***
 
-### broadcast()
-
-> **broadcast**(`type`, ...`data`): `void`
-
-Broadcasts an event to all direct and indirect children of this context.
-
-#### Parameters
-
-##### type
-
-[`EventType`](../../event-emitter/type-aliases/EventType.md)
-
-The type of the event.
-
-##### data
-
-...`unknown`[]
-
-The data associated with the event.
-
-#### Returns
-
-`void`
-
-***
-
-### bubble()
-
-> **bubble**(`type`, ...`data`): `void`
-
-Bubbles an event up the context hierarchy to all parent contexts.
-
-#### Parameters
-
-##### type
-
-[`EventType`](../../event-emitter/type-aliases/EventType.md)
-
-The type of the event.
-
-##### data
-
-...`unknown`[]
-
-The data associated with the event.
-
-#### Returns
-
-`void`
-
-***
-
 ### close()
 
 > **close**(): `void`

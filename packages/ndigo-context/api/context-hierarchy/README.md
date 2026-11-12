@@ -22,8 +22,4 @@ Parent/child application context hierarchy.
 
 - [createFeatureContext](functions/createFeatureContext.md)
 - [createShellContext](functions/createShellContext.md)
-- [findAncestor](functions/findAncestor.md)
-- [findDescendants](functions/findDescendants.md)
-- [traverseSubtree](functions/traverseSubtree.md)
-- [traverseToRoot](functions/traverseToRoot.md)
 - [unmountFeatureContext](functions/unmountFeatureContext.md)

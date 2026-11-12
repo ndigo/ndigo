@@ -80,18 +80,6 @@ export interface ApplicationContext
     destroyedTimestamp?: number;
 
     /**
-     * Broadcasts an event to all direct and indirect children of this context.
-     * @param type - The type of the event.
-     * @param data - The data associated with the event.
-     */
-    broadcast(type: EventType, ...data: unknown[]): void;
-    /**
-     * Bubbles an event up the context hierarchy to all parent contexts.
-     * @param type - The type of the event.
-     * @param data - The data associated with the event.
-     */
-    bubble(type: EventType, ...data: unknown[]): void;
-    /**
      * Closes this application context and all of its descendants, then destroys associated resources.
      *
      * **Sequence:**

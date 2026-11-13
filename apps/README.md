@@ -22,14 +22,14 @@ and file-naming convention is in
 
 | #   | Directory                  | Package                  | Runtime             | Dev port         | Demonstrates                                                                                                                                                                                                                       |
 | --- | -------------------------- | ------------------------ | ------------------- | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | `01-ndigo-hello`           | `@ndigo/hello`           | Browser (Vite)      | 3001             | Browser — context + route + template/Web Component render                                                                                                                                                                          |
+| 1   | `01-ndigo-hello`           | `@ndigo/hello`           | Browser (Vite)      | 3001             | Browser — the minimal SPA: context, route, and a handler-built view (decentralized placement)                                                                                                                                      |
 | 2   | `02-ndigo-hello-node`      | `@ndigo/hello-node`      | Node (`tsx`)        | 3010             | Node — `HTTPServer` + `NodeDispatcher` + `@getMapping`, JSON responses, WebSocket echo                                                                                                                                             |
 | 3   | `03-ndigo-todo-web`        | `@ndigo/todo-web`        | Browser (Vite)      | 3003             | Browser — TodoMVC + micro frontend shell (`@ndigo/host` one-call registration, relay gateway)                                                                                                                                      |
 | 4   | `04-ndigo-todo-api`        | `@ndigo/todo-api`        | Node (`tsx`)        | 3030             | Node — the Todo-Backend REST spec (CRUD + CORS/HEAD/OPTIONS/status contract), verified against the public runner's checklist                                                                                                       |
 | 5   | `05-ndigo-api`             | `@ndigo/api`             | Node (`tsx`)        | 3000             | Node — controllers, opaque session-token auth, ORM (+Drizzle), content negotiation, problem+json errors, **management `/health`/`/metrics`**, **Accept-Language i18n**, config bindings                                            |
 | 6   | `06-ndigo-host-demo`       | `@ndigo/host-demo`       | Browser (Vite)      | 3100             | Browser — micro frontend host: `@ndigo/host` `HostManager` + 3 lazy-loaded feature chunks, shared-dependency validation                                                                                                            |
 | 7   | `07-ndigo-island`          | `@ndigo/island`          | Node + built client | 3200             | Node SSR — EJS shell + island hydration, SSE push → `@ndigo/signals`, typed service stream, registry-installed ndigo-ui controls (AD-95)                                                                                           |
-| 8   | `08-ndigo-views`           | `@ndigo/views`           | Browser (Vite)      | 3005             | Browser — view-resolution composite (three view locations), i18n (`@ndigo/content`), HTTP client with cache + offline queueing                                                                                                     |
+| 8   | `08-ndigo-views`           | `@ndigo/views`           | Browser (Vite)      | 3005             | Browser — view-resolution composite (three view locations) + centralized view targeting (named regions), i18n (`@ndigo/content`), HTTP client with cache + offline queueing                                                        |
 | 9   | `09-ndigo-httpbin`         | `@ndigo/httpbin`         | Node (`tsx`)        | 3020             | Node — HTTP semantics playground: cross-source binding, redirects/status/cookies/auth challenges, compression, rate limiting, matrix params (modelled on httpbin)                                                                  |
 | 10  | `10-ndigo-conduit-web`     | `@ndigo/conduit-web`     | Browser (Vite)      | 3400             | Browser — RealWorld frontend: hash routes, auth guard + 401 session drop, forms with error-envelope mapping, optimistic favorite/follow with rollback, markdown (escape-by-default), pagination (proxies `/api` → the Conduit API) |
 | 11  | `11-ndigo-conduit-api`     | `@ndigo/conduit-api`     | Node (`tsx`)        | 3040             | Node — RealWorld (Conduit) API conformance: JWT auth, articles/comments/tags/favorites/follows, pagination + filters, spec-exact error envelope                                                                                    |
@@ -49,6 +49,9 @@ and file-naming convention is in
 ### 01-ndigo-hello
 
 Minimal Ndigo SPA: a context, a route, and a Web Component view saying hello.
+
+The handler returns a realized view and placement stays on the registered
+target — the decentralized counterpoint to 08's centralized regions.
 
 ```bash
 cd apps/01-ndigo-hello && pnpm dev
@@ -131,8 +134,10 @@ cd apps/07-ndigo-island && pnpm dev
 ### 08-ndigo-views
 
 View-resolution demo: one ordered resolver chain over three view locations
-(component module, context entry, module on disk). Content negotiation — one
-logical view served as JSON or CSV — lives in
+(component module, context entry, module on disk), plus centralized view
+targeting: a `ViewsTargetingConfiguration` places results by view name
+(`shell`/`footer` → regions) and by route (`/report` → sidebar). Content
+negotiation — one logical view served as JSON or CSV — lives in
 [05-ndigo-api](05-ndigo-api/README.md).
 
 ```bash

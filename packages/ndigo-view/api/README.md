@@ -24,3 +24,4 @@ View contracts, view targets, and content-negotiation resolution for Ndigo — t
 - [view-mapping](view-mapping/README.md)
 - [view-resolver](view-resolver/README.md)
 - [view-target](view-target/README.md)
+- [view-targeter](view-targeter/README.md)

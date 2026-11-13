@@ -670,6 +670,12 @@ Re-exports [ModelAndView](../model-and-view/classes/ModelAndView.md)
 
 ***
 
+### ModelAndViewOptions
+
+Re-exports [ModelAndViewOptions](../model-and-view/interfaces/ModelAndViewOptions.md)
+
+***
+
 ### NamePathHandlerMapping
 
 Re-exports [NamePathHandlerMapping](../name-path-handler-mapping/classes/NamePathHandlerMapping.md)
@@ -1213,6 +1219,12 @@ Re-exports [ValidationIssue](../zod-validated-by/interfaces/ValidationIssue.md)
 ### VIEW\_TARGET
 
 Re-exports [VIEW_TARGET](../context-tokens/variables/VIEW_TARGET.md)
+
+***
+
+### VIEW\_TARGET\_ATTRIBUTE
+
+Re-exports [VIEW_TARGET_ATTRIBUTE](../context-tokens/variables/VIEW_TARGET_ATTRIBUTE.md)
 
 ***
 

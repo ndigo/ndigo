@@ -58,6 +58,19 @@ export const MAX_VIEW_CACHE_ENTRIES = 1024;
  */
 export class BoundedCache<V> {
     readonly #entries = new Map<string, V>();
+    readonly #onEvict: ((value: V, key: string) => void) | undefined;
+
+    /**
+     * Creates a bounded cache.
+     *
+     * @param onEvict - Called with the value and key removed from the cache —
+     *   by overflow eviction or {@link BoundedCache.clear} — so owners of
+     *   stateful entries (DOM targets holding event listeners) can release
+     *   them instead of leaking them.
+     */
+    constructor(onEvict?: (value: V, key: string) => void) {
+        this.#onEvict = onEvict;
+    }
 
     /**
      * Number of cached entries.
@@ -87,10 +100,25 @@ export class BoundedCache<V> {
         if (!this.#entries.has(key) && this.#entries.size >= MAX_VIEW_CACHE_ENTRIES) {
             const oldest = this.#entries.keys().next().value;
             if (oldest !== undefined) {
+                const evicted = this.#entries.get(oldest);
                 this.#entries.delete(oldest);
+                if (evicted !== undefined) {
+                    this.#onEvict?.(evicted, oldest);
+                }
             }
         }
         this.#entries.set(key, value);
+    }
+
+    /**
+     * Removes every cached value, reporting each to the eviction callback so
+     * owners can release stateful entries (DOM targets holding listeners).
+     */
+    clear(): void {
+        for (const [key, value] of this.#entries) {
+            this.#onEvict?.(value, key);
+        }
+        this.#entries.clear();
     }
 
     /**

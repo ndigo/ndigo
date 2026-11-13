@@ -178,6 +178,18 @@ The ordered view resolvers.
 
 `AbstractDispatcher.viewResolvers`
 
+***
+
+### viewTargeters
+
+> **viewTargeters**: `ViewTargeter`[]
+
+The ordered view targeters.
+
+#### Inherited from
+
+`AbstractDispatcher.viewTargeters`
+
 ## Accessors
 
 ### \[$aware\]
@@ -702,16 +714,42 @@ The application context.
 
 ***
 
+### initViewTargeters()
+
+> **initViewTargeters**(`context`): `void`
+
+Installs the view-targeter chain.
+
+#### Parameters
+
+##### context
+
+`ApplicationContext`
+
+The application context.
+
+#### Returns
+
+`void`
+
+#### Inherited from
+
+`AbstractDispatcher.initViewTargeters`
+
+***
+
 ### render()
 
 > **render**(`mv`, `route`): `Promise`\<`void`\>
 
-Render the given `ModelAndView` to the HTTP response.
+Render the given handler result to the HTTP response.
 
-Reads the `ServerResponse` from `route.attributes[NODE_RESPONSE_ATTRIBUTE]`
-(set by the HTTP server adapter) and renders according to the result
-shape: response entities and document-producing views write the response
-directly; fragment views render into an `HTTPResponseViewTarget`.
+Node-only result shapes are written before the shared pipeline runs:
+response entities, document-producing views, and plain JSON values are
+complete documents. Everything else — a named view, a realized view, or
+a bare view instance — resolves a target (the registered
+`ResponseViewTargeter`, an explicit result target, or the response
+fallback) and renders through the shared pipeline.
 
 #### Parameters
 
@@ -719,13 +757,13 @@ directly; fragment views render into an `HTTPResponseViewTarget`.
 
 [`ModelAndView`](#)
 
-The `ModelAndView` to render.
+The handler result to render.
 
 ##### route
 
 [`Route`](#)
 
-The route associated with the `ModelAndView`.
+The route associated with the result.
 
 #### Returns
 

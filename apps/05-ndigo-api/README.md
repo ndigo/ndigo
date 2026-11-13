@@ -70,6 +70,29 @@ GET  /swagger-ui/              Swagger UI (AD-35; Bearer-gated, SEC-4)
 - RFC 9457 problem+json error envelope
 - Scheduled heartbeat task (`@scheduled`, auto-discovered and auto-started; see the [scheduling guide](../../docs/guides/23-scheduling.md))
 
+## View targeting
+
+Node ships one default target: `ResponseViewTargeter`, registered by
+`NodeAutoConfiguration`, writes each render pass to the per-request
+`ServerResponse`. That is the pre-chain behavior, now expressed as a one-entry
+`viewTargeters` chain, so `ModelAndView('report')` still becomes an HTTP
+response with no configuration.
+
+Add your own entry ahead of it (or replace it) to redirect selected renders —
+e.g. stream `/report` into a file or a test sink — while leaving every other
+route on the response. The chain is first-match-wins, and a `ModelAndView`
+that carries its own `viewTarget` always wins over the chain:
+
+```ts
+@entry()
+viewTargeters() {
+    return [new ReportFileTargeter(), new ResponseViewTargeter()];
+}
+```
+
+See [guide 09 §7](../../docs/guides/09-views-and-content-negotiation.md) for the
+centralized-vs-decentralized trade-offs.
+
 ## Socket authentication
 
 The app wires socket identity declaratively: `NodeAppConfiguration`'s

@@ -11,6 +11,7 @@ import type { Route, RouterInterceptor } from '@ndigo/router';
 import { getLogger } from '@ndigo/log';
 import { getErrorMessage } from '@ndigo/util';
 import type { DOMElementViewTarget } from '@ndigo/view-webcomponent';
+import type { ViewTargeter } from '@ndigo/view';
 import { BrowserDispatcher } from './browser-dispatcher';
 import { BrowserEnvironment } from './browser-environment';
 import { HashRouter } from './hash-router';
@@ -63,6 +64,12 @@ export interface CreateWebApplicationOptions {
     eventMap?: Record<string, string>;
     /** Router interceptors installed before the first navigation. */
     interceptors?: readonly RouterInterceptor[];
+    /**
+     * Ordered view targeters, registered before strategy initialization so the
+     * dispatcher installs them. First non-`null` target wins; when none
+     * matches, output renders into `root`. Empty by default.
+     */
+    viewTargeters?: readonly ViewTargeter[];
     /** First navigation path. Defaults to the path the URL currently addresses. */
     initialPath?: string;
     /** `true` (default) performs the first navigation. */
@@ -90,6 +97,8 @@ export interface WebApplication {
     readonly router: HashRouter;
     /** The DOM view target routes render into. */
     readonly viewTarget: DOMElementViewTarget;
+    /** The installed view-targeter chain (configured plus preset). */
+    readonly viewTargeters: readonly ViewTargeter[];
     /** Destroys the router, the view target, and the context. Idempotent. */
     destroy(): void;
 }
@@ -141,12 +150,15 @@ export async function createWebApplication(
     let dispatcher: BrowserDispatcher;
     let viewTarget: DOMElementViewTarget;
     let router: HashRouter;
+    let viewEngine: typeof import('@ndigo/view-webcomponent') | undefined;
     let destroyed = false;
     const destroy = (): void => {
         if (destroyed) return;
         destroyed = true;
         router.destroy();
         viewTarget.destroy();
+        // Cached DOM targets hold event listeners; release them with the app.
+        viewEngine?.destroyViewTargeters(dispatcher?.viewTargeters);
         context.close();
     };
 
@@ -154,6 +166,11 @@ export async function createWebApplication(
         const root = resolveRoot(options.root ?? DEFAULT_ROOT);
 
         dispatcher = new BrowserDispatcher();
+        // Register the chain before strategy init so the dispatcher installs
+        // it; a context value set afterwards would be invisible.
+        if (options.viewTargeters?.length) {
+            context.setValue('viewTargeters', [...options.viewTargeters]);
+        }
         dispatcher.initStrategies(context);
         dispatcher.applicationContext = context;
 
@@ -161,7 +178,7 @@ export async function createWebApplication(
         // classes that extend `HTMLElement` at module load, so a static import
         // would make the barrel unimportable outside a DOM. The preset only
         // runs in a DOM; the engine loads on first use.
-        const viewEngine = await import('@ndigo/view-webcomponent');
+        viewEngine = await import('@ndigo/view-webcomponent');
         viewTarget = new viewEngine.DOMElementViewTarget(root, { eventMap: options.eventMap ?? {} });
         viewTarget.setApplicationContext(context);
 
@@ -179,7 +196,14 @@ export async function createWebApplication(
         throw error;
     }
 
-    const app: WebApplication = { context, dispatcher, router, viewTarget, destroy };
+    const app: WebApplication = {
+        context,
+        dispatcher,
+        router,
+        viewTarget,
+        viewTargeters: dispatcher.viewTargeters ?? [],
+        destroy,
+    };
 
     try {
         await options.beforeNavigate?.(app);

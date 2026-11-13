@@ -27,6 +27,7 @@
     "@ndigo/dispatcher": "~0.0.1",
     "@ndigo/platform-web": "~0.0.1",
     "@ndigo/test": "~0.0.1",
+    "@ndigo/view": "~0.0.1",
     "@tsmetadata/polyfill": "catalog:",
     "vite": "catalog:"
   }

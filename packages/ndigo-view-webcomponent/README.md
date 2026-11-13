@@ -29,6 +29,38 @@ class TodoItemView extends AbstractWebComponent {
 
 ## Usage
 
+### Targeting DOM regions
+
+The built-in targeters choose _where_ a render lands. They share one cached
+selector engine (`SelectorViewTargeter`) and are ordered — the first non-`null`
+target wins:
+
+```ts
+import { NameViewTargeter, RouteViewTargeter, idSelector } from '@ndigo/view-webcomponent';
+
+const targeters = [
+    // map form: the view name is a lookup key, never selector text
+    new NameViewTargeter({ shell: '#app', footer: '#site-footer' }),
+    // or the convention form, which escapes the name: view "hello" → #hello
+    new NameViewTargeter(idSelector),
+    // route patterns use the router's URL-glob matcher, in declaration order
+    new RouteViewTargeter({ '/report/**': '#sidebar' }),
+];
+```
+
+- **`NameViewTargeter`** — view name → selector (map or function).
+- **`RouteViewTargeter`** — route pattern → selector (`PathMatcher` from
+  `@ndigo/core`).
+- **`AttributeViewTargeter`** — a route attribute (default key `viewTarget`) →
+  selector.
+
+A missing element, a detached host, a malformed selector, or a throwing
+selector function **declines** (the chain continues); selectors come from
+static configuration only — escape dynamic ids with `CSS.escape`/`idSelector`.
+Targets are cached per `selector + mount` (`element`, `shadow`, `iframe`) and
+destroyed on eviction or `destroyViewTargeters(targeters)`, which
+`createWebApplication` calls for you.
+
 ### Hydrating islands
 
 ```ts
@@ -129,6 +161,7 @@ how it fits with the rest of Ndigo.
 - **`AbstractWebComponent`** — base class with the `create`/`emit` lifecycle for component-backed views; acquire a shadow root with `ensureShadowRoot()` so a parser-created declarative root is adopted (not re-attached) at upgrade — the acquired root is cached, so a **closed** root is reused on later calls, and a mode mismatch throws instead of silently returning the wrong root
 - **Engine** — per-element mount logic, model binding, DOM target (`DOMElementViewTarget`), and event bridging to Ndigo signals
 - **View targets** — `DOMElementViewTarget` (element host), `ShadowRootViewTarget` (open shadow root), `IframeViewTarget` (same-origin iframe document)
+- **View targeters** — `SelectorViewTargeter` (cached `selector + mount` engine), `NameViewTargeter`, `RouteViewTargeter`, `AttributeViewTargeter`, `idSelector`, `destroyViewTargeters`
 - **Hydration** — `hydrateIslands` upgrades declarative-shadow islands in place (keeping the parser-created root) and replaces light-DOM markers otherwise; each marker is isolated (a throwing component is logged and skipped), a malformed `data-ndigo-model` keeps the server fallback, and hydrated markers (`data-ndigo-hydrated`) are skipped on a repeat scan
 - **Forms** — `AsFormAssociated(Base)` marks a component form-associated, routes its value through `ElementInternals.setFormValue`, and implements the FACE lifecycle (`formResetCallback`/`formDisabledCallback`/`formStateRestoreCallback`) plus `value`-attribute reflection, so native form submission and the existing server binding/Zod path work unchanged
 - **Mapping** — tag-name ↔ component mapping and view mapping layers

@@ -147,6 +147,30 @@ class UserController {
 }
 ```
 
+### View targets
+
+Rendering writes to a `ViewTarget`, and a `ViewTargeter` chooses which one per
+render pass. Node's destination is per-request, so `NodeAutoConfiguration`
+installs exactly one targeter:
+
+```ts
+import { ResponseViewTargeter } from '@ndigo/platform-node';
+
+// registered automatically as the `viewTargeter` entry
+const targeter = new ResponseViewTargeter(); // → new HTTPResponseViewTarget(getNodeResponse(route))
+```
+
+That is the pre-targeter behavior expressed as a one-entry chain, so
+`ModelAndView('page')` still becomes an HTTP response with no app configuration.
+Precedence is unchanged and strict: an explicit `ModelAndView.viewTarget` (or a
+route `viewTarget` attribute) wins over the chain, which lets tests and
+streaming transports redirect selected renders without forking the dispatcher.
+
+`ResponseEntity`, producing views (`renderTo`), plain JSON returns, and a
+`ModelAndView` with neither a view nor a name are complete documents written
+before the shared pipeline — they never construct a target. See
+[guide 09 §7](../../docs/guides/09-views-and-content-negotiation.md).
+
 ### Custom Configuration
 
 Use `configureNodeArgumentResolvers()` to register the platform resolver

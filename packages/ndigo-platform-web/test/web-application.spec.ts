@@ -4,6 +4,7 @@ import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { DISPATCHER, VIEW_TARGET } from '@ndigo/dispatcher';
 import { ROUTER } from '@ndigo/router';
 import type { RouterInterceptor } from '@ndigo/router';
+import type { ViewTargeter } from '@ndigo/view';
 import { HashRouter } from '../src/hash-router';
 import { createWebApplication } from '../src/web-application';
 import type { CreateWebApplicationOptions, WebApplication } from '../src/web-application';
@@ -151,6 +152,35 @@ describe('createWebApplication', () => {
         expect(app.router.destroyed).toBe(true);
         expect(app.viewTarget.destroyed).toBe(true);
         expect(app.context.isActive).toBe(false);
+    });
+
+    test('installs no view targeters by default', async () => {
+        const app = await boot();
+
+        expect(app.viewTargeters).toEqual([]);
+    });
+
+    test('registers the viewTargeters option before strategy initialization', async () => {
+        const targeter: ViewTargeter = { resolveViewTarget: () => null };
+        const app = await boot({ viewTargeters: [targeter] });
+
+        // Installed on the dispatcher, not just stored on the context: a value
+        // set after `initStrategies` would be invisible.
+        expect(app.dispatcher.viewTargeters).toEqual([targeter]);
+        expect(app.viewTargeters).toEqual([targeter]);
+    });
+
+    test('destroy() destroys view targeters that own cached targets', async () => {
+        const destroy = vi.fn(),
+            targeter: ViewTargeter = { resolveViewTarget: () => null, destroyed: false, destroy } as ViewTargeter & {
+                destroyed: boolean;
+                destroy: () => void;
+            };
+        const app = await boot({ viewTargeters: [targeter] });
+
+        app.destroy();
+
+        expect(destroy).toHaveBeenCalledTimes(1);
     });
 
     test('applies the name, profiles, and properties to the context', async () => {

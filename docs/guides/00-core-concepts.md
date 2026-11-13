@@ -100,7 +100,47 @@ A view is a contract, not a template engine. The same handler can return:
 extension and `Accept` header) before the view resolver runs. The view target is
 the platform half: an HTTP response on Node, a DOM element in the browser.
 
-[Guide 09](09-views-and-content-negotiation.md) covers view contracts, targets, negotiation, EJS, Web Components, and
+### Centralized and decentralized rendering
+
+Who picks the destination? Both answers are supported, and the distinction is
+orthogonal to resolution — resolvers choose _what_ renders, targeters choose
+_where_.
+
+|                              | Decentralized                          | Centralized                                 |
+| :--------------------------- | :------------------------------------- | :------------------------------------------ |
+| **Controller knows**         | view type / surface                    | a logical name                              |
+| **Placement lives in**       | the handler (or the view)              | configuration                               |
+| **Change a layout**          | edit handlers                          | edit one configuration entry                |
+| **First-read clarity**       | high — everything is local             | lower — follow the name                     |
+| **Consistency across teams** | depends on discipline                  | enforced by the chain                       |
+| **One-off layouts**          | natural                                | awkward — a chain entry for one route       |
+| **Tests**                    | trivial — inject a capture target      | need the configured chain or the fallback   |
+| **Node/browser parity**      | view classes differ per platform       | same name, resolver picks the platform view |
+| **Failure mode**             | compile-time (missing constructor arg) | runtime (declines to fallback)              |
+
+A render pass resolves its destination in this order, short-circuiting at the
+first hit:
+
+1. the result's own target (`new ModelAndView(view, model, { viewTarget })`);
+2. a `VIEW_TARGET_ATTRIBUTE` on the route (middleware/interceptor);
+3. the `viewTargeters` chain — ordered, first non-`null` wins;
+4. the platform fallback (the registered `VIEW_TARGET`; the per-request
+   response on Node).
+
+- **Centralize** when the destination is part of the app's _structure_ —
+  regions, layouts, shells, dashboards.
+- **Decentralize** when the destination is intrinsic to the _result_ — a
+  stream, a per-render iframe, a captured test buffer — or when a view owns a
+  sub-layout it composes itself.
+- **Mix** as needed: centralized region selection at the top, decentralized
+  composition inside a region.
+
+Decentralized paths are cheap by construction: a realized view skips the
+resolver chain and an explicit target skips the targeter chain. Browser apps
+install no targeters by default (the preset's root target is the destination);
+Node installs one behavior-preserving response targeter.
+
+[Guide 09](09-views-and-content-negotiation.md) covers view contracts, targets, targeting, negotiation, EJS, Web Components, and
 themes.
 
 ## 4. The platform split
@@ -108,13 +148,13 @@ themes.
 The same application code runs on two platforms; the preset decides what
 "transport" and "render target" mean:
 
-| Concern       | Node (`@ndigo/platform-node`)      | Browser (`@ndigo/platform-web`) |
-| ------------- | ---------------------------------- | ------------------------------- |
-| Bootstrap     | `createNodeApplication`            | `createWebApplication`          |
-| Transport     | HTTP/1.1, HTTP/2, WebSocket server | hash/history routing, `fetch`   |
-| View target   | HTTP response                      | DOM element                     |
-| Static assets | filesystem handler / static views  | Vite dev server and bundles     |
-| Test harness  | `bootNodeApp` + `MockHTTP`         | `bootWebApp` + `MockWebClient`  |
+| Concern       | Node (`@ndigo/platform-node`)                  | Browser (`@ndigo/platform-web`)                 |
+| ------------- | ---------------------------------------------- | ----------------------------------------------- |
+| Bootstrap     | `createNodeApplication`                        | `createWebApplication`                          |
+| Transport     | HTTP/1.1, HTTP/2, WebSocket server             | hash/history routing, `fetch`                   |
+| View target   | HTTP response (default `ResponseViewTargeter`) | DOM element (`#app` fallback, opt-in targeters) |
+| Static assets | filesystem handler / static views              | Vite dev server and bundles                     |
+| Test harness  | `bootNodeApp` + `MockHTTP`                     | `bootWebApp` + `MockWebClient`                  |
 
 Platform packages are adapters, not forks: `@ndigo/platform-node` and
 `@ndigo/platform-web` wire the shared contracts to a runtime. Guides [01](01-building-a-node-api.md) and [02](02-building-a-browser-app.md)

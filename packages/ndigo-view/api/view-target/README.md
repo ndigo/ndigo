@@ -12,3 +12,7 @@ The view-target contract that receives rendered output.
 
 - [EventBridgeViewTarget](interfaces/EventBridgeViewTarget.md)
 - [ViewTarget](interfaces/ViewTarget.md)
+
+## Functions
+
+- [likeViewTarget](functions/likeViewTarget.md)

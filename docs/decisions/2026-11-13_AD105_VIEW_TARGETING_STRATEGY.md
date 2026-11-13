@@ -149,7 +149,9 @@ buffers) should not pay for a resolver or targeter chain they never use.
   `node-dispatcher.ts`, `node-auto-configuration.ts`
 - Presets: `packages/ndigo-platform-web/src/web-application.ts`
 - Docs: guide [00 §3](../guides/00-core-concepts.md), guide
-  [09 §7](../guides/09-views-and-content-negotiation.md)
+  [09 §7](../guides/09-views-and-content-negotiation.md) (basics — contract,
+  precedence, defaults), guide
+  [50](../guides/50-view-targeting.md) (the strategy in depth)
 - Related: [AD-65](2026-09-06_AD65_VIEW_RESOLUTION_STRATEGY.md) (resolver
   strategy; D-7 deferred here), [AD-89](2026-11-03_AD89_LAYER_BOUNDARIES.md)
   (layer boundaries), [AD-90](2026-11-05_AD90_APPLICATION_LIFECYCLE_PRESETS.md)

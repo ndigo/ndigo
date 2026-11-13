@@ -140,8 +140,8 @@ resolver chain and an explicit target skips the targeter chain. Browser apps
 install no targeters by default (the preset's root target is the destination);
 Node installs one behavior-preserving response targeter.
 
-[Guide 09](09-views-and-content-negotiation.md) covers view contracts, targets, targeting, negotiation, EJS, Web Components, and
-themes.
+[Guide 09](09-views-and-content-negotiation.md) covers view contracts, targets, negotiation, EJS, Web Components, and
+themes; [Guide 50](50-view-targeting.md) covers the targeting strategy in depth.
 
 ## 4. The platform split
 

@@ -17,7 +17,7 @@ class HelloController {
         // is no single place that describes the page layout. App 01 keeps this
         // as the counter-example; apps/08-ndigo-views shows the centralized
         // model (handlers return names, one configuration decides placement —
-        // see docs/guides/09-views-and-content-negotiation.md §7).
+        // see docs/guides/50-view-targeting.md).
         return new ModelAndView(new WebComponentView('hello-app'), { message: 'Hello, World!' });
     }
 }

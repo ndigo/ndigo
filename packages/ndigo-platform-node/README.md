@@ -169,7 +169,7 @@ streaming transports redirect selected renders without forking the dispatcher.
 `ResponseEntity`, producing views (`renderTo`), plain JSON returns, and a
 `ModelAndView` with neither a view nor a name are complete documents written
 before the shared pipeline — they never construct a target. See
-[guide 09 §7](../../docs/guides/09-views-and-content-negotiation.md).
+[guide 50 §7](../../docs/guides/50-view-targeting.md) for targeting on Node.
 
 ### Custom Configuration
 

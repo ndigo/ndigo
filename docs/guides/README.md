@@ -60,9 +60,12 @@ contributor guides. Numbers are reading order within a section.
   error lineage, `@errorMapping`, resolver chains, validation/binding failures,
   and denials.
 - [09 — Views, Targets & Content Negotiation](09-views-and-content-negotiation.md)
-  — view contracts, serializing views, HTTP/DOM targets, centralized vs.
-  decentralized placement, targeter chains, negotiation, resolvers, EJS and
-  Web Component views, and themes.
+  — view contracts, serializing views, HTTP/DOM targets, the placement
+  precedence, negotiation, resolvers, EJS and Web Component views, and themes.
+- [50 — View Targeting](50-view-targeting.md) — the strategy behind the
+  precedence: centralized vs. decentralized placement, the ordered
+  `viewTargeters` chain, the name/route/attribute targeters and their safety
+  rules, target ownership and teardown, and the platform defaults.
 
 ## Web and APIs
 

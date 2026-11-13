@@ -36,7 +36,8 @@ but does not scale to pages composed of several regions:
 | Dispatcher work             | Skips resolver + targeters | Runs the chains                     |
 
 Both are supported by the same pipeline — see
-[guide 09 §7](../../docs/guides/09-views-and-content-negotiation.md).
+[guide 50 — View Targeting](../../docs/guides/50-view-targeting.md) for the
+full trade-off table.
 
 ## Development
 

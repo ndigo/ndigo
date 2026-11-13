@@ -90,8 +90,8 @@ viewTargeters() {
 }
 ```
 
-See [guide 09 §7](../../docs/guides/09-views-and-content-negotiation.md) for the
-centralized-vs-decentralized trade-offs.
+See [guide 50 — View Targeting](../../docs/guides/50-view-targeting.md) for
+the centralized-vs-decentralized trade-offs.
 
 ## Socket authentication
 

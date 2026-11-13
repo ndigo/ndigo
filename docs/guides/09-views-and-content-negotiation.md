@@ -20,7 +20,7 @@ technologies.
 - Negotiate a representation from the path extension or `Accept` header.
 - Compose view resolvers for EJS, Web Components, and islands.
 - Apply view targets and themes.
-- Choose between centralized and decentralized view placement.
+- See where a render lands, and follow it into [Guide 50 — View Targeting](50-view-targeting.md) for the strategy.
 
 ## 1. The view contract
 
@@ -209,72 +209,35 @@ so a view never hard-codes its host. Fragment rendering (a partial inside a
 layout, an island inside a page) goes through the target abstraction too.
 
 A **view targeter** is the policy half: an ordered strategy that chooses _which_
-target a render pass writes to. Resolution and targeting are deliberately
-separate concerns — resolvers choose the **representation** (JSON vs. CSV,
-EJS vs. Web Component), targeters choose the **destination** (`#app` vs.
-`#sidebar`). A targeter never sees negotiation candidates and cannot change
-what is rendered; a resolver never sees the DOM.
+target a render pass writes to. Resolvers choose the **representation** (JSON
+vs. CSV, EJS vs. Web Component); targeters choose the **destination** (`#app`
+vs. `#sidebar`). This section covers the basics; the full strategy — chains,
+ordering, safety, and ownership — is
+[Guide 50 — View Targeting](50-view-targeting.md).
 
-### 7.0 Two ways to place a view
+### 7.0 Where a render lands
 
-Both models are first-class. Pick per result, not per app.
+A render pass resolves its destination in strict order — the first hit wins:
 
-**Decentralized** — the handler (or the view) owns the destination:
+1. **`ModelAndView.viewTarget`** — an explicit target on the result
+   (decentralized: the handler owns the destination).
+2. **`route.attributes[VIEW_TARGET_ATTRIBUTE]`** — a target placed on the route
+   by middleware or an interceptor.
+3. **The `viewTargeters` chain** — first targeter to return a non-`null`
+   target; the rest are not consulted.
+4. **The fallback** — the platform's registered `VIEW_TARGET`: the `#app` (or
+   `root`) target in the browser, the per-request HTTP response on Node.
 
-```ts
-// controller
-const view = new WebComponentView('hello-app');
-return new ModelAndView(view, { message: 'Hello, World!' });
-// placement: the registered VIEW_TARGET, or an explicit result target:
-// return new ModelAndView(view, model, { viewTarget });
-```
+| Layer                            | Default chain            | Fallback when no targeter matches                      |
+| :------------------------------- | :----------------------- | :----------------------------------------------------- |
+| `@ndigo/dispatcher`              | `[]` — opt-in            | the registered `VIEW_TARGET`                           |
+| Browser (`createWebApplication`) | `[]` — opt-in            | the `#app` (or `root`) target registered by the preset |
+| Node (`NodeAutoConfiguration`)   | `[ResponseViewTargeter]` | the per-request `HTTPResponseViewTarget`               |
 
-**Centralized** — the handler names the result; configuration decides the
-destination:
-
-```ts
-// controller
-return new ModelAndView('footer', model);
-```
-
-```ts
-// configuration
-@entry() viewTargeters() {
-    return [new NameViewTargeter({ footer: '#site-footer' })];
-}
-```
-
-|                              | Decentralized                          | Centralized                                 |
-| :--------------------------- | :------------------------------------- | :------------------------------------------ |
-| **Controller knows**         | view type / surface                    | a logical name                              |
-| **Placement lives in**       | the handler (or the view)              | configuration                               |
-| **Change a layout**          | edit handlers                          | edit one configuration entry                |
-| **First-read clarity**       | high — everything is local             | lower — follow the name                     |
-| **Consistency across teams** | depends on discipline                  | enforced by the chain                       |
-| **One-off layouts**          | natural                                | awkward — a chain entry for one route       |
-| **Tests**                    | trivial — inject `MemoryViewTarget`    | need the configured chain or the fallback   |
-| **Node/browser parity**      | view classes differ per platform       | same name, resolver picks the platform view |
-| **Failure mode**             | compile-time (missing constructor arg) | runtime (declines to fallback)              |
-
-Decision guide:
-
-- **Centralized** when the destination is part of the app's _structure_ —
-  regions, layouts, shells, dashboards. The handler should not know the DOM.
-- **Decentralized** when the destination is intrinsic to the _result_ — a
-  stream, an iframe created for that render, a captured test buffer — or when a
-  view genuinely owns a sub-layout it composes itself.
-- **Mixed** is expected: centralized region selection at the top, decentralized
-  composition inside a region.
-
-The pipeline makes the decentralized choice cheap rather than merely possible:
-a realized view skips the resolver chain, and an explicit target skips the
-targeter chain. Supporting both models must not tax the other — see §7.6 for
-the Node fast paths that guarantee it.
-
-Reference demos: [apps/01-ndigo-hello](https://github.com/ndigo/ndigo/tree/main/apps/01-ndigo-hello)
-is deliberately decentralized (one handler, one registered target, no chains);
-[apps/08-ndigo-views](https://github.com/ndigo/ndigo/tree/main/apps/08-ndigo-views)
-is centralized (three named regions plus a route-selected sidebar).
+Steps 1–2 validate their value with `likeViewTarget`, so a stray string can
+never reach a selector lookup. "Centralized" (names plus configuration) and
+"decentralized" (handler-owned targets and views) are both first-class models;
+[Guide 50 §1](50-view-targeting.md) carries the decision table.
 
 ### 7.1 The target contract
 
@@ -290,39 +253,22 @@ forward DOM/surface events back into the application layer. A target that only
 renders and never forwards events implements the base interface; one that also
 bridges events implements `EventBridgeViewTarget`.
 
-A render pass chooses its destination in strict order:
-
-1. **`ModelAndView.viewTarget`** — an explicit target on the result
-   (decentralized, always wins).
-2. **`route.attributes[VIEW_TARGET_ATTRIBUTE]`** — a target placed on the
-   route by middleware or an interceptor.
-3. **The `viewTargeters` chain** — first targeter to return a non-`null`
-   target; the rest are not consulted.
-4. **The fallback** — the platform's registered `VIEW_TARGET` (or the Node
-   response target). This is the pre-targeter behavior.
-
-Steps 1 and 2 validate their value with `likeViewTarget`, so a stray string can
-never reach a selector lookup; a non-target value is ignored (and logged at
-debug) rather than failing the render. `null` from a targeter means **decline**
-— not "render nowhere" — matching `ViewResolver.resolveViewName` exactly.
-
-Targets are also registered as the `VIEW_TARGET` context token (from
-`@ndigo/dispatcher`) and read as the fallback. The platform presets
-(`createNodeApplication` / `createWebApplication`) provision the right target
-for the runtime; you only construct one yourself for a custom surface or a
-test. `createWebApplication({ viewTargeters })` and `NodeAutoConfiguration`'s
-`viewTargeter` entry are the two ways a preset installs a chain.
+Targets are registered as the `VIEW_TARGET` context token (from
+`@ndigo/dispatcher`), which the dispatcher reads as its fallback. The platform
+presets (`createNodeApplication` / `createWebApplication`) provision the right
+target for the runtime; you only construct one yourself for a custom surface or
+a test.
 
 ### 7.2 Built-in targets
 
-| Target                      | Package                    | Host                                   | When to use                                                                                                                                                            |
-| --------------------------- | -------------------------- | -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `HTTPResponseViewTarget`    | `@ndigo/platform-node`     | An HTTP response (`ServerResponse`)    | Server-side rendering: what `ResponseViewTargeter` returns by default; writes status, headers, and body through the response.                                          |
-| `DOMElementViewTarget`      | `@ndigo/view-webcomponent` | A DOM element (by id or element ref)   | Browser rendering: the preset's fallback target and the host backing the selector targeters; renders into `#app` (or a passed root) and bridges events via `eventMap`. |
-| `ShadowRootViewTarget`      | `@ndigo/view-webcomponent` | An element's (open) shadow root        | Shadow-DOM rendering: attaches/reuses an open shadow root on a host element and renders into it; throws on a closed shadow root.                                       |
-| `IframeViewTarget`          | `@ndigo/view-webcomponent` | A same-origin `<iframe>`'s document    | Isolated rendering: renders into an iframe's document (empty iframe, `srcdoc`, or same-origin `src`); throws on cross-origin/sandboxed frames.                         |
-| `MemoryViewTarget`          | `@ndigo/test`              | An in-memory capture                   | Tests: captures the last rendered output + model with no real DOM or socket; used by `bootWebApp`/`MockWebClient`.                                                     |
-| `DOMViewTarget` (interface) | `@ndigo/view-webcomponent` | A DOM surface that also bridges events | Implement when a target renders into the DOM **and** forwards surface events.                                                                                          |
+| Target                      | Package                    | Host                                   | When to use                                                                                                                                    |
+| --------------------------- | -------------------------- | -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `HTTPResponseViewTarget`    | `@ndigo/platform-node`     | An HTTP response (`ServerResponse`)    | Server-side rendering: the default on Node; writes status, headers, and body through the response.                                             |
+| `DOMElementViewTarget`      | `@ndigo/view-webcomponent` | A DOM element (by id or element ref)   | Browser rendering: the default in the browser; renders into `#app` (or a passed root) and bridges events via `eventMap`.                       |
+| `ShadowRootViewTarget`      | `@ndigo/view-webcomponent` | An element's (open) shadow root        | Shadow-DOM rendering: attaches/reuses an open shadow root on a host element and renders into it; throws on a closed shadow root.               |
+| `IframeViewTarget`          | `@ndigo/view-webcomponent` | A same-origin `<iframe>`'s document    | Isolated rendering: renders into an iframe's document (empty iframe, `srcdoc`, or same-origin `src`); throws on cross-origin/sandboxed frames. |
+| `MemoryViewTarget`          | `@ndigo/test`              | An in-memory capture                   | Tests: captures the last rendered output + model with no real DOM or socket; used by `bootWebApp`/`MockWebClient`.                             |
+| `DOMViewTarget` (interface) | `@ndigo/view-webcomponent` | A DOM surface that also bridges events | Implement when a target renders into the DOM **and** forwards surface events.                                                                  |
 
 Constructors:
 
@@ -395,97 +341,7 @@ Guidelines for a custom target:
   the app's default target empty, which `MockWebClient` reports as "no view was
   rendered".
 
-### 7.5 Targeting by view name, route, or attribute
-
-`@ndigo/view-webcomponent` ships three targeters over one selector engine
-(`SelectorViewTargeter`):
-
-| Targeter                | Chooses by                                   | Typical use                                                |
-| :---------------------- | :------------------------------------------- | :--------------------------------------------------------- |
-| `NameViewTargeter`      | the logical view name                        | named regions: `shell` → `#app`, `footer` → `#site-footer` |
-| `RouteViewTargeter`     | the route path against URL-glob patterns     | page-level layout: `/report/**` → `#sidebar`               |
-| `AttributeViewTargeter` | a route attribute (default key `viewTarget`) | one route redirecting output without a code change         |
-
-```ts
-@entry()
-viewTargeters() {
-    return [
-        // 1. named regions — the name is a lookup key, never selector text
-        new NameViewTargeter({ shell: '#app', footer: '#site-footer' }),
-        // 2. page layout — patterns are matched in declaration order
-        new RouteViewTargeter({ '/report/**': '#sidebar', '/': '#app' }),
-    ];
-}
-```
-
-The chain is **ordered and first-match-wins**: put the most specific entry
-first; the generic catch-all, if any, last. Neither targeter knows about the
-other, so a layout change is a one-line edit in configuration, not a controller
-change.
-
-Guidelines:
-
-- **The map form is the safe form.** `NameViewTargeter({ footer: '#site-footer' })`
-  treats the view name as a key; an unmapped name declines. The function form
-  (`NameViewTargeter(idSelector)` for the `view "hello"` → `#hello` convention)
-  must escape request-derived values — `idSelector` uses `CSS.escape`.
-- **Selectors must come from static configuration.** A selector derived from
-  request data must be escaped (`CSS.escape`) before interpolation; a malformed
-  selector is caught, logged at debug, and declined rather than failing the
-  render.
-- **A missing or detached element declines.** The chain falls through to the
-  next targeter (or the fallback), so an unrendered region never breaks routing.
-  `isConnected` is checked when the target is created; a DOM target is cached
-  per `selector + mount` pair and reused until evicted or the app is destroyed.
-- **Targeters select destination, not representation.** Do not encode
-  negotiation logic in a targeter; that is a resolver's job (§5).
-- **Mounts:** all three accept `{ mount: 'element' | 'shadow' | 'iframe' }` and an
-  `eventMap`, delegating to `DOMElementViewTarget`, `ShadowRootViewTarget`, and
-  `IframeViewTarget`.
-
-### 7.6 Targets on Node
-
-Node's destination is per-request, so the platform installs a single chain
-entry, `ResponseViewTargeter`, through `NodeAutoConfiguration`:
-
-```ts
-// @ndigo/platform-node — registered automatically
-@entry('viewTargeter')
-viewTargeter() {
-    return new ResponseViewTargeter();
-}
-```
-
-The targeter wraps the `ServerResponse` the HTTP adapter stored on the route,
-so `ModelAndView('report')` still becomes an HTTP response with no app
-configuration — the chain is behavior-preserving, not a behavior change. Order
-still applies: an explicit `ModelAndView.viewTarget` wins over it, which is how
-streaming transports and tests redirect selected renders, and a route attribute
-wins too.
-
-Node-only result shapes never construct a target at all. `ResponseEntity`
-values, producing views (`renderTo`), plain JSON returns, and a `ModelAndView`
-with neither a view nor a name are complete documents written before the shared
-pipeline runs. That keeps the platform branches free of targeting overhead.
-
-### 7.7 Defaults
-
-| Layer                                       | Default chain            | Fallback when no targeter matches                      |
-| :------------------------------------------ | :----------------------- | :----------------------------------------------------- |
-| `ABSTRACT dispatcher` (`@ndigo/dispatcher`) | `[]` — opt-in            | the registered `VIEW_TARGET`                           |
-| Browser (`createWebApplication`)            | `[]` — opt-in            | the `#app` (or `root`) target registered by the preset |
-| Node (`NodeAutoConfiguration`)              | `[ResponseViewTargeter]` | the per-request `HTTPResponseViewTarget`               |
-
-Browser apps are opt-in by design: the preset's registered root target is
-already the destination, so a default chain entry would have to move existing
-renders to justify itself. Node is behavior-preserving by default because its
-old pipeline always wrote to the response.
-
-The chain itself comes from the context: `viewTargeters` (an array) wins over
-`viewTargeter` (a single instance) which wins over the platform default. Keep
-one of them per context — the collection form is the documented one.
-
-### 7.8 Themes
+### 7.5 Themes
 
 Themes are resolved per route before rendering; the platform's theme resolver
 selects the theme name, and templates/components read it from the context. Do
@@ -519,6 +375,7 @@ not bake theme names into a view; take them from the resolver.
 - [Guide 17 — Internationalization & Content](17-i18n-and-content.md) — locale in templates
 - [Guide 29 — Signals & Islands](29-signals-and-islands.md) — island hydration
 - [Guide 41 — Custom View Engines](41-custom-view-engines.md) — adding React/Vue or a bespoke renderer
+- [Guide 50 — View Targeting](50-view-targeting.md) — the targeting strategy in depth: placement models, chains, ownership
 - [`@ndigo/view`](../../packages/ndigo-view/README.md) — the view, targeter, and negotiation surface
 - [`@ndigo/view-webcomponent`](../../packages/ndigo-view-webcomponent/README.md) — the selector-backed targeters and DOM targets
 - [`@ndigo/platform-node`](../../packages/ndigo-platform-node/README.md) — `ResponseViewTargeter` and the Node render pipeline

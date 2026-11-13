@@ -92,7 +92,7 @@ await createWebApplication([AppConfiguration], {
 
 Targeters are ordered and first-match-wins, use the view name / route / a
 route attribute, and decline to the root when nothing matches. See
-[Guide 09 §7.5](09-views-and-content-negotiation.md).
+[Guide 50 — View Targeting](50-view-targeting.md).
 
 ## 2. Configuration and routes
 

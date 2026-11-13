@@ -4,6 +4,13 @@
 **Status:** Implemented (review incorporated)
 **Tracks:** AD-65 (view resolution), AD-89 (layer boundaries), [AD-105](../decisions/2026-11-13_AD105_VIEW_TARGETING_STRATEGY.md) (decision record)
 
+> **Implementation note:** the targeting depth was split out of guide 09 into
+> [guide 50 — View Targeting](../guides/50-view-targeting.md) during
+> implementation. Guide 09 keeps the basics (target contract, placement
+> precedence, defaults); guide 50 owns the placement models, the targeter
+> chain, safety rules, ownership, and the Node specifics. The walkthrough
+> below is otherwise as implemented.
+
 ---
 
 ## 1. Problem

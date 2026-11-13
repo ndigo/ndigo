@@ -235,7 +235,9 @@ destination:
 ```ts
 // controller
 return new ModelAndView('footer', model);
+```
 
+```ts
 // configuration
 @entry() viewTargeters() {
     return [new NameViewTargeter({ footer: '#site-footer' })];

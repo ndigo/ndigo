@@ -98,3 +98,13 @@ Extra builder properties, merged above the built-in sources.
 > `optional` **root?**: `string` \| `Element`
 
 Element (or element id, with or without `#`) to render into. Defaults to `#app`.
+
+***
+
+### viewTargeters?
+
+> `optional` **viewTargeters?**: readonly `ViewTargeter`[]
+
+Ordered view targeters, registered before strategy initialization so the
+dispatcher installs them. First non-`null` target wins; when none
+matches, output renders into `root`. Empty by default.

@@ -21,3 +21,4 @@ Node request attribute helpers.
 ## Functions
 
 - [getNodeRequest](functions/getNodeRequest.md)
+- [getNodeResponse](functions/getNodeResponse.md)

@@ -231,6 +231,12 @@ Re-exports [getNodeRequest](../node-request/functions/getNodeRequest.md)
 
 ***
 
+### getNodeResponse
+
+Re-exports [getNodeResponse](../node-request/functions/getNodeResponse.md)
+
+***
+
 ### gracefulShutdown
 
 Re-exports [gracefulShutdown](../graceful-shutdown/functions/gracefulShutdown.md)
@@ -654,6 +660,12 @@ Re-exports [ResponseEntity](../response-entity/classes/ResponseEntity.md)
 ### ResponseEntityView
 
 Re-exports [ResponseEntityView](../response-entity-view/classes/ResponseEntityView.md)
+
+***
+
+### ResponseViewTargeter
+
+Re-exports [ResponseViewTargeter](../response-view-targeter/classes/ResponseViewTargeter.md)
 
 ***
 

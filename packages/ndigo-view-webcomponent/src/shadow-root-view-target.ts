@@ -66,34 +66,68 @@ export class ShadowRootViewTarget implements DOMViewTarget, Destroyable {
         }
     }
 
+    /**
+     * Forwards the application context to the inner element target.
+     *
+     * @param applicationContext - The application event emitter.
+     */
     setApplicationContext(applicationContext: EventEmitter): void {
         this.#inner.setApplicationContext(applicationContext);
     }
 
+    /**
+     * Forwards the DOM event map to the inner element target.
+     *
+     * @param eventMap - DOM event name → application event name mapping.
+     */
     setEventMap(eventMap: Record<string, string>): void {
         this.#inner.setEventMap(eventMap);
     }
 
+    /**
+     * Re-installs the inner target's DOM event listeners.
+     */
     listen(): void {
         this.#inner.listen();
     }
 
+    /**
+     * Removes the inner target's DOM event listeners.
+     */
     unlisten(): void {
         this.#inner.unlisten();
     }
 
+    /**
+     * Prepares the shadow root for a new render pass.
+     *
+     * @param route - The route being rendered.
+     */
     prepare(route: Parameters<DOMViewTarget['prepare']>[0]): void {
         this.#inner.prepare(route);
     }
 
+    /**
+     * Commits rendered output to the shadow root.
+     *
+     * @param output - The rendered output (DOM subtree or markup string).
+     * @param model - The model passed through from the view engine.
+     * @param route - The route being rendered.
+     */
     commit(output: unknown, model: unknown, route: Parameters<DOMViewTarget['commit']>[2]): void {
-        this.#inner.commit(output as HTMLElement, model, route);
+        this.#inner.commit(output, model, route);
     }
 
+    /**
+     * Clears the shadow root without destroying the target.
+     */
     clear(): void {
         this.#inner.clear();
     }
 
+    /**
+     * Destroys the target and releases the shadow root's listeners.
+     */
     destroy(): void {
         this.#inner.destroy();
     }

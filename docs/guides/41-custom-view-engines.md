@@ -48,8 +48,10 @@ class HelloView implements ProducerView {
 ```
 
 The dispatcher renders a `ProducerView` directly; a `View` is rendered through
-`view.render(model, route, target)`. The Node adapter supplies an HTTP view
-target; the browser supplies a DOM target.
+`view.render(model, route, target)`. The Node preset supplies a per-request
+HTTP view target (`ResponseViewTargeter`), and the browser preset supplies a DOM
+target (`#app` by default), with the optional targeter chain choosing another
+region — see [Guide 09 §7](09-views-and-content-negotiation.md).
 
 ## 2. Server rendering with React
 

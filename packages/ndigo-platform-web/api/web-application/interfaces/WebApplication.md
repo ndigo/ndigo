@@ -41,6 +41,14 @@ The hash router driving navigation.
 
 The DOM view target routes render into.
 
+***
+
+### viewTargeters
+
+> `readonly` **viewTargeters**: readonly `ViewTargeter`[]
+
+The installed view-targeter chain (configured plus preset).
+
 ## Methods
 
 ### destroy()

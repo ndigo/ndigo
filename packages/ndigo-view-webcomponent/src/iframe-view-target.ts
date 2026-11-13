@@ -102,6 +102,14 @@ export class IframeViewTarget implements DOMViewTarget, Destroyable {
         return inner;
     }
 
+    /**
+     * Stores the application context and forwards it to the inner target.
+     *
+     * The iframe document may not exist yet, so the context is stored and
+     * applied when the inner target is created.
+     *
+     * @param applicationContext - The application event emitter.
+     */
     setApplicationContext(applicationContext: EventEmitter): void {
         if (this.#destroyed) {
             return;
@@ -112,6 +120,11 @@ export class IframeViewTarget implements DOMViewTarget, Destroyable {
         }
     }
 
+    /**
+     * Stores the DOM event map and forwards it to the inner target.
+     *
+     * @param eventMap - DOM event name → application event name mapping.
+     */
     setEventMap(eventMap: Record<string, string>): void {
         if (this.#destroyed) {
             return;
@@ -122,6 +135,9 @@ export class IframeViewTarget implements DOMViewTarget, Destroyable {
         }
     }
 
+    /**
+     * Re-installs the inner target's DOM event listeners.
+     */
     listen(): void {
         if (this.#destroyed || !this.#inner) {
             return;
@@ -129,12 +145,21 @@ export class IframeViewTarget implements DOMViewTarget, Destroyable {
         this.#inner.listen();
     }
 
+    /**
+     * Removes the inner target's DOM event listeners.
+     */
     unlisten(): void {
         if (this.#inner) {
             this.#inner.unlisten();
         }
     }
 
+    /**
+     * Prepares the iframe document for a new render pass, loading it first.
+     *
+     * @param route - The route being rendered.
+     * @returns A promise that resolves once the document is ready.
+     */
     async prepare(route: Parameters<DOMViewTarget['prepare']>[0]): Promise<void> {
         if (this.#destroyed) {
             throw new IllegalStateError('Cannot prepare a destroyed IframeViewTarget.');
@@ -143,14 +168,25 @@ export class IframeViewTarget implements DOMViewTarget, Destroyable {
         this.#innerTarget().prepare(route);
     }
 
+    /**
+     * Commits rendered output to the iframe document, loading it first.
+     *
+     * @param output - The rendered output (DOM subtree or markup string).
+     * @param model - The model passed through from the view engine.
+     * @param route - The route being rendered.
+     * @returns A promise that resolves once the output is committed.
+     */
     async commit(output: unknown, model: unknown, route: Parameters<DOMViewTarget['commit']>[2]): Promise<void> {
         if (this.#destroyed) {
             throw new IllegalStateError('Cannot commit to a destroyed IframeViewTarget.');
         }
         await this.#ensureLoaded();
-        this.#innerTarget().commit(output as HTMLElement, model, route);
+        this.#innerTarget().commit(output, model, route);
     }
 
+    /**
+     * Clears the iframe document without destroying the target.
+     */
     clear(): void {
         if (this.#destroyed) {
             return;
@@ -160,6 +196,9 @@ export class IframeViewTarget implements DOMViewTarget, Destroyable {
         }
     }
 
+    /**
+     * Destroys the target and releases the iframe document's listeners.
+     */
     destroy(): void {
         if (this.#destroyed) {
             return;

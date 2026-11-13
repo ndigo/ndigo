@@ -30,6 +30,7 @@ import {
 } from '@ndigo/jobs';
 import { IslandViewResolver } from '@ndigo/view';
 import { NodeDispatcher } from './node-dispatcher';
+import { ResponseViewTargeter } from './response-view-targeter';
 import { HTTPServer } from './http-server';
 import { readIntEnv } from './read-int-env';
 import { NodeSocketSessionRegistry, resolveSocketRegistryOptions } from './node-socket-session-registry';
@@ -406,5 +407,19 @@ export class NodeAutoConfiguration extends AsApplicationContextAware(Null) {
     @entry()
     viewResolver() {
         return new IslandViewResolver();
+    }
+
+    /**
+     * The Node render destination: one HTTP response target per render pass.
+     *
+     * Registered as the platform's default chain entry so the shared
+     * dispatcher pipeline writes exactly where the pre-targeter dispatcher
+     * wrote. A result that supplies its own target still wins.
+     *
+     * @returns The response view targeter.
+     */
+    @entry('viewTargeter')
+    viewTargeter() {
+        return new ResponseViewTargeter();
     }
 }

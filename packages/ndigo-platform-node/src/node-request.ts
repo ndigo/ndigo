@@ -2,6 +2,7 @@
  * Node request attribute helpers.
  */
 import { Route } from '@ndigo/router';
+import type { ServerResponse } from 'node:http';
 import type { MultipartContext } from './multipart-file';
 
 /**
@@ -71,4 +72,14 @@ export interface NodeRequest {
  */
 export function getNodeRequest(route: Route): NodeRequest | undefined {
     return route.attributes?.[NODE_REQUEST_ATTRIBUTE] as NodeRequest | undefined;
+}
+
+/**
+ * Reads the Node `ServerResponse` the HTTP server adapter stored on the route.
+ *
+ * @param route - The route being handled.
+ * @returns The response, or `undefined` outside an HTTP dispatch.
+ */
+export function getNodeResponse(route: Route): ServerResponse | undefined {
+    return route.attributes?.[NODE_RESPONSE_ATTRIBUTE] as ServerResponse | undefined;
 }

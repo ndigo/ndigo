@@ -67,6 +67,7 @@ Platform-independent request dispatch for Ndigo: maps routes to handlers, binds 
 - [strategies/strategy-initializer](strategies/strategy-initializer/README.md)
 - [strategies/theme-resolver-strategy](strategies/theme-resolver-strategy/README.md)
 - [strategies/view-resolver-strategy](strategies/view-resolver-strategy/README.md)
+- [strategies/view-targeter-strategy](strategies/view-targeter-strategy/README.md)
 - [theme-resolver](theme-resolver/README.md)
 - [tool-mapping](tool-mapping/README.md)
 - [zod-validated-by](zod-validated-by/README.md)

@@ -15,3 +15,4 @@ Context tokens for dispatcher services.
 - [DISPATCHER](variables/DISPATCHER.md)
 - [HANDLER\_MAPPING](variables/HANDLER_MAPPING.md)
 - [VIEW\_TARGET](variables/VIEW_TARGET.md)
+- [VIEW\_TARGET\_ATTRIBUTE](variables/VIEW_TARGET_ATTRIBUTE.md)

@@ -18,7 +18,7 @@ It can be used with just about any workflow, with the installation of the approp
 
 ## Extends
 
-- [`ViewResolverStrategy`](../../strategies/view-resolver-strategy/interfaces/ViewResolverStrategy.md) & [`RouteErrorResolverStrategy`](../../strategies/route-error-resolver-strategy/interfaces/RouteErrorResolverStrategy.md) & [`ThemeResolverStrategy`](../../strategies/theme-resolver-strategy/interfaces/ThemeResolverStrategy.md) & [`RouteToViewNameTranslatorStrategy`](../../strategies/route-to-view-name-translator-strategy/interfaces/RouteToViewNameTranslatorStrategy.md) & [`LanguageResolverStrategy`](../../strategies/language-resolver-strategy/interfaces/LanguageResolverStrategy.md) & [`RouteHandlerMappingStrategy`](../../strategies/route-handler-mapping-strategy/interfaces/RouteHandlerMappingStrategy.md) & [`RouteHandlerAdapterStrategy`](../../strategies/route-handler-adapter-strategy/interfaces/RouteHandlerAdapterStrategy.md) & [`StrategyInitializer`](../../strategies/strategy-initializer/interfaces/StrategyInitializer.md) & `Null`\<`this`\>
+- [`ViewTargeterStrategy`](../../strategies/view-targeter-strategy/interfaces/ViewTargeterStrategy.md) & [`ViewResolverStrategy`](../../strategies/view-resolver-strategy/interfaces/ViewResolverStrategy.md) & [`RouteErrorResolverStrategy`](../../strategies/route-error-resolver-strategy/interfaces/RouteErrorResolverStrategy.md) & [`ThemeResolverStrategy`](../../strategies/theme-resolver-strategy/interfaces/ThemeResolverStrategy.md) & [`RouteToViewNameTranslatorStrategy`](../../strategies/route-to-view-name-translator-strategy/interfaces/RouteToViewNameTranslatorStrategy.md) & [`LanguageResolverStrategy`](../../strategies/language-resolver-strategy/interfaces/LanguageResolverStrategy.md) & [`RouteHandlerMappingStrategy`](../../strategies/route-handler-mapping-strategy/interfaces/RouteHandlerMappingStrategy.md) & [`RouteHandlerAdapterStrategy`](../../strategies/route-handler-adapter-strategy/interfaces/RouteHandlerAdapterStrategy.md) & [`StrategyInitializer`](../../strategies/strategy-initializer/interfaces/StrategyInitializer.md) & `Null`\<`this`\>
 
 ## Implements
 
@@ -37,7 +37,7 @@ It can be used with just about any workflow, with the installation of the approp
 
 #### Inherited from
 
-`AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ).constructor`
+`AsViewTargeterStrategy( AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ) ).constructor`
 
 ## Properties
 
@@ -65,7 +65,7 @@ The ordered error resolvers.
 
 #### Inherited from
 
-`AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ).errorResolvers`
+`AsViewTargeterStrategy( AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ) ).errorResolvers`
 
 ***
 
@@ -77,7 +77,7 @@ The ordered adapters consulted for a handler.
 
 #### Inherited from
 
-`AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ).handlerAdapters`
+`AsViewTargeterStrategy( AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ) ).handlerAdapters`
 
 ***
 
@@ -89,7 +89,7 @@ The ordered mappings a route is resolved against.
 
 #### Inherited from
 
-`AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ).handlerMappings`
+`AsViewTargeterStrategy( AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ) ).handlerMappings`
 
 ***
 
@@ -109,7 +109,7 @@ The active locale resolver.
 
 #### Inherited from
 
-`AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ).languageResolver`
+`AsViewTargeterStrategy( AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ) ).languageResolver`
 
 ***
 
@@ -129,7 +129,7 @@ The translator that derives a view name from a route.
 
 #### Inherited from
 
-`AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ).routeToViewNameTranslator`
+`AsViewTargeterStrategy( AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ) ).routeToViewNameTranslator`
 
 ***
 
@@ -141,7 +141,7 @@ Names of the strategies this composition contributes.
 
 #### Inherited from
 
-`AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ).strategies`
+`AsViewTargeterStrategy( AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ) ).strategies`
 
 ***
 
@@ -153,7 +153,7 @@ The active theme resolver.
 
 #### Inherited from
 
-`AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ).themeResolver`
+`AsViewTargeterStrategy( AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ) ).themeResolver`
 
 ***
 
@@ -165,7 +165,19 @@ The ordered view resolvers.
 
 #### Inherited from
 
-`AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ).viewResolvers`
+`AsViewTargeterStrategy( AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ) ).viewResolvers`
+
+***
+
+### viewTargeters
+
+> **viewTargeters**: `ViewTargeter`[]
+
+The ordered view targeters.
+
+#### Inherited from
+
+`AsViewTargeterStrategy( AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ) ).viewTargeters`
 
 ## Accessors
 
@@ -233,7 +245,7 @@ The strategy name.
 
 #### Inherited from
 
-`AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ).addStrategy`
+`AsViewTargeterStrategy( AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ) ).addStrategy`
 
 ***
 
@@ -303,7 +315,7 @@ The strategy now registered in the context.
 
 #### Inherited from
 
-`AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ).getDefaultStrategy`
+`AsViewTargeterStrategy( AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ) ).getDefaultStrategy`
 
 ***
 
@@ -329,7 +341,7 @@ The default view name.
 
 #### Inherited from
 
-`AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ).getDefaultViewName`
+`AsViewTargeterStrategy( AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ) ).getDefaultViewName`
 
 ***
 
@@ -355,7 +367,7 @@ The execution chain for the route.
 
 #### Inherited from
 
-`AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ).getHandler`
+`AsViewTargeterStrategy( AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ) ).getHandler`
 
 ***
 
@@ -381,7 +393,7 @@ The supporting adapter.
 
 #### Inherited from
 
-`AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ).getHandlerAdapter`
+`AsViewTargeterStrategy( AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ) ).getHandlerAdapter`
 
 ***
 
@@ -435,7 +447,7 @@ The fallback collection.
 
 #### Inherited from
 
-`AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ).initCollectionStrategy`
+`AsViewTargeterStrategy( AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ) ).initCollectionStrategy`
 
 ***
 
@@ -459,7 +471,7 @@ The application context.
 
 #### Inherited from
 
-`AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ).initErrorResolvers`
+`AsViewTargeterStrategy( AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ) ).initErrorResolvers`
 
 ***
 
@@ -483,7 +495,7 @@ The application context.
 
 #### Inherited from
 
-`AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ).initHandlerAdapters`
+`AsViewTargeterStrategy( AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ) ).initHandlerAdapters`
 
 ***
 
@@ -507,7 +519,7 @@ The application context.
 
 #### Inherited from
 
-`AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ).initHandlerMappings`
+`AsViewTargeterStrategy( AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ) ).initHandlerMappings`
 
 ***
 
@@ -531,7 +543,7 @@ The application context.
 
 #### Inherited from
 
-`AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ).initLanguageResolver`
+`AsViewTargeterStrategy( AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ) ).initLanguageResolver`
 
 ***
 
@@ -555,7 +567,7 @@ The application context.
 
 #### Inherited from
 
-`AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ).initRouteToViewNameTranslator`
+`AsViewTargeterStrategy( AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ) ).initRouteToViewNameTranslator`
 
 ***
 
@@ -579,7 +591,7 @@ The application context.
 
 #### Inherited from
 
-`AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ).initStrategies`
+`AsViewTargeterStrategy( AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ) ).initStrategies`
 
 ***
 
@@ -627,7 +639,7 @@ The fallback strategy.
 
 #### Inherited from
 
-`AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ).initStrategy`
+`AsViewTargeterStrategy( AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ) ).initStrategy`
 
 ***
 
@@ -651,7 +663,7 @@ The application context.
 
 #### Inherited from
 
-`AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ).initThemeResolver`
+`AsViewTargeterStrategy( AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ) ).initThemeResolver`
 
 ***
 
@@ -675,7 +687,31 @@ The application context.
 
 #### Inherited from
 
-`AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ).initViewResolvers`
+`AsViewTargeterStrategy( AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ) ).initViewResolvers`
+
+***
+
+### initViewTargeters()
+
+> **initViewTargeters**(`context`): `void`
+
+Installs the view-targeter chain.
+
+#### Parameters
+
+##### context
+
+`ApplicationContext`
+
+The application context.
+
+#### Returns
+
+`void`
+
+#### Inherited from
+
+`AsViewTargeterStrategy( AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null))) ) ) ) ) ) ).initViewTargeters`
 
 ***
 
@@ -684,6 +720,11 @@ The application context.
 > **render**(`mv`, `route`): `Promise`\<`void`\>
 
 Render the given `ModelAndView`. This is the last stage of handling a route.
+
+The shared pipeline: normalize the result, resolve a view (unless the
+result already carries one), give document-producing platforms a chance
+to write the whole document, otherwise resolve a target and render into
+it.
 
 #### Parameters
 

@@ -21,6 +21,21 @@ documentation/publication contract that supports honest “faster” claims.
 
 ## Completed Plans
 
+### 2026-11-13 - View targeting strategy
+
+A centralized placement strategy beside view resolution: a platform-neutral
+`ViewTargeter` contract, an ordered first-match-wins chain, strict dispatcher
+precedence (explicit result target → route attribute → chain → `VIEW_TARGET`
+fallback), name/route/attribute targeters over a cached selector engine,
+`ResponseViewTargeter` as Node's behavior-preserving default, and a single Node
+
+- browser render pipeline. Browser placement is opt-in; decentralized
+  handler-owned targets and views stay on fast paths. Decision: AD-105.
+
+[Read plan](2026-11-13_VIEW_TARGETING_STRATEGY.md)
+
+---
+
 ### 2026-11-09 - Agent and LLM integration
 
 Two audiences, one derived surface: a machine-readable CLI (`--json`,

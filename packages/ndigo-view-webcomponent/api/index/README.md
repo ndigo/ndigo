@@ -34,9 +34,27 @@ Re-exports [AsWebMcpElement](../webmcp/functions/AsWebMcpElement.md)
 
 ***
 
+### AttributeViewTargeter
+
+Re-exports [AttributeViewTargeter](../attribute-view-targeter/classes/AttributeViewTargeter.md)
+
+***
+
+### AttributeViewTargeterOptions
+
+Re-exports [AttributeViewTargeterOptions](../attribute-view-targeter/interfaces/AttributeViewTargeterOptions.md)
+
+***
+
 ### declareWebMcpTool
 
 Re-exports [declareWebMcpTool](../webmcp/functions/declareWebMcpTool.md)
+
+***
+
+### destroyViewTargeters
+
+Re-exports [destroyViewTargeters](../selector-view-targeter/functions/destroyViewTargeters.md)
 
 ***
 
@@ -64,6 +82,12 @@ Re-exports [hydrateIslands](../hydrate/functions/hydrateIslands.md)
 
 ***
 
+### idSelector
+
+Re-exports [idSelector](../selector-view-targeter/functions/idSelector.md)
+
+***
+
 ### IframeViewTarget
 
 Re-exports [IframeViewTarget](../iframe-view-target/classes/IframeViewTarget.md)
@@ -79,6 +103,18 @@ Re-exports [likeDOMViewTarget](../engine/functions/likeDOMViewTarget.md)
 ### ModelAwareElement
 
 Re-exports [ModelAwareElement](../view/interfaces/ModelAwareElement.md)
+
+***
+
+### NameSelectorResolver
+
+Re-exports [NameSelectorResolver](../name-view-targeter/type-aliases/NameSelectorResolver.md)
+
+***
+
+### NameViewTargeter
+
+Re-exports [NameViewTargeter](../name-view-targeter/classes/NameViewTargeter.md)
 
 ***
 
@@ -100,6 +136,36 @@ Re-exports [RenderHost](../engine/type-aliases/RenderHost.md)
 
 ***
 
+### RouteSelectorMap
+
+Re-exports [RouteSelectorMap](../route-view-targeter/type-aliases/RouteSelectorMap.md)
+
+***
+
+### RouteViewTargeter
+
+Re-exports [RouteViewTargeter](../route-view-targeter/classes/RouteViewTargeter.md)
+
+***
+
+### RouteViewTargeterOptions
+
+Re-exports [RouteViewTargeterOptions](../route-view-targeter/interfaces/RouteViewTargeterOptions.md)
+
+***
+
+### SelectorViewTargeter
+
+Re-exports [SelectorViewTargeter](../selector-view-targeter/classes/SelectorViewTargeter.md)
+
+***
+
+### SelectorViewTargeterOptions
+
+Re-exports [SelectorViewTargeterOptions](../selector-view-targeter/interfaces/SelectorViewTargeterOptions.md)
+
+***
+
 ### ShadowRootViewTarget
 
 Re-exports [ShadowRootViewTarget](../shadow-root-view-target/classes/ShadowRootViewTarget.md)
@@ -115,6 +181,18 @@ Re-exports [TagMapping](../tag-mapping/variables/TagMapping.md)
 ### ViewMapping
 
 Re-exports [ViewMapping](../view-mapping/variables/ViewMapping.md)
+
+***
+
+### ViewTargetMount
+
+Re-exports [ViewTargetMount](../selector-view-targeter/type-aliases/ViewTargetMount.md)
+
+***
+
+### ViewTargetSelector
+
+Re-exports [ViewTargetSelector](../selector-view-targeter/type-aliases/ViewTargetSelector.md)
 
 ***
 

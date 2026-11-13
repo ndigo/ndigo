@@ -12,7 +12,7 @@ Holds a view plus its optional model data.
 
 ### Constructor
 
-> **new ModelAndView**(`view`, `model?`): `ModelAndView`
+> **new ModelAndView**(`view`, `model?`, `options?`): `ModelAndView`
 
 Create a model and view pair.
 
@@ -29,6 +29,12 @@ The view name or view instance.
 [`Model`](#)\<`unknown`\> \| `null` = `null`
 
 Optional model data to expose to the view.
+
+##### options?
+
+[`ModelAndViewOptions`](../interfaces/ModelAndViewOptions.md) = `{}`
+
+Optional placement settings ([ModelAndViewOptions.viewTarget](../interfaces/ModelAndViewOptions.md#viewtarget)).
 
 #### Returns
 
@@ -54,9 +60,17 @@ Resolved view instance, when known.
 
 ### viewName
 
-> **viewName**: `string` \| `null`
+> **viewName**: `string` \| `null` = `null`
 
 Resolved view name, when known.
+
+***
+
+### viewTarget?
+
+> `optional` **viewTarget?**: [`ViewTarget`](#)
+
+Explicit destination for this result, when the handler supplied one.
 
 ## Accessors
 

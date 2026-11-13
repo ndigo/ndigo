@@ -98,13 +98,11 @@ Whether the target has been destroyed.
 
 > **clear**(): `void`
 
-Cleans up the ViewTarget.
+Clears the shadow root without destroying the target.
 
 #### Returns
 
 `void`
-
-A promise that resolves when cleanup completes.
 
 #### Implementation of
 
@@ -116,8 +114,7 @@ A promise that resolves when cleanup completes.
 
 > **commit**(`output`, `model`, `route`): `void`
 
-Commits the rendered output to the target.
-The type of `output` depends on the View engine (e.g., HTMLElement, string).
+Commits rendered output to the shadow root.
 
 #### Parameters
 
@@ -125,13 +122,13 @@ The type of `output` depends on the View engine (e.g., HTMLElement, string).
 
 `unknown`
 
-The rendered output.
+The rendered output (DOM subtree or markup string).
 
 ##### model
 
 `unknown`
 
-The model used to produce the output.
+The model passed through from the view engine.
 
 ##### route
 
@@ -143,8 +140,6 @@ The route being rendered.
 
 `void`
 
-A promise that resolves when the output has been committed.
-
 #### Implementation of
 
 [`DOMViewTarget`](../../engine/interfaces/DOMViewTarget.md).[`commit`](../../engine/interfaces/DOMViewTarget.md#commit)
@@ -155,7 +150,7 @@ A promise that resolves when the output has been committed.
 
 > **destroy**(): `void`
 
-Releases the value's resources.
+Destroys the target and releases the shadow root's listeners.
 
 #### Returns
 
@@ -171,6 +166,8 @@ Releases the value's resources.
 
 > **listen**(): `void`
 
+Re-installs the inner target's DOM event listeners.
+
 #### Returns
 
 `void`
@@ -181,7 +178,7 @@ Releases the value's resources.
 
 > **prepare**(`route`): `void`
 
-Prepares the target for rendering (e.g., clearing previous content).
+Prepares the shadow root for a new render pass.
 
 #### Parameters
 
@@ -195,8 +192,6 @@ The route being rendered.
 
 `void`
 
-A promise that resolves when preparation completes.
-
 #### Implementation of
 
 [`DOMViewTarget`](../../engine/interfaces/DOMViewTarget.md).[`prepare`](../../engine/interfaces/DOMViewTarget.md#prepare)
@@ -207,11 +202,15 @@ A promise that resolves when preparation completes.
 
 > **setApplicationContext**(`applicationContext`): `void`
 
+Forwards the application context to the inner element target.
+
 #### Parameters
 
 ##### applicationContext
 
 `EventEmitter`
+
+The application event emitter.
 
 #### Returns
 
@@ -223,8 +222,7 @@ A promise that resolves when preparation completes.
 
 > **setEventMap**(`eventMap`): `void`
 
-Configures the mapping of surface event names to application event names.
-Only mapped events are forwarded.
+Forwards the DOM event map to the inner element target.
 
 #### Parameters
 
@@ -232,7 +230,7 @@ Only mapped events are forwarded.
 
 `Record`\<`string`, `string`\>
 
-A map of surface event names to application event names.
+DOM event name → application event name mapping.
 
 #### Returns
 
@@ -247,6 +245,8 @@ A map of surface event names to application event names.
 ### unlisten()
 
 > **unlisten**(): `void`
+
+Removes the inner target's DOM event listeners.
 
 #### Returns
 

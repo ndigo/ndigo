@@ -20,6 +20,7 @@ technologies.
 - Negotiate a representation from the path extension or `Accept` header.
 - Compose view resolvers for EJS, Web Components, and islands.
 - Apply view targets and themes.
+- See where a render lands, and follow it into [Guide 50 — View Targeting](50-view-targeting.md) for the strategy.
 
 ## 1. The view contract
 
@@ -199,7 +200,7 @@ The same logical name can resolve to an EJS view on Node and a Web Component in
 the browser. That is the "same name, resolver picks representation" rule
 .
 
-## 7. View targets and themes
+## 7. View targets and view targeting
 
 A **view target** is the platform half of rendering: the destination a view
 writes its output to. An HTTP response on Node, a DOM element in the browser,
@@ -207,7 +208,38 @@ a captured buffer in a test — all go through the same `ViewTarget` interface,
 so a view never hard-codes its host. Fragment rendering (a partial inside a
 layout, an island inside a page) goes through the target abstraction too.
 
-### 7.1 The contract
+A **view targeter** is the policy half: an ordered strategy that chooses _which_
+target a render pass writes to. Resolvers choose the **representation** (JSON
+vs. CSV, EJS vs. Web Component); targeters choose the **destination** (`#app`
+vs. `#sidebar`). This section covers the basics; the full strategy — chains,
+ordering, safety, and ownership — is
+[Guide 50 — View Targeting](50-view-targeting.md).
+
+### 7.0 Where a render lands
+
+A render pass resolves its destination in strict order — the first hit wins:
+
+1. **`ModelAndView.viewTarget`** — an explicit target on the result
+   (decentralized: the handler owns the destination).
+2. **`route.attributes[VIEW_TARGET_ATTRIBUTE]`** — a target placed on the route
+   by middleware or an interceptor.
+3. **The `viewTargeters` chain** — first targeter to return a non-`null`
+   target; the rest are not consulted.
+4. **The fallback** — the platform's registered `VIEW_TARGET`: the `#app` (or
+   `root`) target in the browser, the per-request HTTP response on Node.
+
+| Layer                            | Default chain            | Fallback when no targeter matches                      |
+| :------------------------------- | :----------------------- | :----------------------------------------------------- |
+| `@ndigo/dispatcher`              | `[]` — opt-in            | the registered `VIEW_TARGET`                           |
+| Browser (`createWebApplication`) | `[]` — opt-in            | the `#app` (or `root`) target registered by the preset |
+| Node (`NodeAutoConfiguration`)   | `[ResponseViewTargeter]` | the per-request `HTTPResponseViewTarget`               |
+
+Steps 1–2 validate their value with `likeViewTarget`, so a stray string can
+never reach a selector lookup. "Centralized" (names plus configuration) and
+"decentralized" (handler-owned targets and views) are both first-class models;
+[Guide 50 §1](50-view-targeting.md) carries the decision table.
+
+### 7.1 The target contract
 
 `ViewTarget` (from `@ndigo/view`) has three methods:
 
@@ -222,7 +254,7 @@ renders and never forwards events implements the base interface; one that also
 bridges events implements `EventBridgeViewTarget`.
 
 Targets are registered as the `VIEW_TARGET` context token (from
-`@ndigo/dispatcher`) and read by the dispatcher when it renders. The platform
+`@ndigo/dispatcher`), which the dispatcher reads as its fallback. The platform
 presets (`createNodeApplication` / `createWebApplication`) provision the right
 target for the runtime; you only construct one yourself for a custom surface or
 a test.
@@ -231,8 +263,8 @@ a test.
 
 | Target                      | Package                    | Host                                   | When to use                                                                                                                                    |
 | --------------------------- | -------------------------- | -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| `HTTPResponseViewTarget`    | `@ndigo/platform-node`     | An HTTP response (`ServerResponse`)    | Server-side rendering: the default target on Node; writes status, headers, and body through the response.                                      |
-| `DOMElementViewTarget`      | `@ndigo/view-webcomponent` | A DOM element (by id or element ref)   | Browser rendering: the default target in the browser; renders into `#app` (or a passed root) and bridges events via `eventMap`.                |
+| `HTTPResponseViewTarget`    | `@ndigo/platform-node`     | An HTTP response (`ServerResponse`)    | Server-side rendering: the default on Node; writes status, headers, and body through the response.                                             |
+| `DOMElementViewTarget`      | `@ndigo/view-webcomponent` | A DOM element (by id or element ref)   | Browser rendering: the default in the browser; renders into `#app` (or a passed root) and bridges events via `eventMap`.                       |
 | `ShadowRootViewTarget`      | `@ndigo/view-webcomponent` | An element's (open) shadow root        | Shadow-DOM rendering: attaches/reuses an open shadow root on a host element and renders into it; throws on a closed shadow root.               |
 | `IframeViewTarget`          | `@ndigo/view-webcomponent` | A same-origin `<iframe>`'s document    | Isolated rendering: renders into an iframe's document (empty iframe, `srcdoc`, or same-origin `src`); throws on cross-origin/sandboxed frames. |
 | `MemoryViewTarget`          | `@ndigo/test`              | An in-memory capture                   | Tests: captures the last rendered output + model with no real DOM or socket; used by `bootWebApp`/`MockWebClient`.                             |
@@ -296,10 +328,18 @@ Guidelines for a custom target:
 
 - Use `MemoryViewTarget` (via `bootWebApp`/`MockWebClient`) to assert on rendered
   model/output without a real DOM.
+- Give one result its own target with `new ModelAndView('page', model, { viewTarget })`
+  when a suite needs a second capture buffer — the explicit target wins over the
+  app's chain and fallback, so no test-only configuration is needed. The handler
+  signature is unchanged; production code keeps using the app target.
 - Use a real `DOMElementViewTarget` in a jsdom suite only when you need to assert
   on actual DOM structure or event bridging.
 - On Node, `MockHTTP` exercises the full `HTTPResponseViewTarget` contract
   in-process, including headers, status, and interceptor denials.
+- A test that boots an app with `viewTargeters` should assert either the region
+  it targets or an explicit result target — a chain that redirects output leaves
+  the app's default target empty, which `MockWebClient` reports as "no view was
+  rendered".
 
 ### 7.5 Themes
 
@@ -321,6 +361,11 @@ not bake theme names into a view; take them from the resolver.
   to the component module.
 - **A 4xx `ResponseEntity` is rewritten to problem+json.** For a custom error
   envelope, use a `ProducerView` (guide 08).
+- **A targeter changes the destination, not the representation.** If a route
+  renders the wrong format, fix the resolver chain, not the targeter.
+- **A redirecting chain leaves the default target empty.** That is correct — the
+  output went elsewhere. Assert the region (or the explicit target), not the
+  fallback.
 
 ## See also
 
@@ -330,5 +375,8 @@ not bake theme names into a view; take them from the resolver.
 - [Guide 17 — Internationalization & Content](17-i18n-and-content.md) — locale in templates
 - [Guide 29 — Signals & Islands](29-signals-and-islands.md) — island hydration
 - [Guide 41 — Custom View Engines](41-custom-view-engines.md) — adding React/Vue or a bespoke renderer
-- [`@ndigo/view`](../../packages/ndigo-view/README.md) — the view and negotiation surface
+- [Guide 50 — View Targeting](50-view-targeting.md) — the targeting strategy in depth: placement models, chains, ownership
+- [`@ndigo/view`](../../packages/ndigo-view/README.md) — the view, targeter, and negotiation surface
+- [`@ndigo/view-webcomponent`](../../packages/ndigo-view-webcomponent/README.md) — the selector-backed targeters and DOM targets
+- [`@ndigo/platform-node`](../../packages/ndigo-platform-node/README.md) — `ResponseViewTargeter` and the Node render pipeline
 - and — the view model and resolution strategy

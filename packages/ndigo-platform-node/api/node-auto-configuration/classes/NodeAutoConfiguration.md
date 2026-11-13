@@ -465,3 +465,21 @@ ordinary named views adds its own resolver (e.g. EJS) to the chain.
 `IslandViewResolver`
 
 The island view resolver.
+
+***
+
+### viewTargeter()
+
+> **viewTargeter**(): [`ResponseViewTargeter`](../../response-view-targeter/classes/ResponseViewTargeter.md)
+
+The Node render destination: one HTTP response target per render pass.
+
+Registered as the platform's default chain entry so the shared
+dispatcher pipeline writes exactly where the pre-targeter dispatcher
+wrote. A result that supplies its own target still wins.
+
+#### Returns
+
+[`ResponseViewTargeter`](../../response-view-targeter/classes/ResponseViewTargeter.md)
+
+The response view targeter.

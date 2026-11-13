@@ -530,6 +530,9 @@ importers:
       '@ndigo/test':
         specifier: ~0.0.1
         version: link:../../packages/ndigo-test
+      '@ndigo/view':
+        specifier: ~0.0.1
+        version: link:../../packages/ndigo-view
       '@tsmetadata/polyfill':
         specifier: 'catalog:'
         version: 1.1.3
@@ -912,6 +915,9 @@ importers:
         specifier: 'catalog:'
         version: 1.1.3
     devDependencies:
+      '@ndigo/router':
+        specifier: ~0.0.1
+        version: link:../../packages/ndigo-router
       '@ndigo/test':
         specifier: ~0.0.1
         version: link:../../packages/ndigo-test

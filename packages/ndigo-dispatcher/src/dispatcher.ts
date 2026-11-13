@@ -3,12 +3,14 @@
  */
 
 import { Null } from '@ndigo/core';
-import { View } from '@ndigo/view';
+import { View, ViewTarget, ViewTargetingContext, likeProducerView, likeView, likeViewTarget } from '@ndigo/view';
+import type { ProducerView } from '@ndigo/view';
 import { Route, applyNegotiatedLanguage } from '@ndigo/router';
 import { $aware } from '@ndigo/factory';
 import { like } from '@ndigo/util/types';
 import { ApplicationContext, likeApplicationContextAware } from '@ndigo/context';
-import { VIEW_TARGET } from './context-tokens';
+import { getLogger } from '@ndigo/log';
+import { VIEW_TARGET, VIEW_TARGET_ATTRIBUTE } from './context-tokens';
 
 import { NoHandlerFoundError, NoViewFoundError } from './error';
 import { RouteHandlerAdapter } from './route-handler-adapter';
@@ -21,7 +23,10 @@ import { AsRouteToViewNameTranslatorStrategy } from './strategies/route-to-view-
 import { AsThemeResolverStrategy } from './strategies/theme-resolver-strategy';
 import { AsRouteErrorResolverStrategy } from './strategies/route-error-resolver-strategy';
 import { AsViewResolverStrategy } from './strategies/view-resolver-strategy';
+import { AsViewTargeterStrategy } from './strategies/view-targeter-strategy';
 import { AsStrategyInitializer } from './strategies/strategy-initializer';
+
+const logger = getLogger('ndigo-dispatcher:dispatcher');
 
 /**
  * Interface for dispatching routes.
@@ -97,12 +102,14 @@ export function getDispatchError(route: Route): Error | null {
  * It can be used with just about any workflow, with the installation of the appropriate strategies and adapter classes.
  */
 export class AbstractDispatcher
-    extends AsViewResolverStrategy(
-        AsRouteErrorResolverStrategy(
-            AsThemeResolverStrategy(
-                AsRouteToViewNameTranslatorStrategy(
-                    AsLanguageResolverStrategy(
-                        AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null)))
+    extends AsViewTargeterStrategy(
+        AsViewResolverStrategy(
+            AsRouteErrorResolverStrategy(
+                AsThemeResolverStrategy(
+                    AsRouteToViewNameTranslatorStrategy(
+                        AsLanguageResolverStrategy(
+                            AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null)))
+                        )
                     )
                 )
             )
@@ -231,43 +238,202 @@ export class AbstractDispatcher
     /**
      * Render the given `ModelAndView`. This is the last stage of handling a route.
      *
+     * The shared pipeline: normalize the result, resolve a view (unless the
+     * result already carries one), give document-producing platforms a chance
+     * to write the whole document, otherwise resolve a target and render into
+     * it.
+     *
      * @param mv - The {@link ModelAndView} to render.
      * @param route - The route associated with the {@link ModelAndView}.
      * @returns A promise that resolves once the view has rendered.
      */
     async render(mv: ModelAndView, route: Route): Promise<void> {
+        // A handler may return a bare view. Wrapping happens here rather than
+        // in `dispatch()` so `postHandle` interceptors still observe the raw
+        // handler result; platform document results are handled by the
+        // subclass *before* this pipeline runs.
+        const result = this._normalizeResult(mv);
+        if (!result) {
+            throw new NoViewFoundError('', route);
+        }
+
         const language = this.languageResolver ? this.languageResolver.resolveLanguage(route) : '',
-            viewName = mv.viewName;
+            viewName = result.viewName;
 
         // Expose the negotiated language to views and templates.
         applyNegotiatedLanguage(route, language);
 
         let view: View | null = null;
 
-        if (viewName) {
+        if (result.view) {
+            // A realized view is authoritative: never re-resolve an instance
+            // the handler built, even when a caller also assigned a name.
+            view = result.view;
+        } else if (viewName) {
             // Content negotiation reads per-call request data (Accept header,
-            // path extension) from the route threaded through resolution.
-            view = await this._resolveViewName(viewName, language, route);
+            // path extension) from the platform projection of the route.
+            view = await this._resolveViewName(viewName, language, this.getNegotiationRequest(route));
             if (!view) {
-                throw new NoViewFoundError(viewName as string, route);
+                throw new NoViewFoundError(viewName, route);
             }
             // Resolved views are owned by the resolver chain (cached
             // singletons) — never destroy them when replaced.
             this.#resolvedViews.add(view);
         } else {
-            view = mv?.view;
-            if (!view) {
-                throw new NoViewFoundError(viewName ?? '', route);
-            }
+            throw new NoViewFoundError(viewName ?? '', route);
         }
 
         if (likeApplicationContextAware(view)) {
             view.setApplicationContext(this.applicationContext);
         }
 
-        const viewTarget = this.applicationContext.getValue(VIEW_TARGET);
-        await view.render(mv.model, route, viewTarget);
+        // Document platforms (Node) write producer output themselves and
+        // report `true`; fragment platforms (browser) keep the producer as a
+        // view and render it into a target.
+        if (!(likeProducerView(view) && (await this.renderDocument(view, result.model, route)))) {
+            const viewTarget = await this._resolveViewTarget(result, route, viewName, view, language);
+            await view.render(result.model, route, viewTarget ?? undefined);
+        }
 
+        await this.#activateView(view);
+    }
+
+    /**
+     * Normalizes a handler result for the shared render pipeline.
+     *
+     * @param result - The raw handler result.
+     * @returns The result as a {@link ModelAndView}, or `null` when it is
+     *   neither a `ModelAndView` nor view-shaped (a plain object is a platform
+     *   document result and never reaches this pipeline).
+     */
+    protected _normalizeResult(result: unknown): ModelAndView | null {
+        if (result instanceof ModelAndView) {
+            return result;
+        }
+
+        if (likeView(result)) {
+            return new ModelAndView(result);
+        }
+
+        return null;
+    }
+
+    /**
+     * Chooses the destination for one render pass.
+     *
+     * Precedence is strict and short-circuiting: an explicit result target,
+     * then a route attribute, then the configured targeter chain, then the
+     * platform fallback. Steps 1–2 validate their value so a stray string can
+     * never reach a selector lookup; step 3 is skipped entirely — context
+     * included — when no targeters are configured.
+     *
+     * @param result - The normalized result being rendered.
+     * @param route - The route being rendered.
+     * @param viewName - The logical view name, when the result carried one.
+     * @param view - The view that will render.
+     * @param language - The negotiated language.
+     * @returns The chosen target, or `null` when the platform has none.
+     */
+    protected async _resolveViewTarget(
+        result: ModelAndView,
+        route: Route,
+        viewName: string | null,
+        view: View,
+        language: string
+    ): Promise<ViewTarget | null> {
+        const explicitTarget = result.viewTarget;
+
+        if (explicitTarget !== undefined) {
+            if (likeViewTarget(explicitTarget)) {
+                return explicitTarget;
+            }
+            logger.debug(`Ignoring a non-view-target result target on route "${route.path}"`);
+        }
+
+        const attributeTarget = route.attributes?.[VIEW_TARGET_ATTRIBUTE];
+
+        if (attributeTarget !== undefined) {
+            if (likeViewTarget(attributeTarget)) {
+                return attributeTarget;
+            }
+            logger.debug(`Ignoring a non-view-target route attribute on route "${route.path}"`);
+        }
+
+        const targeters = this.viewTargeters,
+            length = targeters?.length ?? 0;
+
+        if (length > 0) {
+            const context: ViewTargetingContext = {
+                route,
+                viewName,
+                view,
+                model: result.model,
+                language,
+            };
+
+            for (let index = 0; index < length; index++) {
+                // oxlint-disable-next-line no-await-in-loop -- targeters run in priority order with first-match-wins; parallelizing would execute every targeter and change which destination wins.
+                const target = await targeters[index].resolveViewTarget(context);
+                if (target) {
+                    return target;
+                }
+            }
+        }
+
+        return this.getFallbackViewTarget(route);
+    }
+
+    /**
+     * The platform's default destination when no targeter chooses one.
+     *
+     * The base implementation reads the application's registered
+     * {@link VIEW_TARGET}, which is byte-identical to the pre-targeter
+     * pipeline.
+     *
+     * @param _route - The route being rendered.
+     * @returns The fallback target, or `null` when none is registered.
+     */
+    protected getFallbackViewTarget(_route: Route): ViewTarget | null {
+        return this.applicationContext?.getValue(VIEW_TARGET) ?? null;
+    }
+
+    /**
+     * Writes a whole response document for a {@link ProducerView}.
+     *
+     * The base implementation declines (`false`), so fragment platforms render
+     * producer views into a target. Document platforms (Node) write the
+     * render result and return `true`.
+     *
+     * @param _view - The producing view.
+     * @param _model - The model to render.
+     * @param _route - The route being rendered.
+     * @returns `true` when the document was written and rendering is complete.
+     */
+    protected async renderDocument(_view: ProducerView, _model: unknown, _route: Route): Promise<boolean> {
+        return false;
+    }
+
+    /**
+     * The request object handed to view resolution for content negotiation.
+     *
+     * The base returns the route, whose headers the browser adapter populates.
+     * Node overrides this to project the raw server request headers onto the
+     * route without mutating it.
+     *
+     * @param route - The route being rendered.
+     * @returns The negotiation request.
+     */
+    protected getNegotiationRequest(route: Route): unknown {
+        return route;
+    }
+
+    /**
+     * Records the active view and destroys the handler-created view it
+     * replaces.
+     *
+     * @param view - The view that just rendered.
+     */
+    async #activateView(view: View): Promise<void> {
         const previousView = this.#activeView;
         this.#activeView = view;
 

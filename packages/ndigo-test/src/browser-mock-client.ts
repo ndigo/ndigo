@@ -116,6 +116,11 @@ function isConfiguration(source: Function): boolean {
 /**
  * Socket-free mock MVC client for browser applications. Dispatches routes
  * through the real `BrowserDispatcher` and captures the rendered view.
+ *
+ * Applications that install `viewTargeters` decide their own destinations:
+ * when a targeter matches, the render goes there and the capture target stays
+ * empty — assert that destination, or render a result that carries an explicit
+ * `ModelAndView.viewTarget`.
  */
 export class MockWebClient {
     #app: BrowserTestApp;
@@ -132,8 +137,14 @@ export class MockWebClient {
     /**
      * Dispatches a route through the browser pipeline.
      *
+     * The capture target is reset first, so a render that the app's
+     * `viewTargeters` send elsewhere can never surface as the previous
+     * dispatch's stale render.
+     *
      * @param path - The route path, e.g. `/account/settings`.
      * @returns The captured render (output element + model).
+     * @throws When nothing landed in the capture target — a handler mismatch,
+     *   or a `viewTargeters` chain that redirected the render.
      */
     async dispatch(path: string): Promise<CapturedRender> {
         const route: Route = {
@@ -146,10 +157,17 @@ export class MockWebClient {
             attributes: {},
         } as unknown as Route;
 
+        await this.#app.viewTarget.clear();
         await this.#app.dispatcher.dispatch(route);
         const render = this.#app.viewTarget.lastRender;
         if (!render) {
-            throw new Error(`No view was rendered for route '${path}'. Check the handler match and argument binding.`);
+            const targeters = this.#app.dispatcher.viewTargeters ?? [];
+            const hint = targeters.length
+                ? ` The app installs ${targeters.length} view targeter(s): the render may have gone to a different view target — assert that destination, or render a result with an explicit viewTarget.`
+                : '';
+            throw new Error(
+                `No view was rendered for route '${path}'. Check the handler match and argument binding.${hint}`
+            );
         }
         return render;
     }

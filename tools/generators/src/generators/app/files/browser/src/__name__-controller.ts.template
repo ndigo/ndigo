@@ -7,10 +7,10 @@ import { WebComponentView } from '@ndigo/view-webcomponent';
 class <%= className %>Controller {
     @routeMapping('/')
     handleRoot() {
-        // The minimal example keeps a concrete view by design — constructing
-        // a view in the handler is always an option. Most apps instead return
-        // a view NAME (`new ModelAndView('<%= name %>-app')`) resolved by the
-        // resolver chain (WebComponentViewResolver etc.).
+        // The minimal example returns a realized view; placement stays on the
+        // preset's `#app` target and no chains run. Return a view NAME to let
+        // the resolver chain pick the view; configure `viewTargeters` for
+        // named regions and layouts (docs/guides/50-view-targeting.md).
         return new ModelAndView(new WebComponentView('<%= name %>-app'), { message: 'Hello, World!' });
     }
 }

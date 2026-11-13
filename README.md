@@ -4,6 +4,8 @@
 
 # Ndigo
 
+> ⚠️ **Pre-release:** Ndigo is in pre-release and still subject to changes. APIs may change between commits; Semantic Versioning guarantees arrive at `1.0.0`.
+
 Ndigo gives TypeScript applications the structure of a server framework and the reach of the web. One context, one dispatcher, one view model — shared by browser and Node — so server-rendered islands, micro frontends, SPAs, and APIs run on the same primitives, with views, HTTP, ORM, auth, telemetry, and agent surfaces adopted only when needed.
 
 ## Requirements

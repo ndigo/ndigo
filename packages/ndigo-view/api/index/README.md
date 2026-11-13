@@ -142,6 +142,12 @@ Re-exports [FixedContentNegotiationStrategy](../content-negotiation-view-resolve
 
 ***
 
+### FixedViewTargeter
+
+Re-exports [FixedViewTargeter](../view-targeter/classes/FixedViewTargeter.md)
+
+***
+
 ### ImportViewResolver
 
 Re-exports [ImportViewResolver](../view-resolver/classes/ImportViewResolver.md)
@@ -205,6 +211,12 @@ Re-exports [likeProducerView](../producer-view/functions/likeProducerView.md)
 ### likeView
 
 Re-exports [likeView](../like-view/functions/likeView.md)
+
+***
+
+### likeViewTarget
+
+Re-exports [likeViewTarget](../view-target/functions/likeViewTarget.md)
 
 ***
 
@@ -319,3 +331,21 @@ Re-exports [ViewResolverComposite](../view-resolver/classes/ViewResolverComposit
 ### ViewTarget
 
 Re-exports [ViewTarget](../view-target/interfaces/ViewTarget.md)
+
+***
+
+### ViewTargeter
+
+Re-exports [ViewTargeter](../view-targeter/interfaces/ViewTargeter.md)
+
+***
+
+### ViewTargeterComposite
+
+Re-exports [ViewTargeterComposite](../view-targeter/classes/ViewTargeterComposite.md)
+
+***
+
+### ViewTargetingContext
+
+Re-exports [ViewTargetingContext](../view-targeter/interfaces/ViewTargetingContext.md)

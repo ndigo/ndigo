@@ -131,6 +131,30 @@ describe('DOMElementViewTarget', () => {
         expect(el.children[0].tagName.toLowerCase()).toBe('my-view');
     });
 
+    it('commit parses string output as a fragment', () => {
+        // `StringTemplateView` and other fragment views produce markup, and
+        // `ViewTarget.commit` receives `unknown` — a string is valid output.
+        const el = document.createElement('div');
+        const target = new DOMElementViewTarget(el);
+
+        target.commit('<footer><p>Built with Ndigo</p></footer>', {}, mockRoute);
+
+        expect(el.children.length).toBe(1);
+        expect((el.firstElementChild as HTMLElement).tagName.toLowerCase()).toBe('footer');
+        expect(el.textContent).toContain('Built with Ndigo');
+    });
+
+    it('commit replaces previous string output instead of stacking', () => {
+        const el = document.createElement('div');
+        const target = new DOMElementViewTarget(el);
+
+        target.commit('<p>first</p>', {}, mockRoute);
+        target.commit('<p>second</p>', {}, mockRoute);
+
+        expect(el.children.length).toBe(1);
+        expect(el.textContent).toBe('second');
+    });
+
     it('clear empties container without destroying', () => {
         const el = document.createElement('div');
         const target = new DOMElementViewTarget(el);

@@ -101,6 +101,8 @@ Clears rendered content without permanently destroying the target.
 
 Commits rendered output to the host node and re-enables event bridging.
 
+A string is parsed as HTML and appended as a fragment (views that render
+template strings, such as `StringTemplateView`, produce fragment markup).
 A single existing child whose tag name matches the output is reused by
 updating its model instead of being replaced, so web component model
 updates drive re-rendering in place.
@@ -109,9 +111,9 @@ updates drive re-rendering in place.
 
 ##### output
 
-`HTMLElement`
+`unknown`
 
-The rendered DOM subtree to attach.
+The rendered DOM subtree or HTML string to attach.
 
 ##### model
 

@@ -44,11 +44,14 @@ The preset composes, it does not replace:
   applies `profiles` / `properties`;
 - resolves `root` (an element or an element id, default `#app`) and
   creates the `DOMElementViewTarget` (`eventMap` bridges DOM events to
-  context events);
+  context events) — this is the **fallback** region, used when no targeter
+  chooses another destination;
 - creates the `BrowserDispatcher` (strategies initialized from the
   context) and the `HashRouter` that dispatches routes to it, and
   registers them under `VIEW_TARGET` / `DISPATCHER` / `ROUTER`;
 - installs the `interceptors` you pass on the router;
+- installs the `viewTargeters` you pass **before** strategy initialization,
+  so the dispatcher's chain is the configured one;
 - runs `beforeNavigate(app)`, then performs the first navigation:
   `initialPath` defaults to the path the URL already addresses, so a
   reload of `#/item/123` restores that route (`autoNavigate: false`
@@ -72,6 +75,24 @@ The preset uses `DOMElementViewTarget` for the root. For isolated surfaces
 (shadow DOM, an iframe, a micro-frontend host) construct
 `ShadowRootViewTarget` or `IframeViewTarget` (from `@ndigo/view-webcomponent`)
 instead and register it as `VIEW_TARGET` — see [Guide 09 §7](09-views-and-content-negotiation.md).
+
+To fill **several** regions on one page, keep the root as the fallback and add
+targeters — either through the preset or in a configuration:
+
+```ts
+import { NameViewTargeter, RouteViewTargeter } from '@ndigo/view-webcomponent';
+
+await createWebApplication([AppConfiguration], {
+    viewTargeters: [
+        new NameViewTargeter({ shell: '#app', footer: '#site-footer' }),
+        new RouteViewTargeter({ '/report/**': '#sidebar' }),
+    ],
+});
+```
+
+Targeters are ordered and first-match-wins, use the view name / route / a
+route attribute, and decline to the root when nothing matches. See
+[Guide 50 — View Targeting](50-view-targeting.md).
 
 ## 2. Configuration and routes
 

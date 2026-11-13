@@ -50,6 +50,7 @@ export * from './node-config-file-reader';
 export * from './http-request-limits';
 export * from './node-dispatcher';
 export * from './node-view-target';
+export * from './response-view-targeter';
 export * from './response-entity';
 export * from './response-entity-view';
 export * from './static-file-view';

@@ -9,12 +9,16 @@ Web Component rendering engine for Ndigo — turns `AbstractWebComponent` views 
 ## Modules
 
 - [abstract-web-component](abstract-web-component/README.md)
+- [attribute-view-targeter](attribute-view-targeter/README.md)
 - [engine](engine/README.md)
 - [form-associated](form-associated/README.md)
 - [hydrate](hydrate/README.md)
 - [iframe-view-target](iframe-view-target/README.md)
 - [index](index/README.md)
+- [name-view-targeter](name-view-targeter/README.md)
 - [ndigo-element](ndigo-element/README.md)
+- [route-view-targeter](route-view-targeter/README.md)
+- [selector-view-targeter](selector-view-targeter/README.md)
 - [shadow-root-view-target](shadow-root-view-target/README.md)
 - [tag-mapping](tag-mapping/README.md)
 - [view](view/README.md)

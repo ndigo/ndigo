@@ -23,7 +23,20 @@ so the eviction contract is defined once: never more than
 
 ### Constructor
 
-> **new BoundedCache**\<`V`\>(): `BoundedCache`\<`V`\>
+> **new BoundedCache**\<`V`\>(`onEvict?`): `BoundedCache`\<`V`\>
+
+Creates a bounded cache.
+
+#### Parameters
+
+##### onEvict?
+
+(`value`, `key`) => `void`
+
+Called with the value and key removed from the cache —
+  by overflow eviction or [BoundedCache.clear](#clear) — so owners of
+  stateful entries (DOM targets holding event listeners) can release
+  them instead of leaking them.
 
 #### Returns
 
@@ -44,6 +57,19 @@ Number of cached entries.
 `number`
 
 ## Methods
+
+### clear()
+
+> **clear**(): `void`
+
+Removes every cached value, reporting each to the eviction callback so
+owners can release stateful entries (DOM targets holding listeners).
+
+#### Returns
+
+`void`
+
+***
 
 ### get()
 

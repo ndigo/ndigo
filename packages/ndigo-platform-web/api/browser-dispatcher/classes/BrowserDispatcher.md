@@ -178,6 +178,18 @@ The ordered view resolvers.
 
 `AbstractDispatcher.viewResolvers`
 
+***
+
+### viewTargeters
+
+> **viewTargeters**: `ViewTargeter`[]
+
+The ordered view targeters.
+
+#### Inherited from
+
+`AbstractDispatcher.viewTargeters`
+
 ## Accessors
 
 ### \[$aware\]
@@ -700,11 +712,40 @@ The application context.
 
 ***
 
+### initViewTargeters()
+
+> **initViewTargeters**(`context`): `void`
+
+Installs the view-targeter chain.
+
+#### Parameters
+
+##### context
+
+`ApplicationContext`
+
+The application context.
+
+#### Returns
+
+`void`
+
+#### Inherited from
+
+`AbstractDispatcher.initViewTargeters`
+
+***
+
 ### render()
 
 > **render**(`mv`, `route`): `Promise`\<`void`\>
 
 Render the given `ModelAndView`. This is the last stage of handling a route.
+
+The shared pipeline: normalize the result, resolve a view (unless the
+result already carries one), give document-producing platforms a chance
+to write the whole document, otherwise resolve a target and render into
+it.
 
 #### Parameters
 

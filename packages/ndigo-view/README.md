@@ -51,6 +51,25 @@ const result = await view.renderTo({ name: 'Ada', count: 3 }, route);
 // result: { status, headers, body }
 ```
 
+### Choosing where a view lands
+
+A `ViewTarget` is the destination; a `ViewTargeter` chooses it per render pass.
+Targeters are ordered and the first non-`null` answer wins:
+
+```ts
+import { FixedViewTargeter, ViewTargeterComposite, likeViewTarget } from '@ndigo/view';
+
+const chain = new ViewTargeterComposite([
+    new FixedViewTargeter(captureTarget), // tests / single-surface apps
+]);
+const target = await chain.resolveViewTarget({ route, viewName: 'home', view, model, language: 'en' });
+```
+
+The dispatcher consults, in order: `ModelAndView.viewTarget`, a route
+`viewTarget` attribute, the `viewTargeters` chain, then the registered
+`VIEW_TARGET`. Use `likeViewTarget(value)` to validate a runtime-supplied
+candidate — it checks the `prepare`/`commit`/`clear` shape, not a class.
+
 ### Performance
 
 Candidate aggregation is cached per (view name, language) — the `Promise.all` over delegate resolvers runs once per name, not per request. Only the media type selection reads the current request.
@@ -64,6 +83,7 @@ how it fits with the rest of Ndigo.
 - **View contracts** — `View`, `AbstractView`, `ProducerView` (a render produces `{ status, headers, body }`)
 - **Serializing views** — `AbstractSerializingView` family: `JSONView`, `CSVView`, `TextView`, `OctetStreamView`
 - **View targets** — `ViewTarget` abstraction for fragment rendering (DOM, HTTP response)
+- **View targeting** — `ViewTargeter` contract, ordered `ViewTargeterComposite`, `FixedViewTargeter`, `likeViewTarget`
 - **Resolution** — `ContentNegotiationManager` + strategies, `ContentNegotiationViewResolver`, path-based resolvers with per-name caching, `IslandViewResolver`/`IslandView`
 - **Island first paint** — `IslandView` accepts trusted `shadowHtml` (author/design-system markup, never user input) rendered as a Declarative Shadow DOM `<template shadowrootmode="open">`, so the first paint shows real content before any script runs
 

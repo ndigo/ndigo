@@ -5,6 +5,7 @@ export * from './view.js';
 export * from './view-mapping.js';
 export * from './view-resolver.js';
 export * from './view-target.js';
+export * from './view-targeter.js';
 export * from './producer-view.js';
 export * from './abstract-serializing-view.js';
 export * from './json-view.js';

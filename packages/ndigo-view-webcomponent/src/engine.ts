@@ -158,24 +158,37 @@ export class DOMElementViewTarget implements DOMViewTarget, Destroyable {
     /**
      * Commits rendered output to the host node and re-enables event bridging.
      *
+     * A string is parsed as HTML and appended as a fragment (views that render
+     * template strings, such as `StringTemplateView`, produce fragment markup).
      * A single existing child whose tag name matches the output is reused by
      * updating its model instead of being replaced, so web component model
      * updates drive re-rendering in place.
      *
-     * @param output - The rendered DOM subtree to attach.
+     * @param output - The rendered DOM subtree or HTML string to attach.
      * @param model - The model passed through from the view engine.
      * @param route - The active route associated with the render pass.
      * @throws When the target has already been destroyed.
      */
-    commit(output: HTMLElement, model: unknown, route: Route): void {
+    commit(output: unknown, model: unknown, route: Route): void {
         if (this.destroyed) {
             throw new IllegalStateError('Cannot commit to a destroyed DOMElementViewTarget.');
         }
 
-        const children = this.#host.children;
+        if (typeof output === 'string') {
+            this.#commitMarkup(output, route);
+            return;
+        }
+
+        const element = output as HTMLElement,
+            children = this.#host.children;
+
         if (children.length === 1) {
             const existing = children[0] as HTMLElement;
-            if (existing.tagName !== undefined && existing.tagName.toLowerCase() === output.tagName.toLowerCase()) {
+            if (
+                existing.tagName !== undefined &&
+                element.tagName !== undefined &&
+                existing.tagName.toLowerCase() === element.tagName.toLowerCase()
+            ) {
                 (existing as ModelAwareElement).model = model;
                 this.listen();
                 return;
@@ -183,7 +196,23 @@ export class DOMElementViewTarget implements DOMViewTarget, Destroyable {
         }
 
         this.prepare(route);
-        this.#host.appendChild(output);
+        this.#host.appendChild(element);
+        this.listen();
+    }
+
+    /**
+     * Parses fragment markup and appends it to the host.
+     *
+     * @param markup - The HTML fragment.
+     * @param route - The active route associated with the render pass.
+     */
+    #commitMarkup(markup: string, route: Route): void {
+        const ownerDocument = (this.#host as Node).ownerDocument ?? (this.#host as Document),
+            template = ownerDocument.createElement('template');
+
+        template.innerHTML = markup;
+        this.prepare(route);
+        this.#host.appendChild(template.content);
         this.listen();
     }
 

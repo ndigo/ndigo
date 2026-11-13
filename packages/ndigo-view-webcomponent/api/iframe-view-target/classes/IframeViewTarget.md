@@ -92,13 +92,11 @@ Whether the target has been destroyed.
 
 > **clear**(): `void`
 
-Cleans up the ViewTarget.
+Clears the iframe document without destroying the target.
 
 #### Returns
 
 `void`
-
-A promise that resolves when cleanup completes.
 
 #### Implementation of
 
@@ -110,8 +108,7 @@ A promise that resolves when cleanup completes.
 
 > **commit**(`output`, `model`, `route`): `Promise`\<`void`\>
 
-Commits the rendered output to the target.
-The type of `output` depends on the View engine (e.g., HTMLElement, string).
+Commits rendered output to the iframe document, loading it first.
 
 #### Parameters
 
@@ -119,13 +116,13 @@ The type of `output` depends on the View engine (e.g., HTMLElement, string).
 
 `unknown`
 
-The rendered output.
+The rendered output (DOM subtree or markup string).
 
 ##### model
 
 `unknown`
 
-The model used to produce the output.
+The model passed through from the view engine.
 
 ##### route
 
@@ -137,7 +134,7 @@ The route being rendered.
 
 `Promise`\<`void`\>
 
-A promise that resolves when the output has been committed.
+A promise that resolves once the output is committed.
 
 #### Implementation of
 
@@ -149,7 +146,7 @@ A promise that resolves when the output has been committed.
 
 > **destroy**(): `void`
 
-Releases the value's resources.
+Destroys the target and releases the iframe document's listeners.
 
 #### Returns
 
@@ -165,6 +162,8 @@ Releases the value's resources.
 
 > **listen**(): `void`
 
+Re-installs the inner target's DOM event listeners.
+
 #### Returns
 
 `void`
@@ -175,7 +174,7 @@ Releases the value's resources.
 
 > **prepare**(`route`): `Promise`\<`void`\>
 
-Prepares the target for rendering (e.g., clearing previous content).
+Prepares the iframe document for a new render pass, loading it first.
 
 #### Parameters
 
@@ -189,7 +188,7 @@ The route being rendered.
 
 `Promise`\<`void`\>
 
-A promise that resolves when preparation completes.
+A promise that resolves once the document is ready.
 
 #### Implementation of
 
@@ -201,11 +200,18 @@ A promise that resolves when preparation completes.
 
 > **setApplicationContext**(`applicationContext`): `void`
 
+Stores the application context and forwards it to the inner target.
+
+The iframe document may not exist yet, so the context is stored and
+applied when the inner target is created.
+
 #### Parameters
 
 ##### applicationContext
 
 `EventEmitter`
+
+The application event emitter.
 
 #### Returns
 
@@ -217,8 +223,7 @@ A promise that resolves when preparation completes.
 
 > **setEventMap**(`eventMap`): `void`
 
-Configures the mapping of surface event names to application event names.
-Only mapped events are forwarded.
+Stores the DOM event map and forwards it to the inner target.
 
 #### Parameters
 
@@ -226,7 +231,7 @@ Only mapped events are forwarded.
 
 `Record`\<`string`, `string`\>
 
-A map of surface event names to application event names.
+DOM event name → application event name mapping.
 
 #### Returns
 
@@ -241,6 +246,8 @@ A map of surface event names to application event names.
 ### unlisten()
 
 > **unlisten**(): `void`
+
+Removes the inner target's DOM event listeners.
 
 #### Returns
 

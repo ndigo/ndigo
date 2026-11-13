@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { Route, ACCEPT_LANGUAGE_ATTRIBUTE } from '@ndigo/router';
 import { AcceptHeaderLanguageResolver } from '@ndigo/dispatcher';
 import { NodeAutoConfiguration } from '../src/node-auto-configuration';
+import { ResponseViewTargeter } from '../src/response-view-targeter';
 import type { ServerResponse } from 'node:http';
 import { CORSInterceptor } from '../src/cors-interceptor';
 import { NODE_REQUEST_ATTRIBUTE, NODE_RESPONSE_ATTRIBUTE } from '../src/node-request';
@@ -55,6 +56,12 @@ describe('NodeAutoConfiguration', () => {
         const config = new NodeAutoConfiguration();
         const resolver = config.languageResolver();
         expect(resolver).toBeInstanceOf(AcceptHeaderLanguageResolver);
+    });
+
+    test('provides the response view targeter as the default chain entry', () => {
+        const config = new NodeAutoConfiguration();
+
+        expect(config.viewTargeter()).toBeInstanceOf(ResponseViewTargeter);
     });
 
     test('language resolver negotiates from the route accept-language attribute', () => {

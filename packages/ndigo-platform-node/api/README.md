@@ -54,6 +54,7 @@ Node.js HTTP argument resolvers, environment integration, and auto-configuration
 - [request-session-argument-resolver](request-session-argument-resolver/README.md)
 - [response-entity](response-entity/README.md)
 - [response-entity-view](response-entity-view/README.md)
+- [response-view-targeter](response-view-targeter/README.md)
 - [security-headers-interceptor](security-headers-interceptor/README.md)
 - [server-sent-event-view](server-sent-event-view/README.md)
 - [session-cookie](session-cookie/README.md)

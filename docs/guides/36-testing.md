@@ -125,10 +125,17 @@ expect(app.viewTarget.lastRender?.model).toEqual({ section: 'settings' });
 app.close();
 ```
 
-`MockWebClient.dispatch(path)` returns the captured render (output element
+`MockWebClient.dispatch(path)` returns the captured render — the output
+element plus the model — and records it on `app.viewTarget`, so you can
+assert the view a route renders, not just the response.
 
-- model) and records it on `app.viewTarget`, so you can assert the view a
-  route renders — not just the response.
+An app that installs `viewTargeters` chooses its own destinations: a matched
+targeter sends the output to its target and the capture stays empty, which
+`dispatch` reports with a hint. Assert the real destination in jsdom, or
+render a result that carries an explicit `ModelAndView.viewTarget`
+([Guide 50 — View Targeting](50-view-targeting.md) §8). The capture is reset
+per dispatch, so a redirected render can never surface as the previous
+result.
 
 ## 4. Timing helpers
 

@@ -130,9 +130,11 @@ export class FixedViewTargeter implements ViewTargeter {
     /**
      * Returns the fixed target.
      *
+     * @param _context - The render pass being targeted (unused: the target is
+     *   fixed for the lifetime of this targeter).
      * @returns The configured target.
      */
-    resolveViewTarget(): ViewTarget {
+    resolveViewTarget(_context: ViewTargetingContext): ViewTarget {
         return this.target;
     }
 }

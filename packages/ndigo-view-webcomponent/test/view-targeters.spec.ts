@@ -38,7 +38,7 @@ describe('SelectorViewTargeter', () => {
         const target = targeter.resolveViewTarget(context());
 
         expect(target).not.toBeNull();
-        expect((target as { container: unknown }).container).toBe(host);
+        expect((target as DOMElementViewTarget).container).toBe(host);
     });
 
     it('reuses one target instance per selector', () => {
@@ -115,7 +115,7 @@ describe('SelectorViewTargeter', () => {
     it('destroys cached targets on destroy', () => {
         mount('main');
         const targeter = new SelectorViewTargeter(() => '#main'),
-            target = targeter.resolveViewTarget(context()) as { destroyed: boolean; destroy: () => void };
+            target = targeter.resolveViewTarget(context()) as DOMElementViewTarget;
 
         targeter.destroy();
 
@@ -152,7 +152,7 @@ describe('NameViewTargeter', () => {
 
         const target = targeter.resolveViewTarget(context({ viewName: 'footer' }));
 
-        expect((target as { container: unknown }).container).toBe(host);
+        expect((target as DOMElementViewTarget).container).toBe(host);
     });
 
     it('declines an unmapped view name', () => {
@@ -189,9 +189,9 @@ describe('RouteViewTargeter', () => {
         const targeter = new RouteViewTargeter({ '/report/**': '#sidebar', '/**': '#app' });
 
         expect(targeter.resolveViewTarget(context({ route: route('/report/q1') }))).not.toBeNull();
-        expect(
-            (targeter.resolveViewTarget(context({ route: route('/other') })) as { container: Element }).container.id
-        ).toBe('app');
+        const fallback = targeter.resolveViewTarget(context({ route: route('/other') })) as DOMElementViewTarget;
+
+        expect((fallback.container as Element).id).toBe('app');
     });
 
     it('declines when no pattern matches', () => {
@@ -218,7 +218,7 @@ describe('AttributeViewTargeter', () => {
 
         const target = targeter.resolveViewTarget(context({ route: route('/', { viewTarget: '#footer' }) }));
 
-        expect((target as { container: unknown }).container).toBe(host);
+        expect((target as DOMElementViewTarget).container).toBe(host);
     });
 
     it('supports a custom attribute key', () => {

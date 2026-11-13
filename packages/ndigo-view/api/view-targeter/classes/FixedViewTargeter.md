@@ -48,9 +48,18 @@ The target this targeter always returns.
 
 ### resolveViewTarget()
 
-> **resolveViewTarget**(): [`ViewTarget`](../../view-target/interfaces/ViewTarget.md)
+> **resolveViewTarget**(`_context`): [`ViewTarget`](../../view-target/interfaces/ViewTarget.md)
 
 Returns the fixed target.
+
+#### Parameters
+
+##### \_context
+
+[`ViewTargetingContext`](../interfaces/ViewTargetingContext.md)
+
+The render pass being targeted (unused: the target is
+  fixed for the lifetime of this targeter).
 
 #### Returns
 

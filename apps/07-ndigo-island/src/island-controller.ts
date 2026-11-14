@@ -12,7 +12,7 @@ import {
 } from '@ndigo/dispatcher';
 import { ServerSentEventView } from '@ndigo/platform-node';
 import { IslandView } from '@ndigo/view';
-import type { Route } from '@ndigo/router';
+import { THEME_ATTRIBUTE, type Route } from '@ndigo/router';
 import { z } from 'zod';
 import { TodoModel, TodoModelStore } from './todo-model-store';
 
@@ -167,6 +167,10 @@ export class IslandController {
         // name through the EJSViewResolver — servlet/JSP-style, no inline HTML.
         return new ModelAndView('shell', {
             renderIslandHtml: () => renderIslandMarkup(island, model, route),
+            // Theme negotiation also runs after the handler returns, so the
+            // shell reads the negotiated name lazily during render — the same
+            // reason the island markup is a closure.
+            theme: () => String(route.attributes?.[THEME_ATTRIBUTE] ?? 'ndigo-dark'),
             // Fixed sample timestamp so the localized date rendering stays
             // deterministic across runs (locale helpers format it).
             today: new Date('2026-09-13T12:00:00Z'),

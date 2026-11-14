@@ -2,9 +2,9 @@
  */
 import { describe, test, expect } from 'vitest';
 import { StaticContentSource } from '../src/content';
-import { StaticThemeResolver } from '../src/theme';
+import { StaticThemeSource } from '../src/theme';
 import { CompositeContentSource } from '../src/composite';
-import { CompositeThemeResolver } from '../src/composite';
+import { CompositeThemeResolver, CompositeThemeSource } from '../src/composite';
 
 describe('CompositeContentSource', () => {
     test('returns the first real translation', async () => {
@@ -19,9 +19,8 @@ describe('CompositeContentSource', () => {
     test('falls back to key when no source has a translation', async () => {
         const a = new StaticContentSource({});
         const b = new StaticContentSource({});
-        const composite = new CompositeContentSource([a, b]);
 
-        expect(await composite.getContent('unknown', 'en')).toBe('unknown');
+        expect(await new CompositeContentSource([a, b]).getContent('unknown', 'en')).toBe('unknown');
     });
 
     test('throws when constructed with no sources', () => {
@@ -29,40 +28,47 @@ describe('CompositeContentSource', () => {
     });
 });
 
-describe('CompositeThemeResolver', () => {
-    test('returns theme from first resolver that has it', () => {
-        const primary = new StaticThemeResolver([{ name: 'dark', contentSource: new StaticContentSource() }], 'dark');
-        const fallback = new StaticThemeResolver(
+describe('CompositeThemeSource', () => {
+    test('returns theme from first source that has it', () => {
+        const primary = new StaticThemeSource([{ name: 'dark', contentSource: new StaticContentSource() }], 'dark');
+        const fallback = new StaticThemeSource(
             [
                 { name: 'light', contentSource: new StaticContentSource() },
                 { name: 'dark', contentSource: new StaticContentSource() },
             ],
             'light'
         );
-        const composite = new CompositeThemeResolver([primary, fallback]);
+        const composite = new CompositeThemeSource([primary, fallback]);
 
         expect(composite.getTheme('dark').name).toBe('dark');
     });
 
-    test('falls back to next resolver when first throws', () => {
-        const empty = new StaticThemeResolver([{ name: 'light', contentSource: new StaticContentSource() }], 'light');
-        const withDark = new StaticThemeResolver([{ name: 'dark', contentSource: new StaticContentSource() }], 'dark');
-        const composite = new CompositeThemeResolver([empty, withDark]);
+    test('falls back to next source when first throws', () => {
+        const empty = new StaticThemeSource([{ name: 'light', contentSource: new StaticContentSource() }], 'light');
+        const withDark = new StaticThemeSource([{ name: 'dark', contentSource: new StaticContentSource() }], 'dark');
+        const composite = new CompositeThemeSource([empty, withDark]);
 
         expect(composite.getTheme('dark').name).toBe('dark');
     });
 
-    test('throws when no resolver can provide the theme', () => {
-        const resolver = new StaticThemeResolver(
-            [{ name: 'light', contentSource: new StaticContentSource() }],
-            'light'
-        );
-        const composite = new CompositeThemeResolver([resolver]);
+    test('throws when no source can provide the theme', () => {
+        const source = new StaticThemeSource([{ name: 'light', contentSource: new StaticContentSource() }], 'light');
+        const composite = new CompositeThemeSource([source]);
 
         expect(() => composite.getTheme('nonexistent')).toThrow(TypeError);
     });
 
-    test('throws when constructed with no resolvers', () => {
-        expect(() => new CompositeThemeResolver([])).toThrow(TypeError);
+    test('throws when constructed with no sources', () => {
+        expect(() => new CompositeThemeSource([])).toThrow(TypeError);
+    });
+
+    test('deprecated resolver name aliases the composite theme source', () => {
+        const source = new CompositeThemeResolver([
+            new StaticThemeSource([{ name: 'dark', contentSource: new StaticContentSource() }], 'dark'),
+        ]);
+
+        expect(CompositeThemeResolver).toBe(CompositeThemeSource);
+        expect(source).toBeInstanceOf(CompositeThemeSource);
+        expect(source.getTheme('dark').name).toBe('dark');
     });
 });

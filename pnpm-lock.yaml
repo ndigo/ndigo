@@ -832,6 +832,9 @@ importers:
       '@ndigo/platform-node':
         specifier: ~0.0.1
         version: link:../../packages/ndigo-platform-node
+      '@ndigo/router':
+        specifier: ~0.0.1
+        version: link:../../packages/ndigo-router
       '@ndigo/service':
         specifier: ~0.0.1
         version: link:../../packages/ndigo-service
@@ -857,9 +860,6 @@ importers:
         specifier: 'catalog:'
         version: 4.6.7
     devDependencies:
-      '@ndigo/router':
-        specifier: ~0.0.1
-        version: link:../../packages/ndigo-router
       '@ndigo/test':
         specifier: ~0.0.1
         version: link:../../packages/ndigo-test
@@ -1565,12 +1565,18 @@ importers:
       '@internationalized/date':
         specifier: ^3.12.4
         version: 3.12.4
+      '@ndigo/context':
+        specifier: ~0.0.1
+        version: link:../../packages/ndigo-context
       '@ndigo/dispatcher':
         specifier: ~0.0.1
         version: link:../../packages/ndigo-dispatcher
       '@ndigo/ui':
         specifier: ~0.0.1
         version: link:../../packages/ndigo-ui
+      '@ndigo/ui-web':
+        specifier: ~0.0.1
+        version: link:../../packages/ndigo-ui-web
       '@ndigo/view-webcomponent':
         specifier: ~0.0.1
         version: link:../../packages/ndigo-view-webcomponent
@@ -3026,6 +3032,21 @@ importers:
       axe-core:
         specifier: ^4.14.0
         version: 4.14.0
+
+  packages/ndigo-ui-web:
+    dependencies:
+      '@ndigo/context':
+        specifier: ~0.0.1
+        version: link:../ndigo-context
+      '@ndigo/platform-web':
+        specifier: ~0.0.1
+        version: link:../ndigo-platform-web
+      '@ndigo/router':
+        specifier: ~0.0.1
+        version: link:../ndigo-router
+      '@ndigo/ui':
+        specifier: ~0.0.1
+        version: link:../ndigo-ui
 
   packages/ndigo-util: {}
 

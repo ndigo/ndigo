@@ -6,7 +6,7 @@ import {
     ProxiedGenericApplicationContext,
     ApplicationContextAwareProcessor,
 } from '../src/context';
-import { StaticContentSource, StaticThemeResolver } from '@ndigo/content';
+import { StaticContentSource, StaticThemeSource } from '@ndigo/content';
 import { MockEnvironment } from '../src/environment';
 import { refreshScope } from '@ndigo/factory';
 import { EntryRegistryProcessor } from '@ndigo/factory';
@@ -287,9 +287,9 @@ describe('GenericApplicationContext', () => {
         expect(theme.name).toBe('night');
     });
 
-    test('it should resolve theme from custom theme resolver', () => {
-        context.setThemeResolver(
-            new StaticThemeResolver(
+    test('it should resolve theme from custom theme source', () => {
+        context.setThemeSource(
+            new StaticThemeSource(
                 [
                     {
                         name: 'light',
@@ -301,6 +301,22 @@ describe('GenericApplicationContext', () => {
         );
 
         expect(context.getTheme().name).toBe('light');
+    });
+
+    test('it should still accept the deprecated setThemeResolver alias', () => {
+        context.setThemeResolver(
+            new StaticThemeSource(
+                [
+                    {
+                        name: 'solarized-dark',
+                        contentSource: new StaticContentSource(),
+                    },
+                ],
+                'solarized-dark'
+            )
+        );
+
+        expect(context.getTheme().name).toBe('solarized-dark');
     });
 });
 

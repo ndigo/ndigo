@@ -174,3 +174,13 @@
 .lab-swatch--info {
     --lab-swatch-color: var(--nd-color-info);
 }
+
+.lab-theme-select {
+    padding: var(--nd-space-1) var(--nd-space-2);
+    color: var(--nd-color-text);
+    font: inherit;
+    font-size: var(--nd-text-sm);
+    background: var(--nd-color-surface);
+    border: 1px solid var(--nd-color-border);
+    border-radius: var(--nd-radius-md);
+}

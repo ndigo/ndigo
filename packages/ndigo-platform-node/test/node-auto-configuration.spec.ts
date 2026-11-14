@@ -2,8 +2,8 @@
  */
 import { describe, test, expect } from 'vitest';
 import { z } from 'zod';
-import { Route, ACCEPT_LANGUAGE_ATTRIBUTE } from '@ndigo/router';
-import { AcceptHeaderLanguageResolver } from '@ndigo/dispatcher';
+import { Route, ACCEPT_LANGUAGE_ATTRIBUTE, REQUESTED_THEME_ATTRIBUTE } from '@ndigo/router';
+import { AcceptHeaderLanguageResolver, AttributeThemeResolver } from '@ndigo/dispatcher';
 import { NodeAutoConfiguration } from '../src/node-auto-configuration';
 import { ResponseViewTargeter } from '../src/response-view-targeter';
 import type { ServerResponse } from 'node:http';
@@ -56,6 +56,24 @@ describe('NodeAutoConfiguration', () => {
         const config = new NodeAutoConfiguration();
         const resolver = config.languageResolver();
         expect(resolver).toBeInstanceOf(AcceptHeaderLanguageResolver);
+    });
+
+    test('provides an attribute-backed theme resolver', () => {
+        const config = new NodeAutoConfiguration();
+
+        expect(config.themeResolver()).toBeInstanceOf(AttributeThemeResolver);
+    });
+
+    test('theme resolver negotiates from the route requested-theme attribute', () => {
+        const config = new NodeAutoConfiguration();
+        const resolver = config.themeResolver() as AttributeThemeResolver;
+
+        expect(
+            resolver.resolveThemeName({
+                attributes: { [REQUESTED_THEME_ATTRIBUTE]: 'solarized-light' },
+            } as unknown as Route)
+        ).toBe('solarized-light');
+        expect(resolver.resolveThemeName({ attributes: {} } as Route)).toBe('ndigo-dark');
     });
 
     test('provides the response view targeter as the default chain entry', () => {

@@ -1,7 +1,7 @@
 {
   "name": "@ndigo/island",
   "version": "0.0.1",
-  "description": "Hybrid island demo — Node server renders Web Component islands; client hydrates them",
+  "description": "Hybrid island demo \u2014 Node server renders Web Component islands; client hydrates them",
   "type": "module",
   "private": true,
   "scripts": {
@@ -20,6 +20,7 @@
     "@ndigo/http": "~0.0.1",
     "@ndigo/log": "~0.0.1",
     "@ndigo/platform-node": "~0.0.1",
+    "@ndigo/router": "~0.0.1",
     "@ndigo/service": "~0.0.1",
     "@ndigo/signals": "~0.0.1",
     "@ndigo/util": "~0.0.1",
@@ -36,7 +37,6 @@
     "@ndigo/http": "~0.0.1",
     "@ndigo/log": "~0.0.1",
     "@ndigo/platform-node": "~0.0.1",
-    "@ndigo/router": "~0.0.1",
     "@ndigo/service": "~0.0.1",
     "@ndigo/signals": "~0.0.1",
     "@ndigo/test": "~0.0.1",

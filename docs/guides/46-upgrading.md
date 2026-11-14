@@ -22,16 +22,17 @@ migration guide when the framework changes.
 
 ## 1. The versioning contract
 
-| Phase          | Rule                                                                                                                                                                                         |
-| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Pre-1.0**    | The repository is the distribution; renames/removals are hard cuts with **no aliases** . A change ships with a migration guide and a CHANGELOG entry.                                        |
-| **1.0 freeze** | The frozen surface is the public API reachable from each package's `exports` map: exported symbols, their signatures, and documented behavior. `_*.ts`, `lib/`, and `api/` are not covered . |
-| **Post-1.0**   | Changes to the frozen surface are **additive**. A breaking change waits for the next major, or lands incomplete behind `@ndigo/flags` .                                                      |
+| Phase          | Rule                                                                                                                                                                                                                           |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Pre-1.0**    | The repository is the distribution; renames/removals are hard cuts with **no alias layer by default**. An ADR may declare a one-minor deprecation window instead. A change ships with a migration guide and a CHANGELOG entry. |
+| **1.0 freeze** | The frozen surface is the public API reachable from each package's `exports` map: exported symbols, their signatures, and documented behavior. `_*.ts`, `lib/`, and `api/` are not covered .                                   |
+| **Post-1.0**   | Changes to the frozen surface are **additive**. A breaking change waits for the next major, or lands incomplete behind `@ndigo/flags` .                                                                                        |
 
 Consequences for upgrades:
 
-- Do not expect a deprecation layer at 1.0. If a name changed pre-1.0, the old
-  name is gone; the migration guide is the bridge.
+- Do not expect a deprecation layer at 1.0. A pre-1.0 rename is a hard cut
+  unless an ADR named a deprecation window, and that window closes no later
+  than 1.0; the migration guide is the bridge.
 - Upgrade the `@ndigo/*` packages **as a set**. They are a self-contained graph
   with workspace ranges; mixing minors is not a supported configuration unless
   a guide says otherwise.
@@ -165,8 +166,8 @@ Also:
 - Add or update the ADR when the change is architectural; the migration guide
   is the _how_, the ADR is the _why_.
 - Update the affected guide and package README in the same change.
-- Pre-1.0: state explicitly that there is no alias; post-1.0: state the major
-  or the flag gate.
+- Pre-1.0: state explicitly that there is no alias, or the ADR's alias expiry
+  and removal version; post-1.0: state the major or the flag gate.
 
 ## 7. Pitfalls
 
@@ -181,8 +182,8 @@ Also:
 - **Assuming a database rollback.** Test the restore path before the upgrade.
 - **Ignoring the runtime floor.** Node 24/pnpm 12 are part of the release, not
   a suggestion.
-- **Keeping old imports behind a wrapper.** Pre-1.0 aliases do not exist;
-  migrate the call site.
+- **Keeping old imports behind a wrapper.** Pre-1.0 aliases exist only when an
+  ADR declared a deprecation window; migrate the call site before it closes.
 - **No app smoke.** Unit tests can pass while the server fails to bind or a
   view no longer resolves.
 

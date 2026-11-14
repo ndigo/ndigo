@@ -15,6 +15,8 @@ import { initCommandPalette } from './components/command/command';
 import { initDataTable } from './components/data-table/data-table';
 import { initCodeBlocks } from './components/code-block/code-block';
 import { TOKENS } from '@ndigo/ui';
+import { GenericApplicationContext } from '@ndigo/context';
+import { connectBrowserTheme } from '@ndigo/ui-web';
 
 const _uiStyles = import.meta.glob('./ui/**/*.css', { eager: true });
 const _uiModules = import.meta.glob('./ui/**/*.ts', { eager: true });
@@ -94,4 +96,17 @@ if (a2ui !== null) {
             },
         },
     ];
+}
+
+// Theme switcher: cookie → system preference → Ndigo default, then the same
+// one-call switch the guide documents. The context is a bare
+// GenericApplicationContext — theme state does not need a booted app.
+const themeContext = new GenericApplicationContext('ndigo-ui-lab');
+const browserTheme = connectBrowserTheme(themeContext, { themeName: 'ndigo-dark' });
+const themeSelect = document.querySelector<HTMLSelectElement>('#theme-select');
+if (themeSelect !== null) {
+    themeSelect.value = browserTheme.theme?.name ?? 'ndigo-dark';
+    themeSelect.addEventListener('change', () => {
+        browserTheme.setTheme(themeSelect.value);
+    });
 }

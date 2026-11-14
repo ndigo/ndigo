@@ -50,8 +50,20 @@ Sets the default theme name.
 
 ***
 
-### themeResolver?
+### ~~themeResolver?~~
 
-> `optional` **themeResolver?**: `ThemeResolver`
+> `optional` **themeResolver?**: `ThemeSource`
 
-Overrides the shell theme resolver.
+Overrides the shell theme source.
+
+#### Deprecated
+
+Use [themeSource](#themesource) instead.
+
+***
+
+### themeSource?
+
+> `optional` **themeSource?**: `ThemeSource`
+
+Overrides the shell theme source.

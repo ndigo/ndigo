@@ -9,8 +9,8 @@ import {
     MessageSource,
     StaticContentSource,
     Theme,
-    ThemeResolver,
-    StaticThemeResolver,
+    ThemeSource,
+    StaticThemeSource,
 } from '@ndigo/content';
 import { AsEventEmitter } from './event-emitter';
 import {
@@ -50,7 +50,7 @@ let uuid = 0;
 export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLoader(DefaultFactory)) {
     #children: GenericApplicationContext[];
     #contentSource: ContentSource;
-    #customThemeResolver: boolean;
+    #customThemeSource: boolean;
     #environment: Environment | null;
     #refreshEnvironment: ConfigurableEnvironment | null = null;
     #refreshListener: (() => void) | null = null;
@@ -62,7 +62,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
     #name: string;
     #parent: ApplicationContext | null;
     #themeName: string;
-    #themeResolver: ThemeResolver | null;
+    #themeSource: ThemeSource | null;
 
     /** Timestamp when the context was created. */
     createdTimestamp!: number;
@@ -171,7 +171,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
 
         this.#contentSource = new StaticContentSource();
         this.#children = [];
-        this.#customThemeResolver = false;
+        this.#customThemeSource = false;
         this.#environment = null;
         this.#isActive = false;
         this.#lifecycleProcessor = null;
@@ -179,7 +179,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
         this.#name = name ?? '';
         this.#parent = null;
         this.#themeName = 'default';
-        this.#themeResolver = null;
+        this.#themeSource = null;
 
         this.setId(++uuid);
 
@@ -383,11 +383,11 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
      * @returns The resolved theme.
      */
     getTheme(name?: string): Theme {
-        if (!this.#themeResolver) {
-            this.#themeResolver = this._createThemeResolver();
+        if (!this.#themeSource) {
+            this.#themeSource = this._createThemeSource();
         }
 
-        return this.#themeResolver.getTheme(name || this.#themeName);
+        return this.#themeSource.getTheme(name || this.#themeName);
     }
 
     /**
@@ -462,8 +462,8 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
     setContentSource(contentSource: ContentSource): void {
         this.#contentSource = contentSource;
 
-        if (!this.#customThemeResolver) {
-            this.#themeResolver = null;
+        if (!this.#customThemeSource) {
+            this.#themeSource = null;
         }
     }
 
@@ -584,12 +584,21 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
     }
 
     /**
-     * Overrides the theme resolver used by this context.
-     * @param themeResolver - The theme resolver.
+     * Replaces the theme source used by this context.
+     * @param themeSource - The theme source.
      */
-    setThemeResolver(themeResolver: ThemeResolver): void {
-        this.#customThemeResolver = true;
-        this.#themeResolver = themeResolver;
+    setThemeSource(themeSource: ThemeSource): void {
+        this.#customThemeSource = true;
+        this.#themeSource = themeSource;
+    }
+
+    /**
+     * Overrides the theme source used by this context.
+     * @param themeResolver - The theme source.
+     * @deprecated Use {@link setThemeSource} instead.
+     */
+    setThemeResolver(themeResolver: ThemeSource): void {
+        this.setThemeSource(themeResolver);
     }
 
     /** Creates the environment for this context. */
@@ -597,9 +606,9 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
         return new StandardEnvironment();
     }
 
-    /** Creates the theme resolver for this context. */
-    protected _createThemeResolver(): ThemeResolver {
-        return new StaticThemeResolver(
+    /** Creates the theme source for this context. */
+    protected _createThemeSource(): ThemeSource {
+        return new StaticThemeSource(
             [
                 {
                     name: this.#themeName,

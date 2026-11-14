@@ -34,8 +34,8 @@ class ContextThemeResolver extends AbstractThemeResolver {
         this.#context = context;
     }
 
-    resolveTheme(route: Route): string {
-        return this.#context.getTheme().name;
+    resolveThemeName(_route: Route): string {
+        return this.#context.themeName || this.defaultThemeName;
     }
 }
 

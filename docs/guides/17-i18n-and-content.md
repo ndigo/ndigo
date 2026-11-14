@@ -123,6 +123,10 @@ $ curl -H 'Accept-Language: fr' http://localhost:3200/ | grep -E '<h1>|lang='
 <html lang="fr">
 ```
 
+Theme negotiation uses the same shape: the `theme` cookie rides the route as
+`requestedTheme`, the dispatcher writes `theme`, and the shell emits
+`data-theme`. See [Guide 30 § Theme selection](30-component-integration.md#theme-selection).
+
 ## 4. Templates: `t` and formatters
 
 Every EJS render receives helpers bound to the request's language —

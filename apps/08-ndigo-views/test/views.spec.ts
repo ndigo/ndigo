@@ -3,7 +3,7 @@ import '@tsmetadata/polyfill';
 import { describe, expect, it, vi } from 'vitest';
 import { bootWebApp, MockWebClient, installSynchronousAnimationFrames } from '@ndigo/test';
 import type { ConfigurableApplicationContext } from '@ndigo/context';
-import { StaticContentSource, StaticThemeResolver } from '@ndigo/content';
+import { StaticContentSource, StaticThemeSource } from '@ndigo/content';
 import { propagation, trace } from '@opentelemetry/api';
 import { W3CTraceContextPropagator } from '@opentelemetry/core';
 import { BasicTracerProvider } from '@opentelemetry/sdk-trace-base';
@@ -96,7 +96,7 @@ describe('ndigo-views composite resolver demo', () => {
         const themeContent = new StaticContentSource();
         const ctx = app.context as ConfigurableApplicationContext;
         ctx.setThemeName('night');
-        ctx.setThemeResolver(new StaticThemeResolver([{ name: 'night', contentSource: themeContent }]));
+        ctx.setThemeSource(new StaticThemeSource([{ name: 'night', contentSource: themeContent }]));
 
         expect(app.context.getTheme('night').name).toBe('night');
         expect(app.context.getTheme('night').contentSource).toBe(themeContent);

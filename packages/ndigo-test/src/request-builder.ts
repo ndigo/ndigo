@@ -7,8 +7,14 @@
  */
 
 import { HTTPHeaders } from '@ndigo/http';
-import { Route, RouteSegment, ACCEPT_LANGUAGE_ATTRIBUTE } from '@ndigo/router';
-import { NODE_REQUEST_ATTRIBUTE, NODE_RESPONSE_ATTRIBUTE, NodeRequest, parseCookies } from '@ndigo/platform-node';
+import { Route, RouteSegment, ACCEPT_LANGUAGE_ATTRIBUTE, REQUESTED_THEME_ATTRIBUTE } from '@ndigo/router';
+import {
+    NODE_REQUEST_ATTRIBUTE,
+    NODE_RESPONSE_ATTRIBUTE,
+    NodeRequest,
+    parseCookies,
+    THEME_COOKIE_NAME,
+} from '@ndigo/platform-node';
 import { ResponseSink } from './memory-response';
 
 /**
@@ -185,6 +191,7 @@ export function buildRoute(request: MockRequest, responseSink: ResponseSink): Pr
             [NODE_REQUEST_ATTRIBUTE]: nodeRequest,
             [NODE_RESPONSE_ATTRIBUTE]: responseSink,
             [ACCEPT_LANGUAGE_ATTRIBUTE]: HTTPHeaders.ACCEPT_LANGUAGE.get(headers) ?? undefined,
+            [REQUESTED_THEME_ATTRIBUTE]: nodeRequest.cookies[THEME_COOKIE_NAME],
         },
         // NOTE: bridging to Route — the source type is wider than this consumer's contract.
     } as unknown as Route;

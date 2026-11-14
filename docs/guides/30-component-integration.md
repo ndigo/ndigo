@@ -320,6 +320,43 @@ submit ordinary name/value pairs:
   hard-coded English defaults.
 - **RTL** — require logical properties; test one component per library.
 
+### Theme selection
+
+A theme name travels the same path as a language: the transport supplies a
+requested name, a resolver negotiates it once per request, and the dispatcher
+writes the result onto `route.attributes.theme`. Application code reads the
+negotiated name; it never reads a cookie or a header itself.
+
+| Source               | Browser (`@ndigo/ui-web`) | Server (`@ndigo/platform-node`) |
+| :------------------- | :------------------------ | :------------------------------ |
+| Explicit user choice | `theme` cookie            | `Cookie` header                 |
+| System preference    | `prefers-color-scheme`    | not visible                     |
+| Fallback             | context default           | context default                 |
+
+A server-rendered shell reads the negotiated name from the route and serializes
+it with `themeAttributes`, so the document carries the same attributes
+`applyTheme` would set. A client-only or hydrated app calls
+`connectBrowserTheme` once: it installs cookie-backed resolution, applies the
+current theme, and returns `{ theme, setTheme, destroy }`. A hydrated page
+applies the server's name directly — no re-resolution, no flash.
+
+```ts
+import { themeAttributes, resolveVisualTheme } from '@ndigo/ui';
+import { THEME_ATTRIBUTE } from '@ndigo/router';
+
+const name = route.attributes?.[THEME_ATTRIBUTE] ?? 'ndigo-dark';
+const theme = resolveVisualTheme(name); // unknown name → keep the base tokens
+const attributes = theme ? themeAttributes(theme) : {};
+```
+
+`connectBrowserTheme(context)` returns `{ theme, setTheme, destroy }`, so a
+switcher is one listener; `setVisualTheme(context, name)` performs a single
+switch without the handle. Both accept `{ themes }`, so an application theme
+map is consulted before the built-ins
+(`connectBrowserTheme(context, { themes: { 'brand-dark': brand } })`).
+`@ndigo/ui` itself never imports a framework package; the cookie, context, and
+system-preference glue lives in the opt-in `@ndigo/ui-web` adapter.
+
 ## 9. CSP and bundle budget
 
 If the library injects inline styles/scripts, extend the CSP explicitly
@@ -356,6 +393,7 @@ current app dependency.
 - [Guide 28 — Security Hardening](28-security-hardening.md) — CSP
 - [Guide 41 — Custom View Engines](41-custom-view-engines.md) — React/Vue UI strategies
 - [`@ndigo/ui`](../../packages/ndigo-ui/README.md) — tokens, theme, registry
+- [`@ndigo/ui-web`](../../packages/ndigo-ui-web/README.md) — browser theme adapter
 - [apps/20-ndigo-ui-lab](https://github.com/ndigo/ndigo/tree/main/apps/20-ndigo-ui-lab) — the runnable consumer
 - [ndigo-ui agent skill](../../agent-local/skills/ndigo-ui/SKILL.md) — the agent-facing usage and porting contract
 - , , and — component, selection, and ndigo-ui decisions

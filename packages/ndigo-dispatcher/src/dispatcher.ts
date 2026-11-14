@@ -5,7 +5,7 @@
 import { Null } from '@ndigo/core';
 import { View, ViewTarget, ViewTargetingContext, likeProducerView, likeView, likeViewTarget } from '@ndigo/view';
 import type { ProducerView } from '@ndigo/view';
-import { Route, applyNegotiatedLanguage } from '@ndigo/router';
+import { Route, applyNegotiatedLanguage, applyNegotiatedTheme } from '@ndigo/router';
 import { $aware } from '@ndigo/factory';
 import { like } from '@ndigo/util/types';
 import { ApplicationContext, likeApplicationContextAware } from '@ndigo/context';
@@ -258,10 +258,12 @@ export class AbstractDispatcher
         }
 
         const language = this.languageResolver ? this.languageResolver.resolveLanguage(route) : '',
+            theme = this.themeResolver ? this.themeResolver.resolveThemeName(route) : '',
             viewName = result.viewName;
 
-        // Expose the negotiated language to views and templates.
+        // Expose the negotiated language and theme to views and templates.
         applyNegotiatedLanguage(route, language);
+        applyNegotiatedTheme(route, theme);
 
         let view: View | null = null;
 

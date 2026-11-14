@@ -23,7 +23,7 @@ import * as http2 from 'node:http2';
 import type { Socket } from 'node:net';
 import { WebSocketServer } from 'ws';
 import { like } from '@ndigo/util/types';
-import { Route, RouteSegment, ACCEPT_LANGUAGE_ATTRIBUTE } from '@ndigo/router';
+import { Route, RouteSegment, ACCEPT_LANGUAGE_ATTRIBUTE, REQUESTED_THEME_ATTRIBUTE } from '@ndigo/router';
 import { ARGUMENT_RESOLVERS } from '@ndigo/dispatcher';
 import {
     getDispatchError,
@@ -69,6 +69,14 @@ import { NotAcceptableError } from '@ndigo/view';
 import { getLogger } from '@ndigo/log';
 
 const logger = getLogger('ndigo-platform-node:node-http-server-adapter');
+
+/**
+ * Cookie carrying the user's persisted theme choice.
+ *
+ * The browser (`CookieThemeResolver`) and the server-side stamping below must
+ * agree on this name; it is the same default `configureBrowserTheme` writes.
+ */
+export const THEME_COOKIE_NAME = 'theme';
 
 /**
  * STOMP WebSocket subprotocols, best to worst (AD-23 D4). Reference clients and
@@ -732,6 +740,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
                     session: {},
                 },
                 [ACCEPT_LANGUAGE_ATTRIBUTE]: HTTPHeaders.ACCEPT_LANGUAGE.get(sources.headers) ?? undefined,
+                [REQUESTED_THEME_ATTRIBUTE]: sources.cookies[THEME_COOKIE_NAME],
             },
             length: 0,
         };
@@ -1110,6 +1119,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
                     [NODE_RESPONSE_ATTRIBUTE]: res,
                     [NODE_INCOMING_ATTRIBUTE]: req,
                     [ACCEPT_LANGUAGE_ATTRIBUTE]: HTTPHeaders.ACCEPT_LANGUAGE.get(req.headers) ?? undefined,
+                    [REQUESTED_THEME_ATTRIBUTE]: nodeRequest.cookies[THEME_COOKIE_NAME],
                 },
             };
 

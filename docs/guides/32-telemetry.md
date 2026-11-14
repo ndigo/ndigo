@@ -172,9 +172,6 @@ processors had not yet exported.
   plumbing; OTel env vars (`OTEL_*`) keep native precedence for raw OTel
   consumers — mixing the Ndigo options with `OTEL_*` is unsupported (one
   source of truth per deployment).
-- See `docs/plans/2026-09-26_TELEMETRY_COMPLETION.md` and
-  `docs/decisions/2026-09-26_AD32_TELEMETRY_COMPLETION.md` for decisions
-  and known edge semantics.
 
 ## Package surfaces
 

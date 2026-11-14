@@ -88,13 +88,13 @@
 /* ---------- Dark mode (primary) ---------- */
 :root,
 :root[data-theme='dark'] {
-    --nd-color-bg: #0a0a14;
-    --nd-color-surface: #13132a;
-    --nd-color-surface-raised: #1c1c3a;
-    --nd-color-text: #e8e8f2;
-    --nd-color-text-muted: #9898b8;
-    --nd-color-border: #2a2a4a;
-    --nd-color-code-bg: #0f0f1f;
+    --nd-color-bg: #0c0c1e;
+    --nd-color-surface: #141430;
+    --nd-color-surface-raised: #1e1e3e;
+    --nd-color-text: #e8e8f4;
+    --nd-color-text-muted: #9a9ab8;
+    --nd-color-border: #2c2c52;
+    --nd-color-code-bg: #0e0e1c;
     --nd-color-accent: var(--nd-palette-violet);
     /* AA on the dark surfaces (≥5.6:1); the brand gradient keeps violet-bright. */
     --nd-color-accent-strong: #b07cff;

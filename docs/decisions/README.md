@@ -1,6 +1,6 @@
 # ndigo Decision Records (ADRs)
 
-Architecture Decision Records for the ndigo monorepo — **AD-01..AD-105**,
+Architecture Decision Records for the ndigo monorepo — **AD-01..AD-106**,
 contiguous. Every record captures a decision with its context, the evidence
 (plan, code, commits), the decided shape, consequences, and a revisit trigger.
 
@@ -117,6 +117,7 @@ contiguous. Every record captures a decision with its context, the evidence
 | **AD-103** | 2026-11-11    | Accepted                     | [Validation-error stack capture — one stack per failure](2026-11-11_AD103_VALIDATION_ERROR_STACK_POLICY.md)                                                                                                                    |
 | **AD-104** | 2026-11-11    | Accepted                     | [Context events are hub-and-spoke, not tree-wide](2026-11-11_AD104_CONTEXT_EVENT_SCOPE.md)                                                                                                                                     |
 | **AD-105** | 2026-11-13    | Accepted                     | [View targeting — targeters choose the destination, resolvers choose the representation](2026-11-13_AD105_VIEW_TARGETING_STRATEGY.md)                                                                                          |
+| **AD-106** | 2026-11-14    | Accepted — pending           | [Theme model — registry, request negotiation, and visual application](2026-11-14_AD106_THEME_MODEL.md)                                                                                                                         |
 
 ## Archived ADRs
 

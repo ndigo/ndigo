@@ -363,10 +363,10 @@ transport.
 - Plans: [WebSocket Broadcast](../plans/2026-09-15_WEBSOCKET_BROADCAST.md),
   [WebSocket Client](../plans/2026-09-15_WEBSOCKET_CLIENT.md),
   [STOMP](../plans/2026-09-16_STOMP.md)
-- Demo: `ChatController` in `[apps/05-ndigo-api/src/chat-controller.ts`,](https://github.com/ndigo/ndigo/blob/main/apps/05-ndigo-api/src/chat-controller.ts`,) e2e in
-  `[apps/05-ndigo-api/test/chat.spec.ts`](https://github.com/ndigo/ndigo/blob/main/apps/05-ndigo-api/test/chat.spec.ts`) (driven by `WebSocketClient`);
-  `StompChatController` in `[apps/05-ndigo-api/src/stomp-chat-controller.ts`,](https://github.com/ndigo/ndigo/blob/main/apps/05-ndigo-api/src/stomp-chat-controller.ts`,)
-  e2e in `[apps/05-ndigo-api/test/stomp.spec.ts`](https://github.com/ndigo/ndigo/blob/main/apps/05-ndigo-api/test/stomp.spec.ts`) (driven by `StompClient`)
+- Demo: `ChatController` in `[apps/05-ndigo-api/src/chat-controller.ts](https://github.com/ndigo/ndigo/blob/main/apps/05-ndigo-api/src/chat-controller.ts) e2e in
+  `[apps/05-ndigo-api/test/chat.spec.ts](https://github.com/ndigo/ndigo/blob/main/apps/05-ndigo-api/test/chat.spec.ts) (driven by `WebSocketClient`);
+  `StompChatController` in `[apps/05-ndigo-api/src/stomp-chat-controller.ts](https://github.com/ndigo/ndigo/blob/main/apps/05-ndigo-api/src/stomp-chat-controller.ts)
+  e2e in `[apps/05-ndigo-api/test/stomp.spec.ts](https://github.com/ndigo/ndigo/blob/main/apps/05-ndigo-api/test/stomp.spec.ts) (driven by `StompClient`)
 - Package surfaces: [`@ndigo/socket`](../../packages/ndigo-socket/README.md)
   (contracts + client + STOMP), `@ndigo/dispatcher` (handler vocabulary),
   [`@ndigo/platform-node`](../../packages/ndigo-platform-node/README.md)

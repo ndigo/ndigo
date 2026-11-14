@@ -154,9 +154,8 @@ cross-origin tool.
 
 ## API
 
-The full API is at [`api/`](api/README.md). Primary exports live in
-[`src/index.ts`](src/index.ts); see the [package index](../../API.md) for
-how it fits with the rest of Ndigo.
+The full API is at `api/` (generated; run `pnpm doc:api`). Primary exports live in
+[`src/index.ts`](src/index.ts);
 
 - **`AbstractWebComponent`** — base class with the `create`/`emit` lifecycle for component-backed views; acquire a shadow root with `ensureShadowRoot()` so a parser-created declarative root is adopted (not re-attached) at upgrade — the acquired root is cached, so a **closed** root is reused on later calls, and a mode mismatch throws instead of silently returning the wrong root
 - **Engine** — per-element mount logic, model binding, DOM target (`DOMElementViewTarget`), and event bridging to Ndigo signals

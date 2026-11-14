@@ -61,7 +61,7 @@ in the child's environment. The child performs its own
 
 ## API
 
-The full API is at [`api/`](api/README.md). Primary exports:
+The full API is at `api/` (generated; run `pnpm doc:api`). Primary exports:
 
 - `ClusterRunner` — the supervisor (`run()` / `stop()` / `abort()`).
 - `runCluster` — run-to-completion entry.

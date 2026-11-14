@@ -238,10 +238,9 @@ deployment.
 
 ## API
 
-The full API is at [`api/`](api/README.md). Primary exports live in
+The full API is at `api/` (generated; run `pnpm doc:api`). Primary exports live in
 [`src/index.ts`](src/index.ts) (`RedisConnection`); the `/cache` and `/pubsub`
-entry points re-export the adapters listed above. See the [package
-index](../../API.md) for how it fits with the rest of Ndigo.
+entry points re-export the adapters listed above. The package index is generated on demand (`pnpm doc:api`).
 
 ## Development
 

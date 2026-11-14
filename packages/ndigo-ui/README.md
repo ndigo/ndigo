@@ -184,8 +184,8 @@ are stable across disconnects, so moving an element in the DOM keeps its
 
 ## API
 
-The full API is at [`api/`](api/README.md). Primary exports live in
-[`src/index.ts`](src/index.ts); see the [package index](../../API.md) for how
+The full API is at `api/` (generated; run `pnpm doc:api`). Primary exports live in
+[`src/index.ts`](src/index.ts); how
 it fits with the rest of Ndigo.
 
 ## Development

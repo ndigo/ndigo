@@ -54,9 +54,9 @@ sweep:
    `pnpm manifest:check`, `pnpm docs:links`, and `pnpm format`.
 6. Refresh the graph with `graft build`.
 
-Do **not** rewrite historical records: `docs/plans/`, `docs/decisions/`,
-`docs/audits/`, dated migration guides, and `CHANGELOG.md` describe the tree as
-it was when they were written.
+Do **not** rewrite historical records: `docs/decisions/`, dated migration
+guides, and `CHANGELOG.md` describe the tree as it was when they were written.
+(`docs/plans/` and `docs/audits/` are kept locally only.)
 
 ## 2. Paired front-end and back-end apps
 

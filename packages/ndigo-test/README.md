@@ -68,7 +68,7 @@ Interceptor denials are finalized by the same helper as the live `NodeHTTPServer
 
 ## API
 
-Complete generated reference (all exports): [`api/README.md`](api/README.md).
+Complete generated reference (all exports): run `pnpm doc:api`.
 
 - **`bootNodeApp(sources: Function[]): NdigoTestApp`** — boots a real `MetadataConfigApplicationContext` with `NodeAutoConfiguration`, wires the handler mapping + dispatcher. Returns `{ context, dispatcher, close }`.
 - **`cachedBootNodeApp(sources)` / `releaseCachedNodeApp(sources)`** — same-sources dedupe within a worker: multiple suites booting the same sources share one context (ref-counted; released via `releaseCachedNodeApp` or `app.close()`).

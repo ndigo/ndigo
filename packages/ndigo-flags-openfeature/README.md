@@ -127,7 +127,7 @@ your telemetry providers are wired (`@ndigo/telemetry-node` /
 
 ## API
 
-The full API is at [`api/`](api/README.md).
+The full API is at `api/` (generated; run `pnpm doc:api`).
 
 ## Development
 

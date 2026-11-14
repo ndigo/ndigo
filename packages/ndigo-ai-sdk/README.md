@@ -58,7 +58,7 @@ No package imports `ai` directly. Add `ai` to `INTEGRATION_LAYER_MAP` in
 
 ## API
 
-See the generated [API reference](./api/README.md).
+The generated API reference is available via `pnpm doc:api`.
 
 ## Development
 

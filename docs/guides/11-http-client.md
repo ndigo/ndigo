@@ -92,7 +92,7 @@ const api = HTTP.create({
 
 Order matters: a later interceptor can replace the `Request`, so identity-
 sensitive interceptors (retry caching, offline replay) must account for that —
-see the review register in `docs/plans/2026-10-06_COMPREHENSIVE_REVIEW_AND_MITIGATION.md`.
+see the review register in the project issue tracker.
 
 ## 4. Body transforms and parsers
 
@@ -117,7 +117,7 @@ const params = QueryString.parse('a=1&a=2&b=3'); // { a: ['1','2'], b: '3' }
 
 ## See also
 
-- Generated API: [`@ndigo/http` api](../../packages/ndigo-http/api/README.md);
+- Generated API: run `pnpm doc:api` for `@ndigo/http`;
   the full symbol surface is on the package README.
 - Decision: —
   the body transform pipeline.

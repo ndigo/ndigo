@@ -2,7 +2,7 @@
 
 **Date:** 2026-09-26
 **Status:** Accepted — decisions D-1..D-5 ratified; Wave 1 of the ORM
-completion plan landed (see [plan](../plans/2026-09-26_ORM_COMPLETION.md)):
+completion plan landed (see plan):
 `DrizzleMigrator` + `createTableStatements` extraction + migration specs.
 
 ## Background

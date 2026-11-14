@@ -135,7 +135,7 @@ or a 1.0 adoption blocker) and recorded separately.
 
 ## Evidence
 
-- Review context: [§6 GAP-11](../plans/2026-10-06_COMPREHENSIVE_REVIEW_AND_MITIGATION.md)
+- Review context: §6 GAP-11
   (browser paradigm: no asset/component story) and the framework-gap analysis.
 - Platform: [Declarative Shadow DOM — Baseline 2024](https://web.dev/articles/declarative-shadow-dom),
   [Form-associated custom elements — MDN](https://developer.mozilla.org/en-US/docs/Web/API/ElementInternals).

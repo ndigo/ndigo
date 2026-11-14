@@ -2,7 +2,7 @@
 
 **Date:** 2026-09-24
 **Status:** Accepted — decision recorded; implementation landed (see
-[plan](../plans/2026-09-24_STATIC_FILES.md)).
+plan).
 
 ## Background
 
@@ -130,5 +130,5 @@ conditional requests on POST.
   containment spec and all prior static tests pass unmodified.
 
 **Supersedes:** the "Static files" row of the
-[Framework Gap Analysis](../audits/2026-09-13_FRAMEWORK_GAP_ANALYSIS.md) §3
+Framework Gap Analysis §3
 and §5 sequencing item 6 ("static-file ETag/Range/compression").

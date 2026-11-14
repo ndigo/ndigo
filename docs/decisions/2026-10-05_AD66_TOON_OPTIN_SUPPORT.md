@@ -5,7 +5,7 @@
 files) landed 2026-10-05; **Phase 3 (`fromConfig`) landed 2026-11-10** (a
 `.toon` address suffix decodes as TOON, an explicit `format` overrides it,
 JSON stays the default; plan:
-[2026-10-05_TOON_SUPPORT](../plans/2026-10-05_TOON_SUPPORT.md)).
+2026-10-05_TOON_SUPPORT).
 **2026-11-10: D-3 superseded in part by
 [AD-102](2026-11-10_AD102_TOON_REPRESENTATION.md)** — TOON became an opt-in
 HTTP representation in the dedicated `@ndigo/view-toon` package; the "no
@@ -143,7 +143,7 @@ boundaries.
 
 ## Companion docs
 
-[Plan](../plans/2026-10-05_TOON_SUPPORT.md),
+Plan,
 [AD-13](archive/2026-09-08_AD13_ENVIRONMENT_STANDARD_SOURCES.md)
 (additively amended: "JSON only" → "JSON default; TOON optional per AD-66"),
 [TOON spec v4.1](https://github.com/toon-format/spec/blob/main/SPEC.md)

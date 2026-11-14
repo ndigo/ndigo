@@ -2,7 +2,7 @@
 
 **Date:** 2026-10-08
 **Status:** Accepted, executed 2026-10-08 (see the
-[companion plan](../plans/2026-10-08_SHARED_STORE_RATE_LIMITING.md); guide 11
+companion plan; guide 11
 §5 and guide 16 updated at execution) — GAP-8 of
 `docs/plans/2026-10-07_CODE_REVIEW_AND_MITIGATION.md` §6, Wave-6 capacity track
 **Deciders:** Framework owner

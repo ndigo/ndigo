@@ -79,7 +79,7 @@ Each run opens `chat <model>` with the GenAI semantic-convention attributes
 
 ## API
 
-See the generated [API reference](./api/README.md).
+The generated API reference is available via `pnpm doc:api`.
 
 ## Development
 

@@ -2,7 +2,7 @@
 
 **Date:** 2026-09-26
 **Status:** Accepted — D-1..D-5 ratified and landed 2026-09-26 (all four
-waves; see [plan](../plans/2026-09-26_TELEMETRY_COMPLETION.md)).
+waves; see plan).
 
 ## Background
 

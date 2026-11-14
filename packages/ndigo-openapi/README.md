@@ -108,9 +108,8 @@ metadata, so a metadata-driven guard always permits these endpoints.
 
 ## API
 
-The full API is at [`api/`](api/README.md). Primary exports live in
-[`src/index.ts`](src/index.ts); see the [package index](../../API.md) for
-how it fits with the rest of Ndigo.
+The full API is at `api/` (generated; run `pnpm doc:api`). Primary exports live in
+[`src/index.ts`](src/index.ts);
 
 - `OpenAPISpecGenerator` — mappings → `OpenAPIDocument` (library-level)
 - `@apiDocs(metadata)` / `getApiDocs(target, method)` — documentation metadata

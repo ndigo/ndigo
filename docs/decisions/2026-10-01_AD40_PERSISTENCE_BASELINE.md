@@ -1,7 +1,7 @@
 # AD-40: Persistence backend baseline
 
 **Date:** 2026-10-01
-**Status:** Accepted — Phases 0–3 implemented in the [shared persistence roadmap](../plans/2026-10-01_SHARED_PERSISTENCE_ROADMAP.md); Phase 3 completed 2026-10-03.
+**Status:** Accepted — Phases 0–3 implemented in the shared persistence roadmap; Phase 3 completed 2026-10-03.
 
 ## Decisions
 

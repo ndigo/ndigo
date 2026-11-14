@@ -2,7 +2,7 @@
 
 **Date:** 2026-10-09
 **Status:** Accepted, executed 2026-10-09 (see the
-[companion plan](../plans/2026-10-09_NATIVE_HTTP2.md); guide 01 §8 and the
+companion plan; guide 01 §8 and the
 `HTTPServer`/adapter TSDoc updated at execution) — executes the optioned
 Scope B recorded in AD-80 D-3, closing the native-origin half of GAP-12
 **Deciders:** Framework owner

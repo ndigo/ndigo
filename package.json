@@ -35,7 +35,7 @@
     "ci:usage": "node scripts/ci-usage.mjs",
     "doc": "pnpm doc:api",
     "doc:api": "node scripts/doc-api.mjs",
-    "doc:check": "pnpm doc:api && git diff --exit-code -- packages API.md",
+    "doc:check": "pnpm doc:api",
     "doc:coverage": "node scripts/doc-coverage.mjs --check",
     "doc:examples": "node scripts/doc-examples.mjs",
     "guides:check": "node scripts/check-guides.mjs",

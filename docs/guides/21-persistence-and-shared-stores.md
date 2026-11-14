@@ -197,7 +197,6 @@ Not built, with an explicit decision and revisit triggers:
 - Decisions: ,
   ,
   (async cutover)
-- Roadmap: `docs/plans/2026-10-01_SHARED_PERSISTENCE_ROADMAP.md`
 - Related guides: [15 — WebSockets](15-websockets.md) (fan-out),
   [19 — Caching](19-caching.md) §6, [26 — Auth & Sessions](26-authentication-and-sessions.md)
 - Packages: `@ndigo/redis` (README), `@ndigo/orm-drizzle` (README:

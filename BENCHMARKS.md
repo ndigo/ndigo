@@ -5,10 +5,7 @@ states what is measured, how to reproduce it, what the numbers do and do not
 prove, and where the raw artifact lives.
 
 The harness and its contributor rules live in
-[`benchmarks/README.md`](benchmarks/README.md). The current estate audit and
-refresh plan are
-[`docs/audits/2026-11-10_BENCHMARK_ESTATE_AUDIT.md`](docs/audits/2026-11-10_BENCHMARK_ESTATE_AUDIT.md)
-and [`docs/plans/2026-11-10_BENCHMARK_REFRESH.md`](docs/plans/2026-11-10_BENCHMARK_REFRESH.md).
+[`benchmarks/README.md`](benchmarks/README.md).
 
 ## How to run
 

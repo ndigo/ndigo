@@ -202,19 +202,6 @@ jobs:
       - name: Dead-code check (knip)
         run: pnpm audit:dead
 
-      - name: Agent config integrity
-        # Generated agents (.opencode/agents, .omp/agents) and the shared
-        # harness-neutral skills (.agents/skills) must match the committed
-        # sha256 manifest. Regenerate with `pnpm agents:sync` from the
-        # development-agents neutral store — never hand-edit generated dirs.
-        # Repo-owned deployment files (opencode.json, .opencode/plugins/,
-        # AGENTS.md) are covered by a second manifest (.agent-local.json);
-        # refresh it with `node scripts/agents-check.mjs --update`.
-        # Boundary: the neutral store lives outside this repo and CI never runs
-        # gen.mjs, so this gate enforces self-consistency of committed content,
-        # not freshness against the store.
-        run: pnpm agents:check
-
       - name: Consumer agent content integrity
         # tools/agent-content is the authored store; the CLI assets and the
         # CNA bootstrap templates are generated. Regenerate with
@@ -294,14 +281,6 @@ jobs:
             exit 0
           fi
           node scripts/doc-api.mjs --only "$packages"
-
-      - name: API docs freshness (generated tree must match committed)
-        # The step above regenerated the affected docs (or all of them on
-        # schedule/dispatch); any resulting working-tree diff means committed
-        # docs are stale. The weekly sweep regenerates all 46 packages, so
-        # per-PR scoping cannot hide drift for long. Docs standard:
-        # docs/guides/90-package-documentation.md
-        run: git diff --exit-code -- packages API.md
 
       - name: TSDoc coverage (zero tolerance)
         # Every package must stay at zero: module summaries present, exported

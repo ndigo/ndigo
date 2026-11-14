@@ -1,7 +1,7 @@
 # AD-41: Distributed scheduling — deferred on evidence, no adapter
 
 **Date:** 2026-10-03
-**Status:** Accepted — Phase 4 decision of [shared persistence roadmap](../plans/2026-10-01_SHARED_PERSISTENCE_ROADMAP.md); no scheduler adapter built.
+**Status:** Accepted — Phase 4 decision of shared persistence roadmap; no scheduler adapter built.
 
 ## Scope distinction (roadmap Phase 4)
 

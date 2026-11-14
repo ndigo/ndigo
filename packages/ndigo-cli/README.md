@@ -151,7 +151,7 @@ dash-style shells both swallow `SIGTERM`.
 
 ## API
 
-The full API is at [`api/`](api/README.md). Primary exports: `runCli(args)` — the dispatcher
+The full API is at `api/` (generated; run `pnpm doc:api`). Primary exports: `runCli(args)` — the dispatcher
 the `ndigo` binary invokes — and `buildCliApp()`, the Stricli application
 for embeddings.
 

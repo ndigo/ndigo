@@ -89,7 +89,7 @@ auto-configuration machinery.
 ## Update (2026-09-29, SEC-4)
 
 - D-3's CSP default was hardened from `connect-src 'self' ws: wss:` to
-  `connect-src 'self'` (SEC-4, [2026-09-29 review](../plans/2026-09-29_CODE_REVIEW_AND_MITIGATION.md);
+  `connect-src 'self'` (SEC-4, 2026-09-29 review;
   `security-headers-interceptor.ts` `DEFAULT_CONNECT_SRC`). Under CSP3
   `'self'` covers WebSocket (`ws:`/`wss:`) streams to the same host-origin,
   so the framework's co-located socket server keeps working; a socket server

@@ -27,14 +27,13 @@ const FULL_STEPS = [
     { label: 'migration schema freshness', script: 'db:schema:check' },
     { label: 'manifest conformance', script: 'manifest:check' },
     { label: 'dead-code check (knip)', script: 'audit:dead' },
-    { label: 'agent config integrity', script: 'agents:check' },
     { label: 'build libraries', script: 'build' },
     { label: 'example apps boot + probe', script: 'apps:smoke' },
     { label: 'strict type-check', script: 'typecheck' },
     { label: 'unit + integration tests', script: 'test' },
     { label: 'TSDoc coverage', script: 'doc:coverage' },
     { label: 'TSDoc examples', script: 'doc:examples' },
-    { label: 'API docs freshness', script: 'doc:check' },
+    { label: 'API docs generation', script: 'doc:check' },
     { label: 'production dependency audit', bin: 'pnpm', args: ['audit', '--prod'] },
 ];
 

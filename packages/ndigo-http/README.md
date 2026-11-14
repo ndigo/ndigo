@@ -42,9 +42,8 @@ const api = HTTP.create({
 
 ## API
 
-The full API is at [`api/`](api/README.md). Primary exports live in
-[`src/index.ts`](src/index.ts); see the [package index](../../API.md) for
-how it fits with the rest of Ndigo.
+The full API is at `api/` (generated; run `pnpm doc:api`). Primary exports live in
+[`src/index.ts`](src/index.ts);
 
 - **Client** — `HTTP.create(...)` static factory
 - **Interceptors** — timeout, content-type, response-class, cache, trace-header (lifecycle hooks: `preInit`, `preRequest`, `postResponse`, `postError`, `postComplete`)

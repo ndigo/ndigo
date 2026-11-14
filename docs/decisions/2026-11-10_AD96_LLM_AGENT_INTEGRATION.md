@@ -96,7 +96,7 @@ AD-98 (agent content), AD-99 (MCP host), AD-100 (`@ndigo/mcp`), and AD-101
 
 ## Evidence
 
-- Plan: [Agent and LLM integration plan](../plans/2026-11-09_LLM_AGENT_INTEGRATION.md).
+- Plan: Agent and LLM integration plan.
 - Shipped: `@ndigo/mcp`, `@ndigo/ai`, `@ndigo/ai-sdk`,
   `apps/21-ndigo-agent-lab`, `tools/agent-content`, `ndigo ai:*`, `ndigo mcp`,
   `ndigo ui catalog`, `nd-a2ui-surface`, MCP Apps `ui://` resources, WebMCP.

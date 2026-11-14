@@ -11,4 +11,12 @@ Composite content and theme sources that delegate across a list.
 ## Classes
 
 - [CompositeContentSource](classes/CompositeContentSource.md)
-- [CompositeThemeResolver](classes/CompositeThemeResolver.md)
+- [CompositeThemeSource](classes/CompositeThemeSource.md)
+
+## Type Aliases
+
+- [~~CompositeThemeResolver~~](type-aliases/CompositeThemeResolver.md)
+
+## Variables
+
+- [~~CompositeThemeResolver~~](variables/CompositeThemeResolver.md)

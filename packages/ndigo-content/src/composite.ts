@@ -3,7 +3,7 @@
  */
 import { ContentSource } from './content';
 import { LanguageCode } from './language-code';
-import { Theme, ThemeResolver } from './theme';
+import { Theme, ThemeSource } from './theme';
 
 /**
  * Merges multiple content sources in priority order.
@@ -47,47 +47,57 @@ export class CompositeContentSource implements ContentSource {
 }
 
 /**
- * Chains multiple theme resolvers in priority order.
+ * Chains multiple theme sources in priority order.
  *
- * `getTheme` tries each resolver in order and returns the first successful
- * result. Throws when all resolvers fail to resolve the theme.
+ * `getTheme` tries each source in order and returns the first successful
+ * result. Throws when all sources fail to resolve the theme.
  */
-export class CompositeThemeResolver implements ThemeResolver {
-    #resolvers: ThemeResolver[];
+export class CompositeThemeSource implements ThemeSource {
+    #sources: ThemeSource[];
 
     /**
-     * Creates a composite theme resolver.
+     * Creates a composite theme source.
      *
-     * @param resolvers - Resolvers ordered by priority, highest first.
+     * @param sources - Sources ordered by priority, highest first.
      */
-    constructor(resolvers: ThemeResolver[]) {
-        if (!resolvers.length) {
-            throw new TypeError('CompositeThemeResolver requires at least one resolver');
+    constructor(sources: ThemeSource[]) {
+        if (!sources.length) {
+            throw new TypeError('CompositeThemeSource requires at least one theme source');
         }
-        this.#resolvers = resolvers;
+        this.#sources = sources;
     }
 
     /**
-     * Resolves the first successfully found theme across all resolvers.
+     * Resolves the first successfully found theme across all sources.
      *
      * @param name - Optional theme name.
      * @returns The first resolved theme.
-     * @throws When no resolver can provide the theme.
+     * @throws When no source can provide the theme.
      */
     getTheme(name?: string): Theme {
-        for (const resolver of this.#resolvers) {
+        for (const source of this.#sources) {
             try {
-                const theme = resolver.getTheme(name);
+                const theme = source.getTheme(name);
                 // When a specific name was requested, only accept an exact match.
-                // Resolvers that don't have the theme fall back to their default,
-                // so we skip those and try the next resolver.
+                // Sources that don't have the theme fall back to their default,
+                // so we skip those and try the next source.
                 if (!name || theme.name === name) {
                     return theme;
                 }
             } catch {
-                // try next resolver
+                // try next source
             }
         }
-        throw new TypeError(`No resolver could provide theme: "${name ?? 'default'}"`);
+        throw new TypeError(`No theme source could provide theme: "${name ?? 'default'}"`);
     }
 }
+
+/**
+ * @deprecated Use {@link CompositeThemeSource} instead.
+ */
+export type CompositeThemeResolver = CompositeThemeSource;
+
+/**
+ * @deprecated Use {@link CompositeThemeSource} instead.
+ */
+export const CompositeThemeResolver = CompositeThemeSource;

@@ -1,5 +1,5 @@
 /**
- * Theme contracts, a static resolver, and structural guards.
+ * Theme contracts, a static source, and structural guards.
  */
 import { like } from '@ndigo/util/types';
 import { ContentSource } from './content';
@@ -20,19 +20,9 @@ export interface Theme {
 }
 
 /**
- * Provides the currently selected theme.
+ * Looks up themes by name — the theme registry.
  */
 export interface ThemeSource {
-    /**
-     * The active theme.
-     */
-    theme: Theme;
-}
-
-/**
- * Resolves themes by name.
- */
-export interface ThemeResolver {
     /**
      * Gets a theme by name, or the default theme when no name is provided.
      *
@@ -43,14 +33,20 @@ export interface ThemeResolver {
 }
 
 /**
- * In-memory theme resolver for static theme maps.
+ * @deprecated Use {@link ThemeSource} instead. This alias is kept for one
+ * minor release; the registry has never performed per-request selection.
  */
-export class StaticThemeResolver implements ThemeResolver {
+export type ThemeResolver = ThemeSource;
+
+/**
+ * In-memory theme source for static theme maps.
+ */
+export class StaticThemeSource implements ThemeSource {
     #themes: Map<string, Theme>;
     #defaultThemeName: string;
 
     /**
-     * Creates a theme resolver backed by an in-memory theme list.
+     * Creates a theme source backed by an in-memory theme list.
      *
      * @param themes - Available themes.
      * @param defaultThemeName - Optional name of the default theme.
@@ -61,7 +57,7 @@ export class StaticThemeResolver implements ThemeResolver {
         this.#defaultThemeName = defaultThemeName || themes[0]?.name || '';
 
         if (!this.#defaultThemeName || !this.#themes.has(this.#defaultThemeName)) {
-            throw new TypeError('StaticThemeResolver requires at least one valid default theme');
+            throw new TypeError('StaticThemeSource requires at least one valid default theme');
         }
     }
 
@@ -92,6 +88,16 @@ export class StaticThemeResolver implements ThemeResolver {
 }
 
 /**
+ * @deprecated Use {@link StaticThemeSource} instead.
+ */
+export type StaticThemeResolver = StaticThemeSource;
+
+/**
+ * @deprecated Use {@link StaticThemeSource} instead.
+ */
+export const StaticThemeResolver = StaticThemeSource;
+
+/**
  * Tests whether a value looks like a theme.
  *
  * @param value - The value to be tested.
@@ -100,9 +106,14 @@ export class StaticThemeResolver implements ThemeResolver {
 export const likeTheme = like({ name: String, contentSource: Object }) as (value: unknown) => value is Theme;
 
 /**
- * Tests whether a value looks like a theme resolver.
+ * Tests whether a value looks like a theme source.
  *
  * @param value - The value to be tested.
- * @returns Whether the value matches the theme resolver shape.
+ * @returns Whether the value matches the theme source shape.
  */
-export const likeThemeResolver = like({ getTheme: Function }) as (value: unknown) => value is ThemeResolver;
+export const likeThemeSource = like({ getTheme: Function }) as (value: unknown) => value is ThemeSource;
+
+/**
+ * @deprecated Use {@link likeThemeSource} instead.
+ */
+export const likeThemeResolver = likeThemeSource;

@@ -6,19 +6,28 @@
 
 # theme
 
-Theme contracts, a static resolver, and structural guards.
+Theme contracts, a static source, and structural guards.
 
 ## Classes
 
-- [StaticThemeResolver](classes/StaticThemeResolver.md)
+- [StaticThemeSource](classes/StaticThemeSource.md)
 
 ## Interfaces
 
 - [Theme](interfaces/Theme.md)
-- [ThemeResolver](interfaces/ThemeResolver.md)
 - [ThemeSource](interfaces/ThemeSource.md)
+
+## Type Aliases
+
+- [~~StaticThemeResolver~~](type-aliases/StaticThemeResolver.md)
+- [~~ThemeResolver~~](type-aliases/ThemeResolver.md)
+
+## Variables
+
+- [~~StaticThemeResolver~~](variables/StaticThemeResolver.md)
 
 ## Functions
 
 - [likeTheme](functions/likeTheme.md)
-- [likeThemeResolver](functions/likeThemeResolver.md)
+- [~~likeThemeResolver~~](functions/likeThemeResolver.md)
+- [likeThemeSource](functions/likeThemeSource.md)

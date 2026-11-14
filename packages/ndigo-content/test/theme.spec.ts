@@ -2,7 +2,14 @@
  */
 import { describe, test, expect } from 'vitest';
 import { StaticContentSource } from '../src/content';
-import { StaticThemeResolver, Theme, likeTheme, likeThemeResolver } from '../src/theme';
+import {
+    StaticThemeResolver,
+    StaticThemeSource,
+    Theme,
+    likeTheme,
+    likeThemeResolver,
+    likeThemeSource,
+} from '../src/theme';
 
 describe('@ndigo/content theme utilities', () => {
     const contentSource = new StaticContentSource({
@@ -19,22 +26,31 @@ describe('@ndigo/content theme utilities', () => {
         contentSource,
     };
 
-    test('StaticThemeResolver resolves theme by name and default', () => {
-        const resolver = new StaticThemeResolver([lightTheme, darkTheme], 'light');
+    test('StaticThemeSource resolves theme by name and default', () => {
+        const source = new StaticThemeSource([lightTheme, darkTheme], 'light');
 
-        expect(resolver.getTheme().name).toBe('light');
-        expect(resolver.getTheme('dark').name).toBe('dark');
-        expect(resolver.availableThemes()).toEqual(['light', 'dark']);
+        expect(source.getTheme().name).toBe('light');
+        expect(source.getTheme('dark').name).toBe('dark');
+        expect(source.availableThemes()).toEqual(['light', 'dark']);
     });
 
-    test('StaticThemeResolver throws when no default theme can be determined', () => {
-        expect(() => new StaticThemeResolver([], 'light')).toThrow(TypeError);
+    test('StaticThemeSource throws when no default theme can be determined', () => {
+        expect(() => new StaticThemeSource([], 'light')).toThrow(TypeError);
     });
 
-    test('duck typing guards for themes and resolvers', () => {
-        const resolver = new StaticThemeResolver([lightTheme], 'light');
+    test('duck typing guards for themes and theme sources', () => {
+        const source = new StaticThemeSource([lightTheme], 'light');
 
         expect(likeTheme(lightTheme)).toBe(true);
-        expect(likeThemeResolver(resolver)).toBe(true);
+        expect(likeThemeSource(source)).toBe(true);
+    });
+
+    test('deprecated resolver names alias the theme source', () => {
+        const source = new StaticThemeResolver([lightTheme], 'light');
+
+        expect(StaticThemeResolver).toBe(StaticThemeSource);
+        expect(likeThemeResolver).toBe(likeThemeSource);
+        expect(source).toBeInstanceOf(StaticThemeSource);
+        expect(source.getTheme().name).toBe('light');
     });
 });

@@ -36,7 +36,13 @@ Re-exports [CompositeContentSource](../composite/classes/CompositeContentSource.
 
 ### CompositeThemeResolver
 
-Re-exports [CompositeThemeResolver](../composite/classes/CompositeThemeResolver.md)
+Re-exports [CompositeThemeResolver](../composite/variables/CompositeThemeResolver.md)
+
+***
+
+### CompositeThemeSource
+
+Re-exports [CompositeThemeSource](../composite/classes/CompositeThemeSource.md)
 
 ***
 
@@ -244,6 +250,12 @@ Re-exports [likeThemeResolver](../theme/functions/likeThemeResolver.md)
 
 ***
 
+### likeThemeSource
+
+Re-exports [likeThemeSource](../theme/functions/likeThemeSource.md)
+
+***
+
 ### MessageParams
 
 Re-exports [MessageParams](../message-source/interfaces/MessageParams.md)
@@ -336,7 +348,13 @@ Re-exports [StaticContentSource](../content/classes/StaticContentSource.md)
 
 ### StaticThemeResolver
 
-Re-exports [StaticThemeResolver](../theme/classes/StaticThemeResolver.md)
+Re-exports [StaticThemeResolver](../theme/variables/StaticThemeResolver.md)
+
+***
+
+### StaticThemeSource
+
+Re-exports [StaticThemeSource](../theme/classes/StaticThemeSource.md)
 
 ***
 
@@ -354,7 +372,7 @@ Re-exports [Theme](../theme/interfaces/Theme.md)
 
 ### ThemeResolver
 
-Re-exports [ThemeResolver](../theme/interfaces/ThemeResolver.md)
+Re-exports [ThemeResolver](../theme/type-aliases/ThemeResolver.md)
 
 ***
 

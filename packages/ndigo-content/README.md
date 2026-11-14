@@ -15,7 +15,7 @@ Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥12.
 ## Getting Started
 
 ```typescript
-import { StaticContentSource, StaticThemeResolver, Theme } from '@ndigo/content';
+import { StaticContentSource, StaticThemeSource, Theme } from '@ndigo/content';
 
 const contentSource = new StaticContentSource({
     welcome: {
@@ -29,8 +29,8 @@ const theme: Theme = {
     contentSource,
 };
 
-const resolver = new StaticThemeResolver([theme], 'default');
-const welcome = await resolver.getTheme().contentSource.getContent('welcome', 'en');
+const source = new StaticThemeSource([theme], 'default');
+const welcome = await source.getTheme().contentSource.getContent('welcome', 'en');
 // 'Welcome'
 ```
 
@@ -51,9 +51,9 @@ The full API is at [`api/`](api/README.md). Primary exports live in
 [`src/index.ts`](src/index.ts); see the [package index](../../API.md) for
 how it fits with the rest of Ndigo.
 
-- **Sources** — `ContentSource`, `StaticContentSource` (default-language fallback), `ThemeSource`
+- **Sources** — `ContentSource`, `StaticContentSource` (default-language fallback), `CompositeContentSource`
 - **Language codes** — `LanguageCode` (validated, canonicalized BCP 47 tags) and the `LanguageCodes` constant catalog (`LanguageCodes.EN_US` instead of `'en-US'` magic strings)
-- **Themes** — `Theme`, `StaticThemeResolver`
+- **Themes** — `Theme`, `ThemeSource` (the registry: `StaticThemeSource`, `CompositeThemeSource`). `ThemeResolver`, `StaticThemeResolver`, `CompositeThemeResolver`, and `likeThemeResolver` remain as deprecated aliases for one minor. Per-request theme _selection_ lives in `@ndigo/dispatcher`, not here.
 - **Mixins & guards** — `AsContentSourceAware` awareness mixins and duck-type guards
 
 `LanguageCode` implements `Equatable<LanguageCode>` and `StringComparable<LanguageCode>`.

@@ -1,7 +1,7 @@
 /**
  * Parent/child application context hierarchy.
  */
-import { ContentSource, ThemeResolver } from '@ndigo/content';
+import { ContentSource, ThemeSource } from '@ndigo/content';
 import { JSONObject } from '@ndigo/core';
 import { likeCloseable } from '@ndigo/factory';
 import { ConfigurableEnvironment } from './environment';
@@ -33,9 +33,14 @@ export interface ShellContextOptions {
      */
     themeName?: string;
     /**
-     * Overrides the shell theme resolver.
+     * Overrides the shell theme source.
      */
-    themeResolver?: ThemeResolver;
+    themeSource?: ThemeSource;
+    /**
+     * Overrides the shell theme source.
+     * @deprecated Use {@link themeSource} instead.
+     */
+    themeResolver?: ThemeSource;
 }
 
 /**
@@ -94,7 +99,7 @@ export type FeatureUnmountPolicy = 'close' | 'preserve';
  * @returns A configured shell context.
  */
 export const createShellContext = (options: ShellContextOptions = {}): GenericApplicationContext => {
-    const { contentSource, data, environment, name = 'shell', themeName, themeResolver } = options;
+    const { contentSource, data, environment, name = 'shell', themeName, themeSource, themeResolver } = options;
     const context = new GenericApplicationContext(name, data);
 
     // eslint-disable-next-line no-unused-expressions -- guarded dispatch: skip wiring when no override was provided
@@ -103,8 +108,11 @@ export const createShellContext = (options: ShellContextOptions = {}): GenericAp
     environment && context.setEnvironment(environment);
     // eslint-disable-next-line no-unused-expressions -- guarded dispatch: skip wiring when no override was provided
     themeName && context.setThemeName(themeName);
+
+    // `themeResolver` was always the registry; prefer the new name when both are supplied.
+    const resolvedThemeSource = themeSource ?? themeResolver;
     // eslint-disable-next-line no-unused-expressions -- guarded dispatch: skip wiring when no override was provided
-    themeResolver && context.setThemeResolver(themeResolver);
+    resolvedThemeSource && context.setThemeSource(resolvedThemeSource);
 
     return context;
 };

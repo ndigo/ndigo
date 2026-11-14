@@ -3,14 +3,7 @@
  */
 import { JSONObject, type ChildNode, type ParentNode } from '@ndigo/core';
 import type { z } from 'zod';
-import {
-    ContentSource,
-    MessageSource,
-    Theme,
-    ThemeResolver,
-    likeContentSource,
-    likeMessageSource,
-} from '@ndigo/content';
+import { ContentSource, MessageSource, Theme, ThemeSource, likeContentSource, likeMessageSource } from '@ndigo/content';
 import { like } from '@ndigo/util/types';
 import { EventEmitter, likeEventEmitter, EventType, EventHandlers } from './event-emitter';
 import type { ContextEvents } from './context-events';
@@ -225,10 +218,17 @@ export interface ConfigurableApplicationContext extends ApplicationContext {
      */
     setThemeName(themeName: string): void;
     /**
-     * Overrides the theme resolver used by this context.
-     * @param themeResolver - The theme resolver.
+     * Replaces the theme source used by this context.
+     * @param themeSource - The theme source.
      */
-    setThemeResolver(themeResolver: ThemeResolver): void;
+    setThemeSource(themeSource: ThemeSource): void;
+    /**
+     * Overrides the theme resolver used by this context.
+     * @param themeResolver - The theme source.
+     * @deprecated Use {@link setThemeSource} instead. A `ThemeResolver` here
+     * was always a registry lookup, not per-request selection.
+     */
+    setThemeResolver(themeResolver: ThemeSource): void;
 }
 
 /**

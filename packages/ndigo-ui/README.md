@@ -67,6 +67,55 @@ headings, code, links, focus rings, reduced motion) and adds the `.nd-gradient-t
 `.nd-gradient-bg`, and `.nd-mark` brand utilities. Applications that already
 have their own base styles can import only the token stylesheet.
 
+### Themes
+
+Ndigo UI ships a curated set of themes selectable with the `data-theme`
+attribute on the root element:
+
+- `ndigo-dark` (default) and `ndigo-light`
+- `solarized-dark` and `solarized-light`
+- `high-contrast-dark` and `high-contrast-light`
+
+The legacy `dark` and `light` values are aliases for the Ndigo themes.
+
+```html
+<html data-theme="solarized-dark">
+```
+
+Every theme overrides only the semantic color tokens; spacing, radius,
+typography, motion, and stacking tokens stay shared.
+
+#### Creating and customizing themes
+
+Themes can be created and applied programmatically:
+
+```ts
+import { createTheme, applyTheme, themeToCss, NDIGO_DARK_THEME } from '@ndigo/ui';
+
+const brand = createTheme({
+    name: 'brand-dark',
+    colorScheme: 'dark',
+    tokens: { '--nd-color-accent': '#ff5500', '--nd-color-accent-strong': '#ff7733' },
+});
+
+applyTheme(brand); // sets inline custom properties + data-theme
+const css = themeToCss(brand, ':root[data-theme="brand-dark"]');
+```
+
+`createTheme` inherits tokens from a base theme (Ndigo by default, or any
+theme passed via `base`), so a custom theme can override a handful of tokens.
+`withThemeTokens` merges further overrides immutably. `removeTheme` clears an
+applied theme.
+
+#### Using themes with Tailwind CSS
+
+ndigo-ui themes are plain CSS custom properties, so they compose with Tailwind
+without a runtime adapter. Map the `--nd-*` tokens into your Tailwind theme
+(Tailwind v4 `@theme` block or v3 `theme.extend`) so utilities resolve to the
+active theme's values; switching `data-theme` (or calling `applyTheme`) then
+re-skins those utilities with no rebuild required. Keep the token stylesheet
+imported before Tailwind so the variables are defined.
+
 ### Registry
 
 The package directory is a shadcn-compatible registry chunk included by the

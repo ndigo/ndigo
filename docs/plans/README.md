@@ -7,6 +7,18 @@ Every implemented plan has its **decision recorded** in
 
 ## Active Plans
 
+### 2026-11-14 - Theme model
+
+Split the overloaded theme contracts into a registry (`ThemeSource`), request
+negotiation (`ThemeResolver`), and visual application (`@ndigo/ui-web`);
+profile-specific resolvers mirror language negotiation, theme names stay
+request-scoped, and SSR emits `data-theme` from the negotiated name. P0
+(visual themes) is implemented; P1–P4 pending. Decision: AD-106.
+
+[Read plan](2026-11-14_THEME_MODEL.md)
+
+---
+
 ### 2026-11-10 - Benchmark refresh and expansion
 
 Repair the benchmark estate before adding to it: serialized, typechecked,

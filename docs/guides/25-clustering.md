@@ -18,8 +18,8 @@ graceful shutdown .
 ## The model
 
 `@ndigo/cluster` is a **supervisor, not a coordinator**. There is no leader,
-no discovery, no state sync: job leases (`@ndigo/jobs`, ) and
-`@scheduled({ lock })` (`@ndigo/locks`, ) already make replicated slots
+no discovery, no state sync: job leases (`@ndigo/jobs`) and
+`@scheduled({ lock })` (`@ndigo/locks`) already make replicated slots
 single-executor. The package owns only the process shell:
 
 - **Spawn** `size` children running the same command;

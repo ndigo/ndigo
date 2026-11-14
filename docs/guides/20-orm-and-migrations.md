@@ -28,7 +28,7 @@ db/migrations/NNNN-slug.ts ──► ndigo db migrate / migrateOnBoot
                         _ndigo_migrations (journal, forward-only)
 ```
 
-## 1. The runner (`DrizzleMigrator`, )
+## 1. The runner (`DrizzleMigrator`)
 
 Migrations are versioned modules, one per file under `db/migrations`:
 `<NNNN>-<slug>.ts`, each exporting a `Migration` as its default export.
@@ -64,7 +64,7 @@ belongs to the application. Hand-written SQL migrations stay first-class:
 the same directory holds generated and authored files, versions unique
 across both.
 
-## 2. Generation (`ndigo db generate`, )
+## 2. Generation (`ndigo db generate`)
 
 `ndigo db generate` renders the next migration from your entities — the
 **committed snapshot** is the diff base, so:
@@ -123,7 +123,7 @@ on stderr until acknowledged (REV-002/REV-006):
 Both flags follow the repo's env-flag convention (`present`/`true`/`1`
 enables, `false`/`0`/`''` does not) and are read from the environment.
 
-## 3. Running migrations at boot (`migrations.runOnBoot`, )
+## 3. Running migrations at boot (`migrations.runOnBoot`)
 
 `@ndigo/orm-drizzle` exports `migrateOnBoot({ dataSource, dir })`: loads the
 file migrations and applies pending ones through the journaled runner,

@@ -5,7 +5,7 @@ Browser apps run the same DI container as server apps — the same
 `@parameters` binding, and view resolution — with a browser runtime in
 place of the HTTP server: hash routing, in-page dispatch, and
 web-component rendering. The `createWebApplication` preset
-(`@ndigo/platform-web`, ) wires that runtime in one call.
+(`@ndigo/platform-web`) wires that runtime in one call.
 
 Reference applications: [apps/08-ndigo-views](https://github.com/ndigo/ndigo/tree/main/apps/08-ndigo-views)
 (views and resolver chains) and [apps/19-ndigo-hn](https://github.com/ndigo/ndigo/tree/main/apps/19-ndigo-hn)

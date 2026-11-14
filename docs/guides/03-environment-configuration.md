@@ -22,7 +22,7 @@ JavaScript-native structures with fail-loud semantics throughout.
 
 ## The pipeline
 
-```
+```text
         ┌───────── CLI ─────────┐   (highest precedence)
         ├─ builder properties ─┤
         ├─ process.env ────────┤
@@ -171,7 +171,7 @@ env.acceptsProfiles(Profile.and(Profile.or('a', 'b'), 'c')); // '(a | b) & c'
 
 `application-prod.json` loads above `application.json` when `prod` is active.
 
-### TOON config files (opt-in, )
+### TOON config files (opt-in)
 
 Config files may be authored in [TOON](https://github.com/toon-format/toon)
 (spec v4.4) instead of JSON — same files, same deep-merge, same profiles:
@@ -200,7 +200,7 @@ install it (`npm i @toon-format/toon@4.4.0`) to use TOON files. The
 `text/toon` media type is provisional (not IANA-registered) — this opt-in
 is a pre-1.0 authoring option, not a framework default.
 
-### TOON from a URL (`ApplicationBuilder.fromConfig`, Phase 3)
+### TOON from a URL (`ApplicationBuilder.fromConfig`)
 
 `fromConfig(url)` follows the **address**: a `.toon` path suffix decodes the
 document as TOON, everything else as JSON — JSON stays the default.

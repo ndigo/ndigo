@@ -58,7 +58,7 @@ Tokens expose `--nd-*` custom properties (color, type, spacing, radius, shadow,
 motion, stacking, focus). Dark is the default; set `data-theme="light"` on the
 root for the light palette.
 
-#### Theming ndigo-ui
+### Theming ndigo-ui
 
 ndigo-ui ships a curated set of themes selected with `data-theme` on the root:
 `ndigo-dark` (default), `ndigo-light`, `solarized-dark`, `solarized-light`,
@@ -92,7 +92,7 @@ const css = themeToCss(brand, ':root[data-theme="brand-dark"]');
 `removeTheme` clears an applied theme. For CSS-only switching, import the token
 stylesheet and set `data-theme`; no JavaScript is required.
 
-#### Using themes with Tailwind CSS
+### Using themes with Tailwind CSS
 
 ndigo-ui themes are plain CSS custom properties, so they compose with Tailwind
 without a runtime adapter. Map the `--nd-*` tokens into your Tailwind theme so
@@ -132,6 +132,19 @@ module.exports = {
     },
 };
 ```
+
+Dark mode follows the same mechanism: set `data-theme` to a dark theme (the
+default is `ndigo-dark`) or a light one, and every utility that references a
+`--nd-*` token re-skins with no rebuild. Tailwind v4 can key its own `dark:`
+variant off the attribute instead of the media query:
+
+```css
+@custom-variant dark (&:where([data-theme="ndigo-dark"], [data-theme="solarized-dark"], [data-theme="high-contrast-dark"]));
+```
+
+Persist the choice in a cookie or `localStorage` and apply it before first
+paint to avoid a flash; `@ndigo/ui-web` ships a theme adapter that negotiates
+the cookie for SSR.
 
 Switching `data-theme` (or calling `applyTheme`) then re-skins every Tailwind
 utility that references a `--nd-*` token, with no rebuild required. Keep the
@@ -367,7 +380,7 @@ budget; a third-party library's claim is not a measurement.
 
 ## 10. Web Awesome as a third-party example
 
-[apps/07-ndigo-island](https://github.com/ndigo/ndigo/tree/main/apps/07-ndigo-island) migrated from Web Awesome to ndigo-ui in Phase 3
+[apps/07-ndigo-island](https://github.com/ndigo/ndigo/tree/main/apps/07-ndigo-island) migrated from Web Awesome to ndigo-ui
 (issue #304); its source no longer imports `<wa-*>` components and the library
 is no longer installed anywhere in this repository. The migration sequence
 remains the worked example for moving a third-party library onto ndigo-ui:

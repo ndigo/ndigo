@@ -20,7 +20,7 @@ is worth reading.
 ## 1. Bootstrap: `createNodeApplication`
 
 An application is assembled around a DI container. The Node preset
-(`@ndigo/platform-node`, ) wires the standard assembly — platform
+(`@ndigo/platform-node`) wires the standard assembly — platform
 auto-configuration, a `NodeEnvironment`, config files, the managed server,
 and graceful shutdown — and returns the refreshed context plus a runtime
 handle:

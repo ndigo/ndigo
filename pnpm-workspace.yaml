@@ -45,7 +45,7 @@ catalog:
   '@types/ws': '^8.18.2'
   jose: '^6.2.15'
   nx: '~24.0.4'
-  oxlint: '^1.91.0'
+  oxlint: '^1.93.0'
   swagger-ui-dist: '5.34.1'
   tsx: '^4.23.13'
   typescript: '~7.0.2'

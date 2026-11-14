@@ -18,7 +18,7 @@ A theme name is resolved in three unrelated places, and two of them are named
 `ThemeResolver`:
 
 - `@ndigo/content` `ThemeResolver` is a **registry** (`getTheme(name)` →
-  `Theme { name, contentSource }`). The correctly named `ThemeSource` sits
+  `Theme { name, contentSource }`). A `ThemeSource` stub (`{ theme }`) sits
   next to it, referenced by nothing.
 - `@ndigo/dispatcher` `ThemeResolver` is a **request selector**
   (`resolveTheme(route)` → name). It has no production call site, and the

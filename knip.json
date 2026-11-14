@@ -1,11 +1,73 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
-  "ignore": ["**/api/**", "**/lib/**", "**/dist/**", ".opencode/**", ".omp/**", "graft/**"],
-  "ignoreDependencies": ["graft"],
-  "ignoreBinaries": ["graft", "openssl"],
+  "ignore": [
+    "**/api/**",
+    "**/lib/**",
+    ".opencode/**",
+    "apps/05-ndigo-api/db/migrations/**",
+    "packages/create-ndigo-app/templates/**",
+    "scripts/vite-plugin-lower-decorators.d.mts",
+    "vitest.bench.config.ts",
+    "benchmarks/http/ndigo-app.ts"
+  ],
+  "ignoreDependencies": [
+    "todomvc-app-css",
+    "@tsmetadata/polyfill",
+    "@nx/devkit",
+    "typedoc-plugin-markdown",
+    "@ndigo/context",
+    "@ndigo/dispatcher",
+    "@ndigo/platform-node"
+  ],
+  "ignoreBinaries": ["graft", "openssl", "ss"],
+  "exclude": ["optionalPeerDependencies"],
+  "ignoreIssues": {
+    "**/_*.ts": ["exports", "types", "nsExports", "nsTypes"],
+    "packages/create-ndigo-app/**": ["exports", "types"],
+    "packages/ndigo-cli/**": ["exports", "types"],
+    "packages/ndigo-core/src/media-type.ts": ["exports", "types"],
+    "packages/ndigo-http/src/response-error.ts": ["exports", "duplicates"],
+    "packages/ndigo-management/src/metrics-controller.ts": ["exports"],
+    "packages/ndigo-orm-drizzle/src/schema-snapshot.ts": ["exports"],
+    "packages/ndigo-orm/src/metadata.ts": ["types"],
+    "packages/ndigo-util/src/crypto/index.ts": ["exports"],
+    "packages/ndigo-util/src/crypto/random-hex.ts": ["duplicates"],
+    "packages/ndigo-util/src/crypto/random-token.ts": ["duplicates"],
+    "packages/ndigo-util/src/type/like.ts": ["types"],
+    "packages/ndigo-platform-web/src/cookies.ts": ["duplicates"]
+  },
   "workspaces": {
     ".": {
-      "entry": ["src/oxlint/plugin.ts", "scripts/*.mjs"]
+      "entry": ["scripts/*.mjs"]
+    },
+    "apps/*": {
+      "ignoreIssues": {
+        "**/*": ["exports", "types", "nsExports", "nsTypes", "enumMembers", "namespaceMembers", "duplicates"],
+        "package.json": ["devDependencies"]
+      }
+    },
+    "benchmarks": {
+      "entry": ["http/*.mjs"],
+      "project": ["**/*.{js,mjs,ts}"]
+    },
+    "packages/ndigo-flags-openfeature": {
+      "entry": ["src/index.ts", "src/web/index.ts"]
+    },
+    "packages/ndigo-http": {
+      "entry": ["src/index.ts", "src/interceptors/index.ts"]
+    },
+    "packages/ndigo-redis": {
+      "entry": [
+        "src/index.ts",
+        "src/cache/index.ts",
+        "src/jobs/index.ts",
+        "src/locks/index.ts",
+        "src/pubsub/index.ts",
+        "src/rate-limit/index.ts"
+      ]
+    },
+    "packages/ndigo-util": {
+      "entry": ["src/index.ts", "src/string/index.ts", "src/type/index.ts"]
     }
   }
 }

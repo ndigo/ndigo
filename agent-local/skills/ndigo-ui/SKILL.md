@@ -137,6 +137,11 @@ Use `--nd-*`; never hard-code brand colours, spacing, radii, or motion.
   duration, easing, and focus-ring tokens.
 - `data-theme="light"` switches the palette; leaving it unset follows the OS.
   Dark is the default.
+- Built-in themes: `ndigo-dark`/`ndigo-light`, `solarized-dark`/`solarized-light`,
+  `high-contrast-dark`/`high-contrast-light` (legacy `dark`/`light` alias Ndigo).
+  Switch with `data-theme="..."`, or use `createTheme`/`applyTheme`/`themeToCss`
+  from `@ndigo/ui` to customize or create themes. Themes are plain CSS variables,
+  so they compose with Tailwind by mapping `--nd-*` into `@theme`/`theme.extend`.
 - Use logical properties (`padding-inline`, `inset-block-start`) so RTL works.
   Respect `prefers-reduced-motion`.
 - Keep focus visible with the shared focus-ring tokens; do not remove outlines.

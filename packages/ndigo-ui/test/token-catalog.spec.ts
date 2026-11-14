@@ -15,7 +15,7 @@ const STYLESHEET = readFileSync(STYLESHEET_PATH, 'utf8');
 const CSS = STYLESHEET.replace(/\/\*[\s\S]*?\*\//g, '');
 const declarationRe = /(--nd-[a-z0-9-]+)\s*:/g;
 const selectorBlockRe = /^[ \t]*([^@\s][^\n{}]*?)[ \t]*\{[ \t]*$/gm;
-const allowedSelectorRe = /^:root(?::not\(\[data-theme\]\)|\[data-theme='(?:dark|light)'\])?$/;
+const allowedSelectorRe = /^:root(?::not\(\[data-theme\]\)|\[data-theme='[a-z0-9-]+'\])?$/;
 
 /** Custom properties declared inside the first block whose selector matches. */
 function declarationsIn(css: string, selector: string): Set<string> {

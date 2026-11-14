@@ -267,7 +267,7 @@ signals relay, crashes reap.
 declared scripts — add them when the CLI reports them missing (the
 `inspect` entry builds the manifest without binding a port; apps choose
 their own controllers/config classes, exactly as
-`[apps/05-ndigo-api/src/inspect.ts`](https://github.com/ndigo/ndigo/blob/main/apps/05-ndigo-api/src/inspect.ts`) does). The `db:*` lifecycle — versioned
+`[apps/05-ndigo-api/src/inspect.ts](https://github.com/ndigo/ndigo/blob/main/apps/05-ndigo-api/src/inspect.ts) does). The `db:*` lifecycle — versioned
 migration files, generation from entity metadata, and run-on-boot — is
 [Guide 20](20-orm-and-migrations.md).
 

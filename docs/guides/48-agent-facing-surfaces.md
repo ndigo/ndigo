@@ -290,9 +290,9 @@ const tools = await registry.listTools();
 ```
 
 `packages/ndigo-mcp/test/parity.spec.ts` proves the projection itself;
-`[apps/21-ndigo-agent-lab/test/parity.spec.ts`](https://github.com/ndigo/ndigo/blob/main/apps/21-ndigo-agent-lab/test/parity.spec.ts`) proves the demo wiring (tool list,
-`_meta.ui`, the `lookup_order` schema against the generated operation, and A2UI
-serialization). `[apps/20-ndigo-ui-lab/test/a2ui-surface.spec.ts`](https://github.com/ndigo/ndigo/blob/main/apps/20-ndigo-ui-lab/test/a2ui-surface.spec.ts`) covers
+`[apps/21-ndigo-agent-lab/test/parity.spec.ts](https://github.com/ndigo/ndigo/blob/main/apps/21-ndigo-agent-lab/test/parity.spec.ts) proves the demo wiring (tool list,
+`_meta.ui`, the `lookup_order`schema against the generated operation, and A2UI
+serialization).`[apps/20-ndigo-ui-lab/test/a2ui-surface.spec.ts](https://github.com/ndigo/ndigo/blob/main/apps/20-ndigo-ui-lab/test/a2ui-surface.spec.ts) covers
 installed-component rendering and unknown-component rejection.
 
 ## See also

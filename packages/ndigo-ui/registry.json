@@ -22,7 +22,7 @@
           "target": "styles/ndigo-base.css"
         }
       ],
-      "docs": "Import `styles/ndigo-tokens.css` before the base layer. Set `data-theme=\"light\"` for the light palette; leaving it unset follows the operating system."
+      "docs": "Import `styles/ndigo-tokens.css` before the base layer. Built-in themes: `ndigo-dark` (default), `ndigo-light`, `solarized-dark`, `solarized-light`, `high-contrast-dark`, `high-contrast-light` (legacy `dark`/`light` alias the Ndigo themes). Set `data-theme` to switch; unset follows the operating system for the default Ndigo palette."
     },
     {
       "name": "lib",

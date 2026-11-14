@@ -18,7 +18,7 @@
           "sha256": "6a298af62b01122adea3a480b6c04c2711035b5bd558c8187ee2e51572beb1d3"
         }
       ],
-      "installedAt": "2026-11-12T18:25:01.028Z"
+      "installedAt": "2026-11-14T16:01:14.502Z"
     },
     "dialog": {
       "registry": "../../registry.json",
@@ -60,10 +60,10 @@
         },
         {
           "target": "styles/ndigo-tokens.css",
-          "sha256": "65615adc247734ea4f952b92fe3f193a09528ccd84f0a662275f8a8051cb6ade"
+          "sha256": "6706eb388a9259c255efc97034a19fad91fbc4aed9013c729526901627d33521"
         }
       ],
-      "installedAt": "2026-11-09T21:04:37.663Z"
+      "installedAt": "2026-11-14T15:12:12.550Z"
     },
     "button": {
       "registry": "../../registry.json",
@@ -574,10 +574,10 @@
         },
         {
           "target": "src/ui/nd-a2ui-surface/nd-a2ui-surface.ts",
-          "sha256": "d2190ba0f371f08addb0afae4547154cc82afefe4e0886b0beb729344a649975"
+          "sha256": "556083d9b47fcec6a0ae590485a102f602458e81181b2ea9556cdeae111de776"
         }
       ],
-      "installedAt": "2026-11-10T03:07:31.826Z"
+      "installedAt": "2026-11-14T16:01:14.502Z"
     }
   }
 }

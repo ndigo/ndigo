@@ -58,6 +58,85 @@ Tokens expose `--nd-*` custom properties (color, type, spacing, radius, shadow,
 motion, stacking, focus). Dark is the default; set `data-theme="light"` on the
 root for the light palette.
 
+#### Theming ndigo-ui
+
+ndigo-ui ships a curated set of themes selected with `data-theme` on the root:
+`ndigo-dark` (default), `ndigo-light`, `solarized-dark`, `solarized-light`,
+`high-contrast-dark`, and `high-contrast-light`. The legacy `dark` and `light`
+values alias the Ndigo themes.
+
+```html
+<html data-theme="solarized-dark">
+```
+
+Themes override only the semantic color tokens; structural tokens stay shared,
+and every theme meets WCAG AA for the declared text/background pairs.
+
+To create or customize a theme programmatically:
+
+```ts
+import { createTheme, applyTheme, themeToCss } from '@ndigo/ui';
+
+const brand = createTheme({
+    name: 'brand-dark',
+    colorScheme: 'dark',
+    tokens: { '--nd-color-accent': '#ff5500' },
+});
+
+applyTheme(brand); // inline overrides + data-theme/data-color-scheme
+const css = themeToCss(brand, ':root[data-theme="brand-dark"]');
+```
+
+`createTheme` inherits from a base theme (Ndigo by default, or any theme via
+`base`), and `withThemeTokens` merges further overrides immutably.
+`removeTheme` clears an applied theme. For CSS-only switching, import the token
+stylesheet and set `data-theme`; no JavaScript is required.
+
+#### Using themes with Tailwind CSS
+
+ndigo-ui themes are plain CSS custom properties, so they compose with Tailwind
+without a runtime adapter. Map the `--nd-*` tokens into your Tailwind theme so
+utilities resolve to the active theme's values:
+
+Tailwind v4 (`app.css`):
+
+```css
+@import 'tailwindcss';
+@import '@ndigo/ui/tokens.css';
+
+@theme {
+    --color-nd-bg: var(--nd-color-bg);
+    --color-nd-surface: var(--nd-color-surface);
+    --color-nd-text: var(--nd-color-text);
+    --color-nd-accent: var(--nd-color-accent-strong);
+    --radius-nd-md: var(--nd-radius-md);
+}
+```
+
+Tailwind v3 (`tailwind.config.js`):
+
+```js
+module.exports = {
+    theme: {
+        extend: {
+            colors: {
+                nd: {
+                    bg: 'var(--nd-color-bg)',
+                    surface: 'var(--nd-color-surface)',
+                    text: 'var(--nd-color-text)',
+                    accent: 'var(--nd-color-accent-strong)',
+                },
+            },
+            borderRadius: { 'nd-md': 'var(--nd-radius-md)' },
+        },
+    },
+};
+```
+
+Switching `data-theme` (or calling `applyTheme`) then re-skins every Tailwind
+utility that references a `--nd-*` token, with no rebuild required. Keep the
+token stylesheet imported before Tailwind so the variables are defined.
+
 For an application in this monorepo or the lab, install copy-in items with the
 first-party CLI. Point the app at the repository registry:
 

@@ -23,8 +23,8 @@ So every package carries its own docs:
 
 - **`README.md`** — the human-written entry point (purpose, install,
   usage, API pointer).
-- **`api/`** — the generated TypeDoc reference tree, committed and
-  CI-verified.
+- **`api/`** — the generated TypeDoc reference tree (generated on demand,
+  not committed; run `pnpm doc:api`).
 - **`package.json` metadata** — registry-facing fields (description,
   keywords, files) that make the package self-describing on npm.
 
@@ -130,15 +130,11 @@ Rules:
   [`scripts/external-symbol-links.json`](../../scripts/external-symbol-links.json)
   (`{ "@ndigo/other": { "Symbol": "#" } }`). TypeDoc names the needed entry
   in its warning message — add it there, never in a package's own docs.
-- **After any public API change:** update the JSDoc, run `pnpm doc:api`,
-  commit the generated `api/` tree with the change.
-- **Freshness:** CI regenerates the packages a PR affects — a package's
-  `src/` **or** its manifest counts, since name/version/description reach the
-  tree — and every package on the weekly sweep, then runs
-  `git diff --exit-code -- packages API.md`, so stale docs fail the lane. A PR
-  that changes the doc toolchain, or one with more changed files than the
-  compare API reports (it caps the list at 300 entries, truncating it
-  silently), regenerates everything instead of guessing. Locally:
+- **After any public API change:** update the JSDoc, run `pnpm doc:api` to
+  verify generation succeeds (zero warnings).
+- **Generation:** CI runs `pnpm doc` (or `pnpm doc:api` per affected package)
+  to verify the reference generates cleanly (zero warnings); the generated
+  tree is not committed, so there is no freshness diff. Locally:
   `pnpm doc:check` (full regeneration); `node scripts/doc-api.mjs --only
    <pkg-dir>` regenerates a single package.
 - **Coverage gate:** `pnpm doc:api` fails when a **top-level exported**
@@ -197,4 +193,4 @@ in real content, then let `pnpm manifest:check` + `pnpm doc:api` validate.
 - [Guide 46 — Upgrading Ndigo](46-upgrading.md) — migration-guide authoring
 - [CONTRIBUTING.md](../../CONTRIBUTING.md) — the repository workflow
 - [Generators](../../tools/generators/README.md) — package and README scaffolding
-- [API index](../../API.md) — the generated package surface
+- The root `API.md` index is generated on demand (`pnpm doc:api`) and is not committed.

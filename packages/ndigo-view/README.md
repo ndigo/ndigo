@@ -76,9 +76,8 @@ Candidate aggregation is cached per (view name, language) — the `Promise.all` 
 
 ## API
 
-The full API is at [`api/`](api/README.md). Primary exports live in
-[`src/index.ts`](src/index.ts); see the [package index](../../API.md) for
-how it fits with the rest of Ndigo.
+The full API is at `api/` (generated; run `pnpm doc:api`). Primary exports live in
+[`src/index.ts`](src/index.ts);
 
 - **View contracts** — `View`, `AbstractView`, `ProducerView` (a render produces `{ status, headers, body }`)
 - **Serializing views** — `AbstractSerializingView` family: `JSONView`, `CSVView`, `TextView`, `OctetStreamView`

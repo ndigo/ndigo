@@ -41,9 +41,8 @@ await sdk?.shutdown(); // batched signals — flush before exit
 
 ## API
 
-The full API is at [`api/`](api/README.md). Primary exports live in
-[`src/index.ts`](src/index.ts); see the [package index](../../API.md) for
-how it fits with the rest of Ndigo.
+The full API is at `api/` (generated; run `pnpm doc:api`). Primary exports live in
+[`src/index.ts`](src/index.ts);
 
 - **Bootstrap** — `configureTelemetry()`
 - **Prometheus pull** — `PrometheusMetricReader` (backed by `metricExporter: 'prometheus'`); `HTTPServerInstrumentation` records the semconv `http.server.request.duration` histogram (seconds) for every request

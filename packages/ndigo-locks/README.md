@@ -54,7 +54,7 @@ Multi node: register a `RedisLockDriver` entry (see [guide 24](../../docs/guides
 
 ## API
 
-The full API is at [`api/`](api/README.md). Primary exports:
+The full API is at `api/` (generated; run `pnpm doc:api`). Primary exports:
 
 - `LockDriver` / `LockHandle` / `LockAcquireOptions` — the contract
   (`acquire` is non-blocking; `renew`/`release` are token-checked).

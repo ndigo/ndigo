@@ -95,5 +95,9 @@ test-results/
 /.nx/SELF_HEALING.md
 /.github/copilot-instructions.md
 
+# Generated API reference: produced on demand via `pnpm doc:api`, not committed.
+/API.md
+/packages/*/api/
+
 # opencode plugin dependencies (installed on demand by opencode)
 .opencode/node_modules/

@@ -52,9 +52,8 @@ class ReportService {
 
 ## API
 
-The full API is at [`api/`](api/README.md). Primary exports live in
-[`src/index.ts`](src/index.ts); see the [package index](../../API.md) for
-how it fits with the rest of Ndigo.
+The full API is at `api/` (generated; run `pnpm doc:api`). Primary exports live in
+[`src/index.ts`](src/index.ts);
 
 - **Logging** — `getLogger`, logger abstraction with threshold filtering
 - **Metrics** — `FeatureMetricAggregator`, `@counted`, the metric snapshot model (`MetricSnapshot`/`MetricSnapshotProvider` registry) and the Prometheus-text / JSON renderers the management `/metrics` endpoint serves (AD-77)

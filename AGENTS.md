@@ -126,11 +126,12 @@ Every package must meet the documentation standard:
   `tools/generators/src/generators/readme/files/README.md.template`.
 - **Generated API reference** — `pnpm doc:api` writes
   `packages/<name>/api/` per package (zero-warning TypeDoc standard,
-  CI-enforced). After public API changes: regenerate, commit the tree.
+  generated on demand, not committed). After public API changes: regenerate
+  to verify.
 - **Cross-package JSDoc links** — add an entry to
   `scripts/external-symbol-links.json`; never sprinkle links into package code.
 - **Enforcement** — `pnpm manifest:check` (README/metadata/files), CI
-  freshness diff. Full rules: `docs/guides/90-package-documentation.md`.
+  generation (zero warnings). Full rules: `docs/guides/90-package-documentation.md`.
 
 **No HTML docs:** `doc-html/` and `typedoc.html.json` are gone; do not
 reintroduce them.
@@ -597,8 +598,8 @@ The tracked `.githooks/pre-commit` guard enforces the checkout rule once
 
 **Single-lane files** — at most one in-flight issue touches these (note it
 when grooming): `pnpm-lock.yaml`, Drizzle migrations (`db:schema:check`
-enforces one-commit discipline), and the generated trees (`.opencode/`,
-`.omp/`, `packages/*/api/`).
+enforces one-commit discipline), and the generated agent trees (`.opencode/`,
+`.omp/`).
 
 **Releases** stay trunk-based: `main` is always releasable; a release is a
 milestone-driven act (CHANGELOG cut → tag → per-package publish), not a

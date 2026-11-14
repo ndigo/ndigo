@@ -34,7 +34,7 @@ const FULL_STEPS = [
     { label: 'unit + integration tests', script: 'test' },
     { label: 'TSDoc coverage', script: 'doc:coverage' },
     { label: 'TSDoc examples', script: 'doc:examples' },
-    { label: 'API docs freshness', script: 'doc:check' },
+    { label: 'API docs generation', script: 'doc:check' },
     { label: 'production dependency audit', bin: 'pnpm', args: ['audit', '--prod'] },
 ];
 

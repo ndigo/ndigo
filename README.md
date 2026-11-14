@@ -286,7 +286,6 @@ Micro frontends:
 | [CONTRIBUTING.md](CONTRIBUTING.md) | _How do I contribute?_ — setup, work tracking (issue → branch → PR), quality gates                                                                                                                                   |
 | [docs/](docs/README.md)            | The documentation set: [guides](docs/guides/README.md) (numbered how-tos), [architecture topics](docs/architecture/README.md), [decisions (ADRs)](docs/decisions/README.md), [migrations](docs/migrations/README.md) |
 | [AGENTS.md](AGENTS.md)             | Instructions for AI agents working in this repository                                                                                                                                                                |
-| [API.md](API.md)                   | Generated per-package API reference index (`pnpm doc:api`, freshness-gated)                                                                                                                                          |
 
 Conventions and layout rules are stated once, in [STYLE_GUIDE.md](STYLE_GUIDE.md);
 architectural rationale once, in [ARCHITECTURE.md](ARCHITECTURE.md). This README

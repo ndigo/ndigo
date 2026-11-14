@@ -57,7 +57,7 @@ every process counts against the **same** budgets.
 
 ## API
 
-The full API is at [`api/`](api/README.md). Primary exports:
+The full API is at `api/` (generated; run `pnpm doc:api`). Primary exports:
 
 - `RateLimiter` / `RateLimitPolicy` / `RateLimitResult` — the contract
   (`consume` accounts one request; `retryAfterMs` is the `Retry-After`

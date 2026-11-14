@@ -295,14 +295,6 @@ jobs:
           fi
           node scripts/doc-api.mjs --only "$packages"
 
-      - name: API docs freshness (generated tree must match committed)
-        # The step above regenerated the affected docs (or all of them on
-        # schedule/dispatch); any resulting working-tree diff means committed
-        # docs are stale. The weekly sweep regenerates all 46 packages, so
-        # per-PR scoping cannot hide drift for long. Docs standard:
-        # docs/guides/90-package-documentation.md
-        run: git diff --exit-code -- packages API.md
-
       - name: TSDoc coverage (zero tolerance)
         # Every package must stay at zero: module summaries present, exported
         # class/interface members documented, methods carrying @param for

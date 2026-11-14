@@ -283,7 +283,7 @@ Rules:
 - Code snippets are written against the current framework surface and mirror the
   demo applications — treat `apps/05-ndigo-api` as the canonical reference.
 - API names link to nothing inline; the per-package TypeDoc references are
-  generated (`pnpm doc:api` → `packages/<name>/api/`; index `API.md`) and the
-  package READMEs link them.
+  generated on demand (`pnpm doc:api` → `packages/<name>/api/`; index `API.md`)
+  and are not committed.
 - Each guide states its audience, prerequisites, and reference app, and closes
   with related guides/ADRs.

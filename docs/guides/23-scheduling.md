@@ -67,7 +67,7 @@ class Maintenance {
 - stops/drains on context close.
 
 The `ndigo-api` demo ships a working heartbeat (`Heartbeat` in
-`[apps/05-ndigo-api/src/heartbeat.ts](https://github.com/ndigo/ndigo/blob/main/apps/05-ndigo-api/src/heartbeat.ts)).
+[apps/05-ndigo-api/src/heartbeat.ts](https://github.com/ndigo/ndigo/blob/main/apps/05-ndigo-api/src/heartbeat.ts)).
 
 ## 2. Specs
 

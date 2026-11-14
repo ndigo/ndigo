@@ -18,6 +18,22 @@ export const ACCEPT_LANGUAGE_ATTRIBUTE = 'acceptLanguage';
 export const LANGUAGE_ATTRIBUTE = 'language';
 
 /**
+ * Route attribute carrying the requested theme name. Platform adapters set it
+ * from transport input (a cookie, typically) when building a route so theme
+ * negotiation stays transport-agnostic (consumed by theme resolvers).
+ *
+ * The value is untrusted: resolvers normalize it before use.
+ */
+export const REQUESTED_THEME_ATTRIBUTE = 'requestedTheme';
+
+/**
+ * Route attribute carrying the negotiated theme name. Dispatchers write the
+ * theme after negotiation so views and server-rendered shells can emit
+ * `data-theme` and the matching token CSS for the request.
+ */
+export const THEME_ATTRIBUTE = 'theme';
+
+/**
  * Records the negotiated request language on the route.
  *
  * Dispatchers call this after negotiation so views and templates can format
@@ -30,5 +46,21 @@ export const LANGUAGE_ATTRIBUTE = 'language';
 export const applyNegotiatedLanguage = (route: Route, language: string): void => {
     if (route.attributes) {
         route.attributes[LANGUAGE_ATTRIBUTE] = language;
+    }
+};
+
+/**
+ * Records the negotiated request theme on the route.
+ *
+ * Dispatchers call this after negotiation so views and server-rendered shells
+ * can select the matching visual theme. No-op on attribute-less routes
+ * (partial hand-rolled routes, test doubles).
+ *
+ * @param route - The current route.
+ * @param theme - The resolved theme name.
+ */
+export const applyNegotiatedTheme = (route: Route, theme: string): void => {
+    if (route.attributes) {
+        route.attributes[THEME_ATTRIBUTE] = theme;
     }
 };

@@ -144,7 +144,25 @@ for post-boot setup; `autoNavigate: false` plus `app.router.navigate(path)`
 gives programmatic navigation; `app.destroy` is the teardown (it is
 idempotent, and the router stops listening immediately).
 
-## 4. Testing
+## 4. Theme bootstrap
+
+A browser app picks up its visual theme with one call. `@ndigo/ui-web` resolves
+the `theme` cookie first, then `prefers-color-scheme`, then the default you
+pass; applies the winning theme to the document; and persists later switches:
+
+```ts
+import { connectBrowserTheme } from '@ndigo/ui-web';
+
+const theme = connectBrowserTheme(context, { themeName: 'ndigo-dark' });
+
+themeSelect.addEventListener('change', () => theme.setTheme(themeSelect.value));
+```
+
+A full-stack app resolves the same cookie per request and renders `data-theme`,
+so applying it again on boot is idempotent. Guide 30 covers precedence, custom
+themes, and Tailwind interop.
+
+## 5. Testing
 
 The `@ndigo/test` harness boots a browser app without a DOM root
 (`MemoryViewTarget`) and drives dispatches through `MockWebClient` —
@@ -173,6 +191,8 @@ the app's `test` script (`vite build && vitest run`).
   client auth and the OIDC flow.
 - [29 — Signals & Islands](29-signals-and-islands.md) — reactive state and
   island hydration.
+- [30 — UI Libraries & Component Integration](30-component-integration.md) —
+  theming, theme selection, and component libraries.
 - [31 — Micro Frontends with `@ndigo/host`](31-micro-frontends.md) — composing
   feature contexts.
 - [91 — Application Conventions](91-application-conventions.md) — file layout

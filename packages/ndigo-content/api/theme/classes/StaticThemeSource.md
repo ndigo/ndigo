@@ -2,23 +2,23 @@
 
 ***
 
-[@ndigo/content](../../README.md) / [theme](../README.md) / StaticThemeResolver
+[@ndigo/content](../../README.md) / [theme](../README.md) / StaticThemeSource
 
-# Class: StaticThemeResolver
+# Class: StaticThemeSource
 
-In-memory theme resolver for static theme maps.
+In-memory theme source for static theme maps.
 
 ## Implements
 
-- [`ThemeResolver`](../interfaces/ThemeResolver.md)
+- [`ThemeSource`](../interfaces/ThemeSource.md)
 
 ## Constructors
 
 ### Constructor
 
-> **new StaticThemeResolver**(`themes`, `defaultThemeName?`): `StaticThemeResolver`
+> **new StaticThemeSource**(`themes`, `defaultThemeName?`): `StaticThemeSource`
 
-Creates a theme resolver backed by an in-memory theme list.
+Creates a theme source backed by an in-memory theme list.
 
 #### Parameters
 
@@ -36,7 +36,7 @@ Optional name of the default theme.
 
 #### Returns
 
-`StaticThemeResolver`
+`StaticThemeSource`
 
 #### Throws
 
@@ -84,4 +84,4 @@ When the theme cannot be found.
 
 #### Implementation of
 
-[`ThemeResolver`](../interfaces/ThemeResolver.md).[`getTheme`](../interfaces/ThemeResolver.md#gettheme)
+[`ThemeSource`](../interfaces/ThemeSource.md).[`getTheme`](../interfaces/ThemeSource.md#gettheme)

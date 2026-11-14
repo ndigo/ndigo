@@ -55,7 +55,7 @@ export class TestLanguageResolver {
 }
 
 export class TestThemeResolver {
-    resolveTheme(route: unknown) {
+    resolveThemeName(route: unknown) {
         return 'testTheme';
     }
 }

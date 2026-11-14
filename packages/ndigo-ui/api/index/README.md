@@ -82,6 +82,12 @@ Re-exports [resolveToken](../resolve-token/functions/resolveToken.md)
 
 ***
 
+### resolveVisualTheme
+
+Re-exports [resolveVisualTheme](../resolve-visual-theme/functions/resolveVisualTheme.md)
+
+***
+
 ### SOLARIZED\_DARK\_THEME
 
 Re-exports [SOLARIZED_DARK_THEME](../common-themes/variables/SOLARIZED_DARK_THEME.md)
@@ -97,6 +103,18 @@ Re-exports [SOLARIZED_LIGHT_THEME](../common-themes/variables/SOLARIZED_LIGHT_TH
 ### Theme
 
 Re-exports [Theme](../theme/interfaces/Theme.md)
+
+***
+
+### themeAttributes
+
+Re-exports [themeAttributes](../theme-attributes/functions/themeAttributes.md)
+
+***
+
+### ThemeAttributes
+
+Re-exports [ThemeAttributes](../theme-attributes/interfaces/ThemeAttributes.md)
 
 ***
 
@@ -157,6 +175,12 @@ Re-exports [TokenName](../token-name/type-aliases/TokenName.md)
 ### TOKENS
 
 Re-exports [TOKENS](../token-catalog/variables/TOKENS.md)
+
+***
+
+### VisualThemeMap
+
+Re-exports [VisualThemeMap](../resolve-visual-theme/type-aliases/VisualThemeMap.md)
 
 ***
 

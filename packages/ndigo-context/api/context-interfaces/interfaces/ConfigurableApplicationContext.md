@@ -1099,7 +1099,7 @@ The theme name.
 
 ***
 
-### setThemeResolver()
+### ~~setThemeResolver()~~
 
 > **setThemeResolver**(`themeResolver`): `void`
 
@@ -1109,9 +1109,34 @@ Overrides the theme resolver used by this context.
 
 ##### themeResolver
 
-`ThemeResolver`
+`ThemeSource`
 
-The theme resolver.
+The theme source.
+
+#### Returns
+
+`void`
+
+#### Deprecated
+
+Use [setThemeSource](#setthemesource) instead. A `ThemeResolver` here
+was always a registry lookup, not per-request selection.
+
+***
+
+### setThemeSource()
+
+> **setThemeSource**(`themeSource`): `void`
+
+Replaces the theme source used by this context.
+
+#### Parameters
+
+##### themeSource
+
+`ThemeSource`
+
+The theme source.
 
 #### Returns
 

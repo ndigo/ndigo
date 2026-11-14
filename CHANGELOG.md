@@ -336,6 +336,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `removeTheme`, and `themeToCss`. Themes override only `--nd-*` color tokens
   and switch through `data-theme` in CSS, so a theme change needs no
   JavaScript; the legacy `dark`/`light` values alias the Ndigo themes.
+- `@ndigo/router` + `@ndigo/dispatcher` (AD-106): per-request theme negotiation
+  — `REQUESTED_THEME_ATTRIBUTE` (`requestedTheme`), `THEME_ATTRIBUTE`
+  (`theme`), `applyNegotiatedTheme`, `AttributeThemeResolver`, and
+  `SystemThemeResolver`. `@ndigo/platform-node` stamps the `theme` cookie on
+  HTTP and socket routes and registers the attribute resolver;
+  `@ndigo/content` exports `normalizeThemeName` for untrusted names.
+- `@ndigo/ui-web` (AD-106): browser theme adapter — `connectBrowserTheme`
+  resolves the `theme` cookie through `prefers-color-scheme` to the context
+  default, applies the result, and returns a `setTheme`/`destroy` handle;
+  `setVisualTheme` performs a single switch. `@ndigo/ui` gains the pure
+  `resolveVisualTheme` and `themeAttributes` helpers, so framework packages
+  never take a UI dependency.
 
 ### Changed
 
@@ -509,6 +521,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   hand-wired dispatcher/router/view-target assembly or duplicated hash-path
   helper. Generated browser apps ship `<name>-configuration.ts` (replacing
   `<name>-context.ts`) and no longer declare `@ndigo/router` directly.
+- `@ndigo/content`, `@ndigo/context`, `@ndigo/dispatcher` (AD-106): the theme
+  registry is renamed `ThemeResolver` → `ThemeSource` (with
+  `StaticThemeSource`, `CompositeThemeSource`, and `likeThemeSource`) and
+  `setThemeResolver` → `setThemeSource`. `resolveTheme` is now
+  `resolveThemeName` and runs per dispatch, not once at startup; the dispatcher
+  writes the negotiated name onto `route.attributes.theme`. See the
+  [theme-model migration guide](docs/migrations/2026-11-14_THEME_MODEL.md).
+
+### Deprecated
+
+- `@ndigo/content`, `@ndigo/context` (AD-106): the `ThemeResolver`,
+  `StaticThemeResolver`, `CompositeThemeResolver`, `likeThemeResolver`, and
+  `setThemeResolver` names remain as deprecated aliases for one minor. They are
+  removed at 1.0.
 
 ### Fixed
 

@@ -343,9 +343,16 @@ Guidelines for a custom target:
 
 ### 7.5 Themes
 
-Themes are resolved per route before rendering; the platform's theme resolver
-selects the theme name, and templates/components read it from the context. Do
-not bake theme names into a view; take them from the resolver.
+A theme name is negotiated per request, the same way language is. The transport
+stamps the raw value as `requestedTheme`; the configured `ThemeResolver`
+normalizes and chooses a name; the dispatcher writes it to
+`route.attributes[THEME_ATTRIBUTE]` before render. Views read that attribute —
+never a cookie or header — and serialize it for the shell. Do not bake a theme
+name into a template.
+
+[Guide 30 § Theme selection](30-component-integration.md#theme-selection)
+covers browser vs server precedence, `themeAttributes`, and
+`connectBrowserTheme`.
 
 ## 8. Pitfalls
 
@@ -374,6 +381,7 @@ not bake theme names into a view; take them from the resolver.
 - [Guide 08 — Errors & Problem Details](08-errors-and-problem-details.md) — 406 and error views
 - [Guide 17 — Internationalization & Content](17-i18n-and-content.md) — locale in templates
 - [Guide 29 — Signals & Islands](29-signals-and-islands.md) — island hydration
+- [Guide 30 — UI Libraries & Component Integration](30-component-integration.md) — theme selection and visual application
 - [Guide 41 — Custom View Engines](41-custom-view-engines.md) — adding React/Vue or a bespoke renderer
 - [Guide 50 — View Targeting](50-view-targeting.md) — the targeting strategy in depth: placement models, chains, ownership
 - [`@ndigo/view`](../../packages/ndigo-view/README.md) — the view, targeter, and negotiation surface

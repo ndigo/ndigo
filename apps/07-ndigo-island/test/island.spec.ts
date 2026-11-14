@@ -122,7 +122,22 @@ describe('ndigo-island hybrid demo', () => {
         expect(html).toContain('Rendu par le <strong>serveur</strong>');
         expect(html).toContain('septembre 2026');
         expect(html).toContain('Langue du serveur : FR');
-        expect(html).toMatch(/<html lang="fr">/);
+        expect(html).toMatch(/<html lang="fr" data-theme="ndigo-dark">/);
+    });
+
+    test('GET / renders the negotiated theme from the theme cookie', async () => {
+        const res = await mockHTTP.get('/').headers({ cookie: 'theme=solarized-dark' }).exec();
+
+        expect(res.text()).toMatch(/<html lang="en-US" data-theme="solarized-dark">/);
+    });
+
+    test('GET / discards a malformed theme cookie', async () => {
+        const res = await mockHTTP
+            .get('/')
+            .headers({ cookie: `theme=${encodeURIComponent('"><script>alert(1)</script>')}` })
+            .exec();
+
+        expect(res.text()).toMatch(/<html lang="en-US" data-theme="ndigo-dark">/);
     });
 
     test('GET / defaults to English without an Accept-Language header', async () => {
@@ -132,7 +147,7 @@ describe('ndigo-island hybrid demo', () => {
         expect(html).toContain('data-ndigo-locale="en-US"');
         expect(html).toContain('Rendered by the <strong>server</strong>');
         expect(html).toContain('September 13, 2026');
-        expect(html).toMatch(/<html lang="en-US">/);
+        expect(html).toMatch(/<html lang="en-US" data-theme="ndigo-dark">/);
     });
 });
 

@@ -60,17 +60,17 @@ Fallback theme name used when a route-specific theme is unavailable.
 
 `string`
 
-#### Inherited from
+#### Overrides
 
 [`AbstractThemeResolver`](AbstractThemeResolver.md).[`[toStringTag]`](AbstractThemeResolver.md#tostringtag)
 
 ## Methods
 
-### resolveTheme()
+### ~~resolveTheme()~~
 
 > **resolveTheme**(`route`): `string`
 
-Return the configured fallback theme.
+Resolve the theme name for a route.
 
 #### Parameters
 
@@ -84,8 +84,38 @@ The current route.
 
 `string`
 
+The resolved theme name.
+
+#### Deprecated
+
+Use [resolveThemeName](AbstractThemeResolver.md#resolvethemename) instead.
+
+#### Inherited from
+
+[`AbstractThemeResolver`](AbstractThemeResolver.md).[`resolveTheme`](AbstractThemeResolver.md#resolvetheme)
+
+***
+
+### resolveThemeName()
+
+> **resolveThemeName**(`_route`): `string`
+
+Return the configured fallback theme.
+
+#### Parameters
+
+##### \_route
+
+[`Route`](#)
+
+The current route.
+
+#### Returns
+
+`string`
+
 The configured theme name.
 
 #### Overrides
 
-[`AbstractThemeResolver`](AbstractThemeResolver.md).[`resolveTheme`](AbstractThemeResolver.md#resolvetheme)
+[`AbstractThemeResolver`](AbstractThemeResolver.md).[`resolveThemeName`](AbstractThemeResolver.md#resolvethemename)

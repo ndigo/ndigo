@@ -1409,19 +1409,47 @@ The theme name.
 
 ***
 
-### setThemeResolver()
+### ~~setThemeResolver()~~
 
 > **setThemeResolver**(`themeResolver`): `void`
 
-Overrides the theme resolver used by this context.
+Overrides the theme source used by this context.
 
 #### Parameters
 
 ##### themeResolver
 
-`ThemeResolver`
+`ThemeSource`
 
-The theme resolver.
+The theme source.
+
+#### Returns
+
+`void`
+
+#### Deprecated
+
+Use [setThemeSource](../../generic-application-context/classes/GenericApplicationContext.md#setthemesource) instead.
+
+#### Inherited from
+
+[`GenericApplicationContext`](../../generic-application-context/classes/GenericApplicationContext.md).[`setThemeResolver`](../../generic-application-context/classes/GenericApplicationContext.md#setthemeresolver)
+
+***
+
+### setThemeSource()
+
+> **setThemeSource**(`themeSource`): `void`
+
+Replaces the theme source used by this context.
+
+#### Parameters
+
+##### themeSource
+
+`ThemeSource`
+
+The theme source.
 
 #### Returns
 
@@ -1429,7 +1457,7 @@ The theme resolver.
 
 #### Inherited from
 
-[`GenericApplicationContext`](../../generic-application-context/classes/GenericApplicationContext.md).[`setThemeResolver`](../../generic-application-context/classes/GenericApplicationContext.md#setthemeresolver)
+[`GenericApplicationContext`](../../generic-application-context/classes/GenericApplicationContext.md).[`setThemeSource`](../../generic-application-context/classes/GenericApplicationContext.md#setthemesource)
 
 ***
 

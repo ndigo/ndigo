@@ -9,6 +9,7 @@ import { CACHE_MANAGER } from '@ndigo/cache';
 import { CONVERSION_SERVICE } from './context-tokens';
 import {
     AcceptHeaderLanguageResolver,
+    AttributeThemeResolver,
     RadixMetadataHandlerMapping,
     MetadataErrorResolver,
     argumentValueConverters,
@@ -228,6 +229,21 @@ export class NodeAutoConfiguration extends AsApplicationContextAware(Null) {
     @entry()
     languageResolver() {
         return new AcceptHeaderLanguageResolver('en-US');
+    }
+
+    /**
+     * Resolves the request theme from the `theme` cookie stamped on the route
+     * by the HTTP adapter. Server rendering has no system-preference input, so
+     * an absent or invalid cookie selects the Ndigo default.
+     *
+     * Can be overridden by registering a custom `configuration` with a
+     * themeResolver entry.
+     *
+     * @returns The attribute-backed theme resolver.
+     */
+    @entry()
+    themeResolver() {
+        return new AttributeThemeResolver('ndigo-dark');
     }
 
     /**

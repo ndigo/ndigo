@@ -1,14 +1,13 @@
 # Theme Model — registry, request negotiation, and visual application
 
 **Date:** 2026-11-14
-**Status:** P0 complete; P1–P4 pending
+**Status:** Complete — P0–P4 implemented (2026-11-14)
 **Tracks:** [AD-106](../decisions/2026-11-14_AD106_THEME_MODEL.md) (decision),
 AD-95 (ndigo-ui), AD-105 (choose/provide split), AD-19 (content resolution)
 
-> **P0 is already on `feat/ndigo-ui-themes`.** P1–P3 change framework
-> contracts and need their own worktree, branch, and tracking issue
-> (AGENTS.md §8). The plan is ordered so each phase is independently
-> shippable and green.
+> **Implementation:** P0 landed on `feat/ndigo-ui-themes`; P1–P4 landed on
+> `feat/482-theme-model` (issue #482). Each phase stayed independently
+> shippable and green, and the branch is squash-merged.
 
 ---
 

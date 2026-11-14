@@ -1,7 +1,7 @@
 # AD-106: Theme model — registry, request negotiation, and visual application
 
 **Date:** 2026-11-14
-**Status:** Accepted — direction approved; implementation pending
+**Status:** Implemented (2026-11-14) — P0–P4 complete
 ([plan](../plans/2026-11-14_THEME_MODEL.md)).
 
 **Related:** AD-19 (content resolution), AD-95 (ndigo-ui tokens and themes),

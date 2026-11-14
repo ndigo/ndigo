@@ -80,6 +80,23 @@ The cookie-backed language resolver.
 
 ***
 
+### themeResolver()
+
+> **themeResolver**(): [`CookieThemeResolver`](../../cookie-theme-resolver/classes/CookieThemeResolver.md)
+
+Resolves the request theme from the persisted cookie, falling back to
+the system color-scheme preference and then the Ndigo default. Can be
+overridden by registering a custom `configuration` with a
+themeResolver entry.
+
+#### Returns
+
+[`CookieThemeResolver`](../../cookie-theme-resolver/classes/CookieThemeResolver.md)
+
+The cookie-backed theme resolver.
+
+***
+
 ### viewResolver()
 
 > **viewResolver**(): `ViewResolverComposite`

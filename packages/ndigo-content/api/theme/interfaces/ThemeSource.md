@@ -6,12 +6,26 @@
 
 # Interface: ThemeSource
 
-Provides the currently selected theme.
+Looks up themes by name — the theme registry.
 
-## Properties
+## Methods
 
-### theme
+### getTheme()
 
-> **theme**: [`Theme`](Theme.md)
+> **getTheme**(`name?`): [`Theme`](Theme.md)
 
-The active theme.
+Gets a theme by name, or the default theme when no name is provided.
+
+#### Parameters
+
+##### name?
+
+`string`
+
+Optional theme name.
+
+#### Returns
+
+[`Theme`](Theme.md)
+
+The resolved theme.

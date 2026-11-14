@@ -170,6 +170,10 @@ left as inert markup — restores the locale and `.model`, and replaces the
 server markup, after which `connectedCallback`/`render` run. The demo app is
 [apps/07-ndigo-island](https://github.com/ndigo/ndigo/tree/main/apps/07-ndigo-island) (EJS shell + hydrated island + SSE).
 
+Shell-level attributes are not part of the marker: `lang` and `data-theme` ride
+the server-rendered `<html>`, and hydration trusts them. The island does not
+re-resolve locale or theme, so the first paint matches the server.
+
 ### Reactive islands: SSE → signal → render
 
 The server pushes model updates as Server-Sent Events; the client consumes the

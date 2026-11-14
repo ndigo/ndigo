@@ -4,11 +4,9 @@
 
 [@ndigo/content](../../README.md) / [theme](../README.md) / likeThemeResolver
 
-# Function: likeThemeResolver()
+# ~~Function: likeThemeResolver()~~
 
-> **likeThemeResolver**(`value`): `value is ThemeResolver`
-
-Tests whether a value looks like a theme resolver.
+> **likeThemeResolver**(`value`): `value is ThemeSource`
 
 ## Parameters
 
@@ -16,10 +14,10 @@ Tests whether a value looks like a theme resolver.
 
 `unknown`
 
-The value to be tested.
-
 ## Returns
 
-`value is ThemeResolver`
+`value is ThemeSource`
 
-Whether the value matches the theme resolver shape.
+## Deprecated
+
+Use [likeThemeSource](likeThemeSource.md) instead.

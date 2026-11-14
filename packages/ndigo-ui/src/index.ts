@@ -16,6 +16,10 @@ export type { CreateThemeOptions } from './create-theme.js';
 export { applyTheme, removeTheme } from './apply-theme.js';
 export type { ThemeTarget } from './apply-theme.js';
 export { themeToCss } from './theme-to-css.js';
+export { resolveVisualTheme } from './resolve-visual-theme.js';
+export type { VisualThemeMap } from './resolve-visual-theme.js';
+export { themeAttributes } from './theme-attributes.js';
+export type { ThemeAttributes } from './theme-attributes.js';
 export {
     COMMON_THEMES,
     getCommonTheme,

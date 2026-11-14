@@ -16,3 +16,7 @@ Node HTTP server adapter for the dispatcher.
 
 - [NodeHTTPServerAdapterOptions](interfaces/NodeHTTPServerAdapterOptions.md)
 - [SocketRequestAuthenticator](interfaces/SocketRequestAuthenticator.md)
+
+## Variables
+
+- [THEME\_COOKIE\_NAME](variables/THEME_COOKIE_NAME.md)

@@ -515,19 +515,20 @@ published in the public repository.
 
 ## 7. Agent Configuration
 
-This repository's AI-agent definitions are **generated, not hand-edited**, and
-are **kept locally** — the generated trees (`.agents/`, `.omp/`, `.opencode/`,
-`agent-local/`, and their manifests) are not committed.
+The committed repository does **not** ship generated AI-agent configuration.
+The agent trees (`.agents/`, `.omp/`, `.opencode/`, `agent-local/`, and their
+manifests) are generated locally and gitignored — they are maintainer tooling,
+not part of the public, installable product.
 
-- **Source of truth:** the neutral store in `development-agents/` (agents,
-  skills, per-harness shims), which lives outside this repository, plus this
-  repo's `agent-local/` (repo-specific overrides, e.g. the `graft` skill).
-- **Regenerate locally:** `pnpm agents:sync` (runs `gen.mjs`; agents into
-  `.opencode/` + `.omp/`, skills once into the harness-neutral `.agents/skills/`,
-  plus `.agent-gen.json`). Run after cloning and after editing the store or
-  `agent-local/`.
-- **Validate locally:** `pnpm agents:check` — committed-vs-generated drift
-  check is a local concern now that the trees are not tracked.
+- **Maintainers only:** the neutral store lives in `development-agents/`
+  (outside this repository). With it available, run `pnpm agents:sync` to
+  regenerate `.opencode/` + `.omp/` + `.agents/skills/` + manifests, and
+  `pnpm agents:check` to verify.
+- **Contributors:** a fresh checkout will not contain the generated agent
+  trees. `AGENTS.md` itself is the contract — use it directly with your own
+  agent harness. The generated configs are optional and unavailable without
+  the neutral store; this is a known limitation to revisit (either vendoring
+  the store into this repo or committing a curated subset of `.agents/skills/`).
 - Never hand-edit generated files under `.opencode/agents`, `.omp/agents`,
   `.agents/skills`.
 - Models: not part of the deployment — agents inherit the session model

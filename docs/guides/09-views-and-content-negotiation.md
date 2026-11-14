@@ -86,7 +86,11 @@ A `ResponseEntity` adds an explicit status and headers; the platform rewrites a
 
 All serializing views expose their `mediaType`, which is what negotiation
 matches against. A view without a media type is a fallback, not a negotiation
-candidate.
+candidate. `ProducerView` is the streaming representation — its body is not
+buffered, so it backs SSE endpoints; see Guides 15 and 16.
+
+`CSVView` takes its records from a named model field rather than the whole
+body: `new ModelAndView('report', { rows: data }, { records: 'rows' })`.
 
 The A2UI representation is plain JSON over the A2UI 1.0 message array
 (`createSurface`, `updateComponents`, …). Register

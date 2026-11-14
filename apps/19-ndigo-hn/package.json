@@ -39,7 +39,7 @@
   "devDependencies": {
     "@ndigo/test": "~0.0.1",
     "@tsmetadata/polyfill": "catalog:",
-    "msw": "~3.0.3",
+    "msw": "~3.0.5",
     "vite": "catalog:"
   }
 }

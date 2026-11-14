@@ -43,7 +43,7 @@
     "@ndigo/util": "~0.0.1",
     "@ndigo/view-ejs": "~0.0.1",
     "@ndigo/view-webcomponent": "~0.0.1",
-    "@playwright/test": "^1.64.1",
+    "@playwright/test": "^1.65.0",
     "tsx": "catalog:",
     "vite": "catalog:"
   }

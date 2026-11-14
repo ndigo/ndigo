@@ -107,6 +107,27 @@ theme passed via `base`), so a custom theme can override a handful of tokens.
 `withThemeTokens` merges further overrides immutably. `removeTheme` clears an
 applied theme.
 
+#### Resolving a negotiated theme
+
+This package is framework-free: it has no dependencies and never imports a
+context or platform package. Two pure helpers connect a negotiated name to the
+visual layer:
+
+- `resolveVisualTheme(name, themes?)` returns the matching theme from an
+  application map first, then the built-ins, or `undefined` for an unknown
+  name (the page keeps the base tokens rather than failing).
+- `themeAttributes(theme)` serializes `data-theme` and `data-color-scheme` for
+  server-rendered markup, escaping the name as defense in depth.
+
+Cookie persistence, system-preference detection, and application-context wiring
+live in the opt-in [`@ndigo/ui-web`](../ndigo-ui-web/README.md) adapter:
+
+```ts
+import { connectBrowserTheme } from '@ndigo/ui-web';
+
+const theme = connectBrowserTheme(context);
+```
+
 #### Using themes with Tailwind CSS
 
 ndigo-ui themes are plain CSS custom properties, so they compose with Tailwind

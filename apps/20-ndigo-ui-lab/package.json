@@ -1,7 +1,7 @@
 {
   "name": "@ndigo/ui-lab",
   "version": "0.0.1",
-  "description": "Ndigo UI lab — registry-installed tokens, blocks, and behaviour elements",
+  "description": "Ndigo UI lab \u2014 registry-installed tokens, blocks, and behaviour elements",
   "type": "module",
   "private": true,
   "scripts": {
@@ -21,8 +21,10 @@
   "dependencies": {
     "@a2ui/web_core": "~0.15.0",
     "@internationalized/date": "^3.12.4",
+    "@ndigo/context": "~0.0.1",
     "@ndigo/dispatcher": "~0.0.1",
     "@ndigo/ui": "~0.0.1",
+    "@ndigo/ui-web": "~0.0.1",
     "@ndigo/view-webcomponent": "~0.0.1",
     "@tsmetadata/polyfill": "catalog:",
     "@zag-js/accordion": "~1.47.0",

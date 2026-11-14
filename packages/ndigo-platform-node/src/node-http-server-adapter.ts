@@ -76,7 +76,7 @@ const logger = getLogger('ndigo-platform-node:node-http-server-adapter');
  * The browser (`CookieThemeResolver`) and the server-side stamping below must
  * agree on this name; it is the same default `configureBrowserTheme` writes.
  */
-const THEME_COOKIE_NAME = 'theme';
+export const THEME_COOKIE_NAME = 'theme';
 
 /**
  * STOMP WebSocket subprotocols, best to worst (AD-23 D4). Reference clients and

@@ -819,6 +819,12 @@ Re-exports [SwaggerUIController](../swagger-ui-controller/classes/SwaggerUIContr
 
 ***
 
+### THEME\_COOKIE\_NAME
+
+Re-exports [THEME_COOKIE_NAME](../node-http-server-adapter/variables/THEME_COOKIE_NAME.md)
+
+***
+
 ### TLSServerOptions
 
 Re-exports [TLSServerOptions](../http-server/interfaces/TLSServerOptions.md)

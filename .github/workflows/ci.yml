@@ -199,6 +199,8 @@ jobs:
 
       - name: Manifest conformance
         run: pnpm manifest:check
+      - name: Dead-code check (knip)
+        run: pnpm audit:dead
 
       - name: Agent config integrity
         # Generated agents (.opencode/agents, .omp/agents) and the shared

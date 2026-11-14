@@ -145,7 +145,5 @@ class ReportController {
 
 ## See also
 
-- [scheduling decision](../../docs/decisions/2026-09-13_AD20_SCHEDULING.md)
-- [Implementation plan](../../docs/plans/2026-09-13_SCHEDULING.md)
 - [ndigo-api demo](../../apps/05-ndigo-api/README.md) — the heartbeat task
 - [`@ndigo/scheduler`](../../packages/ndigo-scheduler/README.md) — package surface

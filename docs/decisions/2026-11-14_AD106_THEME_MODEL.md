@@ -26,8 +26,9 @@ and the second is not wired to anything.
 
 - `packages/ndigo-content/src/theme.ts:35` — `ThemeResolver` is
   `getTheme(name?): Theme`: a **registry**, Spring's `ThemeSource`.
-- `packages/ndigo-content/src/theme.ts:25` — `ThemeSource` is declared and
-  referenced by nothing. The name is free and already means the right thing.
+- `packages/ndigo-content/src/theme.ts:25` — `ThemeSource` is declared as
+  `{ theme: Theme }` and referenced by nothing. The name is free; no consumer
+  depends on the stub shape.
 - `packages/ndigo-content/src/composite.ts:55` — `CompositeThemeResolver`
   composes registries (priority order), confirming the registry semantics.
 - `packages/ndigo-dispatcher/src/theme-resolver.ts:45` — the real
@@ -76,11 +77,12 @@ question, and the names are used nowhere else:
 **D-2 — Rename the registry.** `@ndigo/content`'s `ThemeResolver` becomes
 `ThemeSource`; `StaticThemeResolver` and `CompositeThemeResolver` become
 `StaticThemeSource` and `CompositeThemeSource`; `likeThemeResolver` becomes
-`likeThemeSource`. The declared-but-unused `ThemeSource` becomes the real
-contract. `@ndigo/context`'s `ApplicationContext.setThemeResolver` becomes
-`setThemeSource` and `getTheme(name?)` is unchanged. Deprecated aliases keep
-the old names for one minor release; the `0.0.x` line makes the rename cheap
-now and expensive later.
+`likeThemeSource`. The declared-but-unused `ThemeSource` stub (`{ theme }`)
+is replaced by the registry shape. `@ndigo/context`'s
+`ApplicationContext.setThemeResolver` becomes `setThemeSource` and
+`getTheme(name?)` is unchanged. Deprecated aliases keep the old names for one
+minor release; the `0.0.x` line makes the rename cheap now and expensive
+later.
 
 **D-3 — Narrow the resolver.** `@ndigo/dispatcher`'s
 `ThemeResolver.resolveTheme(route)` becomes `resolveThemeName(route): string`,

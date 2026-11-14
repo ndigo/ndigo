@@ -54,6 +54,7 @@ export class WebSocketClientInstrumentation extends AbstractBaseInstrumentation 
         const counter = createLazyCounter();
 
         this._wrap(WebSocketClient.prototype, 'send', (original) => {
+            // NOTE: type assertion required at this boundary.
             const send = original as unknown as (this: unknown, data: unknown) => unknown;
             return function (this: unknown, data: unknown): void {
                 send.apply(this, [data]);

@@ -155,6 +155,7 @@ export class MockWebClient {
             data: {},
             params: null,
             attributes: {},
+            // NOTE: bridging to Route — the source type is wider than this consumer's contract.
         } as unknown as Route;
 
         await this.#app.viewTarget.clear();

@@ -70,6 +70,7 @@ export function resolveHTTPRequestLimits(limits?: HTTPRequestLimits): ResolvedHT
                 `HTTPRequestLimits.${key} must be a positive finite number, received ${String(value)}`
             );
         }
+        // NOTE: bridging to Record<string — the source type is wider than this consumer's contract.
         (resolved as unknown as Record<string, number>)[key] = value;
     }
     return resolved;

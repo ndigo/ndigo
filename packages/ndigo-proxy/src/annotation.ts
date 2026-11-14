@@ -79,6 +79,7 @@ export function methodAnnotation<T = unknown>(name: string): AnnotationKey<T> {
     return Object.defineProperties(apply, {
         key: { value: key, enumerable: true },
         name: { value: name, enumerable: true },
+        // NOTE: bridging to AnnotationKey<T> — the source type is wider than this consumer's contract.
     }) as unknown as AnnotationKey<T>;
 }
 

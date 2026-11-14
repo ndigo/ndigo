@@ -139,6 +139,7 @@ function getHeaderValue(headers: HeadersInit | HeaderRecord, name: string): stri
     if (isHeaders(headers)) {
         return (headers as Headers).get(name);
     } else if (isEntries(headers)) {
+        // NOTE: bridging to HeaderEntries — the source type is wider than this consumer's contract.
         return getPair(headers as unknown as HeaderEntries, name);
     } else if (isRecord(headers)) {
         const record = headers;
@@ -171,6 +172,7 @@ function setHeader(headers: HeadersInit | HeaderRecord, name: string, value: unk
     if (isHeaders(headers)) {
         (headers as Headers).set(name, stringValue);
     } else if (isEntries(headers)) {
+        // NOTE: bridging to HeaderEntries — the source type is wider than this consumer's contract.
         setPair(headers as unknown as HeaderEntries, name, stringValue);
     } else if (isRecord(headers)) {
         const record = headers;

@@ -251,6 +251,7 @@ export class StaticResourceHandler {
      * @returns A promise that resolves once the response is written.
      */
     async handle(route: Route, requestPath: string): Promise<void> {
+        // NOTE: bridging to ServerResponse | undefined — the source type is wider than this consumer's contract.
         const res = route.attributes?.[NODE_RESPONSE_ATTRIBUTE] as unknown as ServerResponse | undefined;
         if (!res || res.headersSent) {
             return;

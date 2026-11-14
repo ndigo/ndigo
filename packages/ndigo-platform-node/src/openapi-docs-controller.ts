@@ -58,6 +58,7 @@ export class OpenAPIDocsController extends AsApplicationContextAware(Null) {
      */
     @parameters({ route: routeValue() })
     async spec(route: Route): Promise<void> {
+        // NOTE: bridging to ServerResponse | undefined — the source type is wider than this consumer's contract.
         const res = route.attributes?.[NODE_RESPONSE_ATTRIBUTE] as unknown as ServerResponse | undefined;
         if (!res || res.headersSent) return;
         if (this.#cached === null) {

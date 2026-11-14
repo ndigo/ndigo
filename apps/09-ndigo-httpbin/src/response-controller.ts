@@ -158,6 +158,7 @@ export class ResponseController {
     @getMapping('/response-headers')
     @parameters({ query: queryValue() })
     responseHeaders(query: QueryBag) {
+        // NOTE: bridging to Record<string — the source type is wider than this consumer's contract.
         const headers = { ...query } as unknown as Record<string, string>;
         return new ResponseEntity(headers, ResponseStatuses.OK, headers);
     }

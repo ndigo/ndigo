@@ -21,17 +21,21 @@ interface GlobImportMeta {
     glob(pattern: string, options: { eager: true }): Record<string, unknown>;
 }
 
+// NOTE: bridging to GlobImportMeta — the source type is wider than this consumer's contract.
 (import.meta as unknown as GlobImportMeta).glob('../../../packages/ndigo-ui/registry/ui/**/*.css', {
     eager: true,
 });
+// NOTE: bridging to GlobImportMeta — the source type is wider than this consumer's contract.
 (import.meta as unknown as GlobImportMeta).glob('../../../packages/ndigo-ui/registry/blocks/**/*.css', {
     eager: true,
 });
 
 const ELEMENTS = {
+    // NOTE: bridging to GlobImportMeta — the source type is wider than this consumer's contract.
     ...(import.meta as unknown as GlobImportMeta).glob('../../../packages/ndigo-ui/registry/ui/**/*.ts', {
         eager: true,
     }),
+    // NOTE: bridging to GlobImportMeta — the source type is wider than this consumer's contract.
     ...(import.meta as unknown as GlobImportMeta).glob('../../../packages/ndigo-ui/registry/blocks/**/*.ts', {
         eager: true,
     }),

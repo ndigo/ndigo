@@ -27,8 +27,10 @@ export function extractAuthMetadata(handler: object | undefined): AuthRouteMetad
     const metadata: Record<string, unknown> =
         (handler?.constructor as { [Symbol.metadata]?: Record<string, unknown> } | undefined)?.[Symbol.metadata] ?? {};
     const methodName: string | null =
+        // NOTE: bridging to Record<string — the source type is wider than this consumer's contract.
         typeof (handler as unknown as Record<string, unknown>)?.method === 'string'
-            ? ((handler as unknown as Record<string, unknown>).method as string)
+            ? // NOTE: bridging to Record<string — the source type is wider than this consumer's contract.
+              ((handler as unknown as Record<string, unknown>).method as string)
             : null;
 
     const classRequiresAuth = Boolean(metadata[AUTH_REQUIRED_KEY]);

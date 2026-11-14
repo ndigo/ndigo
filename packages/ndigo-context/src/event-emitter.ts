@@ -577,6 +577,7 @@ export const asEventEmitter = <TTarget extends object>(target: TTarget): TTarget
         return target as TTarget & EventEmitter;
     }
 
+    // NOTE: bridging to EventEmitterTarget — the source type is wider than this consumer's contract.
     const t = target as unknown as EventEmitterTarget;
     const emitter = new Emitter();
 

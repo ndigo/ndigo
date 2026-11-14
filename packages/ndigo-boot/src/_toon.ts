@@ -54,6 +54,7 @@ export const loadToonDecoder = async (): Promise<(content: string) => JSONObject
                 `Reinstall it (e.g. \`npm i @toon-format/toon@${TOON_PEER_VERSION}\`).`
         );
     }
+    // NOTE: type assertion required at this boundary.
     return peer.decode as unknown as (content: string) => JSONObject;
 };
 

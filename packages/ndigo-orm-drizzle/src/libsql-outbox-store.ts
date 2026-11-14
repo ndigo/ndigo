@@ -173,6 +173,7 @@ export class LibSQLOutboxStore implements OutboxStore {
                   RETURNING id, type, payload, occurred_at`,
             args: [now + leaseMs, now, limit],
         });
+        // NOTE: bridging to Row — the source type is wider than this consumer's contract.
         return result.rows.map((row) => decodeRow(row as unknown as Row));
     }
 

@@ -99,5 +99,14 @@ test-results/
 /API.md
 /packages/*/api/
 
+# AI agent deployment: generated locally via `pnpm agents:sync` from the neutral
+# store (development-agents/, outside this repo) plus agent-local/. Not committed.
+/.agents/
+/.omp/
+/.opencode/
+/agent-local/
+/.agent-gen.json
+/.agent-local.json
+
 # opencode plugin dependencies (installed on demand by opencode)
 .opencode/node_modules/

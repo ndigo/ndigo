@@ -515,21 +515,21 @@ published in the public repository.
 
 ## 7. Agent Configuration
 
-This repository's AI-agent definitions are **generated, not hand-edited**:
+This repository's AI-agent definitions are **generated, not hand-edited**, and
+are **kept locally** — the generated trees (`.agents/`, `.omp/`, `.opencode/`,
+`agent-local/`, and their manifests) are not committed.
 
 - **Source of truth:** the neutral store in `development-agents/` (agents,
-  skills, per-harness shims) plus this repo's `agent-local/` (repo-specific
-  overrides, e.g. the `graft` skill).
-- **Regenerate:** `pnpm agents:sync` (runs `gen.mjs`; agents into
+  skills, per-harness shims), which lives outside this repository, plus this
+  repo's `agent-local/` (repo-specific overrides, e.g. the `graft` skill).
+- **Regenerate locally:** `pnpm agents:sync` (runs `gen.mjs`; agents into
   `.opencode/` + `.omp/`, skills once into the harness-neutral `.agents/skills/`,
-  plus `.agent-gen.json`)
-- **Validate:** `pnpm agents:check` — committed files vs. the sha256
-  manifest + structural invariants (CI-gated)
-- Edit `development-agents/` or `agent-local/` and regenerate — never edit
-  generated files under `.opencode/agents`, `.omp/agents`, `.agents/skills`.
-  Skills are deployed once to `.agents/skills` because both harnesses read
-  that tree natively; a second copy under a harness directory would shadow it
-  at a different precedence.
+  plus `.agent-gen.json`). Run after cloning and after editing the store or
+  `agent-local/`.
+- **Validate locally:** `pnpm agents:check` — committed-vs-generated drift
+  check is a local concern now that the trees are not tracked.
+- Never hand-edit generated files under `.opencode/agents`, `.omp/agents`,
+  `.agents/skills`.
 - Models: not part of the deployment — agents inherit the session model
   (OpenCode `model`, OMP `modelRoles`, configured outside the store).
 
@@ -592,9 +592,10 @@ The tracked `.githooks/pre-commit` guard enforces the checkout rule once
 **Never**
 
 - Never push directly to `main`, never force-push.
-- Never hand-merge generated files — after a rebase, regenerate:
+- Never hand-merge generated files — after a rebase, regenerate locally:
   `pnpm agents:sync` (agent trees + `.agent-gen.json`), `pnpm doc:api`
-  (API reference), `pnpm install` (lockfile); commit the regenerated output.
+  (API reference), `pnpm install` (lockfile). The agent trees and generated
+  API reference are not committed.
 
 **Single-lane files** — at most one in-flight issue touches these (note it
 when grooming): `pnpm-lock.yaml`, Drizzle migrations (`db:schema:check`

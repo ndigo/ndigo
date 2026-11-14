@@ -271,7 +271,7 @@ dispatch on either platform.
 
 ## 7. Putting it together
 
-`[apps/02-ndigo-hello-node/src/index.ts](https://github.com/ndigo/ndigo/blob/main/apps/02-ndigo-hello-node/src/index.ts) is the minimal complete app — the
+[apps/02-ndigo-hello-node/src/index.ts](https://github.com/ndigo/ndigo/blob/main/apps/02-ndigo-hello-node/src/index.ts) is the minimal complete app — the
 snippet below is that file:
 
 ```ts

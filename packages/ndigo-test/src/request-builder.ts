@@ -186,6 +186,7 @@ export function buildRoute(request: MockRequest, responseSink: ResponseSink): Pr
             [NODE_RESPONSE_ATTRIBUTE]: responseSink,
             [ACCEPT_LANGUAGE_ATTRIBUTE]: HTTPHeaders.ACCEPT_LANGUAGE.get(headers) ?? undefined,
         },
+        // NOTE: bridging to Route — the source type is wider than this consumer's contract.
     } as unknown as Route;
 
     // Per-segment matrix data so matrix-param conditions can match.

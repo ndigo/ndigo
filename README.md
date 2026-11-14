@@ -168,6 +168,7 @@ demo.
 | [ndigo-hn](apps/19-ndigo-hn/README.md)                           | Hacker News reader — cached/offline HTTP client, long lists         |
 | [ndigo-ui-lab](apps/20-ndigo-ui-lab/README.md)                   | Owned design system — full 42-item registry, tokens, and blocks     |
 | [ndigo-agent-lab](apps/21-ndigo-agent-lab/README.md)             | Local-model tool loop — MCP tools, MCP App, A2UI, SSE + GenAI trace |
+| [ndigo-ui-storybook](apps/22-ndigo-ui-storybook/README.md)       | Storybook — owned design system catalog (42-item registry)          |
 
 The [apps/README](apps/README.md) documents the progression from simple to
 complex. App directories are numbered in reading order (`apps/01-ndigo-hello` …);

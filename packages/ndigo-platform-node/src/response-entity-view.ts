@@ -23,7 +23,8 @@ export class ResponseEntityView implements ProducerView {
         // AD-10: every 4xx/5xx response is a problem+json document.
         if (entity.status.code >= 400) {
             const details = isProblemDetails(entity.body)
-                ? (entity.body as unknown as ProblemDetails)
+                ? // NOTE: bridging to ProblemDetails — the source type is wider than this consumer's contract.
+                  (entity.body as unknown as ProblemDetails)
                 : toProblemDetails(entity.body, entity.status.code, entity.status.text, route.path);
             return {
                 status: entity.status.code,

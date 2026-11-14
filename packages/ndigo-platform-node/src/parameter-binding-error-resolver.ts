@@ -35,6 +35,7 @@ export class NodeParameterBindingErrorResolver extends AbstractRouteErrorResolve
                 instance,
                 errors: cause.issues,
             });
+            // NOTE: bridging to ModelAndView — the source type is wider than this consumer's contract.
             return entity as unknown as ModelAndView;
         }
         const badRequest = problemEntity(ResponseStatuses.BAD_REQUEST, {
@@ -44,6 +45,7 @@ export class NodeParameterBindingErrorResolver extends AbstractRouteErrorResolve
             detail: error.message,
             instance,
         });
+        // NOTE: bridging to ModelAndView — the source type is wider than this consumer's contract.
         return badRequest as unknown as ModelAndView;
     }
 }

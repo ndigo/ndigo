@@ -8,7 +8,7 @@
 
 > **toPascal**(`value`): `string`
 
-Returns the pascal case version of a string.
+Returns the PascalCase version of a string.
 
 ## Parameters
 

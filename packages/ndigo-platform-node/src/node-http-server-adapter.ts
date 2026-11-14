@@ -507,6 +507,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
             // 2026-10-09) — but is typed as `tls.Server`, which `@types/ws`
             // does not accept, hence the cast.
             const websocket = new WebSocketServer({
+                // NOTE: bridging to Server — the source type is wider than this consumer's contract.
                 server: server as unknown as Server,
                 maxPayload: this.#socketLimits.maxPayloadBytes,
                 // STOMP subprotocol negotiation (AD-23 D4): a stomp-mapped
@@ -1000,6 +1001,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
         // from an empty ledger (pending close events are no-ops).
         this.#openConnections.clear();
         if (wss) {
+            // NOTE: type assertion required at this boundary.
             const clients = wss.clients as unknown as Set<{ close(code: number, reason: string): void }> | undefined;
             clients?.forEach((client) => client.close(1001, 'server shutting down'));
         }

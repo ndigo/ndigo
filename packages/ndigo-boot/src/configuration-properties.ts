@@ -436,12 +436,16 @@ type ConversionTarget =
 function converterFor(target: string): ConversionTarget {
     switch (target) {
         case 'number':
+            // NOTE: bridging to ConversionTarget — the source type is wider than this consumer's contract.
             return Number as unknown as ConversionTarget;
         case 'boolean':
+            // NOTE: bridging to ConversionTarget — the source type is wider than this consumer's contract.
             return Boolean as unknown as ConversionTarget;
         case 'date':
+            // NOTE: bridging to ConversionTarget — the source type is wider than this consumer's contract.
             return Date as unknown as ConversionTarget;
         default:
+            // NOTE: bridging to ConversionTarget — the source type is wider than this consumer's contract.
             return String as unknown as ConversionTarget;
     }
 }

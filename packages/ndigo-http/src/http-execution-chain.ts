@@ -279,7 +279,8 @@ export class HTTPExecutionChain {
                         const result = await interceptor.preRequest(
                             currentRequest instanceof Request
                                 ? currentRequest
-                                : new Request(currentRequest as unknown as RequestInfo),
+                                : // NOTE: bridging to RequestInfo — the source type is wider than this consumer's contract.
+                                  new Request(currentRequest as unknown as RequestInfo),
                             http,
                             settings
                         );

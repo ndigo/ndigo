@@ -158,6 +158,7 @@ export class SwaggerUIController {
      * @param route - The current route (carries the Node response).
      */
     #writeDistFailure(route: Route): void {
+        // NOTE: bridging to ServerResponse | undefined — the source type is wider than this consumer's contract.
         const res = route.attributes?.[NODE_RESPONSE_ATTRIBUTE] as unknown as ServerResponse | undefined;
         if (!res || res.headersSent) return;
         writeProblem(res, {
@@ -182,6 +183,7 @@ export class SwaggerUIController {
             this.#writeDistFailure(route);
             return;
         }
+        // NOTE: bridging to ServerResponse | undefined — the source type is wider than this consumer's contract.
         const res = route.attributes?.[NODE_RESPONSE_ATTRIBUTE] as unknown as ServerResponse | undefined;
         if (!res || res.headersSent) return;
         res.writeHead(200, {
@@ -203,6 +205,7 @@ export class SwaggerUIController {
     async asset(file: string | undefined, route: Route): Promise<void> {
         const name = file ?? '';
         if (!ASSET_NAMES.includes(name)) {
+            // NOTE: bridging to ServerResponse | undefined — the source type is wider than this consumer's contract.
             const res = route.attributes?.[NODE_RESPONSE_ATTRIBUTE] as unknown as ServerResponse | undefined;
             if (res && !res.headersSent) {
                 res.writeHead(404, { [HTTPHeaders.CONTENT_TYPE.name]: 'text/plain; charset=utf-8' });

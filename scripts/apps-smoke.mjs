@@ -97,6 +97,12 @@ const LOG_TAIL = 8_000;
  */
 
 /** @type {AppProbe[]} */
+/**
+ * Browser (Vite) apps and the Storybook app are intentionally NOT listed here:
+ * they are covered by their own `pnpm test` / `test:storybook`, which builds the
+ * bundle and runs the bundle spec. Only Node (`tsx`) apps are booted and probed.
+ * Excluded: 01, 03, 06, 08, 10, 19, 20 (browser/Vite), 22 (Storybook).
+ */
 const APPS = [
     {
         dir: '02-ndigo-hello-node',

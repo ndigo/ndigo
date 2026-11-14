@@ -21,7 +21,6 @@ Fetch-based HTTP client for Ndigo — interceptor system, body transforms, and a
 - [http-types](http-types/README.md)
 - [index](index/README.md)
 - [interceptors](interceptors/README.md)
-- [interceptors](interceptors/README-1.md)
 - [interceptors/app-reset-interceptor](interceptors/app-reset-interceptor/README.md)
 - [interceptors/cache-interceptor](interceptors/cache-interceptor/README.md)
 - [interceptors/content-type-interceptor](interceptors/content-type-interceptor/README.md)

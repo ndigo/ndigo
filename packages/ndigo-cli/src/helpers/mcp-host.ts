@@ -81,6 +81,7 @@ export function createMcpHost(options: McpHostOptions): McpHost {
         // while `Shape` is generic (TS erases it to the constraint), so the
         // handler's precise parameter type is asserted at the SDK boundary.
         const handler = (async (args: ToolArguments<Shape>) =>
+            // NOTE: bridging to ToolCallback<Shape> — the source type is wider than this consumer's contract.
             runTool(() => tool.run(args))) as unknown as ToolCallback<Shape>;
         server.registerTool<ToolSchema, Shape>(
             tool.name,

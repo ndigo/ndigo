@@ -203,6 +203,7 @@ export class InMemoryEntityManager implements EntityManager {
             );
         }
 
+        // NOTE: bridging to Constructable<object> — the source type is wider than this consumer's contract.
         const targetClass = relation.targetEntity() as unknown as Constructable<object>;
         const targetMetadata = getEntityMetadata(this.#assertEntityClass(targetClass));
         const record = entity as Record<string, unknown>;

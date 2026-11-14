@@ -232,15 +232,6 @@ export function setCommandIndex(index: CommandIndex): void {
 }
 
 /**
- * Returns the recorded index, when `buildCliApp` has run.
- *
- * @returns The index, or `undefined` outside a built application.
- */
-export function getCommandIndex(): CommandIndex | undefined {
-    return current;
-}
-
-/**
  * Returns the recorded index, failing when no application has been built.
  *
  * @returns The recorded index.

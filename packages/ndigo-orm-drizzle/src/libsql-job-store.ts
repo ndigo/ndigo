@@ -180,6 +180,7 @@ export class LibSQLJobStore implements JobDriver {
                   RETURNING ${RETURNING_COLUMNS}`,
             args: [now + options.leaseMs, now, now, options.limit],
         });
+        // NOTE: bridging to Row — the source type is wider than this consumer's contract.
         return result.rows.map((row) => decodeRow(row as unknown as Row));
     }
 

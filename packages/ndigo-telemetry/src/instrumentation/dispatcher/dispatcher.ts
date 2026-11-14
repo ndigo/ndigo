@@ -102,6 +102,7 @@ export class DispatcherInstrumentation extends AbstractBaseInstrumentation {
      * Restores the original dispatcher methods.
      */
     disable(): void {
+        // NOTE: bridging to DispatcherPatchTarget — the source type is wider than this consumer's contract.
         const target = AbstractDispatcher.prototype as unknown as DispatcherPatchTarget;
         this._unwrap(target, 'dispatch');
         this._unwrap(target, '_resolveViewName');

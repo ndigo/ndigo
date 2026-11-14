@@ -68,7 +68,7 @@ return new ModelAndView('report', { rows });
 ```
 
 A `ResponseEntity` adds an explicit status and headers; the platform rewrites a
-`>= 400` entity into problem+json (guide 08).
+`>= 400` entity into problem+json (Guide 08).
 
 ## 3. The serializing views
 
@@ -188,9 +188,9 @@ Component's `customElements.define` remains the module's own side effect.
 The view **technology** is separate from the resolver:
 
 - `@ndigo/view-ejs` — server-side EJS templates; `t` and formatters come from
-  `@ndigo/content`, and the locale rides on the route (guide 17).
+  `@ndigo/content`, and the locale rides on the route (Guide 17).
 - `@ndigo/view-webcomponent` — server-rendered Web Components; the browser
-  hydrates them with `@ndigo/signals` (guide 29).
+  hydrates them with `@ndigo/signals` (Guide 29).
 - `@ndigo/view-toon` — the `text/toon` representation and prompt encoder
   ; opt-in per route, never a default.
 - `IslandView` — server-rendered markup plus a serialized model, hydrated on
@@ -360,7 +360,7 @@ not bake theme names into a view; take them from the resolver.
 - **Do not register components in a resolver.** `customElements.define` belongs
   to the component module.
 - **A 4xx `ResponseEntity` is rewritten to problem+json.** For a custom error
-  envelope, use a `ProducerView` (guide 08).
+  envelope, use a `ProducerView` (Guide 08).
 - **A targeter changes the destination, not the representation.** If a route
   renders the wrong format, fix the resolver chain, not the targeter.
 - **A redirecting chain leaves the default target empty.** That is correct — the

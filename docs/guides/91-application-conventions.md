@@ -6,7 +6,7 @@ file's role obvious before it is opened. They apply to new apps and to files
 touched while changing an existing app; the [migration backlog](#migration-backlog)
 lists the older shapes that are deliberately left for follow-up work.
 
-**Audience:** Framework contributors · **Prerequisites:** Workspace bootstrapped; [guide 37](37-ndigo-cli.md) · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)
+**Audience:** Framework contributors · **Prerequisites:** Workspace bootstrapped; [Guide 37](37-ndigo-cli.md) · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)
 
 ## What you'll learn
 
@@ -187,6 +187,6 @@ repo-wide rename. When a row is complete, delete it from this table.
 
 - [apps/README.md](../../apps/README.md) — the numbered ladder, ports, and per-app index
 - [STYLE_GUIDE.md](../../STYLE_GUIDE.md) — file, symbol, and role-suffix rules in the framework packages
-- [guide 37 — The `ndigo` CLI](37-ndigo-cli.md) — `ndigo new` allocates the next app number and port
+- [Guide 37 — The `ndigo` CLI](37-ndigo-cli.md) — `ndigo new` allocates the next app number and port
 
 [Back to guides](./README.md)

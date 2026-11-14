@@ -9,7 +9,7 @@ This guide covers the path grammar, the mapping decorators, the condition
 builders, precedence and 404/405 behavior, and the router primitives used by
 browser shells.
 
-**Audience:** Node and browser application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) (Node) or [guide 02](02-building-a-browser-app.md) (browser) · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api), [apps/09-ndigo-httpbin](https://github.com/ndigo/ndigo/tree/main/apps/09-ndigo-httpbin)
+**Audience:** Node and browser application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) (Node) or [Guide 02](02-building-a-browser-app.md) (browser) · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api), [apps/09-ndigo-httpbin](https://github.com/ndigo/ndigo/tree/main/apps/09-ndigo-httpbin)
 
 ## What you'll learn
 
@@ -53,7 +53,7 @@ normalized (`/foo` and `/foo/` share one radix node), so choose one spelling for
 your own links and expect both to resolve.
 
 Query and matrix data are parsed into `route.data`; use `queryValue` /
-`matrixValue` (guide 06) rather than reading it by hand in a handler.
+`matrixValue` (Guide 06) rather than reading it by hand in a handler.
 
 ## 3. Mapping decorators
 
@@ -175,9 +175,9 @@ registry.registerFeature({
 registry.navigate('/todo/active'); // activates 'todo', routes '/active'
 ```
 
-Use `FeatureRoutingRegistry` with `@ndigo/host` (guide 31) when features are
+Use `FeatureRoutingRegistry` with `@ndigo/host` (Guide 31) when features are
 separate contexts. A plain browser app usually needs only the web preset's
-router (guide 02).
+router (Guide 02).
 
 ## 7. Pitfalls
 
@@ -190,7 +190,7 @@ router (guide 02).
 - **Trailing-slash spelling is normalized.** Do not register both spellings
   expecting different handlers.
 - **Access `private` is routing metadata, not authentication.** Role checks
-  live in `@ndigo/auth-server` (guide 26).
+  live in `@ndigo/auth-server` (Guide 26).
 
 ## See also
 

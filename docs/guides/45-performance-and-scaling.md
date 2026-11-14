@@ -61,7 +61,7 @@ The dispatcher is intentionally thin:
   (auth, rate limit) before logging/transformation; do not do I/O in
   `preHandle` that the handler will repeat.
 - **Serialization** is `JSON.stringify` for plain returns. Large object graphs
-  cost proportionally; project to a DTO (guide 13) instead of returning
+  cost proportionally; project to a DTO (Guide 13) instead of returning
   persistence shapes.
 - **No synchronous I/O in a handler.** Filesystem reads, crypto, and database
   calls belong in async APIs; a blocking call stalls the whole event loop for
@@ -100,7 +100,7 @@ SPA.
 ## 4. Network and static assets
 
 - **Compression** — serve precompressed `.br`/`.gz` twins; the static handler
-  negotiates them and sends `Vary: Accept-Encoding` (guide 10).
+  negotiates them and sends `Vary: Accept-Encoding` (Guide 10).
 - **Caching** — hashed assets get a long `Cache-Control`; HTML gets a short or
   no-cache policy. ETag/conditional GET avoids re-sending unchanged files.
 - **Ranges** — large media benefits from single-range support; do not disable
@@ -110,7 +110,7 @@ SPA.
 - **CDN** — put static assets behind a CDN when the app is multi-region; the
   framework's ETag/Range semantics survive a caching proxy.
 - **SSE/streaming** — disable proxy buffering for `text/event-stream`; a
-  buffered stream looks like a slow response (guide 16).
+  buffered stream looks like a slow response (Guide 16).
 - **Keep-alive** — reuse connections between services; creating a client per
   request pays TLS and handshake every time.
 
@@ -119,13 +119,13 @@ SPA.
 Use the cheapest layer that can answer correctly:
 
 1. **In-process memory** — `@cached`/`memoize` for pure or TTL-safe results
-   (guide 19). Beware unbounded keys; use the bounded store.
+   (Guide 19). Beware unbounded keys; use the bounded store.
 2. **Shared Redis** — the same contracts when multiple slots/nodes must agree
-   (guide 21). Redis adds a network hop; it is not free.
+   (Guide 21). Redis adds a network hop; it is not free.
 3. **Database** — indexes, pagination, and projections. Fetch only the columns
    a response needs; avoid N+1 queries (batch/join where the repository
    supports it).
-4. **Outbox/jobs** — move slow side effects off the request path (guide 22).
+4. **Outbox/jobs** — move slow side effects off the request path (Guide 22).
 
 Invalidation is the hard part:
 
@@ -137,7 +137,7 @@ Invalidation is the hard part:
 ## 6. Runtime and scaling
 
 - **Cluster slots** — `ndigo serve --cluster N` uses the cores; each slot is a
-  separate process with its own memory and in-process state (guide 25).
+  separate process with its own memory and in-process state (Guide 25).
 - **Shared state** — caches, rate-limit counters, locks, jobs, and WebSocket
   fan-out need the shared drivers when slots/nodes must agree (guides [16](16-typed-service-clients-and-sse.md)/[21](21-persistence-and-shared-stores.md)/[24](24-distributed-locks.md)/[28](28-security-hardening.md)).
 - **Connection pools** — one owned pool per process, not per request; borrowed
@@ -146,7 +146,7 @@ Invalidation is the hard part:
   RSS, not just heap. A crash-loop after OOM is a sizing bug.
 - **Telemetry** — sampling, exporter batching, and metric cardinality matter.
   A per-request span with a high-cardinality attribute (user id, URL with ids)
-  inflates every backend; use route patterns, not raw paths (guide 32).
+  inflates every backend; use route patterns, not raw paths (Guide 32).
 - **Logging** — debug logs in a hot loop are a synchronous cost; use levels and
   structured fields, not string concatenation per request.
 

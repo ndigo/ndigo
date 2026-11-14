@@ -11,7 +11,7 @@ piece (client-side **HTTP** caching) — see the `ndigo-views` client demo and
 the `@ndigo/http` package README; they are separate machinery with
 response-specific semantics.
 
-**Audience:** Node and browser application developers · **Prerequisites:** Workspace bootstrapped; [guide 21](21-persistence-and-shared-stores.md) for shared Redis · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api), [apps/08-ndigo-views](https://github.com/ndigo/ndigo/tree/main/apps/08-ndigo-views)
+**Audience:** Node and browser application developers · **Prerequisites:** Workspace bootstrapped; [Guide 21](21-persistence-and-shared-stores.md) for shared Redis · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api), [apps/08-ndigo-views](https://github.com/ndigo/ndigo/tree/main/apps/08-ndigo-views)
 
 ## What you'll learn
 

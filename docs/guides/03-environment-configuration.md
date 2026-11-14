@@ -10,7 +10,7 @@ The environment is a pipeline: **sources** provide raw values →
 (`@environment` zod schemas). It is the reference framework's environment model, ported to
 JavaScript-native structures with fail-loud semantics throughout.
 
-**Audience:** Node and browser application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) (Node) or [guide 02](02-building-a-browser-app.md) (browser) · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)
+**Audience:** Node and browser application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) (Node) or [Guide 02](02-building-a-browser-app.md) (browser) · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)
 
 ## What you'll learn
 
@@ -18,7 +18,7 @@ JavaScript-native structures with fail-loud semantics throughout.
 - Bind external values to typed `@configurationProperties` classes.
 - Resolve placeholders and validate the environment at boot.
 - Extend the environment with custom sources and customizers.
-- Continue with [guide 43](43-live-configuration-and-secrets.md) for refresh, secrets, and remote config.
+- Continue with [Guide 43](43-live-configuration-and-secrets.md) for refresh, secrets, and remote config.
 
 ## The pipeline
 
@@ -358,7 +358,7 @@ rebind (next section).
 ## 7. Live configuration, secrets, and remote config
 
 Live rebinding, at-rest `{cipher:...}` secrets, and the remote config server are
-covered in [guide 43](43-live-configuration-and-secrets.md). Everything above is
+covered in [Guide 43](43-live-configuration-and-secrets.md). Everything above is
 the boot-time source/binding pipeline; everything in 43 is the running-app
 surface.
 

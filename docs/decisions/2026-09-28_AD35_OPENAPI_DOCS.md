@@ -1,11 +1,11 @@
 # AD-35: OpenAPI / API documentation
 
 **Date:** 2026-09-28
-**Status:** Ratified — implementation in [`docs/plans/2026-09-28_OPENAPI_AND_MANAGEMENT_HARDENING.md`](../plans/2026-09-28_OPENAPI_AND_MANAGEMENT_HARDENING.md)
+**Status:** Ratified — implementation in `docs/plans/2026-09-28_OPENAPI_AND_MANAGEMENT_HARDENING.md`
 **Supersedes:** the `OpenAPI / API docs` row of the framework gap analysis
-([`docs/audits/2026-09-13_FRAMEWORK_GAP_ANALYSIS.md`](../audits/2026-09-13_FRAMEWORK_GAP_ANALYSIS.md) §2.1 —
+(`docs/audits/2026-09-13_FRAMEWORK_GAP_ANALYSIS.md` §2.1 —
 the last remaining Tier-1 gap) and the "OpenAPI generation — post-1.0" note in
-[`docs/reference/2026-09-01_FEATURE_ASSESSMENT.md`](../reference/2026-09-01_FEATURE_ASSESSMENT.md) §3.4.
+`docs/reference/2026-09-01_FEATURE_ASSESSMENT.md` §3.4.
 
 ## Background
 

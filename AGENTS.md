@@ -342,7 +342,7 @@ When adding new integration layers or encapsulated libraries:
 - ✅ **Correct:** `@routeMapping`, `@injectable`
 - ❌ **Incorrect:** `@RouteMapping`, `@Injectable`
 
-This convention is detailed in **STYLE_GUIDE.md Section 3.8**; the per-category forms (stereotypes, behaviors, conditions, registrations, lifecycle, descriptors, policies) are in **Section 3.17** ([AD-83](docs/decisions/2026-10-31_AD83_DECORATOR_CATEGORIES.md)). Adherence is critical for distinguishing decorators from classes at a glance.
+This convention is detailed in **STYLE_GUIDE.md Section 3.8**; the per-category forms (stereotypes, behaviors, conditions, registrations, lifecycle, descriptors, policies) are in **Section 3.17**. Adherence is critical for distinguishing decorators from classes at a glance.
 
 ### Architecture & File Structure
 
@@ -474,9 +474,10 @@ All project documentation (except root-level guides) should be organized under `
 ```
 docs/
 ├── migrations/     # Breaking changes and upgrade guides
-├── plans/          # Implementation plans for features
-├── reference/      # Technical references and specifications
-└── audits/         # Codebase analysis and compliance reports
+├── decisions/      # Architecture decision records (ADRs)
+├── guides/         # Numbered how-to guides
+├── architecture/   # Living architecture topics
+└── (root guides)   # ARCHITECTURE.md, STYLE_GUIDE.md, etc.
 ```
 
 **Naming Convention:** `YYYY-MM-DD_DESCRIPTION.md`
@@ -503,25 +504,13 @@ Where:
 - Provide upgrade paths
 - Include before/after examples
 
-**Implementation Plans** (`docs/plans/`):
+**Decision Records** (`docs/decisions/`):
 
-- Detail technical specifications
-- Outline implementation steps
-- Include testing strategy
+- Architecture decision records (ADRs); index at `docs/decisions/README.md`
 
-**Audit Reports** (`docs/audits/`):
-
-- Analyze codebase patterns
-- Identify violations or inconsistencies
-- Recommend improvements
-
-**Reference Docs** (`docs/reference/`):
-
-- Document dependency versions
-- Provide configuration references
-- Include comparison tables
-
-**Each directory has a README.md** that indexes all documents in that category.
+**Notes:** Implementation plans (`docs/plans/`), audit reports (`docs/audits/`),
+and technical references (`docs/reference/`) are kept locally only and are not
+published in the public repository.
 
 ## 7. Agent Configuration
 

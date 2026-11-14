@@ -2,7 +2,7 @@
 
 **Date:** 2026-09-24
 **Status:** Accepted — decision recorded; implementation landed (see
-[plan](../plans/2026-09-23_ARGUMENT_BINDING.md)).
+plan).
 
 ## Background
 
@@ -139,7 +139,7 @@ properties (`path`, `method`, `id`, plus `attributes` — the old
   the Zod `convert` hook (AD-07) is the documented validation surface.
 
 **Supersedes:** the stale "Argument binding" row of the
-[Framework Gap Analysis](../audits/2026-09-13_FRAMEWORK_GAP_ANALYSIS.md) §3
+Framework Gap Analysis §3
 and the unfinished Domain 2 of the MVC research plan; the
 2026-03-16 argument-converter reference notes (archival pre-rename API
 descriptions) are retained as dated history only.

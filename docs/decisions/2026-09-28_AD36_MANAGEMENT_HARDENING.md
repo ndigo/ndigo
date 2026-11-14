@@ -1,9 +1,9 @@
 # AD-36: Management endpoint hardening — redaction + bind posture (SEC-5)
 
 **Date:** 2026-09-28
-**Status:** Ratified — implementation in [`docs/plans/2026-09-28_OPENAPI_AND_MANAGEMENT_HARDENING.md`](../plans/2026-09-28_OPENAPI_AND_MANAGEMENT_HARDENING.md)
+**Status:** Ratified — implementation in `docs/plans/2026-09-28_OPENAPI_AND_MANAGEMENT_HARDENING.md`
 **Closes:** the remaining SEC-5 items (bind-address separation + response
-redaction) named in [`docs/audits/2026-09-13_FRAMEWORK_GAP_ANALYSIS.md`](../audits/2026-09-13_FRAMEWORK_GAP_ANALYSIS.md)
+redaction) named in `docs/audits/2026-09-13_FRAMEWORK_GAP_ANALYSIS.md`
 §3/§5 and in the AD-33 wave docs.
 
 ## Background

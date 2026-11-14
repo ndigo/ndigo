@@ -18,9 +18,9 @@ contiguous. Every record captures a decision with its context, the evidence
   the outcome is recorded — no change needed) · _Deferred/Rejected_
   (decided against, with revisit triggers) · _Proposed_ (draft awaiting
   sign-off — recorded so the gated backlog is visible).
-- Decision records are the source of truth for _why_; implementation plans
-  live in [docs/plans](../plans/README.md), how-to in
-  [docs/guides](../guides/README.md).
+- Decision records are the source of truth for _why_; how-to guides in
+  [docs/guides](../guides/README.md). (Implementation plans are kept
+  locally.)
 
 ## Index
 

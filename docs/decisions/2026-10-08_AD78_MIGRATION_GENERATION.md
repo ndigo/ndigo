@@ -2,7 +2,7 @@
 
 **Date:** 2026-10-08
 **Status:** Accepted, executed 2026-10-08 (see the
-[companion plan](../plans/2026-10-08_MIGRATION_GENERATION.md) and
+companion plan and
 [guide 27](../guides/27-orm-and-migrations.md)) — GAP-7 of
 `docs/plans/2026-10-07_CODE_REVIEW_AND_MITIGATION.md` §6, Wave-6 DX track
 **Deciders:** Framework owner

@@ -2,7 +2,7 @@
 
 **Date:** 2026-10-04
 **Status:** Accepted — design and implementation plan:
-[2026-10-04_RETRY_AND_CIRCUIT_BREAKER](../plans/2026-10-04_RETRY_AND_CIRCUIT_BREAKER.md)
+2026-10-04_RETRY_AND_CIRCUIT_BREAKER
 
 ## Context
 

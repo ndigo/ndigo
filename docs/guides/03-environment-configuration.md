@@ -421,5 +421,5 @@ annotated `"x-ndigo-read-from-config": false`; `management.*` is read by
 
 - [Guide 43 — Live Configuration, Secrets & Remote Config](43-live-configuration-and-secrets.md) — refresh, secrets, and the config server
 - [Guide 01 — Building a Node API](01-building-a-node-api.md) for the surrounding bootstrap
-- [Environment API](../reference/2026-09-08_ENVIRONMENT_API.md) for the full surface
+- Environment API for the full surface
 - for the precedence, refresh, secrets, and config-server decisions

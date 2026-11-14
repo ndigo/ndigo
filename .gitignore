@@ -88,5 +88,12 @@ test-results/
 # graft's local graph cache — regenerable, not committed (run `graft build`).
 /graft/
 
+# Internal working docs: kept locally, not published (see docs/README.md).
+/docs/plans/
+/docs/audits/
+/docs/reference/
+/.nx/SELF_HEALING.md
+/.github/copilot-instructions.md
+
 # opencode plugin dependencies (installed on demand by opencode)
 .opencode/node_modules/

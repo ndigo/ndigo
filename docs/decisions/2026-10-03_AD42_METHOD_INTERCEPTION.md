@@ -1,7 +1,7 @@
 # AD-42: Method interception on JavaScript `Proxy` — `@ndigo/proxy`
 
 **Date:** 2026-10-03
-**Status:** Accepted — design and implementation plan: [2026-10-03_METHOD_INTERCEPTION](../plans/2026-10-03_METHOD_INTERCEPTION.md)
+**Status:** Accepted — design and implementation plan: 2026-10-03_METHOD_INTERCEPTION
 
 ## Context
 

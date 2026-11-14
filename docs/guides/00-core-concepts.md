@@ -218,7 +218,7 @@ close() ── stop lifecycles (reverse phase order), destroy entries, close chi
 `refresh` is idempotent while active; `close` is idempotent after
 destruction. Child contexts close depth-first before the parent. [Guide 04](04-dependency-injection-and-lifecycle.md)
 covers the hooks and ordering in detail; the reference doc is
-[Application Context Lifecycle](../reference/2026-08-22_CONTEXT_LIFECYCLE.md).
+Application Context Lifecycle.
 
 ## 8. Where to go next
 

@@ -2,7 +2,7 @@
 
 **Date:** 2026-09-27
 **Status:** Accepted — D-1..D-8 ratified and landed 2026-09-27 (all four
-waves; see [docs/plans/2026-09-27_TYPESCRIPT_NATIVE_LAYER.md](../plans/2026-09-27_TYPESCRIPT_NATIVE_LAYER.md)).
+waves; see docs/plans/2026-09-27_TYPESCRIPT_NATIVE_LAYER.md).
 
 ## Background
 

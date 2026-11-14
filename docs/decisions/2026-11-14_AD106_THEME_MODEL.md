@@ -2,7 +2,7 @@
 
 **Date:** 2026-11-14
 **Status:** Implemented (2026-11-14) — P0–P4 complete
-([plan](../plans/2026-11-14_THEME_MODEL.md)).
+(plan).
 
 **Related:** AD-19 (content resolution), AD-95 (ndigo-ui tokens and themes),
 AD-105 (the resolver/targeter split this record applies to themes).
@@ -237,7 +237,7 @@ per-request child context instead of route attributes.
 
 ## References
 
-- Plan: [`docs/plans/2026-11-14_THEME_MODEL.md`](../plans/2026-11-14_THEME_MODEL.md)
+- Plan: `docs/plans/2026-11-14_THEME_MODEL.md`
 - Content: `packages/ndigo-content/src/theme.ts`,
   `packages/ndigo-content/src/composite.ts`
 - Context: `packages/ndigo-context/src/generic-application-context.ts`,

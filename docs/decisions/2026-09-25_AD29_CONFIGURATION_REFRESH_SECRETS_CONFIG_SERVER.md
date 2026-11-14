@@ -2,7 +2,7 @@
 
 **Date:** 2026-09-25
 **Status:** Accepted — decisions D-1..D-9 ratified; Waves 1–3 landed (see
-[plan](../plans/2026-09-24_CONFIGURATION_COMPLETION.md)), Wave 4 (docs +
+plan), Wave 4 (docs +
 status refresh; this ADR) closes the row.
 
 ## Background

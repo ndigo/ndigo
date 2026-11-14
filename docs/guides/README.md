@@ -8,7 +8,7 @@ The numbering is stable: **00–50** are application guides, **90–91** are
 contributor guides. Numbers are reading order within a section.
 
 > **Renumbered 2026-11-08.** Historical records (ADRs, plans, audits) still use
-> the old numbers. See the [renumbering map](../reference/2026-11-08_GUIDE_RENUMBERING.md);
+> the old numbers. See the renumbering map;
 > old guide paths redirect here.
 
 ## Start here
@@ -217,8 +217,8 @@ contributor guides. Numbers are reading order within a section.
 ## Reference
 
 - [Package → guide coverage](coverage.md) — the documentation home for every package.
-- [Glossary](../reference/GLOSSARY.md) — the vocabulary used across the guides and API.
-- [Renumbering map](../reference/2026-11-08_GUIDE_RENUMBERING.md) — old→new guide numbers.
+- Glossary — the vocabulary used across the guides and API.
+- Renumbering map — old→new guide numbers.
 
 ## Contributing
 

@@ -10,7 +10,7 @@ repository: how to install, validate, change a package, and prepare a release.
 - **Packages are strictly typed**: TypeScript `strict` is enabled in every
   package (see Task 9 remediation). Public API changes must keep declarations
   `any`-free where the contract is public.
-- **Package boundaries are enforced** (see `docs/plans/2026-09-04_REPOSITORY_REMEDIATION.md`):
+- **Package boundaries are enforced**:
     - `@ndigo/boot` is platform-neutral — never import `@ndigo/platform-node` or
       `@ndigo/platform-web` from its runtime source (enforced by
       `packages/ndigo-boot/test/platform-boundary.spec.ts`).
@@ -99,10 +99,11 @@ change a package or app.
 
 ## Plans and decision records
 
-Plans (`docs/plans/`) and ADRs (`docs/decisions/`) are reviewable engineering
-artifacts with the same verification bar as code. Model the structure of the
-recent ADR/plan pairs (e.g. AD-26): `Date`/`Status` header first, then Problem,
-Decisions (D-N), Risks, Sequencing (waves with per-wave gates), Verification.
+Plans (`docs/plans/`, kept locally, not published) and ADRs
+(`docs/decisions/`) are reviewable engineering artifacts with the same
+verification bar as code. Model the structure of the recent ADR/plan pairs
+(e.g. AD-26): `Date`/`Status` header first, then Problem, Decisions (D-N),
+Risks, Sequencing (waves with per-wave gates), Verification.
 Minimum requirements before a plan is ready to build:
 
 - **Every code claim cites an exact span** — `package/path:line` taken from
@@ -121,7 +122,8 @@ Minimum requirements before a plan is ready to build:
   there before any test executes, so a green test run alone is not evidence.
 - **Lifecycle is tracked**: `Proposal` → review (record findings and fixes in
   the doc) → `Accepted` (ADR recorded) → `Implemented` (status header updated,
-  gap-analysis rows refreshed, index entry moved in `docs/plans/README.md`).
+  gap-analysis rows refreshed, index entry moved in `docs/plans/README.md`
+  (local-only).
 - **Links are bidirectional**: companion decision ↔ plan, superseded docs,
   prerequisite docs.
 

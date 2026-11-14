@@ -92,7 +92,7 @@ const api = HTTP.create({
 
 Order matters: a later interceptor can replace the `Request`, so identity-
 sensitive interceptors (retry caching, offline replay) must account for that —
-see the review register in `docs/plans/2026-10-06_COMPREHENSIVE_REVIEW_AND_MITIGATION.md`.
+see the review register in the project issue tracker.
 
 ## 4. Body transforms and parsers
 

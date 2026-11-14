@@ -148,3 +148,110 @@
         color-scheme: light;
     }
 }
+
+/* ---------- Ndigo (explicit aliases) ---------- */
+:root[data-theme='ndigo-dark'],
+:root[data-theme='dark'] {
+    color-scheme: dark;
+}
+
+:root[data-theme='ndigo-light'],
+:root[data-theme='light'] {
+    color-scheme: light;
+}
+
+/* ---------- Solarized dark ---------- */
+:root[data-theme='solarized-dark'] {
+    --nd-color-bg: #002b36;
+    --nd-color-surface: #00212b;
+    --nd-color-surface-raised: #001a22;
+    --nd-color-text: #93a1a1;
+    --nd-color-text-muted: #839496;
+    --nd-color-border: #1a4a5a;
+    --nd-color-code-bg: #002028;
+    --nd-color-accent: #268bd2;
+    --nd-color-accent-strong: #4aa3df;
+    --nd-color-accent-soft: rgb(38 139 210 / 0.18);
+    --nd-color-on-accent: #000000;
+    --nd-color-success: #9fb800;
+    --nd-color-warning: #d4a800;
+    --nd-color-danger: #ff5a57;
+    --nd-color-info: #4aa3df;
+    --nd-palette-indigo-deep: #268bd2;
+    --nd-palette-violet: #2aa198;
+    --nd-palette-violet-bright: #268bd2;
+    --nd-gradient-brand: linear-gradient(135deg, #268bd2 0%, #2aa198 45%, #9fb800 100%);
+    color-scheme: dark;
+}
+
+/* ---------- Solarized light ---------- */
+:root[data-theme='solarized-light'] {
+    --nd-color-bg: #fdf6e3;
+    --nd-color-surface: #eee8d5;
+    --nd-color-surface-raised: #f5efdc;
+    --nd-color-text: #4a5f66;
+    --nd-color-text-muted: #52656d;
+    --nd-color-border: #d3cdb7;
+    --nd-color-code-bg: #f5efdc;
+    --nd-color-accent: #1f6fa8;
+    --nd-color-accent-strong: #1a5f94;
+    --nd-color-accent-soft: rgb(38 139 210 / 0.1);
+    --nd-color-on-accent: #ffffff;
+    --nd-color-success: #4f6100;
+    --nd-color-warning: #7a5900;
+    --nd-color-danger: #b02020;
+    --nd-color-info: #1a5f94;
+    --nd-palette-indigo-deep: #1a5f94;
+    --nd-palette-violet: #1f6fa8;
+    --nd-palette-violet-bright: #268bd2;
+    --nd-gradient-brand: linear-gradient(135deg, #1a5f94 0%, #1f6fa8 45%, #268bd2 100%);
+    color-scheme: light;
+}
+
+/* ---------- High contrast dark ---------- */
+:root[data-theme='high-contrast-dark'] {
+    --nd-color-bg: #000000;
+    --nd-color-surface: #0a0a0a;
+    --nd-color-surface-raised: #1a1a1a;
+    --nd-color-text: #ffffff;
+    --nd-color-text-muted: #c0c0c0;
+    --nd-color-border: #808080;
+    --nd-color-code-bg: #0a0a0a;
+    --nd-color-accent: #60cdff;
+    --nd-color-accent-strong: #60cdff;
+    --nd-color-accent-soft: rgb(96 205 255 / 0.18);
+    --nd-color-on-accent: #000000;
+    --nd-color-success: #6ccb5f;
+    --nd-color-warning: #f9e000;
+    --nd-color-danger: #ff6b6b;
+    --nd-color-info: #60cdff;
+    --nd-palette-indigo-deep: #60cdff;
+    --nd-palette-violet: #60cdff;
+    --nd-palette-violet-bright: #60cdff;
+    --nd-gradient-brand: linear-gradient(135deg, #60cdff 0%, #6ccb5f 45%, #f9e000 100%);
+    color-scheme: dark;
+}
+
+/* ---------- High contrast light ---------- */
+:root[data-theme='high-contrast-light'] {
+    --nd-color-bg: #ffffff;
+    --nd-color-surface: #f3f3f3;
+    --nd-color-surface-raised: #ffffff;
+    --nd-color-text: #000000;
+    --nd-color-text-muted: #333333;
+    --nd-color-border: #808080;
+    --nd-color-code-bg: #f3f3f3;
+    --nd-color-accent: #0067c0;
+    --nd-color-accent-strong: #0067c0;
+    --nd-color-accent-soft: rgb(0 103 192 / 0.1);
+    --nd-color-on-accent: #ffffff;
+    --nd-color-success: #0f7b0f;
+    --nd-color-warning: #7a5900;
+    --nd-color-danger: #c50f1f;
+    --nd-color-info: #0067c0;
+    --nd-palette-indigo-deep: #0067c0;
+    --nd-palette-violet: #0067c0;
+    --nd-palette-violet-bright: #0067c0;
+    --nd-gradient-brand: linear-gradient(135deg, #0067c0 0%, #0f7b0f 45%, #7a5900 100%);
+    color-scheme: light;
+}

@@ -25,6 +25,10 @@ function declarationsIn(selector: string): Map<string, string> {
 const ROOT = declarationsIn(':root');
 const DARK = declarationsIn(":root[data-theme='dark']");
 const LIGHT = declarationsIn(":root[data-theme='light']");
+const SOLARIZED_DARK = declarationsIn(":root[data-theme='solarized-dark']");
+const SOLARIZED_LIGHT = declarationsIn(":root[data-theme='solarized-light']");
+const HIGH_CONTRAST_DARK = declarationsIn(":root[data-theme='high-contrast-dark']");
+const HIGH_CONTRAST_LIGHT = declarationsIn(":root[data-theme='high-contrast-light']");
 
 function valueOf(name: string, scope: Map<string, string>): string {
     const raw = scope.get(name) ?? ROOT.get(name);
@@ -66,6 +70,10 @@ const FOREGROUNDS = [
 describe.each([
     ['dark', DARK],
     ['light', LIGHT],
+    ['solarized-dark', SOLARIZED_DARK],
+    ['solarized-light', SOLARIZED_LIGHT],
+    ['high-contrast-dark', HIGH_CONTRAST_DARK],
+    ['high-contrast-light', HIGH_CONTRAST_LIGHT],
 ])('%s theme token contrast', (_name, scope) => {
     for (const background of BACKGROUNDS) {
         for (const foreground of FOREGROUNDS) {

@@ -28,6 +28,12 @@ Re-exports [applyNegotiatedLanguage](../route-attributes/functions/applyNegotiat
 
 ***
 
+### applyNegotiatedTheme
+
+Re-exports [applyNegotiatedTheme](../route-attributes/functions/applyNegotiatedTheme.md)
+
+***
+
 ### deriveKey
 
 Re-exports [deriveKey](../route-registry/functions/deriveKey.md)
@@ -115,6 +121,12 @@ Re-exports [PathRoute](../path-route/classes/PathRoute.md)
 ### PathRouteSegment
 
 Re-exports [PathRouteSegment](../path-route/classes/PathRouteSegment.md)
+
+***
+
+### REQUESTED\_THEME\_ATTRIBUTE
+
+Re-exports [REQUESTED_THEME_ATTRIBUTE](../route-attributes/variables/REQUESTED_THEME_ATTRIBUTE.md)
 
 ***
 
@@ -211,3 +223,9 @@ Re-exports [RouteSegment](../route/interfaces/RouteSegment.md)
 ### stripPartitionPrefix
 
 Re-exports [stripPartitionPrefix](../route-partition/functions/stripPartitionPrefix.md)
+
+***
+
+### THEME\_ATTRIBUTE
+
+Re-exports [THEME_ATTRIBUTE](../route-attributes/variables/THEME_ATTRIBUTE.md)

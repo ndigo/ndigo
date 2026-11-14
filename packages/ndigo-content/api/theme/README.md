@@ -31,3 +31,4 @@ Theme contracts, a static source, and structural guards.
 - [likeTheme](functions/likeTheme.md)
 - [~~likeThemeResolver~~](functions/likeThemeResolver.md)
 - [likeThemeSource](functions/likeThemeSource.md)
+- [normalizeThemeName](functions/normalizeThemeName.md)

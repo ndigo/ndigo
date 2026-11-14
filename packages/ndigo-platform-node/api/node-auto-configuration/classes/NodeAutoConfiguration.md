@@ -449,6 +449,25 @@ The task scheduler.
 
 ***
 
+### themeResolver()
+
+> **themeResolver**(): `AttributeThemeResolver`
+
+Resolves the request theme from the `theme` cookie stamped on the route
+by the HTTP adapter. Server rendering has no system-preference input, so
+an absent or invalid cookie selects the Ndigo default.
+
+Can be overridden by registering a custom `configuration` with a
+themeResolver entry.
+
+#### Returns
+
+`AttributeThemeResolver`
+
+The attribute-backed theme resolver.
+
+***
+
 ### viewResolver()
 
 > **viewResolver**(): `IslandViewResolver`

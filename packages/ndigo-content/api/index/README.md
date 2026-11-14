@@ -298,6 +298,12 @@ Re-exports [normalizeLocale](../language-code/functions/normalizeLocale.md)
 
 ***
 
+### normalizeThemeName
+
+Re-exports [normalizeThemeName](../theme/functions/normalizeThemeName.md)
+
+***
+
 ### parseAcceptLanguage
 
 Re-exports [parseAcceptLanguage](../negotiation/functions/parseAcceptLanguage.md)

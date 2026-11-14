@@ -6,6 +6,13 @@
 
 # Class: CookieThemeResolver
 
+Resolves the active theme from a persisted cookie, falling back to the
+system color-scheme preference and then the configured default.
+
+The persisted user choice wins over the system preference — the precedence
+rule for client-side theme resolution. Cookie values are untrusted input
+and are normalized before use.
+
 ## Extends
 
 - `AbstractThemeResolver`
@@ -14,7 +21,7 @@
 
 ### Constructor
 
-> **new CookieThemeResolver**(`cookieName?`, `defaultThemeName?`): `CookieThemeResolver`
+> **new CookieThemeResolver**(`cookieName?`, `defaultThemeName?`, `fallback?`): `CookieThemeResolver`
 
 Creates a cookie-backed theme resolver.
 
@@ -28,9 +35,17 @@ Cookie name that stores the theme.
 
 ##### defaultThemeName?
 
-`string` = `'default'`
+`string` = `'ndigo-dark'`
 
-Fallback theme when the cookie is absent.
+Fallback theme when no cookie or system
+  preference is available.
+
+##### fallback?
+
+`AbstractThemeResolver` = `...`
+
+Resolver used when the cookie is absent or invalid
+  (defaults to [SystemThemeResolver](#)).
 
 #### Returns
 
@@ -78,11 +93,11 @@ Fallback theme name used when a route-specific theme is unavailable.
 
 ## Methods
 
-### resolveTheme()
+### ~~resolveTheme()~~
 
 > **resolveTheme**(`route`): `string`
 
-Resolves the current theme from cookies or the fallback value.
+Resolve the theme name for a route.
 
 #### Parameters
 
@@ -90,7 +105,42 @@ Resolves the current theme from cookies or the fallback value.
 
 [`Route`](#)
 
-The current route (unused).
+The current route.
+
+#### Returns
+
+`string`
+
+The resolved theme name.
+
+#### Deprecated
+
+Use [resolveThemeName](#resolvethemename) instead.
+
+#### Inherited from
+
+`AbstractThemeResolver.resolveTheme`
+
+***
+
+### resolveThemeName()
+
+> **resolveThemeName**(`route`): `string`
+
+Resolves the current theme from the cookie, the fallback resolver, or
+the configured default.
+
+Only well-formed names are honored — a tampered cookie (quotes,
+whitespace, script characters, uppercase) falls through to the fallback
+resolver instead of reaching markup or CSS.
+
+#### Parameters
+
+##### route
+
+[`Route`](#)
+
+The current route.
 
 #### Returns
 
@@ -100,7 +150,7 @@ The resolved theme name.
 
 #### Overrides
 
-`AbstractThemeResolver.resolveTheme`
+`AbstractThemeResolver.resolveThemeName`
 
 ***
 

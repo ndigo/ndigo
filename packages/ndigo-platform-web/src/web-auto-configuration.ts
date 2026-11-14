@@ -4,6 +4,7 @@
 import { configuration, entry } from '@ndigo/context';
 import { argumentValueConverters, RadixMetadataHandlerMapping } from '@ndigo/dispatcher';
 import { CookieLanguageResolver } from './cookie-language-resolver';
+import { CookieThemeResolver } from './cookie-theme-resolver';
 import { createBrowserArgumentResolvers } from './configure-argument-resolvers';
 import { NameViewResolver, ViewResolverComposite } from '@ndigo/view';
 import type { ViewResolver, View } from '@ndigo/view';
@@ -92,5 +93,18 @@ export class WebAutoConfiguration {
     @entry()
     languageResolver() {
         return new CookieLanguageResolver();
+    }
+
+    /**
+     * Resolves the request theme from the persisted cookie, falling back to
+     * the system color-scheme preference and then the Ndigo default. Can be
+     * overridden by registering a custom `configuration` with a
+     * themeResolver entry.
+     *
+     * @returns The cookie-backed theme resolver.
+     */
+    @entry()
+    themeResolver() {
+        return new CookieThemeResolver();
     }
 }

@@ -14,7 +14,7 @@ import {
     TestView,
 } from './test-strategies';
 import { MetadataConfigApplicationContext } from '@ndigo/context';
-import { Route } from '@ndigo/router';
+import { Route, THEME_ATTRIBUTE } from '@ndigo/router';
 
 describe('AbstractDispatcher', () => {
     // Tests need only the path; the rest of Route is filled by the router.
@@ -72,7 +72,14 @@ describe('AbstractDispatcher', () => {
             const themeDispatcher = new AbstractDispatcher();
             themeDispatcher.initStrategies(themeContext);
 
-            expect(themeDispatcher.themeResolver.resolveTheme(fooRoute)).toBe('night');
+            expect(themeDispatcher.themeResolver.resolveThemeName(fooRoute)).toBe('night');
+        });
+
+        test('it should write the negotiated theme onto the route', async () => {
+            const route = { path: '/foo', attributes: {} } as unknown as Route;
+            await dispatcher.dispatch(route);
+
+            expect(route.attributes[THEME_ATTRIBUTE]).toBe('testTheme');
         });
 
         test('it should trigger completeHandle after successful render', async () => {

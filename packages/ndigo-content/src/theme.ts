@@ -117,3 +117,34 @@ export const likeThemeSource = like({ getTheme: Function }) as (value: unknown) 
  * @deprecated Use {@link likeThemeSource} instead.
  */
 export const likeThemeResolver = likeThemeSource;
+
+/**
+ * Shape accepted for a theme name: lowercase ASCII letters and digits
+ * separated by single hyphens.
+ *
+ * A theme name reaches `data-theme`, `data-color-scheme`, and CSS selector
+ * text, so the alphabet is deliberately narrow — quotes, whitespace, angle
+ * brackets, uppercase, and empty segments never pass.
+ */
+const themeNamePattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/u;
+
+/** Cap on theme-name length; 64 bounds hostile cookie/header input. */
+const MAX_THEME_NAME_LENGTH = 64;
+
+/**
+ * Validates a theme name from an untrusted source (cookie, header, query).
+ *
+ * Values are rejected, never escaped and passed on: a name that fails the
+ * shape test falls back to the configured default instead of reaching markup
+ * or CSS.
+ *
+ * @param value - The candidate theme name.
+ * @returns The name when it matches the accepted shape, or `null`.
+ */
+export const normalizeThemeName = (value: unknown): string | null => {
+    if (typeof value !== 'string' || value.length === 0 || value.length > MAX_THEME_NAME_LENGTH) {
+        return null;
+    }
+
+    return themeNamePattern.test(value) ? value : null;
+};

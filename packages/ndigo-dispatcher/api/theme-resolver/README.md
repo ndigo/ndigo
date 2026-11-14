@@ -11,8 +11,11 @@ Theme resolution contracts.
 ## Classes
 
 - [AbstractThemeResolver](classes/AbstractThemeResolver.md)
+- [AttributeThemeResolver](classes/AttributeThemeResolver.md)
 - [FixedThemeResolver](classes/FixedThemeResolver.md)
+- [SystemThemeResolver](classes/SystemThemeResolver.md)
 
 ## Interfaces
 
+- [SystemThemeResolverOptions](interfaces/SystemThemeResolverOptions.md)
 - [ThemeResolver](interfaces/ThemeResolver.md)

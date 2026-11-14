@@ -208,6 +208,12 @@ Re-exports [asUUID](../parameter-factories/functions/asUUID.md)
 
 ***
 
+### AttributeThemeResolver
+
+Re-exports [AttributeThemeResolver](../theme-resolver/classes/AttributeThemeResolver.md)
+
+***
+
 ### attributeValue
 
 Re-exports [attributeValue](../parameter-factories/functions/attributeValue.md)
@@ -1135,6 +1141,18 @@ Re-exports [stompMapping](../stomp-mapping/functions/stompMapping.md)
 ### storeResolvedParameters
 
 Re-exports [storeResolvedParameters](../parameters/functions/storeResolvedParameters.md)
+
+***
+
+### SystemThemeResolver
+
+Re-exports [SystemThemeResolver](../theme-resolver/classes/SystemThemeResolver.md)
+
+***
+
+### SystemThemeResolverOptions
+
+Re-exports [SystemThemeResolverOptions](../theme-resolver/interfaces/SystemThemeResolverOptions.md)
 
 ***
 

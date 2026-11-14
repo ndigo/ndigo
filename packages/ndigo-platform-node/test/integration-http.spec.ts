@@ -7,6 +7,7 @@ import { getMapping, parameters, queryValue, requestMapping, ModelAndView } from
 import { View, ViewTarget } from '@ndigo/view';
 import { MediaType } from '@ndigo/core';
 import type { Route } from '@ndigo/router';
+import { THEME_ATTRIBUTE } from '@ndigo/router';
 import { NodeAutoConfiguration } from '../src/node-auto-configuration';
 import { NodeDispatcher } from '../src/node-dispatcher';
 import { NodeHTTPServerAdapter } from '../src/node-http-server-adapter';
@@ -34,11 +35,26 @@ class LanguageProbeView implements View {
     }
 }
 
+/** Renders the theme the dispatcher negotiated for the request. */
+class ThemeProbeView implements View {
+    mediaType: MediaType | null = null;
+
+    async render(model: unknown, request: Route, target?: ViewTarget): Promise<void> {
+        const theme = String(request.attributes?.[THEME_ATTRIBUTE] ?? '');
+
+        await target?.commit(JSON.stringify({ theme, markup: `<html data-theme="${theme}">` }), model, request);
+    }
+}
+
 /** Records the language passed to view-name resolution. */
 class RecordingViewResolver {
     lastLanguage: string | undefined = undefined;
 
     async resolveViewName(name: string, language?: unknown): Promise<View | null> {
+        if (name === 'theme-probe') {
+            return new ThemeProbeView();
+        }
+
         if (name !== 'probe') {
             return null;
         }
@@ -66,6 +82,11 @@ class LocaleProbeController {
     @getMapping('/locale')
     locale() {
         return new ModelAndView('probe', {});
+    }
+
+    @getMapping('/theme')
+    theme() {
+        return new ModelAndView('theme-probe', {});
     }
 }
 
@@ -135,5 +156,47 @@ describe('Node SSR pipeline', () => {
     test('GET /probe/locale falls back to the default language without a header', async () => {
         const res = await fetch(`${base}/probe/locale`);
         expect(await res.json()).toEqual({ language: 'en-US' });
+    });
+
+    test('GET /probe/theme negotiates the theme cookie', async () => {
+        const res = await fetch(`${base}/probe/theme`, {
+            headers: { Cookie: 'theme=solarized-dark' },
+        });
+
+        expect(res.status).toBe(200);
+        expect(await res.json()).toEqual({
+            theme: 'solarized-dark',
+            markup: '<html data-theme="solarized-dark">',
+        });
+    });
+
+    test('GET /probe/theme falls back to the Node default without a cookie', async () => {
+        const res = await fetch(`${base}/probe/theme`);
+
+        expect(await res.json()).toEqual({
+            theme: 'ndigo-dark',
+            markup: '<html data-theme="ndigo-dark">',
+        });
+    });
+
+    test('GET /probe/theme discards a malformed theme cookie', async () => {
+        const res = await fetch(`${base}/probe/theme`, {
+            headers: { Cookie: `theme=${encodeURIComponent('"><script>alert(1)</script>')}` },
+        });
+
+        expect(await res.json()).toEqual({
+            theme: 'ndigo-dark',
+            markup: '<html data-theme="ndigo-dark">',
+        });
+    });
+
+    test('keeps theme selection request-scoped across concurrent requests', async () => {
+        const [solarized, contrast] = await Promise.all([
+            fetch(`${base}/probe/theme`, { headers: { Cookie: 'theme=solarized-dark' } }),
+            fetch(`${base}/probe/theme`, { headers: { Cookie: 'theme=high-contrast-light' } }),
+        ]);
+
+        expect(await solarized.json()).toMatchObject({ theme: 'solarized-dark' });
+        expect(await contrast.json()).toMatchObject({ theme: 'high-contrast-light' });
     });
 });

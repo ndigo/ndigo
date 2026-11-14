@@ -58,6 +58,7 @@
     "RouteHandlerInterceptor": "#",
     "RouteMappingValue": "#",
     "SocketSession": "#",
+    "SystemThemeResolver": "#",
     "ViewNameTranslator": "#",
     "default": "#",
     "MaybeHandler": "#"

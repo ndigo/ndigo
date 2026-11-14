@@ -54,6 +54,7 @@ how it fits with the rest of Ndigo.
 - **Sources** — `ContentSource`, `StaticContentSource` (default-language fallback), `CompositeContentSource`
 - **Language codes** — `LanguageCode` (validated, canonicalized BCP 47 tags) and the `LanguageCodes` constant catalog (`LanguageCodes.EN_US` instead of `'en-US'` magic strings)
 - **Themes** — `Theme`, `ThemeSource` (the registry: `StaticThemeSource`, `CompositeThemeSource`). `ThemeResolver`, `StaticThemeResolver`, `CompositeThemeResolver`, and `likeThemeResolver` remain as deprecated aliases for one minor. Per-request theme _selection_ lives in `@ndigo/dispatcher`, not here.
+- **Theme names** — `normalizeThemeName` validates untrusted names (lowercase kebab, ≤64 chars) before they reach `data-theme` or CSS.
 - **Mixins & guards** — `AsContentSourceAware` awareness mixins and duck-type guards
 
 `LanguageCode` implements `Equatable<LanguageCode>` and `StringComparable<LanguageCode>`.

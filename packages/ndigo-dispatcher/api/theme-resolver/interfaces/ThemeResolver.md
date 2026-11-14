@@ -6,13 +6,13 @@
 
 # Interface: ThemeResolver
 
-Resolves the active theme for a route.
+Resolves the active theme name for a route.
 
 ## Methods
 
-### resolveTheme()
+### resolveThemeName()
 
-> **resolveTheme**(`route`): `string`
+> **resolveThemeName**(`route`): `string`
 
 Resolve the theme name for a route.
 

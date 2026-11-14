@@ -6,11 +6,13 @@
 
 # Abstract Class: AbstractThemeResolver
 
-Resolves the active theme for a route.
+Base class for theme resolvers with a configurable fallback theme.
 
 ## Extended by
 
 - [`FixedThemeResolver`](FixedThemeResolver.md)
+- [`AttributeThemeResolver`](AttributeThemeResolver.md)
+- [`SystemThemeResolver`](SystemThemeResolver.md)
 
 ## Implements
 
@@ -58,9 +60,35 @@ Fallback theme name used when a route-specific theme is unavailable.
 
 ## Methods
 
-### resolveTheme()
+### ~~resolveTheme()~~
 
-> `abstract` **resolveTheme**(`route`): `string`
+> **resolveTheme**(`route`): `string`
+
+Resolve the theme name for a route.
+
+#### Parameters
+
+##### route
+
+[`Route`](#)
+
+The current route.
+
+#### Returns
+
+`string`
+
+The resolved theme name.
+
+#### Deprecated
+
+Use [resolveThemeName](#resolvethemename) instead.
+
+***
+
+### resolveThemeName()
+
+> `abstract` **resolveThemeName**(`route`): `string`
 
 Resolve the theme name for a route.
 
@@ -80,4 +108,4 @@ The resolved theme name.
 
 #### Implementation of
 
-[`ThemeResolver`](../interfaces/ThemeResolver.md).[`resolveTheme`](../interfaces/ThemeResolver.md#resolvetheme)
+[`ThemeResolver`](../interfaces/ThemeResolver.md).[`resolveThemeName`](../interfaces/ThemeResolver.md#resolvethemename)

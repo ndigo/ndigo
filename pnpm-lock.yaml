@@ -3027,6 +3027,21 @@ importers:
         specifier: ^4.14.0
         version: 4.14.0
 
+  packages/ndigo-ui-web:
+    dependencies:
+      '@ndigo/context':
+        specifier: ~0.0.1
+        version: link:../ndigo-context
+      '@ndigo/platform-web':
+        specifier: ~0.0.1
+        version: link:../ndigo-platform-web
+      '@ndigo/router':
+        specifier: ~0.0.1
+        version: link:../ndigo-router
+      '@ndigo/ui':
+        specifier: ~0.0.1
+        version: link:../ndigo-ui
+
   packages/ndigo-util: {}
 
   packages/ndigo-view:

@@ -70,7 +70,7 @@ boot, which is idempotent for an SSR page.
 
 ## API
 
-The full API is at [`api/`](api/README.md). Primary exports live in
+The full API is at `api/` (generated; run `pnpm doc:api`). Primary exports live in
 [`src/index.ts`](src/index.ts).
 
 - **Bootstrap** — `connectBrowserTheme()` returns `{ theme, cookieName, setTheme, destroy }`

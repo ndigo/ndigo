@@ -2,10 +2,10 @@
 
 **Date:** 2026-09-29
 **Status:** Ratified — implementation in
-[`docs/plans/2026-09-29_DTO_MAPPING.md`](../plans/2026-09-29_DTO_MAPPING.md)
+`docs/plans/2026-09-29_DTO_MAPPING.md`
 (two implementation amendments below).
 **Closes:** the "DTO/object mapping" (DTO = data transfer object) Tier-2 gap in
-[`docs/audits/2026-09-13_FRAMEWORK_GAP_ANALYSIS.md`](../audits/2026-09-13_FRAMEWORK_GAP_ANALYSIS.md)
+`docs/audits/2026-09-13_FRAMEWORK_GAP_ANALYSIS.md`
 §2.2, and the AD-35 recorded follow-up "response-schema inference" at the
 explicit-contract level.
 
@@ -150,7 +150,7 @@ RFC 9457 `default` response entry in the spec (separate AD-35 follow-up).
 
 ## References
 
-- Gap analysis: [`docs/audits/2026-09-13_FRAMEWORK_GAP_ANALYSIS.md`](../audits/2026-09-13_FRAMEWORK_GAP_ANALYSIS.md) §2.2
+- Gap analysis: `docs/audits/2026-09-13_FRAMEWORK_GAP_ANALYSIS.md` §2.2
 - AD-35 (OpenAPI, response-schema follow-up): [`2026-09-28_AD35_OPENAPI_DOCS.md`](2026-09-28_AD35_OPENAPI_DOCS.md)
 - AD-34 (TypeScript-native layer): [`2026-09-27_AD34_TYPESCRIPT_NATIVE_LAYER.md`](2026-09-27_AD34_TYPESCRIPT_NATIVE_LAYER.md)
 - AD-07 (Zod validation): [`2026-09-05_AD07_ZOD_VALIDATION.md`](2026-09-05_AD07_ZOD_VALIDATION.md)

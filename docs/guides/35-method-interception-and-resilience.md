@@ -186,10 +186,7 @@ class PushAPI {
 
 ## See also
 
-- Interception: ,
-  plan `docs/plans/2026-10-03_METHOD_INTERCEPTION.md`
-- Resilience: ,
-  plan `docs/plans/2026-10-04_RETRY_AND_CIRCUIT_BREAKER.md`
+- Interception: `@ndigo/proxy`
+- Resilience: `@ndigo/resilience`
 - Demo gates: [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api) (audit), `packages/ndigo-service`
   (`service-client-resilience.spec.ts`)
-- Packages: `@ndigo/proxy`, `@ndigo/resilience`

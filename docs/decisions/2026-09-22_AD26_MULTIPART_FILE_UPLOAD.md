@@ -2,12 +2,12 @@
 
 **Date:** 2026-09-22
 **Status:** Accepted — decision recorded; implementation landed (see
-[plan](../plans/2026-09-22_MULTIPART_FILE_UPLOAD.md)).
+plan).
 
 ## Background
 
 This is gap-analysis item #1 in the Tier 1 "must-have" row of
-[`docs/audits/2026-09-13_FRAMEWORK_GAP_ANALYSIS.md`](../audits/2026-09-13_FRAMEWORK_GAP_ANALYSIS.md) §2.1:
+`docs/audits/2026-09-13_FRAMEWORK_GAP_ANALYSIS.md` §2.1:
 
 > Server cannot accept uploads — `MULTIPART_FORM_DATA` constant and client `FormData`
 > transformer exist, but the Node body resolver has no multipart parser.
@@ -131,7 +131,7 @@ seam.
 ## Sequencing
 
 Implementation sequenced across four waves in
-[`docs/plans/2026-09-22_MULTIPART_FILE_UPLOAD.md`](../plans/2026-09-22_MULTIPART_FILE_UPLOAD.md):
+`docs/plans/2026-09-22_MULTIPART_FILE_UPLOAD.md`:
 contract + parser (Wave 1), request wiring (Wave 2), binding via `fileValue()` +
 resolver (Wave 3), demo gates + docs (Wave 4). All waves landed — see below.
 

@@ -44,9 +44,8 @@ Path-backed views load their template source once and keep rendering it for the 
 
 ## API
 
-The full API is at [`api/`](api/README.md). Primary exports live in
-[`src/index.ts`](src/index.ts); see the [package index](../../API.md) for
-how it fits with the rest of Ndigo.
+The full API is at `api/` (generated; run `pnpm doc:api`). Primary exports live in
+[`src/index.ts`](src/index.ts);
 
 - **`EJSView`** — a producer view that renders an EJS template into a fragment `ViewTarget` (islands, client-side DOM) or a whole document (servlet-style SSR), per the `ProducerView` contract
 - **`EJSTemplateEngine`** — compiles templates once per source string and reuses the compiled function; renders at ~1µs after the first pass

@@ -32,9 +32,8 @@ const provider = await createDOMProvider(); // BrowserDOMProvider, or LinkedomDO
 
 ## API
 
-The full API is at [`api/`](api/README.md). Primary exports live in
-[`src/index.ts`](src/index.ts); see the [package index](../../API.md) for
-how it fits with the rest of Ndigo.
+The full API is at `api/` (generated; run `pnpm doc:api`). Primary exports live in
+[`src/index.ts`](src/index.ts);
 
 - `DOMProvider` — interface for platform-agnostic DOM creation
 - `BrowserDOMProvider` — browser implementation

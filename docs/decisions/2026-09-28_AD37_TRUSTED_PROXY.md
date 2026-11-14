@@ -2,9 +2,9 @@
 
 **Date:** 2026-09-28
 **Status:** Ratified — implementation in
-[`docs/plans/2026-09-28_TRUSTED_PROXY.md`](../plans/2026-09-28_TRUSTED_PROXY.md)
+`docs/plans/2026-09-28_TRUSTED_PROXY.md`
 **Closes:** the "Trusted-proxy / client-IP handling" Tier-2 gap in
-[`docs/audits/2026-09-13_FRAMEWORK_GAP_ANALYSIS.md`](../audits/2026-09-13_FRAMEWORK_GAP_ANALYSIS.md)
+`docs/audits/2026-09-13_FRAMEWORK_GAP_ANALYSIS.md`
 §2.2 and the SEC-6 rate-limit keying caveat (limiter keys on the socket
 address; proxy deployments share one bucket).
 

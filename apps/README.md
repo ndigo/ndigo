@@ -8,9 +8,7 @@ import specifier, or nx target. Package names are stable (`@ndigo/<slug>`), so
 renumbering the ladder is a mechanical directory sweep and nothing more. New
 apps append at the next free number: `ndigo new <slug> --kind node|browser`
 scaffolds the skeleton and allocates the number and dev port (AD-85, guide 37);
-add the app's row below by hand. See the
-[example-applications plan](../docs/plans/2026-10-07_EXAMPLE_APPLICATIONS.md)
-for the planned `08+` portfolio.
+add the app's row below by hand.
 
 Paired front-end/back-end apps use the `-web` / `-api` role suffixes and sit
 next to each other in the ladder (`03-ndigo-todo-web` + `04-ndigo-todo-api`,

@@ -126,11 +126,12 @@ Every package must meet the documentation standard:
   `tools/generators/src/generators/readme/files/README.md.template`.
 - **Generated API reference** — `pnpm doc:api` writes
   `packages/<name>/api/` per package (zero-warning TypeDoc standard,
-  CI-enforced). After public API changes: regenerate, commit the tree.
+  generated on demand, not committed). After public API changes: regenerate
+  to verify.
 - **Cross-package JSDoc links** — add an entry to
   `scripts/external-symbol-links.json`; never sprinkle links into package code.
 - **Enforcement** — `pnpm manifest:check` (README/metadata/files), CI
-  freshness diff. Full rules: `docs/guides/90-package-documentation.md`.
+  generation (zero warnings). Full rules: `docs/guides/90-package-documentation.md`.
 
 **No HTML docs:** `doc-html/` and `typedoc.html.json` are gone; do not
 reintroduce them.
@@ -342,7 +343,7 @@ When adding new integration layers or encapsulated libraries:
 - ✅ **Correct:** `@routeMapping`, `@injectable`
 - ❌ **Incorrect:** `@RouteMapping`, `@Injectable`
 
-This convention is detailed in **STYLE_GUIDE.md Section 3.8**; the per-category forms (stereotypes, behaviors, conditions, registrations, lifecycle, descriptors, policies) are in **Section 3.17** ([AD-83](docs/decisions/2026-10-31_AD83_DECORATOR_CATEGORIES.md)). Adherence is critical for distinguishing decorators from classes at a glance.
+This convention is detailed in **STYLE_GUIDE.md Section 3.8**; the per-category forms (stereotypes, behaviors, conditions, registrations, lifecycle, descriptors, policies) are in **Section 3.17**. Adherence is critical for distinguishing decorators from classes at a glance.
 
 ### Architecture & File Structure
 
@@ -474,9 +475,10 @@ All project documentation (except root-level guides) should be organized under `
 ```
 docs/
 ├── migrations/     # Breaking changes and upgrade guides
-├── plans/          # Implementation plans for features
-├── reference/      # Technical references and specifications
-└── audits/         # Codebase analysis and compliance reports
+├── decisions/      # Architecture decision records (ADRs)
+├── guides/         # Numbered how-to guides
+├── architecture/   # Living architecture topics
+└── (root guides)   # ARCHITECTURE.md, STYLE_GUIDE.md, etc.
 ```
 
 **Naming Convention:** `YYYY-MM-DD_DESCRIPTION.md`
@@ -503,43 +505,32 @@ Where:
 - Provide upgrade paths
 - Include before/after examples
 
-**Implementation Plans** (`docs/plans/`):
+**Decision Records** (`docs/decisions/`):
 
-- Detail technical specifications
-- Outline implementation steps
-- Include testing strategy
+- Architecture decision records (ADRs); index at `docs/decisions/README.md`
 
-**Audit Reports** (`docs/audits/`):
-
-- Analyze codebase patterns
-- Identify violations or inconsistencies
-- Recommend improvements
-
-**Reference Docs** (`docs/reference/`):
-
-- Document dependency versions
-- Provide configuration references
-- Include comparison tables
-
-**Each directory has a README.md** that indexes all documents in that category.
+**Notes:** Implementation plans (`docs/plans/`), audit reports (`docs/audits/`),
+and technical references (`docs/reference/`) are kept locally only and are not
+published in the public repository.
 
 ## 7. Agent Configuration
 
-This repository's AI-agent definitions are **generated, not hand-edited**:
+The committed repository does **not** ship generated AI-agent configuration.
+The agent trees (`.agents/`, `.omp/`, `.opencode/`, `agent-local/`, and their
+manifests) are generated locally and gitignored — they are maintainer tooling,
+not part of the public, installable product.
 
-- **Source of truth:** the neutral store in `development-agents/` (agents,
-  skills, per-harness shims) plus this repo's `agent-local/` (repo-specific
-  overrides, e.g. the `graft` skill).
-- **Regenerate:** `pnpm agents:sync` (runs `gen.mjs`; agents into
-  `.opencode/` + `.omp/`, skills once into the harness-neutral `.agents/skills/`,
-  plus `.agent-gen.json`)
-- **Validate:** `pnpm agents:check` — committed files vs. the sha256
-  manifest + structural invariants (CI-gated)
-- Edit `development-agents/` or `agent-local/` and regenerate — never edit
-  generated files under `.opencode/agents`, `.omp/agents`, `.agents/skills`.
-  Skills are deployed once to `.agents/skills` because both harnesses read
-  that tree natively; a second copy under a harness directory would shadow it
-  at a different precedence.
+- **Maintainers only:** the neutral store lives in `development-agents/`
+  (outside this repository). With it available, run `pnpm agents:sync` to
+  regenerate `.opencode/` + `.omp/` + `.agents/skills/` + manifests, and
+  `pnpm agents:check` to verify.
+- **Contributors:** a fresh checkout will not contain the generated agent
+  trees. `AGENTS.md` itself is the contract — use it directly with your own
+  agent harness. The generated configs are optional and unavailable without
+  the neutral store; this is a known limitation to revisit (either vendoring
+  the store into this repo or committing a curated subset of `.agents/skills/`).
+- Never hand-edit generated files under `.opencode/agents`, `.omp/agents`,
+  `.agents/skills`.
 - Models: not part of the deployment — agents inherit the session model
   (OpenCode `model`, OMP `modelRoles`, configured outside the store).
 
@@ -602,14 +593,15 @@ The tracked `.githooks/pre-commit` guard enforces the checkout rule once
 **Never**
 
 - Never push directly to `main`, never force-push.
-- Never hand-merge generated files — after a rebase, regenerate:
+- Never hand-merge generated files — after a rebase, regenerate locally:
   `pnpm agents:sync` (agent trees + `.agent-gen.json`), `pnpm doc:api`
-  (API reference), `pnpm install` (lockfile); commit the regenerated output.
+  (API reference), `pnpm install` (lockfile). The agent trees and generated
+  API reference are not committed.
 
 **Single-lane files** — at most one in-flight issue touches these (note it
 when grooming): `pnpm-lock.yaml`, Drizzle migrations (`db:schema:check`
-enforces one-commit discipline), and the generated trees (`.opencode/`,
-`.omp/`, `packages/*/api/`).
+enforces one-commit discipline), and the generated agent trees (`.opencode/`,
+`.omp/`).
 
 **Releases** stay trunk-based: `main` is always releasable; a release is a
 milestone-driven act (CHANGELOG cut → tag → per-package publish), not a

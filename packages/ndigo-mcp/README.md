@@ -142,7 +142,7 @@ call emits one `execute_tool <name>` span with `gen_ai.tool.name` and
 
 ## API
 
-See the [generated API reference](api/README.md).
+The generated API reference is available via `pnpm doc:api`.
 
 ## Development
 

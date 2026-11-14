@@ -47,9 +47,8 @@ LanguageCode.for('en_us'); // null — invalid tags never become codes
 
 ## API
 
-The full API is at [`api/`](api/README.md). Primary exports live in
-[`src/index.ts`](src/index.ts); see the [package index](../../API.md) for
-how it fits with the rest of Ndigo.
+The full API is at `api/` (generated; run `pnpm doc:api`). Primary exports live in
+[`src/index.ts`](src/index.ts);
 
 - **Sources** — `ContentSource`, `StaticContentSource` (default-language fallback), `CompositeContentSource`
 - **Language codes** — `LanguageCode` (validated, canonicalized BCP 47 tags) and the `LanguageCodes` constant catalog (`LanguageCodes.EN_US` instead of `'en-US'` magic strings)

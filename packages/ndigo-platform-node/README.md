@@ -63,12 +63,11 @@ is a `400`, never silently reshaped. `listen()` rejects on bind errors, and
 ### TLS and HTTP/2 origin (opt-in)
 
 The origin listens on plaintext HTTP/1.1 by default — the edge-terminated
-posture (see [guide 38 §6](../../docs/guides/38-deployment-and-production-readiness.md#6-tls-and-the-edge)
-and [AD-80](../../docs/decisions/2026-10-09_AD80_HTTP23_EDGE_TERMINATION.md)).
+posture (see [guide 38 §6](../../docs/guides/38-deployment-and-production-readiness.md#6-tls-and-the-edge)).
 Pass TLS material and the listener becomes an `http2.createSecureServer`
 in `allowHTTP1` mode: ALPN negotiates HTTP/2 with an HTTP/1.1 fallback on
 one port, and WebSockets keep riding h1.1 (neither `ws` nor browsers
-implement RFC 8441 — [AD-81](../../docs/decisions/2026-10-09_AD81_NATIVE_HTTP2.md)).
+implement RFC 8441).
 
 ```ts
 const server = new HTTPServer(dispatcher, {
@@ -392,9 +391,8 @@ and `writeProblem` are exported for custom errors.
 
 ## API
 
-The full API is at [`api/`](api/README.md). Primary exports live in
-[`src/index.ts`](src/index.ts); see the [package index](../../API.md) for
-how it fits with the rest of Ndigo.
+The full API is at `api/` (generated; run `pnpm doc:api`). Primary exports live in
+[`src/index.ts`](src/index.ts);
 
 ## Development
 

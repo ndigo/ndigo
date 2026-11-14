@@ -16,11 +16,6 @@ This directory contains migration guides documenting breaking changes and upgrad
 - [2026-05-29_V1_MIGRATION.md](./2026-05-29_V1_MIGRATION.md) - V1 migration guide: breaking changes from the 10-wave roadmap
 - [2026-05-27_PNPM_11_UPGRADE.md](./2026-05-27_PNPM_11_UPGRADE.md) - pnpm 11 upgrade (8.15.0→11.4.0), workspace config migration
 - [2026-01-23_DEPENDENCIES.md](./2026-01-23_DEPENDENCIES.md) - Dependency modernization (Ramda, date-fns, etc.)
-- [2026-01-23_PRETTIER.md](./2026-01-23_PRETTIER.md) - Prettier code formatting setup
-- [2026-01-23_TOOLING.md](./2026-01-23_TOOLING.md) - Tooling migration (Yarn→pnpm, Lerna→Nx, Jest→Vitest)
-- [2026-01-23_VITE.md](./2026-01-23_VITE.md) - Build tool migration (webpack→Vite)
-- [2026-01-27_DOCS.md](./2026-01-27_DOCS.md) - Documentation generation setup
-- [2026-01-27_NPMRC.md](./2026-01-27_NPMRC.md) - pnpm configuration optimization
 - [2026-01-28_ESM_ONLY.md](./2026-01-28_ESM_ONLY.md) - ESM-only module system migration
 
 ## Naming Convention

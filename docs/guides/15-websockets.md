@@ -338,16 +338,14 @@ transport.
 
 - **No generic `Session` base class.** HTTP session state and WebSocket
   connections share only "ID + data container" — every operation past that
-  splits by lifecycle. Research appendix in the plan
-  (`docs/plans/2026-09-15_WEBSOCKET_BROADCAST.md`): no framework unifies
-  them, including Micronaut (whose `WebSocketSession` shares an
-  attribute-bag mixin, not a base).
+  splits by lifecycle: no framework unifies them, including Micronaut (whose
+  `WebSocketSession` shares an attribute-bag mixin, not a base).
 - **Names are adjectival**: `AuthSession` (auth state), `SocketSession`
   (connection), `HttpSession` (reserved for the future session store).
 - **Client story**: `@ndigo/socket` — the isomorphic client package
   (`SocketClient`, reconnect + status signal) — see
   [WebSocket client](../decisions/archive/2026-09-15_AD22_WEBSOCKET_CLIENT.md) and
-  [plan](../plans/2026-09-15_WEBSOCKET_CLIENT.md).
+  plan.
 - **Cross-node live fan-out: opt-in**, through `SocketFanout` and
   `@ndigo/redis/pubsub`; socket ownership, room membership, queue consumption
   and ACK/message IDs remain local. Durable `/queue` persistence is available
@@ -360,9 +358,9 @@ transport.
 - Decision: [WebSocket session registry](../decisions/2026-09-15_AD21_WEBSOCKET_SESSION_REGISTRY.md),
   [WebSocket client](../decisions/archive/2026-09-15_AD22_WEBSOCKET_CLIENT.md),
   [STOMP protocol layer](../decisions/archive/2026-09-16_AD23_STOMP.md)
-- Plans: [WebSocket Broadcast](../plans/2026-09-15_WEBSOCKET_BROADCAST.md),
-  [WebSocket Client](../plans/2026-09-15_WEBSOCKET_CLIENT.md),
-  [STOMP](../plans/2026-09-16_STOMP.md)
+- Plans: WebSocket Broadcast,
+  WebSocket Client,
+  STOMP
 - Demo: `ChatController` in [apps/05-ndigo-api/src/chat-controller.ts](https://github.com/ndigo/ndigo/blob/main/apps/05-ndigo-api/src/chat-controller.ts) e2e in
   [apps/05-ndigo-api/test/chat.spec.ts](https://github.com/ndigo/ndigo/blob/main/apps/05-ndigo-api/test/chat.spec.ts) (driven by `WebSocketClient`);
   `StompChatController` in [apps/05-ndigo-api/src/stomp-chat-controller.ts](https://github.com/ndigo/ndigo/blob/main/apps/05-ndigo-api/src/stomp-chat-controller.ts)

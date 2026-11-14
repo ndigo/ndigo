@@ -88,5 +88,25 @@ test-results/
 # graft's local graph cache — regenerable, not committed (run `graft build`).
 /graft/
 
+# Internal working docs: kept locally, not published (see docs/README.md).
+/docs/plans/
+/docs/audits/
+/docs/reference/
+/.nx/SELF_HEALING.md
+/.github/copilot-instructions.md
+
+# Generated API reference: produced on demand via `pnpm doc:api`, not committed.
+/API.md
+/packages/*/api/
+
+# AI agent deployment: generated locally via `pnpm agents:sync` from the neutral
+# store (development-agents/, outside this repo) plus agent-local/. Not committed.
+/.agents/
+/.omp/
+/.opencode/
+/agent-local/
+/.agent-gen.json
+/.agent-local.json
+
 # opencode plugin dependencies (installed on demand by opencode)
 .opencode/node_modules/

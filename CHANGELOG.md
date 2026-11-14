@@ -760,8 +760,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (cross-node cache + socket fan-out), `17-ndigo-telemetry-lab` (browser→server
   trace continuation, sampling, OTLP), `18-ndigo-auth-playground` (cookie/JWT/
   role/session-durability matrix + embedded OIDC PKCE issuer), `19-ndigo-hn`
-  (cached/offline HN reader) — each with tests and a boot-smoke probe
-  (`docs/plans/2026-10-07_EXAMPLE_APPLICATIONS.md`).
+  (cached/offline HN reader) — each with tests and a boot-smoke probe.
 - Root `pnpm apps:smoke` — boots every Node example app on a dedicated probe
   port, asserts its documented route (plus the hello-node WebSocket echo),
   requires a clean SIGTERM exit and a released port; wired into the CI quality
@@ -824,8 +823,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   AD-58 left unadopted were re-assessed at oxc 0.153: standard-decorator
   lowering is still absent (and `legacy` mode mis-invokes TC39 decorators), so
   `tsc -b` and the esbuild decorator pre-transform stand; oxc-parser is mature
-  but unnecessary, oxc-minify/oxc-resolver have no consumer
-  (`docs/audits/2026-10-07_OXC_UPDATE_AND_MATURITY_ASSESSMENT.md`).
+  but unnecessary, oxc-minify/oxc-resolver have no consumer.
 - Example-app directories are numbered in reading order
   (`apps/01-ndigo-hello` … `apps/07-ndigo-views`, new apps `08`–`19`); package
   names stay unnumbered (`@ndigo/hello` …) except the two unscoped demos, now
@@ -839,7 +837,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   boots `MetadataConfigApplicationContext` instead of the Node-oriented
   `ApplicationBuilder` (−98 kB in the client bundle; guide 01's minimal-app
   snippet now matches `02-ndigo-hello-node` again); `01-ndigo-hello`'s smoke spec
-  uses the `@ndigo/test` browser harness (`docs/plans/2026-10-07_EXAMPLE_APPLICATIONS.md` §12).
+  uses the `@ndigo/test` browser harness.
 
 - The `internal/requires-doc-header` oxlint rule now rejects stray `* * @…`
   header lines; a repo-wide sweep repaired 115 files (the artifact rendered as

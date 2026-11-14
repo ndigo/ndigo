@@ -2,7 +2,7 @@
 
 **Date:** 2026-09-13
 **Status:** Accepted — decision recorded; implementation sequenced (see
-[plan](../plans/2026-09-13_SCHEDULING.md), not yet started)
+plan, not yet started)
 
 ## Background
 
@@ -176,14 +176,14 @@ convention documented.
 ## Sequencing
 
 See the implementation plan:
-[`docs/plans/2026-09-13_SCHEDULING.md`](../plans/2026-09-13_SCHEDULING.md) —
+`docs/plans/2026-09-13_SCHEDULING.md` —
 package + validation, registry + engine, platform integration + telemetry,
 demo + lint rule + docs.
 
 ## Implementation status (2026-09-13)
 
 **All phases landed** (plan
-[`docs/plans/2026-09-13_SCHEDULING.md`](../plans/2026-09-13_SCHEDULING.md)):
+`docs/plans/2026-09-13_SCHEDULING.md`):
 
 - Phase 1: `@scheduled` decorator + validation (`TimeZones`/`Intl` probe).
 - Phase 2: `Schedule` contract, `ScheduleRegistry`, `TaskScheduler` engine

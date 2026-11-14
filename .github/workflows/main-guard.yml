@@ -72,9 +72,6 @@ jobs:
       - name: Manifest conformance
         run: pnpm manifest:check
 
-      - name: Agent config integrity
-        run: pnpm agents:check
-
       - name: Consumer agent content integrity
         run: pnpm agent-content:check
 

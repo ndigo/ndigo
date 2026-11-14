@@ -75,7 +75,7 @@ bundle guard, and follows the conventions in
 
 ## API
 
-See the [generated API reference](api/README.md).
+The generated API reference is available via `pnpm doc:api`.
 
 ## Development
 

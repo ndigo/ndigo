@@ -26,6 +26,7 @@ const FULL_STEPS = [
     { label: 'guide contract', script: 'guides:check' },
     { label: 'migration schema freshness', script: 'db:schema:check' },
     { label: 'manifest conformance', script: 'manifest:check' },
+    { label: 'dead-code check (knip)', script: 'audit:dead' },
     { label: 'agent config integrity', script: 'agents:check' },
     { label: 'build libraries', script: 'build' },
     { label: 'example apps boot + probe', script: 'apps:smoke' },

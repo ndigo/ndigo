@@ -130,8 +130,9 @@ composite (rating, combobox, tag input).
 - **Color is not the only signal** — errors, required fields, and selected
   states need text/icon/ARIA, not just color.
 - **Contrast** — the ndigo-ui token suite enforces AA (4.5:1) for every
-  semantic foreground/background pair in both themes; component-specific colors
-  still need a browser check.
+  semantic foreground/background pair in all six built-in themes, including the
+  high-contrast pair; component-specific colors still need a browser check.
+  `data-color-scheme` lets the browser tint native widgets to match.
 - **RTL/logical properties** — use `margin-inline`, `padding-inline`,
   `inset-inline`, and `text-align: start`; avoid hard-coded `left`/`right`.
   Test at least one component per library in `dir="rtl"`.

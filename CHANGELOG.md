@@ -330,6 +330,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   AD-90 presets (`createNodeApplication` / `createWebApplication`), with
   `--local` dev mode against the workspace, a copied decorator-lowering
   plugin, and a smoke + bundle guard in the generated app. Ships at 1.0.
+- `@ndigo/ui` (AD-106): six built-in visual themes — `ndigo-dark`,
+  `ndigo-light`, `solarized-dark`, `solarized-light`, `high-contrast-dark`, and
+  `high-contrast-light` — with `createTheme`, `withThemeTokens`, `applyTheme`,
+  `removeTheme`, and `themeToCss`. Themes override only `--nd-*` color tokens
+  and switch through `data-theme` in CSS, so a theme change needs no
+  JavaScript; the legacy `dark`/`light` values alias the Ndigo themes.
 
 ### Changed
 

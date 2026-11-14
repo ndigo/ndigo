@@ -181,7 +181,7 @@ Under multiple processes the in-memory default multiplies the effective
 limit per node; override the entry with `@ndigo/redis/rate-limit`'s
 `RedisRateLimiter` so every node counts against the **same** budgets
 (shared store, **fail-closed** by default — ; see
-[guide 21 §3](21-persistence-and-shared-stores.md)).
+[Guide 21 §3](21-persistence-and-shared-stores.md)).
 
 ## 6. CSRF on auth mutations
 

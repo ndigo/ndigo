@@ -31,9 +31,9 @@ configuration and wiring.
 - **CSRF** — **not** wired by default; opt in for cookie-authenticated
   mutations (§4).
 
-Other layers are explicit: sessions/auth (guide 26), static containment
-(guide 10), management exposure (guide 33), WebSocket origins (guide 15), and
-at-rest secrets (guide 03).
+Other layers are explicit: sessions/auth (Guide 26), static containment
+(Guide 10), management exposure (Guide 33), WebSocket origins (Guide 15), and
+at-rest secrets (Guide 03).
 
 ## 2. Security headers and CSP
 
@@ -164,15 +164,15 @@ you trust too broadly. Trust only the exact proxy networks.
   `__Host-ndigo-session` prefix pins the origin. Never expose the session id to
   JavaScript. [Guide 26](26-authentication-and-sessions.md) covers rotation and revocation.
 - **JWT** — short access TTLs, rotating refresh tokens, `tokenVersion`
-  revocation; see [guide 26](26-authentication-and-sessions.md).
+  revocation; see [Guide 26](26-authentication-and-sessions.md).
 - **Management endpoints** — opt-in exposure; protect them with the same guard
-  as any privileged route (guide 33).
-- **WebSockets** — validate `Origin` on upgrade (guide 15); a socket inherits
+  as any privileged route (Guide 33).
+- **WebSockets** — validate `Origin` on upgrade (Guide 15); a socket inherits
   the same auth and rate-limit decisions as HTTP.
 - **Static files** — containment and method safety are on by default; do not
-  serve user-controlled roots (guide 10).
+  serve user-controlled roots (Guide 10).
 - **Secrets** — use `{cipher:...}` values and keep `NDIGO_SECRET_KEY` out of
-  the repository and backups (guide 03).
+  the repository and backups (Guide 03).
 
 ## 8. Production checklist
 

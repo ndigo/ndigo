@@ -237,8 +237,8 @@ contributor guides. Numbers are reading order within a section.
 - **Browser app:** 02 → 29 → 30 → 31 → 27 → 28 → 36.
 - **Full-stack / islands:** 01 + 02 → 09 → 17 → 18 → 29 → 30 → 31.
 
-Start with [**00 — Core Concepts**](00-core-concepts.md), then guide 01 for a
-Node app or guide 02 for a browser app. Guide 01 introduces the concepts the rest
+Start with [**00 — Core Concepts**](00-core-concepts.md), then Guide 01 for a
+Node app or Guide 02 for a browser app. Guide 01 introduces the concepts the rest
 of the guides and package READMEs assume. Use the API reference when you need
 the full symbol surface.
 

@@ -29,7 +29,7 @@ pnpm build                     # packages and app build targets
 ndigo serve ./[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api) --port 3000
 ```
 
-`ndigo serve` runs the app's `start` script under the supervisor (guide 37);
+`ndigo serve` runs the app's `start` script under the supervisor (Guide 37);
 `ndigo dev` is the watch mode. A plain `node`/`tsx` start command is equally
 valid when you do not need the supervisor. Build artifacts belong in the image
 or release bundle; do not ship `node_modules` from a dev install.
@@ -40,7 +40,7 @@ Set `NODE_ENV=production` and a real `NODE_OPTIONS` memory limit per slot.
 
 ## 2. Configuration and secrets
 
-Configuration is resolved from the environment chain (guide 03): CLI args,
+Configuration is resolved from the environment chain (Guide 03): CLI args,
 builder properties, `process.env`, config files, `configServer`, defaults.
 Production rules:
 
@@ -68,9 +68,9 @@ ndigo serve ./[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/
 ```
 
 Each slot gets `NDIGO_CLUSTER_SLOT`, `NDIGO_CLUSTER_SIZE`, and
-`PORT = base + slot` (guide 25). The supervisor relays `SIGINT`/`SIGTERM` into
+`PORT = base + slot` (Guide 25). The supervisor relays `SIGINT`/`SIGTERM` into
 each child's own graceful shutdown and restarts crashed slots with bounded
-backoff; a crash loop fails closed instead of flapping forever (guide 24).
+backoff; a crash loop fails closed instead of flapping forever (Guide 24).
 
 What changes under clustering:
 
@@ -79,14 +79,14 @@ What changes under clustering:
 - **Scheduled work needs single-executor arbitration** — `@scheduled({ lock })`
   or a cluster-wide leader; otherwise every slot runs the task.
 - **WebSocket fan-out needs the Redis pub/sub bridge** when clients may land on
-  different slots (guide 15).
+  different slots (Guide 15).
 - **Health probes** must target a single slot (the supervisor's port mapping)
   or the platform's load balancer, not an arbitrary child.
 
 ## 4. Graceful shutdown
 
 The canonical order is stop serving, drain producers, close consumers/
-transports, then close the context (guide 04 and
+transports, then close the context (Guide 04 and
 [Lifecycle & Ownership](../architecture/lifecycle-and-ownership.md)):
 
 1. Stop accepting new requests (server stop).
@@ -103,7 +103,7 @@ drain time. A clustered supervisor waits for children and reaps stragglers.
 
 ## 5. Health, metrics, and traces
 
-Expose the management surface deliberately (guide 33):
+Expose the management surface deliberately (Guide 33):
 
 - `GET /health` — liveness/readiness groups; use a component check for the
   database/Redis when the app cannot serve without it.
@@ -113,7 +113,7 @@ Expose the management surface deliberately (guide 33):
   or keep them off the public listener.
 - **Probes** — point readiness at `/health/readiness` (or the group that
   includes dependencies) and liveness at a cheap `/health/liveness`.
-- **Telemetry** — export traces/metrics/logs (guide 32); correlate request,
+- **Telemetry** — export traces/metrics/logs (Guide 32); correlate request,
   job, and scheduled-task spans; flush on shutdown.
 
 Do not expose the management surface on the same public listener without a
@@ -134,14 +134,14 @@ The server starts an HTTP/2 secure listener with `allowHTTP1` fallback; HTTP/3
 stays at the edge . A half-configured TLS pair fails at startup
 rather than silently serving plaintext.
 
-Behind a proxy, configure `trustedProxies` (guide 28) so rate limiting,
+Behind a proxy, configure `trustedProxies` (Guide 28) so rate limiting,
 sessions, and `remoteAddress` see the real client. Forward `X-Forwarded-For`
 and `X-Forwarded-Proto`; keep the proxy's hop count minimal.
 
 ## 7. Static assets and caching
 
 - Serve precompressed twins (`.br`/`.gz`) with `Vary: Accept-Encoding`; the
-  static handler negotiates them (guide 10).
+  static handler negotiates them (Guide 10).
 - Give hashed assets a long `Cache-Control` and HTML a short/no-cache policy.
 - Use a CDN in front of static assets when the app is multi-region; the
   framework's ETag/Range semantics survive a caching proxy.
@@ -162,7 +162,7 @@ and `X-Forwarded-Proto`; keep the proxy's hop count minimal.
 - [ ] TLS at the edge or `NDIGO_TLS_*` on the listener; trusted proxies set.
 - [ ] Static assets cached/precompressed; uploads on a durable volume.
 - [ ] Rate limits, CORS, CSRF, and security headers verified in the deployed
-      origin (guide 28).
+      origin (Guide 28).
 - [ ] A rollback path exists (previous image + migration compatibility).
 
 ## 9. Pitfalls
@@ -176,7 +176,7 @@ and `X-Forwarded-Proto`; keep the proxy's hop count minimal.
   per slot.
 - **Killing before draining.** A short termination grace period truncates
   in-flight requests; set it above the shutdown timeout.
-- **Trusting every proxy.** Configure the exact networks (guide 28).
+- **Trusting every proxy.** Configure the exact networks (Guide 28).
 
 ## See also
 

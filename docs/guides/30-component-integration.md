@@ -32,7 +32,7 @@ the superseded .
 | ------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------- |
 | **ndigo-ui** (first-party, optional)  | You want the Ndigo design language and a copy-in registry           | You own the installed source; components arrive via `ndigo ui add`        |
 | **Third-party Web Component library** | You already have a design system (Web Awesome, Shoelace, Lit-based) | You own the adoption/fallback/i18n work; the framework stays library-free |
-| **View-engine UI** (React/Vue/Svelte) | The UI is a full framework app or a React design system             | You implement or adopt a view engine (guide 41)                           |
+| **View-engine UI** (React/Vue/Svelte) | The UI is a full framework app or a React design system             | You implement or adopt a view engine (Guide 41)                           |
 | **Hand-rolled / native**              | Small surfaces, maximum control                                     | You build accessibility, forms, and theming yourself                      |
 
 The framework packages never import a UI library. Each application selects
@@ -237,7 +237,7 @@ submit ordinary name/value pairs:
 - **Third-party** — theme through the library's CSS custom properties; map
   your brand tokens onto its variables at the app boundary.
 - **i18n** — component chrome strings must be localizable. Pass the negotiated
-  locale (guide 17) into the component's label/aria attributes; do not rely on
+  locale (Guide 17) into the component's label/aria attributes; do not rely on
   hard-coded English defaults.
 - **RTL** — require logical properties; test one component per library.
 
@@ -245,7 +245,7 @@ submit ordinary name/value pairs:
 
 If the library injects inline styles/scripts, extend the CSP explicitly
 (`style-src`/`script-src` with a nonce or hash) rather than disabling CSP
-(guide 28). Budget per component: import only what the page uses, measure the
+(Guide 28). Budget per component: import only what the page uses, measure the
 gzip delta, and record it in the ADR. ndigo-ui items ship with a recorded
 budget; a third-party library's claim is not a measurement.
 

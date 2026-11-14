@@ -5,7 +5,7 @@ ships: `/health` + `/metrics` from day one , and — since — the
 actuator-parity set `/loggers`, `/env`, `/configprops` and composed health
 groups. Everything lives behind the one `ManagementAutoConfiguration` entry
 point and the single access-guard model; the endpoints are **open by
-default**, so the security posture from [guide 26](26-authentication-and-sessions.md) (guard + boundary firewall)
+default**, so the security posture from [Guide 26](26-authentication-and-sessions.md) (guard + boundary firewall)
 applies to everything below.
 
 Reference application: [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api) (the demo exposes the full surface).
@@ -68,7 +68,7 @@ A disabled endpoint answers `404`; it is never half-armed. When an
 `/metrics` is the **pull view over the OpenTelemetry meter provider**: one
 snapshot, two wire forms. Registering
 [`ManagementAutoConfiguration`](../../packages/ndigo-management/README.md)
-serves it; configuring `metricExporter: 'prometheus'` (guide 32 §3)
+serves it; configuring `metricExporter: 'prometheus'` (Guide 32 §3)
 registers the reader that backs it — neither needs the other to boot.
 
 - **Prometheus text by default.** `GET /metrics` returns the exposition
@@ -189,9 +189,9 @@ prefix (`ROOT` for prefix-less classes).
   [`@ndigo/boot`'s `application.schema.json`](../../packages/ndigo-boot/schema/application.schema.json)
   (only `redactHealthErrors` is not read from config files); the
   `telemetry.metricExporter` spec documents the `'prometheus'` literal.
-- Related: [guide 32](32-telemetry.md) (telemetry — the metrics backing and the exporter
-  knobs), [guide 12](12-openapi-and-api-docs.md) (OpenAPI — the same management guard pattern in
-  `OpenAPIDocsAutoConfiguration`), [guide 03](03-environment-configuration.md) (the config-file convention the
+- Related: [Guide 32](32-telemetry.md) (telemetry — the metrics backing and the exporter
+  knobs), [Guide 12](12-openapi-and-api-docs.md) (OpenAPI — the same management guard pattern in
+  `OpenAPIDocsAutoConfiguration`), [Guide 03](03-environment-configuration.md) (the config-file convention the
   `management.*` keys follow).
 
 ## See also

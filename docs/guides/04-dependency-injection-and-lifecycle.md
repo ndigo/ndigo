@@ -5,7 +5,7 @@ decides how long each one lives, injects the collaborators an entry asks for, an
 closes resources in a defined order when the app stops. This guide covers the
 registration surface, the scope strategies, and the lifecycle hooks.
 
-**Audience:** Node and browser application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) (Node) or [guide 02](02-building-a-browser-app.md) (browser) · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)
+**Audience:** Node and browser application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) (Node) or [Guide 02](02-building-a-browser-app.md) (browser) · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)
 
 ## What you'll learn
 
@@ -114,7 +114,7 @@ class FeatureClient {
 }
 ```
 
-`@refreshScope` is the bridge to [guide 03](03-environment-configuration.md): when the environment emits
+`@refreshScope` is the bridge to [Guide 03](03-environment-configuration.md): when the environment emits
 `config:refresh`, the cached instance is destroyed and the next `getValue`
 re-creates it. A custom scope is registered on the factory with
 `registerScope(name, scope)`; the scope owns its own cache and
@@ -206,7 +206,7 @@ Teardown is idempotent: `destroy`/`close` may run more than once, so guard
 the body. The container calls `destroy` when present, otherwise `close`;
 implementing both is unnecessary. Async teardown is not awaited by the
 synchronous `context.close` — bridge an async resource to a
-`Closeable` that drains first (guide 21) or close it explicitly before the
+`Closeable` that drains first (Guide 21) or close it explicitly before the
 context.
 
 ## 6. Parent/child contexts and events
@@ -241,10 +241,10 @@ Events are addressed explicitly:
 - `ContextEventGateway` — an allowlisted relay with managed teardown.
 
 Use application events for cross-context notification (a feature mounted, a
-configuration refreshed), not for durable work — that is jobs (guide 22) — and
-not for local derived state — that is signals (guide 29).
+configuration refreshed), not for durable work — that is jobs (Guide 22) — and
+not for local derived state — that is signals (Guide 29).
 [Guide 31](31-micro-frontends.md) covers the micro-frontend relay wiring, and
-[guide 49](49-configuration-layering-and-context-composition.md) covers the
+[Guide 49](49-configuration-layering-and-context-composition.md) covers the
 composition and event model end to end.
 
 Closing a context closes its children depth-first, then stops its lifecycle

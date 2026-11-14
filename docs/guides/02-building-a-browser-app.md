@@ -122,7 +122,7 @@ through `app.router.addInterceptor(...)`.
 ## 3. App-specific state and services
 
 Entries are plain entries; cross-entry reads go through `ContextToken`s so a
-rename cannot silently miss (`[apps/19-ndigo-hn/src/app/hn-tokens.ts](https://github.com/ndigo/ndigo/blob/main/apps/19-ndigo-hn/src/app/hn-tokens.ts)):
+rename cannot silently miss ([apps/19-ndigo-hn/src/app/hn-tokens.ts](https://github.com/ndigo/ndigo/blob/main/apps/19-ndigo-hn/src/app/hn-tokens.ts)):
 
 ```ts
 export const APP_SERVICE = new ContextToken<AppService>('appService');

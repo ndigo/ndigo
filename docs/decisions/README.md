@@ -120,7 +120,12 @@ contiguous. Every record captures a decision with its context, the evidence
 
 ## Archived ADRs
 
-Includes ADRs archived in Phase A+B (AD-02, AD-52, AD-71) and Phase C consolidations (AD-12..17, AD-22, AD-23, AD-31, AD-97..101).
+Includes ADRs archived in Phase A+B (AD-02, AD-52, AD-71) and Phase C consolidations:
+
+- AD-12..AD-17 → consolidated into [AD-11](2026-09-08_AD11_ENVIRONMENT_PROPERTY_SOURCES.md) (environment phases 0–6). Archived records: [AD-12](archive/2026-09-08_AD12_ENVIRONMENT_RESOLUTION_SEMANTICS.md), [AD-13](archive/2026-09-08_AD13_ENVIRONMENT_STANDARD_SOURCES.md), [AD-14](archive/2026-09-08_AD14_ENVIRONMENT_PROFILES.md), [AD-15](archive/2026-09-08_AD15_CONFIGURATION_PROPERTIES.md), [AD-16](archive/2026-09-08_AD16_ENVIRONMENT_OBSERVABILITY.md), [AD-17](archive/2026-09-08_AD17_ENVIRONMENT_VALIDATION.md).
+- AD-22, AD-23 → consolidated (websocket/STOMP) — see archive.
+- AD-31 → consolidated into the ORM ADRs — see archive.
+- AD-97..AD-101 → consolidated into [AD-96](2026-11-10_AD96_LLM_AGENT_INTEGRATION.md) (agent/LLM integration). Archived records: [AD-97](archive/2026-11-10_AD97_CLI_JSON_CONTRACT.md), [AD-98](archive/2026-11-10_AD98_AGENT_CONTENT_GENERATION.md), [AD-99](archive/2026-11-10_AD99_MCP_HOST_EXTRACTION.md), [AD-100](archive/2026-11-10_AD100_MCP_TOOL_PROJECTION.md), [AD-101](archive/2026-11-10_AD101_A2UI_ADOPTION.md).
 
 Fully superseded decisions are moved to [`archive/`](archive/) and marked
 "Archived (superseded)" above. They are retained for history; the superseding

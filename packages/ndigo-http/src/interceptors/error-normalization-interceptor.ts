@@ -86,6 +86,7 @@ export class ErrorNormalizationInterceptor implements ResponseAwareHTTPIntercept
         const responseError = new ResponseError(undefined, normalized);
         // Preserve the original failure as the `cause` of the surfaced error.
         defineProperty(responseError, 'cause', { value: error, configurable: true });
+        // NOTE: bridging to Response — the source type is wider than this consumer's contract.
         return responseError as unknown as Response;
     }
 }

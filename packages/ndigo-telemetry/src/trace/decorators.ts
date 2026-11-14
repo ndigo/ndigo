@@ -58,7 +58,9 @@ function createTracedDecorator(spanName?: string) {
                 try {
                     const result = target.apply(this, args);
 
+                    // NOTE: bridging to PromiseLike<unknown> — the source type is wider than this consumer's contract.
                     if (result && typeof (result as unknown as PromiseLike<unknown>).then === 'function') {
+                        // NOTE: bridging to Promise<unknown> — the source type is wider than this consumer's contract.
                         return (result as unknown as Promise<unknown>)
                             .then((value) => {
                                 span.setStatus({ code: SpanStatusCode.OK });

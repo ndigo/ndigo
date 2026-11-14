@@ -43,6 +43,7 @@ and file-naming convention is in
 | 19  | `19-ndigo-hn`              | `@ndigo/hn`              | Browser (Vite)      | 3450             | Browser — Hacker News reader: cached/offline HTTP client, incremental long-list rendering, deep links, comment tree bounded to depth 3                                                                                             |
 | 20  | `20-ndigo-ui-lab`          | `@ndigo/ui-lab`          | Browser (Vite)      | 3460             | Browser — owned design system: full 42-item registry (tokens, native-first primitives, Zag.js behaviour, five blocks), typed token catalog, axe-clean                                                                              |
 | 21  | `21-ndigo-agent-lab`       | `@ndigo/agent-lab`       | Node (`tsx`)        | 3210             | Node — local-model tool loop over MCP tools: MCP App (`ui://orders`), A2UI report, Streamable HTTP, SSE + one GenAI trace                                                                                                          |
+| 22  | `22-ndigo-ui-storybook`    | `@ndigo/ui-storybook`    | Node (Storybook)    | 6007             | Storybook — owned design system catalog: interactive showcase of the 42-item @ndigo/ui registry (tokens, primitives, Zag.js behaviours, blocks)                                                                                    |
 
 ## Applications
 
@@ -274,6 +275,17 @@ bounded to depth 3.
 ```bash
 cd apps/19-ndigo-hn && pnpm dev
 # open http://127.0.0.1:3450/
+```
+
+### 22-ndigo-ui-storybook
+
+Storybook catalog for the owned design system: interactive showcase of the
+42-item `@ndigo/ui` registry (tokens, native-first primitives, Zag.js
+behaviours, blocks), with axe-clean conformance checks.
+
+```bash
+cd apps/22-ndigo-ui-storybook && pnpm storybook
+# open http://127.0.0.1:6007/
 ```
 
 ## Ports

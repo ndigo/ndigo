@@ -202,6 +202,7 @@ function toolRoute(tool: RegisteredTool, args: Record<string, unknown>): Route {
         params,
         method: tool.info.methodCondition?.method,
         attributes: { [NODE_REQUEST_ATTRIBUTE]: nodeRequest },
+        // NOTE: bridging to Route — the source type is wider than this consumer's contract.
     } as unknown as Route;
 }
 

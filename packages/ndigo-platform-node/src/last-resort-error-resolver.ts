@@ -26,6 +26,7 @@ export class NodeLastResortErrorResolver extends AbstractRouteErrorResolver {
             status: 500,
             instance: route.path,
         });
+        // NOTE: bridging to ModelAndView — the source type is wider than this consumer's contract.
         return entity as unknown as ModelAndView;
     }
 }

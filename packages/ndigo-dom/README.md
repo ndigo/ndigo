@@ -1,8 +1,6 @@
 # @ndigo/dom
 
-> Browser and server-side (linkedom) DOM providers for Ndigo — isomorphic Web Component rendering.
-
-DOM abstraction layer for Ndigo. Provides browser DOM and server-side (linkedom) DOM providers, enabling isomorphic rendering of Web Components across client and server runtimes.
+> Reserved integration layer for `linkedom` — isomorphic DOM providers for Ndigo. Not currently consumed by any package; island hydration uses the browser `document`. Retained as the single, lint-enforced entry point for linkedom so a future SSR consumer has one place to land.
 
 ## Installation
 

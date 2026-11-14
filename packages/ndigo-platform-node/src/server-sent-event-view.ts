@@ -87,6 +87,7 @@ export class ServerSentEventView implements ProducerView {
      * @returns The streaming render result.
      */
     async renderTo(_model: unknown, route: Route): Promise<RenderResult> {
+        // NOTE: bridging to ServerResponse | undefined — the source type is wider than this consumer's contract.
         const res = route.attributes?.[NODE_RESPONSE_ATTRIBUTE] as unknown as ServerResponse | undefined;
 
         if (this.destroyed || !res) {

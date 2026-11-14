@@ -79,6 +79,7 @@ export function drizzleTableForEntity<E extends object>(entityClass: Constructab
  * @returns A Zod schema.
  */
 export function insertSchemaForEntity<E extends object>(entityClass: Constructable<E>): z.ZodType {
+    // NOTE: bridging to Parameters<typeof createInsertSchema>[0] — the source type is wider than this consumer's contract.
     const table = drizzleTableForEntity(entityClass) as unknown as Parameters<typeof createInsertSchema>[0];
     return createInsertSchema(table) as z.ZodType;
 }

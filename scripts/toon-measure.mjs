@@ -15,10 +15,7 @@
  * whose encoding is worth pricing.
  */
 import { readFileSync } from 'node:fs';
-import {
-    decode,
-    encode,
-} from '../node_modules/.pnpm/@toon-format+toon@4.4.0/node_modules/@toon-format/toon/dist/index.mjs';
+import { decode, encode } from '@toon-format/toon';
 
 const input = [];
 let selectPath;

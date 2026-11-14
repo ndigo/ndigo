@@ -4,7 +4,7 @@
 
 # @ndigo/dom v0.0.1
 
-Browser and server-side (linkedom) DOM providers for Ndigo — isomorphic Web Component rendering.
+Reserved integration layer for `linkedom` — isomorphic DOM providers for Ndigo. Not currently consumed by any package; island hydration uses the browser `document`. Retained as the single, lint-enforced entry point for linkedom so a future SSR consumer has one place to land.
 
 ## Modules
 

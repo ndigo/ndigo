@@ -70,8 +70,6 @@ already have:
 
 ## See also
 
--: `docs/decisions/2026-10-07_AD74_CLUSTERING.md`
-
 - [Guide 38 — Deployment & Production Readiness](38-deployment-and-production-readiness.md) — clustered operation and the production checklist
 - `gracefulShutdown` (`@ndigo/platform-node`) — what each child runs on the
   relayed signal.

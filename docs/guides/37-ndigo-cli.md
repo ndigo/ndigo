@@ -273,9 +273,7 @@ migration files, generation from entity metadata, and run-on-boot — is
 
 ## See also
 
--: `docs/decisions/2026-10-07_AD75_FRAMEWORK_CLI.md`
-
 - [Guide 46 — Upgrading Ndigo](46-upgrading.md) — `update` and migration guides
-- The cluster guide (24) — what `serve --cluster` runs
-- The jobs (22) and locks (23) guides — the coordination the CLI fronts
-- `[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)/src/inspect.ts` — the inspect-entry template
+- [Guide 25 — Clustering](25-clustering.md) — what `serve --cluster` runs
+- [Guide 22 — Jobs & Outbox](22-jobs-and-outbox.md) and [Guide 24 — Distributed Locks](24-distributed-locks.md) — the coordination the CLI fronts
+- [apps/05-ndigo-api/src/inspect.ts](https://github.com/ndigo/ndigo/blob/main/apps/05-ndigo-api/src/inspect.ts) — the inspect-entry template

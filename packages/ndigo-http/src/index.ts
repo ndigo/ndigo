@@ -12,7 +12,6 @@ export * from './authorization-header';
 export * from './content-type-header';
 export * from './set-cookie-header';
 export * from './interceptors';
-export { TraceHeaderInterceptor, TraceHeaderInterceptorOptions } from './interceptors/trace-header-interceptor';
 export { ResponseStatus };
 export { ResponseStatuses };
 export * from './transformers';

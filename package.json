@@ -73,6 +73,7 @@
   "devDependencies": {
     "@nx/devkit": "catalog:",
     "@oxlint/plugins": "catalog:",
+    "@toon-format/toon": "4.4.0",
     "@tsmetadata/polyfill": "catalog:",
     "@types/node": "catalog:",
     "esbuild": "^0.28.2",

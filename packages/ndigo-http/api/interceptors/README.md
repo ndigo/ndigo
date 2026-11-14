@@ -70,6 +70,30 @@ Re-exports [DataParameterInterceptor](data-parameter-interceptor/classes/DataPar
 
 ***
 
+### ErrorNormalizationInterceptor
+
+Re-exports [ErrorNormalizationInterceptor](error-normalization-interceptor/classes/ErrorNormalizationInterceptor.md)
+
+***
+
+### ErrorNormalizationInterceptorConfig
+
+Re-exports [ErrorNormalizationInterceptorConfig](error-normalization-interceptor/interfaces/ErrorNormalizationInterceptorConfig.md)
+
+***
+
+### HeaderInterceptor
+
+Re-exports [HeaderInterceptor](header-interceptor/classes/HeaderInterceptor.md)
+
+***
+
+### HeaderInterceptorConfig
+
+Re-exports [HeaderInterceptorConfig](header-interceptor/interfaces/HeaderInterceptorConfig.md)
+
+***
+
 ### IfModifiedInit
 
 Re-exports [IfModifiedInit](if-modified-interceptor/type-aliases/IfModifiedInit.md)
@@ -211,6 +235,18 @@ Re-exports [RetryInterceptor](retry-interceptor/classes/RetryInterceptor.md)
 ### ServerErrorAwareHTTPInterceptor
 
 Re-exports [ServerErrorAwareHTTPInterceptor](response-class-interceptor/interfaces/ServerErrorAwareHTTPInterceptor.md)
+
+***
+
+### StatusInterceptor
+
+Re-exports [StatusInterceptor](status-interceptor/classes/StatusInterceptor.md)
+
+***
+
+### StatusInterceptorConfig
+
+Re-exports [StatusInterceptorConfig](status-interceptor/interfaces/StatusInterceptorConfig.md)
 
 ***
 

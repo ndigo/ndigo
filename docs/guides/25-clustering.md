@@ -66,7 +66,7 @@ already have:
 - `@jobHandler` work claims atomically — workers may all poll, only
   one leases.
 - Sessions/caches/rates with shared-store drivers keep their cross-node
-  semantics (guide 21).
+  semantics (Guide 21).
 
 ## See also
 

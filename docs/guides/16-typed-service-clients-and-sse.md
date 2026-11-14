@@ -3,7 +3,7 @@
 `@ndigo/service` turns a decorated class into a typed remote-service client:
 method metadata declares the HTTP call, a Zod schema validates the response, and
 `{ stream: true }` switches the same method to Server-Sent Events. The HTTP
-transport and its interceptors still come from `@ndigo/http` (guide 11); this
+transport and its interceptors still come from `@ndigo/http` (Guide 11); this
 package is the domain façade over it.
 
 **Audience:** Node and browser application developers · **Prerequisites:** Guides [11](11-http-client.md) and [15](15-websockets.md) · **Reference app:** [apps/07-ndigo-island](https://github.com/ndigo/ndigo/tree/main/apps/07-ndigo-island)
@@ -103,7 +103,7 @@ ticks(): AsyncIterable<z.infer<typeof Tick>> {
 
 The stream ends when the server closes it; a network failure rejects the
 iteration. There is no automatic reconnect or replay — implement resume logic in
-the consumer or use the socket client (guide 15) when you need it.
+the consumer or use the socket client (Guide 15) when you need it.
 
 ## 4. Parsing an event stream directly
 
@@ -143,7 +143,7 @@ code that builds the client. The service client itself stays transport-only.
 ## 6. Interceptors
 
 The client uses the `HTTP` instance you pass in, so the HTTP interceptor
-lifecycle applies unchanged (guide 11): auth headers, retries, tracing, and
+lifecycle applies unchanged (Guide 11): auth headers, retries, tracing, and
 caching compose around the service call. `ServiceExecutionChain` and the
 `ServiceInterceptor` contracts exist for the stateful `Service` class; a
 `serviceClient` is the simpler default.

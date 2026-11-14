@@ -195,11 +195,11 @@ describes all fragments.
   Do not inline the bundle into `renderTo`.
 - **CSP** — a React page usually needs a nonce on its inline model script. Pass
   the request's nonce into the view and emit `<script nonce="…">`; never disable
-  CSP (guide 28).
-- **i18n** — pass the negotiated locale (guide 17) into the component props and
+  CSP (Guide 28).
+- **i18n** — pass the negotiated locale (Guide 17) into the component props and
   keep message lookup on the server for the first paint; the client uses the
   same message source or the serialized strings.
-- **Forms** — React forms submit through the normal binding path (guide 18).
+- **Forms** — React forms submit through the normal binding path (Guide 18).
   Keep the server as the validator; client state is convenience.
 
 ## 7. Streaming
@@ -218,7 +218,7 @@ and a static document; add streaming when the page is large enough to measure.
 
 ## 8. Testing
 
-- **Server** — `bootNodeApp` + `MockHTTP` (guide 36) asserts the status, headers,
+- **Server** — `bootNodeApp` + `MockHTTP` (Guide 36) asserts the status, headers,
   and root markup. The React component can be tested separately with its own
   props.
 - **Hydration** — run the client entry in jsdom, assert no hydration warning,
@@ -239,9 +239,9 @@ and a static document; add streaming when the page is large enough to measure.
 - **Do not bundle per request.** Build the client once; the server renders
   only markup and a model.
 - **A view engine is not a component library.** React components still follow
-  the UI-library rules (guide 30); the engine only renders them.
+  the UI-library rules (Guide 30); the engine only renders them.
 - **Do not use a view engine for JSON.** Return data or a serializing view
-  (guide 09); a React engine is for HTML.
+  (Guide 09); a React engine is for HTML.
 
 ## See also
 

@@ -6,7 +6,7 @@ route prefix, with its own services and lifecycle; the shell owns the context
 tree, the shared singletons, and the route partitions.
 
 `@ndigo/host` is the orchestration layer over `FeatureRoutingRegistry` and
-`FeatureContextMountManager`. Islands (guide 29) are the other micro-frontend
+`FeatureContextMountManager`. Islands (Guide 29) are the other micro-frontend
 shape: presentation units hydrated inside a page rather than full application
 contexts. This guide is the host/feature path.
 
@@ -165,7 +165,7 @@ layering options and the boundary.
 - A feature owns a **context**, services, and a route partition. It is the right
   unit for an application slice with its own lifecycle.
 - An island owns a **model** and a tag. It is the right unit for a presentation
-  component embedded in a server-rendered page; [guide 29](29-signals-and-islands.md) covers hydration and
+  component embedded in a server-rendered page; [Guide 29](29-signals-and-islands.md) covers hydration and
   SSE.
 - They compose: a feature's page can contain islands; an island never mounts a
   feature. Keep the boundary at data contracts (context values, serialized

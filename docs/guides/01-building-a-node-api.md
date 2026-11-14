@@ -109,7 +109,7 @@ Controllers are plain classes whose methods carry mapping decorators.
 `@getMapping` / `@postMapping` (from `@ndigo/dispatcher`) describe path and
 method; `@parameters` describes how method arguments are bound. The full
 routing surface — patterns, conditions, precedence, partitions — is
-[guide 05](05-routing-and-route-conditions.md).
+[Guide 05](05-routing-and-route-conditions.md).
 
 ```ts
 import '@tsmetadata/polyfill';
@@ -199,7 +199,7 @@ the lifecycle processor.
 ## 6. The error contract (RFC 9457)
 
 The extension surface — `@errorMapping`, custom resolvers, and the error
-lineage — is [guide 08](08-errors-and-problem-details.md). This section shows
+lineage — is [Guide 08](08-errors-and-problem-details.md). This section shows
 the shape every handler can rely on.
 
 Every 4xx/5xx response is an `application/problem+json` document:
@@ -222,7 +222,7 @@ The framework maps errors deterministically:
 | Insufficient role                                        | 403                                                         |
 | No route / no view                                       | 404                                                         |
 | Path exists, method not allowed                          | 405 + `Allow`                                               |
-| Zod validation failure                                   | 422 + `errors[]` (see [guide 07](07-request-validation.md)) |
+| Zod validation failure                                   | 422 + `errors[]` (see [Guide 07](07-request-validation.md)) |
 | Anything unhandled                                       | 500 (internals never leaked)                                |
 
 Handlers can return a `ResponseEntity<ProblemDetails>` for full control, or
@@ -233,7 +233,7 @@ placeholder — replace with real HTTPS URIs before first public release.
 
 Real-time endpoints use `@socketMapping` and async-iterable producer-consumers.
 The session registry, rooms, heartbeat, client, STOMP, and cross-node fan-out
-are [guide 15](15-websockets.md) and [guide 42](42-stomp.md). A minimal handler:
+are [Guide 15](15-websockets.md) and [Guide 42](42-stomp.md). A minimal handler:
 
 ```ts
 import { requestMapping, socketMapping, type SocketSession } from '@ndigo/dispatcher';
@@ -271,7 +271,7 @@ dispatch on either platform.
 
 ## 7. Putting it together
 
-`[apps/02-ndigo-hello-node](https://github.com/ndigo/ndigo/tree/main/apps/02-ndigo-hello-node)/src/index.ts` is the minimal complete app — the
+`[apps/02-ndigo-hello-node/src/index.ts`](https://github.com/ndigo/ndigo/blob/main/apps/02-ndigo-hello-node/src/index.ts`) is the minimal complete app — the
 snippet below is that file:
 
 ```ts
@@ -314,7 +314,7 @@ depends on it .
 
 The production checklist — TLS/HTTP2–3 at the edge or `NDIGO_TLS_KEY`/`CERT`,
 trusted proxies, health probes, graceful shutdown, clustering, and static
-caching — is [guide 38](38-deployment-and-production-readiness.md). Keep the
+caching — is [Guide 38](38-deployment-and-production-readiness.md). Keep the
 local dev server plaintext; terminate TLS at the edge unless you are running
 the Node listener as the public origin.
 

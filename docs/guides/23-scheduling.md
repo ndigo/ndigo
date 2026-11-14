@@ -67,7 +67,7 @@ class Maintenance {
 - stops/drains on context close.
 
 The `ndigo-api` demo ships a working heartbeat (`Heartbeat` in
-`[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)/src/heartbeat.ts`).
+`[apps/05-ndigo-api/src/heartbeat.ts`](https://github.com/ndigo/ndigo/blob/main/apps/05-ndigo-api/src/heartbeat.ts`)).
 
 ## 2. Specs
 
@@ -77,7 +77,7 @@ The `ndigo-api` demo ships a working heartbeat (`Heartbeat` in
 | `{ fixedRate: '10s' }`   | every interval **from run start**                   | —                                                                                                                                  |
 | `{ fixedDelay: '5m' }`   | every interval **from run completion**              | —                                                                                                                                  |
 | both/formats             | `maxRunTime`                                        | caps a run; on expiry the single-flight slot is released with a warning (the task itself keeps running — Node has no cancellation) |
-| both/formats             | `lock`                                              | distributed lock key: one node executes each fire; see `lockWait`/`lockWaitStep`/`lockTtl` and [guide 24](24-distributed-locks.md) |
+| both/formats             | `lock`                                              | distributed lock key: one node executes each fire; see `lockWait`/`lockWaitStep`/`lockTtl` and [Guide 24](24-distributed-locks.md) |
 
 Bare string shorthand: `@scheduled('*/30 * * * * *')` ≡
 `@scheduled({ cron: '*/30 * * * * *' })`.

@@ -186,7 +186,7 @@ The CLI resolves `package.json` scripts and runs them **shell-free**
 (single commands; `tsx src/index.ts`, `vite`, `node app.mjs`):
 
 - SIGTERM/SIGINT relayed by `serve` reach the **actual application
-  process**, which runs its own `gracefulShutdown` (guide 01). This is
+  process**, which runs its own `gracefulShutdown` (Guide 01). This is
   deliberate: both package-manager `run` wrappers (which kill children
   without granting a drain) and dash-style `/bin/sh` (which forks instead
   of execs) were verified to swallow the signal (2026-10-07).
@@ -240,7 +240,7 @@ ndigo new todo-widget --kind node --port 3190 --dryRun
   collides fails and names the owning app.
 - **Naming:** pick the slug from the app's domain; a paired front end and back
   end take `-web` / `-api` and sit next to each other in the ladder
-  ([guide 91](91-application-conventions.md)).
+  ([Guide 91](91-application-conventions.md)).
 - `--dryRun` previews the file plan without writing anything. After
   generating, add the app's row to `apps/README.md` and the root README
   table by hand — index tables are not generated.
@@ -267,9 +267,9 @@ signals relay, crashes reap.
 declared scripts — add them when the CLI reports them missing (the
 `inspect` entry builds the manifest without binding a port; apps choose
 their own controllers/config classes, exactly as
-`[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)/src/inspect.ts` does). The `db:*` lifecycle — versioned
+`[apps/05-ndigo-api/src/inspect.ts`](https://github.com/ndigo/ndigo/blob/main/apps/05-ndigo-api/src/inspect.ts`) does). The `db:*` lifecycle — versioned
 migration files, generation from entity metadata, and run-on-boot — is
-[guide 20](20-orm-and-migrations.md).
+[Guide 20](20-orm-and-migrations.md).
 
 ## See also
 

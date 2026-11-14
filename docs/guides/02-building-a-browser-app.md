@@ -11,7 +11,7 @@ Reference applications: [apps/08-ndigo-views](https://github.com/ndigo/ndigo/tre
 (views and resolver chains) and [apps/19-ndigo-hn](https://github.com/ndigo/ndigo/tree/main/apps/19-ndigo-hn)
 (routing, services, offline cache, deep links).
 
-**Audience:** Browser application developers · **Prerequisites:** Workspace bootstrapped; [guide 01](01-building-a-node-api.md) concepts recommended · **Reference app:** [apps/08-ndigo-views](https://github.com/ndigo/ndigo/tree/main/apps/08-ndigo-views), [apps/19-ndigo-hn](https://github.com/ndigo/ndigo/tree/main/apps/19-ndigo-hn)
+**Audience:** Browser application developers · **Prerequisites:** Workspace bootstrapped; [Guide 01](01-building-a-node-api.md) concepts recommended · **Reference app:** [apps/08-ndigo-views](https://github.com/ndigo/ndigo/tree/main/apps/08-ndigo-views), [apps/19-ndigo-hn](https://github.com/ndigo/ndigo/tree/main/apps/19-ndigo-hn)
 
 ## What you'll learn
 
@@ -97,7 +97,7 @@ route attribute, and decline to the root when nothing matches. See
 ## 2. Configuration and routes
 
 Browser `@configuration` classes and `@routeMapping` controllers are the
-same as on Node (guide 01); the handler mapping, argument resolvers, and
+same as on Node (Guide 01); the handler mapping, argument resolvers, and
 view-resolver chain come from `WebAutoConfiguration`.
 
 ```ts
@@ -122,7 +122,7 @@ through `app.router.addInterceptor(...)`.
 ## 3. App-specific state and services
 
 Entries are plain entries; cross-entry reads go through `ContextToken`s so a
-rename cannot silently miss (`[apps/19-ndigo-hn](https://github.com/ndigo/ndigo/tree/main/apps/19-ndigo-hn)/src/app/hn-tokens.ts`):
+rename cannot silently miss (`[apps/19-ndigo-hn/src/app/hn-tokens.ts`](https://github.com/ndigo/ndigo/blob/main/apps/19-ndigo-hn/src/app/hn-tokens.ts`)):
 
 ```ts
 export const APP_SERVICE = new ContextToken<AppService>('appService');

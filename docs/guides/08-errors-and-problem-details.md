@@ -146,7 +146,7 @@ class DomainErrorResolver extends AbstractRouteErrorResolver {
 ```
 
 `DomainErrorView` implements `ProducerView` and returns
-`{ status, headers, body }`; [guide 09](09-views-and-content-negotiation.md) shows the view contract. This is the
+`{ status, headers, body }`; [Guide 09](09-views-and-content-negotiation.md) shows the view contract. This is the
 pattern the Conduit app uses for the RealWorld `{ errors: { field: [...] } }`
 envelope: the resolver translates the framework failure before the last-resort
 chain sees it.

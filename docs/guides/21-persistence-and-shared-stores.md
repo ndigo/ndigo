@@ -107,7 +107,7 @@ Shared cache lives in `@ndigo/redis/cache` (`RedisCacheManager` /
 `MemoryCacheManager`, saw the async cutover under . Redis values are
 restricted to JSON-value trees (plus a tagged whole-entry undefined);
 unsupported and corrupt values reject rather than silently losing data. See
-[guide 19 §6](19-caching.md) for the full backend policy (no per-cache
+[Guide 19 §6](19-caching.md) for the full backend policy (no per-cache
 eviction, server-side expiry, namespace-safe `clear`/`size`, no
 `FLUSHDB`).
 
@@ -133,7 +133,7 @@ const shared = new RedisRateLimiter({ connection, namespace: 'prod' });
 // RateLimitInterceptor constructor directly)…
 ```
 
-See [guide 26 §5](26-authentication-and-sessions.md) for the
+See [Guide 26 §5](26-authentication-and-sessions.md) for the
 `@rateLimit` metadata and the 429 + `Retry-After` denial.
 
 ## 4. Cross-node live fan-out (opt-in)
@@ -148,7 +148,7 @@ serving, and all consumers connect before `server.start`.
 
 Details — delivery semantics (live at-most-once, no replay/reconnect/global
 ordering), echo suppression, Redis limits, stop/shutdown ordering, and
-deployment policy — are in [guide 42, cross-node live fan-out](42-stomp.md#2-cross-node-live-fan-out-opt-in).
+deployment policy — are in [Guide 42, cross-node live fan-out](42-stomp.md#2-cross-node-live-fan-out-opt-in).
 
 ## 5. Shutdown ordering
 
@@ -183,7 +183,7 @@ recognizes `Closeable`; a dispose-only object is not proof of cleanup.
 Not built, with an explicit decision and revisit triggers:
 
 - **Distributed scheduling** — no leader election, no durable job queue; the
-  in-process `TaskScheduler` remains (guide 23). Revisit only when a real
+  in-process `TaskScheduler` remains (Guide 23). Revisit only when a real
   consumer needs at-most-once-per-schedule across workers, restart-surviving
   queued jobs, deployable schedule definitions, or cross-process task
   observation — then the precedent is 's hook seam plus the

@@ -28,7 +28,7 @@ db/migrations/NNNN-slug.ts ──► ndigo db migrate / migrateOnBoot
                         _ndigo_migrations (journal, forward-only)
 ```
 
-## 1. The runner (`DrizzleMigrator`, )
+## 1. The runner (`DrizzleMigrator`)
 
 Migrations are versioned modules, one per file under `db/migrations`:
 `<NNNN>-<slug>.ts`, each exporting a `Migration` as its default export.
@@ -64,7 +64,7 @@ belongs to the application. Hand-written SQL migrations stay first-class:
 the same directory holds generated and authored files, versions unique
 across both.
 
-## 2. Generation (`ndigo db generate`, )
+## 2. Generation (`ndigo db generate`)
 
 `ndigo db generate` renders the next migration from your entities — the
 **committed snapshot** is the diff base, so:
@@ -123,7 +123,7 @@ on stderr until acknowledged (REV-002/REV-006):
 Both flags follow the repo's env-flag convention (`present`/`true`/`1`
 enables, `false`/`0`/`''` does not) and are read from the environment.
 
-## 3. Running migrations at boot (`migrations.runOnBoot`, )
+## 3. Running migrations at boot (`migrations.runOnBoot`)
 
 `@ndigo/orm-drizzle` exports `migrateOnBoot({ dataSource, dir })`: loads the
 file migrations and applies pending ones through the journaled runner,
@@ -178,6 +178,26 @@ is enabled.
 The data source's parent directory is created on demand
 (`ensureDbDir` — libSQL fails CANTOPEN when it is missing); the store itself
 (`apps/*/data/`) is gitignored.
+
+## 6. Seeding and fixtures
+
+Seed data is application code, not a framework feature. Use the same Drizzle
+client the app and migrations use, and keep seeds idempotent:
+
+```ts
+import { getDrizzleDataSource } from './data-source';
+
+export async function seed(): Promise<void> {
+    const db = getDrizzleDataSource();
+    await db.insert(users).values({ email: 'admin@example.com' }).onConflictDoNothing();
+}
+```
+
+- Run seeds only in dev/test profiles (`NDIGO_PROFILES_ACTIVE=dev`); guard
+  production with an explicit `--seed` flag or a separate script.
+- Reset a dev database by deleting the `file:` store and re-running
+  `ndigo db migrate` followed by the seed script.
+- Do not seed through migrations; migrations own schema, seeds own data.
 
 ## See also
 

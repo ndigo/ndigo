@@ -47,7 +47,7 @@ class ServerConfig {
 - Coverage is config classes only in v1 ; `@entry` method
   results are not re-run.
 
-#### Refresh snapshot semantics
+### Refresh snapshot semantics
 
 `config:refresh` re-binds the opt-in surface only — it does **not**
 re-inject consumers. After a refresh:

@@ -105,7 +105,7 @@ overflow — the inbound mirror of the outbound watermark (the byte budget
 is what stops a stalled handler pinning `count × payload`). Tune per
 adapter or by env:
 
-```
+```text
 NDIGO_SOCKET_MAX_PAYLOAD_BYTES=1048576       # frame payload cap (default 1 MiB)
 NDIGO_SOCKET_MAX_QUEUED_MESSAGES=1024        # inbound queue cap per session (default 1024)
 NDIGO_SOCKET_MAX_QUEUED_BYTES=4194304        # inbound byte budget (default 4 MiB; 0 disables)
@@ -170,7 +170,7 @@ never finish the close handshake are force-reaped by ws's own
 `closeTimeout`. Dead peers (NAT timeouts, dropped WiFi) cannot accumulate.
 Configure via environment:
 
-```
+```text
 NDIGO_SOCKET_HEARTBEAT_INTERVAL_MS=10000   # ping every 10s
 NDIGO_SOCKET_IDLE_TIMEOUT_MS=30000         # reap after 30s silent
 NDIGO_SOCKET_HEARTBEAT_INTERVAL_MS=0       # disable explicitly (not recommended)

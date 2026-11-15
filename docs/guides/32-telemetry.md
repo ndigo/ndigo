@@ -166,6 +166,20 @@ When no collector is configured (`sdk` is `undefined`), omit the shutdown
 resource. Apps that never call `shutdown` lose whatever the batch
 processors had not yet exported.
 
+## Dashboards and alerting
+
+Scrape `/metrics` (Prometheus text) or export OTLP to your collector. Useful
+starting panels:
+
+- Request rate and error rate by route (`http.server.request.duration`).
+- Latency p50/p95/p99.
+- Job backlog and retry count (guide 22).
+- Scheduled task last-run and failure count (guide 23).
+- Active WebSocket sessions (guide 15).
+
+Alert on readiness failures (`/health/readiness`), crash-loop restarts, and
+sustained p99 latency rather than on single spikes.
+
 ## Limits
 
 - **Node**: `@ndigo/telemetry-node` manufacturers the exporter/processor

@@ -26,7 +26,7 @@ ecosystem standard, and uses platform standard APIs directly** —
 
 ## 1. The pipeline
 
-```
+```text
         ┌─ NavigatorLanguageResolver ─┐  (browser: navigator.languages)
         ├─ CookieLanguageResolver ────┤  (client: persisted user choice wins)
         ├─ AcceptHeaderLanguageResolver ┤ (server: Accept-Language header)
@@ -215,6 +215,17 @@ signal-driven re-rendering.
 | Island locale      | `data-ndigo-locale` attribute, assigned on hydration              |
 | Reactive switching | `changeLocale` → cookie + `currentLocale` signal                  |
 | Formatting         | `Intl.*` via `@ndigo/core` formatters (explicit locale/time zone) |
+
+## 8. Deliberate limits
+
+- RTL is not adopted as a framework feature; use logical CSS properties in your
+  own styles and keep `dir` handling in the application.
+- i18next is the reference `MessageSource` backend; an ICU/`@formatjs` backend
+  is an optional second implementation behind the same contract.
+- Locale persistence is cookie-only. The local-storage half of the AD-19
+  design is deferred.
+- `@locale` handler-parameter injection is an explicit non-goal; read the
+  negotiated locale from the request attributes or the view context instead.
 
 ## See also
 

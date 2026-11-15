@@ -126,6 +126,19 @@ per process. Add `@scheduled({ lock })` or use the lock driver (Guide 24).
 **Why does the browser guard not protect the API?** Client auth is UX; the
 server guard is the boundary (guides [26](26-authentication-and-sessions.md)/[27](27-browser-authentication-and-oidc.md)).
 
+**Why do Tailwind utilities not resolve `--nd-*` tokens?** Import the token
+stylesheet before Tailwind, and map the tokens in `@theme`/`theme.extend`
+(guide 30).
+
+**Why are cluster slots not sharing state?** In-memory caches/locks/rate
+limits are per slot; wire the Redis drivers (guides 19, 24, 28).
+
+**Why does OIDC fail behind a proxy?** Configure `trustedProxies` and forward
+`X-Forwarded-Proto` (guide 28).
+
+**Why does `ndigo db generate` report drift?** Regenerate after entity changes
+and commit both the migration and `db/schema.json` (guide 20).
+
 ## See also
 
 - [Guide 05 — Routing & Route Conditions](05-routing-and-route-conditions.md)

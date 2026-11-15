@@ -108,7 +108,7 @@ the renderer supports it. Use the regular HTML view or a text response when
 there is nothing more than a short message or a small unstructured answer
 for the sandbox to render.
 
-### TOON (`@ndigo/view-toon`, )
+### TOON (`@ndigo/view-toon`)
 
 TOON (Token-Oriented Object Notation) is a line-oriented encoding of the JSON
 data model, tuned for LLM prompts. `ToonView` serializes a model as

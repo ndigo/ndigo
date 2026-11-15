@@ -142,7 +142,7 @@ sessions deliberately do **not** compare `tokenVersion` — JWT refresh
 rotation advances that counter and must never log server sessions out;
 sessions revoke by deletion.
 
-## 5. Rate limiting login (SEC-6)
+## 5. Rate limiting login
 
 Credential endpoints are the brute-force surface — throttle them:
 
@@ -203,7 +203,7 @@ Every POST/PUT/DELETE/PATCH then requires a matching `X-CSRF-Token` header
 cookie attributes. Without a matching token, login/logout never run — the
 interceptor denies before the handler.
 
-**Posture note (2026-10-06 review, SEC-AUD2-SEC-3):** the interceptor is
+**Posture note:** the interceptor is
 opt-in and **unwired by default**, so a cookie-session app **must** wire
 `CSRFInterceptor` (or keep every mutating route JSON-only). A cross-site
 HTML form always sends `application/x-www-form-urlencoded` (or
@@ -241,9 +241,9 @@ first-party tokens:
   would need a `jti` ledger (follow-up).
 - `logout(token)` — verifies, then bumps the version: the whole family
   dies at once. For an explicit user-wide revoke that also deletes every
-  live session, use `CredentialsAuthAdapter.logoutAll` (§4, ).
+  live session, use `CredentialsAuthAdapter.logoutAll` (§4).
 
-## 8. Securing management endpoints (SEC-5, )
+## 8. Securing management endpoints
 
 `/health` and `/metrics` are **open by default** (documented posture), with
 two hardening layers on by default since:
@@ -293,7 +293,7 @@ new NodeHTTPServerAdapter(dispatcher, {
 
 Or deploy-time, no code change:
 
-```
+```text
 NDIGO_TRUSTED_PROXIES=10.0.0.0/8,2001:db8::/32 node server.js
 ```
 

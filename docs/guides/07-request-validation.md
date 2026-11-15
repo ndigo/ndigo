@@ -22,7 +22,7 @@ The validation mechanism is a single pipeline: an extractor resolves
 
 ## The pipeline
 
-```
+```text
 request → extractor (resolve + type-convert) → Zod schema (validatedBy) → handler
                                                     │ failure
                                                     ▼

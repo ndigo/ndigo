@@ -114,7 +114,7 @@ a **private access-condition marker** — dispatch never evaluates access
 conditions, so the marker is documentation-of-exclusion only: it keeps the
 spec from self-referencing and changes nothing about live dispatch.
 
-> **Disclosure scope (SEC-4):** the spec documents the route table, not the
+> **Disclosure scope:** the spec documents the route table, not the
 > protection posture. Routes gated only **in-handler** (no access
 > condition — e.g. the demo's `/api/config/secrets`, `/notes` and
 > `/drizzle/notes`, where the handler checks the Bearer token itself) still

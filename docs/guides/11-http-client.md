@@ -115,6 +115,15 @@ import { QueryString, MatrixString } from '@ndigo/http';
 const params = QueryString.parse('a=1&a=2&b=3'); // { a: ['1','2'], b: '3' }
 ```
 
+## 5. Browser patterns
+
+- Deduplicate in-flight requests by keying `memoize` (guide 19) on the URL +
+  params; reuse the promise instead of re-fetching.
+- Retry only idempotent verbs; surface a user-visible error envelope on final
+  failure rather than throwing to the renderer.
+- Keep auth tokens in memory or httpOnly cookies, never `localStorage`, and
+  refresh through the interceptor chain.
+
 ## See also
 
 - Generated API: run `pnpm doc:api` for `@ndigo/http`;

@@ -2,7 +2,7 @@
 
 Fencing-token locks make a `@scheduled` task a **single-executor** across
 nodes: exactly one node runs the fire, others skip. They are the shared
-primitive behind multi-node scheduling (this guide, ) and the future
+primitive behind multi-node scheduling (this guide) and the future
 cluster spine (GAP-2).
 
 **Audience:** Node application developers and operators · **Prerequisites:** [Guide 23](23-scheduling.md) · **Reference package:** `packages/ndigo-locks`

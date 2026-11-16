@@ -11,6 +11,16 @@ that drives an auth-matrix UI; an embedded `oidc-provider` issuer listens on
 `127.0.0.1:3111` so mode 6 needs no container and no external service. Every
 mode is also reachable with `curl` — the transcripts below are real runs.
 
+## Demonstrates
+
+- Six authentication modes side by side in one Node process: opaque cookie
+  session, short-lived JWTs with refresh, role matrix over HTTP and sockets,
+  rate-limited login, durable LibSQL sessions, embedded OIDC issuer (code +
+  PKCE S256)
+- Secure cookies + session rotation, JWT expiry/refresh, role guards on HTTP
+  and sockets, rate-limited login, durable sessions, embedded OIDC issuer
+- Environment-driven config with working defaults (see table below)
+
 ## Run
 
 ```bash

@@ -17,6 +17,14 @@ pnpm --filter @ndigo/ui-lab dev
 # http://localhost:3460
 ```
 
+## Demonstrates
+
+- Full install of the 42-item `@ndigo/ui` registry as copy-in source
+  (tokens, native-first primitives, Zag.js behaviour elements, five blocks)
+- Typed token catalog from `@ndigo/ui`; axe-clean, keyboard-navigable UI
+- `<nd-a2ui-surface>` rendering the component vocabulary from A2UI messages
+- `<nd-webmcp-demo>` exposing `search_catalogue` as a WebMCP tool
+
 ## What it covers
 
 - **Native-first primitives:** button, input, field, checkbox, table, alert,

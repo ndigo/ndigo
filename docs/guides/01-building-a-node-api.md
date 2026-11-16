@@ -325,7 +325,7 @@ the Node listener as the public origin.
 - [Guide 10 — Static Files](10-static-files.md): serving a directory over
   HTTP — ETag/Range, precompressed variants, SPA fallback (the reference demo
   is [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)'s `/static/`).
-- Package READMEs: `@ndigo/platform-node`, `@ndigo/dispatcher`, `@ndigo/boot`,
-  `@ndigo/orm` for the full symbol surface.
-- Decision records: [Zod validation](../decisions/2026-09-05_AD07_ZOD_VALIDATION.md),
-  [RFC 9457 problem+json error model](../decisions/2026-09-07_AD10_RFC9457_ERROR_MODEL.md).
+- [`@ndigo/platform-node`](../../packages/ndigo-platform-node/README.md) — the platform and runtime surface.
+- [`@ndigo/dispatcher`](../../packages/ndigo-dispatcher/README.md) — dispatch and handler mapping.
+- [`@ndigo/boot`](../../packages/ndigo-boot/README.md) — boot-time wiring.
+- [`@ndigo/orm`](../../packages/ndigo-orm/README.md) — ORM and migrations.

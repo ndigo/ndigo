@@ -25,7 +25,7 @@ import { z } from 'zod';
 import { StandardConfigFileLoader } from './config-file-loader';
 import { isConfigurationProperties, resolveConfigurationProperties } from './configuration-properties';
 import { getLogger } from '@ndigo/log';
-import { getEnv } from '@ndigo/util';
+import { getEnv, toError } from '@ndigo/util';
 
 const logger = getLogger('ndigo-boot:application');
 
@@ -133,10 +133,7 @@ export class Application extends Emitter {
             // A polling source started before a later boot failure has no context
             // to stop it — tear it down here to avoid dangling intervals.
             this.#configServerSource?.stop();
-            throw new IllegalStateError(
-                'Application startup failed',
-                error instanceof Error ? { cause: error } : { cause: new Error(String(error)) }
-            );
+            throw new IllegalStateError('Application startup failed', { cause: toError(error) });
         }
     }
 

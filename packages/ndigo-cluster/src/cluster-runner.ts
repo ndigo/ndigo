@@ -18,6 +18,7 @@
 import { spawn } from 'node:child_process';
 import { getLogger } from '@ndigo/log';
 import { Deque } from '@ndigo/core';
+import { delay } from '@ndigo/util';
 
 const logger = getLogger('ndigo-cluster:runner');
 
@@ -580,9 +581,7 @@ export class ClusterRunner {
         if (ms <= 0) {
             return;
         }
-        await new Promise<void>((resolve) => {
-            setTimeout(resolve, ms);
-        });
+        await delay(ms);
     }
 }
 

@@ -5,6 +5,7 @@
  * managed `HTTPServer` reads it at construction time and `NodeAutoConfiguration`
  * builds that entry during refresh.
  */
+import { getErrorMessage } from '@ndigo/util';
 import 'node:process';
 import { ApplicationBuilder } from '@ndigo/boot';
 import { HTTP_SERVER, NodeAutoConfiguration, gracefulShutdown } from '@ndigo/platform-node';
@@ -45,6 +46,6 @@ async function main() {
 }
 
 main().catch((error: unknown) => {
-    logger.error(`failed to start: ${error instanceof Error ? error.message : String(error)}`);
+    logger.error(`failed to start: ${getErrorMessage(error)}`);
     process.exit(1);
 });

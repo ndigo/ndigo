@@ -17,6 +17,7 @@
  * is READY (the SDK serves defaults before that; `setProviderAndWait`
  * settles readiness at bootstrap).
  */
+import { getErrorMessage } from '@ndigo/util';
 import { OpenFeature } from '@openfeature/web-sdk';
 import type { Client, JsonValue } from '@openfeature/web-sdk';
 import {
@@ -95,7 +96,7 @@ export class WebOpenFeatureFlagEvaluator implements FlagEvaluator {
                 value: defaultValue,
                 reason: 'ERROR',
                 errorCode: 'GENERAL',
-                errorMessage: error instanceof Error ? error.message : String(error),
+                errorMessage: getErrorMessage(error),
                 flagMetadata: {},
             };
         }

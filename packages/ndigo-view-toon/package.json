@@ -28,6 +28,7 @@
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "dependencies": {
+    "@ndigo/util": "~0.0.1",
     "@ndigo/core": "~0.0.1",
     "@ndigo/view": "~0.0.1",
     "@toon-format/toon": "catalog:"

@@ -29,6 +29,7 @@
     "test:watch": "vitest --config ../../vitest.config.ts"
   },
   "dependencies": {
+    "@ndigo/util": "~0.0.1",
     "@modelcontextprotocol/sdk": "^1.32.2",
     "@ndigo/dispatcher": "~0.0.1",
     "@ndigo/flags": "~0.0.1",

@@ -2,10 +2,7 @@
  * A fixed-capacity ring buffer implementing `ArrayLike` and `Iterable`.
  */
 import { Serializable, JSONArray, serialize } from './serializable.js';
-
-/** `typeof`/`instanceof` check that also accepts boxed `String` objects. */
-const isString = (value: unknown): value is string => typeof value === 'string' || value instanceof String;
-
+import { isString } from '@ndigo/util/types';
 /**
  * Determines whether a value is array-like: an array, string, element, or an
  * object exposing a coherent `length` and last index.

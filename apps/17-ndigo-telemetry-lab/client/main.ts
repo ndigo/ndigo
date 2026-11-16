@@ -16,6 +16,7 @@
  * 5. renders all of it — spans, server replies, pushes, and console lines —
  *    into the page.
  */
+import { getErrorMessage } from '@ndigo/util';
 import { ROOT_CONTEXT, SpanStatusCode, trace, type Span } from '@opentelemetry/api';
 import { HTTP, TraceHeaderInterceptor } from '@ndigo/http';
 import { WebSocketClient, type SocketStatus } from '@ndigo/socket';
@@ -201,7 +202,7 @@ async function callWork(method: 'GET' | 'POST', payload: string, units: number):
     } catch (error) {
         span.recordException(error as Error);
         span.setStatus({ code: SpanStatusCode.ERROR });
-        log('err', `${method} /work failed: ${error instanceof Error ? error.message : String(error)}`);
+        log('err', `${method} /work failed: ${getErrorMessage(error)}`);
     } finally {
         activeSpan = null;
         span.end();
@@ -273,7 +274,7 @@ async function main(): Promise<void> {
     try {
         config = await loadConfig();
     } catch (error) {
-        log('err', `could not read /lab/config: ${error instanceof Error ? error.message : String(error)}`);
+        log('err', `could not read /lab/config: ${getErrorMessage(error)}`);
         return;
     }
 

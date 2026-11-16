@@ -2,6 +2,7 @@
  * The MCP tool registry: visibility policy (read-only + feature gates) and
  * invocation through the same binding pipeline the HTTP route uses.
  */
+import { toError } from '@ndigo/util';
 import { randomUUID } from 'node:crypto';
 import {
     MethodParameterType,
@@ -135,7 +136,7 @@ export class McpToolRegistry {
                     const route = toolRoute(tool, args);
                     return normalizeResult(await tool.handlerMethod.invoke(route));
                 } catch (error) {
-                    span.recordException(error instanceof Error ? error : String(error));
+                    span.recordException(toError(error));
                     span.setStatus({ code: SpanStatusCode.ERROR });
                     throw error;
                 } finally {

@@ -3,6 +3,7 @@
  * read-only tool gating, JSON-text results, and error mapping. Each server
  * supplies its own tool set; this module owns the protocol plumbing only.
  */
+import { getErrorMessage } from '@ndigo/util';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { ToolCallback } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { ShapeOutput, ZodRawShapeCompat } from '@modelcontextprotocol/sdk/server/zod-compat.js';
@@ -123,7 +124,7 @@ export async function runTool(run: () => Promise<unknown> | unknown): Promise<Ca
         } catch (encodeError) {
             text = JSON.stringify(
                 {
-                    serializationError: encodeError instanceof Error ? encodeError.message : String(encodeError),
+                    serializationError: getErrorMessage(encodeError),
                     value: Object.prototype.toString.call(value),
                 },
                 null,
@@ -133,7 +134,7 @@ export async function runTool(run: () => Promise<unknown> | unknown): Promise<Ca
         return { content: [{ type: 'text', text }] };
     } catch (error) {
         return {
-            content: [{ type: 'text', text: error instanceof Error ? error.message : String(error) }],
+            content: [{ type: 'text', text: getErrorMessage(error) }],
             isError: true,
         };
     }

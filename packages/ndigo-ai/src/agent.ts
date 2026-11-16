@@ -4,6 +4,7 @@
  * per run. Tool execution is deliberately outside the adapter so every
  * provider gets the same loop, telemetry, limits, and error handling.
  */
+import { getErrorMessage, toError } from '@ndigo/util';
 import { context, SpanStatusCode, trace, type Attributes, type Span } from '@opentelemetry/api';
 import type { FlagEvaluator } from '@ndigo/flags';
 import type { RateLimitPolicy, RateLimiter } from '@ndigo/rate-limit';
@@ -268,7 +269,7 @@ export class AIAgent {
             yield { type: 'finish', result };
             return result;
         } catch (error) {
-            span.recordException(error instanceof Error ? error : String(error));
+            span.recordException(toError(error));
             span.setStatus({ code: SpanStatusCode.ERROR });
             throw error;
         } finally {
@@ -341,7 +342,7 @@ export class AIAgent {
             return {
                 callId: call.id,
                 name: call.name,
-                output: { error: error instanceof Error ? error.message : String(error) },
+                output: { error: getErrorMessage(error) },
             };
         }
     }
@@ -367,7 +368,7 @@ export class AIAgent {
             try {
                 return await execute(span);
             } catch (error) {
-                span.recordException(error instanceof Error ? error : String(error));
+                span.recordException(toError(error));
                 span.setStatus({ code: SpanStatusCode.ERROR });
                 throw error;
             } finally {

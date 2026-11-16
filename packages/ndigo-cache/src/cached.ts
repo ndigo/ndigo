@@ -1,6 +1,7 @@
 /**
  * The `@cached` decorator: spec resolution and method memoization.
  */
+import { getErrorMessage } from '@ndigo/util';
 import '@tsmetadata/polyfill';
 import { isDevMode } from '@ndigo/context';
 import { Cache, CacheMiss } from './cache';
@@ -189,7 +190,7 @@ export function cached(spec: CachedSpec = {}) {
                     await store.set(key, result, normalized.ttl);
                 } catch (error) {
                     logger.warn(`[@ndigo/cache] failed to cache "${methodName}" (${key}):`, {
-                        error: error instanceof Error ? error.message : String(error),
+                        error: getErrorMessage(error),
                     });
                 }
                 return result;

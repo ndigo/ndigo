@@ -14,6 +14,7 @@
  * The hook is synchronous, so the same instance also satisfies the web
  * SDK's hook contract (`OpenFeature.addHooks` in the browser).
  */ import { SpanKind, SpanStatusCode, trace, type Span } from '@opentelemetry/api';
+import { toError } from '@ndigo/util';
 import type {
     BeforeHookContext,
     EvaluationDetails,
@@ -96,7 +97,7 @@ export class FeatureFlagTelemetryHook implements Hook {
             return;
         }
         span.setStatus({ code: SpanStatusCode.ERROR });
-        span.recordException(error instanceof Error ? error : new Error(String(error)));
+        span.recordException(toError(error));
         // OpenFeature errors carry their classification on `code`; duck-typed
         // so the hook does not import the SDK's error class hierarchy.
         const code = (error as { code?: unknown } | null)?.code;

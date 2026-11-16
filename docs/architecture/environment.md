@@ -1,10 +1,10 @@
 # Environment & Configuration
 
-The environment is a JavaScript-native port of [Spring Boot's configuration model](https://docs.spring.io/spring-boot/reference/features/external-config.html) — property sources, profiles, `@ConfigurationProperties`, and environment post-processing — with fail-loud semantics throughout. This page covers the design principles, the precedence rules, and the tensions they resolve.
+The environment is a JavaScript-native configuration model — property sources, profiles, typed configuration properties, and environment post-processing — with fail-loud semantics throughout. This page covers the design principles, the precedence rules, and the tensions they resolve.
 
 ## Design Principles
 
-1. **Port semantics, not structures.** Spring's implementation (iterate every source per lookup, subclass zoo, `LinkedHashMap` ceremony) is Java-shaped. Ndigo uses a `Map`-backed registry plus prototype-chain and flat-index strategies; the research table rejected radix/ART/QP-trie/HAMT/codegen accessors for config-size exact lookups (native objects and `Map` win).
+1. **Port semantics, not structures.** A Java-shaped implementation (iterate every source per lookup, subclass zoo, `LinkedHashMap` ceremony) is what Ndigo avoids. Ndigo uses a `Map`-backed registry plus prototype-chain and flat-index strategies; the research table rejected radix/ART/QP-trie/HAMT/codegen accessors for config-size exact lookups (native objects and `Map` win).
 2. **Bench drives defaults, not taste.** The representative-workload rule (≥10% median win, no cell ≥10% regression, mixed-mutation within margin; ties to prototype) chose `PrototypeChainIndex` as the default on both platforms — lookup costs were within noise and prototype's lazy mutation won the sustained case. `{ index: 'flat' }` remains the opt-in.
 3. **Fail loud everywhere.** Missing-required throws; malformed profile expressions throw; conversion failures throw; customizer failures fail boot; invalid environments fail boot with every violation. A typo that silently never-matches is the bug the whole arc eliminates.
 4. **Replace, never mutate.** Sources are captured (null-prototype copies), replaced, or reordered — in-place edits are declared unsupported where they shadow (flat index, placeholder cache). `process.env` is snapshotted.

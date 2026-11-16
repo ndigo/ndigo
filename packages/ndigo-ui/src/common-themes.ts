@@ -15,14 +15,15 @@ const NDIGO_DARK_TOKENS = {
     '--nd-color-text-muted': '#9898b8',
     '--nd-color-border': '#2a2a4a',
     '--nd-color-code-bg': '#0f0f1f',
-    '--nd-color-accent': '#5b3be0',
-    '--nd-color-accent-strong': '#b07cff',
-    '--nd-color-accent-soft': 'rgb(91 59 224 / 0.18)',
+    '--nd-color-accent': '#3b5bdb',
+    '--nd-color-accent-strong': '#91a7ff',
+    '--nd-color-accent-soft': 'rgb(59 91 219 / 0.18)',
     '--nd-color-on-accent': '#ffffff',
     '--nd-color-success': '#4ade80',
     '--nd-color-warning': '#fbbf24',
     '--nd-color-danger': '#f87171',
     '--nd-color-info': '#60a5fa',
+    '--nd-color-tip': '#b07cff',
 } as const;
 
 const NDIGO_LIGHT_TOKENS = {
@@ -37,14 +38,15 @@ const NDIGO_LIGHT_TOKENS = {
     '--nd-color-text-muted': '#5a5a7a',
     '--nd-color-border': '#e0e0f0',
     '--nd-color-code-bg': '#f0f0f8',
-    '--nd-color-accent': '#5b3be0',
-    '--nd-color-accent-strong': '#293896',
-    '--nd-color-accent-soft': 'rgb(91 59 224 / 0.1)',
+    '--nd-color-accent': '#3b5bdb',
+    '--nd-color-accent-strong': '#2f4fb3',
+    '--nd-color-accent-soft': 'rgb(59 91 219 / 0.1)',
     '--nd-color-on-accent': '#ffffff',
     '--nd-color-success': '#15803d',
-    '--nd-color-warning': '#92400e',
+    '--nd-color-warning': '#866905',
     '--nd-color-danger': '#b91c1c',
     '--nd-color-info': '#1d4ed8',
+    '--nd-color-tip': '#5b3be0',
 } as const;
 
 const SOLARIZED_DARK_TOKENS = {
@@ -67,6 +69,7 @@ const SOLARIZED_DARK_TOKENS = {
     '--nd-color-warning': '#d4a800',
     '--nd-color-danger': '#ff5a57',
     '--nd-color-info': '#4aa3df',
+    '--nd-color-tip': '#9c8fd6',
 } as const;
 
 const SOLARIZED_LIGHT_TOKENS = {
@@ -89,6 +92,7 @@ const SOLARIZED_LIGHT_TOKENS = {
     '--nd-color-warning': '#7a5900',
     '--nd-color-danger': '#b02020',
     '--nd-color-info': '#1a5f94',
+    '--nd-color-tip': '#5e5a8a',
 } as const;
 
 const HIGH_CONTRAST_DARK_TOKENS = {
@@ -111,6 +115,7 @@ const HIGH_CONTRAST_DARK_TOKENS = {
     '--nd-color-warning': '#f9e000',
     '--nd-color-danger': '#ff6b6b',
     '--nd-color-info': '#60cdff',
+    '--nd-color-tip': '#60cdff',
 } as const;
 
 const HIGH_CONTRAST_LIGHT_TOKENS = {
@@ -133,6 +138,7 @@ const HIGH_CONTRAST_LIGHT_TOKENS = {
     '--nd-color-warning': '#7a5900',
     '--nd-color-danger': '#c50f1f',
     '--nd-color-info': '#0067c0',
+    '--nd-color-tip': '#0067c0',
 } as const;
 
 export const NDIGO_DARK_THEME: Theme = {

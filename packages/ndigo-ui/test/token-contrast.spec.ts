@@ -65,6 +65,7 @@ const FOREGROUNDS = [
     '--nd-color-warning',
     '--nd-color-danger',
     '--nd-color-info',
+    '--nd-color-tip',
 ];
 
 describe.each([

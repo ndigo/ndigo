@@ -212,4 +212,3 @@ and `X-Forwarded-Proto`; keep the proxy's hop count minimal.
 - [Guide 33 — Management Endpoints](33-management-endpoints.md) — health and metrics
 - [Guide 37 — The `ndigo` CLI](37-ndigo-cli.md) — `serve`, `build`, `dev`
 - [Security Architecture](../architecture/security.md) — trust boundaries
-- , , and — cluster, edge, and HTTP/2 decisions

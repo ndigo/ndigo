@@ -188,4 +188,3 @@ any `>= 400` entity into problem+json, so a protocol-specific envelope must be a
 - [Guide 05 — Routing & Route Conditions](05-routing-and-route-conditions.md) — 404/405 routing behavior
 - [Guide 07 — Request Validation](07-request-validation.md) — the 422 document
 - [Guide 09 — Views, Targets & Content Negotiation](09-views-and-content-negotiation.md) — `ProducerView` and 406
-- and — the error model and lineage

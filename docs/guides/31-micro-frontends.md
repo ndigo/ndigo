@@ -196,4 +196,3 @@ layering options and the boundary.
 - [Micro Frontends architecture](../architecture/micro-frontends.md) — the full map and design decisions
 - [`@ndigo/host`](../../packages/ndigo-host/README.md) — `HostManager`
 - [apps/06-ndigo-host-demo](https://github.com/ndigo/ndigo/tree/main/apps/06-ndigo-host-demo) — three lazy feature chunks
-- and — host runtime and shared dependencies

@@ -195,4 +195,3 @@ Also:
 - [Guide 37 — The `ndigo` CLI](37-ndigo-cli.md) — `update`, `db`, and `serve`
 - [Guide 38 — Deployment & Production Readiness](38-deployment-and-production-readiness.md) — release/rollback posture
 - [Guide 90 — Package Documentation](90-package-documentation.md) — the package/API standard
-- — the freeze surface and additive policy

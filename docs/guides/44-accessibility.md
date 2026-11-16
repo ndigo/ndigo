@@ -222,4 +222,3 @@ release.
 - [Guide 29 — Signals & Islands](29-signals-and-islands.md) — hydration
 - [`@ndigo/ui`](../../packages/ndigo-ui/README.md) — tokens, app-shell, conformance tests
 - [`@ndigo/view-webcomponent`](../../packages/ndigo-view-webcomponent/README.md) — FACE and hydration
-- and — integration and ndigo-ui conformance

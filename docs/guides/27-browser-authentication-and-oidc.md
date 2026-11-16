@@ -195,4 +195,5 @@ server bridge when it can. The server side is [Guide 26](26-authentication-and-s
 - [Guide 28 — Security Hardening](28-security-hardening.md) — cookies, CORS, and CSRF
 - [`@ndigo/auth-client`](../../packages/ndigo-auth-client/README.md) — `AuthClient`, guard, OIDC adapter
 - [apps/18-ndigo-auth-playground](https://github.com/ndigo/ndigo/tree/main/apps/18-ndigo-auth-playground) — six auth modes, including OIDC + PKCE
-- and — auth and revocation decisions
+- [OAuth 2.0 (RFC 6749)](https://www.rfc-editor.org/rfc/rfc6749) — the authorization framework Ndigo implements
+- [OpenID Connect Core 1.0](https://openid.net/specs/openid-connect-core-1_0.html) — the identity layer on top of OAuth 2.0

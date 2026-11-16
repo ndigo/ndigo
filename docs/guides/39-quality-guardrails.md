@@ -155,4 +155,3 @@ metadata. `pnpm doc:coverage` is the zero-tolerance member-docs gate.
 - [Guide 90 — Package Documentation](90-package-documentation.md) — README/API standard
 - [`@ndigo/oxlint-plugin`](../../packages/ndigo-oxlint-plugin/README.md) — the consumer rules
 - [`@ndigo/inspect`](../../packages/ndigo-inspect/README.md) — the manifest
-- — the rule-surface split

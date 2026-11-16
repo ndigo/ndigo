@@ -344,7 +344,6 @@ transport.
   (connection), `HttpSession` (reserved for the future session store).
 - **Client story**: `@ndigo/socket` — the isomorphic client package
   (`SocketClient`, reconnect + status signal) — see
-  [WebSocket client](../decisions/archive/2026-09-15_AD22_WEBSOCKET_CLIENT.md) and
   plan.
 - **Cross-node live fan-out: opt-in**, through `SocketFanout` and
   `@ndigo/redis/pubsub`; socket ownership, room membership, queue consumption
@@ -355,9 +354,6 @@ transport.
 
 ## 9. References
 
-- Decision: [WebSocket session registry](../decisions/2026-09-15_AD21_WEBSOCKET_SESSION_REGISTRY.md),
-  [WebSocket client](../decisions/archive/2026-09-15_AD22_WEBSOCKET_CLIENT.md),
-  [STOMP protocol layer](../decisions/archive/2026-09-16_AD23_STOMP.md)
 - Plans: WebSocket Broadcast,
   WebSocket Client,
   STOMP

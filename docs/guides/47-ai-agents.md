@@ -211,5 +211,9 @@ Configuration lives under `ai.*`: `baseURL`, `model`, `apiKey`, `maxSteps`, and
 - [`@ndigo/mcp` README](../../packages/ndigo-mcp/README.md)
 - [Guide 48 — Agent-Facing Surfaces](48-agent-facing-surfaces.md) — the
   app→agent direction: `@toolMapping`, MCP Apps, A2UI, WebMCP.
-- Guides [16](16-typed-service-clients-and-sse.md) (SSE), 32 (telemetry), 34 (flags), 35 (resilience), 37 (CLI)
+- [Guide 16 — Typed Service Clients & SSE](16-typed-service-clients-and-sse.md) — SSE transport
+- [Guide 32 — Telemetry](32-telemetry.md) — observability and metrics
+- [Guide 34 — Feature Flags](34-feature-flags.md) — runtime switches and rollout
+- [Guide 35 — Method Interception & Resilience](35-method-interception-and-resilience.md) — proxy and resilience
+- [Guide 37 — The `ndigo` CLI](37-ndigo-cli.md) — scaffolding and inspection
 - [apps/21-ndigo-agent-lab](https://github.com/ndigo/ndigo/tree/main/apps/21-ndigo-agent-lab)

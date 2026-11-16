@@ -193,4 +193,3 @@ in real content, then let `pnpm manifest:check` + `pnpm doc:api` validate.
 - [Guide 46 — Upgrading Ndigo](46-upgrading.md) — migration-guide authoring
 - [CONTRIBUTING.md](../../CONTRIBUTING.md) — the repository workflow
 - [Generators](../../tools/generators/README.md) — package and README scaffolding
-- The root `API.md` index is generated on demand (`pnpm doc:api`) and is not committed.

@@ -1,14 +1,15 @@
 {
   "name": "@ndigo/kanban",
   "version": "0.0.1",
-  "description": "Ndigo Kanban — collaborative board: versioned ORM entities, optimistic drag-and-drop, and live WebSocket sync",
+  "description": "Ndigo Kanban \u2014 collaborative board: versioned ORM entities, optimistic drag-and-drop, and live WebSocket sync",
   "type": "module",
   "private": true,
   "scripts": {
     "build:client": "vite build",
     "dev": "npm run build:client && tsx src/index.ts",
     "start": "tsx src/index.ts",
-    "test": "vitest run"
+    "test": "vite build && vitest run",
+    "build": "vite build"
   },
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",

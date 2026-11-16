@@ -1,12 +1,14 @@
 {
   "name": "@ndigo/hello-node",
   "version": "0.0.1",
-  "description": "Ndigo Hello Node — minimal HTTP server using the Node platform foundation",
+  "description": "Ndigo Hello Node \u2014 minimal HTTP server using the Node platform foundation",
   "type": "module",
   "private": true,
   "scripts": {
     "start": "tsx src/index.ts",
-    "test": "vitest run"
+    "test": "vitest run",
+    "dev": "tsx src/index.ts",
+    "build": "tsc -b tsconfig.build.json"
   },
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",

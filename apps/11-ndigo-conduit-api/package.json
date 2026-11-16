@@ -1,12 +1,14 @@
 {
   "name": "@ndigo/conduit-api",
   "version": "0.0.1",
-  "description": "RealWorld (Conduit) API conformance app — JWT auth, articles, comments, tags over @ndigo/platform-node",
+  "description": "RealWorld (Conduit) API conformance app \u2014 JWT auth, articles, comments, tags over @ndigo/platform-node",
   "type": "module",
   "private": true,
   "scripts": {
     "start": "tsx src/index.ts",
-    "test": "vitest run"
+    "test": "vitest run",
+    "dev": "tsx src/index.ts",
+    "build": "tsc -b tsconfig.build.json"
   },
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",

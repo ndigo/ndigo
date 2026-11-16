@@ -1,12 +1,14 @@
 {
   "name": "@ndigo/petclinic",
   "version": "0.0.1",
-  "description": "Ndigo PetClinic — server-rendered owners/pets/vets/visits vertical on @ndigo/view-ejs + @ndigo/orm",
+  "description": "Ndigo PetClinic \u2014 server-rendered owners/pets/vets/visits vertical on @ndigo/view-ejs + @ndigo/orm",
   "type": "module",
   "private": true,
   "scripts": {
     "start": "tsx src/index.ts",
-    "test": "vitest run"
+    "test": "vitest run",
+    "dev": "tsx src/index.ts",
+    "build": "tsc -b tsconfig.build.json"
   },
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",

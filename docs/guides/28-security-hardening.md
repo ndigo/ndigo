@@ -224,3 +224,4 @@ you trust too broadly. Trust only the exact proxy networks.
 - [Guide 10 — Static Files](10-static-files.md) — containment and method safety
 - [Guide 15 — WebSockets](15-websockets.md) — origin and socket auth
 - [`@ndigo/rate-limit`](../../packages/ndigo-rate-limit/README.md) and [`@ndigo/platform-node`](../../packages/ndigo-platform-node/README.md) — the enforcing surfaces
+- [OWASP Top 10](https://owasp.org/www-project-top-ten/) — the web application security risks this guide maps to

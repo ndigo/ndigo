@@ -3,7 +3,7 @@
  *
  * `@ndigo/resilience` keeps circuit cells private, so the lab weaves this
  * interceptor *outside* the breaker (lowest `order` — closest to the caller)
- * and mirrors AD-43 D-5 exactly: one chain pass is one outcome, `failureThreshold`
+ * and mirrors it exactly: one chain pass is one outcome, `failureThreshold`
  * consecutive failures open the circuit, the first call after `resetMs` is a
  * probe, a successful probe closes and a failed probe re-opens with a fresh
  * window. The projection never decides anything — the real breaker's

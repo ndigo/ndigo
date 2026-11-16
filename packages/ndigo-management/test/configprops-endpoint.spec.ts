@@ -1,5 +1,5 @@
 /**
- * `/configprops` endpoint specs (AD-76 D-3).
+ * `/configprops` endpoint specs.
  */
 // @vitest-environment node
 import { describe, test, expect, beforeAll, afterAll } from 'vitest';
@@ -30,7 +30,7 @@ class ExposedManagement extends ManagementAutoConfiguration {
     }
 }
 
-describe('ConfigurationPropertiesController (AD-76 D-3)', () => {
+describe('ConfigurationPropertiesController', () => {
     let base: string;
     let adapter: NodeHTTPServerAdapter;
 

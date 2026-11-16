@@ -1,5 +1,5 @@
 /**
- * The AD-35 schema seam: `validatedBy` exposes the Zod schema on the
+ * The schema seam: `validatedBy` exposes the Zod schema on the
  * extractor and on the resolved {@link MethodParameter}, for generation-time
  * introspection (OpenAPI), without changing resolution behavior.
  */
@@ -22,7 +22,7 @@ class EchoController {
     }
 }
 
-describe('Zod schema seam (AD-35)', () => {
+describe('Zod schema seam', () => {
     describe('validatedBy', () => {
         it('attaches the caller schema to the returned extractor', () => {
             const extractor = validatedBy(EchoSchema, bodyValue('data'));

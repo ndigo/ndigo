@@ -1,7 +1,7 @@
 {
   "name": "@ndigo/cluster",
   "version": "0.0.1",
-  "description": "Process supervisor for Node.js applications — replicated worker slots with signal relay, graceful drains, and bounded-backoff restarts (AD-74)",
+  "description": "Process supervisor for Node.js applications — replicated worker slots with signal relay, graceful drains, and bounded-backoff restarts",
   "type": "module",
   "keywords": [
     "ndigo",

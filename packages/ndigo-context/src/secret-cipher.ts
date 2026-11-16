@@ -1,5 +1,5 @@
 /**
- * Secret-at-rest cipher contract and marker format (AD-29 D-3..D-5).
+ * Secret-at-rest cipher contract and marker format.
  *
  * Encrypted property values use a versioned, scheme-dispatched marker:
  *
@@ -135,7 +135,7 @@ export function isSecretMarkerLike(value: unknown): boolean {
 export interface SecretCipherCapabilities {
     /**
      * Whether the backend supports additional authenticated data (AAD).
-     * The decrypt path REQUIRES AAD binding (key-path AAD, AD-29 D-4); a
+     * The decrypt path REQUIRES AAD binding (key-path AAD); a
      * backend without it must be refused at wiring, never downgraded.
      * Compact JWE and age have no AAD slot — a hypothetical adapter for
      * them must return `false` here and be rejected by the capability gate.
@@ -144,7 +144,7 @@ export interface SecretCipherCapabilities {
 }
 
 /**
- * A secret-at-rest cipher backend (AD-29 D-3/D-4).
+ * A secret-at-rest cipher backend.
  *
  * Implementations are identified by their {@link SecretCipher#scheme} —
  * the marker's dispatch key. The contract is intentionally narrow:

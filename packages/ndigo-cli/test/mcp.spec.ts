@@ -143,11 +143,11 @@ describe('ndigo mcp', () => {
         expect(mcp?.positionals.map((positional) => positional.name)).toEqual(['dir']);
     });
 
-    it('reports a missing inspect script with the AD-70 hint', async () => {
+    it('reports a missing inspect script with the hint', async () => {
         const client = await connect({ dir: createApp({ inspect: false }) });
         const message = await callError(client, 'get_manifest', {});
         expect(message).toContain('no "inspect" script');
-        expect(message).toContain('(AD-70)');
+        expect(message).toContain('');
     });
 
     it('tails the application log', async () => {

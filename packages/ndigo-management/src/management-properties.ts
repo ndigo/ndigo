@@ -1,5 +1,5 @@
 /**
- * `management.*` configuration reads and the exposure model (AD-76 D-5/D-2).
+ * `management.*` configuration reads and the exposure model.
  */
 import { type ConfigurableEnvironment, type Environment } from '@ndigo/context';
 import { z } from 'zod';
@@ -27,14 +27,14 @@ const ENDPOINT_PATHS: Record<string, string> = Object.freeze({
 
 /**
  * The exposure defaults when neither options nor a `management.*` source
- * section is present (AD-76 D-2): the two pre-existing endpoints stay
+ * section is present: the two pre-existing endpoints stay
  * served, everything new is opt-in.
  */
 export const DEFAULT_EXPOSURE: readonly string[] = Object.freeze(['health', 'metrics']);
 
 /**
  * Schema for the `management` config-file section — validation and the
- * file-model defaults live here (the AD-34 D3 shape that boot's schema
+ * file-model defaults live here (the shape that boot's schema
  * mode would apply; the reader below reuses it without importing
  * `@ndigo/boot`, per the REU-9 layering).
  */
@@ -56,7 +56,7 @@ const healthShape = z.object({
 
 /**
  * Schema for the `management` config-file section — validation and the
- * file-model defaults live here (the AD-34 D3 shape that boot's schema
+ * file-model defaults live here (the shape that boot's schema
  * mode would apply; the reader below reuses it without importing
  * `@ndigo/boot`, per the REU-9 layering).
  */
@@ -91,7 +91,7 @@ function deepMerge(base: JSONRecord, over: JSONRecord): JSONRecord {
 
 /**
  * Reads the `management` config-file section from the environment's
- * property sources (AD-76 D-5).
+ * property sources.
  *
  * Sources are visited lowest-precedence first and their `management`
  * subtrees deep-merged, so the result matches exactly what the property
@@ -171,8 +171,8 @@ export function endpointPath(id: string): string | undefined {
 }
 
 /**
- * Resolves whether an endpoint id is served: `options` (programmatic,
- * AD-76 D-5) win over the `management.*` source section; the default
+ * Resolves whether an endpoint id is served: `options` (programmatic)
+ * win over the `management.*` source section; the default
  * posture serves health+metrics.
  *
  * @param environment - The application environment (may be undefined pre-injection).

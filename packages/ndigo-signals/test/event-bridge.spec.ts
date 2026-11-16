@@ -36,7 +36,7 @@ function fakeEmitter(): EventSource & EventSink & { listenerCount(type: string |
     };
 }
 
-describe('eventsToSignal (AD-09)', () => {
+describe('eventsToSignal', () => {
     it('writes the payload of matching events into the signal', () => {
         const emitter = fakeEmitter();
         const target = signal('idle');
@@ -78,7 +78,7 @@ describe('eventsToSignal (AD-09)', () => {
     });
 });
 
-describe('signalToEvents (AD-09)', () => {
+describe('signalToEvents', () => {
     it('does not emit on subscribe; emits an occurrence per change', () => {
         const emitter = fakeEmitter();
         const source = signal(5);

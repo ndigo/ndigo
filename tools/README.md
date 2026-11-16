@@ -12,7 +12,7 @@ Current tenants:
   `ndigo new` / `ndigo generate`. See
   [`generators/README.md`](generators/README.md).
 
-The homes, by role (AD-93):
+The homes, by role:
 
 | Home        | Role                                                                     |
 | ----------- | ------------------------------------------------------------------------ |

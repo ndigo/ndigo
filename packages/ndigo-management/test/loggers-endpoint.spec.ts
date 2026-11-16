@@ -1,5 +1,5 @@
 /**
- * `/loggers` endpoint specs (AD-76 D-7).
+ * `/loggers` endpoint specs.
  */
 // @vitest-environment node
 import { describe, test, expect, beforeAll, afterAll } from 'vitest';
@@ -15,7 +15,7 @@ class ExposedManagement extends ManagementAutoConfiguration {
     }
 }
 
-describe('LoggersController (AD-76 D-7)', () => {
+describe('LoggersController', () => {
     let base: string;
     let adapter: NodeHTTPServerAdapter;
 

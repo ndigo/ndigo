@@ -1,5 +1,5 @@
 /**
- * HTTPServerInstrumentation semconv duration metric (AD-77 D-6): every
+ * HTTPServerInstrumentation semconv duration metric: every
  * completed inbound request records `http.server.request.duration` on the
  * meter — the success path with the adapter's status code, the catch path
  * with the 500 the adapter would have written.

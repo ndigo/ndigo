@@ -1,5 +1,5 @@
 /**
- * `NdigoDatabaseAdapter` implementation over Drizzle/libSQL (AD-96).
+ * `NdigoDatabaseAdapter` implementation over Drizzle/libSQL.
  *
  * Wraps the existing `DrizzleMigrator` and the app-supplied migration list /
  * generate callback so `@ndigo/cli` can drive migrations without knowing

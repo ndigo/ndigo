@@ -1,5 +1,5 @@
 /**
- * Full-loop config-server integration (AD-29 Wave 3, D-6..D-8): boot with a
+ * Full-loop config-server integration (D-6..D-8): boot with a
  * remote `configServer` source + `@refreshScope` config class → poll detects
  * a change → `environment.refresh()` → `config:refresh` → the config class
  * re-binds with the new value. Also: 304/unchanged → no event, `optional:
@@ -48,7 +48,7 @@ const makeFetch = () => {
 
 let sequence = 0;
 
-describe('config-server full loop (AD-29 Wave 3)', () => {
+describe('config-server full loop', () => {
     test('remote change through the poll path rebinds @refreshScope entries', async () => {
         // Boot applies the remote document; the wired source's poll cycle
         // (load → body differs → replace + refresh) re-binds the config

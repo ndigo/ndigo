@@ -24,7 +24,7 @@ import { type PasswordEncoder, schemePrefix, UnknownPasswordSchemeError } from '
  *     'scrypt',
  * );
  * ```
- * Adding argon2id later (AD-33 D-3) is purely additive: register the
+ * Adding argon2id later is purely additive: register the
  * adapter under `'argon2id'`; old scrypt hashes keep verifying and
  * `needsRehash` migrates logins onto the new default.
  */

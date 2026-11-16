@@ -1,8 +1,8 @@
 /**
- * The property-backed local flag provider (AD-82 D-3): reads flag state
+ * The property-backed local flag provider: reads flag state
  * from the environment property sources — flag `name` resolves
  * `feature.<name>` by default — and is **read-through**, so an
- * `environment.refresh()` (AD-29) makes flag changes visible immediately
+ * `environment.refresh()` makes flag changes visible immediately
  * with no cache to invalidate.
  */
 import { getErrorMessage } from '@ndigo/util';
@@ -42,7 +42,7 @@ export interface PropertyFlagProviderOptions {
  *
  * Deterministic across processes and calls — a target is always in or
  * out of a percentage — without any shared state. The algorithm is
- * intentionally local: a vendor/flagd bridge (AD-82 D-6) brings its own
+ * intentionally local: a vendor/flagd bridge brings its own
  * bucketing and its own flag configuration, so no coherence coupling
  * exists.
  */
@@ -140,7 +140,7 @@ function convertTo(
  * The local, zero-config flag provider: `feature.<flag>` properties drive
  * evaluations, read live on every call.
  *
- * Semantics (AD-82 D-3):
+ * Semantics:
  * - missing property → `DEFAULT` with the caller's default value;
  * - boolean: truthy / `'true'` → `STATIC` true; `'false'`, `0`, `''`,
  *   `null` → `DISABLED` false;

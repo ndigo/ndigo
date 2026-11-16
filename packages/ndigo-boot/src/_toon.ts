@@ -1,5 +1,5 @@
 /**
- * The optional `@toon-format/toon` peer seam (AD-66): exact pin, runtime
+ * The optional `@toon-format/toon` peer seam: exact pin, runtime
  * shape check, lazy dynamic import, TOON document parsing, and bounded
  * decoder diagnostics — shared by the config-file loader and
  * `ApplicationBuilder.fromConfig`.
@@ -8,7 +8,7 @@ import { IllegalStateError, JSONObject } from '@ndigo/core';
 import { getErrorMessage } from '@ndigo/util';
 
 /**
- * Exact version of the optional `@toon-format/toon` peer (AD-66 D-4) — keep
+ * Exact version of the optional `@toon-format/toon` peer — keep
  * in sync with the `peerDependencies`/`devDependencies` pin in
  * `packages/ndigo-boot/package.json`; the install hint in
  * {@link loadToonDecoder} references it.
@@ -18,7 +18,7 @@ export const TOON_PEER_VERSION = '4.4.0';
 /**
  * Runtime shape of the optional `@toon-format/toon` peer. Declared locally
  * instead of `import type`-ed so that building `@ndigo/boot` from source never
- * requires the optional peer to resolve (AD-66): the lazy dynamic import in
+ * requires the optional peer to resolve: the lazy dynamic import in
  * {@link loadToonDecoder} is the only load site.
  */
 interface ToonDecoderModule {
@@ -61,7 +61,7 @@ export const loadToonDecoder = async (): Promise<(content: string) => JSONObject
 /**
  * Decoder diagnostics quote input slices, and config files routinely hold
  * credentials — bound the message and strip control characters before it
- * enters an error/log (AD-66, SEC parity with the JSON path's bounded
+ * enters an error/log (SEC parity with the JSON path's bounded
  * `JSON.parse` message).
  */
 const MAX_DECODER_MESSAGE_CHARS = 200;

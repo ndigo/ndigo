@@ -1,12 +1,12 @@
 /**
- * `@whenFeature` — declarative feature-gate metadata (AD-82 D-4).
+ * `@whenFeature` — declarative feature-gate metadata.
  *
  * The decorator is **passive metadata** — the `@scheduled` / `@rateLimit`
  * pattern: decoration-time validation, a `Symbol.metadata` key, and a
  * reader for the enforcing interceptor. The route-level enforcement is
  * `FeatureGateInterceptor` in `@ndigo/platform-node` (default-on in the
  * node mapping, mirror of `RateLimitInterceptor`); service-method usage
- * composes as an explicit `evaluator.evaluate()` check or an AD-42
+ * composes as an explicit `evaluator.evaluate()` check or an
  * interceptor.
  */
 import '@tsmetadata/polyfill';

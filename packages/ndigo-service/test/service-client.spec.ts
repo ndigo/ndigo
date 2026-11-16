@@ -177,7 +177,7 @@ class TickerAPI {
     }
 }
 
-describe('serviceClient stream calls (AD-09)', () => {
+describe('serviceClient stream calls', () => {
     /** Minimal facet of the finished spans surfaced by the shared exporter. */
     type FinishedSpan = {
         name: string;

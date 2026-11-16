@@ -180,8 +180,8 @@ export function assertCloseFrame(code: number, reason: string): void {
  *   double in tests).
  * @param path - The request path (for `session.path`).
  * @param sources - Request sources captured from the upgrade request.
- * @param registry - Optional session registry backing `join`/`leave`
- *   (AD-21 D5); when `null`, room membership is a no-op.
+ * @param registry - Optional session registry backing `join`/`leave`.
+ *   When `null`, room membership is a no-op.
  * @param limits - Transport bounds (frame payload, inbound queue cap).
  * @returns The session.
  */
@@ -226,7 +226,7 @@ export function nodeSocketSession(
 
     const onMessage = (data: unknown, isBinary: boolean): void => {
         // ws delivers Buffer payloads with an `isBinary` flag for both
-        // frame types (AD-23 D8). Text frames stay strings (the contract's
+        // frame types. Text frames stay strings (the contract's
         // promise for echo/chat patterns); binary frames surface byte-exact
         // as Uint8Array so STOMP binary bodies (content-length) survive.
         if (isBinary) {
@@ -282,11 +282,11 @@ export function nodeSocketSession(
         },
         attributes: {},
         send(data: unknown) {
-            // Slow-consumer watermark (AD-21 D6 backpressure): every
+            // Slow-consumer watermark ( backpressure): every
             // outbound path — direct send, handler pumps, STOMP fan-out —
             // checks the transport buffer here, not just the registry's
             // broadcast. Over the watermark: `close` mode closes with 1013
-            // (the AD-22 client reconnects with backoff) or `drop` mode
+            // (the client reconnects with backoff) or `drop` mode
             // silently skips the frame. The memory cost of a room is set
             // by its slowest member.
             const buffered = transport.bufferedAmount;
@@ -308,7 +308,7 @@ export function nodeSocketSession(
             if (typeof data === 'string') {
                 transport.send(data);
             } else if (data instanceof Uint8Array || data instanceof ArrayBuffer) {
-                // Binary body/frame passthrough (AD-23 D8): Uint8Array →
+                // Binary body/frame passthrough: Uint8Array →
                 // binary frame, byte-exact.
                 transport.send(Buffer.from(data as Uint8Array));
             } else {

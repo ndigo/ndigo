@@ -97,7 +97,7 @@ describe('resolveLabTelemetry', () => {
         expect(telemetry.config.logExporter).toEqual({ url: 'http://collector:4318/v1/logs' });
     });
 
-    test('NDIGO_TELEMETRY_METRIC_EXPORTER=prometheus overrides only the metric signal (AD-77)', () => {
+    test('NDIGO_TELEMETRY_METRIC_EXPORTER=prometheus overrides only the metric signal', () => {
         process.env['OTEL_EXPORTER_OTLP_ENDPOINT'] = 'http://collector:4318';
         process.env['NDIGO_TELEMETRY_METRIC_EXPORTER'] = 'prometheus';
         const telemetry = resolveLabTelemetry();

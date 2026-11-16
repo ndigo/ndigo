@@ -83,7 +83,7 @@ export class DrizzleDataSource {
  * Generates the `CREATE TABLE IF NOT EXISTS` statements for the given
  * entities' metadata — the single source of truth for metadata → DDL, shared
  * by {@link DrizzleDataSource.init} (fresh-DB auto-init) and baseline
- * migrations (AD-30 D-3).
+ * migrations.
  *
  * Column storage types follow the shared metadata → SQLite mapping:
  * `int*` → `INTEGER`, `real`/`float`/`double` → `REAL`, `blob` → `BLOB`,

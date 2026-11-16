@@ -1,5 +1,5 @@
 /**
- * Type-safe entry handles for the shared cache contracts (AD-34 D1).
+ * Type-safe entry handles for the shared cache contracts.
  */
 import { ContextToken } from '@ndigo/factory';
 import type { CacheManager } from './cache-manager';

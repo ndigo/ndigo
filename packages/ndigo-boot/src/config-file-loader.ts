@@ -13,7 +13,7 @@ import { parseToonDocument } from './_toon';
  * `application.json` then `application.toon` per location — JSON wins on
  * collision; the other values restrict probing to one format, and
  * `NDIGO_CONFIG_IMPORT` paths whose extension contradicts a restricted
- * `format` error out (imports inherit the rule, AD-66 D-2). TOON files
+ * `format` error out (imports inherit the rule). TOON files
  * follow spec v4.4 and decode through the optional `@toon-format/toon` peer
  * (see {@link StandardConfigFileLoader}).
  */
@@ -126,7 +126,7 @@ const isPlainObject = (value: unknown): boolean => value !== null && typeof valu
  * `application-{profile}.toon` — JSON wins the collision) config files into
  * a `ConfigurableEnvironment`, orchestrated by boot AFTER profiles are
  * applied and BEFORE CLI/builder wiring (CLI \> boot \> files \> env \>
- * defaults). See AD-66: TOON is an opt-in, decode-only authoring format;
+ * defaults). See: TOON is an opt-in, decode-only authoring format;
  * JSON stays the default.
  */
 export class StandardConfigFileLoader {
@@ -230,7 +230,7 @@ export class StandardConfigFileLoader {
                 const { path, optional } = stripPrefix(trimmed);
                 // A restricted `format` admits one parser; an import whose
                 // extension contradicts it must not sidestep the option
-                // (AD-66 D-2: imports inherit the `format` rule).
+                // (imports inherit the `format` rule).
                 if (this.#format !== 'auto') {
                     const actual = path.endsWith('.toon') ? 'toon' : 'json';
                     if (actual !== this.#format) {

@@ -5,7 +5,7 @@ import { WebSocketClient, type SocketStatus } from '@ndigo/socket';
 import { AbstractBaseInstrumentation, createLazyCounter } from '@ndigo/telemetry';
 
 /**
- * Instrumentation for {@link WebSocketClient} (AD-22): outbound message
+ * Instrumentation for {@link WebSocketClient}: outbound message
  * and byte counters + exactly one counted `close()` per session (a close
  * that follows a terminal drop counts; the latched repeat does not), via
  * prototype patches.

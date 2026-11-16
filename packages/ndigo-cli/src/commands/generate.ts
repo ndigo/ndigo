@@ -3,7 +3,7 @@
  * (`@ndigo/generators`): the scaffolding kinds package, component, readme,
  * header, controller, service, entity, middleware, config, and migration.
  * The CLI is a thin, prompting front over the workspace's Nx bridge — the
- * generator implementations stay in their package (AD-75 D-3).
+ * generator implementations stay in their package.
  */
 import { buildCommand } from '@stricli/core';
 import { resolveAppDir, runWorkspaceOnce, usageError } from '../helpers/app-scripts.js';
@@ -218,6 +218,6 @@ export const generateCommand = buildCommand({
             'component, readme, header, controller, service, entity, middleware, config, ' +
             'migration. The CLI resolves the workspace from the directory argument and runs ' +
             'the generator there — the generator implementations themselves live in ' +
-            '@ndigo/generators (AD-75 D-3).',
+            '@ndigo/generators.',
     },
 });

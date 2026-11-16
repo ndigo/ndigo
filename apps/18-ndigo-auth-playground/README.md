@@ -113,7 +113,7 @@ What each mode actually demonstrates (and where the lines are):
 - **Rate limiting (mode 4).** Credential endpoints are the brute-force surface:
   five attempts per minute per client address, denied as `429` + `Retry-After`.
   The key is the resolved client address, so with `NDIGO_TRUSTED_PROXIES` set the
-  app honours `X-Forwarded-For` only from a trusted peer (AD-37) — the live
+  app honours `X-Forwarded-For` only from a trusted peer — the live
   transcript below uses that to give each mode its own bucket.
 - **Durable sessions (mode 5).** Sessions live in `ndigo_sessions` on a
   file-backed LibSQL database (`@ndigo/orm-drizzle`'s `LibSQLSessionStore`), not in

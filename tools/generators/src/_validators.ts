@@ -4,10 +4,10 @@
  * Nx loads the generator factories with Node's native TypeScript stripping,
  * which needs exact specifiers: relative imports in Nx-loaded generator
  * files carry the `.ts` extension (rewritten to `.js` on emit by
- * `rewriteRelativeImportExtensions` in the package tsconfig — AD-85).
+ * `rewriteRelativeImportExtensions` in the package tsconfig).
  */
 
-/** Kebab-case artifact names (AD-85): lowercase words joined by single hyphens. */
+/** Kebab-case artifact names: lowercase words joined by single hyphens. */
 const kebabNameRule = /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/u;
 
 /**

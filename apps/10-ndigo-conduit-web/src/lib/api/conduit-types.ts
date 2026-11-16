@@ -174,8 +174,8 @@ export class ConduitApiError extends Error {
  * The service-layer seam onto the Conduit backend.
  *
  * Services depend on this interface rather than on the HTTP-backed
- * implementation, so a spec drives them with a hand-written stub (AD-34-style
- * token discipline does not apply: this is a plain, replaceable port).
+ * implementation, so a spec drives them with a hand-written stub (token
+ * discipline does not apply: this is a plain, replaceable port).
  */
 export interface ConduitApi {
     /** `POST /api/users` — registers an account. */

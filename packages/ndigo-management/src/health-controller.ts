@@ -15,7 +15,7 @@ import { readManagementSettings } from './management-properties';
  *
  * `/health` must keep its `{ status, components, timestamp }` body even when
  * the aggregate is DOWN, but the framework renders every 4xx/5xx
- * `ResponseEntity` as `application/problem+json` (AD-10) — which would replace
+ * `ResponseEntity` as `application/problem+json` — which would replace
  * that body. A producing view writes the document directly, so the health
  * payload survives alongside the `503` status (the actuator convention: a
  * DOWN aggregate is signalled by the status code, not by an error envelope).
@@ -84,8 +84,7 @@ export class HealthController extends AsApplicationContextAware(Null) {
     }
 
     /**
-     * Serves a health group or a single component under `/health/:name`
-     * (AD-76 D-6).
+     * Serves a health group or a single component under `/health/:name`.
      *
      * A configured group (from `management.health.groups.<name>.include`)
      * shadows a same-named component and answers with the aggregate over

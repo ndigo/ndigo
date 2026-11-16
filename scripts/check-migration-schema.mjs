@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Migration-schema freshness gate (AD-78 D-6).
+ * Migration-schema freshness gate.
  *
  * Regenerates the reference app's committed schema snapshot through the
  * app's own `db:generate` script and fails on ANY working-tree change under

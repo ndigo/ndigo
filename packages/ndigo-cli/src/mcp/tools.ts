@@ -9,9 +9,9 @@ import { collectDiagnostics } from '../commands/_diagnostics.js';
 import { captureAppOnce, usageError } from '../helpers/app-scripts.js';
 import { readLogTail, resolveLogFile } from '../helpers/log-tail.js';
 
-/** The `scripts.inspect` hint, identical to `ndigo inspect` (AD-70). */
+/** The `scripts.inspect` hint, identical to `ndigo inspect`. */
 const INSPECT_HINT =
-    'add an "inspect" script that builds and prints the manifest, e.g. "inspect": "tsx src/inspect.ts" (AD-70)';
+    'add an "inspect" script that builds and prints the manifest, e.g. "inspect": "tsx src/inspect.ts"';
 
 /** A manifest route, projected from `@ndigo/inspect` v1. */
 export interface AppRoute {

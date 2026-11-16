@@ -9,7 +9,7 @@ import { Constructable, Null } from '@ndigo/core';
 /**
  * Reads a file's text content, or `null` when the file does not exist.
  *
- * The config-file seam (AD-13 Q1) keeps `@ndigo/boot` isomorphic:
+ * The config-file seam keeps `@ndigo/boot` isomorphic:
  * `@ndigo/platform-node` supplies an `fs`-backed implementation; browsers and
  * specs pass none (files skipped / fake reader). Return `null` for missing
  * files — do not throw. Lives here (the shared core) so both `@ndigo/boot` and

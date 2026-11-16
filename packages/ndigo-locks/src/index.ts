@@ -1,6 +1,5 @@
 /**
- * Public API of `@ndigo/locks` — distributed locks with fencing tokens
- * (AD-73).
+ * Public API of `@ndigo/locks` — distributed locks with fencing tokens.
  */
 
 export { likeLockDriver, type LockAcquireOptions, type LockDriver, type LockHandle } from './lock-driver';

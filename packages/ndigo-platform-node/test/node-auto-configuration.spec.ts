@@ -25,7 +25,7 @@ describe('NodeAutoConfiguration', () => {
         expect(converters).toBeDefined();
     });
 
-    test('provides a shared conversion service with schema targets (AD-38)', () => {
+    test('provides a shared conversion service with schema targets', () => {
         const config = new NodeAutoConfiguration();
         const conversion = config.conversionService();
         // Schema target: contract-enforced projection…
@@ -38,7 +38,7 @@ describe('NodeAutoConfiguration', () => {
         const config = new NodeAutoConfiguration();
         const resolvers = config.argumentResolvers();
         expect(resolvers).toHaveLength(9);
-        // AD-26/D-6: the multipart and request-part resolvers are wired into
+        // The multipart and request-part resolvers are wired into
         // the runtime chain. Without them, @file()/fileValue() and
         // requestPart() parameters never bind and uploads return 400.
         expect(resolvers.some((r) => r instanceof NodeMultipartFileMethodArgumentResolver)).toBe(true);

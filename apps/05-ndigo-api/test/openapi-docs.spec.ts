@@ -7,14 +7,14 @@ import { SecureDocsConfiguration } from '../src/secure-docs-configuration';
 import { initAuth } from '../src/auth-store';
 
 /**
- * End-to-end API docs (AD-35): the real demo app serves the generated spec
+ * End-to-end API docs: the real demo app serves the generated spec
  * (derived from the live route tables) and the Swagger UI page + assets —
  * gated behind the demo's Bearer guard (SEC-4): anonymous callers are
  * denied 401, the demo token (login `admin`/`demo` via `/auth/login`, the
  * established fixture) is admitted.
  */
 
-describe('ndigo-api OpenAPI docs (AD-35)', () => {
+describe('ndigo-api OpenAPI docs', () => {
     let mockHTTP: MockHTTP;
     let close: () => void;
     let token: string;
@@ -85,7 +85,7 @@ describe('ndigo-api OpenAPI docs (AD-35)', () => {
         expect(schema?.properties).toHaveProperty('title');
         expect(schema?.required).toContain('title');
         // The GET response is documented from the same DTO schema the mapper
-        // projects with (AD-38 D-4) — handler output and spec cannot drift.
+        // projects with — handler output and spec cannot drift.
         const list = doc.paths['/notes']?.get;
         expect(list).toBeDefined();
         const responseSchema = list?.responses?.['200']?.content?.['application/json']?.schema;

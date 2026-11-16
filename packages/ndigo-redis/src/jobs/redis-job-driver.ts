@@ -317,7 +317,7 @@ export class RedisJobDriver implements JobDriver {
      */
     async fail(id: JobId, lastError: string): Promise<void> {
         this.#assertOpen();
-        void lastError; // terminal errors surface through telemetry/logs, not storage (AD-72 D-2)
+        void lastError; // terminal errors surface through telemetry/logs, not storage
         await this.#discard(id);
     }
 

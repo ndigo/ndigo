@@ -7,7 +7,7 @@ import type { AsyncCloseable } from '@ndigo/factory';
 import type { ClaimOptions, JobId, JobRecord, JobRequest } from './job';
 
 /**
- * Storage/transport contract for queued jobs (AD-72 D-2).
+ * Storage/transport contract for queued jobs.
  *
  * Semantics every driver must preserve:
  *
@@ -20,7 +20,7 @@ import type { ClaimOptions, JobId, JobRecord, JobRequest } from './job';
  *   {@link request.serializeJobPayload | serializeJobPayload}) and stores text, not object graphs.
  * - **Terminal ends.** `complete` and `fail` remove the job from the queue;
  *   `fail` records the error in the caller's telemetry/log, not in storage
- *   (dead-letter inspection is out of scope — AD-72 D-2).
+ * (dead-letter inspection is out of scope).
  *
  * Implementations are registered under the `jobDriver` entry; the default is
  * {@link "in-process-job-driver".InProcessJobDriver | InProcessJobDriver}, which is explicitly non-durable.

@@ -8,7 +8,7 @@ import { fixedBackoff, type BackoffPolicy } from './backoff';
 
 /**
  * Total call attempts per invocation when `@retry` omits `attempts`
- * (AD-43 D-3): the first attempt plus two retries.
+ * the first attempt plus two retries.
  */
 export const DEFAULT_RETRY_ATTEMPTS = 3;
 
@@ -33,7 +33,7 @@ export const retry = methodAnnotation<RetrySpec>('retry');
 
 /**
  * Retry policy for one method. **Idempotency is the caller's contract**
- * (AD-43 D-3): retrying re-invokes the join point, so a non-idempotent call
+ * retrying re-invokes the join point, so a non-idempotent call
  * must constrain {@link RetrySpec.retryable}.
  */
 export interface RetrySpec {
@@ -83,7 +83,7 @@ function validateRetrySpec(spec: RetrySpec): void {
  * Because `invoke` is async, a woven **sync** method advised by this
  * interceptor returns a Promise through the proxy (see {@link retry}).
  *
- * @see AD-43 D-3 for the retry semantics and idempotency contract.
+ * @see {@link retry} for the retry semantics and idempotency contract.
  */
 export class RetryInterceptor implements MethodInterceptor {
     /**

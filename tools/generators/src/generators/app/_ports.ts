@@ -1,5 +1,5 @@
 /**
- * Dev-port scanning for the app generator (AD-85).
+ * Dev-port scanning for the app generator.
  *
  * A generated app must not reuse a dev port that a sibling app already
  * claims, because the ports are the ladder's run-everything contract (see
@@ -8,7 +8,7 @@
  * conventions in use across the ladder:
  *
  * - vite `server: { port: 3001 }`
- * - a `{ port: 3010 }` preset option (AD-90; `createNodeApplication`)
+ * - a `{ port: 3010 }` preset option (`createNodeApplication`)
  * - `process.env.PORT ??= '3200'` (dot and bracket forms)
  * - `getEnv('PORT', '3050')`
  * - a `DEFAULT_PORT = 3040` constant

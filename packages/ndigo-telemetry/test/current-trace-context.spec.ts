@@ -1,5 +1,5 @@
 /**
- * `currentTraceContext` (AD-32 D-4): boundary-mocked like
+ * `currentTraceContext`: boundary-mocked like
  * `ContextAwareLogger`, so no global provider is needed and every case
  * runs in one process.
  */

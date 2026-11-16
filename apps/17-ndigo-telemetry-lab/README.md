@@ -10,8 +10,8 @@ One Node process and one page on port 3090 show the whole observability journey.
 The server is a plain `@ndigo/platform-node` app: `@ndigo/telemetry-node`'s
 `configureTelemetry` wires the OTel SDK (HTTP server, WebSocket server, and
 dispatcher instrumentations), `@ndigo/management` serves `/health` and
-`/metrics`, `@scheduled` (AD-20) drives the periodic work, and a `@socketMapping`
-endpoint plus the session registry push snapshots to connected clients (AD-21).
+`/metrics`, `@scheduled` drives the periodic work, and a `@socketMapping`
+endpoint plus the session registry push snapshots to connected clients.
 The page is a Vite bundle that configures the browser providers
 (`@ndigo/telemetry-web`), traces its own actions through `@ndigo/http`'s
 `TraceHeaderInterceptor`, and subscribes with `@ndigo/socket`'s
@@ -67,7 +67,7 @@ PORT=3090 pnpm start
   the browser's CORS preflight; the stock image already does, and the CSP is
   widened for that origin automatically.
 
-### Prometheus mode (AD-77)
+### Prometheus mode
 
 ```bash
 cd apps/17-ndigo-telemetry-lab
@@ -155,7 +155,7 @@ With a collector, both halves land in the **same trace**, one span from each
       dataPoints: [ { attributes: {}, startTime: […], endTime: […], value: 12 } ] }
     ```
 
-- **pull** — `GET /metrics` (AD-32's `FeatureMetricAggregator` behind
+- **pull** — `GET /metrics` (the `FeatureMetricAggregator` behind
   `@ndigo/management`) serializes the same observations as a feature:
 
     ```console

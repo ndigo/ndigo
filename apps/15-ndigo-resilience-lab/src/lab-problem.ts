@@ -1,5 +1,5 @@
 /**
- * The lab's failing responses as RFC 9457 problem documents (AD-10: every
+ * The lab's failing responses as RFC 9457 problem documents (every
  * 4xx/5xx `ResponseEntity` is problem+json).
  *
  * `ResponseEntityView` renders a body that already carries a numeric `status`

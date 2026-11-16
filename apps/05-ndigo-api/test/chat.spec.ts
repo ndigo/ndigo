@@ -1,12 +1,11 @@
 /**
- * End-to-end WebSocket demo gate (AD-21/AD-22): the ndigo-api chat room
+ * End-to-end WebSocket demo gate: the ndigo-api chat room
  * **consumed through the `@ndigo/socket` client** — the node global WHATWG
  * `WebSocket` transport, same wire as a browser.
  *
  * Boots the real application stack on an ephemeral port, connects
  * `WebSocketClient`s to `/ws/chat`, and asserts the room fan-out, the
- * scheduler-driven `chat-tick`, and deliberate-close status transitions
- * (AD-22 D3/D6).
+ * scheduler-driven `chat-tick`, and deliberate-close status transitions.
  */
 // @vitest-environment node
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
@@ -90,7 +89,7 @@ function waitFor(
     return promise;
 }
 
-describe('ndigo-api WebSocket chat room via @ndigo/socket client (AD-22 D6)', () => {
+describe('ndigo-api WebSocket chat room via @ndigo/socket client', () => {
     let context: ApplicationContext;
     let wsUrl: string;
     const clients: WebSocketClient[] = [];
@@ -152,7 +151,7 @@ describe('ndigo-api WebSocket chat room via @ndigo/socket client (AD-22 D6)', ()
         expect(tick).toMatchObject({ event: 'chat-tick' });
     });
 
-    test('client status transitions open → closed on deliberate close (AD-22 D3)', async () => {
+    test('client status transitions open → closed on deliberate close', async () => {
         const d = chat();
         await waitForOpen(d, 5_000);
         expect(d.status.value).toBe('open');

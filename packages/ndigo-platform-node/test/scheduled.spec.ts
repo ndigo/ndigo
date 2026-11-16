@@ -6,7 +6,7 @@ import { MetadataConfigApplicationContext } from '@ndigo/context';
 import { scheduled, TASK_SCHEDULER, TaskScheduler } from '@ndigo/scheduler';
 import { NodeAutoConfiguration } from '../src/node-auto-configuration';
 
-/** A `@scheduled` entry registered before refresh (AD-20 demo shape). */
+/** A `@scheduled` entry registered before refresh ( demo shape). */
 class Heartbeat {
     beats = 0;
 
@@ -16,7 +16,7 @@ class Heartbeat {
     }
 }
 
-describe('NodeAutoConfiguration scheduler wiring (AD-20)', () => {
+describe('NodeAutoConfiguration scheduler wiring', () => {
     let context: MetadataConfigApplicationContext;
     let scheduler: TaskScheduler;
 

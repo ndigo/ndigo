@@ -1,5 +1,5 @@
 /**
- * Health groups and single-component reads (AD-76 D-6).
+ * Health groups and single-component reads.
  */
 // @vitest-environment node
 import { describe, test, expect, beforeAll, afterAll } from 'vitest';
@@ -9,7 +9,7 @@ import { ManagementAutoConfiguration } from '../src/management-auto-configuratio
 import { HEALTH_REGISTRY } from '../src/health-registry-tokens';
 import type { HealthRegistry } from '../src/health';
 
-describe('health groups and components (AD-76 D-6)', () => {
+describe('health groups and components', () => {
     let base: string;
     let adapter: NodeHTTPServerAdapter;
     let registry: HealthRegistry;

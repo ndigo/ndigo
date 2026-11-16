@@ -37,7 +37,7 @@ describe('MetadataConfigApplicationContext', () => {
         expect(context.getValue('foo')).toBeUndefined();
     });
 
-    test('it should register token-declared entries (AD-34 D1)', () => {
+    test('it should register token-declared entries', () => {
         const tokenEntry = new ContextToken<number>('tokenEntry');
 
         @configuration

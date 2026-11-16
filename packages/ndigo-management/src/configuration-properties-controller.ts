@@ -1,6 +1,6 @@
 /**
  * Serves bound-configuration introspection under `/configprops`
- * (AD-76 D-3). Registered WITHOUT route decorators — the auto-configuration
+ *. Registered WITHOUT route decorators — the auto-configuration
  * wires the routes explicitly so exposure can gate them.
  */
 import { AsApplicationContextAware, type ApplicationContext, declaredConfigurationProperties } from '@ndigo/context';
@@ -13,7 +13,7 @@ import { isEndpointExposed } from './management-properties';
  * Serves `/configprops`: the declared keys and conversion types of the
  * app's `@configurationProperties` classes — **never their values**, so the
  * endpoint cannot leak a secret by construction (the same value-free
- * contract `@ndigo/inspect` codifies; AD-76 D-3).
+ * contract `@ndigo/inspect` codifies).
  *
  * The class list is the explicit `configurationClasses` option (mirroring
  * `@ndigo/inspect`'s `configurationClasses` input) — the framework keeps no

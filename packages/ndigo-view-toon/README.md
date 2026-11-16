@@ -71,7 +71,7 @@ nested objects — JSON stays the province of those.
 
 ### Opting in per route
 
-TOON is never a default (AD-102): register `toonViewResolver` on the routes
+TOON is never a default: register `toonViewResolver` on the routes
 that want it, and add a `'toon'` entry to your own path-extension map if you
 want `GET /report.toon` to work. The framework's negotiation wiring registers
 nothing for it; JSON remains what clients with no preference get.

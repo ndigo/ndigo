@@ -9,8 +9,7 @@ import { StaticResourceHandler, type StaticHandlerOptions } from './static-resou
  * Serve a static file from a base directory for a matching request path.
  *
  * Delegates every HTTP concern (conditional GET, Range, cache headers,
- * precompressed variants, directory modes) to {@link StaticResourceHandler}
- * (AD-28).
+ * precompressed variants, directory modes) to {@link StaticResourceHandler}.
  */
 export class StaticFileView {
     readonly #handler: StaticResourceHandler;

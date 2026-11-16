@@ -1,6 +1,6 @@
 /**
  * Public API of `@ndigo/cluster` — the process supervisor for replicated
- * worker slots (AD-74).
+ * worker slots.
  */
 
 export {

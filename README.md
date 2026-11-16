@@ -119,7 +119,7 @@ ndigo new <name> --kind node     # or: --kind browser
 ```
 
 Outside the repository (or as part of the 1.0 release), use the standalone
-scaffold (AD-92), which writes a plain pnpm project pinned to the published
+scaffold, which writes a plain pnpm project pinned to the published
 `@ndigo/*` line:
 
 ```bash
@@ -127,7 +127,7 @@ npm create ndigo-app@latest <name>          # node kind by default
 npm create ndigo-app@latest <name> -- --kind browser
 ```
 
-Both paths use the AD-90 lifecycle presets (`createNodeApplication` /
+Both paths use the lifecycle presets (`createNodeApplication` /
 `createWebApplication`) and follow the conventions in
 [guide 91](docs/guides/91-application-conventions.md).
 

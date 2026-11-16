@@ -20,7 +20,7 @@ import {
 /**
  * The response schema the client validates. A failing upstream answers with an
  * `{ error, … }` body, which this schema rejects — so the failure surfaces as
- * the service layer's `IllegalStateError` (AD-43 D-8: `HTTP.request` never
+ * the service layer's `IllegalStateError` (`HTTP.request` never
  * throws transport failures, the schema-validating client is the real throw).
  */
 export const UpstreamPayload = z.object({

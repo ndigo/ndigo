@@ -41,7 +41,7 @@ function itemsOf(payload: unknown): string[] {
 }
 
 /**
- * The client-side memoization half of the caching story (AD-24): the payload
+ * The client-side memoization half of the caching story: the payload
  * derivation is memoized with a TTL, so repeat loads of the same data skip
  * the items extraction. Browser-side, no DI, no entries — the same ttl/maxSize
  * behavior the `@cached` decorator provides server-side.
@@ -127,7 +127,7 @@ export class ClientDemoComponent extends HTMLElement {
             }
             const data: unknown = await response.json();
             // Memoized derivation: identical payloads within the TTL reuse
-            // the extracted items instead of re-scanning (AD-24).
+            // the extracted items instead of re-scanning.
             this.#payload = await derivePayload(data);
             this.#status = 'online';
         } catch (error) {

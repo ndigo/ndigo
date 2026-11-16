@@ -52,9 +52,9 @@ const READ_FROM_CONFIG: Record<string, string> = {
     'server.name': "apps/05-ndigo-api/src/server-config.ts — @configurationProperties('server', { schema })",
     'server.port': "apps/05-ndigo-api/src/server-config.ts — @configurationProperties('server', { schema })",
     'management.endpoints':
-        'packages/ndigo-management/src/management-properties.ts — readManagementSettings (AD-76 D-5): the deep-merged `management` source subtree read at refresh',
+        'packages/ndigo-management/src/management-properties.ts — readManagementSettings: the deep-merged `management` source subtree read at refresh',
     'management.health':
-        'packages/ndigo-management/src/management-properties.ts — readManagementSettings (AD-76 D-5): the deep-merged `management` source subtree read at refresh',
+        'packages/ndigo-management/src/management-properties.ts — readManagementSettings: the deep-merged `management` source subtree read at refresh',
 };
 
 /**

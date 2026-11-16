@@ -19,7 +19,7 @@ description: Diagnoses a failing Ndigo application with the CLI's introspection 
 ## Sequence
 
 1. `ndigo doctor --json` — versions, workspace, git, and failed checks.
-2. `ndigo inspect` — the app's own AD-70 manifest. It boots the application
+2. `ndigo inspect` — the app's own manifest. It boots the application
    without listening, so a boot failure surfaces here.
 3. Compare the manifest to expectations: route, mapping, parameters, config
    key presence.

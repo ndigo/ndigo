@@ -48,9 +48,9 @@ await em.persist(alice); // backfills alice.id (generated key)
 const found = await em.find(User, alice.id);
 ```
 
-## Migrations (AD-30/AD-78)
+## Migrations
 
-Two layers, both additive on the AD-30 runner:
+Two layers, both additive on the runner:
 
 - **Versioned migration files** — `db/migrations/<NNNN>-<slug>.ts`, one
   module exporting a `Migration` per file. `loadMigrations(dir)` discovers

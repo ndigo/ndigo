@@ -5,7 +5,7 @@ import { afterEach, describe, expect, test, vi } from 'vitest';
 import { ApplicationBuilder } from '../src/application-builder';
 
 /**
- * Isomorphism guard (AD-90 D-5): in a browser there is no `process` global,
+ * Isomorphism guard: in a browser there is no `process` global,
  * so the shared bootstrap reaches its environment variables through `getEnv`
  * (a no-op without `process`) rather than `process.env`. Before the fix,
  * `Application._configureProfiles` / `#profileGroups` read `process.env`

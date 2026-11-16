@@ -3,8 +3,7 @@
  *
  * The origin listener serves HTTP/1.1 by default; opt-in TLS material
  * ({@link TLSServerOptions}) upgrades it to ALPN h2 with an HTTP/1.1
- * fallback (AD-81). HTTP/3 terminates at an edge proxy in front of it
- * (AD-80).
+ * fallback. HTTP/3 terminates at an edge proxy in front of it.
  */
 import { $aware, type SmartLifecycle } from '@ndigo/factory';
 import { IllegalStateError } from '@ndigo/core';
@@ -31,13 +30,13 @@ export interface HTTPServerAdapter {
 }
 
 /**
- * TLS material for the secure origin listener (AD-81).
+ * TLS material for the secure origin listener.
  *
  * `key`, `cert` and `ca` accept either inline PEM (detected by a
  * `-----BEGIN` prefix) or a filesystem path, read by the adapter at bind
  * time (Node's tls options take PEM content only). Present when the
  * origin should terminate TLS and negotiate HTTP/2; absent, the origin
- * stays plaintext HTTP/1.1 for the edge-terminated topology (AD-80).
+ * stays plaintext HTTP/1.1 for the edge-terminated topology.
  */
 export interface TLSServerOptions {
     /** PEM private key (inline) or path to the key file. */
@@ -86,7 +85,7 @@ export interface HTTPServerOptions {
     /** Custom adapter. Defaults to `NodeHTTPServerAdapter`. */
     adapter?: HTTPServerAdapter;
     /**
-     * TLS material for the default adapter (AD-81). When set, the origin
+     * TLS material for the default adapter. When set, the origin
      * listener is an `http2.createSecureServer` in `allowHTTP1` mode:
      * ALPN negotiates `h2` with an HTTP/1.1 fallback, and WebSocket
      * upgrades keep working over the h1.1 path (RFC 8441 is not
@@ -122,7 +121,7 @@ export interface HTTPServerOptions {
      */
     authenticate?: NodeHTTPServerAdapterOptions['authenticate'];
     /**
-     * Trusted-proxy allowlist handed to the default adapter (AD-37): IP
+     * Trusted-proxy allowlist handed to the default adapter: IP
      * literals and CIDR prefixes (IPv4/IPv6) whose `X-Forwarded-For`
      * header the server may believe. Env-tunable via `NDIGO_TRUSTED_PROXIES`
      * (comma-separated) when the option is absent; an explicit option wins
@@ -141,7 +140,7 @@ export interface HTTPServerOptions {
      */
     authenticateTimeoutMs?: number;
     /**
-     * Socket session registry shared with the default adapter (AD-21 D4).
+     * Socket session registry shared with the default adapter.
      * When omitted, the registry is resolved from the application context
      * (`socketSessionRegistry` entry) at start, falling back to a fresh
      * instance — so broadcasts from the entry reach the adapter's sessions.
@@ -251,7 +250,7 @@ export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
         this.#host = options.host ?? '127.0.0.1';
         this.#dispatcher = dispatcher;
         this.#socketRegistry = options.socketRegistry ?? null;
-        // AD-81: explicit TLS material wins; otherwise the env pair
+        // Explicit TLS material wins; otherwise the env pair
         // (`NDIGO_TLS_KEY`/`NDIGO_TLS_CERT`, plus optional `NDIGO_TLS_CA`) is
         // read — all-or-nothing, so a half-configured pair fails loud
         // instead of silently keeping the plaintext listener. REV-102: the
@@ -272,7 +271,7 @@ export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
         this.#authenticateTimeoutMs = options.authenticateTimeoutMs;
         // Env-tunable trusted-proxy allowlist for the default adapter:
         // comma-separated IPs/CIDRs (`NDIGO_TRUSTED_PROXIES`). Explicit
-        // option wins over the env. Empty = trust nobody (AD-37).
+        // option wins over the env. Empty = trust nobody.
         this.#trustedProxies = options.trustedProxies ?? parseCSVEnv(getEnv('NDIGO_TRUSTED_PROXIES'));
         this.#adapter = options.adapter ?? null;
         this.#started = false;
@@ -407,10 +406,10 @@ export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
 }
 
 /**
- * Reads optional TLS material from the environment (AD-81):
+ * Reads optional TLS material from the environment:
  * `NDIGO_TLS_KEY` + `NDIGO_TLS_CERT` (both required together) and optional
  * `NDIGO_TLS_CA`. Absent both required keys → `undefined` (plaintext
- * origin, the AD-80 edge-terminated topology). Blank/whitespace-only
+ * origin, the edge-terminated topology). Blank/whitespace-only
  * values count as unset (REV-103) — an empty `NDIGO_TLS_KEY=` export is a
  * shell default, not a broken credential. One key without the other →
  * `RangeError`: a half-configured TLS listener must fail loud rather

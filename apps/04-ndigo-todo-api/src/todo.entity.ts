@@ -8,7 +8,7 @@ import { column, entity, generatedColumn, primaryColumn } from '@ndigo/orm';
 /**
  * One todo row.
  *
- * Column metadata is the single validation source (AD-07): persisting an
+ * Column metadata is the single validation source: persisting an
  * invalid row — an empty title, a non-numeric order — throws before the value
  * can reach a response. The primary key is untyped on purpose (`z.unknown()`):
  * generated ids are numbers, while the spec's client-supplied-id case admits

@@ -63,7 +63,7 @@ export type Backing =
  *
  * Temp files are named with a random suffix — never the client-supplied
  * filename — so parsing can never resolve a path-traversal payload to disk.
- * The caller owns `transferTo(dest)` destination sanitization (see AD-26 D-6).
+ * The caller owns `transferTo(dest)` destination sanitization.
  */
 class NodeMultipartFile implements MultipartFile {
     readonly name: string;

@@ -39,7 +39,7 @@ class UndecoratedConfig {
     @property('app.mode') mode: string | null = null;
 }
 
-describe('configurationProperties decorator (AD-15)', () => {
+describe('configurationProperties decorator', () => {
     test('stores metadata on decorated class', () => {
         expect(isConfigurationProperties(ServerConfig)).toBe(true);
         expect(isConfigurationProperties(UndecoratedConfig)).toBe(false);
@@ -134,7 +134,7 @@ describe('declaredConfigurationProperties (value-free inspection seam)', () => {
     });
 });
 
-describe('resolveConfigurationProperties schema mode (AD-34 D3)', () => {
+describe('resolveConfigurationProperties schema mode', () => {
     const runBoot = async (properties: JSONObject) => {
         @configuration
         class BootConfig {}
@@ -298,7 +298,7 @@ describe('resolveConfigurationProperties v2', () => {
     });
 });
 
-describe('@configurationProperties auto-registration (AD-15 D1)', () => {
+describe('@configurationProperties auto-registration', () => {
     test('registers a bound singleton under the camelCase class name', async () => {
         @configuration
         class AppConfigWithProps {
@@ -440,7 +440,7 @@ describe('BOOT-1 schema mode never relaxes (D-3)', () => {
     });
 });
 
-describe('BOOT-3 relaxed candidate set + origin (AD-16 D1)', () => {
+describe('BOOT-3 relaxed candidate set + origin', () => {
     test('relaxedKeyCandidates returns the exact key plus its spelled variants', () => {
         expect(relaxedKeyCandidates('server.hostName')).toEqual([
             'server.hostName',

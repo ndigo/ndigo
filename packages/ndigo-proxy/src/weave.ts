@@ -189,7 +189,7 @@ export function interceptAndRegister(target: object, specs: readonly MethodChain
 
 /**
  * Standalone weaving: returns a proxy over `instance` intercepting every
- * method an interceptor matches — no container required (AD-43 D-6).
+ * method an interceptor matches — no container required.
  *
  * Service clients and other hand-constructed objects use this where factory
  * processors (`interception(...)`) cannot see them. The instance is

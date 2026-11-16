@@ -1,5 +1,5 @@
 /**
- * Sampler ratio boundary 0: never samples (AD-32 D-1).
+ * Sampler ratio boundary 0: never samples.
  */
 // @vitest-environment node
 import { test, expect } from 'vitest';

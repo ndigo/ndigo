@@ -80,7 +80,7 @@ describe('NodeRequestPartMethodArgumentResolver', () => {
             expect(value).toBe('hello world');
         });
 
-        test('parses repeated parts per element into an array (AD-26 collapse)', () => {
+        test('parses repeated parts per element into an array ( collapse)', () => {
             const route = makeRoute({ tags: ['"a"', 'plain', '3'] });
 
             const value = resolver.resolveArgument(partParam('tags'), route, {});

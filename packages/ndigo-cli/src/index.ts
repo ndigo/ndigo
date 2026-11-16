@@ -71,7 +71,7 @@ export function buildCliApp() {
             seed: dbSeedCommand,
             rollback: dbRollbackCommand,
         },
-        docs: { brief: 'Database migration commands (AD-78)' },
+        docs: { brief: 'Database migration commands' },
     });
 
     const rootRouteMap = buildRouteMap({

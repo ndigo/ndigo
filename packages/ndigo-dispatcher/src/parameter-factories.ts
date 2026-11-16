@@ -217,7 +217,7 @@ export function historyStateValue(name?: string, options: ParameterExtractorOpti
  *
  * The optional target constructor makes the bound result a real instance of
  * the target instead of a plain object (mirrors `@file()`'s explicit-marker
- * convention, AD-26 D-5).
+ * convention).
  *
  * @example
  * ```ts
@@ -370,7 +370,7 @@ export function fileValue(partName?: string, options: ParameterExtractorOptions 
  * target instance, then through the shared conversion + Zod `convert` hook.
  * File parts stay `fileValue()`/`MultipartFile`.
  *
- * The part name follows the AD-26 `fileValue` convention — explicit when
+ * The part name follows the `fileValue` convention — explicit when
  * given, otherwise the method-argument name. Mirrors the reference
  * `@RequestPart(value)` with parameter-name fallback:
  *

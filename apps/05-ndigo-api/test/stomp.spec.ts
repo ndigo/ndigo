@@ -1,5 +1,5 @@
 /**
- * End-to-end STOMP demo gate (AD-23 Phase 4): the ndigo-api STOMP chat
+ * End-to-end STOMP demo gate: the ndigo-api STOMP chat
  * destination consumed through `StompClient` over the `@ndigo/socket`
  * `WebSocketClient` — the node global WHATWG `WebSocket` transport, same
  * wire as a browser.
@@ -58,7 +58,7 @@ async function waitFor(predicate: () => boolean, timeoutMs: number): Promise<voi
     }
 }
 
-describe('ndigo-api STOMP chat via StompClient (AD-23 D6)', () => {
+describe('ndigo-api STOMP chat via StompClient', () => {
     let context: ApplicationContext;
     let wsUrl: string;
     let token: string;
@@ -221,7 +221,7 @@ describe('ndigo-api STOMP chat via StompClient (AD-23 D6)', () => {
         await waitFor(() => ended.length === 1, 5_000);
     });
 
-    test('a queue subscription replays the backlog (AD-23 D11)', async () => {
+    test('a queue subscription replays the backlog', async () => {
         const client = stomp();
         await waitFor(() => client.connected.value, 5_000);
         // The seeder client both seeds and consumes the live message; the
@@ -243,7 +243,7 @@ describe('ndigo-api STOMP chat via StompClient (AD-23 D6)', () => {
         late.disconnect();
     });
 
-    test('binary bodies round-trip byte-exact through the client (AD-23 D8)', async () => {
+    test('binary bodies round-trip byte-exact through the client', async () => {
         const client = stomp();
         await waitFor(() => client.connected.value, 5_000);
         const sub = client.subscribe('/topic/bin', { id: 'bin' });

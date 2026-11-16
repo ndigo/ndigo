@@ -1,5 +1,5 @@
 /**
- * Config-server demo gate (AD-29 Wave 3): the self-served `/api/config.json`
+ * Config-server demo gate: the self-served `/api/config.json`
  * document + `/api/config/remote` live-value endpoint, exercised through the
  * full `poll load → replace → refresh → rebind` loop against a wired
  * `configServer` source. The source's stub fetch serves the LIVE exported
@@ -22,7 +22,7 @@ import { ServerConfig } from '../src/server-config';
 import { initAuth } from '../src/auth-store';
 import { REMOTE_DOCUMENT } from '../src/config-server-demo-controller';
 
-describe('ndigo-api config-server demo (AD-29 Wave 3)', () => {
+describe('ndigo-api config-server demo', () => {
     let context: Awaited<ReturnType<ApplicationBuilder['run']>>;
     let mockHTTP: MockHTTP;
     let app: ApplicationBuilder;

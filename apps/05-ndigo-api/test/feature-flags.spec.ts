@@ -1,5 +1,5 @@
 /**
- * Feature-flags demo (AD-82): `FeatureFlagController`'s `@whenFeature`
+ * Feature-flags demo: `FeatureFlagController`'s `@whenFeature`
  * gate over the real ndigo-api boot path — on-flag 200, refresh-flip to
  * 404 problem doc, un-gated routes untouched.
  */
@@ -12,7 +12,7 @@ import { MockHTTP } from '@ndigo/test';
 import { NodeAppConfiguration } from '../src/node-app-configuration';
 import { ServerConfig } from '../src/server-config';
 
-describe('ndigo-api @whenFeature demo gate (AD-82)', () => {
+describe('ndigo-api @whenFeature demo gate', () => {
     let context: ConfigurableApplicationContext;
     let mockHTTP: MockHTTP;
     let close: () => void;

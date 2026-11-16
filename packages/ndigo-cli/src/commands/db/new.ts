@@ -1,5 +1,5 @@
 /**
- * `ndigo db new` — scaffold the next versioned migration file (AD-78 D-5).
+ * `ndigo db new` — scaffold the next versioned migration file.
  *
  * CLI-owned: no app code runs — the command probes `db/migrations` under the
  * application directory for the highest `NNNN` prefix (via
@@ -71,7 +71,7 @@ export const dbNewCommand = buildCommand({
  */
 function renderScaffold(version: number, description: string): string {
     return (
-        '// Scaffolded by `ndigo db new` (AD-78) — the runner applies this in version order.\n' +
+        '// Scaffolded by `ndigo db new` — the runner applies this in version order.\n' +
         "import type { Migration } from '@ndigo/orm-drizzle';\n" +
         '\n' +
         'const migration: Migration = {\n' +

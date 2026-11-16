@@ -6,7 +6,7 @@ import { NodeAppConfiguration } from '../src/node-app-configuration';
 import { initAuth } from '../src/auth-store';
 
 /**
- * End-to-end multipart upload (AD-26 Wave 4): a real `multipart/form-data`
+ * End-to-end multipart upload: a real `multipart/form-data`
  * body is streamed through the harness into the pipeline, parsed by busboy,
  * bound to `@file() file: MultipartFile`, and persisted — the response echoes
  * back the reported byte size and client-supplied filename.
@@ -34,7 +34,7 @@ function multipartBody(parts: Array<{ name: string; filename?: string; contentTy
     return Buffer.from(chunks.join('\r\n') + '\r\n', 'utf-8');
 }
 
-describe('ndigo-api multipart upload (AD-26)', () => {
+describe('ndigo-api multipart upload', () => {
     let mockHTTP: MockHTTP;
     let close: () => void;
 

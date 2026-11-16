@@ -1,5 +1,5 @@
 /**
- * `@apiDocs` — optional per-handler documentation metadata (AD-35 D-4).
+ * `@apiDocs` — optional per-handler documentation metadata.
  *
  * Purely additive: routes document themselves without it; with it, the
  * OpenAPI generator can carry summary, tags, operation ids and deprecation
@@ -10,10 +10,10 @@ import type { z } from 'zod';
 import { FrameworkError, getSymbolMetadata } from '@ndigo/core';
 
 /**
- * Documentation for one response status (AD-38 D-4).
+ * Documentation for one response status.
  *
  * A bare zod schema is shorthand for `{ description: 'OK', schema }` — the
- * typical case: the DTO schema the handler converts through (AD-38), which
+ * typical case: the DTO schema the handler converts through, which
  * the generator embeds via Zod's `toJSONSchema` seam. The object form
  * additionally allows a custom `description`.
  */
@@ -76,7 +76,7 @@ const API_DOCS_KEY = (name: string | symbol) => `api:docs:${String(name)}`;
 export function apiDocs(docs: APIDocsMetadata) {
     return (_target: unknown, context: ClassMethodDecoratorContext): void => {
         if (context.kind !== 'method') {
-            throw new FrameworkError('@apiDocs is method-only — annotate each handler method (AD-35 D-4).');
+            throw new FrameworkError('@apiDocs is method-only — annotate each handler method.');
         }
         context.metadata[API_DOCS_KEY(context.name)] = docs;
     };

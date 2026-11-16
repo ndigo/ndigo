@@ -1,5 +1,5 @@
 /**
- * The OpenFeature-backed evaluator (AD-87): maps the `FlagEvaluator` SPI
+ * The OpenFeature-backed evaluator: maps the `FlagEvaluator` SPI
  * onto an `@openfeature/server-sdk` client. Vendor providers (flagd,
  * OFREP, LaunchDarkly, Unleash, …) arrive through this adapter — the SPI,
  * `@whenFeature`, and app code never change. The browser counterpart is
@@ -40,7 +40,7 @@ export interface OpenFeatureFlagEvaluatorOptions {
  * returns the SPI's `FlagEvaluation` (reason/error vocabularies match, so
  * the mapping is a translation, not a reinterpretation).
  *
- * Behavior notes (AD-87):
+ * Behavior notes:
  * - **Never throws**: the SDK's client methods must not throw and the SDK
  *   converts provider failures to `default + errorCode`; a violating hook
  *   or provider is caught here as `ERROR` + `GENERAL`.
@@ -120,7 +120,7 @@ export class OpenFeatureFlagEvaluator implements FlagEvaluator {
         }
         // Our FlagValue widens the SDK's JsonValue (unknown object members) —
         // the provider owns the shape it configured; `unknown` in the cast is
-        // the boundary between the two value models (AD-87).
+        // the boundary between the two value models.
         return client.getObjectDetails(flag, defaultValue as unknown as JsonValue, context);
     }
 

@@ -1,5 +1,5 @@
 /**
- * At-rest secrets demo controller (AD-29 Wave 2).
+ * At-rest secrets demo controller.
  *
  * GET /api/config/secrets — returns `api.secretToken` bound from the
  * environment, gated behind the app's established Bearer-token demo auth
@@ -23,7 +23,7 @@ import { lookupPrincipal } from './auth-store';
 export class ConfigSecretsController extends AsApplicationContextAware(Object) implements ApplicationContextAware {
     /**
      * The owning context, injected before refresh. The `secretsConfig`
-     * entry binds AFTER context refresh (AD-15: `@configurationProperties`
+     * entry binds AFTER context refresh (`@configurationProperties`
      * entries register post-refresh in `_prepareContext`), so the value is
      * resolved lazily at dispatch time rather than during injection.
      */

@@ -104,7 +104,7 @@ export class AnonymousPrincipal implements Principal {
 /**
  * The framework's concrete principal, used by authentication adapters to
  * materialize identities from user records (e.g.
- * `CredentialsAuthAdapter` — AD-33 D-5).
+ * `CredentialsAuthAdapter`).
  */
 export class DefaultPrincipal implements Principal {
     /** Unique identifier for this principal. */

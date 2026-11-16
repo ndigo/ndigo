@@ -1,5 +1,5 @@
 /**
- * Zod-backed request validation (AD-07).
+ * Zod-backed request validation.
  */
 import { FrameworkError } from '@ndigo/core';
 import { z } from 'zod';
@@ -31,7 +31,7 @@ export interface ValidationIssue {
  * This is a **structured payload, not an independently thrown error**: on V8
  * its `.stack` carries only the `name: message` header, because the thrown
  * `ParameterConversionError` already owns the single stack for the failure
- * (AD-103). Engines without `Error.stackTraceLimit` keep their default capture.
+ *. Engines without `Error.stackTraceLimit` keep their default capture.
  */
 export class ZodValidationError extends FrameworkError {
     /** The structured per-field failures from the Zod parse. */
@@ -145,13 +145,13 @@ function emptyShapeOutcome(schema: z.ZodType, shape: EmptyShape): EmptyShapeFail
 
 /**
  * V8's per-engine stack-trace limit. Other engines do not define the data
- * property; the guard below then takes the default-capture path (AD-103 D-3).
+ * property; the guard below then takes the default-capture path.
  */
 const stackTraceLimitHost = Error as typeof Error & { stackTraceLimit?: number };
 
 /**
  * Constructs the cause with stack capture disabled, restoring the previous
- * limit in `finally` so the global never stays toggled (AD-103 D-2). The
+ * limit in `finally` so the global never stays toggled. The
  * window is synchronous and contains no user code.
  *
  * @param message - The flattened, human-readable failure message.
@@ -174,7 +174,7 @@ function createValidationCause(message: string, issues: readonly ValidationIssue
 /**
  * Builds the conversion error for a validation failure. The thrown error keeps
  * the only stack; the {@link ZodValidationError} cause is a structured payload
- * constructed without capture (AD-103). Only the immutable message and issues
+ * constructed without capture. Only the immutable message and issues
  * are shared with the memoized templates.
  *
  * @param extractor - The extractor whose name labels the failure.
@@ -237,7 +237,7 @@ export function validatedBy<T>(schema: z.ZodType<T>, extractor: ParameterExtract
         }
         return result.data;
     };
-    // The schema rides along as a generation-time introspection seam (AD-35):
+    // The schema rides along as a generation-time introspection seam:
     // the OpenAPI generator derives JSON Schema from it. Resolution still
     // goes through `convert` only.
     return { ...extractor, convert, schema };

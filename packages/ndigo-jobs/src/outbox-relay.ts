@@ -34,7 +34,7 @@ export interface OutboxRelayOptions {
 }
 
 /**
- * The relay half of the transactional outbox (AD-72 D-6): polls
+ * The relay half of the transactional outbox: polls
  * {@link OutboxStore.claimPending}, publishes through an
  * {@link OutboxPublisher}, then `markPublished`. A failed publish leaves the
  * entry claimed — the lease expiry re-surfaces it — so delivery is

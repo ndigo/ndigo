@@ -5,7 +5,7 @@ import { describe, expect, test } from 'vitest';
 import { parseServerSentEvents, ServerSentEventParser } from '../src/server-sent-events';
 
 /**
- * The SSE wire-format parser (AD-09): incremental chunk feeding, field
+ * The SSE wire-format parser: incremental chunk feeding, field
  * accumulation, JSON data decoding, comments, and end-of-stream flushing.
  */
 

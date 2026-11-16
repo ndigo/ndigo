@@ -2,7 +2,7 @@
  * An article's comments: the list on the article page, plus add and delete.
  *
  * Comments are keyed by article slug like the article itself, and every write
- * re-renders through `router.refresh()` (AD-53 D-3). Unlike favoriting there is
+ * re-renders through `router.refresh()`. Unlike favoriting there is
  * no optimistic path: a comment's identity (id, createdAt, author) comes from
  * the server, so showing a provisional one would mean inventing data — the
  * list reloads instead, which for a single-user comment box is one round trip.

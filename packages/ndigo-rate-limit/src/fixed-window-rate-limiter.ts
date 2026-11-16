@@ -1,13 +1,13 @@
 /**
- * The default {@link RateLimiter}: in-process and single-node (AD-33
- * Wave 3, moved to `@ndigo/rate-limit` by AD-79).
+ * The default {@link RateLimiter}: in-process and single-node, moved to
+ * `@ndigo/rate-limit` in Wave 3.
  *
  * Semantics deliberately mirror a one-node deployment: one counter per
  * (key, window) pair, sliding to a fresh window once `windowMs` elapses.
  * Budgets are **per instance** — the platform wires a single entry into
  * the default mapping, so one process shares one budget; replace the entry
  * with the Redis driver (`@ndigo/redis/rate-limit`) when more than one
- * process must share (AD-79).
+ * process must share.
  *
  * Memory is bounded: expired buckets are swept once the map passes
  * `maxEntries` (default 10 000); at the cap with no expired buckets the

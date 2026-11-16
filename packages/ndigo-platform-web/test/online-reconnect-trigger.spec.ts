@@ -1,6 +1,6 @@
 /**
  * `createOnlineReconnectTrigger` spec — jsdom window `online`/`offline`
- * events, transition notifications, and disposal (AD-22 D3).
+ * events, transition notifications, and disposal.
  */
 import { describe, test, expect, vi } from 'vitest';
 import { createOnlineReconnectTrigger } from '../src/index';

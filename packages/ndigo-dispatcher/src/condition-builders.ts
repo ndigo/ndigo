@@ -1,5 +1,5 @@
 /**
- * Typed route-condition builders (AD-34 D6).
+ * Typed route-condition builders.
  *
  * Mapping conditions (`queryParams: 'filter=all'`, `matrixParams: 'color'`)
  * are canonical expression strings — they deserialize from JSON mapping

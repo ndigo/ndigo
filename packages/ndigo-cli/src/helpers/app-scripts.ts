@@ -1,6 +1,6 @@
 /**
  * Command-side process helpers: everything `@ndigo/cli` runs is one of the
- * application's declared scripts, executed with the AD-74 supervisor
+ * application's declared scripts, executed with the supervisor
  * lifecycle. Long-lived commands (`serve`, `dev`) use the full
  * {@link ClusterRunner} (signal relay, straggler kill, exit-code
  * propagation); one-shot commands (`generate`, `db:*`, `inspect`) use a
@@ -109,7 +109,7 @@ export function appScriptCommand(
         // NDIGO_DB_URL, OTel endpoints, secret keys flow through), with the
         // app's local .bin fronting PATH for argv[0] lookup. Signals still
         // reach the real process — the shell-free property is about no
-        // intermediate shell, not a sanitized environment (AD-78 recorded
+        // intermediate shell, not a sanitized environment (the supervisor recorded
         // this: `ndigo db migrate` silently dropped NDIGO_DB_URL and friends
         // when the env was stripped to PATH).
         ...process.env,
@@ -119,7 +119,7 @@ export function appScriptCommand(
 }
 
 /**
- * Runs a long-lived app script under the AD-74 supervisor.
+ * Runs a long-lived app script under the supervisor.
  *
  * @param dir - The app directory (absolute).
  * @param scriptKey - The `scripts.<key>` to run.

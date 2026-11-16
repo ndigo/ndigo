@@ -1,5 +1,5 @@
 /**
- * The distributed-lock contract (AD-73): a lease-bearing lock with a
+ * The distributed-lock contract: a lease-bearing lock with a
  * fencing token, and the driver that acquires it.
  *
  * A lock is a **lease**: acquiring sets a TTL, and the holder must extend
@@ -64,7 +64,7 @@ export interface LockHandle {
 }
 
 /**
- * The lock backend contract (AD-73 D-2): lease-based, fencing-enabled,
+ * The lock backend contract: lease-based, fencing-enabled,
  * crash-self-healing. Acquisition is **non-blocking** — waiting policies
  * belong to the caller (`@scheduled({ lock, lockWait })`), never to the
  * driver.

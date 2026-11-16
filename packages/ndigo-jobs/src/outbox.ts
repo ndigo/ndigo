@@ -32,7 +32,7 @@ export interface OutboxClaimOptions {
 }
 
 /**
- * Durable store for outbox entries (AD-72 D-6).
+ * Durable store for outbox entries.
  *
  * The defining property is **transactional append**: when the backend is
  * transactional (e.g. `LibSQLOutboxStore` sharing the data source's client),

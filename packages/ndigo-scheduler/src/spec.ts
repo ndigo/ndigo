@@ -65,7 +65,7 @@ export interface CronScheduleSpec {
      */
     maxRunTime?: DurationValue;
     /**
-     * Distributed lock key (AD-73): the runner acquires the named lock
+     * Distributed lock key: the runner acquires the named lock
      * before each run and releases it after (finally-style), so only one
      * node executes this schedule at a time. Requires a `lockDriver` entry
      * (in-process or `@ndigo/redis/locks`).
@@ -107,7 +107,7 @@ export interface IntervalScheduleSpec {
      */
     maxRunTime?: DurationValue;
     /**
-     * Distributed lock key (AD-73) — see the cron spec's `lock` for the
+     * Distributed lock key — see the cron spec's `lock` for the
      * contract; the two spec forms share the same lock option set.
      */
     lock?: string;
@@ -127,7 +127,7 @@ export type ScheduledSpec = string | CronScheduleSpec | IntervalScheduleSpec;
 
 /**
  * The normalized, validated schedule record written into `Symbol.metadata`
- * by `@scheduled` (AD-20 D1).
+ * by `@scheduled`.
  */
 export interface NormalizedScheduledSpec {
     /** Standard five-field cron expression, when the spec declared `cron`. */
@@ -140,7 +140,7 @@ export interface NormalizedScheduledSpec {
     readonly timeZone?: string;
     /** Per-run execution budget in milliseconds; `undefined` = unbounded. */
     readonly maxRunTimeMs?: number;
-    /** Distributed lock key (AD-73), when the spec declared `lock`. */
+    /** Distributed lock key, when the spec declared `lock`. */
     readonly lockKey?: string;
     /** Contended-lock wait budget in milliseconds (`0` = skip immediately). */
     readonly lockWaitMs?: number;

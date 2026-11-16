@@ -1,5 +1,5 @@
 /**
- * Exposure-model and `management.*`-section specs (AD-76 D-2/D-5).
+ * Exposure-model and `management.*`-section specs.
  */
 // @vitest-environment node
 import { describe, test, expect, beforeAll, afterAll } from 'vitest';
@@ -57,7 +57,7 @@ async function boot(
 }
 
 describe('resolveExposure', () => {
-    test('defaults to health + metrics (AD-76 D-2)', () => {
+    test('defaults to health + metrics', () => {
         expect([...resolveExposure()]).toEqual(['health', 'metrics']);
     });
 
@@ -106,7 +106,7 @@ describe('readManagementSettings', () => {
     });
 });
 
-describe('exposure gating (AD-76 D-2)', () => {
+describe('exposure gating', () => {
     describe('default posture: health + metrics only', () => {
         let booted: Booted;
 

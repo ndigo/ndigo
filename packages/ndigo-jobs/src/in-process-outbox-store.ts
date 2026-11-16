@@ -33,7 +33,7 @@ const DEFAULT_LEASE_MS = 60_000;
 /**
  * Map-backed {@link OutboxStore} with the full claim/lease semantics but **no
  * transaction to join**: `append` succeeds unconditionally, so it is a test
- * double and development default, not a correctness guarantee (AD-72 D-6).
+ * double and development default, not a correctness guarantee.
  * Entries vanish with the process.
  */
 export class InProcessOutboxStore implements OutboxStore {

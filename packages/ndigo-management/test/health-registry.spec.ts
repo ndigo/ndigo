@@ -1,5 +1,5 @@
 /**
- * Health registry behavior — including AD-36 D-1 error redaction.
+ * Health registry behavior — including error redaction.
  */
 import { describe, test, expect } from 'vitest';
 import {

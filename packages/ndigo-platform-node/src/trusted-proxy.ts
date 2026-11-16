@@ -6,7 +6,7 @@ import { type Matchable } from '@ndigo/core';
 import { type NodeRequest } from './node-request';
 
 /**
- * Trusted-proxy client-IP resolution (AD-37).
+ * Trusted-proxy client-IP resolution.
  *
  * `X-Forwarded-For` is attacker input unless the request's DIRECT socket
  * peer is a proxy the operator has explicitly trusted. The industry-
@@ -307,7 +307,7 @@ export class TrustedProxySet implements Matchable<string> {
 
 /**
  * Resolves the client address of a request, honoring `X-Forwarded-For`
- * only from trusted proxies (AD-37).
+ * only from trusted proxies.
  *
  * - No trusted proxies configured → the socket peer is returned and the
  *   header is never read (spoof-proof default).

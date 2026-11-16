@@ -1,5 +1,5 @@
 /**
- * Evaluation telemetry as an OpenFeature hook (AD-87 D-7): one INTERNAL
+ * Evaluation telemetry as an OpenFeature hook: one INTERNAL
  * `feature_flag.evaluation` span per evaluation carrying the OpenTelemetry
  * feature-flag semconv attributes — `feature_flag.key`,
  * `feature_flag.provider.name`, `feature_flag.result.reason`,

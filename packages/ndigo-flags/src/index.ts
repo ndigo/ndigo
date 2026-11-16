@@ -1,5 +1,5 @@
 /**
- * Public API of `@ndigo/flags` — feature flags (AD-82): the `FlagEvaluator`
+ * Public API of `@ndigo/flags` — feature flags: the `FlagEvaluator`
  * SPI (typed, async, never-throw), the property-backed local provider,
  * and the `@whenFeature` gate metadata.
  */

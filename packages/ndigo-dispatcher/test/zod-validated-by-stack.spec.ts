@@ -1,5 +1,5 @@
 /**
- * AD-103: a validation failure carries exactly one stack — the thrown
+ * A validation failure carries exactly one stack — the thrown
  * `ParameterConversionError`'s. The `ZodValidationError` cause is a structured
  * payload and must not capture on V8.
  */
@@ -29,7 +29,7 @@ function conversionFailure(value: unknown): ParameterConversionError {
     throw new Error('expected a conversion failure');
 }
 
-describe('validatedBy stack policy (AD-103)', () => {
+describe('validatedBy stack policy', () => {
     it.skipIf(!hasV8Limit)('keeps exactly one stack: the thrown error’s', () => {
         const thrown = conversionFailure({});
         const cause = thrown.cause as ZodValidationError;

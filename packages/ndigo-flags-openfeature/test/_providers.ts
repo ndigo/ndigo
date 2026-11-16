@@ -1,5 +1,5 @@
 /**
- * Test providers for the bridge spec (AD-87): the SDK's in-memory provider
+ * Test providers for the bridge spec: the SDK's in-memory provider
  * for realistic flag sets, plus a scripted provider whose resolutions the
  * tests dictate (custom reasons, error codes, metadata — shapes the
  * in-memory provider cannot produce).

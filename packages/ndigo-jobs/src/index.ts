@@ -1,6 +1,6 @@
 /**
  * Public API of `@ndigo/jobs` — durable job queues, worker execution, and the
- * transactional outbox for Node.js (AD-72).
+ * transactional outbox for Node.js.
  */
 
 export type { ClaimOptions, JobId, JobRecord, JobRequest, ResolvedJobRequest } from './job';

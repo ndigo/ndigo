@@ -1,5 +1,5 @@
 /**
- * The default {@link LockDriver}: in-process and single-node (AD-73 D-1).
+ * The default {@link LockDriver}: in-process and single-node.
  *
  * Semantics deliberately mirror a one-node deployment: the lease table is
  * **shared at module scope**, so every `InProcessLockDriver` instance in the

@@ -8,7 +8,7 @@ decorator lives in `@ndigo/platform-node` beside the enforcing
 owns the backend contract — `RateLimiter` — and the in-process reference
 implementation. The shared-store driver is optional and owned by the
 integration package: `@ndigo/redis` (`@ndigo/redis/rate-limit` —
-`RedisRateLimiter`, AD-79).
+`RedisRateLimiter`).
 
 ## Installation
 
@@ -37,7 +37,7 @@ if (result.allowed) {
 }
 ```
 
-The SPI is **async** (AD-39): the in-process limiter resolves immediately,
+The SPI is **async**: the in-process limiter resolves immediately,
 a shared backend resolves over its network hop. All implementations share
 one contract — the interceptor awaits it.
 
@@ -52,7 +52,7 @@ every process counts against the **same** budgets.
   `NodeAutoConfiguration.handlerMapping`) as **429 + `Retry-After`**
   problem documents. Routes without metadata are untouched.
 - The limiter key is the real client address: `NodeRequest.remoteAddress`,
-  resolved through the trusted-proxy walk (AD-37) — the interceptor owns
+  resolved through the trusted-proxy walk — the interceptor owns
   the key, the limiter owns the counters.
 
 ## API
@@ -69,7 +69,7 @@ The full API is at `api/` (generated; run `pnpm doc:api`). Primary exports:
 - `RATE_LIMITER` — the context token for entry resolution
   (`NodeAutoConfiguration.rateLimiter()` registers under it).
 
-## Driver parity notes (AD-79)
+## Driver parity notes
 
 - **One budget per (window, key)**, every backend. The window is part of
   the counter key, so two routes with different windows on the same client

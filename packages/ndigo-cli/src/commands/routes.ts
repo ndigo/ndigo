@@ -9,7 +9,7 @@ import { jsonFlag, pickFormat, toonFlag, writeJson, writeToon } from './_output.
 import { appDirPositional } from './_script-fronts.js';
 
 const INSPECT_HINT =
-    'add an "inspect" script that builds and prints the manifest, e.g. "inspect": "tsx src/inspect.ts" (AD-70)';
+    'add an "inspect" script that builds and prints the manifest, e.g. "inspect": "tsx src/inspect.ts"';
 
 /**
  * The route-list command.

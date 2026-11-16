@@ -1,5 +1,5 @@
 /**
- * App-generator spec (AD-85): the skeleton shape for both kinds, the
+ * App-generator spec: the skeleton shape for both kinds, the
  * numbering/port allocation and their collision failures, and the
  * manifest properties the app gate (`scripts/check-manifests.mjs` rule 10)
  * depends on.

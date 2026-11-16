@@ -79,7 +79,7 @@ const Health = z.object({
 });
 
 /**
- * The `/metrics` document (AD-77 D-4): the meter-derived JSON projection.
+ * The `/metrics` document: the meter-derived JSON projection.
  */
 const MetricPoint = z.object({
     attributes: z.record(z.string(), z.unknown()),
@@ -202,7 +202,7 @@ describe('ndigo-resilience-lab', () => {
         lab.setUpstreamFetch(inProcessFetch(app));
 
         // The lab records through the feature aggregator; `/metrics` now
-        // serves the meter snapshot (AD-77 D-3/4), so the spec registers a
+        // serves the meter snapshot, so the spec registers a
         // provider that projects that same aggregator — the documented
         // migration path for feature views — and scrapes the JSON view.
         registerMetricSnapshotProvider(
@@ -218,7 +218,7 @@ describe('ndigo-resilience-lab', () => {
     /**
      * Projects a `FeatureMetricAggregator` into the meter snapshot model —
      * the spec-side bridge between the lab's aggregator records and the
-     * meter-derived `/metrics` endpoint (AD-77).
+     * meter-derived `/metrics` endpoint.
      */
     function aggregatorSnapshotProvider(aggregator: FeatureMetricAggregator): MetricSnapshotProvider {
         return {

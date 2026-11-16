@@ -86,7 +86,7 @@ describe('InMemorySessionStore', () => {
         await expect(store.delete('nope')).resolves.toBeUndefined();
     });
 
-    test('deleteForUser removes only the account live sessions and reports the count (AD-68)', async () => {
+    test('deleteForUser removes only the account live sessions and reports the count', async () => {
         const store = new InMemorySessionStore();
         const alice = { ...record, principal: { ...record.principal, id: 'alice' } };
         const bob = { ...record, principal: { ...record.principal, id: 'bob' } };

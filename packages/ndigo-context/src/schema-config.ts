@@ -1,5 +1,5 @@
 /**
- * Zod-schema-driven config resolution (AD-34 D3): bind a typed value from a
+ * Zod-schema-driven config resolution: bind a typed value from a
  * property resolver by declaring the SHAPE once — keys, coercion, required
  * and defaults all come from the schema — instead of per-field decorators.
  *

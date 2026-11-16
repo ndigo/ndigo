@@ -229,7 +229,7 @@ export class JwtController {
     /**
      * `POST /jwt/refresh` — rotates the refresh token and issues a new pair.
      *
-     * Rotation advances the account's `tokenVersion` (AD-33 D-7), so the
+     * Rotation advances the account's `tokenVersion`, so the
      * presented refresh token — and every access token already minted for that
      * account — is dead the moment this succeeds: a replayed refresh token is
      * rejected by construction, not by a ledger.

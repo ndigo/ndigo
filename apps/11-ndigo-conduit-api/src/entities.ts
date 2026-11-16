@@ -1,7 +1,7 @@
 /**
  * Conduit persistence entities — accounts, articles, comments, follows and
  * favorites, mapped through `@ndigo/orm` metadata so the column declarations
- * are also the wire-validation source of truth (AD-07/AD-38).
+ * are also the wire-validation source of truth.
  *
  * Every relation is stored as an explicit foreign-key column plus its own
  * row entity (a favorite is a row, a follow is a row): the RealWorld API

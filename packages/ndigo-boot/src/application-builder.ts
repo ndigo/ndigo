@@ -24,7 +24,7 @@ export interface FromConfigOptions {
     /**
      * Restricts how the fetched document is decoded. `'auto'` (default)
      * follows the address: a `.toon` path suffix decodes the document as
-     * TOON, everything else as JSON — JSON stays the default (AD-66). The
+     * TOON, everything else as JSON — JSON stays the default. The
      * explicit values override the address, with one refused contradiction:
      * `'toon'` always decodes as TOON, while `'json'` over a `.toon` address
      * errors instead of silently re-parsing the document as JSON.
@@ -149,7 +149,7 @@ export class ApplicationBuilder {
     }
 
     /**
-     * Creates a builder from a configuration URL (JSON, or TOON — AD-66).
+     * Creates a builder from a configuration URL (JSON, or TOON).
      *
      * Fetches the config from the given URL and uses the top-level
      * `sources`, `profiles`, and `properties` keys to bootstrap the application.
@@ -374,7 +374,7 @@ export class ApplicationBuilder {
     }
 
     /**
-     * Enables at-rest secret decryption for this application (AD-29 Wave 2).
+     * Enables at-rest secret decryption for this application.
      *
      * Registers a cipher backend so `{cipher:...}` values in any source
      * (config files, env, CLI, and — in Wave 3 — the config server) resolve
@@ -397,7 +397,7 @@ export class ApplicationBuilder {
     }
 
     /**
-     * Configures a remote config source (AD-29 Wave 3).
+     * Configures a remote config source.
      *
      * Fetches a plain JSON document over HTTPS at boot (and optionally polls
      * it) into the `configServer` precedence slot:
@@ -421,7 +421,7 @@ export class ApplicationBuilder {
     }
 
     /**
-     * The active remote config source, when configured (AD-29 Wave 3).
+     * The active remote config source, when configured.
      *
      * @returns The wired source (exposed for observability and tests).
      */
@@ -431,7 +431,7 @@ export class ApplicationBuilder {
 
     /**
      * Declares a zod schema the prepared environment must satisfy — boot
-     * fails loudly with the aggregate report when invalid (AD-17 D3).
+     * fails loudly with the aggregate report when invalid.
      *
      * @param schema - The zod object schema of the environment's shape.
      * @returns This builder for chaining.

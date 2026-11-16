@@ -1,5 +1,5 @@
 /**
- * Real-process cluster lane (AD-74): `ClusterRunner` over `node:child_process`
+ * Real-process cluster lane: `ClusterRunner` over `node:child_process`
  * — slot identity env and PORT derivation reach real children, SIGTERM relay
  * drains them through their own signal handlers, and the children's exit
  * codes decide the cluster's.

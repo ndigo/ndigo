@@ -1,6 +1,5 @@
 /**
- * STOMP 1.2 frame codec — parse/serialize text **and binary** frames
- * (AD-23 D1/D8).
+ * STOMP 1.2 frame codec — parse/serialize text **and binary** frames.
  *
  * Wire shape: `COMMAND EOL header:value EOL ... EOL body\0` — an
  * EOL-delimited header block, a blank line, then the NUL-terminated body.

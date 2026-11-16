@@ -1,15 +1,15 @@
 /**
- * Browser online/offline reconnect trigger (AD-22 D3/D6).
+ * Browser online/offline reconnect trigger.
  *
  * The browser-global half of the client reconnect wiring: `@ndigo/socket`'s
  * `WebSocketClient` stays isomorphic while this package provides the
- * window/`navigator` surface (AD-04 boundary).
+ * window/`navigator` surface.
  */
 import { signal, type Signal } from '@ndigo/signals';
 import { type ReconnectTrigger } from '@ndigo/socket';
 
 /**
- * Browser-backed `ReconnectTrigger` wiring (AD-22 D3).
+ * Browser-backed `ReconnectTrigger` wiring.
  */
 export interface OnlineReconnectTrigger extends ReconnectTrigger {
     /** True while the browser reports online (`navigator.onLine` + events). */

@@ -1,5 +1,5 @@
 /**
- * InProcessLockDriver specs (AD-73): lease lifecycle, monotonic fencing
+ * InProcessLockDriver specs: lease lifecycle, monotonic fencing
  * tokens, stale-holder isolation, and the process-wide single-node
  * guarantee via the injectable clock.
  *

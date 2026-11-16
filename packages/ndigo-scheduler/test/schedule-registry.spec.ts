@@ -82,7 +82,7 @@ describe('@ndigo/scheduler ScheduleRegistry', () => {
     test('a @scheduled class registered as a prototype fails init loudly', () => {
         // The application context wraps even class values in proxies, so the
         // owner-resolution guard is exercised through a raw-value context:
-        // the same shape a non-proxying registry would present (AD-20 D5.5).
+        // the same shape a non-proxying registry would present.
         const rawContext = {
             housekeeping: Housekeeping,
             getValue(name: string): unknown {

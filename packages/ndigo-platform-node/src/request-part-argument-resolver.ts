@@ -33,7 +33,7 @@ function parseJsonPart(raw: string): unknown {
  * to an object (raw-text fallback); with a target constructor the parsed
  * object is copied into a real DTO instance, then the shared conversion +
  * Zod `convert` hook pipeline runs. Repeated parts (already collapsed to
- * `string[]` by AD-26) parse per element into an array. File parts are left
+ * `string[]`) parse per element into an array. File parts are left
  * to `fileValue()`/`MultipartFile` — the resolver ignores them.
  *
  * The part name is the extractor's folded client field (see

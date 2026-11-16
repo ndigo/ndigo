@@ -171,4 +171,4 @@ Credit is given in the advisory unless anonymity is requested.
 - [Guide 33 — Management Endpoints](docs/guides/33-management-endpoints.md)
 - [Guide 47 — AI Agents, Model Loops & Streaming](docs/guides/47-ai-agents.md)
 - [Guide 48 — Agent-Facing Surfaces](docs/guides/48-agent-facing-surfaces.md)
-- AD-76 (management redaction), AD-96…AD-102 (agent integration)
+- Management redaction and agent integration hardening

@@ -464,7 +464,7 @@ describe('GenericApplicationContext — propagation edge cases', () => {
         parent.destroy();
     });
 });
-describe('refresh scope wiring (AD-29 D-2)', () => {
+describe('refresh scope wiring', () => {
     @refreshScope
     class RefreshScoped {}
 

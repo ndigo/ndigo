@@ -11,7 +11,7 @@ describe('resolveCacheName', () => {
         expect(resolveCacheName('users', 'MemoryCacheManager')).toBe('users');
     });
 
-    test('resolves typed store tokens (AD-34 D7) to their description', () => {
+    test('resolves typed store tokens to their description', () => {
         const token = new ContextToken<Cache<unknown>>('reports');
         expect(resolveCacheName(token, 'RedisCacheManager')).toBe('reports');
     });

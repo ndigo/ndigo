@@ -1,5 +1,5 @@
 /**
- * Live-rebind specs for AD-29 Wave 1: `@refreshScope` on
+ * Live-rebind specs: `@refreshScope` on
  * `@configurationProperties` classes re-binds on environment `refresh()`;
  * unmarked classes keep the boot-time snapshot.
  */
@@ -49,7 +49,7 @@ class DestroyCountingConfig {
     }
 }
 
-describe('@refreshScope live rebind (AD-29 D-1/D-2)', () => {
+describe('@refreshScope live rebind', () => {
     test('rebinds @refreshScope config classes with fresh values on refresh()', async () => {
         @configuration
         class BootConfig {}

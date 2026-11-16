@@ -1,5 +1,5 @@
 /**
- * `@scheduled({ lock })` runner specs (AD-73): the TaskScheduler acquires
+ * `@scheduled({ lock })` runner specs: the TaskScheduler acquires
  * the named distributed lock before each locked run, releases it in the
  * finally, skips contended fires (optionally after a bounded wait), and
  * fails loud when a locked task has no lock driver at all.
@@ -42,7 +42,7 @@ function lockedTask(name: string, lockKey: string, runs: string[], fail: boolean
     };
 }
 
-describe('TaskScheduler locked tasks (AD-73)', () => {
+describe('TaskScheduler locked tasks', () => {
     test('acquires the lock, runs, and releases it — consecutive fires both run', async () => {
         const time = walkingClock();
         const driver = new InProcessLockDriver();

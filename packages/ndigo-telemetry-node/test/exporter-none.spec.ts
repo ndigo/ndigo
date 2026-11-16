@@ -1,5 +1,5 @@
 /**
- * 'none' exporter end-to-end (AD-32 D-2): with no span processors the SDK
+ * 'none' exporter end-to-end: with no span processors the SDK
  * registers no trace provider, so spans are inert (not recording). Fresh
  * process: one global provider per worker.
  */

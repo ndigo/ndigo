@@ -1,8 +1,8 @@
 /**
  * Regression specs for CF-3 (2026-10-06 review): the container registers
  * destruction callbacks for refresh-scoped lifecycle values at creation time,
- * so `RefreshScope.clear()` (the environment `config:refresh` teardown edge,
- * AD-29 D-2) runs `destroy()`/`close()` exactly once per instance. Singleton
+ * so `RefreshScope.clear()` (the environment `config:refresh` teardown edge)
+ * runs `destroy()`/`close()` exactly once per instance. Singleton
  * teardown stays owned by `AbstractFactory.destroyValue` (no double destroy).
  */
 import { describe, test, expect, beforeEach, vi } from 'vitest';
@@ -38,7 +38,7 @@ class DestroyableSingletonEntry {
     });
 }
 
-describe('refresh scope teardown (CF-3, AD-29 D-2)', () => {
+describe('refresh scope teardown (CF-3)', () => {
     let factory: DefaultFactory;
 
     beforeEach(() => {

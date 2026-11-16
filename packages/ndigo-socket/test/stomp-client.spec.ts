@@ -1,5 +1,5 @@
 /**
- * `StompClient` unit tests (AD-23 Phase 3) — `SocketClient` doubles with a
+ * `StompClient` unit tests — `SocketClient` doubles with a
  * status signal + AsyncReader message stream, plus one end-to-end case over
  * the real `WebSocketClient`. Covers the CONNECT handshake (resolver-driven
  * timeout, RT-1), subscription routing, send/receipt correlation and its
@@ -414,7 +414,7 @@ describe('StompClient sends and receipts', () => {
         client.disconnect();
     });
 
-    test('sends Uint8Array bodies as binary SEND frames (AD-23 D8)', async () => {
+    test('sends Uint8Array bodies as binary SEND frames', async () => {
         const { socket, client } = openClient();
         const body = new Uint8Array([0, 1, 255, 0]);
         const sent = client.send('/topic/bin', body, { 'content-type': 'application/octet-stream' });
@@ -428,7 +428,7 @@ describe('StompClient sends and receipts', () => {
         client.disconnect();
     });
 
-    test('delivers binary MESSAGE frames body byte-exact (AD-23 D8)', async () => {
+    test('delivers binary MESSAGE frames body byte-exact', async () => {
         const { socket, client } = openClient();
         const sub = client.subscribe('/topic/bin', { id: 'bin-sub' });
         const received: Array<unknown> = [];

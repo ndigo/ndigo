@@ -1,6 +1,6 @@
 /**
  * `ndigo db status` demo entry — prints the journal readback for the file
- * migrations under `db/migrations` (AD-78 D-5; run by `ndigo db status` as
+ * migrations under `db/migrations` (run by `ndigo db status` as
  * the app's `scripts.db:status`).
  */
 import 'node:process';

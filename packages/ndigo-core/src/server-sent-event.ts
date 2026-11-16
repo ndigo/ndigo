@@ -1,5 +1,5 @@
 /**
- * The shared Server-Sent Event wire envelope (AD-09 naming cleanup).
+ * The shared Server-Sent Event wire envelope ( naming cleanup).
  */
 /**
  * One Server-Sent Event on the wire.

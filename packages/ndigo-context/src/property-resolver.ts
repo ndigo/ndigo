@@ -195,7 +195,7 @@ export interface PropertyIndex {
     /**
      * Returns the name of the source that won the given key — optional:
      * strategies that retain origins implement it; others omit it (the
-     * resolver reports `null`). Top-level-key granularity (AD-16 D1/Q7).
+     * resolver reports `null`). Top-level-key granularity.
      *
      * @param key - The top-level property key.
      * @returns The winning source name, or `undefined` when unsupported/unknown.
@@ -290,7 +290,7 @@ export class FlatMergedIndex implements PropertyIndex {
     /**
      * Returns the name of the source that first defined the top-level segment
      * of the key (`server.port` reports the source owning `server` — top-level
-     * granularity, AD-16 D1/Q7).
+     * granularity).
      *
      * @param key - The property key (only the top-level segment is consulted).
      * @returns The winning source name, or `undefined`.
@@ -325,7 +325,7 @@ export interface ResolverOptions {
      */
     conversionService?: ConversionService;
     /**
-     * Optional at-rest secret decryption (AD-29 Wave 2). Consulted for every
+     * Optional at-rest secret decryption. Consulted for every
      * resolved string value AFTER placeholder resolution and BEFORE
      * conversion/typed reads: `{cipher:...}` markers decrypt, everything else
      * passes through. The resolver passes the key path as the AAD context
@@ -472,7 +472,7 @@ export class PrototypalPropertyResolver implements PropertyResolver {
     /**
      * Returns the name of the source that won the given key, or `null` when
      * the active index does not retain origins (prototype chain) or the key
-     * is unknown. Top-level-key granularity (AD-16 D1).
+     * is unknown. Top-level-key granularity.
      *
      * @param key - The top-level property key.
      * @returns The winning source name, or `null`.
@@ -484,7 +484,7 @@ export class PrototypalPropertyResolver implements PropertyResolver {
 
     /**
      * Forces the index to rebuild and clears the placeholder cache —
-     * "recompute from the current sources" (AD-16 D3). Does NOT re-run
+     * "recompute from the current sources". Does NOT re-run
      * customizers or re-read platform snapshots (environment-scope only).
      */
     refresh(): void {
@@ -522,7 +522,7 @@ export class PrototypalPropertyResolver implements PropertyResolver {
     }
 
     /**
-     * Applies at-rest secret decryption (AD-29 Wave 2) after placeholder
+     * Applies at-rest secret decryption after placeholder
      * resolution and before conversion: `{cipher:...}` markers decrypt via the
      * configured decryptor (key-path AAD binding); all other values pass
      * through untouched. No decryptor configured → identity — but a value

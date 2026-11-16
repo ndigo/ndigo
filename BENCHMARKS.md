@@ -183,7 +183,7 @@ re-measure.
 | ORM `findAll` 1,000 / 10,000 rows                  |                         218.89 µs / 2.19 ms | —                |                           absolute |
 | ORM `remove` existing                              |                                      963.24 | —                |               RME > 2%; indicative |
 
-The flat merged property index clears the AD-11 decision rule on the
+The flat merged property index clears the decision rule on the
 representative, 32-source, and access-mix workloads. ORM writes were the
 largest per-operation cost in the estate and the target of the next deep
 optimization pass; the schema-cache change below removes that cost.
@@ -302,7 +302,7 @@ emptiness check. Same-host A/B, two serial runs per side: `{}` 10.47 → 9.46–
 67–68 → 65–75 ns (run-to-run layout noise; no added cost on the valid path).
 The remaining ~8.9 µs was the two `Error` stack captures, addressed below.
 
-**Optimization (AD-103, #403):** the `ZodValidationError` cause is built with
+**Optimization:** the `ZodValidationError` cause is built with
 `Error.stackTraceLimit` scoped to zero and restored in `finally`, so the
 failure carries one stack — the thrown `ParameterConversionError`'s. Same-host
 A/B, serial lane, two runs on the after side: invalid non-empty 10.95 →

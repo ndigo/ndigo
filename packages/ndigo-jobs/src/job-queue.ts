@@ -25,7 +25,7 @@ export interface JobQueueOptions {
  * The producer-facing queue: `enqueue` one job, inspect `size` — nothing else
  * (claiming and completion belong to {@link "job-runner".JobRunner | JobRunner}).
  *
- * Produces, per AD-72 D-3, a single place where defaults live: drivers
+ * Produces a single place where defaults live: drivers
  * normalize and validate, the queue only fills in the configured default
  * `maxAttempts` and forwards.
  */

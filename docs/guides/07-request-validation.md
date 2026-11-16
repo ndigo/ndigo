@@ -163,6 +163,6 @@ browser request "bodies" are form/model sources.)
 
 ## See also
 
-- Full API: [`packages/ndigo-dispatcher/src/zod-validated-by.ts`](../../packages/ndigo-dispatcher/src/zod-validated-by.ts)
+- Full API: [`@ndigo/dispatcher` validation helpers](/reference/api/ndigo-dispatcher/zod-validated-by/)
   (docstring includes all four usage forms) and
-  [`packages/ndigo-orm/src/entity-schema.ts`](../../packages/ndigo-orm/src/entity-schema.ts).
+  [`@ndigo/orm` entity schema](/reference/api/ndigo-orm/entity-schema/).

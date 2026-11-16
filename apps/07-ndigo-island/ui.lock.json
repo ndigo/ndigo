@@ -11,10 +11,10 @@
         },
         {
           "target": "styles/ndigo-tokens.css",
-          "sha256": "6706eb388a9259c255efc97034a19fad91fbc4aed9013c729526901627d33521"
+          "sha256": "34745f444b389e2878b9c5a40154d0fd998b19c768a2598951f2d456433c903c"
         }
       ],
-      "installedAt": "2026-11-14T15:12:22.247Z"
+      "installedAt": "2026-11-15T04:07:38.683Z"
     },
     "button": {
       "registry": "../../registry.json",

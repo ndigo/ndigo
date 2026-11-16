@@ -43,6 +43,7 @@ export const TOKENS = [
     { name: '--nd-color-warning', group: 'color', description: 'Caution status.' },
     { name: '--nd-color-danger', group: 'color', description: 'Destructive or error status.' },
     { name: '--nd-color-info', group: 'color', description: 'Informational status.' },
+    { name: '--nd-color-tip', group: 'color', description: 'Helpful tip or guidance.' },
 
     // Typography
     { name: '--nd-font-display', group: 'typography', description: 'Display face for the wordmark and headings.' },

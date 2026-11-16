@@ -391,4 +391,3 @@ covers browser vs server precedence, `themeAttributes`, and
 - [`@ndigo/view`](../../packages/ndigo-view/README.md) — the view, targeter, and negotiation surface
 - [`@ndigo/view-webcomponent`](../../packages/ndigo-view-webcomponent/README.md) — the selector-backed targeters and DOM targets
 - [`@ndigo/platform-node`](../../packages/ndigo-platform-node/README.md) — `ResponseViewTargeter` and the Node render pipeline
-- and — the view model and resolution strategy

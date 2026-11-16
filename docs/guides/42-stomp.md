@@ -240,4 +240,5 @@ channels; a namespace is isolation convention, not authorization.
 - [Guide 21 — Persistence & Shared Stores](21-persistence-and-shared-stores.md) — Redis ownership and shutdown
 - [`@ndigo/socket`](../../packages/ndigo-socket/README.md) — broker, client, and STOMP surface
 - [`@ndigo/redis`](../../packages/ndigo-redis/README.md) — the fan-out driver
-- — the STOMP decision
+- [STOMP 1.2 specification](http://stomp.github.io/stomp-specification-1.2.html) — the protocol Ndigo implements
+- [Wikipedia: Streaming Text Oriented Messaging Protocol](https://en.wikipedia.org/wiki/Streaming_Text_Oriented_Messaging_Protocol) — background and client ecosystem

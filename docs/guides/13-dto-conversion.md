@@ -144,4 +144,3 @@ override the entry for custom converter registries.
 
 - [Guide 12 — OpenAPI & API Docs](12-openapi-and-api-docs.md) — the generated spec
 - [Guide 20 — ORM & Migrations](20-orm-and-migrations.md) — entity metadata
-- — the conversion decision

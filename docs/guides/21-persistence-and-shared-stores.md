@@ -202,3 +202,4 @@ Not built, with an explicit decision and revisit triggers:
 - Packages: `@ndigo/redis` (README), `@ndigo/orm-drizzle` (README:
   `LibSQLSessionStore`, `LibSQLQueueMessageStore`), `@ndigo/socket`,
   `@ndigo/cache`
+- [Redis documentation](https://redis.io/docs/) — the store and pub/sub backend

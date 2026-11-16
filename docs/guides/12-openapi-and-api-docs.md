@@ -218,3 +218,4 @@ options, until it forwards them.)
 - [Guide 13 — DTO & Conversion](13-dto-conversion.md) — response schemas
 - [Guide 26 — Authentication & Sessions](26-authentication-and-sessions.md) — guarding the docs endpoints
 - [`@ndigo/openapi`](../../packages/ndigo-openapi/README.md) — the generator surface
+- [OpenAPI Specification](https://spec.openapis.org/oas/latest.html) — the document Ndigo generates

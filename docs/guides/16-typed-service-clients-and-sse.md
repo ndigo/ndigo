@@ -171,4 +171,3 @@ caching compose around the service call. `ServiceExecutionChain` and the
 - [Guide 29 — Signals & Islands](29-signals-and-islands.md) — `streamToSignal` over an SSE call
 - [`@ndigo/service`](../../packages/ndigo-service/README.md) — the full client/stream surface
 - [apps/07-ndigo-island](https://github.com/ndigo/ndigo/tree/main/apps/07-ndigo-island) — SSE → signals in a real app
-- and — the service and server-push decisions

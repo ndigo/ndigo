@@ -175,8 +175,7 @@ await catalog.getCache('catalog').clear(); // whole-store eviction
 
 Reference: [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api) (`GET /api/cached-report` demo gate, counter spec
 in `app-bootstrap.spec.ts`) and the `ndigo-views` client demo (memoized
-payload derivation next to the HTTP cache-hit refresh). Design rationale:
-[caching decision](../decisions/2026-09-17_AD24_CACHING.md).
+payload derivation next to the HTTP cache-hit refresh).
 
 ## 6. Shared Node cache with Redis
 

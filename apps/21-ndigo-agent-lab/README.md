@@ -6,6 +6,13 @@ trace per request.
 The same `@toolMapping` handlers serve the HTTP endpoints, the MCP stdio server,
 and the agent loop. No tool description is duplicated.
 
+## Demonstrates
+
+- Local-model tool loop over MCP tools (LM Studio / OpenAI-compatible server)
+- Same `@toolMapping` handlers serving HTTP, MCP stdio, and the agent loop
+- MCP App (`ui://orders`), A2UI report, Streamable HTTP, SSE
+- One GenAI trace per request (chat root span + execute_tool child spans)
+
 ## Prerequisites
 
 - LM Studio (or any OpenAI-compatible server) listening on

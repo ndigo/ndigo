@@ -225,7 +225,6 @@ signal, so the island renders only well-formed models.
 ## See also
 
 - [Guide 16 — Typed Service Clients & SSE](16-typed-service-clients-and-sse.md) — the stream the signal consumes
-- Decisions: (SSE server
   push),
   (view resolution).
 - Architecture: [Micro Frontends](../architecture/micro-frontends.md) — the

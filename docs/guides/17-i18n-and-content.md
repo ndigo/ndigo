@@ -230,7 +230,6 @@ signal-driven re-rendering.
 ## See also
 
 - [Content/i18n decision](../decisions/2026-09-13_AD19_CONTENT_I18N.md)
-- Content/i18n implementation plan
 - [ndigo-island demo](../../apps/07-ndigo-island/README.md) — localized SSR page
 - [ndigo-todo-web demo](../../apps/03-ndigo-todo-web/README.md) — reactive locale switcher
 - [`@ndigo/content-i18next`](../../packages/ndigo-content-i18next/README.md) —

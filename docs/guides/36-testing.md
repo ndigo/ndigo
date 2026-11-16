@@ -151,8 +151,8 @@ promises so fake-timer suites stay deterministic.
 
 ## See also
 
-- Decision: — the
-  in-process, socket-free harness.
+in-process, socket-free harness.
+
 - Generated API: run `pnpm doc:api` for `@ndigo/test`.
 - Demo usage: [apps/03-ndigo-todo-web](https://github.com/ndigo/ndigo/tree/main/apps/03-ndigo-todo-web) —
   harness-driven controller and shell-router specs.

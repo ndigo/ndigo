@@ -1,5 +1,5 @@
 /**
- * `@stompMapping` — STOMP-over-WebSocket route decorator (AD-23 D4).
+ * `@stompMapping` — STOMP-over-WebSocket route decorator.
  *
  * A `@stompMapping` method is a `@socketMapping` endpoint whose
  * connections speak the STOMP 1.2 protocol (destinations, subscriptions,

@@ -10,7 +10,7 @@ import { getNodeRequest, NODE_RESPONSE_ATTRIBUTE } from './node-request';
 
 /**
  * Per-request security-header middleware shape — Helmet's own
- * `(req, res, next)` signature, usable without Express (AD-25 D1).
+ * `(req, res, next)` signature, usable without Express.
  */
 type HeaderMiddleware = (req: IncomingMessage, res: ServerResponse, next: (err?: unknown) => void) => void;
 
@@ -30,7 +30,7 @@ export interface SecurityHeadersInterceptorOptions {
     enabled?: boolean;
     /**
      * Per-header configuration (see the interface doc). Omitted = the full
-     * framework default set (AD-25 D3).
+     * framework default set.
      */
     headers?: HelmetOptions;
 }
@@ -50,7 +50,7 @@ const DEFAULT_CONNECT_SRC = ["'self'"];
 
 /**
  * A {@link RouteHandlerInterceptor} that attaches the security-header set on
- * every HTTP response (AD-25): Helmet middlewares built at construction and
+ * every HTTP response: Helmet middlewares built at construction and
  * invoked against the route's `ServerResponse` in `preHandle`.
  *
  * - **Default-on via `NodeAutoConfiguration` (the mapping prepends a default

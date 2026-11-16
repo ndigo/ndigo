@@ -1,5 +1,5 @@
 /**
- * `StompBroker` unit tests (AD-23 Phase 1 + the 2026-09-17 remediation
+ * `StompBroker` unit tests (Phase 1 + the 2026-09-17 remediation
  * wave). Fake `SocketSession`s with AsyncReader-backed message streams.
  * Covers CONNECT negotiation (including the missing-`accept-version` ⇒
  * 1.0 rule and CONNECT credentials), subscribe/publish fan-out with
@@ -562,7 +562,7 @@ describe('StompBroker shutdown', () => {
     });
 });
 
-describe('StompBroker transactions (AD-23 D7)', () => {
+describe('StompBroker transactions', () => {
     test('BEGIN/COMMIT applies buffered SENDs in order', async () => {
         const broker = new StompBroker();
         const session = new FakeSession();
@@ -719,7 +719,7 @@ describe('StompBroker transactions (AD-23 D7)', () => {
     });
 });
 
-describe('StompBroker ack tracking + redelivery (AD-23 D9)', () => {
+describe('StompBroker ack tracking + redelivery', () => {
     test('client-individual ACK removes exactly the named message', async () => {
         const broker = new StompBroker();
         const session = new FakeSession();
@@ -833,7 +833,7 @@ describe('StompBroker ack tracking + redelivery (AD-23 D9)', () => {
     });
 });
 
-describe('StompBroker /user destinations (AD-23 D10)', () => {
+describe('StompBroker /user destinations', () => {
     test('resolveUser default reads session.attributes.user', async () => {
         const broker = new StompBroker();
         const alice = new FakeSession();
@@ -895,7 +895,7 @@ describe('StompBroker /user destinations (AD-23 D10)', () => {
     });
 });
 
-describe('StompBroker /queue backlog (AD-23 D11)', () => {
+describe('StompBroker /queue backlog', () => {
     test('a new subscriber replays the backlog before live traffic', async () => {
         const broker = new StompBroker();
         const early = new FakeSession();
@@ -951,7 +951,7 @@ describe('StompBroker /queue backlog (AD-23 D11)', () => {
     });
 });
 
-describe('StompBroker binary bodies (AD-23 D8)', () => {
+describe('StompBroker binary bodies', () => {
     test('publish delivers byte-exact binary bodies', async () => {
         const broker = new StompBroker();
         const session = new FakeSession();
@@ -1007,7 +1007,7 @@ describe('StompBroker fan-out robustness', () => {
     });
 });
 
-describe('StompBroker ack tracking + redelivery (AD-23 D9)', () => {
+describe('StompBroker ack tracking + redelivery', () => {
     test('NACK redelivery keeps exactly one outstanding entry', async () => {
         const broker = new StompBroker();
         const session = new FakeSession();
@@ -1037,7 +1037,7 @@ describe('StompBroker ack tracking + redelivery (AD-23 D9)', () => {
     });
 });
 
-describe('StompBroker transactions + /user (AD-23 D7/D10)', () => {
+describe('StompBroker transactions + /user', () => {
     test('transaction-buffered SEND to /user/* reaches the principal scope', async () => {
         const broker = new StompBroker({ resolveUser: (s) => s.attributes['user'] as string | null });
         const sender = new FakeSession();

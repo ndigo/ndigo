@@ -35,11 +35,11 @@ export interface ConfigurationPropertiesOptions {
      * Enable relaxed binding: a field's declared keypath and its camelCase,
      * kebab-case and snake_case spellings all match the environment either
      * way (a camelCase field finds a kebab env key and vice versa). Off by
-     * default — exact keypaths are the contract (AD-15 Q8).
+     * default — exact keypaths are the contract.
      */
     relaxed?: boolean;
     /**
-     * Zod schema describing the bound values (AD-34 D3). When present, the
+     * Zod schema describing the bound values. When present, the
      * class binds in **schema mode**: every shape key resolves
      * `${prefix}.${key}` from the environment, and coercion, requiredness
      * and defaults all come from the schema (`z.default()` replaces
@@ -234,7 +234,7 @@ function bindingValue(
  * Resolves a `@configurationProperties` class against an application context,
  * binding each `@property` field to its converted value from the environment.
  *
- * Fail-loud (AD-15 D4): a missing required field (no `@defaultValue`) or a
+ * Fail-loud: a missing required field (no `@defaultValue`) or a
  * conversion failure throws, naming class.field + attempted value + target
  * type. Nested fields bind recursively via `@nestedConfig`.
  *
@@ -291,7 +291,7 @@ export function resolveConfigurationProperties<T>(
             const rawDefault = meta[`${DEFAULT_KEY}${key}`] as string | undefined;
             if (rawDefault !== undefined) {
                 // The resolver's getPropertyAs(key, type, default) converts a
-                // default through the same path as a real value (P1 / AD-15 D2).
+                // default through the same path as a real value.
                 const target = targetFor(instance, key, meta);
                 const typed = convertRaw(environment, fullPath, target, rawDefault, false);
                 bindings[fullPath] = rawDefault;
@@ -335,13 +335,13 @@ export function resolveConfigurationProperties<T>(
 }
 
 /**
- * Resolves a schema-mode `@configurationProperties` class (AD-34 D3): every
+ * Resolves a schema-mode `@configurationProperties` class: every
  * schema shape key binds `${prefix}.${key}` from the environment; coercion,
  * requiredness and defaults follow the schema. Values materialize onto the
  * instance (writable, enumerable) with the environment's values mirrored in
  * `bindings`. Fail-loud: missing required keys and failed coercions throw an
  * `IllegalStateError` naming the class and the offending value, matching the
- * field-mode contract (AD-15 D4).
+ * field-mode contract.
  *
  * Schema keys are probed **exactly** as `${prefix}.${key}` — the relaxed
  * kebab/snake candidate set is a field-decorator-mode contract and is never

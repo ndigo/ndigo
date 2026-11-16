@@ -1,5 +1,5 @@
 /**
- * Context tokens for `@ndigo/flags` (AD-82 D-2).
+ * Context tokens for `@ndigo/flags`.
  */
 import { ContextToken } from '@ndigo/factory';
 import type { FlagEvaluator } from './flag-evaluator';

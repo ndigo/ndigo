@@ -1,5 +1,5 @@
 /**
- * Web bridge spec (AD-87 Phase 2): the `FlagEvaluator` over an
+ * Web bridge spec: the `FlagEvaluator` over an
  * `@openfeature/web-sdk` client — sync-snapshot evaluation wrapped in the
  * async SPI, the static-context semantics (per-call `ctx` not forwarded),
  * domains, the never-throw boundary, and hook-contract compatibility.

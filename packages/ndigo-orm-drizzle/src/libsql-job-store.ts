@@ -225,7 +225,7 @@ export class LibSQLJobStore implements JobDriver {
     async fail(id: JobId, lastError: string): Promise<void> {
         await this.#ready;
         this.#assertOpen();
-        void lastError; // terminal errors surface through telemetry/logs, not storage (AD-72 D-2)
+        void lastError; // terminal errors surface through telemetry/logs, not storage
         await this.#client.execute({ sql: `DELETE FROM ${TABLE} WHERE id = ?`, args: [id] });
     }
 

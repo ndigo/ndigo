@@ -58,7 +58,7 @@ describe('@ndigo/scheduler resolveScheduledSpec', () => {
         expect(() => resolveScheduledSpec(undefined as unknown as never)).toThrow(TypeError);
     });
 
-    test('normalizes lock fields (AD-73)', () => {
+    test('normalizes lock fields', () => {
         expect(resolveScheduledSpec({ cron: '* * * * * *', lock: 'gate', lockWait: 500, lockTtl: '10s' })).toEqual({
             cron: '* * * * * *',
             lockKey: 'gate',
@@ -72,7 +72,7 @@ describe('@ndigo/scheduler resolveScheduledSpec', () => {
         });
     });
 
-    test('rejects malformed lock fields at decoration time (AD-73)', () => {
+    test('rejects malformed lock fields at decoration time', () => {
         expect(() => resolveScheduledSpec({ cron: '* * * * * *', lock: '' })).toThrow(/invalid lock name/);
         expect(() => resolveScheduledSpec({ cron: '* * * * * *', lock: 'bad name' })).toThrow(/invalid lock name/);
         expect(() => resolveScheduledSpec({ cron: '* * * * * *', lock: 'gate', lockWait: 'soon' })).toThrow(/lockWait/);

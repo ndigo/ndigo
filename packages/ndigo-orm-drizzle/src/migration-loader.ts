@@ -1,10 +1,10 @@
 /**
- * Migration-file loading and boot wiring (AD-78).
+ * Migration-file loading and boot wiring.
  *
  * Generated migrations are one versioned module per file under a
  * `db/migrations` directory — `<NNNN>-<slug>.ts` (`.mts`/`.mjs` accepted by
  * the loader) — each exporting a `Migration` as its default export. The
- * runner contract (AD-30) is unchanged; these helpers only discover and
+ * runner contract is unchanged; these helpers only discover and
  * order the files, so `DrizzleMigrator` internals stay untouched.
  */
 import { readdir } from 'node:fs/promises';
@@ -97,7 +97,7 @@ export interface MigrateOnBootOptions {
 /**
  * Applies all pending migrations at boot, **failing closed**: any loader or
  * migration error throws before serving starts — a boot that skips pending
- * DDL would serve against a stale schema. Journal semantics are AD-30's:
+ * DDL would serve against a stale schema. Journal semantics are the runner's:
  * idempotent across restarts, one runner at a time (concurrent migrators
  * fail loud on the journal primary key).
  *

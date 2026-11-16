@@ -125,7 +125,7 @@ export function loadConfig(): PlaygroundConfig {
         oidc: {
             enabled: flag('OIDC_ENABLED', true),
             // `127.0.0.1`, not `localhost`: the managed HTTP server binds the
-            // loopback address by default (AD-36), so a `localhost` URL can
+            // loopback address by default, so a `localhost` URL can
             // resolve to `::1` and miss the listener.
             issuerUrl: getEnv('OIDC_ISSUER_URL') ?? `http://127.0.0.1:${oidcIssuerPort}`,
             issuerPort: oidcIssuerPort,

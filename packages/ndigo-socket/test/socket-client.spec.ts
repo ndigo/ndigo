@@ -2,7 +2,7 @@
  * `WebSocketClient` unit tests — WHATWG-shaped transport doubles + fake
  * timers (no real sockets). Covers connect/message parity, reconnect
  * backoff + jitter, deliberate-close latching, the optional outbound queue,
- * binary payload framing, and the reconnect trigger (AD-22 D3). Node
+ * binary payload framing, and the reconnect trigger. Node
  * environment: the binary specs need the same-realm `Buffer` (jsdom's
  * cross-realm intrinsics make `Buffer instanceof Uint8Array` false).
  */

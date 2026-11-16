@@ -1,6 +1,6 @@
 /**
- * Typed profile-expression builder (AD-34 D5; re-homed into `@ndigo/core`
- * with the conditional-family profile unification — AD-83).
+ * Typed profile-expression builder (re-homed into `@ndigo/core`
+ * with the conditional-family profile unification).
  *
  * The profile grammar (`dev`, `!ci`, `a & b`, `(a | b) & c`) stays the
  * canonical, serializable form (`@whenProfile`, env-driven activation,

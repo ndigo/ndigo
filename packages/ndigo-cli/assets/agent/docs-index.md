@@ -71,7 +71,7 @@ matches the task; do not guess APIs from memory.
 - `@ndigo/boot` — Application bootstrap, profiles, and typed configuration for Ndigo
 - `@ndigo/cache` — Isomorphic caching for Ndigo — memory cache manager, memoize, and the @cached decorator
 - `@ndigo/cli` — The Ndigo framework CLI — app lifecycle, scaffolding, db migrations, and DX commands
-- `@ndigo/cluster` — Process supervisor for Node.js applications — replicated worker slots with signal relay, graceful drains, and bounded-backoff restarts (AD-74)
+- `@ndigo/cluster` — Process supervisor for Node.js applications — replicated worker slots with signal relay, graceful drains, and bounded-backoff restarts
 - `@ndigo/content` — i18n content keys, themes, and the MessageSource contract for Ndigo
 - `@ndigo/content-i18next` — Ndigo Content i18next Adapter
 - `@ndigo/context` — Application context, environments, configuration, and events for Ndigo

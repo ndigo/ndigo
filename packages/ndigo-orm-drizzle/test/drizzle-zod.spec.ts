@@ -23,7 +23,7 @@ class DzNote {
     views!: number;
 }
 
-describe('drizzle-zod bridge (AD-07)', () => {
+describe('drizzle-zod bridge', () => {
     test('drizzleTableForEntity builds a Drizzle table from metadata', () => {
         const table = drizzleTableForEntity(DzNote);
         expect((table as unknown as Record<symbol, unknown>)[Symbol.for('drizzle:Name')]).toBe('dz_notes');

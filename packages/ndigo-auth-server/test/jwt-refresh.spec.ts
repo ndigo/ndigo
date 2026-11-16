@@ -44,7 +44,7 @@ async function claimsOf(token: string): Promise<JWTPayload> {
     return payload;
 }
 
-describe('JWTAdapter token issuance (AD-33 D-7)', () => {
+describe('JWTAdapter token issuance', () => {
     test('issueTokens mints access + refresh tokens carrying the current version', async () => {
         const { adapter } = buildAdapter();
         const issued = await adapter.issueTokens({ id: 'alice' });
@@ -84,7 +84,7 @@ describe('JWTAdapter token issuance (AD-33 D-7)', () => {
     });
 });
 
-describe('JWTAdapter revocation via ver claim (AD-33 D-7)', () => {
+describe('JWTAdapter revocation via ver claim', () => {
     test('validate accepts an access token while its version is current', async () => {
         const { adapter } = buildAdapter();
         const { accessToken } = await adapter.issueTokens({ id: 'alice' });
@@ -156,7 +156,7 @@ describe('JWTAdapter revocation via ver claim (AD-33 D-7)', () => {
     });
 });
 
-describe('JWTAdapter refresh rotation (AD-33 D-7)', () => {
+describe('JWTAdapter refresh rotation', () => {
     test('refresh issues a new access + refresh pair and advances the family version', async () => {
         const { adapter, userStore } = buildAdapter();
         const { refreshToken } = await adapter.issueTokens({ id: 'alice' });
@@ -229,7 +229,7 @@ describe('JWTAdapter refresh rotation (AD-33 D-7)', () => {
     });
 });
 
-describe('JWTAdapter logout (AD-33 D-7)', () => {
+describe('JWTAdapter logout', () => {
     test('logout bumps the version and invalidates the whole family', async () => {
         const { adapter, userStore } = buildAdapter();
         const { accessToken, refreshToken } = await adapter.issueTokens({ id: 'alice' });
@@ -246,7 +246,7 @@ describe('JWTAdapter logout (AD-33 D-7)', () => {
     });
 });
 
-describe('JWTAdapter revocation cache (AD-33 D-7)', () => {
+describe('JWTAdapter revocation cache', () => {
     test('a short-TTL version cache defers revocation visibility', async () => {
         const { adapter, userStore } = buildAdapter({ revocationCacheTtlMs: 40 });
         const { accessToken } = await adapter.issueTokens({ id: 'alice' });

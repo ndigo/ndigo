@@ -7,7 +7,7 @@
  * `OTEL_EXPORTER_OTLP_ENDPOINT` is set.
  *
  * Telemetry is configured here, at boot, before any context exists:
- * OpenTelemetry's global providers register once per process (AD-32), so
+ * OpenTelemetry's global providers register once per process, so
  * `configureTelemetry` must run first and wins. The app configuration class
  * never touches the OTel API, which is what keeps `bootNodeApp`-based tests
  * hermetic.

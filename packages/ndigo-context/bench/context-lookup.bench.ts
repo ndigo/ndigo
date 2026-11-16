@@ -1,13 +1,13 @@
 /**
  * ApplicationContext entry lookup and context startup.
  *
- * The metadata entries pin the `@entry` path and the AD-34 D1 string/token
+ * The metadata entries pin the `@entry` path and the string/token
  * same-cost claim. The dynamic contexts pin scale: 1, 10, 100, and 1,000
  * registered values. Each measured iteration performs 1,000 lookups.
  */
 
 // oxlint-disable @ndigo/no-string-registry-lookup -- benchmark fixtures: the
-// string-literal lookup hot path is a measured axis; AD-34 D1 tokens and
+// string-literal lookup hot path is a measured axis; tokens and
 // strings share the description-keyed registry (the token case is benched too).
 
 import { test } from 'vitest';

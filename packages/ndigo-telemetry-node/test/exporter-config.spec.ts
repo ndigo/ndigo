@@ -1,11 +1,11 @@
 /**
- * Exporter spec resolution (AD-32 D-2/D-3) — pure shape table, no
+ * Exporter spec resolution — pure shape table, no
  * providers touched, so every case runs in one process.
  */
 import { describe, test, expect } from 'vitest';
 import { resolveExporter } from '../src/node-config';
 
-describe('resolveExporter (AD-32 D-2)', () => {
+describe('resolveExporter', () => {
     test('missing option resolves to the console exporter (dev posture)', () => {
         expect(resolveExporter(undefined, 'trace')).toEqual({ kind: 'console' });
     });
@@ -22,7 +22,7 @@ describe('resolveExporter (AD-32 D-2)', () => {
         expect(resolveExporter('none', 'metric')).toEqual({ kind: 'none' });
     });
 
-    test("'prometheus' selects the pull reader for the metric signal (AD-77 D-1)", () => {
+    test("'prometheus' selects the pull reader for the metric signal", () => {
         expect(resolveExporter('prometheus', 'metric')).toEqual({ kind: 'prometheus' });
     });
 

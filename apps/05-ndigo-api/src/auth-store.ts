@@ -1,5 +1,5 @@
 /**
- * Demo authentication wiring (AD-33 Wave 2): replaces the hand-rolled
+ * Demo authentication wiring: replaces the hand-rolled
  * `demo-token-*` map with the framework machinery — scrypt-hashed demo
  * users, a {@link CredentialsAuthAdapter} over an in-memory session store,
  * registered on the existing {@link AuthRegistry} seam.

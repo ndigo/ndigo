@@ -7,7 +7,7 @@ extend via `renew`) inside it. Every acquisition gets a fresh monotonic
 **fencing token**, and only the handle holding the current token can renew or
 release the lease — a stale holder (its lease expired, another node acquired)
 can never interfere with a successor. That is the exact protection
-`@scheduled({ lock })` needs across processes (AD-73).
+`@scheduled({ lock })` needs across processes.
 
 ## Installation
 
@@ -62,7 +62,7 @@ The full API is at `api/` (generated; run `pnpm doc:api`). Primary exports:
 - `likeLockDriver` — structural guard for entries and options.
 - `LOCK_DRIVER` — the context token for entry resolution.
 
-## Driver parity notes (AD-73)
+## Driver parity notes
 
 - **Tokens are consecutive.** Only a successful `acquire` advances the
   per-key counter — a contended attempt returns `null` and burns nothing — so

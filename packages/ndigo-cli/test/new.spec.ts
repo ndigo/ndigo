@@ -1,5 +1,5 @@
 /**
- * Unit spec for the `ndigo new` argv seam (AD-85): only flags the `app`
+ * Unit spec for the `ndigo new` argv seam: only flags the `app`
  * generator's schema declares are forwarded, and `--dry-run` appears only
  * when requested.
  */

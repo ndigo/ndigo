@@ -1,7 +1,7 @@
 /**
  * The machine-output contract: one document on stdout, diagnostics on stderr,
- * and exit codes unchanged. `--json` is the canonical machine contract
- * (AD-97); `--toon` is an experimental sibling for the verbs whose payloads
+ * and exit codes unchanged. `--json` is the canonical machine contract;
+ * `--toon` is an experimental sibling for the verbs whose payloads
  * measured ≥30% savings vs pretty JSON on ≥2 KB documents — `routes` clears
  * it (−59% vs pretty / −36% vs minified JSON on a real manifest), while
  * `ui list` did not (heterogeneous records: −21% vs pretty / ~0% vs minified,

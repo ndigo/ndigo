@@ -19,8 +19,8 @@ import { z } from 'zod';
  * The server renders this element with `data-ndigo-model="…"`;
  * `hydrateIslands()` constructs it, restores `.model` from the serialized
  * snapshot, and an `effect` re-renders on every signal change. The server
- * pushes model updates over SSE (AD-09): the typed service stream below
- * validates each event (AD-07) and feeds it into the local `@ndigo/signals`
+ * pushes model updates over SSE: the typed service stream below
+ * validates each event and feeds it into the local `@ndigo/signals`
  * state, which re-renders the island.
  *
  * The add-item form uses the registry-installed native controls, so the POST
@@ -37,7 +37,7 @@ const ModelUpdateSchema = z.object({ model: TodoModelSchema });
 
 /**
  * The server's push endpoints as a typed service client — the SSE stream is
- * one call (`stream: true`, AD-09), normalized through the same service layer
+ * one call (`stream: true`), normalized through the same service layer
  * as any REST call.
  */
 @service('ndigo-island', { baseUrl: '' })

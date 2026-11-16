@@ -1,5 +1,5 @@
 /**
- * Telemetry hook spec (AD-87 D-7): one `feature_flag.evaluation` span per
+ * Telemetry hook spec: one `feature_flag.evaluation` span per
  * evaluation with the OTel feature-flag semconv attributes; abnormal
  * outcomes classified via `error.type` (resolved errors) or the ERROR span
  * status (thrown errors).

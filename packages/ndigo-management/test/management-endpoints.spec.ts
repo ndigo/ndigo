@@ -34,11 +34,11 @@ describe('ManagementAutoConfiguration endpoints', () => {
         context.register(ManagementAutoConfiguration);
         context.refresh(); // auto-initializes the handler mapping + dispatcher
 
-        // Seed the health indicator's aggregator (AD-36) — `/health` reads it.
+        // Seed the health indicator's aggregator — `/health` reads it.
         const aggregator = context.getValue<FeatureMetricAggregator>(METRIC_AGGREGATOR);
         aggregator.incrementCounter('todo', 'mountCount', 1);
 
-        // Seed the metric snapshot source (AD-77 D-3): `/metrics` derives
+        // Seed the metric snapshot source: `/metrics` derives
         // from the meter snapshot, not the aggregator.
         registerMetricSnapshotProvider({
             snapshot: async (): Promise<readonly MetricSnapshot[]> => [
@@ -84,7 +84,7 @@ describe('ManagementAutoConfiguration endpoints', () => {
         unregisterMetricSnapshotProvider();
     });
 
-    test('GET /metrics serves the Prometheus text document by default (AD-77 D-4)', async () => {
+    test('GET /metrics serves the Prometheus text document by default', async () => {
         const res = await fetch(`${base}/metrics`);
         expect(res.status).toBe(200);
         expect(res.headers.get('content-type')).toContain('text/plain; version=0.0.4');
@@ -100,7 +100,7 @@ describe('ManagementAutoConfiguration endpoints', () => {
         expect(body).toContain('http.server.request.duration_sum{method="GET"} 0.51');
     });
 
-    test('GET /metrics serves the meter-derived JSON projection on an explicit JSON accept (AD-77 D-4)', async () => {
+    test('GET /metrics serves the meter-derived JSON projection on an explicit JSON accept', async () => {
         const res = await fetch(`${base}/metrics`, { headers: { Accept: 'application/json' } });
         expect(res.status).toBe(200);
         expect(res.headers.get('content-type')).toContain('application/json');
@@ -214,7 +214,7 @@ describe('GET /metrics with the aggregator-backed fallback (REV-003)', () => {
         }
     });
 
-    test('the bare controller still answers the error document with no source anywhere (AD-77 D-3)', async () => {
+    test('the bare controller still answers the error document with no source anywhere', async () => {
         // No management auto-configuration, no telemetry: the current slot
         // and the fallback are both clear, so the documented error document
         // answers instead of a 500.
@@ -225,7 +225,7 @@ describe('GET /metrics with the aggregator-backed fallback (REV-003)', () => {
     });
 });
 
-describe('prefersJsonView (AD-77 D-4)', () => {
+describe('prefersJsonView', () => {
     test('absent and empty Accept headers default to the text document', () => {
         expect(prefersJsonView(undefined)).toBe(false);
         expect(prefersJsonView('')).toBe(false);
@@ -292,7 +292,7 @@ describe('ManagementAutoConfiguration security headers (SE-4)', () => {
     });
 });
 
-describe('ManagementAutoConfiguration health redaction (AD-36 D-1)', () => {
+describe('ManagementAutoConfiguration health redaction', () => {
     let base: string;
     let registry: HealthRegistry;
 

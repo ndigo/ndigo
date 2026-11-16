@@ -1,5 +1,5 @@
 /**
- * The flag targeting-context seam (AD-87 companion): the
+ * The flag targeting-context seam: the
  * `FLAG_CONTEXT_RESOLVER` entry builds the `FlagEvaluationContext` for a
  * `@whenFeature` gate check. The platform default resolves the session-bag
  * principal when one is present, falling back to the client address; apps
@@ -30,7 +30,7 @@ export interface FlagEvaluationContextResolver {
 
 /**
  * The client-address resolver: targeting key = the `NodeRequest`'s
- * `remoteAddress` — the AD-37 trusted-proxy-resolved client IP, the same
+ * `remoteAddress` — the trusted-proxy-resolved client IP, the same
  * key the rate limiter uses. An absent address yields no context.
  */
 export class ClientAddressFlagContextResolver implements FlagEvaluationContextResolver {
@@ -46,7 +46,7 @@ export class ClientAddressFlagContextResolver implements FlagEvaluationContextRe
         // Hash the client address before it becomes a targeting key: the key is
         // forwarded to (possibly third-party) flag providers, and a raw IP is
         // personal data under GDPR/CCPA. Hashing keeps per-IP bucketing stable
-        // without leaking the address. (AD-87 companion)
+        // without leaking the address.
         const hashed = createHash('sha256').update(address).digest('hex');
         return { targetingKey: `ip:${hashed}` };
     }

@@ -22,7 +22,7 @@ catalog:
   '@nx/devkit': '~24.0.4'
   # OpenFeature bridge (@ndigo/flags-openfeature): the app-installed provider
   # runtime. `~` pin — the SDKs are 1.x, but provider-facing behavior still
-  # moves on minors during the spec v0.9.0 compliance sweep (AD-87).
+  # moves on minors during the spec v0.9.0 compliance sweep.
   '@openfeature/server-sdk': '~1.23.0'
   '@openfeature/web-sdk': '~1.10.0'
   '@opentelemetry/api': '~1.10.0'

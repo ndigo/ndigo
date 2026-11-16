@@ -1,5 +1,5 @@
 /**
- * STOMP-over-WebSocket integration through the Node pipeline (AD-23):
+ * STOMP-over-WebSocket integration through the Node pipeline:
  * subprotocol negotiation on `@stompMapping` paths, the broker's full
  * protocol loop over `ws` wire frames, SEND fan-out, receipts, and ERROR
  * + close on violations (server-initiated publish from outside the
@@ -32,7 +32,7 @@ const frame = (command: string, headers: Record<string, string> = {}, body = '')
 const waitFrame = (ws: WebSocket): Promise<StompFrame> => {
     const { promise, resolve } = Promise.withResolvers<StompFrame>();
     // ws v8 delivers Buffers with an `isBinary` flag: text frames must be
-    // decoded to strings, binary frames parsed byte-exact (AD-23 D8).
+    // decoded to strings, binary frames parsed byte-exact.
     ws.once('message', (data: unknown, isBinary: boolean) => {
         if (isBinary) {
             // ws delivers Buffers; normalize to a plain Uint8Array so
@@ -79,7 +79,7 @@ class StompController {
     }
 }
 
-describe('STOMP over WebSocket (AD-23)', () => {
+describe('STOMP over WebSocket', () => {
     let server: HTTPServer;
     let wsUrl: string;
     let controller: StompController;
@@ -192,7 +192,7 @@ describe('STOMP over WebSocket (AD-23)', () => {
         b.close(1000, 'done');
     });
 
-    test('publish from outside the handler reaches subscribers (AD-23 D5)', async () => {
+    test('publish from outside the handler reaches subscribers', async () => {
         const ws = new WebSocket(`${wsUrl}/stomp`);
         await new Promise<void>((resolve, reject) => {
             ws.on('open', resolve);
@@ -235,7 +235,7 @@ describe('STOMP over WebSocket (AD-23)', () => {
         });
         ws.send(frame('CONNECT', { 'accept-version': '1.2', host: 'x' }));
         await waitFrame(ws);
-        // SEND without a destination — fail-closed (AD-23 D2).
+        // SEND without a destination — fail-closed.
         ws.send(frame('SEND', {}));
         const error = await waitFrame(ws);
         expect(error.command).toBe('ERROR');
@@ -246,7 +246,7 @@ describe('STOMP over WebSocket (AD-23)', () => {
         expect(closedCode).toBe(1002);
     });
 
-    test('binary frames round-trip byte-exact (AD-23 D8)', async () => {
+    test('binary frames round-trip byte-exact', async () => {
         const ws = new WebSocket(`${wsUrl}/stomp`);
         await new Promise<void>((resolve, reject) => {
             ws.on('open', resolve);
@@ -270,7 +270,7 @@ describe('STOMP over WebSocket (AD-23)', () => {
         ws.close(1000, 'done');
     });
 
-    test('queue backlog replays to a late subscriber (AD-23 D11)', async () => {
+    test('queue backlog replays to a late subscriber', async () => {
         await controller.broker.publish('/queue/jobs', 'job-1');
         const ws = new WebSocket(`${wsUrl}/stomp`);
         await new Promise<void>((resolve, reject) => {
@@ -298,7 +298,7 @@ describe('STOMP over WebSocket (AD-23)', () => {
         ws.close(1000, 'done');
     });
 
-    test('/user destinations route by resolved user (AD-23 D10)', async () => {
+    test('/user destinations route by resolved user', async () => {
         // Second controller scoped to fixed users (attributes preset via
         // the adapter's authenticate seam is not wired here — resolveUser
         // reads attributes.user, so preset directly).

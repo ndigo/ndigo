@@ -16,7 +16,7 @@ function getMetadata(target: unknown): Record<string, unknown> {
 
 /**
  * Marks a configuration class with the zod schema of its resolved
- * environment — the schema IS the contract (AD-17).
+ * environment — the schema IS the contract.
  *
  * The schema validates the environment's resolved values (via
  * `validateEnvironment`); boot fails loudly with the aggregate report when
@@ -82,7 +82,7 @@ const pathOf = (issue: { path: readonly (string | number | symbol)[] }): string 
 /**
  * Validates the resolved values of a property resolver against a zod schema.
  *
- * Aggregate (AD-17 Q1): every violation is reported — validation's point is
+ * Aggregate: every violation is reported — validation's point is
  * the full report. Report-only (Q2): zod transforms/defaults are never
  * written back — the environment is the source of truth; conversion is P4's
  * binding.

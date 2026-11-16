@@ -1,6 +1,6 @@
 /**
  * Sampler configuration validation: invalid ratios fail at configuration
- * time, before any provider is registered (AD-32 D-1). Validation runs
+ * time, before any provider is registered. Validation runs
  * before the once-per-process latch, so every rejection throws in one
  * process.
  */

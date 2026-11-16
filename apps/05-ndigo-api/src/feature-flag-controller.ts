@@ -1,5 +1,5 @@
 /**
- * Feature-flags demo controller (AD-82): a `@whenFeature`-gated route.
+ * Feature-flags demo controller: a `@whenFeature`-gated route.
  *
  * The gate flag `gated.report` reads the config property
  * `feature.gated.report` (see `config/application.json`, flat dotted key)

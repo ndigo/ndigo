@@ -1,6 +1,6 @@
 /**
  * Renders metric snapshots in the Prometheus text exposition format
- * (AD-77 D-5). The projection rules:
+ *. The projection rules:
  * - `sum` snapshots → `* counter` lines;
  * - `gauge` snapshots → `* gauge` lines;
  * - `histogram` snapshots → a `<name>_count` counter plus a `<name>_sum`

@@ -49,7 +49,7 @@ Success answers `200` with `{ ok: true, path, policy, upstreamAttempts, data }`,
 where `upstreamAttempts` is how many requests the call actually sent upstream
 (retries included).
 
-Failures are RFC 9457 `application/problem+json` documents (AD-10) carrying the
+Failures are RFC 9457 `application/problem+json` documents carrying the
 same fields as extension members:
 
 ```text
@@ -162,7 +162,7 @@ interceptMethods(serviceClient(UpstreamAPI, HTTP.create({ baseURL: UPSTREAM_ORIG
 
 - **`@ndigo/proxy`** weaves the hand-built client (`interceptMethods`) — the
   service-layer registration path, since a `serviceClient` never enters the
-  container. The array order is the composition AD-43 D-5 prescribes: the
+  container. The array order the composition prescribes: the
   breaker _outside_ retry, so one chain pass counts one failure.
 - **`@ndigo/resilience`** supplies `@retry({ attempts: 3, backoff: …. })` and
   `@circuitBreaker({ failureThreshold: 3, resetMs: 1500 })` on `data()`. The
@@ -181,7 +181,7 @@ interceptMethods(serviceClient(UpstreamAPI, HTTP.create({ baseURL: UPSTREAM_ORIG
 - **The failure path is the documented one.** `HTTP.request` never throws a
   transport failure (it resolves `ResponseError` _values_), so the exception the
   policies observe is the service client's response-schema validation —
-  `IllegalStateError` — exactly the boundary AD-43 D-8 records for v1. A failing
+  `IllegalStateError` — exactly the boundary recorded for v1. A failing
   upstream answers with an `{ error, … }` body, which the declared
   `responseSchema` rejects.
 - **`@ndigo/management`** gets a custom `HealthIndicator` reading the breaker

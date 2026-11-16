@@ -1,11 +1,11 @@
 /**
- * The cluster supervisor (AD-74): replicated worker slots with signal
+ * The cluster supervisor: replicated worker slots with signal
  * relay, graceful drains, and bounded-backoff restarts.
  *
  * `@ndigo/cluster` is a **supervisor, not a coordinator** — every slot runs
  * the same application process and lets the existing contracts arbitrate
- * single-executor work (job leases from AD-72, `@scheduled({ lock })` from
- * AD-73). This package owns only the process shell: spawn N children with
+ * single-executor work (job leases, `@scheduled({ lock })`).
+ * This package owns only the process shell: spawn N children with
  * slot identity env, forward `SIGINT`/`SIGTERM` into each child's **own**
  * graceful shutdown, and respawn crashed slots with exponential backoff
  * inside a fail-closed crash-loop window.
@@ -225,7 +225,7 @@ interface SlotState {
 }
 
 /**
- * The cluster supervisor (AD-74 D-1..D-5). Construct with
+ * The cluster supervisor. Construct with
  * {@link ClusterRunnerOptions}, then `await run()`; the returned result
  * carries the resolved exit code and per-slot snapshots.
  */

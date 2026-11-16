@@ -1,6 +1,6 @@
 /**
  * The `ndigo mcp` stdio server: static application introspection tools, plus
- * a live mode that delegates to the application's own `scripts.mcp` (AD-70).
+ * a live mode that delegates to the application's own `scripts.mcp`.
  */
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
@@ -30,8 +30,8 @@ export interface AppServerOptions {
     readonly live?: boolean;
 }
 
-/** The missing-`mcp`-script hint, mirroring the `inspect` one (AD-70). */
-const LIVE_HINT = 'add an "mcp" script that starts the application MCP server, e.g. "mcp": "tsx src/mcp.ts" (AD-70)';
+/** The missing-`mcp`-script hint, mirroring the `inspect` one. */
+const LIVE_HINT = 'add an "mcp" script that starts the application MCP server, e.g. "mcp": "tsx src/mcp.ts"';
 
 /**
  * Creates the static application MCP server.
@@ -78,7 +78,7 @@ function createAppHost(options: AppServerOptions): McpHost {
         name: 'get_manifest',
         title: 'Get the Ndigo application manifest',
         description:
-            'Run the application scripts.inspect (AD-70) and return the versioned manifest: app identity, routes, mappings, and configuration keys.',
+            'Run the application scripts.inspect and return the versioned manifest: app identity, routes, mappings, and configuration keys.',
         inputSchema: {},
         annotations: { readOnlyHint: true },
         run: () => getManifest(context),

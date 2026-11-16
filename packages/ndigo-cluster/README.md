@@ -3,10 +3,10 @@
 > A process supervisor for Node.js applications — replicated worker slots
 > with signal relay, graceful drains, and bounded-backoff restarts.
 
-`@ndigo/cluster` is a **supervisor, not a coordinator** (AD-74): every slot
+`@ndigo/cluster` is a **supervisor, not a coordinator**: every slot
 runs the same application process, and the existing contracts arbitrate
-single-executor work — job leases (`@ndigo/jobs`, AD-72) and
-`@scheduled({ lock })` (`@ndigo/locks`, AD-73). This package owns only the
+single-executor work — job leases (`@ndigo/jobs`) and
+`@scheduled({ lock })` (`@ndigo/locks`). This package owns only the
 process shell: spawn `size` children with slot identity env, forward
 `SIGINT`/`SIGTERM` into each child's **own** graceful shutdown, and respawn
 crashed slots with exponential backoff inside a fail-closed crash-loop

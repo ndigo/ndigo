@@ -1,5 +1,5 @@
 /**
- * OpenAPI 3.0 spec generation from dispatch metadata (AD-35, D-2/D-3/D-4).
+ * OpenAPI 3.0 spec generation from dispatch metadata (D-2/D-3/D-4).
  * The fixture controllers exercise translation, exclusions, parameter
  * mapping and the zod schema seam — all through the real mapping
  * registration path.
@@ -217,7 +217,7 @@ class APIController {
     }
 }
 
-describe('OpenAPISpecGenerator (AD-35)', () => {
+describe('OpenAPISpecGenerator', () => {
     it('builds the document envelope', () => {
         const mapping = register(new APIController());
         const doc = new OpenAPISpecGenerator().generate([mapping], { title: 'Demo API', version: '1.2.3' });
@@ -292,7 +292,7 @@ describe('OpenAPISpecGenerator (AD-35)', () => {
         });
     });
 
-    it('embeds @apiDocs response schemas via the zod seam (AD-38 D-4)', () => {
+    it('embeds @apiDocs response schemas via the zod seam', () => {
         const mapping = register(new APIController());
         const doc = new OpenAPISpecGenerator().generate([mapping]);
         const op = doc.paths['/api/docs-response'].get as OpenAPIOperation;

@@ -8,7 +8,7 @@ import { IllegalStateError } from '@ndigo/core';
 import { NODE_RESPONSE_ATTRIBUTE } from './node-request';
 
 /**
- * The session cookie name for opaque server sessions (AD-33 D-6).
+ * The session cookie name for opaque server sessions.
  *
  * Carries the `__Host-` security prefix (SEC-AUD2-SEC-2 / PLN-F6): browsers
  * accept such a cookie only when it is `Secure`, `Path=/` and `Domain`-less,

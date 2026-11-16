@@ -49,7 +49,7 @@ export class NodeEnvironment extends StandardEnvironment {
     /**
      * Re-snapshots `process.env` into the `systemEnvironment` source and
      * refreshes the environment (formal `super.refresh()` — recompute from
-     * current sources, AD-16 D3), keeping the source's position in the
+     * current sources), keeping the source's position in the
      * precedence order.
      *
      * Call after mutating `process.env` at runtime to make the new values

@@ -43,14 +43,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   flags error together, `--json` stays canonical, the flag brief is marked
   `[experimental]` while TOON is a Working Draft, and the SDK arrives as a
   regular lazily imported dependency (CLI startup untouched).
-- `@ndigo/view-toon`: the TOON view technology (AD-102) — `ToonView`
+- `@ndigo/view-toon`: the TOON view technology — `ToonView`
   (`text/toon;charset=utf-8`), `toonViewResolver(viewName, options?)` for
   opt-in per-route negotiation (register the JSON resolver first:
   registration order is what keeps JSON the default), and `encodeToon()`
   for synchronous in-process prompt composition. `@toon-format/toon` is a
   regular pinned dependency (spec v4.4), so the wire surface fails at
   install time, never as a request-time missing-module error. Supersedes
-  AD-66 D-3 in part: TOON may appear in HTTP responses as an explicitly
+  part of the earlier TOON response scope: TOON may appear in HTTP responses as an explicitly
   composed representation with an app-registered `.toon` extension; the
   framework wires nothing for it, and storage, SSE, WS/STOMP, external
   protocols, MCP results/schemas, and every negotiation default stay
@@ -69,7 +69,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `@toolMapping` handlers served by HTTP and MCP, streamed over SSE with one
   trace.
 - `@ndigo/boot`: `ApplicationBuilder.fromConfig(url, options?)` accepts TOON
-  documents (AD-66 Phase 3) — a `.toon` address suffix decodes as TOON
+  documents — a `.toon` address suffix decodes as TOON
   (query strings and fragments stripped first), an explicit
   `format: 'json' | 'toon'` option overrides the address, and `format:
   'json'` over a `.toon` address errors instead of silently re-parsing.
@@ -133,7 +133,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   native-first primitives, Zag.js behaviour elements, and all five blocks — with
   keyboard and axe coverage.
 
-- `@ndigo/cli`: the command surface expanded from the AD-75 core (serve, dev,
+- `@ndigo/cli`: the command surface expanded from the core (serve, dev,
   generate, db, inspect, doctor) to the full developer loop — `build`, `test`,
   `lint`, `format`, `typecheck`, `clean`, `info`, `config`, `routes`, `logs`,
   `completion`, `env`, `openapi` (`--out`/`--format`), `add` (installs an
@@ -191,7 +191,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   and redeems it via `GET /oidc/refresh`, rotation included.
 - `@ndigo/auth-core`: `AuthResult` gains an optional `refreshToken` seat for
   rotation-capable adapters.
-- `@ndigo/flags-openfeature` (AD-87 Phase 2): the **browser entry**
+- `@ndigo/flags-openfeature`: the **browser entry**
   (`@ndigo/flags-openfeature/web`) — `WebOpenFeatureFlagEvaluator` over
   `@openfeature/web-sdk` (static-context snapshot semantics, the same
   reason/error mapping, `null` narrowing, and never-throw boundary as the
@@ -202,30 +202,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   on abnormal outcomes), usable on both SDKs and inert until telemetry
   providers are wired. Guide 28 gains the browser recipe and provider
   notes (flagd/OFREP).
-- `@ndigo/platform-node` (AD-87 companion): the flag targeting-context
+- `@ndigo/platform-node`: the flag targeting-context
   seam — the **`FLAG_CONTEXT_RESOLVER`** entry
   (`FlagEvaluationContextResolver`; default
   `SessionPrincipalFlagContextResolver`: the session-bag principal's id as
   the targeting key with its roles as attributes, falling back to the
-  AD-37 client address; `ClientAddressFlagContextResolver` ships for
+  client address; `ClientAddressFlagContextResolver` ships for
   address-only targeting), and **late-bound gate dependencies**: the
   `FeatureGateInterceptor` now resolves `FLAG_EVALUATOR` /
   `FLAG_CONTEXT_RESOLVER` from the application context per check, so
   app-level entry overrides (the vendor-bridge recipe included) reach
   `@whenFeature` routes instead of pinning the auto-configuration
   defaults.
-- `@ndigo/flags` (AD-87): the evaluation vocabulary widens to the full
+- `@ndigo/flags`: the evaluation vocabulary widens to the full
   OpenFeature surface — reasons `CACHED`/`UNKNOWN`/`STALE`, error codes
   `TARGETING_KEY_MISSING`/`INVALID_CONTEXT`, and an optional
   `flagMetadata` on `FlagEvaluation` (`DISABLED` is documented as a
   successful evaluation).
-- `@ndigo/flags-openfeature` (AD-87): the **OpenFeature bridge** — a
+- `@ndigo/flags-openfeature`: the **OpenFeature bridge** — a
   `FlagEvaluator` over `@openfeature/server-sdk` clients (global,
   domain-scoped, or explicit), never-throw at the boundary, provider
   `flagMetadata` passed through; vendor flagging (flagd, OFREP,
   LaunchDarkly, …) plugs in behind the existing SPI, so `@whenFeature`
   gates and app code stay unchanged.
-- `@ndigo/generators` (AD-85): the **`app` generator** — scaffolds a demo
+- `@ndigo/generators`: the **`app` generator** — scaffolds a demo
   application under `apps/NN-ndigo-<slug>` from the `01-ndigo-hello` (browser)
   or `02-ndigo-hello-node` (node) shape, allocating the reading-order number
   and dev port automatically (the port scan covers the ladder's documented
@@ -233,14 +233,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   generator factories now load through Node's native TypeScript stripping —
   Nx-loaded generator files import their own modules with `.ts` specifiers,
   rewritten on emit by `rewriteRelativeImportExtensions`.
-- `@ndigo/cli` (AD-85): **`ndigo new <name>`** (`--kind`, `--number`, `--port`,
+- `@ndigo/cli`: **`ndigo new <name>`** (`--kind`, `--number`, `--port`,
   `--description`, `--dry-run`) fronts the app generator through the
   workspace's Nx bridge; `ndigo generate app` fails with a pointer at it (one
   canonical path per artifact).
 - `@ndigo/generators` (drive-by, 2026-11-01): the `package` generator's
   manifest now ships `files: ["api", "lib"]` — the docs standard the manifest
   gate enforces.
-- `@ndigo/flags` (AD-82): feature flags — the **`FlagEvaluator`** SPI
+- `@ndigo/flags`: feature flags — the **`FlagEvaluator`** SPI
   (typed, async, **never-throw**: abnormal evaluation returns the supplied
   default with a `reason` + `errorCode`), the zero-config
   **`PropertyFlagProvider`** (flag `name` → `feature.<name>` properties,
@@ -249,27 +249,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   key — `SPLIT` reason), the **`@whenFeature`** class/method gate metadata
   (flag-key validated at decoration time), and the `FLAG_EVALUATOR` entry
   token.
-- `@ndigo/platform-node` (AD-82): the **`FeatureGateInterceptor`** —
+- `@ndigo/platform-node`: the **`FeatureGateInterceptor`** —
   default-on in the node mapping, evaluates `@whenFeature` gates per
   request and denies an off flag with a 404 problem document
   (`urn:ndigo:not-found`; the `@FeatureGate`/`DisabledFeaturesHandler`
   analog); the default `FLAG_EVALUATOR` entry reads the application
   environment.
-- `apps/04-ndigo-api` (AD-82): the gated `/gated-report` demo route
+- `apps/04-ndigo-api`: the gated `/gated-report` demo route
   (`@whenFeature('gated.report')`, `feature.gated.report` in
   `config/application.json`).
 
-- `@ndigo/orm-drizzle` (AD-78): migration **files** — `loadMigrations(dir)`
+- `@ndigo/orm-drizzle`: migration **files** — `loadMigrations(dir)`
   (one versioned module per file, `db/migrations/<NNNN>-<slug>.ts` by
   convention), `nextMigrationVersion(dir)`, and `migrateOnBoot({dataSource,
   dir})` — apply pending journaled migrations at boot, failing closed. The
-  AD-30 runner contract is unchanged.
-- `@ndigo/orm-drizzle` (AD-78): schema **generation** — `projectEntities`,
+  runner contract is unchanged.
+- `@ndigo/orm-drizzle`: schema **generation** — `projectEntities`,
   `diffProjections`, `renderMigrationFile`, and the committed `schema.json`
   snapshot (`renderSnapshot`/`readSnapshot`, `predicate: 1`). Generation is
   a diff against the committed snapshot; constraints the metadata cannot
   express are reported, never emitted silently.
-- `ndigo db new|generate|status` (AD-78): scaffold the next versioned
+- `ndigo db new|generate|status`: scaffold the next versioned
   migration, generate one from entity metadata (runs the app's
   `scripts.db:generate`), and report the journal (runs the app's
   `scripts.db:status`).
@@ -280,21 +280,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (`config/application.json`) as the dotted-key carrier.
 - Guide 27 — ORM & Migrations (the journaled lifecycle, the snapshot
   freshness gate, and the fidelity ceiling).
-- `@ndigo/rate-limit` (AD-79): the `RateLimiter` SPI as a leaf package —
-  async `consume` (AD-39), `RateLimitPolicy`/`RateLimitResult`,
+- `@ndigo/rate-limit`: the `RateLimiter` SPI as a leaf package —
+  async `consume`, `RateLimitPolicy`/`RateLimitResult`,
   `validateRateLimitPolicy`, `likeRateLimiter`, `FixedWindowRateLimiter`
   (moved from `@ndigo/platform-node`), and the `RATE_LIMITER` context
   token. The platform interceptor awaits, the entry registers under the
   token, and apps import `RateLimitPolicy` from the new package (clean
   cutover — no re-exports).
-- `@ndigo/redis/rate-limit` (AD-79): `RedisRateLimiter` — the shared-store
+- `@ndigo/redis/rate-limit`: `RedisRateLimiter` — the shared-store
   fixed-window driver, one Lua script per consume (INCR, PEXPIRE on the
   first request of a window, PTTL as the `Retry-After` basis), keys
   `ndigo:rl:<namespace>:<windowMs>:<key>`, windows anchored at first
   request; budgets survive restarts and N processes share one budget
   (fail-closed by default; `onError: 'fail-open'` logs through
   `@ndigo/log` and allows).
-- `@ndigo/platform-node` (AD-80/AD-81, 2026-10-09): opt-in TLS origin with
+- `@ndigo/platform-node`: opt-in TLS origin with
   native HTTP/2 — `tls?: TLSServerOptions` on `HTTPServerOptions` and the
   adapter (`key`/`cert`/`ca` inline-or-path, `minVersion?`, `ciphers?`,
   `clientAuth?` for mutual TLS, `maxConcurrentStreams?` to bound h2
@@ -303,10 +303,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   blank values count as unset). TLS material switches the listener to an
   `http2.createSecureServer` in `allowHTTP1` mode — ALPN negotiates h2
   with an HTTP/1.1 fallback, and WebSockets keep riding h1.1 (no RFC 8441
-  in `ws`/browsers). Plaintext, edge-terminated stays the default posture
-  (AD-80); a half-configured env pair throws rather than silently serving
+  in `ws`/browsers). Plaintext, edge-terminated stays the default posture;
+  a half-configured env pair throws rather than silently serving
   plaintext.
-- `@ndigo/platform-node` (AD-90): the **`createNodeApplication(sources, options)`**
+- `@ndigo/platform-node`: the **`createNodeApplication(sources, options)`**
   lifecycle preset — composes `NodeAutoConfiguration` and `NodeEnvironment`
   with config files (new default reader `nodeConfigFileReader`), the
   `configureBuilder` / `beforeStart` hooks, extra teardown `resources`, and
@@ -314,10 +314,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   returns `{ context, server, port, close }`. Every implicit action has a
   `false` switch; `ApplicationBuilder` and `gracefulShutdown` stay public
   and unchanged.
-- `@ndigo/platform-node` (AD-90): `HTTPServer.port` reports the **bound**
+- `@ndigo/platform-node`: `HTTPServer.port` reports the **bound**
   port once started — the kernel-assigned port when `port: 0` was requested —
   and reverts to the configured port on `close()`.
-- `@ndigo/platform-web` (AD-90): the **`createWebApplication(sources, options)`**
+- `@ndigo/platform-web`: the **`createWebApplication(sources, options)`**
   lifecycle preset — composes `WebAutoConfiguration` and `BrowserEnvironment`
   with the `DOMElementViewTarget` / `BrowserDispatcher` / `HashRouter` wiring
   and the first navigation, registers `VIEW_TARGET` / `DISPATCHER` / `ROUTER`,
@@ -325,24 +325,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `autoNavigate` / `beforeNavigate` / `platform` / `profiles` / `properties`
   options; `destroy()` is idempotent. The manual
   `MetadataConfigApplicationContext` path stays public and unchanged.
-- `create-ndigo-app` (AD-92): an unscoped `npm create ndigo-app` bin that
+- `create-ndigo-app`: an unscoped `npm create ndigo-app` bin that
   scaffolds a standalone pnpm project (node or browser kind) using the
-  AD-90 presets (`createNodeApplication` / `createWebApplication`), with
+  presets (`createNodeApplication` / `createWebApplication`), with
   `--local` dev mode against the workspace, a copied decorator-lowering
   plugin, and a smoke + bundle guard in the generated app. Ships at 1.0.
-- `@ndigo/ui` (AD-106): six built-in visual themes — `ndigo-dark`,
+- `@ndigo/ui`: six built-in visual themes — `ndigo-dark`,
   `ndigo-light`, `solarized-dark`, `solarized-light`, `high-contrast-dark`, and
   `high-contrast-light` — with `createTheme`, `withThemeTokens`, `applyTheme`,
   `removeTheme`, and `themeToCss`. Themes override only `--nd-*` color tokens
   and switch through `data-theme` in CSS, so a theme change needs no
   JavaScript; the legacy `dark`/`light` values alias the Ndigo themes.
-- `@ndigo/router` + `@ndigo/dispatcher` (AD-106): per-request theme negotiation
+- `@ndigo/router` + `@ndigo/dispatcher`: per-request theme negotiation
   — `REQUESTED_THEME_ATTRIBUTE` (`requestedTheme`), `THEME_ATTRIBUTE`
   (`theme`), `applyNegotiatedTheme`, `AttributeThemeResolver`, and
   `SystemThemeResolver`. `@ndigo/platform-node` stamps the `theme` cookie on
   HTTP and socket routes and registers the attribute resolver;
   `@ndigo/content` exports `normalizeThemeName` for untrusted names.
-- `@ndigo/ui-web` (AD-106): browser theme adapter — `connectBrowserTheme`
+- `@ndigo/ui-web`: browser theme adapter — `connectBrowserTheme`
   resolves the `theme` cookie through `prefers-color-scheme` to the context
   default, applies the result, and returns a `setTheme`/`destroy` handle;
   `setVisualTheme` performs a single switch. `@ndigo/ui` gains the pure
@@ -385,8 +385,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   before parsing; keyless plain objects are classified after a failed parse,
   so valid bodies pay nothing. Same-host bench: `{}` −7 to −10%, `undefined`
   −12 to −14%, valid unchanged (`BENCHMARKS.md`).
-- `@ndigo/dispatcher`: validation failures carry one stack instead of two
-  (AD-103): the `ZodValidationError` cause is built with
+- `@ndigo/dispatcher`: validation failures carry one stack instead of two:
+  the `ZodValidationError` cause is built with
   `Error.stackTraceLimit` scoped to zero and restored in `finally`, leaving
   the thrown `ParameterConversionError`'s stack as the only one. Same-host
   bench: invalid 10.95 → ~7.36 µs (−33%), empty `{}` −33 to −36%,
@@ -415,8 +415,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   304 ns (`BENCHMARKS.md`).
 - `apps/07-ndigo-island`: migrated from Web Awesome to the ndigo-ui registry
   items — the form now uses native `<input>`/`<button>` with copy-in CSS and no
-  component-library dependency (AD-95).
-- `@ndigo/cli` (AD-75): the CLI underpinnings moved from `@oclif/core` v5 to
+  component-library dependency.
+- `@ndigo/cli`: the CLI underpinnings moved from `@oclif/core` v5 to
   `@stricli/core` — commands are `buildCommand` declarations, nested `db`
   routes use `buildRouteMap`, and the bin reads the same Stricli application
   the `runCli` embedding entry exposes. Exit-code contract unchanged
@@ -424,29 +424,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `create-ndigo-app` is unchanged: it uses a hand-rolled argument parser (no
   OCLIF), so the migration did not apply to it.
 
-- `@ndigo/generators` (AD-93): the repo-only Nx generator collection moved
+- `@ndigo/generators`: the repo-only Nx generator collection moved
   out of `packages/` to `tools/generators/` (`private: true`) — it hard-codes
   this repository's layout and is never published. `packages/` now contains
   consumer packages only; `ndigo new` / `ndigo generate` are unchanged.
-- **The project is renamed: BlueJS → ndigo** (issue #78, AD-88): packages
+- **The project is renamed: BlueJS → ndigo**: packages
   publish under `@ndigo/*`, the CLI is `ndigo`, problem-type URIs are
   `urn:ndigo:*`, env vars are `NDIGO_*`, Redis keys are `ndigo:*`, session
   cookies are `ndigo-session` / `__Host-ndigo-session`, and the durable tables
   are `ndigo_sessions` / `ndigo_jobs` / `ndigo_queue_messages` /
   `_ndigo_migrations`. The repository becomes `github.com/ndigo/ndigo`. Dated
   historical records keep the old name pending the tracked scrub pass.
-- `@ndigo/oxlint-plugin` + lint rules (AD-86): repository-only rules moved
+- `@ndigo/oxlint-plugin` + lint rules: repository-only rules moved
   out of the package into the internal plugin at root `src/oxlint/`, loading
   directly from TypeScript (rule IDs `internal/*`, e.g.
   `internal/no-internal-file-exports`). The package now ships the
   consumer-facing rules only; `pnpm test:internal` runs the internal specs.
-- `@ndigo/oxlint-plugin` (AD-86, #117): `no-raw-console` and
+- `@ndigo/oxlint-plugin`: `no-raw-console` and
   `no-browser-globals-in-isomorphic` returned to the internal plugin
   (`internal/*`) — both key off this repository's `packages/ndigo-*` layout,
   so they are inert or misleading in consumer projects. The package ships its
   six layout-independent rules until the two are de-hardcoded for app repos.
-- `@ndigo/host` (AD-18): dropped the `private: true` staging flag — the
-  package is publishable and the AD-86 `packages/` surface guard now carries
+- `@ndigo/host`: dropped the `private: true` staging flag — the
+  package is publishable and the `packages/` surface guard now carries
   no exceptions.
 - `ndigo db generate` (2026-10-08 review, REV-002/REV-006): **fails loud**
   instead of emitting what the operator has not reviewed — a delta with
@@ -510,18 +510,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (`{@link <module>.<Symbol> | Symbol}`); the doc-coverage gate was repaired (it
   had been checking the wrong reflection kinds and could never fire) and the 62
   public symbols it flagged are documented.
-- `apps/02-ndigo-hello-node`, `apps/05-ndigo-api`, `@ndigo/generators`
-  (AD-90): the Node entrypoints adopt the `createNodeApplication` preset — no
+- `apps/02-ndigo-hello-node`, `apps/05-ndigo-api`, `@ndigo/generators`:
+  the Node entrypoints adopt the `createNodeApplication` preset — no
   more `process.env['PORT']` mutation or hand-written start/shutdown
   assembly, and `05-ndigo-api` drops its hand-written config-file reader.
   Generated node apps infer the dev port from `{ port: … }` and no longer
   declare `@ndigo/boot` directly (the platform carries it).
-- `apps/08-ndigo-views`, `apps/19-ndigo-hn`, `@ndigo/generators` (AD-90): the
+- `apps/08-ndigo-views`, `apps/19-ndigo-hn`, `@ndigo/generators`: the
   browser entrypoints adopt the `createWebApplication` preset — no more
   hand-wired dispatcher/router/view-target assembly or duplicated hash-path
   helper. Generated browser apps ship `<name>-configuration.ts` (replacing
   `<name>-context.ts`) and no longer declare `@ndigo/router` directly.
-- `@ndigo/content`, `@ndigo/context`, `@ndigo/dispatcher` (AD-106): the theme
+- `@ndigo/content`, `@ndigo/context`, `@ndigo/dispatcher`: the theme
   registry is renamed `ThemeResolver` → `ThemeSource` (with
   `StaticThemeSource`, `CompositeThemeSource`, and `likeThemeSource`) and
   `setThemeResolver` → `setThemeSource`. `resolveTheme` is now
@@ -531,7 +531,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Deprecated
 
-- `@ndigo/content`, `@ndigo/context` (AD-106): the `ThemeResolver`,
+- `@ndigo/content`, `@ndigo/context`: the `ThemeResolver`,
   `StaticThemeResolver`, `CompositeThemeResolver`, `likeThemeResolver`, and
   `setThemeResolver` names remain as deprecated aliases for one minor. They are
   removed at 1.0.
@@ -548,21 +548,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   sources) now stays **false**; `z.coerce.boolean()` applied `Boolean("false")`
   → `true` and silently enabled migration-on-boot. A misspelled flag now
   fails boot instead of flipping the default.
-- `apps/04-ndigo-api` (AD-78 remainder): the Drizzle controller opens the
+- `apps/04-ndigo-api`: the Drizzle controller opens the
   file-backed SQL store lazily inside `ensureInit()` — after `ensureDbDir()`
   — instead of at construction, so the lane boots on a fresh checkout
   (no pre-existing `data/` directory; libSQL CANTOPEN class) and tests can
   pin `NDIGO_DB_URL` before any request touches the store, as documented.
-- `ndigo` (AD-75 review, discovered by AD-78): space-form nested commands
+- `ndigo`: space-form nested commands
   (`ndigo db migrate`, `ndigo db new …`) printed topic help instead of running
   — the oclif `topicSeparator` was `:` so only `ndigo db:migrate` worked.
   `topicSeparator` is now a space; colon form keeps working.
-- `ndigo` (AD-75, discovered by AD-78): one-shot commands (`db:*`, `inspect`,
+- `ndigo`: one-shot commands (`db:*`, `inspect`,
   run-through scripts) received only `PATH` in their environment — config
   knobs like `NDIGO_DB_URL`, OTel endpoints and secret keys never reached the
   app script. The invoking environment now flows through (shell-free
   signal relays unchanged).
-- `@ndigo/boot` (AD-90 D-5): the profile resolver no longer reads
+- `@ndigo/boot`: the profile resolver no longer reads
   `process.env` directly — `NDIGO_PROFILES_ACTIVE`, `NDIGO_PROFILES_DEFAULT`,
   and `NDIGO_PROFILES_GROUPS` resolve through `getEnv`, so booting through
   `ApplicationBuilder` / `Application` works in browsers and workers where
@@ -571,25 +571,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- `@ndigo/cluster` (AD-74 review): the crash-loop guard now tears down **every**
+- `@ndigo/cluster`: the crash-loop guard now tears down **every**
   sibling slot — a tripped cluster settles with `reason: 'crash-loop'`
   instead of hanging with live children; a spawn failure aborts fail-closed
   (no orphaned children); the worst sibling exit code survives a trip (floor
   1); and a `stop()` after an `abort()` is a no-op.
-- `ndigo serve` (AD-74/75 review): `--port` is now forwarded as the cluster's
+- `ndigo serve`: `--port` is now forwarded as the cluster's
   `basePort`, so `--cluster N --port P` gives every slot a distinct
   `PORT = P + slot` as documented — slots no longer collide on one port.
-- `ndigo generate` (AD-75 review): forwards each generator's declared flags
+- `ndigo generate`: forwards each generator's declared flags
   (`--package`, `--file`, `--force`, `--className`, `--summary`, `--author`,
   `--description`, `--module`, `--path`, `--jobs`) — `component` and `header`
   are runnable from the CLI.
-- `ndigo doctor` (AD-75 review): reports the workspace root by walking up to
+- `ndigo doctor`: reports the workspace root by walking up to
   `pnpm-workspace.yaml` (not the `node_modules` dir `pnpm root` answers),
   performs real environment checks, and exits `1` when one fails.
-- `ndigo` (AD-75 review): one-shot commands install their signal relays before
+- `ndigo`: one-shot commands install their signal relays before
   spawning (a signal in the spawn window is never dropped), and the
   shell-operator guard also rejects `$()`/backtick scripts.
-- `@ndigo/jobs`/`@ndigo/redis/jobs` (AD-72 review): the Redis driver's
+- `@ndigo/jobs`/`@ndigo/redis/jobs`: the Redis driver's
   `heartbeat` and `retry` are single-Lua-script atomic units — a stale
   heartbeat can no longer re-lease a job a successor reclaimed, and a retry
   can no longer resurrect a completed (terminal) job; the claim script sweeps
@@ -597,13 +597,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   awaits its last in-flight heartbeat before the terminal transition;
   enqueue now fails loud on `undefined` payload members; the LibSQL job store
   gained a `(state, lease_expires_at)` reclaim index.
-- `@ndigo/redis/locks` (AD-73 review): `close()` now releases the driver's own
+- `@ndigo/redis/locks`: `close()` now releases the driver's own
   leases (token-checked, in-process parity), and only a successful acquire
   advances the fencing-token counter (consecutive tokens on both drivers).
 
 ### Added
 
-- `@ndigo/telemetry-node` + `@ndigo/management` (AD-77): Prometheus metrics —
+- `@ndigo/telemetry-node` + `@ndigo/management`: Prometheus metrics —
   `metricExporter: 'prometheus'` (metric signal only) registers a pull
   `PrometheusMetricReader` over the SDK `MeterProvider`; the management
   `/metrics` endpoint serves the same snapshot two ways — the Prometheus
@@ -616,7 +616,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   snapshot model + renderers in `@ndigo/telemetry`; the telemetry lab gains
   `NDIGO_TELEMETRY_METRIC_EXPORTER=prometheus`.
 
-- `@ndigo/management` (AD-76): actuator parity — `/loggers` (level index,
+- `@ndigo/management`: actuator parity — `/loggers` (level index,
   per-logger reads, and live `POST` level changes backed by a per-name
   registry in `@ndigo/log`), `/env` (property sources with origins,
   redacted values by default, `showValues` opt-in that never serves
@@ -625,13 +625,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   health groups + single-component reads under `/health/<name>`. The new
   endpoints are **opt-in** via `management.endpoints.exposure.include`
   (a real config-file read path — the HI-5 annotation flips for the
-  `management.*` read keys), with the AD-36 access-guard model extended to
+  `management.*` read keys), with the access-guard model extended to
   every management path. New guide 26.
 
 - `ndigo generate package --jobs` — wire the `@ndigo/jobs` dependency into a
   new package at generation time.
 
-- `@ndigo/jobs` (AD-72): durable job queues and the transactional outbox — the
+- `@ndigo/jobs`: durable job queues and the transactional outbox — the
   `JobDriver` SPI (lease-based at-least-once claims, attempts incremented at
   claim, expired leases reclaimed by the next `claim`, terminal `fail` with
   outcome telemetry/logs), the `JobQueue` producer facade, the `JobRunner`
@@ -655,16 +655,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   tooling, CI and docs. Seams: `MappingRegistry.entries()` /
   `getMappingEntries()` in `@ndigo/dispatcher`, and
   `declaredConfigurationProperties()` in `@ndigo/boot`; `apps/ndigo-api` gains
-  an `inspect` script (AD-70).
+  an `inspect` script.
 - Config JSON Schema (`@ndigo/boot/schema/application.schema.json`) for
   `config/application.json` and profile variants, including the `{cipher:…}`
   at-rest secret marker, wired into `.vscode/settings.json`; the environment
-  guide documents the `$schema` reference (AD-70).
+  guide documents the `$schema` reference.
 - `@ndigo/oxlint-plugin`: `no-unsafe-view-name-literal` (the view-name
   traversal guard) and `no-duplicate-mapping-path` (method-level duplicate
   registrations), both enabled as errors; the duplicate rule is off in specs,
-  where duplicate-registration fixtures are deliberate (AD-70).
-- Component integration contract (AD-69): islands can paint server content
+  where duplicate-registration fixtures are deliberate.
+- Component integration contract: islands can paint server content
   before any script runs — `IslandView({ shadowHtml })` emits
   `<template shadowrootmode="open">`, `hydrateIslands` adopts the
   browser-parsed shadow root and upgrades the element in place, and
@@ -673,20 +673,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   custom elements whose values submit as standard form data through the
   existing binding/Zod path. No UI library is bundled; the decision record
   defines the adoption checklist and the no-wrappers discipline.
-- Component library selection (AD-71): Web Awesome is the adopted library for
+- Component library selection: Web Awesome is the adopted library for
   the single reference integration — a dependency of `apps/ndigo-island` only
   (framework packages stay library-free). The island's add-item form uses its
   form-associated controls end-to-end: native `FormData` →
   `application/x-www-form-urlencoded` → `POST /items` → `dataBinderValue` +
   Zod → SSE push. Theming is the library's token stylesheet plus `--wa-*`
   overrides; first paint stays the DSD fallback pattern. Guide 21 documents
-  the workflow, and the AD-69 vetting checklist carries recorded results
+  the workflow, and the vetting checklist carries recorded results
   (Spectrum and Material Web ship no form-associated controls; FAST has no
   maintained component set).
 - `@ndigo/log` — dependency-light logging core (Logger contract,
   `getLogger`/`LoggerFactory`, console + OpenTelemetry appenders, severity
   mappings) extracted so framework internals can log without the telemetry
-  stack (AD-67).
+  stack.
 - `delay(ms)` — shared async delay helper in `@ndigo/util`, re-exported from
   `@ndigo/test` (replaces copy-pasted test helpers across packages) (HG-6).
 - Environment accessors `getEnv(name, fallback?)` / `isDevMode()` in
@@ -695,7 +695,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `@ndigo/dispatcher`: `registerArgumentResolvers()` and
   `passthroughArgumentValue()` exports (consolidated platform resolver
   utilities).
-- TOON support (AD-66): `MediaTypes.TEXT_TOON` media token and opt-in
+- TOON support: `MediaTypes.TEXT_TOON` media token and opt-in
   `application.toon` config files — `StandardConfigFileLoader` probes JSON
   first, then TOON (`format: 'auto' | 'json' | 'toon'`); the
   `@toon-format/toon` decoder is an optional peer, loaded lazily only when a
@@ -706,49 +706,47 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Framework core: application contexts, DI/factory with scopes and entry
   processors, profiles and typed configuration binding
   (`@configurationProperties`), placeholder resolution, CLI args, live
-  refresh and at-rest secret encryption (AD-11..17, AD-29).
+  refresh and at-rest secret encryption.
 - HTTP client: interceptor pipeline (retry, cache, error normalization,
   status, app-reset, trace headers, timeouts) and the composable body
-  transform pipeline with subpath exports (AD-01, AD-47, AD-49).
+  transform pipeline with subpath exports.
 - Dispatcher/routing: radix metadata handler mapping, per-source argument
   resolvers (query/path/header/body/cookie/session), whole-source data
   binding (`dataBinderValue`), `@requestPart` multipart JSON, matrix
-  parameter parity (AD-26, AD-27).
+  parameter parity.
 - Validation: Zod as the single runtime-schema primitive — `validatedBy`
   / `validatedBody` / `validatedQuery`, entity-derived schemas
-  (`insertSchemaForEntity`), structured validation issues (AD-07).
+  (`insertSchemaForEntity`), structured validation issues.
 - Node platform: `HTTPServer` + `NodeDispatcher`, view targets, static
   files (ETag/conditional GET, range, precompressed variants, SPA
   fallback), multipart streaming uploads, security headers, rate limiting,
-  trusted-proxy client IP (AD-05, AD-25, AD-26, AD-28, AD-33, AD-37, AD-60).
+  trusted-proxy client IP.
 - Auth & sessions: credentials auth with password encoders, OIDC
   authorization-code + PKCE, JWTs, role guards, HttpOnly cookie sessions,
-  durable LibSQL sessions (AD-33, AD-40, AD-56).
+  durable LibSQL sessions.
 - Persistence: decorator entity ORM with Drizzle adapter, relation fetch,
   journaled migrations, durable queue message store; opt-in Redis shared
-  cache and live cross-node WebSocket/STOMP fan-out (AD-30, AD-31, AD-40).
+  cache and live cross-node WebSocket/STOMP fan-out.
 - Caching: awaitable `Cache`/`CacheManager` (`@ndigo/cache`), `@cached`
-  decorator, `memoize`, Redis backend (AD-24, AD-39, AD-40).
-- Scheduling: `@scheduled` decorator with single-flight engine (AD-20);
-  distributed scheduling explicitly deferred (AD-41).
+  decorator, `memoize`, Redis backend.
+- Scheduling: `@scheduled` decorator with single-flight engine;
+  distributed scheduling explicitly deferred.
 - Content/i18n: `MessageSource` contract, i18next adapter, Intl formatters,
-  locale negotiation (AD-19).
+  locale negotiation.
 - WebSockets & STOMP: session registry with rooms/heartbeat, isomorphic
-  client with reconnect, STOMP 1.2 broker/client (AD-21..23).
-- Server push: SSE-first island reactivity (AD-09).
-- Signals: `@ndigo/signals` reactive state on `@preact/signals-core`
-  (AD-59).
+  client with reconnect, STOMP 1.2 broker/client.
+- Server push: SSE-first island reactivity.
+- Signals: `@ndigo/signals` reactive state on `@preact/signals-core`.
 - Micro-frontends: host runtime, feature contexts with event-gateway
-  isolation, route partitioning, shared-dependency contract (AD-18, AD-54,
-  AD-62).
+  isolation, route partitioning, shared-dependency contract.
 - Resilience: `@ndigo/proxy` method interception with retry + circuit
-  breaker (`@ndigo/resilience`) (AD-42, AD-43).
+  breaker (`@ndigo/resilience`).
 - Observability: OpenTelemetry tracing/metrics/logging with Node and web
-  instrumentations (AD-32).
+  instrumentations.
 - API docs: OpenAPI 3.0.3 generation from dispatch metadata + Swagger UI,
-  DTO/schema-target conversion (AD-35, AD-38).
+  DTO/schema-target conversion.
 - Tooling: `@ndigo/test` integration harness (bootNodeApp/MockHTTP), oxlint
-  plugin architectural rules (AD-45, AD-46, AD-63).
+  plugin architectural rules.
 - Example applications `08`–`19`: `08-ndigo-httpbin` (HTTP semantics
   playground), `09-ndigo-todobackend` (Todo-Backend REST spec + CORS/HEAD/
   OPTIONS), `10-ndigo-conduit-api` (RealWorld API, JWT + spec-exact error
@@ -766,21 +764,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   requires a clean SIGTERM exit and a released port; wired into the CI quality
   lane.
 
-- `@ndigo/locks` (AD-73): distributed locks with **fencing tokens** — the
+- `@ndigo/locks`: distributed locks with **fencing tokens** — the
   `LockDriver` SPI (non-blocking `acquire` with lease TTLs, monotonic per-key
   tokens where only the current token can `renew`/`release`/`isHeld`), the
   process-wide `InProcessLockDriver` (single-node truth — every driver in the
   process coordinates, zero config), and the `LOCK_DRIVER` context token.
-- `@ndigo/redis/locks` (AD-73): `RedisLockDriver` — Lua `SET NX PX` acquire +
+- `@ndigo/redis/locks`: `RedisLockDriver` — Lua `SET NX PX` acquire +
   compare-and-delete release, one namespace per environment, borrowed
   connection. Cross-process single-executor for multi-node deployments.
-- `@ndigo/cli` (AD-75): the `ndigo` binary — `serve` (with the AD-74
+- `@ndigo/cli`: the `ndigo` binary — `serve` (with the
   `--cluster <n>` surface and `--port` derivation), `dev`, `generate`
-  (fronting `@ndigo/generators`), `db:migrate`, `inspect` (the AD-70
+  (fronting `@ndigo/generators`), `db:migrate`, `inspect` (the manifest
   entry), and `doctor` (environment diagnostics). Built on `@oclif/core`
   ^5 as an embedded library; scripts run shell-free so SIGTERM/SIGINT
   reach the actual application process.
-- `@ndigo/cluster` (AD-74): the process supervisor — `ClusterRunner` spawns N
+- `@ndigo/cluster`: the process supervisor — `ClusterRunner` spawns N
   replicated worker slots (`NDIGO_CLUSTER_SLOT`/`SIZE`, `PORT = base + slot`
   derivation), relays `SIGINT`/`SIGTERM` into each child's own graceful
   shutdown (shared deadline, `SIGKILL` stragglers), respawns crashed slots
@@ -788,7 +786,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   per slot, and aborts on a second signal; `runCluster()` runs one cluster
   to completion. The `node:child_process` spawner and `process` signal host
   are injectable seams for embeddings and tests.
-- `@scheduled({ lock })` (AD-73): one node executes each fire of a locked
+- `@scheduled({ lock })`: one node executes each fire of a locked
   schedule — the runner acquires before the run and releases in the `finally`
   (contended fires skip with a logged warning; `lockWait`/`lockWaitStep`/
   `lockTtl` tune the waiting, polling, and lease duration). `lockDriver` entry
@@ -820,7 +818,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `@oxlint/plugins` `^1.87.0`, `oxfmt` `^0.72.0` (`oxlint-tsgolint` was
   already current). oxfmt 0.72's native Markdown formatter (upstream breaking
   change) reformatted 31 docs — wrapped-prose indentation only. The tools
-  AD-58 left unadopted were re-assessed at oxc 0.153: standard-decorator
+  left unadopted were re-assessed at oxc 0.153: standard-decorator
   lowering is still absent (and `legacy` mode mis-invokes TC39 decorators), so
   `tsc -b` and the esbuild decorator pre-transform stand; oxc-parser is mature
   but unnecessary, oxc-minify/oxc-resolver have no consumer.
@@ -831,7 +829,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   3000 → 3003 and `ndigo-hello-node`'s default 3000 → 3010; the port registry
   lives in `apps/README.md`. Lockfile importers, CI artifact paths, lint
   ignores and all doc links were swept with the rename.
-- Example-app practice sweep (guides + AD-67): every app imports `getLogger`
+- Example-app practice sweep (guides): every app imports `getLogger`
   from the `@ndigo/log` leaf instead of `@ndigo/telemetry`, and the twelve apps
   that only log dropped their `@ndigo/telemetry` dependency; `03-ndigo-todo`
   boots `MetadataConfigApplicationContext` instead of the Node-oriented
@@ -851,8 +849,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   re-export them; the core dispatcher instrumentation gains the
   `_resolveViewName` span). The forked copies and the unused node
   `CountedInstrumentation` duplicate are removed.
-- Decorators migrated from legacy experimental to TC39 Stage 3 standard
-  (AD-44).
+- Decorators migrated from legacy experimental to TC39 Stage 3 standard.
 - Conditional auto-configuration decorators renamed `@conditionalOn*` →
   `@when*`: `@whenBrowser`, `@whenNode`, `@whenProperty`,
   `@whenProfile`, `@whenMissingEntry`; options interface now
@@ -860,22 +857,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   rename (`boot:whenPlatform`, `boot:whenProperty`, `boot:whenProfile`,
   `boot:whenMissingEntry`) — code reading the old `boot:conditionalOn*`
   keys must be updated.
-- Cache API became fully awaitable, including `size()` (AD-39).
-- `@ndigo/reactive` modernized into `@ndigo/signals` (AD-59).
+- Cache API became fully awaitable, including `size()`.
+- `@ndigo/reactive` modernized into `@ndigo/signals`.
 - Toolchain migrated from ESLint/Prettier to oxlint/oxfmt; `tsc -b` build
-  retained (AD-58).
+  retained.
 - Single-`Application` boot model; JSON-config loading and conditional
-  browser/node boots (AD-03, AD-05).
+  browser/node boots.
 
 ### Removed
 
-- `@ndigo/telemetry`'s `./logger` subpath — use `@ndigo/log` (AD-67).
+- `@ndigo/telemetry`'s `./logger` subpath — use `@ndigo/log`.
 - Legacy validation: `@ndigo/validate` constraint system and
-  `@ndigo/model`/objectmodel, replaced by Zod (AD-07).
-- `@ndigo/domain` MVVM layer, archived (AD-02 supersession).
+  `@ndigo/model`/objectmodel, replaced by Zod.
+- `@ndigo/domain` MVVM layer, archived.
 - `@ndigo/parser` (dissolved into `@ndigo/core`) and the Ramda/Arcsecond
-  dependencies (AD-57).
-- `SiteBuilder` stub and the legacy Site/Page model remnants (AD-03).
+  dependencies.
+- `SiteBuilder` stub and the legacy Site/Page model remnants.
 
 ### Fixed
 
@@ -925,7 +922,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Refresh-scoped entries with `destroy()`/`close()` now tear down when the
   refresh scope clears on environment refresh (`config:refresh`): the
   container registers the destruction callback at creation time, exactly once
-  per instance (AD-29).
+  per instance.
 - Conditional sources are now gated consistently: an inactive
   `@whenBrowser`/`@whenNode`/`@whenProperty`/… `@configurationProperties`
   class no longer binds, no longer rebinds on refresh, and no longer
@@ -1099,8 +1096,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Cookie attribute writing truncates values at the first `;` and rejects
   `;`/CR/LF in attribute names (SE-11).
 - Security headers default-on in `NodeAutoConfiguration` (CSP, HSTS,
-  X-Frame-Options, nosniff, …) (AD-25).
+  X-Frame-Options, nosniff, …).
 - Rate limiting with fixed-window limiter and real client IP behind
-  trusted proxies (AD-33, AD-37).
-- At-rest secret encryption via `{cipher:...}` markers, AES-256-GCM
-  (AD-29).
+  trusted proxies.
+- At-rest secret encryption via `{cipher:...}` markers, AES-256-GCM.

@@ -1,5 +1,5 @@
 /**
- * Runtime proxy generator for declarative service clients (AD-08).
+ * Runtime proxy generator for declarative service clients.
  */
 import { SpanKind, SpanStatusCode, trace } from '@opentelemetry/api';
 import { HTTP, HTTPInit } from '@ndigo/http';
@@ -64,7 +64,7 @@ export function resolveCallBody(method: string, args: unknown[]): unknown {
 /**
  * Executes a `stream: true` call: performs the HTTP request, decodes the
  * response body chunks as they arrive, and yields each parsed Server-Sent
- * Event (AD-09). With a declared `responseSchema`, each event's `data` payload
+ * Event. With a declared `responseSchema`, each event's `data` payload
  * is validated and the typed value is yielded instead of the raw event.
  *
  * @param config - The service config (name used in error messages).

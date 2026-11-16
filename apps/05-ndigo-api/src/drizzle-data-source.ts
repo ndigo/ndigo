@@ -4,7 +4,7 @@
  * The demo reads `NDIGO_DB_URL` (a relative URL resolves against the process
  * CWD), defaulting to a file next to this module
  * (`apps/05-ndigo-api/data/ndigo-api.db`, gitignored) so journaled migrations
- * and the routed store share one durable database (AD-78). The instance is
+ * and the routed store share one durable database. The instance is
  * created lazily on first use so integration tests can pin `NDIGO_DB_URL`
  * before any request touches it.
  */

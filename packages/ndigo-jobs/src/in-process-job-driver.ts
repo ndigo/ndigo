@@ -34,7 +34,7 @@ export interface InProcessJobDriverOptions {
  *
  * **Not durable**: jobs vanish with the process. It is the zero-wiring default
  * for development and tests; register a durable driver (`LibSQLJobStore`,
- * `RedisJobDriver`) for work that must survive a restart (AD-72 D-1).
+ * `RedisJobDriver`) for work that must survive a restart.
  *
  * Payloads round-trip through JSON like every driver, so handlers see the
  * same shape they would after a restart.
@@ -159,7 +159,7 @@ export class InProcessJobDriver implements JobDriver {
      */
     async fail(id: JobId, lastError: string): Promise<void> {
         this.#assertOpen();
-        void lastError; // terminal errors surface through telemetry/logs, not storage (AD-72 D-2)
+        void lastError; // terminal errors surface through telemetry/logs, not storage
         this.#jobs.delete(id);
     }
 

@@ -1,5 +1,5 @@
 /**
- * `@toolMapping` — declarative MCP tool metadata (AD-96 P3).
+ * `@toolMapping` — declarative MCP tool metadata ( P3).
  *
  * Passive metadata, like `@whenFeature`: a `Symbol.metadata` key and a reader
  * for the MCP tool projector. The same handler remains a REST route; the

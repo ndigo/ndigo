@@ -66,7 +66,7 @@ export type CircuitState = 'closed' | 'open' | 'half-open';
 
 /**
  * The lab's projection of one method's circuit, mirroring the state machine
- * `CircuitBreakerInterceptor` documents (AD-43 D-5).
+ * `CircuitBreakerInterceptor` documents.
  */
 export interface CircuitSnapshot {
     /** The advised method name. */

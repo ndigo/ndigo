@@ -1,5 +1,5 @@
 /**
- * Migration-version probing for scaffold commands (AD-78 D-5).
+ * Migration-version probing for scaffold commands.
  *
  * Mirrors `@ndigo/orm-drizzle`'s loader filename contract — versions derive
  * from the `NNNN` prefix of `db/migrations/<NNNN>-<slug>.ts` files — so a

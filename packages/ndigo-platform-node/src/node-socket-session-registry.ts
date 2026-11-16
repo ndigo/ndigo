@@ -27,14 +27,14 @@ export type SocketBackpressurePolicy = {
     /**
      * `close` (default) — close the session with `1013` ("try again later",
      * the `SESSION_NOT_RELIABLE` convention): bounded memory, an explicit
-     * client-visible signal — the AD-22 client reconnects automatically.
+     * client-visible signal — the client reconnects automatically.
      * `drop` — silently skip fan-out to that session (ordered gaps for that
      * consumer only).
      */
     onOverflow: 'close' | 'drop';
 };
 
-/** Default policy: 1 MiB watermark, close on overflow (fail-closed, AD-21 D6). */
+/** Default policy: 1 MiB watermark, close on overflow (fail-closed). */
 const DEFAULT_BACKPRESSURE: SocketBackpressurePolicy = Object.freeze({
     maxBufferedBytes: 1_048_576,
     onOverflow: 'close',
@@ -83,7 +83,7 @@ export interface NodeSocketSessionRegistryOptions {
     /**
      * Heartbeat ping interval in milliseconds: the registry pings every open
      * session on this cadence and reaps sessions whose pong is missing past
-     * `idleTimeoutMs`. `null` disables the heartbeat (AD-21 D6 — enabled by
+     * `idleTimeoutMs`. `null` disables the heartbeat (enabled by
      * default at 30s).
      */
     heartbeatIntervalMs?: number | null;
@@ -107,7 +107,7 @@ export interface NodeSocketSessionRegistryOptions {
     onOverflow?: (event: SocketBackpressureEvent) => void;
     /**
      * Injectable clock for deterministic tests (the TaskScheduler clock
-     * precedent, AD-20). Defaults to `Date.now`.
+     * precedent). Defaults to `Date.now`.
      * @internal
      */
     now?: () => number;
@@ -144,7 +144,7 @@ export function resolveSocketRegistryOptions(
 }
 
 /**
- * Tracks live Node WebSocket sessions and fans out to them (AD-21 D3/D5/D6).
+ * Tracks live Node WebSocket sessions and fans out to them.
  *
  * Sessions are registered by the server adapter on connection and removed on
  * close. Every session auto-joins the set keyed by its endpoint path, so
@@ -321,7 +321,7 @@ export class NodeSocketSessionRegistry implements SocketSessionRegistry, AsyncCl
      * Start tracking a session. Adapter hook — not part of the dispatcher
      * contract: registers the transport for heartbeat pings and attaches the
      * pong bookkeeping. The session auto-joins the set keyed by its endpoint
-     * path (AD-21 D5). Idempotent.
+     * path. Idempotent.
      *
      * @param session - The session to track.
      * @param path - The endpoint path the session was upgraded at.
@@ -374,8 +374,8 @@ export class NodeSocketSessionRegistry implements SocketSessionRegistry, AsyncCl
      *
      * Strings are sent as text frames, `Uint8Array`/`ArrayBuffer` as binary
      * frames, any other value is JSON-encoded — parity with
-     * `SocketSession.send` (AD-23 D8). Best-effort fan-out: closed sessions
-     * are skipped and transport write errors are tolerated (AD-21 D5).
+     * `SocketSession.send`. Best-effort fan-out: closed sessions
+     * are skipped and transport write errors are tolerated.
      * Serialized once per fan-out; observers registered via
      * {@link addFanoutObserver} see the wire size without re-serializing.
      *
@@ -402,7 +402,7 @@ export class NodeSocketSessionRegistry implements SocketSessionRegistry, AsyncCl
 
     /**
      * Send a payload to every session in the named room
-     * (`session.join(room)` — AD-21 D5).
+     * (`session.join(room)`).
      *
      * @param room - The room name.
      * @param payload - The payload to send.
@@ -620,7 +620,7 @@ export class NodeSocketSessionRegistry implements SocketSessionRegistry, AsyncCl
                 }
                 if (policy.onOverflow === 'close') {
                     // 1013 "try again later" — bounded memory, explicit
-                    // client-visible signal; the AD-22 client reconnects
+                    // client-visible signal; the client reconnects
                     // with backoff. Close flows through the transport's
                     // close event → registry removal (no leaks). Memoized so
                     // broadcasts while the close handshake is pending don't
@@ -634,7 +634,7 @@ export class NodeSocketSessionRegistry implements SocketSessionRegistry, AsyncCl
         try {
             session.send(payload);
         } catch {
-            // Best-effort fan-out (AD-21 D5): a transport that fails mid-send
+            // Best-effort fan-out: a transport that fails mid-send
             // (raced close, buffer overrun) must not break the broadcast.
         }
     }

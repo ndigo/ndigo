@@ -8,7 +8,7 @@ import { bootNodeApp, MockHTTP } from '@ndigo/test';
 import { StaticController } from '@ndigo/platform-node';
 
 /**
- * Static HTTP semantics e2e (AD-28) through the real dispatcher: the
+ * Static HTTP semantics e2e through the real dispatcher: the
  * `StaticController` catch-all serves nested paths, conditional GETs return
  * 304, Range returns 206/416, variants compress, and SPA fallback resolves
  * client routes. The island demo serves its built `dist/`; this suite boots a
@@ -30,7 +30,7 @@ function bootStatic(dir: string): { mockHTTP: MockHTTP; close: () => void } {
     return { mockHTTP: new MockHTTP(app), close: app.close };
 }
 
-describe('ndigo-island static HTTP semantics (AD-28)', () => {
+describe('ndigo-island static HTTP semantics', () => {
     let mockHTTP: MockHTTP;
     let close: () => void;
     let dir: string;

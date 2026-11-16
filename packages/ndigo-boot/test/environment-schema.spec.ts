@@ -9,7 +9,7 @@ const schema = z.object({
     server: z.object({ port: z.coerce.number().min(1) }),
 });
 
-describe('boot environment validation (AD-17 D3)', () => {
+describe('boot environment validation', () => {
     test('validateWith fails boot with the aggregate report when invalid', async () => {
         @configuration
         class AppConfig {}

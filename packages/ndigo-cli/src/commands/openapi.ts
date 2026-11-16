@@ -5,7 +5,7 @@ import { buildCommand } from '@stricli/core';
 import { captureAppOnce, resolveAppDir, runAppOnce } from '../helpers/app-scripts.js';
 import { jsonFlag, writeJson } from './_output.js';
 
-const OPENAPI_HINT = 'add an "openapi" script that emits the spec (AD-70 manifest)';
+const OPENAPI_HINT = 'add an "openapi" script that emits the spec (manifest)';
 
 /**
  * The OpenAPI emission command.

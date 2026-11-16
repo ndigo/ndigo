@@ -1,5 +1,5 @@
 /**
- * Config-server demo (AD-29 Wave 3).
+ * Config-server demo.
  *
  * Serves `/api/config.json` — the self-served remote config document — and
  * `/api/config/remote` which reflects the LIVE resolved value from the

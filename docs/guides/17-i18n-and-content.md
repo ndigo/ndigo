@@ -222,7 +222,7 @@ signal-driven re-rendering.
   own styles and keep `dir` handling in the application.
 - i18next is the reference `MessageSource` backend; an ICU/`@formatjs` backend
   is an optional second implementation behind the same contract.
-- Locale persistence is cookie-only. The local-storage half of the AD-19
+- Locale persistence is cookie-only. The local-storage half of the
   design is deferred.
 - `@locale` handler-parameter injection is an explicit non-goal; read the
   negotiated locale from the request attributes or the view context instead.

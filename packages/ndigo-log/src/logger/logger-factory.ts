@@ -60,9 +60,9 @@ const DEFAULT_SETTINGS: Readonly<LoggerSettings> = {
 let settings: LoggerSettings = { ...DEFAULT_SETTINGS };
 
 /**
- * Per-name threshold overrides (AD-76 D-7): names and severities only — no
+ * Per-name threshold overrides: names and severities only — no
  * registry keeps handles alive, so lazy `ConfigurableLogger` handles stay
- * collectible (the AD-67 property). Changes bump {@link revision}.
+ * collectible (the property). Changes bump {@link revision}.
  */
 const levelOverrides = new Map<string, SeverityNumber>();
 
@@ -205,7 +205,7 @@ export class LoggerFactory {
      * - Type: `'console'`
      * - Threshold: `SeverityNumber.DEBUG`
      * - Context-aware: `true`
-     * - Per-name overrides and requested-name tracking: cleared (AD-76 D-7)
+     * - Per-name overrides and requested-name tracking: cleared
      */
     public static reset(): void {
         settings = { ...DEFAULT_SETTINGS };
@@ -227,7 +227,7 @@ export class LoggerFactory {
     }
 
     /**
-     * Sets a per-name threshold override (AD-76 D-7). Applies to every
+     * Sets a per-name threshold override. Applies to every
      * handle for the name — including ones handed out before this call —
      * and survives global `setThreshold` calls until cleared.
      * @param name - The logger name.
@@ -252,7 +252,7 @@ export class LoggerFactory {
     /**
      * The logger names known to the factory — ever requested through
      * {@link LoggerFactory.getLogger} plus any name with a level override
-     * (a `/loggers` POST names a logger without a handle, AD-76 D-7) —
+     * (a `/loggers` POST names a logger without a handle) —
      * sorted: the `/loggers` enumeration surface.
      * @returns The known logger names.
      */

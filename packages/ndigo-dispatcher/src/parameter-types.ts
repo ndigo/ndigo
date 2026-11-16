@@ -24,7 +24,7 @@ export type ParameterExtractor = {
     convert?: (value: unknown) => unknown;
     /**
      * The Zod schema backing {@link ParameterExtractor.convert}, when the
-     * extractor was produced by `validatedBy` (AD-35). Generation-time
+     * extractor was produced by `validatedBy`. Generation-time
      * introspection seam — the OpenAPI generator derives JSON Schema from it;
      * never read by the resolvers (they go through `convert`).
      */
@@ -239,12 +239,12 @@ export class MethodParameter implements Serializable {
     readonly prefix!: string | null;
     /**
      * Optional post-bind validator/converter applied to the resolved value.
-     * Set by {@link "zod-validated-by".validatedBy | validatedBy} (Zod-backed, AD-07).
+     * Set by {@link "zod-validated-by".validatedBy | validatedBy} (Zod-backed).
      */
     readonly convert!: ((value: unknown) => unknown) | undefined;
     /**
      * The Zod schema backing {@link MethodParameter.convert}, when the
-     * parameter was validated via `validatedBy` (AD-35). Generation-time
+     * parameter was validated via `validatedBy`. Generation-time
      * introspection seam for API docs; never used by resolution.
      */
     readonly schema!: z.ZodType<unknown> | undefined;

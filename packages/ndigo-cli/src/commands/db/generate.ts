@@ -1,6 +1,6 @@
 /**
  * `ndigo db generate` — generate the next migration from the application's
- * entity metadata (AD-78 D-2/D-5).
+ * entity metadata.
  *
  * Like `db migrate`, the generation assembly (entities, migrations dir,
  * snapshot path) belongs to the app: the CLI runs the app's declared

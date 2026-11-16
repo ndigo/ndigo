@@ -43,7 +43,7 @@ With `config/application.json`:
 The route is reachable while the flag is truthy; when it is `false`
 (plain explicit off) the route returns **404** (`urn:ndigo:not-found`) —
 the `DisabledFeaturesHandler` default. Because the provider is
-**read-through**, `environment.refresh()` (AD-29) flips flags live:
+**read-through**, `environment.refresh()` flips flags live:
 no cache, no restart.
 
 Programmatic checks (service methods, view logic):

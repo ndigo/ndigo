@@ -18,7 +18,7 @@ import type { ResilienceLab } from './resilience-lab';
  *
  * - `200 { ok: true, path, policy, upstreamAttempts, data }`.
  *
- * Failures are RFC 9457 problem documents (AD-10) carrying the same fields as
+ * Failures are RFC 9457 problem documents carrying the same fields as
  * extension members:
  *
  * - `502 { ok: false, …, error: { name, message } }` — the upstream failed and

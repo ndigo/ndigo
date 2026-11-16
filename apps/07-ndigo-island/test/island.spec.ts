@@ -12,7 +12,7 @@ import { TodoModelStore } from '../src/todo-model-store';
  * Hybrid island demo integration: the server renders a full shell document
  * containing the server-side island markup (`<todo-app data-ndigo-island
  * data-ndigo-model="…">`), serves the built client bundle that hydrates it,
- * and pushes source-of-truth model updates to islands over SSE (AD-09).
+ * and pushes source-of-truth model updates to islands over SSE.
  */
 
 describe('ndigo-island hybrid demo', () => {
@@ -90,7 +90,7 @@ describe('ndigo-island hybrid demo', () => {
         expect(body.length).toBeGreaterThan(1000);
     });
 
-    test('POST /items binds + validates the form body and updates the model (AD-71)', async () => {
+    test('POST /items binds + validates the form body and updates the model', async () => {
         const res = await mockHTTP
             .post('/items')
             .headers({ 'content-type': 'application/x-www-form-urlencoded' })
@@ -151,7 +151,7 @@ describe('ndigo-island hybrid demo', () => {
     });
 });
 
-describe('GET /events pushes model updates over SSE (AD-09)', () => {
+describe('GET /events pushes model updates over SSE', () => {
     let adapter: NodeHTTPServerAdapter;
     let base: string;
     let store: TodoModelStore;
@@ -303,7 +303,7 @@ describe('GET /events pushes model updates over SSE (AD-09)', () => {
         expect(text).toContain('"text":"Model update pushed from the server (3)"');
     });
 
-    test('a posted form item reaches connected clients over SSE (AD-71)', async () => {
+    test('a posted form item reaches connected clients over SSE', async () => {
         const res = await fetch(`${base}/events`);
         const body = res.body;
         if (body === null) {

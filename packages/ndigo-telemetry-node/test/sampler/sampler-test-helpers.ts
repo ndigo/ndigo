@@ -2,7 +2,7 @@
  * Shared helpers for the sampler scenario specs.
  *
  * OpenTelemetry's API registers a global trace provider ONCE per process
- * (later registrations are silently ignored — see AD-32), so every sampler
+ * (later registrations are silently ignored), so every sampler
  * scenario runs in its own spec file: one `configureTelemetry` call per
  * worker process, asserting recording decisions at span start.
  */

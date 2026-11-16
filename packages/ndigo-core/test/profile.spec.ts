@@ -1,12 +1,12 @@
 /**
- * Profile expression builder specs (AD-34 D5; re-homed with the builder —
- * AD-83). Config-gating integration for `@whenProfile` lives in
+ * Profile expression builder specs (re-homed with the builder).
+ * Config-gating integration for `@whenProfile` lives in
  * `@ndigo/context` (`test/when-profile.spec.ts`).
  */
 import { describe, test, expect } from 'vitest';
 import { Profile, ProfileTerm } from '../src/profile';
 
-describe('Profile builder (AD-34 D5)', () => {
+describe('Profile builder', () => {
     test('composes simple gates to canonical strings', () => {
         expect(String(Profile.and('dev', 'ci'))).toBe('dev & ci');
         expect(String(Profile.or('dev', 'ci'))).toBe('dev | ci');

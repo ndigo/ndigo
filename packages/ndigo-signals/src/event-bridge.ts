@@ -1,5 +1,5 @@
 /**
- * Bridges event occurrences and reactive state (AD-09): `eventsToSignal`
+ * Bridges event occurrences and reactive state: `eventsToSignal`
  * feeds a `Signal` from an emitter-shaped source, `signalToEvents`
  * re-emits a `Signal`'s changes as occurrences on an emitter-shaped sink.
  */

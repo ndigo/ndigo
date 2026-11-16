@@ -1,5 +1,5 @@
 /**
- * Helper unit specs (AD-75): directory resolution, script discovery, and
+ * Helper unit specs: directory resolution, script discovery, and
  * the pnpm argv the CLI runs — the command/process plumbing in isolation.
  */
 import { describe, test, expect, beforeAll } from 'vitest';

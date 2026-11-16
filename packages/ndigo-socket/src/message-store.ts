@@ -1,5 +1,5 @@
 /**
- * The `/queue` message store contract (D11 hardening, AD-24 direction).
+ * The `/queue` message store contract (D11 hardening, direction).
  *
  * The broker's durable store-and-forward substrate: an ordered, replayable
  * log of messages per destination. The interface is deliberately backend-

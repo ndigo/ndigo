@@ -6,7 +6,7 @@ import { MutablePropertySources } from '../src/property-sources';
 import { applyCustomizers } from '../src/customizer';
 import type { EnvironmentCustomizer } from '../src/customizer';
 
-describe('applyCustomizers (AD-16 D2)', () => {
+describe('applyCustomizers', () => {
     test('runs in registration order with each seeing the prior mutations', () => {
         const env = new StandardEnvironment();
         const order: string[] = [];
@@ -53,7 +53,7 @@ describe('applyCustomizers (AD-16 D2)', () => {
     });
 });
 
-describe('originOf (AD-16 D1)', () => {
+describe('originOf', () => {
     test('flat strategy reports the winning top-level source', () => {
         const registry = new MutablePropertySources();
         registry.addLast('application', { server: { port: 8080 } });
@@ -76,7 +76,7 @@ describe('originOf (AD-16 D1)', () => {
     });
 });
 
-describe('refresh (AD-16 D3)', () => {
+describe('refresh', () => {
     test('rebuilds after in-place source mutation (forced)', () => {
         const registry = new MutablePropertySources();
         registry.addLast('user', { a: 'one' });

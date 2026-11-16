@@ -1,5 +1,5 @@
 /**
- * OpenFeature specification vectors, adapted (AD-87).
+ * OpenFeature specification vectors, adapted.
  *
  * Transcribed from the spec's Appendix B scenarios (v0.9.0) for the
  * capability tags that constrain the bridge mapping — `@standard-reasons`,

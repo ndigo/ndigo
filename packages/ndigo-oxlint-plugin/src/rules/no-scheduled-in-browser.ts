@@ -10,7 +10,7 @@ const browserPlatformPattern = /^@ndigo\/(?:platform-web|view-webcomponent)(?:\/
 /**
  * Reports `@ndigo/scheduler` usage alongside browser-platform imports.
  *
- * Scheduling is Node-only (AD-20 D5.3): `@scheduled` throws in
+ * Scheduling is Node-only: `@scheduled` throws in
  * environments without `process`, so a file that imports the scheduler
  * where browser glue is also imported is a platform-misuse smell. The rule
  * is a heuristic — the runtime platform guard and the documentation carry
@@ -24,7 +24,7 @@ export const noScheduledInBrowser = {
         },
         messages: {
             scheduledInBrowser:
-                "Do not import '@ndigo/scheduler' in a browser-platform file — scheduled tasks run on the server only (@scheduled throws without a Node runtime; AD-20 D5). Move @scheduled classes to a Node application.",
+                "Do not import '@ndigo/scheduler' in a browser-platform file — scheduled tasks run on the server only (@scheduled throws without a Node runtime). Move @scheduled classes to a Node application.",
         },
         schema: [],
     } as const,

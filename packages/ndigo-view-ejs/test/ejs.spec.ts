@@ -99,7 +99,7 @@ describe('EJSTemplateEngine includes (DSV-EJS-1)', () => {
     });
 
     // No test pins an un-awaited include. The engine compiles templates in
-    // async mode (AD-39 D-4) and its `render` TSDoc documents the contract:
+    // async mode and its `render` TSDoc documents the contract:
     // templates MUST write `<%- await include(...) %>`, because an un-awaited
     // include interpolates the pending Promise as `[object Promise]`. That is
     // a template-author error, not supported behaviour — asserting the garbage

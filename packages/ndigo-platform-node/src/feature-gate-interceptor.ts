@@ -1,5 +1,5 @@
 /**
- * `@whenFeature` route-gate enforcement (AD-82 D-4): per request, when the
+ * `@whenFeature` route-gate enforcement: per request, when the
  * handler method (or its class) carries `@whenFeature` metadata, the flag
  * is evaluated via the `FLAG_EVALUATOR` entry; an off/errored flag denies
  * the route with a 404 problem document — the repository's
@@ -14,7 +14,7 @@
  * entry values are created while sources register — before an app's own
  * configuration registers its entries — so an eager capture would pin the
  * auto-configuration defaults and a `FLAG_EVALUATOR` or
- * `FLAG_CONTEXT_RESOLVER` entry override (the vendor-bridge recipe, AD-87)
+ * `FLAG_CONTEXT_RESOLVER` entry override (the vendor-bridge recipe)
  * would never reach the gate. `HTTPServer`'s late `getValue` resolution is
  * the precedent; the interceptor registers as an entry so the aware
  * processor injects the application context into it.
@@ -51,7 +51,7 @@ export interface FeatureGateInterceptorOptions {
 }
 
 /**
- * Enforces `@whenFeature` gates (AD-82): off flag → **404** problem
+ * Enforces `@whenFeature` gates: off flag → **404** problem
  * document (`urn:ndigo:not-found`), written before the denial finalizer so
  * the body survives.
  */
@@ -101,11 +101,11 @@ export class FeatureGateInterceptor implements RouteHandlerInterceptor, Applicat
             return true;
         }
 
-        // Never-throw evaluation (AD-82 D-2): a provider failure resolves
+        // Never-throw evaluation: a provider failure resolves
         // as the default (false) with reason ERROR — the gate is
         // fail-closed by posture. A flag that errors is a kill switch.
         // The context resolver seeds the targeting key (session principal,
-        // else the AD-37 client address) so percentage rollouts (the local
+        // else the client address) so percentage rollouts (the local
         // provider's `feature.rollout.*` channel) bucket per requester.
         const evaluation = await this.#evaluator().evaluate<boolean>(
             flag,

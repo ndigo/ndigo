@@ -151,7 +151,7 @@ describe('MockEnvironment', () => {
     });
 });
 
-describe('config:refresh event (AD-29 D-1)', () => {
+describe('config:refresh event', () => {
     test('emits config:refresh exactly once per refresh()', () => {
         const env = new StandardEnvironment();
         const listener = vi.fn();

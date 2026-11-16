@@ -1,5 +1,5 @@
 /**
- * Method-interception demo gate (AD-42 D-8): boots the REAL ndigo-api
+ * Method-interception demo gate: boots the REAL ndigo-api
  * bootstrap path (same assembly as `src/index.ts`) and proves a
  * container-managed `@audited` interceptor advises a constructor-created
  * entry while leaving plain methods and private state untouched.
@@ -20,7 +20,7 @@ import { AuditInterceptor } from '../src/audit-interceptor';
 import { OrderService } from '../src/order-service';
 import { initAuth } from '../src/auth-store';
 
-describe('ndigo-api method interception demo gate (AD-42 D-8)', () => {
+describe('ndigo-api method interception demo gate', () => {
     let context: ConfigurableApplicationContext;
     let audit: AuditInterceptor;
     let orders: OrderService;

@@ -2,8 +2,8 @@
  * Converts strings to PascalCase.
  *
  * Inlined from the former toCamel/removeNonWord/replaceDiacritics helpers
- * (pruned in AD-84 follow-up): toPascal is the only retained string case
- * converter in the util package (see AD-84 D2).
+ * (pruned in follow-up): toPascal is the only retained string case
+ * converter in the util package.
  */
 
 const accented = /[\xC0-\xFF\u0152\u0153\u0160\u0161\u0178\u0192\uA732\uA733]/g,

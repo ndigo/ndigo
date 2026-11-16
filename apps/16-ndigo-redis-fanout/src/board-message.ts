@@ -44,7 +44,7 @@ export function boardMessage(from: string, text: string): BoardMessage {
 
 /**
  * Normalizes an inbound socket frame to text: text frames arrive as strings,
- * binary frames as bytes (AD-23 D8).
+ * binary frames as bytes.
  *
  * @param message - The value the session's `messages` iterable yielded.
  * @returns The decoded text (`''` for a payload neither shape describes).

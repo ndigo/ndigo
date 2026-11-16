@@ -32,7 +32,7 @@ metricsPanel.aggregator = composition.featureMetrics;
 metricsPanel.routeHandledRateAlertThreshold = 5;
 document.body.appendChild(metricsPanel);
 
-// ── Reactive locale switcher (AD-19 demo): changeLocale → cookie + signal ──
+// ── Reactive locale switcher: changeLocale → cookie + signal ──
 const localeSwitcher = document.createElement('locale-switcher') as HTMLElement & {
     messages?: unknown;
 };

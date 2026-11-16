@@ -13,7 +13,7 @@ import './components/shell-component';
 // the console exporter is the default dev posture.
 configureBrowserTelemetry({ serviceName: 'ndigo-views' });
 
-// Lifecycle preset (AD-90): builds the container (WebAutoConfiguration +
+// Lifecycle preset: builds the container (WebAutoConfiguration +
 // ViewsAppConfiguration + ViewsTargetingConfiguration), wires the router,
 // dispatcher, and DOM view target, registers the runtime tokens, and navigates
 // to the URL's current route. The targeting configuration is what places

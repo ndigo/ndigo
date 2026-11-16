@@ -1,6 +1,6 @@
 /**
  * Serves dynamic log-level inspection and changes under `/loggers`
- * (AD-76 D-7). Registered WITHOUT route decorators — the auto-configuration
+ *. Registered WITHOUT route decorators — the auto-configuration
  * wires the routes explicitly so exposure can gate them.
  */
 import { AsApplicationContextAware, type ApplicationContext } from '@ndigo/context';
@@ -19,7 +19,7 @@ const LOGGER_BODY_SCHEMA = z.object({
 
 /**
  * Serves `/loggers`: the level index, per-logger reads, and per-logger
- * level changes (runtime, process-local — lost on restart, AD-76 D-7).
+ * level changes (runtime, process-local — lost on restart).
  *
  * Payloads follow the actuator loggers endpoint: the index is
  * `{ levels, loggers: { <name>: { configuredLevel?, effectiveLevel } } }`,
@@ -38,7 +38,7 @@ export class LoggersController extends AsApplicationContextAware(Null) {
     /**
      * Creates the `/loggers` controller.
      *
-     * @param exposure - The programmatic exposure override (AD-76 D-5);
+     * @param exposure - The programmatic exposure override;
      *   wins over the `management.*` source section.
      */
     constructor(exposure: { include?: string[]; exclude?: string[] } = {}) {
@@ -46,7 +46,7 @@ export class LoggersController extends AsApplicationContextAware(Null) {
         this.#exposure = exposure;
     }
 
-    /** Whether the `loggers` endpoint is served (AD-76 D-2). */
+    /** Whether the `loggers` endpoint is served. */
     #exposed(): boolean {
         return isEndpointExposed(this.applicationContext?.environment, this.#exposure, 'loggers');
     }
@@ -109,7 +109,7 @@ export class LoggersController extends AsApplicationContextAware(Null) {
     }
 
     /**
-     * Sets or clears a logger's level (AD-76 D-7). A body with
+     * Sets or clears a logger's level. A body with
      * `configuredLevel` sets a per-name override; an empty body clears it.
      * Invalid level names fail validation with 400.
      *

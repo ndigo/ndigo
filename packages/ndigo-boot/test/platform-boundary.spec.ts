@@ -15,8 +15,8 @@ import { join } from 'node:path';
  * (static or re-exported) under `src/`. Test files reach the platform sources
  * relatively (`../../ndigo-platform-node/src/…`) instead of naming them in
  * the manifest: any dependency entry — of any kind — puts the edge in the Nx
- * task graph, and `@ndigo/platform-node` depends on `@ndigo/boot` (AD-90), so
- * the build would fail on the cycle (AD-67's acyclicity gate).
+ * task graph, and `@ndigo/platform-node` depends on `@ndigo/boot`, so
+ * the build would fail on the cycle ('s acyclicity gate).
  */
 
 const SRC_ROOT = join(import.meta.dirname, '..', 'src');

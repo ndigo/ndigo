@@ -1,5 +1,5 @@
 /**
- * App generator (AD-85): scaffolds an example application under
+ * App generator: scaffolds an example application under
  * `apps/NN-ndigo-<slug>` — the in-repo counterpart of the future
  * `create-ndigo-app` flow. Templates are extracted from the minimal
  * reference apps (`01-ndigo-hello` for the browser kind,
@@ -93,7 +93,7 @@ export default async function appGenerator(tree: Tree, schema: AppGeneratorSchem
     });
 
     // Presets layer extra files on top of the kind scaffold: `api` adds an
-    // entity and a database adapter runner (AD-96).
+    // entity and a database adapter runner.
     if (preset === 'api') {
         generateFiles(tree, join(__dirname, 'presets', 'api'), appDir, {
             name,

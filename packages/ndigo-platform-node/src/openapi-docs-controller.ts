@@ -1,5 +1,5 @@
 /**
- * Serves the generated OpenAPI specification document (AD-35 D-5).
+ * Serves the generated OpenAPI specification document.
  *
  * Registered **without** decorator metadata: the docs auto-configuration
  * registers the route at construction with per-instance paths. Dispatch

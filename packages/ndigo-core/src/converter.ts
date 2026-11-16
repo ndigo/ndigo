@@ -275,7 +275,7 @@ function sourceTypeOf(source: unknown): unknown {
 
 /**
  * Central type-conversion service (modelled on the classic `ConversionService`,
- * extended with schema targets — AD-38).
+ * extended with schema targets).
  *
  * Provides a unified API for registering, looking up, and executing type
  * conversions at runtime: leaf conversions (string ↔ typed, constructor

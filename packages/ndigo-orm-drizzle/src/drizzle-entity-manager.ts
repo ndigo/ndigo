@@ -52,7 +52,7 @@ export class DrizzleEntityManager {
         // validation — matching the in-memory manager's order.
         runLifecycleHooks(entity, exists ? 'preUpdate' : 'prePersist');
 
-        // Validate against the Zod schema derived from @column metadata (AD-07).
+        // Validate against the Zod schema derived from @column metadata.
         validateEntity(entityClass, entity);
 
         const colNames: string[] = [];

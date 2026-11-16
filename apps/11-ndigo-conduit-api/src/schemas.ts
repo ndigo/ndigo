@@ -1,7 +1,7 @@
 /**
  * Request schemas for the Conduit API.
  *
- * These are the framework's Zod validation contracts (AD-07) bound through
+ * These are the framework's Zod validation contracts bound through
  * `validatedBody`/`validatedQuery`: failures never reach a handler, and the
  * app's `ConduitValidationErrorResolver` renders them as the RealWorld
  * `{errors:{field:[…]}}` envelope. Messages are authored here so they match

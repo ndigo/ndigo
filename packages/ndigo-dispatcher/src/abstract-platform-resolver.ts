@@ -62,7 +62,7 @@ export abstract class AbstractPlatformArgumentResolver extends AbstractNamedValu
      * Pipeline: resolveName → defaultValue fallback → convertType lookup → conversion → extractor validation → nil check.
      *
      * The `parameter.convert` hook (installed by `validatedBy` for Zod
-     * validation, AD-07) runs after type conversion so schemas see coerced
+     * validation) runs after type conversion so schemas see coerced
      * values. Without this invocation the hook was dead on every resolver
      * extending this base — only the BIND path invoked it.
      *
@@ -172,7 +172,7 @@ export abstract class AbstractPlatformArgumentResolver extends AbstractNamedValu
             mapping
         );
 
-        // Post-bind validation/conversion (e.g. Zod via validatedBy, AD-07).
+        // Post-bind validation/conversion (e.g. Zod via validatedBy).
         let validatedValue = parameter.convert ? parameter.convert(convertedValue) : convertedValue;
 
         if (instance && validatedValue !== convertedValue && validatedValue && typeof validatedValue === 'object') {

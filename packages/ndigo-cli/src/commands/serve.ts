@@ -1,5 +1,5 @@
 /**
- * `ndigo serve` — run the application under the AD-74 supervisor: every
+ * `ndigo serve` — run the application under the supervisor: every
  * `SIGINT`/`SIGTERM` relays to the app (which runs its own graceful
  * shutdown); `--cluster <n>` replicates it across N worker slots with slot
  * env and `PORT` derivation.
@@ -53,7 +53,7 @@ export const serveCommand = buildCommand({
         },
     },
     docs: {
-        brief: 'Run the application with the cluster process lifecycle (AD-74)',
+        brief: 'Run the application with the cluster process lifecycle',
         fullDescription:
             "Runs the application's scripts.start (package.json + scripts.start at the " +
             'directory argument) under the @ndigo/cluster supervisor: signals relay ' +

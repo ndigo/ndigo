@@ -278,7 +278,7 @@ describe('CredentialsAuthAdapter', () => {
         await expect(adapter.logoutAll('alice')).resolves.toEqual({ sessions: 0, tokenVersion: 2 });
     });
 
-    test('logoutAll revokes outstanding JWTs of the account through the shared user store (AD-68)', async () => {
+    test('logoutAll revokes outstanding JWTs of the account through the shared user store', async () => {
         const { adapter, users } = buildAdapter();
         const jwt = new JWTAdapter({
             issuer: 'https://auth.example.com',

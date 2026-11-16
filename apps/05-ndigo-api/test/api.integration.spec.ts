@@ -8,7 +8,7 @@ import { DrizzleNote } from '../src/drizzle-note.entity';
 import { getDrizzleDataSource } from '../src/drizzle-note-controller';
 import type { NoteDTO } from '../src/note.dto';
 
-// AD-78: the demo data source is file-backed by default; tests pin the
+// The demo data source is file-backed by default; tests pin the
 // in-process store so runs never touch the working tree's `data/` dir
 // (the data source is created lazily on first request).
 process.env.NDIGO_DB_URL = ':memory:';
@@ -84,7 +84,7 @@ describe('ndigo-api through @ndigo/test', () => {
             .headers({ 'content-type': 'application/json' })
             .body({ username: 'bob', password: 'wrong' })
             .exec();
-        // AD-10 / RFC 9110 §15.5.2: authentication failure is 401, not 400.
+        // RFC 9110 §15.5.2: authentication failure is 401, not 400.
         expect(res.response.status).toBe(401);
         // Handler-returned errors wrap to an about:blank problem (no `type`).
         expect(res.json()).toMatchObject({
@@ -94,7 +94,7 @@ describe('ndigo-api through @ndigo/test', () => {
         });
     });
 
-    test('in-memory notes project to the DTO shape (AD-38)', async () => {
+    test('in-memory notes project to the DTO shape', async () => {
         const login = await mockHTTP
             .post('/auth/login')
             .headers({ 'content-type': 'application/json' })
@@ -143,7 +143,7 @@ describe('ndigo-api through @ndigo/test', () => {
         expect(created.note?.id).toBeGreaterThan(0); // generated PK read back from SQL
         expect(created.note?.title).toBe('SQL Note');
         expect(created.note?.createdAt).toBeDefined(); // @prePersist filled it
-        expect(created.note?.summary).toBe('persisted via libSQL'); // AD-38 projection
+        expect(created.note?.summary).toBe('persisted via libSQL'); // projection
         expect('body' in (created.note ?? {})).toBe(false); // entity columns never reach the wire
 
         const list = await mockHTTP
@@ -152,7 +152,7 @@ describe('ndigo-api through @ndigo/test', () => {
             .exec();
         const { notes } = list.json() as { notes?: NoteDTO[] };
         expect(notes?.some((n) => n.title === 'SQL Note')).toBe(true);
-        expect(notes?.some((n) => typeof n.summary === 'string')).toBe(true); // AD-38 projection
+        expect(notes?.some((n) => typeof n.summary === 'string')).toBe(true); // projection
         expect('body' in (notes?.[0] ?? {})).toBe(false);
     });
 
@@ -195,7 +195,7 @@ describe('ndigo-api through @ndigo/test', () => {
         const { note } = byId.json() as { note?: NoteDTO };
         expect(note?.id).toBe(seeded.id);
         expect(note?.title).toBe('Seeded SQL Note');
-        expect(note?.summary).toBe('from adapter'); // AD-38: body projected into summary
+        expect(note?.summary).toBe('from adapter'); // body projected into summary
         expect('body' in (note ?? {})).toBe(false);
 
         // Missing id → not found
@@ -224,7 +224,7 @@ describe('ndigo-api through @ndigo/test', () => {
 
         // Empty title violates the entity column's z.string().min(1) — the
         // derived insert schema (insertSchemaForEntity + validatedBody) must
-        // reject it with a 422 validation-failed problem document (AD-10)
+        // reject it with a 422 validation-failed problem document
         // before any SQL write, carrying the structured issues (Phase 4A).
         const bad = await mockHTTP
             .post('/drizzle/notes')

@@ -1,5 +1,5 @@
 /**
- * Versioned schema migrations for Drizzle data sources (AD-30): applies
+ * Versioned schema migrations for Drizzle data sources: applies
  * code-composed `Migration[]` in ascending version order, journaled in
  * `_ndigo_migrations`, applied outside any explicit transaction (see
  * {@link Migration.up} for the `batch()` constraint).
@@ -74,7 +74,7 @@ const JOURNAL_DDL = `CREATE TABLE IF NOT EXISTS "${JOURNAL_TABLE}" (
 )`;
 
 /**
- * Journaled, forward-only schema migration runner (AD-30).
+ * Journaled, forward-only schema migration runner.
  *
  * `migrate()` applies every pending migration in ascending version order
  * and journals each application in `_ndigo_migrations`; `status()` reports

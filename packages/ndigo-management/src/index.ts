@@ -1,6 +1,6 @@
 /**
  * Ndigo management endpoints — actuator-style `/health`, `/metrics`,
- * `/loggers`, `/env` and `/configprops` (AD-76).
+ * `/loggers`, `/env` and `/configprops`.
  */
 export { HealthRegistry, HEALTH_ERROR_REDACTED } from './health';
 export type { HealthRegistryOptions, HealthState, HealthResult, HealthIndicator, HealthStatus } from './health';

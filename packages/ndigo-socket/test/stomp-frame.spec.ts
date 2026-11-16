@@ -1,5 +1,5 @@
 /**
- * STOMP 1.2 frame codec tests (AD-23 Phase 0).
+ * STOMP 1.2 frame codec tests.
  *
  * Covers round-trip serialization, all four header-value escapes (and the
  * fatal undefined ones), `content-length` framing (including NUL inside
@@ -226,7 +226,7 @@ describe('serializeStompFrame', () => {
     });
 });
 
-describe('parseStompFrame binary (AD-23 D8)', () => {
+describe('parseStompFrame binary', () => {
     const ascii = (text: string): Uint8Array => new TextEncoder().encode(text);
 
     test('parses a binary frame with a NUL-containing binary body', () => {
@@ -266,7 +266,7 @@ describe('parseStompFrame binary (AD-23 D8)', () => {
     });
 });
 
-describe('serializeStompFrame binary (AD-23 D8)', () => {
+describe('serializeStompFrame binary', () => {
     test('serializes a binary body to bytes with content-length', () => {
         const wire = serializeStompFrame({ command: 'MESSAGE', headers: {}, body: new Uint8Array([1, 2, 0, 3]) });
         expect(wire).toBeInstanceOf(Uint8Array);

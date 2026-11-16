@@ -50,7 +50,7 @@
  *  13. Publishable surface: every directory under `packages/` is a consumer
  *      package — a `package.json` must exist, must not be `private: true`,
  *      and must carry the consumer artifacts (legacy contract + docs
- *      standard) (AD-86).
+ * standard).
  *
  * Run: `node scripts/check-manifests.mjs` (wired into `pnpm manifest:check`
  * and `.github/workflows/ci.yml`).
@@ -86,7 +86,7 @@ const PEER_ALLOWLIST = {
         '@ndigo/redis',
     ],
     '@ndigo/telemetry-web': ['@ndigo/auth-client'],
-    // Asset-only runtime feature dep for the OpenAPI docs UI (see AD-35):
+    // Asset-only runtime feature dep for the OpenAPI docs UI:
     // the platform serves the files but code never imports the module.
     '@ndigo/platform-node': ['swagger-ui-dist'],
     // Node-only capability subpaths: connection-only consumers need none of these.
@@ -98,11 +98,11 @@ const PEER_ALLOWLIST = {
         '@ndigo/rate-limit',
         '@ndigo/socket',
     ],
-    // OPTIONAL peer (AD-66): .toon config files decode through a lazy
+    // OPTIONAL peer:.toon config files decode through a lazy
     // variable-specifier dynamic import; consumers who never use TOON
     // install nothing and bundlers never resolve the module.
     '@ndigo/boot': ['@toon-format/toon'],
-    // OpenFeature bridge (AD-87): the SDKs are the app-installed provider
+    // OpenFeature bridge: the SDKs are the app-installed provider
     // runtimes — one singleton copy per app; the `./web` subpath's consumer
     // installs only the web SDK.
     '@ndigo/flags-openfeature': ['@openfeature/server-sdk', '@openfeature/web-sdk'],
@@ -276,10 +276,10 @@ function aliasTargetFromReplacement(tail) {
 
 /** Every specifier imported anywhere in the workspace — feeds the root rule. */
 const workspaceUsage = importsOf(ROOT, DEV_DIRS);
-// Root `src/` is repo-only source (AD-86): its imports count as usage too.
+// Root `src/` is repo-only source: its imports count as usage too.
 for (const spec of importsOf(ROOT, SOURCE_DIRS)) workspaceUsage.add(spec);
 
-// Repo-only tooling under `tools/` is workspace code too (AD-93): its imports
+// Repo-only tooling under `tools/` is workspace code too: its imports
 // count as usage for the root manifest's shared tooling pool (e.g. @nx/devkit).
 const toolsRoot = join(ROOT, 'tools');
 if (existsSync(toolsRoot)) {
@@ -291,7 +291,7 @@ if (existsSync(toolsRoot)) {
     }
 }
 
-// Rule 13: `packages/` is the published surface (AD-86) — every directory in
+// Rule 13: `packages/` is the published surface — every directory in
 // it must be a consumer package: a `package.json` must exist and must not be
 // `private` (the `files`/`exports` requirement is the legacy contract checked
 // below).

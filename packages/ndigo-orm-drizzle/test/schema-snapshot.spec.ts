@@ -46,7 +46,7 @@ function col(name: string, type: SqliteStorageType = 'TEXT', extra: Partial<Colu
     return { name, type, primaryKey: false, generated: false, nullable: false, ...extra };
 }
 
-describe('projectEntities (AD-78 D-2/D-3)', () => {
+describe('projectEntities', () => {
     test('renders the same DDL predicate createTableStatements emits — byte-identical baseline', () => {
         const projection = projectEntities([SnapNote]);
         const delta = diffProjections(null, projection);
@@ -60,7 +60,7 @@ describe('projectEntities (AD-78 D-2/D-3)', () => {
     });
 });
 
-describe('diffProjections (AD-78 D-2)', () => {
+describe('diffProjections', () => {
     test('emits ALTER ADD COLUMN for added columns and keeps column order', () => {
         const before = table('t', [col('a')]);
         const after = table('t', [col('a'), col('b'), col('c', 'INTEGER')]);
@@ -98,7 +98,7 @@ describe('diffProjections (AD-78 D-2)', () => {
     });
 });
 
-describe('diffProjections fidelity ceiling (AD-78 D-3)', () => {
+describe('diffProjections fidelity ceiling', () => {
     test('a type change goes to unsupported, never into the migration silently', () => {
         const delta = diffProjections(table('t', [col('a', 'TEXT')]), table('t', [col('a', 'INTEGER')]));
         expect(delta.statements).toEqual([]);
@@ -130,7 +130,7 @@ describe('diffProjections fidelity ceiling (AD-78 D-3)', () => {
     });
 });
 
-describe('renderMigrationFile / snapshot I/O (AD-78 D-2)', () => {
+describe('renderMigrationFile / snapshot I/O', () => {
     test('renders a versioned module with single-quoted literals (oxfmt-stable)', () => {
         const statement = 'ALTER TABLE "t" ADD COLUMN "c" TEXT NOT NULL';
         const source = renderMigrationFile(7, 'add column "c" to "t"', [statement]);

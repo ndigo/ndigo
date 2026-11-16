@@ -19,7 +19,7 @@ async function withDir(fn: (dir: string) => Promise<void>): Promise<void> {
 const MIGRATION_1 = `export default { version: 1, description: 'first', up: (ctx) => ctx.execute('CREATE TABLE "one" ("id" INTEGER NOT NULL)') };`;
 const MIGRATION_2 = `export default { version: 2, description: 'second', up: (ctx) => ctx.execute('CREATE TABLE "two" ("id" INTEGER NOT NULL)') };`;
 
-describe('loadMigrations / nextMigrationVersion (AD-78 D-1)', () => {
+describe('loadMigrations / nextMigrationVersion', () => {
     test('loads matching modules in filename order, ignoring foreign files', () =>
         withDir(async (dir) => {
             await writeFile(join(dir, '0002-second.mjs'), MIGRATION_2);
@@ -66,7 +66,7 @@ describe('loadMigrations / nextMigrationVersion (AD-78 D-1)', () => {
     });
 });
 
-describe('migrateOnBoot (AD-78 D-4)', () => {
+describe('migrateOnBoot', () => {
     test('applies pending migrations and reports them applied; a second boot is a no-op', () =>
         withDir(async (dir) => {
             await writeFile(join(dir, '0001-first.mjs'), MIGRATION_1);

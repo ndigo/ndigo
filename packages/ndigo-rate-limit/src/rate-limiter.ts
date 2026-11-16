@@ -1,9 +1,9 @@
 /**
- * The rate-limit backend contract (AD-33 Wave 3, shared-store follow-up
- * AD-79): fixed-window budgets per client key, enforced as **429 +
+ * The rate-limit backend contract (shared-store follow-up):
+ * fixed-window budgets per client key, enforced as **429 +
  * `Retry-After`** by the platform interceptor.
  *
- * The SPI is **async** (AD-39): backends decide where the counters live —
+ * The SPI is **async**: backends decide where the counters live —
  * the in-process reference implementation ships here, the shared-store
  * Redis driver in `@ndigo/redis/rate-limit`. The enforcement metadata
  * (`@rateLimit`, `RATE_LIMIT_KEY`) and the `RateLimitInterceptor` live in
@@ -38,7 +38,7 @@ export interface RateLimitResult {
 /**
  * Rate-limit backend contract. Implementations count request keys over
  * fixed windows; the in-memory reference (single process) and the Redis
- * driver (shared store, multi-process — AD-79) implement the same
+ * driver (shared store, multi-process) implement the same
  * semantics.
  */
 export interface RateLimiter {
@@ -48,7 +48,7 @@ export interface RateLimiter {
     /**
      * Accounts one request for `key` under `policy`. Implementations MUST
      * fail loud (`RangeError`) on malformed policies and MUST be safe for
-     * concurrent use. The async signature is deliberate (AD-39): a shared
+     * concurrent use. The async signature is deliberate: a shared
      * backend resolves its counter over a network hop.
      *
      * @param key - The client key whose budget is consumed.

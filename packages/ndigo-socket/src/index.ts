@@ -1,5 +1,5 @@
 /**
- * Ndigo Socket — isomorphic WebSocket domain (AD-22).
+ * Ndigo Socket — isomorphic WebSocket domain.
  *
  * Owns the socket contracts (`SocketSession`, `SocketSessionRegistry` —
  * moved from `ndigo-dispatcher`, which re-exports them for handler

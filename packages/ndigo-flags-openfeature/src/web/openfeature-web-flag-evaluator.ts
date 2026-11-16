@@ -1,5 +1,5 @@
 /**
- * The browser-side OpenFeature evaluator (AD-87 Phase 2): maps the
+ * The browser-side OpenFeature evaluator: maps the
  * `FlagEvaluator` SPI onto an `@openfeature/web-sdk` client. The web SDK
  * resolves from a provider-materialized snapshot with **synchronous**
  * evaluation, so this adapter wraps it in the SPI's async shape without
@@ -119,7 +119,7 @@ export class WebOpenFeatureFlagEvaluator implements FlagEvaluator {
         }
         // Our FlagValue widens the SDK's JsonValue (unknown object members) —
         // the provider owns the shape it configured; `unknown` in the cast is
-        // the boundary between the two value models (AD-87).
+        // the boundary between the two value models.
         return client.getObjectDetails(flag, defaultValue as unknown as JsonValue);
     }
 

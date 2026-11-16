@@ -111,7 +111,7 @@ describe('ndigo-telemetry-lab HTTP surface', () => {
         expect(res.json()).toMatchObject({ status: 400, error: 'invalid_body' });
     });
 
-    test('GET /metrics serves the meter-derived Prometheus document (AD-77 D-4)', async () => {
+    test('GET /metrics serves the meter-derived Prometheus document', async () => {
         // The hermetic lane never registers an OTel SDK, so the meter-backed
         // snapshot source is injected directly. (`@ndigo/management` pins the
         // full adapter contract end-to-end; this lane pins what the lab

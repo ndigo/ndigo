@@ -1,5 +1,5 @@
 /**
- * Host orchestration — the centralized micro frontend host (AD-18).
+ * Host orchestration — the centralized micro frontend host.
  */
 import type { FeatureMetricRecorder } from '@ndigo/core';
 import { ContextToken, FeatureContextMountManager } from '@ndigo/context';

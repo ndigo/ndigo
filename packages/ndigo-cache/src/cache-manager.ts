@@ -20,7 +20,7 @@ export interface CacheManager {
      */
     getCache<V = unknown>(name: string): Cache<V>;
     /**
-     * Returns the cache identified by a typed store token (AD-34 D7) —
+     * Returns the cache identified by a typed store token —
      * description-backed, same store as the string form.
      *
      * @param token - The cache store token.

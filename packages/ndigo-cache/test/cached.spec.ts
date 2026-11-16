@@ -56,7 +56,7 @@ describe('resolveCachedSpec', () => {
     });
 });
 
-describe('cache-store tokens (AD-34 D7)', () => {
+describe('cache-store tokens', () => {
     const REPORTS_CACHE = new ContextToken<Cache<string>>('reports');
 
     class Service {

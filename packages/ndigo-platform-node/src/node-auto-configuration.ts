@@ -70,7 +70,7 @@ function configuredPort(value: unknown): number | undefined {
 @whenNode
 @configuration
 export class NodeAutoConfiguration extends AsApplicationContextAware(Null) {
-    /** The owning application context (container-injected, AD-82 wiring). */
+    /** The owning application context (container-injected, wiring). */
     readonly applicationContext!: ApplicationContext;
     /**
      * Exposes the shared argument-value converter registry.
@@ -106,7 +106,7 @@ export class NodeAutoConfiguration extends AsApplicationContextAware(Null) {
         const mapping = new RadixMetadataHandlerMapping();
         mapping.interceptors.unshift(new SecurityHeadersInterceptor());
         // Feature gate before rate limiting: a disabled feature is not a
-        // traffic event worth charging a budget against (AD-82 D-5).
+        // traffic event worth charging a budget against.
         mapping.interceptors.push(this.featureGateInterceptor());
         mapping.interceptors.push(new RateLimitInterceptor(this.rateLimiter()));
         // CORS runs last (after feature/rate-limit) and is fail-closed by
@@ -157,7 +157,7 @@ export class NodeAutoConfiguration extends AsApplicationContextAware(Null) {
      * The shared in-memory rate limiter (SEC-6). Apps needing a
      * distributed backend provide their own {@link RateLimiter}
      * implementation (the `@ndigo/redis/rate-limit` driver is the
-     * shared-store option, AD-79); the entry is the default.
+     * shared-store option); the entry is the default.
      *
      * @returns The default fixed-window rate limiter.
      */
@@ -167,13 +167,13 @@ export class NodeAutoConfiguration extends AsApplicationContextAware(Null) {
     }
 
     /**
-     * The default flag evaluator (AD-82): reads `feature.*` properties
+     * The default flag evaluator: reads `feature.*` properties
      * from the application environment, **live on every evaluation** — an
-     * `environment.refresh()` (AD-29) flips flags without a redeploy.
+     * `environment.refresh()` flips flags without a redeploy.
      * Apps needing vendor flagging (flagd / OFREP / LaunchDarkly via the
      * `@ndigo/flags-openfeature` bridge) provide their own `FlagEvaluator`
      * entry; this is the zero-config default. The gate resolves the entry
-     * per check (AD-87), so an override reaches `@whenFeature` routes too.
+     * per check, so an override reaches `@whenFeature` routes too.
      *
      * @returns The property-backed flag evaluator.
      */
@@ -183,9 +183,9 @@ export class NodeAutoConfiguration extends AsApplicationContextAware(Null) {
     }
 
     /**
-     * The default flag targeting-context resolver (AD-87 companion): the
+     * The default flag targeting-context resolver: the
      * session-bag principal when a session/identity interceptor ran first
-     * (targeting key = principal id, roles as attributes), else the AD-37
+     * (targeting key = principal id, roles as attributes), else the
      * client address. Apps override this entry for tenant/attribute
      * targeting.
      *
@@ -247,7 +247,7 @@ export class NodeAutoConfiguration extends AsApplicationContextAware(Null) {
     }
 
     /**
-     * The shared task scheduler for `@scheduled` methods (AD-20). The
+     * The shared task scheduler for `@scheduled` methods. The
      * registry entry discovers and starts scheduled tasks on refresh.
      *
      * @returns The task scheduler.
@@ -260,7 +260,7 @@ export class NodeAutoConfiguration extends AsApplicationContextAware(Null) {
     /**
      * Discovers `@scheduled` methods on registered entries and runs them on
      * the task scheduler. Auto-started on refresh (SmartLifecycle) and torn
-     * down with the context — zero wiring for Node apps (AD-20 D2).
+     * down with the context — zero wiring for Node apps.
      *
      * @returns The schedule registry.
      */
@@ -270,7 +270,7 @@ export class NodeAutoConfiguration extends AsApplicationContextAware(Null) {
     }
 
     /**
-     * The default job driver (AD-72): in-process and **not durable** — jobs
+     * The default job driver: in-process and **not durable** — jobs
      * vanish with the process. Apps register their own `JobDriver` entry
      * (`LibSQLJobStore`, `RedisJobDriver`) for work that must survive a
      * restart; the queue, registry and runner follow whichever driver entry is
@@ -284,7 +284,7 @@ export class NodeAutoConfiguration extends AsApplicationContextAware(Null) {
     }
 
     /**
-     * The producer-facing job queue (AD-72): resolves the `jobDriver` entry
+     * The producer-facing job queue: resolves the `jobDriver` entry
      * through the injected context at first use.
      *
      * @returns The job queue facade.
@@ -307,7 +307,7 @@ export class NodeAutoConfiguration extends AsApplicationContextAware(Null) {
     }
 
     /**
-     * The worker engine (AD-72). It is **not** refresh-started: a pending poll
+     * The worker engine. It is **not** refresh-started: a pending poll
      * timer keeps the process alive, so worker processes call `start()` after
      * boot (the `HTTPServer` precedent); API-only processes leave it stopped.
      * Pass `autoStart: true` for refresh-driven start.
@@ -320,7 +320,7 @@ export class NodeAutoConfiguration extends AsApplicationContextAware(Null) {
     }
 
     /**
-     * The default lock driver (AD-73): in-process and **single-node** — the
+     * The default lock driver: in-process and **single-node** — the
      * process-wide lease table gives `@scheduled({ lock })` tasks exactly
      * one holder per process. Apps that run multiple nodes register their
      * own `LockDriver` entry (`RedisLockDriver`) for cross-process
@@ -335,7 +335,7 @@ export class NodeAutoConfiguration extends AsApplicationContextAware(Null) {
     }
 
     /**
-     * The shared named-cache manager for `@cached` methods (AD-24):
+     * The shared named-cache manager for `@cached` methods:
      * `@cached` resolves the manager off the method's `this.cacheManager`
      * (constructor or aware-injection) — zero wiring for Node apps, mirror
      * of the scheduler entries above.
@@ -348,7 +348,7 @@ export class NodeAutoConfiguration extends AsApplicationContextAware(Null) {
     }
 
     /**
-     * The shared conversion service (AD-38): leaf conversions (string ↔
+     * The shared conversion service: leaf conversions (string ↔
      * typed) and schema-driven DTO projection (`convert(value, schema)`)
      * in one entry — zero wiring for Node apps, mirror of the cache manager
      * entries above. Apps with custom converter registries override the entry
@@ -362,7 +362,7 @@ export class NodeAutoConfiguration extends AsApplicationContextAware(Null) {
     }
 
     /**
-     * Tracks open WebSocket sessions — broadcast, rooms, heartbeat (AD-21).
+     * Tracks open WebSocket sessions — broadcast, rooms, heartbeat.
      *
      * The HTTP server resolves this entry when it starts, so broadcasts from
      * any service reach the adapter's live sessions. Heartbeat defaults to

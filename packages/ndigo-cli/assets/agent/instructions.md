@@ -10,7 +10,7 @@ The framework changes faster than any copied flag list. Before inventing a
 command or an API, run:
 
 - `ndigo commands --json` — every verb, flag, positional, and exit code
-- `ndigo inspect` — routes, mappings, and declared config keys (AD-70)
+- `ndigo inspect` — routes, mappings, and declared config keys
 - `ndigo doctor` — environment and workspace checks
 - `ndigo routes --json` — the route list only
 - `ndigo logs` — the application log tail

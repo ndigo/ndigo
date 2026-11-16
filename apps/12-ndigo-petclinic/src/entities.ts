@@ -2,7 +2,7 @@
  * PetClinic persistence entities — the reference application's owners, pets,
  * visits, vets and specialties mapped through `@ndigo/orm` metadata, so the
  * column declarations double as the persistence schema *and* the write-time
- * validation source (AD-07).
+ * validation source.
  *
  * Relations are declared with `@oneToMany` / `@manyToOne` and fetched explicitly
  * (`findById(id, { relations: ['pets'] })`): the owning side names the declared

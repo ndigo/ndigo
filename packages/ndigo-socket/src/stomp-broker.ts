@@ -1,16 +1,16 @@
 /**
  * STOMP server broker — endpoint state machine + destination fan-out
- * (AD-23 D1/D2/D5, second wave D7–D11).
+ * (second wave D7–D11).
  *
  * A `StompBroker` instance owns a destination namespace: `handleSocket`
  * runs the STOMP 1.2 endpoint protocol over one `SocketSession` (CONNECT
  * negotiation, SUBSCRIBE/UNSUBSCRIBE, SEND, ACK/NACK, transactions,
  * receipts, ERROR + close on violations), `publish`/`sendToUser` fan out
- * from anywhere (scheduler → broker, HTTP → broker — the AD-20/AD-21
+ * from anywhere (scheduler → broker, HTTP → broker — the
  * reachability pattern), and `closeAll` terminates every tracked
  * connection.
  *
- * Semantics (AD-23):
+ * Semantics:
  * - Destinations are broker state, not rooms — MESSAGE frames carry the
  *   subscriber's own `subscription` id, so two subscriptions to one
  *   destination on the same session stay distinct.
@@ -41,11 +41,11 @@
  *   replay is in flight, then replays the backlog, flushes the buffered
  *   frames the replay did not already carry (deduped by `message-id`), and
  *   only then receives live traffic directly (`queueBacklog`).
- * - Heart-beat is negotiated off (`0,0`) — the AD-21 registry ping/pong
+ * - Heart-beat is negotiated off (`0,0`) — the registry ping/pong
  *   already owns liveness at the WS layer. Ping frames (bare newlines)
  *   are tolerated on inbound.
  * - The broker is isomorphic: it touches `SocketSession` contracts only,
- *   never the transport (AD-23 D1). All protocol failures are fail-closed:
+ * never the transport. All protocol failures are fail-closed:
  *   ERROR frame (carrying `receipt-id` when the offending frame asked for
  *   one), then close — `1002` on per-frame violations (including an
  *   over-long identifier), `1008` on policy denials (missing `/user`
@@ -244,7 +244,7 @@ export interface StompBrokerOptions {
     /**
      * Principal resolution for `/user` destinations (D10). Default reads
      * `session.attributes.user` (a string); the adapter's `authenticate`
-     * hook populates attributes (AD-21). A session that resolves to
+     * hook populates attributes. A session that resolves to
      * `null` cannot bind `/user/*` subscriptions (ERROR + close 1008) and
      * its SEND to `/user/*` is rejected.
      */
@@ -378,7 +378,7 @@ export interface StompBrokerOptions {
      * it without broker changes. `null` disables the persistence layer
      * (live delivery and replay continue off the in-memory structure).
      * Receipts still mean "broker accepted" — "persisted" waits for the
-     * store-read phase (AD-24 receipt decision).
+     * store-read phase (the receipt decision).
      */
     queueStore?: QueueMessageStore | null;
     /**
@@ -394,7 +394,7 @@ export interface StompBrokerOptions {
 
 /**
  * STOMP 1.2 broker — transport-agnostic, one instance per destination
- * namespace (app-scoped entry, AD-23 D1).
+ * namespace (app-scoped entry).
  *
  * @example
  * ```ts
@@ -820,7 +820,7 @@ export class StompBroker {
     /**
      * Close every connected session tracked by the broker (graceful
      * shutdown integration; the transport's `closeAll` path remains the
-     * AD-21 registry's job — this closes the STOMP side).
+     * registry's job — this closes the STOMP side).
      *
      * @param code - Close status code (default `1001` going away).
      * @param reason - Human-readable close reason.
@@ -956,8 +956,8 @@ export class StompBroker {
                 version: mutual,
                 session: state.sessionId,
                 server: 'Ndigo',
-                // Liveness is the WS layer's job (AD-21 D6); negotiate
-                // STOMP heartbeats off (AD-23 D3).
+                // Liveness is the WS layer's job; negotiate
+                // STOMP heartbeats off.
                 'heart-beat': '0,0',
             },
             body: '',

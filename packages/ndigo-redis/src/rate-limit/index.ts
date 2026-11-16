@@ -1,5 +1,5 @@
 /**
- * Shared-store rate limiting (AD-79): {@link RedisRateLimiter} — the
+ * Shared-store rate limiting: {@link RedisRateLimiter} — the
  * Redis-backed fixed-window driver for the `@ndigo/rate-limit` SPI.
  */
 

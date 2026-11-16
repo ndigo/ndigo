@@ -1,5 +1,5 @@
 /**
- * ClusterRunner lifecycle specs (AD-74): spawn identity, signal relay into
+ * ClusterRunner lifecycle specs: spawn identity, signal relay into
  * graceful drains, bounded-backoff respawns, the fail-closed crash-loop
  * guard, stuck-child force-kill, and the two-signal abort — all through
  * injected spawner/signal-host/clock seams (no real processes here; see

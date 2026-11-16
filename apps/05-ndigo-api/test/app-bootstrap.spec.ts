@@ -43,19 +43,19 @@ describe('ndigo-api full bootstrap (ApplicationBuilder path)', () => {
         context.close();
     });
 
-    test('it should activate the dev profile on the environment (AD-14)', () => {
+    test('it should activate the dev profile on the environment', () => {
         expect(context.environment?.activeProfiles).toEqual(['dev']);
     });
 
-    test('it should bind ServerConfig from the property source (AD-15)', () => {
+    test('it should bind ServerConfig from the property source', () => {
         const serverConfig = context.getValue<ServerConfig>('serverConfig');
 
         expect(serverConfig.name).toBe('ndigo-api-demo');
         expect(serverConfig.port).toBe(3010);
     });
 
-    test('it should activate the dev-profile entry (AD-14)', () => {
-        expect(context.getValue('devInfo')).toEqual({ flavor: 'dev', note: 'profile-gated entry (AD-14)' });
+    test('it should activate the dev-profile entry', () => {
+        expect(context.getValue('devInfo')).toEqual({ flavor: 'dev', note: 'profile-gated entry' });
     });
 
     test('GET /health reports the registry status', async () => {
@@ -95,7 +95,7 @@ describe('ndigo-api full bootstrap (ApplicationBuilder path)', () => {
         expect(res.json()).toEqual({ message: 'Hello, Ada!', language: 'en' });
     });
 
-    test('the scheduled heartbeat is auto-discovered and auto-started (AD-20)', async () => {
+    test('the scheduled heartbeat is auto-discovered and auto-started', async () => {
         const scheduler = context.getValue<TaskScheduler>('taskScheduler');
         expect(context.hasValue('scheduleRegistry')).toBe(true);
         expect(scheduler.taskNames()).toContain('heartbeat.ping');
@@ -114,11 +114,11 @@ describe('ndigo-api full bootstrap (ApplicationBuilder path)', () => {
         expect(heartbeat.pings).toBe(1);
     });
 
-    test('the cacheManager entry is provisioned zero-wiring (AD-24)', () => {
+    test('the cacheManager entry is provisioned zero-wiring', () => {
         expect(context.hasValue('cacheManager')).toBe(true);
     });
 
-    test('GET /api/cached-report caches across dispatches (AD-24)', async () => {
+    test('GET /api/cached-report caches across dispatches', async () => {
         const controller = context.getValue<CachedReportController>('cachedReportController');
 
         const first = await mockHTTP.get('/api/cached-report').exec();
@@ -130,7 +130,7 @@ describe('ndigo-api full bootstrap (ApplicationBuilder path)', () => {
         expect(controller.invocations).toBe(1);
     });
 
-    test('security headers are set by default on dispatches (AD-25)', async () => {
+    test('security headers are set by default on dispatches', async () => {
         // Asserted over a real socket: MockHTTP's route resolution walks the
         // strategy's mapping collection (which can dedupe the platform
         // mapping) — the adapter path resolves the platform mapping that

@@ -1,5 +1,5 @@
 /**
- * Constructor-entry demo for `@ndigo/proxy` (AD-42 D-8): a service created by
+ * Constructor-entry demo for `@ndigo/proxy`: a service created by
  * the container at first `getValue` — so the interception processor weaves it
  * — whose `place` method carries `@audited` policy metadata.
  */

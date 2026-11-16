@@ -1,5 +1,5 @@
 /**
- * `@whenFeature` decoration-time contract (AD-82 D-4): method and class
+ * `@whenFeature` decoration-time contract: method and class
  * metadata keys, decoration-time key validation, and the reader.
  */
 import { describe, test, expect } from 'vitest';

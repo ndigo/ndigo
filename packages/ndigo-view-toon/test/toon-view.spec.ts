@@ -124,7 +124,7 @@ describe('toon negotiation (opt-in)', () => {
                 new PathExtensionContentNegotiationStrategy(
                     new Map([
                         // The app's own extension map: nothing framework-wired
-                        // registers `.toon` (AD-102 D-3).
+                        // registers `.toon`.
                         ['toon', requireMediaType(MediaTypes.TEXT_TOON)],
                         ['json', requireMediaType(MediaTypes.APPLICATION_JSON)],
                     ])
@@ -133,7 +133,7 @@ describe('toon negotiation (opt-in)', () => {
         );
         // JSON is registered FIRST: without a negotiable Accept hint the
         // resolver serves the first candidate, so registration order is what
-        // makes JSON the default for unopinionated clients (AD-102 D-3).
+        // makes JSON the default for unopinionated clients.
         resolver.viewResolvers = [staticResolver(new JSONView()), toonViewResolver('report')];
 
         expect(await resolver.resolveViewName('report', '', { path: '/report.toon' })).toBeInstanceOf(ToonView);
@@ -153,7 +153,7 @@ describe('toon negotiation (opt-in)', () => {
         );
         // JSON first — a `.toon` address, unregistered here because the app's
         // extension map contains only JSON, keeps extending to the default
-        // JSON representation (AD-102 D-3: no framework extension wiring).
+        // JSON representation (no framework extension wiring).
         resolver.viewResolvers = [staticResolver(new JSONView()), toonViewResolver('report')];
 
         expect(await resolver.resolveViewName('report', '', { path: '/report' })).toBeInstanceOf(JSONView);

@@ -1,5 +1,5 @@
 /**
- * PrecedenceDoc assertions (AD-13 D6): the documented source order, the
+ * PrecedenceDoc assertions: the documented source order, the
  * uniqueness of names, and — critically — that REAL boot wiring satisfies
  * the documented chain (first registered = highest precedence). The runtime
  * test caught a real regression when the chain was first wired (defaults

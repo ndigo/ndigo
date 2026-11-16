@@ -41,7 +41,7 @@ export interface JWTAdapterConfig {
     /** The algorithm used for signing (e.g., 'HS256', 'RS256'). */
     algorithm: string;
     /**
-     * User store backing `ver`-claim revocation (AD-33 D-7). When present:
+     * User store backing `ver`-claim revocation. When present:
      * `validate` checks the `ver` claim of framework-issued tokens against
      * the account's `tokenVersion`, `issueTokens` snapshots the current
      * version, and `refresh`/`logout` advance it (rotating the family and
@@ -139,7 +139,7 @@ const MAX_REVOCATION_CACHE_ENTRIES = 10_000;
  *
  * Issuer, audience, `exp`, and `sub` are required and validated on every token.
  *
- * With a `userStore` wired (AD-33 D-7), the adapter also owns issuance and
+ * With a `userStore` wired, the adapter also owns issuance and
  * revocation: `issueTokens` mints access + refresh JWTs snapshotting the
  * account's `tokenVersion` (`ver` claim); `refresh` advances the version —
  * every older access AND refresh token dies, so reuse of a rotated-out
@@ -243,7 +243,7 @@ export class JWTAdapter implements AuthAdapter {
                 return null;
             }
 
-            // AD-33 D-7: framework-issued tokens carry `ver`; when a store is
+            // Framework-issued tokens carry `ver`; when a store is
             // wired, the claim must equal the account's current version.
             // Tokens without `ver` (external IdP) skip the check entirely.
             // SE-7: `#currentVersion` returns null for disabled/deleted
@@ -303,7 +303,7 @@ export class JWTAdapter implements AuthAdapter {
     }
 
     /**
-     * Mints an access + refresh token pair (AD-33 D-7).
+     * Mints an access + refresh token pair.
      *
      * HMAC (HS*) configurations only: asymmetric configs hold a public
      * key for validation, not a signing key — external IdPs own issuance
@@ -349,7 +349,7 @@ export class JWTAdapter implements AuthAdapter {
     }
 
     /**
-     * Rotates a refresh token (AD-33 D-7): issues a new access + refresh
+     * Rotates a refresh token: issues a new access + refresh
      * pair AFTER advancing the account's `tokenVersion` — every older
      * token (access and refresh alike) is dead the moment a refresh lands,
      * so replaying a rotated-out refresh token is rejected by the version
@@ -397,7 +397,7 @@ export class JWTAdapter implements AuthAdapter {
 
     /**
      * Revokes every outstanding token for the token's account by
-     * advancing `tokenVersion` (AD-33 D-7). The presented token (access
+     * advancing `tokenVersion`. The presented token (access
      * or refresh) must verify — an unverifiable token revokes nothing and
      * throws (fail closed).
      *
@@ -438,9 +438,7 @@ export class JWTAdapter implements AuthAdapter {
     }> {
         const store = this.#userStore;
         if (store === undefined) {
-            throw new JWTTokenError(
-                'issueTokens requires a userStore — revocation is user-record token versioning (AD-33 D-7)'
-            );
+            throw new JWTTokenError('issueTokens requires a userStore — revocation is user-record token versioning');
         }
         const user = await store.findById(id);
         if (!user || user.disabled === true) {
@@ -467,9 +465,7 @@ export class JWTAdapter implements AuthAdapter {
 
     #userStoreOrThrow(flow: string): UserStore {
         if (!this.#userStore) {
-            throw new JWTTokenError(
-                `${flow} requires a userStore — revocation is user-record token versioning (AD-33 D-7)`
-            );
+            throw new JWTTokenError(`${flow} requires a userStore — revocation is user-record token versioning`);
         }
         return this.#userStore;
     }

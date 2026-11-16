@@ -1,5 +1,5 @@
 /**
- * The Prometheus pull reader (AD-77 D-2): an SDK `MetricReader` whose
+ * The Prometheus pull reader: an SDK `MetricReader` whose
  * `snapshot()` projects the meter provider's current aggregated state into
  * the isomorphic {@link MetricSnapshot} model — the seam `@ndigo/management`
  * serves as Prometheus text or JSON without depending on SDK types.

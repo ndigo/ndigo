@@ -1,5 +1,5 @@
 /**
- * Route-condition builder specs (AD-34 D6).
+ * Route-condition builder specs.
  */
 import { describe, test, expect } from 'vitest';
 import { queryParamCondition, matrixParamCondition } from '../src/condition-builders';
@@ -14,7 +14,7 @@ const routeWith = (data: Record<string, unknown> | undefined): Route =>
         data,
     }) as unknown as Route;
 
-describe('condition builders (AD-34 D6)', () => {
+describe('condition builders', () => {
     test('produces the canonical expressions for value and presence forms', () => {
         expect(queryParamCondition('filter', 'all')).toBe('filter=all');
         expect(queryParamCondition('flag')).toBe('flag');

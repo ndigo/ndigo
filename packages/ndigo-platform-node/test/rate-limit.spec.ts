@@ -2,7 +2,7 @@
  * `@rateLimit` metadata + `RateLimitInterceptor` contracts (SEC-6): the
  * metadata gate, per-client-address budgets over the platform's limiter
  * entry, and the 429 + `Retry-After` denial. The limiter itself is tested
- * in `@ndigo/rate-limit` (AD-79 moved the SPI).
+ * in `@ndigo/rate-limit` (the shared SPI).
  */
 import { describe, test, expect } from 'vitest';
 import type { ServerResponse } from 'node:http';

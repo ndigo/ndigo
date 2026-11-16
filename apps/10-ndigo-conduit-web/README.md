@@ -69,7 +69,7 @@ Unauthenticated access to a guarded route is refused at the router and lands on
   (`conduit-actions.ts`) — the complete, auditable interaction surface.
 - **`@ndigo/signals` as the state layer.** Session, feed window, article,
   profile and comment state are signals; a mutation re-renders the current route
-  through `router.refresh()` (AD-53 D-3) instead of a second render path.
+  through `router.refresh()` instead of a second render path.
 - **Keyed loading.** `ensureFeed`/`ensureArticle`/`ensureProfile` fetch only when
   the query (tab/tag/page, slug, username) actually changed — which is what makes
   optimistic updates viable: favoriting patches the cached list and re-renders

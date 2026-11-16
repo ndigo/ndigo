@@ -1,5 +1,5 @@
 /**
- * Boot-level secrets integration (AD-29 Wave 2, D-5): `builder.secrets(...)`
+ * Boot-level secrets integration (D-5): `builder.secrets(...)`
  * wires a cipher so `{cipher:...}` markers in properties resolve to
  * plaintext in `@configurationProperties` binding.
  */
@@ -51,7 +51,7 @@ const fakeCipher = (): SecretCipher => {
     };
 };
 
-describe('builder.secrets (AD-29 Wave 2)', () => {
+describe('builder.secrets', () => {
     test('binds decrypted marker values into @configurationProperties classes', async () => {
         const cipher = fakeCipher();
         const marker = cipher.encrypt('s3cret-pass', 'db.password');

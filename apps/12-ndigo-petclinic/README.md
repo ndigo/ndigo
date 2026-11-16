@@ -108,7 +108,7 @@ for one model in several representations — see
 `@ndigo/orm` entities in `src/entities.ts`: `Owner` (with a `pets` relation),
 `Pet` (with `type` and `visits`), `Visit`, `Vet`, `Specialty`, `PetType`, and a
 `VetSpecialty` link row. Column metadata doubles as the write-time validation
-source (AD-07), and relations are real `@oneToMany`/`@manyToOne` declarations
+source, and relations are real `@oneToMany`/`@manyToOne` declarations
 fetched through `findById(id, { relations: ['pets'] })`. Vet ↔ specialty is a
 many-to-many relation the in-memory manager deliberately does not resolve, so it
 is modelled the way the reference database models it — an explicit join row

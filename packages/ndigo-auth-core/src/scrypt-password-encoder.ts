@@ -62,12 +62,12 @@ const MAX_KEY_LENGTH = 64;
 /**
  * The reference {@link PasswordEncoder} implementation: scrypt via
  * `node:crypto` — a platform-audited primitive, zero dependencies (the
- * same reasoning that picked AES-GCM for `{cipher:...}`, AD-29).
+ * same reasoning that picked AES-GCM for `{cipher:...}`).
  *
  * Serialization is PHC-style with **parameters embedded** in the string:
  * `$ln=17,r=8,p=1$<salt>$<hash>`. Verification parses the stored
  * parameters, so older hashes keep verifying after a cost bump.
- * Argon2id is a documented future alternative implementation (AD-33 D-3);
+ * Argon2id is a documented future alternative implementation;
  * the self-describing format keeps adding it purely additive.
  *
  * Security properties:

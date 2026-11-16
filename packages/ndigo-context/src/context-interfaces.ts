@@ -126,7 +126,7 @@ export interface ApplicationContext
 
     /**
      * Resolves a schema-typed configuration value from the context's
-     * environment (AD-34 D3) — convenience mirror of
+     * environment — convenience mirror of
      * `Environment.typedConfig` for context-held callers.
      *
      * @param prefix - Property prefix (a keypath for scalar schemas).
@@ -136,7 +136,7 @@ export interface ApplicationContext
     typedConfig<S extends z.ZodType>(prefix: string, schema: S): z.infer<S> | undefined;
 
     /**
-     * Typed event overloads (AD-34 D2): lifecycle events deliver their
+     * Typed event overloads: lifecycle events deliver their
      * {@link ContextEvents} payloads to the listener; any other event type
      * falls through to the raw `EventEmitter` surface.
      * @example

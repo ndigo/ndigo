@@ -1,5 +1,5 @@
 /**
- * Typed event overlay specs (AD-34 D2): framework emitters deliver typed
+ * Typed event overlay specs: framework emitters deliver typed
  * payloads for declared events while the raw EventEmitter surface stays
  * usable. The positive usages below double as the compile gate — a payload
  * regressing to `unknown[]` would fail assignment/access here.
@@ -9,7 +9,7 @@ import { GenericApplicationContext } from '../src/context';
 import { ApplicationContext } from '../src/context-interfaces';
 import { StandardEnvironment, ConfigurableEnvironment, CONFIG_REFRESH_EVENT } from '../src/environment';
 
-describe('typed context events (AD-34 D2)', () => {
+describe('typed context events', () => {
     test('typed lifecycle listener receives the typed context payload', () => {
         const context: ApplicationContext = new GenericApplicationContext('typed');
 
@@ -84,7 +84,7 @@ describe('typed context events (AD-34 D2)', () => {
     });
 });
 
-describe('typed environment events (AD-34 D2)', () => {
+describe('typed environment events', () => {
     test('CONFIG_REFRESH_EVENT listens with an empty payload tuple', () => {
         const environment: ConfigurableEnvironment = new StandardEnvironment();
         let refreshes = 0;

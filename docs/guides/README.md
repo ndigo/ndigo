@@ -277,6 +277,8 @@ Rules:
   recommends splitting or moving option tables to the package reference.
 - Link the guide from this index. Planned guides stay unlinked until their file
   lands.
+- In `## See also`, give each guide, package, app, or external concept its own
+  bullet with a link; do not group multiple guides in one bullet.
 
 ## Conventions
 

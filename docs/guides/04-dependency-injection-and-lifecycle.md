@@ -271,6 +271,5 @@ safe no-op after the first call.
 - [Guide 01 — Building a Node API](01-building-a-node-api.md) — the boot preset that creates the root context
 - [Guide 02 — Building a Browser App](02-building-a-browser-app.md) — the browser twin
 - [Lifecycle & Resource Ownership](../architecture/lifecycle-and-ownership.md) — the async/resource doctrine
-- Application Context Lifecycle — refresh/close sequences
 - [`@ndigo/factory`](../../packages/ndigo-factory/README.md) — scopes, aware mixins, lifecycle contracts
 - [`@ndigo/context`](../../packages/ndigo-context/README.md) — the container and environment

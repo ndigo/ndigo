@@ -124,8 +124,8 @@ exported for tools that need the pieces separately.
 
 ## See also
 
-- Decision: — ETag/Range,
-  precompressed variants, SPA fallback, directory control (D-1..D-9).
+precompressed variants, SPA fallback, directory control (D-1..D-9).
+
 - Package: `@ndigo/platform-node` README — `StaticController`,
   `StaticFileView`, `StaticResourceHandler`, `StaticResourceResolver`.
 - Guides: [01 — Building a Node API](01-building-a-node-api.md) (the server

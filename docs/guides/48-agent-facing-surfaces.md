@@ -304,5 +304,4 @@ installed-component rendering and unknown-component rejection.
 - [Guide 30 — Component Integration](30-component-integration.md)
 - [Guide 37 — The `ndigo` CLI](37-ndigo-cli.md)
 - [Guide 47 — AI Agents, MCP Tools & Streaming](47-ai-agents.md)
-- (agent integration), (tool projection), (A2UI)
 - Reference apps: [apps/21-ndigo-agent-lab](https://github.com/ndigo/ndigo/tree/main/apps/21-ndigo-agent-lab), [apps/20-ndigo-ui-lab](https://github.com/ndigo/ndigo/tree/main/apps/20-ndigo-ui-lab)

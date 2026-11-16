@@ -128,7 +128,6 @@ const params = QueryString.parse('a=1&a=2&b=3'); // { a: ['1','2'], b: '3' }
 
 - Generated API: run `pnpm doc:api` for `@ndigo/http`;
   the full symbol surface is on the package README.
-- Decision: —
   the body transform pipeline.
 - Related: [Guide 19](./19-caching.md) (client `memoize`),
   [Guide 35](./35-method-interception-and-resilience.md) (retry/circuit-breaker policies),

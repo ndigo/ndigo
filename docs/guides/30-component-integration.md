@@ -409,4 +409,3 @@ current app dependency.
 - [`@ndigo/ui-web`](../../packages/ndigo-ui-web/README.md) — browser theme adapter
 - [apps/20-ndigo-ui-lab](https://github.com/ndigo/ndigo/tree/main/apps/20-ndigo-ui-lab) — the runnable consumer
 - [ndigo-ui agent skill](../../agent-local/skills/ndigo-ui/SKILL.md) — the agent-facing usage and porting contract
-- , , and — component, selection, and ndigo-ui decisions

@@ -199,4 +199,3 @@ router (Guide 02).
 - [Guide 08 — Errors & Problem Details](08-errors-and-problem-details.md) — 404/405/406 shapes
 - [`@ndigo/router`](../../packages/ndigo-router/README.md) — `Route`, `Router`, partitions
 - [`@ndigo/dispatcher`](../../packages/ndigo-dispatcher/README.md) — mappings and conditions
-- and — partitioning and registry decisions

@@ -195,4 +195,3 @@ server bridge when it can. The server side is [Guide 26](26-authentication-and-s
 - [Guide 28 — Security Hardening](28-security-hardening.md) — cookies, CORS, and CSRF
 - [`@ndigo/auth-client`](../../packages/ndigo-auth-client/README.md) — `AuthClient`, guard, OIDC adapter
 - [apps/18-ndigo-auth-playground](https://github.com/ndigo/ndigo/tree/main/apps/18-ndigo-auth-playground) — six auth modes, including OIDC + PKCE
-- and — auth and revocation decisions

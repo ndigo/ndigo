@@ -196,5 +196,4 @@ record — see 's consequences.
   for time-based work, jobs for delivered work.
 - [Guide 21 — Persistence & Shared Stores](21-persistence-and-shared-stores.md):
   the memory-first doctrine and the durable-store family the job stores join.
-  -: the decision
   record behind this surface.

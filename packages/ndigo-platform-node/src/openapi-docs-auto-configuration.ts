@@ -1,5 +1,5 @@
 /**
- * OpenAPI docs auto-configuration for Node applications (AD-35 D-5/D-6).
+ * OpenAPI docs auto-configuration for Node applications.
  *
  * Registers:
  * - `GET {path}` — the OpenAPI 3.0.3 spec document, derived at runtime from

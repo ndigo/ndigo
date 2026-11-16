@@ -1,5 +1,5 @@
 /**
- * Scheduled demo task (AD-20): a heartbeat that pings every 30 seconds,
+ * Scheduled demo task: a heartbeat that pings every 30 seconds,
  * registered as a context entry so the scheduler's auto-discovery picks it
  * up at refresh. The ping counter is observable in tests.
  */
@@ -9,7 +9,7 @@ import { getLogger } from '@ndigo/log';
 const logger = getLogger('ndigo-api:heartbeat');
 
 /**
- * The application heartbeat — the scheduling demo gate (AD-20 D2/D4):
+ * The application heartbeat — the scheduling demo gate:
  * zero-wiring `@scheduled` on a registered entry.
  */
 export class Heartbeat {

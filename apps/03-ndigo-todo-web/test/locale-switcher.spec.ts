@@ -15,7 +15,7 @@ const resetCookies = () => {
     document.cookie = `${LOCALE_COOKIE_NAME}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
 };
 
-describe('locale-switcher view (AD-19 demo)', () => {
+describe('locale-switcher view', () => {
     let messages: MessageSource;
 
     beforeEach(() => {

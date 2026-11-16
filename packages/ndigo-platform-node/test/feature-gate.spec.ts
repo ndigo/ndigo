@@ -1,5 +1,5 @@
 /**
- * `@whenFeature` metadata + `FeatureGateInterceptor` contracts (AD-82):
+ * `@whenFeature` metadata + `FeatureGateInterceptor` contracts:
  * the metadata gate, the 404 problem-document denial, method-over-class
  * precedence, untouched un-gated routes, and the live-refresh flip through
  * the real `NodeAutoConfiguration` wiring.
@@ -133,7 +133,7 @@ describe('FeatureGateInterceptor', () => {
     });
 });
 
-describe('FeatureGateInterceptor targeting context + rollouts (AD-82 addendum)', () => {
+describe('FeatureGateInterceptor targeting context + rollouts ( addendum)', () => {
     /** A route carrying a client address (the targeting key source). */
     function routeFrom(address: string): Route {
         return {
@@ -185,7 +185,7 @@ describe('FeatureGateInterceptor targeting context + rollouts (AD-82 addendum)',
     });
 });
 
-describe('@whenFeature through the real NodeAutoConfiguration wiring (AD-82 D-5)', () => {
+describe('@whenFeature through the real NodeAutoConfiguration wiring', () => {
     let adapter: NodeHTTPServerAdapter;
     let context: MetadataConfigApplicationContext;
     let base: string;
@@ -223,7 +223,7 @@ describe('@whenFeature through the real NodeAutoConfiguration wiring (AD-82 D-5)
         expect(off.status).toBe(404);
         expect(await off.json()).toMatchObject({ type: 'urn:ndigo:not-found', status: 404 });
 
-        // AD-29 refresh: a higher-precedence source flips the flag; the
+        // On refresh: a higher-precedence source flips the flag; the
         // read-through provider serves the new state without a restart.
         environment.getPropertySources().addFirst('runtime', { 'feature.noteFlags': true });
         environment.refresh();
@@ -290,7 +290,7 @@ describe('@whenFeature through the real NodeAutoConfiguration wiring (AD-82 D-5)
     });
 });
 
-describe('targeting-context resolvers (AD-87 companion)', () => {
+describe('targeting-context resolvers', () => {
     /** A route carrying a node request (address and/or session bag). */
     function routeWith(request: Partial<NodeRequest>): Route {
         return {
@@ -398,7 +398,7 @@ describe('targeting-context resolvers (AD-87 companion)', () => {
     });
 });
 
-describe('app entry overrides reach the gate (AD-87 companion)', () => {
+describe('app entry overrides reach the gate', () => {
     test('FLAG_EVALUATOR and FLAG_CONTEXT_RESOLVER entries apply to @whenFeature routes', async () => {
         const seen: (FlagEvaluationContext | undefined)[] = [];
         const override: FlagEvaluator = {

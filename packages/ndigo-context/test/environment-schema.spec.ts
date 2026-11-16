@@ -15,7 +15,7 @@ const serverSchema = z.object({
     mode: z.string().optional(),
 });
 
-describe('@environment decorator (AD-17 D1)', () => {
+describe('@environment decorator', () => {
     test('stores the schema in class metadata', () => {
         @environment(serverSchema)
         class AppConfig {}
@@ -29,7 +29,7 @@ describe('@environment decorator (AD-17 D1)', () => {
     });
 });
 
-describe('validateEnvironment (AD-17 D2)', () => {
+describe('validateEnvironment', () => {
     test('valid environment resolves clean', () => {
         const env = new StandardEnvironment([{ server: { port: '8080', host: 'ndigo.dev' }, mode: 'prod' }]);
         const result = validateEnvironment(env, serverSchema);

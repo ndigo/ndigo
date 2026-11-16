@@ -6,7 +6,7 @@ and the two rules that key off this repository's package layout) rather than
 to Ndigo application code. Consumer-facing rules live in
 [`@ndigo/oxlint-plugin`](../../packages/ndigo-oxlint-plugin/README.md).
 
-`src/` is the home for repo-only cross-package concerns (AD-86); this
+`src/` is the home for repo-only cross-package concerns; this
 directory is **not a package** — no `package.json`, no build step, no
 published artifact.
 

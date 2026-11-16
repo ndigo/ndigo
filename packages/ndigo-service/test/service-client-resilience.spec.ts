@@ -1,5 +1,5 @@
 /**
- * Demo gate for `@ndigo/resilience` (AD-43 D-7): the exact composition a real
+ * Demo gate for `@ndigo/resilience`: the exact composition a real
  * app uses — `interceptMethods(serviceClient(API, http), [circuit, retry])` —
  * exercised on the service layer's real failure path: response-schema
  * validation throws `IllegalStateError` (`service-client.ts`), which the
@@ -7,7 +7,7 @@
  *
  * Transport-level failures are documented out of v1 scope: `HTTP.request`
  * never throws — fetch failures resolve as `ResponseError` *values* — so the
- * exception-path interceptors do not see them (see AD-43 D-8 amendment).
+ * exception-path interceptors do not see them (see amendment).
  */
 import '@tsmetadata/polyfill';
 
@@ -57,7 +57,7 @@ class PlainAPI {
     }
 }
 
-describe('resilient service client composition (AD-43 D-7 demo gate)', () => {
+describe('resilient service client composition ( demo gate)', () => {
     test('retry intercepts validation failures through the service client', async () => {
         fetchMock.mockResolvedValue(invalidBody());
         const api = interceptMethods(serviceClient(ResilientAPI, http) as unknown as ResilientAPI, [

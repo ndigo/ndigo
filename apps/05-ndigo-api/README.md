@@ -3,7 +3,7 @@
 > Node server showcase: controllers, opaque session-token auth, ORM-backed notes, content negotiation, and problem+json errors.
 
 Node server showcase built on `@ndigo/platform-node`: controllers, opaque session-token
-auth (AD-33), ORM-backed notes (+Drizzle), content negotiation, RFC 9457 problem+json
+auth, ORM-backed notes (+Drizzle), content negotiation, RFC 9457 problem+json
 errors, and actuator-style management endpoints.
 
 ## Run
@@ -14,7 +14,7 @@ cd apps/05-ndigo-api && pnpm start
 
 ## Introspection (`inspect`)
 
-AD-70 ships the manifest generator without a CLI: the demo entry point prints a
+The manifest generator ships without a CLI: the demo entry point prints a
 deterministic, versioned JSON manifest of this app.
 
 ```bash
@@ -50,13 +50,13 @@ POST /api/upload               multipart/form-data (file + optional meta)
 GET  /api/config.json          self-served remote config document
 GET  /api/config/remote        live resolved remote config value
 GET  /api/config/secrets       (Authorization: Bearer <token>) decrypted binding
-GET  /api/cached-report        60 s cached report (AD-24)
+GET  /api/cached-report        60 s cached report
 WS   /stomp/chat?token=<token> STOMP 1.2 chat (@authenticated)
 WS   /ws/chat                  raw socket chat (public contrast)
 GET  /health                   aggregate component health (management)
 GET  /metrics                  live telemetry counters (management)
-GET  /v3/api-docs              OpenAPI spec (AD-35; Bearer-gated, SEC-4)
-GET  /swagger-ui/              Swagger UI (AD-35; Bearer-gated, SEC-4)
+GET  /v3/api-docs              OpenAPI spec (Bearer-gated, SEC-4)
+GET  /swagger-ui/              Swagger UI (Bearer-gated, SEC-4)
 ```
 
 ## Demonstrates
@@ -65,7 +65,7 @@ GET  /swagger-ui/              Swagger UI (AD-35; Bearer-gated, SEC-4)
   (path/query/body/attribute binding)
 - Content negotiation by path extension and `Accept` header
 - `ResponseEntity` for status/header control and static file serving
-- Opaque session-token auth (`@ndigo/auth-server`, AD-33) and profile-gated dev entries (`@whenProfile('dev')`)
+- Opaque session-token auth (`@ndigo/auth-server`) and profile-gated dev entries (`@whenProfile('dev')`)
 - In-memory and Drizzle ORM entity managers
 - RFC 9457 problem+json error envelope
 - Scheduled heartbeat task (`@scheduled`, auto-discovered and auto-started; see the [scheduling guide](../../docs/guides/23-scheduling.md))

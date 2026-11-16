@@ -10,13 +10,13 @@ describe('PrometheusMetricReader', () => {
         metrics.disable();
     });
 
-    test('answers an empty snapshot when not bound to a meter provider (AD-77 D-2)', async () => {
+    test('answers an empty snapshot when not bound to a meter provider', async () => {
         const reader = new PrometheusMetricReader();
 
         expect(await reader.snapshot()).toEqual([]);
     });
 
-    test('projects counters, gauges and explicit histograms from the meter provider (AD-77 D-2/D-6)', async () => {
+    test('projects counters, gauges and explicit histograms from the meter provider', async () => {
         const reader = new PrometheusMetricReader();
         metrics.setGlobalMeterProvider(new MeterProvider({ readers: [reader] }));
         const meter = metrics.getMeter('prometheus-spec');

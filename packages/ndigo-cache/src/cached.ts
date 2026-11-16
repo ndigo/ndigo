@@ -29,7 +29,7 @@ export const DEFAULT_CACHE_NAME = 'default';
  */
 export interface CachedSpec {
     /**
-     * Typed cache-store handle (AD-34 D7): a `ContextToken`-identified cache
+     * Typed cache-store handle: a `ContextToken`-identified cache
      * under the instance's {@link CacheManager}. Takes precedence over
      * `cacheName`; the token's description is the store name.
      */
@@ -72,7 +72,7 @@ export interface NormalizedCachedSpec {
 /**
  * Normalizes and validates a {@link CachedSpec}. Throws at decoration time
  * for malformed specs — in any environment importing the module (the browser
- * included), mirroring `resolveScheduledSpec` (AD-20 D5.2).
+ * included), mirroring `resolveScheduledSpec`.
  *
  * @param spec - The supplied spec.
  * @returns The normalized spec record.
@@ -93,7 +93,7 @@ export function resolveCachedSpec(spec: CachedSpec = {}): NormalizedCachedSpec {
 }
 
 /**
- * Marks a method as cached (AD-24). The non-AOP interception mechanism
+ * Marks a method as cached. The non-AOP interception mechanism
  * mirrors `@transactional`: the decorator returns a wrapper that resolves
  * the {@link CacheManager} off the instance (`this.cacheManager`), calling
  * the raw method when absent — caching is disabled, but the method remains

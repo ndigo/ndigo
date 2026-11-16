@@ -1,5 +1,5 @@
 /**
- * Audit demo gate for `@ndigo/proxy` (AD-42 D-8): a `MethodInterceptor` +
+ * Audit demo gate for `@ndigo/proxy`: a `MethodInterceptor` +
  * annotation key pair that records every advised call in memory.
  */
 import { methodAnnotation, type MethodDescriptor, type MethodInvocation, type MethodInterceptor } from '@ndigo/proxy';

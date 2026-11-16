@@ -1,5 +1,5 @@
 /**
- * Isomorphic WebSocket client — WHATWG `WebSocket`-based (AD-22 D3).
+ * Isomorphic WebSocket client — WHATWG `WebSocket`-based.
  *
  * Runs on the same interface surface in browsers and Node ≥24 (undici
  * global), so the client lives in the isomorphic `@ndigo/socket` package:
@@ -18,7 +18,7 @@ import { AsyncReader } from './async-reader';
  * - `open` — messages flow both ways.
  * - `reconnecting` — the peer dropped unexpectedly; a retry is scheduled.
  * - `closed` — deliberate close (or `reconnect: null` after a drop);
- *   terminal, never reconnects (AD-22 D3).
+ * terminal, never reconnects.
  */
 export type SocketStatus = 'connecting' | 'open' | 'reconnecting' | 'closed';
 
@@ -56,7 +56,7 @@ export interface SocketTransport {
 }
 
 /**
- * Exponential backoff policy for unexpected-close reconnects (AD-22 D3).
+ * Exponential backoff policy for unexpected-close reconnects.
  */
 export interface ReconnectPolicy {
     /** First delay in ms (default `1000`). */
@@ -106,7 +106,7 @@ export interface WebSocketClientOptions {
      * keeps draining what was queued. Default: unbounded.
      */
     maxInboundMessages?: number;
-    /** Immediate-retry wiring (AD-22 D3); `null` disables. */
+    /** Immediate-retry wiring; `null` disables. */
     reconnectTrigger?: ReconnectTrigger | null;
     /**
      * Status-transition observer: invoked on every state change
@@ -137,7 +137,7 @@ export interface WebSocketClientOptions {
 export interface SocketClient {
     /** The endpoint URL the client connects to. */
     readonly url: string;
-    /** Reactive connection state (`@ndigo/signals` signal, AD-22 D3). */
+    /** Reactive connection state (`@ndigo/signals` signal). */
     readonly status: Signal<SocketStatus>;
     /**
      * Inbound messages as an async iterable. Text frames arrive as
@@ -155,7 +155,7 @@ export interface SocketClient {
      */
     send(data: unknown): void;
     /**
-     * Deliberate close — never triggers a reconnect (AD-22 D3).
+     * Deliberate close — never triggers a reconnect.
      *
      * @param code - Close status code (default `1000` normal).
      * @param reason - Human-readable close reason.
@@ -186,7 +186,7 @@ function defaultTransportFactory(url: string): SocketTransport {
 }
 
 /**
- * WHATWG-`WebSocket`-based client with reconnect (AD-22 D3).
+ * WHATWG-`WebSocket`-based client with reconnect.
  *
  * @example
  * ```ts
@@ -324,7 +324,7 @@ export class WebSocketClient implements SocketClient {
 
     /**
      * Deliberate close — latches, cancels any pending retry, and completes
-     * the message stream (AD-22 D3).
+     * the message stream.
      *
      * @param code - Close status code (default `1000` normal).
      * @param reason - Human-readable close reason.

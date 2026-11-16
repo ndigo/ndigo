@@ -422,7 +422,7 @@ describe('NodeSocketSessionRegistry', () => {
         });
     });
 
-    describe('session-level outbound watermark (AD-21 D6 hardening)', () => {
+    describe('session-level outbound watermark ( hardening)', () => {
         test('send over the watermark closes 1013 in close mode', () => {
             const transport = fakeTransport();
             transport.bufferedAmount = 2_000_000;

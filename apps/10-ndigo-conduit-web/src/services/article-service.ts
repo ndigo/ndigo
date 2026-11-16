@@ -4,7 +4,7 @@
  * The service owns the list/article state as `@ndigo/signals` signals and is the
  * only thing that talks to the API for articles; controllers read the signals
  * to build a model, and mutations call `router.refresh()` so the current route
- * re-renders from the new state (AD-53 D-3).
+ * re-renders from the new state.
  *
  * **Loading is keyed, not per-render.** A route dispatch calls
  * {@link ArticleService.ensureFeed}, which fetches only when the query changed

@@ -51,7 +51,7 @@ export class InvalidCredentialsError extends ApplicationError {
 }
 
 /**
- * The first-party credential authentication adapter (AD-33 D-5):
+ * The first-party credential authentication adapter:
  * username/password → opaque server session.
  *
  * Implements the existing {@link AuthAdapter} seam unchanged, so it plugs
@@ -72,7 +72,7 @@ export class InvalidCredentialsError extends ApplicationError {
  * - `refresh` — session **rotation**: new id, old id dead (fixation-safe);
  *   a disabled or deleted account cannot rotate.
  * - `logout` — session delete (single device).
- * - `logoutAll` — user-wide revocation (AD-68): every live session of the
+ * - `logoutAll` — user-wide revocation: every live session of the
  *   account is deleted and its `tokenVersion` advances, which also kills
  *   every outstanding JWT the `JWTAdapter` issued for the account.
  *
@@ -194,7 +194,7 @@ export class CredentialsAuthAdapter implements AuthAdapter {
     }
 
     /**
-     * Revokes every live credential of the account (AD-68): deletes all of
+     * Revokes every live credential of the account: deletes all of
      * its opaque sessions and advances its `tokenVersion`, which invalidates
      * every outstanding JWT issued for the account by `JWTAdapter`. Sessions
      * are removed first so a failing version bump can never leave tokens

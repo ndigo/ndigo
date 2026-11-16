@@ -121,7 +121,7 @@ export class NodeAppConfiguration {
     }
 
     /**
-     * Method-interception demo gate (AD-42 D-8): the class is the entry, so
+     * Method-interception demo gate: the class is the entry, so
      * the container instantiates it — eagerly at refresh end, by which time
      * the audit processor registered via `builder.processors(...)` is
      * already in place and the instance is woven at creation.
@@ -160,7 +160,7 @@ export class NodeAppConfiguration {
     }
 
     /**
-     * The scheduled heartbeat (AD-20 demo gate): a registered entry picked
+     * The scheduled heartbeat ( demo gate): a registered entry picked
      * up by the node platform's scheduler auto-discovery — zero wiring.
      */
     @entry()
@@ -176,13 +176,13 @@ export class NodeAppConfiguration {
      */
 
     /**
-     * Profile-gated entry (AD-14): registered only when the `dev` profile is
+     * Profile-gated entry: registered only when the `dev` profile is
      * active — `ApplicationBuilder.profiles('dev')` in the app entry.
      */
     @whenProfile(Profile.and('dev', Profile.not('staging')))
     @entry()
     devInfo() {
-        return { flavor: 'dev', note: 'profile-gated entry (AD-14)' };
+        return { flavor: 'dev', note: 'profile-gated entry' };
     }
 
     /**

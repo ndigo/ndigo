@@ -1,5 +1,5 @@
 /**
- * Context tokens for the `@ndigo/locks` entries (AD-73 D-4).
+ * Context tokens for the `@ndigo/locks` entries.
  */
 import { ContextToken } from '@ndigo/factory';
 import type { LockDriver } from './lock-driver';

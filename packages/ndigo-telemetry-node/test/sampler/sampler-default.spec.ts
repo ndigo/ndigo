@@ -1,5 +1,5 @@
 /**
- * Sampler default: parent-based always-on (AD-32 D-1) — the current
+ * Sampler default: parent-based always-on — the current
  * effective behavior, pinned before any drift is possible.
  */
 // @vitest-environment node

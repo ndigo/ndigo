@@ -21,7 +21,7 @@ import { authenticate, lookupPrincipal, invalidateToken } from './auth-store';
 export class AuthController {
     /**
      * POST /auth/login — authenticates credentials through the
-     * 'credentials' adapter (scrypt verify + opaque session, AD-33) and
+     * 'credentials' adapter (scrypt verify + opaque session) and
      * returns the token in the body (API-client flows) while also issuing
      * it as an HttpOnly session cookie (server-rendered flows).
      * Returns 401 with an error body on bad credentials.

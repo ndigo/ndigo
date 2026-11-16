@@ -1,5 +1,5 @@
 /**
- * AD-76 demo gate: the ndigo-api actuator surface served through the real
+ * Demo gate: the ndigo-api actuator surface served through the real
  * bootstrap path (the same `ApplicationBuilder` assembly `src/index.ts`
  * runs, with the app's own property sources).
  */
@@ -12,7 +12,7 @@ import { NodeAppConfiguration } from '../src/node-app-configuration';
 
 const LOGGER_NAME = 'ndigo-api.spec.logger';
 
-describe('actuator parity demo (AD-76)', () => {
+describe('actuator parity demo', () => {
     let base: string;
     let adapter: NodeHTTPServerAdapter;
 

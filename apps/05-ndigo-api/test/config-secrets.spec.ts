@@ -1,5 +1,5 @@
 /**
- * At-rest secrets demo gate (AD-29 Wave 2, SEC-4): with NDIGO_SECRET_KEY set
+ * At-rest secrets demo gate (SEC-4): with NDIGO_SECRET_KEY set
  * and a `{cipher:...}` value in the property source, the bound
  * `@configurationProperties` instance carries the plaintext and the
  * `/api/config/secrets` endpoint serves it — gated behind the app's
@@ -23,7 +23,7 @@ const KEY_B64 = Buffer.from(randomBytes(32)).toString('base64');
 const cipher = new AESGCMCipher(KEY_B64);
 const TOKEN_MARKER = cipher.encrypt('demo-secret-token', 'api.secretToken');
 
-describe('ndigo-api config-secrets demo (AD-29 Wave 2, SEC-4 gated)', () => {
+describe('ndigo-api config-secrets demo (SEC-4 gated)', () => {
     let context: Awaited<ReturnType<ApplicationBuilder['run']>>;
     let mockHTTP: MockHTTP;
 

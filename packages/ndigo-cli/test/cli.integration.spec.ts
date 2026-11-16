@@ -1,5 +1,5 @@
 /**
- * Real-bin integration lane (AD-75): every command exercised through
+ * Real-bin integration lane: every command exercised through
  * `lib/bin/run.js` as an actual subprocess — exit codes, help surface,
  * usage errors, and the `serve` end-to-end signal-relay drain. Requires
  * `build:lib` (the nx lane builds it; `pnpm --filter @ndigo/cli test` in
@@ -181,7 +181,7 @@ describe('ndigo (real bin)', () => {
         expect(`${out}${err}`).toContain("unknown generator 'wat'");
     });
 
-    test('generate points at `ndigo new` for the app kind (AD-85)', async () => {
+    test('generate points at `ndigo new` for the app kind', async () => {
         const { code, out, err } = await runCli(['generate', 'app', '--name', 'widget']);
         expect(code).toBe(2);
         expect(`${out}${err}`).toContain('ndigo new <name>');
@@ -339,7 +339,7 @@ setTimeout(() => {}, 120_000);
     }, 20_000);
 });
 
-describe('ndigo db (AD-78)', () => {
+describe('ndigo db', () => {
     let dbAppDir: string;
 
     beforeAll(() => {
@@ -721,7 +721,7 @@ describe('ndigo script fronts, env, and passthrough (issue #152)', () => {
         expect(out).toContain('["--out","spec.json","--format","yaml"]');
     });
 
-    test('db adapter-path commands pass --db through, and the DB url relays (AD-78)', async () => {
+    test('db adapter-path commands pass --db through, and the DB url relays', async () => {
         const { code, out } = await runCli(['db', 'list', '--db', 'bar', dbAppDir], undefined, {
             NDIGO_DB_URL: 'postgres://demo',
         });

@@ -1,6 +1,6 @@
 /**
  * Redis-backed {@link RateLimiter} — the shared-store fixed-window driver
- * (AD-79): every process counts against the same budgets, windows expire
+ * every process counts against the same budgets, windows expire
  * server-side by TTL, and one atomic Lua script per consume keeps the
  * check-and-count race-free.
  *

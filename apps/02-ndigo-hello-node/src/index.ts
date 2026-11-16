@@ -10,7 +10,7 @@ import { HelloConfiguration } from './hello-configuration';
 const logger = getLogger('ndigo-hello-node');
 
 async function main() {
-    // Lifecycle preset (AD-90): NodeAutoConfiguration + NodeEnvironment +
+    // Lifecycle preset: NodeAutoConfiguration + NodeEnvironment +
     // config files by default; the managed server is started before this
     // returns, and `app.port` is the port the socket actually bound (`PORT`
     // still wins over the app default).

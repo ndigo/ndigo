@@ -8,11 +8,11 @@ import { NodeAppConfiguration } from '../src/node-app-configuration';
 import { initAuth } from '../src/auth-store';
 
 /**
- * Cookie-session auth round-trip (AD-33 Wave 2) through the real
+ * Cookie-session auth round-trip through the real
  * ndigo-api pipeline: login issues an HttpOnly session cookie, `/auth/me`
  * resolves it, logout clears + invalidates it.
  */
-describe('ndigo-api cookie sessions (AD-33 Wave 2)', () => {
+describe('ndigo-api cookie sessions', () => {
     let mockHTTP: MockHTTP;
     let close: () => void;
 

@@ -8,7 +8,7 @@ import { Route } from '@ndigo/router';
 import { StaticResourceHandler, type StaticHandlerOptions } from './static-resource-handler';
 
 /**
- * Static file serving controller (AD-28): serves files under /static.
+ * Static file serving controller: serves files under /static.
  *
  * The catch-all route binds nested paths (`/static/assets/logo.png`
  * to `assets/logo.png`), and every HTTP concern — conditional GET, Range,

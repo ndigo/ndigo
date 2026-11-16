@@ -1,6 +1,6 @@
 /**
  * `ndigo inspect` demo entry point — builds the application manifest without
- * listening on a port (OP: introspection substrate, AD-70).
+ * listening on a port (OP: introspection substrate).
  *
  * Boots the same assembly as `src/index.ts`, enumerates routes, handler
  * mappings and declared configuration keys through `@ndigo/inspect`, prints the

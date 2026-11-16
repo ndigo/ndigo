@@ -32,7 +32,7 @@ const likeNormalizedSpec = (value: unknown): value is NormalizedScheduledSpec =>
  * them (telemetry-wrapped) with the context's `taskScheduler` entry, and
  * manages the scheduler's lifecycle.
  *
- * As a container entry it is driven by the factory lifecycle (AD-20 D2):
+ * As a container entry it is driven by the factory lifecycle:
  * registered by `NodeAutoConfiguration`, injected with the context via
  * `ApplicationContextAware`, **auto-started on refresh** (`SmartLifecycle`),
  * and stopped/destroyed on context close — zero extra wiring for Node apps.
@@ -41,7 +41,7 @@ const likeNormalizedSpec = (value: unknown): value is NormalizedScheduledSpec =>
  * per-name value): every entry instance's class metadata is read through
  * `Symbol.metadata`, and each `schedule:<method>` entry is bound to its
  * owner instance. A `@scheduled` class registered as a prototype (not an
- * instance) has no resolvable owner and fails start loudly (AD-20 D5.5).
+ * instance) has no resolvable owner and fails start loudly.
  */
 export class ScheduleRegistry implements AsyncDestroyable {
     #applicationContext: ApplicationContext | null = null;
@@ -229,7 +229,7 @@ export class ScheduleRegistry implements AsyncDestroyable {
             if (hasScheduledMethods) {
                 throw new FrameworkError(
                     `ScheduleRegistry: entry '${name}' has @scheduled methods but is registered as a class, not an ` +
-                        'instance — register an instance so the task owner can be resolved (AD-20 D5.5)'
+                        'instance — register an instance so the task owner can be resolved'
                 );
             }
             return;

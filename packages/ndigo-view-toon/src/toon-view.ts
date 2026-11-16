@@ -3,7 +3,7 @@
  * opt-in agent-facing representation beside `application/a2ui+json` and
  * `text/csv`.
  *
- * The dependency shape (AD-102): `@toon-format/toon` is a *regular* dep of
+ * The dependency shape: `@toon-format/toon` is a *regular* dep of
  * this dedicated package, statically imported, so `serialize` stays
  * synchronous and a wire surface fails at install time — never as a
  * request-time missing-module error. Consumers who do not want TOON install

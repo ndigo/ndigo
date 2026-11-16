@@ -30,7 +30,7 @@ import { HTTPServer, type HTTPServerAdapter, type TLSServerOptions } from '../sr
 import type { HTTPRequestLimits } from '../src/http-request-limits';
 
 /**
- * TLS origin + HTTP/2 (AD-81): the secure adapter branch binds
+ * TLS origin + HTTP/2: the secure adapter branch binds
  * `http2.createSecureServer({ allowHTTP1: true })` — ALPN negotiates h2
  * with an h1.1 fallback, WebSockets keep riding h1.1 (no RFC 8441), and
  * the drain deadline force-closes tracked sockets (the tls/h2 server has
@@ -99,7 +99,7 @@ async function collectBody(stream: NodeJS.ReadableStream): Promise<string> {
     return body;
 }
 
-describe.skipIf(!OPENSSL_AVAILABLE)('TLS origin + HTTP/2 (AD-81)', () => {
+describe.skipIf(!OPENSSL_AVAILABLE)('TLS origin + HTTP/2', () => {
     let dir: string;
     let keyPath: string;
     let certPath: string;
@@ -280,8 +280,7 @@ describe.skipIf(!OPENSSL_AVAILABLE)('TLS origin + HTTP/2 (AD-81)', () => {
         const broken = new NodeHTTPServerAdapter(new NodeDispatcher(), {
             tls: { key: join(dir, 'missing.pem'), cert: certPath },
         });
-        // The filesystem error surfaces as the listen() rejection (AD-81
-        // D-3's typed-error contract), not a bare handshake failure later.
+        // The filesystem error surfaces as the listen() rejection (the typed-error contract), not a bare handshake failure later.
         await expect(broken.listen(0, '127.0.0.1')).rejects.toThrow(/ENOENT|no such file/i);
     });
 

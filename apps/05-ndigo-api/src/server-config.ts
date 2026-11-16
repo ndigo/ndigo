@@ -5,20 +5,20 @@ import { ContextToken } from '@ndigo/context';
 import { z } from 'zod';
 
 /**
- * Type-safe handle for the bound `ServerConfig` entry (AD-34 D1). The entry is
+ * Type-safe handle for the bound `ServerConfig` entry. The entry is
  * auto-registered as `serverConfig` by `ApplicationBuilder`; consumers
  * resolve it with the token instead of the string.
  */
 export const SERVER_CONFIG = new ContextToken<ServerConfig>('serverConfig');
 
 /**
- * Type-safe handle for the bound `SecretsConfig` entry (AD-34 D1).
+ * Type-safe handle for the bound `SecretsConfig` entry.
  */
 export const SECRETS_CONFIG = new ContextToken<SecretsConfig>('secretsConfig');
 
 /**
  * Schema for `server.*` — keys, coercion, requiredness and defaults live
- * here and nowhere else (AD-34 D3 schema mode).
+ * here and nowhere else (schema mode).
  */
 const serverSchema = z.object({
     name: z.string().default('ndigo-api'),
@@ -28,7 +28,7 @@ const serverSchema = z.object({
 /**
  * Typed server configuration bound from environment properties:
  * `server.name` / `server.port` — resolved from property sources
- * (env/file/CLI), coerced and defaulted by the schema (AD-34 D3 — replaced
+ * (env/file/CLI), coerced and defaulted by the schema (replaced
  * the previous per-field `@property`/`@defaultValue` decorations).
  *
  * The `@configurationProperties` decorator auto-registers the bound instance
@@ -42,14 +42,14 @@ export class ServerConfig {
 }
 
 /**
- * Schema for `api.*` (AD-34 D3 schema mode).
+ * Schema for `api.*` ( schema mode).
  */
 const secretsSchema = z.object({
     secretToken: z.string().default('unset'),
 });
 
 /**
- * At-rest secrets demo (AD-29 Wave 2): a bound config value that is
+ * At-rest secrets demo: a bound config value that is
  * `{cipher:...}`-encrypted in the environment. With `NDIGO_SECRET_KEY` set,
  * `api.secretToken` resolves to its plaintext; without it, the raw marker
  * binds (a reverse-proxy/deployer sets the key, never the repo).
@@ -96,7 +96,7 @@ function parseBooleanFlag(value: unknown): unknown {
 }
 
 /**
- * Schema for `migrations.*` (AD-78 D-4) — the run-on-boot opt-in and the
+ * Schema for `migrations.*` — the run-on-boot opt-in and the
  * migrations directory, resolved from environment properties with schema
  * defaults.
  */
@@ -106,12 +106,12 @@ const migrationsSchema = z.object({
 });
 
 /**
- * Type-safe handle for the bound `MigrationsConfig` entry (AD-34 D1).
+ * Type-safe handle for the bound `MigrationsConfig` entry.
  */
 export const MIGRATIONS_CONFIG = new ContextToken<MigrationsConfig>('migrationsConfig');
 
 /**
- * Journaled-migration boot options (AD-78): `migrations.runOnBoot` applies
+ * Journaled-migration boot options: `migrations.runOnBoot` applies
  * pending file migrations through `migrateOnBoot` before the server starts
  * (fail-closed), against the same store the Drizzle routes read.
  */

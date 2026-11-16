@@ -1,5 +1,5 @@
 /**
- * AD-24 demo gate: `@cached` on a controller-backed service method.
+ * Demo gate: `@cached` on a controller-backed service method.
  */
 import '@tsmetadata/polyfill';
 import { getMapping, requestMapping } from '@ndigo/dispatcher';
@@ -9,19 +9,19 @@ import { AsApplicationContextAware, ContextToken } from '@ndigo/context';
 import type { ApplicationContext } from '@ndigo/context';
 
 /**
- * The reports store — typed cache handle (AD-34 D7): used by `@cached` and
+ * The reports store — typed cache handle: used by `@cached` and
  * by manual eviction (`cacheManager.getCache(REPORTS).delete(key)`).
  */
 export const REPORTS = new ContextToken<Cache<{ invocations: number; value: string }>>('reports');
 
 /**
- * `@cached` zero-wiring demo (AD-24):
+ * `@cached` zero-wiring demo:
  *
  * - The entry resolves the platform's `cacheManager` entry through
  *   `ApplicationContextAware` (the same DI seam `ScheduleRegistry` uses) —
  *   no manual cache construction.
  * - `report()` is cached for 60 s under the token-identified `reports` cache
- *   (AD-34 D7): two dispatches within the TTL invoke the method once (spec
+ * two dispatches within the TTL invoke the method once (spec
  *   counter), and the manual-invalidation contract is
  *   `cacheManager.getCache(REPORTS).delete/clear`.
  * - The cached method must be public for TC39 decorator application — the

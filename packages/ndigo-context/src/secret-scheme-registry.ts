@@ -1,5 +1,5 @@
 /**
- * Secret scheme registry — marker dispatch + wiring capability gate (AD-29 D-3).
+ * Secret scheme registry — marker dispatch + wiring capability gate.
  *
  * Registration is the wiring step: a cipher whose capabilities cannot honor
  * the full guarantee set is REFUSED here (throws), never silently wired with
@@ -40,7 +40,7 @@ export class SecretSchemeRegistry implements SecretDecryptor {
         if (!cipher.capabilities?.aad) {
             throw new IllegalStateError(
                 `Secret cipher "${cipher.scheme}" does not support AAD binding; refusing to wire ` +
-                    '(AD-29 D-3 capability gate — pluggability must not downgrade the threat model)'
+                    '( capability gate — pluggability must not downgrade the threat model)'
             );
         }
         this.#ciphers.set(cipher.scheme, cipher);

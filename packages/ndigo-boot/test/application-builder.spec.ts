@@ -228,7 +228,7 @@ describe('ApplicationBuilder.fromConfig', () => {
 const TOON_NESTED = 'properties:\n  server:\n    port: 9090\nprofiles[1]: production';
 const TOON_FLAT = 'properties:\n  server.port: 9090';
 
-describe('ApplicationBuilder.fromConfig — TOON decode (AD-66 Phase 3)', () => {
+describe('ApplicationBuilder.fromConfig — TOON decode', () => {
     beforeEach(() => {
         vi.stubGlobal('fetch', vi.fn());
     });

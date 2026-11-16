@@ -4,7 +4,7 @@
  * Loaded directly as TypeScript by oxlint's JS-plugin runtime (Node ≥24 type
  * stripping) — there is no build step, so relative imports carry explicit
  * `.ts` extensions. Consumer-facing rules ship in `@ndigo/oxlint-plugin`
- * instead; this tree never leaves the repository (AD-86).
+ * instead; this tree never leaves the repository.
  */
 import { eslintCompatPlugin } from '@oxlint/plugins';
 

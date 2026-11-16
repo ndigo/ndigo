@@ -20,7 +20,7 @@ export class ResponseEntityView implements ProducerView {
      * @returns The render result.
      */
     async renderTo(entity: ResponseEntity<unknown>, route: Route): Promise<RenderResult> {
-        // AD-10: every 4xx/5xx response is a problem+json document.
+        // Every 4xx/5xx response is a problem+json document.
         if (entity.status.code >= 400) {
             const details = isProblemDetails(entity.body)
                 ? // NOTE: bridging to ProblemDetails — the source type is wider than this consumer's contract.

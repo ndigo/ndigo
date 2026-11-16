@@ -12,7 +12,7 @@ one-minor deprecation window
 "Theme" named three unrelated things: a content registry (`ThemeResolver`), a
 request selector (also `ThemeResolver`), and a set of visual tokens with no
 runtime at all. Selection was fixed when the context started, so a user's
-choice could never reach server rendering. [AD-106](../decisions/2026-11-14_AD106_THEME_MODEL.md)
+choice could never reach server rendering. [The theme-model decision](../decisions/2026-11-14_AD106_THEME_MODEL.md)
 splits the concerns:
 
 - **Registry** — `ThemeSource` answers "which content source owns this theme?"
@@ -118,6 +118,6 @@ deprecation window, a rollback needs only the version pin.
 
 ## References
 
-- [AD-106](../decisions/2026-11-14_AD106_THEME_MODEL.md)
+- [The theme-model decision](../decisions/2026-11-14_AD106_THEME_MODEL.md)
 - [Guide 30 — UI Libraries & Component Integration](../guides/30-component-integration.md)
 - Issue #482

@@ -1,5 +1,5 @@
 /**
- * Live standalone Redis rate-limiter contracts (AD-79): shared budgets
+ * Live standalone Redis rate-limiter contracts: shared budgets
  * across separate connections (two nodes), namespace isolation, TTL
  * windows, and the fail-closed/fail-open storage posture.
  */

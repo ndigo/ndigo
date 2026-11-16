@@ -1,6 +1,5 @@
 /**
- * `ndigo db status` — report the applied/pending state of every migration
- * (AD-78 D-5).
+ * `ndigo db status` — report the applied/pending state of every migration.
  *
  * Runs the app's declared `scripts.db:status` under the one-shot process
  * lifecycle; the app script prints `DrizzleMigrator.status()` rows — the
@@ -45,6 +44,6 @@ export const dbStatusCommand = buildCommand({
         fullDescription:
             "Runs the app's scripts.db:status under the one-shot process " +
             'lifecycle — the app script prints DrizzleMigrator.status() rows ' +
-            'from the journal (AD-78).',
+            'from the journal.',
     },
 });

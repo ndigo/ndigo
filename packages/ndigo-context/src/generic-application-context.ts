@@ -84,7 +84,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
     }
 
     /**
-     * Schema-typed configuration read off the context environment (AD-34 D3).
+     * Schema-typed configuration read off the context environment.
      * @param prefix - The prefix.
      * @param schema - The schema.
      * @returns The value.
@@ -489,7 +489,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
 
     /**
      * Wires the registered `refresh` scope's `clear()` to the environment's
-     * `config:refresh` event (AD-29 D-2): refresh-scoped entries re-create from
+     * `config:refresh` event: refresh-scoped entries re-create from
      * their factories when the environment refreshes. Re-subscribing on a new
      * environment detaches the previous subscription (listener identity
      * tracked).
@@ -669,7 +669,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
             // FACTORY-12: only eagerly instantiate scopes that support it —
             // hash/route scopes have no active key at refresh (getValue would
             // throw) and prototype entries would be created then discarded.
-            // Singleton/refresh/custom scopes stay eager (AD-29 D-2).
+            // Singleton/refresh/custom scopes stay eager.
             if (name && this.hasValue(name) && this.shouldEagerlyInstantiate(name)) {
                 this.getValue(name);
             }

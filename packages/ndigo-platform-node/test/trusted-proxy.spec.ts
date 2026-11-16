@@ -11,7 +11,7 @@ import { rateLimit } from '../src/rate-limit-interceptor';
 import { TrustedProxySet, resolveClientAddress } from '../src/trusted-proxy';
 
 /**
- * Trusted-proxy resolution (AD-37, closes the gap-analysis Tier-2 row):
+ * Trusted-proxy resolution (closes the gap-analysis Tier-2 row):
  * `X-Forwarded-For` is honored ONLY when the direct socket peer is a
  * configured trusted proxy; otherwise it is attacker input and must be
  * ignored. The walk follows the industry-standard rightmost-untrusted

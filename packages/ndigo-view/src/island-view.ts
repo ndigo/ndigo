@@ -188,7 +188,7 @@ export class IslandView extends AbstractTemplateView {
         }
 
         // The resolved request language rides along so the hydrated element
-        // can format identically to the server-rendered output (AD-19 D5).
+        // can format identically to the server-rendered output.
         // Escaped like the model: the attribute sits in generated markup and
         // the value may originate from request headers.
         const rawLocale = (request as Route | null)?.attributes?.[LANGUAGE_ATTRIBUTE];

@@ -1,5 +1,5 @@
 /**
- * Schema-config binding, property keys and typedConfig specs (AD-34 D3/D4).
+ * Schema-config binding, property keys and typedConfig specs.
  */
 import { describe, test, expect } from 'vitest';
 import { z } from 'zod';
@@ -12,7 +12,7 @@ const serverSchema = z.object({
     port: z.coerce.number().default(3000),
 });
 
-describe('resolveSchemaConfig (AD-34 D3)', () => {
+describe('resolveSchemaConfig', () => {
     test('resolves shape keys under the prefix with coercion and defaults', () => {
         const env = new StandardEnvironment([{ server: { name: 'api.prod', port: '9090' } }]);
 
@@ -53,7 +53,7 @@ describe('parseSchemaConfig', () => {
     });
 });
 
-describe('propertyKeys (AD-34 D4)', () => {
+describe('propertyKeys', () => {
     test('materializes leaf keypaths in the same shape', () => {
         const keys = propertyKeys({ server: { name: '', port: 0 }, db: { url: '' } });
 
@@ -69,7 +69,7 @@ describe('propertyKeys (AD-34 D4)', () => {
     });
 });
 
-describe('typedConfig (AD-34 D3)', () => {
+describe('typedConfig', () => {
     test('environment resolves schema-typed values', () => {
         const env = new StandardEnvironment([{ server: { name: 'x', port: '4444' } }]);
 

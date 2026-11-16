@@ -56,7 +56,7 @@ The full API is at `api/` (generated; run `pnpm doc:api`). Primary exports live 
 [`src/index.ts`](src/index.ts);
 
 - **Logging** — `getLogger`, logger abstraction with threshold filtering
-- **Metrics** — `FeatureMetricAggregator`, `@counted`, the metric snapshot model (`MetricSnapshot`/`MetricSnapshotProvider` registry) and the Prometheus-text / JSON renderers the management `/metrics` endpoint serves (AD-77)
+- **Metrics** — `FeatureMetricAggregator`, `@counted`, the metric snapshot model (`MetricSnapshot`/`MetricSnapshotProvider` registry) and the Prometheus-text / JSON renderers the management `/metrics` endpoint serves
 - **Tracing** — `@traced` decorator, platform-free instrumentation bases
 - **Severity mapping** — utilities for `syslog`, `npm`, `apache`, and `cli`
 

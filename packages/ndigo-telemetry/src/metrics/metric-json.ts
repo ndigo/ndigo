@@ -1,5 +1,5 @@
 /**
- * The JSON projection of metric snapshots (AD-77 D-4): the same
+ * The JSON projection of metric snapshots: the same
  * {@link MetricSnapshot} array the Prometheus renderer consumes, as a
  * deterministic JSON document. One source of truth, two wire forms.
  */

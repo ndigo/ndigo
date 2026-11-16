@@ -1,5 +1,5 @@
 /**
- * `PropertyFlagProvider` semantics (AD-82 D-3): the read-through matrix —
+ * `PropertyFlagProvider` semantics: the read-through matrix —
  * boolean/number/string/object, DEFAULT on missing, DISABLED on false,
  * TYPE_MISMATCH/PARSE_ERROR + default, never-throw on a throwing reader,
  * namespace resolution, and default-value typing.

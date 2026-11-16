@@ -37,7 +37,7 @@ function parseDurationValue(value: unknown, label: string, options?: { positive?
 const lockNamePattern = /^[A-Za-z0-9._:-]+$/;
 
 /**
- * Normalizes and validates the AD-73 lock options shared by both spec
+ * Normalizes and validates the lock options shared by both spec
  * forms: `lock`, `lockWait`, `lockWaitStep`, `lockTtl`.
  *
  * @param spec - The raw spec object (unknown-typed via narrowing).
@@ -72,7 +72,7 @@ function resolveLockFields(spec: { lock?: unknown; lockWait?: unknown; lockWaitS
  *
  * Throws at decoration time for malformed cron expressions, durations, and
  * time zones — in any environment importing the module, the browser
- * included (AD-20 D5.2).
+ * included.
  *
  * @param spec - The supplied schedule.
  * @returns The normalized schedule record.
@@ -144,12 +144,12 @@ function validateCron(expression: string): void {
 }
 
 /**
- * Marks a method as a scheduled task (AD-20 D1).
+ * Marks a method as a scheduled task.
  *
  * Node-only: the decorator refuses to apply in environments without a
  * `process` global (genuine browsers). Bundlers that polyfill `process` can
  * evade the runtime check — the `no-scheduled-in-browser` lint rule covers
- * repository code and docs cover the rest (AD-20 D5.3).
+ * repository code and docs cover the rest.
  *
  * @param spec - A cron string, `{ cron }`, or `{ fixedRate | fixedDelay }`
  *   specification (with optional `timeZone` and `maxRunTime`).

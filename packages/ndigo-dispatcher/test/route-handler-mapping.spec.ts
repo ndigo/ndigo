@@ -85,7 +85,7 @@ describe('RouteHandlerMapping', () => {
             expect(controllerOf(chain).id).toBe(barController.id);
         });
 
-        test('it should resolve token handlers (AD-34 D1)', () => {
+        test('it should resolve token handlers', () => {
             const fooToken = new ContextToken<TestController>('fooControllerToken');
             applicationContext.setValue(fooToken, fooController);
 

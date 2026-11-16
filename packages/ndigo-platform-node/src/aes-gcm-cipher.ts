@@ -1,5 +1,5 @@
 /**
- * AES-256-GCM cipher backend for at-rest config secrets (AD-29 D-4).
+ * AES-256-GCM cipher backend for at-rest config secrets.
  *
  * Marker format: `{cipher:v1:<base64url(iv | tag | ct)>}` — 12-byte IV,
  * 16-byte tag, plaintext ciphertext, AES-256-GCM. The three binary segments
@@ -19,7 +19,7 @@
  *   `IllegalStateError`, never plaintext.
  * - Key-path AAD binding: the resolver passes the property key (`db.password`)
  *   as additional authenticated data — ciphertext moved between key paths
- *   fails auth at lookup (AD-29 D-4).
+ * fails auth at lookup.
  * - Fresh random 96-bit nonce per encryption; no nonce reuse in a key
  *   lifetime (random nonce collision bound p ≈ n²/2⁹⁷ — negligible at
  *   config-file scale, documented).
@@ -77,7 +77,7 @@ const decodePayload = (payload: string): DecodedPayload => {
 };
 
 /**
- * AES-256-GCM {@link SecretCipher} implementation (AD-29 rung 1).
+ * AES-256-GCM {@link SecretCipher} implementation ( rung 1).
  *
  * The reference backend for at-rest config secrets: zero dependencies
  * (platform-standard `node:crypto`), versioned marker, key-path AAD binding.

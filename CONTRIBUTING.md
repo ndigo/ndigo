@@ -102,7 +102,7 @@ change a package or app.
 Plans (`docs/plans/`, kept locally, not published) and ADRs
 (`docs/decisions/`) are reviewable engineering artifacts with the same
 verification bar as code. Model the structure of the recent ADR/plan pairs
-(e.g. AD-26): `Date`/`Status` header first, then Problem, Decisions (D-N),
+(e.g. the most recent pair): `Date`/`Status` header first, then Problem, Decisions (D-N),
 Risks, Sequencing (waves with per-wave gates), Verification.
 Minimum requirements before a plan is ready to build:
 

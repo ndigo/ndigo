@@ -1,7 +1,7 @@
 /**
  * `ndigo dev` — run the application's development script (vite for browser
  * apps, the app's `dev`/`start` for Node apps) under the supervisor
- * lifecycle. Server watch/hot-reload is documented as v1.1 (AD-75 D-2).
+ * lifecycle. Server watch/hot-reload is documented as v1.1.
  */
 import { buildCommand, numberParser } from '@stricli/core';
 import { readAppManifest, resolveAppDir, runAppSupervised } from '../helpers/app-scripts.js';

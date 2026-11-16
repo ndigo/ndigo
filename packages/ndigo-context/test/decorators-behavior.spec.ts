@@ -105,7 +105,7 @@ describe('@whenProfile Decorator', () => {
         expect(devContext.getValue('prodOnly')).toBeUndefined();
     });
 
-    it('evaluates profile expressions on entries (AD-14)', () => {
+    it('evaluates profile expressions on entries', () => {
         @configuration
         class TestConfig {
             @whenProfile('!prod & (dev | test)')
@@ -136,7 +136,7 @@ describe('@whenProfile Decorator', () => {
         expect(prodContext.getValue('prodOnly')).toBe('prod');
     });
 
-    it('default profiles gate when nothing is explicit (AD-14)', () => {
+    it('default profiles gate when nothing is explicit', () => {
         @configuration
         class TestConfig {
             @whenProfile('base')
@@ -178,7 +178,7 @@ describe('@property Decorator', () => {
         expect(descriptor).toBeDefined();
         // The decorator no longer replaces the field with null — the
         // author's initializer survives so config binders can infer the
-        // field type (AD-15); the parser overwrites resolved values.
+        // field type; the parser overwrites resolved values.
         expect(descriptor?.value).toBe('initial');
         expect(descriptor?.writable).toBe(true);
     });
@@ -345,7 +345,7 @@ describe('@entry Decorator', () => {
         expect(metadata['config:entry:myMethod']).toEqual({ name: 'customName', token: undefined });
     });
 
-    it('stores entry metadata with a ContextToken when used with a token (AD-34 D1)', () => {
+    it('stores entry metadata with a ContextToken when used with a token', () => {
         const methodToken = new ContextToken<string>('methodToken');
 
         @configuration

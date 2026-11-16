@@ -1,5 +1,5 @@
 /**
- * Context tokens for the `@ndigo/rate-limit` entries (AD-79 D-2).
+ * Context tokens for the `@ndigo/rate-limit` entries.
  */
 import { ContextToken } from '@ndigo/factory';
 import type { RateLimiter } from './rate-limiter';

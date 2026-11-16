@@ -1,6 +1,6 @@
 /**
  * The metric snapshot model — the SDK-free seam between the OpenTelemetry
- * meter provider and the management HTTP surface (AD-77 D-3).
+ * meter provider and the management HTTP surface.
  *
  * `@ndigo/telemetry` stays isomorphic: it carries neither the SDK reader
  * (`@ndigo/telemetry-node` implements {@link MetricSnapshotProvider} over
@@ -72,7 +72,7 @@ export interface MetricSnapshotProvider {
     snapshot(): Promise<readonly MetricSnapshot[]>;
 }
 
-// Single-slot registry (AD-77 D-3), mirroring OTel's global-provider pattern:
+// Single-slot registry, mirroring OTel's global-provider pattern:
 // `configureTelemetry` registers the SDK reader after `sdk.start()`, and the
 // `/metrics` controller reads it per request — zero wiring between the two
 // auto-configurations, the same story `FeatureMetricAggregator` had via

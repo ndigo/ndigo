@@ -11,7 +11,7 @@ export type HealthState = 'UP' | 'DOWN' | 'UNKNOWN';
 
 /**
  * The marker `/health` reports when an indicator throws and error details
- * are redacted (SEC-5/AD-36): the status stays `DOWN` and the component name
+ * are redacted (SEC-5): the status stays `DOWN` and the component name
  * is preserved, but the exception text never reaches the wire.
  */
 export const HEALTH_ERROR_REDACTED = 'unavailable';
@@ -23,7 +23,7 @@ export interface HealthRegistryOptions {
     /**
      * Whether thrown indicator errors are redacted to
      * {@link HEALTH_ERROR_REDACTED}. Default `false` — the registry is a
-     * shared API; the `/health` endpoint (AD-36) opts into redaction by
+     * shared API; the `/health` endpoint opts into redaction by
      * default via `ManagementAutoConfigurationOptions.redactHealthErrors`.
      */
     redactHealthErrors?: boolean;
@@ -141,7 +141,7 @@ export class HealthRegistry implements Enumerable<string, HealthIndicator> {
 
     /**
      * Runs the registered indicators (or the named subset) and aggregates
-     * the results (AD-76 D-6).
+     * the results.
      *
      * Unknown names in `names` are skipped; an empty intersection produces
      * `{ status: 'UNKNOWN', components: {} }` — callers decide the 404.

@@ -25,7 +25,7 @@
  *
  * Claims are lease-based (`claimPending` sets a lease; expired leases are
  * re-claimable), so a crashed relay or failed publish re-surfaces the entry —
- * at-least-once, consumers subscribe idempotently (AD-72 D-6). Published rows
+ * at-least-once, consumers subscribe idempotently. Published rows
  * are retained until `prunePublished`.
  *
  * Same options/dispose semantics as the sibling durable stores: owned

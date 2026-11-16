@@ -24,7 +24,7 @@ export interface RegisteredJobHandler {
 }
 
 /**
- * Holds the job-type → handler mapping. Two registration paths (AD-72 D-5):
+ * Holds the job-type → handler mapping. Two registration paths:
  *
  * - **Declarative** — `@jobHandler('type')` methods on entries are discovered
  *   when the registry starts (container lifecycle: `SmartLifecycle`, phase 0,

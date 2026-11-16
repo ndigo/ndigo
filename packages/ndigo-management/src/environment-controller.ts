@@ -1,5 +1,5 @@
 /**
- * Serves environment/property-source visibility under `/env` (AD-76 D-3).
+ * Serves environment/property-source visibility under `/env`.
  * Registered WITHOUT route decorators — the auto-configuration wires the
  * routes explicitly so exposure can gate them.
  */
@@ -53,7 +53,7 @@ function flatten(node: unknown, prefix: string, into: Map<string, unknown>): voi
  * `{ activeProfiles, propertySources: [{ name, properties }] }`. Values are
  * `"<redacted>"` unless `management.endpoints.env.showValues: true`, and
  * even then only the raw stored text is emitted — decrypted plaintext
- * never reaches the wire (AD-76 D-3). `?toMatch=` filters to sources whose
+ * never reaches the wire. `?toMatch=` filters to sources whose
  * name contains the term plus properties whose key starts with it.
  */
 @requestMapping('/env')
@@ -65,7 +65,7 @@ export class EnvironmentController extends AsApplicationContextAware(Null) {
     /**
      * Creates the `/env` controller.
      *
-     * @param exposure - The programmatic exposure override (AD-76 D-5);
+     * @param exposure - The programmatic exposure override;
      *   wins over the `management.*` source section.
      */
     constructor(exposure: { include?: string[]; exclude?: string[] } = {}) {

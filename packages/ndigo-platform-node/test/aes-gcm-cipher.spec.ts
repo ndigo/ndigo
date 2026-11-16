@@ -1,5 +1,5 @@
 /**
- * AESGCMCipher behavioral + known-answer tests (AD-29 Wave 2, D-4).
+ * AESGCMCipher behavioral + known-answer tests (D-4).
  *
  * The NIST/Wycheproof vectors below are AES-256-GCM known-answer tests:
  * fixed key/IV/AAD → exact ciphertext + tag. They cross-check the cipher's
@@ -47,7 +47,7 @@ const KAT_VECTORS = [
     },
 ];
 
-describe('AESGCMCipher (AD-29 D-4)', () => {
+describe('AESGCMCipher', () => {
     let cipher: AESGCMCipher;
 
     beforeEach(() => {
@@ -131,7 +131,7 @@ describe('AESGCMCipher (AD-29 D-4)', () => {
     });
 });
 
-describe('SecretSchemeRegistry capability gate (AD-29 D-3)', () => {
+describe('SecretSchemeRegistry capability gate', () => {
     it('refuses to wire a cipher without AAD capability', () => {
         const registry = new SecretSchemeRegistry();
         const noAad = {

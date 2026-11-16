@@ -1,5 +1,5 @@
 /**
- * NodeSDK configuration for `@ndigo/telemetry-node` (AD-32): sampler
+ * NodeSDK configuration for `@ndigo/telemetry-node`: sampler
  * presets, per-signal exporter ergonomics, and a once-per-process guard.
  */
 import { SeverityNumber } from '@opentelemetry/api-logs';
@@ -27,7 +27,7 @@ import { getLogger } from '@ndigo/log';
 const logger = getLogger('ndigo-telemetry-node:node-config');
 
 /**
- * Trace sampling configuration (AD-32 D-1). Presets resolve to parent-based
+ * Trace sampling configuration. Presets resolve to parent-based
  * samplers so child spans inherit the root decision; a raw OTel `Sampler`
  * passes through untouched. Default: `'always'` (100% sampling — today's
  * effective behavior).
@@ -35,13 +35,13 @@ const logger = getLogger('ndigo-telemetry-node:node-config');
 export type SamplerSpec = { ratio: number } | 'always' | 'off' | Sampler;
 
 /**
- * Per-signal exporter configuration (AD-32 D-2), reaching parity with
+ * Per-signal exporter configuration, reaching parity with
  * `@ndigo/telemetry-web`'s dev posture:
  * - `undefined`/`'console'`/`{ console: true }` — console exporter
  *   (the dev default; a missing url can no longer silently phone the
  *   default collector);
  * - `'none'` — the signal's export path is disabled;
- * - `'prometheus'` — **metric signal only** (AD-77 D-1): registers the pull
+ * - `'prometheus'` — **metric signal only**: registers the pull
  *   {@link PrometheusMetricReader} instead of the periodic push reader, and
  *   serves the meter state through `GET /metrics` in the Prometheus text
  *   exposition format (plus the JSON projection);
@@ -83,7 +83,7 @@ export type ResolvedExporter =
     | { kind: 'prometheus' };
 
 /**
- * Resolves a per-signal exporter spec (AD-32 D-2/D-3). Pure — no providers
+ * Resolves a per-signal exporter spec. Pure — no providers
  * are touched — so the shape table is unit-testable in one process.
  * OTLP urls fail loud here (`new URL`), naming the signal in the error.
  *
@@ -157,7 +157,7 @@ function resolveSampler(spec: SamplerSpec | undefined): Sampler {
 let configured = false;
 
 /**
- * Configures the global OpenTelemetry providers for one process (AD-32).
+ * Configures the global OpenTelemetry providers for one process.
  *
  * OTel's API registers global providers once per process — later calls are
  * silently ignored — so this shim warns loudly instead: the first call wins
@@ -204,7 +204,7 @@ export function configureTelemetry(config: TelemetryConfig) {
               : undefined;
 
     // Metrics: the reader list is always explicit (as before). The
-    // `'prometheus'` spec (AD-77 D-1) swaps the periodic push reader for the
+    // `'prometheus'` spec swaps the periodic push reader for the
     // pull reader; the same process cannot push and pull (one reader slot —
     // combining them is a future `metricReaders` knob).
     let prometheusReader: PrometheusMetricReader | undefined;
@@ -230,7 +230,7 @@ export function configureTelemetry(config: TelemetryConfig) {
         log.kind === 'none' || log.kind === 'prometheus' ? [] : [logRecordProcessorFor(log, config.minimumSeverity)];
 
     const sdk = new NodeSDK({
-        // AD-32 D-1: parent-based sampler presets preserve the SDK default
+        // Parent-based sampler presets preserve the SDK default
         // (parentbased always-on) unless configured otherwise.
         sampler,
         ...(trace.kind === 'otlp'
@@ -245,7 +245,7 @@ export function configureTelemetry(config: TelemetryConfig) {
 
     sdk.start();
 
-    // AD-77 D-3: the pull reader becomes the process's metric snapshot source
+    // The pull reader becomes the process's metric snapshot source
     // (single slot, last registration wins) — `@ndigo/management`'s `/metrics`
     // endpoint reads it per request with zero wiring.
     if (prometheusReader !== undefined) {

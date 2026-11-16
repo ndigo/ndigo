@@ -1,5 +1,5 @@
 /**
- * Database-adapter abstraction (AD-96): the contract `@ndigo/cli`'s
+ * Database-adapter abstraction: the contract `@ndigo/cli`'s
  * `db *` commands talk to, plus the in-app runner that dispatches them.
  *
  * The ORM package defines the contract; concrete engines

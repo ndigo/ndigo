@@ -81,7 +81,7 @@ silently recycled.
 - `@requestMapping` / `@getMapping` / `@postMapping` / `@putMapping` /
   `@patchMapping` / `@deleteMapping` controllers with `@parameters`
   (path variable, header, whole body)
-- Zod request validation through `validatedBody` (AD-07) — schema failures are `422`
+- Zod request validation through `validatedBody` — schema failures are `422`
 - `ResponseEntity` for exact statuses and the `Location`/`Allow` headers
 - RFC 9457 problem+json error envelopes for `400`/`404`/`405`/`415`/`422`
 - `HEAD` → `GET` fallback and explicit `OPTIONS` mappings

@@ -18,7 +18,7 @@ export interface PackageGeneratorSchema {
     description?: string;
     /**
      * Wire the `@ndigo/jobs` dependency (durable jobs / transactional
-     * outbox, AD-72) into the generated package. Off by default — keep
+     * outbox) into the generated package. Off by default — keep
      * skeletons dependency-free until a feature asks for one.
      */
     jobs?: boolean;
@@ -49,7 +49,7 @@ export default async function packageGenerator(tree: Tree, schema: PackageGenera
 
     if (jobs) {
         // The skeleton ships dependency-free; a package opting into the
-        // AD-72 jobs/outbox surface needs its runtime dep wired here
+        // Jobs/outbox surface needs its runtime dep wired here
         // (mirrors how platform-node declares @ndigo/jobs).
         const manifestPath = join(projectRoot, 'package.json');
         const manifestContent = tree.read(manifestPath, 'utf-8');

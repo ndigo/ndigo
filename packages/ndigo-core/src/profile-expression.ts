@@ -1,7 +1,7 @@
 /**
  * Reference-style profile expression grammar (`name`, `!`, `&`, `|`,
  * parentheses) — parsed, never eval'd. Re-homed from `@ndigo/context` with
- * the conditional-family profile unification (AD-83).
+ * the conditional-family profile unification.
  */
 import { IllegalStateError } from './error.js';
 

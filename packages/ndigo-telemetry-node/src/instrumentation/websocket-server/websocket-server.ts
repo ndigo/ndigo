@@ -32,7 +32,7 @@ export interface WebSocketServerInstrumentationOptions {
 }
 
 /**
- * Instrumentation for {@link NodeSocketSessionRegistry} (AD-21/AD-22):
+ * Instrumentation for {@link NodeSocketSessionRegistry}:
  *
  * - **Session lifetime**: `register`/`remove` pair into a
  *   `SocketSession.connect` SERVER span (path, duration, close code) —

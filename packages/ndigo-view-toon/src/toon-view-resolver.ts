@@ -2,7 +2,7 @@
  * Builds a resolver that serves {@link ToonView} for one logical view name,
  * so content negotiation can pick TOON against other representations — the
  * same shape as `@ndigo/view`'s `a2uiViewResolver`. Opt-in per route, never
- * a default (AD-102 D-3): the platform's negotiation wiring registers
+ * a default: the platform's negotiation wiring registers
  * nothing for `.toon`, and an app opts in by adding this resolver and, if it
  * wants the extension, a `'toon'` entry in its own path-extension map.
  */

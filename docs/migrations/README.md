@@ -4,7 +4,7 @@ This directory contains migration guides documenting breaking changes and upgrad
 
 ## Available Migrations
 
-- [2026-11-14_THEME_MODEL.md](./2026-11-14_THEME_MODEL.md) - Theme model (AD-106): `ThemeResolver` registry → `ThemeSource`, per-request negotiation, and visual application via `@ndigo/ui-web`
+- [2026-11-14_THEME_MODEL.md](./2026-11-14_THEME_MODEL.md) - Theme model: `ThemeResolver` registry → `ThemeSource`, per-request negotiation, and visual application via `@ndigo/ui-web`
 - [2026-11-04_LIBSQL_CLIENT_0_18_UPGRADE.md](./2026-11-04_LIBSQL_CLIENT_0_18_UPGRADE.md) - `@libsql/client` 0.17.4→0.18.0: pooled local driver, interactive-transaction boundary in `@ndigo/orm-drizzle`
 - [2026-11-04_CRONER_11_I18NEXT_26_UPGRADE.md](./2026-11-04_CRONER_11_I18NEXT_26_UPGRADE.md) - Runtime deps: croner 10→11 (DST semantics) and i18next 24→26 (`initImmediate` removal)
 - [2026-11-04_VITEST_5_UPGRADE.md](./2026-11-04_VITEST_5_UPGRADE.md) - Vitest 4.0.18→5.1.0: `bench` fixture rewrite, per-lane config wiring, decorator lowering in test lanes

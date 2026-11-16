@@ -64,7 +64,7 @@ async function main() {
           })
         : undefined;
 
-    // Lifecycle preset (AD-90): builds the same context this app used to
+    // Lifecycle preset: builds the same context this app used to
     // assemble by hand — NodeAutoConfiguration, config files (the platform
     // reader replaces the hand-written adapter), the `dev` profile, and the
     // `server.*` properties — then starts the managed server and wires
@@ -89,7 +89,7 @@ async function main() {
             profiles: ['dev'],
             properties: { 'server.name': 'ndigo-api' },
             configureBuilder: (builder) => {
-                // At-rest config secrets (AD-29 Wave 2): when NDIGO_SECRET_KEY
+                // At-rest config secrets: when NDIGO_SECRET_KEY
                 // is set, {cipher:...} values anywhere in the environment
                 // resolve to plaintext. Without the key, boot still proceeds —
                 // markers would bind raw and only fail loud if a lookup or
@@ -98,7 +98,7 @@ async function main() {
                     builder.secrets(AESGCMCipher.fromEnvironment());
                 }
 
-                // Remote config source (AD-29 Wave 3): when a config-server
+                // Remote config source: when a config-server
                 // URL is set, fetch (and poll) a plain JSON document at the
                 // `configServer` precedence slot. The self-served demo
                 // endpoint `/api/config.json` works out of the box; point
@@ -114,7 +114,7 @@ async function main() {
                     });
                 }
 
-                // Method-interception demo gate (AD-42 D-8): the audit
+                // Method-interception demo gate: the audit
                 // interceptor is a first-class builder registration — the
                 // context receives it before refresh, so even constructor
                 // entries eagerly created at refresh end (like
@@ -122,7 +122,7 @@ async function main() {
                 builder.processors(interception([new AuditInterceptor()]));
             },
             beforeStart: async (context) => {
-                // AD-78 D-4: apply pending journaled migrations at boot when
+                // Apply pending journaled migrations at boot when
                 // opted in (`migrations.runOnBoot`), against the same store
                 // the Drizzle routes read. Fail-closed: any migration error
                 // aborts startup.
@@ -159,14 +159,14 @@ async function main() {
     logger.info(`  GET  http://localhost:${app.port}/api/config.json  (self-served remote config document)`);
     logger.info(`  GET  http://localhost:${app.port}/api/config/remote  (live resolved remote value)`);
     logger.info(`  GET  http://localhost:${app.port}/api/config/secrets  (Authorization: Bearer <token>, decrypted)`);
-    logger.info(`  GET  http://localhost:${app.port}/api/cached-report  (60 s cached report, AD-24)`);
+    logger.info(` GET http://localhost:${app.port}/api/cached-report (60 s cached report)`);
     logger.info(`  WS   ws://localhost:${app.port}/stomp/chat?token=<login token>  (STOMP, @authenticated)`);
     logger.info(`  WS   ws://localhost:${app.port}/ws/chat  (public socket contrast)`);
     logger.info(`  GET  http://localhost:${app.port}/static/    (serves ./public)`);
     logger.info(`  GET  http://localhost:${app.port}/health   (management)`);
     logger.info(`  GET  http://localhost:${app.port}/metrics  (management)`);
-    logger.info(`  GET  http://localhost:${app.port}/v3/api-docs   (OpenAPI spec, AD-35; Bearer-gated, SEC-4)`);
-    logger.info(`  GET  http://localhost:${app.port}/swagger-ui/   (Swagger UI, AD-35; Bearer-gated, SEC-4)`);
+    logger.info(` GET http://localhost:${app.port}/v3/api-docs (OpenAPI spec,; Bearer-gated, SEC-4)`);
+    logger.info(` GET http://localhost:${app.port}/swagger-ui/ (Swagger UI,; Bearer-gated, SEC-4)`);
 }
 
 main().catch((error) => {

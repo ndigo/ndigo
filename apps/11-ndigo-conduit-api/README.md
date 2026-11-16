@@ -114,7 +114,7 @@ GET    /api/tags                                   → 200 {tags}
 
 In-memory ORM entities (`@ndigo/orm`): `User`, `Article`, `Comment`, `Favorite`
 and `Follow`, each a real `@entity` with `@column` metadata that doubles as the
-Zod validation source (AD-07).
+Zod validation source.
 
 Every handler goes through `ConduitStore` (`src/store.ts`) — the persistence
 seam. It exposes domain operations (register, publish, favorite, follow, filter,
@@ -194,7 +194,7 @@ move by exactly one.
 ### Why the error envelope needs its own view
 
 `apps/05-ndigo-api` documents the framework's contract: every `>=400` response is
-an `application/problem+json` document (AD-10), and `ResponseEntityView` enforces
+an `application/problem+json` document, and `ResponseEntityView` enforces
 it — any 4xx/5xx `ResponseEntity` body is rewritten. RealWorld requires
 `{"errors":{…}}` with `application/json`, so this app answers errors with a
 `ProducerView` (`ConduitErrorView`) instead of a `ResponseEntity`, and its first

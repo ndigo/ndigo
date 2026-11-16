@@ -1,7 +1,7 @@
 /**
  * `ndigo db generate` demo entry — renders the next versioned migration from
  * the demo entity metadata and rewrites the committed `db/schema.json`
- * projection (AD-78 D-2/D-5; run by `ndigo db generate` as the app's
+ * projection (run by `ndigo db generate` as the app's
  * `scripts.db:generate`).
  *
  * The snapshot is the common ancestor: the diff is computed against the
@@ -9,7 +9,7 @@
  * output (the root freshness gate's premise) and writes a migration file
  * only when the metadata actually moved. The gate lives in
  * `db-generate-plan.ts`: a delta with destructive drops or changes the
- * AD-30 predicate cannot express **fails loud** (exit code 1) until the
+ * The predicate cannot express **fails loud** (exit code 1) until the
  * operator acknowledges them with `NDIGO_DB_ACCEPT_DROPS=true` /
  * `NDIGO_DB_ACCEPT_UNSUPPORTED=true` (REV-002/REV-006).
  */
@@ -27,7 +27,7 @@ import { GenerationBlockedError, planGeneration } from './db-generate-plan';
 
 const logger = getLogger('ndigo-api:db');
 
-/** The demo's entities — the single schema source (AD-78 D-2). */
+/** The demo's entities — the single schema source. */
 const ENTITIES = [DrizzleNote];
 
 async function loadSnapshot(): Promise<SchemaSnapshot | null> {

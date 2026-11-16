@@ -147,7 +147,7 @@ export function property(
 /**
  * Supplies the fallback value for a `@property` field when the property is
  * missing. The default is a raw string, converted through the same
- * ConversionService path as real property values (AD-15 D2).
+ * ConversionService path as real property values.
  *
  * @param rawDefault - The default value (string; converted to the field type).
  * @returns A field decorator.
@@ -172,7 +172,7 @@ export function defaultValue(rawDefault: string) {
 /**
  * Marks a `@property('prefix')` field as a nested configuration object: bind
  * recursively into this plain-class field under the property's keypath
- * (AD-15 D3). One prefix mechanism (`@property`), one recursion flag.
+ *. One prefix mechanism (`@property`), one recursion flag.
  *
  * @returns A field decorator.
  *

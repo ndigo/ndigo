@@ -110,7 +110,7 @@ describe('LibSQLSessionStore', () => {
         await second.delete(winners[0].value.id);
     });
 
-    test('deleteForUser removes every live session of one account and reports the count (AD-68)', async () => {
+    test('deleteForUser removes every live session of one account and reports the count', async () => {
         const { store } = await openStore();
         const alice = record();
         const bob = { ...record(), principal: new DefaultPrincipal('bob', 'Bob', ['user']) };

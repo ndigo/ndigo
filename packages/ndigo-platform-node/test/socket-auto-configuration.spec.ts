@@ -26,7 +26,7 @@ describe('resolveSocketRegistryOptions', () => {
         ).toEqual({ heartbeatIntervalMs: 5000, idleTimeoutMs: 15000 });
     });
 
-    test('heartbeat 0 disables the heartbeat explicitly (AD-21 D6)', () => {
+    test('heartbeat 0 disables the heartbeat explicitly', () => {
         expect(resolveSocketRegistryOptions({ NDIGO_SOCKET_HEARTBEAT_INTERVAL_MS: '0' })).toEqual({
             heartbeatIntervalMs: null,
         });
@@ -116,7 +116,7 @@ class EntrySocketController {
     }
 }
 
-describe('socket auto-configuration wiring (AD-21 D4)', () => {
+describe('socket auto-configuration wiring', () => {
     const context = new MetadataConfigApplicationContext('ws-entry-wiring');
     let server: HTTPServer;
     let wsUrl: string;

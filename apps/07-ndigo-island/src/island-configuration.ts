@@ -34,7 +34,7 @@ export class IslandConfiguration {
                 translation: {
                     'app.title': 'Ndigo Island',
                     'app.intro':
-                        'Rendered by the <strong>server</strong>; the component below is a Web Component island hydrated on the <strong>client</strong>. Model updates are pushed from the server over SSE (AD-09).',
+                        'Rendered by the <strong>server</strong>; the component below is a Web Component island hydrated on the <strong>client</strong>. Model updates are pushed from the server over SSE.',
                     'app.today': 'Today is {{date}}',
                     'app.mode.switched': 'Server language: {{language}}',
                 },
@@ -43,7 +43,7 @@ export class IslandConfiguration {
                 translation: {
                     'app.title': 'Ndigo Island',
                     'app.intro':
-                        'Rendu par le <strong>serveur</strong>; le composant ci-dessous est une île Web Component hydratée côté <strong>client</strong>. Les mises à jour du modèle sont poussées par le serveur via SSE (AD-09).',
+                        'Rendu par le <strong>serveur</strong>; le composant ci-dessous est une île Web Component hydratée côté <strong>client</strong>. Les mises à jour du modèle sont poussées par le serveur via SSE.',
                     'app.today': "Aujourd'hui, nous sommes le {{date}}",
                     'app.mode.switched': 'Langue du serveur : {{language}}',
                 },

@@ -38,11 +38,11 @@ export interface ScheduledTaskDefinition {
     /**
      * Optional cap: when a run exceeds this duration the single-flight slot
      * is released and a warning is emitted. The task itself is not
-     * cancelled — Node has no preemptive cancellation (AD-20 D4).
+     * cancelled — Node has no preemptive cancellation.
      */
     readonly maxRunTimeMs?: number;
     /**
-     * Distributed lock key (AD-73): the scheduler acquires the named lock
+     * Distributed lock key: the scheduler acquires the named lock
      * before each run and releases it after (finally-style), so only one
      * node executes this task at a time.
      */
@@ -83,7 +83,7 @@ export interface TaskSchedulerOptions {
     warn?: (message: string) => void;
     /**
      * The distributed lock driver for `@scheduled({ lock })` tasks
-     * (AD-73). `undefined` (default) resolves the `lockDriver` entry from
+     *. `undefined` (default) resolves the `lockDriver` entry from
      * the injected application context; pass `null` to leave locked tasks
      * failing loudly when no entry exists.
      */
@@ -99,7 +99,7 @@ export interface TaskStats {
      */
     readonly runs: number;
     /**
-     * Runs that threw (exceptions are isolated per run — AD-20 D4).
+     * Runs that threw (exceptions are isolated per run).
      */
     readonly failures: number;
     /**
@@ -150,7 +150,7 @@ export const likeTaskScheduler = like({
 
 /**
  * The task-execution engine: next-fire tracking, single-flight runs, error
- * isolation, `maxRunTime` races, and drain-on-close (AD-20 D4).
+ * isolation, `maxRunTime` races, and drain-on-close.
  *
  * The engine is driven two ways:
  * - `tick(now)` — deterministic, testable, and suited to an application
@@ -200,7 +200,7 @@ export class TaskScheduler implements AsyncCloseable, AsyncDestroyable {
     /**
      * Container injection (`ApplicationContextAware`): the context is used
      * to resolve the `lockDriver` entry for locked tasks when no driver was
-     * passed to the constructor (AD-73).
+     * passed to the constructor.
      *
      * @param context - The application context.
      */
@@ -410,7 +410,7 @@ export class TaskScheduler implements AsyncCloseable, AsyncDestroyable {
     }
 
     /**
-     * Container contract (AD-20): stops the loop, drains in-flight runs, and
+     * Container contract: stops the loop, drains in-flight runs, and
      * clears the registry — the same work as {@link TaskScheduler.close}.
      *
      * The container does not await the drain (context close is synchronous);

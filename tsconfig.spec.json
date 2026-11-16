@@ -9,8 +9,8 @@
     "noEmit": true,
     "strict": true,
     // The generators package and the repo-only `src/` tree import their own
-    // modules with `.ts` specifiers (Node's native type stripping; AD-85 /
-    // AD-86) — the noEmit lane here permits the extension without rewriting.
+    // modules with `.ts` specifiers (Node's native type stripping) — the
+    // noEmit lane here permits the extension without rewriting.
     "allowImportingTsExtensions": true,
     "lib": ["ES2024", "DOM", "DOM.Iterable"],
     "types": ["node", "vitest/globals"],

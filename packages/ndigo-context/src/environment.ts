@@ -16,7 +16,7 @@ import type { SecretDecryptor } from './secret-cipher';
 
 /**
  * Event emitted by a {@link ConfigurableEnvironment} after `refresh()`
- * recomputes from its current sources (AD-29 D-1). Listeners read fresh
+ * recomputes from its current sources. Listeners read fresh
  * state; the event carries no payload.
  */
 export const CONFIG_REFRESH_EVENT = 'config:refresh';
@@ -51,7 +51,7 @@ export interface Environment extends PropertyResolver {
      * (explicit profiles, or defaults when none are explicit).
      *
      * @param expression - The profile expression (`dev`, `!prod`, `a & b`,
-     *   `(a | b) & c`) or a composed {@link ProfileTerm} (AD-34 D5).
+     * `(a | b) & c`) or a composed {@link ProfileTerm}.
      * @returns `true` when the expression matches.
      * @throws On malformed expressions.
      */
@@ -66,7 +66,7 @@ export interface Environment extends PropertyResolver {
     originOf(key: string): string | null;
     /**
      * Resolves a schema-typed configuration value from this environment
-     * (AD-34 D3): object-shaped schemas read each key under `prefix`
+     * object-shaped schemas read each key under `prefix`
      * (`server.port` for `('server', z.object({ port: ... }))`); coercion,
      * defaults and required checks follow the schema. A missing required key
      * throws the zod error; an absent value with no default yields
@@ -80,7 +80,7 @@ export interface Environment extends PropertyResolver {
     typedConfig<S extends z.ZodType>(prefix: string, schema: S): z.infer<S> | undefined;
     /**
      * Recomputes the environment from its current sources: rebuilds the
-     * lookup index and clears caches. Environment-scope only (AD-16 D3).
+     * lookup index and clears caches. Environment-scope only.
      */
     refresh(): void;
 }
@@ -159,7 +159,7 @@ const { defineProperty } = Reflect;
  *
  * Environments are {@link EventEmitter} instances: `refresh()` emits
  * {@link CONFIG_REFRESH_EVENT} after recomputing from current sources, so
- * listeners (e.g. boot's `@refreshScope` rebinder, AD-29) observe config
+ * listeners (e.g. boot's `@refreshScope` rebinder) observe config
  * changes.
  *
  * @example
@@ -363,15 +363,15 @@ export abstract class AbstractEnvironment extends AsEventEmitter(Null) implement
      */
     refresh(): void {
         this.#propertyResolver.refresh();
-        // AD-29 D-1: emit AFTER the rebuild so listeners read fresh state.
+        // emit AFTER the rebuild so listeners read fresh state.
         this.emit(CONFIG_REFRESH_EVENT);
     }
 
     /**
-     * Applies at-rest secret decryption to this environment (AD-29 Wave 2).
+     * Applies at-rest secret decryption to this environment.
      *
      * Rebuilds the resolver with the decryptor threaded through its options
-     * (replace-not-mutate, AD-11 D1): existing sources and registry bindings
+     * (replace-not-mutate): existing sources and registry bindings
      * are preserved. Applying twice is idempotent — the last decryptor wins.
      *
      * @param decryptor - The secret decryptor (e.g. a `SecretSchemeRegistry`).

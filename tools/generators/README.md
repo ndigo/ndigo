@@ -2,12 +2,12 @@
 
 The Nx generator collection behind `ndigo new` / `ndigo generate` (the
 [`@ndigo/cli`](../../packages/ndigo-cli/README.md) workspace commands). This
-is **repo-only tooling** (`tools/`, AD-93): it hard-codes this repository's
+is **repo-only tooling** (`tools/`): it hard-codes this repository's
 layout (`packages/ndigo-*`, `apps/NN-*`, `vitest.aliases.ts`) and bakes in
 the repo's manifest rules, so it is a private workspace member and is never
 published. Consumer scaffolding is
 [`create-ndigo-app`](../../packages/create-ndigo-app/README.md); the deferred
-consumer Nx story (AD-85 D-3) would be a new package, not this collection.
+consumer Nx story would be a new package, not this collection.
 
 ## Generators
 
@@ -52,7 +52,7 @@ pnpm --filter @ndigo/generators test
 
 Nx loads the generator factories with Node's native TypeScript stripping,
 which requires exact specifiers: relative imports in Nx-loaded generator
-files carry the `.ts` extension (AD-85), and the package tsconfigs set
+files carry the `.ts` extension, and the package tsconfigs set
 `rewriteRelativeImportExtensions` so `tsc` emits `.js` for the built `lib/`.
 Keep the flag in sync between `tsconfig.json` and `tsconfig.build.json` when
 touching either.

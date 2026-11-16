@@ -1,6 +1,6 @@
 /**
  * Redis-backed `LockDriver` — the shared multi-node lock for
- * `@scheduled({ lock })` and cluster work (AD-73).
+ * `@scheduled({ lock })` and cluster work.
  *
  * The contract lives in `@ndigo/locks`; this adapter keeps two keys per lock:
  * the lease key (value = the current fencing token, TTL = the lease) and a

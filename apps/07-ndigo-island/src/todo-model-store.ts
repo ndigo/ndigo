@@ -1,5 +1,5 @@
 /**
- * The island demo's server-side todo model (AD-09).
+ * The island demo's server-side todo model.
  */
 export type TodoItem = { text: string; done: boolean };
 export type TodoModel = { items: TodoItem[]; filter: string };

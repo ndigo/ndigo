@@ -1,5 +1,5 @@
 /**
- * Jobs stack through the real `NodeAutoConfiguration` (AD-72): the four
+ * Jobs stack through the real `NodeAutoConfiguration`: the four
  * entries exist, the registry scans `@jobHandler` entries on refresh, and an
  * explicitly started runner executes an enqueued job end to end.
  */

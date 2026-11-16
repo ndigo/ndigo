@@ -35,7 +35,7 @@ export interface NodeRequest {
      * The client address, populated by the adapter. Without trusted
      * proxies configured this is the socket address
      * (`req.socket.remoteAddress`); when the direct peer matches the
-     * adapter's `trustedProxies` allowlist (AD-37), `X-Forwarded-For` is
+     * adapter's `trustedProxies` allowlist, `X-Forwarded-For` is
      * walked from the rightmost entry and the first non-trusted valid IP
      * wins — the header is attacker input from any other peer and is
      * never consulted. The rate limiter keys on this (SEC-6, Wave 3).

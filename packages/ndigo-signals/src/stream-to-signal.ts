@@ -1,5 +1,5 @@
 /**
- * Bridges an async event stream into a reactive signal (AD-09).
+ * Bridges an async event stream into a reactive signal.
  */
 import { toError } from '@ndigo/util';
 import { Signal } from '@preact/signals-core';

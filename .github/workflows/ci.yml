@@ -187,7 +187,7 @@ jobs:
         # wrong relative paths, and dead heading anchors. No network.
         run: pnpm docs:links
 
-      - name: Migration schema freshness (AD-78 D-6)
+      - name: Migration schema freshness
         # Regenerates the reference app's committed db/schema.json through
         # its own db:generate script and fails on any drift under db/
         # (scripts/check-migration-schema.mjs): entity metadata and the
@@ -398,7 +398,7 @@ jobs:
         run: pnpm test:e2e
 
       - name: E2E (island reference integration)
-        # The AD-71 reference integration: DSD first paint -> hydration -> FACE
+        # The reference integration: DSD first paint -> hydration -> FACE
         # form submit -> SSE. The browsers installed above are shared through
         # the Playwright cache, so this lane adds no install cost.
         run: pnpm --filter @ndigo/island test:e2e

@@ -34,7 +34,7 @@ export const VIEW_TARGET = new ContextToken<ViewTarget>('viewTarget');
 export const VIEW_TARGET_ATTRIBUTE = '__dispatch:viewTarget';
 
 /**
- * Context token for the argument-resolver collection entry (AD-34 D1).
+ * Context token for the argument-resolver collection entry.
  */
 export const ARGUMENT_RESOLVERS = new ContextToken<HandlerMethodArgumentResolver[]>('argumentResolvers');
 

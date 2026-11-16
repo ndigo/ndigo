@@ -2,7 +2,7 @@
 
 > NodeSDK configuration and Node platform instrumentations for Ndigo, built on the isomorphic [`@ndigo/telemetry`](../ndigo-telemetry/README.md) core.
 
-`@ndigo/telemetry-node` wires OpenTelemetry into Node applications: one-call `configureTelemetry()` NodeSDK setup (tracer provider, span/live-metric exporters — including the `'prometheus'` pull reader, AD-77, severity-filtered log processor), runtime instrumentations that produce spans for Ndigo components, and a `SeverityFilterLogRecordProcessor` that drops log records below a configured severity so production logs stay quiet. The isomorphic core carries only the OTel API packages; SDK dependencies live here on the Node side.
+`@ndigo/telemetry-node` wires OpenTelemetry into Node applications: one-call `configureTelemetry()` NodeSDK setup (tracer provider, span/live-metric exporters — including the `'prometheus'` pull reader, severity-filtered log processor), runtime instrumentations that produce spans for Ndigo components, and a `SeverityFilterLogRecordProcessor` that drops log records below a configured severity so production logs stay quiet. The isomorphic core carries only the OTel API packages; SDK dependencies live here on the Node side.
 
 ## Installation
 

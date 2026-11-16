@@ -73,7 +73,7 @@ export class Application extends Emitter {
     #pendingContext: ConfigurableApplicationContext | null = null;
 
     /**
-     * The active remote config source, when configured (AD-29 Wave 3).
+     * The active remote config source, when configured.
      *
      * @returns The wired source, or `null` when no `configServer` is configured.
      */
@@ -174,7 +174,7 @@ export class Application extends Emitter {
     }
 
     /**
-     * Sets the config-file loader used during environment preparation (AD-13).
+     * Sets the config-file loader used during environment preparation.
      *
      * @param loader - The loader, or `null` to disable file loading.
      */
@@ -226,7 +226,7 @@ export class Application extends Emitter {
     }
 
     /**
-     * Attaches an at-rest secret decryptor (AD-29 Wave 2).
+     * Attaches an at-rest secret decryptor.
      *
      * Applied to the prepared environment in `_prepareEnvironment` (before the
      * context reads it), so `{cipher:...}` values resolve to plaintext for
@@ -239,7 +239,7 @@ export class Application extends Emitter {
     }
 
     /**
-     * Configures a remote config source (AD-29 Wave 3).
+     * Configures a remote config source.
      *
      * Fetch-once at boot and optional polling of a JSON document, merged into
      * the environment at the documented `configServer` precedence slot. When
@@ -255,7 +255,7 @@ export class Application extends Emitter {
     /**
      * Applies environment-level configuration before the application context is created.
      *
-     * Order matters (AD-13): profiles first (file loading is profile-aware),
+     * Order matters: profiles first (file loading is profile-aware),
      * then config files, then CLI + builder sources (CLI \> boot \> files \> env
      * \> defaults).
      *
@@ -273,7 +273,7 @@ export class Application extends Emitter {
 
     /**
      * Applies the configured active profiles to the environment, in
-     * precedence order (AD-14): CLI `--profiles.active=` \> env
+     * precedence order: CLI `--profiles.active=` \> env
      * `NDIGO_PROFILES_ACTIVE` \> builder `.profiles()`. `profiles.default` /
      * `NDIGO_PROFILES_DEFAULT` set the default set; `profiles.group.*` /
      * `NDIGO_PROFILES_GROUPS` expand group names to members.
@@ -331,7 +331,7 @@ export class Application extends Emitter {
      * (comma-separated `name=members` pairs) and CLI
      * `--profiles.group.<name>=…`.
      *
-     * Precedence is the same as the active profile channels (AD-14): env
+     * Precedence is the same as the active profile channels: env
      * first (deployment baseline), CLI last (most specific), so a CLI group
      * mapping overrides an env one of the same name (CTX-12).
      *
@@ -434,7 +434,7 @@ export class Application extends Emitter {
         context.refresh();
 
         // Auto-register @configurationProperties classes as bound entries
-        // (AD-15 D1): after refresh so the environment is fully prepared.
+        // after refresh so the environment is fully prepared.
         for (const source of activeSources) {
             if (isConfigurationProperties(source)) {
                 const name = camelCaseName(source.name);
@@ -444,7 +444,7 @@ export class Application extends Emitter {
             }
         }
 
-        // AD-29 D-2: live rebind — `@refreshScope` configuration classes
+        // Live rebind — `@refreshScope` configuration classes
         // re-bind on every environment refresh (`config:refresh` event).
         // Unmarked classes keep the boot-time instance (snapshot identity).
         const refreshScoped = activeSources.filter(
@@ -499,7 +499,7 @@ export class Application extends Emitter {
             context.on('context:close', () => this.#detachRebindListeners());
         }
 
-        // Validate the environment against declared schemas (AD-17 D3):
+        // Validate the environment against declared schemas:
         // explicit validateWith schema first, then @environment schemas on
         // registered (active) sources. Invalid → fail boot loudly with the
         // report.
@@ -547,25 +547,25 @@ export class Application extends Emitter {
         const env = this._getOrCreateEnvironment();
         await this._configureEnvironment(env, args);
         // The `defaults` source is ALWAYS present (empty when unused) at the
-        // LOWEST precedence (AD-13 Q8): registered after every other source so
+        // LOWEST precedence: registered after every other source so
         // the registry order (first = highest) matches PrecedenceDoc exactly —
         // `commandLine > boot > … > application > defaults`. Earlier placement
         // (before files/boot) inverted the chain (defaults outranked builder
-        // properties). AD-29 Wave 3 hardens this with the order-assertion spec.
+        // properties). hardens this with the order-assertion spec.
         if (!env.getPropertySources().contains('defaults')) {
             env.getPropertySources().addLast('defaults', this.#defaults ?? {});
         }
         // Customizers run after the fully-wired environment, before the
-        // context reads it (AD-16 D2); registration order, fail-loud.
+        // context reads it; registration order, fail-loud.
         applyCustomizers(env, this.#customizers);
-        // At-rest secret decryption (AD-29 Wave 2): apply after the environment
+        // At-rest secret decryption: apply after the environment
         // is fully wired (profiles/files/CLI/customizers) so every registered
         // source — including the config-server source in Wave 3 — is covered.
         // {cipher:...} markers resolve to plaintext for binding and lookups.
         if (this.#secretDecryptor) {
             env.applySecretDecryptor(this.#secretDecryptor);
         }
-        // Remote config source (AD-29 Wave 3): fetch-once (and optionally poll)
+        // Remote config source: fetch-once (and optionally poll)
         // a JSON document into the `configServer` slot. Runs AFTER customizers
         // and the secret decryptor so remote values are covered by both — the
         // "remote values decrypt too" decision (owner-confirmed 2026-09-25).

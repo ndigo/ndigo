@@ -311,7 +311,7 @@ import { createDOMProvider } from '@ndigo/dom';
 
 These rules are **automatically enforced** by the repository-only oxlint
 plugin at root [`src/oxlint/`](src/oxlint/README.md) (rule namespace
-`internal/*`, AD-86), loaded by the same `pnpm lint` lane as the
+`internal/*`), loaded by the same `pnpm lint` lane as the
 consumer-facing `@ndigo/oxlint-plugin`:
 
 | Rule                                     | Severity | Description                                                                                                                                        |
@@ -450,7 +450,7 @@ When organizing helper functions and utilities, follow the extraction hierarchy:
         - **Step 2 - Scan related packages:** Check common utilities and specialized tools:
             - `@ndigo/util` - Common utilities (type guards, string utils, environment, crypto) - **Check first!**
             - `@ndigo/dom` - Isomorphic DOM parsing/creation (linkedom wrappers) - For HTML parsing, element creation
-            - `@ndigo/validate` - (retired 2026-09-05 per AD-07; use `zod` via `@ndigo/orm` entity schemas / `@ndigo/dispatcher` `validatedBy`)
+            - `@ndigo/validate` - (retired 2026-09-05; use `zod` via `@ndigo/orm` entity schemas / `@ndigo/dispatcher` `validatedBy`)
             - `@ndigo/core` - Core primitives, containers, patterns - Use for application context, DI, base types
     - **After big changes:** refresh the graph with `graft build`.
 3.  **Plan:** Check `docs/migrations/` or `ARCHITECTURE.md` for recent architectural shifts.

@@ -4,7 +4,7 @@
  * The service is the single owner of the session state — a `@ndigo/signals`
  * signal for the in-memory snapshot plus the persisted token — so the auth
  * interceptor, the auth guard, the settings form and every view read one
- * source of truth. Mutations refresh the current route (AD-53 D-3: services
+ * source of truth. Mutations refresh the current route (services
  * call `router.refresh()` instead of driving a second render path), which is
  * how a follow/favorite/login change reaches the DOM.
  *

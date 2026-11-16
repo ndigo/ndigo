@@ -1,5 +1,5 @@
 /**
- * Shared-vector spec for the migration filename contract (AD-78 D-1/D-5):
+ * Shared-vector spec for the migration filename contract:
  * the CLI's scaffold probe (`migration-probe`) and the framework loader's
  * `nextMigrationVersion` must agree on every directory shape, so a
  * scaffolded version is never one the runner would not load.
@@ -19,7 +19,7 @@ async function withDir(fn: (dir: string) => Promise<void>): Promise<void> {
     }
 }
 
-describe('migration version probe parity (AD-78 shared vector)', () => {
+describe('migration version probe parity ( shared vector)', () => {
     test('both probes agree on empty, missing, and populated directories', async () => {
         await withDir(async (dir) => {
             await expect(cliNextVersion(dir)).resolves.toBe(await loaderNextVersion(dir));

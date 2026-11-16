@@ -1,5 +1,5 @@
 /**
- * Secret marker + decryptor specs (AD-29 Wave 2): marker parsing, scheme
+ * Secret marker + decryptor specs: marker parsing, scheme
  * dispatch, pass-through of non-marker values, resolver integration
  * (placeholders-then-decrypt, key-path AAD, typed reads), and the wiring
  * capability gate.
@@ -100,7 +100,7 @@ describe('parseSecretMarker', () => {
     });
 });
 
-describe('SecretSchemeRegistry (AD-29 D-3)', () => {
+describe('SecretSchemeRegistry', () => {
     test('registers ciphers and dispatches decrypt by scheme', () => {
         const registry = new SecretSchemeRegistry();
         const cipher = fakeCipher();
@@ -136,7 +136,7 @@ describe('SecretSchemeRegistry (AD-29 D-3)', () => {
     });
 });
 
-describe('resolver secret integration (AD-29 D-5)', () => {
+describe('resolver secret integration', () => {
     test('decrypts {cipher:...} values at lookup with key-path AAD', () => {
         const registry = new SecretSchemeRegistry();
         const cipher = fakeCipher();

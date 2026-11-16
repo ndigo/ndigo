@@ -138,7 +138,7 @@ export const hashScope = scope('hash');
 
 /**
  * Decorator for refresh scope (convenience factory): the instance cache is
- * cleared when the environment refreshes (`config:refresh`, AD-29 D-2), so
+ * cleared when the environment refreshes (`config:refresh`), so
  * the next `getValue` re-creates the instance from its factory.
  */
 export const refreshScope = scope('refresh');
@@ -146,7 +146,7 @@ export const refreshScope = scope('refresh');
 /**
  * Prototype scope implementation — creates a fresh instance on every `getValue()` call.
  *
- * @internal AD-06: This is an implementation detail of the scoped factory. Only the
+ * @internal This is an implementation detail of the scoped factory. Only the
  * {@link Scope} and {@link ScopedFactory} interfaces are part of the stable public API.
  * A future scoping split may move concrete scope implementations to a separate module.
  */
@@ -184,7 +184,7 @@ export class PrototypeScope implements Scope {
  * value is discarded — mirroring `SingletonScope.destroyValue` and
  * `RefreshScope.clear`.
  *
- * @internal AD-06: Implementation detail — see {@link PrototypeScope} for rationale.
+ * @internal Implementation detail — see {@link PrototypeScope} for rationale.
  */
 export class HashScope implements Scope {
     #scopeMap: Map<string, Map<string, unknown>> = new Map<string, Map<string, unknown>>();
@@ -313,7 +313,7 @@ export class HashScope implements Scope {
  * Singleton scope implementation — creates at most one instance per named value.
  * Destruction callbacks can be registered when an instance is created.
  *
- * @internal AD-06: Implementation detail — see {@link PrototypeScope} for rationale.
+ * @internal Implementation detail — see {@link PrototypeScope} for rationale.
  */
 export class SingletonScope implements Scope {
     #instances: Map<string, unknown> = new Map<string, unknown>();
@@ -364,14 +364,14 @@ export class SingletonScope implements Scope {
 /**
  * Refresh scope implementation — one cached instance per named value, like
  * {@link SingletonScope}, but the whole cache is cleared when the owning
- * context's environment refreshes (`config:refresh` event, AD-29 D-2): the
+ * context's environment refreshes (`config:refresh` event): the
  * next `getValue` re-creates the instance from its factory.
  *
  * Destruction callbacks are registered by the container for lifecycle-bearing
  * values; `clear()` runs them before discarding so `@destroyable`/`@closeable`
  * values tear down properly (mirrors `SingletonScope.destroyValue`).
  *
- * @internal AD-06: Implementation detail — see {@link PrototypeScope} for rationale.
+ * @internal Implementation detail — see {@link PrototypeScope} for rationale.
  */
 export class RefreshScope implements Scope {
     #instances: Map<string, unknown> = new Map<string, unknown>();

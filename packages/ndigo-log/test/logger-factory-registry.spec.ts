@@ -1,5 +1,5 @@
 /**
- * Per-name logger registry specs (AD-76 D-7).
+ * Per-name logger registry specs.
  */
 import { describe, test, expect, beforeEach } from 'vitest';
 import { SeverityNumber } from '@opentelemetry/api-logs';
@@ -7,7 +7,7 @@ import { LoggerFactory, getLogger } from '../src/logger/logger-factory';
 
 const NS = 'registry-spec';
 
-describe('LoggerFactory per-name registry (AD-76 D-7)', () => {
+describe('LoggerFactory per-name registry', () => {
     beforeEach(() => {
         LoggerFactory.reset();
     });
@@ -53,7 +53,7 @@ describe('LoggerFactory per-name registry (AD-76 D-7)', () => {
         expect(LoggerFactory.loggerNames()).toEqual(expect.arrayContaining([`${NS}:x`, `${NS}:y`]));
     });
 
-    test('reset clears the per-name state (AD-76 D-7)', () => {
+    test('reset clears the per-name state', () => {
         getLogger(`${NS}:z`);
         LoggerFactory.setLevel(`${NS}:z`, SeverityNumber.ERROR);
         LoggerFactory.reset();

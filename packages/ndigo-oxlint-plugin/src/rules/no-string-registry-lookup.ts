@@ -5,7 +5,7 @@ import type { Context, ESTree } from '@oxlint/plugins';
 
 /**
  * Registry read-side methods whose argument should be a {@link ContextToken}
- * in source files (AD-34 D1). Registration (`setValue`) stays string-legal:
+ * in source files. Registration (`setValue`) stays string-legal:
  * tokens and strings share the description-keyed registry.
  */
 const registryLookupMethods = new Set(['getValue', 'getInstance', 'hasValue', 'destroyValue']);

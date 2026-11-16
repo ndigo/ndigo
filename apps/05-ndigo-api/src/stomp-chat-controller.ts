@@ -1,14 +1,14 @@
 /**
- * STOMP chat endpoint + scheduler-driven tick — the AD-23 demo gate.
+ * STOMP chat endpoint + scheduler-driven tick — the demo gate.
  *
  * Clients on `/stomp/chat` speak STOMP 1.2 over WebSocket: they subscribe
  * to `/topic/chat`, SEND messages (fanned out to all subscribers,
  * including the sender when subscribed — room-echo parity), and receive a
  * `chat-tick` published into the destination every 2 seconds by the
- * scheduler — the scheduler → broker reachability proof (AD-23 D5,
- * mirroring AD-21 D4's scheduler → registry path). The broker implements
+ * scheduler — the scheduler → broker reachability proof
+ * (mirroring the scheduler → registry path). The broker implements
  * the full second wave (transactions, ack tracking + redelivery, binary
- * bodies, `/user` scopes, `/queue` backlogs — AD-23 D7–D11) on the same
+ * bodies, `/user` scopes, `/queue` backlogs) on the same
  * endpoint; the wire-level gates live in `ndigo-platform-node`'s stomp
  * integration spec.
  *
@@ -54,7 +54,7 @@ export class StompChatController {
     }
 
     /**
-     * Periodic tick — the scheduler → broker fan-out path (AD-23 D5).
+     * Periodic tick — the scheduler → broker fan-out path.
      */
     @scheduled('*/2 * * * * *')
     async chatTick() {

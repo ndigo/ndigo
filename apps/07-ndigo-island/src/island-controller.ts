@@ -17,7 +17,7 @@ import { z } from 'zod';
 import { TodoModel, TodoModelStore } from './todo-model-store';
 
 /**
- * The add-item form's server contract (AD-71 reference integration): the
+ * The add-item form's server contract ( reference integration): the
  * bound form body arrives as strings, so the schema is the single validation
  * source (trim → non-empty → bounded).
  */
@@ -43,7 +43,7 @@ function escapeHtmlText(value: string): string {
  * root, so the page shows real content before any script runs (ADR-69 D-3);
  * hydration then replaces it in place. Third-party components cannot
  * server-render portably yet, so the derived fallback is the documented
- * pattern (AD-71 D-4).
+ * pattern.
  */
 function renderTodoFallback(model: TodoModel): string {
     const items = model.items
@@ -76,7 +76,7 @@ async function renderIslandMarkup(island: IslandView, model: TodoModel, route: R
 }
 
 /**
- * The SSE push stream for one client connection (AD-09): the current snapshot
+ * The SSE push stream for one client connection: the current snapshot
  * first (APP-N3 snapshot-on-connect), then one event per *coalesced* model
  * change.
  *
@@ -134,7 +134,7 @@ export async function* modelUpdateStream(
 
 /**
  * Serves the hybrid shell (the server-rendered island + client bundle) and
- * the reactive half of the demo (AD-09): `GET /events` pushes source-of-truth
+ * the reactive half of the demo: `GET /events` pushes source-of-truth
  * model updates to the client as Server-Sent Events, which the hydrated
  * island consumes into its local reactive state (`@ndigo/signals`).
  */

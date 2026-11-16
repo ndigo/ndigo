@@ -1,6 +1,6 @@
 /**
  * `@whenProfile` configuration gating specs — the unified profile condition
- * (AD-83): class and method gates evaluated through the environment's
+ * class and method gates evaluated through the environment's
  * `acceptsProfiles`, composed `Profile` terms, and variadic either-of.
  */
 import { describe, test, expect } from 'vitest';
@@ -8,7 +8,7 @@ import { Profile, whenProfile } from '@ndigo/core';
 import { StandardEnvironment } from '../src/environment';
 import { configuration, entry, MetadataConfigApplicationContext } from '../src/configuration';
 
-describe('environment.acceptsProfiles with composed terms (AD-34 D5)', () => {
+describe('environment.acceptsProfiles with composed terms', () => {
     test('terms evaluate identically to their strings', () => {
         const env = new StandardEnvironment();
         env.addActiveProfile('dev');
@@ -19,7 +19,7 @@ describe('environment.acceptsProfiles with composed terms (AD-34 D5)', () => {
     });
 });
 
-describe('@whenProfile config gating (AD-83)', () => {
+describe('@whenProfile config gating', () => {
     test('gates class registration on the active profile', () => {
         @configuration
         @whenProfile('prod')

@@ -1,21 +1,20 @@
 /**
- * STOMP client — CONNECT negotiation, subscriptions, receipts (AD-23
- * D1/D2).
+ * STOMP client — CONNECT negotiation, subscriptions, receipts (D1/D2).
  *
  * `StompClient` wraps any {@link SocketClient} (the isomorphic
- * `WebSocketClient`, AD-22) and owns the STOMP session on top of the raw
+ * `WebSocketClient`) and owns the STOMP session on top of the raw
  * message stream: sends CONNECT as the first frame of every transport
  * connection, awaits CONNECTED, routes MESSAGE frames to per-subscription
  * async iterables, resolves `send()` promises on RECEIPT, and maps the
  * socket status signal onto the STOMP lifecycle.
  *
- * Reconnect semantics (AD-23): a new WebSocket connection is a **new STOMP
+ * Reconnect semantics: a new WebSocket connection is a **new STOMP
  * session** (the server requires CONNECT first), so on every underlying
  * `open` the client re-CONNECTs and re-SUBSCRIBEs its active
  * subscriptions, then flushes app sends that arrived mid-gap. Subscribers
  * keep the same iterables across reconnects — only the delivery pauses.
  *
- * Protocol posture: heart-beat is advertised `0,0` (the AD-21 WS layer
+ * Protocol posture: heart-beat is advertised `0,0` (the WS layer
  * owns liveness); receipts auto-generated per `send()` (a caller-supplied
  * `receipt` header is honored); a transport drop settles every `send()`
  * whose frame already left the wire (its receipt can never arrive on the
@@ -43,8 +42,7 @@ const DEFAULT_CONNECT_TIMEOUT_MS = 10_000;
 
 /**
  * A MESSAGE frame delivered to a subscription. The body is the wire
- * payload verbatim — a string for text frames, bytes for binary (AD-23
- * D8); `json()` parses either (bytes decoded as UTF-8) on demand.
+ * payload verbatim — a string for text frames, bytes for binary (D8); `json()` parses either (bytes decoded as UTF-8) on demand.
  */
 export interface StompMessage<T = unknown> {
     /** The frame's destination. */
@@ -81,7 +79,7 @@ export interface StompClientOptions {
     passcode?: string;
     /**
      * `heart-beat` values advertised on CONNECT. Default `'0,0'` — the
-     * transport owns liveness (AD-23 D3).
+     * transport owns liveness.
      */
     heartBeat?: string;
     /**
@@ -182,7 +180,7 @@ interface SubscriptionEntry {
 }
 
 /**
- * STOMP 1.2 client over any {@link SocketClient} (AD-23).
+ * STOMP 1.2 client over any {@link SocketClient}.
  *
  * @example
  * ```ts
@@ -242,7 +240,7 @@ export class StompClient {
         // to subscriptions, resolve receipts, track session state. Started
         // in the constructor so the reader's queue never grows unbounded.
         void this.#drain();
-        // Ride the socket status signal (the AD-19/reactivity idiom, not a
+        // Ride the socket status signal (the /reactivity idiom, not a
         // poll loop): every transport `open` is a fresh STOMP session —
         // CONNECT, then re-SUBSCRIBE, then flush.
         const sessionEnded = (): void => {

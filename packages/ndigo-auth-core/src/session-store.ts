@@ -10,13 +10,13 @@ import { type Principal } from './principal';
  * credential held by the client; the record below lives in the store.
  * Opaque sessions are trivially revocable (delete the record) and carry no
  * replay window — the deliberate contrast to JWTs, which stay for the
- * client/OIDC path (AD-33 D-6).
+ * client/OIDC path.
  */
 export interface SessionRecord {
     /** The authenticated principal. */
     readonly principal: Principal;
     /**
-     * Account `tokenVersion` snapshot at issue time (AD-33 D-7). The JWT
+     * Account `tokenVersion` snapshot at issue time. The JWT
      * `ver` claim is compared against the live account value on every
      * validation; opaque sessions deliberately do NOT compare it, because
      * that counter advances on JWT refresh rotation and must never log out

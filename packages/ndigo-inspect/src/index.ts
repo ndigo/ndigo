@@ -5,7 +5,7 @@
  * description of a running application: identity, routes, handler mappings and
  * declared configuration keys (values are never read or emitted).
  *
- * There is no `ndigo inspect` CLI (AD-70 defers it); the demo entry point that
+ * There is no `ndigo inspect` CLI ( defers it); the demo entry point that
  * prints a manifest is `pnpm --filter @ndigo/api inspect`.
  */
 

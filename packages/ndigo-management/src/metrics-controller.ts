@@ -16,8 +16,7 @@ import { Null } from '@ndigo/core';
 export const PROMETHEUS_TEXT_CONTENT_TYPE = 'text/plain; version=0.0.4; charset=utf-8';
 
 /**
- * Whether an `Accept` header explicitly prefers the JSON projection (AD-77
- * D-4): the single best-acceptable entry decides, ties keep header order,
+ * Whether an `Accept` header explicitly prefers the JSON projection: the single best-acceptable entry decides, ties keep header order,
  * malformed weights fall back to `1`. A JSON media type
  * (`application/json` or any `application/*+json` suffix) selects JSON;
  * everything else — absent headers, wildcard accepts, `text/plain`,
@@ -51,7 +50,7 @@ export function prefersJsonView(accept: string | undefined): boolean {
 }
 
 /**
- * Serves the meter snapshot under `/metrics` (AD-77 D-4): one source of
+ * Serves the meter snapshot under `/metrics`: one source of
  * truth — the process's registered `MetricSnapshotProvider` — in two wire
  * forms. An `Accept: application/json` (or `*+json`) header selects the
  * JSON projection; every other request receives the Prometheus text

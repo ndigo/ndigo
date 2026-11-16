@@ -1,6 +1,6 @@
 /**
- * Fixed-window limiter contracts (AD-33, moved to `@ndigo/rate-limit` by
- * AD-79): per-(key, window) budgets, window slide, fail-loud policies,
+ * Fixed-window limiter contracts (moved to `@ndigo/rate-limit`):
+ * per-(key, window) budgets, window slide, fail-loud policies,
  * and the SEC-2 memory bound.
  */
 import { describe, test, expect } from 'vitest';

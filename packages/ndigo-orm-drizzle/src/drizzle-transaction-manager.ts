@@ -1,5 +1,5 @@
 /**
- * LibSQL/Drizzle-backed transaction manager (AD-07 completion).
+ * LibSQL/Drizzle-backed transaction manager ( completion).
  */
 import { TransactionManager } from '@ndigo/orm';
 import { IllegalStateError } from '@ndigo/core';

@@ -439,7 +439,7 @@ describe('Integration: ConversionService + built-in converters', () => {
     });
 });
 
-describe('ConversionService schema targets (AD-38)', () => {
+describe('ConversionService schema targets', () => {
     const noteSchema = z.object({
         id: z.number(),
         title: z.string(),

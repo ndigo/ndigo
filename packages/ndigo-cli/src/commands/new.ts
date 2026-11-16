@@ -1,8 +1,8 @@
 /**
  * `ndigo new <name>` — scaffold an example application in the workspace
- * (`apps/NN-ndigo-<name>`) through the framework-owned `app` generator
- * (AD-85). The CLI is a thin front: flags reach `@ndigo/generators:app` via
- * the workspace's Nx bridge (AD-75 D-3); the generator owns the templates,
+ * (`apps/NN-ndigo-<name>`) through the framework-owned `app` generator.
+ * The CLI is a thin front: flags reach `@ndigo/generators:app` via
+ * the workspace's Nx bridge; the generator owns the templates,
  * the reading-order number, and the dev-port allocation.
  */
 import { buildCommand, numberParser } from '@stricli/core';

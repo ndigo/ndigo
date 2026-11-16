@@ -1,6 +1,6 @@
 /**
  *
- * Peer-loading behavior of the TOON lazy decoder (AD-66): the optional
+ * Peer-loading behavior of the TOON lazy decoder: the optional
  * `@toon-format/toon` module must never be resolved for JSON-only loads,
  * and a missing/unusable peer must fail with an actionable message. The
  * `@toon-format/toon` module is MOCKED per test in this file — these tests
@@ -11,7 +11,7 @@ import { StandardEnvironment } from '@ndigo/context';
 import type { ConfigFileReader } from '@ndigo/context';
 import { StandardConfigFileLoader } from '../src/config-file-loader';
 
-describe('TOON peer loading (AD-66)', () => {
+describe('TOON peer loading', () => {
     const files =
         (map: Record<string, string | null>): ConfigFileReader =>
         async (path) =>

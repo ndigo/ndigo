@@ -47,7 +47,7 @@ function freshMigrator(): { ds: DrizzleDataSource; migrator: DrizzleMigrator } {
     return { ds, migrator: new DrizzleMigrator(ds) };
 }
 
-describe('DrizzleMigrator (AD-30)', () => {
+describe('DrizzleMigrator', () => {
     test('applies pending migrations in ascending version order regardless of input order', async () => {
         const { migrator } = freshMigrator();
         const order: number[] = [];

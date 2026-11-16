@@ -1,5 +1,5 @@
 /**
- * The lab's telemetry wiring resolved from the environment (AD-32, guide 32).
+ * The lab's telemetry wiring resolved from the environment (guide 32).
  *
  * Two things are deliberately separate:
  *
@@ -106,7 +106,7 @@ export function describeSampler(spec: SamplerSpec): string {
  *   exported there (`<endpoint>/v1/{traces,metrics,logs}`); otherwise the
  *   console exporters are used.
  * - `NDIGO_TELEMETRY_METRIC_EXPORTER=prometheus` — override for the metric
- *   signal only (wins over the OTLP endpoint, AD-77): the pull reader backs
+ * signal only (wins over the OTLP endpoint): the pull reader backs
  *   `/metrics` in the Prometheus text exposition format (and its JSON
  *   projection) — `curl localhost:<port>/metrics` is the scrape contract.
  * - `NDIGO_TELEMETRY_SAMPLER` — `always` (default), `off`, or a `[0, 1]` ratio.

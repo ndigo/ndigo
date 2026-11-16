@@ -6,7 +6,7 @@ import { Application } from '../src/application';
 
 class EmptyConfiguration {}
 
-describe('Environment profile defaults (AD-14 D1)', () => {
+describe('Environment profile defaults', () => {
     test('defaults activate when no explicit profile is set', () => {
         const env = new StandardEnvironment();
         env.addDefaultProfile('prod');
@@ -37,7 +37,7 @@ describe('Environment profile defaults (AD-14 D1)', () => {
     });
 });
 
-describe('Application profile activation (AD-14 D3/D4)', () => {
+describe('Application profile activation', () => {
     const cleanEnv = () => {
         delete process.env.NDIGO_PROFILES_ACTIVE;
         delete process.env.NDIGO_PROFILES_DEFAULT;

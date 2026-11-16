@@ -1,5 +1,5 @@
 /**
- * Typed event maps for the framework's emitters (AD-34 D2).
+ * Typed event maps for the framework's emitters.
  *
  * The core {@link EventEmitter} stays string-typed — it is a general-purpose
  * mixin. These maps overlay compile-time payload contracts on the two

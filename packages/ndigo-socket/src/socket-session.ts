@@ -1,7 +1,7 @@
 /**
  * WebSocket session contract — the handler's view of a live connection
  * (moved from `ndigo-dispatcher`, which re-exports these for `@socketMapping`
- * handler signatures — AD-22 D2).
+ * handler signatures).
  */
 /**
  * Request sources captured from the upgrade request — the same vocabulary
@@ -51,7 +51,7 @@ export interface SocketSession {
      * Inbound messages from the peer, as an async iterable.
      *
      * Each value is the message payload: **a string for text frames, a
-     * `Uint8Array` for binary frames** (AD-23 D8 — binary payloads surface
+     * `Uint8Array` for binary frames** (binary payloads surface
      * byte-exact; handlers that expect text decode explicitly, e.g.
      * `new TextDecoder().decode(bytes)`). The stream completes when the
      * peer closes the connection.
@@ -68,7 +68,7 @@ export interface SocketSession {
     readonly isClosed: boolean;
 
     /**
-     * Per-connection state bag (AD-21 D3, Micronaut/Jakarta
+     * Per-connection state bag (Micronaut/Jakarta
      * parity). Any value may be stored; the bag lives as long as the
      * session and is never shared with other sessions.
      */
@@ -95,7 +95,7 @@ export interface SocketSession {
     close(code?: number, reason?: string): void;
 
     /**
-     * Join a named room (AD-21 D5). Membership is registry-backed: other
+     * Join a named room. Membership is registry-backed: other
      * sessions (or any service with the registry) can reach this session
      * via `broadcastTo(room, …)`. No-op once the session is closed.
      *

@@ -12,7 +12,7 @@ export const JOB_HANDLER_METADATA_PREFIX = 'jobs:handler:';
 
 /**
  * Per-handler policy overrides. Either value, when set, wins over the
- * per-request value stored on the job record (AD-72 D-4).
+ * per-request value stored on the job record.
  */
 export interface JobHandlerOptions {
     /** Attempts allowed before the job is failed terminally. */
@@ -53,7 +53,7 @@ export interface JobHandlerContext {
 export type JobHandler = (payload: unknown, context: JobHandlerContext) => void | Promise<void>;
 
 /**
- * Marks a method as the handler for one job type (AD-72 D-5).
+ * Marks a method as the handler for one job type.
  *
  * Node-only: the decorator refuses to apply in environments without a
  * `process` global (genuine browsers) — jobs run on the server.

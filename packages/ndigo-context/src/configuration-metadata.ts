@@ -225,7 +225,7 @@ export function declaredConfigurationProperties(ctor: new () => unknown): Declar
 /**
  * Normalizes a key for relaxed binding: kebab/snake → camel (`host-name` /
  * `host_name` → `hostName`). Exact keypaths are the default; this only runs
- * when a class opts in via `{ relaxed: true }` (AD-15 Q8).
+ * when a class opts in via `{ relaxed: true }`.
  */
 const camelize = (key: string): string => key.replace(/[-_]([a-z])/g, (_match, letter: string) => letter.toUpperCase());
 

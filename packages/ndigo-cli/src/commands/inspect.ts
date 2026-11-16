@@ -1,8 +1,8 @@
 /**
  * `ndigo inspect` — run the application's declared `inspect` script (the
- * AD-70 introspection entry prints the app manifest without binding a
+ * introspection entry prints the app manifest without binding a
  * port). The introspection logic stays in `@ndigo/inspect`; the app owns
- * the wiring (AD-75 D-3, AD-70).
+ * the wiring.
  */
 import { buildCommand } from '@stricli/core';
 import { resolveAppDir, runAppOnce } from '../helpers/app-scripts.js';
@@ -16,7 +16,7 @@ export const inspectCommand = buildCommand({
         process.exitCode = await runAppOnce(
             resolved,
             'inspect',
-            'add an "inspect" script that builds and prints the manifest, e.g. "inspect": "tsx src/inspect.ts" (AD-70)'
+            'add an "inspect" script that builds and prints the manifest, e.g. "inspect": "tsx src/inspect.ts"'
         );
     },
     parameters: {
@@ -36,7 +36,7 @@ export const inspectCommand = buildCommand({
     docs: {
         brief: 'Print the application manifest (routes, mappings, config keys)',
         fullDescription:
-            "Runs the app's scripts.inspect — the AD-70 introspection entry " +
+            "Runs the app's scripts.inspect — the introspection entry " +
             'that builds the manifest without listening. The wiring lives in ' +
             'the app (choose its controllers/config classes); @ndigo/inspect owns ' +
             'the introspection.',

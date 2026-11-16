@@ -66,7 +66,7 @@ jobs:
       - name: Docs relative-link integrity
         run: pnpm docs:links
 
-      - name: Migration schema freshness (AD-78 D-6)
+      - name: Migration schema freshness
         run: pnpm db:schema:check
 
       - name: Manifest conformance

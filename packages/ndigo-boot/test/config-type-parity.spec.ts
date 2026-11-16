@@ -46,7 +46,7 @@ const schemaKeysOf = (namespace: string): string[] => Object.keys(schema.propert
 /**
  * The schema keys of a section that carry the constructor-option annotation
  * (`x-ndigo-read-from-config: false`) — the only ones mirroring an option
- * type, post AD-76 D-5 (the read-from-config keys are NOT options).
+ * type, post (the read-from-config keys are NOT options).
  */
 const annotatedKeysOf = (namespace: string): string[] =>
     Object.entries(schema.properties?.[namespace]?.properties ?? {})
@@ -68,10 +68,10 @@ describe('schema ⇄ option-type parity (BOOT-4)', () => {
         ).toEqual([]);
     });
 
-    test('config-read management keys are not constructor options (AD-76 D-5)', () => {
+    test('config-read management keys are not constructor options', () => {
         for (const key of ['endpoints', 'health']) {
             const isOption = MANAGEMENT_TYPE_KEYS.some((known) => known === key);
-            expect(isOption, `${key} is read from config (AD-76 D-5), not a constructor option`).toBe(false);
+            expect(isOption, `${key} is read from config, not a constructor option`).toBe(false);
         }
     });
 

@@ -12,7 +12,7 @@ import { SecurityHeadersInterceptor } from '../src/security-headers-interceptor'
 import type { SecurityHeadersInterceptorOptions } from '../src/security-headers-interceptor';
 
 /**
- * Security headers over a real socket (AD-25): the default-on set, fallback
+ * Security headers over a real socket: the default-on set, fallback
  * coverage of unmatched routes, per-header escape hatches, and the
  * WebSocket-aware CSP default.
  */
@@ -89,7 +89,7 @@ describe('SecurityHeadersInterceptor (default-on)', () => {
         // dispatcher/interceptor chain runs — security headers cannot reach
         // them without an adapter-level seam. Acceptable: these responses
         // are fixed JSON problem documents (no HTML, no user reflection).
-        // Revisit if HTML error pages ship (AD-25 D5).
+        // Revisit if HTML error pages ship.
         const { base, close } = await boot();
         try {
             const res = await fetch(`${base}/no/such/route`);

@@ -28,7 +28,7 @@
  */
 
 // oxlint-disable @ndigo/no-string-registry-lookup -- benchmark fixtures: the
-// string-literal lookup hot path is a measured axis; AD-34 D1 tokens and
+// string-literal lookup hot path is a measured axis; tokens and
 // strings share the description-keyed registry (same-cost claim pinned in
 // packages/ndigo-context/bench/context-lookup.bench.ts's token case).
 

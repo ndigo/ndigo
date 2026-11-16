@@ -1,6 +1,6 @@
 /**
  * `ndigo db migrate` demo entry — applies the journaled file migrations under
- * `db/migrations` (AD-30 runner, AD-78 D-1 loader) and prints the journal
+ * `db/migrations` ( runner, loader) and prints the journal
  * readback. The data source is the same store the Drizzle routes read
  * (`NDIGO_DB_URL` override respected).
  */

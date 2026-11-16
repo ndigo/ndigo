@@ -8,7 +8,7 @@ import { performance } from 'node:perf_hooks';
 import { AbstractBaseInstrumentation, createLazyHistogram } from '@ndigo/telemetry';
 
 /**
- * The semconv HTTP server request-duration metric (AD-77 D-6): a histogram
+ * The semconv HTTP server request-duration metric: a histogram
  * in seconds with the semconv explicit bucket boundaries, aggregated by the
  * SDK's default explicit-bucket histogram aggregation.
  */
@@ -116,7 +116,7 @@ export class HTTPServerInstrumentation extends AbstractBaseInstrumentation {
                                     span.setAttribute('http.response.status_code', res.statusCode);
                                     span.setStatus(resultStatus({ ok: res.statusCode < 500 }));
                                     span.end();
-                                    // AD-77 D-6: the semconv duration histogram
+                                    // The semconv duration histogram
                                     // (seconds), aggregated server-side by
                                     // method + status code (low cardinality —
                                     // the raw path is deliberately not an

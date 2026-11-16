@@ -1,11 +1,11 @@
 /**
  * WebSocket session registry contract — tracks live connections and fan-out
- * (moved from `ndigo-dispatcher`, which re-exports it — AD-22 D2).
+ * (moved from `ndigo-dispatcher`, which re-exports it).
  */
 import type { SocketSession } from './socket-session';
 
 /**
- * Tracks live WebSocket sessions and broadcasts to them (AD-21 D3/D5).
+ * Tracks live WebSocket sessions and broadcasts to them.
  *
  * Sessions auto-join the set keyed by their endpoint path
  * (`broadcast('/ws/room', …)` reaches every session upgraded at that path,
@@ -15,7 +15,7 @@ import type { SocketSession } from './socket-session';
  * This is a **type-only contract**: the dispatcher's execution path never
  * references it. Implementations (e.g. the Node transport) are registered
  * as application-context entries; any service with the registry can push to
- * a room (scheduler → room, HTTP → room) — AD-21 D4.
+ * a room (scheduler → room, HTTP → room).
  */
 export interface SocketSessionRegistry {
     /**

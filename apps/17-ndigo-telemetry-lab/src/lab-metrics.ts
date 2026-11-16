@@ -3,7 +3,7 @@
  * views the demo contrasts:
  *
  * - **pull** — every observation is mirrored into the context-level
- *   `FeatureMetricAggregator` (AD-32), which is what `GET /metrics`
+ * `FeatureMetricAggregator`, which is what `GET /metrics`
  *   serializes (`@ndigo/management`).
  * - **push** — the instrumented methods carry `@counted` (see
  *   {@link WorkService}/{@link LabTicker}), which records an OpenTelemetry

@@ -1,5 +1,5 @@
 /**
- * Remote config property source (AD-29 D-6..D-8).
+ * Remote config property source.
  *
  * A named, reorderable property source whose values are fetched over HTTP(S)
  * as a plain JSON document (`{"key": value, ...}` — the own-contract wire

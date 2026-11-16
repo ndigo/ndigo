@@ -123,7 +123,7 @@ export function whenProperty(options: WhenPropertyOptions) {
  * value keeps its validated, trimmed form; multiple values mean either-of
  * and fold into one union via {@link Profile.or}. Folding at decoration time
  * replaces the old per-entry OR loop, so every reader evaluates exactly one
- * expression (AD-83).
+ * expression.
  */
 const normalizeProfileCondition = (expressions: Array<string | ProfileTerm>): string => {
     if (expressions.length === 0) {
@@ -135,11 +135,11 @@ const normalizeProfileCondition = (expressions: Array<string | ProfileTerm>): st
 /**
  * Class or method decorator that marks the annotated target active only when
  * a profile expression matches the environment's effective active set
- * (AD-14; unified as the single profile gate by AD-83).
+ * (unified as the single profile gate).
  *
  * A single expression keeps its form; multiple arguments mean either-of and
  * fold into one canonical `a | b` expression at decoration time. Composed
- * {@link ProfileTerm} expressions (AD-34 D5) are accepted and normalized the
+ * {@link ProfileTerm} expressions are accepted and normalized the
  * same way. On a class the condition gates registration; on an entry method
  * it gates that entry alone.
  *
@@ -213,7 +213,7 @@ export function getConditionalPlatform(target: unknown): ConditionalPlatform | u
 
 /**
  * Reads the canonical profile condition stored on a class or one of its
- * methods — the read counterpart of {@link whenProfile} (AD-83). The
+ * methods — the read counterpart of {@link whenProfile}. The
  * configuration parser uses this to gate classes and entry methods; boot
  * uses {@link isActive} on classes only.
  *

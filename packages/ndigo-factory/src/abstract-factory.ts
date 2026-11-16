@@ -156,7 +156,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
         this.registerScope('route', new HashScope());
         this.registerScope('hash', this.getScope('route'));
         this.registerScope('singleton', new SingletonScope());
-        // AD-29 D-2: refresh-scoped entries re-create on environment refresh.
+        // Refresh-scoped entries re-create on environment refresh.
         // Registered by default so @refreshScope works with zero wiring; the
         // owning context wires the config:refresh event to scope.clear().
         this.registerScope('refresh', new RefreshScope());
@@ -313,7 +313,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
             const value = scope.getValue<T>(name, () => {
                 const instance = this._create<T>(name, argumentsList);
 
-                // CF-3 / AD-29 D-2: the scope's value factory runs only when a
+                // CF-3: the scope's value factory runs only when a
                 // new instance is created, so lifecycle teardown is registered
                 // exactly once per instance (never on cache hits).
                 this._registerScopeDestructionCallback(scope, name, instance);
@@ -352,7 +352,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
      * Registers a destruction callback for a lifecycle-bearing value owned by
      * a caching, scope-managed lifecycle, so that scope's teardown runs
      * `destroy()`/`close()` before discarding the value: `RefreshScope.clear()`
-     * on environment `config:refresh` (AD-29 D-2) and `HashScope.endScope()` at
+     * on environment `config:refresh` and `HashScope.endScope()` at
      * the end of a route/request.
      *
      * Only refresh and hash/route scopes opt in. `SingletonScope` also declares

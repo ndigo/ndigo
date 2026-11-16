@@ -25,7 +25,7 @@ export interface UserRecord {
     /** Roles attached to the account. */
     readonly roles?: readonly string[];
     /**
-     * Token version for JWT revocation (AD-33 D-7): access/refresh tokens
+     * Token version for JWT revocation: access/refresh tokens
      * carry a `ver` claim that must equal `tokenVersion`; bumping the
      * version revokes every outstanding token for the account.
      */
@@ -45,7 +45,7 @@ export interface UserStore {
     findById(id: string): Promise<UserRecord | null>;
     /**
      * Advances the account's `tokenVersion` by one and returns the new
-     * value (AD-33 D-7). This is the revocation primitive: JWTs carry a
+     * value. This is the revocation primitive: JWTs carry a
      * `ver` claim that must equal `tokenVersion`; every bump kills every
      * outstanding token for the account. Stores should implement this as
      * a single atomic write (UPDATE ... SET token_version = token_version + 1) — the read-modify-write must not race.
@@ -57,7 +57,7 @@ export interface UserStore {
     incrementTokenVersion(id: string): Promise<number>;
 
     /**
-     * Compare-and-swap advancement of `tokenVersion` (AD-33 D-7, SEC-6):
+     * Compare-and-swap advancement of `tokenVersion` (SEC-6):
      * bumps the version to `expected + 1` only when the current version is
      * still `expected`, returning the new value; returns `null` when the
      * current version no longer matches (someone else advanced it). This is

@@ -38,14 +38,14 @@ class UploadMeta {
 }
 
 /**
- * Demo `multipart/form-data` upload endpoint (AD-26, D-6).
+ * Demo `multipart/form-data` upload endpoint (D-6).
  *
  * Binds an optional JSON `meta` part into a DTO via `requestPart(MetaDTO)`
  * (the part name is inferred from the parameter name) and a single file part
  * via `@file()` — persisted to a temp directory, echoing back the reported
  * byte size, the client-supplied filename, and the parsed meta. The stored
  * filename is random, never the client-supplied `originalFilename`, so an
- * upload can never resolve a path-traversal payload to disk (AD-26 D-6).
+ * upload can never resolve a path-traversal payload to disk.
  */
 @requestMapping('/api')
 export class UploadController {

@@ -53,7 +53,7 @@ export interface JobRunnerOptions {
 }
 
 /**
- * The worker engine (AD-72 D-4): single-flight poll ticks, `concurrency`
+ * The worker engine: single-flight poll ticks, `concurrency`
  * execution slots, per-execution timeout (cooperative `AbortSignal`), lease
  * heartbeat, exponential-backoff retries until `maxAttempts`, one
  * `jobs.job.<type>` span per execution, and outcome logging via `@ndigo/log`.

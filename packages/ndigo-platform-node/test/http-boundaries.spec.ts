@@ -302,7 +302,7 @@ describe('HTTPServer lifecycle', () => {
         expect(server.port).toBe(0);
     });
 
-    test('binds the supplied host and answers on it (AD-36 D-2)', async () => {
+    test('binds the supplied host and answers on it', async () => {
         const context = new MetadataConfigApplicationContext('bind-host');
         context.register(NodeAutoConfiguration);
         context.refresh();
@@ -312,7 +312,7 @@ describe('HTTPServer lifecycle', () => {
         try {
             const port = (server.server as { address(): { port: number } }).address();
             // The listener is reachable exactly on the configured interface
-            // — bind separation is honored (AD-36 D-2 posture: private
+            // — bind separation is honored (bind-separation posture: private
             // interfaces, never 0.0.0.0).
             const res = await fetch(`http://127.0.0.1:${port.port}/`);
             expect([200, 404]).toContain(res.status);

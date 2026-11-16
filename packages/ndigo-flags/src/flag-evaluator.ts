@@ -1,10 +1,10 @@
 /**
- * The feature-flag backend contract (AD-82): typed, **async** (AD-39),
+ * The feature-flag backend contract: typed, **async**,
  * **never-throw** flag evaluation behind one `FlagEvaluator` surface.
  *
  * The SPI is deliberately provider-agnostic: a local property-backed
  * provider ships here, and the OpenFeature bridge
- * (`@ndigo/flags-openfeature`, AD-87) implements the same contract over an
+ * (`@ndigo/flags-openfeature`) implements the same contract over an
  * `@openfeature/server-sdk` client (accessing flagd / OFREP /
  * LaunchDarkly / … providers). Enforcement — the `@whenFeature` route gate
  * — lives in `@ndigo/platform-node` beside the other interceptors.
@@ -53,7 +53,7 @@ export type FlagErrorCode =
  *
  * The `value` field is always set: abnormal execution returns the caller's
  * default with `reason: 'ERROR'` and an `errorCode` — evaluation never
- * throws (AD-82 D-2).
+ * throws.
  */
 export interface FlagEvaluation<T extends FlagValue> {
     /** The evaluated flag value (the supplied default on abnormal execution). */
@@ -82,7 +82,7 @@ export interface FlagEvaluation<T extends FlagValue> {
  *
  * Not every provider reads this; the property-backed provider is static
  * today. The seam exists so a targeting/traffic-split provider can
- * implement percentage rollouts per subject (AD-82 D-6).
+ * implement percentage rollouts per subject.
  */
 export interface FlagEvaluationContext {
     /** Stable identifier for the subject (user, session, tenant, device…). */

@@ -1,5 +1,5 @@
 /**
- * RemotePropertySource specs (AD-29 Wave 3, D-6..D-8): fetch-once, ETag /
+ * RemotePropertySource specs (D-6..D-8): fetch-once, ETag /
  * body-text change gating, `optional` failure semantics, precedence-slot
  * anchoring, polling lifecycle (start/stop via the scheduler seam), and the
  * refresh-event loop.
@@ -54,7 +54,7 @@ const streamedResponse = (status: number, chunks: readonly Uint8Array[]) => ({
     text: async () => '',
 });
 
-describe('RemotePropertySource (AD-29 D-6..D-8)', () => {
+describe('RemotePropertySource', () => {
     let env: StandardEnvironment;
     let fetchImpl: ReturnType<typeof vi.fn<fakeFetch>>;
 

@@ -1,5 +1,5 @@
 /**
- * OpenAPI 3.0.3 spec generation from dispatch metadata (AD-35 D-2/D-3).
+ * OpenAPI 3.0.3 spec generation from dispatch metadata.
  *
  * The generator walks `RouteHandlerMapping.getHandlerMethods()` — the exact
  * table dispatch uses — so the document cannot drift from behavior. Nothing
@@ -72,7 +72,7 @@ export interface OpenAPIResponse {
     description: string;
     /**
      * Response content — e.g. `{ 'application/json': { schema } }` when the
-     * handler declares its DTO via `@apiDocs({ responses })` (AD-38 D-4).
+     * handler declares its DTO via `@apiDocs({ responses })`.
      */
     content?: Record<string, { schema?: OpenAPISchemaObject }>;
 }
@@ -128,9 +128,9 @@ export interface OpenAPIOperation {
      * An empty array documents an explicitly anonymous operation.
      */
     security?: Array<Record<string, string[]>>;
-    /** Framework matrix-parameter conditions (AD-35 D-2). */
+    /** Framework matrix-parameter conditions. */
     'x-ndigo-matrixParams'?: string[];
-    /** Framework query-parameter conditions (AD-35 D-2). */
+    /** Framework query-parameter conditions. */
     'x-ndigo-queryParams'?: string[];
 }
 
@@ -213,7 +213,7 @@ const { toJSONSchema } = z;
 /**
  * Normalizes an `@apiDocs` responses entry: a bare schema is
  * `{ description: 'OK', schema }`; the object form carries an optional
- * description and schema (AD-38 D-4).
+ * description and schema.
  */
 function responseDocsOf(entry: OpenAPIResponseDocs): { description: string; schema?: z.ZodType<unknown> } {
     if (entry instanceof z.ZodType) {
@@ -225,7 +225,7 @@ function responseDocsOf(entry: OpenAPIResponseDocs): { description: string; sche
 /**
  * Converts a zod schema to a JSON Schema object compatible with the served
  * OpenAPI 3.0.3 document (embedded: no `$schema` header). The zod library
- * owns the conversion (AD-35 D-3); the `openapi-3.0` target keeps constructs
+ * owns the conversion; the `openapi-3.0` target keeps constructs
  * such as nullable, literal and tuple fields valid for that version
  * (`nullable`/`enum`/`items` instead of `type: ['x', 'null']`/`const`/
  * `prefixItems`).
@@ -529,7 +529,7 @@ export class OpenAPISpecGenerator {
         }
 
         // Framework conditions the OpenAPI model cannot express are carried
-        // as x-ndigo extensions instead of silently dropped (AD-35 D-2).
+        // as x-ndigo extensions instead of silently dropped.
         const matrixParams = [...info.matrixCondition.expressions].map((expression) => expression.toString());
         if (matrixParams.length > 0) operation['x-ndigo-matrixParams'] = matrixParams;
         const queryParams = [...info.queryCondition.expressions].map((expression) => expression.toString());

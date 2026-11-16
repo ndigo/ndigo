@@ -1,10 +1,10 @@
 /**
- * Serves the Swagger UI page + assets (AD-35 D-6).
+ * Serves the Swagger UI page + assets.
  *
  * The page is a framework-rendered template over `swagger-ui-dist`'s
  * bundle; the dist assets are served by {@link StaticResourceHandler}
  * straight from the installed package — ETag/conditional GET, cache headers
- * and Range included (AD-28 machinery), no CDN, offline-friendly. The
+ * and Range included (the static-resource handler), no CDN, offline-friendly. The
  * spec-wiring bootstrap (`swagger-ui-init.js`) is rendered server-side and
  * served by this controller (SEC-2): external, so the default-on CSP
  * (`script-src 'self'`) needs no `'unsafe-inline'`.

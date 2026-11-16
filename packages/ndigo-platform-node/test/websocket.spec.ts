@@ -46,7 +46,7 @@ class SocketController {
         }
     }
 
-    // Room membership (AD-21 D5): the handler joins 'lobby' on connect;
+    // Room membership: the handler joins 'lobby' on connect;
     // the adapter's registry then fans out broadcastTo('lobby', …) to it.
     @socketMapping('/lobby')
     @parameters({ session: socketSessionValue('session') })
@@ -195,7 +195,7 @@ describe('Node WebSocket pipeline', () => {
         return promise;
     };
 
-    test('registry tracks live sessions and broadcasts to a path (AD-21)', async () => {
+    test('registry tracks live sessions and broadcasts to a path', async () => {
         const a = new WebSocket(`${wsUrl}/echo`);
         const b = new WebSocket(`${wsUrl}/echo`);
         await Promise.all([open(a), open(b)]);
@@ -214,7 +214,7 @@ describe('Node WebSocket pipeline', () => {
         expect(adapter.socketRegistry.count('/echo')).toBe(0);
     });
 
-    test('handler room join enables broadcastTo (AD-21 D5)', async () => {
+    test('handler room join enables broadcastTo', async () => {
         const ws = new WebSocket(`${wsUrl}/lobby`);
         await open(ws);
         expect(adapter.socketRegistry.count('/lobby')).toBe(1);
@@ -321,7 +321,7 @@ describe('WebSocket upgrade authentication + limits', () => {
         async *privateEcho(session: SocketSession) {
             for await (const message of session.messages) {
                 // Text frames arrive as strings; binary frames as bytes
-                // (AD-23 D8) — decode explicitly for the text contract.
+                // — decode explicitly for the text contract.
                 const data = typeof message === 'string' ? message : new TextDecoder().decode(message as Uint8Array);
                 yield { event: 'private', principal: session.attributes['principal'], data };
             }
@@ -436,13 +436,13 @@ describe('WebSocket upgrade authentication + limits', () => {
         await expect(closed).resolves.toMatchObject({ code: 1013, reason: 'inbound queue overflow' });
     });
 
-    test('binary frames arrive byte-exact; handlers decode explicitly (AD-23 D8)', async () => {
+    test('binary frames arrive byte-exact; handlers decode explicitly', async () => {
         const ws = new WebSocket(`${wsUrl}/authws/private?token=good`);
         await open(ws);
         const reply = waitMessage(ws);
         ws.send(Buffer.from('héllo binary'));
         // The old "binary arrives as UTF-8 strings" promise is replaced:
-        // binary frames surface as Uint8Array (AD-23 D8) and the handler
+        // binary frames surface as Uint8Array and the handler
         // decodes; text frames still arrive as strings.
         await expect(reply).resolves.toEqual({ event: 'private', principal: 'alice', data: 'héllo binary' });
         ws.close(1000, 'done');

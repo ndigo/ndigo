@@ -9,7 +9,7 @@
  *   registered reader (prometheus exporter) always wins over the fallback
  * - a {@link HealthRegistry} with the {@link TelemetryHealthIndicator} wired
  * - the `/metrics`, `/health`, `/loggers`, `/env` and `/configprops`
- *   controllers — the last three only when the exposure model (AD-76 D-2)
+ * controllers — the last three only when the exposure model
  *   includes them, so nothing new is served without operator action
  *
  * Register alongside `NodeAutoConfiguration` in a Node application:
@@ -48,7 +48,7 @@ import { ConfigurationPropertiesController } from './configuration-properties-co
 import { endpointPath, MANAGEMENT_ENDPOINT_IDS } from './management-properties';
 
 /**
- * Auto-configuration for management endpoints (AD-76).
+ * Auto-configuration for management endpoints.
  */
 @configuration
 export class ManagementAutoConfiguration extends AsApplicationContextAware(Null) {
@@ -126,7 +126,7 @@ export class ManagementAutoConfiguration extends AsApplicationContextAware(Null)
     }
 
     /**
-     * The `/loggers` controller entry (AD-76 D-8): decorator-registered, so
+     * The `/loggers` controller entry: decorator-registered, so
      * handler detection dispatches the context-processed instance.
      *
      * @returns The loggers controller.
@@ -137,7 +137,7 @@ export class ManagementAutoConfiguration extends AsApplicationContextAware(Null)
     }
 
     /**
-     * The `/env` controller entry (AD-76 D-8).
+     * The `/env` controller entry.
      *
      * @returns The environment controller.
      */
@@ -147,7 +147,7 @@ export class ManagementAutoConfiguration extends AsApplicationContextAware(Null)
     }
 
     /**
-     * The `/configprops` controller entry (AD-76 D-8).
+     * The `/configprops` controller entry.
      *
      * @returns The configuration-properties controller.
      */
@@ -162,14 +162,13 @@ export class ManagementAutoConfiguration extends AsApplicationContextAware(Null)
      * management routes otherwise bypass the interceptor attached to the
      * *platform* mapping), the management-path guard pushed onto the
      * interceptor chain when present, and the controllers detected through
-     * it like every other decorator-driven handler (AD-76 D-8: detection
+     * it like every other decorator-driven handler (detection
      * registers the *processed* entry, so the handlers run with their
      * context wired). Declared as the `handlerMappings` collection (the
      * resolution the strategy checks first), so it is immune to
      * registration-order clobbering by `NodeAutoConfiguration.handlerMapping`.
      *
-     * Exposure is enforced **per request** inside the controllers (AD-76
-     * D-2): a disabled endpoint answers 404, and its path is covered by the
+     * Exposure is enforced **per request** inside the controllers (D-2): a disabled endpoint answers 404, and its path is covered by the
      * guard like every other management route — same wire behavior as not
      * registering it.
      *
@@ -209,7 +208,7 @@ export interface ManagementAutoConfigurationOptions {
     accessGuard?: RouteHandlerInterceptor;
     /**
      * Whether thrown health-indicator errors are redacted on `/health`
-     * (AD-36 D-1). Default `true`: the status stays `DOWN` and the component
+     *. Default `true`: the status stays `DOWN` and the component
      * name is preserved, but the exception text is replaced with
      * {@link health.HEALTH_ERROR_REDACTED | HEALTH_ERROR_REDACTED} so indicator internals never reach the
      * wire. Set `false` to expose the raw error messages (only sensible
@@ -217,7 +216,7 @@ export interface ManagementAutoConfigurationOptions {
      */
     redactHealthErrors?: boolean;
     /**
-     * Endpoint exposure override (AD-76 D-2/D-5): wins over any
+     * Endpoint exposure override: wins over any
      * `management.endpoints.exposure` section. `include` lists the endpoint
      * ids to serve (`'*'` = all), `exclude` withholds; the default is
      * `["health", "metrics"]`.
@@ -225,8 +224,8 @@ export interface ManagementAutoConfigurationOptions {
     exposure?: { include?: string[]; exclude?: string[] };
     /**
      * The `@configurationProperties` classes `/configprops` enumerates
-     * (declared keys + conversion types only — values are never read,
-     * AD-76 D-3). The same explicit list `@ndigo/inspect` takes.
+     * (declared keys + conversion types only — values are never read).
+     * The same explicit list `@ndigo/inspect` takes.
      */
     configurationClasses?: Array<new () => unknown>;
 }

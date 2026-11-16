@@ -103,7 +103,7 @@ export function levelToSeverityText(levelName: string, scheme?: SeverityScheme):
 export const loggerSeverityMethodNames: ReadonlyArray<keyof Logger> = ['debug', 'info', 'warn', 'error'];
 
 /**
- * The canonical threshold vocabulary (AD-76 D-7): one name per settable
+ * The canonical threshold vocabulary: one name per settable
  * threshold, `off` mapped above every emitted severity (FATAL4 — the
  * `NoopLogger` posture) and `trace` to the lowest. This is the single
  * source of truth for the `/loggers` endpoint's level names.

@@ -7,8 +7,8 @@
 `@ndigo/util` is now a zero-dependency leaf toolkit. `seedrandom`, `slug`, and
 `safe-regex` were removed along with the unused or replaceable helpers they
 backed (the `guid`/`rand*` PRNG chain — replaced by native
-`crypto.randomUUID()` — plus `slugify` and `toRegExp`). See AD-84
-(`docs/decisions/2026-10-31_AD84_UTIL_SURFACE_PRUNE.md`).
+`crypto.randomUUID()` — plus `slugify` and `toRegExp`). See the util-surface
+prune decision.
 
 ## Ramda/date-fns Removal (Completed — 2026-06-12)
 

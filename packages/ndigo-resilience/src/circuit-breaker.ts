@@ -25,7 +25,7 @@ import { methodAnnotation, type MethodDescriptor, type MethodInvocation, type Me
 export const circuitBreaker = methodAnnotation<CircuitBreakerSpec>('circuitBreaker');
 
 /**
- * Circuit-breaking policy for one method (AD-43 D-5): after
+ * Circuit-breaking policy for one method: after
  * `failureThreshold` consecutive failures the circuit opens and calls fail
  * fast; once `resetMs` has elapsed a single probe attempt runs the call —
  * success closes the circuit, failure re-opens it with a fresh window.
@@ -115,7 +115,7 @@ function validateCircuitBreakerSpec(spec: CircuitBreakerSpec): void {
 
 /**
  * Around-advice keeping a per-(entry, method) circuit. Awaits `next()` so it
- * observes the final outcome of the inner chain (AD-43 D-5) — when composed
+ * observes the final outcome of the inner chain — when composed
  * outside a retry interceptor, one chain pass counts as one failure, not one
  * per retry attempt.
  */

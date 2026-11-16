@@ -1,10 +1,10 @@
 /**
- * WebSocket chat room + scheduler-driven tick — the AD-21 demo gate.
+ * WebSocket chat room + scheduler-driven tick — the demo gate.
  *
  * Clients on `/ws/chat` join the `room` group; every client message is
  * fanned out to the whole room (including the sender). A `chat-tick` fires
  * into the room every 2 seconds — the scheduler → registry reachability
- * proof (AD-21 D4): zero-wiring `@scheduled` next to the socket endpoint.
+ * proof: zero-wiring `@scheduled` next to the socket endpoint.
  */
 import '@tsmetadata/polyfill';
 import { $aware } from '@ndigo/factory';
@@ -79,7 +79,7 @@ export class ChatController implements ApplicationContextAware {
     }
 
     /**
-     * Periodic room tick — the scheduler → registry fan-out path (AD-21 D4).
+     * Periodic room tick — the scheduler → registry fan-out path.
      */
     @scheduled('*/2 * * * * *')
     async chatTick() {

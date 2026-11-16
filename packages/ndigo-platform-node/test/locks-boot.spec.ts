@@ -1,5 +1,5 @@
 /**
- * Locks stack through the real `NodeAutoConfiguration` (AD-73): the
+ * Locks stack through the real `NodeAutoConfiguration`: the
  * `lockDriver` entry exists, a `@scheduled({ lock })` task runs through the
  * real registry→scheduler→driver wiring, and its lease is released after
  * the run.

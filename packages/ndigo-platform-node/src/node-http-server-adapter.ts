@@ -8,8 +8,8 @@
  * and dispatches through the `NodeDispatcher`. The dispatcher's render output
  * is written to the `ServerResponse`.
  *
- * The origin is HTTP/1.1 only — put an edge proxy (trusted per AD-37, TLS
- * terminated per AD-80) in front for production deployments.
+ * The origin is HTTP/1.1 only — put an edge proxy (trusted, TLS
+ * terminated) in front for production deployments.
  *
  * Every request passes through one error boundary: URL construction, body
  * streaming, parsing, dispatch, and response finalization all terminate with
@@ -80,7 +80,7 @@ const logger = getLogger('ndigo-platform-node:node-http-server-adapter');
 export const THEME_COOKIE_NAME = 'theme';
 
 /**
- * STOMP WebSocket subprotocols, best to worst (AD-23 D4). Reference clients and
+ * STOMP WebSocket subprotocols, best to worst. Reference clients and
  * STOMP.js clients offer these on upgrade; the adapter selects the best
  * mutual match.
  */
@@ -205,21 +205,21 @@ export interface NodeHTTPServerAdapterOptions {
      * Trusted-proxy addresses/ranges (IP literal or CIDR, IPv4/IPv6) whose
      * `X-Forwarded-For` header the server may believe. The direct socket
      * peer must match this set before the header is even read — a client
-     * reaching the server directly can never spoof an address (AD-37).
+     * reaching the server directly can never spoof an address.
      * Empty (default) trusts nobody: `NodeRequest.remoteAddress` stays the
      * socket address. Malformed entries (hostnames, ports, bad prefixes)
      * fail loud at construction.
      */
     trustedProxies?: string[];
     /**
-     * Session registry tracking open sockets (broadcast, rooms, heartbeat;
-     * AD-21). When omitted, the adapter creates a default registry with
+     * Session registry tracking open sockets (broadcast, rooms, heartbeat).
+     * When omitted, the adapter creates a default registry with
      * standard heartbeat defaults — heartbeats are on unless explicitly
      * disabled.
      */
     socketRegistry?: NodeSocketSessionRegistry;
     /**
-     * TLS material for the origin listener (AD-81). When set, the adapter
+     * TLS material for the origin listener. When set, the adapter
      * binds `http2.createSecureServer` with `allowHTTP1: true` — ALPN
      * negotiates h2 with an HTTP/1.1 fallback, and WebSocket upgrades keep
      * flowing over the h1.1 path (RFC 8441 is not implemented by `ws` or
@@ -229,7 +229,7 @@ export interface NodeHTTPServerAdapterOptions {
 }
 
 /**
- * TLS material from a {@link TLSServerOptions} entry (AD-81): inline PEM
+ * TLS material from a {@link TLSServerOptions} entry: inline PEM
  * (detected by the `-----BEGIN` prefix after trimming surrounding
  * whitespace — env-dumped values often carry indentation or quoting)
  * passes through; anything else is a file path read here, so a missing or
@@ -323,9 +323,9 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
     #server: Server | http2.Http2SecureServer | null;
     #websocket: WebSocketServer | null = null;
     readonly #socketRegistry: NodeSocketSessionRegistry;
-    /** Trusted-proxy allowlist (AD-37); empty = trust nobody. */
+    /** Trusted-proxy allowlist; empty = trust nobody. */
     readonly #trustedProxies: TrustedProxySet;
-    /** TLS material for the secure origin listener (AD-81), or `null` for plaintext h1.1. */
+    /** TLS material for the secure origin listener, or `null` for plaintext h1.1. */
     readonly #tls: TLSServerOptions | null;
     /**
      * Force-closes the remaining connections when the shutdown drain
@@ -344,7 +344,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
     /**
      * The session registry backing this adapter's sockets (broadcast, rooms,
      * heartbeat). Shared with the application so any service can push to a
-     * room (AD-21 D4).
+     * room.
      */
     get socketRegistry(): NodeSocketSessionRegistry {
         return this.#socketRegistry;
@@ -457,7 +457,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
                     ALPNProtocols: ['h2', 'http/1.1'],
                 });
                 server.on('request', (req, res) => {
-                    // AD-81: the http2 compatibility layer presents h2
+                    // The http2 compatibility layer presents h2
                     // requests through the http.Server-shaped surface
                     // (url/method/headers in, writeHead/write/end out), so
                     // the same pipeline consumes both flavors
@@ -519,7 +519,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
                 // NOTE: bridging to Server — the source type is wider than this consumer's contract.
                 server: server as unknown as Server,
                 maxPayload: this.#socketLimits.maxPayloadBytes,
-                // STOMP subprotocol negotiation (AD-23 D4): a stomp-mapped
+                // STOMP subprotocol negotiation: a stomp-mapped
                 // path answers `v12.stomp`/`v11.stomp`/`v10.stomp` when the
                 // client offers any of them; every other path keeps ws's
                 // stock behavior (first offered protocol echoed). A falsy
@@ -858,8 +858,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
         // authentication is pending must not leave a registry entry for a
         // dead session (remove is idempotent, so this also covers the
         // register below). The close code flows into `remove` for
-        // observability (e.g. 1013 backpressure closes) — AD-21 D4 +
-        // socket telemetry.
+        // observability (e.g. 1013 backpressure closes) and socket telemetry.
         ws.on('close', (code: number) => this.#socketRegistry.remove(session, code));
         // Upgrade-time authentication: the adapter-level hook binds identity
         // before the handler runs (REST gets this via the interceptor chain;
@@ -931,7 +930,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
         }
         // Track the session before the handler runs so broadcasts from the
         // handler (or any service with the registry) reach it immediately;
-        // the close event drops it from the registry (AD-21 D3/D4).
+        // the close event drops it from the registry.
         this.#socketRegistry.register(session, path, ws);
         const handlerMethod = (target.instance as Record<string, unknown>)[target.method] as unknown;
         if (typeof handlerMethod !== 'function') {
@@ -1079,7 +1078,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
                 headers: req.headers as Record<string, string | string[] | undefined>,
                 body: bodyRecord,
                 cookies: this.#parseRequestCookies(req),
-                // AD-37: resolved through the trusted-proxy allowlist; the
+                // Resolved through the trusted-proxy allowlist; the
                 // direct socket address stands unless the peer is trusted.
                 remoteAddress: resolveClientAddress(
                     req.socket?.remoteAddress,

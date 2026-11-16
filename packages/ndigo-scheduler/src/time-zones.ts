@@ -5,7 +5,7 @@
 const group = (zones: Record<string, string>): Readonly<Record<string, string>> => Object.freeze(zones);
 
 /**
- * Curated common IANA time-zone identifiers (AD-20 D6).
+ * Curated common IANA time-zone identifiers.
  *
  * Autocomplete + typo safety for the common cases without hand-maintaining
  * the full ~400-entry IANA catalog. Arbitrary identifiers remain accepted —
@@ -89,7 +89,7 @@ export const TimeZones = Object.freeze({
  *
  * `Intl.DateTimeFormat` throws `RangeError` on unknown zones, which also
  * catches the silent-UTC-fallback class of configuration bugs (croner, for
- * example, accepts garbage zones silently — AD-20 D6 requires this probe).
+ * example, accepts garbage zones silently — hence this probe).
  *
  * @param zone - The IANA identifier to validate.
  * @returns Whether the identifier is a recognized time zone.

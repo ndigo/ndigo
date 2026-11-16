@@ -10,7 +10,7 @@
  *
  * `tracker` (the lab's breaker projection) runs outermost so it sees the final
  * outcome of one chain pass, `breaker` counts one failure per pass, and `retry`
- * re-invokes the tail with backoff — the composition AD-43 D-5/D-7 prescribes.
+ * re-invokes the tail with backoff — the composition prescribes.
  */
 import { AsApplicationContextAware, ContextToken } from '@ndigo/context';
 import type { ApplicationContext } from '@ndigo/context';

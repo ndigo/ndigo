@@ -1,5 +1,5 @@
 /**
- * File-writing helper for `@ndigo/openapi` (AD-96 / richer openapi output).
+ * File-writing helper for `@ndigo/openapi` (richer openapi output).
  */
 import { writeFileSync } from 'node:fs';
 import { OpenAPISpecGenerator } from './spec.js';

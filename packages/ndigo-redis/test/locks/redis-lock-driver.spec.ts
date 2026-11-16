@@ -1,5 +1,5 @@
 /**
- * Live standalone Redis lock-driver contracts (AD-73): lease lifecycle,
+ * Live standalone Redis lock-driver contracts: lease lifecycle,
  * fencing tokens across separate connections, and stale-holder isolation.
  */
 // @vitest-environment node

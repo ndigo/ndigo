@@ -165,7 +165,7 @@ export class AuthStack {
         ensureSessionDirectory(config.sessionDbUrl);
         const encoder = new DelegatingPasswordEncoder({ scrypt: new ScryptPasswordEncoder() }, 'scrypt');
         const sessions = new LibSQLSessionStore({ url: config.sessionDbUrl, maxSessions: MAX_SESSIONS });
-        // Explicit provisioning (AD-40): creates `ndigo_sessions` + its expiry
+        // Explicit provisioning: creates `ndigo_sessions` + its expiry
         // index, idempotently, and never touches other tables.
         await sessions.initialize();
         return new AuthStack({ config, encoder, sessions, passwordHash: encoder.encode(DEMO_PASSWORD) });

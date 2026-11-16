@@ -1,5 +1,5 @@
 /**
- * `/env` endpoint specs (AD-76 D-3).
+ * `/env` endpoint specs.
  */
 // @vitest-environment node
 import { describe, test, expect } from 'vitest';
@@ -47,7 +47,7 @@ interface EnvDocument {
     }>;
 }
 
-describe('EnvironmentController (AD-76 D-3)', () => {
+describe('EnvironmentController', () => {
     test('values are redacted by default; origins and keys remain', async () => {
         const { adapter, base } = await bootWith(ExposedManagement, { ...APP_PROPERTIES });
         try {

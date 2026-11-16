@@ -24,7 +24,7 @@ import { lookupPrincipal } from './auth-store';
 const noteInsertSchema = insertSchemaForEntity(DrizzleNote);
 
 // Idempotent + async: the first call that awaits init() creates the table
-// (IF NOT EXISTS — byte-identical to the AD-30 baseline migration, so the
+// (IF NOT EXISTS — byte-identical to the baseline migration, so the
 // journaled and auto-init paths agree); subsequent calls short-circuit.
 let initPromise: Promise<void> | null = null;
 function ensureInit(): Promise<void> {
@@ -38,7 +38,7 @@ function ensureInit(): Promise<void> {
 /**
  * The demo's Drizzle data source — exported (unchanged signature) so
  * integration tests can seed the same SQL store the routes read from; the
- * store itself now lives in `./drizzle-data-source` (AD-78).
+ * store itself now lives in `./drizzle-data-source`.
  */
 export { getDrizzleDataSource } from './drizzle-data-source';
 
@@ -110,12 +110,12 @@ export class DrizzleNoteController {
         }
         await ensureInit();
         // The validated body is already entity-shaped: instantiate and copy
-        // (documented request→entity pattern, AD-38 D-6); @prePersist fills
+        // (documented request→entity pattern); @prePersist fills
         // createdAt.
         const note = new DrizzleNote();
         Object.assign(note, data);
         await this.#manager().persist(note);
-        // AD-38: convert back through the DTO schema — the response is a
+        // Convert back through the DTO schema — the response is a
         // plain object (fields are decorator-affixed non-enumerable on the
         // entity itself) and matches the GET shape exactly.
         return ResponseEntity.ok({ note: conversionService.convert(note, noteDtoSchema) });

@@ -1,14 +1,15 @@
 {
   "name": "@ndigo/agent-lab",
   "version": "0.0.1",
-  "description": "Ndigo Agent Lab — a local-model tool-calling loop over MCP tools, streamed over SSE and traced with GenAI spans",
+  "description": "Ndigo Agent Lab \u2014 a local-model tool-calling loop over MCP tools, streamed over SSE and traced with GenAI spans",
   "type": "module",
   "private": true,
   "scripts": {
     "start": "tsx src/index.ts",
     "dev": "tsx src/index.ts",
     "mcp": "tsx src/mcp.ts",
-    "test": "vitest run"
+    "test": "vitest run",
+    "build": "tsc -b tsconfig.build.json"
   },
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",

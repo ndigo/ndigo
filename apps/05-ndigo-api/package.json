@@ -1,7 +1,7 @@
 {
   "name": "@ndigo/api",
   "version": "0.0.1",
-  "description": "Ndigo API — Node server showcase using @ndigo/platform-node",
+  "description": "Ndigo API \u2014 Node server showcase using @ndigo/platform-node",
   "type": "module",
   "private": true,
   "scripts": {
@@ -10,7 +10,9 @@
     "db:migrate": "tsx src/migrate.ts",
     "db:generate": "tsx src/db-generate.ts",
     "db:status": "tsx src/db-status.ts",
-    "test": "vitest run"
+    "test": "vitest run",
+    "dev": "tsx src/index.ts",
+    "build": "tsc -b tsconfig.build.json"
   },
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",

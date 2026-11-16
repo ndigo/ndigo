@@ -1,7 +1,7 @@
 {
   "name": "@ndigo/telemetry-lab",
   "version": "0.0.1",
-  "description": "Ndigo Telemetry Lab — browser action → server span → scheduled task → socket push, exported to console or an OTLP collector",
+  "description": "Ndigo Telemetry Lab \u2014 browser action \u2192 server span \u2192 scheduled task \u2192 socket push, exported to console or an OTLP collector",
   "type": "module",
   "private": true,
   "scripts": {
@@ -9,7 +9,8 @@
     "start": "tsx src/index.ts",
     "dev": "npm run start:full",
     "start:full": "npm run build:client && tsx src/index.ts",
-    "test": "vitest run"
+    "test": "vite build && vitest run",
+    "build": "vite build"
   },
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",

@@ -1,12 +1,14 @@
 {
   "name": "@ndigo/todo-api",
   "version": "0.0.1",
-  "description": "Ndigo Todo-Backend — implementation of the Todo-Backend REST spec (CRUD + CORS + HEAD/OPTIONS)",
+  "description": "Ndigo Todo-Backend \u2014 implementation of the Todo-Backend REST spec (CRUD + CORS + HEAD/OPTIONS)",
   "type": "module",
   "private": true,
   "scripts": {
     "start": "tsx src/index.ts",
-    "test": "vitest run"
+    "test": "vitest run",
+    "dev": "tsx src/index.ts",
+    "build": "tsc -b tsconfig.build.json"
   },
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",

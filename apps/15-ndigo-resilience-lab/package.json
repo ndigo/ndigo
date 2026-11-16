@@ -1,13 +1,14 @@
 {
   "name": "@ndigo/resilience-lab",
   "version": "0.0.1",
-  "description": "Ndigo Resilience Lab — retry and circuit-breaker policies on a typed service client against a controllable flaky upstream",
+  "description": "Ndigo Resilience Lab \u2014 retry and circuit-breaker policies on a typed service client against a controllable flaky upstream",
   "type": "module",
   "private": true,
   "scripts": {
     "start": "tsx src/index.ts",
     "dev": "tsx src/index.ts",
-    "test": "vitest run"
+    "test": "vitest run",
+    "build": "tsc -b tsconfig.build.json"
   },
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",

@@ -1,13 +1,14 @@
 {
   "name": "@ndigo/redis-fanout",
   "version": "0.0.1",
-  "description": "Ndigo Redis Fanout — two-node demo: a shared @ndigo/redis cache and cross-node WebSocket fan-out, with a clean single-node fallback when Redis is absent",
+  "description": "Ndigo Redis Fanout \u2014 two-node demo: a shared @ndigo/redis cache and cross-node WebSocket fan-out, with a clean single-node fallback when Redis is absent",
   "type": "module",
   "private": true,
   "scripts": {
     "start": "tsx src/index.ts",
     "dev": "tsx src/index.ts",
-    "test": "vitest run"
+    "test": "vitest run",
+    "build": "tsc -b tsconfig.build.json"
   },
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",

@@ -1,6 +1,7 @@
 /**
  * Browser cookie parsing and jar helpers.
  */
+import { getErrorMessage } from '@ndigo/util';
 import { createNull, JSONObject, JSONValue } from '@ndigo/core';
 import { parseCookieHeader } from './parser/cookie-parser';
 import { getLogger } from '@ndigo/log';
@@ -96,7 +97,7 @@ function init(converter: CookieConverter = {}): CookieJar {
             }
         } catch (e) {
             logger.warn('[Cookies] Failed to stringify cookie value:', {
-                error: e instanceof Error ? e.message : String(e),
+                error: getErrorMessage(e),
             });
         }
 

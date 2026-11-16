@@ -1,6 +1,7 @@
 /**
  * Scope contracts and implementations.
  */
+import { toError } from '@ndigo/util';
 import '@tsmetadata/polyfill';
 import { IllegalStateError } from '@ndigo/core';
 import { getLogger } from '@ndigo/log';
@@ -207,7 +208,7 @@ export class HashScope implements Scope {
                 } catch (error) {
                     logger.error(
                         `HashScope destruction callback for "${name}" failed during endScope("${key}"):`,
-                        error instanceof Error ? error : String(error)
+                        toError(error)
                     );
                 }
             }
@@ -433,10 +434,7 @@ export class RefreshScope implements Scope {
             try {
                 callback();
             } catch (error) {
-                logger.error(
-                    `RefreshScope destruction callback for "${name}" failed during clear():`,
-                    error instanceof Error ? error : String(error)
-                );
+                logger.error(`RefreshScope destruction callback for "${name}" failed during clear():`, toError(error));
             }
             this.#destructionCallbacks.delete(name);
         }

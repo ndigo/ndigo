@@ -1,6 +1,7 @@
 /**
  * The router contract and abstract base.
  */
+import { toError } from '@ndigo/util';
 import {
     RouterInterceptorRegistry,
     RouterInterceptor,
@@ -76,10 +77,7 @@ export abstract class AbstractRouter implements Router, RouterInterceptorRegistr
         this.#onError =
             options.onError ??
             ((error, route) => {
-                logger.error(
-                    `[Router] navigation to "${route}" failed`,
-                    error instanceof Error ? error : String(error)
-                );
+                logger.error(`[Router] navigation to "${route}" failed`, toError(error));
             });
     }
 

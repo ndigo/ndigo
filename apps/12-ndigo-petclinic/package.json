@@ -11,6 +11,7 @@
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "dependencies": {
+    "@ndigo/util": "~0.0.1",
     "zod": "catalog:",
     "@tsmetadata/polyfill": "catalog:",
     "@ndigo/boot": "~0.0.1",

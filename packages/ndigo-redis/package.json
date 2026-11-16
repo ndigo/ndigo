@@ -53,6 +53,7 @@
     "node"
   ],
   "dependencies": {
+    "@ndigo/util": "~0.0.1",
     "@ndigo/core": "~0.0.1",
     "@ndigo/log": "~0.0.1",
     "@redis/client": "6.3.1"

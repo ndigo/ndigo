@@ -10,6 +10,7 @@
  * `setProviderAndWait` / `OpenFeature.close()`); this evaluator holds no
  * resources of its own and defines no `close()`.
  */
+import { getErrorMessage } from '@ndigo/util';
 import { OpenFeature } from '@openfeature/server-sdk';
 import type { Client, EvaluationContext, EvaluationContextValue, JsonValue } from '@openfeature/server-sdk';
 import {
@@ -92,7 +93,7 @@ export class OpenFeatureFlagEvaluator implements FlagEvaluator {
                 value: defaultValue,
                 reason: 'ERROR',
                 errorCode: 'GENERAL',
-                errorMessage: error instanceof Error ? error.message : String(error),
+                errorMessage: getErrorMessage(error),
                 flagMetadata: {},
             };
         }

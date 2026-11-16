@@ -4,6 +4,7 @@
  * `IllegalStateError` with a bounded, control-stripped message (documents
  * routinely carry user data) and the cause attached.
  */
+import { getErrorMessage } from '@ndigo/util';
 import { IllegalStateError } from '@ndigo/core';
 import type { EncodeOptions } from '@toon-format/toon';
 import { encode as encodeReference } from '@toon-format/toon';
@@ -71,7 +72,7 @@ export function encodeToon(value: unknown, options: ToonEncodeOptions = {}): str
     try {
         return encodeReference(value, toEncodeOptions(options));
     } catch (cause) {
-        const message = cause instanceof Error ? cause.message : String(cause);
+        const message = getErrorMessage(cause);
         throw new IllegalStateError(`TOON encoding failed: ${sanitizeDiagnosticMessage(message)}`, { cause });
     }
 }

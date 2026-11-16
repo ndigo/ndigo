@@ -4,6 +4,7 @@
  * transport. JSON Schemas are carried verbatim, so projection and parity stay
  * exact.
  */
+import { getErrorMessage } from '@ndigo/util';
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import {
@@ -70,7 +71,7 @@ export function createMcpServer(registry: McpToolRegistry, options: McpServerOpt
             };
         } catch (error) {
             return {
-                content: [{ type: 'text' as const, text: error instanceof Error ? error.message : String(error) }],
+                content: [{ type: 'text' as const, text: getErrorMessage(error) }],
                 isError: true,
             };
         }

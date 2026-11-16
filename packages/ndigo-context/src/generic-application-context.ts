@@ -1,6 +1,7 @@
 /**
  * Generic application context implementation.
  */
+import { toError } from '@ndigo/util';
 import { JSONObject } from '@ndigo/core';
 import {
     ContentSource,
@@ -312,7 +313,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
     #reportTeardownError(error: unknown): void {
         logger.error(
             `[ndigo-context] error during teardown of "${this.#name ?? 'context'}"; teardown continues (CTX-06)`,
-            error instanceof Error ? error : String(error)
+            toError(error)
         );
     }
 

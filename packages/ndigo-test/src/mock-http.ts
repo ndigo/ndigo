@@ -1,6 +1,7 @@
 /**
  * MockHTTP — in-process, socket-free integration-test client for Ndigo applications.
  */
+import { toError } from '@ndigo/util';
 import { HTTPHeaders, contentTypeBase, MULTIPART_FORM_DATA } from '@ndigo/http';
 import { NodeDispatcher } from '@ndigo/platform-node';
 import { getMethodNotAllowed, getInterceptorDenial, isSocketMapping } from '@ndigo/dispatcher';
@@ -465,7 +466,7 @@ export class MockHTTP {
                         detail: 'malformed_body',
                     });
                 } else {
-                    const message = err instanceof Error ? (err.stack ?? err.message) : String(err);
+                    const message = toError(err).stack ?? toError(err).message;
                     logger.error('dispatch failure:', message);
                     writeProblem(sink, {
                         type: ProblemTypes.internalError,

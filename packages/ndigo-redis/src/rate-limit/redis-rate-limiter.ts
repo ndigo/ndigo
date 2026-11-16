@@ -14,6 +14,7 @@
  * as a 429). `onError: 'fail-open'` is the documented availability escape
  * hatch — it logs every allowance.
  */
+import { toError } from '@ndigo/util';
 import { FrameworkError } from '@ndigo/core';
 import type { AsyncCloseable } from '@ndigo/factory';
 import { getLogger } from '@ndigo/log';
@@ -132,7 +133,7 @@ export class RedisRateLimiter implements RateLimiter, AsyncCloseable {
                 // operator value) is enough to find the failing limiter.
                 logger.error(
                     'RedisRateLimiter: allowing request — shared-store consume failed (fail-open)',
-                    error instanceof Error ? error : String(error),
+                    toError(error),
                     { namespace: this.#namespace }
                 );
                 return { allowed: true, retryAfterMs: 0 };

@@ -3,6 +3,7 @@
  * an HTTP(S) URL. File bodies are read lazily so `list`/`view`/`validate` do
  * not fetch every payload.
  */
+import { getErrorMessage } from '@ndigo/util';
 import { existsSync, readFileSync, statSync, realpathSync } from 'node:fs';
 import { dirname, isAbsolute, join, resolve } from 'node:path';
 import { usageError } from '../helpers/app-scripts.js';
@@ -228,7 +229,7 @@ function validateFile(item: LocatedRegistryItem, file: RegistryFile): string[] {
             const location = ensureRegistryPathInsideRoot(item.source, item.base, file.path, 'item');
             if (!existsSync(location)) errors.push(`${label} does not exist`);
         } catch (error) {
-            errors.push(`${label} ${error instanceof Error ? error.message : String(error)}`);
+            errors.push(`${label} ${getErrorMessage(error)}`);
         }
     }
     return errors;

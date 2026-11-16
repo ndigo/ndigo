@@ -2,6 +2,7 @@
  * Retry policy, interceptor, and `@retry` annotation.
  */
 import { methodAnnotation, type MethodDescriptor, type MethodInvocation, type MethodInterceptor } from '@ndigo/proxy';
+import { delay } from '@ndigo/util';
 import { CircuitOpenError } from './circuit-breaker';
 import { fixedBackoff, type BackoffPolicy } from './backoff';
 
@@ -131,7 +132,7 @@ export class RetryInterceptor implements MethodInterceptor {
                     throw error;
                 }
                 // eslint-disable-next-line no-await-in-loop -- the backoff delay precedes the next sequential attempt.
-                await new Promise<void>((resolve) => setTimeout(resolve, backoff.delay(attempt)));
+                await delay(backoff.delay(attempt));
             }
         }
     }

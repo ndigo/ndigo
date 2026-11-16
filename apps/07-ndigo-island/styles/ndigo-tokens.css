@@ -95,15 +95,16 @@
     --nd-color-text-muted: #9a9ab8;
     --nd-color-border: #2c2c52;
     --nd-color-code-bg: #0e0e1c;
-    --nd-color-accent: var(--nd-palette-violet);
+    --nd-color-accent: #3b5bdb;
     /* AA on the dark surfaces (≥5.6:1); the brand gradient keeps violet-bright. */
-    --nd-color-accent-strong: #b07cff;
-    --nd-color-accent-soft: rgb(91 59 224 / 0.18);
+    --nd-color-accent-strong: #91a7ff;
+    --nd-color-accent-soft: rgb(59 91 219 / 0.18);
     --nd-color-on-accent: #ffffff;
     --nd-color-success: #4ade80;
     --nd-color-warning: #fbbf24;
     --nd-color-danger: #f87171;
     --nd-color-info: #60a5fa;
+    --nd-color-tip: #b07cff;
     color-scheme: dark;
 }
 
@@ -116,14 +117,15 @@
     --nd-color-text-muted: #5a5a7a;
     --nd-color-border: #e0e0f0;
     --nd-color-code-bg: #f0f0f8;
-    --nd-color-accent: var(--nd-palette-violet);
-    --nd-color-accent-strong: var(--nd-palette-indigo-deep);
-    --nd-color-accent-soft: rgb(91 59 224 / 0.1);
+    --nd-color-accent: #3b5bdb;
+    --nd-color-accent-strong: #2f4fb3;
+    --nd-color-accent-soft: rgb(59 91 219 / 0.1);
     --nd-color-on-accent: #ffffff;
     --nd-color-success: #15803d;
-    --nd-color-warning: #92400e;
+    --nd-color-warning: #866905;
     --nd-color-danger: #b91c1c;
     --nd-color-info: #1d4ed8;
+    --nd-color-tip: #5b3be0;
     color-scheme: light;
 }
 
@@ -137,14 +139,15 @@
         --nd-color-text-muted: #5a5a7a;
         --nd-color-border: #e0e0f0;
         --nd-color-code-bg: #f0f0f8;
-        --nd-color-accent: var(--nd-palette-violet);
-        --nd-color-accent-strong: var(--nd-palette-indigo-deep);
-        --nd-color-accent-soft: rgb(91 59 224 / 0.1);
+        --nd-color-accent: #3b5bdb;
+        --nd-color-accent-strong: #2f4fb3;
+        --nd-color-accent-soft: rgb(59 91 219 / 0.1);
         --nd-color-on-accent: #ffffff;
         --nd-color-success: #15803d;
-        --nd-color-warning: #92400e;
+        --nd-color-warning: #866905;
         --nd-color-danger: #b91c1c;
         --nd-color-info: #1d4ed8;
+        --nd-color-tip: #5b3be0;
         color-scheme: light;
     }
 }
@@ -177,6 +180,7 @@
     --nd-color-warning: #d4a800;
     --nd-color-danger: #ff5a57;
     --nd-color-info: #4aa3df;
+    --nd-color-tip: #9c8fd6;
     --nd-palette-indigo-deep: #268bd2;
     --nd-palette-violet: #2aa198;
     --nd-palette-violet-bright: #268bd2;
@@ -201,6 +205,7 @@
     --nd-color-warning: #7a5900;
     --nd-color-danger: #b02020;
     --nd-color-info: #1a5f94;
+    --nd-color-tip: #5e5a8a;
     --nd-palette-indigo-deep: #1a5f94;
     --nd-palette-violet: #1f6fa8;
     --nd-palette-violet-bright: #268bd2;
@@ -225,6 +230,7 @@
     --nd-color-warning: #f9e000;
     --nd-color-danger: #ff6b6b;
     --nd-color-info: #60cdff;
+    --nd-color-tip: #60cdff;
     --nd-palette-indigo-deep: #60cdff;
     --nd-palette-violet: #60cdff;
     --nd-palette-violet-bright: #60cdff;
@@ -249,6 +255,7 @@
     --nd-color-warning: #7a5900;
     --nd-color-danger: #c50f1f;
     --nd-color-info: #0067c0;
+    --nd-color-tip: #0067c0;
     --nd-palette-indigo-deep: #0067c0;
     --nd-palette-violet: #0067c0;
     --nd-palette-violet-bright: #0067c0;

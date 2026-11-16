@@ -60,10 +60,10 @@
         },
         {
           "target": "styles/ndigo-tokens.css",
-          "sha256": "6706eb388a9259c255efc97034a19fad91fbc4aed9013c729526901627d33521"
+          "sha256": "34745f444b389e2878b9c5a40154d0fd998b19c768a2598951f2d456433c903c"
         }
       ],
-      "installedAt": "2026-11-14T15:12:12.550Z"
+      "installedAt": "2026-11-15T04:07:38.553Z"
     },
     "button": {
       "registry": "../../registry.json",
@@ -415,10 +415,10 @@
       "files": [
         {
           "target": "src/ui/nd-alert/nd-alert.css",
-          "sha256": "4928479c5785e3e2613abd03c0f335727bec94dea8b91116f15f6f9b921f3014"
+          "sha256": "1c285ffcbdd9650a9a565f639d1eff03fe5ab3e5a5ed41d87df37ca8232386ad"
         }
       ],
-      "installedAt": "2026-11-09T21:04:37.663Z"
+      "installedAt": "2026-11-16T03:46:18.979Z"
     },
     "badge": {
       "registry": "../../registry.json",
@@ -437,10 +437,10 @@
       "files": [
         {
           "target": "src/ui/nd-card/nd-card.css",
-          "sha256": "26399e233b5a801e7eab4fa4ed621898949d5c61cd64ca7b3c074e375726aae0"
+          "sha256": "0cf00c4b88e6573f1742bc4439e17844ad7ef1986bdd3db44093ae06adf33ae8"
         }
       ],
-      "installedAt": "2026-11-09T21:04:37.663Z"
+      "installedAt": "2026-11-15T16:51:53.995Z"
     },
     "separator": {
       "registry": "../../registry.json",

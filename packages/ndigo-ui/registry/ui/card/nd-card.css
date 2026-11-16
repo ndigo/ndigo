@@ -1,6 +1,7 @@
 /* nd-card — content surface built on the design tokens. */
 
 .nd-card {
+    margin: 0 !important;
     display: flex;
     flex-direction: column;
     gap: var(--nd-space-3);

@@ -144,4 +144,3 @@ builder.configServer({
 - [Guide 04 — Dependency Injection, Scopes & Lifecycle](04-dependency-injection-and-lifecycle.md) — the refresh scope
 - [Guide 28 — Security Hardening](28-security-hardening.md) — secret delivery and production posture
 - Environment API — the full surface
-- — refresh, secrets, and config server

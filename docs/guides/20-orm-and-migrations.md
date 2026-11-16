@@ -201,11 +201,9 @@ export async function seed(): Promise<void> {
 
 ## See also
 
-- — the journaled
-  runner contract (versions, journal, D-2 atomicity, D-3 DDL sharing).
-- — file
-  migrations, the committed snapshot, generation, `migrateOnBoot`.
-- — the `db:*` CLI
-  surface.
+runner contract (versions, journal, D-2 atomicity, D-3 DDL sharing).
+migrations, the committed snapshot, generation, `migrateOnBoot`.
+surface.
+
 - [Guide 03](03-environment-configuration.md) — property sources and config
   files (the dotted-key carrier for `migrations.*`).

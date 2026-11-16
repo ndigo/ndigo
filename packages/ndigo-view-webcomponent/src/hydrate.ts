@@ -1,6 +1,7 @@
 /**
  * Client-side hydration of server-rendered islands.
  */
+import { toError } from '@ndigo/util';
 import { getLogger } from '@ndigo/log';
 
 /**
@@ -87,7 +88,7 @@ export function hydrateIslands(root: ParentNode = document): number {
             // HI-2: one misbehaving island MUST NOT abort hydration for the
             // rest of the page. Log the tag, leave the marker as it was, and
             // do not count it as a success.
-            logger.error(`island hydration failed for <${tagName}>`, error instanceof Error ? error : String(error));
+            logger.error(`island hydration failed for <${tagName}>`, toError(error));
         }
     });
 

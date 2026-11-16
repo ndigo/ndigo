@@ -15,3 +15,18 @@
 export function getErrorMessage(error: unknown): string {
     return error instanceof Error ? error.message : String(error);
 }
+
+/**
+ * Normalizes an unknown thrown value into an `Error` instance.
+ *
+ * `Error` instances (and subclasses) are returned unchanged; every other
+ * value is wrapped in a new `Error` whose message is the coerced string. Use
+ * this at telemetry/span boundaries and `cause`-preserving sites so a
+ * non-`Error` throw never reaches an API that expects an `Error`.
+ *
+ * @param error - The unknown thrown value.
+ * @returns An `Error` instance.
+ */
+export function toError(error: unknown): Error {
+    return error instanceof Error ? error : new Error(String(error));
+}

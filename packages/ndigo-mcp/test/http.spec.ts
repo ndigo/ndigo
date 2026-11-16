@@ -11,6 +11,7 @@ import { MethodParameter, MethodParameterType, toolMapping } from '@ndigo/dispat
 import { NODE_INCOMING_ATTRIBUTE, NODE_REQUEST_ATTRIBUTE, NODE_RESPONSE_ATTRIBUTE } from '@ndigo/platform-node';
 import type { Route } from '@ndigo/router';
 import { afterEach, describe, expect, it } from 'vitest';
+import { getErrorMessage } from '@ndigo/util';
 import { McpHTTPEndpoint, type McpHTTPEndpointOptions, protectedResourceMetadata } from '../src/http';
 import { McpToolRegistry } from '../src/registry';
 import { createUiResource, MCP_APP_MIME_TYPE } from '../src/ui-resource';
@@ -81,7 +82,7 @@ async function start(options: McpHTTPEndpointOptions = {}): Promise<Client> {
             await endpoint.handle(route);
         })().catch((error: unknown) => {
             res.statusCode = 500;
-            res.end(error instanceof Error ? error.message : String(error));
+            res.end(getErrorMessage(error));
         });
     });
     httpServer = server;

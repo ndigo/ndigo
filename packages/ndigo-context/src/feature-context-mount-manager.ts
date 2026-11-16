@@ -1,6 +1,7 @@
 /**
  * Mounting and unmounting feature contexts.
  */
+import { toError } from '@ndigo/util';
 import type { FeatureMetricRecorder } from '@ndigo/core';
 
 /**
@@ -228,7 +229,7 @@ export class FeatureContextMountManager {
         try {
             return await loadPromise;
         } catch (err) {
-            registration.loadError = err instanceof Error ? err : new Error(String(err));
+            registration.loadError = toError(err);
             registration.loadPromise = undefined;
             throw registration.loadError;
         }

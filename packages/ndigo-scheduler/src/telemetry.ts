@@ -1,6 +1,7 @@
 /**
  * Telemetry integration for scheduled tasks.
  */
+import { toError } from '@ndigo/util';
 import { SpanKind, SpanStatusCode, trace } from '@opentelemetry/api';
 import { ScheduledTaskDefinition } from './task-scheduler';
 
@@ -36,7 +37,7 @@ async function withTaskSpan(task: ScheduledTaskDefinition): Promise<void> {
     } catch (error) {
         span.setAttribute('task.outcome', 'error');
         span.setStatus({ code: SpanStatusCode.ERROR });
-        span.recordException(error instanceof Error ? error : new Error(String(error)));
+        span.recordException(toError(error));
         throw error;
     } finally {
         span.setAttribute('task.duration_ms', Date.now() - began);

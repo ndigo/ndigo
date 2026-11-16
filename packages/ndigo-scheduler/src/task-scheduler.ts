@@ -1,9 +1,11 @@
 /**
  * Task scheduler: drives scheduled task execution.
  */
+import { toError } from '@ndigo/util';
 import { FrameworkError } from '@ndigo/core';
 import type { AsyncCloseable, AsyncDestroyable } from '@ndigo/factory';
 import { like } from '@ndigo/util/types';
+import { delay } from '@ndigo/util';
 import { LOCK_DRIVER, likeLockDriver, type LockDriver, type LockHandle } from '@ndigo/locks';
 import { Schedule } from './schedule';
 import { getLogger } from '@ndigo/log';
@@ -566,9 +568,7 @@ export class TaskScheduler implements AsyncCloseable, AsyncDestroyable {
         if (ms <= 0) {
             return;
         }
-        await new Promise<void>((resolve) => {
-            setTimeout(resolve, ms);
-        });
+        await delay(ms);
     }
 
     /**
@@ -579,7 +579,7 @@ export class TaskScheduler implements AsyncCloseable, AsyncDestroyable {
      */
     #recordFailure(state: TaskState, error: unknown): void {
         state.failures += 1;
-        state.lastError = error instanceof Error ? error : new Error(String(error));
+        state.lastError = toError(error);
     }
 
     /**

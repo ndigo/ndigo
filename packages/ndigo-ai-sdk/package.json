@@ -28,6 +28,7 @@
     "test:watch": "vitest --config ../../vitest.config.ts"
   },
   "dependencies": {
+    "@ndigo/util": "~0.0.1",
     "@ndigo/ai": "~0.0.1",
     "ai": "^7.0.166"
   },

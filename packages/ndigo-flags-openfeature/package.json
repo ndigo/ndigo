@@ -32,6 +32,7 @@
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "dependencies": {
+    "@ndigo/util": "~0.0.1",
     "@ndigo/flags": "~0.0.1",
     "@opentelemetry/api": "catalog:"
   },

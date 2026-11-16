@@ -1,6 +1,7 @@
 /**
  * Bridges an async event stream into a reactive signal (AD-09).
  */
+import { toError } from '@ndigo/util';
 import { Signal } from '@preact/signals-core';
 import { getLogger } from '@ndigo/log';
 
@@ -38,7 +39,7 @@ export function streamToSignal<T>(source: AsyncIterable<T>, target: Signal<T>): 
             }
         } catch (error: unknown) {
             if (!cancelled) {
-                logger.error('[ndigo-signals] streamToSignal failed:', error instanceof Error ? error : String(error));
+                logger.error('[ndigo-signals] streamToSignal failed:', toError(error));
             }
         } finally {
             if (!cancelled) {

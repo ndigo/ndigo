@@ -5,7 +5,7 @@
 import { IllegalStateError, JSONObject } from '@ndigo/core';
 import type { ConfigurableEnvironment } from '@ndigo/context';
 import type { ConfigFileReader } from '@ndigo/context';
-import { getErrorMessage } from '@ndigo/util';
+import { getErrorMessage, getEnv } from '@ndigo/util';
 import { parseToonDocument } from './_toon';
 
 /**
@@ -139,7 +139,7 @@ export class StandardConfigFileLoader {
     constructor(options: ConfigFileLoaderOptions = {}) {
         this.#reader = options.reader ?? null;
         this.#locations =
-            options.locations ?? (process.env.NDIGO_CONFIG_LOCATION || DEFAULT_LOCATIONS.join(',')).split(',');
+            options.locations ?? (getEnv('NDIGO_CONFIG_LOCATION') || DEFAULT_LOCATIONS.join(',')).split(',');
         this.#baseName = options.baseName ?? 'application';
         this.#format = options.format ?? 'auto';
         this.#decodeToon = options.decodeToon ?? null;
@@ -220,7 +220,7 @@ export class StandardConfigFileLoader {
             await addLocation(`${this.#baseName}-${profile}`);
         }
 
-        const importValue = process.env.NDIGO_CONFIG_IMPORT;
+        const importValue = getEnv('NDIGO_CONFIG_IMPORT');
         if (importValue) {
             // Imports load in declaration order and share the same
             // first-present-wins source chain, so they must stay sequential.

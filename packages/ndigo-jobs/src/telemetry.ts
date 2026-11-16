@@ -1,6 +1,7 @@
 /**
  * OpenTelemetry instrumentation for job execution.
  */
+import { toError } from '@ndigo/util';
 import { SpanKind, SpanStatusCode, trace, type Span } from '@opentelemetry/api';
 import type { JobRecord } from './job';
 
@@ -49,7 +50,7 @@ export function startJobSpan(job: Pick<JobRecord, 'id' | 'type' | 'attempts'>): 
             if (outcome === 'error') {
                 span.setStatus({ code: SpanStatusCode.ERROR });
                 if (error !== undefined) {
-                    span.recordException(error instanceof Error ? error : new Error(String(error)));
+                    span.recordException(toError(error));
                 }
             }
             span.end();

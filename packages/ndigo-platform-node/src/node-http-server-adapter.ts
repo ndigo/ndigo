@@ -17,6 +17,7 @@
  * oversized body, generic `500` otherwise — internal details logged, never
  * returned to the client).
  */
+import { toError } from '@ndigo/util';
 import { createServer, IncomingMessage, Server, ServerResponse } from 'node:http';
 import { readFileSync } from 'node:fs';
 import * as http2 from 'node:http2';
@@ -1242,7 +1243,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
             // (PLN-F5). A mid-stream failure is not a 500 candidate (PLN-F4) —
             // log and abort the socket so the client sees a closed connection,
             // never a hang.
-            const streamMessage = error instanceof Error ? (error.stack ?? error.message) : String(error);
+            const streamMessage = toError(error).stack ?? toError(error).message;
             logger.error('dispatch failure after headers were sent; destroying response:', streamMessage);
             res.destroy();
             return;
@@ -1296,7 +1297,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
             });
             return;
         }
-        const message = error instanceof Error ? (error.stack ?? error.message) : String(error);
+        const message = toError(error).stack ?? toError(error).message;
         logger.error('dispatch failure:', message);
         writeProblem(res, {
             type: ProblemTypes.internalError,

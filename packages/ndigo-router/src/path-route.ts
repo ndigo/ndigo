@@ -3,7 +3,7 @@
  */
 import { RouteSegment, Route } from './route';
 import { JSONValue, Serializable, JSONObject, createNull, type Matchable } from '@ndigo/core';
-import { isNil } from '@ndigo/util/types';
+import { isNotNil } from '@ndigo/util/types';
 import type { HTTPMethod } from '@ndigo/http';
 import { QueryString, MatrixString } from '@ndigo/http';
 
@@ -11,7 +11,6 @@ const questionMark = '?',
     semicolon = ';',
     slash = '/',
     { defineProperty } = Reflect,
-    isNotNil = (value: unknown) => !isNil(value),
     isNotNilAndNotEmpty = (value: unknown) => isNotNil(value) && value !== '',
     joinOnSlash = (arr: string[]): string => arr.join(slash),
     leadingSlash = new RegExp(`^${slash}`),

@@ -5,6 +5,7 @@
  * `environment.refresh()` (AD-29) makes flag changes visible immediately
  * with no cache to invalidate.
  */
+import { getErrorMessage } from '@ndigo/util';
 import {
     type FlagEvaluation,
     type FlagEvaluationContext,
@@ -205,7 +206,7 @@ export class PropertyFlagProvider implements FlagEvaluator {
                 value: defaultValue,
                 reason: 'ERROR',
                 errorCode: 'GENERAL',
-                errorMessage: error instanceof Error ? error.message : String(error),
+                errorMessage: getErrorMessage(error),
             };
         }
 

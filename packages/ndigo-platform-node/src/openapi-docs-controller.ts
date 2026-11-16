@@ -6,6 +6,7 @@
  * never reads the access condition; it exists so the spec generator
  * excludes these endpoints from the document.
  */
+import { toError } from '@ndigo/util';
 import type { ServerResponse } from 'node:http';
 import '@tsmetadata/polyfill';
 import { type ApplicationContext, AsApplicationContextAware } from '@ndigo/context';
@@ -65,7 +66,7 @@ export class OpenAPIDocsController extends AsApplicationContextAware(Null) {
             try {
                 this.#cached = this.#generate();
             } catch (error) {
-                const message = error instanceof Error ? (error.stack ?? error.message) : String(error);
+                const message = toError(error).stack ?? toError(error).message;
                 logger.error('[OpenAPIDocsController] spec generation failed:', message);
                 writeProblem(res, {
                     type: ProblemTypes.internalError,

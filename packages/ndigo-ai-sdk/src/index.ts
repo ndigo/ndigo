@@ -3,6 +3,7 @@
  * lives here; the rest of the framework talks to {@link AIModel} from
  * `@ndigo/ai`.
  */
+import { toError } from '@ndigo/util';
 import {
     generateObject,
     generateText,
@@ -129,7 +130,7 @@ export class AISdkModel implements AIModel {
                 finishReason = asFinishReason(part.finishReason);
                 usage = asUsage(part.totalUsage);
             } else if (part.type === 'error') {
-                throw part.error instanceof Error ? part.error : new Error(String(part.error));
+                throw toError(part.error);
             }
         }
 

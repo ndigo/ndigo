@@ -33,7 +33,8 @@
   "license": "ISC",
   "dependencies": {
     "@ndigo/core": "~0.0.1",
-    "@ndigo/log": "~0.0.1"
+    "@ndigo/log": "~0.0.1",
+    "@ndigo/util": "~0.0.1"
   },
   "sideEffects": false
 }

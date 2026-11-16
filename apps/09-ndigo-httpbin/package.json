@@ -1,12 +1,14 @@
 {
   "name": "@ndigo/httpbin",
   "version": "0.0.1",
-  "description": "Ndigo HTTPBin — an HTTP semantics playground: echo, redirects, cookies, auth, compression",
+  "description": "Ndigo HTTPBin \u2014 an HTTP semantics playground: echo, redirects, cookies, auth, compression",
   "type": "module",
   "private": true,
   "scripts": {
     "start": "tsx src/index.ts",
-    "test": "vitest run"
+    "test": "vitest run",
+    "dev": "tsx src/index.ts",
+    "build": "tsc -b tsconfig.build.json"
   },
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",

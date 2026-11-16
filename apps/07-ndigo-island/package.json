@@ -10,7 +10,8 @@
     "start": "tsx src/index.ts",
     "start:full": "npm run build:client && tsx src/index.ts",
     "test": "pnpm build:client && vitest run",
-    "test:e2e": "pnpm build:client && playwright test"
+    "test:e2e": "pnpm build:client && playwright test",
+    "build": "vite build"
   },
   "dependencies": {
     "@ndigo/boot": "~0.0.1",

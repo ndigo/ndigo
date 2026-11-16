@@ -163,8 +163,6 @@ browser request "bodies" are form/model sources.)
 
 ## See also
 
-- Full API: JSDoc in `packages/ndigo-dispatcher/src/zod-validated-by.ts`
+- Full API: [`packages/ndigo-dispatcher/src/zod-validated-by.ts`](../../packages/ndigo-dispatcher/src/zod-validated-by.ts)
   (docstring includes all four usage forms) and
-  `packages/ndigo-orm/src/entity-schema.ts`.
-- Rationale: [Zod as the canonical schema primitive](../decisions/2026-09-05_AD07_ZOD_VALIDATION.md)
-  and [RFC 9457 problem+json error contract](../decisions/2026-09-07_AD10_RFC9457_ERROR_MODEL.md).
+  [`packages/ndigo-orm/src/entity-schema.ts`](../../packages/ndigo-orm/src/entity-schema.ts).

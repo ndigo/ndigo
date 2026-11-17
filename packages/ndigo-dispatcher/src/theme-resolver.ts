@@ -47,17 +47,6 @@ export abstract class AbstractThemeResolver implements ThemeResolver {
      * @returns The resolved theme name.
      */
     abstract resolveThemeName(route: Route): string;
-
-    /**
-     * Resolve the theme name for a route.
-     *
-     * @param route - The current route.
-     * @returns The resolved theme name.
-     * @deprecated Use {@link resolveThemeName} instead.
-     */
-    resolveTheme(route: Route): string {
-        return this.resolveThemeName(route);
-    }
 }
 
 /**

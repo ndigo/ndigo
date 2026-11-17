@@ -302,22 +302,6 @@ describe('GenericApplicationContext', () => {
 
         expect(context.getTheme().name).toBe('light');
     });
-
-    test('it should still accept the deprecated setThemeResolver alias', () => {
-        context.setThemeResolver(
-            new StaticThemeSource(
-                [
-                    {
-                        name: 'solarized-dark',
-                        contentSource: new StaticContentSource(),
-                    },
-                ],
-                'solarized-dark'
-            )
-        );
-
-        expect(context.getTheme().name).toBe('solarized-dark');
-    });
 });
 
 describe('GenericApplicationContext — propagation edge cases', () => {

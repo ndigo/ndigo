@@ -4,7 +4,7 @@ import { describe, test, expect } from 'vitest';
 import { StaticContentSource } from '../src/content';
 import { StaticThemeSource } from '../src/theme';
 import { CompositeContentSource } from '../src/composite';
-import { CompositeThemeResolver, CompositeThemeSource } from '../src/composite';
+import { CompositeThemeSource } from '../src/composite';
 
 describe('CompositeContentSource', () => {
     test('returns the first real translation', async () => {
@@ -60,15 +60,5 @@ describe('CompositeThemeSource', () => {
 
     test('throws when constructed with no sources', () => {
         expect(() => new CompositeThemeSource([])).toThrow(TypeError);
-    });
-
-    test('deprecated resolver name aliases the composite theme source', () => {
-        const source = new CompositeThemeResolver([
-            new StaticThemeSource([{ name: 'dark', contentSource: new StaticContentSource() }], 'dark'),
-        ]);
-
-        expect(CompositeThemeResolver).toBe(CompositeThemeSource);
-        expect(source).toBeInstanceOf(CompositeThemeSource);
-        expect(source.getTheme('dark').name).toBe('dark');
     });
 });

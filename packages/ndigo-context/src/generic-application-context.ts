@@ -593,15 +593,6 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
         this.#themeSource = themeSource;
     }
 
-    /**
-     * Overrides the theme source used by this context.
-     * @param themeResolver - The theme source.
-     * @deprecated Use {@link setThemeSource} instead.
-     */
-    setThemeResolver(themeResolver: ThemeSource): void {
-        this.setThemeSource(themeResolver);
-    }
-
     /** Creates the environment for this context. */
     protected _createEnvironment(): Environment {
         return new StandardEnvironment();

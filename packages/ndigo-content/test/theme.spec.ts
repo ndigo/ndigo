@@ -2,15 +2,7 @@
  */
 import { describe, test, expect } from 'vitest';
 import { StaticContentSource } from '../src/content';
-import {
-    StaticThemeResolver,
-    StaticThemeSource,
-    Theme,
-    likeTheme,
-    likeThemeResolver,
-    likeThemeSource,
-    normalizeThemeName,
-} from '../src/theme';
+import { StaticThemeSource, Theme, likeTheme, likeThemeSource, normalizeThemeName } from '../src/theme';
 
 describe('@ndigo/content theme utilities', () => {
     const contentSource = new StaticContentSource({
@@ -44,15 +36,6 @@ describe('@ndigo/content theme utilities', () => {
 
         expect(likeTheme(lightTheme)).toBe(true);
         expect(likeThemeSource(source)).toBe(true);
-    });
-
-    test('deprecated resolver names alias the theme source', () => {
-        const source = new StaticThemeResolver([lightTheme], 'light');
-
-        expect(StaticThemeResolver).toBe(StaticThemeSource);
-        expect(likeThemeResolver).toBe(likeThemeSource);
-        expect(source).toBeInstanceOf(StaticThemeSource);
-        expect(source.getTheme().name).toBe('light');
     });
 });
 

@@ -19,6 +19,11 @@ import { runCluster, type ClusterRunResult } from '@ndigo/cluster';
  *
  * @param message - The usage error message.
  * @returns An `Error` carrying exit code `2`.
+ *
+ * @example
+ * ```ts
+ * throw usageError('missing --name');
+ * ```
  */
 export function usageError(message: string): Error & { exitCode?: number } {
     const error = new Error(message) as Error & { exitCode?: number };
@@ -31,6 +36,12 @@ export function usageError(message: string): Error & { exitCode?: number } {
  *
  * @param dir - The application directory.
  * @returns The parsed manifest, or `null` when missing or unreadable.
+ *
+ * @example
+ * ```ts
+ * const manifest = readAppManifest('/path/to/app');
+ * console.log(manifest?.name);
+ * ```
  */
 export function readAppManifest(dir: string): Record<string, unknown> | null {
     try {
@@ -47,6 +58,11 @@ export function readAppManifest(dir: string): Record<string, unknown> | null {
  *
  * @param dir - The directory argument (may be `undefined`/`'.'`).
  * @returns The absolute directory.
+ *
+ * @example
+ * ```ts
+ * const dir = resolveAppDir(process.cwd());
+ * ```
  */
 export function resolveAppDir(dir: string | undefined): string {
     const target = resolvePath(dir ?? '.');

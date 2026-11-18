@@ -9,6 +9,13 @@ import type { DOMProvider } from './dom-provider';
  * `LinkedomDOMProvider` for server-side environments.
  *
  * @returns A `DOMProvider` suitable for the current environment.
+ *
+ * @example
+ * ```ts
+ * const provider = await createDOMProvider();
+ * const doc = provider.parseHTML('<h1>Title</h1>');
+ * console.log(doc.querySelector('h1')?.textContent); // "Title"
+ * ```
  */
 export async function createDOMProvider(): Promise<DOMProvider> {
     if (typeof globalThis.document !== 'undefined' && typeof globalThis.DOMParser !== 'undefined') {

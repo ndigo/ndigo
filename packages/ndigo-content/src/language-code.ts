@@ -31,6 +31,11 @@ const MAX_LOCALE_LENGTH = 64;
  *
  * @param value - The candidate language tag.
  * @returns The canonical tag, or `undefined` when unusable.
+ *
+ * @example
+ * ```ts
+ * normalizeLocale('EN-us'); // 'en-US'
+ * ```
  */
 export const normalizeLocale = (value: unknown): string | undefined => {
     if (typeof value !== 'string' || value.length === 0 || value.length > MAX_LOCALE_LENGTH) {
@@ -74,6 +79,12 @@ export class LanguageCode implements Serializable, Equatable<LanguageCode>, Stri
      *
      * @param code - The language tag to canonicalize.
      * @throws When the value is not a usable BCP 47 tag.
+     *
+     * @example
+     * ```ts
+     * const code = new LanguageCode('EN-us');
+     * console.log(code.code); // 'en-US'
+     * ```
      */
     constructor(code: string) {
         const canonical = normalizeLocale(code);
@@ -93,6 +104,11 @@ export class LanguageCode implements Serializable, Equatable<LanguageCode>, Stri
      *
      * @param value - The candidate language tag.
      * @returns A {@link LanguageCode}, or `null` when the value is unusable.
+     *
+     * @example
+     * ```ts
+     * const code = LanguageCode.for('en_us'); // null
+     * ```
      */
     static for(value: unknown): LanguageCode | null {
         const canonical = normalizeLocale(value);

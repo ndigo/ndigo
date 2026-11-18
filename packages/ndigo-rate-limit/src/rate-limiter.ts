@@ -54,6 +54,11 @@ export interface RateLimiter {
      * @param key - The client key whose budget is consumed.
      * @param policy - The window and limit to enforce.
      * @returns Whether the request may proceed and, when denied, the wait before retry.
+     *
+     * @example
+     * ```ts
+     * const result = await limiter.consume('client-1', { limit: 10, windowMs: 60_000 });
+     * ```
      */
     consume(key: string, policy: RateLimitPolicy): Promise<RateLimitResult>;
 }

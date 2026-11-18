@@ -57,6 +57,12 @@ The full API is at `api/` (generated; run `pnpm doc:api`). Primary exports live 
 
 - **Logging** — `getLogger`, logger abstraction with threshold filtering
 - **Metrics** — `FeatureMetricAggregator`, `@counted`, the metric snapshot model (`MetricSnapshot`/`MetricSnapshotProvider` registry) and the Prometheus-text / JSON renderers the management `/metrics` endpoint serves
+- **Context integration** — `FEATURE_METRIC_AGGREGATOR` token and
+  `FeatureMetricAggregatorAware` / `AsFeatureMetricAggregatorAware` /
+  `likeFeatureMetricAggregatorAware` for receiving the aggregator registered by
+  `ManagementAutoConfiguration`. `@counted` resolves the aggregator from the
+  context (or an injected `featureMetricAggregator` property) when not passed
+  explicitly.
 - **Tracing** — `@traced` decorator, platform-free instrumentation bases
 - **Severity mapping** — utilities for `syslog`, `npm`, `apache`, and `cli`
 

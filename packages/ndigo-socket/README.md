@@ -165,6 +165,10 @@ The full API is at `api/` (generated; run `pnpm doc:api`). Primary exports live 
 - **Client** — `WebSocketClient`, `StompClient`
 - **Server** — `StompBroker`
 - **Contracts** — `SocketSession`, `SocketRequestSources`, `SocketSessionRegistry` (type-only; re-exported by `@ndigo/dispatcher`), `SocketFanout`, `SocketFanoutScope`, `SocketFanoutMessage`
+- **Context integration** — `SOCKET_SESSION_REGISTRY` token and
+  `SocketSessionRegistryAware` / `AsSocketSessionRegistryAware` /
+  `likeSocketSessionRegistryAware` for receiving the registry registered by
+  the platform auto-configuration.
 
 ## Development
 

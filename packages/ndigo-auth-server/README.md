@@ -122,6 +122,9 @@ The full API is at `api/` (generated; run `pnpm doc:api`). Primary exports live 
 [`src/index.ts`](src/index.ts);
 
 - **Classes** — `AuthServer`, `AuthRouteGuard`, `JWTAdapter`
+- **Context integration** — `AUTH_SERVER`, `PASSWORD_ENCODER`, `SESSION_STORE`,
+  `USER_STORE` tokens, the `*Aware` mixins (`AsAuthServerAware`, etc.), and
+  `AuthAutoConfiguration` for in-memory defaults.
 
 ## Development
 

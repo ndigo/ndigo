@@ -61,6 +61,8 @@ The full API is at `api/` (generated; run `pnpm doc:api`). Primary exports:
 - `InProcessLockDriver` — the process-wide default.
 - `likeLockDriver` — structural guard for entries and options.
 - `LOCK_DRIVER` — the context token for entry resolution.
+- `LockDriverAware` / `AsLockDriverAware` / `likeLockDriverAware` — aware mixin
+  for components that receive a lock driver via the application context.
 
 ## Driver parity notes
 

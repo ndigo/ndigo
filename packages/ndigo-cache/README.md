@@ -19,9 +19,12 @@ container-friendly decorator that resolves a `CacheManager` off the instance.
   memoization for browsers and Node, no DI: JSON-arg keys, async
   single-flight coalescing, fulfilled-results-only caching.
 - **`@cached({ cacheName, key, ttl })`** — the server-side decorator: a
-  wrapper (no AOP) that reads `this.cacheManager`, degrades gracefully to the
-  raw method when absent, caches fulfilled results only, and records its spec
-  under `cache:<method>` metadata (read via `getCachedSpec`).
+  wrapper (no AOP) that resolves the `CacheManager` from `this.cacheManager`
+  or lazily from `this.applicationContext` (the platform's `cacheManager`
+  entry), degrades gracefully to the raw method when absent, caches fulfilled
+  results only, and records its spec under `cache:<method>` metadata (read via
+  `getCachedSpec`). Implement `AsCacheManagerAware` (or `AsApplicationContextAware`)
+  for automatic injection.
 
 ## Installation
 

@@ -66,6 +66,8 @@ The full API is at `api/` (generated; run `pnpm doc:api`). Primary exports:
   with deterministic oldest-bucket eviction (SEC-2).
 - `validateRateLimitPolicy` — shared decoration/call-time validation.
 - `likeRateLimiter` — structural guard for entries and options.
+- `RateLimiterAware` / `AsRateLimiterAware` / `likeRateLimiterAware` — aware mixin
+  for components that receive a rate limiter via the application context.
 - `RATE_LIMITER` — the context token for entry resolution
   (`NodeAutoConfiguration.rateLimiter()` registers under it).
 

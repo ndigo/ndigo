@@ -50,6 +50,10 @@ The full API is at `api/` (generated; run `pnpm doc:api`). Primary exports live 
 - **Parsers** — `QueryString` (WHATWG `URLSearchParams` parity), `MatrixString` for path-segment parameters
 - **Body transforms** — request/response transform pipelines
 - **HTTP vocabulary** — status code and header constants
+- **Context integration** — `HTTP_CLIENT` token and `HTTPAware` / `AsHTTPAware` /
+  `likeHTTPAware` for receiving the shared `http` entry registered by the
+  platform auto-configuration. `serviceClient` resolves the client from the
+  context when no explicit `HTTP` is passed.
 
 ## Development
 

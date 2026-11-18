@@ -96,6 +96,9 @@ synchronous exceptions into rejected promises. There is no async-to-sync adapter
 `DrizzleRepository` implements the same contract directly, without changing SQL
 ordering or relation-loading semantics.
 
+Context integration: `DATA_SOURCE` token, `DataSourceAware` / `AsDataSourceAware` /
+`likeDataSourceAware` mixin, and `OrmAutoConfiguration` for an in-memory default.
+
 ## Development
 
 ```bash

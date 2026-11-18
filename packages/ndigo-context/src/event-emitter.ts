@@ -480,6 +480,12 @@ export class Emitter extends AsEventEmitter(Null) implements Destroyable, Serial
      * Creates an emitter and optionally seeds it with listeners.
      *
      * @param mapping - Optional initial event mappings.
+     *
+     * @example
+     * ```ts
+     * const emitter = new Emitter({ 'user:login': (u) => console.log(u) });
+     * emitter.emit('user:login', { id: 1 });
+     * ```
      */
     constructor(mapping?: EventHandlers) {
         super();

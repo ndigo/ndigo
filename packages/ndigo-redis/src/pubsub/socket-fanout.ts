@@ -129,6 +129,14 @@ export class RedisSocketFanout implements SocketFanout, AsyncCloseable {
     #decodeError: Error | undefined;
     #decodeErrorAt: number | undefined;
 
+    /**
+     * @param options - Publisher/subscriber connections, namespace, and limits.
+     *
+     * @example
+     * ```ts
+     * const fanout = new RedisSocketFanout({ connection, namespace: 'app' });
+     * ```
+     */
     constructor(options: RedisSocketFanoutOptions) {
         if (!/^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/.test(options.namespace)) {
             throw new TypeError('RedisSocketFanout: namespace must be 1–128 safe ASCII characters');

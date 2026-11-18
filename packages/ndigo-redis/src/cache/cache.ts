@@ -53,6 +53,12 @@ export class RedisCache<V = unknown> implements Cache<V> {
      *
      * @param connection - The Redis connection to run commands on.
      * @param options - Namespace, cache name, and TTL defaults.
+     *
+     * @example
+     * ```ts
+     * const cache = new RedisCache<string>(connection, { namespace: 'app', cacheName: 'users' });
+     * await cache.set('u:1', 'alice');
+     * ```
      */
     constructor(connection: RedisConnection, options: RedisCacheOptions) {
         if (

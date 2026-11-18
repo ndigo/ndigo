@@ -308,6 +308,15 @@ Run it with `pnpm --filter @ndigo/hello-node start` (or
 `pnpm --filter @ndigo/hello-node exec tsx src/index.ts`) and set `PORT` to
 override the default. Logging comes from the dependency-light `@ndigo/log`
 leaf; `@ndigo/telemetry` re-exports the same surface when an app already
+
+Module-level `getLogger(...)` is the right choice at the bootstrap/entry-point
+boundary (as above). Inside managed components, prefer the context-injected
+logger: implement `LoggerAware` (or `AsLoggerAware`) and let the context
+inject it via `applicationContext.getLogger(name)`, or call
+`applicationContext.getLogger('my-component')` directly. Both paths share the
+same `LoggerFactory`, so appender/threshold settings apply uniformly, and both
+stamp the active span's `traceId`/`spanId` — records from either API
+correlate to the same trace tree. See Guide 32 for the full logging guidance.
 depends on it .
 
 ## 8. Deployment topology

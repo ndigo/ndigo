@@ -6,16 +6,16 @@
  * an issue report could pronounce a broken environment healthy. Parity is
  * therefore a failing test rather than a comment.
  *
- * @module blue-cli
+ * @module ndigo-cli
  */
 // @vitest-environment node
 import { describe, expect, test } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { MIN_NODE_MAJOR } from '../src/commands/_diagnostics';
+import { MIN_NODE_MAJOR } from '../src/commands/_diagnostics.js';
 
-/** The workspace-root manifest — this spec lives at `<root>/packages/blue-cli/test`. */
+/** The workspace-root manifest — this spec lives at `<root>/packages/ndigo-cli/test`. */
 const ROOT_MANIFEST = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', 'package.json');
 
 describe('doctor Node floor parity', () => {

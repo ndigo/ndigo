@@ -372,6 +372,18 @@ describe('ndigo db', () => {
         expect(out).toContain('0003-add-column.ts');
     });
 
+    test('db new rejects a slug that normalizes to empty (issue #159)', async () => {
+        const { code, out, err } = await runCli(['db', 'new', dbAppDir, '!!!']);
+        expect(code).toBe(2);
+        expect(`${out}${err}`).toContain('slug must contain at least one alphanumeric character');
+    });
+
+    test('db rollback rejects a non-integer count (issue #159)', async () => {
+        const { code, out, err } = await runCli(['db', 'rollback', dbAppDir, 'abc']);
+        expect(code).toBe(2);
+        expect(`${out}${err}`).toContain('count must be a positive integer');
+    });
+
     test('db generate and db status fail loud with the script hint when undeclared', async () => {
         const results = await Promise.all(['generate', 'status'].map((script) => runCli(['db', script, dbAppDir])));
         for (const [script, { code, out, err }] of results.map(

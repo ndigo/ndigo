@@ -11,7 +11,7 @@
 import { buildCommand } from '@stricli/core';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { resolveAppDir } from '../../helpers/app-scripts.js';
+import { resolveAppDir, usageError } from '../../helpers/app-scripts.js';
 import { nextMigrationVersion } from '../../helpers/migration-probe.js';
 
 /**
@@ -26,6 +26,9 @@ export const dbNewCommand = buildCommand({
             .replace(/[^a-zA-Z0-9]+/g, '-')
             .replace(/^-+|-+$/g, '')
             .toLowerCase();
+        if (normalized === '') {
+            throw usageError('slug must contain at least one alphanumeric character');
+        }
         const target = join(migrationsDir, `${String(version).padStart(4, '0')}-${normalized}.ts`);
 
         await mkdir(migrationsDir, { recursive: true });

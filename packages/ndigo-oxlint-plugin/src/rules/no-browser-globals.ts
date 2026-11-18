@@ -1,9 +1,34 @@
 /**
- * Rule that blocks unguarded access to browser globals in isomorphic packages.
+ * Rule that blocks unguarded browser-global access in code that also runs on
+ * the server.
  */
 import type { Context, ESTree, Scope } from '@oxlint/plugins';
 
-import { BROWSER_GLOBALS, BROWSER_ONLY_PACKAGES } from '../_constants.ts';
+import { ruleUrl } from '../_docs.js';
+
+/** Browser globals that do not exist under Node; each needs a guard. */
+const DEFAULT_GLOBALS: readonly string[] = [
+    'window',
+    'document',
+    'navigator',
+    'location',
+    'history',
+    'localStorage',
+    'sessionStorage',
+    'indexedDB',
+    'btoa',
+    'atob',
+    'requestAnimationFrame',
+    'cancelAnimationFrame',
+    'performance',
+    'screen',
+];
+
+/** Options accepted by {@link noBrowserGlobals}. */
+interface NoBrowserGlobalsOptions {
+    /** Additional global names to check, e.g. `['matchMedia', 'ResizeObserver']`. */
+    extraGlobals?: readonly string[];
+}
 
 /**
  * Identifier node types the `Identifier` visitor dispatches, all carrying `name`.
@@ -16,19 +41,19 @@ type IdentifierLike =
     | ESTree.TSIndexSignatureName
     | ESTree.TSThisParameter;
 
-function getCurrentPackageName(filename: string): string | null {
-    const match = /[\\/]packages[\\/]ndigo-([^\\/]+)[\\/]/u.exec(filename);
-    if (!match) return null;
-    return `@ndigo/${match[1]}`;
-}
-
-function isTestFile(filename: string): boolean {
-    return (
-        filename.includes('.spec.ts') ||
-        filename.includes('.test.ts') ||
-        filename.includes('/test/') ||
-        filename.includes('\\test\\')
-    );
+/**
+ * Reads the configured extra globals. A malformed option yields an empty list
+ * so the rule keeps checking the defaults instead of going quiet.
+ *
+ * @param value - The first element of `context.options`.
+ * @returns The extra global names to check.
+ */
+function readExtraGlobals(value: unknown): readonly string[] {
+    if (typeof value !== 'object' || value === null || Array.isArray(value)) {
+        return [];
+    }
+    const configured = (value as NoBrowserGlobalsOptions).extraGlobals;
+    return Array.isArray(configured) ? configured.filter((name) => typeof name === 'string') : [];
 }
 
 /**
@@ -42,9 +67,6 @@ function isTypeofSubject(node: IdentifierLike): boolean {
 /**
  * Returns true if the identifier is the (non-computed) key of a property,
  * method, or class member — a name position, never a reference to the global.
- * Covers `Property`, `MethodDefinition`, `PropertyDefinition` and the TS
- * signature forms; a class method or object key legitimately named like a
- * browser global (`history()`, `{ window: 1 }`) is not a global access.
  */
 function isMemberName(node: IdentifierLike): boolean {
     const parent = node.parent as { key?: unknown; computed?: boolean } | undefined;
@@ -55,8 +77,9 @@ function isMemberName(node: IdentifierLike): boolean {
 }
 
 /**
- * Returns true if `node` is in a declaration/binding position rather than a value reference.
- * This avoids false positives when a parameter or variable is named the same as a browser global.
+ * Returns true if `node` is in a declaration/binding position rather than a
+ * value reference, so a parameter named like a browser global is not a global
+ * access.
  */
 function isBindingSite(node: IdentifierLike): boolean {
     if (isMemberName(node)) {
@@ -92,8 +115,8 @@ function isBindingSite(node: IdentifierLike): boolean {
 
 /**
  * Returns true if a local variable named `name` is declared in the scope chain
- * (excluding the global scope), meaning the identifier refers to a local binding
- * rather than the browser global.
+ * (excluding the global scope), meaning the identifier refers to a local
+ * binding rather than the browser global.
  */
 function isShadowedByLocalBinding(scope: Scope, name: string): boolean {
     let current: Scope | null = scope;
@@ -107,7 +130,8 @@ function isShadowedByLocalBinding(scope: Scope, name: string): boolean {
 }
 
 /**
- * Returns true if `testNode` contains a `typeof <name> !== 'undefined'` (or `=== 'undefined'`) check.
+ * Returns true if `testNode` contains a `typeof <name> !== 'undefined'` (or
+ * `=== 'undefined'`) check.
  */
 function containsTypeofGuard(testNode: ESTree.Expression, name: string): boolean {
     if (testNode.type === 'BinaryExpression') {
@@ -140,9 +164,8 @@ function containsTypeofGuard(testNode: ESTree.Expression, name: string): boolean
 
 /**
  * Returns true if the identifier is inside a typeof-guarded scope:
- * - An ancestor IfStatement whose test contains `typeof <name> !== 'undefined'`
- * - An ancestor ConditionalExpression whose test contains the same
- * - An ancestor LogicalExpression (&&) whose left side contains the same, and `node` is on the right
+ * - an ancestor `IfStatement`/`ConditionalExpression` whose test guards `name`
+ * - the right side of an `&&` whose left side guards `name`
  */
 function isInsideTypeofGuard(node: IdentifierLike): boolean {
     const name = node.name;
@@ -152,21 +175,18 @@ function isInsideTypeofGuard(node: IdentifierLike): boolean {
         const parent = current.parent;
 
         if (parent.type === 'IfStatement') {
-            // We are in the consequent or alternate, not the test itself
             if (current !== parent.test && containsTypeofGuard(parent.test, name)) {
                 return true;
             }
         }
 
         if (parent.type === 'ConditionalExpression') {
-            // We are in consequent or alternate, not the test
             if (current !== parent.test && containsTypeofGuard(parent.test, name)) {
                 return true;
             }
         }
 
         if (parent.type === 'LogicalExpression') {
-            // We are on the right side of &&, and the left contains a typeof guard
             if (parent.operator === '&&' && current === parent.right && containsTypeofGuard(parent.left, name)) {
                 return true;
             }
@@ -179,56 +199,53 @@ function isInsideTypeofGuard(node: IdentifierLike): boolean {
 }
 
 /**
- * Reports unguarded access to browser globals in isomorphic packages.
+ * Reports unguarded browser-global access. Which files the rule applies to is
+ * the consuming config's business — scope it with `overrides` and exempt
+ * browser-only packages there. Guarded access (`typeof window !== 'undefined'`)
+ * and locally shadowed names stay legal.
  */
-export const noBrowserGlobalsInIsomorphic = {
+export const noBrowserGlobals = {
     meta: {
         type: 'problem',
         docs: {
-            description: 'Disallow unguarded access to browser globals in isomorphic packages',
+            description: 'Disallow unguarded access to browser globals in code that also runs on the server',
+            url: ruleUrl('no-browser-globals'),
+            recommended: false,
         },
         messages: {
-            browserGlobal:
-                "'{{name}}' is a browser global. Guard with `typeof {{name}} !== 'undefined'` or move to @ndigo/platform-web.",
+            browserGlobal: `'{{name}}' is a browser global and does not exist on the server — guard with \`typeof {{name}} !== 'undefined'\` or move the code to a browser-only package. ${ruleUrl('no-browser-globals')}`,
         },
-        schema: [],
+        schema: [
+            {
+                type: 'object',
+                properties: {
+                    extraGlobals: { type: 'array', items: { type: 'string' } },
+                },
+                additionalProperties: false,
+            },
+        ],
     } as const,
-    defaultOptions: [],
+    defaultOptions: [{ extraGlobals: [] }],
     create(context: Context) {
-        const filename = context.filename ?? context.getFilename?.() ?? '';
-        const currentPackageName = getCurrentPackageName(filename);
-
-        // Allow in browser-only packages and test files
-        if ((currentPackageName && BROWSER_ONLY_PACKAGES.includes(currentPackageName)) || isTestFile(filename)) {
-            return {};
-        }
+        const globals = new Set([...DEFAULT_GLOBALS, ...readExtraGlobals(context.options[0])]);
 
         return {
-            before() {
-                // Per-file setup if needed in the future
-            },
             Identifier(node: IdentifierLike) {
-                if (!BROWSER_GLOBALS.includes(node.name)) {
+                if (!globals.has(node.name)) {
                     return;
                 }
 
-                // Allow binding/declaration sites: parameter names, variable declarators, etc.
+                // Binding and name positions never reference the global.
                 if (isBindingSite(node)) {
                     return;
                 }
 
-                // Allow when the name is shadowed by a local variable/parameter in scope
+                // A local variable/parameter of the same name wins.
                 if (isShadowedByLocalBinding(context.sourceCode.getScope(node), node.name)) {
                     return;
                 }
 
-                // Allow typeof checks: typeof window !== 'undefined'
-                if (isTypeofSubject(node)) {
-                    return;
-                }
-
-                // Allow inside a typeof-guarded scope
-                if (isInsideTypeofGuard(node)) {
+                if (isTypeofSubject(node) || isInsideTypeofGuard(node)) {
                     return;
                 }
 

@@ -66,3 +66,5 @@ of the name.
 | [`no-string-token-lookup`](./no-string-token-lookup.md)             | yes         | Context lookups use tokens, not strings                 |
 | [`no-unsafe-view-name-literal`](./no-unsafe-view-name-literal.md)   | yes         | View names are relative and island tags are well-formed |
 | [`no-duplicate-mapping`](./no-duplicate-mapping.md)                 | yes         | One registration per path and HTTP method in a class    |
+| [`no-raw-console`](./no-raw-console.md)                             | opt-in      | Framework code logs through `@ndigo/log`                |
+| [`no-browser-globals`](./no-browser-globals.md)                     | opt-in      | Shared code guards browser globals                      |

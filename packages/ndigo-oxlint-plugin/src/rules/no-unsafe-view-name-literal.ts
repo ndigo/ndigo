@@ -129,6 +129,7 @@ export const noUnsafeViewNameLiteral = {
         docs: {
             description: 'Disallow unsafe string-literal view names',
             url: ruleUrl('no-unsafe-view-name-literal'),
+            recommended: true,
         },
         messages: {
             unsafeViewName: `Unsafe view-name literal '{{name}}' — names must be relative, with no absolute prefix, \`..\` segment, or NUL byte. ${ruleUrl('no-unsafe-view-name-literal')}`,

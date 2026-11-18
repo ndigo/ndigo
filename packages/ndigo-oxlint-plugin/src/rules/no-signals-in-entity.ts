@@ -21,6 +21,7 @@ export const noSignalsInEntity = {
         docs: {
             description: 'Disallow @ndigo/signals imports in ORM entity files',
             url: ruleUrl('no-signals-in-entity'),
+            recommended: true,
         },
         messages: {
             signalsInEntity: `Do not import '@ndigo/signals' in an ORM entity — entities describe persisted columns, not reactive state. ${ruleUrl('no-signals-in-entity')}`,

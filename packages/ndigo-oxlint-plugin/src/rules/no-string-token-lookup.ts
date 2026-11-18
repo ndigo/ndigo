@@ -120,6 +120,7 @@ export const noStringTokenLookup = {
         docs: {
             description: 'Disallow string-literal context-token lookups in source files',
             url: ruleUrl('no-string-token-lookup'),
+            recommended: true,
         },
         messages: {
             preferToken: `String-literal lookup {{method}}('{{name}}') — use a ContextToken so renames and type errors surface at build time. ${ruleUrl('no-string-token-lookup')}`,

@@ -72,7 +72,6 @@
     "internal/no-direct-integration-imports": "warn",
     "internal/no-internal-file-imports": "error",
     "internal/no-internal-file-exports": "error",
-    "internal/no-browser-globals-in-isomorphic": "warn",
     "internal/no-uppercase-regexp-constants": "error",
     "internal/no-abstract-class-without-prefix": "error",
     "internal/no-mixed-case-acronyms": "error",
@@ -105,7 +104,6 @@
     "typescript/no-implied-eval": "off",
     "internal/require-doc-header": "error",
     "internal/no-upward-layer-imports": "error",
-    "internal/no-raw-console": "error",
     "internal/valid-tsdoc": "off"
   },
   "env": {
@@ -130,7 +128,30 @@
     {
       "files": ["packages/*/src/**/*.ts"],
       "rules": {
-        "internal/valid-tsdoc": "error"
+        "internal/valid-tsdoc": "error",
+        "@ndigo/no-raw-console": "error",
+        "@ndigo/no-browser-globals": "warn"
+      }
+    },
+    {
+      "files": [
+        "packages/create-ndigo-app/src/**/*.ts",
+        "packages/ndigo-log/src/**/*.ts",
+        "packages/ndigo-util/src/**/*.ts"
+      ],
+      "rules": {
+        "@ndigo/no-raw-console": "off"
+      }
+    },
+    {
+      "files": [
+        "packages/ndigo-boot/src/**/*.ts",
+        "packages/ndigo-dom/src/**/*.ts",
+        "packages/ndigo-platform-web/src/**/*.ts",
+        "packages/ndigo-view-webcomponent/src/**/*.ts"
+      ],
+      "rules": {
+        "@ndigo/no-browser-globals": "off"
       }
     },
     {
@@ -141,13 +162,8 @@
         "no-useless-escape": "off",
         "no-instanceof-builtins": "off",
         "@ndigo/no-duplicate-mapping": "off",
-        "internal/no-raw-console": "off"
-      }
-    },
-    {
-      "files": ["apps/**/*.ts", "apps/**/*.js", "apps/**/*.mjs"],
-      "rules": {
-        "internal/no-browser-globals-in-isomorphic": "off"
+        "@ndigo/no-raw-console": "off",
+        "@ndigo/no-browser-globals": "off"
       }
     }
   ]

@@ -24,6 +24,7 @@ export const noScheduledInBrowser = {
         docs: {
             description: 'Disallow @ndigo/scheduler imports in browser-platform files',
             url: ruleUrl('no-scheduled-in-browser'),
+            recommended: true,
         },
         messages: {
             scheduledInBrowser: `'@ndigo/scheduler' is Node-only — move @scheduled classes to a Node application; this file also imports browser-platform code. ${ruleUrl('no-scheduled-in-browser')}`,

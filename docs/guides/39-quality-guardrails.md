@@ -28,6 +28,18 @@ internal-file convention, doc headers, or repository naming stay internal.
 
 ## 2. Enabling the consumer rules
 
+Spread the preset in `oxlint.config.ts`:
+
+```ts
+import { defineConfig } from 'oxlint';
+import { recommended } from '@ndigo/oxlint-plugin/recommended';
+
+export default defineConfig({ extends: [recommended] });
+```
+
+On JSON config, write the same six rules — `ndigo new` and `ndigo lint init`
+render this block for you:
+
 ```jsonc
 // .oxlintrc.json
 {
@@ -40,6 +52,12 @@ internal-file convention, doc headers, or repository naming stay internal.
         "@ndigo/no-unsafe-view-name-literal": "error",
         "@ndigo/no-duplicate-mapping": "error",
     },
+    "overrides": [
+        {
+            "files": ["**/*.spec.ts", "**/*.test.ts", "**/test/**"],
+            "rules": { "@ndigo/no-duplicate-mapping": "off" },
+        },
+    ],
 }
 ```
 
@@ -58,6 +76,18 @@ resolved method identity, and skips mappings with extra conditions. It is
 best-effort by design; do not rely on it to see base-class or dynamically built
 paths.
 
+Two rules are **opt-in** because where they apply depends on the platform split.
+Both are layout-blind; scope them with `overrides`:
+
+| Rule                 | Catches                                                        |
+| -------------------- | -------------------------------------------------------------- |
+| `no-raw-console`     | `console.log`/`warn`/`error` bypassing `@ndigo/log`            |
+| `no-browser-globals` | Unguarded `window`/`document`/… in code that also runs on Node |
+
+Every rule carries `meta.docs.url` and ends each diagnostic with
+`https://ndigo.dev/lint/<rule>`; the pages live in
+[`docs/lint/`](../lint/README.md).
+
 ## 3. The repo-only rules
 
 The internal plugin runs from TypeScript with no build step and is loaded by the
@@ -70,6 +100,13 @@ root `.oxlintrc.json`. It enforces:
 - `internal/no-mixed-case-acronyms` — acronym casing.
 - `internal/require-doc-header` — the module summary block.
 - `internal/no-global-state-in-create-factories` — `create*` stays global-free.
+
+Two rules that used to live here — the raw-console policy and the browser-global
+guard — are now consumer rules (`no-raw-console`, `no-browser-globals`) because
+they describe framework usage, not this repository's layout. The root config
+reproduces the old scoping with `overrides`: package source only, the logging
+bridge and leaf utility exempt, browser-only packages exempt from the global
+guard, specs exempt from both.
 
 Run them with the same command as the consumer rules: `pnpm lint`.
 

@@ -55,6 +55,7 @@ export const noMixedDecoratorParadigms = {
         docs: {
             description: 'Disallow mixing service-call and route-mapping decorators on one class',
             url: ruleUrl('no-mixed-decorator-paradigms'),
+            recommended: true,
         },
         messages: {
             mixedParadigms: `Class '{{name}}' mixes {{call}} (client call) with {{mapping}} (route mapping) — keep one decorator paradigm per class. ${ruleUrl('no-mixed-decorator-paradigms')}`,

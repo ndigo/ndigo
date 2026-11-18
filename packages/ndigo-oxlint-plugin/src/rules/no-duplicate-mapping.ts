@@ -312,6 +312,7 @@ export const noDuplicateMapping = {
             description:
                 'Disallow duplicate method-level route-mapping paths of the same HTTP-method identity within a class',
             url: ruleUrl('no-duplicate-mapping'),
+            recommended: true,
         },
         messages: {
             duplicateMapping: `Duplicate @{{decorator}} mapping '{{path}}' ({{method}}) — already mapped by @{{firstDecorator}}('{{first}}'); the later registration shadows it in this class. ${ruleUrl('no-duplicate-mapping')}`,

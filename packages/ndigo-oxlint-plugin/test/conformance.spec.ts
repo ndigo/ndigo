@@ -1,6 +1,6 @@
 /**
  * Contract test for the consumer rule surface: rule keys, documentation URLs,
- * message suffixes, and the pages that back them.
+ * message suffixes, the recommended preset, and the pages that back them.
  *
  * Every assertion here exists because a formatter or a contributor can drift
  * from the contract silently: oxlint prints rule keys, and the URL is the only
@@ -13,6 +13,7 @@ import { describe, expect, test } from 'vitest';
 
 import { ruleUrl } from '../src/_docs';
 import plugin from '../src/index';
+import { recommended } from '../src/recommended';
 
 /** One naming scheme: prohibition, requirement, well-formedness. */
 const ruleKeyPattern = /^(?:no|require|valid)-[a-z0-9]+(?:-[a-z0-9]+)*$/u;
@@ -27,6 +28,11 @@ function metaOf(ruleKey: string) {
         throw new Error(`Rule ${ruleKey} has no meta`);
     }
     return meta;
+}
+
+/** Reads one rule's documentation page. */
+function pageOf(ruleKey: string): string {
+    return readFileSync(resolve(DOCS_DIR, `${ruleKey}.md`), 'utf8');
 }
 
 describe('consumer rule contract', () => {
@@ -68,10 +74,34 @@ describe('consumer rule contract', () => {
         expect(pages.sort()).toEqual(RULE_KEYS);
     });
 
-    test('docs pages carry the rule frontmatter', () => {
+    test('docs pages agree with the rule metadata', () => {
         for (const ruleKey of RULE_KEYS) {
-            const page = readFileSync(resolve(DOCS_DIR, `${ruleKey}.md`), 'utf8');
+            const page = pageOf(ruleKey);
+            const recommended = metaOf(ruleKey).docs?.recommended === true;
             expect(page, ruleKey).toContain(`rule: '@ndigo/${ruleKey}'`);
+            expect(page, ruleKey).toContain(`recommended: ${recommended}`);
+        }
+    });
+
+    test('the recommended preset is exactly the rules marked recommended', () => {
+        const expected = RULE_KEYS.filter((ruleKey) => metaOf(ruleKey).docs?.recommended === true);
+        const configured = Object.keys(recommended.rules ?? {})
+            .filter((name) => name.startsWith('@ndigo/'))
+            .map((name) => name.slice('@ndigo/'.length))
+            .sort();
+        expect(configured).toEqual(expected);
+        expect(recommended.jsPlugins).toEqual(['@ndigo/oxlint-plugin']);
+    });
+
+    test('the recommended preset only relaxes a rule for test files', () => {
+        const configured = new Set(Object.keys(recommended.rules ?? {}));
+        for (const override of recommended.overrides ?? []) {
+            for (const [name, setting] of Object.entries(override.rules ?? {})) {
+                // An override may only silence a rule the preset enables.
+                expect(configured.has(name), `${name} is not in the preset`).toBe(true);
+                expect(['off', 'warn'], name).toContain(setting);
+            }
+            expect(override.files?.length, 'override without files').toBeGreaterThan(0);
         }
     });
 });

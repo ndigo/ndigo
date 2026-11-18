@@ -46,6 +46,12 @@ export class RedisCacheManager implements CacheManager, AsyncCloseable {
      * Creates a manager over a borrowed or owned Redis connection.
      *
      * @param options - Connection, namespace, and TTL defaults.
+     *
+     * @example
+     * ```ts
+     * const manager = new RedisCacheManager({ url: 'redis://localhost:6379', namespace: 'app' });
+     * const cache = manager.getCache<string>('users');
+     * ```
      */
     constructor(options: RedisCacheManagerOptions) {
         // Validate policy even when no handle is acquired.

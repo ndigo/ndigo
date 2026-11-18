@@ -140,6 +140,12 @@ export class RedisLockDriver implements LockDriver {
      * Creates a driver over the given connection and namespace.
      *
      * @param options - Borrowed connection and namespace.
+     *
+     * @example
+     * ```ts
+     * const driver = new RedisLockDriver({ connection, namespace: 'app' });
+     * const handle = await driver.acquire('job:1', { ttlMs: 30_000 });
+     * ```
      */
     constructor(options: RedisLockDriverOptions) {
         if (options === null || typeof options !== 'object' || options.connection === undefined) {

@@ -86,20 +86,6 @@ export function likeRateLimiter(value: unknown): value is RateLimiter {
 }
 
 /**
- * Validates a {@link RateLimitPolicy} — shared by the `@rateLimit`
- * decorator (decoration-time) and every limiter (call-time).
- *
- * @param policy - The policy to validate.
- * @param where - Label used in the thrown error (defaults to `"rate limit policy"`).
- * @returns Nothing; throws on an invalid policy.
- * @throws When `limit` or `windowMs` is not a positive integer.
- *
- * @example
- * ```ts
- * validateRateLimitPolicy({ limit: 100, windowMs: 60_000 });
- * ```
- */
-/**
  * Marks an object that can receive a {@link RateLimiter}.
  */
 export interface RateLimiterAware extends Aware {
@@ -120,6 +106,12 @@ export interface RateLimiterAware extends Aware {
 export const AsRateLimiterAware = <T extends Constructable>(superclass: T): Constructable<RateLimiterAware> & T =>
     class extends AsAware(superclass) implements RateLimiterAware {
         rateLimiter: RateLimiter | null = null;
+
+        /**
+         * Attaches a rate limiter to the instance.
+         *
+         * @param rateLimiter - The rate limiter to store.
+         */
         setRateLimiter(rateLimiter: RateLimiter): void {
             Reflect.defineProperty(this, 'rateLimiter', {
                 value: rateLimiter,
@@ -140,6 +132,20 @@ export const likeRateLimiterAware = likeAwareAnd(like({ setRateLimiter: Function
     value: unknown
 ) => value is RateLimiterAware;
 
+/**
+ * Validates a {@link RateLimitPolicy} — shared by the `@rateLimit`
+ * decorator (decoration-time) and every limiter (call-time).
+ *
+ * @param policy - The policy to validate.
+ * @param where - Label used in the thrown error (defaults to `"rate limit policy"`).
+ * @returns Nothing; throws on an invalid policy.
+ * @throws When `limit` or `windowMs` is not a positive integer.
+ *
+ * @example
+ * ```ts
+ * validateRateLimitPolicy({ limit: 100, windowMs: 60_000 });
+ * ```
+ */
 export function validateRateLimitPolicy(policy: RateLimitPolicy, where = 'rate limit policy'): void {
     if (!Number.isInteger(policy.limit) || policy.limit < 1) {
         throw new RangeError(`${where}: "limit" must be a positive integer, got ${String(policy.limit)}`);

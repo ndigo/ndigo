@@ -69,6 +69,13 @@ export interface McpHost {
  *
  * @param options - Server identity, instructions, and read-only mode.
  * @returns The host; registration and transport are separate steps.
+ *
+ * @example
+ * ```ts
+ * const host = createMcpHost({ name: 'my-app', version: '1.0.0' });
+ * host.registerTool({ name: 'greet', title: 'Greet', description: 'Say hi', inputSchema: {}, run: () => 'hi' });
+ * await host.startStdio('my-app');
+ * ```
  */
 export function createMcpHost(options: McpHostOptions): McpHost {
     const server = new McpServer(
@@ -113,6 +120,12 @@ export function createMcpHost(options: McpHostOptions): McpHost {
  *
  * @param run - The tool body.
  * @returns The MCP tool result.
+ *
+ * @example
+ * ```ts
+ * const result = await runTool(() => ({ ok: true }));
+ * console.log(result.content); // [{ type: 'text', text: '{\n  "ok": true\n}' }]
+ * ```
  */
 export async function runTool(run: () => Promise<unknown> | unknown): Promise<CallToolResult> {
     try {

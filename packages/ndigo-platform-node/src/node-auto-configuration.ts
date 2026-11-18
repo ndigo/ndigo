@@ -377,6 +377,11 @@ export class NodeAutoConfiguration extends AsApplicationContextAware(Null) {
         return createConversionService();
     }
 
+    /**
+     * The shared HTTP client for outbound calls.
+     *
+     * @returns The HTTP client.
+     */
     @entry(HTTP_CLIENT)
     httpClient(): HTTP {
         return HTTP.create();

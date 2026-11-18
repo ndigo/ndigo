@@ -139,6 +139,11 @@ export class WebAutoConfiguration {
         return new CookieThemeResolver();
     }
 
+    /**
+     * The shared HTTP client for outbound calls.
+     *
+     * @returns The HTTP client.
+     */
     @entry(HTTP_CLIENT)
     httpClient() {
         return HTTP.create();

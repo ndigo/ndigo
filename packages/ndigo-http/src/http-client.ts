@@ -4,6 +4,9 @@
 /// <reference lib="dom" />
 // TypeScript 6.0 declaration generation fix
 import type { Fetch, HTTPConfig, HTTPInit, HTTPInterceptor } from './http-types';
+import { Constructable } from '@ndigo/core';
+import { Aware, AsAware, likeAwareAnd } from '@ndigo/factory';
+import { like } from '@ndigo/util/types';
 import { assign, defaults, freeze } from './http-shared';
 import { TransformInterceptor } from './interceptors/transform-interceptor';
 import ResponseError from './response-error';
@@ -410,3 +413,22 @@ export class HTTP {
         return chain;
     }
 }
+
+export interface HttpAware extends Aware {
+    setHttp(http: HTTP): void;
+}
+
+export const AsHttpAware = <T extends Constructable>(superclass: T): Constructable<HttpAware> & T =>
+    class extends AsAware(superclass) implements HttpAware {
+        http: HTTP | null = null;
+        setHttp(http: HTTP): void {
+            Reflect.defineProperty(this, 'http', {
+                value: http,
+                configurable: true,
+                enumerable: false,
+                writable: false,
+            });
+        }
+    };
+
+export const likeHttpAware = likeAwareAnd(like({ setHttp: Function })) as (value: unknown) => value is HttpAware;

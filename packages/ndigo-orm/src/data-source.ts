@@ -2,7 +2,9 @@
  * The data-source contract and in-memory implementation.
  */
 import { IllegalStateError } from '@ndigo/core';
-import { Destroyable, Initializable } from '@ndigo/factory';
+import { Constructable } from '@ndigo/core';
+import { Destroyable, Initializable, Aware, AsAware, likeAwareAnd } from '@ndigo/factory';
+import { like } from '@ndigo/util/types';
 
 /**
  * Well-known symbol an entity class implements to control how it is cloned for
@@ -283,3 +285,50 @@ function cloneStoredValue<T>(value: T, seen: Map<object, unknown>): T {
     }
     return clone as T;
 }
+
+/**
+ * Marks an object that can receive a {@link DataSource}.
+ */
+export interface DataSourceAware extends Aware {
+    /**
+     * Sets the data source used by the receiver.
+     *
+     * @param dataSource - The data source to attach.
+     */
+    setDataSource(dataSource: DataSource): void;
+}
+
+/**
+ * Mixes data-source awareness into a base class.
+ *
+ * @param superclass - Base class to extend.
+ * @returns A subclass that can receive a data source.
+ */
+export const AsDataSourceAware = <T extends Constructable>(superclass: T): Constructable<DataSourceAware> & T =>
+    class extends AsAware(superclass) implements DataSourceAware {
+        dataSource: DataSource | null = null;
+
+        /**
+         * Attaches a data source to the instance.
+         *
+         * @param dataSource - The data source to store.
+         */
+        setDataSource(dataSource: DataSource): void {
+            Reflect.defineProperty(this, 'dataSource', {
+                value: dataSource,
+                configurable: true,
+                enumerable: false,
+                writable: false,
+            });
+        }
+    };
+
+/**
+ * Tests whether a value looks like data-source-aware state.
+ *
+ * @param value - The candidate value.
+ * @returns Whether the value can receive a data source.
+ */
+export const likeDataSourceAware = likeAwareAnd(like({ setDataSource: Function })) as (
+    value: unknown
+) => value is DataSourceAware;

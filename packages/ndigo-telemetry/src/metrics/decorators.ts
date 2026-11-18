@@ -5,7 +5,9 @@ import '@tsmetadata/polyfill';
 import { getSymbolMetadata } from '@ndigo/core';
 import type { LogAttributes } from '@ndigo/log';
 import { FeatureMetricAggregator } from './feature-metric-aggregator';
+import { FEATURE_METRIC_AGGREGATOR } from './context-tokens';
 import { createLazyCounter } from './lazy-counter';
+import type { ApplicationContext } from '@ndigo/context';
 
 const COUNTED_KEY = 'telemetry:counted';
 
@@ -101,11 +103,33 @@ function createCountedDecorator(options: CountedOptions = {}) {
         const { featureAggregator, featureKey } = options;
         return function (this: This, ...args: Args): Return {
             counters(counterName, options.attributes);
-            if (featureAggregator !== undefined) {
+
+            let aggregator = featureAggregator;
+            if (aggregator === undefined) {
+                const instance = this as {
+                    featureMetricAggregator?: FeatureMetricAggregator;
+                    applicationContext?: ApplicationContext;
+                };
+                aggregator = instance.featureMetricAggregator ?? undefined;
+                if (aggregator === undefined && instance.applicationContext) {
+                    const context = instance.applicationContext;
+                    try {
+                        if (typeof context.hasValue === 'function' && context.hasValue(FEATURE_METRIC_AGGREGATOR)) {
+                            aggregator = context.getValue(FEATURE_METRIC_AGGREGATOR);
+                        } else if (typeof context.hasValue === 'function' && context.hasValue('metricAggregator')) {
+                            aggregator = context.getValue('metricAggregator') as FeatureMetricAggregator;
+                        }
+                    } catch {
+                        aggregator = undefined;
+                    }
+                }
+            }
+
+            if (aggregator !== undefined) {
                 const key = featureKey ?? 'feature';
                 const feature = options.attributes?.[key];
                 if (typeof feature === 'string') {
-                    featureAggregator.incrementCounter(feature, counterName);
+                    aggregator.incrementCounter(feature, counterName);
                 }
             }
             return target.apply(this, args);

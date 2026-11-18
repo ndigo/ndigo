@@ -2,7 +2,7 @@
  * Runtime proxy generator for declarative service clients.
  */
 import { SpanKind, SpanStatusCode, trace } from '@opentelemetry/api';
-import { HTTP, HTTPInit } from '@ndigo/http';
+import { HTTP, HTTPInit, HTTP_CLIENT } from '@ndigo/http';
 import {
     getServiceCalls,
     getServiceConfig,
@@ -212,7 +212,7 @@ async function* streamCall(
  * const account = await accounts.getById(42);
  * ```
  */
-export function serviceClient<T extends object>(target: T, http: HTTP): T {
+export function serviceClient<T extends object>(target: T, http?: HTTP): T {
     const config = getServiceConfig(target as object);
     if (!config) {
         throw new IllegalStateError(
@@ -220,6 +220,21 @@ export function serviceClient<T extends object>(target: T, http: HTTP): T {
         );
     }
     const calls = getServiceCalls(target as object);
+
+    let resolvedHttp = http;
+    if (!resolvedHttp) {
+        const context = (target as { applicationContext?: unknown })?.applicationContext;
+        if (
+            context &&
+            typeof (context as { hasValue?: unknown }).hasValue === 'function' &&
+            (context as { hasValue: (key: unknown) => boolean }).hasValue(HTTP_CLIENT)
+        ) {
+            resolvedHttp = (context as { getValue: (key: unknown) => HTTP }).getValue(HTTP_CLIENT);
+        }
+    }
+    if (!resolvedHttp) {
+        resolvedHttp = HTTP.create();
+    }
 
     return new Proxy(target as object, {
         get(_t, prop: string | symbol) {
@@ -247,7 +262,7 @@ export function serviceClient<T extends object>(target: T, http: HTTP): T {
                 // consumer iterates events as they arrive over the open response.
                 if (call.stream) {
                     headers['Accept'] = 'text/event-stream';
-                    return streamCall(config, call, url, { method: call.method, headers }, http);
+                    return streamCall(config, call, url, { method: call.method, headers }, resolvedHttp);
                 }
 
                 const init: HTTPInit = {
@@ -256,7 +271,7 @@ export function serviceClient<T extends object>(target: T, http: HTTP): T {
                     ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
                 };
 
-                return http.request(url, init).then(async (response): Promise<unknown> => {
+                return resolvedHttp.request(url, init).then(async (response): Promise<unknown> => {
                     if (call.responseSchema) {
                         const data: unknown = await response.json().catch(() => undefined);
                         const result = call.responseSchema.safeParse(data);

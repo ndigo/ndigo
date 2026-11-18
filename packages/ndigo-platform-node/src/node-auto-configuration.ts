@@ -19,6 +19,7 @@ import {
 } from '@ndigo/dispatcher';
 import { ScheduleRegistry, TaskScheduler } from '@ndigo/scheduler';
 import { InProcessLockDriver, LOCK_DRIVER, type LockDriver } from '@ndigo/locks';
+import { HTTP, HTTP_CLIENT } from '@ndigo/http';
 import {
     InProcessJobDriver,
     JOB_DRIVER,
@@ -374,6 +375,11 @@ export class NodeAutoConfiguration extends AsApplicationContextAware(Null) {
     @entry(CONVERSION_SERVICE)
     conversionService(): ConversionService {
         return createConversionService();
+    }
+
+    @entry(HTTP_CLIENT)
+    httpClient(): HTTP {
+        return HTTP.create();
     }
 
     /**

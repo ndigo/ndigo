@@ -34,6 +34,8 @@
   "dependencies": {
     "@ndigo/core": "~0.0.1",
     "@ndigo/factory": "~0.0.1",
+    "@ndigo/util": "~0.0.1",
+    "@ndigo/context": "~0.0.1",
     "@tsmetadata/polyfill": "catalog:",
     "zod": "catalog:"
   },

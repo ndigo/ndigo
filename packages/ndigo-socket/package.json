@@ -30,7 +30,9 @@
   "license": "ISC",
   "dependencies": {
     "@ndigo/core": "~0.0.1",
-    "@ndigo/signals": "~0.0.1"
+    "@ndigo/factory": "~0.0.1",
+    "@ndigo/signals": "~0.0.1",
+    "@ndigo/util": "~0.0.1"
   },
   "sideEffects": false,
   "devDependencies": {}

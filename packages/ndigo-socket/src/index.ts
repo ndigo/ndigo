@@ -8,6 +8,7 @@
  */
 export * from './socket-session';
 export * from './socket-session-registry';
+export * from './context-tokens';
 export * from './socket-client';
 export * from './stomp-frame';
 export * from './stomp-broker';

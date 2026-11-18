@@ -3,7 +3,9 @@
  */
 import { Cache, CacheOptions, MemoryCache } from './cache';
 import { resolveCacheName } from './cache-name';
-import { ContextToken } from '@ndigo/factory';
+import { ContextToken, Aware, AsAware, likeAwareAnd } from '@ndigo/factory';
+import { like } from '@ndigo/util/types';
+type Constructable<T = {}> = new (...args: any[]) => T;
 
 /**
  * Named-cache registry. Acquires local backend handles synchronously without
@@ -148,3 +150,24 @@ export class MemoryCacheManager implements CacheManager {
         return this.#caches.has(name);
     }
 }
+
+export interface CacheManagerAware extends Aware {
+    setCacheManager(cacheManager: CacheManager): void;
+}
+
+export const AsCacheManagerAware = <T extends Constructable>(superclass: T): Constructable<CacheManagerAware> & T =>
+    class extends AsAware(superclass) implements CacheManagerAware {
+        cacheManager: CacheManager | null = null;
+        setCacheManager(cacheManager: CacheManager): void {
+            Reflect.defineProperty(this, 'cacheManager', {
+                value: cacheManager,
+                configurable: true,
+                enumerable: false,
+                writable: false,
+            });
+        }
+    };
+
+export const likeCacheManagerAware = likeAwareAnd(like({ setCacheManager: Function })) as (
+    value: unknown
+) => value is CacheManagerAware;

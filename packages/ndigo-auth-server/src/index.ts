@@ -8,3 +8,6 @@ export * from './jwt-adapter';
 export * from './in-memory-session-store';
 export * from './in-memory-user-store';
 export * from './credentials-auth-adapter';
+export * from './aware';
+export * from './context-tokens';
+export * from './auth-auto-configuration';

@@ -30,7 +30,7 @@ matches the task; do not guess APIs from memory.
 - `21-persistence-and-shared-stores` — Persistence & Shared Stores: Ndigo is memory-first: every shared capability ships an in-process default, and external backends are explicit opt-ins. This guide covers the persistence baseline: durable sessions on LibSQL, the shar
 - `22-jobs-and-outbox` — Jobs & the Transactional Outbox: How background work is delivered in Ndigo: @ndigo/jobs — the JobDriver contract, worker execution, and the transactional outbox that ties side effects to database commits. Jobs are Node-only.
 - `23-scheduling` — Scheduling: How scheduled tasks work in Ndigo: the @scheduled decorator, zero-wiring discovery, execution semantics, and guardrails. Scheduling is Node-only.
-- `24-distributed-locks` — Distributed Locks: Fencing-token locks make a @scheduled task a single-executor across nodes: exactly one node runs the fire, others skip. They are the shared primitive behind multi-node scheduling (this guide, ) and th
+- `24-distributed-locks` — Distributed Locks: Fencing-token locks make a @scheduled task a single-executor across nodes: exactly one node runs the fire, others skip. They are the shared primitive behind multi-node scheduling (this guide) and the
 - `25-clustering` — Clustering: Replicate a Node application across N worker processes with one supervisor: every slot runs the same application, the existing contracts arbitrate single-executor work, and a signal drains every slot
 - `26-authentication-and-sessions` — Authentication & Sessions: How authentication works in Ndigo: password hashing, first-party credential login, opaque cookie sessions, rate limiting and CSRF on auth mutations, and JWT issuance/refresh/revocation. The machinery
 - `27-browser-authentication-and-oidc` — Browser Authentication & OIDC: Browser apps need three things a server session already has: a current principal, a guard that redirects unauthenticated navigation, and a safe way to obtain tokens from an identity provider. @ndigo/a
@@ -109,6 +109,7 @@ matches the task; do not guess APIs from memory.
 - `@ndigo/telemetry-web` — Browser telemetry for Ndigo — browser telemetry configuration and web instrumentations
 - `@ndigo/test` — Ndigo integration test harness — MockMVC-style in-process request dispatch
 - `@ndigo/ui` — Ndigo UI — brand tokens, theme layers, and the design-system registry contract
+- `@ndigo/ui-web` — Browser theme adapter for Ndigo UI — apply negotiated themes, persist the user's choice, and keep the DOM and context in sync
 - `@ndigo/util` — Zero-dependency helper utilities — type guards, strings, environment, crypto
 - `@ndigo/view` — Views, view targets, and content negotiation for Ndigo
 - `@ndigo/view-ejs` — Ndigo View EJS — server-side EJS template rendering as an isomorphic Ndigo view technology.

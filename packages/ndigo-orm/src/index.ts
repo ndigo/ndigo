@@ -11,8 +11,8 @@ export type {
     LifecycleEvent,
     LifecycleHookDefinition,
 } from './metadata';
-export type { DataSource, EntityCloneHook } from './data-source';
-export { ENTITY_CLONE } from './data-source';
+export type { DataSource, EntityCloneHook, DataSourceAware } from './data-source';
+export { ENTITY_CLONE, AsDataSourceAware, likeDataSourceAware } from './data-source';
 export type { EntityManager } from './entity-manager';
 export type { EntityState, UnitOfWork } from './unit-of-work';
 export type { TransactionManager } from './transaction-manager';
@@ -57,6 +57,7 @@ export {
 
 // Implementations
 export { InMemoryDataSource } from './data-source';
+export { OrmAutoConfiguration } from './orm-auto-configuration';
 export { InMemoryEntityManager } from './entity-manager';
 export { InMemoryUnitOfWork } from './unit-of-work';
 export { InMemoryTransactionManager } from './transaction-manager';
@@ -72,4 +73,7 @@ export type { DerivedQuery, DerivedQueryResult } from './derived-query-repositor
 
 // Pagination & sorting (ORM completion plan, Wave 2)
 export type { Page, PageRequest, SortDirection, SortOrder } from './page';
+
+// Context tokens
+export * from './context-tokens';
 export { pageFromAll, sortComparator, validatePageRequest } from './page';

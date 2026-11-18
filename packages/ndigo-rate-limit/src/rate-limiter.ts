@@ -10,6 +10,8 @@
  * `@ndigo/platform-node`.
  */
 import { like } from '@ndigo/util/types';
+type Constructable<T = {}> = new (...args: any[]) => T;
+import { Aware, AsAware, likeAwareAnd } from '@ndigo/factory';
 
 /**
  * A route's rate-limit policy: at most `limit` requests per `windowMs`
@@ -95,6 +97,27 @@ export function likeRateLimiter(value: unknown): value is RateLimiter {
  * validateRateLimitPolicy({ limit: 100, windowMs: 60_000 });
  * ```
  */
+export interface RateLimiterAware extends Aware {
+    setRateLimiter(rateLimiter: RateLimiter): void;
+}
+
+export const AsRateLimiterAware = <T extends Constructable>(superclass: T): Constructable<RateLimiterAware> & T =>
+    class extends AsAware(superclass) implements RateLimiterAware {
+        rateLimiter: RateLimiter | null = null;
+        setRateLimiter(rateLimiter: RateLimiter): void {
+            Reflect.defineProperty(this, 'rateLimiter', {
+                value: rateLimiter,
+                configurable: true,
+                enumerable: false,
+                writable: false,
+            });
+        }
+    };
+
+export const likeRateLimiterAware = likeAwareAnd(like({ setRateLimiter: Function })) as (
+    value: unknown
+) => value is RateLimiterAware;
+
 export function validateRateLimitPolicy(policy: RateLimitPolicy, where = 'rate limit policy'): void {
     if (!Number.isInteger(policy.limit) || policy.limit < 1) {
         throw new RangeError(`${where}: "limit" must be a positive integer, got ${String(policy.limit)}`);

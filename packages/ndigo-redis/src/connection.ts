@@ -2,7 +2,10 @@
  * Owned or borrowed node-redis connection with tracked operations.
  */
 import { IllegalStateError } from '@ndigo/core';
+import { Constructable } from '@ndigo/core';
 import { createClient, type RedisClientType } from '@redis/client';
+import { Aware, AsAware, likeAwareAnd } from '@ndigo/factory';
+import { like } from '@ndigo/util/types';
 import type { AsyncCloseable } from '@ndigo/factory';
 
 /** Standalone node-redis client with default string replies (no keyPrefix). */
@@ -161,3 +164,52 @@ export class RedisConnection implements AsyncCloseable {
         return this.#closing;
     }
 }
+
+/**
+ * Marks an object that can receive a {@link RedisConnection}.
+ */
+export interface RedisConnectionAware extends Aware {
+    /**
+     * Sets the redis connection used by the receiver.
+     *
+     * @param redisConnection - The connection to attach.
+     */
+    setRedisConnection(redisConnection: RedisConnection): void;
+}
+
+/**
+ * Mixes redis-connection awareness into a base class.
+ *
+ * @param superclass - Base class to extend.
+ * @returns A subclass that can receive a redis connection.
+ */
+export const AsRedisConnectionAware = <T extends Constructable>(
+    superclass: T
+): Constructable<RedisConnectionAware> & T =>
+    class extends AsAware(superclass) implements RedisConnectionAware {
+        redisConnection: RedisConnection | null = null;
+
+        /**
+         * Attaches a redis connection to the instance.
+         *
+         * @param redisConnection - The connection to store.
+         */
+        setRedisConnection(redisConnection: RedisConnection): void {
+            Reflect.defineProperty(this, 'redisConnection', {
+                value: redisConnection,
+                configurable: true,
+                enumerable: false,
+                writable: false,
+            });
+        }
+    };
+
+/**
+ * Tests whether a value looks like redis-connection-aware state.
+ *
+ * @param value - The candidate value.
+ * @returns Whether the value can receive a redis connection.
+ */
+export const likeRedisConnectionAware = likeAwareAnd(like({ setRedisConnection: Function })) as (
+    value: unknown
+) => value is RedisConnectionAware;

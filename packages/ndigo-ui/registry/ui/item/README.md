@@ -44,3 +44,7 @@ row (pair it with `aria-selected` when the list is selectable).
 
 Import `nd-item.css` after the tokens. Hover and selection use the accent-soft
 token; the media circle uses the raised surface.
+
+The title pins `--nd-font-sans` (see `nd-card` for the rationale): the title
+element is consumer-chosen, so a host page's display face would otherwise leak
+in.

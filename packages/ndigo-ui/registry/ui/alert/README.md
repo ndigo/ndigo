@@ -39,3 +39,7 @@ the meaning.
 
 Import `nd-alert.css` after the tokens. Override `--nd-alert-color` or the
 semantic tokens rather than the selectors.
+
+The title pins `--nd-font-sans` (see `nd-card` for the rationale): the title
+element is consumer-chosen, so a host page's display face on headings would
+otherwise leak in.

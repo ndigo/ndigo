@@ -27,6 +27,11 @@ import { CredentialsAuthAdapter, InMemoryUserStore, InMemorySessionStore } from 
 
 const encoder = new DelegatingPasswordEncoder({ scrypt: new ScryptPasswordEncoder() }, 'scrypt');
 
+// Zero-wiring alternative: `AuthAutoConfiguration` (from `@ndigo/auth-server`)
+// registers an in-memory session/user store, scrypt password encoder, and
+// `AuthServer` as context entries — apps that need durable stores override
+// the `sessionStore` / `userStore` entries instead of constructing them here.
+
 function initAuth(): void {
     AuthRegistry.register(
         new CredentialsAuthAdapter({

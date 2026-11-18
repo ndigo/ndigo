@@ -191,13 +191,12 @@ export class RetryInterceptor implements ErrorAwareHTTPInterceptor, RequestAware
 
         return new Promise<Response>((resolve, reject) => {
             const signal = request.signal;
-            let timer: ScheduledTimer | undefined;
+            let timer: ReturnType<typeof setTimeout> | undefined;
 
             // An abort during the backoff window cancels the pending retry:
             // clear the timer so no request is issued, and surface the abort.
             const onAbort = (): void => {
-                // NOTE: bridging to number — the source type is wider than this consumer's contract.
-                clearTimeout(timer as unknown as number);
+                clearTimeout(timer);
                 const reason = signal.reason;
                 reject(reason instanceof Error ? reason : new DOMException('The operation was aborted.', 'AbortError'));
             };
@@ -237,8 +236,7 @@ export class RetryInterceptor implements ErrorAwareHTTPInterceptor, RequestAware
                 } catch (retryError) {
                     reject(retryError);
                 }
-                // NOTE: bridging to ScheduledTimer — the source type is wider than this consumer's contract.
-            }, bufferInterval * 1000) as unknown as ScheduledTimer;
+            }, bufferInterval * 1000);
             // Never keep the process alive for a pending backoff window.
             timer.unref?.();
         });

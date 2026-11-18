@@ -36,6 +36,11 @@ export interface View {
      * @param model - The data model.
      * @param request - The current request.
      * @param target - The optional view target.
+     *
+     * @example
+     * ```ts
+     * await view.render(model, request, target);
+     * ```
      */
     render(model: unknown, request: unknown, target?: ViewTarget): void | Promise<void>;
 }

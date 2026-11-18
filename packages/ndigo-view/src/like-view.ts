@@ -10,6 +10,13 @@ import { View } from './view.js';
  *
  * @param value - The value to inspect.
  * @returns `true` when the value is View-shaped.
+ *
+ * @example
+ * ```ts
+ * if (likeView(candidate)) {
+ *     await candidate.render(model, request, target);
+ * }
+ * ```
  */
 export const likeView = (value: unknown): value is View =>
     value !== null &&

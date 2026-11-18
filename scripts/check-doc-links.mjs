@@ -10,7 +10,10 @@
  * node_modules/) are not walked.
  *
  * Catches: renamed/moved files, wrong relative depth, wrong link dates,
- * and heading anchors that no longer exist. Run via `pnpm docs:links`.
+ * and heading anchors that no longer exist. Root-relative targets
+ * (`/reference/…`, `/guides/…`, …) are site routes on the published docs
+ * site, not repository paths — the checker cannot resolve them without the
+ * site's route table, so it counts and skips them. Run via `pnpm docs:links`.
  */
 
 import { readdirSync, readFileSync, statSync } from 'node:fs';
@@ -79,6 +82,15 @@ function collectMarkdownFiles() {
 const files = collectMarkdownFiles();
 const broken = [];
 let linkCount = 0;
+let siteRouteCount = 0;
+
+/**
+ * Root-relative targets are routes on the published documentation site, not
+ * repository paths. `/reference/api/…` exists only after `doc:api` renders;
+ * the rest are site sections. Resolution needs the site's route table, which
+ * does not live in this repository, so these links are counted and skipped.
+ */
+const SITE_ROUTE_PREFIXES = ['/reference/', '/guides/', '/concepts/', '/ui/'];
 
 /**
  * Decodes a percent-encoded link segment; malformed input (`%zz`, bare `%`)
@@ -126,6 +138,10 @@ for (const file of files) {
         // Strip optional title
         target = target.replace(/\s+["'][^"']*["']\s*$/, '');
         if (!target || target === '#' || /^(https?:|mailto:|data:)/i.test(target)) continue;
+        if (SITE_ROUTE_PREFIXES.some((prefix) => target.startsWith(prefix))) {
+            siteRouteCount++;
+            continue;
+        }
         linkCount++;
         const [pathPart, fragPart] = target.split('#');
         const fragment = fragPart ? safeDecode(fragPart) : null;
@@ -159,4 +175,4 @@ if (broken.length > 0) {
     for (const b of broken) console.error(`  - ${b}`);
     process.exit(1);
 }
-console.log(`docs link check: ${files.length} files, ${linkCount} relative links — OK`);
+console.log(`docs link check: ${files.length} files, ${linkCount} relative links, ${siteRouteCount} site routes — OK`);

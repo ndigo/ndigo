@@ -21,6 +21,11 @@ export interface AuthAdapter {
      *
      * @param token - The session or access token to validate.
      * @returns The authenticated {@link Principal}, or `null` if the token is invalid or expired.
+     *
+     * @example
+     * ```ts
+     * const principal = await adapter.validate(token);
+     * ```
      */
     validate(token: string): Promise<Principal | null>;
 
@@ -30,6 +35,11 @@ export interface AuthAdapter {
      * @param credentials - The credentials provided by the user. Adapters
      * narrow this opaque value to their protocol-specific credential shape.
      * @returns An {@link AuthResult} containing the principal and session token.
+     *
+     * @example
+     * ```ts
+     * const result = await adapter.authenticate({ username, password });
+     * ```
      */
     authenticate(credentials: unknown): Promise<AuthResult>;
 

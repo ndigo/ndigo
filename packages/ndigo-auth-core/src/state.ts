@@ -5,6 +5,12 @@ import { type Principal } from './principal';
 
 /**
  * The result of an authentication attempt.
+ *
+ * @example
+ * ```ts
+ * const result = await adapter.authenticate(credentials);
+ * if (result.principal) console.log('signed in as', result.principal.name);
+ * ```
  */
 export interface AuthResult {
     /** The authenticated principal, or null if authentication failed. */

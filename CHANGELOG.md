@@ -540,6 +540,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Docs lane: `scripts/check-doc-links.mjs` no longer resolves root-relative
+  documentation-site routes (`/reference/…`, `/guides/…`, `/concepts/…`,
+  `/ui/…`) as repository paths; it counts and skips them, since the site's
+  route table is not in this repository. Guide 30 now links the vendored
+  ndigo-ui skill instead of the maintainer-only `agent-local/` copy, so
+  `pnpm docs:links` passes on a clean checkout (issue #505).
 - `ndigo doctor` (2026-11-02 review follow-up): the Node floor was pinned at
   22 while root `engines` requires `>=24` under `engine-strict` — the
   diagnostic users attach to issue reports pronounced an unusable runtime

@@ -36,6 +36,11 @@ export interface McpServerOptions {
  * @param registry - The projected tools.
  * @param options - Identity and the optional inspect manifest.
  * @returns A server ready to connect to a transport.
+ *
+ * @example
+ * ```ts
+ * const server = createMcpServer(registry, { name: 'my-app', version: '1.0.0' });
+ * ```
  */
 export function createMcpServer(registry: McpToolRegistry, options: McpServerOptions = {}): Server {
     const uiResources = options.uiResources ?? [];
@@ -121,6 +126,11 @@ export function createMcpServer(registry: McpToolRegistry, options: McpServerOpt
  * @param registry - The projected tools.
  * @param options - Identity and the optional inspect manifest.
  * @returns A promise that resolves once the transport is connected.
+ *
+ * @example
+ * ```ts
+ * await startStdioServer(registry, { name: 'my-app', version: '1.0.0' });
+ * ```
  */
 export async function startStdioServer(registry: McpToolRegistry, options: McpServerOptions = {}): Promise<void> {
     const server = createMcpServer(registry, options);

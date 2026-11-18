@@ -115,6 +115,12 @@ function entriesOf(table: MappingTableLike): readonly MappingEntryLike[] {
  * @param source - A dispatcher, a mapping table, or an array of tables.
  * @returns The tools, in registration order.
  * @throws When two handlers project to the same tool name.
+ *
+ * @example
+ * ```ts
+ * const tools = projectTools(dispatcher);
+ * console.log(tools.map((t) => t.descriptor.name));
+ * ```
  */
 export function projectTools(source: MappingSource): RegisteredTool[] {
     const tools: RegisteredTool[] = [];

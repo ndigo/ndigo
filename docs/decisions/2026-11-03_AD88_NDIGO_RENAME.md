@@ -1,4 +1,4 @@
-# AD-88: Project rename — BlueJS → ndigo
+# AD-88: Project rename to ndigo
 
 **Date:** 2026-11-03
 **Status:** Accepted
@@ -8,7 +8,7 @@
 
 ## Context
 
-The project cannot publish as **BlueJS**:
+The project cannot publish under its previous name:
 
 - The `blue` name carries historical ties to a company — not worth the risk.
 - The npm `@blue` scope and the GitHub `blue` namespace are both unavailable.
@@ -50,8 +50,8 @@ core/node/web split already exists at the package level; a repo split would
 multiply release and CI coordination without changing what consumers install
 (revisit only on independent cadence/ownership needs).
 
-**Dated historical records stay as written** — `docs/decisions`,
-`docs/migrations` — with the
+**Dated historical records stay as written** — `docs/decisions`, `docs/plans`,
+`docs/audits`, `docs/migrations`, dated `docs/reference` snapshots — with the
 sole exception of link targets inside archives that pointed at renamed paths
 (mechanically repaired so the docs link gate stays green). The CHANGELOG is not
 historical yet (nothing is released), so its accumulated `[Unreleased]` notes

@@ -7,6 +7,11 @@ export interface ServiceRegistry {
      *
      * @param token - The unique token for the service.
      * @param endpoint - The endpoint URL for the service.
+     *
+     * @example
+     * ```ts
+     * registry.register('accounts', 'https://api.example.com');
+     * ```
      */
     register(token: string, endpoint: string): void;
     /**

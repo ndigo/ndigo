@@ -348,9 +348,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `setVisualTheme` performs a single switch. `@ndigo/ui` gains the pure
   `resolveVisualTheme` and `themeAttributes` helpers, so framework packages
   never take a UI dependency.
+- `@ndigo/oxlint-plugin`: the consumer lint surface (AD-108). The plugin now
+  ships eight rules and a typed `recommended` preset
+  (`@ndigo/oxlint-plugin/recommended`), and every rule carries
+  `meta.docs.url` plus its page URL at the end of every diagnostic
+  (`https://ndigo.dev/lint/<rule>`), with a page per rule under
+  [`docs/lint/`](docs/lint/README.md). `no-raw-console` and
+  `no-browser-globals` rejoin the public set, de-hardcoded: they take
+  `{ methods? }` and `{ extraGlobals? }` and leave path scoping to the
+  consuming config's `overrides` (both opt-in — a pure browser app should not
+  see the global guard).
+- `@ndigo/cli`: `ndigo lint init [dir] [--kind node|browser] [--force]
+  [--json]` writes the recommended `.oxlintrc.json`, adds a `lint` script and
+  the `oxlint` + `@ndigo/oxlint-plugin` dev dependencies, and refuses when an
+  ancestor config already governs the directory.
+- `create-ndigo-app`: scaffolded apps ship `.oxlintrc.json` (the recommended
+  preset; the Node template adds `no-browser-globals`), a `lint` script, and
+  the plugin dev dependencies, so a new project lints out of the box.
 
 ### Changed
 
+- Lint rule keys follow one naming scheme: `no-*` (prohibition), `require-*`
+  (requirement), `valid-*` (well-formedness). Renamed:
+  `no-cross-paradigm-decorators` → `no-mixed-decorator-paradigms`,
+  `no-string-registry-lookup` → `no-string-token-lookup`,
+  `no-duplicate-mapping-path` → `no-duplicate-mapping`,
+  `internal/requires-doc-header` → `internal/require-doc-header`,
+  `internal/tsdoc-syntax` → `internal/valid-tsdoc` (AD-108).
+- Every app under `apps/` declares `"lint": "oxlint"`; the in-repo `app`
+  generator writes the same script (in-repo apps inherit the root config).
 - Agent skills are authored in the standalone
   [`ndigo-skills`](https://github.com/ndigo/ndigo-skills) repository. The
   monorepo vendors a pinned snapshot under `tools/agent-content/skills/`

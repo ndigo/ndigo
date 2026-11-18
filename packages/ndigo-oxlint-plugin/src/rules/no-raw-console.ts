@@ -44,7 +44,7 @@ export const noRawConsole = {
             recommended: false,
         },
         messages: {
-            rawConsole: `Raw console.{{method}} bypasses @ndigo/log — call getLogger('…') so records carry trace context. ${ruleUrl('no-raw-console')}`,
+            rawConsole: `Raw console.{{method}} bypasses @ndigo/log — log through LoggerAware (components) or getLogger('…'). ${ruleUrl('no-raw-console')}`,
         },
         schema: [
             {

@@ -33,6 +33,22 @@ trace that makes a production incident legible.
 
 ## How to fix
 
+In a managed component (controller, service), implement `LoggerAware` so the
+context injects a logger named after the component:
+
+```ts
+import { AsLoggerAware, type LoggerAware } from '@ndigo/context';
+
+export class OrderController extends AsLoggerAware(Object) implements LoggerAware {
+    list() {
+        this.logger?.info('listing orders');
+    }
+}
+```
+
+Everywhere else — framework internals, leaf packages, code outside a managed
+component — use the module-level factory:
+
 ```ts
 import { getLogger } from '@ndigo/log';
 
@@ -42,6 +58,10 @@ logger.info('server listening');
 logger.warn('retrying');
 logger.error('checkout failed', { error });
 ```
+
+`@ndigo/log`'s README documents the split as "module-level vs
+context-injected" and prefers the injected form in application components, so
+their logging follows the context's configuration.
 
 ## Options
 

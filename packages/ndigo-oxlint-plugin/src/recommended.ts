@@ -33,5 +33,3 @@ export const recommended: OxlintConfig = {
         },
     ],
 };
-
-export default recommended;

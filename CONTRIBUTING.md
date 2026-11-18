@@ -38,7 +38,7 @@ Run the whole lane locally with one command:
 ```bash
 pnpm hooks:install   # once per clone: worktree guard + pre-push lane
 pnpm preflight       # every gate below, fail-fast order (~5 min on a dev box)
-pnpm preflight:fast  # format, lint, links, typecheck only
+pnpm preflight:fast  # format, lint, links, typecheck, agent content only
 ```
 
 `preflight` mirrors `.github/workflows/ci.yml` and is what the pre-push hook
@@ -60,6 +60,7 @@ pnpm guides:check        # guide contract: titles, metadata, fences, index
 pnpm doc:coverage        # zero-tolerance TSDoc depth gate
 pnpm audit --prod        # production advisories — must be clean
 pnpm manifest:check      # package manifest conformance
+pnpm agent-content:check # CLI assets, templates, and skills snapshot drift
 pnpm doc                 # TypeDoc — must emit 0 errors, 0 warnings
 ```
 

@@ -351,6 +351,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Agent skills are authored in the standalone
+  [`ndigo-skills`](https://github.com/ndigo/ndigo-skills) repository. The
+  monorepo vendors a pinned snapshot under `tools/agent-content/skills/`
+  recorded in `skills.lock.json` (source, version, commit, per-file sha256);
+  `pnpm agent-content:sync` refreshes it from a clean checkout and
+  `agent-content:check` fails on drift, so builds no longer depend on a
+  sibling repository being present (AD-107).
 - `@ndigo/platform-node`: rename `runNodeApplication` to `createNodeApplication`
   (and `RunNodeApplicationOptions` to `CreateNodeApplicationOptions`) for naming
   parity with `@ndigo/platform-web`'s `createWebApplication`. Hard cutover, no

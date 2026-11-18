@@ -1,16 +1,19 @@
 #!/usr/bin/env node
 /**
- * Build the consumer agent content from the single authored store:
+ * Build the consumer agent content from the authored store:
  *
  *   instructions/ndigo.md   the managed AGENTS.md block body
  *   instructions/bootstrap.md  the scaffold pointer
- *   skills/<id>/SKILL.md    nine consumer skills
+ *   skills/<id>/SKILL.md    vendored snapshot of the `ndigo-skills` repo
  *   docs-index.md           generated compressed index (committed output)
  *
  * Outputs:
  *   packages/ndigo-cli/assets/agent/**            version-matched runtime assets
  *   packages/create-ndigo-app/templates/*\/AGENTS.md.template
  *   .agent-content.json                           sha256 manifest (CI gate)
+ *
+ * The skill snapshot is pinned by `skills.lock.json`; refresh it with
+ * `node tools/agent-content/sync-skills.mjs` — never by editing the snapshot.
  *
  * Usage:
  *   node tools/agent-content/build.mjs          # write outputs
@@ -21,43 +24,44 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, wri
 import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { readSkills } from './_skills.mjs';
+
 const SOURCE = dirname(fileURLToPath(import.meta.url));
 const ROOT = dirname(dirname(SOURCE));
-// Canonical skills source may live in a sibling repo (`ndigo-skills`) for
-// independent versioning and `npx add-skill` distribution. Fall back to the
-// in-repo copy when it is not checked out.
-const SKILLS_REPO = join(dirname(ROOT), 'ndigo-skills');
-const SKILLS_SOURCE = existsSync(join(SKILLS_REPO, 'ndigo-app', 'SKILL.md'))
-    ? join(SKILLS_REPO)
-    : join(SOURCE, 'skills');
+// The canonical skills live in the sibling `ndigo-skills` repository. This
+// copy is pinned by skills.lock.json so builds stay deterministic and offline.
+const SKILLS_SOURCE = join(SOURCE, 'skills');
 const CHECK = process.argv.includes('--check');
 const CLI_ASSETS = join(ROOT, 'packages', 'ndigo-cli', 'assets', 'agent');
 const CNA_TEMPLATES = join(ROOT, 'packages', 'create-ndigo-app', 'templates');
 const MANIFEST_PATH = join(SOURCE, '.agent-content.json');
 const DOCS_INDEX_PATH = join(SOURCE, 'docs-index.md');
+const SKILLS_LOCK_PATH = join(SOURCE, 'skills.lock.json');
 
 /** Repository-relative path with forward slashes. */
 const repoPath = (absolute) => relative(ROOT, absolute).split('\\').join('/');
 const sha256 = (text) => createHash('sha256').update(text, 'utf8').digest('hex');
 
-function readSkillDirectories() {
-    const root = SKILLS_SOURCE;
-    return readdirSync(root)
-        .filter((entry) => statSync(join(root, entry)).isDirectory() && existsSync(join(root, entry, 'SKILL.md')))
-        .sort();
-}
-
-function skillContent(id) {
-    const file = join(SKILLS_SOURCE, id, 'SKILL.md');
-    const text = readFileSync(file, 'utf8');
-    const match = /^---\n([\s\S]*?)\n---\n/u.exec(text);
-    if (match === null) throw new Error(`${repoPath(file)} is missing its frontmatter block`);
-    const name = /^name:\s*(.+)$/mu.exec(match[1])?.[1]?.trim();
-    if (name !== id) throw new Error(`${repoPath(file)} declares name '${name}', expected '${id}'`);
-    if (!/^description:\s*\S/mu.test(match[1])) throw new Error(`${repoPath(file)} is missing a description`);
-    const bodyLines = text.split('\n').length;
-    if (bodyLines > 120) throw new Error(`${repoPath(file)} is ${bodyLines} lines; keep skills at or below 120`);
-    return text;
+/** Fails when the vendored snapshot no longer matches its provenance lock. */
+function verifySkillsLock(skills) {
+    if (!existsSync(SKILLS_LOCK_PATH)) {
+        throw new Error(`missing ${repoPath(SKILLS_LOCK_PATH)}; run \`pnpm agent-content:sync\``);
+    }
+    const lock = JSON.parse(readFileSync(SKILLS_LOCK_PATH, 'utf8'));
+    const problems = [];
+    for (const { id, content } of skills) {
+        if (lock.files?.[`${id}/SKILL.md`] !== sha256(content)) problems.push(`${id}/SKILL.md`);
+    }
+    for (const file of Object.keys(lock.files ?? {})) {
+        const id = file.split('/')[0];
+        if (!skills.some((skill) => skill.id === id)) problems.push(`${file} (absent from snapshot)`);
+    }
+    if (problems.length > 0) {
+        process.stderr.write(`✗ agent-content: skills snapshot drifted (${problems.join(', ')})\n`);
+        process.stderr.write('run `pnpm agent-content:sync` and commit the snapshot\n');
+        process.exit(1);
+    }
+    return lock;
 }
 
 function firstParagraph(text) {
@@ -136,15 +140,15 @@ function docsIndex() {
     ].join('\n');
 }
 
-function outputPlan() {
+function outputPlan(skills) {
     const files = new Map();
     files.set(
         repoPath(join(CLI_ASSETS, 'instructions.md')),
         readFileSync(join(SOURCE, 'instructions', 'ndigo.md'), 'utf8')
     );
     files.set(repoPath(join(CLI_ASSETS, 'docs-index.md')), docsIndex());
-    for (const id of readSkillDirectories()) {
-        files.set(repoPath(join(CLI_ASSETS, 'skills', id, 'SKILL.md')), skillContent(id));
+    for (const { id, content } of skills) {
+        files.set(repoPath(join(CLI_ASSETS, 'skills', id, 'SKILL.md')), content);
     }
     const bootstrap = readFileSync(join(SOURCE, 'instructions', 'bootstrap.md'), 'utf8');
     for (const kind of ['browser', 'node']) {
@@ -173,7 +177,7 @@ function staleSkillDirectories(files) {
         .map((entry) => repoPath(join(root, entry)));
 }
 
-function check(files, manifest) {
+function check(files, manifest, lock) {
     const problems = [];
     for (const [file, content] of files) {
         const absolute = join(ROOT, file);
@@ -193,10 +197,10 @@ function check(files, manifest) {
         process.exitCode = 1;
         return;
     }
-    console.log(`agent-content: ${files.size} files current`);
+    console.log(`agent-content: ${files.size} files current (skills @ ${lock.commit.slice(0, 7)})`);
 }
 
-function write(files, manifest) {
+function write(files, manifest, lock) {
     for (const [file, content] of files) {
         const absolute = join(ROOT, file);
         if (existsSync(absolute) && readFileSync(absolute, 'utf8') === content) continue;
@@ -209,10 +213,12 @@ function write(files, manifest) {
         console.log(`removed ${stale}`);
     }
     writeFileSync(MANIFEST_PATH, manifest, 'utf8');
-    console.log(`agent-content: ${files.size} files written`);
+    console.log(`agent-content: ${files.size} files written (skills @ ${lock.commit.slice(0, 7)})`);
 }
 
-const files = outputPlan();
+const skills = readSkills(SKILLS_SOURCE);
+const lock = verifySkillsLock(skills);
+const files = outputPlan(skills);
 const manifest = manifestFor(files);
-if (CHECK) check(files, manifest);
-else write(files, manifest);
+if (CHECK) check(files, manifest, lock);
+else write(files, manifest, lock);

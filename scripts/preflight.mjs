@@ -7,8 +7,8 @@
  * in fail-fast order and refuses the push when one fails. The weekly sweep and
  * the self-hosted runner are the backstop, not the first line of defence.
  *
- * `--fast` keeps the sub-minute gates only (format, lint, links, typecheck) and
- * is what a WIP branch wants before a throwaway push.
+ * `--fast` keeps the sub-minute gates only (format, lint, links, typecheck,
+ * agent-content) and is what a WIP branch wants before a throwaway push.
  */
 
 import { spawnSync } from 'node:child_process';
@@ -26,6 +26,7 @@ const FULL_STEPS = [
     { label: 'guide contract', script: 'guides:check' },
     { label: 'migration schema freshness', script: 'db:schema:check' },
     { label: 'manifest conformance', script: 'manifest:check' },
+    { label: 'agent content drift', script: 'agent-content:check' },
     { label: 'dead-code check (knip)', script: 'audit:dead' },
     { label: 'build libraries', script: 'build' },
     { label: 'example apps boot + probe', script: 'apps:smoke' },
@@ -37,7 +38,7 @@ const FULL_STEPS = [
     { label: 'production dependency audit', bin: 'pnpm', args: ['audit', '--prod'] },
 ];
 
-const FAST_SCRIPTS = new Set(['format:check', 'lint', 'docs:links', 'typecheck']);
+const FAST_SCRIPTS = new Set(['format:check', 'lint', 'docs:links', 'typecheck', 'agent-content:check']);
 
 const steps = FAST ? FULL_STEPS.filter((step) => FAST_SCRIPTS.has(step.script)) : FULL_STEPS;
 

@@ -1,7 +1,9 @@
 # AD-96: Agent and LLM integration — two audiences, one derived surface (consolidated)
 
 **Date:** 2026-11-10
-**Status:** Accepted — umbrella record for AD-97..AD-101.
+**Status:** Accepted — umbrella record for AD-97..AD-101. Superseded in part
+by AD-107 (D-2: skills are authored in the standalone `ndigo-skills`
+repository and vendored as a pinned snapshot).
 
 ## Context
 
@@ -107,6 +109,7 @@ AD-98 (agent content), AD-99 (MCP host), AD-100 (`@ndigo/mcp`), and AD-101
 ## See Also
 
 - AD-97, AD-98, AD-99, AD-100, AD-101
+- AD-107 — skills authoring moves to the standalone `ndigo-skills` repository
 - AD-70 — introspection first
 - AD-75 — the CLI as a thin front
 - AD-95 — ndigo-ui registry and the per-application allowlist

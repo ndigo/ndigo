@@ -1794,6 +1794,9 @@ importers:
 
   packages/ndigo-ai:
     dependencies:
+      '@ndigo/context':
+        specifier: ~0.0.1
+        version: link:../ndigo-context
       '@ndigo/core':
         specifier: ~0.0.1
         version: link:../ndigo-core

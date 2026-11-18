@@ -72,6 +72,11 @@ function scanPlaceholders(template: string): PlaceholderOccurrence[] {
  * @param depth - Current nesting depth.
  * @returns The resolved string.
  * @throws On a placeholder cycle or runaway nesting.
+ *
+ * @example
+ * ```ts
+ * resolvePlaceholders('Hello ${name}', resolver); // 'Hello Ada'
+ * ```
  */
 export function resolvePlaceholders(
     template: string,

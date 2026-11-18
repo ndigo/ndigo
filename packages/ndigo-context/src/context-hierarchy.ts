@@ -36,11 +36,6 @@ export interface ShellContextOptions {
      * Overrides the shell theme source.
      */
     themeSource?: ThemeSource;
-    /**
-     * Overrides the shell theme source.
-     * @deprecated Use {@link themeSource} instead.
-     */
-    themeResolver?: ThemeSource;
 }
 
 /**
@@ -99,7 +94,7 @@ export type FeatureUnmountPolicy = 'close' | 'preserve';
  * @returns A configured shell context.
  */
 export const createShellContext = (options: ShellContextOptions = {}): GenericApplicationContext => {
-    const { contentSource, data, environment, name = 'shell', themeName, themeSource, themeResolver } = options;
+    const { contentSource, data, environment, name = 'shell', themeName, themeSource } = options;
     const context = new GenericApplicationContext(name, data);
 
     // eslint-disable-next-line no-unused-expressions -- guarded dispatch: skip wiring when no override was provided
@@ -109,10 +104,8 @@ export const createShellContext = (options: ShellContextOptions = {}): GenericAp
     // eslint-disable-next-line no-unused-expressions -- guarded dispatch: skip wiring when no override was provided
     themeName && context.setThemeName(themeName);
 
-    // `themeResolver` was always the registry; prefer the new name when both are supplied.
-    const resolvedThemeSource = themeSource ?? themeResolver;
     // eslint-disable-next-line no-unused-expressions -- guarded dispatch: skip wiring when no override was provided
-    resolvedThemeSource && context.setThemeSource(resolvedThemeSource);
+    themeSource && context.setThemeSource(themeSource);
 
     return context;
 };

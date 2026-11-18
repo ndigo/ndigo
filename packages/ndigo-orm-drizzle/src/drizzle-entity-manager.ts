@@ -256,8 +256,7 @@ export class DrizzleEntityManager {
             );
         }
 
-        // NOTE: bridging to Constructable<object> — the source type is wider than this consumer's contract.
-        const targetClass = relation.targetEntity() as unknown as Constructable<object>;
+        const targetClass = relation.targetEntity();
         if (!isEntity(targetClass)) {
             throw new FrameworkError(
                 `Relation '${relationName}' target '${targetClass.name}' is not decorated with @entity.`
@@ -330,8 +329,7 @@ export class DrizzleEntityManager {
             );
         }
 
-        // NOTE: bridging to Constructable<object> — the source type is wider than this consumer's contract.
-        const targetClass = relation.targetEntity() as unknown as Constructable<object>;
+        const targetClass = relation.targetEntity();
         if (!isEntity(targetClass)) {
             throw new FrameworkError(
                 `Relation '${relationName}' target '${targetClass.name}' is not decorated with @entity.`

@@ -69,14 +69,6 @@ describe('@ndigo/dispatcher AttributeThemeResolver', () => {
             expect(resolver.resolveThemeName(routeWith({ [REQUESTED_THEME_ATTRIBUTE]: value }))).toBe('ndigo-dark');
         }
     });
-
-    test('keeps the deprecated resolveTheme shim working', () => {
-        const resolver = new AttributeThemeResolver('ndigo-dark');
-
-        expect(resolver.resolveTheme(routeWith({ [REQUESTED_THEME_ATTRIBUTE]: 'solarized-light' }))).toBe(
-            'solarized-light'
-        );
-    });
 });
 
 describe('@ndigo/dispatcher SystemThemeResolver', () => {

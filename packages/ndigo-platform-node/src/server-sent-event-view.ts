@@ -4,8 +4,7 @@
 import { MediaTypes, ServerSentEvent } from '@ndigo/core';
 import { Route } from '@ndigo/router';
 import { type ProducerView, type RenderResult } from '@ndigo/view';
-import type { ServerResponse } from 'node:http';
-import { NODE_RESPONSE_ATTRIBUTE } from './node-request';
+import { getNodeResponse } from './node-request';
 
 const SSE_HEADERS: Record<string, string> = {
     'Content-Type': 'text/event-stream; charset=utf-8',
@@ -87,8 +86,7 @@ export class ServerSentEventView implements ProducerView {
      * @returns The streaming render result.
      */
     async renderTo(_model: unknown, route: Route): Promise<RenderResult> {
-        // NOTE: bridging to ServerResponse | undefined — the source type is wider than this consumer's contract.
-        const res = route.attributes?.[NODE_RESPONSE_ATTRIBUTE] as unknown as ServerResponse | undefined;
+        const res = getNodeResponse(route);
 
         if (this.destroyed || !res) {
             return { status: 200, headers: SSE_HEADERS, body: (async function* () {})() };

@@ -252,6 +252,24 @@ export class LoggerFactory {
      * - Context-aware: `true`
      * - Per-name overrides and requested-name tracking: cleared
      */
+    /**
+     * Applies a partial configuration to the factory in one call — convenience
+     * for boot/context wiring. Unspecified fields keep their current value.
+     *
+     * @param settings - Partial settings to apply.
+     */
+    public static configure(config: { type?: LoggerType; threshold?: SeverityNumber; contextAware?: boolean }): void {
+        if (config.type !== undefined) {
+            LoggerFactory.setType(config.type);
+        }
+        if (config.threshold !== undefined) {
+            LoggerFactory.setThreshold(config.threshold);
+        }
+        if (config.contextAware !== undefined) {
+            LoggerFactory.setContextAware(config.contextAware);
+        }
+    }
+
     public static reset(): void {
         settings = { ...DEFAULT_SETTINGS };
         levelOverrides.clear();

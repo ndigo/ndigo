@@ -3,16 +3,20 @@
  * registered as a context entry so the scheduler's auto-discovery picks it
  * up at refresh. The ping counter is observable in tests.
  */
+import '@tsmetadata/polyfill';
+import { AsLoggerAware, type LoggerAware } from '@ndigo/context';
 import { scheduled } from '@ndigo/scheduler';
-import { getLogger } from '@ndigo/log';
-
-const logger = getLogger('ndigo-api:heartbeat');
 
 /**
  * The application heartbeat — the scheduling demo gate:
  * zero-wiring `@scheduled` on a registered entry.
+ *
+ * Uses the context-injected logger (`LoggerAware`) so its output follows the
+ * application's logging configuration and carries the active span's trace
+ * context. A module-level `getLogger(...)` would also work here; the injected
+ * form is preferred for managed components.
  */
-export class Heartbeat {
+export class Heartbeat extends AsLoggerAware(Object) implements LoggerAware {
     /**
      * Ping count, observable for tests and health checks.
      */
@@ -24,6 +28,6 @@ export class Heartbeat {
     @scheduled('*/30 * * * * *')
     ping() {
         this.pings += 1;
-        logger.info(`heartbeat #${this.pings}`);
+        this.logger?.info(`heartbeat #${this.pings}`);
     }
 }

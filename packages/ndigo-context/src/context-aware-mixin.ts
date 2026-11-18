@@ -3,8 +3,9 @@
  */
 import { Constructable } from '@ndigo/core';
 import { AsAware } from '@ndigo/factory';
-import { ApplicationContext, ApplicationContextAware } from './context-interfaces';
+import { ApplicationContext, ApplicationContextAware, LoggerAware } from './context-interfaces';
 import { defineProperty } from './context-shared';
+import type { Logger } from '@ndigo/log';
 
 /**
  * @see module:context.AsApplicationContextAware
@@ -27,6 +28,31 @@ export const AsApplicationContextAware = <T extends Constructable>(
              */
             defineProperty(this, 'applicationContext', {
                 value: applicationContext,
+                configurable: true,
+                enumerable: false,
+                writable: false,
+            });
+        }
+    };
+
+/**
+ * Mixin adding logger awareness to a class.
+ */
+export const AsLoggerAware = <T extends Constructable>(superclass: T): Constructable<LoggerAware> & T =>
+    class extends AsAware(superclass) implements LoggerAware {
+        readonly logger?: Logger;
+
+        /**
+         * Set the Logger that this object runs with.
+         *
+         * @param logger - The Logger to be used by this object.
+         */
+        setLogger(logger: Logger): void {
+            /**
+             * @readonly
+             */
+            defineProperty(this, 'logger', {
+                value: logger,
                 configurable: true,
                 enumerable: false,
                 writable: false,

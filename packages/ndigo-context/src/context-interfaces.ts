@@ -18,6 +18,7 @@ import {
 } from '@ndigo/factory';
 import { EnvironmentSource, likeEnvironmentSource, ConfigurableEnvironment } from './environment';
 import { ResourceLoader, likeResourceLoader } from './resource';
+import type { Logger } from '@ndigo/log';
 
 /**
  * Central application context: a hierarchical, configurable factory and event emitter.
@@ -92,6 +93,20 @@ export interface ApplicationContext
      * @returns The requested theme.
      */
     getTheme(name?: string): Theme;
+
+    /**
+     * Returns a logger backed by the shared `LoggerFactory`. When `name` is
+     * omitted the context's own name is used, so a component's logger is
+     * identifiable in the `/loggers` actuator endpoint.
+     *
+     * The returned logger participates in the active OpenTelemetry span
+     * (traceId/spanId stamping) just like a module-level `getLogger(...)`,
+     * so records from either API correlate to the same trace tree.
+     *
+     * @param name - Optional logger name. Defaults to the context name.
+     * @returns A `Logger` handle following the factory's current settings.
+     */
+    getLogger(name?: string): Logger;
     /**
      * Checks if this context has a specific child context.
      * @param node - The application context to check for.
@@ -177,6 +192,40 @@ export interface ApplicationContextAware extends Aware {
      */
     setApplicationContext(applicationContext: ApplicationContext): void;
 }
+
+/**
+ * Interface to be implemented by any object that wishes to be notified of a
+ * {@link Logger|Logger} (typically obtained from the owning
+ * {@link ApplicationContext|ApplicationContext}) that it runs in.
+ *
+ * Implementing this interface lets the context inject a logger during
+ * initialization, mirroring the other `*Aware` interfaces. Prefer this over
+ * module-level `getLogger(...)` in application components so the logger can be
+ * reconfigured and tested through the context; framework internals and leaf
+ * packages may keep using the module-level API.
+ *
+ * `AsLoggerAware` is a convenience mixin implementing this interface.
+ */
+export interface LoggerAware extends Aware {
+    /**
+     * The Logger injected by the context, when available.
+     */
+    readonly logger?: Logger;
+
+    /**
+     * Set the Logger that this object runs with.
+     *
+     * Invoked after population of normal value properties but before an
+     * `init` callback.
+     * @param logger - The Logger to be used by this object.
+     */
+    setLogger(logger: Logger): void;
+}
+
+/**
+ * Returns whether a value behaves like a logger-aware object.
+ */
+export const likeLoggerAware = likeAwareAnd(like({ setLogger: Function })) as (value: unknown) => value is LoggerAware;
 
 /**
  * Mutable application-context variant used during configuration.

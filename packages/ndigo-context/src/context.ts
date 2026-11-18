@@ -11,11 +11,13 @@ export {
     ApplicationContext,
     ApplicationContextAware,
     ConfigurableApplicationContext,
+    LoggerAware,
     likeApplicationContext,
     likeApplicationContextAware,
+    likeLoggerAware,
 } from './context-interfaces';
 export { GenericApplicationContext } from './generic-application-context';
 export { ProxiedGenericApplicationContext } from './proxied-application-context';
-export { AsApplicationContextAware } from './context-aware-mixin';
+export { AsApplicationContextAware, AsLoggerAware } from './context-aware-mixin';
 export { ApplicationComponent, BusinessComponent, ViewComponent } from './application-context-components';
 export { ApplicationContextAwareProcessor } from './application-context-aware-processor';

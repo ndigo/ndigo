@@ -185,6 +185,11 @@ export class RedisJobDriver implements JobDriver {
      * Creates a driver over the given connection and namespace.
      *
      * @param options - Borrowed connection, namespace, optional id factory.
+     *
+     * @example
+     * ```ts
+     * const driver = new RedisJobDriver({ connection, namespace: 'app' });
+     * ```
      */
     constructor(options: RedisJobDriverOptions) {
         if (options === null || typeof options !== 'object' || options.connection === undefined) {

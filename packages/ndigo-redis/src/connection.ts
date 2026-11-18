@@ -52,6 +52,12 @@ export class RedisConnection implements AsyncCloseable {
      * Creates a connection from a URL or an already-ready client.
      *
      * @param options - URL or borrowed client configuration.
+     *
+     * @example
+     * ```ts
+     * const connection = new RedisConnection({ url: 'redis://localhost:6379' });
+     * await connection.connect();
+     * ```
      */
     constructor(options: RedisConnectionOptions) {
         if (options.client !== undefined) {

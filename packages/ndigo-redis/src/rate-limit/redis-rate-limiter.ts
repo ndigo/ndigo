@@ -92,6 +92,12 @@ export class RedisRateLimiter implements RateLimiter, AsyncCloseable {
      * Creates a limiter over the given connection and namespace.
      *
      * @param options - Borrowed connection, namespace, and failure posture.
+     *
+     * @example
+     * ```ts
+     * const limiter = new RedisRateLimiter({ connection, namespace: 'app' });
+     * const result = await limiter.consume('client-1', { limit: 10, windowMs: 60_000 });
+     * ```
      */
     constructor(options: RedisRateLimiterOptions) {
         if (options === null || typeof options !== 'object' || options.connection === undefined) {

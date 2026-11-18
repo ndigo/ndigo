@@ -166,12 +166,17 @@ export function cached(spec: CachedSpec = {}) {
                 | undefined;
             let manager = cacheAware?.cacheManager;
             if (!manager && cacheAware?.applicationContext) {
-                const context = cacheAware.applicationContext;
+                const ctx = cacheAware.applicationContext;
                 try {
-                    if (typeof context.hasValue === 'function' && context.hasValue(CACHE_MANAGER)) {
-                        manager = context.getValue(CACHE_MANAGER);
-                    } else if (typeof context.hasValue === 'function' && context.hasValue('cacheManager')) {
-                        manager = context.getValue('cacheManager') as CacheManager;
+                    if (typeof ctx.hasValue === 'function' && ctx.hasValue(CACHE_MANAGER)) {
+                        manager = ctx.getValue(CACHE_MANAGER);
+                    } else if (
+                        typeof ctx.hasValue === 'function' &&
+                        // oxlint-disable-next-line @ndigo/no-string-registry-lookup -- fallback for token-less registrations
+                        ctx.hasValue('cacheManager')
+                    ) {
+                        // oxlint-disable-next-line @ndigo/no-string-registry-lookup -- fallback for token-less registrations
+                        manager = ctx.getValue('cacheManager') as CacheManager;
                     }
                 } catch {
                     manager = undefined;

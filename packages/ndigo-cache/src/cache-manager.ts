@@ -5,6 +5,7 @@ import { Cache, CacheOptions, MemoryCache } from './cache';
 import { resolveCacheName } from './cache-name';
 import { ContextToken, Aware, AsAware, likeAwareAnd } from '@ndigo/factory';
 import { like } from '@ndigo/util/types';
+// oxlint-disable-next-line typescript/no-explicit-any -- TS2545 requires mixin superclass ctors to be exactly `...args: any[]`; no erasable alternative.
 type Constructable<T = {}> = new (...args: any[]) => T;
 
 /**

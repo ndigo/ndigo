@@ -414,12 +414,12 @@ export class HTTP {
     }
 }
 
-export interface HttpAware extends Aware {
+export interface HTTPAware extends Aware {
     setHttp(http: HTTP): void;
 }
 
-export const AsHttpAware = <T extends Constructable>(superclass: T): Constructable<HttpAware> & T =>
-    class extends AsAware(superclass) implements HttpAware {
+export const AsHTTPAware = <T extends Constructable>(superclass: T): Constructable<HTTPAware> & T =>
+    class extends AsAware(superclass) implements HTTPAware {
         http: HTTP | null = null;
         setHttp(http: HTTP): void {
             Reflect.defineProperty(this, 'http', {
@@ -431,4 +431,4 @@ export const AsHttpAware = <T extends Constructable>(superclass: T): Constructab
         }
     };
 
-export const likeHttpAware = likeAwareAnd(like({ setHttp: Function })) as (value: unknown) => value is HttpAware;
+export const likeHTTPAware = likeAwareAnd(like({ setHttp: Function })) as (value: unknown) => value is HTTPAware;

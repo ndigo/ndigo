@@ -6,7 +6,9 @@ import { is } from '@ndigo/util/types';
 
 const { defineProperty, deleteProperty, get, set } = Reflect,
     isHeaders = is(Headers) as (value: unknown) => value is Headers,
-    isRecord = isJSONObject as (value: unknown) => value is HeaderRecord;
+    isRecord = isJSONObject as (value: unknown) => value is HeaderRecord,
+    isHeaderEntries = (value: unknown): value is HeaderEntries =>
+        isEntries(value) && value.every((entry) => typeof entry[0] === 'string' && typeof entry[1] === 'string');
 
 type HeaderEntries = Array<[string, string]>;
 
@@ -113,9 +115,8 @@ function setPair(entries: HeaderEntries, name: string, value: string): void {
 function deleteHeader(headers: HeadersInit | HeaderRecord, name: string): void {
     if (isHeaders(headers)) {
         (headers as Headers).delete(name);
-    } else if (isEntries(headers)) {
-        // isEntries narrows to the core Entry shape; the pair helpers only read [name, value] tuples.
-        deletePair(headers as unknown as HeaderEntries, name);
+    } else if (isHeaderEntries(headers)) {
+        deletePair(headers, name);
     } else if (isRecord(headers)) {
         const record = headers;
         // Node-server records are lower-cased; remove both this name and its
@@ -138,9 +139,8 @@ function deleteHeader(headers: HeadersInit | HeaderRecord, name: string): void {
 function getHeaderValue(headers: HeadersInit | HeaderRecord, name: string): string | string[] | null {
     if (isHeaders(headers)) {
         return (headers as Headers).get(name);
-    } else if (isEntries(headers)) {
-        // NOTE: bridging to HeaderEntries — the source type is wider than this consumer's contract.
-        return getPair(headers as unknown as HeaderEntries, name);
+    } else if (isHeaderEntries(headers)) {
+        return getPair(headers, name);
     } else if (isRecord(headers)) {
         const record = headers;
         let value = get(record, name);
@@ -171,9 +171,8 @@ function setHeader(headers: HeadersInit | HeaderRecord, name: string, value: unk
     const stringValue = String(value);
     if (isHeaders(headers)) {
         (headers as Headers).set(name, stringValue);
-    } else if (isEntries(headers)) {
-        // NOTE: bridging to HeaderEntries — the source type is wider than this consumer's contract.
-        setPair(headers as unknown as HeaderEntries, name, stringValue);
+    } else if (isHeaderEntries(headers)) {
+        setPair(headers, name, stringValue);
     } else if (isRecord(headers)) {
         const record = headers;
         const folded = foldHeaderName(name);

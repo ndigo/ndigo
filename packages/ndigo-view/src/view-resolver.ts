@@ -30,6 +30,21 @@ export interface ViewResolver {
 }
 
 class UnresolvedView implements View {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "UnresolvedView".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object UnresolvedView]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'UnresolvedView';
+    }
+
     readonly mediaType: MediaType | null = null;
 
     render(model: unknown, request: unknown): void {
@@ -57,6 +72,21 @@ export const MAX_VIEW_CACHE_ENTRIES = 1024;
  * {@link MAX_VIEW_CACHE_ENTRIES} entries, the oldest key evicted first.
  */
 export class BoundedCache<V> {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "BoundedCache".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object BoundedCache]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'BoundedCache';
+    }
+
     readonly #entries = new Map<string, V>();
     readonly #onEvict: ((value: V, key: string) => void) | undefined;
 
@@ -154,6 +184,21 @@ export function createViewCacheKey(name: string, language?: unknown): string {
 }
 
 export abstract class AbstractCachingViewResolver implements ViewResolver {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "AbstractCachingViewResolver".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object AbstractCachingViewResolver]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'AbstractCachingViewResolver';
+    }
+
     readonly #cache = new BoundedCache<View>();
     /**
      * Indicates whether resolved views should be cached.
@@ -276,6 +321,21 @@ export function isSafeViewName(name: string): boolean {
 
 export abstract class AbstractPathBasedViewResolver extends AbstractCachingViewResolver {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "AbstractPathBasedViewResolver".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object AbstractPathBasedViewResolver]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'AbstractPathBasedViewResolver';
+    }
+
+    /**
      * Media type assigned to resolved views.
      */
     mediaType: MediaType | null;
@@ -369,6 +429,21 @@ export abstract class AbstractPathBasedViewResolver extends AbstractCachingViewR
 
 export class ImportViewResolver extends AbstractPathBasedViewResolver {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "ImportViewResolver".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object ImportViewResolver]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'ImportViewResolver';
+    }
+
+    /**
      * Loads a view module dynamically and instantiates its default export.
      *
      * @param name - The view name to resolve.
@@ -400,6 +475,21 @@ export class ImportViewResolver extends AbstractPathBasedViewResolver {
  */
 export class NameViewResolver extends AsApplicationContextAware(Null) implements ViewResolver {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "NameViewResolver".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object NameViewResolver]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'NameViewResolver';
+    }
+
+    /**
      * The application context used as the view registry.
      */
     readonly applicationContext!: ApplicationContext;
@@ -430,6 +520,21 @@ export class NameViewResolver extends AsApplicationContextAware(Null) implements
  * A {@link ViewResolver|`ViewResolver`} that delegates to others.
  */
 export class ViewResolverComposite extends AsApplicationContextAware(Null) implements Initializable, ViewResolver {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "ViewResolverComposite".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object ViewResolverComposite]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'ViewResolverComposite';
+    }
+
     /**
      * The ordered resolver chain consulted during lookup.
      */

@@ -142,6 +142,21 @@ const toPrototypeChain = (list: JSONObject[]): JSONObject => {
  * Bounded FIFO cache of parsed keypaths, so hot lookups never allocate.
  */
 class TokenCache {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "TokenCache".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object TokenCache]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'TokenCache';
+    }
+
     #entries = new Map<string, KeypathToken[]>();
     #cap: number;
 
@@ -212,6 +227,21 @@ export interface PropertyIndex {
  * without a rebuild.
  */
 export class PrototypeChainIndex implements PropertyIndex {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "PrototypeChainIndex".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object PrototypeChainIndex]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'PrototypeChainIndex';
+    }
+
     #chain: unknown;
     #tokens = new TokenCache();
 
@@ -250,6 +280,21 @@ export class PrototypeChainIndex implements PropertyIndex {
  * the next rebuild.
  */
 export class FlatMergedIndex implements PropertyIndex {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "FlatMergedIndex".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object FlatMergedIndex]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'FlatMergedIndex';
+    }
+
     #merged: Record<string | number, unknown> = createNull();
     #origins = new Map<string, string>();
     #tokens = new TokenCache();
@@ -346,6 +391,21 @@ export interface ResolverOptions {
  * ```
  */
 export class PrototypalPropertyResolver implements PropertyResolver {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "PrototypalPropertyResolver".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object PrototypalPropertyResolver]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'PrototypalPropertyResolver';
+    }
+
     #sources: PropertySource[] = [];
     #index: PropertyIndex;
     #registry!: MutablePropertySources;

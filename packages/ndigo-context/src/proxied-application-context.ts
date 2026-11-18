@@ -10,6 +10,21 @@ import { GenericApplicationContext } from './generic-application-context';
  * Application context proxy that exposes values as dynamic object properties.
  */
 export class ProxiedGenericApplicationContext extends GenericApplicationContext implements Record<string, unknown> {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "ProxiedGenericApplicationContext".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object ProxiedGenericApplicationContext]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'ProxiedGenericApplicationContext';
+    }
+
     [key: string]: unknown;
 
     /**

@@ -26,6 +26,21 @@ import { DrizzleDataSource } from './drizzle-data-source';
  * (DAT-F9), and a transaction owns one connection for its lifetime.
  */
 export class DrizzleTransactionManager implements TransactionManager {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "DrizzleTransactionManager".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object DrizzleTransactionManager]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'DrizzleTransactionManager';
+    }
+
     readonly #dataSource: DrizzleDataSource;
     #active = false;
 

@@ -13,6 +13,21 @@ import { isProblemDetails, toProblemDetails, type ProblemDetails } from './probl
  */
 export class ResponseEntityView implements ProducerView {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "ResponseEntityView".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object ResponseEntityView]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'ResponseEntityView';
+    }
+
+    /**
      * Produces the response document (problem+json for 4xx/5xx).
      *
      * @param entity - The response entity.

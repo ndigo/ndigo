@@ -8,6 +8,21 @@ import { HTTPTransformer, TransformContext } from './http-transformer';
  * Applies a pipeline of transforms to JSON bodies.
  */
 export class JSONTransformer implements HTTPTransformer<JSONObject, JSONObject> {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "JSONTransformer".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object JSONTransformer]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'JSONTransformer';
+    }
+
     readonly #pipeline: (value: JSONObject) => JSONObject;
     readonly #condition?: (body: JSONObject, context: TransformContext) => boolean;
 

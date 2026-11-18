@@ -130,6 +130,21 @@ const isPlainObject = (value: unknown): boolean => value !== null && typeof valu
  * JSON stays the default.
  */
 export class StandardConfigFileLoader {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "StandardConfigFileLoader".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object StandardConfigFileLoader]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'StandardConfigFileLoader';
+    }
+
     #reader: ConfigFileReader | null;
     #locations: string[];
     #baseName: string;

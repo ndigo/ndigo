@@ -70,6 +70,21 @@ export interface RouteHandlerMethodMappingNamingStrategy<T = unknown> {
  */
 
 export class RouteHandlerMethod implements HandlerMethod, Serializable {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "RouteHandlerMethod".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object RouteHandlerMethod]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'RouteHandlerMethod';
+    }
+
     /** The factory that owns the handler, when constructed from one. */
     readonly factory!: Factory | null;
     /** The handler's registered factory name. */
@@ -207,6 +222,21 @@ export class RouteHandlerMethod implements HandlerMethod, Serializable {
  * `RouteHandlerMethod`'s invocation contract.
  */
 export class ErrorHandlerMethod extends RouteHandlerMethod {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "ErrorHandlerMethod".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object ErrorHandlerMethod]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'ErrorHandlerMethod';
+    }
+
     /**
      * Invokes the error handler with the route and thrown error.
      *

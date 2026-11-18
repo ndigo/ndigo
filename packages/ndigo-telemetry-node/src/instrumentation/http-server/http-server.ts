@@ -40,6 +40,21 @@ const recordRequestDuration = createLazyHistogram({
  * ```
  */
 export class HTTPServerInstrumentation extends AbstractBaseInstrumentation {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "HTTPServerInstrumentation".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object HTTPServerInstrumentation]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'HTTPServerInstrumentation';
+    }
+
     constructor() {
         super('http-server');
     }

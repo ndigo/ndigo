@@ -37,6 +37,21 @@ const defaults: AppResetInit = {
 
  */
 export class AppResetInterceptor implements ResponseAwareHTTPInterceptor<AppResetInit> {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "AppResetInterceptor".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object AppResetInterceptor]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'AppResetInterceptor';
+    }
+
     #reloadCallback: () => void;
 
     /**

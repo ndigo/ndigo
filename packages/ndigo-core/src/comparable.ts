@@ -215,6 +215,21 @@ class PredicateComparator<T> implements Comparator<T> {
  */
 class NaturalComparator<T> extends PredicateComparator<T> {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "NaturalComparator".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object NaturalComparator]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'NaturalComparator';
+    }
+
+    /**
      * Creates an instance of NaturalComparator.
      */
     constructor() {
@@ -225,12 +240,42 @@ class NaturalComparator<T> extends PredicateComparator<T> {
 /**
  * A comparator for `number` objects.
  */
-export class NumberComparator extends NaturalComparator<number> {}
+export class NumberComparator extends NaturalComparator<number> {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "NumberComparator".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object NumberComparator]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'NumberComparator';
+    }
+}
 
 /**
  * A comparator for `string` objects, with a method for case-insensitive comparison.
  */
 export class StringComparator extends NaturalComparator<string> {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "StringComparator".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object StringComparator]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'StringComparator';
+    }
+
     /**
      * Compares two strings ignoring case.
      * @param value1 - The first string.

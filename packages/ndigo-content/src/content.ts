@@ -35,6 +35,21 @@ export type ContentDictionary = Record<string, Record<string, string>>;
  * In-memory content source with language fallback support.
  */
 export class StaticContentSource implements ContentSource {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "StaticContentSource".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object StaticContentSource]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'StaticContentSource';
+    }
+
     #content: ContentDictionary;
     #defaultLanguage: string;
 

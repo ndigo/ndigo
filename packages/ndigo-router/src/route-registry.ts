@@ -71,6 +71,21 @@ function getRouteMappingMethodKeys(target: unknown): string[] {
  * for URL generation, navigation, and route matching.
  */
 export class RouteRegistry {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "RouteRegistry".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object RouteRegistry]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'RouteRegistry';
+    }
+
     readonly #defs: Map<string, RouteDefinition>;
 
     constructor() {

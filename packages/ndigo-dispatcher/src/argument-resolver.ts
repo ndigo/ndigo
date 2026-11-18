@@ -52,6 +52,21 @@ export const likeArgumentResolver = like({
  */
 export abstract class AbstractNamedValueMethodArgumentResolver implements HandlerMethodArgumentResolver {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "AbstractNamedValueMethodArgumentResolver".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object AbstractNamedValueMethodArgumentResolver]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'AbstractNamedValueMethodArgumentResolver';
+    }
+
+    /**
      * Handles a missing argument value by throwing a
      * a MissingParameterError — a ParameterBindingError, so HTTP
      * error resolvers map it to 400 (the reference framework's
@@ -132,6 +147,21 @@ export abstract class AbstractNamedValueMethodArgumentResolver implements Handle
  */
 export class MatrixValueMethodArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "MatrixValueMethodArgumentResolver".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object MatrixValueMethodArgumentResolver]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'MatrixValueMethodArgumentResolver';
+    }
+
+    /**
      * Reads a matrix variable from the matched path segment.
      *
      * @param name - The matrix-variable name.
@@ -182,6 +212,21 @@ export class MatrixValueMethodArgumentResolver extends AbstractNamedValueMethodA
  */
 export class QueryValueMethodArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "QueryValueMethodArgumentResolver".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object QueryValueMethodArgumentResolver]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'QueryValueMethodArgumentResolver';
+    }
+
+    /**
      * Reads a query parameter, or the whole query when unnamed.
      *
      * @param name - The query-parameter name, or `''`.
@@ -211,6 +256,21 @@ export class QueryValueMethodArgumentResolver extends AbstractNamedValueMethodAr
  */
 export class PathValueMethodArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "PathValueMethodArgumentResolver".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object PathValueMethodArgumentResolver]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'PathValueMethodArgumentResolver';
+    }
+
+    /**
      * Reads a path variable, or the whole params record when unnamed.
      *
      * @param name - The path-variable name, or `''`.
@@ -238,6 +298,21 @@ export class PathValueMethodArgumentResolver extends AbstractNamedValueMethodArg
  * Resolves method arguments from request attributes.
  */
 export class AttributeValueMethodArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "AttributeValueMethodArgumentResolver".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object AttributeValueMethodArgumentResolver]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'AttributeValueMethodArgumentResolver';
+    }
+
     /**
      * Reads a request attribute by dotted path, or the whole bag when unnamed.
      *
@@ -270,6 +345,21 @@ export class AttributeValueMethodArgumentResolver extends AbstractNamedValueMeth
  * `route.id` by the extractor's name (the ROUTE meta source).
  */
 export class RouteValueMethodArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "RouteValueMethodArgumentResolver".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object RouteValueMethodArgumentResolver]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'RouteValueMethodArgumentResolver';
+    }
+
     /**
      * Reads a route meta value: the whole route, a built-in property, or an attribute.
      *

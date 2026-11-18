@@ -145,6 +145,21 @@ export const likeServerErrorAwareHTTPInterceptor = like({ postServerErrorRespons
  * Dispatches response hooks based on the response status class.
  */
 export class MappedResponseClassHTTPInterceptor implements ResponseAwareHTTPInterceptor {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "MappedResponseClassHTTPInterceptor".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object MappedResponseClassHTTPInterceptor]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'MappedResponseClassHTTPInterceptor';
+    }
+
     #interceptor: ResponseClassAwareHTTPInterceptor;
     #hasInformationAwareInterceptor: boolean;
     #hasSuccessAwareInterceptor: boolean;

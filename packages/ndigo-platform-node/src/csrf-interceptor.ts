@@ -66,6 +66,21 @@ export interface CSRFInterceptorOptions {
  * ```
  */
 export class CSRFInterceptor implements RouteHandlerInterceptor {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "CSRFInterceptor".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object CSRFInterceptor]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'CSRFInterceptor';
+    }
+
     #cookieName: string;
     #fieldName: string;
     #headerName: string;

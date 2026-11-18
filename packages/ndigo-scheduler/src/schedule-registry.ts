@@ -44,6 +44,21 @@ const likeNormalizedSpec = (value: unknown): value is NormalizedScheduledSpec =>
  * instance) has no resolvable owner and fails start loudly.
  */
 export class ScheduleRegistry implements AsyncDestroyable {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "ScheduleRegistry".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object ScheduleRegistry]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'ScheduleRegistry';
+    }
+
     #applicationContext: ApplicationContext | null = null;
     #scheduler: TaskScheduler | null = null;
     #tasks: ScheduledTaskDefinition[] = [];

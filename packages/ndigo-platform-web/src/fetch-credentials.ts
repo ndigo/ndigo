@@ -35,6 +35,21 @@ export interface FetchCredentialsInterceptorConfig {
  * ```
  */
 export class FetchCredentialsInterceptor implements RequestAwareHTTPInterceptor {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "FetchCredentialsInterceptor".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object FetchCredentialsInterceptor]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'FetchCredentialsInterceptor';
+    }
+
     readonly #credentials: RequestCredentials;
 
     constructor(config: FetchCredentialsInterceptorConfig = {}) {

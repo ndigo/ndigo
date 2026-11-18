@@ -18,6 +18,21 @@ import type { Converter } from './converter.js';
  * wildcards.convert('*')       // '^.*?$'
  */
 export class WildcardConverter implements Converter<string, string> {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "WildcardConverter".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object WildcardConverter]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'WildcardConverter';
+    }
+
     /** Converts a wildcard pattern into a regex source string. @param pattern - The wildcard pattern. @returns The regex source string. */
     convert(pattern: string): string {
         // Every regex metacharacter is escaped so a wildcard pattern matches

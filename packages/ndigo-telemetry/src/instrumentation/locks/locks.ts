@@ -9,6 +9,21 @@ import { AbstractBaseInstrumentation } from '../base';
  * OpenTelemetry instrumentation for `LockInstrumentation`.
  */
 export class LockInstrumentation extends AbstractBaseInstrumentation {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "LockInstrumentation".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object LockInstrumentation]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'LockInstrumentation';
+    }
+
     constructor() {
         super('locks');
     }

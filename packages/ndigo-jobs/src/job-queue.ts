@@ -30,6 +30,21 @@ export interface JobQueueOptions {
  * `maxAttempts` and forwards.
  */
 export class JobQueue {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "JobQueue".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object JobQueue]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'JobQueue';
+    }
+
     #driver: JobDriver | null;
     #context: ApplicationContext | null = null;
     readonly #maxAttempts: number;

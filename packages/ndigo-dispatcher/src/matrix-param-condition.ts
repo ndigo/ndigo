@@ -15,6 +15,21 @@ const { defineProperty } = Reflect;
  * This expression walks every segment of the route looking for a matching name/value pair.
  */
 export class MatrixParamExpression extends AbstractNameValueExpression<string> {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "MatrixParamExpression".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object MatrixParamExpression]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'MatrixParamExpression';
+    }
+
     /** Matrix-parameter names are always case-sensitive. */
     get isCaseSensitiveName(): boolean {
         return true;
@@ -85,6 +100,21 @@ export class MatrixParamExpression extends AbstractNameValueExpression<string> {
  * a set of matrix-parameter expressions.
  */
 export class MatrixParamCondition extends AbstractRouteCondition<MatrixParamCondition> {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "MatrixParamCondition".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object MatrixParamCondition]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'MatrixParamCondition';
+    }
+
     /**
      * Matrix-parameter expressions that must all match.
      */

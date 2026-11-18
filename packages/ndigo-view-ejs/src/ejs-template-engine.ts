@@ -15,6 +15,21 @@ import { FrameworkError } from '@ndigo/core';
  */
 export class EJSIncludeCycleError extends FrameworkError {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "EJSIncludeCycleError".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object EJSIncludeCycleError]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'EJSIncludeCycleError';
+    }
+
+    /**
      * Creates the cycle/overflow error for the offending include specifier.
      *
      * @param specifier - The include path that closed or overflowed the chain.
@@ -83,6 +98,21 @@ const MAX_INCLUDE_DEPTH = 32;
  * ejs's own `include` parameter directly.
  */
 export class EJSTemplateEngine {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "EJSTemplateEngine".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object EJSTemplateEngine]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'EJSTemplateEngine';
+    }
+
     readonly #options: ejs.Options;
     readonly #compiled = new Map<string, ejs.AsyncTemplateFunction>();
 

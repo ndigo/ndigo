@@ -14,6 +14,21 @@ import { AbstractBaseInstrumentation } from '@ndigo/telemetry';
  * OpenTelemetry instrumentation for `DrizzleInstrumentation`.
  */
 export class DrizzleInstrumentation extends AbstractBaseInstrumentation {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "DrizzleInstrumentation".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object DrizzleInstrumentation]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'DrizzleInstrumentation';
+    }
+
     constructor() {
         super('drizzle');
     }

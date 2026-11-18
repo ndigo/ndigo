@@ -27,6 +27,21 @@ export interface ThemeResolverStrategy {
 const THEME_RESOLVER = 'themeResolver';
 
 class ContextThemeResolver extends AbstractThemeResolver {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "ContextThemeResolver".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object ContextThemeResolver]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'ContextThemeResolver';
+    }
+
     readonly #context: ApplicationContext;
 
     constructor(context: ApplicationContext) {

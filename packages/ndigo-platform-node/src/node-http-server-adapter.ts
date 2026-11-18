@@ -283,6 +283,21 @@ function normalizeOrigin(origin: string): string | null {
  */
 export class NodeHTTPServerAdapter implements HTTPServerAdapter {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "NodeHTTPServerAdapter".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object NodeHTTPServerAdapter]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'NodeHTTPServerAdapter';
+    }
+
+    /**
      * Pending upgrade sources, keyed by the upgrade `IncomingMessage`:
      * `shouldHandle(req)` runs before `handleUpgrade`/`connection` for each
      * upgrade, so store the parsed request sources keyed by its request and

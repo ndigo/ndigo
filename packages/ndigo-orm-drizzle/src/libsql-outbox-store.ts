@@ -92,6 +92,21 @@ export interface LibSQLOutboxStoreOptions {
  * default.
  */
 export class LibSQLOutboxStore implements OutboxStore {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "LibSQLOutboxStore".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object LibSQLOutboxStore]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'LibSQLOutboxStore';
+    }
+
     readonly #client: Client;
     readonly #ready: Promise<void>;
     readonly #ownsClient: boolean;

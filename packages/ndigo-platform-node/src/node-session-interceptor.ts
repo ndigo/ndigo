@@ -33,6 +33,21 @@ import { SESSION_COOKIE } from './session-cookie';
  * - token values are the opaque ids issued by the store.
  */
 export class NodeSessionInterceptor implements RouteHandlerInterceptor {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "NodeSessionInterceptor".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object NodeSessionInterceptor]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'NodeSessionInterceptor';
+    }
+
     readonly #sessionStore: SessionStore;
     readonly #cookieName: string;
 

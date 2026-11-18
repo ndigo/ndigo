@@ -26,6 +26,21 @@ export interface RequestIdCorrelation {
  * Request-ID correlation implementation using crypto.randomUUID().
  */
 export class CryptoRequestIdCorrelation implements RequestIdCorrelation {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "CryptoRequestIdCorrelation".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object CryptoRequestIdCorrelation]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'CryptoRequestIdCorrelation';
+    }
+
     #correlationId: string | null = null;
 
     /**

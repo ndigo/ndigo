@@ -136,6 +136,21 @@ export const likeIterable = (value: unknown): value is Iterable<unknown> =>
 
  */
 export class IndexedIterator<T = unknown> implements IterableIterator<T> {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "IndexedIterator".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object IndexedIterator]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'IndexedIterator';
+    }
+
     #indexed: ArrayLike<T | undefined>;
     #index: number;
 
@@ -187,6 +202,21 @@ export const indexedIterator = <T = unknown>(indexed: ArrayLike<T | undefined>):
 
  */
 export class EntriesIterator<T = unknown> implements IterableIterator<Entry<T>> {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "EntriesIterator".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object EntriesIterator]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'EntriesIterator';
+    }
+
     #iterator: Iterator<Entry<T>>;
 
     /**

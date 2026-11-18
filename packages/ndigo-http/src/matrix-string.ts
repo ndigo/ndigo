@@ -125,6 +125,21 @@ const isNull = (value: unknown): boolean => value === null,
  */
 class MatrixString implements Parser, Stringifier {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "MatrixString".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object MatrixString]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'MatrixString';
+    }
+
+    /**
      * Parses a matrix string into a JSON object.
      *
      * @param value - The matrix string to parse.

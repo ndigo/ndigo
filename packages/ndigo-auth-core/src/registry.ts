@@ -10,6 +10,21 @@ import { type AuthAdapter } from './adapter';
  * (e.g., OIDC, SAML, JWT) by registering them at startup.
  */
 export class AuthRegistry {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "AuthRegistry".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object AuthRegistry]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'AuthRegistry';
+    }
+
     private static readonly adapters = new Map<string, AuthAdapter>();
 
     /**

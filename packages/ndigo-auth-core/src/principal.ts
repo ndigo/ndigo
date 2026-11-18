@@ -51,6 +51,21 @@ export interface Principal {
  * Sentinel principal representing an unauthenticated user.
  */
 export class AnonymousPrincipal implements Principal {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "AnonymousPrincipal".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object AnonymousPrincipal]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'AnonymousPrincipal';
+    }
+
     /** The sentinel id (`'anonymous'`). */
     readonly id = 'anonymous';
     /** The display name (`'Anonymous'`). */
@@ -107,6 +122,21 @@ export class AnonymousPrincipal implements Principal {
  * `CredentialsAuthAdapter`).
  */
 export class DefaultPrincipal implements Principal {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "DefaultPrincipal".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object DefaultPrincipal]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'DefaultPrincipal';
+    }
+
     /** Unique identifier for this principal. */
     readonly id: string;
     /** Human-readable display name. */

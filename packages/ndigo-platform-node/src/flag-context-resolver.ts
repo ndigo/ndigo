@@ -35,6 +35,21 @@ export interface FlagEvaluationContextResolver {
  */
 export class ClientAddressFlagContextResolver implements FlagEvaluationContextResolver {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "ClientAddressFlagContextResolver".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object ClientAddressFlagContextResolver]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'ClientAddressFlagContextResolver';
+    }
+
+    /**
      * Resolves the flag context from the trusted client address.
      *
      * @param route - The current route.
@@ -68,6 +83,21 @@ export class ClientAddressFlagContextResolver implements FlagEvaluationContextRe
  * for provider targeting.
  */
 export class SessionPrincipalFlagContextResolver implements FlagEvaluationContextResolver {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "SessionPrincipalFlagContextResolver".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object SessionPrincipalFlagContextResolver]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'SessionPrincipalFlagContextResolver';
+    }
+
     readonly #fallback: FlagEvaluationContextResolver;
 
     /**

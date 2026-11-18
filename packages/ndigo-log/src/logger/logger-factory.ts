@@ -17,6 +17,21 @@ import { ContextAwareLogger } from './context-aware-logger.js';
 export type LoggerType = 'open-telemetry' | 'console' | 'none';
 
 class NoopLogger implements Logger {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "NoopLogger".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object NoopLogger]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'NoopLogger';
+    }
+
     #threshold: SeverityNumber = SeverityNumber.FATAL4;
 
     get threshold(): SeverityNumber {
@@ -103,6 +118,21 @@ function buildLogger(name: string): Logger {
  * (KRN-REV-LOG-11).
  */
 class ConfigurableLogger implements Logger {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "ConfigurableLogger".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object ConfigurableLogger]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'ConfigurableLogger';
+    }
+
     readonly #name: string;
     #delegate: Logger;
     #revision: number;
@@ -169,6 +199,21 @@ class ConfigurableLogger implements Logger {
  * lazily-resolved handles, not frozen snapshots.
  */
 export class LoggerFactory {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "LoggerFactory".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object LoggerFactory]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'LoggerFactory';
+    }
+
     /**
      * Sets the global logger type for all loggers created by this factory —
      * including those already handed out.

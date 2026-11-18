@@ -66,6 +66,21 @@ export type Backing =
  * The caller owns `transferTo(dest)` destination sanitization.
  */
 class NodeMultipartFile implements MultipartFile {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "NodeMultipartFile".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object NodeMultipartFile]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'NodeMultipartFile';
+    }
+
     readonly name: string;
     readonly originalFilename: string;
     readonly contentType: string | undefined;
@@ -127,6 +142,21 @@ class NodeMultipartFile implements MultipartFile {
  * A parsed multipart request that can dispose any temp files it created.
  */
 class NodeMultipartContext implements MultipartContext {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "NodeMultipartContext".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object NodeMultipartContext]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'NodeMultipartContext';
+    }
+
     // SEC-1: null-prototype record + `Object.hasOwn` — a field named
     // `__proto__` must land as an ordinary own key (see also the urlencoded
     // codec in http-request-limits.ts), never through the inherited accessor.

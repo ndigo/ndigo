@@ -80,6 +80,21 @@ function hasCacheDirective(headers: Headers, directives: Record<string, true>): 
  * and a stored response is only replayed when its `Vary` request headers match.
  */
 export class CacheInterceptor implements RequestAwareHTTPInterceptor, ResponseAwareHTTPInterceptor {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "CacheInterceptor".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object CacheInterceptor]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'CacheInterceptor';
+    }
+
     #config: CacheInterceptorConfig;
     #cache: Map<string, CacheEntry> = new Map();
     /**

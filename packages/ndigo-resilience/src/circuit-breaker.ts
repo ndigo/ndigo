@@ -48,6 +48,21 @@ export interface CircuitBreakerSpec {
  * Thrown while a circuit is open: the call was not executed.
  */
 export class CircuitOpenError extends ApplicationError {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "CircuitOpenError".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object CircuitOpenError]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'CircuitOpenError';
+    }
+
     constructor(method: PropertyKey, entryName: string, remainingMs: number) {
         super(`circuit open for '${entryName}.${String(method)}' — failing fast (reset in ${remainingMs} ms)`);
     }
@@ -120,6 +135,21 @@ function validateCircuitBreakerSpec(spec: CircuitBreakerSpec): void {
  * per retry attempt.
  */
 export class CircuitBreakerInterceptor implements MethodInterceptor {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "CircuitBreakerInterceptor".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object CircuitBreakerInterceptor]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'CircuitBreakerInterceptor';
+    }
+
     #cells = new WeakMap<Function, Map<string, CircuitCell>>();
     #now: () => number;
 

@@ -10,6 +10,21 @@ import { severityNumberToLevel } from '../severity/index.js';
  * Logger that emits records through the OpenTelemetry logs API.
  */
 export class OpenTelemetryLogger implements Logger {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "OpenTelemetryLogger".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object OpenTelemetryLogger]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'OpenTelemetryLogger';
+    }
+
     #threshold: SeverityNumber;
 
     constructor(

@@ -8,6 +8,21 @@ import { PossibleScope, Scope } from './scope';
  * Internal scope registry used by factories to manage scope strategies.
  */
 export default class ScopeRegistry {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "ScopeRegistry".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object ScopeRegistry]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'ScopeRegistry';
+    }
+
     #scopes: Map<PossibleScope, Scope>;
 
     constructor() {

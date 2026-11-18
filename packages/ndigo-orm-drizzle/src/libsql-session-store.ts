@@ -65,6 +65,21 @@ export interface LibSQLSessionStoreOptions {
  * `close` is the container's supported shutdown bridge, not automatic migration.
  */
 export class LibSQLSessionStore implements SessionStore, Closeable {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "LibSQLSessionStore".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object LibSQLSessionStore]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'LibSQLSessionStore';
+    }
+
     /** Store identifier (`'libsql'`). */
     readonly kind = 'libsql';
     readonly #client: Client;

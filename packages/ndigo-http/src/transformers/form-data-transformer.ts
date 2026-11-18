@@ -12,6 +12,21 @@ export type FormDataEntryTransform = (key: string, value: FormDataEntryValue) =>
  * Transforms `FormData` entries one by one while preserving multipart semantics.
  */
 export class FormDataTransformer implements HTTPTransformer<FormData, FormData> {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "FormDataTransformer".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object FormDataTransformer]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'FormDataTransformer';
+    }
+
     readonly #entryTransform: FormDataEntryTransform;
     readonly #condition?: (body: FormData, context: TransformContext) => boolean;
 

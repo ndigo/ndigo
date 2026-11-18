@@ -71,6 +71,21 @@ export interface DataSource extends Initializable, Destroyable {
  * It stores entity data in JavaScript Maps.
  */
 export class InMemoryDataSource implements DataSource {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "InMemoryDataSource".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object InMemoryDataSource]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'InMemoryDataSource';
+    }
+
     /** Whether the data source has been destroyed. */
     destroyed: boolean;
     #stores: Map<string, Map<unknown, unknown>>;

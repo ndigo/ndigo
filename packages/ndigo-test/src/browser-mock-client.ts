@@ -123,6 +123,21 @@ function isConfiguration(source: Function): boolean {
  * `ModelAndView.viewTarget`.
  */
 export class MockWebClient {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "MockWebClient".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object MockWebClient]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'MockWebClient';
+    }
+
     #app: BrowserTestApp;
 
     /**

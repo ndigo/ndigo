@@ -230,6 +230,21 @@ interface SlotState {
  * carries the resolved exit code and per-slot snapshots.
  */
 export class ClusterRunner {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "ClusterRunner".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object ClusterRunner]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'ClusterRunner';
+    }
+
     readonly #options: Required<
         Pick<ClusterRunnerOptions, 'shutdownTimeoutMs' | 'restartBaseMs' | 'restartMaxMs' | 'restartJitter'>
     > & {

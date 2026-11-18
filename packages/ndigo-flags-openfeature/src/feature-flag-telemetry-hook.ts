@@ -44,6 +44,21 @@ const FLAG_SPAN_KEY = 'ndigo:featureFlagSpan';
  */
 export class FeatureFlagTelemetryHook implements Hook {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "FeatureFlagTelemetryHook".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object FeatureFlagTelemetryHook]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'FeatureFlagTelemetryHook';
+    }
+
+    /**
      * Opens the evaluation span and records the key/provider identity.
      *
      * @param hookContext - The hook context for the evaluation being started.

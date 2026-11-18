@@ -60,6 +60,21 @@ export interface RouteHandlerInterceptor {
  * is to allow for factoring out repetitive handler code.
  */
 export class MappedHandlerInterceptor extends AsPathMatcherFilter(Null) implements RouteHandlerInterceptor {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "MappedHandlerInterceptor".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object MappedHandlerInterceptor]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'MappedHandlerInterceptor';
+    }
+
     #interceptor: RouteHandlerInterceptor;
 
     /** The matcher used to filter requests by path. */

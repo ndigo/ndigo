@@ -57,6 +57,21 @@ export interface WebSocketServerInstrumentationOptions {
  */
 export class WebSocketServerInstrumentation extends AbstractBaseInstrumentation {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "WebSocketServerInstrumentation".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object WebSocketServerInstrumentation]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'WebSocketServerInstrumentation';
+    }
+
+    /**
      * Whether room fan-out series carry the `socket.room` attribute (see
      * {@link WebSocketServerInstrumentationOptions.roomAttribute}).
      *

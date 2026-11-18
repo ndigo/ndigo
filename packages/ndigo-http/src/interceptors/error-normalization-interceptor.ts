@@ -26,6 +26,21 @@ export interface ErrorNormalizationInterceptorConfig {
 
  */
 export class ErrorNormalizationInterceptor implements ResponseAwareHTTPInterceptor, ErrorAwareHTTPInterceptor {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "ErrorNormalizationInterceptor".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object ErrorNormalizationInterceptor]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'ErrorNormalizationInterceptor';
+    }
+
     #config: ErrorNormalizationInterceptorConfig;
 
     /**

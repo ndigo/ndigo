@@ -12,6 +12,21 @@ import { StaticResourceHandler, type StaticHandlerOptions } from './static-resou
  * precompressed variants, directory modes) to {@link StaticResourceHandler}.
  */
 export class StaticFileView {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "StaticFileView".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object StaticFileView]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'StaticFileView';
+    }
+
     readonly #handler: StaticResourceHandler;
 
     /**

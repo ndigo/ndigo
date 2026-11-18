@@ -21,6 +21,21 @@ export interface CapturedRender {
  * Captures rendered view output instead of mounting it into a DOM container.
  */
 export class MemoryViewTarget implements ViewTarget {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "MemoryViewTarget".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object MemoryViewTarget]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'MemoryViewTarget';
+    }
+
     #lastRender: CapturedRender | null = null;
 
     /**

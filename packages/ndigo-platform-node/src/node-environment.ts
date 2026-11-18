@@ -36,6 +36,21 @@ const snapshotProcessEnv = (): JSONObject => {
  */
 export class NodeEnvironment extends StandardEnvironment {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "NodeEnvironment".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object NodeEnvironment]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'NodeEnvironment';
+    }
+
+    /**
      * Creates a Node.js environment.
      *
      * @param propertySources - Custom property sources (higher precedence than `process.env`).

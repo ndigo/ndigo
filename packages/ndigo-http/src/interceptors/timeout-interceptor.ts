@@ -83,6 +83,21 @@ export class TimeoutInterceptor
         CompletionAwareHTTPInterceptor
 {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "TimeoutInterceptor".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object TimeoutInterceptor]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'TimeoutInterceptor';
+    }
+
+    /**
      * Live timers keyed by the settings object the pipeline hands to
      * `preInit` and `postComplete` — the only identity that survives request
      * replacement by other interceptors.

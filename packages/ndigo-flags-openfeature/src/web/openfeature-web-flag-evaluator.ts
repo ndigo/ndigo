@@ -53,6 +53,21 @@ export interface WebOpenFeatureFlagEvaluatorOptions {
  * is static — see the module doc).
  */
 export class WebOpenFeatureFlagEvaluator implements FlagEvaluator {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "WebOpenFeatureFlagEvaluator".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object WebOpenFeatureFlagEvaluator]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'WebOpenFeatureFlagEvaluator';
+    }
+
     /** Backend identifier. */
     readonly kind = 'openfeature';
     readonly #client: Client | undefined;

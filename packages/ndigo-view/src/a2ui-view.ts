@@ -12,6 +12,21 @@ import type { ViewResolver } from './view-resolver.js';
  * `updateComponents`) as `application/a2ui+json`.
  */
 export class A2UIView extends AbstractSerializingView {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "A2UIView".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object A2UIView]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'A2UIView';
+    }
+
     constructor() {
         super();
         this.mediaType = MediaTypes.APPLICATION_A2UI_JSON?.withCharset('UTF-8') ?? null;

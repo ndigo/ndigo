@@ -87,6 +87,21 @@ function validateRetrySpec(spec: RetrySpec): void {
  */
 export class RetryInterceptor implements MethodInterceptor {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "RetryInterceptor".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object RetryInterceptor]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'RetryInterceptor';
+    }
+
+    /**
      * Whether the method carries a valid `@retry` spec.
      *
      * @param method - The method descriptor being woven.

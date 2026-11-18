@@ -64,6 +64,21 @@ export interface RedisRateLimiterOptions {
  * Redis keys are the shared truth.
  */
 export class RedisRateLimiter implements RateLimiter, AsyncCloseable {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "RedisRateLimiter".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object RedisRateLimiter]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'RedisRateLimiter';
+    }
+
     /** Backend identifier for diagnostics. */
     readonly kind = 'redis';
 

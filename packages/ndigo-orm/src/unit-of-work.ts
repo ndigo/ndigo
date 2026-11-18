@@ -59,6 +59,21 @@ export interface UnitOfWork {
  * implement `UnitOfWork` with your `EntityManager` adapter.
  */
 export class InMemoryUnitOfWork implements UnitOfWork {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "InMemoryUnitOfWork".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object InMemoryUnitOfWork]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'InMemoryUnitOfWork';
+    }
+
     readonly #entityManager: EntityManager;
     #newEntities: Set<object>;
     #dirtyEntities: Set<object>;

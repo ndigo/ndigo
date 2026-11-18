@@ -79,6 +79,21 @@ const tokenize = (expression: string): Token[] => {
  * Grammar (precedence low to high): or, and, not, name/paren.
  */
 class Parser {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "Parser".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object Parser]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'Parser';
+    }
+
     #tokens: Token[];
     #index = 0;
     #expression: string;

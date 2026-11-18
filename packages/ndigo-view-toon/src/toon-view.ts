@@ -19,6 +19,21 @@ import type { ToonEncodeOptions } from './toon-encode';
  * type's text/* default charset, matching spec §17.
  */
 export class ToonView extends AbstractSerializingView {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "ToonView".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object ToonView]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'ToonView';
+    }
+
     readonly #options: ToonEncodeOptions;
 
     /**

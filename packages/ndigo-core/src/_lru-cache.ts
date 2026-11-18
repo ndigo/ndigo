@@ -12,6 +12,21 @@ interface LRUNode<K, V> {
 }
 
 export class LRUCache<K, V> {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "LRUCache".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object LRUCache]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'LRUCache';
+    }
+
     readonly #capacity: number;
     readonly #map: Map<K, LRUNode<K, V>> = new Map();
     #head: LRUNode<K, V> | null = null;

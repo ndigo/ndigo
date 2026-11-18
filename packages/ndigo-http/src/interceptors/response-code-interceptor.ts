@@ -22,6 +22,21 @@ export interface ResponseCodeAwareHTTPInterceptor {
  * Dispatches response hooks based on the numeric status code.
  */
 export class MappedResponseCodeHTTPInterceptor implements ResponseAwareHTTPInterceptor {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "MappedResponseCodeHTTPInterceptor".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object MappedResponseCodeHTTPInterceptor]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'MappedResponseCodeHTTPInterceptor';
+    }
+
     #interceptor: ResponseCodeAwareHTTPInterceptor;
 
     /**

@@ -27,6 +27,21 @@ export type NameSelectorResolver = Record<string, string> | ((viewName: string) 
  */
 export class NameViewTargeter extends SelectorViewTargeter {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "NameViewTargeter".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object NameViewTargeter]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'NameViewTargeter';
+    }
+
+    /**
      * Creates a name-driven targeter.
      *
      * @param selectors - A view-name → selector map, or a selector function.

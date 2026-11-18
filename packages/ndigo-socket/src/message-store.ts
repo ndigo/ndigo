@@ -211,6 +211,21 @@ export interface InMemoryQueueStoreStats {
  * `#seqs` can never outgrow the destination cap (SEC-1).
  */
 export class InMemoryQueueMessageStore implements QueueMessageStore {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "InMemoryQueueMessageStore".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object InMemoryQueueMessageStore]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'InMemoryQueueMessageStore';
+    }
+
     /** Store identifier (`'in-memory'`). */
     readonly kind = 'in-memory';
     readonly #byDestination = new Map<string, RingBuffer<StoredQueueMessage>>();

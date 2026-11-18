@@ -24,6 +24,21 @@ export interface DrizzleDataSourceOptions {
  * Drizzle-backed data source that maps `@ndigo/orm` entity metadata to SQL tables.
  */
 export class DrizzleDataSource {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "DrizzleDataSource".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object DrizzleDataSource]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'DrizzleDataSource';
+    }
+
     readonly #client: Client;
     readonly #db: LibSQLDatabase;
     readonly #url: string;

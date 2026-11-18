@@ -92,6 +92,21 @@ export const likePathMatcher = like({ getPatternComparator: Function, match: Fun
  * Comparator that orders patterns by exact equality with the matched path.
  */
 class EqualsPathComparator extends AbstractValueComparator {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "EqualsPathComparator".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object EqualsPathComparator]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'EqualsPathComparator';
+    }
+
     compare(pattern1: string, pattern2: string): number {
         const { value } = this,
             pattern1EqualsPath = pattern1 === value,
@@ -113,6 +128,21 @@ class EqualsPathComparator extends AbstractValueComparator {
  * Comparator that orders glob patterns by specificity.
  */
 class GlobPatternComparator extends AbstractValueComparator {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "GlobPatternComparator".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object GlobPatternComparator]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'GlobPatternComparator';
+    }
+
     compare(pattern1: string, pattern2: string): number {
         const info1 = new GlobPatternInfo(pattern1),
             info2 = new GlobPatternInfo(pattern2);
@@ -169,6 +199,21 @@ class GlobPatternComparator extends AbstractValueComparator {
  * need pattern plumbing without wildcard semantics.
  */
 export class EqualsPathMatcher implements PathMatcher {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "EqualsPathMatcher".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object EqualsPathMatcher]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'EqualsPathMatcher';
+    }
+
     /** {@inheritDoc PathMatcher#merge} @param pattern1 - First pattern. @param pattern2 - Second pattern. */
     merge(pattern1: string, pattern2: string): string {
         if (typeof pattern1 !== 'string') {
@@ -239,6 +284,21 @@ export class EqualsPathMatcher implements PathMatcher {
  * ```
  */
 export class URLGlobPathMatcher implements PathMatcher {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "URLGlobPathMatcher".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object URLGlobPathMatcher]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'URLGlobPathMatcher';
+    }
+
     #cache: LRUCache<string, RegExp>;
 
     /**
@@ -304,6 +364,21 @@ export class URLGlobPathMatcher implements PathMatcher {
  * (`isLeastSpecific`, `isPrefixPattern`).
  */
 export class GlobPatternInfo {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "GlobPatternInfo".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object GlobPatternInfo]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'GlobPatternInfo';
+    }
+
     #catchAllPattern: boolean;
 
     /** The glob pattern being analyzed. */

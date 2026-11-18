@@ -53,6 +53,21 @@ export abstract class AbstractPathViewController implements Controller {
  */
 export class PathViewController extends AbstractPathViewController {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "PathViewController".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object PathViewController]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'PathViewController';
+    }
+
+    /**
      * Cache for resolved view names.
      */
     _viewNameCache: Map<string, string>;

@@ -32,6 +32,21 @@ export interface HeaderInterceptorConfig {
 
  */
 export class HeaderInterceptor implements RequestAwareHTTPInterceptor {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "HeaderInterceptor".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object HeaderInterceptor]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'HeaderInterceptor';
+    }
+
     #config: HeaderInterceptorConfig;
 
     /**

@@ -23,6 +23,21 @@ export interface LanguageResolver {
  */
 export abstract class AbstractLanguageResolver implements LanguageResolver {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "AbstractLanguageResolver".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object AbstractLanguageResolver]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'AbstractLanguageResolver';
+    }
+
+    /**
      * Fallback language used when no route-specific language is available.
      */
     readonly defaultLanguage!: string;

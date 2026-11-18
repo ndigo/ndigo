@@ -31,6 +31,21 @@ export interface StatusInterceptorConfig {
 
  */
 export class StatusInterceptor implements ResponseAwareHTTPInterceptor {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "StatusInterceptor".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object StatusInterceptor]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'StatusInterceptor';
+    }
+
     #config: StatusInterceptorConfig;
 
     /**

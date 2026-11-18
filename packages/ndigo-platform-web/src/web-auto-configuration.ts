@@ -21,6 +21,21 @@ import { whenBrowser } from '@ndigo/core';
  * because the module cannot be evaluated on a non-DOM platform.
  */
 class LazyWebComponentViewResolver implements ViewResolver {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "LazyWebComponentViewResolver".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object LazyWebComponentViewResolver]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'LazyWebComponentViewResolver';
+    }
+
     #delegate: ViewResolver | undefined;
 
     async resolveViewName(name: string, language?: unknown, request?: unknown): Promise<View | null> {
@@ -40,6 +55,21 @@ class LazyWebComponentViewResolver implements ViewResolver {
 @whenBrowser
 @configuration
 export class WebAutoConfiguration {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "WebAutoConfiguration".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object WebAutoConfiguration]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'WebAutoConfiguration';
+    }
+
     /**
      * Exposes the shared argument-value converter registry.
      *

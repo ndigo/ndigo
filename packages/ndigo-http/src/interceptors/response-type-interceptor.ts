@@ -98,6 +98,21 @@ export class ResponseTypeInterceptor
     implements InitializationAwareHTTPInterceptor<ResponseTypeInit>, ResponseAwareHTTPInterceptor<ResponseTypeSettings>
 {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "ResponseTypeInterceptor".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object ResponseTypeInterceptor]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'ResponseTypeInterceptor';
+    }
+
+    /**
      * @param url - The requested URL.
      * @param settings - The HTTP request settings, including the `responseType` setting.
      * @returns Whether or not the http request should continue execution.

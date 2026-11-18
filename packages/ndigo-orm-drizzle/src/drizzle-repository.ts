@@ -12,6 +12,21 @@ import { DrizzleEntityManager } from './drizzle-entity-manager';
  * @typeParam ID - The entity's primary identifier type.
  */
 export class DrizzleRepository<T extends object, ID> implements AsyncRepository<T, ID> {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "DrizzleRepository".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object DrizzleRepository]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'DrizzleRepository';
+    }
+
     readonly #entityClass: Constructable<T>;
     readonly #entityManager: DrizzleEntityManager;
 

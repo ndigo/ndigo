@@ -130,6 +130,21 @@ function invokeOnEnd(
  */
 export abstract class AbstractBaseInstrumentation extends InstrumentationBase {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "AbstractBaseInstrumentation".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object AbstractBaseInstrumentation]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'AbstractBaseInstrumentation';
+    }
+
+    /**
      * Creates the instrumentation, deriving the package name from the component.
      *
      * @param component - Short component name (e.g. `'context'`, `'dispatcher'`).

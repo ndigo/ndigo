@@ -21,6 +21,21 @@ import { readManagementSettings } from './management-properties';
  * DOWN aggregate is signalled by the status code, not by an error envelope).
  */
 export class HealthResponseView {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "HealthResponseView".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object HealthResponseView]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'HealthResponseView';
+    }
+
     readonly #body: HealthStatus;
     readonly #status: number;
 
@@ -64,6 +79,21 @@ export class HealthResponseView {
  */
 @requestMapping('/health')
 export class HealthController extends AsApplicationContextAware(Null) {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "HealthController".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object HealthController]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'HealthController';
+    }
+
     /** The application context injected by the aware mixin. */
     readonly applicationContext!: ApplicationContext;
 

@@ -8,6 +8,21 @@ import { FrameworkError, MediaType } from '@ndigo/core';
 
 export class NotAcceptableError extends FrameworkError {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "NotAcceptableError".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object NotAcceptableError]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'NotAcceptableError';
+    }
+
+    /**
      * The view name whose candidates were unacceptable.
      */
     readonly viewName: string;

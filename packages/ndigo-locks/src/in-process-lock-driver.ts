@@ -66,6 +66,21 @@ function requireTtl(ttlMs: number): void {
  * instance acquired.
  */
 export class InProcessLockDriver implements LockDriver {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "InProcessLockDriver".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object InProcessLockDriver]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'InProcessLockDriver';
+    }
+
     /** Backend identifier for diagnostics. */
     readonly kind = 'in-process';
 

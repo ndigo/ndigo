@@ -25,6 +25,21 @@ export interface OfflineInterceptorConfig {
  * {@link OfflineInterceptor.dispose | dispose()} is called.
  */
 export class OfflineInterceptor implements ResponseAwareHTTPInterceptor {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "OfflineInterceptor".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object OfflineInterceptor]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'OfflineInterceptor';
+    }
+
     #config: OfflineInterceptorConfig;
     #emitter: EventEmitter;
     #isOnline: boolean = navigator.onLine;

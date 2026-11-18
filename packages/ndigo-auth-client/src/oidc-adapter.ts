@@ -30,6 +30,21 @@ import { FrameworkError } from '@ndigo/core';
  * this so callers can distinguish provider errors from programming errors.
  */
 export class OIDCError extends FrameworkError {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "OIDCError".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object OIDCError]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'OIDCError';
+    }
+
     /** The failure code. */
     readonly code: OIDCErrorCode;
     /**
@@ -275,6 +290,21 @@ export interface PendingAuthorizationStore {
  * grow the map without limit. Entries persist until redeemed or evicted.
  */
 export class InMemoryPendingAuthorizationStore implements PendingAuthorizationStore {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "InMemoryPendingAuthorizationStore".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object InMemoryPendingAuthorizationStore]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'InMemoryPendingAuthorizationStore';
+    }
+
     /** Store identifier (`'in-memory'`). */
     readonly kind = 'in-memory';
 
@@ -382,6 +412,21 @@ export interface RefreshTokenStore {
  * flood cannot grow the map without limit.
  */
 export class InMemoryRefreshTokenStore implements RefreshTokenStore {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "InMemoryRefreshTokenStore".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object InMemoryRefreshTokenStore]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'InMemoryRefreshTokenStore';
+    }
+
     /** Store identifier (`'in-memory'`). */
     readonly kind = 'in-memory';
 
@@ -543,6 +588,21 @@ function hashRefreshToken(token: string): string {
 }
 
 export class OIDCAdapter implements AuthAdapter {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "OIDCAdapter".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object OIDCAdapter]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'OIDCAdapter';
+    }
+
     /** Adapter identifier (`'oidc'`). */
     readonly id = 'oidc';
     readonly #config: OIDCAdapterConfig;

@@ -144,6 +144,7 @@ export class ApplicationContextAwareProcessor implements InitializationAwareProc
                 healthRegistryAware.setHealthRegistry(applicationContext.getValue('healthRegistry'));
             }
 
+
             const authServerAware = value as { setAuthServer?: (authServer: unknown) => void };
             // oxlint-disable-next-line @ndigo/no-string-registry-lookup -- auth token lives in @ndigo/auth-server which depends on context
             if (typeof authServerAware.setAuthServer === 'function' && applicationContext.hasValue('authServer')) {

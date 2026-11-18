@@ -47,6 +47,8 @@
 
 .nd-alert__title {
     margin: 0;
+    /* Pin the UI face — the host's heading element may carry a display face. */
+    font-family: var(--nd-font-sans);
     font-size: var(--nd-text-base);
     font-weight: var(--nd-weight-semibold);
     line-height: var(--nd-leading-tight);

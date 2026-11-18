@@ -53,3 +53,10 @@ link or button inside so keyboard users can act.
 Import `nd-card.css` after the tokens. The surface, border, radius, and shadow
 come from the tokens; the interactive modifier switches to the accent border and
 the raised shadow on hover/focus-within.
+
+The title pins `--nd-font-sans` (as do the `__title` slots on `nd-alert` and
+`nd-item`). The title element is consumer-chosen — often an `h2`/`h3` — so a
+host page that sets a display face on headings would otherwise leak it in and,
+when that face ships fewer weights, trigger faux-bold. Pinning the UI face keeps
+component titles stable regardless of host typography. Set `--nd-font-sans` to
+retarget it.

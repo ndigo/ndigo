@@ -49,6 +49,8 @@
 
 .nd-item__title {
     overflow: hidden;
+    /* Pin the UI face — the host's element may carry a display face. */
+    font-family: var(--nd-font-sans);
     font-size: var(--nd-text-sm);
     font-weight: var(--nd-weight-medium);
     text-overflow: ellipsis;

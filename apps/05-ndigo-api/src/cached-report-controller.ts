@@ -3,10 +3,9 @@
  */
 import '@tsmetadata/polyfill';
 import { getMapping, requestMapping } from '@ndigo/dispatcher';
-import { cached, CACHE_MANAGER } from '@ndigo/cache';
-import type { Cache, CacheManager } from '@ndigo/cache';
+import { cached } from '@ndigo/cache';
+import type { Cache } from '@ndigo/cache';
 import { AsApplicationContextAware, ContextToken } from '@ndigo/context';
-import type { ApplicationContext } from '@ndigo/context';
 
 /**
  * The reports store — typed cache handle: used by `@cached` and
@@ -35,13 +34,9 @@ export class CachedReportController extends AsApplicationContextAware(Object) {
     #invocations = 0;
 
     /**
-     * Injected by the framework before entry init (ApplicationContextAware).
+     * `@cached` resolves the platform's `cacheManager` entry lazily from
+     * `this.applicationContext` (injected by `AsApplicationContextAware`).
      */
-    cacheManager?: CacheManager;
-
-    setApplicationContext(context: ApplicationContext): void {
-        this.cacheManager = context.getValue(CACHE_MANAGER);
-    }
 
     /**
      * Number of times the cached method actually computed its value —

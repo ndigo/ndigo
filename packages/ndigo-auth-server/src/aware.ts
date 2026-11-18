@@ -74,7 +74,9 @@ export interface PasswordEncoderAware extends Aware {
  * @param superclass - Base class to extend.
  * @returns A subclass that can receive a password encoder.
  */
-export const AsPasswordEncoderAware = <T extends Constructable>(superclass: T): Constructable<PasswordEncoderAware> & T =>
+export const AsPasswordEncoderAware = <T extends Constructable>(
+    superclass: T
+): Constructable<PasswordEncoderAware> & T =>
     class extends AsAware(superclass) implements PasswordEncoderAware {
         passwordEncoder: PasswordEncoder | null = null;
 

@@ -208,6 +208,11 @@ export interface ApplicationContextAware extends Aware {
  */
 export interface LoggerAware extends Aware {
     /**
+     * The Logger injected by the context, when available.
+     */
+    readonly logger?: Logger;
+
+    /**
      * Set the Logger that this object runs with.
      *
      * Invoked after population of normal value properties but before an

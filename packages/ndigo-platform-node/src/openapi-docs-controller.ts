@@ -7,7 +7,6 @@
  * excludes these endpoints from the document.
  */
 import { toError } from '@ndigo/util';
-import type { ServerResponse } from 'node:http';
 import '@tsmetadata/polyfill';
 import { type ApplicationContext, AsApplicationContextAware } from '@ndigo/context';
 import { DISPATCHER, type AbstractDispatcher, parameters, routeValue } from '@ndigo/dispatcher';
@@ -15,7 +14,7 @@ import { HTTPHeaders } from '@ndigo/http';
 import { Null } from '@ndigo/core';
 import { OpenAPISpecGenerator, type OpenAPIDocument, type RouteMappingTable } from '@ndigo/openapi';
 import type { Route } from '@ndigo/router';
-import { NODE_RESPONSE_ATTRIBUTE } from './node-request';
+import { getNodeResponse } from './node-request';
 import { ProblemTypes, writeProblem } from './problem-details';
 import { type ResolvedOpenAPIDocsOptions } from './openapi-docs-auto-configuration';
 import { getLogger } from '@ndigo/log';
@@ -59,8 +58,7 @@ export class OpenAPIDocsController extends AsApplicationContextAware(Null) {
      */
     @parameters({ route: routeValue() })
     async spec(route: Route): Promise<void> {
-        // NOTE: bridging to ServerResponse | undefined — the source type is wider than this consumer's contract.
-        const res = route.attributes?.[NODE_RESPONSE_ATTRIBUTE] as unknown as ServerResponse | undefined;
+        const res = getNodeResponse(route);
         if (!res || res.headersSent) return;
         if (this.#cached === null) {
             try {

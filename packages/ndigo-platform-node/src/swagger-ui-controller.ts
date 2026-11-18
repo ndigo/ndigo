@@ -11,12 +11,11 @@
  */
 import { createRequire } from 'node:module';
 import { dirname } from 'node:path';
-import type { ServerResponse } from 'node:http';
 import '@tsmetadata/polyfill';
 import { HTTPHeaders } from '@ndigo/http';
 import { parameters, pathVariable, routeValue } from '@ndigo/dispatcher';
 import type { Route } from '@ndigo/router';
-import { NODE_RESPONSE_ATTRIBUTE } from './node-request';
+import { getNodeResponse } from './node-request';
 import { StaticResourceHandler } from './static-resource-handler';
 import { writeProblem } from './problem-details';
 import { type ResolvedOpenAPIDocsOptions } from './openapi-docs-auto-configuration';
@@ -158,8 +157,7 @@ export class SwaggerUIController {
      * @param route - The current route (carries the Node response).
      */
     #writeDistFailure(route: Route): void {
-        // NOTE: bridging to ServerResponse | undefined — the source type is wider than this consumer's contract.
-        const res = route.attributes?.[NODE_RESPONSE_ATTRIBUTE] as unknown as ServerResponse | undefined;
+        const res = getNodeResponse(route);
         if (!res || res.headersSent) return;
         writeProblem(res, {
             status: 500,
@@ -183,8 +181,7 @@ export class SwaggerUIController {
             this.#writeDistFailure(route);
             return;
         }
-        // NOTE: bridging to ServerResponse | undefined — the source type is wider than this consumer's contract.
-        const res = route.attributes?.[NODE_RESPONSE_ATTRIBUTE] as unknown as ServerResponse | undefined;
+        const res = getNodeResponse(route);
         if (!res || res.headersSent) return;
         res.writeHead(200, {
             [HTTPHeaders.CONTENT_TYPE.name]: 'text/html; charset=utf-8',
@@ -205,8 +202,7 @@ export class SwaggerUIController {
     async asset(file: string | undefined, route: Route): Promise<void> {
         const name = file ?? '';
         if (!ASSET_NAMES.includes(name)) {
-            // NOTE: bridging to ServerResponse | undefined — the source type is wider than this consumer's contract.
-            const res = route.attributes?.[NODE_RESPONSE_ATTRIBUTE] as unknown as ServerResponse | undefined;
+            const res = getNodeResponse(route);
             if (res && !res.headersSent) {
                 res.writeHead(404, { [HTTPHeaders.CONTENT_TYPE.name]: 'text/plain; charset=utf-8' });
                 res.end('Not Found');
@@ -220,7 +216,7 @@ export class SwaggerUIController {
         if (name === 'swagger-ui-init.js') {
             // Generated wiring asset (not in swagger-ui-dist): it pins the
             // instance spec URL, so it shares the page's freshness contract.
-            const res = route.attributes?.[NODE_RESPONSE_ATTRIBUTE] as unknown as ServerResponse | undefined;
+            const res = getNodeResponse(route);
             if (!res || res.headersSent) return;
             res.writeHead(200, {
                 [HTTPHeaders.CONTENT_TYPE.name]: 'text/javascript; charset=utf-8',

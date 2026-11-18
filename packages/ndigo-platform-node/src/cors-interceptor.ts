@@ -15,7 +15,7 @@ import {
 } from '@ndigo/http';
 import { type InterceptorDenial, type RouteHandlerInterceptor, type ModelAndView, denialOf } from '@ndigo/dispatcher';
 import type { Route } from '@ndigo/router';
-import { getNodeRequest, NODE_RESPONSE_ATTRIBUTE } from './node-request';
+import { getNodeRequest, getNodeResponse } from './node-request';
 
 /**
  * Configuration for the server-side CORS interceptor.
@@ -104,7 +104,7 @@ export class CORSInterceptor implements RouteHandlerInterceptor {
      * @returns Whether to proceed, or a preflight denial.
      */
     async preHandle(route: Route, _handler: object | undefined): Promise<boolean | InterceptorDenial> {
-        const res = route.attributes?.[NODE_RESPONSE_ATTRIBUTE] as ServerResponse | undefined;
+        const res = getNodeResponse(route);
         if (!res || res.headersSent) return true;
 
         const request = getNodeRequest(route);
@@ -141,7 +141,7 @@ export class CORSInterceptor implements RouteHandlerInterceptor {
      * @returns A promise that resolves once handled.
      */
     async postHandle(route: Route, _handler: object | undefined, _modelAndView: ModelAndView): Promise<void> {
-        const res = route.attributes?.[NODE_RESPONSE_ATTRIBUTE] as ServerResponse | undefined;
+        const res = getNodeResponse(route);
         if (!res || res.headersSent) return;
         const request = getNodeRequest(route);
         const originHeader = request?.headers ? ORIGIN.get(request.headers) : null;

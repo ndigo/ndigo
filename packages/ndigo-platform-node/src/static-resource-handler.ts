@@ -33,7 +33,7 @@ import {
     RANGE,
     VARY,
 } from '@ndigo/http';
-import { getNodeRequest, NODE_RESPONSE_ATTRIBUTE } from './node-request';
+import { getNodeRequest, getNodeResponse } from './node-request';
 import { NOSNIFF_HEADER, StaticResourceResolver, type StaticResourceResult } from './static-resource-resolver';
 import { ProblemTypes, writeProblem } from './problem-details';
 
@@ -251,8 +251,7 @@ export class StaticResourceHandler {
      * @returns A promise that resolves once the response is written.
      */
     async handle(route: Route, requestPath: string): Promise<void> {
-        // NOTE: bridging to ServerResponse | undefined — the source type is wider than this consumer's contract.
-        const res = route.attributes?.[NODE_RESPONSE_ATTRIBUTE] as unknown as ServerResponse | undefined;
+        const res = getNodeResponse(route);
         if (!res || res.headersSent) {
             return;
         }

@@ -33,6 +33,12 @@ function buildApp(context: ApplicationContext): InspectApp {
  *
  * @param input - The context plus optional route/mapping/config sources.
  * @returns The application manifest.
+ *
+ * @example
+ * ```ts
+ * const manifest = inspectApplication({ context, routes, mappings });
+ * console.log(JSON.stringify(manifest, null, 2));
+ * ```
  */
 export function inspectApplication(input: InspectInput): InspectManifest {
     const { context } = input;

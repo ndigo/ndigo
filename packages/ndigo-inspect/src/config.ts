@@ -55,6 +55,12 @@ function originOf(environment: Environment, key: string): string | null {
  * @param classes - The `@configurationProperties` classes to enumerate.
  * @param environment - The environment to probe for presence, when available.
  * @returns The sorted, value-free configuration entries.
+ *
+ * @example
+ * ```ts
+ * const entries = collectConfig([AppConfig], context.environment);
+ * console.log(entries.map((e) => e.key));
+ * ```
  */
 export function collectConfig(classes: readonly Function[], environment?: Environment): InspectConfigEntry[] {
     const entries = new Map<string, InspectConfigEntry>();

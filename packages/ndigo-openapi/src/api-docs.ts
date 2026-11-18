@@ -88,6 +88,11 @@ export function apiDocs(docs: APIDocsMetadata) {
  * @param target - The class prototype or constructor.
  * @param propertyKey - The method name.
  * @returns The metadata, or `undefined` when undeclared.
+ *
+ * @example
+ * ```ts
+ * const docs = getApiDocs(ReportsController.prototype, 'list');
+ * ```
  */
 export function getApiDocs(target: unknown, propertyKey: string | symbol): APIDocsMetadata | undefined {
     return getSymbolMetadata(target)[API_DOCS_KEY(propertyKey)];

@@ -16,6 +16,11 @@ export interface ViewTarget {
      *
      * @param route - The route being rendered.
      * @returns A promise that resolves when preparation completes.
+     *
+     * @example
+     * ```ts
+     * await target.prepare(route);
+     * ```
      */
     prepare(route: Route): void | Promise<void>;
 
@@ -27,6 +32,11 @@ export interface ViewTarget {
      * @param model - The model used to produce the output.
      * @param route - The route being rendered.
      * @returns A promise that resolves when the output has been committed.
+     *
+     * @example
+     * ```ts
+     * await target.commit(html, model, route);
+     * ```
      */
     commit(output: unknown, model: unknown, route: Route): void | Promise<void>;
 
@@ -34,6 +44,11 @@ export interface ViewTarget {
      * Cleans up the ViewTarget.
      *
      * @returns A promise that resolves when cleanup completes.
+     *
+     * @example
+     * ```ts
+     * await target.clear();
+     * ```
      */
     clear(): void | Promise<void>;
 }
@@ -61,6 +76,13 @@ export interface EventBridgeViewTarget extends ViewTarget {
  *
  * @param value - The value to inspect.
  * @returns `true` when the value is target-shaped.
+ *
+ * @example
+ * ```ts
+ * if (likeViewTarget(candidate)) {
+ *     await candidate.prepare(route);
+ * }
+ * ```
  */
 export const likeViewTarget = (value: unknown): value is ViewTarget =>
     value !== null &&

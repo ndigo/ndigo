@@ -61,6 +61,31 @@ logger.isEnabled(SeverityNumber.WARN); // false
 
 The package ships the severity schemes used across the framework — `detectSeverityScheme`, `getSeverityMapping`, `levelToSeverityNumber`, and `severityNumberToLevel` for the `apache`, `syslog`, `npm`, and `cli` naming conventions.
 
+### Module-level vs context-injected
+
+Two entry points, both backed by the same `LoggerFactory`:
+
+- **Module-level (lightweight):** `const logger = getLogger('my-module')`. Best for
+  framework internals, leaf packages, and code outside a managed component.
+- **Context-injected (recommended for components):** implement `LoggerAware`
+  (`AsLoggerAware`) or call `applicationContext.getLogger('my-component')` from
+  `@ndigo/context`. The logger is reconfigurable and testable through the context.
+
+Both produce `ConfigurableLogger` handles wrapping a `ContextAwareLogger`, so
+records from either API stamp the active span's `traceId`/`spanId` and
+correlate to the same trace tree — no explicit parent linkage is needed. Use
+the module-level API when you are outside a managed component; prefer the
+injected API in application components so logging follows the context's
+configuration.
+
+### Context-driven configuration
+
+`LoggerFactory.configure({ type, threshold, contextAware })` applies settings in
+one call; `GenericApplicationContext.refresh()` invokes it from optional
+`logging.type`, `logging.threshold`, and `logging.contextAware` environment
+properties, so a context can direct its (and its beans') output to the
+console, the OTel pipeline, or nowhere.
+
 ## API
 
 The full API is at `api/` (generated; run `pnpm doc:api`). Primary exports live in

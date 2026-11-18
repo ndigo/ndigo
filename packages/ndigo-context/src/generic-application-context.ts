@@ -31,7 +31,7 @@ import { defineProperty, ownKeys } from './context-shared';
 import { ApplicationContextAwareProcessor } from './application-context-aware-processor';
 import { resolveSchemaConfig } from './schema-config';
 import type { z } from 'zod';
-import { getLogger } from '@ndigo/log';
+import { getLogger, type Logger, LoggerFactory, levelToSeverityNumber } from '@ndigo/log';
 
 const logger = getLogger('ndigo-context:application-context');
 
@@ -407,6 +407,22 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
     }
 
     /**
+     * Returns a logger backed by the shared `LoggerFactory`. When `name` is
+     * omitted the context's own name is used.
+     *
+     * The returned logger is context-aware: when a span is active its
+     * records carry the span's `traceId`/`spanId`, so a module-level
+     * `getLogger(...)` and a context-injected logger correlate to the same
+     * trace tree.
+     *
+     * @param name - Optional logger name. Defaults to the context name.
+     * @returns A `Logger` handle following the factory's current settings.
+     */
+    getLogger(name?: string): Logger {
+        return getLogger(name || this.#name);
+    }
+
+    /**
      * Returns whether the given context is a direct child.
      *
      * @param node - The application context to check for.
@@ -444,6 +460,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
         this._invokeRegistryProcessors();
         this._finishFactoryInitialization();
         this._onRefresh();
+        this._applyLoggingConfig();
 
         if (!this.#lifecycleProcessor) {
             this.#lifecycleProcessor = new DefaultLifecycleProcessor();
@@ -684,6 +701,44 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
 
     /** Hook invoked on refresh. */
     protected _onRefresh(): void {}
+
+    /**
+     * Applies logging settings from the environment, if present.
+     *
+     * Reads optional `logging.type` ('console' | 'open-telemetry' | 'none'),
+     * `logging.threshold` (a level name, e.g. 'debug'/'info'/'warn'/'error'),
+     * and `logging.contextAware` (boolean) from the environment and forwards
+     * them to `LoggerFactory`. Absent keys leave the current (default)
+     * settings untouched, so module-level `getLogger(...)` and context-injected
+     * loggers keep their defaults when no logging config is supplied.
+     */
+    protected _applyLoggingConfig(): void {
+        try {
+            const type = this.environment.getProperty('logging.type');
+            const threshold = this.environment.getProperty('logging.threshold');
+            const contextAware = this.environment.getProperty('logging.contextAware');
+
+            const settings: {
+                type?: 'console' | 'open-telemetry' | 'none';
+                threshold?: ReturnType<typeof levelToSeverityNumber>;
+                contextAware?: boolean;
+            } = {};
+            if (typeof type === 'string' && (type === 'console' || type === 'open-telemetry' || type === 'none')) {
+                settings.type = type;
+            }
+            if (typeof threshold === 'string') {
+                settings.threshold = levelToSeverityNumber(threshold);
+            }
+            if (typeof contextAware === 'boolean') {
+                settings.contextAware = contextAware;
+            }
+            if (Object.keys(settings).length > 0) {
+                LoggerFactory.configure(settings as Parameters<typeof LoggerFactory.configure>[0]);
+            }
+        } catch {
+            // Logging config is optional; never fail refresh because of it.
+        }
+    }
 
     /** Post-processes the factory. */
     protected _postProcessFactory(): void {}

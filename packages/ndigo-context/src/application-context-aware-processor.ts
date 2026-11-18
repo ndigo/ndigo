@@ -9,7 +9,7 @@ import { likeApplicationEventEmitterAware } from './event-emitter';
 import { InitializationAwareProcessor, likeAware } from '@ndigo/factory';
 import { likeEnvironmentAware } from './environment';
 import { likeResourceLoaderAware } from './resource';
-import { ApplicationContext, likeApplicationContextAware } from './context-interfaces';
+import { ApplicationContext, likeApplicationContextAware, likeLoggerAware } from './context-interfaces';
 import { defineProperty } from './context-shared';
 
 /**
@@ -83,6 +83,8 @@ export class ApplicationContextAwareProcessor implements InitializationAwareProc
             likeMessageSourceAware(value) && value.setMessageSource(applicationContext);
             // eslint-disable-next-line no-unused-expressions -- guarded dispatch: inject only into values implementing the contract
             likeApplicationContextAware(value) && value.setApplicationContext(applicationContext);
+            // eslint-disable-next-line no-unused-expressions -- guarded dispatch: inject only into values implementing the contract
+            likeLoggerAware(value) && value.setLogger(applicationContext.getLogger());
 
             if (likeLockDriverAware(value) && applicationContext.hasValue(LOCK_DRIVER)) {
                 value.setLockDriver(applicationContext.getValue(LOCK_DRIVER));

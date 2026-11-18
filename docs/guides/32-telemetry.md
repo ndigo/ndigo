@@ -129,6 +129,33 @@ await queue.push({ ...payload, traceId: correlation?.traceId, spanId: correlatio
 
 `undefined` means no span is active — safe in pure-logging mode.
 
+### Logging: module-level vs context-injected
+
+Ndigo offers two logging entry points, both backed by the same `LoggerFactory`,
+so appender type and thresholds apply uniformly:
+
+- **Module-level (lightweight):** `const logger = getLogger('my-module')` from
+  `@ndigo/log`. Best for framework internals, leaf packages (`@ndigo/util`),
+  and non-managed code. No dependency on the application context.
+- **Context-injected (recommended for components):** implement
+  `LoggerAware` (or use `AsLoggerAware`) and let the context inject the logger
+  via `applicationContext.getLogger(name)`; or call
+  `applicationContext.getLogger('my-component')` directly. Best for
+  application components — the logger is reconfigurable and testable through
+  the context.
+
+Both paths produce `ConfigurableLogger` handles wrapping a
+`ContextAwareLogger`. When a span is active, OTel context propagation stamps
+the same `traceId`/`spanId` onto records from _either_ API, so a
+module-level logger and a context-injected logger invoked during the same
+request correlate to the same trace tree — no explicit parent linkage or
+logger hierarchy is required.
+
+Use the module-level API when you are outside a managed component (or in a
+leaf package that must not depend on `@ndigo/context`); prefer the injected
+API in application components so logging follows the context's configuration
+and can be overridden in tests.
+
 ## 5. Browser
 
 `configureBrowserTelemetry` (from `@ndigo/telemetry-web`) is the browser
@@ -198,6 +225,14 @@ context (or an injected `featureMetricAggregator` property) at call time, so a
 `@counted` method on a context-registered bean needs no wiring. `configureTelemetry`
 itself stays process-global: OpenTelemetry registers providers once per process,
 so exporter/sampling configuration is not per-context.
+
+Logging is configured per context: `GenericApplicationContext.refresh()` reads
+optional `logging.type`, `logging.threshold`, and `logging.contextAware`
+properties from the environment and applies them to `LoggerFactory`, so a
+context can direct its (and its beans') output to the console, the OTel
+pipeline, or nowhere. Components receive a logger through `LoggerAware` /
+`AsLoggerAware` (injected by `ApplicationContextAwareProcessor`) or via
+`applicationContext.getLogger(name)`.
 
 ## Package surfaces
 

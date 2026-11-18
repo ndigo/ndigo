@@ -50,6 +50,27 @@ class AppConfiguration {
 }
 ```
 
+### Logging
+
+Components can receive a logger through the context rather than calling
+`getLogger(...)` directly:
+
+```ts
+import { AsLoggerAware } from '@ndigo/context';
+import { Logger } from '@ndigo/log';
+
+class MyService extends AsLoggerAware(Object) {
+    doWork() {
+        this.logger?.info('working');
+    }
+}
+```
+
+Or fetch one on demand: `applicationContext.getLogger('my-component')`. Both
+paths are backed by the shared `LoggerFactory` and participate in the active
+OpenTelemetry span (traceId/spanId), so they correlate with module-level
+loggers in the same request.
+
 ## API
 
 The full API is at `api/` (generated; run `pnpm doc:api`). Primary exports live in

@@ -45,6 +45,26 @@ app.getValue<ServerConfig>('serverConfig').port; // number — fail-loud on inva
 
 - [`schema/application.schema.json`](schema/application.schema.json) — a permissive JSON Schema (2020-12) for the `./config/application.json` + `application-{profile}.json` convention. Reference it with `"$schema": "../node_modules/@ndigo/boot/schema/application.schema.json"` for completion and validation of the documented framework keys (`server`, `profiles`, `telemetry`, `management`); application keys are unconstrained and the `{cipher:…}` secret marker is modeled.
 
+### Logging configuration
+
+`GenericApplicationContext.refresh()` reads optional `logging.*` properties from
+the environment and applies them to `LoggerFactory`:
+
+```jsonc
+// config/application.json
+{
+    "logging": { "type": "open-telemetry", "threshold": "info", "contextAware": true },
+}
+```
+
+- `logging.type` — `'console'` (default), `'open-telemetry'`, or `'none'`.
+- `logging.threshold` — a level name (`debug`, `info`, `warn`, `error`, …).
+- `logging.contextAware` — stamp `traceId`/`spanId` on records (default `true`).
+
+Components receive a logger via `LoggerAware` / `AsLoggerAware` or
+`applicationContext.getLogger(name)`; module-level `getLogger(name)` keeps
+working and follows the same factory settings.
+
 ## API
 
 The full API is at `api/` (generated; run `pnpm doc:api`). Primary exports live in

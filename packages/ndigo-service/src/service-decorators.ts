@@ -157,21 +157,57 @@ export const postCall = callDecorator('POST');
 
 /**
  * Declares a PUT service call.
+ *
+ * @param path - Path template relative to the service base URL.
+ * @param config - Optional call config (response Zod schema).
+ *
+ * @example
+ * ```ts
+ * @putCall('/items/:id')
+ * updateItem(id: number, body: Item): Promise<Item> { return undefined as never; }
+ * ```
  */
 export const putCall = callDecorator('PUT');
 
 /**
  * Declares a DELETE service call.
+ *
+ * @param path - Path template relative to the service base URL.
+ * @param config - Optional call config (response Zod schema).
+ *
+ * @example
+ * ```ts
+ * @deleteCall('/items/:id')
+ * deleteItem(id: number): Promise<void> { return undefined as never; }
+ * ```
  */
 export const deleteCall = callDecorator('DELETE');
 
 /**
  * Declares a PATCH service call.
+ *
+ * @param path - Path template relative to the service base URL.
+ * @param config - Optional call config (response Zod schema).
+ *
+ * @example
+ * ```ts
+ * @patchCall('/items/:id')
+ * patchItem(id: number, body: Partial<Item>): Promise<Item> { return undefined as never; }
+ * ```
  */
 export const patchCall = callDecorator('PATCH');
 
 /**
  * Declares a QUERY service call (RFC 9889 — safe method with a body).
+ *
+ * @param path - Path template relative to the service base URL.
+ * @param config - Optional call config (response Zod schema).
+ *
+ * @example
+ * ```ts
+ * @queryCall('/items/search')
+ * searchItems(body: SearchQuery): Promise<Item[]> { return undefined as never; }
+ * ```
  */
 export const queryCall = callDecorator('QUERY');
 

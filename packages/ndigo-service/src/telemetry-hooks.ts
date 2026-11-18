@@ -52,6 +52,11 @@ export class EventEmitterTelemetryHooks implements TelemetryHooks {
      * Creates a new telemetry hooks implementation.
      *
      * @param emitter - The event emitter to use for notifications.
+     *
+     * @example
+     * ```ts
+     * const hooks = new EventEmitterTelemetryHooks(context.eventEmitter);
+     * ```
      */
     constructor(emitter: EventEmitter) {
         this.#emitter = emitter;

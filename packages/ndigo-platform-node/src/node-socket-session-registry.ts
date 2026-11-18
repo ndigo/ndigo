@@ -154,6 +154,21 @@ export function resolveSocketRegistryOptions(
  * `NodeAutoConfiguration`; any service can inject it and push to a room.
  */
 export class NodeSocketSessionRegistry implements SocketSessionRegistry, AsyncCloseable {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "NodeSocketSessionRegistry".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object NodeSocketSessionRegistry]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'NodeSocketSessionRegistry';
+    }
+
     #sessions: Map<SocketSession, string> = new Map();
     /** Auto-join path index: path → sessions (mirror of `#sessions`, O(n)→O(set-size)). */
     #paths: Map<string, Set<SocketSession>> = new Map();

@@ -2,6 +2,21 @@
  * Resource loader that persists data to `localStorage`.
  */
 export class LocalStorageResourceLoader {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "LocalStorageResourceLoader".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object LocalStorageResourceLoader]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'LocalStorageResourceLoader';
+    }
+
     readonly #prefix: string;
 
     /**

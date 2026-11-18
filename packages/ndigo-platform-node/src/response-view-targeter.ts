@@ -17,6 +17,21 @@ import { getNodeResponse } from './node-request';
  */
 export class ResponseViewTargeter implements ViewTargeter {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "ResponseViewTargeter".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object ResponseViewTargeter]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'ResponseViewTargeter';
+    }
+
+    /**
      * Resolves the HTTP response target for the current route.
      *
      * The target is created even when the route carries no response: its

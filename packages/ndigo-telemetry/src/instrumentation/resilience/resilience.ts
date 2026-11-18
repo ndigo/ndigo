@@ -9,6 +9,21 @@ import { AbstractBaseInstrumentation } from '../base';
  * OpenTelemetry instrumentation for `ResilienceInstrumentation`.
  */
 export class ResilienceInstrumentation extends AbstractBaseInstrumentation {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "ResilienceInstrumentation".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object ResilienceInstrumentation]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'ResilienceInstrumentation';
+    }
+
     constructor() {
         super('resilience');
     }

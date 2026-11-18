@@ -22,6 +22,21 @@ import { type RateLimitPolicy, type RateLimitResult, type RateLimiter, validateR
  * (key, window) pair, sliding to a fresh window once `windowMs` elapses.
  */
 export class FixedWindowRateLimiter implements RateLimiter {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "FixedWindowRateLimiter".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object FixedWindowRateLimiter]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'FixedWindowRateLimiter';
+    }
+
     /** Backend identifier (`'fixed-window'`). */
     readonly kind = 'fixed-window';
 

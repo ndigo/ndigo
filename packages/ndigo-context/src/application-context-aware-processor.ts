@@ -14,6 +14,21 @@ import { defineProperty } from './context-shared';
  * An {@link InitializationAwareProcessor|InitializationAwareProcessor} implementation that passes the ApplicationContext to value that implement the `EnvironmentAware`, `ResourceLoaderAware`, `ApplicationEventEmitterAware`, `ContentSourceAware`, `MessageSourceAware`, and/or `ApplicationContextAware` interfaces.
  */
 export class ApplicationContextAwareProcessor implements InitializationAwareProcessor {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "ApplicationContextAwareProcessor".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object ApplicationContextAwareProcessor]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'ApplicationContextAwareProcessor';
+    }
+
     /** The application context injected into aware values. */
     readonly applicationContext!: ApplicationContext;
 

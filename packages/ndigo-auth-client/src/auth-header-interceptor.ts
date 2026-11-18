@@ -20,6 +20,21 @@ import { AuthSession } from '@ndigo/auth-core';
  * ```
  */
 export class AuthHeaderInterceptor implements RequestAwareHTTPInterceptor {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "AuthHeaderInterceptor".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object AuthHeaderInterceptor]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'AuthHeaderInterceptor';
+    }
+
     readonly #session: AuthSession;
 
     /**

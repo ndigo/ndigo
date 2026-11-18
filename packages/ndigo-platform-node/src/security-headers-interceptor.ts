@@ -69,6 +69,21 @@ const DEFAULT_CONNECT_SRC = ["'self'"];
  *   last-write-wins with app-level `setHeader` calls that run later.
  */
 export class SecurityHeadersInterceptor implements RouteHandlerInterceptor {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "SecurityHeadersInterceptor".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object SecurityHeadersInterceptor]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'SecurityHeadersInterceptor';
+    }
+
     readonly #middlewares: HeaderMiddleware[];
 
     /**

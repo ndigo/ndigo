@@ -17,6 +17,21 @@ import { HTTPHeader } from './http-header';
  */
 export class SetCookieHeader extends HTTPHeader {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "SetCookieHeader".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object SetCookieHeader]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'SetCookieHeader';
+    }
+
+    /**
      * Builds a `Set-Cookie` value: `name=value` plus optional attributes,
      * `; `-joined. Attribute strings are inserted verbatim (e.g.
      * `'Max-Age=0'`, `'Expires=Thu, 01 Jan 1970 00:00:00 GMT'`).

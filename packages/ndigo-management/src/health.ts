@@ -62,6 +62,21 @@ export interface HealthIndicator {
  * exposing the backing collection. Replacing an indicator keeps its position.
  */
 export class HealthRegistry implements Enumerable<string, HealthIndicator> {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "HealthRegistry".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object HealthRegistry]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'HealthRegistry';
+    }
+
     #indicators = new Map<string, HealthIndicator>();
     readonly #redactHealthErrors: boolean;
 

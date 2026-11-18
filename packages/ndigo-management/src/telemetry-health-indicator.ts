@@ -13,6 +13,21 @@ import { HealthIndicator, HealthResult, HealthState } from './health';
  * `DOWN` when none is wired (management endpoints would serve empty metrics).
  */
 export class TelemetryHealthIndicator implements HealthIndicator {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "TelemetryHealthIndicator".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object TelemetryHealthIndicator]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'TelemetryHealthIndicator';
+    }
+
     /** The indicator name reported under `/health`. */
     readonly name = 'telemetry';
     #aggregator: FeatureMetricAggregator | undefined;

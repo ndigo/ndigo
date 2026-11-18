@@ -14,6 +14,21 @@ import { DOMElementViewTarget, type DOMViewTarget, type RenderHost } from './eng
  * rendered into and throw `IllegalStateError`.
  */
 export class IframeViewTarget implements DOMViewTarget, Destroyable {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "IframeViewTarget".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object IframeViewTarget]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'IframeViewTarget';
+    }
+
     #iframe: HTMLIFrameElement;
     #eventMap: Record<string, string>;
     #applicationContext: EventEmitter | null;

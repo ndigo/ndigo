@@ -21,6 +21,21 @@ interface HashRouterPatchTarget {
  * providing visibility into route change events within the application.
  */
 export class RouterInstrumentation extends AbstractBaseInstrumentation {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "RouterInstrumentation".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object RouterInstrumentation]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'RouterInstrumentation';
+    }
+
     constructor() {
         super('router');
     }

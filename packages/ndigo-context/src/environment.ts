@@ -487,9 +487,39 @@ export const likeEnvironmentSource = (value: unknown): value is EnvironmentSourc
 /**
  * Environment implementation intended for tests.
  */
-export class MockEnvironment extends AbstractEnvironment {}
+export class MockEnvironment extends AbstractEnvironment {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "MockEnvironment".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object MockEnvironment]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'MockEnvironment';
+    }
+}
 
 /**
  * Default environment implementation used by application contexts.
  */
-export class StandardEnvironment extends AbstractEnvironment {}
+export class StandardEnvironment extends AbstractEnvironment {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "StandardEnvironment".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object StandardEnvironment]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'StandardEnvironment';
+    }
+}

@@ -14,6 +14,21 @@ import { AbstractSerializingView } from './abstract-serializing-view.js';
  * Node HTTP responses and browser SSR from the same class.
  */
 export class JSONView extends AbstractSerializingView {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "JSONView".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object JSONView]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'JSONView';
+    }
+
     constructor() {
         super();
         this.mediaType = MediaTypes.APPLICATION_JSON?.withCharset('UTF-8') ?? null;

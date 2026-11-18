@@ -18,6 +18,21 @@ import { AbstractBaseInstrumentation } from '@ndigo/telemetry';
  * ```
  */
 export class ServerSentEventViewInstrumentation extends AbstractBaseInstrumentation {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "ServerSentEventViewInstrumentation".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object ServerSentEventViewInstrumentation]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'ServerSentEventViewInstrumentation';
+    }
+
     constructor() {
         super('server-sent-event-view');
     }

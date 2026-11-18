@@ -77,6 +77,21 @@ const MAX_KEY_LENGTH = 64;
  *   `false` that could mask a bad migration.
  */
 export class ScryptPasswordEncoder implements PasswordEncoder {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "ScryptPasswordEncoder".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object ScryptPasswordEncoder]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'ScryptPasswordEncoder';
+    }
+
     readonly #ln: number;
     readonly #r: number;
     readonly #p: number;

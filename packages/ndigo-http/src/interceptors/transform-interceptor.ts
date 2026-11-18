@@ -13,6 +13,21 @@ import * as HTTPHeaders from '../http-headers';
  * type and other request context.
  */
 export class TransformInterceptor implements RequestAwareHTTPInterceptor, ResponseAwareHTTPInterceptor {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "TransformInterceptor".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object TransformInterceptor]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'TransformInterceptor';
+    }
+
     constructor(
         private readonly requestTransforms: Transform[] = [],
         private readonly responseTransforms: Transform[] = []

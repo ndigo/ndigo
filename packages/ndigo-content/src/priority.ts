@@ -27,6 +27,21 @@ import { LanguageCode } from './language-code';
  * ```
  */
 export class PriorityContentSource implements ContentSource {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "PriorityContentSource".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object PriorityContentSource]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'PriorityContentSource';
+    }
+
     #sources: ContentSource[];
 
     /**

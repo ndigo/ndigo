@@ -170,6 +170,21 @@ export interface HTTPServerOptions {
  * adapter's close is invoked through `stop()`, not the context entry close.
  */
 export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "HTTPServer".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object HTTPServer]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'HTTPServer';
+    }
+
     #adapter: HTTPServerAdapter | null;
     #port: number;
     #boundPort: number | null;

@@ -216,6 +216,21 @@ function push16(bytes: number[], value: number): void {
  * narrow the trusted set.
  */
 export class TrustedProxySet implements Matchable<string> {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "TrustedProxySet".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object TrustedProxySet]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'TrustedProxySet';
+    }
+
     #entries: readonly (readonly number[])[];
     #prefixBits: readonly number[];
     #families: readonly IPFamily[];

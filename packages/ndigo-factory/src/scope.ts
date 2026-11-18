@@ -152,6 +152,21 @@ export const refreshScope = scope('refresh');
  */
 export class PrototypeScope implements Scope {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "PrototypeScope".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object PrototypeScope]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'PrototypeScope';
+    }
+
+    /**
      * No-op: prototype values are not cached.
      *
      * @param _name - The value name (unused).
@@ -187,6 +202,21 @@ export class PrototypeScope implements Scope {
  * @internal Implementation detail — see {@link PrototypeScope} for rationale.
  */
 export class HashScope implements Scope {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "HashScope".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object HashScope]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'HashScope';
+    }
+
     #scopeMap: Map<string, Map<string, unknown>> = new Map<string, Map<string, unknown>>();
     #destructionCallbacks: Map<string, Map<string, () => void>> = new Map<string, Map<string, () => void>>();
     #currentKey: string | null = null;
@@ -316,6 +346,21 @@ export class HashScope implements Scope {
  * @internal Implementation detail — see {@link PrototypeScope} for rationale.
  */
 export class SingletonScope implements Scope {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "SingletonScope".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object SingletonScope]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'SingletonScope';
+    }
+
     #instances: Map<string, unknown> = new Map<string, unknown>();
     #destructionCallbacks: Map<string, () => void> = new Map<string, () => void>();
 
@@ -374,6 +419,21 @@ export class SingletonScope implements Scope {
  * @internal Implementation detail — see {@link PrototypeScope} for rationale.
  */
 export class RefreshScope implements Scope {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "RefreshScope".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object RefreshScope]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'RefreshScope';
+    }
+
     #instances: Map<string, unknown> = new Map<string, unknown>();
     #destructionCallbacks: Map<string, () => void> = new Map<string, () => void>();
 

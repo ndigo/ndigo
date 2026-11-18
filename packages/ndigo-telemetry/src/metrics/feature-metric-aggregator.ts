@@ -60,6 +60,21 @@ export interface FeatureMetricAggregatorOptions {
  * organizing them by feature. It also offers a way to retrieve summarized metrics for analysis.
  */
 export class FeatureMetricAggregator {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "FeatureMetricAggregator".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object FeatureMetricAggregator]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'FeatureMetricAggregator';
+    }
+
     #featureMetricsMap: Map<string, MutableFeatureMetrics>;
     #maxDurationSamples: number;
     #maxFeatures: number;
@@ -258,6 +273,21 @@ export class FeatureMetricAggregator {
  *   duplicate would clobber in the JSON view.
  */
 export class FeatureMetricAggregatorProvider implements MetricSnapshotProvider {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "FeatureMetricAggregatorProvider".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object FeatureMetricAggregatorProvider]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'FeatureMetricAggregatorProvider';
+    }
+
     readonly #aggregator: FeatureMetricAggregator;
 
     /**

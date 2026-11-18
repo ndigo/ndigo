@@ -68,6 +68,21 @@ export interface JobRunnerOptions {
  * Deterministic tests drive {@link tick} directly with an injected clock.
  */
 export class JobRunner implements AsyncCloseable {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "JobRunner".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object JobRunner]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'JobRunner';
+    }
+
     /** SmartLifecycle phase: after the handler-registry scan (phase 0). */
     readonly phase = 10;
     /** Whether the runner starts with the context (`autoStart`). */

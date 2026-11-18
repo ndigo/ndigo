@@ -64,6 +64,21 @@ export interface EntityManager {
  * It uses an `InMemoryDataSource` to store and manage entities.
  */
 export class InMemoryEntityManager implements EntityManager {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "InMemoryEntityManager".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object InMemoryEntityManager]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'InMemoryEntityManager';
+    }
+
     readonly #dataSource: DataSource;
     #identityCounters: Map<string, number>;
 

@@ -40,6 +40,21 @@ export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo>
     implements Initializable, SmartLifecycle
 {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "AbstractHandlerMethodMapping".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object AbstractHandlerMethodMapping]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'AbstractHandlerMethodMapping';
+    }
+
+    /**
      * Naming strategy used when exposing handler methods by name.
      *
      * Defaults to {@link RouteMappingInfoHandlerMethodMappingNamingStrategy}

@@ -13,6 +13,21 @@ import { Theme, ThemeSource } from './theme';
  * Falls back to the key itself when all sources return the key unchanged.
  */
 export class CompositeContentSource implements ContentSource {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "CompositeContentSource".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object CompositeContentSource]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'CompositeContentSource';
+    }
+
     #sources: ContentSource[];
 
     /**
@@ -53,6 +68,21 @@ export class CompositeContentSource implements ContentSource {
  * result. Throws when all sources fail to resolve the theme.
  */
 export class CompositeThemeSource implements ThemeSource {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "CompositeThemeSource".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object CompositeThemeSource]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'CompositeThemeSource';
+    }
+
     #sources: ThemeSource[];
 
     /**

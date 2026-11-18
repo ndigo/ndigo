@@ -19,6 +19,21 @@ const { isArray } = Array;
  */
 export abstract class AbstractPathHandlerMapping extends AbstractHandlerMapping implements MatchableHandlerMapping {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "AbstractPathHandlerMapping".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object AbstractPathHandlerMapping]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'AbstractPathHandlerMapping';
+    }
+
+    /**
      * Handler mapped to the root path.
      */
     rootHandler: object | null = null;
@@ -200,6 +215,21 @@ export abstract class AbstractPathHandlerMapping extends AbstractHandlerMapping 
  * Base class for path mappings that discover handlers from the application context.
  */
 export abstract class AbstractDetectingPathHandlerMapping extends AbstractPathHandlerMapping {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "AbstractDetectingPathHandlerMapping".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object AbstractDetectingPathHandlerMapping]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'AbstractDetectingPathHandlerMapping';
+    }
+
     /**
      * Store the application context and detect handlers immediately.
      *

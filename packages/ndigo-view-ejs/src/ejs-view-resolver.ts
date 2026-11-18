@@ -27,6 +27,21 @@ export interface EJSViewResolverOptions extends EJSViewOptions {
  * every name is resolved.
  */
 export class EJSViewResolver extends AbstractPathBasedViewResolver {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "EJSViewResolver".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object EJSViewResolver]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'EJSViewResolver';
+    }
+
     readonly #options: EJSViewResolverOptions;
 
     /**

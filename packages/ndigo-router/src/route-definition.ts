@@ -27,6 +27,21 @@ export type RouteParams<T extends string> = T extends `${string}{${infer P}}${in
  * unknown parameter instead of emitting a broken URL.
  */
 export class RouteDefinition<TPattern extends string = string> implements Matchable<string> {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "RouteDefinition".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object RouteDefinition]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'RouteDefinition';
+    }
+
     /** The route pattern this definition is bound to. */
     readonly pattern: TPattern;
     readonly #context: Registry;

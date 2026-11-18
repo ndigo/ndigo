@@ -16,6 +16,21 @@ import { parseSecretMarker, SecretCipher, SecretDecryptContext, SecretDecryptor 
  * at wiring time; `get` performs the dispatch lookup.
  */
 export class SecretSchemeRegistry implements SecretDecryptor {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "SecretSchemeRegistry".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object SecretSchemeRegistry]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'SecretSchemeRegistry';
+    }
+
     #ciphers: Map<string, SecretCipher> = new Map<string, SecretCipher>();
 
     /**

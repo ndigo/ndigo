@@ -20,6 +20,21 @@ import type { ViewTarget } from './view-target.js';
  */
 export abstract class AbstractSerializingView extends AbstractView implements ProducerView {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "AbstractSerializingView".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object AbstractSerializingView]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'AbstractSerializingView';
+    }
+
+    /**
      * Produces the serialized document for document mode.
      *
      * @param model - The data model to encode.

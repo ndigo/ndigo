@@ -29,6 +29,21 @@ function component(value: string): string {
  * keyspace-wide KEYS command, cluster guarantee or per-cache eviction simulation.
  */
 export class RedisCache<V = unknown> implements Cache<V> {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "RedisCache".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object RedisCache]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'RedisCache';
+    }
+
     readonly #connection: RedisConnection;
     readonly #prefix: string;
     readonly #defaultTtl: number | undefined;

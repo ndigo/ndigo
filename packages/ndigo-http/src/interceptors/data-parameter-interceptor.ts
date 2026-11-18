@@ -70,6 +70,21 @@ const getEntries = (data: DataInit) => entriesIterator(isString(data) ? QueryStr
  */
 export class DataParameterInterceptor implements InitializationAwareHTTPInterceptor<DataParameterInit> {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "DataParameterInterceptor".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object DataParameterInterceptor]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'DataParameterInterceptor';
+    }
+
+    /**
      * module:http.DataParameterInterceptor#preInit
      * @param url - The requested URL.
      * @param settings - The HTTP request settings, including the `data` setting.

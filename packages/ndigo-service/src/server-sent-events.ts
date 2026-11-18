@@ -44,6 +44,21 @@ function parseData(raw: string): unknown {
  * ```
  */
 export class ServerSentEventParser {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "ServerSentEventParser".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object ServerSentEventParser]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'ServerSentEventParser';
+    }
+
     /** Chunk bytes not yet consumed as a complete line. */
     #buffer = '';
     /** The event currently being assembled, if any field line was seen. */

@@ -31,6 +31,21 @@ export interface TelemetryHooks {
  * Telemetry hooks implementation that uses an EventEmitter to notify about service events.
  */
 export class EventEmitterTelemetryHooks implements TelemetryHooks {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "EventEmitterTelemetryHooks".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object EventEmitterTelemetryHooks]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'EventEmitterTelemetryHooks';
+    }
+
     #emitter: EventEmitter;
 
     /**

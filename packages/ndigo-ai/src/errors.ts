@@ -9,6 +9,21 @@ import { ApplicationError } from '@ndigo/core';
  */
 export class AIRateLimitError extends ApplicationError {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "AIRateLimitError".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object AIRateLimitError]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'AIRateLimitError';
+    }
+
+    /**
      * Milliseconds until the current rate-limit window resets.
      */
     readonly retryAfterMs: number;
@@ -27,6 +42,21 @@ export class AIRateLimitError extends ApplicationError {
  * The model rollout flag evaluated to `false`, so the agent refused the call.
  */
 export class AIModelDisabledError extends ApplicationError {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "AIModelDisabledError".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object AIModelDisabledError]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'AIModelDisabledError';
+    }
+
     /**
      * @param flag - The feature-flag key that disabled the model.
      */

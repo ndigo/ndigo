@@ -15,6 +15,21 @@ import { writeRenderResult } from './producer-writer';
  * `ServerResponse`. Supports content negotiation via the `Accept` header.
  */
 export class HTTPResponseViewTarget implements ViewTarget {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "HTTPResponseViewTarget".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object HTTPResponseViewTarget]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'HTTPResponseViewTarget';
+    }
+
     readonly #response: ServerResponse | undefined;
 
     /**

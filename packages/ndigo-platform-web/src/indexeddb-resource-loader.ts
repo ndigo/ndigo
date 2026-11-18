@@ -24,6 +24,21 @@ export interface IndexedDBConfig {
  * ```
  */
 export class IndexedDBResourceLoader {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "IndexedDBResourceLoader".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object IndexedDBResourceLoader]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'IndexedDBResourceLoader';
+    }
+
     readonly #dbName: string;
     readonly #storeName: string;
     readonly #version: number;

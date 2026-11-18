@@ -12,6 +12,21 @@ export type URLSearchParamsEntryTransform = (key: string, value: string) => [str
  * Transforms `URLSearchParams` entries one by one.
  */
 export class URLSearchParamsTransformer implements HTTPTransformer<URLSearchParams, URLSearchParams> {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "URLSearchParamsTransformer".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object URLSearchParamsTransformer]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'URLSearchParamsTransformer';
+    }
+
     readonly #entryTransform: URLSearchParamsEntryTransform;
     readonly #postProcess?: (params: URLSearchParams) => URLSearchParams;
     readonly #condition?: (body: URLSearchParams, context: TransformContext) => boolean;

@@ -30,6 +30,21 @@ import { RingBuffer, Deque } from '@ndigo/core';
  */
 export class AsyncReader<T> {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "AsyncReader".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object AsyncReader]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'AsyncReader';
+    }
+
+    /**
      * Queue of pending values — a head-indexed ring, not an array: the
      * per-message `shift()` compaction an array would pay is O(n) per
      * dequeue on the hottest path in the socket stack (every inbound

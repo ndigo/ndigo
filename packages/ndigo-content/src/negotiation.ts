@@ -77,6 +77,21 @@ export const parseAcceptLanguage = (header: string): string | undefined => {
  * ```
  */
 export class NegotiatingContentSource implements ContentSource {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "NegotiatingContentSource".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object NegotiatingContentSource]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'NegotiatingContentSource';
+    }
+
     #source: ContentSource;
     #defaultLanguage: string;
 

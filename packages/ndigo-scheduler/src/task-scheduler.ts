@@ -159,6 +159,21 @@ export const likeTaskScheduler = like({
  *   computed next-fire time (fire-and-forget; single-flight guards overlap).
  */
 export class TaskScheduler implements AsyncCloseable, AsyncDestroyable {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "TaskScheduler".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object TaskScheduler]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'TaskScheduler';
+    }
+
     readonly #clock: () => Date;
     readonly #warn: (message: string) => void;
     readonly #tasks = new Map<string, TaskState>();

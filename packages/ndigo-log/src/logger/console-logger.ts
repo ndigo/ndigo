@@ -9,6 +9,21 @@ import { Logger, LogAttributes } from './logger.js';
  * Logger that writes to the console, gated by a minimum severity.
  */
 export class ConsoleLogger implements Logger {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "ConsoleLogger".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object ConsoleLogger]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'ConsoleLogger';
+    }
+
     #threshold: SeverityNumber;
 
     constructor(

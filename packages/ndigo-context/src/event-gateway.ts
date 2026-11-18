@@ -116,6 +116,21 @@ const parseNamespace = (eventType: EventType): string | undefined => {
  */
 export class PermissiveRelayValidationStrategy implements RelayValidationStrategy {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "PermissiveRelayValidationStrategy".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object PermissiveRelayValidationStrategy]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'PermissiveRelayValidationStrategy';
+    }
+
+    /**
      * Accepts every relay without additional checks.
      *
      * @param relay - The relay to validate.
@@ -133,6 +148,21 @@ export class PermissiveRelayValidationStrategy implements RelayValidationStrateg
  * Namespace-based relay validator for `site:*` and `<feature>:*` contracts.
  */
 export class NamespaceRelayValidationStrategy implements RelayValidationStrategy {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "NamespaceRelayValidationStrategy".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object NamespaceRelayValidationStrategy]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'NamespaceRelayValidationStrategy';
+    }
+
     /** Optional feature namespace for relay validation. */
     readonly featureNamespace?: string;
 
@@ -225,6 +255,21 @@ export class InvalidRelayError extends FrameworkError {
  * Relays selected events from one application context to another.
  */
 export class ContextEventGateway {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "ContextEventGateway".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object ContextEventGateway]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'ContextEventGateway';
+    }
+
     #connected: boolean;
     #blockedRelays: RelayValidationResult[];
     #diagnosticHandler?: GatewayDiagnosticHandler;

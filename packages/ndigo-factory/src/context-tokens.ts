@@ -12,6 +12,21 @@ import { Equatable, Serializable } from '@ndigo/core';
  */
 export class ContextToken<_T> implements Equatable<ContextToken<_T>>, Serializable {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "ContextToken".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object ContextToken]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'ContextToken';
+    }
+
+    /**
      * A descriptive string for the token, used as the backing key at runtime.
      */
     readonly description: string;

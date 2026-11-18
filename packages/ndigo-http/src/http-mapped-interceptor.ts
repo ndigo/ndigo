@@ -31,6 +31,21 @@ import { is } from '@ndigo/util/types';
  */
 export class WildcardMatcher implements PatternMatcher<string, string> {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "WildcardMatcher".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object WildcardMatcher]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'WildcardMatcher';
+    }
+
+    /**
      * Tests whether a value matches a wildcard pattern.
      *
      * @param pattern - The wildcard pattern to compile and cache.
@@ -65,6 +80,21 @@ export class MappedHTTPInterceptor
         RequestAwareHTTPInterceptor,
         ResponseAwareHTTPInterceptor
 {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "MappedHTTPInterceptor".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object MappedHTTPInterceptor]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'MappedHTTPInterceptor';
+    }
+
     #excludePatterns!: string[];
     #includePatterns!: string[];
     #interceptor: HTTPInterceptor;

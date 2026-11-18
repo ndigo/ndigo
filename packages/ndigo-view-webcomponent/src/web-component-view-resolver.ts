@@ -80,6 +80,21 @@ async function loadComponentClass(path: string): Promise<Constructable<HTMLEleme
  * ```
  */
 export class WebComponentViewResolver extends AbstractPathBasedViewResolver {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "WebComponentViewResolver".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object WebComponentViewResolver]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'WebComponentViewResolver';
+    }
+
     readonly #registry: Record<string, Constructable<HTMLElement> | string>;
 
     /**

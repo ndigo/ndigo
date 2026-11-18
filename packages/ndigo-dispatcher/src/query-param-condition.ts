@@ -16,6 +16,21 @@ const { defineProperty } = Reflect;
  */
 export class QueryParamExpression extends AbstractNameValueExpression<string> {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "QueryParamExpression".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object QueryParamExpression]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'QueryParamExpression';
+    }
+
+    /**
      * Parameter names that may satisfy this expression.
      */
     readonly namesToMatch!: Set<string>;
@@ -89,6 +104,21 @@ export class QueryParamExpression extends AbstractNameValueExpression<string> {
  * A logical conjunction (' && ') route condition that matches a route against a set parameter expressions with syntax defined in `RouteMapping`.
  */
 export class QueryParamCondition extends AbstractRouteCondition<QueryParamCondition> {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "QueryParamCondition".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object QueryParamCondition]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'QueryParamCondition';
+    }
+
     /**
      * Parameter expressions that must all match.
      */

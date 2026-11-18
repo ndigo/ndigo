@@ -37,6 +37,21 @@ const namePattern = /^[a-zA-Z0-9_.:-]+$/u;
  * `acceptsProfiles(...)` seamlessly.
  */
 export class ProfileTerm implements Serializable, Equatable<ProfileTerm> {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "ProfileTerm".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object ProfileTerm]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'ProfileTerm';
+    }
+
     readonly #source: string;
     readonly #kind: TermKind;
 

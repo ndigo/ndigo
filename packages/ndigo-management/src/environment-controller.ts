@@ -58,6 +58,21 @@ function flatten(node: unknown, prefix: string, into: Map<string, unknown>): voi
  */
 @requestMapping('/env')
 export class EnvironmentController extends AsApplicationContextAware(Null) {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "EnvironmentController".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object EnvironmentController]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'EnvironmentController';
+    }
+
     /** The application context injected by the aware mixin. */
     readonly applicationContext!: ApplicationContext;
     readonly #exposure: { include?: string[]; exclude?: string[] };

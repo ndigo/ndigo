@@ -303,6 +303,21 @@ export function entry(nameOrTarget?: string | ContextToken<unknown>): EntryDecor
  * @see {@link MetadataConfigApplicationContext}
  */
 class ConfigurationParser {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "ConfigurationParser".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object ConfigurationParser]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'ConfigurationParser';
+    }
+
     readonly environment!: Environment;
     readonly registry!: Registry;
 
@@ -424,6 +439,21 @@ export class ConfigurationProcessor
     implements EntryRegistryProcessor
 {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "ConfigurationProcessor".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object ConfigurationProcessor]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'ConfigurationProcessor';
+    }
+
+    /**
      * The environment used for resolving properties.
      */
     environment!: Environment;
@@ -448,6 +478,21 @@ export class ConfigurationProcessor
  * their `@entry` values.
  */
 export class MetadataConfigApplicationContext extends GenericApplicationContext {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "MetadataConfigApplicationContext".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object MetadataConfigApplicationContext]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'MetadataConfigApplicationContext';
+    }
+
     constructor(name?: string) {
         super(name);
         // Register the ApplicationContextAwareProcessor before any @entry

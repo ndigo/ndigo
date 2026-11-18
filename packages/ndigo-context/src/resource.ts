@@ -118,6 +118,21 @@ export const likeResourceLoaderAware = like({ setResourceLoader: Function }) as 
  * Resource implementation backed by a URL.
  */
 export class URLResource<T = unknown> implements Resource<T> {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "URLResource".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object URLResource]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'URLResource';
+    }
+
     /** The resolved URL. */
     readonly url!: URL;
     /** The loaded value. */
@@ -157,6 +172,21 @@ export class URLResource<T = unknown> implements Resource<T> {
  * Resource wrapper used when loading fails.
  */
 export class UnresolvedResource implements Resource<Error> {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "UnresolvedResource".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object UnresolvedResource]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'UnresolvedResource';
+    }
+
     /** The load error. */
     readonly value!: Error;
 
@@ -209,7 +239,22 @@ export const AsModuleResourceLoader = <T extends Constructable>(superclass: T): 
 /**
  * Resource loader that resolves modules through dynamic import.
  */
-export class DefaultResourceLoader extends AsModuleResourceLoader(Null) {}
+export class DefaultResourceLoader extends AsModuleResourceLoader(Null) {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "DefaultResourceLoader".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object DefaultResourceLoader]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'DefaultResourceLoader';
+    }
+}
 
 /**
  * Resource loader backed by an in-memory map of location to value.
@@ -226,6 +271,21 @@ export class DefaultResourceLoader extends AsModuleResourceLoader(Null) {}
  * ```
  */
 export class InMemoryResourceLoader implements ResourceLoader {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "InMemoryResourceLoader".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object InMemoryResourceLoader]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'InMemoryResourceLoader';
+    }
+
     readonly #sources = new Map<string, unknown>();
 
     /**
@@ -254,6 +314,21 @@ export class InMemoryResourceLoader implements ResourceLoader {
  * Resource wrapper holding a value registered in an {@link InMemoryResourceLoader}.
  */
 class InMemoryResource implements Resource {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "InMemoryResource".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object InMemoryResource]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'InMemoryResource';
+    }
+
     readonly value!: unknown;
 
     get exists(): boolean {

@@ -28,6 +28,21 @@ import { AbstractBaseInstrumentation, createLazyCounter } from '@ndigo/telemetry
  * ```
  */
 export class WebSocketClientInstrumentation extends AbstractBaseInstrumentation {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "WebSocketClientInstrumentation".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object WebSocketClientInstrumentation]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'WebSocketClientInstrumentation';
+    }
+
     constructor() {
         super('websocket-client');
     }

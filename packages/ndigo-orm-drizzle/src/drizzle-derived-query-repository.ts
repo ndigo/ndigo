@@ -32,6 +32,21 @@ import { DrizzleRepository } from './drizzle-repository';
  */
 export class DrizzleDerivedQueryRepository<T extends object, ID> extends DrizzleRepository<T, ID> {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "DrizzleDerivedQueryRepository".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object DrizzleDerivedQueryRepository]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'DrizzleDerivedQueryRepository';
+    }
+
+    /**
      * Evaluates a derived-query method name against the database.
      *
      * @param methodName - The method name that was called.

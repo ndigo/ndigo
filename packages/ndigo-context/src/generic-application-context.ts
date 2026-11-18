@@ -49,6 +49,21 @@ let uuid = 0;
  * ```
  */
 export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLoader(DefaultFactory)) {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "GenericApplicationContext".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object GenericApplicationContext]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'GenericApplicationContext';
+    }
+
     #children: GenericApplicationContext[];
     #contentSource: ContentSource;
     #customThemeSource: boolean;

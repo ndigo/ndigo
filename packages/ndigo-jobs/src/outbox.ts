@@ -125,6 +125,21 @@ export interface OutboxPublisher {
  * effect of `outbox.append(…)` is delivered through the durable queue.
  */
 export class JobOutboxPublisher implements OutboxPublisher {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "JobOutboxPublisher".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object JobOutboxPublisher]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'JobOutboxPublisher';
+    }
+
     readonly #queue: JobQueue;
 
     /**

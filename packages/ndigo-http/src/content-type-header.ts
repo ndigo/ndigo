@@ -60,6 +60,21 @@ export function multipartBoundary(contentType: string | undefined | null): strin
  */
 export class ContentTypeHeader extends HTTPHeader {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "ContentTypeHeader".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object ContentTypeHeader]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'ContentTypeHeader';
+    }
+
+    /**
      * The bare media type of a `Content-Type` value (see
      * {@link contentTypeBase}).
      *

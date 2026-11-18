@@ -9,6 +9,21 @@
  * that locks users out — or, worse, a fallthrough that accepts a plaintext.
  */
 export class UnknownPasswordSchemeError extends Error {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "UnknownPasswordSchemeError".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object UnknownPasswordSchemeError]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'UnknownPasswordSchemeError';
+    }
+
     constructor(message: string) {
         super(message);
         this.name = 'UnknownPasswordSchemeError';

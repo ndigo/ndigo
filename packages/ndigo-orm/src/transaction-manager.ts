@@ -63,6 +63,21 @@ export interface TransactionManager {
  * silently discarding the first run's commits on rollback (DAT-F2).
  */
 export class InMemoryTransactionManager implements TransactionManager {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "InMemoryTransactionManager".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object InMemoryTransactionManager]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'InMemoryTransactionManager';
+    }
+
     #active = false;
     #dataSource: InMemoryDataSource;
 

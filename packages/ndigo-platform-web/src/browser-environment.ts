@@ -64,6 +64,21 @@ const hasImportMetaEnv = (override?: boolean): boolean => {
  */
 export class BrowserEnvironment extends StandardEnvironment {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "BrowserEnvironment".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object BrowserEnvironment]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'BrowserEnvironment';
+    }
+
+    /**
      * Creates a browser environment.
      *
      * @param propertySources - Custom property sources (higher precedence than the built-ins).

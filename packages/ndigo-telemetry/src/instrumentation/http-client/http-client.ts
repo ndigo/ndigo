@@ -13,6 +13,21 @@ import { AbstractBaseInstrumentation } from '../base';
  * spans of the request (transforms, fetch) nest under it.
  */
 export class HTTPClientInstrumentation extends AbstractBaseInstrumentation {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "HTTPClientInstrumentation".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object HTTPClientInstrumentation]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'HTTPClientInstrumentation';
+    }
+
     constructor() {
         super('http-client');
     }

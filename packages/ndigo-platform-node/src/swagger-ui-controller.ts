@@ -117,6 +117,21 @@ export function renderSwaggerUiInitScript(specUrl: string): string {
  * never boot of the whole docs auto-configuration (SEC-3).
  */
 export class SwaggerUIController {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "SwaggerUIController".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object SwaggerUIController]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'SwaggerUIController';
+    }
+
     #assets: StaticResourceHandler | null = null;
     #page: string | null = null;
     #initScript: string | null = null;

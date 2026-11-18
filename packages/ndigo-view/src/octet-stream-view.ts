@@ -12,6 +12,21 @@ import { AbstractSerializingView } from './abstract-serializing-view.js';
  * (UTF-8 encoded).
  */
 export class OctetStreamView extends AbstractSerializingView {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "OctetStreamView".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object OctetStreamView]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'OctetStreamView';
+    }
+
     constructor() {
         super();
         this.mediaType = MediaTypes.APPLICATION_OCTET_STREAM ?? null;

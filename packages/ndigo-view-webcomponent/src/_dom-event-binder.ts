@@ -2,6 +2,21 @@
  * Utility for managing DOM event listeners on a specific element.
  */
 export class DOMEventBinder {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "DOMEventBinder".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object DOMEventBinder]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'DOMEventBinder';
+    }
+
     #element: EventTarget;
     #listeners: Map<string, EventListener> = new Map();
 

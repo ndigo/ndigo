@@ -28,6 +28,21 @@ export interface FeatureRouteMount {
  * It supports mounting feature-specific routes at defined prefixes.
  */
 export class PartitionRouter extends AbstractRouter {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "PartitionRouter".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object PartitionRouter]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'PartitionRouter';
+    }
+
     /** The always-no-op callback (partitions own their callbacks). */
     readonly callback = () => undefined;
     #mounts: FeatureRouteMount[];

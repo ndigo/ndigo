@@ -52,6 +52,21 @@ export interface AISdkModelOptions {
  * sources behave identically across providers.
  */
 export class AISdkModel implements AIModel {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "AISdkModel".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object AISdkModel]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'AISdkModel';
+    }
+
     /** Model identity used in telemetry and rate-limit keys. */
     readonly info: AIModelInfo;
     readonly #model: LanguageModel;

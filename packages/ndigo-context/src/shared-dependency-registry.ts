@@ -64,6 +64,21 @@ export interface SharedDependencyRegistry {
  * runtime entry presence.
  */
 export class DefaultSharedDependencyRegistry implements SharedDependencyRegistry {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "DefaultSharedDependencyRegistry".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object DefaultSharedDependencyRegistry]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'DefaultSharedDependencyRegistry';
+    }
+
     #services: Map<string, SharedDependencyEntry>;
 
     constructor() {

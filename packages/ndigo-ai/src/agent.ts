@@ -108,6 +108,21 @@ const DEFAULT_MAX_STEPS = 8;
  * Drives one model through a bounded tool-calling loop.
  */
 export class AIAgent {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "AIAgent".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object AIAgent]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'AIAgent';
+    }
+
     readonly #model: AIModel;
     readonly #tools: AIToolSource | undefined;
     readonly #maxSteps: number;

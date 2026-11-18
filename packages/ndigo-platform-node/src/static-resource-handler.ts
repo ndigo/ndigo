@@ -229,6 +229,21 @@ function ifRangeMatches(
  * cannot flow through `ResponseEntityView`.
  */
 export class StaticResourceHandler {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "StaticResourceHandler".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object StaticResourceHandler]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'StaticResourceHandler';
+    }
+
     readonly #resolver: StaticResourceResolver;
     readonly #options: StaticHandlerOptions;
 

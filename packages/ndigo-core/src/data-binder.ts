@@ -11,7 +11,22 @@ const { keys } = Object;
 /**
  * Represents an error that occurs during data binding operations.
  */
-export class BindError extends FrameworkError {}
+export class BindError extends FrameworkError {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "BindError".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object BindError]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'BindError';
+    }
+}
 
 /**
  * Binds data from property values to a target object, supporting keypath expressions.
@@ -27,6 +42,21 @@ export class BindError extends FrameworkError {}
  * ```
  */
 export class DataBinder {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "DataBinder".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object DataBinder]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'DataBinder';
+    }
+
     #name: string;
     #target: unknown;
     #result: unknown;

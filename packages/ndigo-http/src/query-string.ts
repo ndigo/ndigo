@@ -81,6 +81,21 @@ function parseQueryString(input: string): Record<string, string | string[]> {
  */
 class QueryString implements Parser, Stringifier {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "QueryString".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object QueryString]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'QueryString';
+    }
+
+    /**
      * Parses a query string into a JSON object.
      *
      * @param value - The query string to parse.

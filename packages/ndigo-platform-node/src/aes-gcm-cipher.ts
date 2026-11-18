@@ -84,6 +84,21 @@ const decodePayload = (payload: string): DecodedPayload => {
  */
 export class AESGCMCipher implements SecretCipher {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "AESGCMCipher".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object AESGCMCipher]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'AESGCMCipher';
+    }
+
+    /**
      * The scheme id dispatched on markers: `cipher`.
      */
     readonly scheme = SCHEME;

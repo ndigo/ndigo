@@ -33,6 +33,21 @@ function normalize(item: unknown): ServerSentEvent {
  * `text/event-stream`, one SSE frame per yielded value.
  */
 export class ServerSentEventView implements ProducerView {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "ServerSentEventView".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object ServerSentEventView]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'ServerSentEventView';
+    }
+
     readonly #source: AsyncIterable<unknown>;
 
     /**

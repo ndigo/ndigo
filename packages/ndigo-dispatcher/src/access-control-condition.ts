@@ -38,6 +38,21 @@ export class AccessControlCondition
     implements RouteCondition<AccessControlCondition>
 {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "AccessControlCondition".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object AccessControlCondition]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'AccessControlCondition';
+    }
+
+    /**
      * The access level required for this condition.
      */
     readonly access!: AccessLevel;

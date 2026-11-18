@@ -320,6 +320,21 @@ function componentKeyOf(hint: string): string {
  * (operation id) or the registered `id`.
  */
 class SchemaComponents {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "SchemaComponents".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object SchemaComponents]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'SchemaComponents';
+    }
+
     readonly #schemas: Record<string, OpenAPISchemaObject> = {};
     readonly #byRef: Map<string, string> = new Map();
     readonly #names: Set<string> = new Set();
@@ -423,6 +438,21 @@ class SchemaComponents {
  * fresh document; nothing is cached on the instance.
  */
 export class OpenAPISpecGenerator {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "OpenAPISpecGenerator".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object OpenAPISpecGenerator]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'OpenAPISpecGenerator';
+    }
+
     /**
      * Generate the API document for the given handler mappings.
      *

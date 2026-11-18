@@ -112,6 +112,21 @@ export interface RedisLockDriverOptions {
  * node — the Redis keys are the shared truth.
  */
 export class RedisLockDriver implements LockDriver {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "RedisLockDriver".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object RedisLockDriver]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'RedisLockDriver';
+    }
+
     /** Backend identifier for diagnostics. */
     readonly kind = 'redis';
 

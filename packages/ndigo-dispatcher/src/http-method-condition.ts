@@ -20,6 +20,21 @@ const { defineProperty } = Reflect;
  */
 export class HTTPMethodCondition extends AbstractRouteCondition<HTTPMethodCondition> {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "HTTPMethodCondition".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object HTTPMethodCondition]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'HTTPMethodCondition';
+    }
+
+    /**
      * The required HTTP method, or `undefined` to match any method.
      */
     readonly method: HTTPMethod | undefined;

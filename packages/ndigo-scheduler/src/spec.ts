@@ -22,6 +22,11 @@ const durationPattern = /^(\d+(?:\.\d+)?)(s|m|h|d)$/iu;
  * @returns The duration in milliseconds.
  * @throws When the value is not a finite non-negative number of
  *   milliseconds or a `'10s'`-style string.
+ *
+ * @example
+ * ```ts
+ * parseDuration('5m'); // 300000
+ * ```
  */
 export function parseDuration(value: DurationValue, label = 'duration', options: { positive?: boolean } = {}): number {
     if (typeof value === 'number') {

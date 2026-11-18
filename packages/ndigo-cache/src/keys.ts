@@ -21,6 +21,11 @@
  *
  * @param args - The method/function arguments.
  * @returns The cache key.
+ *
+ * @example
+ * ```ts
+ * serializeCacheKey('u:1', { page: 2 }); // '["u:1",{"page":2}]'
+ * ```
  */
 export function serializeCacheKey(...args: unknown[]): string {
     return JSON.stringify(args);

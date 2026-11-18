@@ -6,7 +6,7 @@
 import { Aware } from '@ndigo/factory';
 import type { Transform } from './transformers/http-transformer';
 import type { HTTP } from './http-client';
-import type ResponseError from './response-error';
+import type { ResponseError } from './response-error';
 
 /**
  * The HTTP request methods the framework routes and dispatches, including

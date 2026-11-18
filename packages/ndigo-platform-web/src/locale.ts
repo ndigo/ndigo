@@ -3,7 +3,7 @@
  */
 import { Signal, signal } from '@ndigo/signals';
 import { normalizeLocale } from '@ndigo/content';
-import Cookies from './cookies';
+import { Cookies } from './cookies';
 
 /**
  * The cookie name persisting the user's locale choice.

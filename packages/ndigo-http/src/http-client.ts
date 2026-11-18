@@ -9,7 +9,7 @@ import { Aware, AsAware, likeAwareAnd } from '@ndigo/factory';
 import { like } from '@ndigo/util/types';
 import { assign, defaults, freeze } from './http-shared';
 import { TransformInterceptor } from './interceptors/transform-interceptor';
-import ResponseError from './response-error';
+import { ResponseError } from './response-error';
 import { likeResponse } from './like-response';
 import { isMappedHTTPInterceptor } from './http-mapped-interceptor';
 import { HTTPExecutionChain, isHTTPExecutionChain } from './http-execution-chain';

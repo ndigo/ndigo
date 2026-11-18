@@ -2,7 +2,7 @@
  */
 import { afterEach, describe, expect, test, vi } from 'vitest';
 
-import randomHex from '@ndigo/util/crypto/random-hex';
+import { randomHex } from '@ndigo/util/crypto/random-hex';
 
 const hexPattern = /^[0-9a-f]+$/;
 

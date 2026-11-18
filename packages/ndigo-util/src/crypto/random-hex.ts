@@ -41,5 +41,3 @@ export function randomHex(byteLength: number): string {
     }
     return hex;
 }
-
-export default randomHex;

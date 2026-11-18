@@ -193,5 +193,3 @@ function init(converter: CookieConverter = {}): CookieJar {
  * the module default.
  */
 export const Cookies: CookieJar = init();
-
-export default Cookies;

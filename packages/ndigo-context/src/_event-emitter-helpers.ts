@@ -10,7 +10,7 @@ export const $events = '@@emitter/events';
 /** Internal symbol property for catch-all listener. */
 export const $every = '@@emitter/every';
 /** Matcher for `onEventName` style handler keys. */
-export const onMatcher = /^on(.+)$/;
+const onMatcher = /^on(.+)$/;
 
 /**
  * The per-emitter listener registry.
@@ -59,7 +59,7 @@ export function addConditionalEventListener(emitter: EventEmitter, type: EventTy
     addEventListener(emitter, type, conditionalListener, NaN);
 }
 
-export function addEventHandler(emitter: EventEmitter, type: EventType, handler: EventHandler): void {
+function addEventHandler(emitter: EventEmitter, type: EventType, handler: EventHandler): void {
     if (Array.isArray(handler)) {
         const length = handler.length;
         for (let index = 0; index < length; index += 1) {
@@ -96,7 +96,7 @@ export function addEventHandlers(
     }
 }
 
-export function defineEventsProperty(target: EventEmitter, value: EventRegistry): EventRegistry {
+function defineEventsProperty(target: EventEmitter, value: EventRegistry): EventRegistry {
     const hasEvents: boolean = hasOwnProperty.call(target, $events),
         targetPrototype = getPrototypeOf(target);
 
@@ -171,7 +171,7 @@ export function emitAllEvents(emitter: EventEmitter, type: EventType, data: unkn
     return executed;
 }
 
-export function emitErrors(emitter: EventEmitter, errors: Error[]): void {
+function emitErrors(emitter: EventEmitter, errors: Error[]): void {
     const length = errors.length;
     for (let index = 0; index < length; index += 1) {
         emitEvent(emitter, 'error', [errors[index]], false);
@@ -208,7 +208,7 @@ export function emitEvent(emitter: EventEmitter, type: EventType, data: unknown[
     return executed;
 }
 
-export function eventListenerEquals(handler: EventListener | undefined, listener: EventListener): boolean {
+function eventListenerEquals(handler: EventListener | undefined, listener: EventListener): boolean {
     if (typeof handler === 'undefined') {
         return false;
     }
@@ -220,7 +220,7 @@ export function eventListenerEquals(handler: EventListener | undefined, listener
     return typeof handler.listener !== 'undefined' && handler.listener === listener;
 }
 
-export function executeHandler(handler: EventHandler, data: unknown[], scope: EventEmitter): void {
+function executeHandler(handler: EventHandler, data: unknown[], scope: EventEmitter): void {
     const isFn = isFunction(handler);
 
     switch (data.length) {
@@ -247,9 +247,9 @@ export const getEventTypes = (emitter: EventEmitter): EventType[] => {
     return events ? (keys(events) as EventType[]) : [];
 };
 
-export const isEventHandler = (value: unknown): value is EventHandler => isFunction(value) || isArray(value);
+const isEventHandler = (value: unknown): value is EventHandler => isFunction(value) || isArray(value);
 
-export const isEventType = (value: unknown): value is EventType => isString(value) || isSymbol(value);
+const isEventType = (value: unknown): value is EventType => isString(value) || isSymbol(value);
 
 export const isPositiveNumber = ((value: unknown) => isNumber(value) && greaterThanOrEqualZero(value)) as (
     value: unknown
@@ -392,7 +392,7 @@ function handleMany(handler: EventHandler, isFn: boolean, emitter: EventEmitter,
     }
 }
 
-export function removeEventHandler(emitter: EventEmitter, type: EventType, handler: EventHandler): void {
+function removeEventHandler(emitter: EventEmitter, type: EventType, handler: EventHandler): void {
     if (typeof handler === 'function') {
         removeEventListener(emitter, type, handler);
     } else if (isArray(handler)) {

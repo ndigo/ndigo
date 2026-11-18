@@ -10,7 +10,7 @@ import {
 } from '../../src/http';
 import { TimeoutInit, TimeoutInterceptor } from '../../src/interceptors/timeout-interceptor';
 import { RetryInterceptor } from '../../src/interceptors/retry-interceptor';
-import ResponseError from '../../src/response-error';
+import { ResponseError } from '../../src/response-error';
 
 class TestTimeoutInterceptor extends TimeoutInterceptor {
     preInit(url: URL, settings: TimeoutInit) {

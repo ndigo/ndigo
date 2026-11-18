@@ -12,7 +12,7 @@ import {
     likeRequestAwareHTTPInterceptor,
     likeResponseAwareHTTPInterceptor,
 } from './http-interceptor-guards';
-import ResponseError from './response-error';
+import { ResponseError } from './response-error';
 import { isRequest } from './http-shared';
 import { likeResponse } from './like-response';
 import { is } from '@ndigo/util/types';

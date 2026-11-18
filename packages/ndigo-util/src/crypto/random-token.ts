@@ -81,5 +81,3 @@ export function randomToken(bytes: number): string {
     globalThis.crypto.getRandomValues(buffer);
     return base64urlNoPadding(buffer);
 }
-
-export default randomToken;

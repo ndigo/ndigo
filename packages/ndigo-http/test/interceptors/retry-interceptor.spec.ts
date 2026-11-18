@@ -7,7 +7,7 @@ import { HTTP } from '../../src/http';
 import { RetryInterceptor } from '../../src/interceptors/retry-interceptor';
 import { NotOKInterceptor } from '../../src/interceptors/not-ok-interceptor';
 import { HeaderInterceptor } from '../../src/interceptors/header-interceptor';
-import ResponseError from '../../src/response-error';
+import { ResponseError } from '../../src/response-error';
 
 describe('RetryInterceptor', () => {
     beforeAll(() => server.listen({ onUnhandledFrame: 'error' }));

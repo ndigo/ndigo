@@ -5,7 +5,7 @@ import { AbstractThemeResolver, SystemThemeResolver } from '@ndigo/dispatcher';
 import { normalizeThemeName } from '@ndigo/content';
 import { ApplicationContext } from '@ndigo/context';
 import { Route } from '@ndigo/router';
-import Cookies from './cookies';
+import { Cookies } from './cookies';
 
 /**
  * Resolves the active theme from a persisted cookie, falling back to the

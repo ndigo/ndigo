@@ -5,7 +5,7 @@ import { entriesIterator, JSONObject, MediaType, MediaTypes } from '@ndigo/core'
 import { is, isString } from '@ndigo/util/types';
 import { HTTPInit, InitializationAwareHTTPInterceptor, ResponseAwareHTTPInterceptor } from '../http';
 import { CONTENT_TYPE } from '../http-headers';
-import ResponseError from '../response-error';
+import { ResponseError } from '../response-error';
 
 /**
  * Resolved parser that reads a response body into typed data.

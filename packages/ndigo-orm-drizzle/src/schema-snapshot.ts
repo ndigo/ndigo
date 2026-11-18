@@ -116,7 +116,7 @@ export function projectEntities(entities: Constructable[]): SchemaSnapshot {
  * @param table - The table projection.
  * @returns The `CREATE TABLE IF NOT EXISTS` statement.
  */
-export function renderCreateTable(table: TableProjection): string {
+function renderCreateTable(table: TableProjection): string {
     const columns = table.columns.map((column) => {
         const parts: string[] = [`"${column.name}"`, column.type];
         if (column.primaryKey) {

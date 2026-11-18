@@ -2,7 +2,7 @@
  * Normalizes transport failures into response errors.
  */
 import { HTTP, HTTPInit, ResponseAwareHTTPInterceptor, ErrorAwareHTTPInterceptor } from '../http';
-import ResponseError from '../response-error';
+import { ResponseError } from '../response-error';
 
 const { defineProperty } = Reflect;
 

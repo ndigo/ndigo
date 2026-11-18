@@ -4,7 +4,7 @@ import { describe, test, expect, beforeAll, beforeEach, afterEach, afterAll } fr
 import { server } from '../_worker';
 import { HTTP } from '../../src/http';
 import { NotOKInterceptor } from '../../src/interceptors/not-ok-interceptor';
-import ResponseError from '../../src/response-error';
+import { ResponseError } from '../../src/response-error';
 
 describe('NotOKInterceptor', () => {
     let http: HTTP | undefined;

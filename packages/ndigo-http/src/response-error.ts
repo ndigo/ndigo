@@ -220,5 +220,3 @@ export class ResponseError extends FrameworkError implements Error, Response {
         });
     }
 }
-
-export default ResponseError;

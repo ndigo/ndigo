@@ -4,7 +4,7 @@ import { describe, test, expect, afterEach, vi } from 'vitest';
 import { GenericApplicationContext } from '@ndigo/context';
 import { AbstractThemeResolver } from '@ndigo/dispatcher';
 import { Route } from '@ndigo/router';
-import Cookies from '../src/cookies';
+import { Cookies } from '../src/cookies';
 import { CookieThemeResolver, configureCookieThemeResolver } from '../src/cookie-theme-resolver';
 
 const route = { path: '/hello' } as unknown as Route;

@@ -1,7 +1,7 @@
 /**
  */
 import { describe, test, expect } from 'vitest';
-import ResponseError from '../src/response-error';
+import { ResponseError } from '../src/response-error';
 
 describe('ResponseError', () => {
     test('it should create empty response errors', async () => {

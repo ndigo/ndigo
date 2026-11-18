@@ -2,9 +2,8 @@
 
 Repository-only oxlint rules — the enforcement that applies to _this_
 monorepo (integration-layer boundaries, internal-file hygiene, house style,
-and the two rules that key off this repository's package layout) rather than
-to Ndigo application code. Consumer-facing rules live in
-[`@ndigo/oxlint-plugin`](../../packages/ndigo-oxlint-plugin/README.md).
+package layers) rather than to Ndigo application code. Consumer-facing rules
+live in [`@ndigo/oxlint-plugin`](../../packages/ndigo-oxlint-plugin/README.md).
 
 `src/` is the home for repo-only cross-package concerns; this
 directory is **not a package** — no `package.json`, no build step, no
@@ -30,24 +29,23 @@ oxlint executes the TypeScript directly (Node ≥24 type stripping), so:
 
 ## Rules
 
-| Rule                                           | Enforces                                                                                                                                                              |
-| ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `internal/no-direct-integration-imports`       | Imports of encapsulated libraries go through their integration packages, never directly                                                                               |
-| `internal/no-internal-file-imports`            | No cross-package imports of internal files (`_*.ts`)                                                                                                                  |
-| `internal/no-internal-file-exports`            | No barrel re-exports of internal files at any `src/**/index.ts` depth                                                                                                 |
-| `internal/no-abstract-class-without-prefix`    | Abstract classes use the `Abstract`/`As` prefix convention                                                                                                            |
-| `internal/no-mixed-case-acronyms`              | Acronyms follow `STYLE_GUIDE` casing                                                                                                                                  |
-| `internal/no-uppercase-regexp-constants`       | RegExp instances are objects — camelCase                                                                                                                              |
-| `internal/no-global-state-in-create-factories` | `create*` factories must not reference mutable module/class state — the `create*` vs `get*` split                                                                     |
-| `internal/no-browser-globals-in-isomorphic`    | Browser globals are guarded in isomorphic packages; browser-only packages (`@ndigo/platform-web`, `@ndigo/dom`, `@ndigo/view-webcomponent`, `@ndigo/boot`) are exempt |
-| `internal/no-raw-console`                      | Raw `console.warn`/`console.error`/`console.log` calls in package source go through `@ndigo/log` (allow-listed: `@ndigo/log`, `@ndigo/util`)                          |
-| `internal/requires-doc-header`                 | Source files begin with a canonical doc header carrying a module summary (TSDoc standard; no tags)                                                                    |
-| `internal/tsdoc-syntax`                        | TSDoc syntax in doc comments is valid (`@microsoft/tsdoc`): no unknown/legacy tags, well-formed inline tags, escaped braces, standard `@param` form                   |
-| `internal/no-upward-layer-imports`             | Package imports flow only downward through the derived layer ranks (see below)                                                                                        |
+| Rule                                           | Enforces                                                                                                                                            |
+| ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `internal/no-direct-integration-imports`       | Imports of encapsulated libraries go through their integration packages, never directly                                                             |
+| `internal/no-internal-file-imports`            | No cross-package imports of internal files (`_*.ts`)                                                                                                |
+| `internal/no-internal-file-exports`            | No barrel re-exports of internal files at any `src/**/index.ts` depth                                                                               |
+| `internal/no-abstract-class-without-prefix`    | Abstract classes use the `Abstract`/`As` prefix convention                                                                                          |
+| `internal/no-mixed-case-acronyms`              | Acronyms follow `STYLE_GUIDE` casing                                                                                                                |
+| `internal/no-uppercase-regexp-constants`       | RegExp instances are objects — camelCase                                                                                                            |
+| `internal/no-global-state-in-create-factories` | `create*` factories must not reference mutable module/class state — the `create*` vs `get*` split                                                   |
+| `internal/require-doc-header`                  | Source files begin with a canonical doc header carrying a module summary (TSDoc standard; no tags)                                                  |
+| `internal/valid-tsdoc`                         | TSDoc syntax in doc comments is valid (`@microsoft/tsdoc`): no unknown/legacy tags, well-formed inline tags, escaped braces, standard `@param` form |
+| `internal/no-upward-layer-imports`             | Package imports flow only downward through the derived layer ranks (see below)                                                                      |
 
-`no-browser-globals-in-isomorphic` and `no-raw-console` returned from the
-consumer package until they are de-hardcoded for app repos (#116) — both key
-off this repository's `packages/ndigo-*` layout.
+The raw-console policy and the browser-global guard used to live here; they are
+now consumer rules (`no-raw-console`, `no-browser-globals`) because they describe
+framework usage, not this repository's layout. The root config reproduces the
+old scoping with `overrides`.
 
 ## Layer ranks
 

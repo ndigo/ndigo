@@ -1,7 +1,9 @@
 /**
- * Rule that flags cross-paradigm decorator misuse.
+ * Rule that flags mixed decorator paradigms on one class.
  */
 import type { Context, ESTree } from '@oxlint/plugins';
+
+import { ruleUrl } from '../_docs.js';
 
 const CALL_DECORATORS = new Set([
     'service', // @service is the class-level client marker
@@ -47,15 +49,16 @@ function decoratorNames(node: { decorators?: ESTree.Decorator[] }): string[] {
  * Reports classes mixing service-call and server-route-mapping decorators (on
  * the class OR any of its methods).
  */
-export const noCrossParadigmDecorators = {
+export const noMixedDecoratorParadigms = {
     meta: {
         type: 'problem',
         docs: {
             description: 'Disallow mixing service-call and route-mapping decorators on one class',
+            url: ruleUrl('no-mixed-decorator-paradigms'),
+            recommended: true,
         },
         messages: {
-            mixedParadigms:
-                "Class '{{name}}' mixes {{call}} (service-call decorator) with {{mapping}} (route-mapping decorator). Use @service/@*Call for client service calls and @routeMapping/@*Mapping for server handlers — never both on one class.",
+            mixedParadigms: `Class '{{name}}' mixes {{call}} (client call) with {{mapping}} (route mapping) — keep one decorator paradigm per class. ${ruleUrl('no-mixed-decorator-paradigms')}`,
         },
         schema: [],
     } as const,

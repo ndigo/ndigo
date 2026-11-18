@@ -687,7 +687,7 @@ type serializable = string | number | boolean | null | undefined;
 
 ### 3.8. Decorators
 
-**Automated:** `@ndigo/no-cross-paradigm-decorators` (error) rejects mixing service-call and route-mapping decorators on one class; decorator naming itself remains a review concern.
+**Automated:** `@ndigo/no-mixed-decorator-paradigms` (error) rejects mixing service-call and route-mapping decorators on one class; decorator naming itself remains a review concern.
 
 **Pattern:** `camelCase`
 
@@ -4459,7 +4459,7 @@ Ref: STYLE_GUIDE.md Section 4.5"
 
 Ndigo source documentation follows the **TSDoc standard** as parsed by
 `@microsoft/tsdoc` (the same parser wired into oxlint as
-`internal/tsdoc-syntax`). Comments are written so that `pnpm doc:api`
+`internal/valid-tsdoc`). Comments are written so that `pnpm doc:api`
 (TypeDoc) and `pnpm lint` (oxlint) agree on what is valid. `pnpm lint` runs
 `--deny-warnings`, so a TSDoc syntax diagnostic is a hard error.
 
@@ -4497,7 +4497,7 @@ the `header` generator adds/replaces it on existing files:
   `pnpm exec nx generate @ndigo/generators:header --file <path> --summary "…"`
 
 The file-level block documents the whole module; class/method members carry
-their own focused TSDoc. `internal/requires-doc-header` (oxlint, error level —
+their own focused TSDoc. `internal/require-doc-header` (oxlint, error level —
 `.oxlintrc.json`) enforces the canonical block on source files. Module-summary
 presence is gated per package by `scripts/doc-coverage.mjs`.
 

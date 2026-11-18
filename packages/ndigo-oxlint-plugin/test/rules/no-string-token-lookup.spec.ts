@@ -1,7 +1,7 @@
 /**
  */
 import { RuleTester } from 'oxlint/plugins-dev';
-import { noStringRegistryLookup } from '../../src/rules/no-string-registry-lookup';
+import { noStringTokenLookup } from '../../src/rules/no-string-token-lookup';
 
 const ruleTester = new RuleTester({
     languageOptions: {
@@ -11,7 +11,7 @@ const ruleTester = new RuleTester({
     },
 });
 
-ruleTester.run('no-string-registry-lookup', noStringRegistryLookup, {
+ruleTester.run('no-string-token-lookup', noStringTokenLookup, {
     valid: [
         // Token lookup (ADR-34 D1 canonical form).
         {

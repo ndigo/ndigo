@@ -9,17 +9,15 @@
 import { eslintCompatPlugin } from '@oxlint/plugins';
 
 import { noAbstractClassWithoutPrefix } from './rules/no-abstract-class-without-prefix.ts';
-import { noBrowserGlobalsInIsomorphic } from './rules/no-browser-globals-in-isomorphic.ts';
 import { noDirectIntegrationImports } from './rules/no-direct-integration-imports.ts';
 import { noGlobalStateInCreateFactories } from './rules/no-global-state-in-create-factories.ts';
 import { noInternalFileExports } from './rules/no-internal-file-exports.ts';
 import { noInternalFileImports } from './rules/no-internal-file-imports.ts';
 import { noMixedCaseAcronyms } from './rules/no-mixed-case-acronyms.ts';
-import { noRawConsole } from './rules/no-raw-console.ts';
 import { noUppercaseRegexpConstants } from './rules/no-uppercase-regexp-constants.ts';
 import { noUpwardLayerImports } from './rules/no-upward-layer-imports.ts';
-import { requiresDocHeader } from './rules/requires-doc-header.ts';
-import { tsdocSyntax } from './rules/tsdoc-syntax.ts';
+import { requireDocHeader } from './rules/require-doc-header.ts';
+import { validTsdoc } from './rules/valid-tsdoc.ts';
 
 const plugin = eslintCompatPlugin({
     meta: {
@@ -27,17 +25,15 @@ const plugin = eslintCompatPlugin({
     },
     rules: {
         'no-abstract-class-without-prefix': noAbstractClassWithoutPrefix,
-        'no-browser-globals-in-isomorphic': noBrowserGlobalsInIsomorphic,
         'no-direct-integration-imports': noDirectIntegrationImports,
         'no-global-state-in-create-factories': noGlobalStateInCreateFactories,
         'no-internal-file-exports': noInternalFileExports,
         'no-internal-file-imports': noInternalFileImports,
         'no-mixed-case-acronyms': noMixedCaseAcronyms,
-        'no-raw-console': noRawConsole,
         'no-uppercase-regexp-constants': noUppercaseRegexpConstants,
         'no-upward-layer-imports': noUpwardLayerImports,
-        'requires-doc-header': requiresDocHeader,
-        'tsdoc-syntax': tsdocSyntax,
+        'require-doc-header': requireDocHeader,
+        'valid-tsdoc': validTsdoc,
     },
 });
 

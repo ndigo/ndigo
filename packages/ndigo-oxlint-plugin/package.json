@@ -18,6 +18,10 @@
     ".": {
       "types": "./lib/index.d.ts",
       "default": "./lib/index.js"
+    },
+    "./recommended": {
+      "types": "./lib/recommended.d.ts",
+      "default": "./lib/recommended.js"
     }
   },
   "types": "lib/index.d.ts",

@@ -3,6 +3,8 @@
  */
 import type { Context, ESTree } from '@oxlint/plugins';
 
+import { ruleUrl } from '../_docs.js';
+
 /**
  * Constructor that takes a custom-element tag name as its first argument.
  *
@@ -126,12 +128,12 @@ export const noUnsafeViewNameLiteral = {
         type: 'problem',
         docs: {
             description: 'Disallow unsafe string-literal view names',
+            url: ruleUrl('no-unsafe-view-name-literal'),
+            recommended: true,
         },
         messages: {
-            unsafeViewName:
-                "Unsafe view-name literal '{{name}}' — view names must be relative and free of absolute prefixes, `..` segments, and NUL bytes (DSV-SEC-1). Use a plain name, or add oxlint-disable-next-line @ndigo/no-unsafe-view-name-literal with a reason.",
-            invalidIslandViewName:
-                "Invalid custom-element name literal '{{name}}' for IslandView — the name must be a lowercase tag with at least one hyphen (e.g. 'todo-app') and must not be a reserved platform name. Use a valid tag name, or add oxlint-disable-next-line @ndigo/no-unsafe-view-name-literal with a reason.",
+            unsafeViewName: `Unsafe view-name literal '{{name}}' — names must be relative, with no absolute prefix, \`..\` segment, or NUL byte. ${ruleUrl('no-unsafe-view-name-literal')}`,
+            invalidIslandViewName: `Invalid IslandView tag literal '{{name}}' — use a lowercase custom-element name with a hyphen, e.g. 'todo-app'. ${ruleUrl('no-unsafe-view-name-literal')}`,
         },
         schema: [],
     } as const,

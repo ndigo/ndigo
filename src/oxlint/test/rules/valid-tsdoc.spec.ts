@@ -1,8 +1,8 @@
 /**
- * Spec for the tsdoc-syntax rule.
+ * Spec for the valid-tsdoc rule.
  */
 import { RuleTester } from 'oxlint/plugins-dev';
-import { tsdocSyntax } from '../../rules/tsdoc-syntax.ts';
+import { validTsdoc } from '../../rules/valid-tsdoc.ts';
 
 const ruleTester = new RuleTester({
     languageOptions: {
@@ -13,7 +13,7 @@ const ruleTester = new RuleTester({
     },
 });
 
-ruleTester.run('tsdoc-syntax', tsdocSyntax, {
+ruleTester.run('valid-tsdoc', validTsdoc, {
     valid: [
         // Clean standard TSDoc.
         {
@@ -46,7 +46,7 @@ export const x = (value: number) => value;`,
  */
 export const x = 1;`,
             filename: '/packages/ndigo-core/src/widget.ts',
-            errors: [{ messageId: 'tsdocSyntax' }],
+            errors: [{ messageId: 'validTsdoc' }],
         },
         {
             code: `/**
@@ -74,7 +74,7 @@ export const x = 1;`,
  */
 export const x = 1;`,
             filename: '/packages/ndigo-core/src/widget.ts',
-            errors: [{ messageId: 'tsdocSyntax' }],
+            errors: [{ messageId: 'validTsdoc' }],
         },
     ],
 });

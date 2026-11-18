@@ -5,6 +5,7 @@
   "type": "module",
   "private": true,
   "scripts": {
+    "lint": "oxlint",
     "start": "tsx src/index.ts",
     "test": "vitest run",
     "dev": "tsx src/index.ts",

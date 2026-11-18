@@ -161,7 +161,7 @@ Rules:
   real one-line summary (file header) or a member description.
 - **Example syntax:** `scripts/doc-examples.mjs` parses every fenced
   `@example` block as TypeScript; CI fails on syntax errors.
-- **TSDoc syntax:** `internal/tsdoc-syntax` (oxlint) validates every doc
+- **TSDoc syntax:** `internal/valid-tsdoc` (oxlint) validates every doc
   comment against the TSDoc standard (`@microsoft/tsdoc`).
 - **Module summaries:** `scripts/typedoc-module-summary-plugin.mjs` lifts the
   canonical file-header summary onto the generated module page, so

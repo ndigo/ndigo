@@ -27,7 +27,7 @@
  *   - Large gap between warm and miss would indicate unexpected work on the miss path.
  */
 
-// oxlint-disable @ndigo/no-string-registry-lookup -- benchmark fixtures: the
+// oxlint-disable @ndigo/no-string-token-lookup -- benchmark fixtures: the
 // string-literal lookup hot path is a measured axis; tokens and
 // strings share the description-keyed registry (same-cost claim pinned in
 // packages/ndigo-context/bench/context-lookup.bench.ts's token case).

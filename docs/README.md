@@ -35,6 +35,12 @@ slugs. The canonical system design lives in the root
 Breaking-change and upgrade migration logs (`YYYY-MM-DD_DESCRIPTION.md`),
 historical by nature.
 
+### [Lint rules](./lint/README.md)
+
+Reference pages for the consumer `@ndigo/oxlint-plugin` rules — one page per
+rule, at the URL every diagnostic links to
+(`https://ndigo.dev/lint/<rule>`). See the [index](./lint/README.md).
+
 ## Conventions
 
 - **Dated filenames sort history** (`migrations/`, `decisions/`); **stable

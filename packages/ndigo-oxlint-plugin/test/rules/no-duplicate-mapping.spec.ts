@@ -2,7 +2,7 @@
  */
 import { RuleTester } from 'oxlint/plugins-dev';
 import { canonicalizeRouteMappingPath } from '@ndigo/dispatcher';
-import { noDuplicateMappingPath } from '../../src/rules/no-duplicate-mapping-path';
+import { noDuplicateMapping } from '../../src/rules/no-duplicate-mapping';
 
 const ruleTester = new RuleTester({
     languageOptions: {
@@ -37,14 +37,14 @@ for (let left = 0; left < ROUTE_PATH_VECTORS.length; left++) {
                         b() {}
                     }`;
         if (canonicalizeRouteMappingPath(first) === canonicalizeRouteMappingPath(second)) {
-            parityInvalid.push({ code, filename: FILENAME, errors: [{ messageId: 'duplicateMappingPath' }] });
+            parityInvalid.push({ code, filename: FILENAME, errors: [{ messageId: 'duplicateMapping' }] });
         } else {
             parityValid.push({ code, filename: FILENAME });
         }
     }
 }
 
-ruleTester.run('no-duplicate-mapping-path', noDuplicateMappingPath, {
+ruleTester.run('no-duplicate-mapping', noDuplicateMapping, {
     valid: [
         // Distinct method paths, with a class-level prefix
         {
@@ -179,7 +179,7 @@ ruleTester.run('no-duplicate-mapping-path', noDuplicateMappingPath, {
                         listAll() {}
                     }`,
             filename: FILENAME,
-            errors: [{ messageId: 'duplicateMappingPath' }],
+            errors: [{ messageId: 'duplicateMapping' }],
         },
         // Duplicate slashes collapse
         {
@@ -190,7 +190,7 @@ ruleTester.run('no-duplicate-mapping-path', noDuplicateMappingPath, {
                         b() {}
                     }`,
             filename: FILENAME,
-            errors: [{ messageId: 'duplicateMappingPath' }],
+            errors: [{ messageId: 'duplicateMapping' }],
         },
         // `{name}` and `:name` are the same radix node
         {
@@ -201,7 +201,7 @@ ruleTester.run('no-duplicate-mapping-path', noDuplicateMappingPath, {
                         b() {}
                     }`,
             filename: FILENAME,
-            errors: [{ messageId: 'duplicateMappingPath' }],
+            errors: [{ messageId: 'duplicateMapping' }],
         },
         // Two identical method mappings
         {
@@ -212,7 +212,7 @@ ruleTester.run('no-duplicate-mapping-path', noDuplicateMappingPath, {
                         b() {}
                     }`,
             filename: FILENAME,
-            errors: [{ messageId: 'duplicateMappingPath' }],
+            errors: [{ messageId: 'duplicateMapping' }],
         },
         // Optionless configuration form (`{ value }`) participates
         {
@@ -223,7 +223,7 @@ ruleTester.run('no-duplicate-mapping-path', noDuplicateMappingPath, {
                         b() {}
                     }`,
             filename: FILENAME,
-            errors: [{ messageId: 'duplicateMappingPath' }],
+            errors: [{ messageId: 'duplicateMapping' }],
         },
         // No-substitution template literal is a literal path (INS-2)
         {
@@ -234,7 +234,7 @@ ruleTester.run('no-duplicate-mapping-path', noDuplicateMappingPath, {
                         b() {}
                     }`,
             filename: FILENAME,
-            errors: [{ messageId: 'duplicateMappingPath' }],
+            errors: [{ messageId: 'duplicateMapping' }],
         },
         // Renamed import binding resolves to the mapping decorator (INS-2)
         {
@@ -246,7 +246,7 @@ ruleTester.run('no-duplicate-mapping-path', noDuplicateMappingPath, {
                         b() {}
                     }`,
             filename: FILENAME,
-            errors: [{ messageId: 'duplicateMappingPath' }],
+            errors: [{ messageId: 'duplicateMapping' }],
         },
         // Local `const` alias of an imported decorator resolves (INS-2)
         {
@@ -259,7 +259,7 @@ ruleTester.run('no-duplicate-mapping-path', noDuplicateMappingPath, {
                         b() {}
                     }`,
             filename: FILENAME,
-            errors: [{ messageId: 'duplicateMappingPath' }],
+            errors: [{ messageId: 'duplicateMapping' }],
         },
         // `@queryMapping` (HTTP QUERY) registers in the same radix space (INS-2)
         {
@@ -270,7 +270,7 @@ ruleTester.run('no-duplicate-mapping-path', noDuplicateMappingPath, {
                         b() {}
                     }`,
             filename: FILENAME,
-            errors: [{ messageId: 'duplicateMappingPath' }],
+            errors: [{ messageId: 'duplicateMapping' }],
         },
         // `@publicMapping` is method-less, same family as `@routeMapping` (INS-2/INS-3)
         {
@@ -281,7 +281,7 @@ ruleTester.run('no-duplicate-mapping-path', noDuplicateMappingPath, {
                         b() {}
                     }`,
             filename: FILENAME,
-            errors: [{ messageId: 'duplicateMappingPath' }],
+            errors: [{ messageId: 'duplicateMapping' }],
         },
         // `@requestMapping` and `@routeMapping` are both method-less (INS-3)
         {
@@ -292,7 +292,7 @@ ruleTester.run('no-duplicate-mapping-path', noDuplicateMappingPath, {
                         b() {}
                     }`,
             filename: FILENAME,
-            errors: [{ messageId: 'duplicateMappingPath' }],
+            errors: [{ messageId: 'duplicateMapping' }],
         },
         ...parityInvalid,
     ],

@@ -1,6 +1,6 @@
 # ndigo Decision Records (ADRs)
 
-Architecture Decision Records for the ndigo monorepo — **AD-01..AD-107**,
+Architecture Decision Records for the ndigo monorepo — **AD-01..AD-108**,
 contiguous. Every record captures a decision with its context, the evidence
 (plan, code, commits), the decided shape, consequences, and a revisit trigger.
 
@@ -102,7 +102,7 @@ contiguous. Every record captures a decision with its context, the evidence
 | **AD-83**  | 2026-10-31    | Accepted                     | [Decorator categories and their naming conventions — role-keyed taxonomy, renames (`@generatedColumn`, `@sharedDependency`, `@nestedConfig`), `@whenProfile` profile unification](2026-10-31_AD83_DECORATOR_CATEGORIES.md)     |
 | **AD-84**  | 2026-10-31    | Accepted                     | [`@ndigo/util` is a framework leaf toolkit — prune to the consumed surface, native `crypto.randomUUID()`, zero runtime deps](2026-10-31_AD84_UTIL_SURFACE_PRUNE.md)                                                            |
 | **AD-85**  | 2026-11-01    | Accepted                     | [App scaffolding — `ndigo new` in-repo now, `create-ndigo-app` at publish](2026-11-01_AD85_APP_SCAFFOLDING.md)                                                                                                                 |
-| **AD-86**  | 2026-10-31    | Accepted                     | [`packages/` is the consumer surface — repo-only lint rules live in root `src/`](2026-10-31_AD86_LINT_RULE_SURFACE.md)                                                                                                         |
+| **AD-86**  | 2026-10-31    | Superseded in part           | [`packages/` is the consumer surface — repo-only lint rules live in root `src/`](2026-10-31_AD86_LINT_RULE_SURFACE.md)                                                                                                         |
 | **AD-87**  | 2026-11-01    | Accepted                     | [OpenFeature bridge — adopt the standard behind the `FlagEvaluator` SPI](2026-11-01_AD87_OPENFEATURE_BRIDGE.md)                                                                                                                |
 | **AD-88**  | 2026-11-03    | Accepted                     | [Project rename — ndigo → ndigo](2026-11-03_AD88_NDIGO_RENAME.md)                                                                                                                                                              |
 | **AD-89**  | 2026-11-03    | Accepted                     | [Layer-boundary enforcement — derived ranks, not named tiers](2026-11-03_AD89_LAYER_BOUNDARIES.md)                                                                                                                             |
@@ -119,6 +119,7 @@ contiguous. Every record captures a decision with its context, the evidence
 | **AD-105** | 2026-11-13    | Accepted                     | [View targeting — targeters choose the destination, resolvers choose the representation](2026-11-13_AD105_VIEW_TARGETING_STRATEGY.md)                                                                                          |
 | **AD-106** | 2026-11-14    | Implemented                  | [Theme model — registry, request negotiation, and visual application](2026-11-14_AD106_THEME_MODEL.md)                                                                                                                         |
 | **AD-107** | 2026-11-18    | Implemented                  | [Skills authoring — the standalone `ndigo-skills` repository](2026-11-18_AD107_SKILLS_AUTHORING.md)                                                                                                                            |
+| **AD-108** | 2026-11-18    | Implemented                  | [Consumer lint surface — preset, scaffold wiring, de-hardcoded rules, rule conventions](2026-11-18_AD108_CONSUMER_LINT_SURFACE.md)                                                                                             |
 
 ## Archived ADRs
 

@@ -4,12 +4,16 @@
 
 Custom **oxlint** rules that catch common mistakes when building Ndigo
 applications: mixed decorator paradigms, unsafe view names, string-literal
-registry lookups, duplicate route mappings, reactivity leaking into entities,
-and Node-only scheduling in browser code. Rules that key off the Ndigo
-repository's own layout (integration-layer boundaries, internal-file hygiene,
-doc headers, naming conventions, the console policy, and browser-global
-guards) live in the repository's internal plugin at root `src/oxlint/` — they
-are not part of this package.
+context-token lookups, duplicate route mappings, reactivity leaking into
+entities, Node-only scheduling in browser code, raw console calls, and
+unguarded browser globals. Rules that key off the Ndigo repository's own layout
+(integration-layer boundaries, internal-file hygiene, doc headers, and naming
+conventions) live in the repository's internal plugin at root `src/oxlint/` —
+they are not part of this package.
+
+Every rule has a page under [`docs/lint/`](../../docs/lint/README.md). The URL
+is also in `meta.docs.url` and at the end of every diagnostic, so a violation
+in a terminal is one link away from the rationale.
 
 ## Installation
 
@@ -26,25 +30,47 @@ Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥12.
 {
     "jsPlugins": ["@ndigo/oxlint-plugin"],
     "rules": {
-        "@ndigo/no-cross-paradigm-decorators": "error",
+        "@ndigo/no-mixed-decorator-paradigms": "error",
     },
 }
 ```
 
 ## Usage
 
+### Recommended preset
+
+`@ndigo/oxlint-plugin/recommended` is a typed oxlint config carrying the six
+platform-neutral rules, with `no-duplicate-mapping` off in specs. Projects on
+`oxlint.config.ts` spread it directly:
+
+```ts
+import { defineConfig } from 'oxlint';
+import { recommended } from '@ndigo/oxlint-plugin/recommended';
+
+export default defineConfig({ extends: [recommended] });
+```
+
+`ndigo new` and `ndigo lint init` render the same rules into `.oxlintrc.json`
+for JSON-config projects.
+
 ### Rules
 
-| Rule                                  | Enforces                                                                                                                                              |
-| ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `@ndigo/no-cross-paradigm-decorators` | Decorator families stay within their paradigm                                                                                                         |
-| `@ndigo/no-scheduled-in-browser`      | Disallow `@ndigo/scheduler` imports in browser-platform files                                                                                         |
-| `@ndigo/no-signals-in-entity`         | `@ndigo/signals` reactivity does not leak into entities                                                                                               |
-| `@ndigo/no-string-registry-lookup`    | Disallow string-literal registry lookups in source files                                                                                              |
-| `@ndigo/no-unsafe-view-name-literal`  | View-name literals are relative — no absolute prefixes, `..` segments, or NUL bytes (DSV-SEC-1); `IslandView` names must be valid custom-element tags |
-| `@ndigo/no-duplicate-mapping-path`    | Duplicate method-level mapping paths of the same HTTP-method identity in one class (class-local, best-effort); disabled in specs                      |
+| Rule                                  | Recommended | Enforces                                                                                                                                              |
+| ------------------------------------- | :---------: | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@ndigo/no-mixed-decorator-paradigms` |     yes     | Decorator families stay within their paradigm                                                                                                         |
+| `@ndigo/no-scheduled-in-browser`      |     yes     | Disallow `@ndigo/scheduler` imports in browser-platform files                                                                                         |
+| `@ndigo/no-signals-in-entity`         |     yes     | `@ndigo/signals` reactivity does not leak into entities                                                                                               |
+| `@ndigo/no-string-token-lookup`       |     yes     | Disallow string-literal context-token lookups in source files                                                                                         |
+| `@ndigo/no-unsafe-view-name-literal`  |     yes     | View-name literals are relative — no absolute prefixes, `..` segments, or NUL bytes (DSV-SEC-1); `IslandView` names must be valid custom-element tags |
+| `@ndigo/no-duplicate-mapping`         |     yes     | Duplicate method-level mapping paths of the same HTTP-method identity in one class (class-local, best-effort); disabled in specs                      |
+| `@ndigo/no-raw-console`               |   opt-in    | `console.log`/`warn`/`error` bypass `@ndigo/log`; `methods` configures the set                                                                        |
+| `@ndigo/no-browser-globals`           |   opt-in    | Unguarded browser globals in code that also runs on the server; `extraGlobals` extends the set                                                        |
 
-`no-duplicate-mapping-path` is method-level, class-local, and best-effort: it
+The two opt-in rules are platform-dependent: where they apply belongs to the
+consuming config's `overrides`, not to a path option inside the rule. Both are
+layout-blind and skip binding sites, shadowed names, and `typeof` guards.
+
+`no-duplicate-mapping` is method-level, class-local, and best-effort: it
 compares only mapping decorators syntactically attached to methods of a single
 class declaration and groups by normalized path AND resolved HTTP-method
 identity — the method-less family (`routeMapping`, `requestMapping`,

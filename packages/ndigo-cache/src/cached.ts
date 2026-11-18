@@ -172,10 +172,10 @@ export function cached(spec: CachedSpec = {}) {
                         manager = ctx.getValue(CACHE_MANAGER);
                     } else if (
                         typeof ctx.hasValue === 'function' &&
-                        // oxlint-disable-next-line @ndigo/no-string-registry-lookup -- fallback for token-less registrations
+                        // oxlint-disable-next-line @ndigo/no-string-token-lookup -- fallback for token-less registrations
                         ctx.hasValue('cacheManager')
                     ) {
-                        // oxlint-disable-next-line @ndigo/no-string-registry-lookup -- fallback for token-less registrations
+                        // oxlint-disable-next-line @ndigo/no-string-token-lookup -- fallback for token-less registrations
                         manager = ctx.getValue('cacheManager') as CacheManager;
                     }
                 } catch {

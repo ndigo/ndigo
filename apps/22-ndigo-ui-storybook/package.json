@@ -5,6 +5,7 @@
   "type": "module",
   "private": true,
   "scripts": {
+    "lint": "oxlint",
     "prestorybook": "pnpm --filter @ndigo/ui build:lib",
     "storybook": "storybook dev -p 6007",
     "prebuild-storybook": "pnpm --filter @ndigo/ui build:lib",

@@ -3,6 +3,8 @@
  */
 import type { Context, ESTree } from '@oxlint/plugins';
 
+import { ruleUrl } from '../_docs.js';
+
 const signalsImportPattern = /^@ndigo\/signals(?:\/|$)/u;
 const ENTITY_DECORATOR = 'entity';
 
@@ -18,10 +20,11 @@ export const noSignalsInEntity = {
         type: 'problem',
         docs: {
             description: 'Disallow @ndigo/signals imports in ORM entity files',
+            url: ruleUrl('no-signals-in-entity'),
+            recommended: true,
         },
         messages: {
-            signalsInEntity:
-                "Do not import '@ndigo/signals' in an ORM entity file — entities describe persisted columns, not reactive state. Keep signals for component/service state (ARCHITECTURE.md §Paradigm Selection Rules).",
+            signalsInEntity: `Do not import '@ndigo/signals' in an ORM entity — entities describe persisted columns, not reactive state. ${ruleUrl('no-signals-in-entity')}`,
         },
         schema: [],
     } as const,

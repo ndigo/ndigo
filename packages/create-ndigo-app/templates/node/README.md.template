@@ -11,6 +11,11 @@ cd {{name}} && pnpm install && pnpm start
 # GET http://127.0.0.1:{{port}}/hello?name=Ndigo
 ```
 
+Lint with `pnpm lint` — `.oxlintrc.json` enables the recommended
+`@ndigo/oxlint-plugin` rules plus `no-browser-globals` (server code must guard
+`window`/`document`), and every diagnostic links to its page under
+`https://ndigo.dev/lint/`.
+
 ## Demonstrates
 
 - A minimal `createNodeApplication` boot with one controller

@@ -42,7 +42,7 @@ interface RadixEntry {
  * wildcard (distinct from every greedy label).
  *
  * This is the single source of truth for route-pattern canonicalization: both
- * the radix mapping here and the `no-duplicate-mapping-path` lint rule consume
+ * the radix mapping here and the `no-duplicate-mapping` lint rule consume
  * it, so they cannot drift.
  *
  * @param path - The raw route pattern.

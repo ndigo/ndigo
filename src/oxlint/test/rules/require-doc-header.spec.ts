@@ -1,8 +1,8 @@
 /**
- * Spec for the requires-doc-header rule (summary-only, src-only).
+ * Spec for the require-doc-header rule (summary-only, src-only).
  */
 import { RuleTester } from 'oxlint/plugins-dev';
-import { requiresDocHeader } from '../../rules/requires-doc-header.ts';
+import { requireDocHeader } from '../../rules/require-doc-header.ts';
 
 const ruleTester = new RuleTester({
     languageOptions: {
@@ -18,7 +18,7 @@ const CANONICAL = `/**
  */
 `;
 
-ruleTester.run('requires-doc-header', requiresDocHeader, {
+ruleTester.run('require-doc-header', requireDocHeader, {
     valid: [
         {
             code: `${CANONICAL}export const x = 1;`,

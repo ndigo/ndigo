@@ -6,7 +6,7 @@
  * registered values. Each measured iteration performs 1,000 lookups.
  */
 
-// oxlint-disable @ndigo/no-string-registry-lookup -- benchmark fixtures: the
+// oxlint-disable @ndigo/no-string-token-lookup -- benchmark fixtures: the
 // string-literal lookup hot path is a measured axis; tokens and
 // strings share the description-keyed registry (the token case is benched too).
 

@@ -171,7 +171,7 @@ describe('app generator', () => {
         expect(manifest.name).toBe('@ndigo/widget');
         expect(manifest.private).toBe(true);
         expect(manifest.type).toBe('module');
-        expect(manifest.scripts).toEqual({ start: 'tsx src/index.ts', test: 'vitest run' });
+        expect(manifest.scripts).toEqual({ lint: 'oxlint', start: 'tsx src/index.ts', test: 'vitest run' });
         expect(Object.keys(manifest.dependencies)).toEqual(
             expect.arrayContaining([
                 '@ndigo/context',

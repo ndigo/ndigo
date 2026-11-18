@@ -93,6 +93,11 @@ off this repository's `packages/ndigo-*` layout, so the first is inert and the
 second misfires in consumer projects. They rejoin the public set when
 de-hardcoded for app repos (#116); the package ships six rules until then.
 
+**Resolved (2026-11-18, #116 / AD-108):** both rules rejoin the public
+plugin as `no-raw-console` (`{ methods? }`) and `no-browser-globals`
+(`{ extraGlobals? }`), layout-blind — the path logic moves to root-config
+`overrides`. AD-86 D4 is superseded by AD-108.
+
 ### D3 — Root `src/` hosts repo-only cross-package concerns; the internal plugin is uncompiled TS
 
 `src/oxlint/` holds `plugin.ts`, `rules/`, and the moved specs. It is
@@ -116,6 +121,10 @@ De-hardcoding the eight public rules for app repos (path assumptions,
 hardcoded `@ndigo/*` package lists), the `recommended` preset, and
 `ndigo init` wiring are separate issues. This ADR fixes the boundary; it does
 not ship the consumer artifact.
+
+**Superseded in part (2026-11-18, #116 / AD-108):** the consumer surface is
+now shipped — `@ndigo/oxlint-plugin` ships 8 rules, `recommended` preset,
+`ndigo lint init`, scaffold wiring. AD-86 D4 is superseded by AD-108.
 
 ## Consequences
 

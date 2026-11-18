@@ -12,6 +12,11 @@ import type { Cache } from './cache';
  * @param context - Caller name used as the validation error prefix.
  * @returns The non-empty store name.
  * @throws When the resolved name is not a non-empty string.
+ *
+ * @example
+ * ```ts
+ * resolveCacheName('users', '@cached'); // "users"
+ * ```
  */
 export function resolveCacheName(nameOrToken: string | ContextToken<Cache<unknown>>, context: string): string {
     const name = typeof nameOrToken === 'string' ? nameOrToken : nameOrToken.description;

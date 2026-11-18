@@ -81,6 +81,13 @@ export class MemoryCacheManager implements CacheManager {
      * Creates a manager with the given defaults.
      *
      * @param options - Manager options (see {@link CacheManagerOptions}).
+     *
+     * @example
+     * ```ts
+     * const manager = new MemoryCacheManager({ defaults: { defaultTtl: 30_000 } });
+     * const cache = manager.getCache<string>('users');
+     * await cache.set('u:1', 'alice');
+     * ```
      */
     constructor(options: CacheManagerOptions = {}) {
         this.#defaults = options.defaults ?? {};

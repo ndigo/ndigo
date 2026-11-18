@@ -48,6 +48,13 @@ export interface MemoizeOptions<A extends unknown[] = unknown[]> {
  *   plus the TTL).
  * @param options - Cache behavior (see {@link MemoizeOptions}).
  * @returns The memoized function.
+ *
+ * @example
+ * ```ts
+ * const loadUser = memoize(async (id: string) => fetchUser(id), { ttl: 60_000 });
+ * const a = await loadUser('u:1'); // computes
+ * const b = await loadUser('u:1'); // cached
+ * ```
  */
 export function memoize<A extends unknown[], R>(
     fn: (...args: A) => R,

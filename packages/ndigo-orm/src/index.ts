@@ -57,7 +57,6 @@ export {
 
 // Implementations
 export { InMemoryDataSource } from './data-source';
-export { OrmAutoConfiguration } from './orm-auto-configuration';
 export { InMemoryEntityManager } from './entity-manager';
 export { InMemoryUnitOfWork } from './unit-of-work';
 export { InMemoryTransactionManager } from './transaction-manager';

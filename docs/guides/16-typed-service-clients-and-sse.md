@@ -37,6 +37,10 @@ class AccountsAPI {
 
 const accounts = serviceClient(AccountsAPI, new HTTP());
 const account = await accounts.getById(42);
+
+// On a context-registered component, the HTTP client resolves from the
+// context's `http` entry, so the second argument is optional:
+// const accounts = serviceClient(AccountsAPI);
 ```
 
 `@service` records the name (the registry token and correlation tag), base URL,

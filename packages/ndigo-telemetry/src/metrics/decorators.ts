@@ -112,12 +112,17 @@ function createCountedDecorator(options: CountedOptions = {}) {
                 };
                 aggregator = instance.featureMetricAggregator ?? undefined;
                 if (aggregator === undefined && instance.applicationContext) {
-                    const context = instance.applicationContext;
+                    const ctx = instance.applicationContext;
                     try {
-                        if (typeof context.hasValue === 'function' && context.hasValue(FEATURE_METRIC_AGGREGATOR)) {
-                            aggregator = context.getValue(FEATURE_METRIC_AGGREGATOR);
-                        } else if (typeof context.hasValue === 'function' && context.hasValue('metricAggregator')) {
-                            aggregator = context.getValue('metricAggregator') as FeatureMetricAggregator;
+                        if (typeof ctx.hasValue === 'function' && ctx.hasValue(FEATURE_METRIC_AGGREGATOR)) {
+                            aggregator = ctx.getValue(FEATURE_METRIC_AGGREGATOR);
+                        } else if (
+                            typeof ctx.hasValue === 'function' &&
+                            // oxlint-disable-next-line @ndigo/no-string-registry-lookup -- metric token lives in @ndigo/management which depends on context
+                            ctx.hasValue('metricAggregator')
+                        ) {
+                            // oxlint-disable-next-line @ndigo/no-string-registry-lookup -- metric token lives in @ndigo/management which depends on context
+                            aggregator = ctx.getValue('metricAggregator') as FeatureMetricAggregator;
                         }
                     } catch {
                         aggregator = undefined;

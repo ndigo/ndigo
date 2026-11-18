@@ -72,15 +72,6 @@ const RETRY_ATTEMPT = Symbol('ndigo.http.retry-attempt');
 type RetrySettings = HTTPInit & { [RETRY_ATTEMPT]?: number };
 
 /**
- * Minimal structural view of a scheduled timer handle: Node exposes `unref`,
- * the DOM does not. Casting the platform `setTimeout` result to this shape
- * keeps the backoff timer from pinning the event loop.
- */
-interface ScheduledTimer {
-    unref?: () => void;
-}
-
-/**
  * Retries failed HTTP requests up to a configurable limit.
  *
  * Retry state is keyed on the per-request settings object (threaded into

@@ -20,4 +20,4 @@ export { HTTPHeaders };
 export { default as QueryString } from './query-string';
 export { default as MatrixString } from './matrix-string';
 export * from './context-tokens';
-export { AsHttpAware, likeHttpAware, type HttpAware } from './http-client';
+export { AsHTTPAware, likeHTTPAware, type HTTPAware } from './http-client';

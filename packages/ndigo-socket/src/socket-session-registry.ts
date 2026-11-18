@@ -49,6 +49,11 @@ export interface SocketSessionRegistry {
      *
      * @param path - The routing path (e.g. `/ws/room`).
      * @param payload - The payload to send.
+     *
+     * @example
+     * ```ts
+     * await registry.broadcast('/ws/room', { type: 'notice', text: 'hello' });
+     * ```
      */
     broadcast(path: string, payload: unknown): Promise<void>;
 
@@ -59,6 +64,11 @@ export interface SocketSessionRegistry {
      *
      * @param room - The room name.
      * @param payload - The payload to send.
+     *
+     * @example
+     * ```ts
+     * await registry.broadcastTo('lobby', { type: 'notice', text: 'hello' });
+     * ```
      */
     broadcastTo(room: string, payload: unknown): Promise<void>;
 

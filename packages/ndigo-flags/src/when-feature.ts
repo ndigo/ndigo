@@ -34,6 +34,13 @@ export const WHEN_FEATURE_KEY = 'flags:whenFeature';
  * @param flag - The flag key (`[A-Za-z0-9._:-]+`); the local provider
  *   resolves it as `feature.<flag>`.
  * @returns The class or method decorator.
+ *
+ * @example
+ * ```ts
+ * @whenFeature('todo.dueDates')
+ * @routeMapping('/todo/due')
+ * async dueDates() { ... }
+ * ```
  */
 export function whenFeature(flag: string) {
     validateFlagKey(flag, '@whenFeature');
@@ -55,6 +62,11 @@ export function whenFeature(flag: string) {
  *   metadata (preferred; falls back to class-level when `methodName` is
  *   omitted or the method carries no gate).
  * @returns The flag key, or `undefined` when un-gated.
+ *
+ * @example
+ * ```ts
+ * const flag = getWhenFeature(MyController, 'dueDates');
+ * ```
  */
 export function getWhenFeature(target: unknown, methodName?: string): string | undefined {
     // `Symbol.metadata` lives on the class constructor, not the instance or

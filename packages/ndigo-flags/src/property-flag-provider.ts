@@ -57,6 +57,12 @@ const FNV_PRIME = 16777619;
  * @param flag - The flag name being rolled out.
  * @param targetingKey - The stable identity the rollout is bucketed by.
  * @returns A deterministic value in `[0, 1)`.
+ *
+ * @example
+ * ```ts
+ * const bucket = stableBucket('checkout.newFlow', 'user-42');
+ * const enabled = bucket < 0.25; // 25% rollout
+ * ```
  */
 export function stableBucket(flag: string, targetingKey: string): number {
     const input = `${flag}\u0000${targetingKey}`;
@@ -175,6 +181,12 @@ export class PropertyFlagProvider implements FlagEvaluator {
     /**
      * @param options - The reader and optional namespace.
      * @throws When the namespace is empty or malformed.
+     *
+     * @example
+     * ```ts
+     * const provider = new PropertyFlagProvider({ getProperty: (key) => env.getProperty(key) });
+     * const result = await provider.evaluate('checkout.newFlow', false);
+     * ```
      */
     constructor(options: PropertyFlagProviderOptions) {
         const { getProperty, namespace = 'feature' } = options;

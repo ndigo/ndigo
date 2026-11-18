@@ -4,7 +4,7 @@
  * when requested.
  */
 import { describe, expect, test } from 'vitest';
-import { newAppArgv } from '../src/commands/new';
+import { newAppArgv } from '../src/commands/new.js';
 
 describe('ndigo new argv', () => {
     test('always carries --name and nothing else by default', () => {

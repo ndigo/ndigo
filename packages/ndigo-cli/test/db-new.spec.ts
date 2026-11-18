@@ -8,7 +8,7 @@ import { describe, test, expect } from 'vitest';
 import { mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { nextMigrationVersion as loaderNextVersion } from '@ndigo/orm-drizzle';
-import { nextMigrationVersion as cliNextVersion } from '../src/helpers/migration-probe';
+import { nextMigrationVersion as cliNextVersion } from '../src/helpers/migration-probe.js';
 
 async function withDir(fn: (dir: string) => Promise<void>): Promise<void> {
     const dir = await mkdtemp('ndigo-db-new-');

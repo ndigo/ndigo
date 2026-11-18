@@ -2,13 +2,16 @@
  * `ndigo db rollback` — front the application’s db:rollback script.
  */
 import { buildCommand } from '@stricli/core';
-import { resolveAppDir, runAppOnce } from '../../helpers/app-scripts.js';
+import { resolveAppDir, runAppOnce, usageError } from '../../helpers/app-scripts.js';
 
 /**
  * The rollback-last-N command.
  */
 export const dbRollbackCommand = buildCommand({
     async func(flags: { db?: string }, dir: string, count: string) {
+        if (!/^[1-9][0-9]*$/.test(count)) {
+            throw usageError('count must be a positive integer');
+        }
         const resolved = resolveAppDir(dir);
         const extra = flags.db ? ['--db', flags.db] : [];
         extra.push(count);

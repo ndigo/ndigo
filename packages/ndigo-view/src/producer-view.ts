@@ -53,6 +53,13 @@ export interface ProducerView {
 
 /**
  * Returns whether a value behaves like a {@link ProducerView}.
+ *
+ * @example
+ * ```ts
+ * if (likeProducerView(candidate)) {
+ *     const result = await candidate.renderTo(model, route);
+ * }
+ * ```
  */
 export const likeProducerView = (value: unknown): value is ProducerView & object =>
     typeof value === 'object' && value !== null && 'renderTo' in value;

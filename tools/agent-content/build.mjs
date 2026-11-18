@@ -23,6 +23,13 @@ import { fileURLToPath } from 'node:url';
 
 const SOURCE = dirname(fileURLToPath(import.meta.url));
 const ROOT = dirname(dirname(SOURCE));
+// Canonical skills source may live in a sibling repo (`ndigo-skills`) for
+// independent versioning and `npx add-skill` distribution. Fall back to the
+// in-repo copy when it is not checked out.
+const SKILLS_REPO = join(dirname(ROOT), 'ndigo-skills');
+const SKILLS_SOURCE = existsSync(join(SKILLS_REPO, 'ndigo-app', 'SKILL.md'))
+    ? join(SKILLS_REPO)
+    : join(SOURCE, 'skills');
 const CHECK = process.argv.includes('--check');
 const CLI_ASSETS = join(ROOT, 'packages', 'ndigo-cli', 'assets', 'agent');
 const CNA_TEMPLATES = join(ROOT, 'packages', 'create-ndigo-app', 'templates');
@@ -34,14 +41,14 @@ const repoPath = (absolute) => relative(ROOT, absolute).split('\\').join('/');
 const sha256 = (text) => createHash('sha256').update(text, 'utf8').digest('hex');
 
 function readSkillDirectories() {
-    const root = join(SOURCE, 'skills');
+    const root = SKILLS_SOURCE;
     return readdirSync(root)
-        .filter((entry) => statSync(join(root, entry)).isDirectory())
+        .filter((entry) => statSync(join(root, entry)).isDirectory() && existsSync(join(root, entry, 'SKILL.md')))
         .sort();
 }
 
 function skillContent(id) {
-    const file = join(SOURCE, 'skills', id, 'SKILL.md');
+    const file = join(SKILLS_SOURCE, id, 'SKILL.md');
     const text = readFileSync(file, 'utf8');
     const match = /^---\n([\s\S]*?)\n---\n/u.exec(text);
     if (match === null) throw new Error(`${repoPath(file)} is missing its frontmatter block`);

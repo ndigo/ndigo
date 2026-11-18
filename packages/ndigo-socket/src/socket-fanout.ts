@@ -27,6 +27,11 @@ export interface SocketFanout {
      * @param scope - The fan-out scope to subscribe to.
      * @param receive - Invoked for each published message.
      * @returns An unsubscribe function.
+     *
+     * @example
+     * ```ts
+     * const unsubscribe = await fanout.subscribe('room', (msg) => console.log(msg));
+     * ```
      */
     subscribe(scope: SocketFanoutScope, receive: (message: SocketFanoutMessage) => void): Promise<() => Promise<void>>;
     /**
@@ -35,6 +40,11 @@ export interface SocketFanout {
      * @param scope - The fan-out scope to publish to.
      * @param message - The message to publish.
      * @returns A promise that resolves after backend acceptance.
+     *
+     * @example
+     * ```ts
+     * await fanout.publish('room', { id: '1', payload: { text: 'hi' } });
+     * ```
      */
     publish(scope: SocketFanoutScope, message: SocketFanoutMessage): Promise<void>;
 }

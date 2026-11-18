@@ -133,6 +133,12 @@ function validateCircuitBreakerSpec(spec: CircuitBreakerSpec): void {
  * observes the final outcome of the inner chain — when composed
  * outside a retry interceptor, one chain pass counts as one failure, not one
  * per retry attempt.
+ *
+ * @example
+ * ```ts
+ * const interceptor = new CircuitBreakerInterceptor();
+ * // register on a woven proxy chain for methods carrying @circuitBreaker
+ * ```
  */
 export class CircuitBreakerInterceptor implements MethodInterceptor {
     /**

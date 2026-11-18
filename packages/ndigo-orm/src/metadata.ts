@@ -36,7 +36,7 @@ export interface RelationDefinition {
     /** The field that holds the relation. */
     fieldName: string;
     /** Lazily resolves the target entity class. */
-    targetEntity: () => ClassType;
+    targetEntity: () => Constructable<object>;
     /**
      * Owning side (many-to-one, one-to-one): the `@column` field on THIS
      * entity that holds the target entity's primary key.

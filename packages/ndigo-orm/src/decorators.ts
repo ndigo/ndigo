@@ -21,6 +21,7 @@ import {
     LifecycleEvent,
 } from './metadata';
 import type { TransactionManager } from './transaction-manager';
+import { Constructable } from '@ndigo/core';
 
 type ClassType = new (...args: unknown[]) => unknown;
 
@@ -132,7 +133,11 @@ export interface RelationOptions {
  * Shared factory for relation decorators. Records a {@link RelationDefinition}
  * on the class field's `Symbol.metadata` under the `relationsMetadataKey` key.
  */
-function relationDecorator(kind: RelationKind, targetEntity: () => ClassType, options: RelationOptions = {}) {
+function relationDecorator(
+    kind: RelationKind,
+    targetEntity: () => Constructable<object>,
+    options: RelationOptions = {}
+) {
     return function (_value: undefined, context: ClassFieldDecoratorContext): void {
         const relations = ((context.metadata[relationsMetadataKey] as RelationDefinition[]) ?? []).slice();
         relations.push({
@@ -165,7 +170,7 @@ function relationDecorator(kind: RelationKind, targetEntity: () => ClassType, op
  * }
  * ```
  */
-export function oneToMany(targetEntity: () => ClassType, options: RelationOptions = {}) {
+export function oneToMany(targetEntity: () => Constructable<object>, options: RelationOptions = {}) {
     return relationDecorator('one-to-many', targetEntity, options);
 }
 
@@ -184,7 +189,7 @@ export function oneToMany(targetEntity: () => ClassType, options: RelationOption
  * }
  * ```
  */
-export function manyToOne(targetEntity: () => ClassType, options: RelationOptions = {}) {
+export function manyToOne(targetEntity: () => Constructable<object>, options: RelationOptions = {}) {
     return relationDecorator('many-to-one', targetEntity, options);
 }
 
@@ -203,7 +208,7 @@ export function manyToOne(targetEntity: () => ClassType, options: RelationOption
  * }
  * ```
  */
-export function manyToMany(targetEntity: () => ClassType, options: RelationOptions = {}) {
+export function manyToMany(targetEntity: () => Constructable<object>, options: RelationOptions = {}) {
     return relationDecorator('many-to-many', targetEntity, options);
 }
 
@@ -222,7 +227,7 @@ export function manyToMany(targetEntity: () => ClassType, options: RelationOptio
  * }
  * ```
  */
-export function oneToOne(targetEntity: () => ClassType, options: RelationOptions = {}) {
+export function oneToOne(targetEntity: () => Constructable<object>, options: RelationOptions = {}) {
     return relationDecorator('one-to-one', targetEntity, options);
 }
 

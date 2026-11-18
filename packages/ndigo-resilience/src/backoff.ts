@@ -6,6 +6,12 @@
  * Computes the delay before a retry attempt. `attempt` is the 1-based retry
  * number (the first retry after the initial failure is attempt 1). Plain
  * function contract — no scheduling machinery.
+ *
+ * @example
+ * ```ts
+ * const policy: BackoffPolicy = fixedBackoff(250);
+ * await delay(policy.delay(1));
+ * ```
  */
 export interface BackoffPolicy {
     /**

@@ -84,6 +84,12 @@ function validateRetrySpec(spec: RetrySpec): void {
  * interceptor returns a Promise through the proxy (see {@link retry}).
  *
  * @see {@link retry} for the retry semantics and idempotency contract.
+ *
+ * @example
+ * ```ts
+ * const interceptor = new RetryInterceptor();
+ * // register on a woven proxy chain for methods carrying @retry
+ * ```
  */
 export class RetryInterceptor implements MethodInterceptor {
     /**

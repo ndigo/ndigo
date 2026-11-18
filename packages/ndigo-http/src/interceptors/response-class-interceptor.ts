@@ -4,7 +4,7 @@
 import { JSONObject } from '@ndigo/core';
 import { like } from '@ndigo/util/types';
 import { HTTPInit, ResponseAwareHTTPInterceptor } from '../http';
-import ResponseError from '../response-error';
+import { ResponseError } from '../response-error';
 import ResponseStatus from '../response-status';
 
 /**

@@ -4,7 +4,7 @@ import { describe, test, expect, beforeAll, afterEach, afterAll } from 'vitest';
 import { server } from '../_worker';
 import { HTTP, type ErrorAwareHTTPInterceptor } from '../../src/http';
 import { ErrorNormalizationInterceptor } from '../../src/interceptors/error-normalization-interceptor';
-import ResponseError from '../../src/response-error';
+import { ResponseError } from '../../src/response-error';
 
 describe('ErrorNormalizationInterceptor', () => {
     beforeAll(() => server.listen());

@@ -20,7 +20,7 @@ import {
     likeRequestAwareHTTPInterceptor,
     likeResponseAwareHTTPInterceptor,
 } from './http-interceptor-guards';
-import type ResponseError from './response-error';
+import type { ResponseError } from './response-error';
 import { patternCache } from './http-shared';
 import { is } from '@ndigo/util/types';
 

@@ -3,7 +3,7 @@
  */
 import { AbstractCookieValueArgumentResolver } from '@ndigo/dispatcher';
 import { Route } from '@ndigo/router';
-import Cookies from './cookies';
+import { Cookies } from './cookies';
 
 /**
  * Browser cookie argument resolver using `document.cookie` parsing.

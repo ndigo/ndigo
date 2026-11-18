@@ -2,7 +2,7 @@
  * Retries failed requests.
  */
 import { HTTPInit, HTTPMethod, ErrorAwareHTTPInterceptor, RequestAwareHTTPInterceptor, HTTP } from '../http';
-import ResponseError from '../response-error';
+import { ResponseError } from '../response-error';
 
 /**
  * Configuration options for the retry interceptor.

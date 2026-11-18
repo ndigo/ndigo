@@ -7,7 +7,7 @@ import { HTTP } from '../../src/http';
 import type { CompletionAwareHTTPInterceptor, ErrorAwareHTTPInterceptor } from '../../src/http';
 import type { TransformContext } from '../../src/transformers/http-transformer';
 import { TimeoutInterceptor } from '../../src/interceptors/timeout-interceptor';
-import ResponseError from '../../src/response-error';
+import { ResponseError } from '../../src/response-error';
 
 describe('TransformInterceptor', () => {
     beforeAll(() => server.listen());

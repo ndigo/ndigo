@@ -2,7 +2,7 @@
  * Rejects non-2xx responses.
  */
 import { HTTPInit, ResponseAwareHTTPInterceptor } from '../http';
-import ResponseError from '../response-error';
+import { ResponseError } from '../response-error';
 
 /**
  * Throws a {@link ResponseError} when the response status is outside 200-299.

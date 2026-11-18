@@ -5,7 +5,7 @@ import { AbstractLanguageResolver, NavigatorLanguageResolver } from '@ndigo/disp
 import { normalizeLocale } from '@ndigo/content';
 import { ApplicationContext } from '@ndigo/context';
 import { Route } from '@ndigo/router';
-import Cookies from './cookies';
+import { Cookies } from './cookies';
 
 /**
  * Resolves the active language from a persisted cookie, falling back to the

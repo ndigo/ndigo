@@ -2,7 +2,7 @@
  */
 import { describe, test, expect } from 'vitest';
 
-import randomToken from '@ndigo/util/crypto/random-token';
+import { randomToken } from '@ndigo/util/crypto/random-token';
 
 const base64UrlPattern = /^[A-Za-z0-9_-]+$/;
 

@@ -1,7 +1,7 @@
 /**
  * Applies request timeouts.
  */
-import ResponseError from '../response-error';
+import { ResponseError } from '../response-error';
 import { isNumber } from '@ndigo/util/types';
 import {
     CompletionAwareHTTPInterceptor,

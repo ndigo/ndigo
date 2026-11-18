@@ -3,7 +3,7 @@
  */
 import { AbstractDataBindingArgumentResolver, type DataBindingSource } from '@ndigo/dispatcher';
 import { Route } from '@ndigo/router';
-import Cookies from './cookies';
+import { Cookies } from './cookies';
 import { dumpStorage } from './browser-storage-argument-resolver';
 
 /**

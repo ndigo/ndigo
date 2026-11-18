@@ -13,7 +13,7 @@ import { Null } from '@ndigo/core';
  * The wire content type for the Prometheus text exposition document
  * (the versioned media type the scraper understands).
  */
-export const PROMETHEUS_TEXT_CONTENT_TYPE = 'text/plain; version=0.0.4; charset=utf-8';
+const PROMETHEUS_TEXT_CONTENT_TYPE = 'text/plain; version=0.0.4; charset=utf-8';
 
 /**
  * Whether an `Accept` header explicitly prefers the JSON projection: the single best-acceptable entry decides, ties keep header order,

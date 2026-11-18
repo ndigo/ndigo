@@ -46,6 +46,11 @@ const FAMILY_ORDER: ReadonlyArray<Exclude<ColumnTypeFamily, 'unknown'>> = [
  *
  * @param type - The declared column type; `undefined` for untyped columns.
  * @returns The matched family, or `'unknown'` when no family applies.
+ *
+ * @example
+ * ```ts
+ * columnTypeFamily('varchar'); // 'text'
+ * ```
  */
 export function columnTypeFamily(type: string | undefined): ColumnTypeFamily {
     const words = (type ?? '')

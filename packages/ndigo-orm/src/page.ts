@@ -45,6 +45,11 @@ export interface Page<T> {
  *
  * @param request - The request to validate.
  * @param allowedProperties - The entity field names sort properties may name.
+ *
+ * @example
+ * ```ts
+ * validatePageRequest({ page: 1, size: 20, sort: [{ property: 'name' }] }, new Set(['name']));
+ * ```
  */
 export function validatePageRequest(request: PageRequest, allowedProperties: Set<string>): void {
     if (!Number.isInteger(request.page) || request.page < 1) {
@@ -72,6 +77,12 @@ export function validatePageRequest(request: PageRequest, allowedProperties: Set
  * @param request - The page request.
  * @param allowedProperties - The entity field names sort properties may name.
  * @returns The requested page and totals.
+ *
+ * @example
+ * ```ts
+ * const page = pageFromAll(users, { page: 1, size: 10 }, new Set(['name']));
+ * console.log(page.content, page.totalPages);
+ * ```
  */
 export function pageFromAll<T>(all: T[], request: PageRequest, allowedProperties: Set<string>): Page<T> {
     validatePageRequest(request, allowedProperties);
@@ -95,6 +106,12 @@ export function pageFromAll<T>(all: T[], request: PageRequest, allowedProperties
  *
  * @param sort - The sort clauses.
  * @returns The comparator.
+ *
+ * @example
+ * ```ts
+ * const cmp = sortComparator([{ property: 'name', direction: 'asc' }]);
+ * users.sort(cmp);
+ * ```
  */
 export function sortComparator<T>(sort: SortOrder[]): (left: T, right: T) => number {
     return (left, right) => {

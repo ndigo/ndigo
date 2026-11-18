@@ -100,6 +100,10 @@ import { RedisConnection } from '@ndigo/redis';
 const publisher = new RedisConnection({ url: process.env.REDIS_URL! });
 await publisher.connect();
 // … await publisher.close(); // owned; drained, no QUIT (close, not QUIT)
+
+// The connection can also be registered as the `redisConnection` context entry
+// (`REDIS_CONNECTION` from `@ndigo/redis`) so components implementing
+// `RedisConnectionAware` receive it via the aware processor.
 ```
 
 Shared cache lives in `@ndigo/redis/cache` (`RedisCacheManager` /

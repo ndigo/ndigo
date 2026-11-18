@@ -69,9 +69,10 @@ import { getMapping, requestMapping } from '@ndigo/dispatcher';
 
 @requestMapping('/api')
 export class ProductController {
-    // Server apps: NodeAutoConfiguration provisions the `cacheManager` entry;
-    // resolve it with the ApplicationContextAware mixin
-    cacheManager: CacheManager;
+    // Server apps: NodeAutoConfiguration provisions the `cacheManager` entry.
+    // With `AsApplicationContextAware` (or `AsCacheManagerAware`) the processor
+    // injects it; `@cached` also resolves it lazily from `this.applicationContext`.
+    cacheManager?: CacheManager;
 
     @getMapping('/products/top')
     topProducts() {

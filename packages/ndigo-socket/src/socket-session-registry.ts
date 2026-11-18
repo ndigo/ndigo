@@ -3,6 +3,9 @@
  * (moved from `ndigo-dispatcher`, which re-exports it).
  */
 import type { SocketSession } from './socket-session';
+import { Constructable } from '@ndigo/core';
+import { Aware, AsAware, likeAwareAnd } from '@ndigo/factory';
+import { like } from '@ndigo/util/types';
 
 /**
  * Tracks live WebSocket sessions and broadcasts to them.
@@ -91,3 +94,52 @@ export interface SocketSessionRegistry {
      */
     remove(session: SocketSession): void;
 }
+
+/**
+ * Marks an object that can receive a {@link SocketSessionRegistry}.
+ */
+export interface SocketSessionRegistryAware extends Aware {
+    /**
+     * Sets the socket session registry used by the receiver.
+     *
+     * @param socketSessionRegistry - The registry to attach.
+     */
+    setSocketSessionRegistry(socketSessionRegistry: SocketSessionRegistry): void;
+}
+
+/**
+ * Mixes socket-session-registry awareness into a base class.
+ *
+ * @param superclass - Base class to extend.
+ * @returns A subclass that can receive a socket session registry.
+ */
+export const AsSocketSessionRegistryAware = <T extends Constructable>(
+    superclass: T
+): Constructable<SocketSessionRegistryAware> & T =>
+    class extends AsAware(superclass) implements SocketSessionRegistryAware {
+        socketSessionRegistry: SocketSessionRegistry | null = null;
+
+        /**
+         * Attaches a socket session registry to the instance.
+         *
+         * @param socketSessionRegistry - The registry to store.
+         */
+        setSocketSessionRegistry(socketSessionRegistry: SocketSessionRegistry): void {
+            Reflect.defineProperty(this, 'socketSessionRegistry', {
+                value: socketSessionRegistry,
+                configurable: true,
+                enumerable: false,
+                writable: false,
+            });
+        }
+    };
+
+/**
+ * Tests whether a value looks like socket-session-registry-aware state.
+ *
+ * @param value - The candidate value.
+ * @returns Whether the value can receive a socket session registry.
+ */
+export const likeSocketSessionRegistryAware = likeAwareAnd(like({ setSocketSessionRegistry: Function })) as (
+    value: unknown
+) => value is SocketSessionRegistryAware;

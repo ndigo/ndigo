@@ -33,6 +33,9 @@
   "dependencies": {
     "@ndigo/content": "~0.0.1",
     "@ndigo/core": "~0.0.1",
+    "@ndigo/http": "~0.0.1",
+    "@ndigo/locks": "~0.0.1",
+    "@ndigo/rate-limit": "~0.0.1",
     "@ndigo/factory": "~0.0.1",
     "@ndigo/log": "~0.0.1",
     "@ndigo/util": "~0.0.1",

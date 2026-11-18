@@ -2,6 +2,9 @@
  * Aware-processor mixin that injects the application context.
  */
 import { likeContentSourceAware, likeMessageSourceAware } from '@ndigo/content';
+import { likeLockDriverAware } from '@ndigo/locks';
+import { likeRateLimiterAware } from '@ndigo/rate-limit';
+import { likeHttpAware } from '@ndigo/http';
 import { likeApplicationEventEmitterAware } from './event-emitter';
 import { InitializationAwareProcessor, likeAware } from '@ndigo/factory';
 import { likeEnvironmentAware } from './environment';
@@ -80,6 +83,85 @@ export class ApplicationContextAwareProcessor implements InitializationAwareProc
             likeMessageSourceAware(value) && value.setMessageSource(applicationContext);
             // eslint-disable-next-line no-unused-expressions -- guarded dispatch: inject only into values implementing the contract
             likeApplicationContextAware(value) && value.setApplicationContext(applicationContext);
+
+            if (likeLockDriverAware(value) && applicationContext.hasValue('lockDriver')) {
+                value.setLockDriver(applicationContext.getValue('lockDriver'));
+            }
+            if (likeRateLimiterAware(value) && applicationContext.hasValue('rateLimiter')) {
+                value.setRateLimiter(applicationContext.getValue('rateLimiter'));
+            }
+            if (likeHttpAware(value) && applicationContext.hasValue('http')) {
+                value.setHttp(applicationContext.getValue('http'));
+            }
+
+            const cacheManagerAware = value as { setCacheManager?: (manager: unknown) => void };
+            if (
+                typeof cacheManagerAware.setCacheManager === 'function' &&
+                applicationContext.hasValue('cacheManager')
+            ) {
+                cacheManagerAware.setCacheManager(applicationContext.getValue('cacheManager'));
+            }
+            const conversionAware = value as { setConversionService?: (service: unknown) => void };
+            if (
+                typeof conversionAware.setConversionService === 'function' &&
+                applicationContext.hasValue('conversionService')
+            ) {
+                conversionAware.setConversionService(applicationContext.getValue('conversionService'));
+            }
+            const socketRegistryAware = value as { setSocketSessionRegistry?: (registry: unknown) => void };
+            if (
+                typeof socketRegistryAware.setSocketSessionRegistry === 'function' &&
+                applicationContext.hasValue('socketSessionRegistry')
+            ) {
+                socketRegistryAware.setSocketSessionRegistry(applicationContext.getValue('socketSessionRegistry'));
+            }
+            const metricAggregatorAware = value as { setFeatureMetricAggregator?: (aggregator: unknown) => void };
+            if (
+                typeof metricAggregatorAware.setFeatureMetricAggregator === 'function' &&
+                applicationContext.hasValue('metricAggregator')
+            ) {
+                metricAggregatorAware.setFeatureMetricAggregator(applicationContext.getValue('metricAggregator'));
+            }
+            const healthRegistryAware = value as { setHealthRegistry?: (registry: unknown) => void };
+            if (
+                typeof healthRegistryAware.setHealthRegistry === 'function' &&
+                applicationContext.hasValue('healthRegistry')
+            ) {
+                healthRegistryAware.setHealthRegistry(applicationContext.getValue('healthRegistry'));
+            }
+            const dataSourceAware = value as { setDataSource?: (dataSource: unknown) => void };
+            if (typeof dataSourceAware.setDataSource === 'function' && applicationContext.hasValue('dataSource')) {
+                dataSourceAware.setDataSource(applicationContext.getValue('dataSource'));
+            }
+            const redisConnectionAware = value as { setRedisConnection?: (connection: unknown) => void };
+            if (
+                typeof redisConnectionAware.setRedisConnection === 'function' &&
+                applicationContext.hasValue('redisConnection')
+            ) {
+                redisConnectionAware.setRedisConnection(applicationContext.getValue('redisConnection'));
+            }
+            const authServerAware = value as { setAuthServer?: (authServer: unknown) => void };
+            if (typeof authServerAware.setAuthServer === 'function' && applicationContext.hasValue('authServer')) {
+                authServerAware.setAuthServer(applicationContext.getValue('authServer'));
+            }
+            const passwordEncoderAware = value as { setPasswordEncoder?: (encoder: unknown) => void };
+            if (
+                typeof passwordEncoderAware.setPasswordEncoder === 'function' &&
+                applicationContext.hasValue('passwordEncoder')
+            ) {
+                passwordEncoderAware.setPasswordEncoder(applicationContext.getValue('passwordEncoder'));
+            }
+            const sessionStoreAware = value as { setSessionStore?: (store: unknown) => void };
+            if (
+                typeof sessionStoreAware.setSessionStore === 'function' &&
+                applicationContext.hasValue('sessionStore')
+            ) {
+                sessionStoreAware.setSessionStore(applicationContext.getValue('sessionStore'));
+            }
+            const userStoreAware = value as { setUserStore?: (store: unknown) => void };
+            if (typeof userStoreAware.setUserStore === 'function' && applicationContext.hasValue('userStore')) {
+                userStoreAware.setUserStore(applicationContext.getValue('userStore'));
+            }
         }
         return value;
     }

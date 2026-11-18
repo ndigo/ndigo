@@ -143,6 +143,16 @@ export class HostManager {
      * @param options - The feature's name, route prefix, loader, and lifecycle hooks.
      * @returns This manager, so registrations can be chained.
      * @throws If a feature with the same name is already registered.
+     *
+     * @example
+     * ```ts
+     * const host = new HostManager(shellContext);
+     * host.registerFeature({
+     *     name: 'catalog',
+     *     prefix: '/catalog',
+     *     loader: () => import('./features/catalog'),
+     * });
+     * ```
      */
     registerFeature(options: HostRegistrationOptions): this {
         if (this.#names.has(options.name)) {
@@ -259,6 +269,11 @@ export class HostManager {
      *
      * @param path - The absolute path to navigate to.
      * @returns Whether a feature handled the path.
+     *
+     * @example
+     * ```ts
+     * host.navigate('/catalog/items/42');
+     * ```
      */
     navigate(path: string): boolean {
         return this.#routingRegistry.navigate(path);

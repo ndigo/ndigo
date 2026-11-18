@@ -22,6 +22,11 @@ const severityMappings: Readonly<Record<SeverityScheme, SeverityMapping>> = {
  * Retrieves the `SeverityMapping` instance for a given severity scheme.
  * @param scheme - The `SeverityScheme` to retrieve the mapping for.
  * @returns The `SeverityMapping` instance.
+ *
+ * @example
+ * ```ts
+ * const mapping = getSeverityMapping('apache');
+ * ```
  */
 export function getSeverityMapping(scheme: SeverityScheme): SeverityMapping {
     return severityMappings[scheme];
@@ -67,6 +72,11 @@ export function detectSeverityScheme(levelName: string): SeverityScheme {
  * @param levelName - The string name of the log level.
  * @param scheme - Optional. The `SeverityScheme` to use for conversion.
  * @returns The `SeverityNumber` corresponding to the given level name.
+ *
+ * @example
+ * ```ts
+ * levelToSeverityNumber('warn', 'apache'); // SeverityNumber.WARN
+ * ```
  */
 export function levelToSeverityNumber(levelName: string, scheme?: SeverityScheme): SeverityNumber {
     const resolvedScheme = scheme ?? detectSeverityScheme(levelName);

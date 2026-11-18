@@ -102,6 +102,13 @@ export const AsMessageSourceAware = <T extends Constructable>(superclass: T): Co
  *
  * @param value - The value to be tested.
  * @returns Whether the value matches the message source shape.
+ *
+ * @example
+ * ```ts
+ * if (likeMessageSource(candidate)) {
+ *     console.log(candidate.getMessage('greeting'));
+ * }
+ * ```
  */
 export const likeMessageSource = like({ getMessage: Function }) as (value: unknown) => value is MessageSource;
 
@@ -110,6 +117,13 @@ export const likeMessageSource = like({ getMessage: Function }) as (value: unkno
  *
  * @param value - The value to be tested.
  * @returns Whether the value can receive a message source.
+ *
+ * @example
+ * ```ts
+ * if (likeMessageSourceAware(target)) {
+ *     target.setMessageSource(source);
+ * }
+ * ```
  */
 export const likeMessageSourceAware = likeAwareAnd(like({ setMessageSource: Function })) as (
     value: unknown

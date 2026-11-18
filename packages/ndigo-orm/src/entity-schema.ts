@@ -12,6 +12,11 @@ import { type ColumnDefinition, getEntityMetadata } from './metadata';
  *
  * @param type - The declared column `type` (e.g. `'varchar'`, `'int'`).
  * @returns The base Zod schema, or `z.unknown` when no mapping applies.
+ *
+ * @example
+ * ```ts
+ * baseSchemaForType('int'); // z.number()
+ * ```
  */
 export function baseSchemaForType(type: string): z.ZodType {
     switch (columnTypeFamily(type)) {
@@ -64,6 +69,12 @@ const insertSchemaCache = new WeakMap<Constructable, z.ZodObject<Record<string, 
  *
  * @param entityClass - The entity constructor (must be decorated with `@entity`).
  * @returns A Zod object schema keyed by field name.
+ *
+ * @example
+ * ```ts
+ * const schema = schemaForEntity(User);
+ * const parsed = schema.parse({ id: 1, name: 'Ada' });
+ * ```
  */
 export function schemaForEntity<T extends object>(
     entityClass: Constructable<T>
@@ -101,6 +112,12 @@ export function schemaForEntity<T extends object>(
  *
  * @param entityClass - The entity constructor (must be decorated with `@entity`).
  * @returns A Zod object schema over the writable columns.
+ *
+ * @example
+ * ```ts
+ * const schema = insertSchemaForEntity(User);
+ * const parsed = schema.parse({ name: 'Ada' });
+ * ```
  */
 export function insertSchemaForEntity<T extends object>(
     entityClass: Constructable<T>
@@ -138,6 +155,11 @@ export function insertSchemaForEntity<T extends object>(
  * @param entity - The entity instance to validate.
  * @throws When any column fails validation, listing the
  *   offending field paths.
+ *
+ * @example
+ * ```ts
+ * validateEntity(User, user); // throws on invalid columns
+ * ```
  */
 export function validateEntity<T extends object>(entityClass: Constructable<T>, entity: T): void {
     const result = schemaForEntity(entityClass).safeParse(entity);

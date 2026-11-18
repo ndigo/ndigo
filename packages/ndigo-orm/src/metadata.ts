@@ -130,6 +130,11 @@ function getMetadata(target: Constructable): MetadataRecord {
  * Checks if a given class is an entity.
  * @param target - The class constructor to check.
  * @returns `true` if the class is an entity, `false` otherwise.
+ *
+ * @example
+ * ```ts
+ * if (isEntity(User)) { ... }
+ * ```
  */
 export function isEntity(target: Constructable): boolean {
     const metadata = getMetadata(target);
@@ -151,6 +156,12 @@ const entityMetadataCache = new WeakMap<Constructable, EntityMetadata>();
  *
  * @param target - The class constructor for which to retrieve metadata.
  * @returns The entity metadata.
+ *
+ * @example
+ * ```ts
+ * const meta = getEntityMetadata(User);
+ * console.log(meta.columns.map((c) => c.fieldName));
+ * ```
  */
 export function getEntityMetadata(target: Constructable): EntityMetadata {
     const cached = entityMetadataCache.get(target);

@@ -1,7 +1,7 @@
 /**
  */
 import { RuleTester } from 'oxlint/plugins-dev';
-import { noCrossParadigmDecorators } from '../../src/rules/no-cross-paradigm-decorators';
+import { noMixedDecoratorParadigms } from '../../src/rules/no-mixed-decorator-paradigms';
 
 const ruleTester = new RuleTester({
     languageOptions: {
@@ -12,7 +12,7 @@ const ruleTester = new RuleTester({
     },
 });
 
-ruleTester.run('no-cross-paradigm-decorators', noCrossParadigmDecorators, {
+ruleTester.run('no-mixed-decorator-paradigms', noMixedDecoratorParadigms, {
     valid: [
         // Server controller: only mapping decorators
         {

@@ -13,14 +13,14 @@ import { TSDocParser, TSDocConfiguration } from '@microsoft/tsdoc';
 
 const parser = new TSDocParser(new TSDocConfiguration());
 
-export const tsdocSyntax = {
+export const validTsdoc = {
     meta: {
         type: 'problem',
         docs: {
             description: 'Validate TSDoc syntax in doc comments',
         },
         messages: {
-            tsdocSyntax: '[{{messageId}}] {{message}}',
+            validTsdoc: '[{{messageId}}] {{message}}',
         },
         schema: [],
     } as const,
@@ -45,7 +45,7 @@ export const tsdocSyntax = {
                         const end = context.sourceCode.getLocFromIndex(comment.start + msg.textRange.end);
                         context.report({
                             loc: { start, end },
-                            messageId: 'tsdocSyntax',
+                            messageId: 'validTsdoc',
                             data: {
                                 messageId: msg.messageId,
                                 message: msg.unformattedText,

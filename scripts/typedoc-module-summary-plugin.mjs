@@ -23,7 +23,7 @@ export function load(app) {
     app.converter.on('end', (context) => {
         const project = context.project;
         if (!project || (project.comment && project.comment.summary && project.comment.summary.length)) return;
-        // oxlint-disable-next-line @ndigo/no-string-registry-lookup -- TypeDoc's Application.options is an option bag (getValue/setValue), not the Ndigo registry.
+        // oxlint-disable-next-line @ndigo/no-string-token-lookup -- TypeDoc's Application.options is an option bag (getValue/setValue), not the Ndigo registry.
         const entryPoints = app.options.getValue('entryPoints') || [];
         if (!entryPoints.length) return;
         let readme;

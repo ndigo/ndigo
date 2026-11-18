@@ -26,7 +26,7 @@ Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥12.
 {
     "jsPlugins": ["@ndigo/oxlint-plugin"],
     "rules": {
-        "@ndigo/no-cross-paradigm-decorators": "error",
+        "@ndigo/no-mixed-decorator-paradigms": "error",
     },
 }
 ```
@@ -37,14 +37,14 @@ Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥12.
 
 | Rule                                  | Enforces                                                                                                                                              |
 | ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `@ndigo/no-cross-paradigm-decorators` | Decorator families stay within their paradigm                                                                                                         |
+| `@ndigo/no-mixed-decorator-paradigms` | Decorator families stay within their paradigm                                                                                                         |
 | `@ndigo/no-scheduled-in-browser`      | Disallow `@ndigo/scheduler` imports in browser-platform files                                                                                         |
 | `@ndigo/no-signals-in-entity`         | `@ndigo/signals` reactivity does not leak into entities                                                                                               |
-| `@ndigo/no-string-registry-lookup`    | Disallow string-literal registry lookups in source files                                                                                              |
+| `@ndigo/no-string-token-lookup`       | Disallow string-literal context-token lookups in source files                                                                                         |
 | `@ndigo/no-unsafe-view-name-literal`  | View-name literals are relative — no absolute prefixes, `..` segments, or NUL bytes (DSV-SEC-1); `IslandView` names must be valid custom-element tags |
-| `@ndigo/no-duplicate-mapping-path`    | Duplicate method-level mapping paths of the same HTTP-method identity in one class (class-local, best-effort); disabled in specs                      |
+| `@ndigo/no-duplicate-mapping`         | Duplicate method-level mapping paths of the same HTTP-method identity in one class (class-local, best-effort); disabled in specs                      |
 
-`no-duplicate-mapping-path` is method-level, class-local, and best-effort: it
+`no-duplicate-mapping` is method-level, class-local, and best-effort: it
 compares only mapping decorators syntactically attached to methods of a single
 class declaration and groups by normalized path AND resolved HTTP-method
 identity — the method-less family (`routeMapping`, `requestMapping`,

@@ -1,5 +1,5 @@
 /**
- * Rule that flags string-typed registry lookups — the untyped entry handle.
+ * Rule that flags string-literal context-token lookups — the untyped entry handle.
  */
 import type { Context, ESTree } from '@oxlint/plugins';
 
@@ -8,7 +8,7 @@ import type { Context, ESTree } from '@oxlint/plugins';
  * in source files. Registration (`setValue`) stays string-legal:
  * tokens and strings share the description-keyed registry.
  */
-const registryLookupMethods = new Set(['getValue', 'getInstance', 'hasValue', 'destroyValue']);
+const tokenLookupMethods = new Set(['getValue', 'getInstance', 'hasValue', 'destroyValue']);
 
 function isTestFile(filename: string): boolean {
     return (
@@ -112,15 +112,15 @@ function bindPatternNames(pattern: ESTree.BindingPattern, bind: Scope): void {
  * - an unresolvable identifier (e.g. an import-`*`-namespace member or a
  *   cross-module constant) is never assumed to be a string.
  */
-export const noStringRegistryLookup = {
+export const noStringTokenLookup = {
     meta: {
         type: 'problem',
         docs: {
-            description: 'Disallow string-literal registry lookups in source files',
+            description: 'Disallow string-literal context-token lookups in source files',
         },
         messages: {
             preferToken:
-                "String-literal registry lookup {{method}}('{{name}}') — use a ContextToken (ADR-34 D1) so renames and type errors surface at build time. For a genuinely dynamic name, keep the string and add oxlint-disable-next-line with a reason.",
+                "String-literal context-token lookup {{method}}('{{name}}') — use a ContextToken (ADR-34 D1) so renames and type errors surface at build time. For a genuinely dynamic name, keep the string and add oxlint-disable-next-line with a reason.",
         },
         schema: [],
     } as const,
@@ -207,7 +207,7 @@ export const noStringRegistryLookup = {
             if (property === null || property.type !== 'Identifier') {
                 return;
             }
-            if (!registryLookupMethods.has(property.name)) {
+            if (!tokenLookupMethods.has(property.name)) {
                 return;
             }
             const firstArgument = node.arguments[0];

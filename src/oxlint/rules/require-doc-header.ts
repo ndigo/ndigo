@@ -26,7 +26,7 @@ function isCheckedFile(filename: string): boolean {
     return /(^|[\\/])(src|client)([\\/]|$)/u.test(filename) && filename.endsWith('.ts');
 }
 
-export const requiresDocHeader = {
+export const requireDocHeader = {
     meta: {
         type: 'problem',
         docs: {

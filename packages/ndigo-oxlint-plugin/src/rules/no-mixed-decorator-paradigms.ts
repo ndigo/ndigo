@@ -1,5 +1,5 @@
 /**
- * Rule that flags cross-paradigm decorator misuse.
+ * Rule that flags mixed decorator paradigms on one class.
  */
 import type { Context, ESTree } from '@oxlint/plugins';
 
@@ -47,7 +47,7 @@ function decoratorNames(node: { decorators?: ESTree.Decorator[] }): string[] {
  * Reports classes mixing service-call and server-route-mapping decorators (on
  * the class OR any of its methods).
  */
-export const noCrossParadigmDecorators = {
+export const noMixedDecoratorParadigms = {
     meta: {
         type: 'problem',
         docs: {

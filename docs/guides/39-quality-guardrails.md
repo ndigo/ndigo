@@ -33,26 +33,26 @@ internal-file convention, doc headers, or repository naming stay internal.
 {
     "jsPlugins": ["@ndigo/oxlint-plugin"],
     "rules": {
-        "@ndigo/no-cross-paradigm-decorators": "error",
+        "@ndigo/no-mixed-decorator-paradigms": "error",
         "@ndigo/no-scheduled-in-browser": "error",
         "@ndigo/no-signals-in-entity": "error",
-        "@ndigo/no-string-registry-lookup": "error",
+        "@ndigo/no-string-token-lookup": "error",
         "@ndigo/no-unsafe-view-name-literal": "error",
-        "@ndigo/no-duplicate-mapping-path": "error",
+        "@ndigo/no-duplicate-mapping": "error",
     },
 }
 ```
 
-| Rule                           | Catches                                                    |
-| ------------------------------ | ---------------------------------------------------------- |
-| `no-cross-paradigm-decorators` | Decorator families mixed outside their paradigm            |
-| `no-scheduled-in-browser`      | `@ndigo/scheduler` imports in browser-platform files       |
-| `no-signals-in-entity`         | `@ndigo/signals` reactivity leaking into ORM entities      |
-| `no-string-registry-lookup`    | String-literal registry lookups where a token is available |
-| `no-unsafe-view-name-literal`  | Absolute/`..`/NUL view names; invalid island tags          |
-| `no-duplicate-mapping-path`    | Duplicate same-method mappings in one class                |
+| Rule                           | Catches                                                         |
+| ------------------------------ | --------------------------------------------------------------- |
+| `no-mixed-decorator-paradigms` | Decorator families mixed outside their paradigm                 |
+| `no-scheduled-in-browser`      | `@ndigo/scheduler` imports in browser-platform files            |
+| `no-signals-in-entity`         | `@ndigo/signals` reactivity leaking into ORM entities           |
+| `no-string-token-lookup`       | String-literal context-token lookups where a token is available |
+| `no-unsafe-view-name-literal`  | Absolute/`..`/NUL view names; invalid island tags               |
+| `no-duplicate-mapping`         | Duplicate same-method mappings in one class                     |
 
-The duplicate-path rule is class-local and syntactic: it compares mapping
+The duplicate-mapping rule is class-local and syntactic: it compares mapping
 decorators attached to methods of one class, groups by normalized path and
 resolved method identity, and skips mappings with extra conditions. It is
 best-effort by design; do not rely on it to see base-class or dynamically built
@@ -68,7 +68,7 @@ root `.oxlintrc.json`. It enforces:
 - `internal/no-uppercase-regexp-constants` — regex constants use the agreed form.
 - `internal/no-abstract-class-without-prefix` — `Abstract*` naming.
 - `internal/no-mixed-case-acronyms` — acronym casing.
-- `internal/requires-doc-header` — the module summary block.
+- `internal/require-doc-header` — the module summary block.
 - `internal/no-global-state-in-create-factories` — `create*` stays global-free.
 
 Run them with the same command as the consumer rules: `pnpm lint`.

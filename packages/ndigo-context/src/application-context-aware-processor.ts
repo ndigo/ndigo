@@ -96,86 +96,86 @@ export class ApplicationContextAwareProcessor implements InitializationAwareProc
                 value.setHttp(applicationContext.getValue(HTTP_CLIENT));
             }
             const dataSourceAware = value as { setDataSource?: (dataSource: unknown) => void };
-            // oxlint-disable-next-line @ndigo/no-string-registry-lookup -- data source token lives in @ndigo/orm
+            // oxlint-disable-next-line @ndigo/no-string-token-lookup -- data source token lives in @ndigo/orm
             if (typeof dataSourceAware.setDataSource === 'function' && applicationContext.hasValue('dataSource')) {
-                // oxlint-disable-next-line @ndigo/no-string-registry-lookup -- data source token lives in @ndigo/orm
+                // oxlint-disable-next-line @ndigo/no-string-token-lookup -- data source token lives in @ndigo/orm
                 dataSourceAware.setDataSource(applicationContext.getValue('dataSource'));
             }
 
             const cacheManagerAware = value as { setCacheManager?: (manager: unknown) => void };
             if (
                 typeof cacheManagerAware.setCacheManager === 'function' &&
-                // oxlint-disable-next-line @ndigo/no-string-registry-lookup -- cache token lives in @ndigo/cache which depends on context
+                // oxlint-disable-next-line @ndigo/no-string-token-lookup -- cache token lives in @ndigo/cache which depends on context
                 applicationContext.hasValue('cacheManager')
             ) {
-                // oxlint-disable-next-line @ndigo/no-string-registry-lookup -- cache token lives in @ndigo/cache which depends on context
+                // oxlint-disable-next-line @ndigo/no-string-token-lookup -- cache token lives in @ndigo/cache which depends on context
                 cacheManagerAware.setCacheManager(applicationContext.getValue('cacheManager'));
             }
             const conversionAware = value as { setConversionService?: (service: unknown) => void };
             if (
                 typeof conversionAware.setConversionService === 'function' &&
-                // oxlint-disable-next-line @ndigo/no-string-registry-lookup -- conversion token lives in @ndigo/platform-node which depends on context
+                // oxlint-disable-next-line @ndigo/no-string-token-lookup -- conversion token lives in @ndigo/platform-node which depends on context
                 applicationContext.hasValue('conversionService')
             ) {
-                // oxlint-disable-next-line @ndigo/no-string-registry-lookup -- conversion token lives in @ndigo/platform-node which depends on context
+                // oxlint-disable-next-line @ndigo/no-string-token-lookup -- conversion token lives in @ndigo/platform-node which depends on context
                 conversionAware.setConversionService(applicationContext.getValue('conversionService'));
             }
             const socketRegistryAware = value as { setSocketSessionRegistry?: (registry: unknown) => void };
             if (
                 typeof socketRegistryAware.setSocketSessionRegistry === 'function' &&
-                // oxlint-disable-next-line @ndigo/no-string-registry-lookup -- socket token lives in @ndigo/platform-node which depends on context
+                // oxlint-disable-next-line @ndigo/no-string-token-lookup -- socket token lives in @ndigo/platform-node which depends on context
                 applicationContext.hasValue('socketSessionRegistry')
             ) {
-                // oxlint-disable-next-line @ndigo/no-string-registry-lookup -- socket token lives in @ndigo/platform-node which depends on context
+                // oxlint-disable-next-line @ndigo/no-string-token-lookup -- socket token lives in @ndigo/platform-node which depends on context
                 socketRegistryAware.setSocketSessionRegistry(applicationContext.getValue('socketSessionRegistry'));
             }
             const metricAggregatorAware = value as { setFeatureMetricAggregator?: (aggregator: unknown) => void };
             if (
                 typeof metricAggregatorAware.setFeatureMetricAggregator === 'function' &&
-                // oxlint-disable-next-line @ndigo/no-string-registry-lookup -- metric token lives in @ndigo/management which depends on context
+                // oxlint-disable-next-line @ndigo/no-string-token-lookup -- metric token lives in @ndigo/management which depends on context
                 applicationContext.hasValue('metricAggregator')
             ) {
-                // oxlint-disable-next-line @ndigo/no-string-registry-lookup -- metric token lives in @ndigo/management which depends on context
+                // oxlint-disable-next-line @ndigo/no-string-token-lookup -- metric token lives in @ndigo/management which depends on context
                 metricAggregatorAware.setFeatureMetricAggregator(applicationContext.getValue('metricAggregator'));
             }
             const healthRegistryAware = value as { setHealthRegistry?: (registry: unknown) => void };
             if (
                 typeof healthRegistryAware.setHealthRegistry === 'function' &&
-                // oxlint-disable-next-line @ndigo/no-string-registry-lookup -- health token lives in @ndigo/management which depends on context
+                // oxlint-disable-next-line @ndigo/no-string-token-lookup -- health token lives in @ndigo/management which depends on context
                 applicationContext.hasValue('healthRegistry')
             ) {
-                // oxlint-disable-next-line @ndigo/no-string-registry-lookup -- health token lives in @ndigo/management which depends on context
+                // oxlint-disable-next-line @ndigo/no-string-token-lookup -- health token lives in @ndigo/management which depends on context
                 healthRegistryAware.setHealthRegistry(applicationContext.getValue('healthRegistry'));
             }
 
             const authServerAware = value as { setAuthServer?: (authServer: unknown) => void };
-            // oxlint-disable-next-line @ndigo/no-string-registry-lookup -- auth token lives in @ndigo/auth-server which depends on context
+            // oxlint-disable-next-line @ndigo/no-string-token-lookup -- auth token lives in @ndigo/auth-server which depends on context
             if (typeof authServerAware.setAuthServer === 'function' && applicationContext.hasValue('authServer')) {
-                // oxlint-disable-next-line @ndigo/no-string-registry-lookup -- auth token lives in @ndigo/auth-server which depends on context
+                // oxlint-disable-next-line @ndigo/no-string-token-lookup -- auth token lives in @ndigo/auth-server which depends on context
                 authServerAware.setAuthServer(applicationContext.getValue('authServer'));
             }
             const passwordEncoderAware = value as { setPasswordEncoder?: (encoder: unknown) => void };
             if (
                 typeof passwordEncoderAware.setPasswordEncoder === 'function' &&
-                // oxlint-disable-next-line @ndigo/no-string-registry-lookup -- password encoder token lives in @ndigo/auth-server which depends on context
+                // oxlint-disable-next-line @ndigo/no-string-token-lookup -- password encoder token lives in @ndigo/auth-server which depends on context
                 applicationContext.hasValue('passwordEncoder')
             ) {
-                // oxlint-disable-next-line @ndigo/no-string-registry-lookup -- password encoder token lives in @ndigo/auth-server which depends on context
+                // oxlint-disable-next-line @ndigo/no-string-token-lookup -- password encoder token lives in @ndigo/auth-server which depends on context
                 passwordEncoderAware.setPasswordEncoder(applicationContext.getValue('passwordEncoder'));
             }
             const sessionStoreAware = value as { setSessionStore?: (store: unknown) => void };
             if (
                 typeof sessionStoreAware.setSessionStore === 'function' &&
-                // oxlint-disable-next-line @ndigo/no-string-registry-lookup -- session store token lives in @ndigo/auth-server which depends on context
+                // oxlint-disable-next-line @ndigo/no-string-token-lookup -- session store token lives in @ndigo/auth-server which depends on context
                 applicationContext.hasValue('sessionStore')
             ) {
-                // oxlint-disable-next-line @ndigo/no-string-registry-lookup -- session store token lives in @ndigo/auth-server which depends on context
+                // oxlint-disable-next-line @ndigo/no-string-token-lookup -- session store token lives in @ndigo/auth-server which depends on context
                 sessionStoreAware.setSessionStore(applicationContext.getValue('sessionStore'));
             }
             const userStoreAware = value as { setUserStore?: (store: unknown) => void };
-            // oxlint-disable-next-line @ndigo/no-string-registry-lookup -- user store token lives in @ndigo/auth-server which depends on context
+            // oxlint-disable-next-line @ndigo/no-string-token-lookup -- user store token lives in @ndigo/auth-server which depends on context
             if (typeof userStoreAware.setUserStore === 'function' && applicationContext.hasValue('userStore')) {
-                // oxlint-disable-next-line @ndigo/no-string-registry-lookup -- user store token lives in @ndigo/auth-server which depends on context
+                // oxlint-disable-next-line @ndigo/no-string-token-lookup -- user store token lives in @ndigo/auth-server which depends on context
                 userStoreAware.setUserStore(applicationContext.getValue('userStore'));
             }
         }

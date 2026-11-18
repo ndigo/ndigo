@@ -118,10 +118,10 @@ function createCountedDecorator(options: CountedOptions = {}) {
                             aggregator = ctx.getValue(FEATURE_METRIC_AGGREGATOR);
                         } else if (
                             typeof ctx.hasValue === 'function' &&
-                            // oxlint-disable-next-line @ndigo/no-string-registry-lookup -- metric token lives in @ndigo/management which depends on context
+                            // oxlint-disable-next-line @ndigo/no-string-token-lookup -- metric token lives in @ndigo/management which depends on context
                             ctx.hasValue('metricAggregator')
                         ) {
-                            // oxlint-disable-next-line @ndigo/no-string-registry-lookup -- metric token lives in @ndigo/management which depends on context
+                            // oxlint-disable-next-line @ndigo/no-string-token-lookup -- metric token lives in @ndigo/management which depends on context
                             aggregator = ctx.getValue('metricAggregator') as FeatureMetricAggregator;
                         }
                     } catch {

@@ -18,8 +18,8 @@ import { noMixedCaseAcronyms } from './rules/no-mixed-case-acronyms.ts';
 import { noRawConsole } from './rules/no-raw-console.ts';
 import { noUppercaseRegexpConstants } from './rules/no-uppercase-regexp-constants.ts';
 import { noUpwardLayerImports } from './rules/no-upward-layer-imports.ts';
-import { requiresDocHeader } from './rules/requires-doc-header.ts';
-import { tsdocSyntax } from './rules/tsdoc-syntax.ts';
+import { requireDocHeader } from './rules/require-doc-header.ts';
+import { validTsdoc } from './rules/valid-tsdoc.ts';
 
 const plugin = eslintCompatPlugin({
     meta: {
@@ -36,8 +36,8 @@ const plugin = eslintCompatPlugin({
         'no-raw-console': noRawConsole,
         'no-uppercase-regexp-constants': noUppercaseRegexpConstants,
         'no-upward-layer-imports': noUpwardLayerImports,
-        'requires-doc-header': requiresDocHeader,
-        'tsdoc-syntax': tsdocSyntax,
+        'require-doc-header': requireDocHeader,
+        'valid-tsdoc': validTsdoc,
     },
 });
 

@@ -1,5 +1,5 @@
 /**
- * Rule that flags duplicate route-mapping paths within a class.
+ * Rule that flags duplicate route mappings within a class.
  */
 import type { Context, ESTree } from '@oxlint/plugins';
 
@@ -303,7 +303,7 @@ function mappingPathLiteral(decorator: ESTree.Decorator, aliases: Map<string, st
  * attached to methods of a single class declaration are compared. Paths
  * composed dynamically, or contributed by a base class, are not seen.
  */
-export const noDuplicateMappingPath = {
+export const noDuplicateMapping = {
     meta: {
         type: 'problem',
         docs: {
@@ -311,7 +311,7 @@ export const noDuplicateMappingPath = {
                 'Disallow duplicate method-level route-mapping paths of the same HTTP-method identity within a class',
         },
         messages: {
-            duplicateMappingPath:
+            duplicateMapping:
                 "Duplicate @{{decorator}} mapping path '{{path}}' (normalized '{{normalized}}', method {{method}}) — already mapped by @{{firstDecorator}}('{{first}}') in this class. Both target the same radix node for the same HTTP method, so the later registration shadows the earlier; remove or disambiguate one.",
         },
         schema: [],
@@ -339,7 +339,7 @@ export const noDuplicateMappingPath = {
                 }
                 context.report({
                     node: literal.node,
-                    messageId: 'duplicateMappingPath',
+                    messageId: 'duplicateMapping',
                     data: {
                         decorator: literal.decorator,
                         firstDecorator: previous.decorator,

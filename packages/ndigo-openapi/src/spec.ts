@@ -460,6 +460,12 @@ export class OpenAPISpecGenerator {
      *   mapping wins, mirroring the strategy's precedence).
      * @param options - Document options + filters.
      * @returns The OpenAPI 3.0.3 document.
+     *
+     * @example
+     * ```ts
+     * const generator = new OpenAPISpecGenerator();
+     * const document = generator.generate(mappings, { title: 'My API' });
+     * ```
      */
     generate(mappings: readonly RouteMappingTable[], options: OpenAPIGeneratorOptions = {}): OpenAPIDocument {
         const paths: Record<string, OpenAPIPathItem> = {};

@@ -91,13 +91,3 @@ export class CompositeThemeSource implements ThemeSource {
         throw new TypeError(`No theme source could provide theme: "${name ?? 'default'}"`);
     }
 }
-
-/**
- * @deprecated Use {@link CompositeThemeSource} instead.
- */
-export type CompositeThemeResolver = CompositeThemeSource;
-
-/**
- * @deprecated Use {@link CompositeThemeSource} instead.
- */
-export const CompositeThemeResolver = CompositeThemeSource;

@@ -35,8 +35,7 @@ const app = new ApplicationBuilder([ManagementAutoConfiguration]).run();
 - `ManagementAutoConfiguration` registers a shared `FeatureMetricAggregator` entry (the same one `@counted` and feature code populate, and `TelemetryHealthIndicator` reads), a `HealthRegistry` pre-wired with the telemetry indicator, and the two controllers.
 - When `accessGuard` is configured, a `handlerMappings` entry attaches the guard to the dispatch interceptor chain, scoped to management paths only — `/health` and `/metrics` are denied before their handlers run while every other route is untouched.
 - The mapping prepends `SecurityHeadersInterceptor` — management responses carry the platform's default security-header set (CSP, `X-Content-Type-Options: nosniff`, …) even though these routes bypass the platform mapping.
-- `MetricsController` (`/metrics`) reads the process's registered metric snapshot source — registered by `@ndigo/telemetry-node`'s `configureTelemetry({ metricExporter: 'prometheus' })`, replacing the aggregator as the endpoint's backing — and renders the snapshot as Prometheus text or the JSON projection.
-- `HealthController` (`/health`) runs the context `HealthRegistry` — the registry is wired once at context refresh and never mutated per request. The response status mirrors the aggregate: `503` when a component is `DOWN`, `200` otherwise (the health document is written by a producing view so it survives at `503`, where a `ResponseEntity` would be re-shaped into a `problem+json` error body).
+- The `/metrics` and `/health` handlers are registered internally by `ManagementAutoConfiguration`; their controller classes are not part of the public API.
 - Custom `HealthIndicator`s can be registered on the `HealthRegistry` entry for other subsystems (data sources, external deps).
 
 ## API
@@ -46,7 +45,6 @@ The full API is at `api/` (generated; run `pnpm doc:api`). Primary exports live 
 
 - `HealthRegistry` — `register/unregister/checkAll`; `HealthIndicator` interface.
 - `TelemetryHealthIndicator` — reports telemetry health from the aggregator.
-- `MetricsController` / `HealthController` — the two endpoints.
 - `METRIC_AGGREGATOR` / `HEALTH_REGISTRY` — context tokens for the shared entries.
 
 `HealthRegistry` implements `Enumerable<string, HealthIndicator>`: `entries`,

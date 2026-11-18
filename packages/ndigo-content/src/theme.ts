@@ -33,12 +33,6 @@ export interface ThemeSource {
 }
 
 /**
- * @deprecated Use {@link ThemeSource} instead. This alias is kept for one
- * minor release; the registry has never performed per-request selection.
- */
-export type ThemeResolver = ThemeSource;
-
-/**
  * In-memory theme source for static theme maps.
  */
 export class StaticThemeSource implements ThemeSource {
@@ -88,16 +82,6 @@ export class StaticThemeSource implements ThemeSource {
 }
 
 /**
- * @deprecated Use {@link StaticThemeSource} instead.
- */
-export type StaticThemeResolver = StaticThemeSource;
-
-/**
- * @deprecated Use {@link StaticThemeSource} instead.
- */
-export const StaticThemeResolver = StaticThemeSource;
-
-/**
  * Tests whether a value looks like a theme.
  *
  * @param value - The value to be tested.
@@ -112,11 +96,6 @@ export const likeTheme = like({ name: String, contentSource: Object }) as (value
  * @returns Whether the value matches the theme source shape.
  */
 export const likeThemeSource = like({ getTheme: Function }) as (value: unknown) => value is ThemeSource;
-
-/**
- * @deprecated Use {@link likeThemeSource} instead.
- */
-export const likeThemeResolver = likeThemeSource;
 
 /**
  * Shape accepted for a theme name: lowercase ASCII letters and digits

@@ -14,6 +14,7 @@ export * from './text-view.js';
 export * from './csv-view.js';
 export * from './octet-stream-view.js';
 export * from './content-negotiation-view-resolver.js';
+export * from './not-acceptable-error.js';
 // Explicit, not `export *`: `customElementNamePattern` is resolver-internal
 // (only `IslandViewResolver` uses the raw regex); consumers get the
 // `isValidCustomElementName` predicate instead.

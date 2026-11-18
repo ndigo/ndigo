@@ -427,26 +427,18 @@ function inferTarget(value: unknown): string {
  * The per-field conversion target for a primitive name (`number`/`boolean`/
  * `date`/`string`), as a constructor the conversion service can key on.
  */
-type ConversionTarget =
-    | (new (...args: never[]) => number)
-    | (new (...args: never[]) => boolean)
-    | (new (...args: never[]) => Date)
-    | (new (...args: never[]) => string);
+type ConversionTarget = NumberConstructor | BooleanConstructor | DateConstructor | StringConstructor;
 
 function converterFor(target: string): ConversionTarget {
     switch (target) {
         case 'number':
-            // NOTE: bridging to ConversionTarget — the source type is wider than this consumer's contract.
-            return Number as unknown as ConversionTarget;
+            return Number;
         case 'boolean':
-            // NOTE: bridging to ConversionTarget — the source type is wider than this consumer's contract.
-            return Boolean as unknown as ConversionTarget;
+            return Boolean;
         case 'date':
-            // NOTE: bridging to ConversionTarget — the source type is wider than this consumer's contract.
-            return Date as unknown as ConversionTarget;
+            return Date;
         default:
-            // NOTE: bridging to ConversionTarget — the source type is wider than this consumer's contract.
-            return String as unknown as ConversionTarget;
+            return String;
     }
 }
 

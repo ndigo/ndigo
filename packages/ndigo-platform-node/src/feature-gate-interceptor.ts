@@ -31,9 +31,8 @@ import { FLAG_EVALUATOR, getWhenFeature, type FlagEvaluator } from '@ndigo/flags
 import { $aware } from '@ndigo/factory';
 import { IllegalStateError } from '@ndigo/core';
 import type { ApplicationContext, ApplicationContextAware } from '@ndigo/context';
-import type { ServerResponse } from 'node:http';
 import { ProblemTypes, writeProblem } from './problem-details';
-import { NODE_RESPONSE_ATTRIBUTE } from './node-request';
+import { getNodeResponse } from './node-request';
 import { FLAG_CONTEXT_RESOLVER } from './context-tokens';
 import { SessionPrincipalFlagContextResolver, type FlagEvaluationContextResolver } from './flag-context-resolver';
 
@@ -196,7 +195,7 @@ export class FeatureGateInterceptor implements RouteHandlerInterceptor, Applicat
      * survives (RateLimitInterceptor precedent).
      */
     #reject(route: Route, flag: string): void {
-        const res = route.attributes?.[NODE_RESPONSE_ATTRIBUTE] as ServerResponse | undefined;
+        const res = getNodeResponse(route);
         if (res && !res.writableEnded && !res.destroyed) {
             writeProblem(
                 res,

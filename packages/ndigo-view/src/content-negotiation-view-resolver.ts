@@ -6,6 +6,7 @@ import { HTTPHeaders } from '@ndigo/http';
 import { isFunction, isNotNil } from '@ndigo/util/types';
 import { View } from './view.js';
 import { BoundedCache, createViewCacheKey, ViewResolver } from './view-resolver.js';
+import { NotAcceptableError } from './not-acceptable-error.js';
 
 /**
  * Resolves file extensions for a media type and can enumerate all known extensions.
@@ -216,39 +217,6 @@ export function firstServableMediaType(candidates: MediaType[], acceptedRanges: 
         }
     }
     return undefined;
-}
-
-/**
- * Raised when a view name resolves to candidate representations but none
- * satisfies the request's accepted media types (HTTP 406 — the route/handler
- * exists, only the representation is unavailable). Distinct from a missing
- * view, which stays `NoViewFoundError`/404.
- */
-export class NotAcceptableError extends FrameworkError {
-    /**
-     * The view name whose candidates were unacceptable.
-     */
-    readonly viewName: string;
-    /**
-     * The accepted media types considered, in client-priority order.
-     */
-    readonly acceptedMediaTypes: MediaType[];
-
-    /**
-     * Creates a not-acceptable signal for the resolved view name.
-     *
-     * @param viewName - The view name whose representations were refused.
-     * @param acceptedMediaTypes - The request's accepted media types.
-     */
-    constructor(viewName: string, acceptedMediaTypes: MediaType[]) {
-        super(
-            `No acceptable representation for view "${viewName}"; accepted: ${
-                acceptedMediaTypes.map((mediaType) => String(mediaType)).join(', ') || '(none)'
-            }`
-        );
-        this.viewName = viewName;
-        this.acceptedMediaTypes = acceptedMediaTypes;
-    }
 }
 
 /**

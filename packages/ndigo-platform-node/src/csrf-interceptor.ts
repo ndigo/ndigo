@@ -17,9 +17,8 @@ import { randomToken } from '@ndigo/util';
 import { Route } from '@ndigo/router';
 import { RouteHandlerInterceptor } from '@ndigo/dispatcher';
 import { HTTPHeaders } from '@ndigo/http';
-import { getNodeRequest, NODE_RESPONSE_ATTRIBUTE, NodeRequest } from './node-request';
+import { getNodeRequest, getNodeResponse, NodeRequest } from './node-request';
 import { ProblemTypes, writeProblem } from './problem-details';
-import type { ServerResponse } from 'node:http';
 
 /**
  * The cookie name holding the CSRF token.
@@ -149,7 +148,7 @@ export class CSRFInterceptor implements RouteHandlerInterceptor {
      */
     #issueToken(route: Route, request: NodeRequest | undefined): string {
         const token = randomToken(this.#tokenBytes);
-        const res = route.attributes?.[NODE_RESPONSE_ATTRIBUTE] as ServerResponse | undefined;
+        const res = getNodeResponse(route);
         if (res && !res.headersSent) {
             res.setHeader(
                 HTTPHeaders.SET_COOKIE.name,
@@ -163,7 +162,7 @@ export class CSRFInterceptor implements RouteHandlerInterceptor {
      * Writes a 403 problem document for a rejected request.
      */
     #reject(route: Route, reason: string): void {
-        const res = route.attributes?.[NODE_RESPONSE_ATTRIBUTE] as ServerResponse | undefined;
+        const res = getNodeResponse(route);
         if (res && !res.headersSent) {
             writeProblem(res, {
                 type: ProblemTypes.forbidden,

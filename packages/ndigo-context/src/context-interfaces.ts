@@ -222,13 +222,6 @@ export interface ConfigurableApplicationContext extends ApplicationContext {
      * @param themeSource - The theme source.
      */
     setThemeSource(themeSource: ThemeSource): void;
-    /**
-     * Overrides the theme resolver used by this context.
-     * @param themeResolver - The theme source.
-     * @deprecated Use {@link setThemeSource} instead. A `ThemeResolver` here
-     * was always a registry lookup, not per-request selection.
-     */
-    setThemeResolver(themeResolver: ThemeSource): void;
 }
 
 /**

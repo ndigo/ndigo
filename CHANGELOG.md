@@ -529,12 +529,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   writes the negotiated name onto `route.attributes.theme`. See the
   [theme-model migration guide](docs/migrations/2026-11-14_THEME_MODEL.md).
 
-### Deprecated
+### Removed
 
-- `@ndigo/content`, `@ndigo/context`: the `ThemeResolver`,
-  `StaticThemeResolver`, `CompositeThemeResolver`, `likeThemeResolver`, and
-  `setThemeResolver` names remain as deprecated aliases for one minor. They are
-  removed at 1.0.
+- `@ndigo/content`, `@ndigo/context`, `@ndigo/dispatcher`: the deprecated
+  `ThemeResolver`, `StaticThemeResolver`, `CompositeThemeResolver`,
+  `likeThemeResolver`, `setThemeResolver`, and `resolveTheme` aliases are
+  removed ahead of 1.0; use `ThemeSource`, `StaticThemeSource`,
+  `CompositeThemeSource`, `likeThemeSource`, `setThemeSource`, and
+  `resolveThemeName` instead.
 
 ### Fixed
 

@@ -63,6 +63,12 @@ const isConstructor = (value: unknown): value is Function => {
 
 /**
  * An abstract base class for implementing a {@link ConfigurableFactory} and {@link ScopedFactory}.
+ *
+ * @example
+ * ```ts
+ * class MyFactory extends AbstractFactory {}
+ * const factory = new MyFactory();
+ * ```
  */
 export abstract class AbstractFactory implements ConfigurableFactory, ScopedFactory {
     /**

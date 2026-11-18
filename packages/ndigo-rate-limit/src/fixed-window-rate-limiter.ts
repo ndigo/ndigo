@@ -43,6 +43,14 @@ export class FixedWindowRateLimiter implements RateLimiter {
     readonly #buckets = new Map<string, { windowStart: number; windowMs: number; count: number }>();
     readonly #maxEntries: number;
 
+    /**
+     * @param options - Optional `maxEntries` cap (default 10 000).
+     *
+     * @example
+     * ```ts
+     * const limiter = new FixedWindowRateLimiter({ maxEntries: 1000 });
+     * ```
+     */
     constructor(options: { maxEntries?: number } = {}) {
         this.#maxEntries = options.maxEntries ?? 10_000;
         if (!Number.isInteger(this.#maxEntries) || this.#maxEntries < 1) {
@@ -58,6 +66,13 @@ export class FixedWindowRateLimiter implements RateLimiter {
      * @param key - The client key whose budget is consumed.
      * @param policy - The window and limit to enforce.
      * @returns Whether the request is allowed and, when denied, the wait before retry.
+     *
+     * @example
+     * ```ts
+     * const limiter = new FixedWindowRateLimiter();
+     * const result = await limiter.consume('client-1', { limit: 10, windowMs: 60_000 });
+     * if (!result.allowed) console.log('retry after', result.retryAfterMs);
+     * ```
      */
     async consume(key: string, policy: RateLimitPolicy): Promise<RateLimitResult> {
         validateRateLimitPolicy(policy);

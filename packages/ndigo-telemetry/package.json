@@ -38,6 +38,8 @@
     "@ndigo/rate-limit": "~0.0.1",
     "@ndigo/cache": "~0.0.1",
     "@ndigo/core": "~0.0.1",
+    "@ndigo/factory": "~0.0.1",
+    "@ndigo/util": "~0.0.1",
     "@ndigo/dispatcher": "~0.0.1",
     "@ndigo/host": "~0.0.1",
     "@ndigo/http": "~0.0.1",

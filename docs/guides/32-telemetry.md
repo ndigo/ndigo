@@ -187,6 +187,18 @@ sustained p99 latency rather than on single spikes.
   consumers — mixing the Ndigo options with `OTEL_*` is unsupported (one
   source of truth per deployment).
 
+## Context integration
+
+`FeatureMetricAggregator` is registered as the `'metricAggregator'` context entry
+by `ManagementAutoConfiguration`. Components that want feature-scoped counters
+from `@counted` can either pass an aggregator explicitly
+(`@counted({ featureAggregator })`) or implement `FeatureMetricAggregatorAware`
+/ be `ApplicationContextAware` — the decorator resolves the aggregator from the
+context (or an injected `featureMetricAggregator` property) at call time, so a
+`@counted` method on a context-registered bean needs no wiring. `configureTelemetry`
+itself stays process-global: OpenTelemetry registers providers once per process,
+so exporter/sampling configuration is not per-context.
+
 ## Package surfaces
 
 - `@ndigo/log` — loggers, severity mappings (dependency-light leaf)

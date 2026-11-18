@@ -3,7 +3,8 @@
  */
 import { getErrorMessage } from '@ndigo/util';
 import '@tsmetadata/polyfill';
-import { isDevMode } from '@ndigo/context';
+import { isDevMode, type ApplicationContext } from '@ndigo/context';
+import { CACHE_MANAGER } from './context-tokens';
 import { Cache, CacheMiss } from './cache';
 import { resolveCacheName } from './cache-name';
 import type { CacheManager } from './cache-manager';
@@ -160,8 +161,22 @@ export function cached(spec: CachedSpec = {}) {
             // instance optionally carries the manager (constructor-injected);
             // absent — including a detached call with no receiver — degrades
             // to a graceful call-through.
-            const cacheAware = this as unknown as { cacheManager?: CacheManager } | undefined;
-            const manager = cacheAware?.cacheManager;
+            const cacheAware = this as unknown as
+                | { cacheManager?: CacheManager; applicationContext?: ApplicationContext }
+                | undefined;
+            let manager = cacheAware?.cacheManager;
+            if (!manager && cacheAware?.applicationContext) {
+                const context = cacheAware.applicationContext;
+                try {
+                    if (typeof context.hasValue === 'function' && context.hasValue(CACHE_MANAGER)) {
+                        manager = context.getValue(CACHE_MANAGER);
+                    } else if (typeof context.hasValue === 'function' && context.hasValue('cacheManager')) {
+                        manager = context.getValue('cacheManager') as CacheManager;
+                    }
+                } catch {
+                    manager = undefined;
+                }
+            }
             if (!manager) {
                 if (!degradationWarned && isDevMode()) {
                     degradationWarned = true;

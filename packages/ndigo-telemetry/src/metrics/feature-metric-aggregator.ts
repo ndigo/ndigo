@@ -2,6 +2,9 @@
  * Per-feature metric aggregation and snapshot projection.
  */
 import { compareBy, IllegalStateError, numberComparator, stringComparator, Deque } from '@ndigo/core';
+import { Constructable } from '@ndigo/core';
+import { Aware, AsAware, likeAwareAnd } from '@ndigo/factory';
+import { like } from '@ndigo/util/types';
 import { type MetricSnapshot, type MetricSnapshotProvider } from './metric-snapshot';
 
 interface MutableFeatureMetrics {
@@ -354,3 +357,26 @@ export class FeatureMetricAggregatorProvider implements MetricSnapshotProvider {
         return snapshots;
     }
 }
+
+export interface FeatureMetricAggregatorAware extends Aware {
+    setFeatureMetricAggregator(featureMetricAggregator: FeatureMetricAggregator): void;
+}
+
+export const AsFeatureMetricAggregatorAware = <T extends Constructable>(
+    superclass: T
+): Constructable<FeatureMetricAggregatorAware> & T =>
+    class extends AsAware(superclass) implements FeatureMetricAggregatorAware {
+        featureMetricAggregator: FeatureMetricAggregator | null = null;
+        setFeatureMetricAggregator(featureMetricAggregator: FeatureMetricAggregator): void {
+            Reflect.defineProperty(this, 'featureMetricAggregator', {
+                value: featureMetricAggregator,
+                configurable: true,
+                enumerable: false,
+                writable: false,
+            });
+        }
+    };
+
+export const likeFeatureMetricAggregatorAware = likeAwareAnd(like({ setFeatureMetricAggregator: Function })) as (
+    value: unknown
+) => value is FeatureMetricAggregatorAware;

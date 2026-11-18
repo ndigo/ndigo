@@ -8,6 +8,7 @@ export * from './adapter';
 export * from './registry';
 export * from './password-encoder';
 export * from './delegating-password-encoder';
+export * from './scrypt-password-encoder';
 export * from './user-store';
 export * from './session-store';
 export {

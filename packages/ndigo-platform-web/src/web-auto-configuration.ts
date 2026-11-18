@@ -3,6 +3,7 @@
  */
 import { configuration, entry } from '@ndigo/context';
 import { argumentValueConverters, RadixMetadataHandlerMapping } from '@ndigo/dispatcher';
+import { HTTP, HTTP_CLIENT } from '@ndigo/http';
 import { CookieLanguageResolver } from './cookie-language-resolver';
 import { CookieThemeResolver } from './cookie-theme-resolver';
 import { createBrowserArgumentResolvers } from './configure-argument-resolvers';
@@ -136,5 +137,10 @@ export class WebAutoConfiguration {
     @entry()
     themeResolver() {
         return new CookieThemeResolver();
+    }
+
+    @entry(HTTP_CLIENT)
+    httpClient() {
+        return HTTP.create();
     }
 }

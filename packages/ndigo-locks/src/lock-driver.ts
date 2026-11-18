@@ -11,6 +11,8 @@
  * prevent.
  */
 import { like } from '@ndigo/util/types';
+import { Constructable } from '@ndigo/core';
+import { Aware, AsAware, likeAwareAnd } from '@ndigo/factory';
 
 import type { AsyncCloseable } from '@ndigo/factory';
 
@@ -115,3 +117,24 @@ export interface LockDriver extends AsyncCloseable {
 export function likeLockDriver(value: unknown): value is LockDriver {
     return like({ kind: String, acquire: Function, close: Function })(value);
 }
+
+export interface LockDriverAware extends Aware {
+    setLockDriver(lockDriver: LockDriver): void;
+}
+
+export const AsLockDriverAware = <T extends Constructable>(superclass: T): Constructable<LockDriverAware> & T =>
+    class extends AsAware(superclass) implements LockDriverAware {
+        lockDriver: LockDriver | null = null;
+        setLockDriver(lockDriver: LockDriver): void {
+            Reflect.defineProperty(this, 'lockDriver', {
+                value: lockDriver,
+                configurable: true,
+                enumerable: false,
+                writable: false,
+            });
+        }
+    };
+
+export const likeLockDriverAware = likeAwareAnd(like({ setLockDriver: Function })) as (
+    value: unknown
+) => value is LockDriverAware;

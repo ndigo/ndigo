@@ -43,8 +43,10 @@ const api = HTTP.create({
 - `requestTransforms` / `responseTransforms` — body transform pipelines (added
   as an internal `TransformInterceptor`).
 
-Under dependency injection, construct `new HTTP(interceptors, init, fetch)`
-directly (the `AsHTTPStrategy` pattern); `create` is a thin wrapper over it.
+Under dependency injection, either construct `new HTTP(interceptors, init, fetch)`
+directly or implement `HttpAware` and let the application context's `http`
+entry (registered by `NodeAutoConfiguration` / `WebAutoConfiguration`) be
+injected; `create` is a thin wrapper over the constructor.
 
 ## 2. Send requests
 

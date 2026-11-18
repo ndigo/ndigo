@@ -1,0 +1,24 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "env": {
+    "browser": true,
+    "es2022": true
+  },
+  "jsPlugins": ["@ndigo/oxlint-plugin"],
+  "rules": {
+    "@ndigo/no-mixed-decorator-paradigms": "error",
+    "@ndigo/no-scheduled-in-browser": "error",
+    "@ndigo/no-signals-in-entity": "error",
+    "@ndigo/no-string-token-lookup": "error",
+    "@ndigo/no-unsafe-view-name-literal": "error",
+    "@ndigo/no-duplicate-mapping": "error"
+  },
+  "overrides": [
+    {
+      "files": ["**/*.spec.ts", "**/*.test.ts", "**/test/**"],
+      "rules": {
+        "@ndigo/no-duplicate-mapping": "off"
+      }
+    }
+  ]
+}

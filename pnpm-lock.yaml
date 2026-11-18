@@ -1987,6 +1987,9 @@ importers:
       '@ndigo/orm-drizzle':
         specifier: ~0.0.1
         version: link:../ndigo-orm-drizzle
+      '@ndigo/oxlint-plugin':
+        specifier: ~0.0.1
+        version: link:../ndigo-oxlint-plugin
 
   packages/ndigo-cluster:
     dependencies:

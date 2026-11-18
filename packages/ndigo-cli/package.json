@@ -44,7 +44,8 @@
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@ndigo/orm-drizzle": "~0.0.1"
+    "@ndigo/orm-drizzle": "~0.0.1",
+    "@ndigo/oxlint-plugin": "~0.0.1"
   },
   "sideEffects": false
 }

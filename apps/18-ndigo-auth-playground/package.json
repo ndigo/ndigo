@@ -5,6 +5,7 @@
   "type": "module",
   "private": true,
   "scripts": {
+    "lint": "oxlint",
     "build:client": "vite build",
     "start": "tsx src/index.ts",
     "start:full": "pnpm build:client && tsx src/index.ts",

@@ -21,7 +21,7 @@ import { doctorCommand } from './commands/doctor.js';
 import { infoCommand } from './commands/info.js';
 import { buildScriptCommand as buildCmd } from './commands/build.js';
 import { testCommand } from './commands/test.js';
-import { lintCommand } from './commands/lint.js';
+import { lintRouteMap } from './commands/lint/index.js';
 import { formatCommand } from './commands/format.js';
 import { typecheckCommand } from './commands/typecheck.js';
 import { cleanCommand } from './commands/clean.js';
@@ -88,7 +88,7 @@ export function buildCliApp() {
             info: infoCommand,
             build: buildCmd,
             test: testCommand,
-            lint: lintCommand,
+            lint: lintRouteMap,
             format: formatCommand,
             typecheck: typecheckCommand,
             clean: cleanCommand,

@@ -6,6 +6,7 @@
   "private": true,
   "files": ["dist"],
   "scripts": {
+    "lint": "oxlint",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
@@ -21,9 +22,11 @@
   },
   "devDependencies": {
     "@ndigo/cli": "~0.0.1",
+    "@ndigo/oxlint-plugin": "~0.0.1",
     "@ndigo/test": "~0.0.1",
     "@tsmetadata/polyfill": "^1.1.3",
     "esbuild": "^0.28.2",
+    "oxlint": "^1.91.0",
     "typescript": "^7.0.2",
     "vite": "^8.3.5",
     "vitest": "^5.1.0"

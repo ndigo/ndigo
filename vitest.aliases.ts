@@ -82,6 +82,10 @@ export const ndigoAliases: { find: RegExp; replacement: string }[] = [
     { find: /^@ndigo\/telemetry$/, replacement: resolve(repoRoot, 'packages/ndigo-telemetry/src') },
     { find: /^@ndigo\/telemetry-node$/, replacement: resolve(repoRoot, 'packages/ndigo-telemetry-node/src') },
     { find: /^@ndigo\/telemetry-web$/, replacement: resolve(repoRoot, 'packages/ndigo-telemetry-web/src') },
+    {
+        find: /^@ndigo\/oxlint-plugin\/recommended$/,
+        replacement: resolve(repoRoot, 'packages/ndigo-oxlint-plugin/src/recommended.ts'),
+    },
     { find: /^@ndigo\/oxlint-plugin$/, replacement: resolve(repoRoot, 'packages/ndigo-oxlint-plugin/src') },
     { find: /^@ndigo\/orm$/, replacement: resolve(repoRoot, 'packages/ndigo-orm/src') },
     { find: /^@ndigo\/orm-drizzle$/, replacement: resolve(repoRoot, 'packages/ndigo-orm-drizzle/src') },

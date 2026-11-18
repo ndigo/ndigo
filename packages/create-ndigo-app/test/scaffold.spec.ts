@@ -42,6 +42,10 @@ describe('create-ndigo-app scaffold', () => {
         expect(manifest.type).toBe('module');
         expect(manifest.dependencies).toHaveProperty('@ndigo/platform-node');
         expect(manifest.dependencies).not.toHaveProperty('@ndigo/boot');
+
+        expect(existsSync(join(targetDir, '.oxlintrc.json'))).toBe(true);
+        expect(manifest.scripts.lint).toBe('oxlint');
+        expect(manifest.devDependencies).toHaveProperty('@ndigo/oxlint-plugin');
     });
 
     test('scaffolds a browser app with the preset entrypoint and bundle guard', async () => {
@@ -57,6 +61,11 @@ describe('create-ndigo-app scaffold', () => {
 
         const index = await readFile(join(targetDir, 'src', 'index.ts'), 'utf8');
         expect(index).toContain('createWebApplication');
+
+        const manifest = JSON.parse(readFileSync(join(targetDir, 'package.json'), 'utf8'));
+        expect(existsSync(join(targetDir, '.oxlintrc.json'))).toBe(true);
+        expect(manifest.scripts.lint).toBe('oxlint');
+        expect(manifest.devDependencies).toHaveProperty('@ndigo/oxlint-plugin');
     });
 
     test('--local rewrites @ndigo/* deps to file: links', async () => {

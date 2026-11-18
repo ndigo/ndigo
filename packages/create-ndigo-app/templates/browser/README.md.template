@@ -11,6 +11,10 @@ cd {{name}} && pnpm install && pnpm dev
 # open http://127.0.0.1:{{port}}
 ```
 
+Lint with `pnpm lint` — `.oxlintrc.json` enables the recommended
+`@ndigo/oxlint-plugin` rules, and every diagnostic links to its page under
+`https://ndigo.dev/lint/`.
+
 ## Demonstrates
 
 - The minimal `@ndigo` browser application shape: the `createWebApplication` preset + a route + Web Component render

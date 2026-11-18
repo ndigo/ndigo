@@ -5,6 +5,7 @@
   "type": "module",
   "private": true,
   "scripts": {
+    "lint": "oxlint",
     "start": "tsx src/index.ts",
     "dev": "tsx src/index.ts",
     "build": "tsc -b tsconfig.build.json",
@@ -22,8 +23,10 @@
   },
   "devDependencies": {
     "@ndigo/cli": "~0.0.1",
+    "@ndigo/oxlint-plugin": "~0.0.1",
     "@ndigo/test": "~0.0.1",
     "esbuild": "^0.28.2",
+    "oxlint": "^1.91.0",
     "tsx": "^4.23.13",
     "typescript": "^7.0.2",
     "vitest": "^5.1.0"

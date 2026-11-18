@@ -39,7 +39,7 @@ const TOP_LEVEL = [
     'generate',
     'info',
     'inspect',
-    'lint',
+    'lint init',
     'logs',
     'mcp',
     'new',

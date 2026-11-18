@@ -10,6 +10,15 @@
  * The constructor is private: the only instance is {@link CacheMiss.INSTANCE},
  * so identity comparison is reliable (prefer identity over `instanceof`,
  * which breaks if a bundle duplicates the class).
+ *
+ * @example
+ * ```ts
+ * const cache = new MemoryCache<string>();
+ * const value = await cache.get('missing');
+ * if (value === CacheMiss.INSTANCE) {
+ *     console.log('no entry cached');
+ * }
+ * ```
  */
 export class CacheMiss {
     /**
@@ -40,6 +49,15 @@ export class CacheMiss {
  *
  * @param value - The value returned by {@link Cache#get}.
  * @returns Whether the value is the {@link CacheMiss} sentinel.
+ *
+ * @example
+ * ```ts
+ * const cache = new MemoryCache<string>();
+ * const value = await cache.get('missing');
+ * if (isCacheMiss(value)) {
+ *     console.log('no entry cached');
+ * }
+ * ```
  */
 export const isCacheMiss = (value: unknown): value is CacheMiss => value === CacheMiss.INSTANCE;
 
@@ -161,6 +179,14 @@ export class MemoryCache<V = unknown> implements Cache<V> {
      * @param options - Store configuration (see {@link CacheOptions}).
      * @throws For a non-integer/negative `maxSize`, a
      *   non-positive `defaultTtl`, or an unknown `eviction` policy.
+     *
+     * @example
+     * ```ts
+     * const cache = new MemoryCache<string>({ defaultTtl: 60_000, maxSize: 100 });
+     * await cache.set('greeting', 'hello');
+     * const value = await cache.get('greeting');
+     * console.log(value); // "hello"
+     * ```
      */
     constructor(options: CacheOptions = {}) {
         const maxSize = options.maxSize ?? 0;

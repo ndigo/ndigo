@@ -76,6 +76,12 @@ export interface NormalizedCachedSpec {
  *
  * @param spec - The supplied spec.
  * @returns The normalized spec record.
+ *
+ * @example
+ * ```ts
+ * resolveCachedSpec({ cacheName: 'catalog', ttl: 30_000 });
+ * // { cacheName: 'catalog', key: undefined, ttl: 30000 }
+ * ```
  */
 export function resolveCachedSpec(spec: CachedSpec = {}): NormalizedCachedSpec {
     if (spec === null || typeof spec !== 'object') {
@@ -220,6 +226,15 @@ function isMetadataRecord(value: unknown): value is Record<string, unknown> {
  * @param target - The decorated class constructor or an instance of it.
  * @param methodName - The decorated method name.
  * @returns The normalized spec, or `undefined` when not cached.
+ *
+ * @example
+ * ```ts
+ * class CatalogService {
+ *     @cached({ cacheName: 'catalog' })
+ *     async load(id: string): Promise<unknown> { return id; }
+ * }
+ * getCachedSpec(CatalogService, 'load'); // { cacheName: 'catalog', key: undefined, ttl: undefined }
+ * ```
  */
 export function getCachedSpec(target: object, methodName: string): NormalizedCachedSpec | undefined {
     const carrier: object | undefined = typeof target === 'function' ? target : target?.constructor;

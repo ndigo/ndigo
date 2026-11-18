@@ -7,6 +7,13 @@ export interface DOMProvider {
      *
      * @param html - The HTML markup to parse.
      * @returns A `Document` representing the parsed HTML.
+     *
+     * @example
+     * ```ts
+     * const provider = await createDOMProvider();
+     * const doc = provider.parseHTML('<p>Hello</p>');
+     * console.log(doc.body.textContent); // "Hello"
+     * ```
      */
     parseHTML(html: string): Document;
 
@@ -15,6 +22,13 @@ export interface DOMProvider {
      *
      * @param tag - The element tag name (e.g., `'div'`, `'span'`).
      * @returns A new `Element` instance.
+     *
+     * @example
+     * ```ts
+     * const provider = await createDOMProvider();
+     * const div = provider.createElement('div');
+     * div.textContent = 'Hello';
+     * ```
      */
     createElement(tag: string): Element;
 
@@ -22,6 +36,13 @@ export interface DOMProvider {
      * Creates a new empty `DocumentFragment`.
      *
      * @returns A new `DocumentFragment`.
+     *
+     * @example
+     * ```ts
+     * const provider = await createDOMProvider();
+     * const fragment = provider.createFragment();
+     * fragment.appendChild(provider.createElement('span'));
+     * ```
      */
     createFragment(): DocumentFragment;
 }

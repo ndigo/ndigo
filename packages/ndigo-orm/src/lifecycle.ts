@@ -15,6 +15,11 @@ import type { LifecycleEvent } from './metadata';
  *
  * @param entity - The entity instance whose hooks run.
  * @param event - The lifecycle event (e.g. `'prePersist'`).
+ *
+ * @example
+ * ```ts
+ * runLifecycleHooks(user, 'prePersist');
+ * ```
  */
 export function runLifecycleHooks<T extends object>(entity: T, event: LifecycleEvent): void {
     const entityClass = entity.constructor as Constructable<T>;

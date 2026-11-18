@@ -43,6 +43,13 @@ export class LinkedomDOMProvider implements DOMProvider {
      *
      * @param html - The HTML markup to parse.
      * @returns A `Document` representing the parsed HTML.
+     *
+     * @example
+     * ```ts
+     * const provider = new LinkedomDOMProvider();
+     * const doc = provider.parseHTML('<p>Hello</p>');
+     * console.log(doc.body.textContent); // "Hello"
+     * ```
      */
     parseHTML(html: string): Document {
         const markup = fullDocumentPattern.test(html)
@@ -57,6 +64,13 @@ export class LinkedomDOMProvider implements DOMProvider {
      *
      * @param tag - The element tag name.
      * @returns A new `Element`.
+     *
+     * @example
+     * ```ts
+     * const provider = new LinkedomDOMProvider();
+     * const div = provider.createElement('div');
+     * div.textContent = 'Hello';
+     * ```
      */
     createElement(tag: string): Element {
         return this.#document.createElement(tag) as Element;
@@ -66,6 +80,13 @@ export class LinkedomDOMProvider implements DOMProvider {
      * Creates a `DocumentFragment` using the linkedom document.
      *
      * @returns A new `DocumentFragment`.
+     *
+     * @example
+     * ```ts
+     * const provider = new LinkedomDOMProvider();
+     * const fragment = provider.createFragment();
+     * fragment.appendChild(provider.createElement('span'));
+     * ```
      */
     createFragment(): DocumentFragment {
         return this.#document.createDocumentFragment() as DocumentFragment;

@@ -23,6 +23,13 @@ export class BrowserDOMProvider implements DOMProvider {
      *
      * @param html - The HTML markup to parse.
      * @returns A `Document` representing the parsed HTML.
+     *
+     * @example
+     * ```ts
+     * const provider = new BrowserDOMProvider();
+     * const doc = provider.parseHTML('<p>Hello</p>');
+     * console.log(doc.body.textContent); // "Hello"
+     * ```
      */
     parseHTML(html: string): Document {
         return this.#parser.parseFromString(html, 'text/html');
@@ -33,6 +40,13 @@ export class BrowserDOMProvider implements DOMProvider {
      *
      * @param tag - The element tag name.
      * @returns A new `Element`.
+     *
+     * @example
+     * ```ts
+     * const provider = new BrowserDOMProvider();
+     * const div = provider.createElement('div');
+     * div.textContent = 'Hello';
+     * ```
      */
     createElement(tag: string): Element {
         return document.createElement(tag);
@@ -42,6 +56,13 @@ export class BrowserDOMProvider implements DOMProvider {
      * Creates a `DocumentFragment` using `document.createDocumentFragment`.
      *
      * @returns A new `DocumentFragment`.
+     *
+     * @example
+     * ```ts
+     * const provider = new BrowserDOMProvider();
+     * const fragment = provider.createFragment();
+     * fragment.appendChild(provider.createElement('span'));
+     * ```
      */
     createFragment(): DocumentFragment {
         return document.createDocumentFragment();

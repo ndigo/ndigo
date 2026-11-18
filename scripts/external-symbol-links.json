@@ -94,6 +94,9 @@
     "LockDriver": "#",
     "LockHandle": "#"
   },
+  "@ndigo/log": {
+    "Logger": "#"
+  },
   "@ndigo/management": {
     "ManagementAutoConfigurationOptions": "#"
   },

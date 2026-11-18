@@ -246,17 +246,10 @@ export class LoggerFactory {
     }
 
     /**
-     * Resets the `LoggerFactory` to its default configuration:
-     * - Type: `'console'`
-     * - Threshold: `SeverityNumber.DEBUG`
-     * - Context-aware: `true`
-     * - Per-name overrides and requested-name tracking: cleared
-     */
-    /**
      * Applies a partial configuration to the factory in one call — convenience
      * for boot/context wiring. Unspecified fields keep their current value.
      *
-     * @param settings - Partial settings to apply.
+     * @param config - Partial settings to apply.
      */
     public static configure(config: { type?: LoggerType; threshold?: SeverityNumber; contextAware?: boolean }): void {
         if (config.type !== undefined) {
@@ -270,6 +263,13 @@ export class LoggerFactory {
         }
     }
 
+    /**
+     * Resets the `LoggerFactory` to its default configuration:
+     * - Type: `'console'`
+     * - Threshold: `SeverityNumber.DEBUG`
+     * - Context-aware: `true`
+     * - Per-name overrides and requested-name tracking: cleared
+     */
     public static reset(): void {
         settings = { ...DEFAULT_SETTINGS };
         levelOverrides.clear();

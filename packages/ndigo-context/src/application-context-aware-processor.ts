@@ -133,13 +133,7 @@ export class ApplicationContextAwareProcessor implements InitializationAwareProc
             if (typeof dataSourceAware.setDataSource === 'function' && applicationContext.hasValue('dataSource')) {
                 dataSourceAware.setDataSource(applicationContext.getValue('dataSource'));
             }
-            const redisConnectionAware = value as { setRedisConnection?: (connection: unknown) => void };
-            if (
-                typeof redisConnectionAware.setRedisConnection === 'function' &&
-                applicationContext.hasValue('redisConnection')
-            ) {
-                redisConnectionAware.setRedisConnection(applicationContext.getValue('redisConnection'));
-            }
+
             const authServerAware = value as { setAuthServer?: (authServer: unknown) => void };
             if (typeof authServerAware.setAuthServer === 'function' && applicationContext.hasValue('authServer')) {
                 authServerAware.setAuthServer(applicationContext.getValue('authServer'));

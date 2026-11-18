@@ -26,6 +26,21 @@ const { defineProperty } = Reflect;
  */
 export class MetadataScanner {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "MetadataScanner".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object MetadataScanner]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'MetadataScanner';
+    }
+
+    /**
      * Cached metadata lookups for the current target.
      */
     _cache: MultiValueMap<string, string>;

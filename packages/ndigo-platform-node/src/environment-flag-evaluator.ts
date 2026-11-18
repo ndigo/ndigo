@@ -24,6 +24,21 @@ import {
  * properties (default provider namespace), read immediately.
  */
 export class EnvironmentFlagEvaluator extends AsApplicationContextAware(Null) implements FlagEvaluator {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "EnvironmentFlagEvaluator".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object EnvironmentFlagEvaluator]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'EnvironmentFlagEvaluator';
+    }
+
     /** The owning application context (container-injected). */
     readonly applicationContext!: ApplicationContext;
 

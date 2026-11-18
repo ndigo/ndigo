@@ -85,6 +85,21 @@ export const HOST_MANAGER_TOKEN = new ContextToken<HostManager>('ndigo:hostManag
  * + `FeatureRoutingRegistry` machinery this class assembles.
  */
 export class HostManager {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "HostManager".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object HostManager]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'HostManager';
+    }
+
     #mountManager: FeatureContextMountManager;
     #routingRegistry: FeatureRoutingRegistry;
     #names: Set<string>;

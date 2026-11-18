@@ -12,6 +12,21 @@ import { AuthRegistry } from '@ndigo/auth-core';
  */
 export class AuthServer {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "AuthServer".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object AuthServer]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'AuthServer';
+    }
+
+    /**
      * Validates a token using the appropriate adapter.
      *
      * @param adapterId - The ID of the adapter to use for validation.

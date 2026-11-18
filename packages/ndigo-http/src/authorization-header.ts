@@ -17,6 +17,21 @@ import { HTTPHeader } from './http-header';
  */
 export class AuthorizationHeader extends HTTPHeader {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "AuthorizationHeader".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object AuthorizationHeader]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'AuthorizationHeader';
+    }
+
+    /**
      * Extracts the `Bearer`-scheme credential from an `Authorization`
      * value (scheme case-insensitive, surrounding whitespace tolerated).
      * `undefined` when the value is absent (`undefined`/`null` — header

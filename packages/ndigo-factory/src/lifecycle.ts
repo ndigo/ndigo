@@ -150,6 +150,21 @@ export const likeSmartLifecycle = (value: unknown): value is SmartLifecycle =>
  * phase order.
  */
 export class DefaultLifecycleProcessor implements LifecycleProcessor {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "DefaultLifecycleProcessor".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object DefaultLifecycleProcessor]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'DefaultLifecycleProcessor';
+    }
+
     /** Whether the processor is running. */
     isRunning: boolean;
 

@@ -39,6 +39,21 @@ function nextRouteId(): number {
  * It implements `RouteSegment` and `Serializable`.
  */
 export class PathRouteSegment implements RouteSegment, Serializable {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "PathRouteSegment".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object PathRouteSegment]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'PathRouteSegment';
+    }
+
     /** The segment name (before matrix parameters). */
     readonly name!: string;
     /** The parsed matrix-parameter data. */
@@ -144,6 +159,21 @@ export class PathRouteSegment implements RouteSegment, Serializable {
  * @typeParam TParams - A type representing the route parameters, defaulting to `Record<string, string>`.
  */
 export class PathRoute implements Route<Record<string, string>>, Serializable, Matchable<string> {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "PathRoute".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object PathRoute]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'PathRoute';
+    }
+
     [n: number]: RouteSegment;
 
     /** The query/matrix data. */

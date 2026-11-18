@@ -62,6 +62,21 @@ export interface I18nextMessageSourceOptions {
  */
 export class I18nextMessageSource implements MessageSource {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "I18nextMessageSource".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object I18nextMessageSource]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'I18nextMessageSource';
+    }
+
+    /**
      * The underlying i18next instance (escape hatch for advanced use).
      */
     readonly instance: i18n;

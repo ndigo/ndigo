@@ -9,6 +9,21 @@ import { AbstractBaseInstrumentation } from '../base';
  * OpenTelemetry instrumentation for `CacheInstrumentation`.
  */
 export class CacheInstrumentation extends AbstractBaseInstrumentation {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "CacheInstrumentation".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object CacheInstrumentation]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'CacheInstrumentation';
+    }
+
     constructor() {
         super('cache');
     }

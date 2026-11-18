@@ -49,6 +49,21 @@ export interface CounterRateResolverOptions {
  * It can also trigger alerts if a counter's rate exceeds a predefined threshold.
  */
 export class CounterRateResolver {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "CounterRateResolver".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object CounterRateResolver]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'CounterRateResolver';
+    }
+
     #aggregator: FeatureMetricAggregator;
     #sampleHistory: Deque<{ timestamp: number; values: Map<string, number> }>;
     #thresholdByCounterKey: Map<string, number>;

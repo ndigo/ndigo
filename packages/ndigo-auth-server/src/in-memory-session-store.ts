@@ -36,6 +36,21 @@ const DEFAULT_MAX_SESSIONS = 512;
  * cap bounds the live-session map (SEC-4, 2026-09-27 review).
  */
 export class InMemorySessionStore implements SessionStore {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "InMemorySessionStore".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object InMemorySessionStore]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'InMemorySessionStore';
+    }
+
     /** Store identifier (`'in-memory'`). */
     readonly kind = 'in-memory';
 

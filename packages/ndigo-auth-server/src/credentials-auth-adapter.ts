@@ -44,6 +44,21 @@ const DEFAULT_SESSION_TTL_MS = 30 * 60 * 1000;
  * leak which condition failed (no user enumeration via error text).
  */
 export class InvalidCredentialsError extends ApplicationError {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "InvalidCredentialsError".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object InvalidCredentialsError]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'InvalidCredentialsError';
+    }
+
     constructor() {
         super('Invalid credentials');
         this.name = 'InvalidCredentialsError';
@@ -81,6 +96,21 @@ export class InvalidCredentialsError extends ApplicationError {
  * v1 — see the auth completion plan, Wave 5 hardening).
  */
 export class CredentialsAuthAdapter implements AuthAdapter {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "CredentialsAuthAdapter".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object CredentialsAuthAdapter]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'CredentialsAuthAdapter';
+    }
+
     /** Adapter identifier (`'credentials'`). */
     readonly id = 'credentials';
 

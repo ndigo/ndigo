@@ -67,6 +67,21 @@ export const likeMediaTypeFileExtensionResolver = (value: unknown): value is Med
  */
 export class MappingMediaTypeFileExtensionResolver implements MediaTypeFileExtensionResolver {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "MappingMediaTypeFileExtensionResolver".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object MappingMediaTypeFileExtensionResolver]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'MappingMediaTypeFileExtensionResolver';
+    }
+
+    /**
      * The registered media types by normalized file extension.
      */
     mediaTypes: Map<string, MediaType>;
@@ -142,6 +157,21 @@ export class MappingMediaTypeFileExtensionResolver implements MediaTypeFileExten
  * Returns the same media types for every request.
  */
 export class FixedContentNegotiationStrategy implements ContentNegotiationStrategy {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "FixedContentNegotiationStrategy".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object FixedContentNegotiationStrategy]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'FixedContentNegotiationStrategy';
+    }
+
     /**
      * The media types this strategy always returns.
      */
@@ -227,6 +257,21 @@ export abstract class AbstractMappingContentNegotiationStrategy
     implements ContentNegotiationStrategy
 {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "AbstractMappingContentNegotiationStrategy".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object AbstractMappingContentNegotiationStrategy]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'AbstractMappingContentNegotiationStrategy';
+    }
+
+    /**
      * Resolves the media types for a request.
 
      * @param request - The current request.
@@ -264,6 +309,21 @@ export class PathExtensionContentNegotiationStrategy
     extends MappingMediaTypeFileExtensionResolver
     implements ContentNegotiationStrategy
 {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "PathExtensionContentNegotiationStrategy".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object PathExtensionContentNegotiationStrategy]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'PathExtensionContentNegotiationStrategy';
+    }
+
     /**
      * Resolves media types by inspecting the request path extension.
      *
@@ -303,6 +363,21 @@ export class PathExtensionContentNegotiationStrategy
  * Aggregates content-negotiation strategies and file-extension resolvers.
  */
 export class ContentNegotiationManager implements ContentNegotiationStrategy, MediaTypeFileExtensionResolver {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "ContentNegotiationManager".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object ContentNegotiationManager]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'ContentNegotiationManager';
+    }
+
     /**
      * The strategies consulted to resolve media types.
      */
@@ -404,6 +479,21 @@ export class ContentNegotiationManager implements ContentNegotiationStrategy, Me
  * Resolves views using content negotiation results.
  */
 export class ContentNegotiationViewResolver implements ViewResolver {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "ContentNegotiationViewResolver".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object ContentNegotiationViewResolver]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'ContentNegotiationViewResolver';
+    }
+
     /**
      * The manager used to derive acceptable media types.
      */

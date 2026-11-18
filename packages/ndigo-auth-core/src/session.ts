@@ -38,6 +38,21 @@ export interface AuthSession {
  * unauthenticated state with no principal or token.
  */
 export class DefaultAuthSession implements AuthSession {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "DefaultAuthSession".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object DefaultAuthSession]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'DefaultAuthSession';
+    }
+
     #principal: Principal | null = null;
     #token: string | null = null;
 

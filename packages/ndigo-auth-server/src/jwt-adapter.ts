@@ -76,6 +76,21 @@ import { FrameworkError } from '@ndigo/core';
  * cannot issue tokens. Always a `401`-class outcome at the flow level.
  */
 export class JWTTokenError extends FrameworkError {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "JWTTokenError".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object JWTTokenError]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'JWTTokenError';
+    }
+
     constructor(message: string) {
         super(message);
         this.name = 'JWTTokenError';
@@ -147,6 +162,21 @@ const MAX_REVOCATION_CACHE_ENTRIES = 10_000;
  * moves forward); `logout` advances the version outright.
  */
 export class JWTAdapter implements AuthAdapter {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "JWTAdapter".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object JWTAdapter]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'JWTAdapter';
+    }
+
     /** Adapter identifier (`'jwt'`). */
     readonly id = 'jwt';
     #config: JWTAdapterConfig;

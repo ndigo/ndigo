@@ -94,6 +94,21 @@ export interface LibSQLJobStoreOptions {
  * owned; injected clients are borrowed by default.
  */
 export class LibSQLJobStore implements JobDriver {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "LibSQLJobStore".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object LibSQLJobStore]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'LibSQLJobStore';
+    }
+
     /** Backend identifier (`'libsql'`). */
     readonly kind = 'libsql';
     readonly #client: Client;

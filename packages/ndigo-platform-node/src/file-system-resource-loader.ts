@@ -9,6 +9,21 @@ import { Resource, ResourceLoader, UnresolvedResource } from '@ndigo/context';
  * File resource backed by the local filesystem.
  */
 class FileResource<T = string> implements Resource<T> {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "FileResource".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object FileResource]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'FileResource';
+    }
+
     readonly value: T;
 
     get exists(): boolean {
@@ -34,6 +49,21 @@ class FileResource<T = string> implements Resource<T> {
  * generic and reads the given path as-is.
  */
 export class FileSystemResourceLoader implements ResourceLoader {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "FileSystemResourceLoader".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object FileSystemResourceLoader]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'FileSystemResourceLoader';
+    }
+
     readonly #root: string | null;
     /** Canonical root path, resolved lazily and cached. */
     #base: string | null = null;

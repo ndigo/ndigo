@@ -7,6 +7,21 @@ import { HTTPTransformer, TransformContext } from './http-transformer';
  * Composes a sequence of body transforms into a single transformer.
  */
 export class CompositionTransformer<TInput = unknown, TOutput = unknown> implements HTTPTransformer<TInput, TOutput> {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "CompositionTransformer".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object CompositionTransformer]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'CompositionTransformer';
+    }
+
     readonly #pipeline: (input: TInput) => TOutput;
     readonly #condition?: (body: TInput, context: TransformContext) => boolean;
 

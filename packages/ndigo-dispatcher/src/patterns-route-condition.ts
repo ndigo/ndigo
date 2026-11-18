@@ -12,6 +12,21 @@ const prependSlash = (value: string) => (value[0] === '/' ? value : `/${value}`)
 
 export class PatternsRouteCondition extends AbstractRouteCondition<PatternsRouteCondition> {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "PatternsRouteCondition".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object PatternsRouteCondition]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'PatternsRouteCondition';
+    }
+
+    /**
      * Matcher used to compare and merge route patterns.
      */
     readonly pathMatcher!: PathMatcher;

@@ -45,6 +45,21 @@ export interface FeatureRouteRegistration {
  * It allows features to be mounted at specific URL prefixes and provides policies for feature activation.
  */
 export class FeatureRoutingRegistry {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "FeatureRoutingRegistry".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object FeatureRoutingRegistry]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'FeatureRoutingRegistry';
+    }
+
     #activationPolicy: FeatureActivationPolicy;
     #activeFeatureName?: string;
     #activated: Set<string>;

@@ -37,6 +37,21 @@ export interface IslandViewResolverOptions {
  */
 export class IslandViewResolver extends AbstractPathBasedViewResolver {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "IslandViewResolver".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object IslandViewResolver]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'IslandViewResolver';
+    }
+
+    /**
      * Whether the resolver is applying its built-in custom-element predicate
      * (no explicit `viewNames` option was supplied).
      */

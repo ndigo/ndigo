@@ -55,6 +55,21 @@ export interface FeatureGateInterceptorOptions {
  * the body survives.
  */
 export class FeatureGateInterceptor implements RouteHandlerInterceptor, ApplicationContextAware {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "FeatureGateInterceptor".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object FeatureGateInterceptor]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'FeatureGateInterceptor';
+    }
+
     readonly #evaluatorOverride: FlagEvaluator | undefined;
     readonly #contextResolverOverride: FlagEvaluationContextResolver | undefined;
     #applicationContext: ApplicationContext | null = null;

@@ -52,6 +52,21 @@ import { endpointPath, MANAGEMENT_ENDPOINT_IDS } from './management-properties';
  */
 @configuration
 export class ManagementAutoConfiguration extends AsApplicationContextAware(Null) {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "ManagementAutoConfiguration".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object ManagementAutoConfiguration]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'ManagementAutoConfiguration';
+    }
+
     /** The application context injected by the aware mixin. */
     readonly applicationContext!: ApplicationContext;
     readonly #accessGuard: RouteHandlerInterceptor | undefined;

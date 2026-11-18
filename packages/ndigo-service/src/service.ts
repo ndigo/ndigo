@@ -220,6 +220,21 @@ function globToRegExp(globPattern: string): RegExp {
  * Wraps an interceptor so it only applies to matching request paths.
  */
 export class MappedServiceInterceptor {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "MappedServiceInterceptor".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object MappedServiceInterceptor]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'MappedServiceInterceptor';
+    }
+
     #excludePatterns!: string[];
     #includePatterns!: string[];
     #interceptor: ServiceInterceptor;

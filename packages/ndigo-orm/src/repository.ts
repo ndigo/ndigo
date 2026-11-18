@@ -143,6 +143,21 @@ export function toAsyncRepository<T extends object, ID>(repository: Repository<T
  * @typeParam ID - The type of the entity's primary identifier.
  */
 export abstract class AbstractRepository<T extends object, ID> implements Repository<T, ID> {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "AbstractRepository".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object AbstractRepository]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'AbstractRepository';
+    }
+
     readonly #entityClass: Constructable<T>;
     readonly #entityManager: EntityManager;
 
@@ -279,6 +294,21 @@ export abstract class AbstractRepository<T extends object, ID> implements Reposi
  */
 export class InMemoryDerivedQueryRepository<T extends object, ID> extends AbstractRepository<T, ID> {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "InMemoryDerivedQueryRepository".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object InMemoryDerivedQueryRepository]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'InMemoryDerivedQueryRepository';
+    }
+
+    /**
      * Evaluates a derived-query method name against `this.findAll()`.
      *
      * @param methodName - The method name that was called.
@@ -313,6 +343,21 @@ export class InMemoryDerivedQueryRepository<T extends object, ID> extends Abstra
  * @typeParam ID - The type of the entity's primary identifier.
  */
 export class InMemoryRepository<T extends object, ID> extends InMemoryDerivedQueryRepository<T, ID> {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "InMemoryRepository".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object InMemoryRepository]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'InMemoryRepository';
+    }
+
     /**
      * Creates an instance of `InMemoryRepository`.
      * @param entityClass - The constructor of the entity class this repository manages.

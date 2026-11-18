@@ -136,6 +136,21 @@ const DEFAULT_MAX_RESPONSE_BYTES = 1_048_576;
  * into the environment, and (optionally) polls with ETag/body-text gating.
  */
 export class RemotePropertySource {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "RemotePropertySource".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object RemotePropertySource]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'RemotePropertySource';
+    }
+
     #environment: ConfigurableEnvironment;
     #name: string;
     #options: {

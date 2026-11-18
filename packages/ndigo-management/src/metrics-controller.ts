@@ -60,6 +60,21 @@ export function prefersJsonView(accept: string | undefined): boolean {
  */
 @requestMapping('/metrics')
 export class MetricsController extends AsApplicationContextAware(Null) {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "MetricsController".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object MetricsController]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'MetricsController';
+    }
+
     /** The application context injected by the aware mixin. */
     readonly applicationContext!: ApplicationContext;
 

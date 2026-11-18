@@ -44,6 +44,21 @@ export type ConvertArgumentValueFn = (
  *   platform's whole-jar lookup
  */
 export abstract class AbstractPlatformArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "AbstractPlatformArgumentResolver".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object AbstractPlatformArgumentResolver]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'AbstractPlatformArgumentResolver';
+    }
+
     #convertFn: ConvertArgumentValueFn;
 
     /**
@@ -205,6 +220,21 @@ export abstract class AbstractPlatformArgumentResolver extends AbstractNamedValu
  * @see {@link AbstractPlatformArgumentResolver.resolveBoundArgument}
  */
 export abstract class AbstractDataBindingArgumentResolver extends AbstractPlatformArgumentResolver {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "AbstractDataBindingArgumentResolver".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object AbstractDataBindingArgumentResolver]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'AbstractDataBindingArgumentResolver';
+    }
+
     /** Whole-source names this platform can bind from. */
     protected abstract readonly bindableSources: readonly DataBindingSource[];
 
@@ -268,6 +298,21 @@ export abstract class AbstractDataBindingArgumentResolver extends AbstractPlatfo
  * how the cookie jar is read.
  */
 export abstract class AbstractCookieValueArgumentResolver extends AbstractPlatformArgumentResolver {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "AbstractCookieValueArgumentResolver".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object AbstractCookieValueArgumentResolver]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'AbstractCookieValueArgumentResolver';
+    }
+
     /**
      * Creates a cookie-value resolver.
      */

@@ -45,6 +45,21 @@ export interface OutboxRelayOptions {
  * the standalone/test path.
  */
 export class OutboxRelay implements AsyncCloseable {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "OutboxRelay".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object OutboxRelay]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'OutboxRelay';
+    }
+
     /** SmartLifecycle phase: after the store/queue wiring. */
     readonly phase = 10;
     /** Whether the relay auto-starts with the context. */

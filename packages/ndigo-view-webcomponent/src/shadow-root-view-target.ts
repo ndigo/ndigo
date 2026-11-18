@@ -14,6 +14,21 @@ import { DOMElementViewTarget, type DOMViewTarget, type RenderHost } from './eng
  * cannot be rendered into and throw.
  */
 export class ShadowRootViewTarget implements DOMViewTarget, Destroyable {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "ShadowRootViewTarget".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object ShadowRootViewTarget]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'ShadowRootViewTarget';
+    }
+
     #inner: DOMElementViewTarget;
 
     /**

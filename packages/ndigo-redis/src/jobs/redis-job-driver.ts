@@ -159,6 +159,21 @@ export interface RedisJobDriverOptions {
  * only). One handle per namespace; construct independently in every worker.
  */
 export class RedisJobDriver implements JobDriver {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "RedisJobDriver".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object RedisJobDriver]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'RedisJobDriver';
+    }
+
     /** Backend identifier (`'redis'`). */
     readonly kind = 'redis';
     readonly #connection: RedisConnection;

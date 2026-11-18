@@ -11,6 +11,21 @@ import { AbstractSerializingView } from './abstract-serializing-view.js';
  * `String`.
  */
 export class TextView extends AbstractSerializingView {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "TextView".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object TextView]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'TextView';
+    }
+
     constructor() {
         super();
         this.mediaType = MediaTypes.TEXT_PLAIN?.withCharset('UTF-8') ?? null;

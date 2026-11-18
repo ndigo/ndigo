@@ -26,6 +26,21 @@ import { writeRenderResult } from './producer-writer';
  */
 export class NodeDispatcher extends AbstractDispatcher {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "NodeDispatcher".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object NodeDispatcher]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'NodeDispatcher';
+    }
+
+    /**
      * Render the given handler result to the HTTP response.
      *
      * Node-only result shapes are written before the shared pipeline runs:

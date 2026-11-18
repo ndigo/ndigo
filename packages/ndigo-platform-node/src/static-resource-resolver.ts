@@ -192,6 +192,21 @@ function isDotfilePath(relative: string): boolean {
  * Resolves static files strictly inside a canonical base directory.
  */
 export class StaticResourceResolver {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "StaticResourceResolver".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object StaticResourceResolver]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'StaticResourceResolver';
+    }
+
     #base: string | null = null;
     readonly #rawBase: string;
 

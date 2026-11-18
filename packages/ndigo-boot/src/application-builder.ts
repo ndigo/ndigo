@@ -82,6 +82,21 @@ function assertAllowedConfigUrl(url: string | URL): void {
  * Builder for configuring and running an application bootstrap sequence.
  */
 export class ApplicationBuilder {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "ApplicationBuilder".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object ApplicationBuilder]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'ApplicationBuilder';
+    }
+
     #application: Application;
     #context!: ConfigurableApplicationContext;
     #environment!: ConfigurableEnvironment;

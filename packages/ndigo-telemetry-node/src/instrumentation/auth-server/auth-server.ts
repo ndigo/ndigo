@@ -9,6 +9,21 @@ import { AbstractBaseInstrumentation } from '@ndigo/telemetry';
  * OpenTelemetry instrumentation for `AuthServerInstrumentation`.
  */
 export class AuthServerInstrumentation extends AbstractBaseInstrumentation {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "AuthServerInstrumentation".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object AuthServerInstrumentation]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'AuthServerInstrumentation';
+    }
+
     constructor() {
         super('auth-server');
     }

@@ -90,6 +90,21 @@ interface ScheduledTimer {
  * counter both therefore survive `new Request(...)`.
  */
 export class RetryInterceptor implements ErrorAwareHTTPInterceptor, RequestAwareHTTPInterceptor {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "RetryInterceptor".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object RetryInterceptor]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'RetryInterceptor';
+    }
+
     readonly #config: RetryInit;
     /**
      * Undisturbed `Request.clone()` per live request, captured in

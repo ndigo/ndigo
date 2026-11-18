@@ -31,6 +31,21 @@ const LOGGER_BODY_SCHEMA = z.object({
  */
 @requestMapping('/loggers')
 export class LoggersController extends AsApplicationContextAware(Null) {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "LoggersController".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object LoggersController]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'LoggersController';
+    }
+
     /** The application context injected by the aware mixin. */
     readonly applicationContext!: ApplicationContext;
     readonly #exposure: { include?: string[]; exclude?: string[] };

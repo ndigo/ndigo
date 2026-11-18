@@ -206,6 +206,21 @@ const stringifyParameters = (value: MediaTypeParameters): string => {
  * Comparator to sort `MediaType` in order of specificity.
  */
 export class SpecificityComparator<T extends MediaType> implements Comparator<T> {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "SpecificityComparator".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object SpecificityComparator]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'SpecificityComparator';
+    }
+
     /** Compares two media types by specificity. @param mediaType1 - First media type. @param mediaType2 - Second media type. @returns A comparison result. */
     compare(mediaType1: T, mediaType2: T): number {
         // */* < audio/*

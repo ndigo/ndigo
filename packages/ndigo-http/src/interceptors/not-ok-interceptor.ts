@@ -9,6 +9,21 @@ import ResponseError from '../response-error';
  */
 export class NotOKInterceptor implements ResponseAwareHTTPInterceptor {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "NotOKInterceptor".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object NotOKInterceptor]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'NotOKInterceptor';
+    }
+
+    /**
 
      * @param response - The HTTP response
      * @param settings - The HTTP request settings

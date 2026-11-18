@@ -176,6 +176,21 @@ export abstract class AbstractPathBasedView extends AbstractView {
  */
 export abstract class AbstractTemplateView extends AbstractPathBasedView {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "AbstractTemplateView".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object AbstractTemplateView]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'AbstractTemplateView';
+    }
+
+    /**
      * Creates the template model from the view model.
      * @param viewModel - The view model.
      * @param request - The current request.
@@ -216,6 +231,21 @@ export abstract class AbstractTemplateView extends AbstractPathBasedView {
  * View that reroutes to an absolute, context relative, or current request relative route.
  */
 export class RerouteView extends AbstractPathBasedView {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "RerouteView".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object RerouteView]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'RerouteView';
+    }
+
     /**
      * The application context, provided by the mixin via `setApplicationContext`.
      * Declared here so TypeScript can see it through the mixin inheritance chain.
@@ -287,6 +317,21 @@ export class RerouteView extends AbstractPathBasedView {
  * @param path - The URL path for this view.
  */
 export class StringTemplateView extends AbstractTemplateView {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "StringTemplateView".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object StringTemplateView]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'StringTemplateView';
+    }
+
     /**
      * The template string to render.
      *

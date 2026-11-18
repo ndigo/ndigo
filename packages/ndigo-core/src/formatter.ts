@@ -143,6 +143,21 @@ function cachedFormatter<T>(cache: Map<string, T>, key: string, create: () => T)
  * ```
  */
 export class DateTimeFormatter {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "DateTimeFormatter".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object DateTimeFormatter]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'DateTimeFormatter';
+    }
+
     readonly #format: Intl.DateTimeFormat;
 
     /**
@@ -200,6 +215,21 @@ export class DateTimeFormatter {
  * ```
  */
 export class NumberFormatter {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "NumberFormatter".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object NumberFormatter]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'NumberFormatter';
+    }
+
     readonly #format: Intl.NumberFormat;
 
     /**
@@ -258,6 +288,21 @@ export class NumberFormatter {
  * ```
  */
 export class RelativeTimeFormatter {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "RelativeTimeFormatter".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object RelativeTimeFormatter]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'RelativeTimeFormatter';
+    }
+
     readonly #format: Intl.RelativeTimeFormat;
 
     /**
@@ -305,6 +350,21 @@ export class RelativeTimeFormatter {
  * ```
  */
 export class ListFormatter {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "ListFormatter".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object ListFormatter]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'ListFormatter';
+    }
+
     readonly #format: Intl.ListFormat;
 
     /**

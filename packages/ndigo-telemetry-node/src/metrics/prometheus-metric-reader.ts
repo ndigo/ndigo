@@ -30,6 +30,21 @@ import type { MetricHistogramBucket, MetricPoint, MetricSnapshot } from '@ndigo/
  */
 export class PrometheusMetricReader extends MetricReader {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "PrometheusMetricReader".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object PrometheusMetricReader]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'PrometheusMetricReader';
+    }
+
+    /**
      * Stops the reader; pull-only readers hold no resources.
      *
      * @returns A promise that resolves once shutdown is complete.

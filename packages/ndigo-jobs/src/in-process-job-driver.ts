@@ -40,6 +40,21 @@ export interface InProcessJobDriverOptions {
  * same shape they would after a restart.
  */
 export class InProcessJobDriver implements JobDriver {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "InProcessJobDriver".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object InProcessJobDriver]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'InProcessJobDriver';
+    }
+
     /** Backend identifier (`'in-process'`). */
     readonly kind = 'in-process';
     readonly #jobs = new Map<JobId, StoredJob>();

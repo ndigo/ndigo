@@ -29,6 +29,21 @@ import { type PasswordEncoder, schemePrefix, UnknownPasswordSchemeError } from '
  * `needsRehash` migrates logins onto the new default.
  */
 export class DelegatingPasswordEncoder implements PasswordEncoder {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "DelegatingPasswordEncoder".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object DelegatingPasswordEncoder]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'DelegatingPasswordEncoder';
+    }
+
     readonly #encoders: Readonly<Record<string, PasswordEncoder>>;
     readonly #defaultId: string;
 

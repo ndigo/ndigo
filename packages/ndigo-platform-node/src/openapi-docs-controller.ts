@@ -31,6 +31,21 @@ const logger = getLogger('ndigo-platform-node:openapi-docs-controller');
  * writes a 500 problem document; only successful documents are memoized.
  */
 export class OpenAPIDocsController extends AsApplicationContextAware(Null) {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "OpenAPIDocsController".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object OpenAPIDocsController]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'OpenAPIDocsController';
+    }
+
     /** The application context injected by the aware mixin. */
     readonly applicationContext!: ApplicationContext;
 

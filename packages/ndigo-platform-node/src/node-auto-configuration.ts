@@ -70,6 +70,21 @@ function configuredPort(value: unknown): number | undefined {
 @whenNode
 @configuration
 export class NodeAutoConfiguration extends AsApplicationContextAware(Null) {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "NodeAutoConfiguration".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object NodeAutoConfiguration]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'NodeAutoConfiguration';
+    }
+
     /** The owning application context (container-injected, wiring). */
     readonly applicationContext!: ApplicationContext;
     /**

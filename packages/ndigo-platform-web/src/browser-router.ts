@@ -36,6 +36,21 @@ enum RouteAccess {
  * Represents a single route transaction for history tracking.
  */
 class RouteTransaction {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "RouteTransaction".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object RouteTransaction]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'RouteTransaction';
+    }
+
     readonly route: string;
     readonly access: RouteAccess;
     readonly source: RouteSource;
@@ -63,6 +78,21 @@ const { defineProperty } = Reflect;
  * ```
  */
 export class BrowserRouter extends AbstractRouter {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "BrowserRouter".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object BrowserRouter]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'BrowserRouter';
+    }
+
     #handler: PopStateHandler;
     #history: RingBuffer<RouteTransaction>;
     #route: PathRoute;

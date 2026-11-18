@@ -52,6 +52,21 @@ export interface Schedule {
  */
 export class CronSchedule implements Schedule {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "CronSchedule".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object CronSchedule]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'CronSchedule';
+    }
+
+    /**
      * The schedule kind — always `cron`.
      */
     readonly kind: ScheduleKind = 'cron';
@@ -102,6 +117,21 @@ export class CronSchedule implements Schedule {
  * only answers "the anchor plus the interval".
  */
 export class IntervalSchedule implements Schedule {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "IntervalSchedule".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object IntervalSchedule]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'IntervalSchedule';
+    }
+
     /**
      * The trigger kind — `fixedRate` or `fixedDelay`.
      */

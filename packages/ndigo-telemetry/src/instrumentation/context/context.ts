@@ -13,6 +13,21 @@ import { AbstractBaseInstrumentation } from '../base';
  * and refresh processes.
  */
 export class ContextInstrumentation extends AbstractBaseInstrumentation {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "ContextInstrumentation".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object ContextInstrumentation]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'ContextInstrumentation';
+    }
+
     constructor() {
         super('context');
     }

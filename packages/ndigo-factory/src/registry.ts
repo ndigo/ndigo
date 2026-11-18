@@ -48,6 +48,21 @@ export const likeRegistry = (value: unknown): value is Registry =>
  */
 export class RegistryProxyHandler<T extends Registry> implements ProxyHandler<T> {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "RegistryProxyHandler".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object RegistryProxyHandler]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'RegistryProxyHandler';
+    }
+
+    /**
      * Destroys the value behind a deleted property.
      *
      * @param target - The registry.

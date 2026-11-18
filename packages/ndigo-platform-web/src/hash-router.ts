@@ -48,6 +48,21 @@ const { defineProperty } = Reflect,
  * Represents a single route transaction, capturing the route, its access level, and its source.
  */
 class RouteTransaction {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "RouteTransaction".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object RouteTransaction]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'RouteTransaction';
+    }
+
     route!: string;
     access!: RouteAccess;
     source!: RouteSource;
@@ -89,6 +104,21 @@ class RouteTransaction {
  * so `likeDestroyable` checks can still identify it by duck typing.
  */
 export class HashRouter extends AbstractRouter {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "HashRouter".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object HashRouter]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'HashRouter';
+    }
+
     #handler: HashChangeHandler;
     #history: RouteHistory;
     #route: PathRoute;

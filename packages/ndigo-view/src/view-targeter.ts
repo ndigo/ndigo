@@ -66,6 +66,21 @@ export interface ViewTargeter {
  */
 export class ViewTargeterComposite implements ViewTargeter {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "ViewTargeterComposite".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object ViewTargeterComposite]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'ViewTargeterComposite';
+    }
+
+    /**
      * The ordered targeter chain consulted during resolution.
      */
     readonly viewTargeters: ViewTargeter[];
@@ -113,6 +128,21 @@ export class ViewTargeterComposite implements ViewTargeter {
  * the dispatcher's registered `VIEW_TARGET` already plays that role.
  */
 export class FixedViewTargeter implements ViewTargeter {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "FixedViewTargeter".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object FixedViewTargeter]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'FixedViewTargeter';
+    }
+
     /**
      * The target this targeter always returns.
      */

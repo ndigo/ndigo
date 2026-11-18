@@ -26,6 +26,21 @@ interface DispatcherPatchTarget {
  * providing visibility into route dispatching processes.
  */
 export class DispatcherInstrumentation extends AbstractBaseInstrumentation {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "DispatcherInstrumentation".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object DispatcherInstrumentation]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'DispatcherInstrumentation';
+    }
+
     constructor() {
         super('dispatcher');
     }

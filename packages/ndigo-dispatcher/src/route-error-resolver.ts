@@ -183,6 +183,21 @@ export abstract class AbstractRouteErrorResolver implements RouteErrorResolver {
 
 export abstract class AbstractHandlerMethodErrorResolver extends AbstractRouteErrorResolver {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "AbstractHandlerMethodErrorResolver".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object AbstractHandlerMethodErrorResolver]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'AbstractHandlerMethodErrorResolver';
+    }
+
+    /**
      * Narrow applicability to wrapped route handler methods.
      *
      * @param route - The current route.
@@ -367,6 +382,21 @@ export class DefaultRouteErrorResolver extends AbstractRouteErrorResolver {
  * An {@link AbstractRouteErrorResolver|AbstractRouteErrorResolver} that resolves exceptions through 'error:mapping' metadata.
  */
 export class MetadataErrorResolver extends AbstractHandlerMethodErrorResolver implements ApplicationContextAware {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "MetadataErrorResolver".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object MetadataErrorResolver]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'MetadataErrorResolver';
+    }
+
     /**
      * Application context used to discover error handlers.
      */

@@ -58,6 +58,21 @@ export interface SelectorViewTargeterOptions {
  * selector derived from unbounded request data will churn the cache.
  */
 export class SelectorViewTargeter implements ViewTargeter, Destroyable {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "SelectorViewTargeter".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object SelectorViewTargeter]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'SelectorViewTargeter';
+    }
+
     readonly #select: ViewTargetSelector;
     readonly #mount: ViewTargetMount;
     readonly #eventMap: Record<string, string>;

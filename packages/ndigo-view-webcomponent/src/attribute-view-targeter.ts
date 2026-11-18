@@ -31,6 +31,21 @@ export interface AttributeViewTargeterOptions extends SelectorViewTargeterOption
  */
 export class AttributeViewTargeter extends SelectorViewTargeter {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "AttributeViewTargeter".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object AttributeViewTargeter]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'AttributeViewTargeter';
+    }
+
+    /**
      * Creates an attribute-driven targeter.
      *
      * @param options - Attribute key, mount mode, event map, and document.

@@ -34,6 +34,21 @@ export interface ValidationIssue {
  *. Engines without `Error.stackTraceLimit` keep their default capture.
  */
 export class ZodValidationError extends FrameworkError {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "ZodValidationError".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object ZodValidationError]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'ZodValidationError';
+    }
+
     /** The structured per-field failures from the Zod parse. */
     readonly issues: readonly ValidationIssue[];
 

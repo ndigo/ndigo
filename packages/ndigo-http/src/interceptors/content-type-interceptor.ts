@@ -15,6 +15,21 @@ export type ContentTypeInit = HTTPInit & { contentType?: string | MediaType };
  */
 export class ContentTypeInterceptor implements InitializationAwareHTTPInterceptor<ContentTypeInit> {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "ContentTypeInterceptor".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object ContentTypeInterceptor]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'ContentTypeInterceptor';
+    }
+
+    /**
      * If the `contentType` setting exists, it inserts the value as an HTTP request header.
      * @param url - The requested URL.
      * @param settings - The HTTP request settings, including the `contentType` setting.

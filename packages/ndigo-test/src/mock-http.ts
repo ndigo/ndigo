@@ -127,6 +127,21 @@ function toResult(prepared: PreparedRoute, response: MemoryResponse): MockResult
  * ```
  */
 export class MockHTTPRequestBuilder {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "MockHTTPRequestBuilder".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object MockHTTPRequestBuilder]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'MockHTTPRequestBuilder';
+    }
+
     #mockHTTP: MockHTTP;
     #request: MockRequest;
 
@@ -276,6 +291,21 @@ export class MockHTTPRequestBuilder {
  * ```
  */
 export class MockHTTP {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "MockHTTP".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object MockHTTP]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'MockHTTP';
+    }
+
     #dispatcher: NodeDispatcher;
     readonly #multipartLimits: Partial<MultipartLimits> | undefined;
     readonly #limits: ResolvedHTTPRequestLimits;

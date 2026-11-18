@@ -27,6 +27,21 @@ import { StaticResourceHandler, type StaticHandlerOptions } from './static-resou
  */
 @requestMapping('/static')
 export class StaticController {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "StaticController".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object StaticController]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'StaticController';
+    }
+
     readonly #handler: StaticResourceHandler;
 
     /**

@@ -100,6 +100,21 @@ export function decodeSocketFanoutEnvelope(
 
 /** Redis Pub/Sub live fan-out: at-most-once, no replay, reconnect, or offline queue. */
 export class RedisSocketFanout implements SocketFanout, AsyncCloseable {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "RedisSocketFanout".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object RedisSocketFanout]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'RedisSocketFanout';
+    }
+
     readonly #publisher: RedisConnection;
     readonly #subscriber: RedisConnection;
     readonly #namespace: string;

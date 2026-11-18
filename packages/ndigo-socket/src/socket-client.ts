@@ -202,6 +202,21 @@ function defaultTransportFactory(url: string): SocketTransport {
  * ```
  */
 export class WebSocketClient implements SocketClient {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "WebSocketClient".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object WebSocketClient]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'WebSocketClient';
+    }
+
     /** The endpoint URL. */
     readonly url: string;
     /** The live connection status. */

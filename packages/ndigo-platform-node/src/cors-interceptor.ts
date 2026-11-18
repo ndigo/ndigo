@@ -68,6 +68,21 @@ const DEFAULT_ALLOWED_HEADERS = ['Content-Type', 'Authorization', 'X-Requested-W
  *   misconfiguration must fail at startup, not at request time.
  */
 export class CORSInterceptor implements RouteHandlerInterceptor {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "CORSInterceptor".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object CORSInterceptor]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'CORSInterceptor';
+    }
+
     readonly #allowedOrigins: string[];
     readonly #allowedMethods: string[];
     readonly #allowedHeaders: string[];

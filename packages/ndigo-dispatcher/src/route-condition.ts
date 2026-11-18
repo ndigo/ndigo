@@ -64,6 +64,21 @@ export const likeRouteCondition = like({ merge: Function, match: Function }) as 
  * Base class for parsed name/value expressions.
  */
 export abstract class AbstractNameValueExpression<T> implements NameValueExpression<T>, Serializable, Matchable<Route> {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "AbstractNameValueExpression".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object AbstractNameValueExpression]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'AbstractNameValueExpression';
+    }
+
     /** Whether the expression is negated (`!`). */
     readonly isNegated!: boolean;
     /** The expression name. */
@@ -191,6 +206,21 @@ export abstract class AbstractRouteCondition<T extends AbstractRouteCondition<T>
     implements Equatable, RouteCondition<T>, Serializable
 {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "AbstractRouteCondition".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object AbstractRouteCondition]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'AbstractRouteCondition';
+    }
+
+    /**
      * Whether this condition contains no content.
      */
     get isEmpty(): boolean {
@@ -277,6 +307,21 @@ export abstract class AbstractRouteCondition<T extends AbstractRouteCondition<T>
  */
 
 export class RouteConditionHolder extends AbstractRouteCondition<RouteConditionHolder> {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "RouteConditionHolder".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object RouteConditionHolder]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'RouteConditionHolder';
+    }
+
     /**
      * Wrapped condition, when present.
      */
@@ -373,6 +418,21 @@ export class RouteConditionHolder extends AbstractRouteCondition<RouteConditionH
  * When `CompositeRouteCondition` instances are combined or compared they are expected to (a) contain the same number of conditions and (b) that conditions in the respective index are of the same type. It is acceptable to provide `null` conditions or no conditions at all to the constructor.
  */
 export class CompositeRouteCondition extends AbstractRouteCondition<CompositeRouteCondition> {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "CompositeRouteCondition".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object CompositeRouteCondition]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'CompositeRouteCondition';
+    }
+
     /** The conjunction separator. */
     get infix(): string {
         return ' && ';

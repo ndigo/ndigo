@@ -52,6 +52,21 @@ const splitProfiles = (raw: string): string[] =>
 
  */
 export class Application extends Emitter {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "Application".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object Application]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'Application';
+    }
+
     #environment: ConfigurableEnvironment | null = null;
     #refreshEnvironment: ConfigurableEnvironment | null = null;
     #refreshListener: (() => void) | null = null;

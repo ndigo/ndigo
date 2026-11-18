@@ -36,6 +36,21 @@ export interface AuthGuardDenialOptions {
  * adapter finalizes the response, so denied requests never stay open.
  */
 export class AuthRouteGuard implements RouteHandlerInterceptor {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "AuthRouteGuard".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object AuthRouteGuard]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'AuthRouteGuard';
+    }
+
     #authServer: AuthServer;
     #adapterId: string;
     #tokenExtractor: (route: Route) => string | null;

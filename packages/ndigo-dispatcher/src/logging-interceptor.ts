@@ -38,6 +38,21 @@ export interface InterceptorLogger {
  */
 export class LoggingRouteHandlerInterceptor implements RouteHandlerInterceptor {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "LoggingRouteHandlerInterceptor".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object LoggingRouteHandlerInterceptor]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'LoggingRouteHandlerInterceptor';
+    }
+
+    /**
      * Route start timestamps used to compute duration.
      */
     #startTimeMap: WeakMap<Route, number>;

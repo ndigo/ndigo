@@ -91,6 +91,21 @@ const JOURNAL_DDL = `CREATE TABLE IF NOT EXISTS "${JOURNAL_TABLE}" (
  * ```
  */
 export class DrizzleMigrator {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "DrizzleMigrator".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object DrizzleMigrator]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'DrizzleMigrator';
+    }
+
     readonly #dataSource: DrizzleDataSource;
 
     /**

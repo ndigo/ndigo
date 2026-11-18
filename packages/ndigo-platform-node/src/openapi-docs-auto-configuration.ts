@@ -145,6 +145,21 @@ import type { Route } from '@ndigo/router';
  */
 @configuration
 export class OpenAPIDocsAutoConfiguration {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "OpenAPIDocsAutoConfiguration".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object OpenAPIDocsAutoConfiguration]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'OpenAPIDocsAutoConfiguration';
+    }
+
     readonly #options: ResolvedOpenAPIDocsOptions;
     readonly #docs: OpenAPIDocsController;
     readonly #ui: SwaggerUIController;

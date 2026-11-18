@@ -90,6 +90,21 @@ export interface LibSQLQueueMessageStoreOptions {
  * store are owned; injected clients are borrowed by default.
  */
 export class LibSQLQueueMessageStore implements QueueMessageStore {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "LibSQLQueueMessageStore".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object LibSQLQueueMessageStore]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'LibSQLQueueMessageStore';
+    }
+
     /** Store identifier (`'libsql'`). */
     readonly kind = 'libsql';
     readonly #client: Client;

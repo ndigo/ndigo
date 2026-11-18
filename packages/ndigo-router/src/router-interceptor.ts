@@ -66,6 +66,21 @@ export interface RouterInterceptorRegistry {
  * It extends `AsPathMatcherFilter` to leverage path matching capabilities.
  */
 export class MappedRouterInterceptor extends AsPathMatcherFilter(Null) implements RouterInterceptor, PathMatcherFilter {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "MappedRouterInterceptor".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object MappedRouterInterceptor]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'MappedRouterInterceptor';
+    }
+
     #excludePatterns: string[];
     #includePatterns: string[];
     #interceptor: RouterInterceptor;

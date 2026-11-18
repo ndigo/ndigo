@@ -36,6 +36,21 @@ export interface ThemeSource {
  * In-memory theme source for static theme maps.
  */
 export class StaticThemeSource implements ThemeSource {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "StaticThemeSource".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object StaticThemeSource]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'StaticThemeSource';
+    }
+
     #themes: Map<string, Theme>;
     #defaultThemeName: string;
 

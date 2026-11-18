@@ -50,6 +50,21 @@ export function extractAuthMetadata(handler: object | undefined): AuthRouteMetad
  * state before allowing navigation to proceed.
  */
 export class ClientAuthGuard {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "ClientAuthGuard".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object ClientAuthGuard]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'ClientAuthGuard';
+    }
+
     #authClient: AuthClient;
     #loginRedirect: string;
     #forbiddenRedirect: string;

@@ -61,6 +61,21 @@ export interface PropertySources extends Enumerable<string, PropertySource>, Ite
  * ```
  */
 export class MutablePropertySources implements PropertySources {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "MutablePropertySources".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object MutablePropertySources]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'MutablePropertySources';
+    }
+
     #byName!: Map<string, PropertySource>;
     #ordered: PropertySource[] | null = null;
     #version = 0;

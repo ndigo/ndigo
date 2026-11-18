@@ -13,6 +13,21 @@ import { AuthRegistry } from '@ndigo/auth-core';
  * (e.g., redirects, callbacks, token storage).
  */
 export class AuthClient {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "AuthClient".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object AuthClient]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'AuthClient';
+    }
+
     #state: AuthenticationState = {
         isAuthenticated: false,
         principal: null,

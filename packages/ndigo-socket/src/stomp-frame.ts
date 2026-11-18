@@ -49,6 +49,21 @@ export type StompWireInput = string | Uint8Array | ArrayBuffer;
 /** Raised on malformed frames (missing NUL, bad `content-length`, …). */
 export class StompProtocolError extends FrameworkError {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "StompProtocolError".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object StompProtocolError]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'StompProtocolError';
+    }
+
+    /**
      * Creates the protocol error for a malformed frame.
      *
      * @param message - Human-readable protocol failure detail.

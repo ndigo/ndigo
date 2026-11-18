@@ -123,6 +123,21 @@ export interface EJSViewOptions {
  */
 export class EJSView extends AbstractTemplateView implements ProducerView {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "EJSView".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object EJSView]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'EJSView';
+    }
+
+    /**
      * The application context, provided by the mixin via `setApplicationContext`.
      * Declared here so TypeScript can see it through the mixin inheritance chain.
      */

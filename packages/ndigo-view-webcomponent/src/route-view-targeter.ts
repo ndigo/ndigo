@@ -32,6 +32,21 @@ export interface RouteViewTargeterOptions extends SelectorViewTargeterOptions {
  */
 export class RouteViewTargeter extends SelectorViewTargeter {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "RouteViewTargeter".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object RouteViewTargeter]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'RouteViewTargeter';
+    }
+
+    /**
      * Creates a route-driven targeter.
      *
      * @param routes - Route pattern → selector entries.

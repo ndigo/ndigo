@@ -12,6 +12,21 @@
  * which breaks if a bundle duplicates the class).
  */
 export class CacheMiss {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "CacheMiss".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object CacheMiss]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'CacheMiss';
+    }
+
     /** The sole miss sentinel instance. */
     static readonly INSTANCE: CacheMiss = new CacheMiss();
 
@@ -120,6 +135,21 @@ export interface Cache<V = unknown> {
  *   {@link "cache-manager".MemoryCacheManager | MemoryCacheManager}).
  */
 export class MemoryCache<V = unknown> implements Cache<V> {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "MemoryCache".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object MemoryCache]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'MemoryCache';
+    }
+
     readonly #entries: Map<string, CacheEntry<V>> = new Map();
     readonly #defaultTtl: number | undefined;
     readonly #maxSize: number;

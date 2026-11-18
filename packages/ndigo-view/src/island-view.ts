@@ -144,6 +144,21 @@ export interface IslandViewOptions {
  */
 export class IslandView extends AbstractTemplateView {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "IslandView".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object IslandView]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'IslandView';
+    }
+
+    /**
      * The custom element tag name hydrated on the client.
      */
     readonly tagName: string;

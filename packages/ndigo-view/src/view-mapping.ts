@@ -104,6 +104,21 @@ export abstract class AbstractViewMapping extends AsNameAware(AsApplicationConte
  */
 export abstract class AbstractPathViewMapping extends AbstractViewMapping {
     /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "AbstractPathViewMapping".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object AbstractPathViewMapping]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'AbstractPathViewMapping';
+    }
+
+    /**
      * The target returned for the root path when one is configured.
      */
     rootTarget: unknown;

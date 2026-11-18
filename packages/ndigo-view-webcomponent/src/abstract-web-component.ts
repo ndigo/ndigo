@@ -17,6 +17,21 @@ export abstract class AbstractWebComponent
     extends AsNdigoElement(HTMLElement)
     implements EventEmitter, ApplicationContextAware
 {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * `Object.prototype.toString()` reads this symbol to render the
+     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
+     *
+     * @returns The string "AbstractWebComponent".
+     *
+     * @example
+     * console.log(Object.prototype.toString.call(instance)); // "[object AbstractWebComponent]"
+     */
+    get [Symbol.toStringTag](): string {
+        return 'AbstractWebComponent';
+    }
+
     readonly [$aware] = true;
     #wrappedListeners: Map<string, Map<Function, EventListener>> = new Map();
     #eventDelegation: Map<string, Map<string, string>> = new Map();

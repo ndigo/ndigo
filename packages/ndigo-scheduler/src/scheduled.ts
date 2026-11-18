@@ -154,6 +154,14 @@ function validateCron(expression: string): void {
  * @param spec - A cron string, `{ cron }`, or `{ fixedRate | fixedDelay }`
  *   specification (with optional `timeZone` and `maxRunTime`).
  * @returns The class method decorator.
+ *
+ * @example
+ * ```ts
+ * class Reports {
+ *     @scheduled('0 0 * * *')
+ *     async nightly() { ... }
+ * }
+ * ```
  */
 export function scheduled(spec: ScheduledSpec) {
     const normalized = resolveScheduledSpec(spec);

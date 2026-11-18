@@ -5,7 +5,6 @@ import { likeContentSourceAware, likeMessageSourceAware } from '@ndigo/content';
 import { likeLockDriverAware, LOCK_DRIVER } from '@ndigo/locks';
 import { likeRateLimiterAware, RATE_LIMITER } from '@ndigo/rate-limit';
 import { likeHTTPAware, HTTP_CLIENT } from '@ndigo/http';
-import { likeDataSourceAware, DATA_SOURCE } from '@ndigo/orm';
 import { likeApplicationEventEmitterAware } from './event-emitter';
 import { InitializationAwareProcessor, likeAware } from '@ndigo/factory';
 import { likeEnvironmentAware } from './environment';
@@ -94,8 +93,11 @@ export class ApplicationContextAwareProcessor implements InitializationAwareProc
             if (likeHTTPAware(value) && applicationContext.hasValue(HTTP_CLIENT)) {
                 value.setHttp(applicationContext.getValue(HTTP_CLIENT));
             }
-            if (likeDataSourceAware(value) && applicationContext.hasValue(DATA_SOURCE)) {
-                value.setDataSource(applicationContext.getValue(DATA_SOURCE));
+            const dataSourceAware = value as { setDataSource?: (dataSource: unknown) => void };
+            // oxlint-disable-next-line @ndigo/no-string-registry-lookup -- data source token lives in @ndigo/orm
+            if (typeof dataSourceAware.setDataSource === 'function' && applicationContext.hasValue('dataSource')) {
+                // oxlint-disable-next-line @ndigo/no-string-registry-lookup -- data source token lives in @ndigo/orm
+                dataSourceAware.setDataSource(applicationContext.getValue('dataSource'));
             }
 
             const cacheManagerAware = value as { setCacheManager?: (manager: unknown) => void };

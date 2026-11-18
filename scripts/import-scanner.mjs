@@ -173,6 +173,12 @@ export function extractImports(source) {
             continue;
         }
 
+        // A code token appearing while `expectDynamic` is armed means the
+        // pending dynamic import's argument was not an immediately-following
+        // string literal (e.g. a variable) — disarm so an unrelated later
+        // string is not mistaken for the specifier.
+        if (expectDynamic) expectDynamic = false;
+
         // --- code token: process `;`-separated segments ---
         let rest = token.text;
         while (rest.length > 0) {
@@ -216,6 +222,21 @@ export function extractImports(source) {
                 // statement prefix — any other content invalidates it
                 barePending = /^\s*(?:type\s+)?\s*$/.test(rest);
             }
+
+            // mid-statement: a dynamic import/require whose `(` lands inside the
+            // statement's body (e.g. an `export`ed function) must still arm
+            // `expectDynamic` for the following string token — otherwise the
+            // never-terminated statement swallows the specifier. Mirror the
+            // fresh-statement handling above.
+            if (/\bimport\s*\(\s*$/.test(rest)) expectDynamic = true;
+            if (/\brequire(?:\.resolve)?\s*\(\s*$/.test(rest)) expectDynamic = true;
+            // Also catch any fully-inline literal form that survived tokenization.
+            const dynRe = /\bimport\s*\(\s*(["'])([^'"]+)\1\s*\)/g;
+            let dm;
+            while ((dm = dynRe.exec(rest)) !== null) specifiers.push(dm[2]);
+            const reqRe = /\brequire(?:\.resolve)?\s*\(\s*(['\"])([^'\"]+)\1\s*\)/g;
+            let rm;
+            while ((rm = reqRe.exec(rest)) !== null) specifiers.push(rm[2]);
 
             // mid-statement: scan for `;` at brace depth 0 or EOF of this token
             let k = 0;

@@ -11,18 +11,17 @@
 import { usageError } from '../helpers/app-scripts.js';
 
 /**
- * Loader for the reference TOON encoder. NOT exported — an `export`d
- * function leaves the dynamic import inside a never-terminated statement for
- * the manifest scanner (`scripts/import-scanner.mjs`), silently missing the
- * specifier; the non-exported wrapper mirrors `@ndigo/test`'s
- * `loadWebAutoConfiguration` shape. DELIBERATE dynamic import: the CLI
+ * Loader for the reference TOON encoder. DELIBERATE dynamic import: the CLI
  * binary starts tens of times per script run; a static import would pay the
  * SDK load on every invocation. A literal specifier keeps the module a
  * declared runtime dependency (check-manifests rule 1). No `@vite-ignore`
  * needed: the binary runs from compiled lib/ under node — no bundler in
- * this lane. Defined BEFORE the exported functions below: the scanner only
- * adopts a dynamic import from a statement it can recognize as new, and a
- * preceding `export` line leaves that state unset.
+ * this lane.
+ *
+ * The manifest scanner now captures dynamic imports inside `export`ed
+ * statements too (issue #354), so the non-exported/defined-before-exports
+ * shape is no longer required for correctness — retained as-is to keep the
+ * loader private and the module's public surface unchanged.
  */
 async function loadToonEncoder(): Promise<(value: unknown) => string> {
     // The SDK's `encode` runs on any JSON-model input; the narrower package

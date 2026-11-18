@@ -59,6 +59,12 @@ export interface LockHandle {
      * is still the current one. Returns `false` when another holder took
      * over after our expiry (fencing guard), in which case nothing is
      * released.
+     *
+     * @example
+     * ```ts
+     * const released = await handle.release();
+     * if (!released) console.warn('lease was already lost');
+     * ```
      */
     release(): Promise<boolean>;
 }
@@ -82,6 +88,14 @@ export interface LockDriver extends AsyncCloseable {
      * @param key - The lock key (namespaced by the driver).
      * @param options - Acquisition options.
      * @returns The fencing handle, or `null` when the key is held.
+     *
+     * @example
+     * ```ts
+     * const handle = await driver.acquire('job:1', { ttlMs: 30_000 });
+     * if (handle) {
+     *     await handle.release();
+     * }
+     * ```
      */
     acquire(key: string, options: LockAcquireOptions): Promise<LockHandle | null>;
     /**

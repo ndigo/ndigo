@@ -91,6 +91,16 @@ export class InProcessLockDriver implements LockDriver {
 
     /**
      * @param options - Clock override and key prefix (see the interface).
+     *
+     * @example
+     * ```ts
+     * const driver = new InProcessLockDriver();
+     * const handle = await driver.acquire('job:1', { ttlMs: 30_000 });
+     * if (handle) {
+     *     try { await doWork(); }
+     *     finally { await handle.release(); }
+     * }
+     * ```
      */
     constructor(options: InProcessLockDriverOptions = {}) {
         this.#clock = options.clock ?? Date.now;
@@ -103,6 +113,15 @@ export class InProcessLockDriver implements LockDriver {
      * @param key - The lock key.
      * @param options - Lease options; `ttlMs` bounds how long the lease is held.
      * @returns The lock handle, or `null` when the key is already locked.
+     *
+     * @example
+     * ```ts
+     * const driver = new InProcessLockDriver();
+     * const handle = await driver.acquire('job:1', { ttlMs: 30_000 });
+     * if (handle) {
+     *     await handle.release();
+     * }
+     * ```
      */
     acquire(key: string, options: { ttlMs: number }): Promise<LockHandle | null> {
         return Promise.resolve().then(() => this.#acquireNow(key, options));

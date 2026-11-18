@@ -19,6 +19,11 @@ export interface Factory {
      * primitives) are returned as-is, preserving identity (CF-12).
      * @param name - The name of the value.
      * @returns The instance (or registered value) specified by the `name`.
+     *
+     * @example
+     * ```ts
+     * const service = factory.getInstance<MyService>('myService');
+     * ```
      */
     getInstance<T = unknown>(name: string): T;
 }
@@ -98,6 +103,13 @@ export const AsFactoryAware = <T extends Constructable>(superclass: T): Construc
  * Determines whether or not the `value` provided is a {@link Factory}.
  * @param value - The value to be tested.
  * @returns Whether or not the `value` provided is a {@link Factory}.
+ *
+ * @example
+ * ```ts
+ * if (likeFactory(candidate)) {
+ *     const value = candidate.getInstance('myService');
+ * }
+ * ```
  */
 export const likeFactory = (value: unknown): value is Factory => like({ getInstance: Function })(value);
 

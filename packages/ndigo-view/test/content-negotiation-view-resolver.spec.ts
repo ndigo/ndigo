@@ -7,13 +7,13 @@ import {
     MappingMediaTypeFileExtensionResolver,
     FixedContentNegotiationStrategy,
     ContentNegotiationManager,
-    NotAcceptableError,
     PathExtensionContentNegotiationStrategy,
     likeMediaTypeFileExtensionResolver,
 } from '../src/content-negotiation-view-resolver';
 import { MediaTypes, type MediaType } from '@ndigo/core';
 import type { View } from '../src/view';
 import type { ViewResolver } from '../src/view-resolver';
+import { NotAcceptableError } from '../src/not-acceptable-error';
 
 describe('ContentNegotiationViewResolver', () => {
     test('it should delegate media type resolution to the content negotiation manager', () => {

@@ -9,10 +9,8 @@
  * (`@rateLimit`, `RATE_LIMIT_KEY`) and the `RateLimitInterceptor` live in
  * `@ndigo/platform-node`.
  */
+import { Constructable } from '@ndigo/core';
 import { like } from '@ndigo/util/types';
-/** @internal */
-// oxlint-disable-next-line typescript/no-explicit-any -- TS2545 requires mixin superclass ctors to be exactly `...args: any[]`; no erasable alternative.
-type Constructable<T = {}> = new (...args: any[]) => T;
 import { Aware, AsAware, likeAwareAnd } from '@ndigo/factory';
 
 /**

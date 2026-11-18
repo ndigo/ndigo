@@ -31,6 +31,7 @@
   "license": "ISC",
   "sideEffects": false,
   "dependencies": {
+    "@ndigo/core": "~0.0.1",
     "@ndigo/util": "~0.0.1",
     "@tsmetadata/polyfill": "catalog:",
     "@ndigo/context": "~0.0.1",

@@ -1947,6 +1947,9 @@ importers:
       '@ndigo/context':
         specifier: ~0.0.1
         version: link:../ndigo-context
+      '@ndigo/core':
+        specifier: ~0.0.1
+        version: link:../ndigo-core
       '@ndigo/factory':
         specifier: ~0.0.1
         version: link:../ndigo-factory
@@ -2627,6 +2630,9 @@ importers:
 
   packages/ndigo-rate-limit:
     dependencies:
+      '@ndigo/core':
+        specifier: ~0.0.1
+        version: link:../ndigo-core
       '@ndigo/factory':
         specifier: ~0.0.1
         version: link:../ndigo-factory

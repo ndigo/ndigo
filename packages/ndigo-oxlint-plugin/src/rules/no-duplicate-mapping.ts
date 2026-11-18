@@ -3,6 +3,8 @@
  */
 import type { Context, ESTree } from '@oxlint/plugins';
 
+import { ruleUrl } from '../_docs.js';
+
 /**
  * Mapping decorators whose first argument names a path, keyed to the HTTP
  * method identity the registration resolves to.
@@ -309,10 +311,10 @@ export const noDuplicateMapping = {
         docs: {
             description:
                 'Disallow duplicate method-level route-mapping paths of the same HTTP-method identity within a class',
+            url: ruleUrl('no-duplicate-mapping'),
         },
         messages: {
-            duplicateMapping:
-                "Duplicate @{{decorator}} mapping path '{{path}}' (normalized '{{normalized}}', method {{method}}) — already mapped by @{{firstDecorator}}('{{first}}') in this class. Both target the same radix node for the same HTTP method, so the later registration shadows the earlier; remove or disambiguate one.",
+            duplicateMapping: `Duplicate @{{decorator}} mapping '{{path}}' ({{method}}) — already mapped by @{{firstDecorator}}('{{first}}'); the later registration shadows it in this class. ${ruleUrl('no-duplicate-mapping')}`,
         },
         schema: [],
     } as const,

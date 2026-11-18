@@ -4,12 +4,16 @@
 
 Custom **oxlint** rules that catch common mistakes when building Ndigo
 applications: mixed decorator paradigms, unsafe view names, string-literal
-registry lookups, duplicate route mappings, reactivity leaking into entities,
-and Node-only scheduling in browser code. Rules that key off the Ndigo
+context-token lookups, duplicate route mappings, reactivity leaking into
+entities, and Node-only scheduling in browser code. Rules that key off the Ndigo
 repository's own layout (integration-layer boundaries, internal-file hygiene,
 doc headers, naming conventions, the console policy, and browser-global
 guards) live in the repository's internal plugin at root `src/oxlint/` — they
 are not part of this package.
+
+Every rule has a page under [`docs/lint/`](../../docs/lint/README.md). The URL
+is also in `meta.docs.url` and at the end of every diagnostic, so a violation
+in a terminal is one link away from the rationale.
 
 ## Installation
 

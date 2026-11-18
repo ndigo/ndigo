@@ -4,6 +4,8 @@
  */
 import type { Context, ESTree } from '@oxlint/plugins';
 
+import { ruleUrl } from '../_docs.js';
+
 const schedulerImportPattern = /^@ndigo\/scheduler(?:\/|$)/u;
 const browserPlatformPattern = /^@ndigo\/(?:platform-web|view-webcomponent)(?:\/|$)/u;
 
@@ -21,10 +23,10 @@ export const noScheduledInBrowser = {
         type: 'problem',
         docs: {
             description: 'Disallow @ndigo/scheduler imports in browser-platform files',
+            url: ruleUrl('no-scheduled-in-browser'),
         },
         messages: {
-            scheduledInBrowser:
-                "Do not import '@ndigo/scheduler' in a browser-platform file — scheduled tasks run on the server only (@scheduled throws without a Node runtime). Move @scheduled classes to a Node application.",
+            scheduledInBrowser: `'@ndigo/scheduler' is Node-only — move @scheduled classes to a Node application; this file also imports browser-platform code. ${ruleUrl('no-scheduled-in-browser')}`,
         },
         schema: [],
     } as const,
@@ -39,6 +41,11 @@ export const noScheduledInBrowser = {
                 browserImports.length = 0;
             },
             ImportDeclaration(node: ESTree.ImportDeclaration) {
+                // Type-only imports are erased; neither side says anything
+                // about the runtime platform of this file.
+                if (node.importKind === 'type') {
+                    return;
+                }
                 if (schedulerImportPattern.test(node.source.value)) {
                     importsScheduler = true;
                 } else if (browserPlatformPattern.test(node.source.value)) {

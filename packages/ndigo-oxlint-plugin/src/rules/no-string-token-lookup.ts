@@ -3,6 +3,8 @@
  */
 import type { Context, ESTree } from '@oxlint/plugins';
 
+import { ruleUrl } from '../_docs.js';
+
 /**
  * Registry read-side methods whose argument should be a {@link ContextToken}
  * in source files. Registration (`setValue`) stays string-legal:
@@ -117,10 +119,10 @@ export const noStringTokenLookup = {
         type: 'problem',
         docs: {
             description: 'Disallow string-literal context-token lookups in source files',
+            url: ruleUrl('no-string-token-lookup'),
         },
         messages: {
-            preferToken:
-                "String-literal context-token lookup {{method}}('{{name}}') — use a ContextToken (ADR-34 D1) so renames and type errors surface at build time. For a genuinely dynamic name, keep the string and add oxlint-disable-next-line with a reason.",
+            preferToken: `String-literal lookup {{method}}('{{name}}') — use a ContextToken so renames and type errors surface at build time. ${ruleUrl('no-string-token-lookup')}`,
         },
         schema: [],
     } as const,

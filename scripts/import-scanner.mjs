@@ -234,7 +234,7 @@ export function extractImports(source) {
             const dynRe = /\bimport\s*\(\s*(["'])([^'"]+)\1\s*\)/g;
             let dm;
             while ((dm = dynRe.exec(rest)) !== null) specifiers.push(dm[2]);
-            const reqRe = /\brequire(?:\.resolve)?\s*\(\s*(['\"])([^'\"]+)\1\s*\)/g;
+            const reqRe = /\brequire(?:\.resolve)?\s*\(\s*(["'])([^'"]+)\1\s*\)/g;
             let rm;
             while ((rm = reqRe.exec(rest)) !== null) specifiers.push(rm[2]);
 

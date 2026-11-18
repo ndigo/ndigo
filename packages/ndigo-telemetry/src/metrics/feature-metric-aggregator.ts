@@ -358,10 +358,24 @@ export class FeatureMetricAggregatorProvider implements MetricSnapshotProvider {
     }
 }
 
+/**
+ * Marks an object that can receive a {@link FeatureMetricAggregator}.
+ */
 export interface FeatureMetricAggregatorAware extends Aware {
+    /**
+     * Sets the feature metric aggregator used by the receiver.
+     *
+     * @param featureMetricAggregator - The aggregator to attach.
+     */
     setFeatureMetricAggregator(featureMetricAggregator: FeatureMetricAggregator): void;
 }
 
+/**
+ * Mixes feature-metric-aggregator awareness into a base class.
+ *
+ * @param superclass - Base class to extend.
+ * @returns A subclass that can receive a feature metric aggregator.
+ */
 export const AsFeatureMetricAggregatorAware = <T extends Constructable>(
     superclass: T
 ): Constructable<FeatureMetricAggregatorAware> & T =>
@@ -377,6 +391,12 @@ export const AsFeatureMetricAggregatorAware = <T extends Constructable>(
         }
     };
 
+/**
+ * Tests whether a value looks like feature-metric-aggregator-aware state.
+ *
+ * @param value - The candidate value.
+ * @returns Whether the value can receive a feature metric aggregator.
+ */
 export const likeFeatureMetricAggregatorAware = likeAwareAnd(like({ setFeatureMetricAggregator: Function })) as (
     value: unknown
 ) => value is FeatureMetricAggregatorAware;

@@ -10,6 +10,7 @@
  * `@ndigo/platform-node`.
  */
 import { like } from '@ndigo/util/types';
+/** @internal */
 // oxlint-disable-next-line typescript/no-explicit-any -- TS2545 requires mixin superclass ctors to be exactly `...args: any[]`; no erasable alternative.
 type Constructable<T = {}> = new (...args: any[]) => T;
 import { Aware, AsAware, likeAwareAnd } from '@ndigo/factory';
@@ -98,10 +99,24 @@ export function likeRateLimiter(value: unknown): value is RateLimiter {
  * validateRateLimitPolicy({ limit: 100, windowMs: 60_000 });
  * ```
  */
+/**
+ * Marks an object that can receive a {@link RateLimiter}.
+ */
 export interface RateLimiterAware extends Aware {
+    /**
+     * Sets the rate limiter used by the receiver.
+     *
+     * @param rateLimiter - The rate limiter to attach.
+     */
     setRateLimiter(rateLimiter: RateLimiter): void;
 }
 
+/**
+ * Mixes rate-limiter awareness into a base class.
+ *
+ * @param superclass - Base class to extend.
+ * @returns A subclass that can receive a rate limiter.
+ */
 export const AsRateLimiterAware = <T extends Constructable>(superclass: T): Constructable<RateLimiterAware> & T =>
     class extends AsAware(superclass) implements RateLimiterAware {
         rateLimiter: RateLimiter | null = null;
@@ -115,6 +130,12 @@ export const AsRateLimiterAware = <T extends Constructable>(superclass: T): Cons
         }
     };
 
+/**
+ * Tests whether a value looks like rate-limiter-aware state.
+ *
+ * @param value - The candidate value.
+ * @returns Whether the value can receive a rate limiter.
+ */
 export const likeRateLimiterAware = likeAwareAnd(like({ setRateLimiter: Function })) as (
     value: unknown
 ) => value is RateLimiterAware;

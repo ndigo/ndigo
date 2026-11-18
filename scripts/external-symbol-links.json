@@ -2,8 +2,10 @@
   "@ndigo/auth-core": {
     "AuthAdapter": "#",
     "AuthResult": "#",
+    "PasswordEncoder": "#",
     "Principal": "#",
-    "SessionStore": "#"
+    "SessionStore": "#",
+    "UserStore": "#"
   },
   "@ndigo/cache": {
     "CacheMiss": "#"

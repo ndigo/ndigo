@@ -5,6 +5,7 @@ import { Cache, CacheOptions, MemoryCache } from './cache';
 import { resolveCacheName } from './cache-name';
 import { ContextToken, Aware, AsAware, likeAwareAnd } from '@ndigo/factory';
 import { like } from '@ndigo/util/types';
+/** @internal */
 // oxlint-disable-next-line typescript/no-explicit-any -- TS2545 requires mixin superclass ctors to be exactly `...args: any[]`; no erasable alternative.
 type Constructable<T = {}> = new (...args: any[]) => T;
 
@@ -152,10 +153,24 @@ export class MemoryCacheManager implements CacheManager {
     }
 }
 
+/**
+ * Marks an object that can receive a {@link CacheManager}.
+ */
 export interface CacheManagerAware extends Aware {
+    /**
+     * Sets the cache manager used by the receiver.
+     *
+     * @param cacheManager - The cache manager to attach.
+     */
     setCacheManager(cacheManager: CacheManager): void;
 }
 
+/**
+ * Mixes cache-manager awareness into a base class.
+ *
+ * @param superclass - Base class to extend.
+ * @returns A subclass that can receive a cache manager.
+ */
 export const AsCacheManagerAware = <T extends Constructable>(superclass: T): Constructable<CacheManagerAware> & T =>
     class extends AsAware(superclass) implements CacheManagerAware {
         cacheManager: CacheManager | null = null;
@@ -169,6 +184,12 @@ export const AsCacheManagerAware = <T extends Constructable>(superclass: T): Con
         }
     };
 
+/**
+ * Tests whether a value looks like cache-manager-aware state.
+ *
+ * @param value - The candidate value.
+ * @returns Whether the value can receive a cache manager.
+ */
 export const likeCacheManagerAware = likeAwareAnd(like({ setCacheManager: Function })) as (
     value: unknown
 ) => value is CacheManagerAware;

@@ -414,10 +414,24 @@ export class HTTP {
     }
 }
 
+/**
+ * Marks an object that can receive an {@link HTTP} client.
+ */
 export interface HTTPAware extends Aware {
+    /**
+     * Sets the HTTP client used by the receiver.
+     *
+     * @param http - The HTTP client to attach.
+     */
     setHttp(http: HTTP): void;
 }
 
+/**
+ * Mixes HTTP-client awareness into a base class.
+ *
+ * @param superclass - Base class to extend.
+ * @returns A subclass that can receive an HTTP client.
+ */
 export const AsHTTPAware = <T extends Constructable>(superclass: T): Constructable<HTTPAware> & T =>
     class extends AsAware(superclass) implements HTTPAware {
         http: HTTP | null = null;
@@ -431,4 +445,10 @@ export const AsHTTPAware = <T extends Constructable>(superclass: T): Constructab
         }
     };
 
+/**
+ * Tests whether a value looks like HTTP-client-aware state.
+ *
+ * @param value - The candidate value.
+ * @returns Whether the value can receive an HTTP client.
+ */
 export const likeHTTPAware = likeAwareAnd(like({ setHttp: Function })) as (value: unknown) => value is HTTPAware;

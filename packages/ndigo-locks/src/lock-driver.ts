@@ -118,10 +118,24 @@ export function likeLockDriver(value: unknown): value is LockDriver {
     return like({ kind: String, acquire: Function, close: Function })(value);
 }
 
+/**
+ * Marks an object that can receive a {@link LockDriver}.
+ */
 export interface LockDriverAware extends Aware {
+    /**
+     * Sets the lock driver used by the receiver.
+     *
+     * @param lockDriver - The lock driver to attach.
+     */
     setLockDriver(lockDriver: LockDriver): void;
 }
 
+/**
+ * Mixes lock-driver awareness into a base class.
+ *
+ * @param superclass - Base class to extend.
+ * @returns A subclass that can receive a lock driver.
+ */
 export const AsLockDriverAware = <T extends Constructable>(superclass: T): Constructable<LockDriverAware> & T =>
     class extends AsAware(superclass) implements LockDriverAware {
         lockDriver: LockDriver | null = null;
@@ -135,6 +149,12 @@ export const AsLockDriverAware = <T extends Constructable>(superclass: T): Const
         }
     };
 
+/**
+ * Tests whether a value looks like lock-driver-aware state.
+ *
+ * @param value - The candidate value.
+ * @returns Whether the value can receive a lock driver.
+ */
 export const likeLockDriverAware = likeAwareAnd(like({ setLockDriver: Function })) as (
     value: unknown
 ) => value is LockDriverAware;

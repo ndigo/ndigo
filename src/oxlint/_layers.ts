@@ -24,7 +24,8 @@ export const LAYER_RANK: Record<string, number> = {
     // 2 — building blocks
     cluster: 2,
     factory: 2,
-    socket: 2,
+    // 3 — primitives
+    socket: 3,
     // 3 — primitives
     content: 3,
     flags: 3,
@@ -70,6 +71,7 @@ export const LAYER_RANK: Record<string, number> = {
     mcp: 9,
     'telemetry-node': 9,
     'telemetry-web': 9,
+    'ui-web': 9,
 };
 
 /**

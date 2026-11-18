@@ -8,7 +8,6 @@ import { getErrorMessage, toError } from '@ndigo/util';
 import { context, SpanStatusCode, trace, type Attributes, type Span } from '@opentelemetry/api';
 import type { FlagEvaluator } from '@ndigo/flags';
 import type { RateLimitPolicy, RateLimiter } from '@ndigo/rate-limit';
-import type { ApplicationContext } from '@ndigo/context';
 import { AIModelDisabledError, AIRateLimitError } from './errors';
 import type { AIFinishReason, AIMessage, AITokenUsage, AIToolCall, AIToolResult } from './messages';
 import type { AIModel, AIObjectRequest, AIObjectResult, AIStepRequest, AIStepResult } from './model';
@@ -19,8 +18,8 @@ import type { AIToolDescriptor, AIToolSource } from './tools';
  * backend; the key defaults to `provider:model`.
  */
 export interface AIRateLimitOptions {
-    /** The shared rate-limiter backend. Resolved from the application context when omitted. */
-    readonly limiter?: RateLimiter;
+    /** The shared rate-limiter backend. */
+    readonly limiter: RateLimiter;
     /** The window and request budget. */
     readonly policy: RateLimitPolicy;
     /** Override the counter key (defaults to `provider:model`). */
@@ -32,8 +31,8 @@ export interface AIRateLimitOptions {
  * default, so a broken or missing flag disables the model (fail closed).
  */
 export interface AIRolloutOptions {
-    /** The feature-flag evaluator. Resolved from the application context when omitted. */
-    readonly evaluator?: FlagEvaluator;
+    /** The feature-flag evaluator. */
+    readonly evaluator: FlagEvaluator;
     /** The flag key that must evaluate to `true`. */
     readonly key: string;
 }
@@ -44,8 +43,6 @@ export interface AIRolloutOptions {
 export interface AIAgentOptions {
     /** The provider-neutral model. */
     readonly model: AIModel;
-    /** The application context, used to resolve the shared rate limiter / flag evaluator. */
-    readonly applicationContext?: ApplicationContext;
     /** The tool source; omit for a chat-only agent. */
     readonly tools?: AIToolSource;
     /** Maximum model calls per run; defaults to `8`. */
@@ -129,7 +126,6 @@ export class AIAgent {
     readonly #model: AIModel;
     readonly #tools: AIToolSource | undefined;
     readonly #maxSteps: number;
-    readonly #applicationContext: ApplicationContext | undefined;
     readonly #rateLimit: AIRateLimitOptions | undefined;
     readonly #rollout: AIRolloutOptions | undefined;
 
@@ -145,7 +141,6 @@ export class AIAgent {
         this.#model = options.model;
         this.#tools = options.tools;
         this.#maxSteps = maxSteps;
-        this.#applicationContext = options.applicationContext;
         this.#rateLimit = options.rateLimit;
         this.#rollout = options.rollout;
     }
@@ -315,46 +310,20 @@ export class AIAgent {
 
     async #enforcePolicy(): Promise<void> {
         if (this.#rollout !== undefined) {
-            let evaluator = this.#rollout.evaluator;
-            if (evaluator === undefined && this.#applicationContext !== undefined) {
-                const context = this.#applicationContext;
-                try {
-                    if (typeof context.hasValue === 'function' && context.hasValue('flagEvaluator')) {
-                        evaluator = context.getValue('flagEvaluator') as FlagEvaluator;
-                    }
-                } catch {
-                    evaluator = undefined;
-                }
-            }
-            if (evaluator !== undefined) {
-                const evaluation = await evaluator.evaluate<boolean>(this.#rollout.key, false, {
-                    targetingKey: this.#model.info.model,
-                    attributes: { provider: this.#model.info.provider },
-                });
-                if (!evaluation.value) {
-                    throw new AIModelDisabledError(this.#rollout.key);
-                }
+            const evaluation = await this.#rollout.evaluator.evaluate<boolean>(this.#rollout.key, false, {
+                targetingKey: this.#model.info.model,
+                attributes: { provider: this.#model.info.provider },
+            });
+            if (!evaluation.value) {
+                throw new AIModelDisabledError(this.#rollout.key);
             }
         }
 
         if (this.#rateLimit !== undefined) {
-            let limiter = this.#rateLimit.limiter;
-            if (limiter === undefined && this.#applicationContext !== undefined) {
-                const context = this.#applicationContext;
-                try {
-                    if (typeof context.hasValue === 'function' && context.hasValue('rateLimiter')) {
-                        limiter = context.getValue('rateLimiter') as RateLimiter;
-                    }
-                } catch {
-                    limiter = undefined;
-                }
-            }
-            if (limiter !== undefined) {
-                const key = this.#rateLimit.key ?? `${this.#model.info.provider}:${this.#model.info.model}`;
-                const result = await limiter.consume(key, this.#rateLimit.policy);
-                if (!result.allowed) {
-                    throw new AIRateLimitError(key, result.retryAfterMs);
-                }
+            const key = this.#rateLimit.key ?? `${this.#model.info.provider}:${this.#model.info.model}`;
+            const result = await this.#rateLimit.limiter.consume(key, this.#rateLimit.policy);
+            if (!result.allowed) {
+                throw new AIRateLimitError(key, result.retryAfterMs);
             }
         }
     }

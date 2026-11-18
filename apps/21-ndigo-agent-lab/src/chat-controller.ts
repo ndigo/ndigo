@@ -19,10 +19,10 @@ import {
     validatedBy,
 } from '@ndigo/dispatcher';
 import { $aware } from '@ndigo/factory';
-// @ndigo/flags: flag evaluator now resolves from the application context
+import { PropertyFlagProvider } from '@ndigo/flags';
 import { McpToolRegistry } from '@ndigo/mcp';
 import { ServerSentEventView } from '@ndigo/platform-node';
-// @ndigo/rate-limit: limiter now resolves from the application context
+import { FixedWindowRateLimiter } from '@ndigo/rate-limit';
 import { z } from 'zod';
 import { AGENT_LAB_CONFIG } from './agent-lab-config';
 
@@ -107,16 +107,19 @@ export class ChatController implements ApplicationContextAware {
             readOnly: true,
             argumentResolvers: context.getValue(ARGUMENT_RESOLVERS),
         });
+        const flags = new PropertyFlagProvider({
+            getProperty: (key) => context.environment.getProperty(key),
+        });
 
         this.#agent = new AIAgent({
             model,
-            applicationContext: context,
             tools,
             maxSteps: config.maxSteps,
             rateLimit: {
+                limiter: new FixedWindowRateLimiter(),
                 policy: { limit: 20, windowMs: 60_000 },
             },
-            rollout: { key: config.modelFlag },
+            rollout: { evaluator: flags, key: config.modelFlag },
         });
         context.on(CONFIG_REFRESH_EVENT, () => {
             this.#agent = null;

@@ -265,6 +265,12 @@ export class LoggerFactory {
      * override, {@link LoggerFactory.setLevel}).
      * @param name - The name of the logger.
      * @returns A `Logger` instance.
+     *
+     * @example
+     * ```ts
+     * const logger = LoggerFactory.getLogger('catalog');
+     * logger.info('catalog loaded');
+     * ```
      */
     public static getLogger(name: string): Logger {
         requestedNames.add(name);

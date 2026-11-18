@@ -127,6 +127,12 @@ function tablesOf(source: MappingSource): InspectMappingTable[] {
  *   (rejected).
  * @returns The sorted mapping rows.
  * @throws When `source` is `null`.
+ *
+ * @example
+ * ```ts
+ * const rows = collectMappings(dispatcher);
+ * console.log(rows.map((r) => r.pattern));
+ * ```
  */
 export function collectMappings(source?: MappingSource | null): InspectMapping[] {
     if (source === undefined) return [];

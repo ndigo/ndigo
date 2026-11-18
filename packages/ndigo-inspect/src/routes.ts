@@ -68,6 +68,12 @@ function toInspectRoute(item: RouteDefinition | InspectRoute): InspectRoute {
  *
  * @param source - The route source, or `undefined` for no routes.
  * @returns The sorted route rows.
+ *
+ * @example
+ * ```ts
+ * const rows = collectRoutes(registry);
+ * console.log(rows.map((r) => r.path));
+ * ```
  */
 export function collectRoutes(source?: RouteSource): InspectRoute[] {
     if (source === undefined) return [];

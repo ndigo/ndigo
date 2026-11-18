@@ -102,6 +102,17 @@ function installLifecycleMethod(instance: object, name: LifecycleMethod): void {
  * the declaring class is missing the `@reactive` class decorator, or the member
  * was declared on a subclass of a `@reactive` class — `@reactive` only
  * activates members declared in its own class.
+ *
+ * @example
+ * ```ts
+ * @reactive
+ * class Counter {
+ *     @signal count = 0;
+ * }
+ * const c = new Counter();
+ * const sig = getSignal<number>(c, 'count');
+ * console.log(sig?.value); // 0
+ * ```
  */
 export function getSignal<T>(instance: object, field: string): Signal<T> | undefined {
     // Anti-pattern detection (A2): a @signal/@effect field registered without
@@ -137,6 +148,17 @@ export function getSignal<T>(instance: object, field: string): Signal<T> | undef
  * field. Decorators are not inherited: a `@signal` field declared in a
  * subclass of a `@reactive` class stays a plain property — and `getSignal`
  * throws — unless the subclass is decorated with `@reactive` as well.
+ *
+ * @example
+ * ```ts
+ * @reactive
+ * class Counter {
+ *     @signal count = 0;
+ * }
+ * const c = new Counter();
+ * c.count = 5;          // updates the backing signal
+ * console.log(c.count); // 5
+ * ```
  */
 export function signal<T extends object, V>(
     _target: undefined,
@@ -159,6 +181,19 @@ export function signal<T extends object, V>(
 
 /**
  * Getter decorator that wraps the getter with a memoized computed signal.
+ *
+ * @example
+ * ```ts
+ * @reactive
+ * class Counter {
+ *     @signal count = 2;
+ *     @computed get doubled() { return this.count * 2; }
+ * }
+ * const c = new Counter();
+ * console.log(c.doubled); // 4
+ * c.count = 3;
+ * console.log(c.doubled); // 6
+ * ```
  */
 export function computed<T>(target: () => T, context: ClassGetterDecoratorContext<object, T>): () => T {
     const fieldName = context.name;
@@ -188,6 +223,17 @@ export function computed<T>(target: () => T, context: ClassGetterDecoratorContex
  * method. Decorators are not inherited: an `@effect` method declared in a
  * subclass of a `@reactive` class never runs unless the subclass is decorated
  * with `@reactive` as well.
+ *
+ * @example
+ * ```ts
+ * @reactive
+ * class Counter {
+ *     @signal count = 0;
+ *     @effect log() { console.log('count is', this.count); }
+ * }
+ * const c = new Counter(); // logs "count is 0"
+ * c.count = 1;             // logs "count is 1"
+ * ```
  */
 export function effect(target: (...args: unknown[]) => void, context: ClassMethodDecoratorContext<object>): void {
     // Store the method reference for @reactive to process

@@ -41,3 +41,27 @@ export function getSymbolMetadata(target: unknown): Record<string, any> {
 
     return {};
 }
+
+/**
+ * Returns the metadata record for a target, creating it on the constructor
+ * when the class has none yet.
+ *
+ * {@link getSymbolMetadata} returns a fresh empty object for an unadorned
+ * class, so writing to it would silently discard the write. Imperative
+ * writers — {@link ViewMapping.define} and its peers — use this instead.
+ *
+ * @param target - A class constructor or instance.
+ * @returns The class's metadata record, created when absent.
+ * @throws When the target has no constructor to attach metadata to.
+ */
+export function ensureSymbolMetadata(target: unknown): Record<string, any> {
+    const carrier = (typeof target === 'function' ? target : target?.constructor) as
+        | (Function & MetadataCarrier)
+        | undefined;
+
+    if (typeof carrier !== 'function') {
+        throw new TypeError('ensureSymbolMetadata requires a class constructor or an instance of one.');
+    }
+
+    return (carrier[Symbol.metadata] ??= {});
+}

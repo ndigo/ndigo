@@ -63,6 +63,7 @@ matches the task; do not guess APIs from memory.
 
 ## Packages
 
+- `@ndigo/advice` — Declared annotations and their execution — method interception plans and weaving for Ndigo
 - `@ndigo/ai` — Provider-agnostic agent contracts: chat messages, streaming events, structured output, and a tool-calling loop over MCP tools
 - `@ndigo/ai-sdk` — AI SDK integration layer for Ndigo: the only package that imports the Vercel AI SDK
 - `@ndigo/auth-client` — Client-side authentication for Ndigo — AuthClient, ClientAuthGuard, and OIDC adapter
@@ -95,10 +96,9 @@ matches the task; do not guess APIs from memory.
 - `@ndigo/oxlint-plugin` — Consumer-facing oxlint rules for Ndigo applications — paradigm, view, route, and logging guards
 - `@ndigo/platform-node` — Node.js platform adapter for Ndigo — HTTP server, auto-configuration, static files, multipart
 - `@ndigo/platform-web` — Browser platform adapter for Ndigo — dispatcher glue, history/cookie resolvers, themes
-- `@ndigo/proxy` — Container-managed method interception for Ndigo — metadata annotations, interceptor chains, and Proxy-based weaving
 - `@ndigo/rate-limit` — Fixed-window rate limiting for Node.js — the policy contract, the in-process default limiter, and the shared-store driver seam for Ndigo
 - `@ndigo/redis` — Node-only Redis connections, namespaced shared cache adapters, WebSocket pub/sub fan-out, distributed-lock/job drivers, and the shared-store rate limiter for Ndigo
-- `@ndigo/resilience` — Retry, circuit breaking, and backoff policies for Ndigo — interceptors built on @ndigo/proxy
+- `@ndigo/resilience` — Retry, circuit breaking, and backoff policies for Ndigo — annotations plus their advice
 - `@ndigo/router` — Route registry, path partitions, and feature routing for Ndigo
 - `@ndigo/scheduler` — Cron scheduling for Node.js — @scheduled tasks and the task registry
 - `@ndigo/service` — Typed service clients and server-sent event streaming for Ndigo

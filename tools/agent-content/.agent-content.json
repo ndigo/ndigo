@@ -2,7 +2,7 @@
   "files": {
     "packages/create-ndigo-app/templates/browser/AGENTS.md.template": "1f11d4d5949066f4e7f9f3cf01a8a0785f8882181fd76aa3c5f672afdfeea8f4",
     "packages/create-ndigo-app/templates/node/AGENTS.md.template": "1f11d4d5949066f4e7f9f3cf01a8a0785f8882181fd76aa3c5f672afdfeea8f4",
-    "packages/ndigo-cli/assets/agent/docs-index.md": "785186bef5e89e6b65fcf4f72c6ea238e40aa32722ccb10355b6724cfb2bf1a7",
+    "packages/ndigo-cli/assets/agent/docs-index.md": "470cc9a482f7f6922aaa27c60effae6e6a05492c3a2ba71b828e72396718d0e4",
     "packages/ndigo-cli/assets/agent/instructions.md": "b55d5c7a27aae2ad8c4b24682ea6d935e3edd5b6e5bfc31806d6ebe337499aab",
     "packages/ndigo-cli/assets/agent/skills/ndigo-app/SKILL.md": "bb1995de3782588c95e0a0bcd33ad828f37dc6b03cbd09eca3cdcc4e90878e40",
     "packages/ndigo-cli/assets/agent/skills/ndigo-debug/SKILL.md": "0cc1ac88d61b1955261aa9bcca074fcb1432bcee0d6feda66b6c7f2614fa58b1",
@@ -13,6 +13,6 @@
     "packages/ndigo-cli/assets/agent/skills/ndigo-upgrade/SKILL.md": "414ea72d38f371e5c5b6c90e0d20b52ce949bf9f14b1d9d6be50f565ca0d97f7",
     "packages/ndigo-cli/assets/agent/skills/ndigo-verify/SKILL.md": "7c31b77ee4364f8de570d12bb4b45e98cb17655572642f6b258e8f92a4fabdcf",
     "packages/ndigo-cli/assets/agent/skills/ndigo-views/SKILL.md": "ad57130069026a453b30bc8eb5cc7974384329611e4fb23cbce72e63ed8033dd",
-    "tools/agent-content/docs-index.md": "785186bef5e89e6b65fcf4f72c6ea238e40aa32722ccb10355b6724cfb2bf1a7"
+    "tools/agent-content/docs-index.md": "470cc9a482f7f6922aaa27c60effae6e6a05492c3a2ba71b828e72396718d0e4"
   }
 }

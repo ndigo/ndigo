@@ -3,6 +3,7 @@
  */
 import '@tsmetadata/polyfill';
 import { FrameworkError } from './error.js';
+import { getSymbolMetadata } from './metadata.js';
 import { Profile } from './profile.js';
 import type { ProfileTerm } from './profile.js';
 
@@ -192,14 +193,6 @@ export function whenMissingEntry(entryName: string) {
     };
 }
 
-const getMetadata = (target: unknown): Record<string, unknown> => {
-    const carrier = (typeof target === 'function' ? target : target?.constructor) as
-        | { [Symbol.metadata]?: Record<string, unknown> }
-        | undefined;
-
-    return carrier?.[Symbol.metadata] ?? {};
-};
-
 /**
  * Reads the conditional platform metadata from a class.
  *
@@ -207,7 +200,7 @@ const getMetadata = (target: unknown): Record<string, unknown> => {
  * @returns The required platform, or `undefined` when no condition is set.
  */
 export function getConditionalPlatform(target: unknown): ConditionalPlatform | undefined {
-    const meta = getMetadata(target);
+    const meta = getSymbolMetadata(target);
     return meta[WHEN_PLATFORM] as ConditionalPlatform | undefined;
 }
 
@@ -222,7 +215,7 @@ export function getConditionalPlatform(target: unknown): ConditionalPlatform | u
  * @returns The canonical profile expression, or `undefined` when unset.
  */
 export function getProfileCondition(target: unknown, methodName?: string): string | undefined {
-    const meta = getMetadata(target);
+    const meta = getSymbolMetadata(target);
     return meta[methodName === undefined ? WHEN_PROFILE : `${WHEN_PROFILE}:${methodName}`] as string | undefined;
 }
 
@@ -267,7 +260,7 @@ export function isActive(target: unknown, ctx?: ConditionContext): boolean {
         return false;
     }
 
-    const meta: Record<string, unknown> = getMetadata(target);
+    const meta: Record<string, unknown> = getSymbolMetadata(target);
 
     const property = meta[WHEN_PROPERTY] as WhenPropertyOptions | undefined;
     if (property) {

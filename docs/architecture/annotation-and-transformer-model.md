@@ -112,8 +112,14 @@ reaches the woven method through the registry's own closure
 > **Naming debt.** `SmartLifecycle` carries Spring's `Smart-` prefix, and
 > `LifecycleProcessor` is a driver of lifecycle components — not a processor in
 > the `EntryProcessor` sense — although both live in `@ndigo/factory`. The
-> contracts themselves are deliberate; the names are inherited. Tracked in
-> #548, which owns `lifecycle.ts`.
+> contracts themselves are deliberate; the names are inherited.
+>
+> The word is also carrying unrelated meanings elsewhere: `@ndigo-orm` names its
+> entity persistence hooks (`prePersist`, `postLoad`, …) `lifecycle`, and guide
+> 20's “The lifecycle” is the migration pipeline. Nothing collides at the type
+> level — the identifiers differ — but the two files both called `lifecycle.ts`
+> are the sharpest case, and this page's **Lifecycle** row describes only the
+> container's. Tracked in #548, which owns `lifecycle.ts`.
 
 ## 2. Annotations — declaration only
 

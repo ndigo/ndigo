@@ -69,6 +69,52 @@ If a capability only works inside a container, that is a design bug in the
 capability, not a property of the model. [§7](#7-running-by-hand) is the
 acceptance test.
 
+### Choosing a consumption seam
+
+The table above says what a decorator _is_. This one says how a declaration
+reaches whatever acts on it, because that choice is what a capability author
+actually makes — and there are exactly two answers.
+
+| Category      | Consumer                                                  | Lives in                              | Contract                                            |
+| :------------ | :-------------------------------------------------------- | :------------------------------------ | :-------------------------------------------------- |
+| **Processor** | Hook on each entry instance as the container creates it   | `@ndigo/factory` `entry-processor.ts` | `InitializationAwareProcessor` and its siblings     |
+| **Lifecycle** | Component the context drives, scanning the finished graph | `@ndigo/factory` `lifecycle.ts`       | `SmartLifecycle` (+ `Initializable`, `Destroyable`) |
+
+Pick **processor** when the declaration changes what an instance _is or does_,
+and the decision is per instance. Advice is the only current consumer: it must
+decide whether any rule matches and return a replacement for that instance,
+which is exactly `processAfterInitialization`'s contract.
+
+Pick **lifecycle** when the declaration contributes a fact to a _whole-graph
+table_ that is read once, and the consumer also has resources to start and stop.
+Scanning decorators are the consumers here, and they are ordered by `phase`:
+
+| Consumer                                                           | Trigger                                   | Phase |
+| :----------------------------------------------------------------- | :---------------------------------------- | ----: |
+| `ConfigurationProcessor` (`@configuration`, `@entry`, `@property`) | `EntryRegistryProcessor`, at registration |     — |
+| `AbstractHandlerMethodMapping` (`@routeMapping`)                   | `SmartLifecycle` on refresh               |  −100 |
+| `Dispatcher`                                                       | `SmartLifecycle` on refresh               |   −90 |
+| `ScheduleRegistry` (`@scheduled`)                                  | `SmartLifecycle` on refresh               |     0 |
+| `JobHandlerRegistry` (`@jobHandler`), `JobRunner`, `OutboxRelay`   | `SmartLifecycle` on refresh               | 0, 10 |
+| `HTTPServer`                                                       | `SmartLifecycle` on refresh               |     0 |
+
+The discriminator is not "which is newer" but what the consumer needs. A
+scanning consumer resolves its collaborators _at start_ — `ScheduleRegistry.start()`
+looks up the `taskScheduler` entry and throws when it is absent — so it must run
+after every entry exists. A processor runs during creation, where that
+collaborator may not exist yet, which is why the two cannot be swapped freely.
+
+They compose. The schedule registry captures `owner[methodName]` while scanning,
+and advice wove that instance earlier, so a `@scheduled` + `@traced` method
+reaches the woven method through the registry's own closure
+(`apps/17-ndigo-telemetry-lab/test/scheduled-advice.spec.ts`).
+
+> **Naming debt.** `SmartLifecycle` carries Spring's `Smart-` prefix, and
+> `LifecycleProcessor` is a driver of lifecycle components — not a processor in
+> the `EntryProcessor` sense — although both live in `@ndigo/factory`. The
+> contracts themselves are deliberate; the names are inherited. Tracked in
+> #548, which owns `lifecycle.ts`.
+
 ## 2. Annotations — declaration only
 
 An annotation writes a value into the class's `Symbol.metadata` record and
@@ -596,6 +642,12 @@ nesting, because both transaction managers reject an already-active transaction.
 
 ### Notes on the inventory
 
+- **Every declaration-only decorator is consumed by exactly one seam.** Reading
+  this table, the question "who acts on this?" has a two-way answer: a
+  **processor** (per instance, as the container creates it) or a **lifecycle**
+  component (whole graph, on refresh). [§1](#choosing-a-consumption-seam) lists
+  which capability uses which, and why the choice is forced rather than
+  stylistic.
 - **`@signal` / `@computed` / `@effect`** still record into package-private
   WeakMaps consumed by `@reactive`. The declaration half — _which_ fields are
   signals and effects — is a class-level fact and belongs on

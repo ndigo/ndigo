@@ -16,7 +16,7 @@
  */
 import { toError } from '@ndigo/util';
 import { FrameworkError } from '@ndigo/core';
-import type { AsyncCloseable } from '@ndigo/factory';
+import type { AsyncDestroyable } from '@ndigo/factory';
 import { getLogger } from '@ndigo/log';
 import {
     validateRateLimitPolicy,
@@ -63,7 +63,7 @@ export interface RedisRateLimiterOptions {
  * One handle per namespace; construct independently in every node — the
  * Redis keys are the shared truth.
  */
-export class RedisRateLimiter implements RateLimiter, AsyncCloseable {
+export class RedisRateLimiter implements RateLimiter, AsyncDestroyable {
     /**
      * The `Symbol.toStringTag` value for this instance.
      *
@@ -164,12 +164,12 @@ export class RedisRateLimiter implements RateLimiter, AsyncCloseable {
     }
 
     /**
-     * Seals this driver; a closed driver accepts no operations. The
+     * Seals this driver; a destroyed driver accepts no operations. The
      * borrowed connection is untouched; idempotent.
      *
      * @returns A promise that resolves once sealed.
      */
-    close(): Promise<void> {
+    destroy(): Promise<void> {
         this.#closed = true;
         return Promise.resolve();
     }

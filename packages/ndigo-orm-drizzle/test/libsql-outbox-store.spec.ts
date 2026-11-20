@@ -11,12 +11,12 @@ import { delay } from '@ndigo/util';
 import { JobHandlerRegistry, JobOutboxPublisher, JobQueue, JobRunner, OutboxRelay } from '@ndigo/jobs';
 import { DrizzleDataSource, DrizzleTransactionManager, LibSQLJobStore, LibSQLOutboxStore } from '../src/index';
 
-const stores: Array<{ close(): Promise<void> }> = [];
+const stores: Array<{ destroy(): Promise<void> }> = [];
 const directories: string[] = [];
 afterEach(async () => {
     for (const store of stores) {
         // oxlint-disable-next-line no-await-in-loop -- close every store before the clients it may borrow
-        await store.close();
+        await store.destroy();
     }
     for (const directory of directories) {
         // oxlint-disable-next-line no-await-in-loop -- isolated file handles must be released before directory cleanup
@@ -144,7 +144,7 @@ describe('outbox → jobs end to end', () => {
         expect(handled).toEqual([{ id: 'o3' }]);
         expect(await jobs.size()).toBe(0);
 
-        await relay.close();
-        await runner.close();
+        await relay.destroy();
+        await runner.destroy();
     });
 });

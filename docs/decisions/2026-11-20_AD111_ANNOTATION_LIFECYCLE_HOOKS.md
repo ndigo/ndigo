@@ -2,7 +2,7 @@
 
 **Date:** 2026-11-20
 **Status:** Accepted
-**See also:** AD-83 (D5), AD-109, AD-110; #548
+**See also:** AD-83 (D5), AD-109, AD-110, AD-112; #548
 **Refs:** #47 (this decision), #548 (prerequisite and implementation gate)
 
 ---
@@ -125,7 +125,8 @@ the annotation spelling matches the category-5 form.
 
 Lifecycle methods take no arguments, their return value is ignored, and they
 are synchronous: the processor hooks are synchronous, and async release remains
-an interface concern (`AsyncCloseable` bridging; guide 04 §5). A
+an interface concern (`AsyncDestroyable`; guide 04 §5, consolidated in
+AD-112). A
 `@preInit`/`@postInit` failure propagates like an `init()` failure — fail-loud,
 a half-initialized instance is never served. A `@preDestroy` failure follows
 the container's teardown error isolation (one entry's destroy failure does not
@@ -158,6 +159,10 @@ declarations are not inputs the application assembles.
 The annotations attach at `processBeforeDestruction` and inherit whatever #548
 pins (one verb, ordering, reachability). This record fixes the attachment
 point, not the order; #47 does not preempt #548's acceptance criteria.
+
+**Resolved by [AD-112](2026-11-20_AD112_LIFECYCLE_CONSOLIDATION.md)
+(2026-11-20):** `destroy()` is the single release verb, and teardown runs in
+reverse of construction — pools release before the dependencies they resolved.
 
 ### D10 — Category 5 spans two lifecycles; the event names which
 

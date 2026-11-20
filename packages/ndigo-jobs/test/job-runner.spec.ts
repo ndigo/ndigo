@@ -182,7 +182,7 @@ describe('JobRunner', () => {
         expect(runs).toBe(1);
     });
 
-    test('close drains in-flight executions', async () => {
+    test('destroy drains in-flight executions', async () => {
         const { runner, driver, registry } = makeRunner();
         let finished = false;
         registry.register('slow', async () => {
@@ -192,7 +192,7 @@ describe('JobRunner', () => {
         await driver.enqueue({ type: 'slow' });
         await runner.tick();
 
-        await runner.close();
+        await runner.destroy();
 
         expect(finished).toBe(true);
         await expect(runner.tick()).rejects.toThrow(/closed/);
@@ -218,7 +218,7 @@ describe('JobRunner', () => {
         await waitFor(() => runs.length === 1);
         runner.stop();
         expect(runner.isRunning).toBe(false);
-        await runner.close();
+        await runner.destroy();
         context.close();
     });
 
@@ -228,14 +228,14 @@ describe('JobRunner', () => {
         expect(() => runner.start()).toThrow(/no job driver/);
     });
 
-    test('lifecycle shape: phase 10, explicit start by default, closeable', async () => {
+    test('lifecycle shape: phase 10, explicit start by default, destroyable', async () => {
         const { runner } = makeRunner();
 
         expect(runner.phase).toBe(10);
         expect(runner.isAutoStartup).toBe(false); // explicit start keeps no timer pending
         expect(new JobRunner({ autoStart: true }).isAutoStartup).toBe(true);
-        await runner.close();
-        await runner.close(); // idempotent
+        await runner.destroy();
+        await runner.destroy(); // idempotent
     });
 
     test('crash mid-run: an expired lease is reclaimed by the next tick and re-executed (AD72-M2)', async () => {
@@ -317,7 +317,7 @@ describe('JobRunner', () => {
                 }
             },
             size: () => driver.size(),
-            close: () => driver.close(),
+            destroy: () => driver.destroy(),
         };
         // leaseMs 2000 → interval 1000 ms, so a beat starts 1000 ms into the
         // run; the handler settles at ~1100 ms, mid-beat without the await.
@@ -341,7 +341,7 @@ describe('JobRunner', () => {
         expect(sawInFlightAtComplete).toBe(false);
         expect(beating).toBe(0);
         expect(await driver.size()).toBe(0);
-        await runner.close();
+        await runner.destroy();
     });
 });
 

@@ -228,7 +228,7 @@ describe('decorators', () => {
                 primaryColumn: 'sku',
                 generatedColumns: [],
                 relations: [],
-                lifecycleHooks: [],
+                entityHooks: [],
             });
         });
 
@@ -312,7 +312,7 @@ describe('decorators', () => {
         });
     });
 
-    describe('lifecycle hooks', () => {
+    describe('entity hooks', () => {
         @entity()
         class Order {
             @primaryColumn() id!: number;
@@ -341,32 +341,32 @@ describe('decorators', () => {
             stampTimestamp() {}
         }
 
-        it('stores lifecycle hooks for entity with multiple hooks', () => {
+        it('stores entity hooks for entity with multiple hooks', () => {
             const metadata = getEntityMetadata(Order);
-            expect(metadata.lifecycleHooks).toHaveLength(4);
+            expect(metadata.entityHooks).toHaveLength(4);
 
-            const prePersistHook = metadata.lifecycleHooks.find((h) => h.event === 'prePersist');
+            const prePersistHook = metadata.entityHooks.find((h) => h.event === 'prePersist');
             expect(prePersistHook).toBeDefined();
             expect(prePersistHook?.methodName).toBe('onBeforeSave');
 
-            const postLoadHook = metadata.lifecycleHooks.find((h) => h.event === 'postLoad');
+            const postLoadHook = metadata.entityHooks.find((h) => h.event === 'postLoad');
             expect(postLoadHook).toBeDefined();
             expect(postLoadHook?.methodName).toBe('onAfterLoad');
 
-            const preUpdateHook = metadata.lifecycleHooks.find((h) => h.event === 'preUpdate');
+            const preUpdateHook = metadata.entityHooks.find((h) => h.event === 'preUpdate');
             expect(preUpdateHook).toBeDefined();
             expect(preUpdateHook?.methodName).toBe('onBeforeUpdate');
 
-            const postRemoveHook = metadata.lifecycleHooks.find((h) => h.event === 'postRemove');
+            const postRemoveHook = metadata.entityHooks.find((h) => h.event === 'postRemove');
             expect(postRemoveHook).toBeDefined();
             expect(postRemoveHook?.methodName).toBe('onAfterDelete');
         });
 
         it('stores multiple hooks of same event type', () => {
             const metadata = getEntityMetadata(MultiHookEntity);
-            expect(metadata.lifecycleHooks).toHaveLength(2);
+            expect(metadata.entityHooks).toHaveLength(2);
 
-            const prePersistHooks = metadata.lifecycleHooks.filter((h) => h.event === 'prePersist');
+            const prePersistHooks = metadata.entityHooks.filter((h) => h.event === 'prePersist');
             expect(prePersistHooks).toHaveLength(2);
             expect(prePersistHooks[0].methodName).toBe('validateData');
             expect(prePersistHooks[1].methodName).toBe('stampTimestamp');

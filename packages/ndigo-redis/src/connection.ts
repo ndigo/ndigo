@@ -3,7 +3,7 @@
  */
 import { IllegalStateError } from '@ndigo/core';
 import { createClient, type RedisClientType } from '@redis/client';
-import type { AsyncCloseable } from '@ndigo/factory';
+import type { AsyncDestroyable } from '@ndigo/factory';
 
 /** Standalone node-redis client with default string replies (no keyPrefix). */
 export type RedisClient = RedisClientType;
@@ -19,7 +19,7 @@ export type RedisConnectionOptions =
  * offline queues; call and await connect() before use. Errors are observable
  * through lastError and command rejections, never logged with credentials.
  */
-export class RedisConnection implements AsyncCloseable {
+export class RedisConnection implements AsyncDestroyable {
     /**
      * The `Symbol.toStringTag` value for this instance.
      *
@@ -122,7 +122,7 @@ export class RedisConnection implements AsyncCloseable {
     }
 
     /**
-     * Executes one adapter operation and tracks its entire lifetime for close.
+     * Executes one adapter operation and tracks its entire lifetime for destruction.
      * Borrowed client reconnect/queue policy remains the application's policy;
      * new operations require readiness and never become cache misses on failure.
      *
@@ -142,11 +142,11 @@ export class RedisConnection implements AsyncCloseable {
     }
 
     /**
-     * Rejects new work, drains tracked operations, then closes only owned clients.
+     * Rejects new work, drains tracked operations, then releases only owned clients.
      *
-     * @returns A promise that resolves once the connection is closed.
+     * @returns A promise that resolves once the connection is destroyed.
      */
-    close(): Promise<void> {
+    destroy(): Promise<void> {
         if (this.#closing !== undefined) return this.#closing;
         this.#closed = true;
         this.#closing = (async () => {

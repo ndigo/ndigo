@@ -63,7 +63,7 @@ class Maintenance {
 - scans every entry's `Symbol.metadata` for `schedule:` entries at refresh,
 - binds each run to its owner instance,
 - wraps each run in an OpenTelemetry span,
-- **auto-starts** (SmartLifecycle), and
+- **auto-starts** (ManagedLifecycle), and
 - stops/drains on context close.
 
 The `ndigo-api` demo ships a working heartbeat (`Heartbeat` in

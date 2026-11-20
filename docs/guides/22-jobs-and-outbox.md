@@ -60,7 +60,7 @@ await context.getValue(JOB_QUEUE).enqueue({
 - `jobQueue` — the producer facade (resolves the driver entry through the
   context),
 - `jobHandlerRegistry` — discovers `@jobHandler` methods on every registered
-  entry at refresh (SmartLifecycle phase 0),
+  entry at refresh (ManagedLifecycle phase 0),
 - `jobRunner` — the worker engine (phase 10, explicitly started).
 
 The runner starts explicitly because a pending poll timer keeps the process

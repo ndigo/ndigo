@@ -15,11 +15,11 @@ describe('ApplicationBuilder + NodeAutoConfiguration payoff', () => {
         expect(context.hasValue('dispatcher')).toBe(true);
         expect(context.hasValue('handlerMapping')).toBe(true);
 
-        // The mapping is a SmartLifecycle driven by refresh: auto-started.
+        // The mapping is a ManagedLifecycle driven by refresh: auto-started.
         const mapping = context.getValue('handlerMapping') as { isRunning: boolean };
         expect(mapping.isRunning).toBe(true);
 
-        // The dispatcher is SmartLifecycle + auto-started with strategies.
+        // The dispatcher is ManagedLifecycle + auto-started with strategies.
         const dispatcher = context.getValue('dispatcher') as { isRunning: boolean; applicationContext: unknown };
         expect(dispatcher.isRunning).toBe(true);
         expect(dispatcher.applicationContext).toBeDefined();

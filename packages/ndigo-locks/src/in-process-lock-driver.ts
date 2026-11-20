@@ -62,7 +62,7 @@ function requireTtl(ttlMs: number): void {
 
 /**
  * The in-process {@link LockDriver}. See the module doc for the shared-table
- * semantics; {@link InProcessLockDriver.close} releases only the leases this
+ * semantics; {@link InProcessLockDriver.destroy} releases only the leases this
  * instance acquired.
  */
 export class InProcessLockDriver implements LockDriver {
@@ -199,7 +199,7 @@ export class InProcessLockDriver implements LockDriver {
      *
      * @returns A promise that resolves once the leases are released.
      */
-    close(): Promise<void> {
+    destroy(): Promise<void> {
         return Promise.resolve().then(() => {
             for (const [lockKey, token] of this.#acquired) {
                 const current = LEASE_TABLE.get(lockKey);

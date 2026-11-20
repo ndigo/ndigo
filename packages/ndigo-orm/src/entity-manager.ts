@@ -3,7 +3,7 @@
  */
 import { Constructable, IllegalStateError } from '@ndigo/core';
 import { DataSource } from './data-source';
-import { runLifecycleHooks } from './lifecycle';
+import { runEntityHooks } from './entity-hooks';
 import { getEntityMetadata, isEntity } from './metadata';
 import type { EntityMetadata } from './metadata';
 import { validateEntity } from './entity-schema';
@@ -94,7 +94,7 @@ export class InMemoryEntityManager implements EntityManager {
     /**
      * Persists a new entity or updates an existing one in the in-memory store.
      * Automatically assigns generated primary IDs if applicable.
-     * Runs any `@prePersist` / `@preUpdate` lifecycle hooks, then validates the
+     * Runs any `@prePersist` / `@preUpdate` entity hooks, then validates the
      * entity against its Zod schema derived from `@column` metadata.
      *
      * @param entity - The entity to persist.
@@ -127,9 +127,9 @@ export class InMemoryEntityManager implements EntityManager {
         const store = this.#dataSource.getStore<T>(metadata.entityName);
         const isNew = !store.has(primaryId);
         if (isNew) {
-            runLifecycleHooks(entity, 'prePersist');
+            runEntityHooks(entity, 'prePersist');
         } else {
-            runLifecycleHooks(entity, 'preUpdate');
+            runEntityHooks(entity, 'preUpdate');
         }
 
         // Validate against the Zod schema derived from @column metadata
@@ -153,7 +153,7 @@ export class InMemoryEntityManager implements EntityManager {
 
         const entity = this.#dataSource.getStore<T>(metadata.entityName).get(id);
         if (entity !== undefined) {
-            runLifecycleHooks(entity, 'postLoad');
+            runEntityHooks(entity, 'postLoad');
         }
         return entity;
     }
@@ -172,7 +172,7 @@ export class InMemoryEntityManager implements EntityManager {
 
         const entities = Array.from(this.#dataSource.getStore<T>(metadata.entityName).values());
         for (const entity of entities) {
-            runLifecycleHooks(entity, 'postLoad');
+            runEntityHooks(entity, 'postLoad');
         }
         return entities;
     }
@@ -193,7 +193,7 @@ export class InMemoryEntityManager implements EntityManager {
 
         if (primaryId !== undefined && primaryId !== null) {
             this.#dataSource.getStore<T>(metadata.entityName).delete(primaryId);
-            runLifecycleHooks(entity, 'postRemove');
+            runEntityHooks(entity, 'postRemove');
         }
     }
 
@@ -244,7 +244,7 @@ export class InMemoryEntityManager implements EntityManager {
             return Array.from(this.#dataSource.getStore<object>(targetMetadata.entityName).values())
                 .filter((row) => (row as Record<string, unknown>)[fkField] === pk)
                 .map((row) => {
-                    runLifecycleHooks(row, 'postLoad');
+                    runEntityHooks(row, 'postLoad');
                     return row;
                 });
         }

@@ -3,7 +3,7 @@
  */
 
 import { Comparator, IllegalStateError } from '@ndigo/core';
-import { Initializable, SmartLifecycle } from '@ndigo/factory';
+import { Initializable, ManagedLifecycle } from '@ndigo/factory';
 import { Route } from '@ndigo/router';
 import { isFunction } from '@ndigo/util/types';
 import { RouteHandlerMethod, RouteHandlerMethodMappingNamingStrategy } from './route-handler-method';
@@ -37,7 +37,7 @@ const defaultNamingStrategy = new RouteMappingInfoHandlerMethodMappingNamingStra
  */
 export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo>
     extends AbstractHandlerMapping
-    implements Initializable, SmartLifecycle
+    implements Initializable, ManagedLifecycle
 {
     /**
      * The `Symbol.toStringTag` value for this instance.
@@ -91,24 +91,24 @@ export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo>
     #lifecycleStarted: boolean = false;
 
     /**
-     * `SmartLifecycle` — whether the lifecycle has driven init.
+     * `ManagedLifecycle` — whether the lifecycle has driven init.
      */
     get isRunning(): boolean {
         return this.#lifecycleStarted;
     }
 
     /**
-     * `SmartLifecycle` — init runs before the dispatcher and server.
+     * `ManagedLifecycle` — init runs before the dispatcher and server.
      */
     readonly phase = -100;
 
     /**
-     * `SmartLifecycle` — handler mappings must be initialized once the context refreshes.
+     * `ManagedLifecycle` — handler mappings must be initialized once the context refreshes.
      */
     readonly isAutoStartup = true;
 
     /**
-     * `SmartLifecycle` — initialize handler discovery from the application
+     * `ManagedLifecycle` — initialize handler discovery from the application
      * context. Runs on refresh, after every configuration has registered.
      */
     start(): void {
@@ -117,7 +117,7 @@ export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo>
     }
 
     /**
-     * `SmartLifecycle` — mappings are immutable once initialized; nothing to
+     * `ManagedLifecycle` — mappings are immutable once initialized; nothing to
      * release. Present so this type is a well-behaved lifecycle entry.
      */
     stop(): void {

@@ -10,7 +10,7 @@ import {
     generatedColumnMetadataKey,
     primaryMetadataKey,
     relationsMetadataKey,
-    lifecycleHooksMetadataKey,
+    entityHooksMetadataKey,
 } from './_constants';
 
 /**
@@ -50,18 +50,18 @@ export interface RelationDefinition {
 }
 
 /**
- * The entity lifecycle moments a hook can be attached to: `prePersist`,
+ * The entity hook moments a hook can be attached to: `prePersist`,
  * `postLoad`, `preUpdate`, `postRemove`.
  */
-export type LifecycleEvent = 'prePersist' | 'postLoad' | 'preUpdate' | 'postRemove';
+export type EntityHookEvent = 'prePersist' | 'postLoad' | 'preUpdate' | 'postRemove';
 
 /**
- * One registered lifecycle hook: the event it fires on and the method the
+ * One registered entity hook: the event it fires on and the method the
  * manager invokes when that event occurs.
  */
-export interface LifecycleHookDefinition {
-    /** The lifecycle event. */
-    event: LifecycleEvent;
+export interface EntityHookDefinition {
+    /** The entity hook event. */
+    event: EntityHookEvent;
     /** The method invoked for the event. */
     methodName: string;
 }
@@ -114,8 +114,8 @@ export interface EntityMetadata {
     generatedColumns: string[];
     /** Relation definitions. */
     relations: RelationDefinition[];
-    /** Lifecycle hooks. */
-    lifecycleHooks: LifecycleHookDefinition[];
+    /** Entity hooks. */
+    entityHooks: EntityHookDefinition[];
 }
 
 type MetadataRecord = Record<string, unknown>;
@@ -176,7 +176,7 @@ export function getEntityMetadata(target: Constructable): EntityMetadata {
         primaryColumn: (metadata[primaryMetadataKey] as string) ?? '',
         generatedColumns: (metadata[generatedColumnMetadataKey] as string[]) ?? [],
         relations: (metadata[relationsMetadataKey] as RelationDefinition[]) ?? [],
-        lifecycleHooks: (metadata[lifecycleHooksMetadataKey] as LifecycleHookDefinition[]) ?? [],
+        entityHooks: (metadata[entityHooksMetadataKey] as EntityHookDefinition[]) ?? [],
     };
     entityMetadataCache.set(target, entityMetadata);
     return entityMetadata;

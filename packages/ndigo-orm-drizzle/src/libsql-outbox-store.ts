@@ -244,7 +244,7 @@ export class LibSQLOutboxStore implements OutboxStore {
      * client is borrowed. Pending operations are not drained; stop the relay
      * first.
      */
-    async close(): Promise<void> {
+    async destroy(): Promise<void> {
         if (this.#disposed) {
             return;
         }

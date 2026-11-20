@@ -182,12 +182,12 @@ describe('@refreshScope live rebind', () => {
         environment.refresh(); // must not throw and must not touch the context
 
         expect(environment.listenerCount(CONFIG_REFRESH_EVENT)).toBe(0);
-        // The closed context still holds only the pre-close binding — a
-        // still-attached rebind listener would have replaced it with a fresh
-        // instance reporting the refreshed 7070 value.
+        // The closed context released every managed value and holds no
+        // binding any more — a still-attached rebind listener would have
+        // written a fresh instance reporting the refreshed 7070 value.
         const after = context.getValue<RefreshableServerConfig>('refreshableServerConfig');
-        expect(after).toBe(before);
-        expect(after.port).toBe(beforePort); // 9090, not 7070 — no rebind write
+        expect(after).toBeUndefined();
+        expect(before.port).toBe(beforePort); // 9090, not 7070 — no rebind write
     });
 
     test('CTX-13: a rebind destroys the previous @refreshScope instance before replacing it', async () => {

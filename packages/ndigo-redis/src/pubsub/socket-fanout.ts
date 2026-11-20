@@ -4,7 +4,7 @@
 import { randomUUID } from 'node:crypto';
 import { IllegalStateError } from '@ndigo/core';
 import type { SocketFanout, SocketFanoutMessage, SocketFanoutScope } from '@ndigo/socket';
-import type { AsyncCloseable } from '@ndigo/factory';
+import type { AsyncDestroyable } from '@ndigo/factory';
 import { RedisConnection } from '../connection';
 
 /**
@@ -99,7 +99,7 @@ export function decodeSocketFanoutEnvelope(
 }
 
 /** Redis Pub/Sub live fan-out: at-most-once, no replay, reconnect, or offline queue. */
-export class RedisSocketFanout implements SocketFanout, AsyncCloseable {
+export class RedisSocketFanout implements SocketFanout, AsyncDestroyable {
     /**
      * The `Symbol.toStringTag` value for this instance.
      *
@@ -288,11 +288,11 @@ export class RedisSocketFanout implements SocketFanout, AsyncCloseable {
     }
 
     /**
-     * Unsubscribe all listeners, then close only the dedicated owned subscriber.
+     * Unsubscribe all listeners, then release only the dedicated owned subscriber.
      *
-     * @returns A promise that resolves once the fan-out is closed.
+     * @returns A promise that resolves once the fan-out is destroyed.
      */
-    close(): Promise<void> {
+    destroy(): Promise<void> {
         if (this.#closing) return this.#closing;
         this.#closed = true;
         this.#closing = (async () => {
@@ -302,7 +302,7 @@ export class RedisSocketFanout implements SocketFanout, AsyncCloseable {
                 const failed = results.find((result) => result.status === 'rejected');
                 if (failed?.status === 'rejected') throw failed.reason;
             } finally {
-                await this.#subscriber.close();
+                await this.#subscriber.destroy();
             }
         })();
         return this.#closing;

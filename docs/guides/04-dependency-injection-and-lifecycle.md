@@ -154,35 +154,40 @@ Awareness is an integration point, not a service locator: prefer constructor
 arguments for ordinary collaborators and use aware callbacks only when the
 framework object is genuinely ambient.
 
-## 5. Init, destroy, and smart lifecycle
+## 5. Init, destroy, and managed lifecycle
 
-Four contracts cover the common lifecycle shapes:
+Three contracts cover the common lifecycle shapes:
 
-| Contract         | Method           | When it runs                                      |
-| ---------------- | ---------------- | ------------------------------------------------- |
-| `Initializable`  | `init`           | After construction and aware processing           |
-| `Destroyable`    | `destroy`        | When the entry is destroyed or the context closes |
-| `Closeable`      | `close`          | Same as destroy, for close-shaped APIs            |
-| `SmartLifecycle` | `start` / `stop` | On context refresh/close, by phase                |
+| Contract           | Method           | When it runs                                      |
+| ------------------ | ---------------- | ------------------------------------------------- |
+| `Initializable`    | `init`           | Once, after construction and aware processing     |
+| `Destroyable`      | `destroy`        | When the entry is destroyed or the context closes |
+| `ManagedLifecycle` | `start` / `stop` | On context refresh/close, by phase                |
+
+`init()` and `start()` are the two halves of the lifecycle: `init()` is
+one-shot setup that runs when the container creates the instance, while
+`start()`/`stop()` is the reversible run phase — a managed component stops and
+starts across context refreshes, and only destruction is terminal. A value
+whose release is asynchronous implements `AsyncDestroyable`.
 
 ```ts
-import type { Initializable, Closeable, SmartLifecycle } from '@ndigo/factory';
+import type { Destroyable, Initializable, ManagedLifecycle } from '@ndigo/factory';
 
-class Pool implements Initializable, Closeable {
-    #closed = false;
+class Pool implements Initializable, Destroyable {
+    #destroyed = false;
 
     init(): void {
         // open connections
     }
 
-    close(): void {
-        if (this.#closed) return;
-        this.#closed = true;
+    destroy(): void {
+        if (this.#destroyed) return;
+        this.#destroyed = true;
         // release connections
     }
 }
 
-class Heartbeat implements SmartLifecycle {
+class Heartbeat implements ManagedLifecycle {
     readonly isAutoStartup = true;
     readonly phase = 100;
     isRunning = false;
@@ -197,17 +202,19 @@ class Heartbeat implements SmartLifecycle {
 }
 ```
 
-`SmartLifecycle` entries start in **ascending** phase order on refresh and stop in
+`ManagedLifecycle` entries start in **ascending** phase order on refresh and stop in
 **descending** phase order on close. Use a lower phase for infrastructure that
 others depend on and a higher phase for consumers. `isAutoStartup: false` opts
 out of automatic start; the context still calls `stop` if the entry is running.
 
-Teardown is idempotent: `destroy`/`close` may run more than once, so guard
-the body. The container calls `destroy` when present, otherwise `close`;
-implementing both is unnecessary. Async teardown is not awaited by the
-synchronous `context.close` — bridge an async resource to a
-`Closeable` that drains first (Guide 21) or close it explicitly before the
-context.
+Teardown mirrors construction: destruction processors run in **reverse
+registration order**, and managed values are released in **reverse creation
+order** (per scope bucket for scoped values) — dependents release before the
+dependencies they resolved. Teardown is idempotent: `destroy` may run more
+than once, so guard the body. Async teardown is not awaited by the synchronous
+`context.close` — the drain continues in the background; when shutdown must
+wait for it, `await` the resource's `destroy()` before closing the context (or
+list it in `gracefulShutdown`'s resources, Guide 01).
 
 ## 6. Parent/child contexts and events
 
@@ -248,7 +255,7 @@ not for local derived state — that is signals (Guide 29).
 composition and event model end to end.
 
 Closing a context closes its children depth-first, then stops its lifecycle
-processor, destroys its entries, and detaches from the parent. `close` is a
+coordinator, destroys its entries, and detaches from the parent. `close` is a
 safe no-op after the first call.
 
 ## 7. Pitfalls
@@ -260,8 +267,9 @@ safe no-op after the first call.
   setter/aware callback, a provider method, or a separate collaborator.
 - **An entry captured before `refresh` is not initialized.** Resolve entries after
   the context is active; boot presets return the refreshed context.
-- **Async cleanup is not automatic.** Bridge to `Closeable` and drain before
-  `context.close`.
+- **Async cleanup is not automatic.** `AsyncDestroyable` teardown is not
+  awaited by `context.close`; `await destroy()` explicitly before closing the
+  context, or list the resource in `gracefulShutdown`'s resources.
 - **Do not use the context as a global.** Pass it only to infrastructure that
   genuinely needs the container; application services should take their
   collaborators as constructor arguments.

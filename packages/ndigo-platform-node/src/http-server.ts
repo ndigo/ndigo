@@ -5,7 +5,7 @@
  * ({@link TLSServerOptions}) upgrades it to ALPN h2 with an HTTP/1.1
  * fallback. HTTP/3 terminates at an edge proxy in front of it.
  */
-import { $aware, type SmartLifecycle } from '@ndigo/factory';
+import { $aware, type ManagedLifecycle } from '@ndigo/factory';
 import { IllegalStateError } from '@ndigo/core';
 import { getEnv, type ApplicationContext, type ApplicationContextAware } from '@ndigo/context';
 import { DISPATCHER } from '@ndigo/dispatcher';
@@ -151,7 +151,7 @@ export interface HTTPServerOptions {
 /**
  * A managed HTTP server that delegates incoming requests to a {@link NodeDispatcher}.
  *
- * Implements `SmartLifecycle` so the context stops it on `close()`, and
+ * Implements `ManagedLifecycle` so the context stops it on `close()`, and
  * `ApplicationContextAware` so it can resolve the dispatcher from the context
  * when none is supplied to the constructor. `isAutoStartup` is `false`:
  * registering a `NodeAutoConfiguration` context must not bind ports during
@@ -166,10 +166,10 @@ export interface HTTPServerOptions {
  * context.close(); // stops the server
  * ```
  *
- * Deliberately NOT `Closeable`: shutdown is owned by `SmartLifecycle` — the
+ * Deliberately NOT `Closeable`: shutdown is owned by `ManagedLifecycle` — the
  * adapter's close is invoked through `stop()`, not the context entry close.
  */
-export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
+export class HTTPServer implements ManagedLifecycle, ApplicationContextAware {
     /**
      * The `Symbol.toStringTag` value for this instance.
      *
@@ -225,15 +225,15 @@ export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
         return this.#adapter?.server;
     }
 
-    /** `SmartLifecycle` — whether the server is currently listening. */
+    /** `ManagedLifecycle` — whether the server is currently listening. */
     get isRunning(): boolean {
         return this.#started;
     }
 
-    /** `SmartLifecycle` — start/stop ordering. */
+    /** `ManagedLifecycle` — start/stop ordering. */
     readonly phase = 0;
 
-    /** `SmartLifecycle` — never auto-start; the application starts the server explicitly. */
+    /** `ManagedLifecycle` — never auto-start; the application starts the server explicitly. */
     readonly isAutoStartup = false;
 
     /**
@@ -343,7 +343,7 @@ export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
     }
 
     /**
-     * `SmartLifecycle` — stop the server, delegated to {@link close}.
+     * `ManagedLifecycle` — stop the server, delegated to {@link close}.
      *
      * @returns A promise that resolves once stopped.
      */

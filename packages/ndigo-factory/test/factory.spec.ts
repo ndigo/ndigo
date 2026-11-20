@@ -96,7 +96,7 @@ describe('DefaultFactory', () => {
         expect(p.processProperties).toHaveBeenCalledWith({}, 'test', test);
         expect(p.processAfterConstruction).toHaveBeenCalledWith('test', test);
 
-        expect(Object.prototype.toString.call(f)).toBe('[object Factory]');
+        expect(Object.prototype.toString.call(f)).toBe('[object DefaultFactory]');
     });
 
     test('it should return non-constructor values as-is from getInstance (CF-12)', () => {
@@ -310,14 +310,16 @@ describe('DefaultFactory', () => {
         expect(p.processAfterInitialization).not.toHaveBeenCalled();
     });
 
-    test('it should destoy destroyable instances', () => {
+    test('it should destroy destroyable instances and notify processors for every managed value', () => {
         const f = defined(factory);
         const p = defined(processor);
 
         f.setValue('empty1', EmptyPrototype);
         const empty1 = f.getValue('empty1');
         f.destroyValue('empty1');
-        expect(p.processBeforeDestruction).not.toHaveBeenCalledWith('empty1', empty1);
+        // Destruction processors reach every managed value — no release
+        // method required.
+        expect(p.processBeforeDestruction).toHaveBeenCalledWith('empty1', empty1);
 
         f.setValue('test1', TestPrototype);
         const test1 = f.getValue<TestPrototype>('test1');
@@ -328,7 +330,7 @@ describe('DefaultFactory', () => {
         const empty2 = new EmptyPrototype();
         f.setValue('empty2', empty2);
         f.destroyValue('empty2');
-        expect(p.processBeforeDestruction).not.toHaveBeenCalledWith('empty2', empty2);
+        expect(p.processBeforeDestruction).toHaveBeenCalledWith('empty2', empty2);
 
         const test2 = new TestPrototype();
         f.setValue('test2', test2);

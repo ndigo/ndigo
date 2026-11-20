@@ -123,8 +123,8 @@ describe('InProcessJobDriver', () => {
         expect(job?.payload).toEqual({ items: [1] });
     });
 
-    test('a closed driver rejects every operation', async () => {
-        await driver.close();
+    test('a destroyed driver rejects every operation', async () => {
+        await driver.destroy();
 
         await expect(driver.enqueue({ type: 'x' })).rejects.toThrow(/closed/);
         await expect(driver.claim({ limit: 1, leaseMs: 1 })).rejects.toThrow(/closed/);

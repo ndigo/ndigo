@@ -155,9 +155,9 @@ live('Redis socket fan-out (live standalone Redis)', () => {
         await Promise.all(brokers.splice(0).map((item) => item.close()));
         for (const session of sessions.splice(0)) session.inbound.complete();
         await Promise.all(handled.splice(0));
-        await Promise.all(registries.splice(0).map((item) => item.close()));
-        await Promise.all(transports.splice(0).map((item) => item.close()));
-        await Promise.all(connections.splice(0).map((item) => item.close()));
+        await Promise.all(registries.splice(0).map((item) => item.destroy()));
+        await Promise.all(transports.splice(0).map((item) => item.destroy()));
+        await Promise.all(connections.splice(0).map((item) => item.destroy()));
     });
 
     it('delivers path and room text/binary once on each node, isolating scope, keys, and namespaces', async () => {
@@ -233,8 +233,8 @@ live('Redis socket fan-out (live standalone Redis)', () => {
         await vi.waitFor(() => expect(remaining.received).toEqual(['before', 'after remove', 'after remove room']));
         expect(removed.received).toEqual(['before']);
         expect(peerClosed.received).toEqual(['before']);
-        await second.close();
-        await b.fanout.close();
+        await second.destroy();
+        await b.fanout.destroy();
         await first.broadcast('/chat', 'after close');
         await first.broadcastTo('room', 'after close room');
         expect(local.received).toEqual(['before', 'after remove', 'after close']);
@@ -260,7 +260,7 @@ live('Redis socket fan-out (live standalone Redis)', () => {
         await starting;
         await owner.broadcast('/chat', 'ready');
         expect(recipient.received).toEqual(['ready']);
-        await ready.connection.close();
+        await ready.connection.destroy();
         await expect(owner.broadcast('/chat', 'failed path')).rejects.toThrow();
         await expect(owner.broadcastTo('room', 'failed room')).rejects.toThrow();
         expect(recipient.received).toEqual(['ready']);
@@ -477,7 +477,7 @@ live('Redis socket fan-out (live standalone Redis)', () => {
         const remote = await client(second);
         await subscribe(sender, 'local', '/topic/chat');
         await subscribe(remote, 'remote', '/topic/chat');
-        await a.connection.close();
+        await a.connection.destroy();
         await expect(first.publish('/topic/chat', 'failed API publish')).rejects.toThrow();
         sender.push('SEND', { destination: '/topic/chat', receipt: 'failed-send' }, 'failed SEND');
         await vi.waitFor(() => expect(sender.closes.map((item) => item.code)).toEqual([1011]));

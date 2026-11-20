@@ -278,7 +278,7 @@ export class LibSQLJobStore implements JobDriver {
      * client is borrowed. Pending operations are not drained; callers must
      * stop and drain the runner first.
      */
-    async close(): Promise<void> {
+    async destroy(): Promise<void> {
         if (this.#disposed) {
             return;
         }

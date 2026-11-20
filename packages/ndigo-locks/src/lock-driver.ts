@@ -14,7 +14,7 @@ import { like } from '@ndigo/util/types';
 import { Constructable } from '@ndigo/core';
 import { Aware, AsAware, likeAwareAnd } from '@ndigo/factory';
 
-import type { AsyncCloseable } from '@ndigo/factory';
+import type { AsyncDestroyable } from '@ndigo/factory';
 
 /**
  * Options for acquiring a lock.
@@ -77,7 +77,7 @@ export interface LockHandle {
  * belong to the caller (`@scheduled({ lock, lockWait })`), never to the
  * driver.
  */
-export interface LockDriver extends AsyncCloseable {
+export interface LockDriver extends AsyncDestroyable {
     /**
      * Backend identifier (`'in-process'`, `'redis'`, …), for diagnostics.
      */
@@ -104,7 +104,7 @@ export interface LockDriver extends AsyncCloseable {
      * Releases every lease this driver's handles acquired and seals it.
      * Never affects leases acquired through other driver instances.
      */
-    close(): Promise<void>;
+    destroy(): Promise<void>;
 }
 
 /**
@@ -115,7 +115,7 @@ export interface LockDriver extends AsyncCloseable {
  * @returns Whether the value satisfies the driver contract shape.
  */
 export function likeLockDriver(value: unknown): value is LockDriver {
-    return like({ kind: String, acquire: Function, close: Function })(value);
+    return like({ kind: String, acquire: Function, destroy: Function })(value);
 }
 
 /**

@@ -6,12 +6,19 @@ import { like } from '@ndigo/util/types';
 import { Registry } from './registry';
 
 /**
- * A value that can be destroyed once it is no longer needed.
+ * A value whose resources are released permanently.
+ *
+ * Destruction is terminal: a destroyed value is never reused, and resolving
+ * the entry again constructs a new instance. Async teardown bridges to
+ * {@link AsyncDestroyable}; the synchronous context close does not await it.
  */
 export interface Destroyable {
-    /** Whether the value has been destroyed. */
-    destroyed: boolean;
-    /** Releases the value's resources. */
+    /**
+     * Releases the value's resources.
+     *
+     * Guard the body so repeated calls stay safe: teardown is idempotent by
+     * contract, not by caller discipline.
+     */
     destroy(): void;
 }
 
@@ -24,11 +31,16 @@ export interface AsyncDestroyable extends Destroyable {
 }
 
 /**
- * A value with a post-construction `init()` hook.
+ * A value with a one-shot `init()` hook.
+ *
+ * `init()` runs once when the container finishes creating the instance —
+ * after property population and aware callbacks — and the instance is never
+ * initialized again. It is the irreversible setup half of the lifecycle;
+ * {@link Lifecycle.start} is the reversible run phase.
  */
 export interface Initializable {
     /**
-     * Runs the post-construction initialization hook.
+     * Runs the initialization hook.
      *
      * @param args - Initialization arguments.
      */
@@ -36,23 +48,11 @@ export interface Initializable {
 }
 
 /**
- * A value that can be closed to release its resources.
- */
-export interface Closeable {
-    /** Releases the value's resources. */
-    close(): void;
-}
-
-/**
- * A {@link Closeable} whose close is asynchronous.
- */
-export interface AsyncCloseable extends Closeable {
-    /** Releases the value's resources asynchronously. */
-    close(): Promise<void>;
-}
-
-/**
- * A component with an explicit start/stop lifecycle.
+ * A component with an explicit, reversible start/stop lifecycle.
+ *
+ * Unlike {@link Initializable.init}, `start()`/`stop()` may cycle: a running
+ * component is stopped on context close, and {@link ManagedLifecycle} targets
+ * cycle across context refreshes.
  */
 export interface Lifecycle {
     /** Whether the component is running. */
@@ -72,17 +72,18 @@ export interface Phased {
 }
 
 /**
- * A {@link Lifecycle} that starts automatically and runs in a declared phase.
+ * A {@link Lifecycle} the container drives automatically: started in ascending
+ * phase order on context refresh, stopped in descending phase order on close.
  */
-export interface SmartLifecycle extends Lifecycle, Phased {
+export interface ManagedLifecycle extends Lifecycle, Phased {
     /** Whether the component starts with the context. */
     readonly isAutoStartup: boolean;
 }
 
 /**
- * Drives registered {@link SmartLifecycle} targets on context refresh and close.
+ * Drives registered {@link ManagedLifecycle} targets on context refresh and close.
  */
-export interface LifecycleProcessor extends Lifecycle {
+export interface LifecycleCoordinator extends Lifecycle {
     /**
      * Stops running targets on context close.
      *
@@ -102,8 +103,7 @@ export interface LifecycleProcessor extends Lifecycle {
  *
  * @returns Whether or not the `value` is {@link Destroyable|Destroyable}.
  */
-export const likeDestroyable = (value: unknown): value is Destroyable =>
-    like({ destroy: Function, destroyed: Boolean })(value);
+export const likeDestroyable = (value: unknown): value is Destroyable => like({ destroy: Function })(value);
 
 /**
  * Narrows a value to the {@link Initializable} shape.
@@ -111,13 +111,6 @@ export const likeDestroyable = (value: unknown): value is Destroyable =>
  * @returns Whether or not the `value` is {@link Initializable|Initializable}.
  */
 export const likeInitializable = (value: unknown): value is Initializable => like({ init: Function })(value);
-
-/**
- * Narrows a value to the {@link Closeable} shape.
- *
- * @returns Whether or not the `value` is {@link Closeable|Closeable}.
- */
-export const likeCloseable = (value: unknown): value is Closeable => like({ close: Function })(value);
 
 /**
  * Narrows a value to the {@link Lifecycle} shape.
@@ -137,35 +130,35 @@ export const likePhased = (value: unknown): value is Phased => like({ phase: Num
 const _likeAutoStartup = like({ isAutoStartup: Boolean });
 
 /**
- * Narrows a value to the {@link SmartLifecycle} shape.
+ * Narrows a value to the {@link ManagedLifecycle} shape.
  *
- * @returns Whether or not the `value` is {@link SmartLifecycle|SmartLifecycle}.
+ * @returns Whether or not the `value` is {@link ManagedLifecycle|ManagedLifecycle}.
  */
-export const likeSmartLifecycle = (value: unknown): value is SmartLifecycle =>
+export const likeManagedLifecycle = (value: unknown): value is ManagedLifecycle =>
     likeLifecycle(value) && likePhased(value) && _likeAutoStartup(value);
 
 /**
- * Default {@link LifecycleProcessor}: on refresh starts auto-startup targets
+ * Default {@link LifecycleCoordinator}: on refresh starts auto-startup targets
  * in ascending phase order; on close stops running targets in descending
  * phase order.
  */
-export class DefaultLifecycleProcessor implements LifecycleProcessor {
+export class DefaultLifecycleCoordinator implements LifecycleCoordinator {
     /**
      * The `Symbol.toStringTag` value for this instance.
      *
      * `Object.prototype.toString()` reads this symbol to render the
      * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
      *
-     * @returns The string "DefaultLifecycleProcessor".
+     * @returns The string "DefaultLifecycleCoordinator".
      *
      * @example
-     * console.log(Object.prototype.toString.call(instance)); // "[object DefaultLifecycleProcessor]"
+     * console.log(Object.prototype.toString.call(instance)); // "[object DefaultLifecycleCoordinator]"
      */
     get [Symbol.toStringTag](): string {
-        return 'DefaultLifecycleProcessor';
+        return 'DefaultLifecycleCoordinator';
     }
 
-    /** Whether the processor is running. */
+    /** Whether the coordinator is running. */
     isRunning: boolean;
 
     constructor() {
@@ -179,7 +172,7 @@ export class DefaultLifecycleProcessor implements LifecycleProcessor {
      */
     onClose(registry: Registry): void {
         const stopTargets = this._resolveLifecycleTargets(registry)
-            .filter(likeSmartLifecycle)
+            .filter(likeManagedLifecycle)
             .sort(invertComparison(compareBy((target) => target.phase, numberComparator.compare)));
 
         for (const target of stopTargets) {
@@ -198,7 +191,7 @@ export class DefaultLifecycleProcessor implements LifecycleProcessor {
      */
     onRefresh(registry: Registry): void {
         const startTargets = this._resolveLifecycleTargets(registry)
-            .filter(likeSmartLifecycle)
+            .filter(likeManagedLifecycle)
             .filter((target) => target.isAutoStartup)
             .sort(compareBy((target) => target.phase, numberComparator.compare));
 
@@ -211,12 +204,12 @@ export class DefaultLifecycleProcessor implements LifecycleProcessor {
         this.start();
     }
 
-    /** Marks the processor running. */
+    /** Marks the coordinator running. */
     start(): void {
         this.isRunning = true;
     }
 
-    /** Marks the processor stopped. */
+    /** Marks the coordinator stopped. */
     stop(): void {
         this.isRunning = false;
     }

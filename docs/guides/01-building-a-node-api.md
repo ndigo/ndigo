@@ -174,7 +174,7 @@ validation on top of extractors.
 ## 5. Managed entries and the server
 
 Entries can participate in the context lifecycle by implementing
-`SmartLifecycle` (from `@ndigo/factory`): on `refresh` the lifecycle
+`ManagedLifecycle` (from `@ndigo/factory`): on `refresh` the lifecycle
 processor starts entries that are `isAutoStartup`; on `close` it stops them.
 `HTTPServer` is such an entry — `NodeAutoConfiguration` provisions it as the
 `httpServer` entry.

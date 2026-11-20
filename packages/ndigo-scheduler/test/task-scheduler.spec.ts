@@ -182,7 +182,7 @@ describe('@ndigo/scheduler TaskScheduler', () => {
         expect(scheduler.getStats('stuck')?.inFlight).toBe(false); // slot released
 
         gate.release();
-        await scheduler.close();
+        await scheduler.destroy();
     });
 
     test('maxRunTime: a rejection after the timeout still records a failure', async () => {
@@ -207,7 +207,7 @@ describe('@ndigo/scheduler TaskScheduler', () => {
         const stats = scheduler.getStats('slow-thrower');
         expect(stats?.failures).toBe(1);
         expect(stats?.lastError?.message).toBe('late boom');
-        await scheduler.close();
+        await scheduler.destroy();
     });
 
     test('maxRunTime clears its cap timer once the run settles', async () => {
@@ -222,7 +222,7 @@ describe('@ndigo/scheduler TaskScheduler', () => {
             });
 
             expect(await scheduler.tick(at(10))).toBe(1); // run settles well within the cap
-            await scheduler.close();
+            await scheduler.destroy();
 
             // Pre-fix the uncleared 2 s cap stayed armed after the run (and
             // close()) — pinning the event loop. A settled race must leave
@@ -258,7 +258,7 @@ describe('@ndigo/scheduler TaskScheduler', () => {
         expect(overflowWarnings).toHaveLength(0);
     });
 
-    test('rejects duplicate names and registration after close', async () => {
+    test('rejects duplicate names and registration after destroy', async () => {
         const { scheduler } = makeScheduler();
         const run = () => Promise.resolve();
         scheduler.register({ name: 'dup', schedule: new IntervalSchedule('fixedRate', 1_000), run });
@@ -267,13 +267,13 @@ describe('@ndigo/scheduler TaskScheduler', () => {
             scheduler.register({ name: 'dup', schedule: new IntervalSchedule('fixedRate', 1_000), run })
         ).toThrow(/duplicate task/);
 
-        await scheduler.close();
+        await scheduler.destroy();
         expect(() =>
             scheduler.register({ name: 'late', schedule: new IntervalSchedule('fixedRate', 1_000), run })
-        ).toThrow(/closed/);
+        ).toThrow(/destroyed/);
     });
 
-    test('close drains in-flight runs', async () => {
+    test('destroy drains in-flight runs', async () => {
         const { scheduler } = makeScheduler();
         const gate = deferred();
         let finished = false;
@@ -290,18 +290,18 @@ describe('@ndigo/scheduler TaskScheduler', () => {
         await Promise.resolve();
         expect(scheduler.getStats('drain')?.inFlight).toBe(true);
 
-        let closed = false;
-        const closing = scheduler.close().then(() => {
-            closed = true;
+        let destroyed = false;
+        const destroying = scheduler.destroy().then(() => {
+            destroyed = true;
         });
         await Promise.resolve();
-        expect(closed).toBe(false); // close waits for the in-flight run
+        expect(destroyed).toBe(false); // destroy waits for the in-flight run
 
         gate.release();
         await started;
-        await closing;
+        await destroying;
         expect(finished).toBe(true);
-        expect(closed).toBe(true);
+        expect(destroyed).toBe(true);
         expect(scheduler.taskNames()).toEqual([]);
     });
 });
@@ -344,7 +344,7 @@ describe('@ndigo/scheduler TaskScheduler wall-clock loop (OP-13)', () => {
         }
         expect(calls).toBeGreaterThanOrEqual(3);
         expect(scheduler.isRunning).toBe(false);
-        await scheduler.close();
+        await scheduler.destroy();
     });
 
     test('stop() halts the loop: no further fires', async () => {
@@ -369,7 +369,7 @@ describe('@ndigo/scheduler TaskScheduler wall-clock loop (OP-13)', () => {
             expect(calls).toBe(atStop);
         } finally {
             scheduler.stop();
-            await scheduler.close();
+            await scheduler.destroy();
         }
     });
 
@@ -407,7 +407,7 @@ describe('@ndigo/scheduler TaskScheduler wall-clock loop (OP-13)', () => {
             expect(Date.now() - completedAt).toBeGreaterThanOrEqual(INTERVAL_MS - 5);
         } finally {
             gate.release();
-            await scheduler.close();
+            await scheduler.destroy();
         }
     });
 
@@ -432,7 +432,7 @@ describe('@ndigo/scheduler TaskScheduler wall-clock loop (OP-13)', () => {
             await waitFor(() => calls >= 2);
         } finally {
             scheduler.stop();
-            await scheduler.close();
+            await scheduler.destroy();
         }
 
         expect(calls).toBeGreaterThanOrEqual(2);
@@ -463,7 +463,7 @@ describe('@ndigo/scheduler TaskScheduler wall-clock loop (OP-13)', () => {
             await waitFor(() => fastCalls >= 2);
         } finally {
             scheduler.stop();
-            await scheduler.close();
+            await scheduler.destroy();
         }
 
         expect(fastCalls).toBeGreaterThanOrEqual(2);
@@ -489,7 +489,7 @@ describe('@ndigo/scheduler TaskScheduler wall-clock loop (OP-13)', () => {
             expect(scheduler.isRunning).toBe(false);
         } finally {
             scheduler.stop();
-            await scheduler.close();
+            await scheduler.destroy();
         }
     });
 });

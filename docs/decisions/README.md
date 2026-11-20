@@ -1,6 +1,6 @@
 # ndigo Decision Records (ADRs)
 
-Architecture Decision Records for the ndigo monorepo — **AD-01..AD-111**,
+Architecture Decision Records for the ndigo monorepo — **AD-01..AD-112**,
 contiguous. Every record captures a decision with its context, the evidence
 (plan, code, commits), the decided shape, consequences, and a revisit trigger.
 
@@ -123,6 +123,7 @@ contiguous. Every record captures a decision with its context, the evidence
 | **AD-109** | 2026-11-19    | Accepted                     | [Annotation, advice, and member transformer — one declaration layer, several executors](2026-11-19_AD109_ANNOTATION_ADVICE_MODEL.md)                                                                                           |
 | **AD-110** | 2026-11-20    | Accepted                     | [Annotations declare, the context executes — `@ndigo/advice`](2026-11-20_AD110_ANNOTATION_EXECUTION_RUNTIME.md)                                                                                                                |
 | **AD-111** | 2026-11-20    | Accepted                     | [Annotation lifecycle hooks front the processor seam, not `SmartLifecycle`](2026-11-20_AD111_ANNOTATION_LIFECYCLE_HOOKS.md)                                                                                                    |
+| **AD-112** | 2026-11-20    | Accepted                     | [Lifecycle consolidation — `destroy()` is the single release contract, teardown mirrors construction](2026-11-20_AD112_LIFECYCLE_CONSOLIDATION.md)                                                                             |
 
 ## Archived ADRs
 

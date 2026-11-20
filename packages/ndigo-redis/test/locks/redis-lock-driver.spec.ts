@@ -64,8 +64,8 @@ live('RedisLockDriver (live standalone Redis 6.2+)', () => {
             await client.close();
         }
         namespaces.clear();
-        await Promise.all(drivers.splice(0).map((driver) => driver.close()));
-        await Promise.all(connections.splice(0).map((connection) => connection.close()));
+        await Promise.all(drivers.splice(0).map((driver) => driver.destroy()));
+        await Promise.all(connections.splice(0).map((connection) => connection.destroy()));
     });
 
     it('acquire → release → re-acquire cycles with monotonic tokens', async () => {
@@ -101,12 +101,12 @@ live('RedisLockDriver (live standalone Redis 6.2+)', () => {
         const otherHandle = await other.acquire('yours', { ttlMs: 60_000 });
         if (otherHandle === null) throw new Error('expected other to acquire');
 
-        await own.close();
+        await own.destroy();
 
         // own's lease is released (the next acquirer wins immediately)…
         const successor = await other.acquire('mine', { ttlMs: 60_000 });
         if (successor === null) throw new Error('expected the released key to be acquirable');
-        // …while other's lease is untouched by own.close().
+        // …while other's lease is untouched by own.destroy().
         expect(await otherHandle.isHeld()).toBe(true);
         expect(await successor.release()).toBe(true);
         expect(await otherHandle.release()).toBe(true);
@@ -165,7 +165,7 @@ live('RedisLockDriver (live standalone Redis 6.2+)', () => {
 
     it('closed drivers reject operations', async () => {
         const { driver } = await open();
-        await driver.close();
+        await driver.destroy();
         await expect(driver.acquire('x', { ttlMs: 1_000 })).rejects.toThrow(FrameworkError);
     });
 

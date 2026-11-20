@@ -15,7 +15,7 @@ const directories: string[] = [];
 afterEach(async () => {
     for (const store of stores) {
         // oxlint-disable-next-line no-await-in-loop -- close every store before the clients it may borrow
-        await store.close();
+        await store.destroy();
     }
     for (const client of clients) client.close();
     for (const directory of directories) {
@@ -146,7 +146,7 @@ describe('LibSQLJobStore', () => {
     test('jobs survive a store reopen (durability)', async () => {
         const { first, url } = await fileStores();
         const record = await first.enqueue({ type: 'durable', payload: { n: 1 } });
-        await first.close();
+        await first.destroy();
 
         const reopened = new LibSQLJobStore({ url });
         stores.push(reopened);
@@ -161,7 +161,7 @@ describe('LibSQLJobStore', () => {
         clients.push(client);
         const borrowed = new LibSQLJobStore({ client });
         stores.push(borrowed);
-        await borrowed.close();
+        await borrowed.destroy();
         expect(await client.execute('SELECT 1')).toBeDefined();
 
         await expect(borrowed.size()).rejects.toThrow(/disposed/);

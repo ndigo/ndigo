@@ -45,7 +45,7 @@ describe('@ndigo/scheduler ScheduleRegistry', () => {
     });
 
     afterEach(async () => {
-        await scheduler.close();
+        await scheduler.destroy();
         registry.close();
     });
 

@@ -12,7 +12,7 @@ import {
     postRemove,
     primaryColumn,
 } from '../src/decorators';
-import { runLifecycleHooks } from '../src/lifecycle';
+import { runEntityHooks } from '../src/entity-hooks';
 
 // DAT-F1: one runner backs both InMemoryEntityManager and DrizzleEntityManager.
 @entity()
@@ -52,11 +52,11 @@ class HookedNote {
     }
 }
 
-describe('runLifecycleHooks', () => {
+describe('runEntityHooks', () => {
     test('invokes only the hooks registered for the event, bound to the entity', () => {
         const note = new HookedNote();
 
-        runLifecycleHooks(note, 'preUpdate');
+        runEntityHooks(note, 'preUpdate');
 
         expect(note.events).toEqual(['preUpdate']);
     });
@@ -64,7 +64,7 @@ describe('runLifecycleHooks', () => {
     test('runs multiple hooks for one event in declaration order', () => {
         const note = new HookedNote();
 
-        runLifecycleHooks(note, 'prePersist');
+        runEntityHooks(note, 'prePersist');
 
         expect(note.events).toEqual(['prePersist:first', 'prePersist:second']);
     });
@@ -72,9 +72,9 @@ describe('runLifecycleHooks', () => {
     test('keeps each event independent', () => {
         const note = new HookedNote();
 
-        runLifecycleHooks(note, 'prePersist');
-        runLifecycleHooks(note, 'postLoad');
-        runLifecycleHooks(note, 'postRemove');
+        runEntityHooks(note, 'prePersist');
+        runEntityHooks(note, 'postLoad');
+        runEntityHooks(note, 'postRemove');
 
         expect(note.events).toEqual(['prePersist:first', 'prePersist:second', 'postLoad', 'postRemove']);
     });
@@ -83,7 +83,7 @@ describe('runLifecycleHooks', () => {
         const note = new HookedNote();
         Object.defineProperty(note, 'onFirstPrePersist', { value: undefined });
 
-        expect(() => runLifecycleHooks(note, 'prePersist')).not.toThrow();
+        expect(() => runEntityHooks(note, 'prePersist')).not.toThrow();
         expect(note.events).toEqual(['prePersist:second']);
     });
 });

@@ -75,10 +75,10 @@ The table above says what a decorator _is_. This one says how a declaration
 reaches whatever acts on it, because that choice is what a capability author
 actually makes — and there are exactly two answers.
 
-| Category      | Consumer                                                  | Lives in                              | Contract                                            |
-| :------------ | :-------------------------------------------------------- | :------------------------------------ | :-------------------------------------------------- |
-| **Processor** | Hook on each entry instance as the container creates it   | `@ndigo/factory` `entry-processor.ts` | `InitializationAwareProcessor` and its siblings     |
-| **Lifecycle** | Component the context drives, scanning the finished graph | `@ndigo/factory` `lifecycle.ts`       | `SmartLifecycle` (+ `Initializable`, `Destroyable`) |
+| Category      | Consumer                                                  | Lives in                              | Contract                                              |
+| :------------ | :-------------------------------------------------------- | :------------------------------------ | :---------------------------------------------------- |
+| **Processor** | Hook on each entry instance as the container creates it   | `@ndigo/factory` `entry-processor.ts` | `InitializationAwareProcessor` and its siblings       |
+| **Lifecycle** | Component the context drives, scanning the finished graph | `@ndigo/factory` `lifecycle.ts`       | `ManagedLifecycle` (+ `Initializable`, `Destroyable`) |
 
 Pick **processor** when the declaration changes what an instance _is or does_,
 and the decision is per instance. Advice is the only current consumer: it must
@@ -92,11 +92,11 @@ Scanning decorators are the consumers here, and they are ordered by `phase`:
 | Consumer                                                           | Trigger                                   | Phase |
 | :----------------------------------------------------------------- | :---------------------------------------- | ----: |
 | `ConfigurationProcessor` (`@configuration`, `@entry`, `@property`) | `EntryRegistryProcessor`, at registration |     — |
-| `AbstractHandlerMethodMapping` (`@routeMapping`)                   | `SmartLifecycle` on refresh               |  −100 |
-| `Dispatcher`                                                       | `SmartLifecycle` on refresh               |   −90 |
-| `ScheduleRegistry` (`@scheduled`)                                  | `SmartLifecycle` on refresh               |     0 |
-| `JobHandlerRegistry` (`@jobHandler`), `JobRunner`, `OutboxRelay`   | `SmartLifecycle` on refresh               | 0, 10 |
-| `HTTPServer`                                                       | `SmartLifecycle` on refresh               |     0 |
+| `AbstractHandlerMethodMapping` (`@routeMapping`)                   | `ManagedLifecycle` on refresh             |  −100 |
+| `Dispatcher`                                                       | `ManagedLifecycle` on refresh             |   −90 |
+| `ScheduleRegistry` (`@scheduled`)                                  | `ManagedLifecycle` on refresh             |     0 |
+| `JobHandlerRegistry` (`@jobHandler`), `JobRunner`, `OutboxRelay`   | `ManagedLifecycle` on refresh             | 0, 10 |
+| `HTTPServer`                                                       | `ManagedLifecycle` on refresh             |     0 |
 
 The discriminator is not "which is newer" but what the consumer needs. A
 scanning consumer resolves its collaborators _at start_ — `ScheduleRegistry.start()`
@@ -109,17 +109,17 @@ and advice wove that instance earlier, so a `@scheduled` + `@traced` method
 reaches the woven method through the registry's own closure
 (`apps/17-ndigo-telemetry-lab/test/scheduled-advice.spec.ts`).
 
-> **Naming debt.** `SmartLifecycle` carries Spring's `Smart-` prefix, and
-> `LifecycleProcessor` is a driver of lifecycle components — not a processor in
-> the `EntryProcessor` sense — although both live in `@ndigo/factory`. The
-> contracts themselves are deliberate; the names are inherited.
+> **Names, resolved ([AD-112](../decisions/2026-11-20_AD112_LIFECYCLE_CONSOLIDATION.md)).**
+> The Spring-inherited names were renamed in the #548 consolidation:
+> `ManagedLifecycle` (was `SmartLifecycle` — the `Smart-` prefix was jargon)
+> and `LifecycleCoordinator` (was `LifecycleProcessor` — a driver of lifecycle
+> components, not a processor in the `EntryProcessor` sense).
 >
-> The word is also carrying unrelated meanings elsewhere: `@ndigo-orm` names its
-> entity persistence hooks (`prePersist`, `postLoad`, …) `lifecycle`, and guide
-> 20's “The lifecycle” is the migration pipeline. Nothing collides at the type
-> level — the identifiers differ — but the two files both called `lifecycle.ts`
-> are the sharpest case, and this page's **Lifecycle** row describes only the
-> container's. Tracked in #548, which owns `lifecycle.ts`.
+> The word also names other things elsewhere: `@ndigo-orm`'s entity
+> persistence hooks (`prePersist`, `postLoad`, …) live in `entity-hooks.ts`
+> with `EntityHook*` names after the same consolidation, and guide 20's “The
+> lifecycle” is the migration pipeline. This page's **Lifecycle** row
+> describes only the container's.
 
 ## 2. Annotations — declaration only
 
@@ -794,13 +794,13 @@ nothing in this model reopens them.
 
 ## 13. Open questions
 
-| Question                                                                   | Owner                                                                             |
-| :------------------------------------------------------------------------- | :-------------------------------------------------------------------------------- |
-| Does `@transactional` join an active transaction or self-invoke unadvised? | Resolved — AD-110 D-11 (nesting joins; self-invocation is advised)                |
-| Is `preInit` a real lifecycle stage, or covered by existing hooks?         | Resolved — AD-111 (`@preInit` fronts `processBeforeInitialization`; no new stage) |
-| Can an application override an annotation's value per context?             | Deferred — an optional overlay, not a requirement of the model                    |
-| Does `@cached` move from member transformer to advice?                     | Deferred — only if per-application reconfiguration is required                    |
-| Should destruction processors run in reverse registration order?           | #548                                                                              |
+| Question                                                                   | Owner                                                                                                 |
+| :------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------- |
+| Does `@transactional` join an active transaction or self-invoke unadvised? | Resolved — AD-110 D-11 (nesting joins; self-invocation is advised)                                    |
+| Is `preInit` a real lifecycle stage, or covered by existing hooks?         | Resolved — AD-111 (`@preInit` fronts `processBeforeInitialization`; no new stage)                     |
+| Can an application override an annotation's value per context?             | Deferred — an optional overlay, not a requirement of the model                                        |
+| Does `@cached` move from member transformer to advice?                     | Deferred — only if per-application reconfiguration is required                                        |
+| Should destruction processors run in reverse registration order?           | Resolved — AD-112 (reverse of construction: processors reverse registration, values reverse creation) |
 
 Open questions do not block the vocabulary. Each is a capability decision made
 inside the issue that owns it.

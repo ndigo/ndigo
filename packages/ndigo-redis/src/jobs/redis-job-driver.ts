@@ -385,7 +385,7 @@ export class RedisJobDriver implements JobDriver {
      *
      * @returns A promise that resolves once the handle is sealed.
      */
-    async close(): Promise<void> {
+    async destroy(): Promise<void> {
         this.#closed = true;
     }
 

@@ -80,8 +80,8 @@ describe('InProcessOutboxStore', () => {
         expect(claimed.map((entry) => entry.id)).toEqual([first.id, 'entry-2']);
     });
 
-    test('a closed store rejects operations', async () => {
-        await store.close();
+    test('a destroyed store rejects operations', async () => {
+        await store.destroy();
 
         await expect(store.append({ type: 'a' })).rejects.toThrow(/closed/);
         await expect(store.size()).rejects.toThrow(/closed/);
@@ -103,7 +103,7 @@ describe('JobOutboxPublisher + OutboxRelay', () => {
         const [job] = await driver.claim({ limit: 1, leaseMs: 100 });
         expect(job?.type).toBe('email.send');
         expect(job?.payload).toEqual({ to: 'a@b.c' });
-        await relay.close();
+        await relay.destroy();
     });
 
     test('a failed publish leaves the entry for the next lease window', async () => {
@@ -134,7 +134,7 @@ describe('JobOutboxPublisher + OutboxRelay', () => {
 
         expect(published).toEqual(['entry-1']);
         expect(await store.size()).toBe(0);
-        await relay.close();
+        await relay.destroy();
     });
 
     test('retainPublishedMs prunes published history on each pass', async () => {
@@ -150,7 +150,7 @@ describe('JobOutboxPublisher + OutboxRelay', () => {
         advance(500);
         expect(await relay.tick()).toBe(0);
         expect(await store.prunePublished(500)).toBe(0); // already pruned by the pass
-        await relay.close();
+        await relay.destroy();
     });
 
     test('relay start/stop polls with real timers; close awaits the pass', async () => {
@@ -172,7 +172,7 @@ describe('JobOutboxPublisher + OutboxRelay', () => {
         relay.stop();
         expect(relay.isRunning).toBe(false);
         expect(published).toHaveLength(1);
-        await relay.close();
+        await relay.destroy();
         await expect(relay.tick()).rejects.toThrow(/closed/);
     });
 

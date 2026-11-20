@@ -454,7 +454,7 @@ describe('NodeSocketSessionRegistry', () => {
     });
 
     describe('teardown (PLN-F10)', () => {
-        test('close() unsubscribes the fanout scopes and is idempotent', async () => {
+        test('destroy() unsubscribes the fanout scopes and is idempotent', async () => {
             const unsubscribed: string[] = [];
             const fanoutRegistry = new NodeSocketSessionRegistry({
                 fanout: {
@@ -467,12 +467,12 @@ describe('NodeSocketSessionRegistry', () => {
             await fanoutRegistry.connect();
             expect(unsubscribed).toEqual([]);
 
-            await fanoutRegistry.close();
+            await fanoutRegistry.destroy();
             expect([...unsubscribed].sort()).toEqual(['path', 'room']);
 
             // Second close returns the cached teardown — no re-subscribe and
             // no double-unsubscribe.
-            await fanoutRegistry.close();
+            await fanoutRegistry.destroy();
             expect(unsubscribed).toHaveLength(2);
         });
     });

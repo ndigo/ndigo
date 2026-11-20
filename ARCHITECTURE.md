@@ -1706,8 +1706,8 @@ capability: `Equatable`/`Comparable`/`Comparator` (+ `stringComparator`,
 `Enumerable`, `Serializable`, `Matchable`/`ResultMatcher`/`PatternMatcher`,
 `Parser`/`Stringifier`, `Converter`/`ConversionService`, the `FormattingService`
 family, and — in `@ndigo/factory` — the lifecycle set (`Initializable`,
-`Destroyable`/`AsyncDestroyable`, `Closeable`/`AsyncCloseable`,
-`Lifecycle`/`Phased`/`SmartLifecycle`) with the `Aware` mixins. The
+`Destroyable`/`AsyncDestroyable`, `Lifecycle`/`Phased`/`ManagedLifecycle`)
+with the `Aware` mixins. The
 2026-11-06 contract-reuse survey grounded this vocabulary in usage: every `equals()`-carrying class declares
 `Equatable`, the container's entry shutdown is duck-typed through the `like*`
 guards, and `ConversionService`/`FormattingService` are wired through the
@@ -1720,7 +1720,8 @@ The working rules:
    names the contract in its `implements` clause; contract _interfaces_
    (`JobDriver`, `OutboxStore`, `LockDriver`) extend the matching lifecycle
    contract so every backend is compiler-checked. The container's duck-typed
-   shutdown (`likeDestroyable`/`likeCloseable`) does not depend on the
+   shutdown (`likeDestroyable` alone — `close()` is not a destruction
+   contract) does not depend on the
    declarations — declarations are compile-time intent, which is why deliberate
    exclusions (self-stopping servers, parameterized `close()`s) are documented
    next to the class.
@@ -1760,12 +1761,13 @@ conditional on platform (`@whenNode`) and environment.
 The context drives two lifecycle passes:
 
 - **Refresh** (`context.refresh()`) — after entries are created, the
-  `LifecycleProcessor` starts `SmartLifecycle` entries that are
+  `LifecycleCoordinator` starts `ManagedLifecycle` entries that are
   `isAutoStartup` (mapping, dispatcher). Ordering is by phase; the mapping
   and dispatcher initialize before the server would start.
-- **Close** (`context.close()`) — the processor stops running lifecycle
-  entries in reverse order, then `_destroyValues()` tears down values that
-  implement `Destroyable`/`Closeable` (including plain `@entry`/`setValue`
+- **Close** (`context.close()`) — the coordinator stops running lifecycle
+  entries in reverse phase order, then `_destroyValues()` releases every
+  managed value in reverse creation order: destruction processors run first,
+  then `destroy()` on `Destroyable` values (including plain `@entry`/`setValue`
   instances). `HTTPServer` is a managed entry created by
   `NodeAutoConfiguration` (not manually); see
   [Guide 04 — Dependency Injection, Scopes & Lifecycle](./docs/guides/04-dependency-injection-and-lifecycle.md) for the full sequence.
@@ -1801,7 +1803,7 @@ before first public release.
 | ---------------------- | ------------------------ | ----------------------------------------------------------------------------------------------------------------- |
 | `@ndigo/boot`          | Bootstrap primitives     | `ApplicationBuilder`, `Application`                                                                               |
 | `@ndigo/context`       | DI container + lifecycle | `Configuration`, `@entry`, context hierarchy                                                                      |
-| `@ndigo/factory`       | Entry lifecycle          | `SmartLifecycle`, `Destroyable`, `Closeable`                                                                      |
+| `@ndigo/factory`       | Entry lifecycle          | `ManagedLifecycle`, `Destroyable`                                                                                 |
 | `@ndigo/dispatcher`    | Routing + dispatch       | mappings, `@parameters` extractors, validation, interceptors, error resolvers                                     |
 | `@ndigo/platform-node` | Node adapter             | `NodeAutoConfiguration`, `HTTPServer`, `NodeDispatcher`, argument resolvers, `ProblemDetails`, `gracefulShutdown` |
 | `@ndigo/http`          | HTTP vocabulary          | `ResponseStatuses`, `HTTPHeaders`                                                                                 |

@@ -1,12 +1,12 @@
 /**
- * The single lifecycle-hook runner shared by `InMemoryEntityManager` and the
+ * The single entity-hook runner shared by `InMemoryEntityManager` and the
  * Drizzle-backed `DrizzleEntityManager`, so every persistence backend fires
  * `@prePersist` / `@postLoad` / `@preUpdate` / `@postRemove` at the same
  * points (DAT-F1).
  */
 import { Constructable } from '@ndigo/core';
 import { getEntityMetadata } from './metadata';
-import type { LifecycleEvent } from './metadata';
+import type { EntityHookEvent } from './metadata';
 
 /**
  * Invokes the hooks registered for `event` on the entity's class, in
@@ -14,16 +14,16 @@ import type { LifecycleEvent } from './metadata';
  * missing at runtime are skipped.
  *
  * @param entity - The entity instance whose hooks run.
- * @param event - The lifecycle event (e.g. `'prePersist'`).
+ * @param event - The entity hook event (e.g. `'prePersist'`).
  *
  * @example
  * ```ts
- * runLifecycleHooks(user, 'prePersist');
+ * runEntityHooks(user, 'prePersist');
  * ```
  */
-export function runLifecycleHooks<T extends object>(entity: T, event: LifecycleEvent): void {
+export function runEntityHooks<T extends object>(entity: T, event: EntityHookEvent): void {
     const entityClass = entity.constructor as Constructable<T>;
-    const hooks = getEntityMetadata(entityClass).lifecycleHooks;
+    const hooks = getEntityMetadata(entityClass).entityHooks;
     if (hooks.length === 0) {
         return;
     }

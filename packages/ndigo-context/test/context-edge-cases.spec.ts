@@ -19,13 +19,13 @@ describe('GenericApplicationContext — teardown of managed values on close', ()
         expect(entry.destroyed).toBe(true);
     });
 
-    test('a plain setValue entry implementing Closeable is closed on close', () => {
+    test('a close-only entry is not released — close is not a destruction contract', () => {
         const context = new GenericApplicationContext('t2');
         const closed = vi.fn();
-        context.setValue('closeableEntry', { close: closed });
+        context.setValue('closeOnlyEntry', { close: closed });
 
         context.close();
-        expect(closed).toHaveBeenCalledTimes(1);
+        expect(closed).not.toHaveBeenCalled();
     });
 
     test('a constructor-registered Destroyable entry is destroyed on close', () => {
@@ -44,16 +44,17 @@ describe('GenericApplicationContext — teardown of managed values on close', ()
         expect(entry.destroyed).toBe(true);
     });
 
-    test('internal state fields and non-lifecycle values are not torn down', () => {
+    test('internal state fields are not torn down', () => {
         const context = new GenericApplicationContext('t4');
         context.setValue('scalarEntry', 42);
 
         context.close();
 
-        // A scalar is not lifecycle-bearing, so it is neither destroyed nor
-        // removed — and internal context state survives intact.
+        // A scalar has no release method, but it is still a managed value:
+        // destruction removes it from the factory, and internal context state
+        // survives intact.
         expect(context.destroyed).toBe(true);
-        expect((context as unknown as { scalarEntry: number }).scalarEntry).toBe(42);
+        expect((context as unknown as { scalarEntry?: number }).scalarEntry).toBeUndefined();
     });
 });
 

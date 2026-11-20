@@ -8,8 +8,8 @@ export type {
     EntityMetadata,
     RelationKind,
     RelationDefinition,
-    LifecycleEvent,
-    LifecycleHookDefinition,
+    EntityHookEvent,
+    EntityHookDefinition,
 } from './metadata';
 export type { DataSource, EntityCloneHook, DataSourceAware } from './data-source';
 export { ENTITY_CLONE, AsDataSourceAware, likeDataSourceAware } from './data-source';
@@ -46,7 +46,7 @@ export type { RelationOptions } from './decorators';
 export { getEntityMetadata, isEntity } from './metadata';
 export { columnTypeFamily } from './column-type';
 export type { ColumnTypeFamily } from './column-type';
-export { runLifecycleHooks } from './lifecycle';
+export { runEntityHooks } from './entity-hooks';
 
 // Zod schema derivation
 export {

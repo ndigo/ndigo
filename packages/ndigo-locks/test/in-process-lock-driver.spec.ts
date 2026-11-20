@@ -134,12 +134,12 @@ describe('InProcessLockDriver', () => {
         const shared = await mustAcquire(driverA, 'tok-9', 10_000);
         await mustAcquire(driverB, 'tok-9b', 10_000);
 
-        await driverB.close();
+        await driverB.destroy();
         // driverB's own handle is gone; driverA's lease lives on.
         expect(await shared.isHeld()).toBe(true);
         await mustAcquire(driverA, 'tok-9b', 10_000);
 
-        await driverA.close();
+        await driverA.destroy();
         await mustAcquire(driverA, 'tok-9', 10_000);
     });
 
@@ -160,8 +160,8 @@ describe('InProcessLockDriver', () => {
     test('likeLockDriver guards the contract shape', async () => {
         const driver = new InProcessLockDriver();
         expect(likeLockDriver(driver)).toBe(true);
-        expect(likeLockDriver({ kind: 'x', acquire: async () => null, close: async () => {} })).toBe(true);
-        expect(likeLockDriver({ kind: 'x', acquire: async () => null })).toBe(false); // close missing
+        expect(likeLockDriver({ kind: 'x', acquire: async () => null, destroy: async () => {} })).toBe(true);
+        expect(likeLockDriver({ kind: 'x', acquire: async () => null })).toBe(false); // destroy missing
         expect(likeLockDriver(null)).toBe(false);
         expect(likeLockDriver(42)).toBe(false);
     });

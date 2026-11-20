@@ -2,7 +2,7 @@
  * The `JobDriver` SPI — the one seam every jobs backend implements.
  */
 import { like } from '@ndigo/util/types';
-import type { AsyncCloseable } from '@ndigo/factory';
+import type { AsyncDestroyable } from '@ndigo/factory';
 
 import type { ClaimOptions, JobId, JobRecord, JobRequest } from './job';
 
@@ -25,7 +25,7 @@ import type { ClaimOptions, JobId, JobRecord, JobRequest } from './job';
  * Implementations are registered under the `jobDriver` entry; the default is
  * {@link "in-process-job-driver".InProcessJobDriver | InProcessJobDriver}, which is explicitly non-durable.
  */
-export interface JobDriver extends AsyncCloseable {
+export interface JobDriver extends AsyncDestroyable {
     /** Backend discriminator (`'in-process'`, `'libsql'`, `'redis'`). */
     readonly kind: string;
 
@@ -97,10 +97,10 @@ export interface JobDriver extends AsyncCloseable {
     size(): Promise<number>;
 
     /**
-     * Releases driver resources (closes owned clients; idempotent). New
-     * operations on a closed driver fail loud.
+     * Releases driver resources (destroys owned clients; idempotent). New
+     * operations on a destroyed driver fail loud.
      */
-    close(): Promise<void>;
+    destroy(): Promise<void>;
 }
 
 /**
@@ -118,5 +118,5 @@ export const likeJobDriver = (value: unknown): value is JobDriver =>
         fail: Function,
         heartbeat: Function,
         size: Function,
-        close: Function,
+        destroy: Function,
     })(value);

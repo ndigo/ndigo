@@ -215,7 +215,7 @@ export class InProcessJobDriver implements JobDriver {
      *
      * @returns A promise that resolves once the driver is closed.
      */
-    async close(): Promise<void> {
+    async destroy(): Promise<void> {
         this.#closed = true;
         this.#jobs.clear();
     }

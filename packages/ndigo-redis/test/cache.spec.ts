@@ -51,8 +51,8 @@ live('Redis cache (live standalone Redis 7.2+)', () => {
     afterEach(async () => {
         // Clear all namespace data before shutting down any client it depends on.
         await Promise.all(stores.splice(0).map((store) => store.clear().catch(() => undefined)));
-        await Promise.all(managers.splice(0).map((item) => item.close()));
-        await Promise.all(connections.splice(0).map((item) => item.close()));
+        await Promise.all(managers.splice(0).map((item) => item.destroy()));
+        await Promise.all(connections.splice(0).map((item) => item.destroy()));
         await Promise.all(
             clients
                 .splice(0)
@@ -228,8 +228,8 @@ live('Redis cache (live standalone Redis 7.2+)', () => {
             await client.ping();
         });
         await started;
-        const close = connection.close();
-        expect(connection.close()).toBe(close);
+        const close = connection.destroy();
+        expect(connection.destroy()).toBe(close);
         await expect(cache.get('key')).rejects.toThrow('closed');
         release();
         await pending;
@@ -247,7 +247,7 @@ live('Redis cache (live standalone Redis 7.2+)', () => {
         const cache = manager.getCache('borrowed');
         await cache.set('value', 1);
         await cache.clear();
-        await manager.close();
+        await manager.destroy();
         expect(await client.ping()).toBe('PONG');
         expect(() => manager.getCache('other')).toThrow('closed');
         await expect(cache.get('value')).rejects.toThrow('closed');
@@ -283,7 +283,7 @@ live('Redis cache (live standalone Redis 7.2+)', () => {
         while (connection.lastError === undefined && Date.now() < deadline) await delay(10);
         expect(connection.lastError).toBeInstanceOf(Error);
         await expect(cache.get('key')).rejects.toThrow();
-        await connection.close();
+        await connection.destroy();
         const replacement = (await manager(namespace)).getCache('outage');
         stores.push(replacement);
         expect(await replacement.get('key')).toBe('visible');
@@ -299,7 +299,7 @@ live('Redis cache (live standalone Redis 7.2+)', () => {
         await expect(startup).rejects.toThrow();
         expect(connection.connect()).toBe(startup);
         expect(connection.lastError).toBeInstanceOf(Error);
-        await connection.close();
+        await connection.destroy();
     });
 });
 

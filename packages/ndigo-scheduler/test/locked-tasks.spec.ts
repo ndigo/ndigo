@@ -63,7 +63,7 @@ describe('TaskScheduler locked tasks', () => {
         time.advance();
         expect(await scheduler.tick()).toBe(1);
         expect(runs).toHaveLength(2);
-        await scheduler.close();
+        await scheduler.destroy();
     });
 
     test('a contended lock skips the fire and keeps the task schedulable', async () => {
@@ -86,7 +86,7 @@ describe('TaskScheduler locked tasks', () => {
         time.advance();
         await held.release();
         expect(await scheduler.tick()).toBe(1);
-        await scheduler.close();
+        await scheduler.destroy();
     });
 
     test('a bounded lockWait acquires as soon as the lock frees', async () => {
@@ -122,7 +122,7 @@ describe('TaskScheduler locked tasks', () => {
 
         expect(runs).toHaveLength(1);
         expect(Date.now() - started).toBeGreaterThan(50); // actually waited
-        await scheduler.close();
+        await scheduler.destroy();
     });
 
     test('a throwing run still releases the lease (finally)', async () => {
@@ -142,7 +142,7 @@ describe('TaskScheduler locked tasks', () => {
             throw new Error('the finally did not release the lease after the throw');
         }
         expect(await probe.release()).toBe(true);
-        await scheduler.close();
+        await scheduler.destroy();
     });
 
     test('a locked task with no lock driver fails loud instead of running unguarded', async () => {
@@ -155,6 +155,6 @@ describe('TaskScheduler locked tasks', () => {
         expect(await scheduler.tick()).toBe(1);
         expect(runs).toHaveLength(0);
         expect(scheduler.getStats('naive')?.lastError).toBeInstanceOf(FrameworkError);
-        await scheduler.close();
+        await scheduler.destroy();
     });
 });

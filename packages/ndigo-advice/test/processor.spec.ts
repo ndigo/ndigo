@@ -11,6 +11,19 @@ import { interception } from '../src/processor';
 import { interceptMethods } from '../src/weave';
 import type { MethodInterceptor } from '../src/interceptor';
 
+/**
+ * `interception(...)` always implements `processAfterInitialization`; the
+ * processor interface leaves its hooks optional, so tests unwrap it
+ * explicitly.
+ */
+const afterInitializationOf = (processor: ReturnType<typeof interception>) => {
+    const hook = processor.processAfterInitialization;
+    if (!hook) {
+        throw new Error('interception() must implement processAfterInitialization');
+    }
+    return hook;
+};
+
 describe('interception() container integration', () => {
     const audited = methodAnnotation<{ action: string }>('orders:audited');
 
@@ -116,7 +129,7 @@ describe('interception() container integration', () => {
 
         const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
         try {
-            const result = processor.processAfterInitialization('orders', standalone);
+            const result = afterInitializationOf(processor)('orders', standalone);
 
             expect(result).toBe(standalone);
             expect(warn).toHaveBeenCalledTimes(1);
@@ -178,8 +191,8 @@ describe('startup diagnostics', () => {
         const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
         try {
-            processor.processAfterInitialization('first', new AnnotatedButUnadvised());
-            processor.processAfterInitialization('second', new AnnotatedButUnadvised());
+            afterInitializationOf(processor)('first', new AnnotatedButUnadvised());
+            afterInitializationOf(processor)('second', new AnnotatedButUnadvised());
 
             expect(warn).toHaveBeenCalledTimes(1);
             expect(warn.mock.calls[0]?.[0]).toContain("declares annotations on 'run'");
@@ -195,7 +208,7 @@ describe('startup diagnostics', () => {
         const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
         try {
-            processor.processAfterInitialization('advised', new Advised());
+            afterInitializationOf(processor)('advised', new Advised());
             expect(warn).not.toHaveBeenCalled();
         } finally {
             warn.mockRestore();
@@ -213,7 +226,7 @@ describe('startup diagnostics', () => {
         const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
         try {
-            processor.processAfterInitialization('plain', new PlainService());
+            afterInitializationOf(processor)('plain', new PlainService());
             expect(warn).not.toHaveBeenCalled();
         } finally {
             warn.mockRestore();

@@ -466,6 +466,29 @@ When organizing helper functions and utilities, follow the extraction hierarchy:
 - Match the standard file-header style observed in adjacent files (TSDoc module doc — a one-line module summary, no tags; no `@module` tag; no author/copyright lines). See STYLE_GUIDE §5.
 - Add to `exports` in `package.json` if the file needs to be part of the public API.
 
+### Agent content (consumer-facing changes)
+
+Consumer-facing changes — a new or changed CLI verb, a package export, a
+registry item, a route, or a config key — also touch the consumer agent
+content:
+
+1. Update the matching skill in the `ndigo-skills` repository (canonical
+   authoring; AD-107) and merge it there first. The optional `package`
+   frontmatter field names the workspace package a skill ships with.
+2. `pnpm agent-content:sync` — the source checkout must be clean, so the
+   recorded commit in `skills.lock.json` identifies the copied files exactly.
+3. `pnpm agent-content:build`, then `pnpm agent-content:check` — commit the
+   snapshot, the lock, and every regenerated output together.
+
+Hand-written skill content stays at or below 120 lines and router-shaped
+(AD-96 D-1): verbs, traps, and an example prompt — facts come from machine
+output (`ndigo commands --json`, `ndigo inspect`, the package `docs/llms.txt`
+index). Generated artifacts are never edited by hand: the vendored `skills/`
+snapshot, `docs-index.md`, `.agent-content.json`, the emitted
+`packages/ndigo-cli/assets/agent/**`, and the per-package `docs/llms.txt` /
+`skills/` copies. The `ndigo-skill-hygiene` skill carries this checklist for
+maintainer sessions.
+
 ## 6. Documentation Standards
 
 ### Documentation Directory Structure

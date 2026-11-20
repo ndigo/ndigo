@@ -26,12 +26,16 @@ export interface MethodDescriptor {
      */
     readonly methodName: PropertyKey;
     /**
-     * Reads the annotation value stored on this method, walking the class
-     * hierarchy (nearest declaration wins). `undefined` when the method
-     * carries none.
+     * Reads the declaration in effect for this method, walking the class
+     * hierarchy (nearest declaration wins). `undefined` when nothing declares
+     * a value for it.
+     *
+     * A member declaration takes precedence; when the member carries none, a
+     * class-level declaration applies — so a blanket `@authenticated` on a
+     * class covers every method of it, exactly as the route guards read it.
      *
      * @param key - The annotation handle to read.
-     * @returns The annotation value, or `undefined` when absent.
+     * @returns The effective annotation value, or `undefined` when absent.
      */
     annotation<T>(key: AnnotationKey<T>): T | undefined;
 }
@@ -135,7 +139,10 @@ export function createMethodDescriptor(
         targetType,
         methodName,
         annotation<T>(key: AnnotationKey<T>): T | undefined {
-            return annotationOf(targetType, key, methodName);
+            // Member first, then the class-level declaration: a blanket
+            // annotation on a class covers every method of it, matching how
+            // `AuthRouteGuard` and the Node adapter read `@authenticated`.
+            return annotationOf(targetType, key, methodName) ?? annotationOf(targetType, key);
         },
     });
 }

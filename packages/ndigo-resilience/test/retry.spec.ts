@@ -2,6 +2,7 @@
  */
 import { describe, expect, it } from 'vitest';
 import {
+    AdviceOrder,
     createMethodDescriptor,
     hasAnnotation,
     interceptMethods,
@@ -215,5 +216,55 @@ describe('@retry under shadow weaving', () => {
         // first rejection escaped; the instance now owns the wrapper, so the
         // nested call is advised.
         expect(attempts).toBe(3);
+    });
+});
+
+describe('interceptor bands', () => {
+    it('resilience sits outside the application band and inside observability', async () => {
+        const order: string[] = [];
+
+        class Service {
+            @retry({ attempts: 3, backoff: fixedBackoff(0) })
+            async run(): Promise<string> {
+                order.push('method');
+                if (order.filter((entry) => entry === 'method').length < 2) {
+                    throw new Error('transient');
+                }
+                return 'ok';
+            }
+        }
+
+        const service = interceptMethods(new Service(), [
+            // Registered first, so it keeps the outer position within its band.
+            { when: hasAnnotation(retry), use: new RetryInterceptor() },
+            {
+                order: AdviceOrder.Observability,
+                use: {
+                    async invoke(_invocation, next) {
+                        order.push('observability');
+                        return next();
+                    },
+                },
+            },
+            // The documented default band: inside resilience.
+            {
+                use: {
+                    async invoke(_invocation, next) {
+                        order.push('application');
+                        return next();
+                    },
+                },
+            },
+        ]);
+
+        await expect(service.run()).resolves.toBe('ok');
+
+        // Observability wraps the retry, so it runs once; the application-band
+        // rule sits inside retry, so it runs once per attempt.
+        expect(order.filter((entry) => entry === 'observability')).toHaveLength(1);
+        expect(order.filter((entry) => entry === 'application')).toHaveLength(2);
+        expect(order.filter((entry) => entry === 'method')).toHaveLength(2);
+        expect(order[0]).toBe('observability');
+        expect(order).toEqual(['observability', 'application', 'method', 'application', 'method']);
     });
 });

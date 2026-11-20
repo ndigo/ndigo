@@ -2,7 +2,7 @@
  * Retry policy, interceptor, and `@retry` annotation.
  */
 import { methodAnnotation } from '@ndigo/core';
-import type { MethodDescriptor, MethodInvocation, MethodInterceptor } from '@ndigo/advice';
+import { AdviceOrder, type MethodDescriptor, type MethodInvocation, type MethodInterceptor } from '@ndigo/advice';
 import { delay } from '@ndigo/util';
 import { CircuitOpenError } from './circuit-breaker';
 import { fixedBackoff, type BackoffPolicy } from './backoff';
@@ -93,6 +93,12 @@ function validateRetrySpec(spec: RetrySpec): void {
  * ```
  */
 export class RetryInterceptor implements MethodInterceptor {
+    /**
+     * The resilience band: retry re-runs the inner chain, so it wraps the
+     * transaction boundary rather than sitting inside it.
+     */
+    readonly order = AdviceOrder.Resilience;
+
     /**
      * The `Symbol.toStringTag` value for this instance.
      *

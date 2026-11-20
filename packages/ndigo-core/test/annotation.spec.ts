@@ -110,7 +110,13 @@ describe('classAnnotation', () => {
             run(): void {}
         }
 
+        // Deliberate: `annotationOf` with a member is the *member* read. The
+        // class-level fallback belongs to the advice-facing reader
+        // (`MethodDescriptor.annotation`), which applies it so a blanket
+        // annotation covers every method — matching how `@authenticated` is
+        // read by the route guards.
         expect(annotationOf(Service, audited, 'run')).toBeUndefined();
+        expect(annotationOf(Service, audited)).toEqual({ action: 'class-wide' });
     });
 
     test('rejects a method target', () => {

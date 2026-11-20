@@ -2,7 +2,7 @@
  * Circuit-breaker policy, interceptor, and `@circuitBreaker` annotation.
  */
 import { ApplicationError, methodAnnotation } from '@ndigo/core';
-import type { MethodDescriptor, MethodInvocation, MethodInterceptor } from '@ndigo/advice';
+import { AdviceOrder, type MethodDescriptor, type MethodInvocation, type MethodInterceptor } from '@ndigo/advice';
 
 /**
  * `@circuitBreaker` annotation key: methods carrying a
@@ -141,6 +141,13 @@ function validateCircuitBreakerSpec(spec: CircuitBreakerSpec): void {
  * ```
  */
 export class CircuitBreakerInterceptor implements MethodInterceptor {
+    /**
+     * The resilience band, tied with retry: both are registered in the same
+     * band, so registration order decides which wraps the other (register the
+     * circuit first to count one failure per chain pass).
+     */
+    readonly order = AdviceOrder.Resilience;
+
     /**
      * The `Symbol.toStringTag` value for this instance.
      *

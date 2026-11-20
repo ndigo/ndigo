@@ -181,13 +181,13 @@ interface MethodInterceptor {
 
 ```ts
 registry.add({
-    when: whenAnnotation(retry),
+    when: hasAnnotation(retry),
     use: new RetryInterceptor(),
     order: AdviceOrder.Resilience,
 });
 ```
 
-`whenAnnotation` — defined in [§6](#6-selection) — is the common matcher factory.
+`hasAnnotation` — defined in [§6](#6-selection) — is the common matcher factory.
 The registry is where independently-discovered rules accumulate; nothing is
 woven until the plan is compiled.
 
@@ -205,7 +205,7 @@ for paths and the dispatcher uses for route conditions. There is no new
 ```ts
 import { matchAll, matchAny, matchNot } from '@ndigo/core';
 
-when: matchAll(whenAnnotation(audited), matchNot(whenAnnotation(noAudit)), (method) => method.methodName !== 'health');
+when: matchAll(hasAnnotation(audited), matchNot(hasAnnotation(noAudit)), (method) => method.methodName !== 'health');
 ```
 
 `matchAll`, `matchAny`, and `matchNot` are combinators that live beside
@@ -246,8 +246,8 @@ built from core's `compareBy` + `numberComparator`, so the sequence of
 `registry.add` calls is a deterministic tiebreaker:
 
 ```ts
-registry.add({ when: whenAnnotation(audited), use: new AuditInterceptor(), order: AdviceOrder.Application });
-registry.add({ when: whenAnnotation(retry), use: new RetryInterceptor(), order: AdviceOrder.Resilience });
+registry.add({ when: hasAnnotation(audited), use: new AuditInterceptor(), order: AdviceOrder.Application });
+registry.add({ when: hasAnnotation(retry), use: new RetryInterceptor(), order: AdviceOrder.Resilience });
 registry.add({ use: new MetricsInterceptor(), order: AdviceOrder.Observability });
 ```
 
@@ -350,10 +350,10 @@ only in where the plan is applied.
 
 ### Container weaving
 
-The preset registers one weaver as an initialization-aware entry processor. It
-runs after construction and after `ApplicationContextAwareProcessor` has
-injected the context, so advice can rely on `this.applicationContext` being
-present.
+The application registers one weaver as an initialization-aware entry
+processor — `builder.processors(interception(rules))`. It runs after
+construction and after `ApplicationContextAwareProcessor` has injected the
+context, so advice can rely on `this.applicationContext` being present.
 
 **Shadow weaving is the default for object instances.** The weaver installs the
 advised methods as own properties on the instance, each wrapping the prototype
@@ -400,7 +400,7 @@ instance itself.
 import { interceptMethods } from '@ndigo/advice';
 
 const service = interceptMethods(new OrderService(), [
-    { when: whenAnnotation(retry), use: new RetryInterceptor(), order: AdviceOrder.Resilience },
+    { when: hasAnnotation(retry), use: new RetryInterceptor(), order: AdviceOrder.Resilience },
 ]);
 ```
 
@@ -445,14 +445,16 @@ metadata.
 The common matcher factory:
 
 ```ts
-function whenAnnotation<T>(key: AnnotationKey<T>): Matchable<MethodDescriptor>;
+function hasAnnotation<T>(key: AnnotationKey<T>, accept?: (value: T) => boolean): Matchable<MethodDescriptor>;
 ```
 
 It matches when the method — or its declaring class — carries a value under
-`key`. The two reads are distinct metadata keys (`ns:name:member` vs
-`ns:name`), so there is no ambiguity; a class-level declaration covers every
-method of the class, which is what `@authenticated` and `@rateLimit` mean when
-applied to a class.
+`key`, optionally narrowed by `accept`. The two reads are distinct metadata keys
+(`ns:name:member` vs `ns:name`), so there is no ambiguity; a class-level
+declaration covers every method of the class, which is what `@authenticated`
+and `@rateLimit` mean when applied to a class. The fallback lives in
+`MethodDescriptor.annotation`, so a matcher and the interceptor it selects for
+always agree on the effective value.
 
 The combinators:
 
@@ -494,10 +496,10 @@ class OrderService {
 **Execute without a container.**
 
 ```ts
-import { AdviceOrder, interceptMethods, whenAnnotation } from '@ndigo/advice';
+import { AdviceOrder, interceptMethods, hasAnnotation } from '@ndigo/advice';
 
 const service = interceptMethods(new OrderService(), [
-    { when: whenAnnotation(retry), use: new RetryInterceptor(), order: AdviceOrder.Resilience },
+    { when: hasAnnotation(retry), use: new RetryInterceptor(), order: AdviceOrder.Resilience },
 ]);
 
 await service.submit();

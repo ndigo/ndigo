@@ -3,17 +3,23 @@
  */
 import { compareBy, numberComparator } from '@ndigo/core';
 
+import { DEFAULT_ADVICE_ORDER } from './order';
 import type { MethodInterceptor, MethodInterceptorRule, MethodInvocation } from './interceptor';
 
 /**
  * The order a rule's advice executes in: the rule's own `order` when set,
- * otherwise the interceptor's, otherwise `0`.
+ * otherwise the interceptor's, otherwise {@link DEFAULT_ADVICE_ORDER}.
+ *
+ * The default band matters. An unordered rule that fell to the outermost
+ * position would wrap observability, turning one span per call into one span
+ * per retry attempt; landing in `Application` keeps it inside the framework
+ * concerns it has no opinion about.
  *
  * @param rule - The rule to read.
  * @returns The effective order.
  */
 export function ruleOrder(rule: MethodInterceptorRule): number {
-    return rule.order ?? rule.use.order ?? 0;
+    return rule.order ?? rule.use.order ?? DEFAULT_ADVICE_ORDER;
 }
 
 /**

@@ -358,6 +358,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `{ methods? }` and `{ extraGlobals? }` and leave path scoping to the
   consuming config's `overrides` (both opt-in — a pure browser app should not
   see the global guard).
+- `@ndigo/advice` (new): runs the advice annotations declare. A
+  `MethodInterceptorRule` pairs a `Matchable<MethodDescriptor>` with a
+  `MethodInterceptor`, `MethodInterceptorRegistry` lets features contribute
+  rules independently, and one `interception(...)` processor compiles them into
+  one advice chain per method. Shadow weaving is the default — identity is
+  preserved and self-invocation is advised — with a `Proxy` fallback for
+  frozen, sealed, and function-shaped targets. `interceptMethods` and
+  `createIntercepted` run the same compiler without a container
+  ([AD-110](docs/decisions/2026-11-20_AD110_ANNOTATION_EXECUTION_RUNTIME.md)).
+- `@ndigo/core`: annotation primitives — `AnnotationKey`,
+  `methodAnnotation`, `classAnnotation`, `annotationOf` (inheritance walk), and
+  `ensureSymbolMetadata` — plus `matchAll`, `matchAny`, and `matchNot` beside
+  `Matchable`. Keys follow `<namespace>:<name>[:<member>]`, where the namespace
+  names the declaring package.
 - `@ndigo/cli`: `ndigo lint init [dir] [--kind node|browser] [--force]
   [--json]` writes the recommended `.oxlintrc.json`, adds a `lint` script and
   the `oxlint` + `@ndigo/oxlint-plugin` dev dependencies, and refuses when an
@@ -368,6 +382,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Annotation and advice model ([AD-110](docs/decisions/2026-11-20_AD110_ANNOTATION_EXECUTION_RUNTIME.md)):
+  `@cached`, `@traced`, `@counted`, and `@transactional` now declare instead of
+  wrapping the method, and an interceptor runs each one. A decorated method on
+  an unadvised instance is inert, so applications register a rule for the
+  capabilities they use — the container processor warns once per class when an
+  annotation nothing claims would otherwise run silently. `@transactional`
+  nesting joins the open boundary instead of opening a second one.
+  `@traced`/`@counted` advisory stays synchronous, so a sync method stays sync.
+  See the [migration guide](docs/migrations/2026-11-20_ANNOTATION_ADVICE_MODEL.md).
+- Selection moved out of interceptors: `MethodInterceptor.matches` is replaced
+  by a rule's `when` matcher, and fail-loud spec checking moves to
+  `validate(method)`, called once when the plan is compiled. Ordering is a
+  stable sort on the rule's `order`, then the interceptor's, then
+  `AdviceOrder.Application`; the shipped capabilities name their own band.
 - Lint rule keys follow one naming scheme: `no-*` (prohibition), `require-*`
   (requirement), `valid-*` (well-formedness). Renamed:
   `no-cross-paradigm-decorators` → `no-mixed-decorator-paradigms`,
@@ -564,6 +592,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- `@ndigo/proxy` is removed with no alias ([AD-110](docs/decisions/2026-11-20_AD110_ANNOTATION_EXECUTION_RUNTIME.md));
+  `@ndigo/advice` replaces it. Selection moves to the rule, weaving defaults to
+  shadow weaving, and annotation keys move to the declaring package's namespace
+  (`proxy:retry` → `resilience:retry`, `cache:<method>` →
+  `cache:cached:<method>`).
 - `@ndigo/content`, `@ndigo/context`, `@ndigo/dispatcher`: the deprecated
   `ThemeResolver`, `StaticThemeResolver`, `CompositeThemeResolver`,
   `likeThemeResolver`, `setThemeResolver`, and `resolveTheme` aliases are

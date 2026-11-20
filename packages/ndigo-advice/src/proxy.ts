@@ -15,6 +15,7 @@ import { invokeChain } from './chain';
 import { enumerateMethodNames, methodSurfaceOf } from './shadow';
 import type { MethodInvocation } from './interceptor';
 import type { MethodPlan } from './plan';
+import { createAdviceWrapper } from './wrapper';
 
 /**
  * Wraps `target` in a `Proxy` that advises the compiled plans.
@@ -54,14 +55,16 @@ export function weaveMethodProxy(target: object, plans: readonly MethodPlan[]): 
                             // The descriptor half of the invocation is
                             // immutable per method — build it once here.
                             const base = { ...plan.descriptor };
-                            wrapper = (...args: unknown[]): unknown => {
+                            wrapper = createAdviceWrapper(installed, (...args: unknown[]): unknown => {
                                 const invocation: MethodInvocation = { ...base, target: current, args };
                                 return invokeChain(plan.interceptors, invocation, () =>
                                     Reflect.apply(installed, current, args)
                                 );
-                            };
+                            });
                         } else {
-                            wrapper = (...args: unknown[]): unknown => Reflect.apply(installed, current, args);
+                            wrapper = createAdviceWrapper(installed, (...args: unknown[]): unknown =>
+                                Reflect.apply(installed, current, args)
+                            );
                         }
                         wrappers.set(key, wrapper);
                     }

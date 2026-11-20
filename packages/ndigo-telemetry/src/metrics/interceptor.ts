@@ -8,7 +8,7 @@
  */
 import '@tsmetadata/polyfill';
 import { methodAnnotation, type AnnotationKey } from '@ndigo/core';
-import type { MethodInterceptor, MethodInvocation } from '@ndigo/advice';
+import { AdviceOrder, type MethodInterceptor, type MethodInvocation } from '@ndigo/advice';
 import type { LogAttributes } from '@ndigo/log';
 import type { ApplicationContext } from '@ndigo/context';
 import { createLazyCounter } from './lazy-counter';
@@ -113,6 +113,12 @@ function resolveAggregator(
  * ```
  */
 export class CountedInterceptor implements MethodInterceptor {
+    /**
+     * The observability band: one increment per call, not one per retry
+     * attempt.
+     */
+    readonly order = AdviceOrder.Observability;
+
     /**
      * The `Symbol.toStringTag` value for this instance.
      *

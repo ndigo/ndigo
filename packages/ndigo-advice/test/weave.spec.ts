@@ -3,9 +3,10 @@
  */
 import '@tsmetadata/polyfill';
 import { describe, test, expect, vi } from 'vitest';
-import { methodAnnotation } from '@ndigo/core';
+import { classAnnotation, methodAnnotation } from '@ndigo/core';
 
-import { hasAnnotation, AdviceOrder } from '../src/matchers';
+import { hasAnnotation } from '../src/matchers';
+import { AdviceOrder, DEFAULT_ADVICE_ORDER } from '../src/order';
 import { MethodInterceptorRegistry } from '../src/registry';
 import { createIntercepted, interceptMethods, planFor, weaveInstance } from '../src/weave';
 import type { MethodInterceptor } from '../src/interceptor';
@@ -150,6 +151,60 @@ describe('proxy fallback', () => {
     });
 });
 
+describe('wrapper transparency', () => {
+    class Handled {
+        @audited({ action: 'handle' })
+        handle(path: string, extra: number): string {
+            return `${path}:${extra}`;
+        }
+    }
+
+    const handler = { when: hasAnnotation(audited), use: recorder([]) };
+
+    /**
+     * The shape the dispatcher reads `@parameters` names from: it calls
+     * `fn.toString()` (`_decorator-util.ts`), so this mirrors that call rather
+     * than forcing `Function.prototype.toString`.
+     *
+     * @param fn - The method to inspect.
+     * @returns The declared parameter names.
+     */
+    function parameterNames(fn: (...args: never[]) => unknown): string[] {
+        const match = fn.toString().match(/(?:function\s*)?[^(]*\(([^)]*)\)/);
+        return (match?.[1] ?? '')
+            .split(',')
+            .map((name) => name.trim())
+            .filter(Boolean);
+    }
+
+    test('advice does not change what the method source reveals', () => {
+        // Framework code resolves `@parameters` names by reading the function
+        // source, so a wrapped method must read exactly like the declared one.
+        const declared = parameterNames(Handled.prototype.handle);
+        expect(declared).toEqual(['path', 'extra']);
+
+        const advised = interceptMethods(new Handled(), [handler]);
+        expect(parameterNames(advised.handle)).toEqual(['path', 'extra']);
+    });
+
+    test('advice preserves the declared arity and name', () => {
+        const advised = interceptMethods(new Handled(), [handler]);
+
+        expect(advised.handle.length).toBe(2);
+        expect(advised.handle.name).toBe('handle');
+        // Still a distinct function: wrapping is the point.
+        expect(advised.handle).not.toBe(Handled.prototype.handle);
+    });
+
+    test('the proxy fallback is transparent too', () => {
+        const frozen = Object.freeze(new Handled());
+        const advised = interceptMethods(frozen, [handler]);
+
+        expect(parameterNames(advised.handle)).toEqual(['path', 'extra']);
+        expect(advised.handle.length).toBe(2);
+    });
+});
+
 describe('registry', () => {
     test('keeps registration order and skips identity duplicates', () => {
         const registry = new MethodInterceptorRegistry();
@@ -205,12 +260,142 @@ describe('hasAnnotation', () => {
     });
 });
 
+describe('class-level declarations', () => {
+    const guarded = classAnnotation<{ scope: string }>('probe:guarded');
+
+    @guarded({ scope: 'class-wide' })
+    class GuardedService {
+        one(): string {
+            return 'one';
+        }
+
+        @audited({ action: 'specific' })
+        two(): string {
+            return 'two';
+        }
+    }
+
+    // A member declaration outranks the class's, so the blanket value must not
+    // overwrite a method that declared its own.
+    class MixedService {
+        @audited({ action: 'own' })
+        one(): string {
+            return 'one';
+        }
+
+        two(): string {
+            return 'two';
+        }
+    }
+
+    test('a class-level declaration covers every member', () => {
+        const plans = planFor(new GuardedService(), [{ when: hasAnnotation(guarded), use: recorder([]) }]);
+
+        expect(plans.map((plan) => plan.descriptor.methodName)).toEqual(['one', 'two']);
+    });
+
+    test('an interceptor reads the class-level value for an undeclared member', () => {
+        const seen: (string | undefined)[] = [];
+        const service = interceptMethods(new GuardedService(), [
+            {
+                when: hasAnnotation(guarded),
+                use: {
+                    invoke(invocation, next) {
+                        seen.push(invocation.annotation(guarded)?.scope);
+                        return next();
+                    },
+                },
+            },
+        ]);
+
+        service.one();
+        expect(seen).toEqual(['class-wide']);
+    });
+
+    test('a member declaration is not shadowed by the class-level one', () => {
+        class PartiallyGuarded extends GuardedService {}
+
+        @guarded({ scope: 'class-wide' })
+        class Child extends PartiallyGuarded {}
+
+        // `two` declares its own `audited`; the class-level `guarded` still
+        // resolves for it, and the member value wins for `audited`.
+        const plans = planFor(new Child(), [{ when: hasAnnotation(audited), use: recorder([]) }]);
+
+        expect(plans.map((plan) => plan.descriptor.methodName)).toEqual(['two']);
+    });
+
+    test('class-level values do not leak into an unrelated member read', () => {
+        const plans = planFor(new MixedService(), [{ when: hasAnnotation(guarded), use: recorder([]) }]);
+
+        expect(plans).toEqual([]);
+    });
+});
+
 describe('AdviceOrder', () => {
     test('bands are ordered outermost-first', () => {
         expect(AdviceOrder.Observability).toBeLessThan(AdviceOrder.Resilience);
         expect(AdviceOrder.Resilience).toBeLessThan(AdviceOrder.Transaction);
         expect(AdviceOrder.Transaction).toBeLessThan(AdviceOrder.Application);
         expect(AdviceOrder.Application).toBeLessThan(AdviceOrder.Innermost);
+    });
+
+    test('a rule that names no order lands in the Application band', () => {
+        // Not outermost: an unordered rule must not wrap observability, or one
+        // traced call would become one span per retry attempt.
+        expect(DEFAULT_ADVICE_ORDER).toBe(AdviceOrder.Application);
+
+        const log: string[] = [];
+
+        class Service {
+            run(): void {
+                log.push('run');
+            }
+        }
+
+        const service = interceptMethods(new Service(), [
+            { use: recorder(log, 'unordered') },
+            { use: recorder(log, 'observability'), order: AdviceOrder.Observability },
+        ]);
+
+        service.run();
+        expect(log).toEqual(['observability:run', 'unordered:run', 'run']);
+    });
+
+    test('an interceptor order is used when the rule names none', () => {
+        const log: string[] = [];
+
+        class Service {
+            run(): void {
+                log.push('run');
+            }
+        }
+
+        const service = interceptMethods(new Service(), [
+            { use: { order: AdviceOrder.Observability, ...recorder(log, 'banded') } },
+            { use: recorder(log, 'unordered') },
+        ]);
+
+        service.run();
+        expect(log).toEqual(['banded:run', 'unordered:run', 'run']);
+    });
+
+    test('a rule order overrides the interceptor band', () => {
+        const log: string[] = [];
+
+        class Service {
+            run(): void {
+                log.push('run');
+            }
+        }
+
+        const service = interceptMethods(new Service(), [
+            { use: { order: AdviceOrder.Observability, ...recorder(log, 'moved') }, order: AdviceOrder.Innermost },
+            { use: recorder(log, 'default') },
+        ]);
+
+        service.run();
+        expect(log).toEqual(['default:run', 'moved:run', 'run']);
     });
 
     test('registrations interleave by band, not by feature', () => {

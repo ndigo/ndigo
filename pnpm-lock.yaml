@@ -576,6 +576,9 @@ importers:
 
   apps/03-ndigo-todo-web:
     dependencies:
+      '@ndigo/advice':
+        specifier: ~0.0.1
+        version: link:../../packages/ndigo-advice
       '@ndigo/auth-client':
         specifier: ~0.0.1
         version: link:../../packages/ndigo-auth-client

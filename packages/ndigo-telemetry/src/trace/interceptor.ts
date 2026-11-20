@@ -8,7 +8,7 @@
  */
 import '@tsmetadata/polyfill';
 import { methodAnnotation, type AnnotationKey } from '@ndigo/core';
-import type { MethodInterceptor, MethodInvocation } from '@ndigo/advice';
+import { AdviceOrder, type MethodInterceptor, type MethodInvocation } from '@ndigo/advice';
 import { SpanStatusCode, trace } from '@opentelemetry/api';
 import type { Tracer } from '@opentelemetry/api';
 
@@ -53,6 +53,12 @@ export function getTracedTracer(): Tracer {
  * ```
  */
 export class TracedInterceptor implements MethodInterceptor {
+    /**
+     * The observability band: a span must see a retry and its failures as one
+     * call, not be re-run per attempt.
+     */
+    readonly order = AdviceOrder.Observability;
+
     /**
      * The `Symbol.toStringTag` value for this instance.
      *

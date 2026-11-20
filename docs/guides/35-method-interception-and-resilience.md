@@ -188,9 +188,17 @@ numbers relative to every other feature:
 | `Application`   | 400   | Feature-specific policy                                                            |
 | `Innermost`     | 500   | Closest to the method                                                              |
 
-Sorting is stable on the effective order (`rule.order ?? use.order ?? 0`), so
-equal orders keep registration order and later registrations nest inside
-earlier ones. `matchAll`, `matchAny`, and `matchNot` compose matchers.
+A rule that names no order — and whose interceptor names none either — lands in
+`AdviceOrder.Application`. Sorting is stable on the effective order
+(`rule.order ?? use.order ?? DEFAULT_ADVICE_ORDER`), so equal orders keep
+registration order and later registrations nest inside earlier ones.
+`matchAll`, `matchAny`, and `matchNot` compose matchers.
+
+The shipped capabilities name their own band, so registering them needs no
+numbers: `TracedInterceptor` and `CountedInterceptor` sit in `Observability`,
+`RetryInterceptor` and `CircuitBreakerInterceptor` in `Resilience`,
+`TransactionalInterceptor` in `Transaction`, and `CachedInterceptor` in
+`Application`.
 
 ## 6. Resilience policies (`@ndigo/resilience`)
 

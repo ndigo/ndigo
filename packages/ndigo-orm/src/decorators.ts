@@ -22,7 +22,7 @@ import {
 } from './metadata';
 import type { TransactionManager } from './transaction-manager';
 import { methodAnnotation, type AnnotationKey } from '@ndigo/core';
-import type { MethodInterceptor, MethodInvocation } from '@ndigo/advice';
+import { AdviceOrder, type MethodInterceptor, type MethodInvocation } from '@ndigo/advice';
 import { Constructable } from '@ndigo/core';
 
 type ClassType = new (...args: unknown[]) => unknown;
@@ -407,6 +407,12 @@ export function transactional() {
  * ```
  */
 export class TransactionalInterceptor implements MethodInterceptor {
+    /**
+     * The transaction band: inside resilience, so a retry starts a fresh
+     * transaction per attempt rather than retrying inside one boundary.
+     */
+    readonly order = AdviceOrder.Transaction;
+
     /**
      * The `Symbol.toStringTag` value for this instance.
      *

@@ -4,7 +4,7 @@
 import { getErrorMessage } from '@ndigo/util';
 import '@tsmetadata/polyfill';
 import { annotationOf, methodAnnotation, type AnnotationKey } from '@ndigo/core';
-import type { MethodInterceptor, MethodInvocation } from '@ndigo/advice';
+import { AdviceOrder, type MethodInterceptor, type MethodInvocation } from '@ndigo/advice';
 import { isDevMode, type ApplicationContext } from '@ndigo/context';
 import { CACHE_MANAGER } from './context-tokens';
 import { Cache, CacheMiss } from './cache';
@@ -182,6 +182,12 @@ export function cached(spec: CachedSpec = {}) {
  * ```
  */
 export class CachedInterceptor implements MethodInterceptor {
+    /**
+     * The application band: a cache sits inside resilience, so a retry
+     * re-runs the real computation and the result is stored once.
+     */
+    readonly order = AdviceOrder.Application;
+
     /**
      * The `Symbol.toStringTag` value for this instance.
      *

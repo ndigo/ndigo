@@ -24,6 +24,7 @@
  * See {@link canShadowWeave}.
  */
 import type { MethodPlan } from './plan';
+import { createAdviceWrapper } from './wrapper';
 import { invokeChain } from './chain';
 import type { MethodInvocation } from './interceptor';
 
@@ -217,14 +218,14 @@ export function shadowWeave<T extends object>(instance: T, plans: readonly Metho
         // The descriptor half of the invocation is immutable per method —
         // build it once here, not per call.
         const base = { ...descriptor };
-        const wrapper = (...args: unknown[]): unknown => {
+        const wrapper = createAdviceWrapper(installed, (...args: unknown[]): unknown => {
             const invocation: MethodInvocation = {
                 ...base,
                 target: instance,
                 args,
             };
             return invokeChain(interceptors, invocation, () => Reflect.apply(installed, instance, args));
-        };
+        });
 
         // Non-enumerable, matching the prototype method it shadows, so
         // enumeration and serialization see the same shape as before.

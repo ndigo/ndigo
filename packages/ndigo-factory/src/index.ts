@@ -3,6 +3,7 @@
  */
 export * from './aware';
 export * from './context-tokens';
+export * from './lifecycle-annotations';
 export * from './entry-processor';
 export * from './factory';
 export * from './lifecycle';

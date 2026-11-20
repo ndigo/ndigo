@@ -27,6 +27,7 @@ import { AsModuleResourceLoader } from './resource';
 import { ApplicationContext } from './context-interfaces';
 import { defineProperty, ownKeys } from './context-shared';
 import { ApplicationContextAwareProcessor } from './application-context-aware-processor';
+import { LifecycleAnnotationProcessor } from '@ndigo/factory';
 import { resolveSchemaConfig } from './schema-config';
 import type { z } from 'zod';
 import { getLogger, type Logger, LoggerFactory, levelToSeverityNumber } from '@ndigo/log';
@@ -754,6 +755,14 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
 
         if (!hasAwareProcessor) {
             this.addProcessor(new ApplicationContextAwareProcessor(this));
+        }
+
+        const hasLifecycleAnnotationProcessor = this.processors.some(
+            (processor) => processor instanceof LifecycleAnnotationProcessor
+        );
+
+        if (!hasLifecycleAnnotationProcessor) {
+            this.addProcessor(new LifecycleAnnotationProcessor());
         }
     }
 

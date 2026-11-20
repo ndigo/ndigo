@@ -216,6 +216,54 @@ than once, so guard the body. Async teardown is not awaited by the synchronous
 wait for it, `await` the resource's `destroy()` before closing the context (or
 list it in `gracefulShutdown`'s resources, Guide 01).
 
+### Annotation form
+
+The same hook positions are available as method annotations. They are
+metadata-only declarations: they write a marker and run nothing on their own;
+the container's processor invokes the declared method at the matching position.
+Standalone `new` instances stay inert.
+
+| Annotation    | Runs                                                           |
+| ------------- | -------------------------------------------------------------- |
+| `@preInit`    | After property population and aware injection, before `init()` |
+| `@postInit`   | After `init()`, before the instance is served                  |
+| `@preDestroy` | Before the release verb, on every release path                 |
+
+Method shape: no arguments, return value ignored, synchronous. A `@preInit` /
+`@postInit` failure propagates like an `init()` failure (a half-initialized
+instance is never served); a `@preDestroy` failure follows the container's
+teardown isolation. `@postConstruct` is deliberately absent — the post-DI
+moment is named `@preInit`.
+
+```ts
+import { preDestroy, preInit, postInit } from '@ndigo/factory';
+
+class Pool {
+    @preInit()
+    prepare(): void {
+        // runs after injection, before init()
+    }
+
+    init(): void {
+        // open connections
+    }
+
+    @postInit()
+    afterInit(): void {
+        // runs after init()
+    }
+
+    @preDestroy()
+    beforeRelease(): void {
+        // runs before destroy()
+    }
+
+    destroy(): void {
+        // release connections
+    }
+}
+```
+
 ## 6. Parent/child contexts and events
 
 A child context inherits **entry lookups** and shared dependencies from its

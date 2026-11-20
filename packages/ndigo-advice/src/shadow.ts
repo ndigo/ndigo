@@ -23,7 +23,7 @@
  * on a shared prototype — cannot be shadowed and require the Proxy fallback.
  * See {@link canShadowWeave}.
  */
-import type { MethodPlan } from './plan';
+import type { MethodInterceptorPlan } from './plan';
 import { createAdviceWrapper } from './wrapper';
 import { invokeChain } from './chain';
 import type { MethodInvocation } from './interceptor';
@@ -185,10 +185,10 @@ export function isShadowWoven(instance: object): boolean {
  *
  * @example
  * ```ts
- * shadowWeave(service, compileMethodPlan(Service, 'service', names, rules));
+ * shadowWeave(service, compileInterceptorPlan(Service, 'service', names, rules));
  * ```
  */
-export function shadowWeave<T extends object>(instance: T, plans: readonly MethodPlan[]): T {
+export function shadowWeave<T extends object>(instance: T, plans: readonly MethodInterceptorPlan[]): T {
     if (SHADOW_WOVEN.has(instance) || plans.length === 0) {
         return instance;
     }

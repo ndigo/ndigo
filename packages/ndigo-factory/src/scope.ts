@@ -3,7 +3,7 @@
  */
 import { toError } from '@ndigo/util';
 import '@tsmetadata/polyfill';
-import { IllegalStateError } from '@ndigo/core';
+import { annotationOf, classAnnotation, ensureSymbolMetadata, IllegalStateError } from '@ndigo/core';
 import { getLogger } from '@ndigo/log';
 
 const logger = getLogger('ndigo-factory:scope');
@@ -54,16 +54,10 @@ export interface ScopedFactory {
     registerScope(name: string, scope: Scope): void;
 }
 
-const SCOPE_KEY = 'scope:mapping';
-
-const getConstructor = (target: unknown): (Function & { [Symbol.metadata]?: Record<string, unknown> }) | undefined => {
-    if (typeof target === 'function') {
-        return target as Function & { [Symbol.metadata]?: Record<string, unknown> };
-    }
-    return (target as object | undefined)?.constructor as
-        | (Function & { [Symbol.metadata]?: Record<string, unknown> })
-        | undefined;
-};
+/**
+ * `@scope` annotation key: the scope name declared for a class.
+ */
+const scopeMapping = classAnnotation<PossibleScope>('scope:mapping');
 
 /**
  * Defines scope metadata on a class
@@ -71,18 +65,7 @@ const getConstructor = (target: unknown): (Function & { [Symbol.metadata]?: Reco
  * @param target - - Class constructor
  */
 export const defineScope = (value: PossibleScope, target: unknown): void => {
-    const ctor = getConstructor(target);
-    if (!ctor) return;
-
-    // Trust: ctor has Symbol.metadata from @tsmetadata/polyfill at runtime.
-    // The TS Function type doesn't declare it — this cast is needed.
-    const ctorWithMeta = ctor as Function & {
-        [Symbol.metadata]: Record<string, unknown>;
-    };
-    if (!ctorWithMeta[Symbol.metadata]) {
-        ctorWithMeta[Symbol.metadata] = {};
-    }
-    ctorWithMeta[Symbol.metadata][SCOPE_KEY] = value;
+    ensureSymbolMetadata(target)[scopeMapping.key] = value;
 };
 
 /**
@@ -91,8 +74,7 @@ export const defineScope = (value: PossibleScope, target: unknown): void => {
  * @returns Scope name or undefined
  */
 export const getScope = (target: unknown): PossibleScope | undefined => {
-    const ctor = getConstructor(target);
-    return ctor?.[Symbol.metadata]?.[SCOPE_KEY] as PossibleScope | undefined;
+    return annotationOf(target, scopeMapping);
 };
 
 /**
@@ -101,8 +83,7 @@ export const getScope = (target: unknown): PossibleScope | undefined => {
  * @returns Whether or not the target has a scope mapping defined
  */
 export const hasScope = (target: unknown): boolean => {
-    const ctor = getConstructor(target);
-    return ctor?.[Symbol.metadata]?.[SCOPE_KEY] !== undefined;
+    return annotationOf(target, scopeMapping) !== undefined;
 };
 
 /**
@@ -112,8 +93,10 @@ export const hasScope = (target: unknown): boolean => {
  */
 export function scope(scopeName: PossibleScope) {
     return function <T extends new (...args: never[]) => unknown>(target: T, context: ClassDecoratorContext): T {
-        // Store scope in TC39 metadata
-        context.metadata[SCOPE_KEY] = scopeName;
+        // NOTE: AnnotationDecorator is a class-or-method union; the decorator
+        // itself rejects the method half.
+        const declareClass = scopeMapping(scopeName) as unknown as (value: T, context: ClassDecoratorContext) => void;
+        declareClass(target, context);
 
         return target;
     };

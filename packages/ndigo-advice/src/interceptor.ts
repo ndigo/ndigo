@@ -63,8 +63,14 @@ export interface MethodInvocation extends MethodDescriptor {
  */
 export interface MethodInterceptor {
     /**
-     * Order relative to other interceptors; lower runs closer to the caller
-     * (outermost). Missing order is `0`; ties keep registration order.
+     * The interceptor's natural band — lower runs closer to the caller
+     * (outermost). A capability declares where it belongs so an application
+     * gets the safe arrangement without naming numbers: retry outside a
+     * transaction, observability outside retry.
+     *
+     * A rule's own `order` overrides it, because the composition decides the
+     * position and one interceptor may sit in different bands per rule. When
+     * neither names one, the rule lands in `AdviceOrder.Application`.
      */
     readonly order?: number;
     /**

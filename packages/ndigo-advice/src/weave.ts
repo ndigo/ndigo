@@ -5,7 +5,7 @@
  * behaves identically whether an object came from a factory or was
  * constructed directly.
  */
-import { compileMethodPlan, type MethodPlan } from './plan';
+import { compileInterceptorPlan, type MethodInterceptorPlan } from './plan';
 import { weaveMethodProxy } from './proxy';
 import { MethodInterceptorRegistry } from './registry';
 import {
@@ -111,7 +111,7 @@ export function weaveInstance(
     }
 
     const registered = rules instanceof MethodInterceptorRegistry ? rules.rules : rules;
-    const plans = compileMethodPlan(targetTypeOf(instance), entryName, enumerateMethodNames(instance), registered);
+    const plans = compileInterceptorPlan(targetTypeOf(instance), entryName, enumerateMethodNames(instance), registered);
     return weavePlans(instance, plans);
 }
 
@@ -127,7 +127,7 @@ export function weaveInstance(
  * @param plans - The compiled per-method plans.
  * @returns The instance to use and the strategy that produced it.
  */
-export function weavePlans(instance: object, plans: readonly MethodPlan[]): WeaveResult<object> {
+export function weavePlans(instance: object, plans: readonly MethodInterceptorPlan[]): WeaveResult<object> {
     if (plans.length === 0) {
         return { instance, strategy: 'none' };
     }
@@ -214,7 +214,7 @@ export function planFor(
     instance: object,
     rules: MethodInterceptorRegistry | readonly MethodInterceptorRule[],
     entryName: string = entryNameOf(instance)
-): MethodPlan[] {
+): MethodInterceptorPlan[] {
     const registered = rules instanceof MethodInterceptorRegistry ? rules.rules : rules;
-    return compileMethodPlan(targetTypeOf(instance), entryName, enumerateMethodNames(instance), registered);
+    return compileInterceptorPlan(targetTypeOf(instance), entryName, enumerateMethodNames(instance), registered);
 }

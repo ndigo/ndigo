@@ -13,7 +13,7 @@ import {
 /**
  * One method with the advice that runs around it, fixed at weave time.
  */
-export interface MethodPlan {
+export interface MethodInterceptorPlan {
     /** The method's static descriptor. */
     readonly descriptor: MethodDescriptor;
     /** The matched, ordered advice chain. */
@@ -36,17 +36,17 @@ export interface MethodPlan {
  *
  * @example
  * ```ts
- * const plans = compileMethodPlan(OrderService, 'orderService', ['submit'], rules);
+ * const plans = compileInterceptorPlan(OrderService, 'orderService', ['submit'], rules);
  * ```
  */
-export function compileMethodPlan(
+export function compileInterceptorPlan(
     targetType: Function,
     entryName: string,
     methodNames: readonly PropertyKey[],
     rules: readonly MethodInterceptorRule[]
-): MethodPlan[] {
+): MethodInterceptorPlan[] {
     const ordered = sortRules(rules);
-    const plans: MethodPlan[] = [];
+    const plans: MethodInterceptorPlan[] = [];
 
     for (const methodName of methodNames) {
         const descriptor = createMethodDescriptor(targetType, entryName, methodName);

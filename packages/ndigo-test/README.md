@@ -70,8 +70,8 @@ Interceptor denials are finalized by the same helper as the live `NodeHTTPServer
 
 Complete generated reference (all exports): run `pnpm doc:api`.
 
-- **`bootNodeApp(sources: Function[]): NdigoTestApp`** — boots a real `MetadataConfigApplicationContext` with `NodeAutoConfiguration`, wires the handler mapping + dispatcher. Returns `{ context, dispatcher, close }`.
-- **`cachedBootNodeApp(sources)` / `releaseCachedNodeApp(sources)`** — same-sources dedupe within a worker: multiple suites booting the same sources share one context (ref-counted; released via `releaseCachedNodeApp` or `app.close()`).
+- **`bootNodeApp(sources: Function[], options?: BootNodeAppOptions): NdigoTestApp`** — boots a real `MetadataConfigApplicationContext` with `NodeAutoConfiguration`, wires the handler mapping + dispatcher. Returns `{ context, dispatcher, close }`. `options.processors` is the test-side equivalent of `ApplicationBuilder.processors(...)`, which is how a suite advises entries with `@ndigo/advice` rules.
+- **`cachedBootNodeApp(sources, options?)` / `releaseCachedNodeApp(sources, options?)`** — same-sources dedupe within a worker: multiple suites booting the same sources share one context (ref-counted; released via `releaseCachedNodeApp` or `app.close()`). The cache key includes the processor count, so an advised app is never handed to a caller that asked for an unadvised one — callers needing distinct advice sets should use `bootNodeApp` directly.
 - **`MockHTTP(dispatcher | app)`** — socket-free request client. Methods `get/post/put/delete/patch/query`, then fluent `.query()/.body()/.headers()/.cookies()/.session()`, then `.exec()` → `MockResult`.
 - **`MockResult`** — `{ response, route, json(), text() }`. `response` is a `MemoryResponse` `{ status, headers, body, completed }`.
 - **`delay(ms)`** — shared promise-based timing helper for specs awaiting real or fake timers; re-exported from `@ndigo/util` (where packages the harness itself depends on import it directly).

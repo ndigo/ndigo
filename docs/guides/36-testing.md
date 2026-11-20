@@ -52,12 +52,30 @@ describe('Todo API', () => {
 entries (`app.context.getValue(...)`), or pass `@configuration` classes that
 register them.
 
+`bootNodeApp(sources, { processors })` registers entry processors before
+refresh, the test-side equivalent of `ApplicationBuilder.processors(...)`. That
+is how a suite wires `@ndigo/advice` rules, since a declared annotation on an
+unadvised instance is inert:
+
+```ts
+import { hasAnnotation, interception } from '@ndigo/advice';
+import { CachedInterceptor, cachedSpec } from '@ndigo/cache';
+
+const app = bootNodeApp([TodoConfiguration], {
+    processors: [interception([{ when: hasAnnotation(cachedSpec), use: new CachedInterceptor() }])],
+});
+```
+
+`cachedBootNodeApp` takes the same options and keeps advised and unadvised apps
+apart in its cache; callers needing two different advice sets of the same length
+should use `bootNodeApp` directly.
+
 ### Reuse one booted context across suites
 
-Booting is the expensive part. `cachedBootNodeApp(sources)` returns the **same**
+Booting is the expensive part. `cachedBootNodeApp(sources, options?)` returns the **same**
 app for repeated calls with the same sources within a Vitest worker
-(ref-counted); `releaseCachedNodeApp(sources)` (or `app.close`) drops one
-reference and closes on the last:
+(ref-counted); `releaseCachedNodeApp(sources, options?)` (or `app.close`) drops
+one reference and closes on the last:
 
 ```ts
 import { cachedBootNodeApp, releaseCachedNodeApp, MockHTTP } from '@ndigo/test';

@@ -240,9 +240,10 @@ configuration error, not a supported arrangement.
 
 ### Ordering
 
-Lower `order` runs closer to the caller (outermost). Absent `order` is
-`AdviceOrder.Application`. Ties keep registration order — the sort is stable,
-built from core's `compareBy` + `numberComparator`, so the sequence of
+Lower `order` runs closer to the caller (outermost). The rule's own `order`
+wins; when it names none, the interceptor's band applies; when neither does,
+the rule lands in `AdviceOrder.Application`. Ties keep registration order — the
+sort is stable on core's `compareBy` + `numberComparator`, so the sequence of
 `registry.add` calls is a deterministic tiebreaker:
 
 ```ts
@@ -267,6 +268,13 @@ pick a position without knowing the numbers:
 
 Only the **relative** order of the bands is contractual. The numeric values
 live in the `AdviceOrder` constant and may change without notice.
+
+A shipped capability declares its natural band on the interceptor — the
+telemetry advisories in `Observability`, resilience in `Resilience`, the
+transaction boundary in `Transaction`, caching in `Application` — so the safe
+arrangement is what an application gets without naming numbers. This refines
+AD-109 D7, which put order on the rule alone; the rule still has the last word,
+because a capability's band is a default and a composition is a decision.
 
 ### Composition order
 

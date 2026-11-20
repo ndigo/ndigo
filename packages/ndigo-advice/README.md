@@ -78,8 +78,14 @@ independently authored rules interleave predictably instead of guessing numbers:
 | `Application`   | 400   | Feature-specific policy                                                            |
 | `Innermost`     | 500   | Closest to the method                                                              |
 
-Equal orders keep registration order. `matchAll`, `matchAny`, and `matchNot` from
-`@ndigo/core` compose matchers.
+A rule that names no order — and whose interceptor names none either — lands in
+`AdviceOrder.Application`. Equal orders keep registration order, so a later
+registration nests inside an earlier one. `matchAll`, `matchAny`, and `matchNot`
+from `@ndigo/core` compose matchers.
+
+The shipped capabilities name their own band rather than relying on the default:
+the telemetry advisories sit in `Observability`, resilience in `Resilience`, the
+transaction boundary in `Transaction`, and caching in `Application`.
 
 ### The container path
 
@@ -132,6 +138,12 @@ const retry: MethodInterceptor = {
 | Shadow   | The instance accepts own properties                  | Yes                | Yes                     |
 | Proxy    | Frozen, sealed, non-extensible, or a function target | No                 | No                      |
 | None     | No rule matched a method                             | Yes                | —                       |
+
+A wrapped method is introspectively identical to the one it replaced: `length`,
+`name`, and `toString()` all read the declared method, so framework code that
+resolves argument names from the function source (`@parameters` in
+`@ndigo/dispatcher`) keeps working through advice. It is still a different
+function object — that is what wrapping means.
 
 `planFor(instance, rules)` reports which methods would be advised without weaving
 anything — useful for a startup diagnostic.

@@ -143,6 +143,11 @@ When nothing matches, the instance is returned untouched and is never
 revisited. `planFor(instance, rules)` reports what would be advised without
 weaving anything.
 
+A wrapped method answers introspection exactly like the one it replaced —
+`length`, `name`, and `toString()` read the declared method — so framework code
+that reads a signature (argument binding resolves `@parameters` names from the
+function source) is unaffected by advice.
+
 An annotated method that no rule claims is a silent omission, so the container
 processor warns **once per class**, naming the methods and the fix.
 

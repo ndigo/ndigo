@@ -10,7 +10,7 @@ import { describe, test, expect, vi } from 'vitest';
 import { methodAnnotation } from '@ndigo/core';
 
 import { invokeChain } from '../src/chain';
-import { compileMethodPlan } from '../src/plan';
+import { compileInterceptorPlan } from '../src/plan';
 import { enumerateMethodNames, entryNameOf, shadowObstacle, shadowWeave } from '../src/shadow';
 import type { MethodDescriptor, MethodInterceptorRule, MethodInterceptor } from '../src/interceptor';
 
@@ -34,7 +34,7 @@ function recordingInterceptor(log: string[], label: string): MethodInterceptor {
 function weave<T extends object>(instance: T, rules: readonly MethodInterceptorRule[]): T {
     const targetType = Object.getPrototypeOf(instance)?.constructor ?? Object;
     const names = enumerateMethodNames(instance);
-    const plans = compileMethodPlan(targetType, entryNameOf(instance), names, rules);
+    const plans = compileInterceptorPlan(targetType, entryNameOf(instance), names, rules);
     return shadowWeave(instance, plans);
 }
 
@@ -129,7 +129,7 @@ describe('shadow weaving: call semantics', () => {
 
         const account = shadowWeave(
             new Account(),
-            compileMethodPlan(
+            compileInterceptorPlan(
                 Account,
                 'account',
                 ['withdraw'],
@@ -157,7 +157,7 @@ describe('shadow weaving: call semantics', () => {
 
         const service = shadowWeave(
             new OrderService(),
-            compileMethodPlan(OrderService, 'orderService', ['submit'], [{ use: { invoke: () => 'cached' } }])
+            compileInterceptorPlan(OrderService, 'orderService', ['submit'], [{ use: { invoke: () => 'cached' } }])
         );
 
         expect(service.submit()).toBe('cached');
@@ -190,7 +190,7 @@ describe('shadow weaving: call semantics', () => {
             },
         };
 
-        const flaky = shadowWeave(new Flaky(), compileMethodPlan(Flaky, 'flaky', ['run'], [{ use: retry }]));
+        const flaky = shadowWeave(new Flaky(), compileInterceptorPlan(Flaky, 'flaky', ['run'], [{ use: retry }]));
 
         expect(flaky.run()).toBe('done');
         expect(attempts).toBe(3);
@@ -207,7 +207,12 @@ describe('shadow weaving: call semantics', () => {
 
         const service = shadowWeave(
             new OrderService(),
-            compileMethodPlan(OrderService, 'orderService', ['submit'], [{ use: { invoke: (_i, next) => next() } }])
+            compileInterceptorPlan(
+                OrderService,
+                'orderService',
+                ['submit'],
+                [{ use: { invoke: (_i, next) => next() } }]
+            )
         );
 
         const submit = service.submit;
@@ -257,7 +262,7 @@ describe('shadow weaving: order', () => {
 
         const service = shadowWeave(
             new Service(),
-            compileMethodPlan(
+            compileInterceptorPlan(
                 Service,
                 'service',
                 ['run'],
@@ -282,7 +287,7 @@ describe('shadow weaving: order', () => {
 
         const service = shadowWeave(
             new Service(),
-            compileMethodPlan(
+            compileInterceptorPlan(
                 Service,
                 'service',
                 ['run'],
@@ -308,7 +313,7 @@ describe('shadow weaving: plan compilation', () => {
             two(): void {}
         }
 
-        compileMethodPlan(
+        compileInterceptorPlan(
             Service,
             'service',
             ['one', 'two'],
@@ -330,7 +335,7 @@ describe('shadow weaving: plan compilation', () => {
             two(): void {}
         }
 
-        const plans = compileMethodPlan(
+        const plans = compileInterceptorPlan(
             Service,
             'service',
             ['one', 'two'],
@@ -346,7 +351,7 @@ describe('shadow weaving: plan compilation', () => {
             two(): void {}
         }
 
-        const plans = compileMethodPlan(
+        const plans = compileInterceptorPlan(
             Service,
             'service',
             ['one', 'two'],
@@ -427,7 +432,7 @@ describe('shadow weaving: fallback boundary', () => {
         expect(() =>
             shadowWeave(
                 service,
-                compileMethodPlan(Service, 'service', ['run'], [{ use: { invoke: (_i, next) => next() } }])
+                compileInterceptorPlan(Service, 'service', ['run'], [{ use: { invoke: (_i, next) => next() } }])
             )
         ).toThrow(TypeError);
     });

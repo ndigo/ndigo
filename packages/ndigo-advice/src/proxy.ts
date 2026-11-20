@@ -14,7 +14,7 @@
 import { invokeChain } from './chain';
 import { enumerateMethodNames, methodSurfaceOf } from './shadow';
 import type { MethodInvocation } from './interceptor';
-import type { MethodPlan } from './plan';
+import type { MethodInterceptorPlan } from './plan';
 import { createAdviceWrapper } from './wrapper';
 
 /**
@@ -30,8 +30,8 @@ import { createAdviceWrapper } from './wrapper';
  * @param plans - The compiled per-method plans.
  * @returns A proxy over `target`.
  */
-export function weaveMethodProxy(target: object, plans: readonly MethodPlan[]): object {
-    const byName = new Map<string, MethodPlan>();
+export function weaveMethodProxy(target: object, plans: readonly MethodInterceptorPlan[]): object {
+    const byName = new Map<string, MethodInterceptorPlan>();
     for (const plan of plans) {
         byName.set(String(plan.descriptor.methodName), plan);
     }

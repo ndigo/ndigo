@@ -1016,9 +1016,11 @@ graph TD
     OrmDrizzle --> Core
     OrmDrizzle --> Orm
     OrmDrizzle --> Socket
-    Proxy --> Core
-    Proxy --> Factory
-    Resilience --> Proxy
+    Advice --> Core
+    Advice --> Factory
+    Cache --> Advice
+    Orm --> Advice
+    Resilience --> Advice
     Redis --> Cache
     Redis --> Factory
     Redis --> Socket
@@ -1069,7 +1071,7 @@ graph TD
     style Core fill:#fff9e1
     style Signals fill:#fff9e1
     style Log fill:#fff9e1
-    style Proxy fill:#ffe1e1
+    style Advice fill:#ffe1e1
     style Resilience fill:#ffe1e1
     style Redis fill:#e1f5ff
     style OpenAPI fill:#fff4e1

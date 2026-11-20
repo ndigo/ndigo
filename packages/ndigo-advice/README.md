@@ -61,9 +61,20 @@ method on the woven surface.
 const rule: MethodInterceptorRule = {
     when: hasAnnotation(audited),
     use: audit,
-    order: AdviceOrder.Application,
 };
 ```
+
+`hasAnnotation` matches a method that carries the annotation — or whose class
+does, so a blanket `@audited` on a class covers every method of it. Pass a
+second argument to narrow by value:
+
+```ts
+when: hasAnnotation(audited, (spec) => spec.action.startsWith('order.'));
+```
+
+`matchAll`, `matchAny`, and `matchNot` from `@ndigo/core` compose matchers, and
+`when` is any `Matchable<MethodDescriptor>` — a plain object with a `matches`
+method works too.
 
 ### Ordering
 
@@ -78,14 +89,17 @@ independently authored rules interleave predictably instead of guessing numbers:
 | `Application`   | 400   | Feature-specific policy                                                            |
 | `Innermost`     | 500   | Closest to the method                                                              |
 
-A rule that names no order — and whose interceptor names none either — lands in
-`AdviceOrder.Application`. Equal orders keep registration order, so a later
-registration nests inside an earlier one. `matchAll`, `matchAny`, and `matchNot`
-from `@ndigo/core` compose matchers.
+The rule's own `order` wins; when it names none, the interceptor's band
+applies; when neither does, the rule lands in `AdviceOrder.Application`. Equal
+orders keep registration order, so a later registration nests inside an earlier
+one.
 
 The shipped capabilities name their own band rather than relying on the default:
 the telemetry advisories sit in `Observability`, resilience in `Resilience`, the
-transaction boundary in `Transaction`, and caching in `Application`.
+transaction boundary in `Transaction`, and caching in `Application`. That makes
+the safe arrangement the one an application gets without naming numbers — retry
+outside a transaction, tracing outside retry — while a rule that needs a
+different composition still overrides it.
 
 ### The container path
 
@@ -125,19 +139,38 @@ you.
 
 `validate` is called once per matched method while the plan is compiled. Use it to
 reject an annotation whose value cannot be honoured, so the failure names the method
-at startup.
+at startup rather than on the first call.
 
 ```ts
-const retry: MethodInterceptor = {
+const retry = methodAnnotation<{ attempts: number }>('retry:attempts');
+
+const validatingInterceptor: MethodInterceptor = {
     validate(method) {
-        const spec = method.annotation(retrySpec);
-        if (spec && spec.attempts < 1) {
+        const spec = method.annotation(retry);
+        if (spec !== undefined && spec.attempts < 1) {
             throw new TypeError(`@retry attempts must be positive on '${String(method.methodName)}'`);
         }
     },
     invoke: (_invocation, next) => next(),
 };
 ```
+
+### Annotations nothing claims
+
+An annotation is inert by design, so a missing registration would otherwise be
+silent. When the container processor meets a class whose methods carry
+annotations that no registered rule matched, it reports them once per class,
+naming the methods:
+
+```text
+entry 'orders' declares annotations on 'place', 'cancel' but no registered rule
+advises them — those methods run unadvised. Register a rule for the annotation,
+or remove it.
+```
+
+The warning is per class, never per call. On the standalone path there is no
+processor to notice, so `planFor(instance, rules)` is the equivalent check: it
+returns the plans that _would_ be compiled.
 
 ## Weaving strategies
 

@@ -3,7 +3,9 @@
 > Foundational primitives, contracts, and utilities for Ndigo.
 
 The foundational package for Ndigo: shared primitives, contracts, and
-utilities used by every other package.
+utilities used by every other package. It also owns the **declaration layer** —
+the annotation primitives every metadata-writing decorator builds on, which is
+why they live here rather than in the package that executes them.
 
 ## Installation
 
@@ -42,6 +44,45 @@ they provide `equals`. JSON validation remains a separate contract.
 `MutablePropertyValues.equals` compares an unordered multiset of name/value
 pairs: duplicate multiplicity matters, empty collections are equal, and a
 missing property is distinct from a present property containing `undefined`.
+
+### Annotations
+
+A decoration written with `methodAnnotation` / `classAnnotation` records a value
+and returns its target unchanged — it declares, and stops. Executing the value
+is a different package's job (`@ndigo/advice` for method advice, the scheduler
+for `@scheduled`, the ORM for entity hooks).
+
+```ts
+import { annotationOf, classAnnotation, methodAnnotation } from '@ndigo/core';
+
+const audited = methodAnnotation<{ action: string }>('orders:audited');
+const scheduled = classAnnotation<{ cron: string }>('orders:sweep');
+
+class OrderService {
+    @audited({ action: 'order.place' })
+    place(order: string): string {
+        return `ok:${order}`;
+    }
+}
+
+annotationOf(OrderService, audited, 'place'); // { action: 'order.place' }
+```
+
+Keys follow `<namespace>:<name>[:<member>]`, and the **namespace names the
+declaring package** — `resilience:retry`, not `core:retry` or the consumer's
+name. `annotationOf` walks the class hierarchy, so an inherited declaration
+resolves and the nearest declaration wins. Reading without a member gives the
+class-level value; reading _with_ a member is the member read, and
+`MethodDescriptor.annotation` in `@ndigo/advice` applies the class-level fallback
+on top of it.
+
+`ensureSymbolMetadata(target)` returns a class's metadata record, creating it
+when absent — the one supported way to write a declaration imperatively, since
+`getSymbolMetadata` returns a fresh empty object for an unadorned class and
+writing to that would silently discard the write.
+
+`matchAll`, `matchAny`, and `matchNot` compose `Matchable` values, which is how
+rules combine several matchers without a string expression language.
 
 ### Matching and comparison contracts
 

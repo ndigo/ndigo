@@ -63,7 +63,7 @@ matches the task; do not guess APIs from memory.
 
 ## Packages
 
-- `@ndigo/advice` — Declared annotations and their execution — method interception plans and weaving for Ndigo
+- `@ndigo/advice` — Runs the advice declared by annotations — rules, plan compilation, and weaving for Ndigo
 - `@ndigo/ai` — Provider-agnostic agent contracts: chat messages, streaming events, structured output, and a tool-calling loop over MCP tools
 - `@ndigo/ai-sdk` — AI SDK integration layer for Ndigo: the only package that imports the Vercel AI SDK
 - `@ndigo/auth-client` — Client-side authentication for Ndigo — AuthClient, ClientAuthGuard, and OIDC adapter

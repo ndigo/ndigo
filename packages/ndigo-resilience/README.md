@@ -50,7 +50,7 @@ Container entries use the same rules through `interception(...)`; see
 
 - `attempts` — total call attempts including the first; defaults to
   `DEFAULT_RETRY_ATTEMPTS` (3). Must be a positive integer — invalid values
-  throw at weave time instead of being clamped.
+  throw while the plan is compiled (at startup), instead of being clamped.
 - `backoff` — a `BackoffPolicy` invoked before each retry with the 1-based
   attempt number; defaults to no delay.
 - `retryable(error)` — predicate deciding which failures are retried;
@@ -59,10 +59,9 @@ Container entries use the same rules through `interception(...)`; see
 
 Retrying re-invokes the join point, so **idempotency is the caller's
 contract**: a non-idempotent call must constrain `retryable`. The advice is
-async — a `@retry`-advised sync method returns a Promise through a woven proxy
-even though its declared type is not, because the annotation is invisible to
-the type system. Prefer advising Promise-returning methods. On exhaustion the
-final error is re-thrown.
+async — an advised sync method returns a Promise even though its declared type
+is not, because the annotation is invisible to the type system. Prefer advising
+Promise-returning methods. On exhaustion the final error is re-thrown.
 
 ### Backoff policies
 
@@ -93,15 +92,21 @@ tests.
 ### Composing policies
 
 Register the circuit outside retry, so one chain pass counts as one failure
-rather than one per retry attempt:
+rather than one per retry attempt. Both interceptors sit in the same band
+(`AdviceOrder.Resilience`), so registration order decides which wraps the other
+— register the circuit first:
 
 ```ts
-const api = interceptMethods(client, [new CircuitBreakerInterceptor(), new RetryInterceptor()]);
+const api = interceptMethods(client, [
+    { when: hasAnnotation(circuitBreaker), use: new CircuitBreakerInterceptor() },
+    { when: hasAnnotation(retry), use: new RetryInterceptor() },
+]);
 ```
 
-Interceptors run in array order (lower `order` runs closer to the caller), and
-`matches()` runs once per managed method at weave time, gating on the method's
-annotation.
+Each rule's `when` matcher runs once per candidate method while the plan is
+compiled, so a method is only gated on the annotation it actually carries. To
+nest them differently — a retry per statement inside one circuit, say — give the
+rules explicit `order` values or different `AdviceOrder` bands.
 
 ## API
 

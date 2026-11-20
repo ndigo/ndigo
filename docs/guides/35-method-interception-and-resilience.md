@@ -86,7 +86,7 @@ Execution — how a value turns into behaviour:
 
 ```ts
 interface MethodInterceptor {
-    readonly order?: number; // lower runs outer; ties keep registration order
+    readonly order?: number; // the capability's natural band; a rule overrides it
     validate?(method: MethodDescriptor): void; // once, while the plan compiles
     invoke(invocation: MethodInvocation, next: () => unknown): unknown;
 }
@@ -122,7 +122,8 @@ Shadow weaving is the default for objects: each advised method gets a
 non-enumerable own property on the instance that runs the chain and then calls
 the previously installed function with the instance as receiver.
 
-That buys three properties a `Proxy` cannot give at the same time:
+That buys two properties a `Proxy` cannot offer at the same time — and keeps a
+third that `Proxy` also has:
 
 - **Identity is preserved.** `service === wrapped` is true, so `WeakMap` keys,
   `instanceof`, and container singletons behave as before.
@@ -131,7 +132,7 @@ That buys three properties a `Proxy` cannot give at the same time:
 - **`#private` fields work**, because the instance is always the receiver.
 
 The `Proxy` fallback exists for targets that cannot accept own properties, and
-it gives both of those properties up:
+it gives the first two up while keeping the third:
 
 | Strategy | Chosen when                                                            | Identity preserved | Self-invocation advised |
 | -------- | ---------------------------------------------------------------------- | ------------------ | ----------------------- |
@@ -234,7 +235,9 @@ class PushAPI {
   circuit counts one failure per chain pass, not per retry attempt.
 
 Both policies validate their spec through `validate`, so `attempts: 0` or
-`resetMs: NaN` fails while the plan compiles.
+`resetMs: NaN` fails while the plan is compiled — at startup, not on the first
+call. Both also declare `AdviceOrder.Resilience`, so composing them needs no
+numbers: register the circuit first and it wraps retry.
 
 ### Verified boundaries
 
@@ -264,7 +267,15 @@ method they decorated. They now declare, and an interceptor runs them:
 
 A plain `new Service()` with any of them is inert. That is the point: the
 declaration and the runtime are separable, so a unit test can construct the
-class without a container and a production bootstrap can advise it.
+class without a container and a production bootstrap can advise it. The rule
+each one needs is a two-liner — `{ when: hasAnnotation(tracedSpan), use: new
+TracedInterceptor() }` and so on; §5 lists the bands they occupy.
+
+`@transactional` is the one whose semantics change beyond registration: a
+transactional method that calls another transactional method **joins** the open
+boundary. Both transaction managers reject an already-active transaction, so
+nesting would have thrown where the caller expected a working composite
+operation.
 
 ## 8. What advice is not
 

@@ -4,8 +4,9 @@
 
 `@ndigo/cache` covers both halves of the caching story: `MemoryCache` and
 `MemoryCacheManager` for server-side stores (the default framework cache),
-`memoize` for browsers and Node clients, and `@cached` as the
-container-friendly decorator that resolves a `CacheManager` off the instance.
+`memoize` for browsers and Node clients, and `@cached` — a declaration that says
+a method is cacheable, paired with the `CachedInterceptor` that serves it by
+resolving a `CacheManager` off the instance.
 
 - **`Cache` / `CacheMiss` / `MemoryCache`** — awaitable store: TTL expiry
   (lazy, timer-free), bounded-size eviction (Map-order LRU default, `fifo`
@@ -57,9 +58,8 @@ registry — `getCache` acquires a handle without performing data I/O.
 `memoize` always returns an awaitable function, even for a sync input.
 `@cached` methods must declare a Promise return type. Single-flight covers
 backend reads, computation, and completed writes; backend read errors reject,
-while decorator write errors are logged and the computed result is returned
-(the best-effort write policy). There is no synchronous cache compatibility
-API.
+while write errors are logged and the computed result is returned (the
+best-effort write policy). There is no synchronous cache compatibility API.
 
 ### Memory cache
 
@@ -100,7 +100,7 @@ rejections free the slot and the next call re-invokes the function.
 `serializeCacheKeyStrict` is available when JSON semantics would merge
 distinct values (`undefined`/`null`, `1`/`'1'`).
 
-### The `@cached` decorator
+### `@cached`
 
 ```ts
 import { cached, type CacheManager } from '@ndigo/cache';
@@ -115,24 +115,33 @@ class UserService {
 }
 ```
 
-The decorator only declares. Register the interceptor once and every
-`@cached` method on the entries the context creates is served from the cache:
+The decorator only declares — a decorated method on an unadvised instance
+simply computes. Register the interceptor once and every `@cached` method on the
+entries the context creates is served from the cache:
 
 ```ts
 import { hasAnnotation, interception } from '@ndigo/advice';
+import { CachedInterceptor, cachedSpec } from '@ndigo/cache';
 
 builder.processors(interception([{ when: hasAnnotation(cachedSpec), use: new CachedInterceptor() }]));
 ```
 
 Hand-built objects use the same rule through `interceptMethods(instance, rules)`.
+
 The interceptor resolves `this.cacheManager`; without a manager it calls the
 method (caching disabled, the method stays async). Hits return the stored
 settled value; misses call the target and store the result. Fulfilled results
 only — method rejections propagate and are never stored. Single-flight spans
-the backend read, the computation, and the awaited write; self-invocation
-through `this.method()` **is** cached. The normalized spec is recorded under
-`cache:cached:<method>` metadata and can be read with
-`getCachedSpec(target, methodName)`.
+the backend read, the computation, and the awaited write.
+
+Self-invocation through `this.method()` **is** cached, because the advice is
+installed on the instance rather than around it. A frozen or sealed instance,
+and a function-shaped target, are advised through the `Proxy` fallback instead —
+those do not cover self-invocation (see
+[Guide 35](../../docs/guides/35-method-interception-and-resilience.md), §3).
+
+The normalized spec is recorded under `cache:cached:<method>` metadata and can
+be read with `getCachedSpec(target, methodName)`.
 
 ## API
 

@@ -82,7 +82,8 @@ import { getMapping, requestMapping } from '@ndigo/dispatcher';
 export class ProductController {
     // Server apps: NodeAutoConfiguration provisions the `cacheManager` entry.
     // With `AsApplicationContextAware` (or `AsCacheManagerAware`) the processor
-    // injects it; `@cached` also resolves it lazily from `this.applicationContext`.
+    // injects it; CachedInterceptor also resolves it lazily from
+    // `this.applicationContext`.
     cacheManager?: CacheManager;
 
     @getMapping('/products/top')
@@ -163,7 +164,7 @@ const result = await double(21); // 42; double(21) returns Promise<number>
 
 - Concurrent calls for the same key share work from cache read through
   computation and write; promise identity is not a contract.
-- Rejections are never cached; the next call re-invokes. Unlike the decorator's
+- Rejections are never cached; the next call re-invokes. Unlike `@cached`'s
   best-effort writes, `memoize` propagates cache write failures.
 - Options: `ttl`, `maxSize`, `eviction`, `key` (as in `@cached`).
 

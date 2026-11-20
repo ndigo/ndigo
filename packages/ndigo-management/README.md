@@ -1,8 +1,13 @@
 # @ndigo/management
 
-> Actuator-style management endpoints for Ndigo Node applications: `/health` (the aggregate component health report) and `/metrics` (the meter snapshot — Prometheus text exposition by default, JSON projection on an explicit `Accept: application/json`). It complements `@ndigo/telemetry`: telemetry _produces_ metric data (OTel instruments, `@counted`); management _serves_ it as HTTP.
+> Actuator-style management endpoints for Ndigo Node applications: `/health` and `/metrics`.
 
-Actuator-style management endpoints for Ndigo Node applications: `/health` (the aggregate component health report) and `/metrics` (the meter snapshot — Prometheus text exposition by default, JSON projection on an explicit `Accept: application/json`). It complements `@ndigo/telemetry`: telemetry _produces_ metric data (OTel instruments, `@counted`); management _serves_ it as HTTP.
+`@ndigo/management` complements `@ndigo/telemetry`: telemetry _produces_ metric
+data — OpenTelemetry instruments and `@counted` methods — while management
+_serves_ it as HTTP. `GET /health` reports the aggregate component status as a
+status code an orchestrator probe can route on alone, and `GET /metrics` serves
+the meter snapshot as Prometheus text by default with a JSON projection on an
+explicit `Accept: application/json`.
 
 ## Installation
 
@@ -32,7 +37,7 @@ const app = new ApplicationBuilder([ManagementAutoConfiguration]).run();
 
 ### How it works
 
-- `ManagementAutoConfiguration` registers a shared `FeatureMetricAggregator` entry (the same one `@counted` and feature code populate, and `TelemetryHealthIndicator` reads), a `HealthRegistry` pre-wired with the telemetry indicator, and the two controllers.
+- `ManagementAutoConfiguration` registers a shared `FeatureMetricAggregator` entry (the same one `CountedInterceptor` and feature code populate, and `TelemetryHealthIndicator` reads), a `HealthRegistry` pre-wired with the telemetry indicator, and the two controllers.
 - When `accessGuard` is configured, a `handlerMappings` entry attaches the guard to the dispatch interceptor chain, scoped to management paths only — `/health` and `/metrics` are denied before their handlers run while every other route is untouched.
 - The mapping prepends `SecurityHeadersInterceptor` — management responses carry the platform's default security-header set (CSP, `X-Content-Type-Options: nosniff`, …) even though these routes bypass the platform mapping.
 - The `/metrics` and `/health` handlers are registered internally by `ManagementAutoConfiguration`; their controller classes are not part of the public API.

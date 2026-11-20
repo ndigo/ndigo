@@ -42,6 +42,7 @@ logger.info('telemetry initialized');
 `CountedInterceptor` run. Register the two rules once, on the builder:
 
 ```ts
+import { ApplicationBuilder } from '@ndigo/boot';
 import { hasAnnotation, interception, MethodInterceptorRegistry } from '@ndigo/advice';
 import { CountedInterceptor, countedCounter, TracedInterceptor, tracedSpan } from '@ndigo/telemetry';
 
@@ -49,7 +50,7 @@ const advice = new MethodInterceptorRegistry()
     .add({ when: hasAnnotation(tracedSpan), use: new TracedInterceptor() })
     .add({ when: hasAnnotation(countedCounter), use: new CountedInterceptor() });
 
-builder.processors(interception(advice));
+const builder = new ApplicationBuilder([NodeAutoConfiguration]).processors(interception(advice));
 ```
 
 Then decorate:

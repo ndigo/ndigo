@@ -2,13 +2,14 @@
  */
 import '@tsmetadata/polyfill';
 
+import type { Constructable } from '@ndigo/core';
 import { InMemoryDataSource } from '../src/data-source';
 import { column, entity as entityDecorator, generatedColumn, manyToOne, primaryColumn } from '../src/decorators';
 import { InMemoryEntityManager } from '../src/entity-manager';
 
 // Spec-side type wrapper; runtime-identical to the production `entity` decorator.
 const entity = entityDecorator as unknown as (tableName?: string) => ClassDecorator;
-type ClassType = new (...args: unknown[]) => unknown;
+type ClassType = Constructable<object>;
 import { InMemoryRepository, toAsyncRepository } from '../src/index';
 import type { AsyncRepository } from '../src/index';
 

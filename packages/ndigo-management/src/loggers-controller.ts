@@ -128,13 +128,17 @@ export class LoggersController extends AsApplicationContextAware(Null) {
      * `configuredLevel` sets a per-name override; an empty body clears it.
      * Invalid level names fail validation with 400.
      *
+     * Named `updateLogger`, not `setLogger`: the aware processor duck-types
+     * `setLogger` as the `LoggerAware` callback and would invoke it with a
+     * `Logger` at configuration time.
+     *
      * @param name - The logger name.
      * @param body - The parsed request body.
      * @returns The resulting level document.
      */
     @postMapping('/:name')
     @parameters({ name: pathVariable('name'), body: validatedBody(LOGGER_BODY_SCHEMA) })
-    setLogger(name: string, body: { configuredLevel?: string }) {
+    updateLogger(name: string, body: { configuredLevel?: string }) {
         if (!this.#exposed()) {
             return ResponseEntity.notFound();
         }

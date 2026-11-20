@@ -506,20 +506,8 @@ export class MockEnvironment extends AbstractEnvironment {
 
 /**
  * Default environment implementation used by application contexts.
+ *
+ * The `Symbol.toStringTag` is inherited from {@link AbstractEnvironment},
+ * which exposes the active profiles (`Environment:foo,bar`).
  */
-export class StandardEnvironment extends AbstractEnvironment {
-    /**
-     * The `Symbol.toStringTag` value for this instance.
-     *
-     * `Object.prototype.toString()` reads this symbol to render the
-     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
-     *
-     * @returns The string "StandardEnvironment".
-     *
-     * @example
-     * console.log(Object.prototype.toString.call(instance)); // "[object StandardEnvironment]"
-     */
-    get [Symbol.toStringTag](): string {
-        return 'StandardEnvironment';
-    }
-}
+export class StandardEnvironment extends AbstractEnvironment {}

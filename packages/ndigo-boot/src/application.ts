@@ -212,7 +212,7 @@ export class Application extends Emitter {
      * context creates — including constructor entries eagerly created at
      * refresh end (`_finishFactoryInitialization`). Registration replaces
      * any previous processors (chained `processors(...)` calls do not
-     * accumulate). Register at most one `@ndigo/proxy` interception
+     * accumulate). Register at most one `@ndigo/advice` interception
      * processor (see `ApplicationBuilder.processors`).
      *
      * @param processors - The entry processors to register on the context

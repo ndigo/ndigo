@@ -1,6 +1,6 @@
 /**
- * Constructor-entry demo for `@ndigo/proxy`: a service created by
- * the container at first `getValue` — so the interception processor weaves it
+ * Constructor-entry demo for `@ndigo/advice`: a service created by
+ * the container at first `getValue` — so the interception processor advises it
  * — whose `place` method carries `@audited` policy metadata.
  */
 import { audited } from './audit-interceptor';

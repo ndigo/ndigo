@@ -364,21 +364,21 @@ export class ApplicationBuilder {
      * refreshes. Every entry the context creates is processed — including
      * constructor entries eagerly created at refresh end.
      *
-     * The natural consumer is container-managed method interception
-     * (`@ndigo/proxy`):
+     * The natural consumer is container-managed method advice
+     * (`@ndigo/advice`):
      *
      * ```ts
-     * const audit = new AuditInterceptor();
+     * const rules = new MethodInterceptorRegistry()
+     *     .add({ when: hasAnnotation(audited), use: audit });
      * const builder = new ApplicationBuilder([NodeAppConfiguration])
-     *     .processors(interception([audit]));
+     *     .processors(interception(rules));
      * ```
      *
      * Replaces any previously registered processors (chained calls do not
-     * accumulate). Register **at most one** `interception(...)` processor
-     * and combine all interceptors in that single call — combining across
-     * calls silently drops advice, and a second `interception(...)`
-     * processor fails loudly when it meets an already-woven entry (see
-     * `@ndigo/proxy`).
+     * accumulate). Register **at most one** `interception(...)` processor:
+     * features contribute rules to its registry instead of adding their own,
+     * and a second processor fails loudly when it meets an already-advised
+     * entry (see `@ndigo/advice`).
      *
      * @param processors - The entry processors to register.
      * @returns This builder for chaining.

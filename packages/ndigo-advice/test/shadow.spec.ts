@@ -1,10 +1,9 @@
 /**
  * Shadow-weaving spike.
  *
- * Proves the properties `@ndigo/advice` depends on before `@ndigo/proxy` is
- * replaced: identity preservation, advised self-invocation, `#private` access,
- * untouched getters, stable method identity, and the exact boundary where the
- * Proxy fallback is required.
+ * Proves the properties the runtime depends on: identity preservation, advised
+ * self-invocation, `#private` access, untouched getters, stable method
+ * identity, and the exact boundary where the Proxy fallback is required.
  */
 import '@tsmetadata/polyfill';
 import { describe, test, expect, vi } from 'vitest';

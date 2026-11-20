@@ -168,6 +168,13 @@ of silently dropping advice. Because the registry is read at weave time, a
 feature that registers after the processor was installed still applies to
 entries created later.
 
+**"Created later" is the load-bearing part.** A plan is compiled once, when the
+entry is created, so a rule contributed _after_ that moment never reaches it —
+two features compose on a method only if both have contributed by the time the
+entry exists. Registration order therefore matters as much as `order` does:
+`order` decides nesting, registration timing decides whether a rule applies at
+all.
+
 Standalone example:
 
 ```ts

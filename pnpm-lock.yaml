@@ -1957,6 +1957,9 @@ importers:
         specifier: 'catalog:'
         version: 4.6.7
     devDependencies:
+      '@ndigo/advice':
+        specifier: ~0.0.1
+        version: link:../ndigo-advice
       '@ndigo/dispatcher':
         specifier: ~0.0.1
         version: link:../ndigo-dispatcher

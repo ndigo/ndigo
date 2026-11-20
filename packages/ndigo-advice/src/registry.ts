@@ -15,6 +15,14 @@ import type { MethodInterceptorRule } from './interceptor';
  * Registration order is the tie-breaker between rules with equal order, so
  * later registrations nest inside earlier ones.
  *
+ * **Contributions must land before the advised entry is created.** Plans are
+ * compiled once, at weave time, so a rule added afterwards does not reach an
+ * instance that already exists — a second feature's rule applies to entries
+ * created after it registers, not to those before. Independent contributors
+ * therefore compose on a method whenever they register before that entry is
+ * created, and the registry being readable at weave time is what lets a
+ * feature register after the processor was installed.
+ *
  * @example
  * ```ts
  * const registry = new MethodInterceptorRegistry();

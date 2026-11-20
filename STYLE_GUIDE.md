@@ -3490,7 +3490,9 @@ stand out as intentional.
 | **Lifecycle hooks**         | _When_ in a lifecycle it runs         | `@pre*` / `@post*` + event                  | `@prePersist`, `@preUpdate`, `@postLoad`, `@postRemove`                                                                           |
 | **Member descriptors**      | What a member _denotes_               | established term of art (noun or adjective) | `@column`, `@primaryColumn`, `@generatedColumn`, `@property`, `@defaultValue`, `@nestedConfig`, `@signal`, `@computed`, `@effect` |
 | **Policies**                | _How_ behavior is governed            | noun = the policy name                      | `@retry`, `@circuitBreaker`, `@rateLimit`                                                                                         |
-| **Annotations**             | What a declaration _binds_ or exposes | noun                                        | `@parameters`, `@apiDocs`                                                                                                         |
+| **Bindings & exposures**    | What a declaration _binds_ or exposes | noun                                        | `@parameters`, `@apiDocs`                                                                                                         |
+
+**Role and mechanism are separate axes.** Each category answers _what the name describes_. What the decorator does at runtime is a different question, documented in [Annotation, Advice & Member Transformer](docs/architecture/annotation-and-transformer-model.md): an **annotation** writes metadata and runs nothing; **advice** wraps a matched call and is selected by a rule; a **member transformer** replaces the member at definition time. Never derive a name from the mechanism (`@methodAdvice` is wrong), and never use "Annotations" as a category name — that word names a mechanism, not a role.
 
 **Admission procedure:**
 

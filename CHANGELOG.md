@@ -398,6 +398,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   neutral `AgentToolHost` contract; the WebMCP tool types are that contract,
   and annotations pass through registration unchanged. A future UI SDK
   adapter implements the same types, so host swaps change only the adapter.
+- `@ndigo/mcp`: per-call policy and secret-safe results (issue #559) —
+  `authorize(call)` refuses a call as an `isError` tool result (never a
+  protocol failure) before the handler runs; `confirm(call)` withholds a call
+  pending a person (`Needs a person: …`) unless `authorize` accepts it;
+  `@toolMapping({ secret: ['field.path'] })` replaces declared result fields
+  with the shared `<redacted>` sentinel; tool-call spans record
+  `gen_ai.tool.call.source` (the transport: `stdio`/`http`) and mark policy
+  refusals with `gen_ai.tool.call.denied`.
+- `@ndigo/dispatcher`: `@toolMapping` gains `secret`, the dot-separated result
+  field paths the MCP registry redacts.
 
 ### Changed
 

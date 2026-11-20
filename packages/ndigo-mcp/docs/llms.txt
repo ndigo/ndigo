@@ -9,6 +9,8 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 
 ## Public exports
 
+- `McpToolDeniedOptions` *(type)* — Options for McpToolDeniedError.
+- `McpToolDeniedError` — Thrown when a registry policy refuses a tool call. Transports render it as an `isError` tool result, never as a protocol failure.
 - `JSONSchema` *(type)* — A JSON Schema object as carried by MCP `tools/list`.
 - `ToolDescriptor` *(type)*
 - `RegisteredTool` *(type)* — A projected tool with the handler needed to invoke it.
@@ -18,6 +20,7 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `MappingSource` *(type)* — Anything that can supply mapping entries to the projector.
 - `projectTools` — Projects every `@toolMapping` handler in the source into a registered tool.
 - `ToolCallContext` *(type)* — Per-call context carried from the transport.
+- `McpToolCall` *(type)* — One tool call under registry policy evaluation.
 - `McpToolRegistryOptions` *(type)* — Policy options for a registry.
 - `McpToolRegistry` — A registry of tools projected from dispatch metadata.
 - `McpServerOptions` *(type)* — Options for createMcpServer.

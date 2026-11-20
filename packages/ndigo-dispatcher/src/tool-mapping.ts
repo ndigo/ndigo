@@ -14,6 +14,7 @@ import '@tsmetadata/polyfill';
 export const TOOL_MAPPING_KEY = 'mcp:toolMapping';
 
 const toolNamePattern = /^[a-z][a-z0-9_]*$/u;
+const secretPathPattern = /^[A-Za-z_$][\w$]*(\.[A-Za-z_$][\w$]*)*$/u;
 
 /** Tool metadata declared by {@link toolMapping}. */
 export interface ToolMappingMetadata {
@@ -23,6 +24,13 @@ export interface ToolMappingMetadata {
     readonly description?: string;
     /** Mark the tool read-only (mutating tools are gated by policy). */
     readonly readOnly?: boolean;
+    /**
+     * Dot-separated result field paths that are replaced with the shared
+     * `<redacted>` sentinel before the result reaches the transport (for
+     * example `['accessToken', 'profile.number']`). Array elements match
+     * through their parent path.
+     */
+    readonly secret?: readonly string[];
     /**
      * MCP Apps resource URI (`ui://…`) rendered by the host after the call.
      * Projected as `_meta.ui.resourceUri`.
@@ -60,6 +68,13 @@ export function toolMapping(options: ToolMappingMetadata = {}) {
     const ui = options.ui;
     if (ui !== undefined && (!ui.startsWith('ui://') || /\s/u.test(ui))) {
         throw new TypeError(`@toolMapping ui must be a ui:// resource URI — received '${String(ui)}'.`);
+    }
+    for (const path of options.secret ?? []) {
+        if (typeof path !== 'string' || !secretPathPattern.test(path)) {
+            throw new TypeError(
+                `@toolMapping secret paths must be dot-separated identifiers — received '${String(path)}'.`
+            );
+        }
     }
     return function (target: unknown, context: ClassMethodDecoratorContext): void {
         void target;

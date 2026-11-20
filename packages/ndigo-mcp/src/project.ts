@@ -52,6 +52,8 @@ export interface RegisteredTool {
     readonly readOnly: boolean;
     /** Feature flag gating the tool, when `@whenFeature` is present. */
     readonly feature?: string;
+    /** Result field paths redacted before the result leaves the registry. */
+    readonly secretFields?: readonly string[];
 }
 
 /** One `getMappingEntries()` row. */
@@ -148,6 +150,7 @@ export function projectTools(source: MappingSource): RegisteredTool[] {
                 info: entry.mapping,
                 readOnly,
                 ...(feature === undefined ? {} : { feature }),
+                ...(metadata.secret === undefined ? {} : { secretFields: metadata.secret }),
             });
         }
     }

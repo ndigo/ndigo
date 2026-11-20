@@ -27,7 +27,7 @@ export interface RegisteredJobHandler {
  * Holds the job-type → handler mapping. Two registration paths:
  *
  * - **Declarative** — `@jobHandler('type')` methods on entries are discovered
- *   when the registry starts (container lifecycle: `SmartLifecycle`, phase 0,
+ *   when the registry starts (container lifecycle: `ManagedLifecycle`, phase 0,
  *   auto-start; the runner starts in phase 10, after the scan).
  * - **Programmatic** — {@link register} for functional handlers and tests.
  *
@@ -64,7 +64,7 @@ export class JobHandlerRegistry implements AsyncDestroyable {
     readonly phase = 0;
 
     /**
-     * Auto-start on refresh (factory `SmartLifecycle` contract).
+     * Auto-start on refresh (factory `ManagedLifecycle` contract).
      */
     readonly isAutoStartup = true;
 
@@ -127,7 +127,7 @@ export class JobHandlerRegistry implements AsyncDestroyable {
     }
 
     /**
-     * SmartLifecycle start: scans the bound context for `@jobHandler`
+     * ManagedLifecycle start: scans the bound context for `@jobHandler`
      * methods and registers them. Idempotent.
      *
      * @throws When no context is bound or a registration is
@@ -157,7 +157,7 @@ export class JobHandlerRegistry implements AsyncDestroyable {
     }
 
     /**
-     * SmartLifecycle stop: clears the discovered registrations. Programmatic
+     * ManagedLifecycle stop: clears the discovered registrations. Programmatic
      * registrations made before `start` are re-added on the next scan only if
      * they live on scanned entries; functional handlers must be re-registered.
      */

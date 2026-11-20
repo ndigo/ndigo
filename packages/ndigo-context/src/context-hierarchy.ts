@@ -3,9 +3,8 @@
  */
 import { ContentSource, ThemeSource } from '@ndigo/content';
 import { JSONObject } from '@ndigo/core';
-import { likeCloseable } from '@ndigo/factory';
 import { ConfigurableEnvironment } from './environment';
-import { ApplicationContext, GenericApplicationContext } from './context';
+import { ApplicationContext, GenericApplicationContext, likeApplicationContext } from './context';
 import { ContextEventGateway, ContextEventGatewayOptions, ContextEventRelay } from './event-gateway';
 
 /**
@@ -150,7 +149,7 @@ export const unmountFeatureContext = (
 ): void => {
     feature.gateway?.destroy();
 
-    if (policy === 'close' && likeCloseable(feature.context)) {
+    if (policy === 'close' && likeApplicationContext(feature.context)) {
         feature.context.close();
     }
 };

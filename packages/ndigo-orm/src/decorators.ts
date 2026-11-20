@@ -9,7 +9,7 @@ import {
     generatedColumnMetadataKey,
     primaryMetadataKey,
     relationsMetadataKey,
-    lifecycleHooksMetadataKey,
+    entityHooksMetadataKey,
     transactionalMetadataKey,
 } from './_constants';
 import {
@@ -17,8 +17,8 @@ import {
     ColumnOptions,
     RelationDefinition,
     RelationKind,
-    LifecycleHookDefinition,
-    LifecycleEvent,
+    EntityHookDefinition,
+    EntityHookEvent,
 } from './metadata';
 import type { TransactionManager } from './transaction-manager';
 import { methodAnnotation, type MethodAnnotationKey } from '@ndigo/core';
@@ -235,14 +235,14 @@ export function oneToOne(targetEntity: () => Constructable<object>, options: Rel
 
 /**
  * @internal
- * Shared factory for lifecycle hook decorators. Records a {@link LifecycleHookDefinition}
- * on the class method's `Symbol.metadata` under the `lifecycleHooksMetadataKey` key.
+ * Shared factory for entity hook decorators. Records a {@link EntityHookDefinition}
+ * on the class method's `Symbol.metadata` under the `entityHooksMetadataKey` key.
  */
-function lifecycleDecorator(event: LifecycleEvent) {
+function entityHookDecorator(event: EntityHookEvent) {
     return function (_value: unknown, context: ClassMethodDecoratorContext): void {
-        const hooks = ((context.metadata[lifecycleHooksMetadataKey] as LifecycleHookDefinition[]) ?? []).slice();
+        const hooks = ((context.metadata[entityHooksMetadataKey] as EntityHookDefinition[]) ?? []).slice();
         hooks.push({ event, methodName: String(context.name) });
-        context.metadata[lifecycleHooksMetadataKey] = hooks;
+        context.metadata[entityHooksMetadataKey] = hooks;
     };
 }
 
@@ -265,7 +265,7 @@ function lifecycleDecorator(event: LifecycleEvent) {
  * ```
  */
 export function prePersist() {
-    return lifecycleDecorator('prePersist');
+    return entityHookDecorator('prePersist');
 }
 
 /**
@@ -284,7 +284,7 @@ export function prePersist() {
  * ```
  */
 export function postLoad() {
-    return lifecycleDecorator('postLoad');
+    return entityHookDecorator('postLoad');
 }
 
 /**
@@ -306,7 +306,7 @@ export function postLoad() {
  * ```
  */
 export function preUpdate() {
-    return lifecycleDecorator('preUpdate');
+    return entityHookDecorator('preUpdate');
 }
 
 /**
@@ -325,7 +325,7 @@ export function preUpdate() {
  * ```
  */
 export function postRemove() {
-    return lifecycleDecorator('postRemove');
+    return entityHookDecorator('postRemove');
 }
 
 /**

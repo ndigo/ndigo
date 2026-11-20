@@ -68,8 +68,8 @@ live('RedisRateLimiter (live standalone Redis 6.2+)', () => {
             await client.close();
         }
         namespaces.clear();
-        await Promise.all(limiters.splice(0).map((limiter) => limiter.close()));
-        await Promise.all(connections.splice(0).map((connection) => connection.close()));
+        await Promise.all(limiters.splice(0).map((limiter) => limiter.destroy()));
+        await Promise.all(connections.splice(0).map((connection) => connection.destroy()));
     });
 
     it('kind is redis', async () => {
@@ -161,7 +161,7 @@ live('RedisRateLimiter (live standalone Redis 6.2+)', () => {
 
     it('a closed driver rejects operations', async () => {
         const { limiter } = await open();
-        await limiter.close();
+        await limiter.destroy();
         await expect(limiter.consume('k', { limit: 1, windowMs: 1000 })).rejects.toThrow();
     });
 

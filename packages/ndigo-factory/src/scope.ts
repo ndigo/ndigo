@@ -203,16 +203,19 @@ export class HashScope implements Scope {
 
     /**
      * Ends the scope identified by `key`: runs every registered destruction
-     * callback, then discards the key's bucket. Callbacks are best effort —
-     * a throwing callback is logged and never aborts the sweep, so no stale
-     * bucket survives `endScope`.
+     * callback in reverse registration (= creation) order — teardown mirrors
+     * construction — then discards the key's bucket. Callbacks are best
+     * effort: a throwing callback is logged and never aborts the sweep, so no
+     * stale bucket survives `endScope`.
      *
      * @param key - The scope key to end.
      */
     endScope(key: string): void {
         const callbacks = this.#destructionCallbacks.get(key);
         if (callbacks) {
-            for (const [name, callback] of callbacks) {
+            const entries = [...callbacks];
+            for (let index = entries.length - 1; index >= 0; index--) {
+                const [name, callback] = entries[index];
                 try {
                     callback();
                 } catch (error) {
@@ -392,9 +395,9 @@ export class SingletonScope implements Scope {
  * context's environment refreshes (`config:refresh` event): the
  * next `getValue` re-creates the instance from its factory.
  *
- * Destruction callbacks are registered by the container for lifecycle-bearing
- * values; `clear()` runs them before discarding so `@destroyable`/`@closeable`
- * values tear down properly (mirrors `SingletonScope.destroyValue`).
+ * Destruction callbacks are registered by the container for managed values;
+ * `clear()` runs them before discarding, so destruction processors and
+ * `destroy()` run for each value (mirrors `SingletonScope.destroyValue`).
  *
  * @internal Implementation detail — see {@link PrototypeScope} for rationale.
  */
@@ -464,13 +467,16 @@ export class RefreshScope implements Scope {
      *
      * The instance map is cleared FIRST so a throwing destruction callback
      * can never leave a stale instance cached — `clear()` is the refresh
-     * teardown edge (ARC-1) and must always complete. Callbacks are best
-     * effort: each failure is reported via the logger and never
+     * teardown edge (ARC-1) and must always complete. Callbacks run in reverse
+     * registration (= creation) order: teardown mirrors construction. They
+     * are best effort: each failure is reported via the logger and never
      * aborts the sweep.
      */
     clear(): void {
         this.#instances.clear();
-        for (const [name, callback] of this.#destructionCallbacks) {
+        const entries = [...this.#destructionCallbacks];
+        for (let index = entries.length - 1; index >= 0; index--) {
+            const [name, callback] = entries[index];
             try {
                 callback();
             } catch (error) {

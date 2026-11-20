@@ -1,6 +1,7 @@
 /**
  */
 import '@tsmetadata/polyfill';
+import type { Constructable } from '@ndigo/core';
 import { describe, test, expect, vi } from 'vitest';
 import { entity as entityDecorator, generatedColumn, primaryColumn, column, manyToOne, oneToMany } from '@ndigo/orm';
 import type { AsyncRepository } from '@ndigo/orm';
@@ -10,7 +11,7 @@ import { DrizzleRepository } from '../src/drizzle-repository';
 
 // Spec-side type wrapper; runtime-identical to the production `entity` decorator.
 const entity = entityDecorator as unknown as (tableName?: string) => ClassDecorator;
-type ClassType = new (...args: unknown[]) => unknown;
+type ClassType = Constructable<object>;
 
 @entity('drizzle_rel_authors')
 class DrizzleRelAuthor {

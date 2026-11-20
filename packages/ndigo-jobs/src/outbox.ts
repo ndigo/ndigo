@@ -2,7 +2,7 @@
  * Transactional-outbox contracts: store, publisher, and the jobs publisher.
  */
 import { like } from '@ndigo/util/types';
-import type { AsyncCloseable } from '@ndigo/factory';
+import type { AsyncDestroyable } from '@ndigo/factory';
 
 import type { JobId } from './job';
 import type { JobQueue } from './job-queue';
@@ -44,7 +44,7 @@ export interface OutboxClaimOptions {
  * its lease expires (crashed relay, failed publish), so consumers subscribe
  * idempotently.
  */
-export interface OutboxStore extends AsyncCloseable {
+export interface OutboxStore extends AsyncDestroyable {
     /**
      * Records one side effect.
      *
@@ -87,7 +87,7 @@ export interface OutboxStore extends AsyncCloseable {
     /**
      * Releases store resources (idempotent).
      */
-    close(): Promise<void>;
+    destroy(): Promise<void>;
 }
 
 /**
@@ -103,7 +103,7 @@ export const likeOutboxStore = (value: unknown): value is OutboxStore =>
         markPublished: Function,
         prunePublished: Function,
         size: Function,
-        close: Function,
+        destroy: Function,
     })(value);
 
 /**

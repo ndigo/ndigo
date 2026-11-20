@@ -187,19 +187,23 @@ export class FanoutBackend extends AsApplicationContextAware(Object) {
      * transport that carries them, the transport before the publisher it
      * borrowed nothing but cannot outlive, the cache last (it is a producer).
      * The HTTP server is closed before any of these by the caller.
-     *
      * @returns The closables, in the order they must be closed.
      */
     teardownResources(): Closable[] {
-        const resources: Closable[] = [this.registry];
-        if (this.fanout !== undefined) {
-            resources.push(this.fanout);
+        // Every resource here is terminal, so each is adapted to the shutdown
+        // layer's `Closable` shape by bridging to its `destroy()`.
+        const resources: Closable[] = [{ close: () => this.registry.destroy() }];
+        const { fanout } = this;
+        if (fanout !== undefined) {
+            resources.push({ close: () => fanout.destroy() });
         }
-        if (this.#connection !== undefined) {
-            resources.push(this.#connection);
+        const connection = this.#connection;
+        if (connection !== undefined) {
+            resources.push({ close: () => connection.destroy() });
         }
-        if (this.#redisCache !== undefined) {
-            resources.push(this.#redisCache);
+        const redisCache = this.#redisCache;
+        if (redisCache !== undefined) {
+            resources.push({ close: () => redisCache.destroy() });
         }
         return resources;
     }

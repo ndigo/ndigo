@@ -29,8 +29,11 @@ guides cover each surface in detail.
    container close runs last. Cleanup is written so a failure cannot skip
    the remaining steps (see [Guide 15 — WebSockets](../guides/15-websockets.md)
    and [Guide 21 — Persistence & Shared Stores](../guides/21-persistence-and-shared-stores.md)).
-6. **Close is a contract, not a convention.** Container teardown recognizes
-   `Closeable`; external adapters bridge `dispose()` to it explicitly.
+6. **Destruction is a contract, not a convention.** Container teardown
+   recognizes `Destroyable`; external adapters bridge `dispose()`/`close()`
+   to `destroy()` explicitly. The shutdown drain layer (the graceful-shutdown
+   resources and `HTTPServer.close()`) keeps its own `close()` shape for the
+   reversible stop/drain that runs before the container destroys entries.
    A dispose-only object registered with the container is not proof of
    cleanup.
 
@@ -49,8 +52,9 @@ guides cover each surface in detail.
    heartbeat, drop sessions.
 3. `fanout.close()` — unsubscribe its owned subscriber.
 4. `publisher.close()` by its **owner**.
-5. Synchronous `context.close()` — the container tears down entries
-   (`Closeable`), the application's synchronous close semantics.
+5. Synchronous `context.close()` — the container releases every managed
+   value (destruction processors, then `Destroyable.destroy()`), the
+   application's synchronous close semantics.
 
 Every step is awaited where awaitable; a startup failure runs the same
 cleanup path (nothing half-built is left connected).
@@ -60,7 +64,7 @@ cleanup path (nothing half-built is left connected).
 The application-context lifecycle — refresh, close, destroy-vs-close,
 child-context propagation — is specified in
 [Guide 04 — Dependency Injection, Scopes & Lifecycle](../guides/04-dependency-injection-and-lifecycle.md).
-This page covers the resource-ownership half; the two meet at `Closeable`
+This page covers the resource-ownership half; the two meet at `Destroyable`
 bridging and the drain-before-close rule.
 
 ## Verification
@@ -87,4 +91,4 @@ bridging and the drain-before-close rule.
   brokers) needs an explicit fault contract before adoption.
 - If container teardown grows async lifecycle hooks, the
   synchronous-close rule (principle 5) is the seam to reopen — until then,
-  `Closeable` bridging and drain ordering remain the contract.
+  `Destroyable` bridging and drain ordering remain the contract.

@@ -34,7 +34,7 @@ const likeNormalizedSpec = (value: unknown): value is NormalizedScheduledSpec =>
  *
  * As a container entry it is driven by the factory lifecycle:
  * registered by `NodeAutoConfiguration`, injected with the context via
- * `ApplicationContextAware`, **auto-started on refresh** (`SmartLifecycle`),
+ * `ApplicationContextAware`, **auto-started on refresh** (`ManagedLifecycle`),
  * and stopped/destroyed on context close — zero extra wiring for Node apps.
  *
  * Scan model mirrors the handler-mapping scan (`Object.keys(context)` →
@@ -74,7 +74,7 @@ export class ScheduleRegistry implements AsyncDestroyable {
     readonly phase = 0;
 
     /**
-     * Auto-start on refresh (factory `SmartLifecycle` contract).
+     * Auto-start on refresh (factory `ManagedLifecycle` contract).
      */
     readonly isAutoStartup = true;
 
@@ -100,7 +100,7 @@ export class ScheduleRegistry implements AsyncDestroyable {
     }
 
     /**
-     * SmartLifecycle start: scans the context, registers telemetry-wrapped
+     * ManagedLifecycle start: scans the context, registers telemetry-wrapped
      * tasks with the `taskScheduler` entry, and starts the timer loop.
      *
      * Idempotent; scans once per lifecycle (double-init guard on the
@@ -139,7 +139,7 @@ export class ScheduleRegistry implements AsyncDestroyable {
     }
 
     /**
-     * SmartLifecycle stop: stops the timer loop and unregisters the scanned
+     * ManagedLifecycle stop: stops the timer loop and unregisters the scanned
      * tasks. In-flight runs continue; `destroy` drains them.
      *
      * Unlike {@link ScheduleRegistry.close}, stop keeps the context and

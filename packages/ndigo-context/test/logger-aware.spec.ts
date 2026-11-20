@@ -41,7 +41,8 @@ describe('LoggerAware', () => {
         const logger = context.getLogger();
         expect(logger.isEnabled(levelToSeverityNumber('debug'))).toBe(true); // DEBUG threshold allows debug
 
-        LoggerFactory.setThreshold(99999); // effectively disable
+        // Deliberately out of the enum's range: no level matches, effectively disabling the threshold.
+        LoggerFactory.setThreshold(99999 as Parameters<typeof LoggerFactory.setThreshold>[0]);
         // re-resolve by calling isEnabled again
         expect(typeof logger.isEnabled).toBe('function');
         LoggerFactory.reset();

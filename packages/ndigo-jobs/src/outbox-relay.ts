@@ -2,7 +2,7 @@
  * `OutboxRelay` — publishes claimed outbox entries and marks them done.
  */
 import { FrameworkError } from '@ndigo/core';
-import type { AsyncCloseable } from '@ndigo/factory';
+import type { AsyncDestroyable } from '@ndigo/factory';
 import { getErrorMessage } from '@ndigo/util';
 import { getLogger, type Logger } from '@ndigo/log';
 import {
@@ -40,11 +40,11 @@ export interface OutboxRelayOptions {
  * entry claimed — the lease expiry re-surfaces it — so delivery is
  * at-least-once and consumers must be idempotent.
  *
- * Lifecycle: `SmartLifecycle`, phase 10, auto-start when registered as a
+ * Lifecycle: `ManagedLifecycle`, phase 10, auto-start when registered as a
  * entry; `close()` stops and awaits the pass in flight. Direct construction is
  * the standalone/test path.
  */
-export class OutboxRelay implements AsyncCloseable {
+export class OutboxRelay implements AsyncDestroyable {
     /**
      * The `Symbol.toStringTag` value for this instance.
      *
@@ -60,7 +60,7 @@ export class OutboxRelay implements AsyncCloseable {
         return 'OutboxRelay';
     }
 
-    /** SmartLifecycle phase: after the store/queue wiring. */
+    /** ManagedLifecycle phase: after the store/queue wiring. */
     readonly phase = 10;
     /** Whether the relay auto-starts with the context. */
     readonly isAutoStartup = true;
@@ -111,7 +111,7 @@ export class OutboxRelay implements AsyncCloseable {
     }
 
     /**
-     * SmartLifecycle start: arms the poll loop (idempotent).
+     * ManagedLifecycle start: arms the poll loop (idempotent).
      */
     start(): void {
         if (this.#started || this.#closed) {
@@ -122,7 +122,7 @@ export class OutboxRelay implements AsyncCloseable {
     }
 
     /**
-     * SmartLifecycle stop: stops polling; the pass in flight completes.
+     * ManagedLifecycle stop: stops polling; the pass in flight completes.
      */
     stop(): void {
         this.#started = false;
@@ -137,7 +137,7 @@ export class OutboxRelay implements AsyncCloseable {
      *
      * @returns A promise that resolves once the relay is closed.
      */
-    async close(): Promise<void> {
+    async destroy(): Promise<void> {
         this.#closed = true;
         this.stop();
         await this.#ticking?.catch(() => undefined);

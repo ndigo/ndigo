@@ -275,7 +275,7 @@ export class NodeAutoConfiguration extends AsApplicationContextAware(Null) {
 
     /**
      * Discovers `@scheduled` methods on registered entries and runs them on
-     * the task scheduler. Auto-started on refresh (SmartLifecycle) and torn
+     * the task scheduler. Auto-started on refresh (ManagedLifecycle) and torn
      * down with the context — zero wiring for Node apps.
      *
      * @returns The schedule registry.
@@ -312,7 +312,7 @@ export class NodeAutoConfiguration extends AsApplicationContextAware(Null) {
 
     /**
      * Discovers `@jobHandler` methods on registered entries and holds the
-     * registrations. Scans on refresh (`SmartLifecycle`, phase 0); arms no
+     * registrations. Scans on refresh (`ManagedLifecycle`, phase 0); arms no
      * timer.
      *
      * @returns The job handler registry.

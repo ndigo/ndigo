@@ -3,7 +3,7 @@
 import { describe, test, expect, beforeAll, beforeEach, afterAll } from 'vitest';
 import { configuration, entry, MetadataConfigApplicationContext } from '@ndigo/context';
 import { delay } from '@ndigo/util';
-import { likeSmartLifecycle } from '@ndigo/factory';
+import { likeManagedLifecycle } from '@ndigo/factory';
 import { BasicTracerProvider, InMemorySpanExporter, SimpleSpanProcessor } from '@opentelemetry/sdk-trace-base';
 import { trace } from '@opentelemetry/api';
 import { JOB_DRIVER, JOB_HANDLER_REGISTRY, JOB_QUEUE, JOB_RUNNER } from '../src/context-tokens';
@@ -79,8 +79,8 @@ describe('jobs container wiring', () => {
         const queue = context.getValue(JOB_QUEUE) as JobQueue;
         const runner = context.getValue(JOB_RUNNER) as JobRunner;
 
-        expect(likeSmartLifecycle(registry)).toBe(true);
-        expect(likeSmartLifecycle(runner)).toBe(true);
+        expect(likeManagedLifecycle(registry)).toBe(true);
+        expect(likeManagedLifecycle(runner)).toBe(true);
         // The registry scans on refresh; the runner starts explicitly (a
         // pending poll timer keeps the process alive — HTTPServer precedent).
         expect(registry.isRunning).toBe(true);

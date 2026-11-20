@@ -74,6 +74,11 @@ export interface ApplicationContext
     destroyedTimestamp?: number;
 
     /**
+     * Whether this context has been destroyed — its `close()` completed.
+     */
+    readonly destroyed: boolean;
+
+    /**
      * Closes this application context and all of its descendants, then destroys associated resources.
      *
      * **Sequence:**
@@ -125,7 +130,7 @@ export interface ApplicationContext
      *
      * **Sequence:**
      * 1. Emits `'context:preparing'` — processors may register additional entries.
-     * 2. Runs all registered `LifecycleProcessor` and `EntryRegistryProcessor` instances.
+     * 2. Runs all registered `LifecycleCoordinator` and `EntryRegistryProcessor` instances.
      * 3. Emits `'context:refresh'` — signals that the context is fully active.
      * 4. Sets `isActive` to `true`.
      *

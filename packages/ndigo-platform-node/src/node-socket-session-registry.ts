@@ -3,7 +3,7 @@
  */
 import type { SocketSession, SocketSessionRegistry } from '@ndigo/dispatcher';
 import { IllegalStateError } from '@ndigo/core';
-import type { AsyncCloseable } from '@ndigo/factory';
+import type { AsyncDestroyable } from '@ndigo/factory';
 import type { SocketFanout } from '@ndigo/socket';
 import type { WebSocket } from 'ws';
 import { assertCloseFrame } from './node-socket-session';
@@ -153,7 +153,7 @@ export function resolveSocketRegistryOptions(
  * The implementation is registered as a context entry by
  * `NodeAutoConfiguration`; any service can inject it and push to a room.
  */
-export class NodeSocketSessionRegistry implements SocketSessionRegistry, AsyncCloseable {
+export class NodeSocketSessionRegistry implements SocketSessionRegistry, AsyncDestroyable {
     /**
      * The `Symbol.toStringTag` value for this instance.
      *
@@ -273,7 +273,7 @@ export class NodeSocketSessionRegistry implements SocketSessionRegistry, AsyncCl
      *
      * @returns A promise that resolves once closed.
      */
-    close(): Promise<void> {
+    destroy(): Promise<void> {
         if (this.#closePromise) {
             return this.#closePromise;
         }

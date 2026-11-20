@@ -62,8 +62,8 @@ live('RedisJobDriver (live standalone Redis 7.2+)', () => {
             await client.close();
         }
         namespaces.clear();
-        await Promise.all(drivers.splice(0).map((driver) => driver.close()));
-        await Promise.all(connections.splice(0).map((connection) => connection.close()));
+        await Promise.all(drivers.splice(0).map((driver) => driver.destroy()));
+        await Promise.all(connections.splice(0).map((connection) => connection.destroy()));
     });
 
     it('enqueue → claim → complete round-trips a job', async () => {
@@ -260,7 +260,7 @@ live('RedisJobDriver (live standalone Redis 7.2+)', () => {
 
     it('a closed handle rejects operations; the borrowed connection stays usable', async () => {
         const { driver, connection } = await open();
-        await driver.close();
+        await driver.destroy();
 
         await expect(driver.enqueue({ type: 'x' })).rejects.toThrow(/closed/);
         await expect(connection.run(async (client) => client.ping())).resolves.toBe('PONG');

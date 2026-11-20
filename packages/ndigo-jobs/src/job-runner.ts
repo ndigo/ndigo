@@ -2,7 +2,7 @@
  * `JobRunner` — polls a driver and executes registered handlers.
  */
 import { FrameworkError } from '@ndigo/core';
-import type { AsyncCloseable } from '@ndigo/factory';
+import type { AsyncDestroyable } from '@ndigo/factory';
 import { getErrorMessage } from '@ndigo/util';
 import { getLogger, type Logger } from '@ndigo/log';
 import type { ApplicationContext } from '@ndigo/context';
@@ -43,7 +43,7 @@ export interface JobRunnerOptions {
     /** Logger override; default `getLogger('@ndigo/jobs')`. */
     logger?: Logger;
     /**
-     * Start the poll loop on context refresh (`SmartLifecycle`). Default
+     * Start the poll loop on context refresh (`ManagedLifecycle`). Default
      * **false** — a pending poll timer keeps the process alive, so the loop
      * starts explicitly (the `HTTPServer` precedent): worker processes start
      * the runner after boot; API-only processes leave it stopped. Set `true`
@@ -58,7 +58,7 @@ export interface JobRunnerOptions {
  * heartbeat, exponential-backoff retries until `maxAttempts`, one
  * `jobs.job.<type>` span per execution, and outcome logging via `@ndigo/log`.
  *
- * Lifecycle: `SmartLifecycle`, phase 10 (after the registry scan in phase 0).
+ * Lifecycle: `ManagedLifecycle`, phase 10 (after the registry scan in phase 0).
  * The poll loop starts explicitly — `start()` after boot, the `HTTPServer`
  * precedent — because a pending poll timer keeps the process alive; pass
  * `autoStart: true` for refresh-driven start (`stop()` stops claiming while
@@ -67,7 +67,7 @@ export interface JobRunnerOptions {
  *
  * Deterministic tests drive {@link tick} directly with an injected clock.
  */
-export class JobRunner implements AsyncCloseable {
+export class JobRunner implements AsyncDestroyable {
     /**
      * The `Symbol.toStringTag` value for this instance.
      *
@@ -83,7 +83,7 @@ export class JobRunner implements AsyncCloseable {
         return 'JobRunner';
     }
 
-    /** SmartLifecycle phase: after the handler-registry scan (phase 0). */
+    /** ManagedLifecycle phase: after the handler-registry scan (phase 0). */
     readonly phase = 10;
     /** Whether the runner starts with the context (`autoStart`). */
     readonly isAutoStartup: boolean;
@@ -148,7 +148,7 @@ export class JobRunner implements AsyncCloseable {
     }
 
     /**
-     * SmartLifecycle start: resolves collaborators (fail loud when missing)
+     * ManagedLifecycle start: resolves collaborators (fail loud when missing)
      * and arms the poll loop.
      */
     start(): void {
@@ -162,7 +162,7 @@ export class JobRunner implements AsyncCloseable {
     }
 
     /**
-     * SmartLifecycle stop: stops claiming; in-flight executions continue.
+     * ManagedLifecycle stop: stops claiming; in-flight executions continue.
      */
     stop(): void {
         this.#started = false;
@@ -177,7 +177,7 @@ export class JobRunner implements AsyncCloseable {
      *
      * @returns A promise that resolves once the drain completes.
      */
-    async close(): Promise<void> {
+    async destroy(): Promise<void> {
         if (this.#destroyed) {
             return;
         }

@@ -39,7 +39,7 @@ describe('NodeAutoConfiguration scheduler wiring', () => {
 
         const registry = context.getValue('scheduleRegistry');
         const running = (registry as { isRunning?: boolean }).isRunning;
-        expect(running).toBe(true); // SmartLifecycle auto-start on refresh
+        expect(running).toBe(true); // ManagedLifecycle auto-start on refresh
     });
 
     test('discovers the scheduled entry and runs it on demand', async () => {

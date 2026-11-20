@@ -3,7 +3,7 @@
  *
  * Advice weaves at entry creation (`InitializationAwareProcessor`); the
  * schedule registry scans later and captures `owner[methodName]` into a
- * closure (`SmartLifecycle`, phase 0). If that capture happened before weaving,
+ * closure (`ManagedLifecycle`, phase 0). If that capture happened before weaving,
  * or took the prototype method, a `@scheduled` + `@traced` method would run
  * unadvised — and no lane asserted this on the container path, only on the
  * directly-advised path (`scheduled-task.spec.ts`).

@@ -10,7 +10,7 @@ import {
     getSharedOptions,
     satisfiesVersion,
 } from '@ndigo/core';
-import { Destroyable, Initializable, likeCloseable, likeDestroyable, likeInitializable } from './lifecycle';
+import { Initializable, likeDestroyable, likeInitializable } from './lifecycle';
 import { getErrorMessage } from '@ndigo/util';
 import { isNumber, isString } from '@ndigo/util/types';
 import { Aware, likeAware, likeNameAware } from './aware';
@@ -98,6 +98,16 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
      * Registered constructor names (without the leading `$`).
      */
     #constructorNames = new Set<string>();
+    /**
+     * Creation sequence for managed values: every created instance and every
+     * `setValue` registration stamps its name, so destruction can mirror
+     * construction — the latest created value releases first.
+     */
+    #creationCounter = 0;
+    /**
+     * Last-creation ordinal per managed name.
+     */
+    #creationOrdinals = new Map<string, number>();
     /**
      * A list of entry processors applied to instances.
      */
@@ -236,12 +246,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
         if (this.hasInstance(name)) {
             const value = this.#instances.get(name);
             if (value !== undefined && value !== registeredUndefined) {
-                if (likeDestroyable(value)) {
-                    this._applyProcessorsBeforeDestruction(name, value);
-                    value.destroy();
-                } else if (likeCloseable(value)) {
-                    value.close();
-                }
+                this._releaseValue(name, value);
             }
             deleteProperty(this, name);
             this.#instances.delete(name);
@@ -322,6 +327,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
                 // CF-3: the scope's value factory runs only when a
                 // new instance is created, so lifecycle teardown is registered
                 // exactly once per instance (never on cache hits).
+                this._markCreated(name);
                 this._registerScopeDestructionCallback(scope, name, instance);
                 return instance;
             });
@@ -355,30 +361,77 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
     }
 
     /**
-     * Registers a destruction callback for a lifecycle-bearing value owned by
-     * a caching, scope-managed lifecycle, so that scope's teardown runs
-     * `destroy()`/`close()` before discarding the value: `RefreshScope.clear()`
-     * on environment `config:refresh` and `HashScope.endScope()` at
-     * the end of a route/request.
+     * Releases a managed value: runs destruction processors, then destroys
+     * the value when it implements `Destroyable`. Every release path —
+     * {@link destroyValue} and scope teardown — funnels through here, so
+     * processors reach every managed value exactly once per release.
+     */
+    private _releaseValue(name: string, value: unknown): void {
+        this._applyProcessorsBeforeDestruction(name, value);
+
+        if (likeDestroyable(value)) {
+            value.destroy();
+        }
+    }
+
+    /**
+     * Orders managed names for destruction: created instances first, in
+     * reverse creation order, so dependents release before the dependencies
+     * they resolved. Names never created follow in their given order — they
+     * hold nothing to release.
+     *
+     * @param names - The managed names to order.
+     * @returns The names in release order.
+     */
+    protected _destructionOrder(names: Iterable<string>): string[] {
+        const created: string[] = [],
+            rest: string[] = [];
+
+        for (const name of names) {
+            if (this.#creationOrdinals.has(name)) {
+                created.push(name);
+            } else {
+                rest.push(name);
+            }
+        }
+
+        created.sort((a, b) => (this.#creationOrdinals.get(b) ?? 0) - (this.#creationOrdinals.get(a) ?? 0));
+
+        return [...created, ...rest];
+    }
+
+    /**
+     * Stamps `name` as created, for reverse-creation destruction ordering.
+     *
+     * @param name - The created value's name.
+     */
+    private _markCreated(name: string): void {
+        this.#creationOrdinals.set(name, ++this.#creationCounter);
+    }
+
+    /**
+     * Registers a destruction callback for a managed value owned by a
+     * caching, scope-managed lifecycle, so that scope's teardown releases the
+     * value before discarding it: `RefreshScope.clear()` on environment
+     * `config:refresh` and `HashScope.endScope()` at the end of a
+     * route/request.
+     *
+     * Every managed value registers — destruction processors must reach
+     * values that implement no release method (an annotated instance can
+     * carry a destruction hook without implementing `Destroyable`).
      *
      * Only refresh and hash/route scopes opt in. `SingletonScope` also declares
      * the hook, but singleton values are torn down by {@link destroyValue}
-     * itself; a factory-registered callback there would run `destroy()`/
-     * `close()` twice. Prototype-scoped values are never cached, so nothing
-     * outlives them.
+     * itself; a factory-registered callback there would release the value
+     * twice. Prototype-scoped values are never cached, so nothing outlives
+     * them.
      */
     private _registerScopeDestructionCallback(scope: Scope, name: string, value: unknown): void {
         if (!(scope instanceof RefreshScope || scope instanceof HashScope)) {
             return;
         }
 
-        if (likeDestroyable(value)) {
-            const destroyable = value;
-            scope.registerDestructionCallback(name, () => destroyable.destroy());
-        } else if (likeCloseable(value)) {
-            const closeable = value;
-            scope.registerDestructionCallback(name, () => closeable.close());
-        }
+        scope.registerDestructionCallback(name, () => this._releaseValue(name, value));
     }
 
     /**
@@ -585,6 +638,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
             });
             this.#instances.set(name, value === undefined ? registeredUndefined : value);
             this.#instanceNames.add(name);
+            this._markCreated(name);
             const stored = this[name];
 
             if (likeEnumerable(stored)) {
@@ -635,8 +689,9 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
             for (; index < length; index++) {
                 const processor = this.processors[index];
                 if (likeConstructionAwareProcessor(processor)) {
-                    populateProperties = processor.processAfterConstruction(name, instance);
-                    if (!populateProperties) {
+                    const populate = processor.processAfterConstruction?.(name, instance);
+                    if (populate === false) {
+                        populateProperties = false;
                         break;
                     }
                 }
@@ -661,7 +716,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
             let index = 0;
             for (; index < length; index++) {
                 const processor = this.processors[index];
-                if (likeInitializationAwareProcessor(processor)) {
+                if (likeInitializationAwareProcessor(processor) && processor.processAfterInitialization) {
                     const processed = processor.processAfterInitialization(name, result);
                     if (!processed) {
                         return result;
@@ -694,7 +749,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
             let index = 0;
             for (; index < length; index++) {
                 const processor = this.processors[index];
-                if (likeConstructionAwareProcessor(processor)) {
+                if (likeConstructionAwareProcessor(processor) && processor.processBeforeConstruction) {
                     result = processor.processBeforeConstruction<T>(name, constructor, argumentsList);
                     if (!result) {
                         return result;
@@ -711,13 +766,13 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
      * @param name - The name of the instance.
      * @param instance - The instance to be destroyed.
      */
-    protected _applyProcessorsBeforeDestruction(name: string, instance: Destroyable): void {
+    protected _applyProcessorsBeforeDestruction(name: string, instance: unknown): void {
         if (this.hasDestructionAwareProcessors) {
-            const length = this.processors.length;
-            let index = 0;
-            for (; index < length; index++) {
+            // Reverse registration order: teardown mirrors construction, where
+            // processors apply in registration order.
+            for (let index = this.processors.length - 1; index >= 0; index--) {
                 const processor = this.processors[index];
-                if (likeDestructionAwareProcessor(processor)) {
+                if (likeDestructionAwareProcessor(processor) && processor.processBeforeDestruction) {
                     processor.processBeforeDestruction(name, instance);
                 }
             }
@@ -738,7 +793,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
             let index = 0;
             for (; index < length; index++) {
                 const processor = this.processors[index];
-                if (likeInitializationAwareProcessor(processor)) {
+                if (likeInitializationAwareProcessor(processor) && processor.processBeforeInitialization) {
                     const processed = processor.processBeforeInitialization(name, result);
                     if (!processed) {
                         return result;
@@ -854,7 +909,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
             index = 0;
             for (; index < length; index++) {
                 const processor = this.processors[index];
-                if (likeConstructionAwareProcessor(processor)) {
+                if (likeConstructionAwareProcessor(processor) && processor.processProperties) {
                     processedProperties = processor.processProperties(properties, name, processedValue);
                 }
             }

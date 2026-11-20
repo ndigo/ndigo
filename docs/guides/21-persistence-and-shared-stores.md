@@ -39,7 +39,7 @@ pnpm add @ndigo/redis @ndigo/orm-drizzle @ndigo/cache @ndigo/socket
   surface on first use (operations await the original initialization
   promise).
 - **No entry auto-registration.** Container wiring is application-owned;
-  lifecycle must bridge to the container's `Closeable` teardown explicitly.
+  lifecycle must bridge to the container's `Destroyable` teardown explicitly.
 
 ## 2. Durable sessions with LibSQL
 
@@ -81,9 +81,9 @@ Guarantees (verified in ):
 - **Cap + purge.** Creation purges expired rows and enforces
   `maxSessions` atomically; instances sharing a database should agree on the
   cap and keep clocks synchronized.
-- **Lifecycle.** `close` bridges `dispose` to the container's
-  `Closeable` teardown; owned clients close exactly once, borrowed clients
-  stay usable. LibSQL close is synchronous — drain consumers first.
+- **Lifecycle.** `destroy` bridges `dispose` to the container's
+  `Destroyable` teardown; owned clients are destroyed exactly once, borrowed
+  clients stay usable. LibSQL destroy is synchronous — drain consumers first.
 
 Namespaces: the fixed table is a **database-wide namespace** — isolate
 applications/envs by database (or by migration-owned schema), exactly like
@@ -99,7 +99,7 @@ so the package is dependency-light for connection-only use.
 import { RedisConnection } from '@ndigo/redis';
 const publisher = new RedisConnection({ url: process.env.REDIS_URL! });
 await publisher.connect();
-// … await publisher.close(); // owned; drained, no QUIT (close, not QUIT)
+// … await publisher.destroy(); // owned; drained, no QUIT (destroy, not QUIT)
 
 // The connection can also be registered as the `redisConnection` context entry
 // (`REDIS_CONNECTION` from `@ndigo/redis`) so components implementing
@@ -159,13 +159,13 @@ deployment policy — are in [Guide 42, cross-node live fan-out](42-stomp.md#2-c
 Stop producers and serving first, then close consumers, then transports,
 inside `try`/`finally`, before synchronous `context.close`:
 
-1. `registry.close` / `broker.close` — unsubscribes consumers
-2. `fanout.close` — unsubscribes its owned subscriber
-3. `publisher.close` — by its owner (never the fanout)
-4. `sessions.close` (or container `Closeable` teardown) after draining
+1. `registry.destroy` / `broker.close` — unsubscribes consumers
+2. `fanout.destroy` — unsubscribes its owned subscriber
+3. `publisher.destroy` — by its owner (never the fanout)
+4. `sessions.close` (or container `Destroyable` teardown) after draining
 
 Startup failure requires the same cleanup path. Container destruction
-recognizes `Closeable`; a dispose-only object is not proof of cleanup.
+recognizes `Destroyable`; a dispose-only object is not proof of cleanup.
 
 ## 6. Deployment policy
 

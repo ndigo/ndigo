@@ -15,13 +15,11 @@ import {
 } from '@ndigo/content';
 import { AsEventEmitter } from './event-emitter';
 import {
-    DefaultLifecycleProcessor,
-    LifecycleProcessor,
+    DefaultLifecycleCoordinator,
+    LifecycleCoordinator,
     likeEntryRegistryProcessor,
     DefaultFactory,
     Factory,
-    likeCloseable,
-    likeDestroyable,
     RefreshScope,
 } from '@ndigo/factory';
 import { Environment, StandardEnvironment, ConfigurableEnvironment, CONFIG_REFRESH_EVENT } from './environment';
@@ -73,7 +71,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
     #refreshFailHandler: ((error: Error) => void) | null = null;
     #id!: number;
     #isActive: boolean;
-    #lifecycleProcessor: LifecycleProcessor | null;
+    #lifecycleCoordinator: LifecycleCoordinator | null;
     #messageSource: MessageSource | null;
     #name: string;
     #parent: ApplicationContext | null;
@@ -190,7 +188,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
         this.#customThemeSource = false;
         this.#environment = null;
         this.#isActive = false;
-        this.#lifecycleProcessor = null;
+        this.#lifecycleCoordinator = null;
         this.#messageSource = null;
         this.#name = name ?? '';
         this.#parent = null;
@@ -267,7 +265,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
         }
 
         try {
-            this.#lifecycleProcessor?.onClose(this);
+            this.#lifecycleCoordinator?.onClose(this);
         } catch (error) {
             this.#reportTeardownError(error);
         }
@@ -462,11 +460,11 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
         this._onRefresh();
         this._applyLoggingConfig();
 
-        if (!this.#lifecycleProcessor) {
-            this.#lifecycleProcessor = new DefaultLifecycleProcessor();
+        if (!this.#lifecycleCoordinator) {
+            this.#lifecycleCoordinator = new DefaultLifecycleCoordinator();
         }
 
-        this.#lifecycleProcessor.onRefresh(this);
+        this.#lifecycleCoordinator.onRefresh(this);
         this.#isActive = true;
         this.emit('context:refresh', this);
     }
@@ -643,7 +641,11 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
         );
     }
 
-    /** Destroys managed values. */
+    /**
+     * Destroys managed values in reverse creation order — teardown mirrors
+     * construction, so dependents release before the dependencies they
+     * resolved.
+     */
     protected _destroyValues(): void {
         const names: Set<string> = new Set();
 
@@ -658,17 +660,18 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
                 names.add(key.slice(1));
             } else if (this.hasInstance(key)) {
                 // Plain-instance entries (`@entry` results and `setValue`
-                // values). Only lifecycle-bearing values are torn down —
-                // internal state fields and container references (`root` may
-                // point at an ancestor context) never qualify.
+                // values). Every managed value is released — processors may
+                // attach to a value with no release method. Container
+                // references (`root` may point at an ancestor context) never
+                // qualify.
                 const value = this[key];
-                if (!(value instanceof GenericApplicationContext) && (likeDestroyable(value) || likeCloseable(value))) {
+                if (!(value instanceof GenericApplicationContext)) {
                     names.add(key);
                 }
             }
         }
 
-        for (const name of names) {
+        for (const name of this._destructionOrder(names)) {
             if (!name) continue;
             // CTX-06: one entry's destroy failure must not strand the rest of
             // the managed values — isolate and report each.

@@ -4,29 +4,22 @@ import { describe, test, expect } from 'vitest';
 import {
     likeDestroyable,
     likeInitializable,
-    likeCloseable,
     likeLifecycle,
     likePhased,
-    likeSmartLifecycle,
-    DefaultLifecycleProcessor,
+    likeManagedLifecycle,
+    DefaultLifecycleCoordinator,
 } from '../src/lifecycle';
 import { DefaultFactory } from '../src/factory';
 
 describe('likeDestroyable', () => {
     test('it should identify destroyables', () => {
-        expect(likeDestroyable({ destroy: () => void 0, destroyed: false })).toBe(true);
+        expect(likeDestroyable({ destroy: () => void 0 })).toBe(true);
     });
 });
 
 describe('likeInitializable', () => {
     test('it should identify initializables', () => {
         expect(likeInitializable({ init: () => void 0 })).toBe(true);
-    });
-});
-
-describe('likeCloseable', () => {
-    test('it should identify closeables', () => {
-        expect(likeCloseable({ close: () => void 0 })).toBe(true);
     });
 });
 
@@ -42,10 +35,10 @@ describe('likePhased', () => {
     });
 });
 
-describe('likeSmartLifecycle', () => {
-    test('it should identify smart lifecycle values', () => {
+describe('likeManagedLifecycle', () => {
+    test('it should identify managed lifecycle values', () => {
         expect(
-            likeSmartLifecycle({
+            likeManagedLifecycle({
                 isRunning: false,
                 start: () => void 0,
                 stop: () => void 0,
@@ -56,8 +49,8 @@ describe('likeSmartLifecycle', () => {
     });
 });
 
-describe('DefaultLifecycleProcessor', () => {
-    class SmartLifecycleTarget {
+describe('DefaultLifecycleCoordinator', () => {
+    class ManagedLifecycleTarget {
         #running = false;
 
         readonly isAutoStartup: boolean;
@@ -87,10 +80,10 @@ describe('DefaultLifecycleProcessor', () => {
 
     test('it should start smart lifecycle values in phase order', () => {
         const factory = new DefaultFactory();
-        const processor = new DefaultLifecycleProcessor();
+        const processor = new DefaultLifecycleCoordinator();
 
-        const phase2 = new SmartLifecycleTarget(2);
-        const phase1 = new SmartLifecycleTarget(1);
+        const phase2 = new ManagedLifecycleTarget(2);
+        const phase1 = new ManagedLifecycleTarget(1);
 
         factory.setValue('phase2', phase2);
         factory.setValue('phase1', phase1);
@@ -104,10 +97,10 @@ describe('DefaultLifecycleProcessor', () => {
 
     test('it should stop smart lifecycle values in reverse phase order', () => {
         const factory = new DefaultFactory();
-        const processor = new DefaultLifecycleProcessor();
+        const processor = new DefaultLifecycleCoordinator();
 
-        const phase2 = new SmartLifecycleTarget(2);
-        const phase1 = new SmartLifecycleTarget(1);
+        const phase2 = new ManagedLifecycleTarget(2);
+        const phase1 = new ManagedLifecycleTarget(1);
 
         factory.setValue('phase2', phase2);
         factory.setValue('phase1', phase1);
@@ -122,9 +115,9 @@ describe('DefaultLifecycleProcessor', () => {
 
     test('it should skip auto startup when disabled', () => {
         const factory = new DefaultFactory();
-        const processor = new DefaultLifecycleProcessor();
+        const processor = new DefaultLifecycleCoordinator();
 
-        const manual = new SmartLifecycleTarget(1, false);
+        const manual = new ManagedLifecycleTarget(1, false);
 
         factory.setValue('manual', manual);
 

@@ -209,7 +209,7 @@ describe('InMemoryEntityManager', () => {
         });
     });
 
-    describe('lifecycle hooks', () => {
+    describe('entity hooks', () => {
         beforeEach(() => {
             vi.clearAllMocks();
         });

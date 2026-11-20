@@ -189,7 +189,7 @@ export class InProcessOutboxStore implements OutboxStore {
      *
      * @returns A promise that resolves once the store is closed.
      */
-    async close(): Promise<void> {
+    async destroy(): Promise<void> {
         this.#closed = true;
         this.#entries.clear();
     }

@@ -1,9 +1,10 @@
 /**
  * Regression specs for CF-3 (2026-10-06 review): the container registers
- * destruction callbacks for refresh-scoped lifecycle values at creation time,
+ * destruction callbacks for refresh-scoped managed values at creation time,
  * so `RefreshScope.clear()` (the environment `config:refresh` teardown edge)
- * runs `destroy()`/`close()` exactly once per instance. Singleton
- * teardown stays owned by `AbstractFactory.destroyValue` (no double destroy).
+ * runs destruction processors and `destroy()` exactly once per instance.
+ * Singleton teardown stays owned by `AbstractFactory.destroyValue` (no double
+ * destroy).
  */
 import { describe, test, expect, beforeEach, vi } from 'vitest';
 import { DefaultFactory } from '../src/factory';
@@ -69,7 +70,7 @@ describe('refresh scope teardown (CF-3)', () => {
         expect(entry.destroyed).toBe(true);
     });
 
-    test('tears down a refresh-scoped closeable exactly once on clear', () => {
+    test('does NOT tear down a refresh-scoped close-only entry on clear — close is not a destruction contract', () => {
         factory.setValue('entry', CloseableRefreshEntry);
 
         const entry = factory.getValue<CloseableRefreshEntry>('entry');
@@ -77,8 +78,8 @@ describe('refresh scope teardown (CF-3)', () => {
 
         refreshScopeOf(factory).clear();
 
-        expect(entry.close).toHaveBeenCalledTimes(1);
-        expect(entry.closed).toBe(true);
+        expect(entry.close).not.toHaveBeenCalled();
+        expect(entry.closed).toBe(false);
     });
 
     test('registers teardown for each recreated refresh-scoped instance, exactly once', () => {

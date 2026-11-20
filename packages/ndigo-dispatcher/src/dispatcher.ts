@@ -148,19 +148,19 @@ export class AbstractDispatcher
 
     #lifecycleStarted: boolean = false;
 
-    /** `SmartLifecycle` — whether the lifecycle has driven strategy init. */
+    /** `ManagedLifecycle` — whether the lifecycle has driven strategy init. */
     get isRunning(): boolean {
         return this.#lifecycleStarted;
     }
 
-    /** `SmartLifecycle` — initialize after the handler mapping, before the server. */
+    /** `ManagedLifecycle` — initialize after the handler mapping, before the server. */
     readonly phase = -90;
 
-    /** `SmartLifecycle` — dispatchers must initialize once the context refreshes. */
+    /** `ManagedLifecycle` — dispatchers must initialize once the context refreshes. */
     readonly isAutoStartup = true;
 
     /**
-     * `SmartLifecycle` — initialize strategies from the application context.
+     * `ManagedLifecycle` — initialize strategies from the application context.
      * Runs on refresh, after every configuration has registered.
      */
     start(): void {
@@ -171,7 +171,7 @@ export class AbstractDispatcher
     }
 
     /**
-     * `SmartLifecycle` — strategies are immutable once initialized; nothing to
+     * `ManagedLifecycle` — strategies are immutable once initialized; nothing to
      * release. Present so this type is a well-behaved lifecycle entry.
      */
     stop(): void {

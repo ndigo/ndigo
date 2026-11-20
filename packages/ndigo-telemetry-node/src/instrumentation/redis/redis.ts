@@ -49,7 +49,11 @@ export class RedisInstrumentation extends AbstractBaseInstrumentation {
             'acquire',
             this._patch({ name: 'RedisLock.acquire', kind: SpanKind.CLIENT })
         );
-        this._wrap(RedisLockDriver.prototype, 'close', this._patch({ name: 'RedisLock.close', kind: SpanKind.CLIENT }));
+        this._wrap(
+            RedisLockDriver.prototype,
+            'destroy',
+            this._patch({ name: 'RedisLock.destroy', kind: SpanKind.CLIENT })
+        );
 
         this._wrap(
             RedisRateLimiter.prototype,
@@ -58,8 +62,8 @@ export class RedisInstrumentation extends AbstractBaseInstrumentation {
         );
         this._wrap(
             RedisRateLimiter.prototype,
-            'close',
-            this._patch({ name: 'RedisRateLimit.close', kind: SpanKind.CLIENT })
+            'destroy',
+            this._patch({ name: 'RedisRateLimit.destroy', kind: SpanKind.CLIENT })
         );
 
         this._wrap(
@@ -81,7 +85,11 @@ export class RedisInstrumentation extends AbstractBaseInstrumentation {
             this._patch({ name: 'RedisJob.heartbeat', kind: SpanKind.CLIENT })
         );
         this._wrap(RedisJobDriver.prototype, 'size', this._patch({ name: 'RedisJob.size', kind: SpanKind.CLIENT }));
-        this._wrap(RedisJobDriver.prototype, 'close', this._patch({ name: 'RedisJob.close', kind: SpanKind.CLIENT }));
+        this._wrap(
+            RedisJobDriver.prototype,
+            'destroy',
+            this._patch({ name: 'RedisJob.destroy', kind: SpanKind.CLIENT })
+        );
 
         this._wrap(
             RedisSocketFanout.prototype,
@@ -108,8 +116,8 @@ export class RedisInstrumentation extends AbstractBaseInstrumentation {
         );
         this._wrap(
             RedisConnection.prototype,
-            'close',
-            this._patch({ name: 'RedisConnection.close', kind: SpanKind.CLIENT })
+            'destroy',
+            this._patch({ name: 'RedisConnection.destroy', kind: SpanKind.CLIENT })
         );
     }
 
@@ -125,10 +133,10 @@ export class RedisInstrumentation extends AbstractBaseInstrumentation {
         this._unwrap(RedisCache.prototype, 'size');
 
         this._unwrap(RedisLockDriver.prototype, 'acquire');
-        this._unwrap(RedisLockDriver.prototype, 'close');
+        this._unwrap(RedisLockDriver.prototype, 'destroy');
 
         this._unwrap(RedisRateLimiter.prototype, 'consume');
-        this._unwrap(RedisRateLimiter.prototype, 'close');
+        this._unwrap(RedisRateLimiter.prototype, 'destroy');
 
         this._unwrap(RedisJobDriver.prototype, 'enqueue');
         this._unwrap(RedisJobDriver.prototype, 'claim');
@@ -137,13 +145,13 @@ export class RedisInstrumentation extends AbstractBaseInstrumentation {
         this._unwrap(RedisJobDriver.prototype, 'fail');
         this._unwrap(RedisJobDriver.prototype, 'heartbeat');
         this._unwrap(RedisJobDriver.prototype, 'size');
-        this._unwrap(RedisJobDriver.prototype, 'close');
+        this._unwrap(RedisJobDriver.prototype, 'destroy');
 
         this._unwrap(RedisSocketFanout.prototype, 'publish');
         this._unwrap(RedisSocketFanout.prototype, 'subscribe');
 
         this._unwrap(RedisConnection.prototype, 'run');
         this._unwrap(RedisConnection.prototype, 'connect');
-        this._unwrap(RedisConnection.prototype, 'close');
+        this._unwrap(RedisConnection.prototype, 'destroy');
     }
 }

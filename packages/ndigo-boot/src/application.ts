@@ -20,7 +20,7 @@ import { isActive } from '@ndigo/core';
 import { parseCommandLineArgs, getEnvironmentSchema, validateEnvironment, redactDiagnosticValue } from '@ndigo/context';
 import { applyCustomizers } from '@ndigo/context';
 import type { EnvironmentCustomizer } from '@ndigo/context';
-import { likeCloseable, likeDestroyable, type EntryProcessor } from '@ndigo/factory';
+import { likeDestroyable, type EntryProcessor } from '@ndigo/factory';
 import { z } from 'zod';
 import { StandardConfigFileLoader } from './config-file-loader';
 import { isConfigurationProperties, resolveConfigurationProperties } from './configuration-properties';
@@ -619,16 +619,14 @@ export class Application extends Emitter {
 
     /**
      * Tears down a `@refreshScope` instance being replaced by a rebind
-     * (CTX-13): a `Destroyable` is destroyed, else a `Closeable` is closed.
-     * Plain configuration bags with neither hook are left untouched.
+     * (CTX-13): a `Destroyable` is destroyed. Plain configuration bags with
+     * no release method are left untouched.
      *
      * @param value - The previous bound instance.
      */
     #destroyRefreshInstance(value: unknown): void {
         if (likeDestroyable(value)) {
             value.destroy();
-        } else if (likeCloseable(value)) {
-            value.close();
         }
     }
 

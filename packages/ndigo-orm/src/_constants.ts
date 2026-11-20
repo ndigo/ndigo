@@ -7,5 +7,5 @@ export const columnsMetadataKey = 'orm:columns';
 export const primaryMetadataKey = 'orm:primary';
 export const generatedColumnMetadataKey = 'orm:generatedColumn';
 export const relationsMetadataKey = 'orm:relations';
-export const lifecycleHooksMetadataKey = 'orm:lifecycle';
+export const entityHooksMetadataKey = 'orm:entityHook';
 export const transactionalMetadataKey = 'orm:transactional';

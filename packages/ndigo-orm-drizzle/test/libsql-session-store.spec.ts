@@ -17,7 +17,7 @@ const clients: Client[] = [];
 const directories: string[] = [];
 afterEach(async () => {
     vi.restoreAllMocks();
-    for (const store of stores) store.close();
+    for (const store of stores) store.destroy();
     for (const client of clients) client.close();
     for (const directory of directories) {
         // oxlint-disable-next-line no-await-in-loop -- isolated file handles must be released before directory cleanup.
@@ -129,8 +129,8 @@ describe('LibSQLSessionStore', () => {
         const { first, second, url } = await fileStores();
         const original = record();
         const id = await first.create(original, 60_000);
-        first.close();
-        second.close();
+        first.destroy();
+        second.destroy();
         const reopened = new LibSQLSessionStore({ url });
         stores.push(reopened);
         const read = await reopened.get(id);
@@ -273,7 +273,7 @@ describe('LibSQLSessionStore', () => {
         const login = await adapter(first).authenticate({ username: 'alice', password: 'secret' });
         // Successful authentication guarantees a token; narrow it for the strict store APIs.
         const loginToken = login.token as NonNullable<typeof login.token>;
-        first.close();
+        first.destroy();
         const reopened = new LibSQLSessionStore({ url });
         stores.push(reopened);
         const reader = adapter(reopened);

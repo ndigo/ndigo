@@ -4,7 +4,7 @@
 import { resolveCacheName } from '@ndigo/cache';
 import { IllegalStateError } from '@ndigo/core';
 import type { Cache, CacheManager } from '@ndigo/cache';
-import type { AsyncCloseable, ContextToken } from '@ndigo/factory';
+import type { AsyncDestroyable, ContextToken } from '@ndigo/factory';
 import { RedisConnection, type RedisConnectionOptions } from '../connection';
 import { RedisCache } from './cache';
 
@@ -17,10 +17,10 @@ export type RedisCacheManagerOptions = RedisConnectionOptions & {
 /**
  * Local named-handle registry over shared Redis data. getCache/hasCache perform
  * no I/O; hasCache means this manager acquired a handle, not that Redis has data.
- * Container-compatible close() drains operations; a ready injected client is
+ * Container-compatible destroy() drains operations; a ready injected client is
  * borrowed and remains usable after manager shutdown.
  */
-export class RedisCacheManager implements CacheManager, AsyncCloseable {
+export class RedisCacheManager implements CacheManager, AsyncDestroyable {
     /**
      * The `Symbol.toStringTag` value for this instance.
      *
@@ -148,12 +148,12 @@ export class RedisCacheManager implements CacheManager, AsyncCloseable {
     }
 
     /**
-     * Seals the manager and closes the underlying connection.
+     * Seals the manager and destroys the underlying connection.
      *
-     * @returns A promise that resolves once closed.
+     * @returns A promise that resolves once destroyed.
      */
-    close(): Promise<void> {
+    destroy(): Promise<void> {
         this.#closed = true;
-        return this.#connection.close();
+        return this.#connection.destroy();
     }
 }

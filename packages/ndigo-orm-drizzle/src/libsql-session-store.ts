@@ -6,7 +6,7 @@
 import { createClient, type Client, type InValue, type Row } from '@libsql/client';
 import { DefaultPrincipal, type SessionRecord, type SessionStore } from '@ndigo/auth-core';
 import { IllegalStateError } from '@ndigo/core';
-import type { Closeable } from '@ndigo/factory';
+import type { Destroyable } from '@ndigo/factory';
 import { randomToken } from '@ndigo/util';
 
 const TABLE = 'ndigo_sessions';
@@ -64,7 +64,7 @@ export interface LibSQLSessionStoreOptions {
  * Stop/drain consumers before close/dispose; pending operations are not drained.
  * `close` is the container's supported shutdown bridge, not automatic migration.
  */
-export class LibSQLSessionStore implements SessionStore, Closeable {
+export class LibSQLSessionStore implements SessionStore, Destroyable {
     /**
      * The `Symbol.toStringTag` value for this instance.
      *
@@ -243,8 +243,8 @@ export class LibSQLSessionStore implements SessionStore, Closeable {
         if (this.#ownsClient) this.#client.close();
     }
 
-    /** Supported Closeable bridge used by application-context shutdown. */
-    close(): void {
+    /** Supported Destroyable bridge used by application-context shutdown. */
+    destroy(): void {
         this.dispose();
     }
 

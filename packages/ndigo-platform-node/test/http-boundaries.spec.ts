@@ -362,7 +362,7 @@ describe('HTTPServer lifecycle', () => {
         await server.start();
         expect(server.isRunning).toBe(true);
 
-        // context.close() fires LifecycleProcessor.onClose → server.stop().
+        // context.close() fires LifecycleCoordinator.onClose → server.stop().
         context.close();
         await vi.waitFor(() => {
             expect(server.isRunning).toBe(false);

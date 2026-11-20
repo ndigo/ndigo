@@ -19,11 +19,11 @@ import {
 import { DrizzleDataSource } from '../src/drizzle-data-source';
 import { DrizzleEntityManager } from '../src/drizzle-entity-manager';
 
-// DAT-F1: the Drizzle manager must fire the same lifecycle events at the same
+// DAT-F1: the Drizzle manager must fire the same entity hooks at the same
 // points as InMemoryEntityManager — prePersist on insert, preUpdate on update,
 // postLoad on every read, postRemove on remove.
 @entity('lifecycle_parity')
-class LifecycleNote {
+class EntityHookNote {
     static events: string[] = [];
 
     @generatedColumn()
@@ -35,22 +35,22 @@ class LifecycleNote {
 
     @prePersist()
     onPrePersist(): void {
-        LifecycleNote.events.push('prePersist');
+        EntityHookNote.events.push('prePersist');
     }
 
     @postLoad()
     onPostLoad(): void {
-        LifecycleNote.events.push('postLoad');
+        EntityHookNote.events.push('postLoad');
     }
 
     @preUpdate()
     onPreUpdate(): void {
-        LifecycleNote.events.push('preUpdate');
+        EntityHookNote.events.push('preUpdate');
     }
 
     @postRemove()
     onPostRemove(): void {
-        LifecycleNote.events.push('postRemove');
+        EntityHookNote.events.push('postRemove');
     }
 }
 
@@ -102,43 +102,43 @@ describe('DrizzleEntityManager lifecycle parity (DAT-F1)', () => {
     let entityManager: DrizzleEntityManager;
 
     beforeEach(async () => {
-        LifecycleNote.events = [];
+        EntityHookNote.events = [];
         LifecycleChild.loads = 0;
         LifecycleParent.loads = 0;
         dataSource = new DrizzleDataSource({ url: ':memory:' });
-        await dataSource.init([LifecycleNote, LifecycleChild, LifecycleParent]);
+        await dataSource.init([EntityHookNote, LifecycleChild, LifecycleParent]);
         entityManager = new DrizzleEntityManager(dataSource);
     });
 
     test('fires prePersist on insert and preUpdate on a later save of the same row', async () => {
-        const note = new LifecycleNote();
+        const note = new EntityHookNote();
         note.body = 'first';
 
         await entityManager.persist(note);
-        expect(LifecycleNote.events).toEqual(['prePersist']);
+        expect(EntityHookNote.events).toEqual(['prePersist']);
 
         note.body = 'second';
         await entityManager.persist(note);
         // Before the fix every save fired prePersist, never preUpdate.
-        expect(LifecycleNote.events).toEqual(['prePersist', 'preUpdate']);
+        expect(EntityHookNote.events).toEqual(['prePersist', 'preUpdate']);
     });
 
     test('fires postLoad on find, findAll and a missing id fires nothing', async () => {
-        const note = new LifecycleNote();
+        const note = new EntityHookNote();
         note.body = 'loaded';
         await entityManager.persist(note);
 
-        LifecycleNote.events = [];
-        await entityManager.find(LifecycleNote, note.id);
-        expect(LifecycleNote.events).toEqual(['postLoad']);
+        EntityHookNote.events = [];
+        await entityManager.find(EntityHookNote, note.id);
+        expect(EntityHookNote.events).toEqual(['postLoad']);
 
-        LifecycleNote.events = [];
-        await entityManager.findAll(LifecycleNote);
-        expect(LifecycleNote.events).toEqual(['postLoad']);
+        EntityHookNote.events = [];
+        await entityManager.findAll(EntityHookNote);
+        expect(EntityHookNote.events).toEqual(['postLoad']);
 
-        LifecycleNote.events = [];
-        await entityManager.find(LifecycleNote, 9999);
-        expect(LifecycleNote.events).toEqual([]);
+        EntityHookNote.events = [];
+        await entityManager.find(EntityHookNote, 9999);
+        expect(EntityHookNote.events).toEqual([]);
     });
 
     test('fires postLoad on related rows fetched through fetchRelation and fetchRelations', async () => {
@@ -168,41 +168,41 @@ describe('DrizzleEntityManager lifecycle parity (DAT-F1)', () => {
     });
 
     test('fires postRemove after the row is removed', async () => {
-        const note = new LifecycleNote();
+        const note = new EntityHookNote();
         note.body = 'gone';
         await entityManager.persist(note);
 
-        LifecycleNote.events = [];
+        EntityHookNote.events = [];
         await entityManager.remove(note);
 
-        expect(LifecycleNote.events).toEqual(['postRemove']);
-        expect(await entityManager.find(LifecycleNote, note.id)).toBeUndefined();
+        expect(EntityHookNote.events).toEqual(['postRemove']);
+        expect(await entityManager.find(EntityHookNote, note.id)).toBeUndefined();
     });
 
     test('runs the same hook sequence as InMemoryEntityManager', async () => {
         // In-memory run of the sequence.
-        LifecycleNote.events = [];
+        EntityHookNote.events = [];
         const memoryManager = new InMemoryEntityManager(new InMemoryDataSource());
-        const memoryNote = new LifecycleNote();
+        const memoryNote = new EntityHookNote();
         memoryNote.body = 'parity';
         memoryManager.persist(memoryNote);
         memoryManager.persist(memoryNote);
-        memoryManager.find(LifecycleNote, memoryNote.id);
-        memoryManager.findAll(LifecycleNote);
+        memoryManager.find(EntityHookNote, memoryNote.id);
+        memoryManager.findAll(EntityHookNote);
         memoryManager.remove(memoryNote);
-        const memoryEvents = [...LifecycleNote.events];
+        const memoryEvents = [...EntityHookNote.events];
 
         // Drizzle run of the same sequence.
-        LifecycleNote.events = [];
-        const drizzleNote = new LifecycleNote();
+        EntityHookNote.events = [];
+        const drizzleNote = new EntityHookNote();
         drizzleNote.body = 'parity';
         await entityManager.persist(drizzleNote);
         await entityManager.persist(drizzleNote);
-        await entityManager.find(LifecycleNote, drizzleNote.id);
-        await entityManager.findAll(LifecycleNote);
+        await entityManager.find(EntityHookNote, drizzleNote.id);
+        await entityManager.findAll(EntityHookNote);
         await entityManager.remove(drizzleNote);
 
-        expect(LifecycleNote.events).toEqual(memoryEvents);
+        expect(EntityHookNote.events).toEqual(memoryEvents);
         expect(memoryEvents).toEqual(['prePersist', 'preUpdate', 'postLoad', 'postLoad', 'postRemove']);
     });
 });

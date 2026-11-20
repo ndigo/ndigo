@@ -3,7 +3,7 @@
  */
 import { toError } from '@ndigo/util';
 import { FrameworkError } from '@ndigo/core';
-import type { AsyncCloseable, AsyncDestroyable } from '@ndigo/factory';
+import type { AsyncDestroyable } from '@ndigo/factory';
 import { like } from '@ndigo/util/types';
 import { delay } from '@ndigo/util';
 import { LOCK_DRIVER, likeLockDriver, type LockDriver, type LockHandle } from '@ndigo/locks';
@@ -150,7 +150,7 @@ export const likeTaskScheduler = like({
 
 /**
  * The task-execution engine: next-fire tracking, single-flight runs, error
- * isolation, `maxRunTime` races, and drain-on-close.
+ * isolation, `maxRunTime` races, and drain on destroy.
  *
  * The engine is driven two ways:
  * - `tick(now)` — deterministic, testable, and suited to an application
@@ -158,7 +158,7 @@ export const likeTaskScheduler = like({
  * - `start()`/`stop()` — a wall-clock timer chain that calls `tick` at each
  *   computed next-fire time (fire-and-forget; single-flight guards overlap).
  */
-export class TaskScheduler implements AsyncCloseable, AsyncDestroyable {
+export class TaskScheduler implements AsyncDestroyable {
     /**
      * The `Symbol.toStringTag` value for this instance.
      *
@@ -193,7 +193,6 @@ export class TaskScheduler implements AsyncCloseable, AsyncDestroyable {
      * registering a task after `start()` would never arm the loop.
      */
     #started = false;
-    #closed = false;
     /** Set once {@link destroy} runs; new registrations are rejected. */
     destroyed = false;
     /** Constructor-provided lock driver; `undefined` = resolve from context. */
@@ -231,11 +230,13 @@ export class TaskScheduler implements AsyncCloseable, AsyncDestroyable {
      * fires on time.
      *
      * @param definition - The task to register.
-     * @throws On duplicate names or after `close()`.
+     * @throws On duplicate names or after `destroy()`.
      */
     register(definition: ScheduledTaskDefinition): void {
-        if (this.#closed) {
-            throw new FrameworkError(`TaskScheduler: cannot register '${definition.name}' — the scheduler is closed`);
+        if (this.destroyed) {
+            throw new FrameworkError(
+                `TaskScheduler: cannot register '${definition.name}' — the scheduler is destroyed`
+            );
         }
         if (this.#tasks.has(definition.name)) {
             throw new FrameworkError(`TaskScheduler: duplicate task '${definition.name}'`);
@@ -368,7 +369,7 @@ export class TaskScheduler implements AsyncCloseable, AsyncDestroyable {
      * registering one later arms the loop.
      */
     start(): void {
-        if (this.#started || this.#closed) {
+        if (this.#started || this.destroyed) {
             return;
         }
         this.#started = true;
@@ -377,7 +378,7 @@ export class TaskScheduler implements AsyncCloseable, AsyncDestroyable {
 
     /**
      * Stops the wall-clock timer loop. In-flight runs continue; call
-     * {@link TaskScheduler.close} to drain.
+     * {@link TaskScheduler.destroy} to drain.
      */
     stop(): void {
         this.#started = false;
@@ -395,7 +396,7 @@ export class TaskScheduler implements AsyncCloseable, AsyncDestroyable {
      * does not wait behind a stale timer.
      */
     #rearm(): void {
-        if (!this.#started || this.#closed) {
+        if (!this.#started || this.destroyed) {
             return;
         }
         if (this.#timer !== null) {
@@ -407,26 +408,9 @@ export class TaskScheduler implements AsyncCloseable, AsyncDestroyable {
     }
 
     /**
-     * Stops the loop, drains in-flight runs, and clears the registry.
-     *
-     * Tasks are cleared on close; the scheduler is closed for further
-     * registration.
-     */
-    async close(): Promise<void> {
-        if (this.#closed) {
-            return;
-        }
-        this.#closed = true;
-        this.stop();
-        if (this.#active.size > 0) {
-            await Promise.allSettled(this.#active);
-        }
-        this.#tasks.clear();
-    }
-
-    /**
      * Container contract: stops the loop, drains in-flight runs, and
-     * clears the registry — the same work as {@link TaskScheduler.close}.
+     * clears the registry. Idempotent; tasks are cleared and the scheduler
+     * rejects further registration.
      *
      * The container does not await the drain (context close is synchronous);
      * in-flight runs finish in the background and the scheduler rejects new
@@ -437,7 +421,11 @@ export class TaskScheduler implements AsyncCloseable, AsyncDestroyable {
             return;
         }
         this.destroyed = true;
-        await this.close();
+        this.stop();
+        if (this.#active.size > 0) {
+            await Promise.allSettled(this.#active);
+        }
+        this.#tasks.clear();
     }
 
     /**
@@ -521,7 +509,7 @@ export class TaskScheduler implements AsyncCloseable, AsyncDestroyable {
             if (lease !== null) {
                 return lease;
             }
-            if (this.#closed) {
+            if (this.destroyed) {
                 return null;
             }
             const elapsed = this.#clock().getTime() - startedAt;
@@ -655,7 +643,7 @@ export class TaskScheduler implements AsyncCloseable, AsyncDestroyable {
      * runs to settle.
      */
     #scheduleNext(): void {
-        if (this.#closed || !this.#started || this.#timer !== null) {
+        if (this.destroyed || !this.#started || this.#timer !== null) {
             return;
         }
         const now = this.#clock();

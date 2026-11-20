@@ -247,7 +247,7 @@ export class RedisLockDriver implements LockDriver {
      *
      * @returns A promise that resolves once the leases are released.
      */
-    async close(): Promise<void> {
+    async destroy(): Promise<void> {
         if (this.#closed) {
             return;
         }

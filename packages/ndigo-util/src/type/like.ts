@@ -13,8 +13,10 @@ export type LikeDescriptor = { [key: string]: Function | true };
  * 1. **WeakMap caching** of descriptor metadata (keys, types, isTrue flags)
  *    to avoid repeated `Object.entries()` calls
  * 2. **Direct array iteration** with inline type checks (no helper functions)
- * 3. **Inline type checking** using `typeof` for Function and `Object.prototype.toString.call()`
- *    for Boolean/Number/String/Object
+ * 3. **Inline type checking** using `typeof` for Function and the wrapped
+ *    primitives, and object-ness (`typeof === 'object'`) for `Object` — so
+ *    class instances, including ones carrying a `Symbol.toStringTag`, pass an
+ *    `Object` descriptor.
  * 4. **Early return** on first failed check (short-circuit evaluation)
  *
  * **Semantic Compatibility:**
@@ -104,7 +106,8 @@ function computeDescriptor(descriptor: LikeDescriptor): {
  * **Semantic Rules:**
  * - Top-level value must not be null/undefined
  * - Property values of `null` always pass
- * - Type checking uses `typeof` for Function, `Object.prototype.toString.call()` for others
+ * - Type checking uses `typeof` for Function, `Object.prototype.toString.call()` for others except
+ *   `Object`, which checks object-ness (`typeof === 'object'`)
  * - Property presence checked with `in` operator
  */
 function checkLike(cached: { keys: string[]; types: (Function | true)[]; isTrue: boolean[] }, value: unknown): boolean {
@@ -140,7 +143,9 @@ function checkLike(cached: { keys: string[]; types: (Function | true)[]; isTrue:
             } else if (type === String) {
                 if (typeof prop !== 'string' && !(prop instanceof String)) return false;
             } else if (type === Object) {
-                if (Object.prototype.toString.call(prop) !== '[object Object]') return false;
+                // Object means "a non-null object", not "a plain object":
+                // class instances with a Symbol.toStringTag must pass.
+                if (typeof prop !== 'object') return false;
             } else {
                 // Descriptor values are Function | true; the isTrue branch handled `true`
                 const Ctor = type as Function;

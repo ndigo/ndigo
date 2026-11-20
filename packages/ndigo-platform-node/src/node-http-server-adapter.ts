@@ -1033,7 +1033,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
         // not just its heartbeat — otherwise every closed adapter leaks its
         // path/room subscriptions. `close()` is idempotent (cached promise)
         // and also stops the heartbeat, replacing the old `stop()` call.
-        await this.#socketRegistry.close();
+        await this.#socketRegistry.destroy();
         // COR-14: `server.close()` resolves only once every connection ends —
         // an open SSE stream, slow download, or stalled request would hang
         // `close()` forever. Arm the drain deadline *before* the wait and race

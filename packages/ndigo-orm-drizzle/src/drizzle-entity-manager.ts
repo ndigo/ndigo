@@ -3,7 +3,7 @@
  */
 import type { InValue } from '@libsql/client';
 import { Constructable, FrameworkError } from '@ndigo/core';
-import { columnTypeFamily, getEntityMetadata, isEntity, runLifecycleHooks, validateEntity } from '@ndigo/orm';
+import { columnTypeFamily, getEntityMetadata, isEntity, runEntityHooks, validateEntity } from '@ndigo/orm';
 import type { EntityMetadata } from '@ndigo/orm';
 import { Page, PageRequest, SortOrder, validatePageRequest } from '@ndigo/orm';
 import { DrizzleDataSource } from './drizzle-data-source';
@@ -11,7 +11,7 @@ import { DrizzleDataSource } from './drizzle-data-source';
 /**
  * Drizzle-backed entity manager: maps `@ndigo/orm` entity metadata onto SQL
  * through the data source's Drizzle database, validating every write against
- * the entity's derived schema and running lifecycle hooks around
+ * the entity's derived schema and running entity hooks around
  * persist/find/remove.
  */
 export class DrizzleEntityManager {
@@ -57,15 +57,15 @@ export class DrizzleEntityManager {
         const tableName = meta.entityName;
         const pkColumn = meta.columns.find((c) => c.fieldName === meta.primaryColumn);
         const pkValue = pkColumn ? record[pkColumn.fieldName] : undefined;
-        const hasLifecycleHooks = meta.lifecycleHooks.length > 0;
+        const hasEntityHooks = meta.entityHooks.length > 0;
         const exists =
-            hasLifecycleHooks && pkColumn !== undefined && pkValue !== undefined && pkValue !== null
+            hasEntityHooks && pkColumn !== undefined && pkValue !== undefined && pkValue !== null
                 ? await this.existsById(entityClass, pkValue)
                 : false;
 
         // Lifecycle hooks run first (e.g. @prePersist fills createdAt), then
         // validation — matching the in-memory manager's order.
-        runLifecycleHooks(entity, exists ? 'preUpdate' : 'prePersist');
+        runEntityHooks(entity, exists ? 'preUpdate' : 'prePersist');
 
         // Validate against the Zod schema derived from @column metadata.
         validateEntity(entityClass, entity);
@@ -448,7 +448,7 @@ export class DrizzleEntityManager {
         await this.#client.execute(sql, [pkValue] as InValue[]);
 
         // Match the in-memory manager: @postRemove fires after the delete.
-        runLifecycleHooks(entity, 'postRemove');
+        runEntityHooks(entity, 'postRemove');
     }
 
     /**
@@ -529,7 +529,7 @@ export class DrizzleEntityManager {
 
         // Every loaded row is a load: fire @postLoad, matching the in-memory
         // manager's find/findAll/fetchRelation behavior (DAT-F1).
-        runLifecycleHooks(entity, 'postLoad');
+        runEntityHooks(entity, 'postLoad');
 
         return entity as T;
     }

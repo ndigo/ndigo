@@ -1,6 +1,6 @@
 # ndigo Decision Records (ADRs)
 
-Architecture Decision Records for the ndigo monorepo — **AD-01..AD-108**,
+Architecture Decision Records for the ndigo monorepo — **AD-01..AD-111**,
 contiguous. Every record captures a decision with its context, the evidence
 (plan, code, commits), the decided shape, consequences, and a revisit trigger.
 
@@ -122,6 +122,7 @@ contiguous. Every record captures a decision with its context, the evidence
 | **AD-108** | 2026-11-18    | Implemented                  | [Consumer lint surface — preset, scaffold wiring, de-hardcoded rules, rule conventions](2026-11-18_AD108_CONSUMER_LINT_SURFACE.md)                                                                                             |
 | **AD-109** | 2026-11-19    | Accepted                     | [Annotation, advice, and member transformer — one declaration layer, several executors](2026-11-19_AD109_ANNOTATION_ADVICE_MODEL.md)                                                                                           |
 | **AD-110** | 2026-11-20    | Accepted                     | [Annotations declare, the context executes — `@ndigo/advice`](2026-11-20_AD110_ANNOTATION_EXECUTION_RUNTIME.md)                                                                                                                |
+| **AD-111** | 2026-11-20    | Accepted                     | [Annotation lifecycle hooks front the processor seam, not `SmartLifecycle`](2026-11-20_AD111_ANNOTATION_LIFECYCLE_HOOKS.md)                                                                                                    |
 
 ## Archived ADRs
 

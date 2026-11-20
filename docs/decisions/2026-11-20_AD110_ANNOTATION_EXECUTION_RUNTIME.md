@@ -80,7 +80,9 @@ layer a name that says what it does: **`@ndigo/advice`** replaces
 - Qualified interceptor names across pipelines (`RetryInterceptor` exists in
   both `@ndigo/http` and `@ndigo/resilience`) are tracked separately.
 - `close`/`destroy` unification is a prerequisite for lifecycle annotations and
-  lands before them.
+  lands before them; the annotation family is decided in
+  [AD-111](2026-11-20_AD111_ANNOTATION_LIFECYCLE_HOOKS.md)
+  (`@preInit`/`@postInit`/`@preDestroy`).
 - **The signals declaration half is not on the metadata record.** The
   construction handoff no longer uses package-private WeakMaps: it lives on the
   instance under `Symbol.for('ndigo.signals.pending')`, non-enumerable and

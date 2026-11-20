@@ -41,7 +41,7 @@ Three questions get confused constantly, so they are answered on separate axes:
    advice, or member transformation. Answered by this page.
 3. **Pipeline** — which execution surface consumes it? Method calls, HTTP
    exchanges, route handling, or service clients. Answered by the qualified
-   interceptor names in [§10](#10-naming-one-vocabulary-qualified-by-pipeline).
+   interceptor names in [§9](#9-naming-one-vocabulary-qualified-by-pipeline).
 
 The axes are orthogonal. `@retry` is a **policy** (role), an **annotation**
 (mechanism), consumed by **method advice** (pipeline). None of those three

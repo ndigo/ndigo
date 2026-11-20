@@ -100,7 +100,7 @@ EJS shell + hydration + live updates: [apps/07-ndigo-island](apps/07-ndigo-islan
 and [apps/12-ndigo-petclinic](apps/12-ndigo-petclinic/README.md); the model is
 [guide 29 — Signals & Islands](docs/guides/29-signals-and-islands.md).
 
-#### If you want to add agents
+#### If you want your app to expose agent surfaces
 
 1. [`@ndigo/mcp`](packages/ndigo-mcp/README.md) — project handlers into MCP tools, MCP Apps, stdio and Streamable HTTP
 2. [`@ndigo/ai`](packages/ndigo-ai/README.md) — provider-neutral agent loop, streaming, and structured output
@@ -109,6 +109,17 @@ and [apps/12-ndigo-petclinic](apps/12-ndigo-petclinic/README.md); the model is
 Then follow [guide 47 — AI Agents, Model Loops & Streaming](docs/guides/47-ai-agents.md)
 and [guide 48 — Agent-Facing Surfaces](docs/guides/48-agent-facing-surfaces.md);
 the reference app is [apps/21-ndigo-agent-lab](apps/21-ndigo-agent-lab/README.md).
+
+#### Use your AI coding agent
+
+`ndigo ai:init` writes the version-matched agent context into an application:
+the managed `AGENTS.md` block, nine skills under `.agents/skills/`, and the
+Ndigo MCP server when run with `--mcp`. `ndigo ai:check` exits `1` when the
+context is stale; `ndigo ai:update` refreshes it after a framework upgrade.
+Scaffolded apps already point their `AGENTS.md` at `ndigo ai:init`, and every
+`@ndigo/*` package ships a version-matched export index at
+`node_modules/@ndigo/<pkg>/docs/llms.txt`. See [guide 37 — The ndigo
+CLI](docs/guides/37-ndigo-cli.md#agent-context).
 
 ### Scaffold a new app
 

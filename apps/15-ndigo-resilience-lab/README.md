@@ -9,7 +9,7 @@ recover, an `F`/`S` outcome `pattern`, or extra `delay` latency) is set by the
 lab's **control plane**. The other surface is the **consumer**: a typed
 [`@ndigo/service`](../../packages/ndigo-service/README.md) client calling that
 upstream with [`@ndigo/resilience`](../../packages/ndigo-resilience/README.md)
-policies woven in through [`@ndigo/proxy`](../../packages/ndigo-proxy/README.md).
+policies woven in through [`@ndigo/advice`](../../packages/ndigo-advice/README.md).
 A third route runs the _same_ call with no policies at all, so policy-driven and
 raw behaviour can be compared side by side.
 
@@ -154,16 +154,17 @@ boot probe runs with every circuit closed, so it answers `200`.
 ```ts
 // src/resilience-lab.ts
 interceptMethods(serviceClient(UpstreamAPI, HTTP.create({ baseURL: UPSTREAM_ORIGIN, fetch: transport })), [
-    breakerTracker,
-    new CircuitBreakerInterceptor({ now }),
-    new RetryInterceptor(),
+    { when: hasAnnotation(circuitBreaker), use: breakerTracker },
+    { when: hasAnnotation(circuitBreaker), use: new CircuitBreakerInterceptor({ now }) },
+    { when: hasAnnotation(retry), use: new RetryInterceptor() },
 ]);
 ```
 
-- **`@ndigo/proxy`** weaves the hand-built client (`interceptMethods`) — the
+- **`@ndigo/advice`** weaves the hand-built client (`interceptMethods`) — the
   service-layer registration path, since a `serviceClient` never enters the
-  container. The array order the composition prescribes: the
-  breaker _outside_ retry, so one chain pass counts one failure.
+  container. Each rule selects its own annotation, and the order the
+  composition prescribes puts the breaker _outside_ retry, so one chain pass
+  counts one failure.
 - **`@ndigo/resilience`** supplies `@retry({ attempts: 3, backoff: …. })` and
   `@circuitBreaker({ failureThreshold: 3, resetMs: 1500 })` on `data()`. The
   annotations are metadata-only; `direct()` carries just `@getCall`, so the
@@ -305,10 +306,11 @@ that belongs to `CircuitBreakerInterceptor`.
   `@circuitBreaker` across the full cycle: closed → open (fail fast with
   `CircuitOpenError`) → half-open probe → closed, including a failed probe
   re-opening with a fresh window.
-- **`@ndigo/proxy`** — `interceptMethods` weaving a hand-built
+- **`@ndigo/advice`** — `interceptMethods` weaving a hand-built
   `serviceClient`, with interceptor `order` deciding that the policy chain runs
   outermost-to-innermost (`tracker → circuitBreaker → retry → method`) and an
-  unadvised sibling method staying a pass-through.
+  unadvised sibling method staying a pass-through. The client is
+  function-shaped, so this is the `Proxy` strategy — the documented boundary.
 - **`@ndigo/service`** — a `@service`-decorated typed client with `@getCall`,
   a Zod `responseSchema`, and a path-slot-free `baseUrl`, driven by a
   per-method metadata contract.
@@ -361,7 +363,7 @@ No test sleeps: the breaker's reset window is crossed with
 - [apps/README](../README.md) — the applications progression and the port registry
 - [05-ndigo-api](../05-ndigo-api/README.md) — the canonical Node app reference (management wiring)
 - [Guide 35 — Method Interception & Resilience](../../docs/guides/35-method-interception-and-resilience.md)
-- [@ndigo/resilience](../../packages/ndigo-resilience/README.md) · [@ndigo/proxy](../../packages/ndigo-proxy/README.md) · [@ndigo/service](../../packages/ndigo-service/README.md) · [@ndigo/management](../../packages/ndigo-management/README.md)
+- [@ndigo/resilience](../../packages/ndigo-resilience/README.md) · [@ndigo/advice](../../packages/ndigo-advice/README.md) · [@ndigo/service](../../packages/ndigo-service/README.md) · [@ndigo/management](../../packages/ndigo-management/README.md)
 
 ## Contributing
 

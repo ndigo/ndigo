@@ -395,7 +395,7 @@ no-special-characters fixture; escaping is the cost.
 ### Resilience woven interceptors (Phase 4)
 
 `@ndigo/resilience` retry and circuit-breaker interceptors, applied through
-`@ndigo/proxy` `interceptMethods` with method annotations — the application
+`@ndigo/advice` `interceptMethods` with rule matchers — the application
 wiring path. Artifact `2026-11-11T02-54-44-84b94b208602.json` (commit
 `84b94b20`).
 

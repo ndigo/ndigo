@@ -1806,6 +1806,7 @@ importers:
       '@ndigo/log':
         specifier: ~0.0.1
         version: link:../ndigo-log
+    devDependencies:
       '@tsmetadata/polyfill':
         specifier: 'catalog:'
         version: 1.1.3

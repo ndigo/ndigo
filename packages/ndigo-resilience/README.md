@@ -1,14 +1,14 @@
 # @ndigo/resilience
 
-> Retry, backoff, and circuit-breaking policies for Ndigo, applied through `@ndigo/proxy` interceptors.
+> Retry, backoff, and circuit-breaking policies for Ndigo, applied through `@ndigo/advice` rules.
 
-`@retry` and `@circuitBreaker` are metadata-only method annotations executed
-by two interceptors: `RetryInterceptor` re-invokes the chain on failure with a
-backoff policy, and `CircuitBreakerInterceptor` keeps per-method circuit state
-and fails fast while a circuit is open. Both await `next()`, so they observe
-the final outcome of the inner chain, and both are registered through
-`@ndigo/proxy` — either the `interception(...)` container processor or
-standalone `interceptMethods(...)`.
+`@retry` and `@circuitBreaker` are method annotations executed by two
+interceptors: `RetryInterceptor` re-invokes the chain on failure with a backoff
+policy, and `CircuitBreakerInterceptor` keeps per-method circuit state and
+fails fast while a circuit is open. Both await `next()`, so they observe the
+final outcome of the inner chain, and both are selected by a `@ndigo/advice`
+rule — either through the `interception(...)` container processor or standalone
+`interceptMethods(...)`.
 
 ## Installation
 
@@ -21,7 +21,7 @@ Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥12.
 ## Getting Started
 
 ```ts
-import { interceptMethods } from '@ndigo/proxy';
+import { hasAnnotation, interceptMethods } from '@ndigo/advice';
 import { retry, exponentialBackoff, RetryInterceptor } from '@ndigo/resilience';
 
 class PushAPI {
@@ -35,12 +35,12 @@ class PushAPI {
     }
 }
 
-const api = interceptMethods(new PushAPI(), [new RetryInterceptor()]);
+const api = interceptMethods(new PushAPI(), [{ when: hasAnnotation(retry), use: new RetryInterceptor() }]);
 await api.push('hello'); // succeeds on the third attempt
 ```
 
-Container entries use the same policies through `interception([...])`; see
-[`@ndigo/proxy`](../ndigo-proxy/README.md) for the two registration paths.
+Container entries use the same rules through `interception(...)`; see
+[`@ndigo/advice`](../ndigo-advice/README.md) for the two registration paths.
 
 ## Usage
 
@@ -118,7 +118,7 @@ pnpm --filter @ndigo/resilience test
 ## See Also
 
 - [Guide 35 — Method Interception & Resilience](../../docs/guides/35-method-interception-and-resilience.md)
-- [@ndigo/proxy](../ndigo-proxy/README.md) — the annotation, interceptor, and weaving contract these policies run on
+- [@ndigo/advice](../ndigo-advice/README.md) — the rule, plan, and weaving contract these policies run on
 
 ## Contributing
 

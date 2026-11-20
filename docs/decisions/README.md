@@ -121,6 +121,7 @@ contiguous. Every record captures a decision with its context, the evidence
 | **AD-107** | 2026-11-18    | Implemented                  | [Skills authoring — the standalone `ndigo-skills` repository](2026-11-18_AD107_SKILLS_AUTHORING.md)                                                                                                                            |
 | **AD-108** | 2026-11-18    | Implemented                  | [Consumer lint surface — preset, scaffold wiring, de-hardcoded rules, rule conventions](2026-11-18_AD108_CONSUMER_LINT_SURFACE.md)                                                                                             |
 | **AD-109** | 2026-11-19    | Accepted                     | [Annotation, advice, and member transformer — one declaration layer, several executors](2026-11-19_AD109_ANNOTATION_ADVICE_MODEL.md)                                                                                           |
+| **AD-110** | 2026-11-20    | Accepted                     | [Annotations declare, the context executes — `@ndigo/advice`](2026-11-20_AD110_ANNOTATION_EXECUTION_RUNTIME.md)                                                                                                                |
 
 ## Archived ADRs
 

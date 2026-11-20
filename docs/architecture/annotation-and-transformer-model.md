@@ -19,11 +19,11 @@ the application context — not the decorator — composes the executors. The
 programmatic path is a first-class primitive, not a compatibility shim: every
 capability reachable through a container is reachable by hand.
 
-> **Status.** This page describes the target model recorded in AD-109. #546
-> implements it; until that lands, the tree still runs `@ndigo/proxy` and the
-> differences are called out where they matter (the `proxy:` namespace, the
-> fused `matches` method, Proxy-only weaving). The **inventory** in §8 reflects
-> the current tree, not the target.
+> **Status.** This page describes the model recorded in AD-109 and implemented
+> by AD-110. The tree runs `@ndigo/advice`; `@ndigo/proxy` is gone, no
+> annotation writes a `proxy:` key, selection lives on the rule, and shadow
+> weaving is the default strategy. The **inventory** in §8 reflects the current
+> tree.
 
 **Audience:** Framework contributors and package authors · **Prerequisites:**
 [AD-83](../decisions/2026-10-31_AD83_DECORATOR_CATEGORIES.md) (naming roles),
@@ -553,34 +553,38 @@ metadata **and** returns a replacement.
 The decorator itself is declaration-only; the capability pairs it with advice
 that ships in the same package.
 
-| Package             | Declarations                | Shipped advice                     | Pipeline |
-| :------------------ | :-------------------------- | :--------------------------------- | :------- |
-| `@ndigo/resilience` | `@retry`, `@circuitBreaker` | `RetryInterceptor`, breaker advice | Method   |
-| (application)       | any `methodAnnotation`      | any `MethodInterceptor`            | Method   |
+| Package             | Declarations                | Shipped advice                                  | Pipeline |
+| :------------------ | :-------------------------- | :---------------------------------------------- | :------- |
+| `@ndigo/resilience` | `@retry`, `@circuitBreaker` | `RetryInterceptor`, `CircuitBreakerInterceptor` | Method   |
+| `@ndigo/cache`      | `@cached`                   | `CachedInterceptor`                             | Method   |
+| `@ndigo/telemetry`  | `@traced`, `@counted`       | `TracedInterceptor`, `CountedInterceptor`       | Method   |
+| `@ndigo/orm`        | `@transactional`            | `TransactionalInterceptor`                      | Method   |
+| (application)       | any `methodAnnotation`      | any `MethodInterceptor`                         | Method   |
 
 A declaration-only policy becomes advice the moment a rule selects it. The
 table classifies the shipped capability; the pairing is application code.
 
+`TracedInterceptor` and `CountedInterceptor` stay synchronous on purpose:
+marking them `async` would make every advised method return a promise the type
+system cannot see. `TransactionalInterceptor` joins an open boundary instead of
+nesting, because both transaction managers reject an already-active transaction.
+
 ### Annotation + member transformer (hybrid)
 
-| Package            | Decorators            | Why the wrapper stays at definition time                                      |
-| :----------------- | :-------------------- | :---------------------------------------------------------------------------- |
-| `@ndigo/cache`     | `@cached`             | The wrapper holds the in-flight `WeakMap`; it must exist per decorated method |
-| `@ndigo/telemetry` | `@traced`, `@counted` | Span/metric naming is intrinsic; the `:original` entry serves introspection   |
-| `@ndigo/orm`       | `@transactional`      | The wrapper resolves `this.transactionManager`; degrades to call-through      |
-| `@ndigo/signals`   | `@reactive` (class)   | Rewrites accessors before field initializers run                              |
+| Package          | Decorators          | Why the wrapper stays at definition time         |
+| :--------------- | :------------------ | :----------------------------------------------- |
+| `@ndigo/signals` | `@reactive` (class) | Rewrites accessors before field initializers run |
 
 ### Notes on the inventory
 
-- **`@signal` / `@computed` / `@effect`** currently record into package-private
-  WeakMaps consumed by `@reactive`. #546 moves them onto the same
-  `Symbol.metadata` record as everything else, so one reader serves all
-  declaration-layer consumers. `@reactive` remains a member transformer: it
-  must redefine accessors during construction, which is not something a
-  post-construction executor can do.
+- **`@signal` / `@computed` / `@effect`** still record into package-private
+  WeakMaps consumed by `@reactive`; moving them onto the same `Symbol.metadata`
+  record as everything else is the remaining declaration-layer work. `@reactive`
+  remains a member transformer either way: it must redefine accessors during
+  construction, which is not something a post-construction executor can do.
 - **`@retry` / `@circuitBreaker`** are declared in `@ndigo/resilience` and
-  selected by `whenAnnotation(...)`. Their keys move from the `proxy:` namespace
-  to `resilience:` as part of #546 — the namespace names the declaring package.
+  selected by `hasAnnotation(...)`. Their keys live in the `resilience:`
+  namespace — the namespace names the declaring package, never the consumer.
 - **`@rateLimit`** is declaration-only with two consumers: the platform HTTP
   pipeline for request limits and method advice for call limits. One
   declaration, two pipelines; that is the model working as intended.

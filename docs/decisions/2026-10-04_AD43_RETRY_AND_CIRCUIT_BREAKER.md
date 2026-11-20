@@ -1,8 +1,7 @@
 # AD-43: Retry and circuit breaking on `@ndigo/proxy` — `@ndigo/resilience`
 
 **Date:** 2026-10-04
-**Status:** Accepted — design and implementation plan:
-2026-10-04_RETRY_AND_CIRCUIT_BREAKER
+**Status:** Accepted — design and implementation plan: 2026-10-04_RETRY_AND_CIRCUIT_BREAKER. Superseded in part by [AD-110](2026-11-20_AD110_ANNOTATION_EXECUTION_RUNTIME.md) (D-6: the runtime is `@ndigo/advice`).
 
 ## Context
 

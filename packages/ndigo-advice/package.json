@@ -32,7 +32,9 @@
   "dependencies": {
     "@ndigo/core": "~0.0.1",
     "@ndigo/factory": "~0.0.1",
-    "@ndigo/log": "~0.0.1",
+    "@ndigo/log": "~0.0.1"
+  },
+  "devDependencies": {
     "@tsmetadata/polyfill": "catalog:"
   }
 }

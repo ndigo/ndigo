@@ -37,10 +37,7 @@ const tagMappingOf = classAnnotation<string>('tag:mapping');
 export const TagMapping = Object.assign(
     (tagName: string) =>
         <T extends Constructable<HTMLElement>>(target: T, context: ClassDecoratorContext): T => {
-            // NOTE: AnnotationDecorator is a class-or-method union; the
-            // decorator itself rejects the method half.
-            const declareClass = tagMappingOf(tagName) as unknown as (value: T, context: ClassDecoratorContext) => void;
-            declareClass(target, context);
+            tagMappingOf(tagName)(target, context);
             customElements.define(tagName, target as unknown as CustomElementConstructor);
             return target;
         },

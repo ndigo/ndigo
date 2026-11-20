@@ -7,7 +7,7 @@
  * or `interception(...)` in the container.
  */
 import '@tsmetadata/polyfill';
-import { methodAnnotation, type AnnotationKey } from '@ndigo/core';
+import { methodAnnotation, type MethodAnnotationKey } from '@ndigo/core';
 import { AdviceOrder, type MethodInterceptor, type MethodInvocation } from '@ndigo/advice';
 import { SpanStatusCode, trace } from '@opentelemetry/api';
 import type { Tracer } from '@opentelemetry/api';
@@ -18,10 +18,10 @@ import type { Tracer } from '@opentelemetry/api';
  *
  * @example
  * ```ts
- * { when: hasAnnotation(tracedSpan), use: new TracedInterceptor() }
+ * rules.add({ when: hasAnnotation(tracedSpan), use: new TracedInterceptor() });
  * ```
  */
-export const tracedSpan: AnnotationKey<string> = methodAnnotation<string>('telemetry:traced');
+export const tracedSpan: MethodAnnotationKey<string> = methodAnnotation<string>('telemetry:traced');
 
 let tracedTracer: Tracer | undefined;
 

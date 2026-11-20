@@ -100,12 +100,15 @@ export function markWovenBy(instance: object, owner: object): void {
  * const { instance: priced, strategy } = weaveInstance(orderService, rules, 'orderService');
  * ```
  */
-export function weaveInstance(
-    instance: object,
+export function weaveInstance<T extends object>(
+    instance: T,
     rules: MethodInterceptorRegistry | readonly MethodInterceptorRule[],
     entryName: string = entryNameOf(instance)
-): WeaveResult<object> {
-    const existing = WOVEN.get(instance);
+): WeaveResult<T> {
+    // NOTE: the registry stores plain objects because it also keys proxies;
+    // what it holds for a woven instance is that instance or a proxy over it,
+    // both of which the caller uses as `T`.
+    const existing = WOVEN.get(instance) as T | undefined;
     if (existing !== undefined) {
         return { instance: existing, strategy: isShadowWoven(existing) ? 'shadow' : 'proxy' };
     }
@@ -127,12 +130,15 @@ export function weaveInstance(
  * @param plans - The compiled per-method plans.
  * @returns The instance to use and the strategy that produced it.
  */
-export function weavePlans(instance: object, plans: readonly MethodInterceptorPlan[]): WeaveResult<object> {
+export function weavePlans<T extends object>(instance: T, plans: readonly MethodInterceptorPlan[]): WeaveResult<T> {
     if (plans.length === 0) {
         return { instance, strategy: 'none' };
     }
 
-    const existing = WOVEN.get(instance);
+    // NOTE: the registry stores plain objects because it also keys proxies;
+    // what it holds for a woven instance is that instance or a proxy over it,
+    // both of which the caller uses as `T`.
+    const existing = WOVEN.get(instance) as T | undefined;
     if (existing !== undefined) {
         return { instance: existing, strategy: isShadowWoven(existing) ? 'shadow' : 'proxy' };
     }
@@ -147,7 +153,9 @@ export function weavePlans(instance: object, plans: readonly MethodInterceptorPl
         return { instance, strategy: 'shadow' };
     }
 
-    const proxy = weaveMethodProxy(instance, plans);
+    // The proxy forwards the instance's whole surface, so it is an `T` for
+    // every purpose a caller has; only the identity checks differ.
+    const proxy = weaveMethodProxy(instance, plans) as T;
     WOVEN.set(instance, proxy);
     WOVEN.set(proxy, proxy);
     return { instance: proxy, strategy: 'proxy' };
@@ -176,7 +184,7 @@ export function interceptMethods<T extends object>(
     instance: T,
     rules: MethodInterceptorRegistry | readonly MethodInterceptorRule[]
 ): T {
-    return weaveInstance(instance, rules).instance as T;
+    return weaveInstance(instance, rules).instance;
 }
 
 /**

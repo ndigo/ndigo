@@ -3,10 +3,7 @@
  */
 import '@tsmetadata/polyfill';
 import { describe, test, expect } from 'vitest';
-import { annotationOf, classAnnotation, methodAnnotation, type AnnotationDecorator } from '../src/annotation';
-
-type MethodDecorator = (target: Function, context: ClassMethodDecoratorContext) => Function;
-type ClassDecorator = (target: unknown, context: ClassDecoratorContext) => void;
+import { annotationOf, classAnnotation, methodAnnotation, type MethodAnnotationKey } from '../src/annotation';
 
 function methodContext(name: string, metadata: Record<string, unknown> = {}): ClassMethodDecoratorContext {
     return { kind: 'method', name, metadata } as unknown as ClassMethodDecoratorContext;
@@ -16,14 +13,23 @@ function classContext(metadata: Record<string, unknown> = {}): ClassDecoratorCon
     return { kind: 'class', name: 'Service', metadata } as unknown as ClassDecoratorContext;
 }
 
+/**
+ * Applies a method key's decorator the way the compiler would.
+ *
+ * @param key - The method annotation handle.
+ * @param value - The value to record.
+ * @param target - The method being decorated.
+ * @param name - The method name.
+ * @returns The returned method and the metadata it recorded.
+ */
 function applyMethod<T>(
-    decorator: (value: T) => AnnotationDecorator,
+    key: MethodAnnotationKey<T>,
     value: T,
-    target: Function,
+    target: (this: unknown) => unknown,
     name: string
-): { returned: Function; metadata: Record<string, unknown> } {
+): { returned: unknown; metadata: Record<string, unknown> } {
     const metadata: Record<string, unknown> = {};
-    const returned = (decorator(value) as MethodDecorator)(target, methodContext(name, metadata));
+    const returned = key(value)(target, methodContext(name, metadata));
     return { returned, metadata };
 }
 
@@ -80,7 +86,14 @@ describe('methodAnnotation', () => {
     });
 
     test('rejects a class target', () => {
-        expect(() => (audited({ action: 'x' }) as ClassDecorator)(class {}, classContext())).toThrow(TypeError);
+        // The handle is typed for methods, so a class target is a type error;
+        // the runtime check is what a JavaScript caller or a cast reaches.
+        const asClassDecorator = audited({ action: 'x' }) as unknown as (
+            target: unknown,
+            context: ClassDecoratorContext
+        ) => void;
+
+        expect(() => asClassDecorator(class {}, classContext())).toThrow(TypeError);
     });
 });
 
@@ -89,7 +102,7 @@ describe('classAnnotation', () => {
 
     test('records the value under the class key', () => {
         const metadata: Record<string, unknown> = {};
-        (audited({ action: 'class-wide' }) as ClassDecorator)(class Service {}, classContext(metadata));
+        audited({ action: 'class-wide' })(class Service {}, classContext(metadata));
 
         expect(metadata['orders:audited']).toEqual({ action: 'class-wide' });
     });
@@ -120,9 +133,12 @@ describe('classAnnotation', () => {
     });
 
     test('rejects a method target', () => {
-        expect(() => (audited({ action: 'x' }) as MethodDecorator)(function run() {}, methodContext('run'))).toThrow(
-            TypeError
-        );
+        const asMethodDecorator = audited({ action: 'x' }) as unknown as (
+            target: unknown,
+            context: ClassMethodDecoratorContext
+        ) => void;
+
+        expect(() => asMethodDecorator(function run() {}, methodContext('run'))).toThrow(TypeError);
     });
 });
 

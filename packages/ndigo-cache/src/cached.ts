@@ -3,7 +3,7 @@
  */
 import { getErrorMessage } from '@ndigo/util';
 import '@tsmetadata/polyfill';
-import { annotationOf, methodAnnotation, type AnnotationKey } from '@ndigo/core';
+import { annotationOf, methodAnnotation, type MethodAnnotationKey } from '@ndigo/core';
 import { AdviceOrder, type MethodInterceptor, type MethodInvocation } from '@ndigo/advice';
 import { isDevMode, type ApplicationContext } from '@ndigo/context';
 import { CACHE_MANAGER } from './context-tokens';
@@ -22,10 +22,11 @@ const logger = getLogger('ndigo-cache:cached');
  *
  * @example
  * ```ts
- * { when: hasAnnotation(cachedSpec), use: new CachedInterceptor() }
+ * rules.add({ when: hasAnnotation(cachedSpec), use: new CachedInterceptor() });
  * ```
  */
-export const cachedSpec: AnnotationKey<NormalizedCachedSpec> = methodAnnotation<NormalizedCachedSpec>('cache:cached');
+export const cachedSpec: MethodAnnotationKey<NormalizedCachedSpec> =
+    methodAnnotation<NormalizedCachedSpec>('cache:cached');
 
 /**
  * The named cache used when a spec omits `cacheName`.
@@ -143,8 +144,25 @@ export function resolveCachedSpec(spec: CachedSpec = {}): NormalizedCachedSpec {
  * ```
  */
 /**
- * `@cached` execution: the declaration is inert, {@link CachedInterceptor}
- * memoizes the call.
+ * Declares that a method is cached.
+ *
+ * Records the normalized spec and returns the method unchanged —
+ * {@link CachedInterceptor} serves the cache, so a decorated method on an
+ * unadvised instance always computes. See {@link CachedInterceptor} for the
+ * semantics once advised.
+ *
+ * @param spec - Cache selection, key strategy, and TTL (see {@link CachedSpec}).
+ * @returns The method decorator.
+ *
+ * @example
+ * ```ts
+ * class CatalogService {
+ *     @cached({ cacheName: 'catalog', ttl: 30_000 })
+ *     async load(id: string): Promise<unknown> {
+ *         return id;
+ *     }
+ * }
+ * ```
  */
 export function cached(spec: CachedSpec = {}) {
     const normalized = resolveCachedSpec(spec);
@@ -153,13 +171,7 @@ export function cached(spec: CachedSpec = {}) {
         if (context.kind !== 'method') {
             throw new TypeError(`@cached can only be applied to a method — received '${context.kind}'.`);
         }
-        // NOTE: AnnotationDecorator is a class-or-method union; `context.kind`
-        // was just checked, so this is the method half of the signature.
-        const declareMethod = cachedSpec(normalized) as unknown as (
-            value: M,
-            context: ClassMethodDecoratorContext
-        ) => M;
-        return declareMethod(target, context);
+        return cachedSpec(normalized)(target, context);
     };
 }
 

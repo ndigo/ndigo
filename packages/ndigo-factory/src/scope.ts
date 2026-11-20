@@ -93,10 +93,7 @@ export const hasScope = (target: unknown): boolean => {
  */
 export function scope(scopeName: PossibleScope) {
     return function <T extends new (...args: never[]) => unknown>(target: T, context: ClassDecoratorContext): T {
-        // NOTE: AnnotationDecorator is a class-or-method union; the decorator
-        // itself rejects the method half.
-        const declareClass = scopeMapping(scopeName) as unknown as (value: T, context: ClassDecoratorContext) => void;
-        declareClass(target, context);
+        scopeMapping(scopeName)(target, context);
 
         return target;
     };

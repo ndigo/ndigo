@@ -6,23 +6,21 @@
  * a reader — an advisor, a scheduler scan, an ORM manager — decides what the
  * value means. The namespace segment of the key names the declaring package,
  * never the package that consumes it.
+ *
+ * The two factories return **different decorator types** — a method decorator
+ * must return the method it received, a class decorator returns nothing — so
+ * `methodAnnotation` and `classAnnotation` each return a key whose call
+ * signature matches its target kind. Modelling them as one union instead makes
+ * the decorator unresolvable: TypeScript intersects the two context types into
+ * `never` and rejects `@decorator` at every use site.
  */
 import '@tsmetadata/polyfill';
 import { getSymbolMetadata } from './metadata.js';
 
 /**
- * A decorator produced by {@link AnnotationKey}: it records the value and
- * leaves the declaration unchanged.
- */
-export type AnnotationDecorator =
-    | ((target: unknown, context: ClassDecoratorContext) => void)
-    | (<M extends Function>(target: M, context: ClassMethodDecoratorContext) => M);
-
-/**
- * Stable handle for an annotation: the metadata key, the unqualified name, and
- * the decorator factory. Pass the handle to {@link annotationOf} instead of
- * re-deriving the key at the call site, so renaming the decorator variable
- * cannot break a reader.
+ * The reader-facing half of an annotation handle: the metadata key and the
+ * unqualified name. `annotationOf` and every matcher accept this shape, so a
+ * reader never cares which kind of member the declaration came from.
  *
  * @typeParam T - The annotation value type.
  */
@@ -32,10 +30,45 @@ export interface AnnotationKey<T> {
     /** The unqualified annotation name (the segment after the namespace). */
     readonly name: string;
     /**
-     * The annotation decorator factory: writes the value and returns the
-     * declaration unchanged.
+     * The annotation value type. Present for readers; never read at runtime.
      */
-    (value: T): AnnotationDecorator;
+    readonly valueType?: T;
+}
+
+/**
+ * A decorator that records a value on a method and returns it unchanged.
+ */
+export type MethodAnnotationDecorator = <M extends Function>(target: M, context: ClassMethodDecoratorContext) => M;
+
+/**
+ * A decorator that records a value on a class and changes nothing.
+ */
+export type ClassAnnotationDecorator = (target: unknown, context: ClassDecoratorContext) => void;
+
+/**
+ * An annotation handle whose decorator applies to methods.
+ *
+ * @typeParam T - The annotation value type.
+ */
+export interface MethodAnnotationKey<T> extends AnnotationKey<T> {
+    /**
+     * The annotation decorator factory: writes the value and returns the
+     * method unchanged.
+     */
+    (value: T): MethodAnnotationDecorator;
+}
+
+/**
+ * An annotation handle whose decorator applies to classes.
+ *
+ * @typeParam T - The annotation value type.
+ */
+export interface ClassAnnotationKey<T> extends AnnotationKey<T> {
+    /**
+     * The annotation decorator factory: writes the value and leaves the class
+     * unchanged.
+     */
+    (value: T): ClassAnnotationDecorator;
 }
 
 /**
@@ -58,26 +91,28 @@ function parseAnnotationKey(name: string): { namespace: string; name: string } {
 }
 
 /**
- * Builds the shared handle around a scope-specific decorator factory.
+ * Attaches the handle's reader properties to its decorator factory.
  *
+ * @typeParam T - The annotation value type.
+ * @typeParam K - The handle type to present.
  * @param key - The qualified metadata key.
  * @param name - The unqualified annotation name.
  * @param decorate - The decorator factory for the key's scope.
  * @returns The annotation handle.
  */
-function createAnnotationKey<T>(
+function createAnnotationKey<T, K extends AnnotationKey<T>>(
     key: string,
     name: string,
-    decorate: (value: T) => AnnotationDecorator
-): AnnotationKey<T> {
+    decorate: (value: T) => unknown
+): K {
     // Functions already expose a read-only `name`; define both handle
     // properties explicitly so the annotation identity survives.
     return Object.defineProperties(decorate, {
         key: { value: key, enumerable: true },
         name: { value: name, enumerable: true },
-        // NOTE: bridging the generic decorator factory to AnnotationKey<T> —
-        // the callable's parameter type is the key's value type.
-    }) as unknown as AnnotationKey<T>;
+        // NOTE: bridging the factory to the handle — the caller supplies the
+        // precise result type, which the factory cannot express on its own.
+    }) as unknown as K;
 }
 
 /**
@@ -101,11 +136,11 @@ function createAnnotationKey<T>(
  * }
  * ```
  */
-export function methodAnnotation<T>(name: string): AnnotationKey<T> {
+export function methodAnnotation<T>(name: string): MethodAnnotationKey<T> {
     const parsed = parseAnnotationKey(name);
     const key = name;
 
-    return createAnnotationKey<T>(key, parsed.name, (value) => {
+    return createAnnotationKey<T, MethodAnnotationKey<T>>(key, parsed.name, (value) => {
         return function <M extends Function>(target: M, context: ClassMethodDecoratorContext): M {
             if (context.kind !== 'method') {
                 throw new TypeError(`@${parsed.name} can only be applied to a method — received '${context.kind}'.`);
@@ -134,11 +169,11 @@ export function methodAnnotation<T>(name: string): AnnotationKey<T> {
  * class OrderService {}
  * ```
  */
-export function classAnnotation<T>(name: string): AnnotationKey<T> {
+export function classAnnotation<T>(name: string): ClassAnnotationKey<T> {
     const parsed = parseAnnotationKey(name);
     const key = name;
 
-    return createAnnotationKey<T>(key, parsed.name, (value) => {
+    return createAnnotationKey<T, ClassAnnotationKey<T>>(key, parsed.name, (value) => {
         return function (target: unknown, context: ClassDecoratorContext): void {
             if (context.kind !== 'class') {
                 throw new TypeError(`@${parsed.name} can only be applied to a class — received '${context.kind}'.`);
@@ -151,6 +186,11 @@ export function classAnnotation<T>(name: string): AnnotationKey<T> {
 /**
  * Reads an annotation value from a class or instance, walking the class
  * hierarchy so inherited declarations resolve (nearest declaration wins).
+ *
+ * Reading *with* a member is the member read. Reading without one is the
+ * class-level read; combining the two — a member value falling back to the
+ * class's — is the advice layer's `MethodDescriptor.annotation`, deliberately
+ * not done here.
  *
  * @typeParam T - The annotation value type.
  * @param target - Class constructor or instance.

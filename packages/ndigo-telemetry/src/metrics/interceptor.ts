@@ -7,7 +7,7 @@
  * or `interception(...)` in the container.
  */
 import '@tsmetadata/polyfill';
-import { methodAnnotation, type AnnotationKey } from '@ndigo/core';
+import { methodAnnotation, type MethodAnnotationKey } from '@ndigo/core';
 import { AdviceOrder, type MethodInterceptor, type MethodInvocation } from '@ndigo/advice';
 import type { LogAttributes } from '@ndigo/log';
 import type { ApplicationContext } from '@ndigo/context';
@@ -36,10 +36,10 @@ export interface CountedMethodConfig {
  *
  * @example
  * ```ts
- * { when: hasAnnotation(countedCounter), use: new CountedInterceptor() }
+ * rules.add({ when: hasAnnotation(countedCounter), use: new CountedInterceptor() });
  * ```
  */
-export const countedCounter: AnnotationKey<CountedMethodConfig> =
+export const countedCounter: MethodAnnotationKey<CountedMethodConfig> =
     methodAnnotation<CountedMethodConfig>('telemetry:counted');
 
 /**

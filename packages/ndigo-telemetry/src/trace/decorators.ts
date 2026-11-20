@@ -75,13 +75,7 @@ export function traced(
             if (context.kind !== 'method') {
                 throw new TypeError('@traced can only be applied to methods');
             }
-            // NOTE: AnnotationDecorator is a class-or-method union; `context.kind`
-            // was just checked, so this is the method half of the signature.
-            const declareMethod = tracedSpan(spanName ?? String(context.name)) as unknown as (
-                value: M,
-                context: ClassMethodDecoratorContext
-            ) => M;
-            return declareMethod(target, context);
+            return tracedSpan(spanName ?? String(context.name))(target, context);
         };
 
     if (typeof nameOrTarget === 'string') {

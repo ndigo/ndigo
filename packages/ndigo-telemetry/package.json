@@ -51,8 +51,6 @@
     "@opentelemetry/instrumentation": "catalog:",
     "@tsmetadata/polyfill": "catalog:"
   },
-  "devDependencies": {
-    "@ndigo/advice": "~0.0.1"
-  },
+  "devDependencies": {},
   "sideEffects": false
 }

@@ -7,6 +7,12 @@
  */
 import { annotationOf, type AnnotationKey, type Matchable } from '@ndigo/core';
 
+// `AnnotationKey` appears in this package's public signatures — every
+// `annotation(...)` reader takes one — so it is re-exported for callers that
+// build a descriptor or an invocation by hand. The primitives that *create* a
+// key stay in `@ndigo/core`.
+export type { AnnotationKey, ClassAnnotationKey, MethodAnnotationKey } from '@ndigo/core';
+
 /**
  * Static description of one managed method, shared by all of its calls.
  */

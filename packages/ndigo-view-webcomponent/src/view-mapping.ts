@@ -34,10 +34,7 @@ const viewMapping = classAnnotation<string>('view:mapping');
 export const ViewMapping = Object.assign(
     (viewName: string) =>
         <T extends Constructable>(target: T, context: ClassDecoratorContext): T => {
-            // NOTE: AnnotationDecorator is a class-or-method union; the
-            // decorator itself rejects the method half.
-            const declareClass = viewMapping(viewName) as unknown as (value: T, context: ClassDecoratorContext) => void;
-            declareClass(target, context);
+            viewMapping(viewName)(target, context);
             return target;
         },
     {

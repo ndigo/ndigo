@@ -18,7 +18,7 @@ import type { MethodDescriptor } from './interceptor';
  *
  * @example
  * ```ts
- * { when: hasAnnotation(retry), use: new RetryInterceptor() }
+ * rules.add({ when: hasAnnotation(retry), use: new RetryInterceptor() });
  * ```
  */
 export function hasAnnotation<T>(key: AnnotationKey<T>, accept?: (value: T) => boolean): Matchable<MethodDescriptor> {

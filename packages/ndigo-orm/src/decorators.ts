@@ -21,7 +21,7 @@ import {
     LifecycleEvent,
 } from './metadata';
 import type { TransactionManager } from './transaction-manager';
-import { methodAnnotation, type AnnotationKey } from '@ndigo/core';
+import { methodAnnotation, type MethodAnnotationKey } from '@ndigo/core';
 import { AdviceOrder, type MethodInterceptor, type MethodInvocation } from '@ndigo/advice';
 import { Constructable } from '@ndigo/core';
 
@@ -334,10 +334,10 @@ export function postRemove() {
  *
  * @example
  * ```ts
- * { when: hasAnnotation(transactionalMethod), use: new TransactionalInterceptor() }
+ * rules.add({ when: hasAnnotation(transactionalMethod), use: new TransactionalInterceptor() });
  * ```
  */
-export const transactionalMethod: AnnotationKey<true> = methodAnnotation<true>(transactionalMetadataKey);
+export const transactionalMethod: MethodAnnotationKey<true> = methodAnnotation<true>(transactionalMetadataKey);
 
 /**
  * Declares that a method runs inside a transaction.
@@ -365,13 +365,7 @@ export function transactional() {
         if (context.kind !== 'method') {
             throw new TypeError(`@transactional can only be applied to a method — received '${context.kind}'.`);
         }
-        // NOTE: AnnotationDecorator is a class-or-method union; `context.kind`
-        // was just checked, so this is the method half of the signature.
-        const declareMethod = transactionalMethod(true) as unknown as (
-            value: M,
-            context: ClassMethodDecoratorContext
-        ) => M;
-        return declareMethod(target, context);
+        return transactionalMethod(true)(target, context);
     };
 }
 

@@ -105,15 +105,12 @@ export function counted(
             if (context.kind !== 'method') {
                 throw new TypeError('@counted can only be applied to methods');
             }
-            // NOTE: AnnotationDecorator is a class-or-method union; `context.kind`
-            // was just checked, so this is the method half of the signature.
-            const declareMethod = countedCounter({
+            return countedCounter({
                 name: options.name ?? `${String(context.name)}.count`,
                 attributes: options.attributes,
                 featureAggregator: options.featureAggregator,
                 featureKey: options.featureKey,
-            }) as unknown as (value: M, context: ClassMethodDecoratorContext) => M;
-            return declareMethod(target, context);
+            })(target, context);
         };
 
     if (typeof nameOrTarget === 'string') {

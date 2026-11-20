@@ -276,6 +276,12 @@ export class WebMcpDemo extends AsWebMcpElement(NdElement) {
   (`supported: false`), so the element ships everywhere.
 - `exposedTo` lists secure origins allowed to call a cross-origin tool.
 - Non-element code uses `provideWebMcpTools` or `declareWebMcpTool`.
+- The tool shape and safety hints (`readOnlyHint`, `untrustedContentHint`,
+  `consequentialHint`, `debugging`) are the neutral `AgentTool` /
+  `AgentToolAnnotations` contract from `@ndigo/core`, and `webMcpAgentHost`
+  exposes the same registration as an `AgentToolHost`. Code written against
+  the contract is host-agnostic — the planned UI SDK adapter implements the
+  same types, so only the adapter changes.
 
 ## 8. Prove the parity
 

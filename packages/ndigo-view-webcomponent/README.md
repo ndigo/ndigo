@@ -152,6 +152,11 @@ disconnect (a reconnect registers again). `provideWebMcpTools` /
 browsers without WebMCP. `exposedTo` lists secure origins allowed to call a
 cross-origin tool.
 
+The tool shape and safety hints are the neutral `AgentTool` /
+`AgentToolAnnotations` contract from `@ndigo/core`, and `webMcpAgentHost`
+exposes the same registration as an `AgentToolHost` — so a different host
+adapter (the planned UI SDK bridge) swaps in without changing the call sites.
+
 ## API
 
 The full API is at `api/` (generated; run `pnpm doc:api`). Primary exports live in

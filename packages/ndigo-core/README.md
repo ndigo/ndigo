@@ -84,6 +84,20 @@ writing to that would silently discard the write.
 `matchAll`, `matchAny`, and `matchNot` compose `Matchable` values, which is how
 rules combine several matchers without a string expression language.
 
+### Agent bridge
+
+`AgentBridge` is the neutral contract for exposing an application to an agent
+host: `AgentTool` and `AgentToolAnnotations` carry the tool shape and its safety
+hints (`readOnlyHint`, `untrustedContentHint`, `consequentialHint`,
+`debugging`), `snapshot`/`query`/`act` describe the in-page read-and-operate
+surface, and `registerTools` binds tools to a host. `AgentToolHost` is the
+registration-only view an adapter can implement on its own.
+
+Adapters map a host's own shapes onto the contract. `@ndigo/view-webcomponent`
+ships the WebMCP adapter (`webMcpAgentHost`) today; the planned UI SDK adapter
+implements the same types, so application code written against the contract
+survives the swap.
+
 ### Matching and comparison contracts
 
 `PathMatcherFilter` extends `Matchable<string>`, so include/exclude filters can

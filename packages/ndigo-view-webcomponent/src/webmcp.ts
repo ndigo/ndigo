@@ -3,55 +3,38 @@
  * `document.modelContext.registerTool`, AbortSignal lifecycle, and schema
  * projection from the same `@parameters` + `validatedBy` metadata the HTTP
  * route and MCP tool use.
+ *
+ * The tool shape and safety hints are the neutral agent-bridge contract from
+ * `@ndigo/core`; this module is its first host adapter.
  */
-import { type Constructable } from '@ndigo/core';
+import {
+    type AgentTool,
+    type AgentToolAnnotations,
+    type AgentToolHost,
+    type AgentToolHostOptions,
+    type AgentToolRegistration,
+    type Constructable,
+} from '@ndigo/core';
 import { type MethodParameter, resolveParameters } from '@ndigo/dispatcher';
 import { z } from 'zod';
 
-/** Safety hints understood by WebMCP hosts. */
-export interface WebMcpToolAnnotations {
-    /** The tool only reads state. */
-    readonly readOnlyHint?: boolean;
-    /** The output contains third-party/user content. */
-    readonly untrustedContentHint?: boolean;
-    /** The action is significant or hard to reverse. */
-    readonly consequentialHint?: boolean;
-    /** The tool exists for developer tooling only. */
-    readonly debugging?: boolean;
-}
+/**
+ * Safety hints understood by WebMCP hosts — the neutral
+ * {@link AgentToolAnnotations} vocabulary.
+ */
+export type WebMcpToolAnnotations = AgentToolAnnotations;
 
-/** A tool registered with the browser's model context. */
-export interface WebMcpTool {
-    /** Tool name (unique per document origin). */
-    readonly name: string;
-    /** What the tool does and when to use it. */
-    readonly description: string;
-    /** JSON Schema for the arguments. */
-    readonly inputSchema: Record<string, unknown>;
-    /** Executes the tool; the second argument carries the cancellation signal. */
-    readonly execute: (
-        args: Record<string, unknown>,
-        context: { readonly signal: AbortSignal }
-    ) => unknown | Promise<unknown>;
-    /** Safety hints. */
-    readonly annotations?: WebMcpToolAnnotations;
-    /** Origins allowed to see and execute the tool (secure origins only). */
-    readonly exposedTo?: readonly string[];
-}
+/** A tool registered with the browser's model context — the neutral {@link AgentTool} shape. */
+export type WebMcpTool = AgentTool;
 
-/** Registration outcome. `supported` is false when the browser lacks WebMCP. */
-export interface WebMcpRegistration {
-    /** Whether `document.modelContext` was available. */
-    readonly supported: boolean;
-    /** Unregisters the tools (aborts the internal controller). */
-    dispose(): void;
-}
+/**
+ * Registration outcome — the neutral {@link AgentToolRegistration} handle.
+ * `supported` is false when the browser lacks WebMCP.
+ */
+export type WebMcpRegistration = AgentToolRegistration;
 
 /** Options for {@link provideWebMcpTools}. */
-export interface WebMcpOptions {
-    /** External cancellation signal; when supplied, `dispose` cannot abort it. */
-    readonly signal?: AbortSignal;
-}
+export type WebMcpOptions = AgentToolHostOptions;
 
 interface ModelContextTool {
     readonly name: string;
@@ -123,6 +106,16 @@ export async function provideWebMcpTools(
     }
     return { supported: true, dispose: () => controller?.abort() };
 }
+
+/**
+ * The WebMCP adapter over the neutral {@link AgentToolHost} contract — the
+ * first host adapter. Code that registers tools through this binding is
+ * host-agnostic: the planned UI SDK adapter implements the same contract, so
+ * the swap replaces this object and nothing else.
+ */
+export const webMcpAgentHost: AgentToolHost = {
+    registerTools: (tools, options) => provideWebMcpTools(tools, options),
+};
 
 /** Options for {@link webMcpToolForHandler}. */
 export interface WebMcpHandlerToolOptions {

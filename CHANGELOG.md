@@ -388,6 +388,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   direct dependencies; the CLI assets stay authoritative. The managed
   `AGENTS.md` block and guide 37 document the installed read paths, and each
   skill gains an example prompt.
+- `@ndigo/core`: the agent-bridge contract — `AgentBridge` and the
+  registration-only `AgentToolHost` view, the `AgentTool` shape with its
+  safety annotations (`readOnlyHint`, `untrustedContentHint`,
+  `consequentialHint`, `debugging`), and the `snapshot`/`query`/`act`
+  vocabulary — the neutral surface every agent host adapter implements
+  (issue #558).
+- `@ndigo/view-webcomponent`: `webMcpAgentHost`, the WebMCP adapter over the
+  neutral `AgentToolHost` contract; the WebMCP tool types are that contract,
+  and annotations pass through registration unchanged. A future UI SDK
+  adapter implements the same types, so host swaps change only the adapter.
 
 ### Changed
 

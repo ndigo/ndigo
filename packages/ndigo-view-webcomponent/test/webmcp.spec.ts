@@ -2,10 +2,17 @@
 /**
  * WebMCP declaration: registration, element lifecycle, and handler projection.
  */
+import { type AgentTool, type AgentToolHost } from '@ndigo/core';
 import { parameters, queryValue, validatedBy } from '@ndigo/dispatcher';
 import { afterEach, describe, expect, it } from 'vitest';
 import { z } from 'zod';
-import { AsWebMcpElement, declareWebMcpTool, provideWebMcpTools, webMcpToolForHandler } from '../src/webmcp';
+import {
+    AsWebMcpElement,
+    declareWebMcpTool,
+    provideWebMcpTools,
+    webMcpAgentHost,
+    webMcpToolForHandler,
+} from '../src/webmcp';
 import type { WebMcpTool } from '../src/webmcp';
 
 interface RegisterOptions {
@@ -81,6 +88,33 @@ describe('AsWebMcpElement', () => {
         expect(registered.has('echo')).toBe(true);
         element.remove();
         expect(registered.has('echo')).toBe(false);
+    });
+});
+
+describe('webMcpAgentHost', () => {
+    it('registers through the neutral host contract and preserves annotations', async () => {
+        const tools = new Map<string, AgentTool>();
+        Object.defineProperty(document, 'modelContext', {
+            configurable: true,
+            value: {
+                async registerTool(tool: AgentTool): Promise<void> {
+                    tools.set(tool.name, tool);
+                },
+            },
+        });
+        const host: AgentToolHost = webMcpAgentHost;
+        const annotations = {
+            readOnlyHint: true,
+            untrustedContentHint: true,
+            consequentialHint: false,
+            debugging: true,
+        };
+        const registration = await host.registerTools([{ ...ECHO, annotations }]);
+
+        expect(registration.supported).toBe(true);
+        expect(tools.get('echo')?.annotations).toEqual(annotations);
+
+        registration.dispose();
     });
 });
 

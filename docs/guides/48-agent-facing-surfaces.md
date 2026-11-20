@@ -109,14 +109,25 @@ Notes:
 
 - **Read-only by default.** Pass `readOnly: true` unless the application
   deliberately exposes mutations; the policy applies to both list and call.
+- **Per-call policy.** `authorize(call)` decides each call — returning `false`
+  refuses it as an `isError` tool result, never a protocol failure — and
+  `confirm(call)` returns the sentence a person must confirm. MCP has no
+  confirmation round-trip, so a confirmed call is refused with
+  `Needs a person: …` unless an `authorize` policy accepts it. Both run after
+  the visibility policy and before argument binding.
+- **Secret results.** `@toolMapping({ secret: ['field.path'] })` replaces the
+  declared result fields with the shared `<redacted>` sentinel before the
+  result leaves the registry.
 - **OAuth 2.1.** Serve `protectedResourceMetadata(...)` beside the endpoint and
   let `AuthRouteGuard` validate the bearer token, `@authorized` roles, and
   `@authorizedScopes` scopes. The guard denies before the transport runs.
 - **Limits.** Apply per-tool or per-principal budgets through
   `@ndigo/rate-limit`; wrap downstream calls in `@circuitBreaker` / `@retry`.
 - **Telemetry.** Every call emits one `execute_tool <name>` span with
-  `gen_ai.tool.name` and `gen_ai.tool.call.id`; outbound HTTP spans nest under
-  it.
+  `gen_ai.tool.name`, `gen_ai.tool.call.id`, and `gen_ai.tool.call.source` (the
+  transport: `stdio`, `http`); outbound HTTP spans nest under it. A policy
+  refusal is marked with `gen_ai.tool.call.denied` — an expected outcome, so
+  the span does not become an error.
 - **Audit.** Log the tool name and principal in an interceptor; never log
   arguments that may carry secrets.
 

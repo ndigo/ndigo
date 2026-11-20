@@ -171,4 +171,29 @@ describe('createMcpServer', () => {
         const block = result.content.find((entry) => entry.type === 'text');
         expect(block?.type === 'text' ? block.text : '').toContain("unknown or unavailable MCP tool 'missing'");
     });
+
+    it('returns policy denials as isError results, not protocol failures', async () => {
+        class DeniedController {
+            @toolMapping({ name: 'delete_order' })
+            deleteOrder(): unknown {
+                return null;
+            }
+        }
+        const denied = McpToolRegistry.from(
+            table([
+                {
+                    mapping: mapping('/orders/:id', 'DELETE'),
+                    handlerMethod: handlerMethod(new DeniedController(), 'deleteOrder', [], () => ({ deleted: true })),
+                },
+            ]),
+            { authorize: () => false }
+        );
+        const client = await connect({ registry: denied });
+        const result = CallToolResultSchema.parse(
+            await client.callTool({ name: 'delete_order', arguments: {} }, CallToolResultSchema)
+        );
+        expect(result.isError).toBe(true);
+        const block = result.content.find((entry) => entry.type === 'text');
+        expect(block?.type === 'text' ? block.text : '').toContain("MCP tool 'delete_order' denied by policy");
+    });
 });

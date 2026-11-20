@@ -47,4 +47,17 @@ describe('@toolMapping', () => {
         expect(() => toolMapping({ name: '9order' })).toThrow(/snake_case/u);
         expect(() => toolMapping({ name: 'get_order' })).not.toThrow();
     });
+
+    it('validates and stores secret result paths', () => {
+        expect(() => toolMapping({ secret: [''] })).toThrow(/secret paths/u);
+        expect(() => toolMapping({ secret: ['a b'] })).toThrow(/secret paths/u);
+        expect(() => toolMapping({ secret: ['1bad'] })).toThrow(/secret paths/u);
+        expect(() => toolMapping({ secret: ['accessToken', 'profile.number'] })).not.toThrow();
+
+        class Controller {
+            @toolMapping({ secret: ['accessToken'] })
+            login(): void {}
+        }
+        expect(getToolMapping(Controller, 'login')).toEqual({ secret: ['accessToken'] });
+    });
 });

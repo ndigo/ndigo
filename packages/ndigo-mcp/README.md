@@ -67,6 +67,16 @@ and projects every `@toolMapping` handler:
 
 - `readOnly: true` omits mutating tools from `tools/list` and rejects them on
   call.
+- `authorize(call)` runs after the visibility checks and before the handler;
+  returning `false` refuses the call as an `isError` tool result, never a
+  protocol failure. The callback receives the descriptor, the raw arguments,
+  the request id, and `call.confirm` when a confirmation sentence applies.
+- `confirm(call)` returns the sentence a person must confirm. MCP has no
+  confirmation round-trip, so a confirmed call is refused with
+  `Needs a person: …` unless an `authorize` policy accepts it.
+- `@toolMapping({ secret: ['field.path'] })` redacts the declared result
+  fields with the shared `<redacted>` sentinel before the result leaves the
+  registry.
 - `argumentResolvers` is the dispatcher's `ARGUMENT_RESOLVERS` entry. Tools
   without parameters work without it; parameterized tools need it to bind
   path/query/header/body values.
@@ -137,8 +147,10 @@ schema-validated view where the engine controls the render.
 
 `createMcpServer(registry, { inspect })` exposes the inspect manifest as
 `ndigo://manifest`, `ndigo://routes`, and `ndigo://config` resources. Each tool
-call emits one `execute_tool <name>` span with `gen_ai.tool.name` and
-`gen_ai.tool.call.id` attributes; outbound HTTP spans nest under it.
+call emits one `execute_tool <name>` span with `gen_ai.tool.name`,
+`gen_ai.tool.call.id`, and `gen_ai.tool.call.source` (the transport: `stdio`
+from `startStdioServer`, `http` from `McpHTTPEndpoint`) attributes; outbound
+HTTP spans nest under it.
 
 ## API
 

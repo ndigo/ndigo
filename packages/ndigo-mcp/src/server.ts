@@ -15,7 +15,7 @@ import {
     ReadResourceRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
 import type { InspectManifest } from '@ndigo/inspect';
-import type { McpToolRegistry } from './registry.js';
+import type { McpToolRegistry, ToolCallContext } from './registry.js';
 import { MCP_APP_MIME_TYPE, type UiResource } from './ui-resource.js';
 
 /** Options for {@link createMcpServer}. */
@@ -28,6 +28,11 @@ export interface McpServerOptions {
     readonly inspect?: InspectManifest;
     /** MCP Apps `ui://` resources served as `text/html;profile=mcp-app`. */
     readonly uiResources?: readonly UiResource[];
+    /**
+     * The transport label recorded on tool-call spans as
+     * `gen_ai.tool.call.source`; {@link startStdioServer} defaults to `'stdio'`.
+     */
+    readonly source?: string;
 }
 
 /**
@@ -60,11 +65,15 @@ export function createMcpServer(registry: McpToolRegistry, options: McpServerOpt
 
     server.setRequestHandler(CallToolRequestSchema, async (request, extra) => {
         const callId = extra.requestId === undefined ? undefined : String(extra.requestId);
+        const context: ToolCallContext = {
+            ...(callId === undefined ? {} : { callId }),
+            ...(options.source === undefined ? {} : { source: options.source }),
+        };
         try {
             const result = await registry.call(
                 request.params.name,
                 (request.params.arguments ?? {}) as Record<string, unknown>,
-                callId === undefined ? {} : { callId }
+                context
             );
             return {
                 content: [
@@ -133,7 +142,7 @@ export function createMcpServer(registry: McpToolRegistry, options: McpServerOpt
  * ```
  */
 export async function startStdioServer(registry: McpToolRegistry, options: McpServerOptions = {}): Promise<void> {
-    const server = createMcpServer(registry, options);
+    const server = createMcpServer(registry, { source: 'stdio', ...options });
     const transport = new StdioServerTransport();
     await server.connect(transport);
     process.stderr.write(`${options.name ?? 'ndigo'}: listening on stdio\n`);

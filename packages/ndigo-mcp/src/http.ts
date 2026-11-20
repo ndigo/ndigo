@@ -19,6 +19,11 @@ export interface McpHTTPEndpointOptions {
     readonly inspect?: InspectManifest;
     /** MCP Apps `ui://` resources served as `text/html;profile=mcp-app`. */
     readonly uiResources?: readonly UiResource[];
+    /**
+     * The transport label recorded on tool-call spans as
+     * `gen_ai.tool.call.source`; the endpoint defaults to `'http'`.
+     */
+    readonly source?: string;
 }
 
 /**
@@ -73,7 +78,7 @@ export class McpHTTPEndpoint {
         if (req === undefined || res === undefined) {
             throw new Error('@ndigo/mcp HTTP transport requires the Node platform adapter');
         }
-        const server = createMcpServer(this.#registry, this.#options);
+        const server = createMcpServer(this.#registry, { source: 'http', ...this.#options });
         const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined });
         const close = (): void => {
             void transport.close();

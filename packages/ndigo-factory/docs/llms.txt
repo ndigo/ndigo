@@ -19,6 +19,13 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `likeNameAware` — Returns whether a value is NameAware.
 - `ContextToken` — A type-safe key used for value registration and retrieval in a `Registry`.
 - `isContextToken` — Determines whether or not the `value` is a ContextToken.
+- `preInitSpec` — `@preInit` annotation key.
+- `postInitSpec` — `@postInit` annotation key.
+- `preDestroySpec` — `@preDestroy` annotation key.
+- `preInit` — Marks a method to run after property population and aware injection, before `init()`.
+- `postInit` — Marks a method to run after `init()`, before the instance is served.
+- `preDestroy` — Marks a method to run before the release verb.
+- `LifecycleAnnotationProcessor` — Processor that executes the lifecycle-hook annotations.
 - `InitializationAwareProcessor` *(type)* — Processor applied to every instance the factory creates, before and after initialization callbacks run. Each hook receives the entry name and instance and retu…
 - `ConstructionAwareProcessor` *(type)* — Processor that participates in the construction phase: before construction (suppressing or replacing default construction), after construction (before property…
 - `DestructionAwareProcessor` *(type)* — Factory hook that allows for custom modification of new instances, e.g. checking for marker interfaces or wrapping them with proxies.

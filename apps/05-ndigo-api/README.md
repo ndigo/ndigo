@@ -69,6 +69,10 @@ GET  /swagger-ui/              Swagger UI (Bearer-gated, SEC-4)
 - In-memory and Drizzle ORM entity managers
 - RFC 9457 problem+json error envelope
 - Scheduled heartbeat task (`@scheduled`, auto-discovered and auto-started; see the [scheduling guide](../../docs/guides/23-scheduling.md))
+- Method advice through a single builder registration: the `audited` annotation
+  feeds `AuditInterceptor` and `@cached` feeds `CachedInterceptor`, both selected
+  by `@ndigo/advice` rules (`src/index.ts`). See the
+  [advice guide](../../docs/guides/35-method-interception-and-resilience.md).
 
 ## View targeting
 

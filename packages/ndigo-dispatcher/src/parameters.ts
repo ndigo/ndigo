@@ -192,11 +192,9 @@ export function resolveParameters(
     const nameToIndex = new Map<string, number>();
     let paramNames: string[] = [];
     if (kind !== 'socket') {
-        // @traced wraps methods in a `(...args)` proxy that destroys the
-        // declared signature; telemetry preserves the original so framework
-        // code can still read the true parameter names.
-        const original = getSymbolMetadata(target)[`telemetry:traced:${String(propertyKey)}:original`] ?? handlerMethod;
-        paramNames = getFunctionParamNames(original);
+        // Advice is installed on the instance, never on the prototype method,
+        // so the discovered handler still carries the declared signature.
+        paramNames = getFunctionParamNames(handlerMethod);
         const length = paramNames.length;
         for (let index = 0; index < length; index++) nameToIndex.set(paramNames[index], index);
     }

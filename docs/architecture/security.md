@@ -94,7 +94,7 @@ Browser (untrusted) ──HTTPS──▶ TLS-terminating proxy ──▶ Node se
 
 - How-to: [Guide 03 — Environment & Configuration](../guides/03-environment-configuration.md)
   (secrets and config), [Guide 26 — Authentication & Sessions](../guides/26-authentication-and-sessions.md),
-  [Guide 35 — Method Interception & Resilience](../guides/35-method-interception-and-resilience.md)
+  [Guide 35 — Method Advice & Resilience](../guides/35-method-interception-and-resilience.md)
 - Packages: `@ndigo/auth-core`, `@ndigo/auth-server`, `@ndigo/auth-client`,
   `@ndigo/platform-node`, `@ndigo/rate-limit` — see the
   [package index](https://ndigo.dev/reference/packages/).

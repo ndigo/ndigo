@@ -18,13 +18,13 @@ container-friendly decorator that resolves a `CacheManager` off the instance.
 - **`memoize(fn, { ttl, maxSize, eviction, key })`** — client-side
   memoization for browsers and Node, no DI: JSON-arg keys, async
   single-flight coalescing, fulfilled-results-only caching.
-- **`@cached({ cacheName, key, ttl })`** — the server-side decorator: a
-  wrapper (no AOP) that resolves the `CacheManager` from `this.cacheManager`
+- **`@cached({ cacheName, key, ttl })`** — the server-side declaration, run by
+  `CachedInterceptor`: it resolves the `CacheManager` from `this.cacheManager`
   or lazily from `this.applicationContext` (the platform's `cacheManager`
-  entry), degrades gracefully to the raw method when absent, caches fulfilled
-  results only, and records its spec under `cache:<method>` metadata (read via
-  `getCachedSpec`). Implement `AsCacheManagerAware` (or `AsApplicationContextAware`)
-  for automatic injection.
+  entry), calls through when neither is reachable, and caches fulfilled results
+  only. The declaration is recorded under `cache:cached:<method>` and read with
+  `getCachedSpec`. Implement `AsCacheManagerAware` (or
+  `AsApplicationContextAware`) for automatic injection.
 
 ## Installation
 
@@ -115,13 +115,23 @@ class UserService {
 }
 ```
 
-The decorator returns a wrapper (no AOP) that resolves `this.cacheManager`;
-without a manager it calls the raw method (caching disabled, the method stays
-async). Hits return the stored settled value; misses call the target and store
-the result. Fulfilled results only — method rejections propagate and are never
-stored. Single-flight spans the backend read, the computation, and the awaited
-write; self-invocation through `this.method()` **is** cached. The normalized
-spec is recorded under `cache:<method>` metadata and can be read with
+The decorator only declares. Register the interceptor once and every
+`@cached` method on the entries the context creates is served from the cache:
+
+```ts
+import { hasAnnotation, interception } from '@ndigo/advice';
+
+builder.processors(interception([{ when: hasAnnotation(cachedSpec), use: new CachedInterceptor() }]));
+```
+
+Hand-built objects use the same rule through `interceptMethods(instance, rules)`.
+The interceptor resolves `this.cacheManager`; without a manager it calls the
+method (caching disabled, the method stays async). Hits return the stored
+settled value; misses call the target and store the result. Fulfilled results
+only — method rejections propagate and are never stored. Single-flight spans
+the backend read, the computation, and the awaited write; self-invocation
+through `this.method()` **is** cached. The normalized spec is recorded under
+`cache:cached:<method>` metadata and can be read with
 `getCachedSpec(target, methodName)`.
 
 ## API
@@ -132,8 +142,9 @@ The full API is at `api/` (generated; run `pnpm doc:api`). Primary exports live 
 - `Cache`, `CacheOptions`, `CacheMiss`, `isCacheMiss`, `MemoryCache`
 - `CacheManager`, `CacheManagerOptions`, `MemoryCacheManager`, `CACHE_MANAGER`
 - `memoize`, `MemoizeOptions`
-- `cached`, `CachedSpec`, `NormalizedCachedSpec`, `resolveCachedSpec`,
-  `getCachedSpec`, `CACHED_METADATA_PREFIX`, `DEFAULT_CACHE_NAME`
+- `cached`, `cachedSpec`, `CachedInterceptor`, `CachedSpec`,
+  `NormalizedCachedSpec`, `resolveCachedSpec`, `getCachedSpec`,
+  `DEFAULT_CACHE_NAME`
 - `serializeCacheKey`, `serializeCacheKeyStrict`
 
 ## Development

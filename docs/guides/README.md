@@ -186,9 +186,9 @@ contributor guides. Numbers are reading order within a section.
   (`feature.*`, live refresh), `@whenFeature` route gates (404 when off), the
   OpenFeature bridge for vendor flagging, and the targeting-context resolver.
   Reference application: `apps/05-ndigo-api` (`/gated-report`).
-- [35 — Method Interception & Resilience](35-method-interception-and-resilience.md)
+- [35 — Method Advice & Resilience](35-method-interception-and-resilience.md)
   — metadata annotations, the rule and advice chain (`@ndigo/advice`), registration
-  paths, weaving semantics, and retry + circuit breaking (`@ndigo/resilience`).
+  paths, weaving strategies, and retry + circuit breaking (`@ndigo/resilience`).
 - [36 — Testing with `@ndigo/test`](36-testing.md) — the in-process harness
   : `bootNodeApp`/`cachedBootNodeApp`, the `MockHTTP` request builder and
   `MockResult`, browser apps via `MockWebClient` + `MemoryViewTarget`, and

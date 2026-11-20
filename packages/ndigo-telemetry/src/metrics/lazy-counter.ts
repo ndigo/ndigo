@@ -1,11 +1,12 @@
 /**
  * Shared lazily-resolved instrument seam.
  *
- * Instrumentation wrappers and decorators are built at class/module load —
- * often before any SDK registers a global `MeterProvider` — so an eager
- * `metrics.getMeter(...).createCounter(...)` would capture the NoopMeter and
- * silently drop every datapoint. These factories defer instrument creation to
- * the first recorded call (post-SDK-init) and cache it per metric name.
+ * Instrumentation wrappers are built at module load, and `@counted` advisories
+ * are created when a rule is registered — often before any SDK registers a
+ * global `MeterProvider` — so an eager `metrics.getMeter(...).createCounter(...)`
+ * would capture the NoopMeter and silently drop every datapoint. These
+ * factories defer instrument creation to the first recorded call
+ * (post-SDK-init) and cache it per metric name.
  */
 import { metrics } from '@opentelemetry/api';
 import type { Attributes, Counter, Histogram } from '@opentelemetry/api';

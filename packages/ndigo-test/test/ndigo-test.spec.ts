@@ -124,3 +124,58 @@ describe('installSynchronousAnimationFrames', () => {
         expect(scope.requestAnimationFrame).toBe(before);
     });
 });
+
+describe('bootNodeApp processors', () => {
+    it('runs registered processors against the entries the context creates', () => {
+        class Audited {
+            run(): string {
+                return 'ran';
+            }
+        }
+
+        const seen: string[] = [];
+        const app = bootNodeApp([], {
+            processors: [
+                {
+                    processBeforeInitialization<T>(_name: string, instance: T): T {
+                        return instance;
+                    },
+                    processAfterInitialization<T>(name: string, instance: T): T {
+                        seen.push(name);
+                        return instance;
+                    },
+                },
+            ],
+        });
+
+        try {
+            app.context.setValue('audited', Audited);
+            app.context.getValue('audited');
+
+            expect(seen).toContain('audited');
+        } finally {
+            app.close();
+        }
+    });
+
+    it('never shares a cached app between an advised and an unadvised boot', () => {
+        const processor = {
+            processBeforeInitialization<T>(_name: string, instance: T): T {
+                return instance;
+            },
+            processAfterInitialization<T>(_name: string, instance: T): T {
+                return instance;
+            },
+        };
+
+        const plain = cachedBootNodeApp([]);
+        const advised = cachedBootNodeApp([], { processors: [processor] });
+
+        try {
+            expect(advised).not.toBe(plain);
+        } finally {
+            advised.close();
+            plain.close();
+        }
+    });
+});

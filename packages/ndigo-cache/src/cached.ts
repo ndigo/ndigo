@@ -107,13 +107,14 @@ export function resolveCachedSpec(spec: CachedSpec = {}): NormalizedCachedSpec {
 }
 
 /**
- * Marks a method as cached. The non-AOP interception mechanism
- * mirrors `@transactional`: the decorator returns a wrapper that resolves
- * the {@link CacheManager} off the instance (`this.cacheManager`), calling
- * the raw method when absent — caching is disabled, but the method remains
- * async. Decorated methods must declare a Promise return type.
+ * Declares that a method is cached.
  *
- * Semantics:
+ * The decorator records the normalized spec and returns the method unchanged —
+ * {@link CachedInterceptor} serves the cache. A decorated method is inert on
+ * its own: `new Service().load(id)` always computes until the instance is
+ * advised, which keeps a unit test from needing a container.
+ *
+ * Semantics, once advised:
  * - **Hits** return the stored settled value; **misses** call the target and
  *   store the result.
  * - **Fulfilled results only**: method rejections/throws propagate to the
@@ -123,9 +124,10 @@ export function resolveCachedSpec(spec: CachedSpec = {}): NormalizedCachedSpec {
  *   Concurrent calls for the same store/key share one computation. Cache
  *   read failures reject; write failures are logged and the computed result
  *   is returned (the existing best-effort write policy).
- * - Self-invocation through `this.method()` **is** cached: the wrapper
- *   replaces the prototype method (stronger than proxy interception semantics,
- *   where self-invocation bypasses the cache).
+ * - Self-invocation through `this.method()` **is** cached, because the advice
+ *   is installed on the instance rather than around it. Frozen, sealed, and
+ *   function-shaped targets are advised through the proxy fallback, which does
+ *   not cover self-invocation.
  *
  * @param spec - Cache selection/key/TTL (see {@link CachedSpec}).
  * @returns The class method decorator.

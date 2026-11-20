@@ -588,10 +588,15 @@ nesting, because both transaction managers reject an already-active transaction.
 ### Notes on the inventory
 
 - **`@signal` / `@computed` / `@effect`** still record into package-private
-  WeakMaps consumed by `@reactive`; moving them onto the same `Symbol.metadata`
-  record as everything else is the remaining declaration-layer work. `@reactive`
-  remains a member transformer either way: it must redefine accessors during
-  construction, which is not something a post-construction executor can do.
+  WeakMaps consumed by `@reactive`. The declaration half — _which_ fields are
+  signals and effects — is a class-level fact and belongs on
+  `Symbol.metadata`; the runtime half cannot move, because the field
+  initializer runs per instance and must hand that instance's value to the
+  accessor `@reactive` installs for it. Migrating the declaration half is
+  worthwhile when a consumer needs to discover signals without importing
+  `@ndigo/signals`. `@reactive` remains a member transformer either way: it
+  must redefine accessors during construction, which is not something a
+  post-construction executor can do.
 - **`@retry` / `@circuitBreaker`** are declared in `@ndigo/resilience` and
   selected by `hasAnnotation(...)`. Their keys live in the `resilience:`
   namespace — the namespace names the declaring package, never the consumer.

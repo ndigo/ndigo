@@ -80,6 +80,17 @@ layer a name that says what it does: **`@ndigo/advice`** replaces
   both `@ndigo/http` and `@ndigo/resilience`) are tracked separately.
 - `close`/`destroy` unification is a prerequisite for lifecycle annotations and
   lands before them.
+- **Signals are not on the metadata record yet.** `@signal`, `@computed`, and
+  `@effect` still hand data to `@reactive` through package-private WeakMaps.
+  AD-109 D8 reads as a metadata migration, and the _declaration_ half is one —
+  which fields are signals and effects is a class-level fact. The other half is
+  not: the field initializer runs per instance and must hand that instance's
+  value to the accessor `@reactive` installs for it, and `Symbol.metadata` is
+  per class. The unactivated-`@signal` diagnostic also depends on observing
+  per-instance pending state, which is what makes a missing `@reactive` fail
+  loudly instead of reading back as `undefined`. Migrating the declaration half
+  is worth doing when a consumer needs to discover signals without importing
+  `@ndigo/signals`; the runtime half stays per instance.
 
 ## Refs
 

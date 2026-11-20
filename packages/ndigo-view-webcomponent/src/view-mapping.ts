@@ -6,7 +6,13 @@
  * clear a mapping on a class it did not decorate.
  */
 import '@tsmetadata/polyfill';
-import { classAnnotation, ensureSymbolMetadata, annotationOf, type Constructable } from '@ndigo/core';
+import {
+    annotationOf,
+    classAnnotation,
+    ensureSymbolMetadata,
+    getSymbolMetadata,
+    type Constructable,
+} from '@ndigo/core';
 
 /**
  * `@viewMapping` annotation key: the view name declared for a class.
@@ -51,7 +57,9 @@ export const ViewMapping = Object.assign(
          * @param target - The class or instance to clear.
          */
         delete(target: unknown): void {
-            delete ensureSymbolMetadata(target)[viewMapping.key];
+            // Read rather than ensure: deleting from a class that never
+            // declared a mapping must not attach an empty metadata record.
+            delete getSymbolMetadata(target)[viewMapping.key];
         },
 
         /**

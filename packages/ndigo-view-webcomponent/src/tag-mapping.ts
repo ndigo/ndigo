@@ -6,7 +6,13 @@
  * class it did not decorate.
  */
 import '@tsmetadata/polyfill';
-import { annotationOf, classAnnotation, ensureSymbolMetadata, type Constructable } from '@ndigo/core';
+import {
+    annotationOf,
+    classAnnotation,
+    ensureSymbolMetadata,
+    getSymbolMetadata,
+    type Constructable,
+} from '@ndigo/core';
 
 /**
  * `@tagMapping` annotation key: the custom-element name declared for a class.
@@ -55,7 +61,9 @@ export const TagMapping = Object.assign(
          * @param target - The class or instance to clear.
          */
         delete(target: unknown): void {
-            delete ensureSymbolMetadata(target)[tagMappingOf.key];
+            // Read rather than ensure: deleting from a class that never
+            // declared a mapping must not attach an empty metadata record.
+            delete getSymbolMetadata(target)[tagMappingOf.key];
         },
 
         /**

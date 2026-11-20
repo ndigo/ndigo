@@ -113,6 +113,14 @@ const service = interceptMethods(new OrderService(), rules);
 const other = createIntercepted(OrderService, rules);
 ```
 
+### Compiling a plan yourself
+
+`compileInterceptorPlan(targetType, entryName, methodNames, rules)` is the
+primitive both paths use: it returns one `MethodInterceptorPlan` per matched
+method, with the ordered advice chain already resolved. `planFor(instance, rules)`
+is the same thing for an object, reading the class and its method surface for
+you.
+
 ### Validation
 
 `validate` is called once per matched method while the plan is compiled. Use it to

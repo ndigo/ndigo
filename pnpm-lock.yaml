@@ -1352,6 +1352,9 @@ importers:
 
   apps/17-ndigo-telemetry-lab:
     dependencies:
+      '@ndigo/advice':
+        specifier: ~0.0.1
+        version: link:../../packages/ndigo-advice
       '@ndigo/boot':
         specifier: ~0.0.1
         version: link:../../packages/ndigo-boot
@@ -1959,6 +1962,9 @@ importers:
 
   packages/ndigo-cache:
     dependencies:
+      '@ndigo/advice':
+        specifier: ~0.0.1
+        version: link:../ndigo-advice
       '@ndigo/context':
         specifier: ~0.0.1
         version: link:../ndigo-context
@@ -2413,6 +2419,9 @@ importers:
 
   packages/ndigo-orm:
     dependencies:
+      '@ndigo/advice':
+        specifier: ~0.0.1
+        version: link:../ndigo-advice
       '@ndigo/core':
         specifier: ~0.0.1
         version: link:../ndigo-core
@@ -2822,6 +2831,9 @@ importers:
 
   packages/ndigo-telemetry:
     dependencies:
+      '@ndigo/advice':
+        specifier: ~0.0.1
+        version: link:../ndigo-advice
       '@ndigo/cache':
         specifier: ~0.0.1
         version: link:../ndigo-cache
@@ -2928,6 +2940,9 @@ importers:
         specifier: ^8.22.1
         version: 8.22.1
     devDependencies:
+      '@ndigo/advice':
+        specifier: ~0.0.1
+        version: link:../ndigo-advice
       '@ndigo/auth-server':
         specifier: ~0.0.1
         version: link:../ndigo-auth-server
@@ -3013,6 +3028,9 @@ importers:
       '@ndigo/dispatcher':
         specifier: ~0.0.1
         version: link:../ndigo-dispatcher
+      '@ndigo/factory':
+        specifier: ~0.0.1
+        version: link:../ndigo-factory
       '@ndigo/http':
         specifier: ~0.0.1
         version: link:../ndigo-http

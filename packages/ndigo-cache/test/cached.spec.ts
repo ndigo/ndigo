@@ -6,7 +6,8 @@ import type { CacheManager } from '../src/cache-manager';
 import { CacheMiss, MemoryCache } from '../src/cache';
 import type { Cache } from '../src/cache';
 import type { CachedSpec } from '../src/cached';
-import { cached, getCachedSpec, resolveCachedSpec } from '../src/cached';
+import { cached, CachedInterceptor, cachedSpec, getCachedSpec, resolveCachedSpec } from '../src/cached';
+import { hasAnnotation, interceptMethods } from '@ndigo/advice';
 import { serializeCacheKey } from '../src/keys';
 import { ContextToken } from '@ndigo/context';
 
@@ -35,6 +36,17 @@ class DeferredMemoryCache extends MemoryCache<unknown> {
         await this.writeGate.promise;
         await super.set(key, value, ttl);
     }
+}
+
+/**
+ * Advises an instance the way the cache auto-configuration does — the
+ * decorator only declares, so nothing is cached until a rule matches.
+ *
+ * @param instance - The decorated instance to advise.
+ * @returns The advised instance (the same object under shadow weaving).
+ */
+function advise<T extends object>(instance: T): T {
+    return interceptMethods(instance, [{ when: hasAnnotation(cachedSpec), use: new CachedInterceptor() }]);
 }
 
 function managerFor(store: Cache<unknown>): CacheManager {
@@ -71,7 +83,7 @@ describe('cache-store tokens', () => {
     }
 
     test('token-keyed caching shares the store with the string form and supports eviction', async () => {
-        const service = new Service();
+        const service = advise(new Service());
         const first = await service.report('a');
 
         expect(await service.cacheManager.getCache('reports').get(serializeCacheKey('a'))).toBe(first);
@@ -97,14 +109,14 @@ describe('@cached', () => {
     }
 
     test('returns the cached value without re-invoking the method', async () => {
-        const service = new Service();
+        const service = advise(new Service());
         const first = await service.message('a');
         expect(await service.message('a')).toBe(first);
         expect(service.invocations).toBe(1);
     });
 
     test('keys by serialized arguments (miss on a different key)', async () => {
-        const service = new Service();
+        const service = advise(new Service());
         expect(await service.message('a')).toBe('a-1');
         expect(await service.message('b')).toBe('b-2');
         expect(await service.message('a')).toBe('a-1');
@@ -122,7 +134,7 @@ describe('@cached', () => {
                 return `v${x}`;
             }
         }
-        const s = new Single();
+        const s = advise(new Single());
         expect(await s.value(1)).toBe('v1');
         expect(await s.value(2)).toBe('v1');
         expect(s.invocations).toBe(1);
@@ -131,7 +143,7 @@ describe('@cached', () => {
     test('expires entries per the spec ttl', async () => {
         vi.useFakeTimers({ toFake: ['Date'] });
         try {
-            const service = new Service();
+            const service = advise(new Service());
             const first = await service.message('a');
             expect(await service.message('a')).toBe(first);
             expect(service.invocations).toBe(1);
@@ -157,7 +169,7 @@ describe('@cached', () => {
                 return `v${id}`;
             }
         }
-        const loader = new Loader();
+        const loader = advise(new Loader());
         await expect(loader.load('a')).rejects.toThrow('boom');
         expect(await loader.load('a')).toBe('va');
         expect(await loader.load('a')).toBe('va');
@@ -176,7 +188,7 @@ describe('@cached', () => {
                     return this.invocations;
                 }
             }
-            const bare = new Bare();
+            const bare = advise(new Bare());
             expect(await bare.value()).toBe(1);
             expect(await bare.value()).toBe(2);
         } finally {
@@ -195,7 +207,7 @@ describe('@cached', () => {
                     return invocations;
                 }
             }
-            const { value } = new Detached();
+            const { value } = advise(new Detached());
             // Before the guard this threw "Cannot read properties of undefined
             // (reading 'cacheManager')"; it must degrade like @transactional.
             await expect(value()).resolves.toBe(1);
@@ -220,7 +232,7 @@ describe('@cached', () => {
                 return 'done';
             }
         }
-        const loader = new Loader();
+        const loader = advise(new Loader());
         const first = loader.load('a');
         await started.promise;
         const second = loader.load('a');
@@ -243,7 +255,7 @@ describe('@cached', () => {
                 return `result-${this.invocations}`;
             }
         }
-        const loader = new Loader();
+        const loader = advise(new Loader());
         const first = loader.load('a');
         await store.readStarted.promise;
         const duringRead = loader.load('a');
@@ -275,8 +287,8 @@ describe('@cached', () => {
                 return `${this.label}-${id}`;
             }
         }
-        const left = new Loader('left');
-        const right = new Loader('right');
+        const left = advise(new Loader('left'));
+        const right = advise(new Loader('right'));
         const first = left.load('a');
         const second = right.load('a');
         computation.release();
@@ -311,7 +323,7 @@ describe('@cached', () => {
                 return `v${id}`;
             }
         }
-        const loader = new Loader();
+        const loader = advise(new Loader());
         await expect(loader.load('a')).rejects.toBe(failure);
         expect(loader.invocations).toBe(0);
         expect(await loader.load('a')).toBe('va');
@@ -339,7 +351,7 @@ describe('@cached', () => {
                     return `v${id}-${this.invocations}`;
                 }
             }
-            const loader = new Loader();
+            const loader = advise(new Loader());
             expect(await loader.load('a')).toBe('va-1');
             expect(warn).toHaveBeenCalledWith(expect.stringContaining('failed to cache'), { error: 'store full' });
             expect(await loader.load('a')).toBe('va-2');

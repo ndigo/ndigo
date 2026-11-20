@@ -31,7 +31,9 @@ import {
     SimpleSpanProcessor,
     type ReadableSpan,
 } from '@opentelemetry/sdk-trace-base';
+import { hasAnnotation, interception, MethodInterceptorRegistry } from '@ndigo/advice';
 import { ManagementAutoConfiguration } from '@ndigo/management';
+import { CountedInterceptor, countedCounter, TracedInterceptor, tracedSpan } from '@ndigo/telemetry';
 import { HTTPServer } from '@ndigo/platform-node';
 import { bootNodeApp, delay } from '@ndigo/test';
 import type { NdigoTestApp } from '@ndigo/test';
@@ -85,7 +87,15 @@ describe('browser → server trace continuation', () => {
         instrumentation = new HTTPServerInstrumentation();
         instrumentation.enable();
 
-        app = bootNodeApp([ManagementAutoConfiguration, TelemetryLabConfiguration]);
+        // The same rules `src/index.ts` registers at boot: `@traced` on
+        // `WorkService.compute` opens the span this lane asserts on.
+        const advice = new MethodInterceptorRegistry()
+            .add({ when: hasAnnotation(tracedSpan), use: new TracedInterceptor() })
+            .add({ when: hasAnnotation(countedCounter), use: new CountedInterceptor() });
+
+        app = bootNodeApp([ManagementAutoConfiguration, TelemetryLabConfiguration], {
+            processors: [interception(advice)],
+        });
 
         // A real listener on an ephemeral port, wired to the app's dispatcher —
         // the exact path `pnpm start` takes, minus a fixed port.

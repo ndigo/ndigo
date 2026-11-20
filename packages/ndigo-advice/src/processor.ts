@@ -10,7 +10,9 @@
 import { getLogger } from '@ndigo/log';
 import type { InitializationAwareProcessor } from '@ndigo/factory';
 
+import { unadvisedAnnotationWarning } from './diagnostics';
 import { MethodInterceptorRegistry } from './registry';
+import { targetTypeOf } from './shadow';
 import { planFor, isWoven, markWovenBy, weavePlans, wovenBy } from './weave';
 import type { MethodInterceptorRule } from './interceptor';
 
@@ -61,6 +63,12 @@ export function interception(
 
             const plans = planFor(instance, rules, entryName);
             if (plans.length === 0) {
+                // Declarations nothing claimed would otherwise run unadvised
+                // with no signal at all — name the omission once per class.
+                const warning = unadvisedAnnotationWarning(targetTypeOf(instance), entryName);
+                if (warning !== undefined) {
+                    logger.warn(warning);
+                }
                 return instance;
             }
 

@@ -14,18 +14,18 @@ import { AsApplicationContextAware, ContextToken } from '@ndigo/context';
 export const REPORTS = new ContextToken<Cache<{ invocations: number; value: string }>>('reports');
 
 /**
- * `@cached` zero-wiring demo:
+ * `@cached` demo:
  *
  * - The entry resolves the platform's `cacheManager` entry through
  *   `ApplicationContextAware` (the same DI seam `ScheduleRegistry` uses) —
  *   no manual cache construction.
- * - `report()` is cached for 60 s under the token-identified `reports` cache
- * two dispatches within the TTL invoke the method once (spec
- *   counter), and the manual-invalidation contract is
+ * - `report()` is cached for 60 s under the token-identified `reports` cache:
+ *   two dispatches within the TTL invoke the method once (the spec's
+ *   `invocations` counter), and the manual-invalidation contract is
  *   `cacheManager.getCache(REPORTS).delete/clear`.
- * - The cached method must be public for TC39 decorator application — the
- *   wrapper replaces the prototype method, so `this.report()` self-calls are
- *   cached too (documented semantics; stronger than proxy interception).
+ * - The cached method must be public for TC39 decorator application. Shadow
+ *   weaving installs the advice on the instance, so `report()`'s call to
+ *   `this.reportValue()` is cached too.
  *
  * @see docs/guides/19-caching.md
  */
@@ -34,8 +34,9 @@ export class CachedReportController extends AsApplicationContextAware(Object) {
     #invocations = 0;
 
     /**
-     * `@cached` resolves the platform's `cacheManager` entry lazily from
-     * `this.applicationContext` (injected by `AsApplicationContextAware`).
+     * `@cached` only declares; `CachedInterceptor` (registered on the
+     * builder) resolves the platform's `cacheManager` entry from
+     * `this.applicationContext`, injected by `AsApplicationContextAware`.
      */
 
     /**

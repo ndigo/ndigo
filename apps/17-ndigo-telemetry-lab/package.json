@@ -16,11 +16,13 @@
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "dependencies": {
+    "@ndigo/advice": "~0.0.1",
     "@ndigo/boot": "~0.0.1",
     "@ndigo/context": "~0.0.1",
     "@ndigo/dispatcher": "~0.0.1",
     "@ndigo/factory": "~0.0.1",
     "@ndigo/http": "~0.0.1",
+    "@ndigo/log": "~0.0.1",
     "@ndigo/management": "~0.0.1",
     "@ndigo/platform-node": "~0.0.1",
     "@ndigo/scheduler": "~0.0.1",
@@ -31,10 +33,11 @@
     "@ndigo/util": "~0.0.1",
     "@opentelemetry/api": "catalog:",
     "@tsmetadata/polyfill": "catalog:",
-    "zod": "catalog:",
-    "@ndigo/log": "~0.0.1"
+    "zod": "catalog:"
   },
   "devDependencies": {
+    "@ndigo/advice": "~0.0.1",
+    "@ndigo/log": "~0.0.1",
     "@ndigo/test": "~0.0.1",
     "@opentelemetry/context-async-hooks": "catalog:",
     "@opentelemetry/core": "catalog:",
@@ -42,7 +45,6 @@
     "@opentelemetry/sdk-trace-base": "catalog:",
     "tsx": "catalog:",
     "vite": "catalog:",
-    "vitest": "catalog:",
-    "@ndigo/log": "~0.0.1"
+    "vitest": "catalog:"
   }
 }

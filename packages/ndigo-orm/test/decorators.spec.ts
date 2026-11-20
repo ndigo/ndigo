@@ -383,7 +383,7 @@ describe('decorators', () => {
             const metadata = (OrderService as unknown as Record<PropertyKey, unknown>)[Symbol.metadata] as
                 | Record<string, unknown>
                 | undefined;
-            expect(metadata?.['orm:transactional']).toBe(true);
+            expect(metadata?.['orm:transactional:createOrder']).toBe(true);
         });
     });
 });

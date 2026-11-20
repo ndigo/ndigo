@@ -155,3 +155,68 @@ describe('interception() container integration', () => {
         expect(log).toEqual(['order.place:place']);
     });
 });
+
+describe('startup diagnostics', () => {
+    const auditedDiagnostic = methodAnnotation<{ action: string }>('diag:audited');
+
+    class AnnotatedButUnadvised {
+        @auditedDiagnostic({ action: 'orphan' })
+        run(): string {
+            return 'ok';
+        }
+    }
+
+    class Advised {
+        @auditedDiagnostic({ action: 'claimed' })
+        run(): string {
+            return 'ok';
+        }
+    }
+
+    it('warns once per class when nothing advises its annotations', () => {
+        const processor = interception([{ when: { matches: () => false }, use: { invoke: (_i, next) => next() } }]);
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+        try {
+            processor.processAfterInitialization('first', new AnnotatedButUnadvised());
+            processor.processAfterInitialization('second', new AnnotatedButUnadvised());
+
+            expect(warn).toHaveBeenCalledTimes(1);
+            expect(warn.mock.calls[0]?.[0]).toContain("declares annotations on 'run'");
+        } finally {
+            warn.mockRestore();
+        }
+    });
+
+    it('stays silent when a rule advises the annotation', () => {
+        const processor = interception([
+            { when: hasAnnotation(auditedDiagnostic), use: { invoke: (_i, next) => next() } },
+        ]);
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+        try {
+            processor.processAfterInitialization('advised', new Advised());
+            expect(warn).not.toHaveBeenCalled();
+        } finally {
+            warn.mockRestore();
+        }
+    });
+
+    it('stays silent for a class that declares nothing', () => {
+        class PlainService {
+            run(): string {
+                return 'ok';
+            }
+        }
+
+        const processor = interception([]);
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+        try {
+            processor.processAfterInitialization('plain', new PlainService());
+            expect(warn).not.toHaveBeenCalled();
+        } finally {
+            warn.mockRestore();
+        }
+    });
+});

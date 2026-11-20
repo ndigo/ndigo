@@ -2,6 +2,7 @@
  * Declared annotations and their execution for Ndigo.
  */
 export * from './chain.js';
+export * from './diagnostics.js';
 export * from './interceptor.js';
 export * from './matchers.js';
 export * from './plan.js';

@@ -5,6 +5,8 @@ import { ManagementAutoConfiguration } from '@ndigo/management';
 import { NodeAutoConfiguration, NodeDispatcher } from '@ndigo/platform-node';
 import { TaskScheduler } from '@ndigo/scheduler';
 import { MockHTTP } from '@ndigo/test';
+import { hasAnnotation, interception, MethodInterceptorRegistry } from '@ndigo/advice';
+import { CachedInterceptor, cachedSpec } from '@ndigo/cache';
 import { NodeHTTPServerAdapter } from '@ndigo/platform-node';
 import type { AddressInfo } from 'node:net';
 import { NodeAppConfiguration } from '../src/node-app-configuration';
@@ -25,6 +27,13 @@ describe('ndigo-api full bootstrap (ApplicationBuilder path)', () => {
 
     beforeAll(async () => {
         initAuth();
+        // `@cached` declares only — this is the runtime that serves the
+        // cached report, the same registration `src/index.ts` performs.
+        const advice = new MethodInterceptorRegistry().add({
+            when: hasAnnotation(cachedSpec),
+            use: new CachedInterceptor(),
+        });
+
         context = await new ApplicationBuilder([
             NodeAutoConfiguration,
             ManagementAutoConfiguration,
@@ -33,6 +42,7 @@ describe('ndigo-api full bootstrap (ApplicationBuilder path)', () => {
         ])
             .profiles('dev')
             .properties({ 'server.port': '3010', 'server.name': 'ndigo-api-demo' })
+            .processors(interception(advice))
             .run();
 
         const dispatcher = context.getValue<NodeDispatcher>('dispatcher');

@@ -3,6 +3,8 @@
  */
 import { getErrorMessage } from '@ndigo/util';
 import '@tsmetadata/polyfill';
+import { annotationOf, methodAnnotation, type AnnotationKey } from '@ndigo/core';
+import type { MethodInterceptor, MethodInvocation } from '@ndigo/advice';
 import { isDevMode, type ApplicationContext } from '@ndigo/context';
 import { CACHE_MANAGER } from './context-tokens';
 import { Cache, CacheMiss } from './cache';
@@ -15,10 +17,15 @@ import { getLogger } from '@ndigo/log';
 const logger = getLogger('ndigo-cache:cached');
 
 /**
- * Metadata key prefix under which `@cached` writes its per-method spec —
- * `cache:<methodName>` (mirror of `@scheduled`'s `schedule:` prefix).
+ * `@cached` annotation key: the normalized spec recorded for a method. Pass
+ * it to `hasAnnotation(...)` to select cached methods.
+ *
+ * @example
+ * ```ts
+ * { when: hasAnnotation(cachedSpec), use: new CachedInterceptor() }
+ * ```
  */
-export const CACHED_METADATA_PREFIX = 'cache:';
+export const cachedSpec: AnnotationKey<NormalizedCachedSpec> = methodAnnotation<NormalizedCachedSpec>('cache:cached');
 
 /**
  * The named cache used when a spec omits `cacheName`.
@@ -133,115 +140,180 @@ export function resolveCachedSpec(spec: CachedSpec = {}): NormalizedCachedSpec {
  * }
  * ```
  */
+/**
+ * `@cached` execution: the declaration is inert, {@link CachedInterceptor}
+ * memoizes the call.
+ */
 export function cached(spec: CachedSpec = {}) {
     const normalized = resolveCachedSpec(spec);
 
-    // Recorded under `cache:<methodName>` for introspection; captured once so
-    // the degradation warning (S3) can name the method without re-reading it.
-    let methodName: string | undefined;
-
-    return function <This, Args extends unknown[], Return>(
-        value: (this: This, ...args: Args) => Promise<Return>,
-        context: ClassMethodDecoratorContext<This, (this: This, ...args: Args) => Promise<Return>>
-    ): (this: This, ...args: Args) => Promise<Return> {
+    return function <M extends Function>(target: M, context: ClassMethodDecoratorContext): M {
         if (context.kind !== 'method') {
             throw new TypeError(`@cached can only be applied to a method — received '${context.kind}'.`);
         }
-        methodName = String(context.name);
-        context.metadata[`${CACHED_METADATA_PREFIX}${methodName}`] = normalized;
-
-        // Isolate flights by the actual store, not only the string key: two
-        // instances with separate managers must never share results.
-        const flights = new WeakMap<Cache<unknown>, Map<string, Promise<Return>>>();
-        // One-time guard for the graceful-degradation warning (S3).
-        let degradationWarned = false;
-
-        return async function (this: This, ...args: Args): Promise<Return> {
-            // Structural contract, mirroring `@transactional`: the decorated
-            // instance optionally carries the manager (constructor-injected);
-            // absent — including a detached call with no receiver — degrades
-            // to a graceful call-through.
-            const cacheAware = this as unknown as
-                | { cacheManager?: CacheManager; applicationContext?: ApplicationContext }
-                | undefined;
-            let manager = cacheAware?.cacheManager;
-            if (!manager && cacheAware?.applicationContext) {
-                const ctx = cacheAware.applicationContext;
-                try {
-                    if (typeof ctx.hasValue === 'function' && ctx.hasValue(CACHE_MANAGER)) {
-                        manager = ctx.getValue(CACHE_MANAGER);
-                    } else if (
-                        typeof ctx.hasValue === 'function' &&
-                        // oxlint-disable-next-line @ndigo/no-string-token-lookup -- fallback for token-less registrations
-                        ctx.hasValue('cacheManager')
-                    ) {
-                        // oxlint-disable-next-line @ndigo/no-string-token-lookup -- fallback for token-less registrations
-                        manager = ctx.getValue('cacheManager') as CacheManager;
-                    }
-                } catch {
-                    manager = undefined;
-                }
-            }
-            if (!manager) {
-                if (!degradationWarned && isDevMode()) {
-                    degradationWarned = true;
-                    logger.warn(
-                        `[@ndigo/cache] @cached("${methodName}") ran without a CacheManager — caching is disabled for this method.`
-                    );
-                }
-                return value.apply(this, args);
-            }
-
-            const store = manager.getCache<unknown>(normalized.cacheName);
-            const key =
-                typeof normalized.key === 'string'
-                    ? normalized.key
-                    : normalized.key
-                      ? normalized.key(...args)
-                      : serializeCacheKey(...args);
-
-            let inflight = flights.get(store);
-            if (inflight === undefined) {
-                inflight = new Map();
-                flights.set(store, inflight);
-            }
-            const pending = inflight.get(key);
-            if (pending !== undefined) return pending;
-
-            const work = (async () => {
-                const hit = await store.get(key);
-                if (hit !== CacheMiss.INSTANCE) return hit as Return;
-                const result = await value.apply(this, args);
-                try {
-                    await store.set(key, result, normalized.ttl);
-                } catch (error) {
-                    logger.warn(`[@ndigo/cache] failed to cache "${methodName}" (${key}):`, {
-                        error: getErrorMessage(error),
-                    });
-                }
-                return result;
-            })();
-            inflight.set(key, work);
-            try {
-                return await work;
-            } finally {
-                inflight.delete(key);
-            }
-        };
+        // NOTE: AnnotationDecorator is a class-or-method union; `context.kind`
+        // was just checked, so this is the method half of the signature.
+        const declareMethod = cachedSpec(normalized) as unknown as (
+            value: M,
+            context: ClassMethodDecoratorContext
+        ) => M;
+        return declareMethod(target, context);
     };
 }
 
-/** Narrows a metadata bag to its string-keyed record shape. */
-function isMetadataRecord(value: unknown): value is Record<string, unknown> {
-    return value !== null && typeof value === 'object';
+/**
+ * Single-flight and memoization for `@cached` methods.
+ *
+ * Flights are isolated by the actual store, not only the string key: two
+ * instances with separate managers never share an in-flight result.
+ *
+ * The interceptor is async because caching is: a cache read must settle
+ * before the method can be skipped. A `@cached` method therefore returns a
+ * promise even when its declared type is not one — the annotation is
+ * invisible to the type system, so declare these methods `Promise`-returning.
+ *
+ * @example
+ * ```ts
+ * const service = interceptMethods(new CatalogService(), [
+ *     { when: hasAnnotation(cachedSpec), use: new CachedInterceptor() },
+ * ]);
+ * ```
+ */
+export class CachedInterceptor implements MethodInterceptor {
+    /**
+     * The `Symbol.toStringTag` value for this instance.
+     *
+     * @returns The string "CachedInterceptor".
+     */
+    get [Symbol.toStringTag](): string {
+        return 'CachedInterceptor';
+    }
+
+    /** In-flight computations, per store then per key. */
+    readonly #flights = new WeakMap<Cache<unknown>, Map<string, Promise<unknown>>>();
+
+    /** Methods already reported for running without a `CacheManager`. */
+    readonly #warned = new Set<string>();
+
+    /**
+     * Serves a cached value when one is stored, otherwise runs the method and
+     * stores its result.
+     *
+     * Fulfilled results only: a rejection propagates and frees the in-flight
+     * slot, so the next call retries. A write failure is logged and the
+     * computed result is still returned.
+     *
+     * @param invocation - The advised call.
+     * @param next - Continues the inner chain and runs the method.
+     * @returns The stored or computed result.
+     */
+    async invoke(invocation: MethodInvocation, next: () => unknown): Promise<unknown> {
+        const spec = invocation.annotation(cachedSpec);
+        if (spec === undefined) {
+            // A rule's matcher gates the chain; keep hand-built chains safe.
+            return next();
+        }
+
+        const methodName = String(invocation.methodName);
+        const manager = resolveCacheManager(invocation.target);
+        if (manager === undefined) {
+            // Structural contract: the instance optionally carries the
+            // manager (constructor-injected); absent — including a detached
+            // call with no receiver — degrades to a call-through.
+            if (!this.#warned.has(methodName) && isDevMode()) {
+                this.#warned.add(methodName);
+                logger.warn(
+                    `[@ndigo/cache] @cached("${methodName}") ran without a CacheManager — caching is disabled for this method.`
+                );
+            }
+            return next();
+        }
+
+        const store = manager.getCache<unknown>(spec.cacheName);
+        const key =
+            typeof spec.key === 'string'
+                ? spec.key
+                : spec.key
+                  ? spec.key(...invocation.args)
+                  : serializeCacheKey(...invocation.args);
+
+        let inflight = this.#flights.get(store);
+        if (inflight === undefined) {
+            inflight = new Map();
+            this.#flights.set(store, inflight);
+        }
+        const pending = inflight.get(key);
+        if (pending !== undefined) {
+            return pending;
+        }
+
+        const work = (async () => {
+            const hit = await store.get(key);
+            if (hit !== CacheMiss.INSTANCE) {
+                return hit;
+            }
+            const result = await next();
+            try {
+                await store.set(key, result, spec.ttl);
+            } catch (error) {
+                logger.warn(`[@ndigo/cache] failed to cache "${methodName}" (${key}):`, {
+                    error: getErrorMessage(error),
+                });
+            }
+            return result;
+        })();
+
+        inflight.set(key, work);
+        try {
+            return await work;
+        } finally {
+            inflight.delete(key);
+        }
+    }
 }
 
 /**
- * Reads the spec recorded by `@cached` for a method.
+ * Resolves the cache manager a cached instance was given: the instance's own
+ * field first, then the application context it carries.
  *
- * Metadata lives on the class constructor, so an instance is resolved
- * through its `constructor` (mirrors `getSymbolMetadata`); both forms
- * return the same spec.
+ * @param target - The advised instance.
+ * @returns The manager, or `undefined` when the instance has none.
+ */
+function resolveCacheManager(target: object): CacheManager | undefined {
+    const cacheAware = target as { cacheManager?: CacheManager; applicationContext?: ApplicationContext };
+
+    if (cacheAware.cacheManager !== undefined) {
+        return cacheAware.cacheManager;
+    }
+
+    const context = cacheAware.applicationContext;
+    if (context === undefined) {
+        return undefined;
+    }
+
+    try {
+        if (typeof context.hasValue === 'function' && context.hasValue(CACHE_MANAGER)) {
+            return context.getValue(CACHE_MANAGER);
+        }
+        if (
+            typeof context.hasValue === 'function' &&
+            // oxlint-disable-next-line @ndigo/no-string-token-lookup -- fallback for token-less registrations
+            context.hasValue('cacheManager')
+        ) {
+            // oxlint-disable-next-line @ndigo/no-string-token-lookup -- fallback for token-less registrations
+            return context.getValue('cacheManager') as CacheManager;
+        }
+    } catch {
+        return undefined;
+    }
+
+    return undefined;
+}
+
+/**
+ * Reads the spec declared by `@cached` for a method.
+ *
+ * Walks the class hierarchy, so an inherited declaration resolves.
  *
  * @param target - The decorated class constructor or an instance of it.
  * @param methodName - The decorated method name.
@@ -257,14 +329,5 @@ function isMetadataRecord(value: unknown): value is Record<string, unknown> {
  * ```
  */
 export function getCachedSpec(target: object, methodName: string): NormalizedCachedSpec | undefined {
-    const carrier: object | undefined = typeof target === 'function' ? target : target?.constructor;
-    if (carrier === undefined || !(Symbol.metadata in carrier)) {
-        return undefined;
-    }
-    const metadata: unknown = carrier[Symbol.metadata];
-    if (!isMetadataRecord(metadata)) {
-        return undefined;
-    }
-    const spec = metadata[`${CACHED_METADATA_PREFIX}${methodName}`];
-    return spec as NormalizedCachedSpec | undefined;
+    return annotationOf(target, cachedSpec, methodName);
 }

@@ -37,6 +37,8 @@ export {
     preUpdate,
     postRemove,
     transactional,
+    transactionalMethod,
+    TransactionalInterceptor,
 } from './decorators';
 export type { RelationOptions } from './decorators';
 

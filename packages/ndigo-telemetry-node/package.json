@@ -1,7 +1,7 @@
 {
   "name": "@ndigo/telemetry-node",
   "version": "0.0.1",
-  "description": "Node.js telemetry for Ndigo — NodeSDK configuration and Node platform instrumentations",
+  "description": "Node.js telemetry for Ndigo \u2014 NodeSDK configuration and Node platform instrumentations",
   "keywords": [
     "ndigo",
     "ndigo",
@@ -54,13 +54,14 @@
     "ws": "^8.22.1"
   },
   "devDependencies": {
+    "@ndigo/advice": "~0.0.1",
     "@ndigo/auth-server": "~0.0.1",
     "@ndigo/boot": "~0.0.1",
     "@ndigo/cluster": "~0.0.1",
-    "@ndigo/orm-drizzle": "~0.0.1",
-    "@ndigo/redis": "~0.0.1",
     "@ndigo/context": "~0.0.1",
     "@ndigo/dispatcher": "~0.0.1",
+    "@ndigo/orm-drizzle": "~0.0.1",
+    "@ndigo/redis": "~0.0.1",
     "@ndigo/test": "~0.0.1",
     "@opentelemetry/context-async-hooks": "catalog:",
     "@opentelemetry/core": "catalog:",

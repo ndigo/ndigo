@@ -2,6 +2,7 @@
  * Boot helpers for `@ndigo/test` — boot a Ndigo application context and wire a.
  */
 import { MetadataConfigApplicationContext, ApplicationContext } from '@ndigo/context';
+import type { EntryProcessor } from '@ndigo/factory';
 import { isFunction } from '@ndigo/util/types';
 import { HANDLER_MAPPING, DISPATCHER } from '@ndigo/dispatcher';
 import { NodeDispatcher, NodeAutoConfiguration } from '@ndigo/platform-node';
@@ -19,6 +20,18 @@ export interface NdigoTestApp {
 }
 
 /**
+ * Options for {@link bootNodeApp}.
+ */
+export interface BootNodeAppOptions {
+    /**
+     * Entry processors applied to every entry the context creates, before and
+     * after initialization — registering the advice weaver here mirrors what
+     * `ApplicationBuilder.processors(...)` does for a real application.
+     */
+    readonly processors?: readonly EntryProcessor[];
+}
+
+/**
  * Boot a Ndigo application from configuration/controller classes and wire the
  * dispatcher.
  *
@@ -28,17 +41,23 @@ export interface NdigoTestApp {
  * which the handler mapping discovers during `init`.
  *
  * @param sources - Application configuration and/or controller classes.
+ * @param options - Optional entry processors, applied to every entry the
+ *   context creates during `refresh` — the test-side equivalent of
+ *   `ApplicationBuilder.processors(...)`.
  * @returns A booted app exposing the context and configured dispatcher.
  *
  * @example
  * ```ts
- * const app = bootNodeApp([HelloConfiguration]);
+ * const app = bootNodeApp([HelloConfiguration], { processors: [interception(rules)] });
  * const mockHTTP = new MockHTTP(app);
  * const res = await mockHTTP.get('/').exec();
  * ```
  */
-export function bootNodeApp(sources: Function[]): NdigoTestApp {
+export function bootNodeApp(sources: Function[], options: BootNodeAppOptions = {}): NdigoTestApp {
     const context = new MetadataConfigApplicationContext('ndigo-test-app');
+    for (const processor of options.processors ?? []) {
+        context.addProcessor(processor);
+    }
 
     context.register(NodeAutoConfiguration);
     for (const source of sources) {

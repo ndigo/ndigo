@@ -1,13 +1,13 @@
 /**
- * `@counted` decorator spec — the counter must bind to the global
- * `MeterProvider` even though the decorator wraps the method at
- * class-definition time, before any SDK provider is registered.
+ * `@counted` interceptor spec — the counter must bind to the global
+ * `MeterProvider` even though the declaration runs at class-definition time,
+ * before any SDK provider is registered.
  *
- * The decorator resolves the counter lazily on the first recorded call
+ * The interceptor resolves the counter lazily on the first recorded call
  * (post-SDK-init), mirroring `@traced`; an eager `createCounter` at
  * decoration time would capture the NoopMeter and silently drop every
- * datapoint. There is no instrumentation/registry indirection to enable
- * (TEL-03).
+ * datapoint. The decorator itself only declares the counter, so the instance
+ * has to be advised for anything to be recorded.
  */
 // @vitest-environment node
 import { describe, test, expect, beforeAll, afterAll } from 'vitest';
@@ -19,7 +19,8 @@ import {
     PeriodicExportingMetricReader,
 } from '@opentelemetry/sdk-metrics';
 import { metrics } from '@opentelemetry/api';
-import { counted } from '@ndigo/telemetry';
+import { CountedInterceptor, counted, countedCounter } from '@ndigo/telemetry';
+import { hasAnnotation, interceptMethods } from '@ndigo/advice';
 
 class CountedProbeService {
     @counted('counted.probe.invocations')
@@ -69,7 +70,9 @@ describe('@counted counter resolution', () => {
     });
 
     test('exports datapoints even though the decorated class precedes the global meter provider', async () => {
-        const service = new CountedProbeService();
+        const service = interceptMethods(new CountedProbeService(), [
+            { when: hasAnnotation(countedCounter), use: new CountedInterceptor() },
+        ]);
 
         expect(service.invoke()).toBe('done');
         expect(service.invoke()).toBe('done');

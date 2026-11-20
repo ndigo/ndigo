@@ -12,11 +12,11 @@ import { describe, test, beforeAll, afterAll, expect } from 'vitest';
 import { ApplicationBuilder } from '@ndigo/boot';
 import { ManagementAutoConfiguration } from '@ndigo/management';
 import { NodeAutoConfiguration } from '@ndigo/platform-node';
-import { interception } from '@ndigo/proxy';
+import { hasAnnotation, interception } from '@ndigo/advice';
 import type { ConfigurableApplicationContext } from '@ndigo/context';
 import { NodeAppConfiguration } from '../src/node-app-configuration';
 import { ServerConfig } from '../src/server-config';
-import { AuditInterceptor } from '../src/audit-interceptor';
+import { AuditInterceptor, audited } from '../src/audit-interceptor';
 import { OrderService } from '../src/order-service';
 import { initAuth } from '../src/auth-store';
 
@@ -39,7 +39,7 @@ describe('ndigo-api method interception demo gate', () => {
             ServerConfig,
         ])
             .profiles('dev')
-            .processors(interception([audit]));
+            .processors(interception([{ when: hasAnnotation(audited), use: audit }]));
         context = await builder.run();
         orders = context.getValue<OrderService>('orderService');
     });

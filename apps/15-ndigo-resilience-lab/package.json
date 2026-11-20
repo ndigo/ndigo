@@ -14,20 +14,20 @@
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "dependencies": {
+    "@ndigo/advice": "~0.0.1",
     "@ndigo/boot": "~0.0.1",
     "@ndigo/context": "~0.0.1",
     "@ndigo/dispatcher": "~0.0.1",
     "@ndigo/http": "~0.0.1",
+    "@ndigo/log": "~0.0.1",
     "@ndigo/management": "~0.0.1",
     "@ndigo/platform-node": "~0.0.1",
-    "@ndigo/proxy": "~0.0.1",
     "@ndigo/resilience": "~0.0.1",
     "@ndigo/service": "~0.0.1",
     "@ndigo/telemetry": "~0.0.1",
     "@ndigo/util": "~0.0.1",
     "@tsmetadata/polyfill": "catalog:",
-    "zod": "catalog:",
-    "@ndigo/log": "~0.0.1"
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@ndigo/test": "~0.0.1",

@@ -689,6 +689,9 @@ importers:
 
   apps/05-ndigo-api:
     dependencies:
+      '@ndigo/advice':
+        specifier: ~0.0.1
+        version: link:../../packages/ndigo-advice
       '@ndigo/auth-core':
         specifier: ~0.0.1
         version: link:../../packages/ndigo-auth-core
@@ -740,9 +743,6 @@ importers:
       '@ndigo/platform-node':
         specifier: ~0.0.1
         version: link:../../packages/ndigo-platform-node
-      '@ndigo/proxy':
-        specifier: ~0.0.1
-        version: link:../../packages/ndigo-proxy
       '@ndigo/router':
         specifier: ~0.0.1
         version: link:../../packages/ndigo-router
@@ -1245,6 +1245,9 @@ importers:
 
   apps/15-ndigo-resilience-lab:
     dependencies:
+      '@ndigo/advice':
+        specifier: ~0.0.1
+        version: link:../../packages/ndigo-advice
       '@ndigo/boot':
         specifier: ~0.0.1
         version: link:../../packages/ndigo-boot
@@ -1266,9 +1269,6 @@ importers:
       '@ndigo/platform-node':
         specifier: ~0.0.1
         version: link:../../packages/ndigo-platform-node
-      '@ndigo/proxy':
-        specifier: ~0.0.1
-        version: link:../../packages/ndigo-proxy
       '@ndigo/resilience':
         specifier: ~0.0.1
         version: link:../../packages/ndigo-resilience
@@ -1791,6 +1791,21 @@ importers:
       vitest:
         specifier: 'catalog:'
         version: 5.1.0(@opentelemetry/api@1.10.0)(@types/node@24.13.6)(jsdom@30.1.3(@noble/hashes@1.8.0))(msw@3.0.3(@types/node@24.13.6)(supports-color@8.1.1)(typescript@7.0.2)(vite@8.3.5(@types/node@24.13.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1)))(vite@8.3.5(@types/node@24.13.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))
+
+  packages/ndigo-advice:
+    dependencies:
+      '@ndigo/core':
+        specifier: ~0.0.1
+        version: link:../ndigo-core
+      '@ndigo/factory':
+        specifier: ~0.0.1
+        version: link:../ndigo-factory
+      '@ndigo/log':
+        specifier: ~0.0.1
+        version: link:../ndigo-log
+      '@tsmetadata/polyfill':
+        specifier: 'catalog:'
+        version: 1.1.3
 
   packages/ndigo-ai:
     dependencies:
@@ -2694,12 +2709,12 @@ importers:
 
   packages/ndigo-resilience:
     dependencies:
+      '@ndigo/advice':
+        specifier: ~0.0.1
+        version: link:../ndigo-advice
       '@ndigo/core':
         specifier: ~0.0.1
         version: link:../ndigo-core
-      '@ndigo/proxy':
-        specifier: ~0.0.1
-        version: link:../ndigo-proxy
       '@ndigo/util':
         specifier: ~0.0.1
         version: link:../ndigo-util
@@ -2758,6 +2773,9 @@ importers:
 
   packages/ndigo-service:
     dependencies:
+      '@ndigo/advice':
+        specifier: ~0.0.1
+        version: link:../ndigo-advice
       '@ndigo/context':
         specifier: ~0.0.1
         version: link:../ndigo-context

@@ -24,6 +24,64 @@ export interface Matchable<TValue> {
 export const likeMatchable = like({ matches: Function }) as (value: unknown) => value is Matchable<unknown>;
 
 /**
+ * Builds a matcher that matches only when every supplied matcher matches.
+ *
+ * An empty list matches everything, mirroring `Array.prototype.every`.
+ *
+ * @typeParam TValue - The value type being matched.
+ * @param matchers - The matchers to combine.
+ * @returns A matcher that applies logical AND across its inputs.
+ *
+ * @example
+ * ```ts
+ * const auditedWrites = matchAll(audited, matchNot(readOnly));
+ * ```
+ */
+export function matchAll<TValue>(...matchers: readonly Matchable<TValue>[]): Matchable<TValue> {
+    return {
+        matches: (value: TValue): boolean => matchers.every((matcher) => matcher.matches(value)),
+    };
+}
+
+/**
+ * Builds a matcher that matches when at least one supplied matcher matches.
+ *
+ * An empty list matches nothing, mirroring `Array.prototype.some`.
+ *
+ * @typeParam TValue - The value type being matched.
+ * @param matchers - The matchers to combine.
+ * @returns A matcher that applies logical OR across its inputs.
+ *
+ * @example
+ * ```ts
+ * const sensitive = matchAny(adminOnly, billingOnly);
+ * ```
+ */
+export function matchAny<TValue>(...matchers: readonly Matchable<TValue>[]): Matchable<TValue> {
+    return {
+        matches: (value: TValue): boolean => matchers.some((matcher) => matcher.matches(value)),
+    };
+}
+
+/**
+ * Builds a matcher that inverts another matcher.
+ *
+ * @typeParam TValue - The value type being matched.
+ * @param matcher - The matcher to invert.
+ * @returns A matcher that applies logical NOT.
+ *
+ * @example
+ * ```ts
+ * const nonHealthChecks = matchNot(healthCheck);
+ * ```
+ */
+export function matchNot<TValue>(matcher: Matchable<TValue>): Matchable<TValue> {
+    return {
+        matches: (value: TValue): boolean => !matcher.matches(value),
+    };
+}
+
+/**
  * Represents an object that returns a matching result for an input.
  * @typeParam TInput - The type of the input to match.
  * @typeParam TResult - The type of the matching result.

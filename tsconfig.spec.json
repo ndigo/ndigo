@@ -78,6 +78,8 @@
       "@ndigo/cache/*": ["./packages/ndigo-cache/src/*"],
       "@ndigo/proxy": ["./packages/ndigo-proxy/src"],
       "@ndigo/proxy/*": ["./packages/ndigo-proxy/src/*"],
+      "@ndigo/advice": ["./packages/ndigo-advice/src"],
+      "@ndigo/advice/*": ["./packages/ndigo-advice/src/*"],
       "@ndigo/resilience": ["./packages/ndigo-resilience/src"],
       "@ndigo/resilience/*": ["./packages/ndigo-resilience/src/*"],
       "@ndigo/redis/cache": ["./packages/ndigo-redis/src/cache"],

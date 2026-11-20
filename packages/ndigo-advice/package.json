@@ -1,0 +1,38 @@
+{
+  "name": "@ndigo/advice",
+  "version": "0.0.1",
+  "description": "Declared annotations and their execution \u2014 method interception plans and weaving for Ndigo",
+  "keywords": [
+    "ndigo",
+    "ndigo-js",
+    "ndigo-advice",
+    "annotation",
+    "interception",
+    "advice"
+  ],
+  "type": "module",
+  "files": [
+    "api",
+    "lib"
+  ],
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    }
+  },
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build:lib": "tsc -b tsconfig.build.json",
+    "test": "vitest run --config ../../vitest.config.ts"
+  },
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "sideEffects": false,
+  "dependencies": {
+    "@ndigo/core": "~0.0.1",
+    "@ndigo/factory": "~0.0.1",
+    "@ndigo/log": "~0.0.1",
+    "@tsmetadata/polyfill": "catalog:"
+  }
+}

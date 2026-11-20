@@ -1,7 +1,8 @@
 /**
  * Retry policy, interceptor, and `@retry` annotation.
  */
-import { methodAnnotation, type MethodDescriptor, type MethodInvocation, type MethodInterceptor } from '@ndigo/proxy';
+import { methodAnnotation } from '@ndigo/core';
+import type { MethodDescriptor, MethodInvocation, MethodInterceptor } from '@ndigo/advice';
 import { delay } from '@ndigo/util';
 import { CircuitOpenError } from './circuit-breaker';
 import { fixedBackoff, type BackoffPolicy } from './backoff';
@@ -29,7 +30,7 @@ export const DEFAULT_RETRY_ATTEMPTS = 3;
  * }
  * ```
  */
-export const retry = methodAnnotation<RetrySpec>('retry');
+export const retry = methodAnnotation<RetrySpec>('resilience:retry');
 
 /**
  * Retry policy for one method. **Idempotency is the caller's contract**
@@ -108,20 +109,17 @@ export class RetryInterceptor implements MethodInterceptor {
     }
 
     /**
-     * Whether the method carries a valid `@retry` spec.
+     * Rejects an invalid `@retry` spec while the plan is compiled, so a bad
+     * annotation fails at startup rather than on the first call.
      *
-     * @param method - The method descriptor being woven.
-     * @returns `true` when the interceptor should advise the method.
-     * @throws When the annotation carries an invalid spec (fail loud at weave time).
+     * @param method - The method descriptor the interceptor was matched against.
+     * @throws When the annotation carries an invalid spec.
      */
-    matches(method: MethodDescriptor): boolean {
+    validate(method: MethodDescriptor): void {
         const spec = method.annotation(retry);
         if (spec !== undefined) {
-            // Fail loud at weave time, not per call.
             validateRetrySpec(spec);
-            return true;
         }
-        return false;
     }
 
     /**
@@ -135,7 +133,7 @@ export class RetryInterceptor implements MethodInterceptor {
     async invoke(invocation: MethodInvocation, next: () => unknown): Promise<unknown> {
         const spec = invocation.annotation(retry);
         if (spec === undefined) {
-            // matches() gates the chain; keep hand-built chains safe.
+            // A rule's matcher gates the chain; keep hand-built chains safe.
             return next();
         }
         validateRetrySpec(spec);

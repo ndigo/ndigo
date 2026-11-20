@@ -40,6 +40,7 @@ export const ndigoAliases: { find: RegExp; replacement: string }[] = [
     { find: /^@ndigo\/util\/types/, replacement: resolve(repoRoot, 'packages/ndigo-util/src/type') },
     { find: /^@ndigo\/util\/type/, replacement: resolve(repoRoot, 'packages/ndigo-util/src/type') },
 
+    { find: /^@ndigo\/advice$/, replacement: resolve(repoRoot, 'packages/ndigo-advice/src') },
     { find: /^@ndigo\/core$/, replacement: resolve(repoRoot, 'packages/ndigo-core/src') },
     { find: /^@ndigo\/dom$/, replacement: resolve(repoRoot, 'packages/ndigo-dom/src') },
     { find: /^@ndigo\/util$/, replacement: resolve(repoRoot, 'packages/ndigo-util/src') },

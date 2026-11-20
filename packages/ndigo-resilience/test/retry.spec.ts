@@ -3,11 +3,12 @@
 import { describe, expect, it } from 'vitest';
 import {
     createMethodDescriptor,
+    hasAnnotation,
+    interceptMethods,
     invokeChain,
-    weaveMethodProxy,
     type MethodInvocation,
     type AnnotationKey,
-} from '@ndigo/proxy';
+} from '@ndigo/advice';
 import {
     CircuitOpenError,
     DEFAULT_RETRY_ATTEMPTS,
@@ -63,14 +64,11 @@ function retryInvocation(spec: RetrySpec): MethodInvocation {
 }
 
 describe('RetryInterceptor', () => {
-    it('matches only methods carrying @retry', () => {
-        const interceptor = new RetryInterceptor();
+    it('selects only methods carrying @retry', () => {
+        expect(hasAnnotation(retry).matches(retryInvocation({}))).toBe(true);
 
-        expect(interceptor.matches(retryInvocation({}))).toBe(true);
-
-        const plain = new FlakyService();
         const plainDescriptor = createMethodDescriptor(FlakyService, 'flaky', 'other');
-        expect(interceptor.matches(plainDescriptor)).toBe(false);
+        expect(hasAnnotation(retry).matches(plainDescriptor)).toBe(false);
     });
 
     it('retries failures and applies the backoff delay per attempt', async () => {
@@ -138,10 +136,10 @@ describe('RetryInterceptor', () => {
     it('fails loudly on invalid attempts instead of clamping', async () => {
         const interceptor = new RetryInterceptor();
 
-        // Weave-time validation (matches).
-        expect(() => interceptor.matches(retryInvocation({ attempts: 0 }))).toThrow(TypeError);
-        expect(() => interceptor.matches(retryInvocation({ attempts: -1 }))).toThrow(/positive integer/);
-        expect(() => interceptor.matches(retryInvocation({ attempts: 1.5 }))).toThrow(TypeError);
+        // Plan-time validation, before any call is made.
+        expect(() => interceptor.validate(retryInvocation({ attempts: 0 }))).toThrow(TypeError);
+        expect(() => interceptor.validate(retryInvocation({ attempts: -1 }))).toThrow(/positive integer/);
+        expect(() => interceptor.validate(retryInvocation({ attempts: 1.5 }))).toThrow(TypeError);
 
         // Hand-built chains validate at invoke time too — the tail never runs.
         const { tail, runs } = flakyTail(1, new Error('down'));
@@ -158,9 +156,7 @@ describe('RetryInterceptor', () => {
         }
 
         const interceptor = new RetryInterceptor();
-        const instance = new SyncAdvised();
-        const descriptor = createMethodDescriptor(SyncAdvised, 'syncAdvised', 'call');
-        const proxy = weaveMethodProxy(instance, [{ descriptor, interceptors: [interceptor] }]) as SyncAdvised;
+        const proxy = interceptMethods(new SyncAdvised(), [{ when: hasAnnotation(retry), use: interceptor }]);
 
         const result = proxy.call();
         expect(result).toBeInstanceOf(Promise);
@@ -179,14 +175,45 @@ describe('RetryInterceptor', () => {
         expect(runs).toBe(3);
     });
 
-    it('works end-to-end through a woven proxy', async () => {
+    it('works end-to-end through the standalone weave', async () => {
         const interceptor = new RetryInterceptor();
-        const instance = new WovenFlaky();
-        const descriptor = createMethodDescriptor(WovenFlaky, 'flaky', 'call');
-        const proxy = weaveMethodProxy(instance, [{ descriptor, interceptors: [interceptor] }]) as {
-            call: () => Promise<string>;
-        };
+        // Retry advice is async, so the declared `string` return is a Promise
+        // at runtime — the documented annotation/type mismatch.
+        const proxy = interceptMethods(new WovenFlaky(), [
+            { when: hasAnnotation(retry), use: interceptor },
+        ]) as unknown as { call: () => Promise<string> };
 
         expect(await proxy.call()).toBe('recovered');
+    });
+});
+
+describe('@retry under shadow weaving', () => {
+    it('advises a self-invoked annotated method (a deliberate behaviour change)', async () => {
+        let attempts = 0;
+
+        class Pipeline {
+            run(): Promise<string> {
+                return this.step();
+            }
+
+            @retry({ attempts: 3, backoff: fixedBackoff(0) })
+            async step(): Promise<string> {
+                attempts += 1;
+                if (attempts < 3) {
+                    throw new Error('down');
+                }
+                return 'ok';
+            }
+        }
+
+        const pipeline = interceptMethods(new Pipeline(), [
+            { when: hasAnnotation(retry), use: new RetryInterceptor() },
+        ]);
+
+        await expect(pipeline.run()).resolves.toBe('ok');
+        // Under proxy weaving this call bypassed advice entirely and the
+        // first rejection escaped; the instance now owns the wrapper, so the
+        // nested call is advised.
+        expect(attempts).toBe(3);
     });
 });

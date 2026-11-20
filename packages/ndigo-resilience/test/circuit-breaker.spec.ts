@@ -1,7 +1,13 @@
 /**
  */
 import { describe, expect, it } from 'vitest';
-import { createMethodDescriptor, invokeChain, type AnnotationKey, type MethodInvocation } from '@ndigo/proxy';
+import {
+    createMethodDescriptor,
+    hasAnnotation,
+    invokeChain,
+    type AnnotationKey,
+    type MethodInvocation,
+} from '@ndigo/advice';
 import {
     CircuitBreakerInterceptor,
     CircuitOpenError,
@@ -53,14 +59,13 @@ describe('CircuitBreakerInterceptor', () => {
         };
     }
 
-    it('matches only methods carrying @circuitBreaker', () => {
-        const interceptor = new CircuitBreakerInterceptor();
+    it('selects only methods carrying @circuitBreaker', () => {
+        expect(hasAnnotation(circuitBreaker).matches(breakerInvocation({ failureThreshold: 2, resetMs: 100 }))).toBe(
+            true
+        );
 
-        expect(interceptor.matches(breakerInvocation({ failureThreshold: 2, resetMs: 100 }))).toBe(true);
-
-        const plain = new Downstream();
         const plainDescriptor = createMethodDescriptor(Downstream, 'downstream', 'other');
-        expect(interceptor.matches(plainDescriptor)).toBe(false);
+        expect(hasAnnotation(circuitBreaker).matches(plainDescriptor)).toBe(false);
     });
 
     it('fails loudly on invalid failureThreshold/resetMs instead of silently inverting the policy', async () => {
@@ -76,14 +81,14 @@ describe('CircuitBreakerInterceptor', () => {
             { resetMs: Infinity },
         ];
 
-        // Weave-time validation (matches), naming the offending field/value.
+        // Plan-time validation, naming the offending field/value.
         for (const spec of invalid) {
-            expect(() => interceptor.matches(breakerInvocation(spec))).toThrow(TypeError);
+            expect(() => interceptor.validate(breakerInvocation(spec))).toThrow(TypeError);
         }
-        expect(() => interceptor.matches(breakerInvocation({ failureThreshold: 0 }))).toThrow(
+        expect(() => interceptor.validate(breakerInvocation({ failureThreshold: 0 }))).toThrow(
             '@circuitBreaker failureThreshold must be a positive integer — got 0'
         );
-        expect(() => interceptor.matches(breakerInvocation({ resetMs: -5 }))).toThrow(
+        expect(() => interceptor.validate(breakerInvocation({ resetMs: -5 }))).toThrow(
             '@circuitBreaker resetMs must be a positive finite number — got -5'
         );
 
@@ -98,7 +103,7 @@ describe('CircuitBreakerInterceptor', () => {
 
     it('accepts valid specs unchanged', async () => {
         const interceptor = new CircuitBreakerInterceptor();
-        expect(interceptor.matches(breakerInvocation({ failureThreshold: 1, resetMs: 1 }))).toBe(true);
+        expect(() => interceptor.validate(breakerInvocation({ failureThreshold: 1, resetMs: 1 }))).not.toThrow();
 
         const { tail, runs } = failingTail(99);
         await expect(

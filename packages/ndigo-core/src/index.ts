@@ -22,6 +22,7 @@ export * from './feature-metric-recorder.js';
 export * from './iterable.js';
 export * from './matchable.js';
 export * from './metadata.js';
+export * from './annotation.js';
 export * from './server-sent-event.js';
 export { MediaType, parseMediaType } from './media-type.js';
 export * from './multi-value-map.js';

@@ -43,6 +43,13 @@ factory.getValue<GreetingService>('greetingService').greet(); // 'hello'
 
 Built-in names: `singleton`, `prototype`, `route` (implemented using key-based hash scope), `hash`, `refresh`. Custom scopes register through `ScopedFactory`: `registerScope(name, scope)`, `getScope(name)`, `getScopeNames()`, `destroyScopedValue(scopeName, valueName)`. Custom implementations conform to the `Scope` interface and use an object-factory callback pattern for lazy creation.
 
+### Lifecycle hooks
+
+The same hook positions are available as method annotations (`@preInit`,
+`@postInit`, `@preDestroy`). They are metadata-only declarations; the
+container's processor invokes the declared method at the matching position.
+Standalone `new` instances stay inert. See guide 04 §5.
+
 ## API
 
 The full API is at `api/` (generated; run `pnpm doc:api`). Primary exports live in

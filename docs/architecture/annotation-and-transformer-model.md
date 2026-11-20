@@ -786,19 +786,21 @@ nothing in this model reopens them.
 - **[AD-83](../decisions/2026-10-31_AD83_DECORATOR_CATEGORIES.md)** — role
   taxonomy. D1's category 8 is renamed **Bindings & exposures**; the taxonomy
   is about names, not mechanisms, and is unchanged otherwise. D5's
-  interface-first lifecycle position stands.
+  interface-first lifecycle position stands; [AD-111](../decisions/2026-11-20_AD111_ANNOTATION_LIFECYCLE_HOOKS.md)
+  decides the annotation family beside it (`@preInit`/`@postInit`/`@preDestroy`,
+  gated on #548).
 - **[AD-91](../decisions/2026-11-02_AD91_1_0_API_FREEZE.md)** — the freeze.
   This work is a pre-1.0 break, recorded in AD-109 and applied without aliases.
 
 ## 13. Open questions
 
-| Question                                                                   | Owner                                                          |
-| :------------------------------------------------------------------------- | :------------------------------------------------------------- |
-| Does `@transactional` join an active transaction or self-invoke unadvised? | #47                                                            |
-| Is `preInit` a real lifecycle stage, or covered by existing hooks?         | #47                                                            |
-| Can an application override an annotation's value per context?             | Deferred — an optional overlay, not a requirement of the model |
-| Does `@cached` move from member transformer to advice?                     | Deferred — only if per-application reconfiguration is required |
-| Should destruction processors run in reverse registration order?           | #548                                                           |
+| Question                                                                   | Owner                                                                             |
+| :------------------------------------------------------------------------- | :-------------------------------------------------------------------------------- |
+| Does `@transactional` join an active transaction or self-invoke unadvised? | Resolved — AD-110 D-11 (nesting joins; self-invocation is advised)                |
+| Is `preInit` a real lifecycle stage, or covered by existing hooks?         | Resolved — AD-111 (`@preInit` fronts `processBeforeInitialization`; no new stage) |
+| Can an application override an annotation's value per context?             | Deferred — an optional overlay, not a requirement of the model                    |
+| Does `@cached` move from member transformer to advice?                     | Deferred — only if per-application reconfiguration is required                    |
+| Should destruction processors run in reverse registration order?           | #548                                                                              |
 
 Open questions do not block the vocabulary. Each is a capability decision made
 inside the issue that owns it.

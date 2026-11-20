@@ -26,6 +26,10 @@
     "SecretCipher": "#"
   },
   "@ndigo/core": {
+    "AgentTool": "#",
+    "AgentToolAnnotations": "#",
+    "AgentToolHost": "#",
+    "AgentToolRegistration": "#",
     "ArrayEntries": "#",
     "EntryProcessor": "#",
     "Factory": "#",

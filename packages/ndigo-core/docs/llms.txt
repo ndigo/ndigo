@@ -187,3 +187,15 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `parseUrlGlob`
 - `RadixMatch` *(type)* — Result of a successful radix tree path lookup.
 - `RadixTree` — A radix tree implementation for URL routing.
+- `AgentToolAnnotations` *(type)* — Safety hints understood by agent hosts.
+- `AgentTool` *(type)* — A tool an agent host can call.
+- `AgentToolRegistration` *(type)* — The outcome of a tool registration; `supported` is false when the host is absent.
+- `AgentToolHostOptions` *(type)* — Options for AgentToolHost.registerTools.
+- `AgentToolHost` *(type)* — The host-side registration contract: any agent host an adapter can register tools with — the browser's model context today, a UI SDK bridge later.
+- `AgentEntity` *(type)* — An entity an agent can see in AgentBridge.snapshot.
+- `AgentStep` *(type)* — One step of AgentBridge.act.
+- `AgentActResult` *(type)* — The result of AgentBridge.act.
+- `AgentItem` *(type)* — An item of a closed-choice entity.
+- `AgentQuery` *(type)* — A filter for AgentBridge.query.
+- `AgentQueryMatch` *(type)* — A match returned by AgentBridge.query.
+- `AgentBridge` *(type)* — The in-page agent bridge: what a complete adapter (the planned UI SDK adapter included) provides. The read and act verbs let an agent inspect and operate the p…

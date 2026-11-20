@@ -45,3 +45,4 @@ export { WildcardConverter } from './wildcard-converter.js';
 export type { KeypathToken } from './keypath-converter.js';
 export { parseUrlGlob } from './url-glob.js';
 export * from './radix-tree.js';
+export * from './agent-bridge.js';

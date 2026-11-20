@@ -360,8 +360,17 @@ only in where the plan is applied.
 
 The application registers one weaver as an initialization-aware entry
 processor — `builder.processors(interception(rules))`. It runs after
-construction and after `ApplicationContextAwareProcessor` has injected the
-context, so advice can rely on `this.applicationContext` being present.
+construction and before `ApplicationContextAwareProcessor` has injected the
+context, because the builder's processors are added to the context before
+`refresh()` while the aware processor is appended during it.
+
+That ordering is why an interceptor reads instance state at **call** time, not
+while the plan is compiled: `invocation.target.applicationContext` is `undefined`
+during weaving and populated by the time any advised method runs. A matcher or a
+`validate` implementation must therefore select on
+`MethodDescriptor`/`targetType` — the static facts — and leave instance lookup to
+`invoke`. Weaving itself does not depend on injection: shadow weaving installs
+own wrappers, which the aware processor's property write does not disturb.
 
 **Shadow weaving is the default for object instances.** The weaver installs the
 advised methods as own properties on the instance, each wrapping the prototype

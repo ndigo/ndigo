@@ -89,7 +89,7 @@ configureTelemetry({
   both views derive from the one meter snapshot, so the exported and the
   scraped picture can never diverge. Without a telemetry pull reader the
   endpoint serves the management auto-configuration's **feature-aggregator
-  fallback** (REV-003): counters/gauges/durations from `counted` /
+  fallback** (REV-003): counters/gauges/durations from `@counted` /
   `FeatureMetricAggregator` render as `{feature}.{name}` snapshots (durations
   as the histogram count/sum pair). With neither a reader nor the
   auto-configuration present, the endpoint answers

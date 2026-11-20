@@ -460,3 +460,60 @@ describe('@reactive cleanup hardening (SIGNALS-10)', () => {
         expect(values.filter((v) => v === 2)).toHaveLength(0);
     });
 });
+
+describe('the construction handoff', () => {
+    const pendingKey = Symbol.for('ndigo.signals.pending');
+
+    it('is gone once @reactive has drained it', () => {
+        @reactive
+        class Counter {
+            @signal count = 0;
+            @effect noop(): void {}
+        }
+
+        const counter = new Counter();
+        // No scaffolding left behind for the rest of the instance's life.
+        expect(Object.getOwnPropertySymbols(counter)).not.toContain(pendingKey);
+        expect(Object.keys(counter)).toEqual(['count']);
+    });
+
+    it('is never enumerable, so it cannot leak into serialization', () => {
+        @reactive
+        class Counter {
+            @signal count = 2;
+        }
+
+        const counter = new Counter();
+        expect(JSON.parse(JSON.stringify(counter))).toEqual({ count: 2 });
+        // And a pristine instance shows only its declared field.
+        expect(Object.keys(counter)).toEqual(['count']);
+    });
+
+    it('survives on an unactivated instance, which is what the diagnostic reads', () => {
+        class Bare {
+            @signal count = 0;
+        }
+
+        const bare = new Bare();
+        expect(Object.getOwnPropertySymbols(bare)).toContain(pendingKey);
+        expect(() => getSignal(bare, 'count')).toThrow(/is pending on an instance of Bare/);
+    });
+
+    it('a subclass creates its own slot, unconsumed by the parent @reactive', () => {
+        @reactive
+        class Base {
+            @signal base = 1;
+        }
+
+        class Child extends Base {
+            @signal child = 2;
+        }
+
+        const child = new Child();
+        // Base's activation drained its own slot; Child's members created a new
+        // one that nothing consumed — the documented inheritance boundary.
+        expect(Object.getOwnPropertySymbols(child)).toContain(pendingKey);
+        expect(child.base).toBe(1);
+        expect(() => getSignal(child, 'child')).toThrow(/is declared on a subclass of a @reactive class/);
+    });
+});

@@ -49,6 +49,7 @@ layer a name that says what it does: **`@ndigo/advice`** replaces
 | D-13 | An advice wrapper is introspectively transparent: `length`, `name`, and `toString()` read the declared method                                                      | Framework code resolves `@parameters` names from the function source. A variadic wrapper silently breaks argument binding on any advised handler, and the failure surfaces far from its cause — at startup, as "parameter not found".                                                                                                                                                                                                                                                                                                                                                                                            |
 | D-14 | An unordered rule lands in `AdviceOrder.Application`; a rule's `order` wins, then the interceptor's, then the default — **refines AD-109 D7**                      | A default of `0` would put an unordered rule outside observability, turning one span per call into one span per retry attempt, and an unbanded retry would land inside the transaction band and retry within one boundary. Both fail silently. AD-109 D7 puts order on the rule because "an interceptor's position depends on what it is composed with"; that holds for _position_, and the rule-level `order` still decides it. What a capability knows is its _natural band_ — a retry always belongs outside a transaction — so declaring that on the interceptor makes the safe arrangement the default an application gets. |
 | D-15 | `MethodDescriptor.annotation` falls back to the class-level declaration                                                                                            | AD-109 says a blanket annotation on a class covers every method, and `@authenticated` is already read that way by the route guards. Without the fallback, a matcher and the interceptor it selects for disagree about the effective value.                                                                                                                                                                                                                                                                                                                                                                                       |
+| D-16 | The `@signal`/`@effect` construction handoff lives on the instance under a registered symbol, drained by `@reactive`                                               | The value is per instance and cannot cross in `Symbol.metadata`, which is per class. A module-level `WeakMap` works but hides framework state the instance cannot see; a non-enumerable, transient own property is inspectable, survives duplicate package loads via `Symbol.for`, and keeps the unactivated-`@signal` diagnostic intact. Post-construction registries stay `WeakMap`s — they are registries, not a handoff.                                                                                                                                                                                                     |
 
 ## Consequences
 
@@ -80,17 +81,15 @@ layer a name that says what it does: **`@ndigo/advice`** replaces
   both `@ndigo/http` and `@ndigo/resilience`) are tracked separately.
 - `close`/`destroy` unification is a prerequisite for lifecycle annotations and
   lands before them.
-- **Signals are not on the metadata record yet.** `@signal`, `@computed`, and
-  `@effect` still hand data to `@reactive` through package-private WeakMaps.
-  AD-109 D8 reads as a metadata migration, and the _declaration_ half is one —
-  which fields are signals and effects is a class-level fact. The other half is
-  not: the field initializer runs per instance and must hand that instance's
-  value to the accessor `@reactive` installs for it, and `Symbol.metadata` is
-  per class. The unactivated-`@signal` diagnostic also depends on observing
-  per-instance pending state, which is what makes a missing `@reactive` fail
-  loudly instead of reading back as `undefined`. Migrating the declaration half
-  is worth doing when a consumer needs to discover signals without importing
-  `@ndigo/signals`; the runtime half stays per instance.
+- **The signals declaration half is not on the metadata record.** The
+  construction handoff no longer uses package-private WeakMaps: it lives on the
+  instance under `Symbol.for('ndigo.signals.pending')`, non-enumerable and
+  deleted once `@reactive` drains it (D-16). What remains of AD-109 D8 is the
+  _declaration_ — recording which members are reactive in `Symbol.metadata` so a
+  consumer can discover them without importing `@ndigo/signals`. That needs a
+  field/accessor annotation primitive beside `methodAnnotation` /
+  `classAnnotation` in `@ndigo/core`, and nothing reads it today. The
+  per-instance _value_ can never move: the metadata record is per class.
 
 ## Refs
 

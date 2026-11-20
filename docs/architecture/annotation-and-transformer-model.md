@@ -654,16 +654,27 @@ nesting, because both transaction managers reject an already-active transaction.
   component (whole graph, on refresh). [§1](#choosing-a-consumption-seam) lists
   which capability uses which, and why the choice is forced rather than
   stylistic.
-- **`@signal` / `@computed` / `@effect`** still record into package-private
-  WeakMaps consumed by `@reactive`. The declaration half — _which_ fields are
-  signals and effects — is a class-level fact and belongs on
-  `Symbol.metadata`; the runtime half cannot move, because the field
-  initializer runs per instance and must hand that instance's value to the
-  accessor `@reactive` installs for it. Migrating the declaration half is
-  worthwhile when a consumer needs to discover signals without importing
-  `@ndigo/signals`. `@reactive` remains a member transformer either way: it
-  must redefine accessors during construction, which is not something a
-  post-construction executor can do.
+- **`@signal` / `@computed` / `@effect`** are declaration-only, but their
+  declarations do not live in `Symbol.metadata`. Two different facts are in
+  play: _which_ members are reactive is a class-level fact and could live on the
+  metadata record, while _the initial value_ is per instance and cannot — the
+  record is per class.
+
+    The construction handoff (the initial value, and the bound `@effect`
+    methods) therefore lives on the instance itself, under the registered
+    `Symbol.for('ndigo.signals.pending')`, non-enumerable and deleted once
+    `@reactive` has drained it. It is scaffolding, not a registry: the
+    post-construction registries (`signalMap`, `computedMap`, `effectDisposers`)
+    stay invisible `WeakMap`s because they answer "which signals does this
+    instance have" for its whole life.
+
+    Moving the _declaration_ half onto `Symbol.metadata` needs a field/accessor
+    annotation primitive beside `methodAnnotation`/`classAnnotation`, and no
+    consumer reads it today — `@reactive` drains per-instance state and
+    `getSignal` reads the registry. `@reactive` remains a member transformer
+    regardless: it must redefine accessors during construction, which a
+    post-construction executor cannot do.
+
 - **`@retry` / `@circuitBreaker`** are declared in `@ndigo/resilience` and
   selected by `hasAnnotation(...)`. Their keys live in the `resilience:`
   namespace — the namespace names the declaring package, never the consumer.

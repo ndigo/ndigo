@@ -60,6 +60,8 @@ c.count++; // logs "count = 1"
 
 **`@reactive` is required** — it activates the `@signal` and `@effect` decorators after the decorated class's fields are initialized.
 
+While an instance is under construction, `@signal` and `@effect` stage their value and their bound methods under `Symbol.for('ndigo.signals.pending')`. `@reactive` drains that slot and removes it, so an activated instance carries no extra own properties and nothing extra appears in `Object.keys` or in JSON. The slot is visible only where it has not been drained — on an instance whose class is missing `@reactive`, which is what `getSignal` reports.
+
 **Reactive members are not inherited.** `@reactive` activates the `@signal` and `@effect` members declared in its own class only — activation runs at the end of that class's construction, before subclass field initializers. A subclass that declares its own reactive members must apply `@reactive` as well:
 
 ```ts

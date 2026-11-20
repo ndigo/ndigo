@@ -9,14 +9,14 @@ import {
     type ReadonlySignal,
 } from '@preact/signals-core';
 
-// ── Metadata storage ─────────────────────────────────────────────────────────
+// ── Runtime registries ───────────────────────────────────────────────────────
+//
+// These outlive construction: they answer "which signals does this instance
+// have" for the whole instance lifetime, so they stay invisible WeakMaps. They
+// are registries, not a handoff.
 const signalMap = new WeakMap<object, Map<string | symbol, Signal>>();
 const computedMap = new WeakMap<object, Map<string | symbol, ReadonlySignal>>();
 const effectDisposers = new WeakMap<object, Array<() => void>>();
-
-// Stores pending field data for @reactive to process
-const pendingSignals = new WeakMap<object, Map<string | symbol, unknown>>();
-const pendingEffects = new WeakMap<object, Array<() => void>>();
 
 // The instance's teardown, kept out of the destroy/dispose wrappers so any
 // wrapper (base class or @reactive subclass) still finds it, and so it runs at
@@ -25,6 +25,61 @@ const cleanupMap = new WeakMap<object, () => void>();
 
 /** The reserved teardown method names that \@reactive installs. */
 type LifecycleMethod = 'destroy' | 'dispose';
+
+// ── Construction handoff ─────────────────────────────────────────────────────
+//
+// `@signal` and `@effect` run before the instance can carry a signal, and
+// `@reactive` runs at the end of the constructor to install the accessors. The
+// value has to cross that gap, and it cannot cross in `Symbol.metadata`: that
+// record is per class, while the initial value is per instance.
+//
+// So the handoff lives on the instance itself, under a registered symbol, and
+// is deleted once activated. `Symbol.for` keeps one slot even if the package is
+// loaded twice (bundler duplication), and a non-enumerable property keeps it out
+// of enumeration and serialization. A `WeakMap` would hide it more thoroughly,
+// at the cost of the framework stashing state the instance cannot see.
+const PENDING = Symbol.for('ndigo.signals.pending');
+
+/** The construction-time state `@reactive` drains. */
+interface PendingActivation {
+    /** Field name to the initial value its initializer produced. */
+    signals?: Map<string | symbol, unknown>;
+    /** Bound `@effect` methods, in declaration order. */
+    effects?: Array<() => void>;
+}
+
+/**
+ * Returns the instance's pending-activation slot, creating it on first use.
+ *
+ * @param instance - The instance under construction.
+ * @returns The mutable slot; deleted by `@reactive` once drained.
+ */
+function pendingOf(instance: object): PendingActivation {
+    const carrier = instance as { [PENDING]?: PendingActivation };
+    const existing = carrier[PENDING];
+    if (existing !== undefined) {
+        return existing;
+    }
+
+    const created: PendingActivation = {};
+    Object.defineProperty(instance, PENDING, {
+        value: created,
+        enumerable: false,
+        configurable: true,
+        writable: true,
+    });
+    return created;
+}
+
+/**
+ * Reads the instance's pending slot without creating one.
+ *
+ * @param instance - Any object.
+ * @returns The slot, or `undefined` when nothing is pending.
+ */
+function readPending(instance: object): PendingActivation | undefined {
+    return (instance as { [PENDING]?: PendingActivation })[PENDING];
+}
 
 // Explains the two ways `@signal`/`@effect` metadata can stay pending: the
 // declaring class lacks `@reactive`, or the member is declared in a subclass of
@@ -120,17 +175,18 @@ export function getSignal<T>(instance: object, field: string): Signal<T> | undef
     // pending metadata that never activates. Fail loudly instead of returning
     // undefined with a "working" appearance.
     const ctorName = (instance as object).constructor?.name ?? 'object';
-    const pending = pendingSignals.get(instance);
-    if (pending && pending.size > 0) {
-        const names = [...pending.keys()].join(', ');
+    const pending = readPending(instance);
+    const pendingSignals = pending?.signals;
+    if (pendingSignals !== undefined && pendingSignals.size > 0) {
+        const names = [...pendingSignals.keys()].join(', ');
         throw new Error(
-            pending.has(field)
+            pendingSignals.has(field)
                 ? `@signal '${field}' is pending on an instance of ${ctorName} but was never activated — ${REACTIVATION_HINT}`
                 : `@signal/@effect fields (${names}) are pending on an instance of ${ctorName} but were never activated — ${REACTIVATION_HINT}`
         );
     }
-    const effectsPending = pendingEffects.get(instance);
-    if (effectsPending && effectsPending.length > 0) {
+    const effectsPending = pending?.effects;
+    if (effectsPending !== undefined && effectsPending.length > 0) {
         throw new Error(
             `@effect methods (${effectsPending.length}) are pending on an instance of ${ctorName} but were ` +
                 `never activated — ${REACTIVATION_HINT}`
@@ -167,12 +223,8 @@ export function signal<T extends object, V>(
     const fieldName = context.name as string;
 
     return function (this: T, initialValue: V): V {
-        let map = pendingSignals.get(this);
-        if (!map) {
-            map = new Map();
-            pendingSignals.set(this, map);
-        }
-        map.set(fieldName, initialValue);
+        const pending = pendingOf(this);
+        (pending.signals ??= new Map()).set(fieldName, initialValue);
         return initialValue;
     };
 }
@@ -238,12 +290,8 @@ export function computed<T>(target: () => T, context: ClassGetterDecoratorContex
 export function effect(target: (...args: unknown[]) => void, context: ClassMethodDecoratorContext<object>): void {
     // Store the method reference for @reactive to process
     context.addInitializer(function (this: object): void {
-        let effects = pendingEffects.get(this);
-        if (!effects) {
-            effects = [];
-            pendingEffects.set(this, effects);
-        }
-        effects.push(target.bind(this));
+        const pending = pendingOf(this);
+        (pending.effects ??= []).push(target.bind(this));
     });
 }
 
@@ -290,8 +338,10 @@ export function reactive<T extends new (...args: unknown[]) => object>(
             // NOTE: bridging to Record<string | symbol — the source type is wider than this consumer's contract.
             const instance = this as unknown as Record<string | symbol, unknown>;
 
+            const pending = readPending(instance);
+
             // ── Process @signal fields ─────────────────────────────────────────
-            const sigs = pendingSignals.get(instance);
+            const sigs = pending?.signals;
             if (sigs) {
                 for (const [fieldName, initialValue] of sigs) {
                     const sig = _signal(initialValue);
@@ -314,11 +364,10 @@ export function reactive<T extends new (...args: unknown[]) => object>(
                         configurable: true,
                     });
                 }
-                pendingSignals.delete(instance);
             }
 
             // ── Process @effect methods ────────────────────────────────────────
-            const effects = pendingEffects.get(instance);
+            const effects = pending?.effects;
             if (effects) {
                 for (const fn of effects) {
                     const dispose = _effect(() => fn());
@@ -330,7 +379,14 @@ export function reactive<T extends new (...args: unknown[]) => object>(
                     }
                     disposers.push(dispose);
                 }
-                pendingEffects.delete(instance);
+            }
+
+            // Drained: the slot is transient scaffolding, gone for the rest of the
+            // instance's life. A subclass's own @signal/@effect members create a
+            // fresh slot, which nothing consumes — that is what `getSignal`
+            // reports as unactivated.
+            if (pending !== undefined) {
+                Reflect.deleteProperty(instance, PENDING);
             }
 
             // ── Cleanup ────────────────────────────────────────────────────────

@@ -12,6 +12,7 @@
   ],
   "files": [
     "api",
+    "docs",
     "lib"
   ],
   "exports": {

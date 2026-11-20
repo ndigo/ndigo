@@ -1,7 +1,7 @@
 {
   "name": "@ndigo/cache",
   "version": "0.0.1",
-  "description": "Isomorphic caching for Ndigo \u2014 memory cache manager, memoize, and the @cached decorator",
+  "description": "Isomorphic caching for Ndigo — memory cache manager, memoize, and the @cached decorator",
   "keywords": [
     "ndigo",
     "ndigo",
@@ -14,6 +14,7 @@
   "type": "module",
   "files": [
     "api",
+    "docs",
     "lib"
   ],
   "exports": {

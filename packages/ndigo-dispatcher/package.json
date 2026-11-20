@@ -11,7 +11,9 @@
   "type": "module",
   "files": [
     "api",
-    "lib"
+    "docs",
+    "lib",
+    "skills"
   ],
   "exports": {
     ".": {

@@ -379,6 +379,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `create-ndigo-app`: scaffolded apps ship `.oxlintrc.json` (the recommended
   preset; the Node template adds `no-browser-globals`), a `lint` script, and
   the plugin dev dependencies, so a new project lints out of the box.
+- Agent-facing package context (issue #557): every `@ndigo/*` package ships a
+  version-matched export index at `docs/llms.txt`, generated from committed
+  inputs (manifest, README, and the `src/index.ts` re-export graph) so it needs
+  no build or TypeDoc run. Skills that declare a workspace package in their
+  frontmatter (`ndigo-endpoint`, `ndigo-persistence`, `ndigo-reactive`,
+  `ndigo-ui`, `ndigo-views`) also ship under that package's `skills/` for
+  direct dependencies; the CLI assets stay authoritative. The managed
+  `AGENTS.md` block and guide 37 document the installed read paths, and each
+  skill gains an example prompt.
 
 ### Changed
 

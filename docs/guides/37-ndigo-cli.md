@@ -122,6 +122,14 @@ Claude Code reads `.claude/skills/` only; symlink each generated skill
 (`ln -s ../../.agents/skills/<id> .claude/skills/<id>`) or install the published
 mirror with `npx skills add ndigo/skills`.
 
+An agent working inside an installed application reads the same content from
+`node_modules/@ndigo/cli/assets/agent/` — `instructions.md`, `docs-index.md`,
+and `skills/<id>/SKILL.md`. Some skills also ship with the package they
+describe, at `node_modules/@ndigo/<pkg>/skills/<id>/SKILL.md`, when that package
+is a direct dependency; the CLI copy remains authoritative. Every `@ndigo/*`
+package additionally ships a version-matched export index at
+`node_modules/@ndigo/<pkg>/docs/llms.txt`.
+
 ### Agent tools
 
 `@ndigo/mcp` turns `@toolMapping` handlers into MCP tools over stdio or

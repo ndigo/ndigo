@@ -1,16 +1,16 @@
 {
   "source": "https://github.com/ndigo/ndigo-skills.git",
   "version": "0.1.0",
-  "commit": "a469a423a8b08b3a8752ed832af2b2cddf5ea29d",
+  "commit": "6018f68570ac0230d3271a6b6a84e8c0997647c0",
   "files": {
-    "ndigo-app/SKILL.md": "bb1995de3782588c95e0a0bcd33ad828f37dc6b03cbd09eca3cdcc4e90878e40",
-    "ndigo-debug/SKILL.md": "0cc1ac88d61b1955261aa9bcca074fcb1432bcee0d6feda66b6c7f2614fa58b1",
-    "ndigo-endpoint/SKILL.md": "66decab96b8093234dc48fd60007c87630181fee4dc68e0de8f7e3517c63f563",
-    "ndigo-persistence/SKILL.md": "3f060fb702890a2803974378557d69906898eebe97085d214a7cb3d7eb4de3dd",
-    "ndigo-reactive/SKILL.md": "8d3bb29f3044e1cf25c26bd72569c4e3c1aa929dc43a50a07ed80970ae46fe87",
-    "ndigo-ui/SKILL.md": "76b11ecdad96f73041d93ce1d759a4994947656e4e6c0081fc6c9c8e5ca15bcd",
-    "ndigo-upgrade/SKILL.md": "414ea72d38f371e5c5b6c90e0d20b52ce949bf9f14b1d9d6be50f565ca0d97f7",
-    "ndigo-verify/SKILL.md": "7c31b77ee4364f8de570d12bb4b45e98cb17655572642f6b258e8f92a4fabdcf",
-    "ndigo-views/SKILL.md": "ad57130069026a453b30bc8eb5cc7974384329611e4fb23cbce72e63ed8033dd"
+    "ndigo-app/SKILL.md": "bc140d0d27bb341066c0a712a840d16635e9e76318418b8232454806b78b57f8",
+    "ndigo-debug/SKILL.md": "583243d2ee73fbaf807cb143c23e617448f5eebb172ac87729bcec7ffe567db3",
+    "ndigo-endpoint/SKILL.md": "13993adc33bde7d9130bcd2fd684924877206542e55c7f1a52c4121b86166c31",
+    "ndigo-persistence/SKILL.md": "84c42ad6734350ed0276f66ff11a4d2568eeb28b67b5a11975b0d373ecc2b34a",
+    "ndigo-reactive/SKILL.md": "5fdbdcf1ceb6cb6ab685fbdcf8976ebd0b0aaae572c7685a10e91afa24033c87",
+    "ndigo-ui/SKILL.md": "d84620f11dba4fb4f7596498e091f8b96ec99897b01801a033e7040395abdfcf",
+    "ndigo-upgrade/SKILL.md": "f2b33ec63d430e8faa524870f07ec11630654164dd587f872ff37c035f07fcc7",
+    "ndigo-verify/SKILL.md": "755f3ffc7ad760546b195e115179ae59a91b5a51ae34678e85fd72c523fd49af",
+    "ndigo-views/SKILL.md": "f26136bb54ed176c4b01e90ea9cbfeeac97eabaf4a6c33c7131589c7e1f02d1e"
   }
 }

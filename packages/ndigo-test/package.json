@@ -1,10 +1,11 @@
 {
   "name": "@ndigo/test",
   "version": "0.0.1",
-  "description": "Ndigo integration test harness \u2014 MockMVC-style in-process request dispatch",
+  "description": "Ndigo integration test harness — MockMVC-style in-process request dispatch",
   "type": "module",
   "files": [
     "api",
+    "docs",
     "lib"
   ],
   "exports": {

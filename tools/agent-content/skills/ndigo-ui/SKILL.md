@@ -1,6 +1,7 @@
 ---
 name: ndigo-ui
 description: Uses the Ndigo UI design system and copy-in registry. Use when adding UI components, tokens, or theming to an application.
+package: "@ndigo/ui"
 ---
 
 # Ndigo UI: registry, components, tokens
@@ -23,6 +24,8 @@ description: Uses the Ndigo UI design system and copy-in registry. Use when addi
   no runtime component package.
 - `theme` and `lib` are foundation items. Items declare their
   `registryDependencies`; `ui add` installs them first.
+- `@ndigo/ui` ships a version-matched export index at
+  `node_modules/@ndigo/ui/docs/llms.txt` when installed as a dependency.
 
 ## Sequence
 
@@ -45,3 +48,10 @@ description: Uses the Ndigo UI design system and copy-in registry. Use when addi
 
 `ndigo ui validate` passes, the installed items render in the app, and
 `ui.lock.json` is committed.
+
+## Example prompt
+
+> Use ndigo ui to add a dialog and a button to this app. Install `theme` and
+> `lib` first, then the items; keep the first version to one screen using the
+> installed elements. Check focus and keyboard behavior in the browser, then
+> run `ndigo ui validate` and commit `ui.lock.json`.

@@ -1,7 +1,7 @@
 {
   "name": "@ndigo/resilience",
   "version": "0.0.1",
-  "description": "Retry, circuit breaking, and backoff policies for Ndigo \u2014 annotations plus their advice",
+  "description": "Retry, circuit breaking, and backoff policies for Ndigo — annotations plus their advice",
   "keywords": [
     "ndigo",
     "ndigo",
@@ -14,6 +14,7 @@
   "type": "module",
   "files": [
     "api",
+    "docs",
     "lib"
   ],
   "exports": {

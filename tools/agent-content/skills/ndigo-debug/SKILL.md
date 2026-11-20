@@ -39,3 +39,9 @@ description: Diagnoses a failing Ndigo application with the CLI's introspection 
 
 The diagnosis is confirmed by a manifest entry, a log line, or a failing test —
 not by a guess; then the fix is proven by the narrowest re-run.
+
+## Example prompt
+
+> `GET /orders` 404s in production but works locally. Use `ndigo doctor`,
+> `ndigo inspect`, and `ndigo logs` to find the cause; state what confirmed the
+> diagnosis, then prove the fix with the narrowest re-run.

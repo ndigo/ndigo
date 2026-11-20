@@ -1,6 +1,7 @@
 ---
 name: ndigo-views
 description: Shapes responses with views, targets, and content negotiation. Use when returning ModelAndView, choosing a representation, adding EJS or Web Component rendering, or debugging negotiation.
+package: "@ndigo/view"
 ---
 
 # Views and representations
@@ -19,6 +20,9 @@ the view or the negotiated representation, not in the handler.
 | Explicit status/body | `ResponseEntity` (>= 400 becomes problem+json)                  |
 | Negotiation          | path extension or `Accept`, resolved by the view resolver chain |
 | Server-rendered HTML | EJS views; Web Components for progressive enhancement           |
+
+`@ndigo/view` ships a version-matched export index at
+`node_modules/@ndigo/view/docs/llms.txt` when installed as a dependency.
 
 ## Sequence
 
@@ -42,3 +46,10 @@ the view or the negotiated representation, not in the handler.
 
 The response content type matches the negotiated representation, and the
 serialized body matches the view contract.
+
+## Example prompt
+
+> Return server-rendered HTML for `/orders` with an EJS view. Keep the handler
+> returning a named view; start with one route and the default layout. Request
+> it with an `Accept` header and confirm the negotiated content type before
+> finishing.

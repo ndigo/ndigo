@@ -1,10 +1,11 @@
 {
   "name": "@ndigo/view-webcomponent",
   "version": "0.0.1",
-  "description": "Web Component view technology for Ndigo \u2014 component creation and event binding",
+  "description": "Web Component view technology for Ndigo — component creation and event binding",
   "type": "module",
   "files": [
     "api",
+    "docs",
     "lib"
   ],
   "exports": {

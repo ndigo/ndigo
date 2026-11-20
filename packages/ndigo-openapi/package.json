@@ -1,7 +1,7 @@
 {
   "name": "@ndigo/openapi",
   "version": "0.0.1",
-  "description": "OpenAPI 3.0 documentation for Ndigo apps \u2014 spec generation from dispatch metadata + Swagger UI",
+  "description": "OpenAPI 3.0 documentation for Ndigo apps — spec generation from dispatch metadata + Swagger UI",
   "keywords": [
     "ndigo",
     "ndigo",
@@ -13,6 +13,7 @@
   "type": "module",
   "files": [
     "api",
+    "docs",
     "lib"
   ],
   "exports": {

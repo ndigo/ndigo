@@ -1,7 +1,7 @@
 {
   "name": "@ndigo/telemetry-node",
   "version": "0.0.1",
-  "description": "Node.js telemetry for Ndigo \u2014 NodeSDK configuration and Node platform instrumentations",
+  "description": "Node.js telemetry for Ndigo — NodeSDK configuration and Node platform instrumentations",
   "keywords": [
     "ndigo",
     "ndigo",
@@ -69,6 +69,7 @@
   },
   "files": [
     "api",
+    "docs",
     "lib"
   ]
 }

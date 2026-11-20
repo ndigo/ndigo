@@ -1,6 +1,7 @@
 ---
 name: ndigo-endpoint
 description: Adds and validates HTTP and WebSocket endpoints. Use when creating controllers, binding request data, validating input, or shaping errors.
+package: "@ndigo/dispatcher"
 ---
 
 # Endpoints: routes, binding, validation, errors
@@ -16,6 +17,9 @@ description: Adds and validates HTTP and WebSocket endpoints. Use when creating 
 | Validation           | `@validatedBy(Schema)`, `@validatedBody`, `@validatedQuery`               |
 | Errors               | `@errorMapping`, RFC 9457 problem details                                 |
 | WebSocket            | `@socketMapping('/chat')`                                                 |
+
+`@ndigo/dispatcher` ships a version-matched export index at
+`node_modules/@ndigo/dispatcher/docs/llms.txt` when installed as a dependency.
 
 ## Sequence
 
@@ -42,3 +46,10 @@ description: Adds and validates HTTP and WebSocket endpoints. Use when creating 
 
 `ndigo inspect --json` shows the mapping; `ndigo openapi` includes the operation;
 the handler returns the expected status for valid and invalid input.
+
+## Example prompt
+
+> Add `GET /api/orders/:id` to the orders controller: bind `id` with
+> `pathValue`, validate the response shape, and register the controller. Start
+> with that single route, then confirm it with `ndigo inspect --json` and
+> `ndigo openapi`, and run the narrowest test.

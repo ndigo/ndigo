@@ -1,6 +1,7 @@
 ---
 name: ndigo-persistence
 description: Works with Ndigo entities, ORM schemas, and journaled migrations. Use when adding a table or entity, generating or applying a migration, or checking database status.
+package: "@ndigo/orm"
 ---
 
 # Persistence and migrations
@@ -25,6 +26,8 @@ description: Works with Ndigo entities, ORM schemas, and journaled migrations. U
 - `migrations.runOnBoot` is opt-in. Production rollouts run `db migrate` as a
   separate step unless the deployment contract says otherwise.
 - Migration files are reviewed artifacts: generated SQL plus the snapshot.
+- `@ndigo/orm` ships a version-matched export index at
+  `node_modules/@ndigo/orm/docs/llms.txt` when installed as a dependency.
 
 ## Sequence
 
@@ -46,3 +49,10 @@ description: Works with Ndigo entities, ORM schemas, and journaled migrations. U
 
 `ndigo db status` shows the migration applied, and a test exercises the
 repository path against the real schema.
+
+## Example prompt
+
+> Add a `customers` entity with a journaled migration. Start from the decorated
+> entity, run `ndigo db generate`, review the SQL and the snapshot diff, apply
+> with `ndigo db migrate`, and confirm with `ndigo db status`. Add one test
+> that exercises the repository against the real schema.

@@ -5,6 +5,7 @@
   "type": "module",
   "files": [
     "api",
+    "docs",
     "lib"
   ],
   "exports": {

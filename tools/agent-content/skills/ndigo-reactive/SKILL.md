@@ -1,6 +1,7 @@
 ---
 name: ndigo-reactive
 description: Adds reactive state with Ndigo signals, computed values, and effects. Use when introducing client-side state or wiring state to the DOM.
+package: "@ndigo/signals"
 ---
 
 # Reactive state
@@ -14,6 +15,9 @@ description: Adds reactive state with Ndigo signals, computed values, and effect
 | Side effect    | `effect(() => …)`, batched with `batch(() => …)` |
 | Decorator form | `@signal`, `@computed`, `@effect`, `@reactive`   |
 | Teardown       | `dispose()` on the owner                         |
+
+`@ndigo/signals` ships a version-matched export index at
+`node_modules/@ndigo/signals/docs/llms.txt` when installed as a dependency.
 
 ## Sequence
 
@@ -38,3 +42,10 @@ description: Adds reactive state with Ndigo signals, computed values, and effect
 
 A test updates the signal and asserts the derived value and any effect count;
 the owner disposes cleanly on disconnect.
+
+## Example prompt
+
+> Add client-side state for a counter: one `signal`, one `computed` label, and
+> an `effect` that writes to the DOM. Start with the single counter, add
+> `@reactive` where the members need it, and dispose the owner on disconnect.
+> Verify with a test that updates the signal and asserts the derived value.

@@ -12,6 +12,7 @@
   "files": [
     "bin",
     "api",
+    "docs",
     "lib",
     "assets"
   ],

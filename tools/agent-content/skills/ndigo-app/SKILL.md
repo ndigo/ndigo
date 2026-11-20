@@ -48,3 +48,10 @@ operators (`&&`, `|`) are rejected so OS signals reach the real process.
 
 `ndigo inspect` lists the route; `ndigo doctor --json` exits 0; the app starts
 under `ndigo dev`.
+
+## Example prompt
+
+> Scaffold a Ndigo API app named `orders` with one route. Start with the
+> smallest version that runs: `ndigo new orders --preset api`, one controller,
+> then `ndigo inspect` to confirm the route. Finish by running `ndigo test` and
+> `ndigo lint` and report what passed.

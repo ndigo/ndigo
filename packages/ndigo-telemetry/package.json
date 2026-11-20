@@ -1,7 +1,7 @@
 {
   "name": "@ndigo/telemetry",
   "version": "0.0.1",
-  "description": "Isomorphic telemetry core for Ndigo \u2014 API-only: logger, metrics, severity, tracing decorators",
+  "description": "Isomorphic telemetry core for Ndigo — API-only: logger, metrics, severity, tracing decorators",
   "keywords": [
     "ndigo",
     "ndigo",
@@ -15,6 +15,7 @@
   "type": "module",
   "files": [
     "api",
+    "docs",
     "lib"
   ],
   "exports": {

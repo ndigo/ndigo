@@ -37,6 +37,7 @@
   "sideEffects": false,
   "files": [
     "api",
+    "docs",
     "lib"
   ]
 }

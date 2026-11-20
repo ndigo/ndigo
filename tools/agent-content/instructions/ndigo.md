@@ -17,6 +17,13 @@ command or an API, run:
 
 Facts come from these commands; the skills below carry workflows and traps.
 
+## Package context
+
+Every `@ndigo/*` package ships a version-matched export index at
+`node_modules/@ndigo/<pkg>/docs/llms.txt`, alongside its README. Read the index
+before guessing a package's public surface. The CLI carries the guide index and
+all skills under `node_modules/@ndigo/cli/assets/agent/`.
+
 ## Rules
 
 1. **ESM only.** No `require`; emitted TypeScript imports end in `.js`.

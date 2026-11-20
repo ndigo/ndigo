@@ -1,7 +1,7 @@
 {
   "name": "@ndigo/advice",
   "version": "0.0.1",
-  "description": "Runs the advice declared by annotations \u2014 rules, plan compilation, and weaving for Ndigo",
+  "description": "Runs the advice declared by annotations — rules, plan compilation, and weaving for Ndigo",
   "keywords": [
     "ndigo",
     "ndigo-js",
@@ -13,6 +13,7 @@
   "type": "module",
   "files": [
     "api",
+    "docs",
     "lib"
   ],
   "exports": {

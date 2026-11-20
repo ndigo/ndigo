@@ -38,3 +38,10 @@ description: Upgrades Ndigo packages and adapts an application to framework chan
 
 `ndigo update --check` reports no drift; `ndigo test`, `ndigo lint`, and
 `ndigo typecheck` are green; `ndigo ai:check` reports no stale agent content.
+
+## Example prompt
+
+> Upgrade this app to the latest `@ndigo/*` pins: run `ndigo update --check`,
+> read the changelog and any migration guide, apply with `ndigo update`, fix
+> the breakages, run `ndigo ai:update`, and finish with the full verification
+> lanes.

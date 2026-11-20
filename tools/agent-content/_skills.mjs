@@ -13,6 +13,13 @@ import { join } from 'node:path';
 const MAX_SKILL_LINES = 120;
 
 /**
+ * The optional `package` frontmatter field links a skill to the workspace
+ * package that ships it; the monorepo build emits the packaged copy into that
+ * package's `skills/` directory.
+ */
+const packageNamePattern = /^@ndigo\/[a-z0-9-]+$/u;
+
+/**
  * Reads and validates every `<id>/SKILL.md` directory under `root`.
  *
  * @param root - Directory containing the skill directories.
@@ -24,7 +31,11 @@ export function readSkills(root) {
         .filter((entry) => statSync(join(root, entry)).isDirectory() && existsSync(join(root, entry, 'SKILL.md')))
         .sort();
     if (ids.length === 0) throw new Error(`no skills found in ${root}`);
-    return ids.map((id) => ({ id, content: skillContent(root, id) }));
+    return ids.map((id) => {
+        const file = join(root, id, 'SKILL.md');
+        const content = skillContent(root, id);
+        return { id, content, package: skillPackage(frontmatterHeader(content, file), file) };
+    });
 }
 
 /**
@@ -37,14 +48,37 @@ export function readSkills(root) {
 export function skillContent(root, id) {
     const file = join(root, id, 'SKILL.md');
     const text = readFileSync(file, 'utf8');
-    const match = /^---\n([\s\S]*?)\n---\n/u.exec(text);
-    if (match === null) throw new Error(`${file} is missing its frontmatter block`);
-    const name = /^name:\s*(.+)$/mu.exec(match[1])?.[1]?.trim();
+    const header = frontmatterHeader(text, file);
+    const name = /^name:\s*(.+)$/mu.exec(header)?.[1]?.trim();
     if (name !== id) throw new Error(`${file} declares name '${name}', expected '${id}'`);
-    if (!/^description:\s*\S/mu.test(match[1])) throw new Error(`${file} is missing a description`);
+    if (!/^description:\s*\S/mu.test(header)) throw new Error(`${file} is missing a description`);
+    skillPackage(header, file); // validates the optional field when present
     const bodyLines = text.split('\n').length;
     if (bodyLines > MAX_SKILL_LINES) {
         throw new Error(`${file} is ${bodyLines} lines; keep skills at or below ${MAX_SKILL_LINES}`);
     }
     return text;
+}
+
+function frontmatterHeader(text, file) {
+    const match = /^---\n([\s\S]*?)\n---\n/u.exec(text);
+    if (match === null) throw new Error(`${file} is missing its frontmatter block`);
+    return match[1];
+}
+
+/**
+ * Reads the optional `package` frontmatter field.
+ *
+ * @param header - The frontmatter block without its `---` fences.
+ * @param file - The skill file, for error messages.
+ * @returns The declared workspace package name, or undefined when absent.
+ */
+function skillPackage(header, file) {
+    const raw = /^package:\s*(.+)$/mu.exec(header)?.[1]?.trim();
+    if (raw === undefined) return undefined;
+    const name = raw.replace(/^["']|["']$/gu, '');
+    if (!packageNamePattern.test(name)) {
+        throw new Error(`${file} declares package '${name}'; expected @ndigo/<lower-case-name>`);
+    }
+    return name;
 }

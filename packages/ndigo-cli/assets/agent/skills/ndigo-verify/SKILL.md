@@ -41,3 +41,9 @@ the other machine-readable commands emit one JSON document on stdout.
 
 Every lane you claim to have run is actually green in this session; report the
 narrowest command that proves the change.
+
+## Example prompt
+
+> Run the narrowest verification for the change I just made, then the full lane
+> (`ndigo lint`, `ndigo typecheck`, `ndigo test`). Report each command's exit
+> code and anything you could not check.

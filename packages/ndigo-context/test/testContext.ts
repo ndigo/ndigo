@@ -1,7 +1,7 @@
 /**
  */
 import { configuration, entry, MetadataConfigApplicationContext, propertySource, property } from '../src/configuration';
-import { whenProfile } from '@ndigo/core';
+import { ensureSymbolMetadata, whenProfile } from '@ndigo/core';
 
 class Bar {}
 
@@ -59,12 +59,9 @@ Reflect.defineProperty(TestConfiguration.prototype, 'baz', {
     enumerable: true,
     writable: false,
 });
-// Add the entry metadata using the TC39 approach
-const metadataTarget = TestConfiguration as { [Symbol.metadata]?: Record<string, unknown> };
-const metadata = metadataTarget[Symbol.metadata] || {};
-metadataTarget[Symbol.metadata] = metadata;
-// String entry names are stored directly; ContextTokens add typed lookup metadata.
-metadata['config:entry:baz'] = { name: 'baz', token: undefined };
+// Add the entry metadata the way a decorator would. String entry names are
+// stored directly; ContextTokens add typed lookup metadata.
+ensureSymbolMetadata(TestConfiguration)['config:entry:baz'] = { name: 'baz', token: undefined };
 
 context.register(TestConfiguration);
 

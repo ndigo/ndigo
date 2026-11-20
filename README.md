@@ -191,7 +191,7 @@ Core & infrastructure:
 - [ndigo-util](packages/ndigo-util/README.md) — native helper utilities
 - [ndigo-log](packages/ndigo-log/README.md) — logging core, severity mappings, thresholds (re-exported by `@ndigo/telemetry`)
 - [ndigo-factory](packages/ndigo-factory/README.md) — IoC factory + scopes
-- [ndigo-proxy](packages/ndigo-proxy/README.md) — method interception: annotation-driven advice weaving
+- [ndigo-advice](packages/ndigo-advice/README.md) — method advice: rules, plan compilation, and advice weaving
 - [ndigo-resilience](packages/ndigo-resilience/README.md) — resilience policies: `@retry`, `@circuitBreaker`
 - [ndigo-context](packages/ndigo-context/README.md) — application context, configuration, environments
 - [ndigo-boot](packages/ndigo-boot/README.md) — application bootstrap, profiles, typed config

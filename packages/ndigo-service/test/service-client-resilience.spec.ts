@@ -15,7 +15,7 @@ import { describe, expect, test, vi, beforeEach } from 'vitest';
 import { z } from 'zod';
 import { HTTP } from '@ndigo/http';
 import { service, getCall, serviceClient } from '../src';
-import { interceptMethods } from '@ndigo/proxy';
+import { hasAnnotation, interceptMethods } from '@ndigo/advice';
 import {
     CircuitBreakerInterceptor,
     CircuitOpenError,
@@ -61,7 +61,7 @@ describe('resilient service client composition ( demo gate)', () => {
     test('retry intercepts validation failures through the service client', async () => {
         fetchMock.mockResolvedValue(invalidBody());
         const api = interceptMethods(serviceClient(ResilientAPI, http) as unknown as ResilientAPI, [
-            new RetryInterceptor(),
+            { when: hasAnnotation(retry), use: new RetryInterceptor() },
         ]);
 
         await expect(api.items()).rejects.toThrow(/Service 'resilient' response validation failed/);
@@ -71,7 +71,7 @@ describe('resilient service client composition ( demo gate)', () => {
     test('the circuit opens after the threshold and fails fast', async () => {
         fetchMock.mockResolvedValue(invalidBody());
         const api = interceptMethods(serviceClient(ResilientAPI, http) as unknown as ResilientAPI, [
-            new CircuitBreakerInterceptor(),
+            { when: hasAnnotation(circuitBreaker), use: new CircuitBreakerInterceptor() },
         ]);
 
         await expect(api.items()).rejects.toThrow(/response validation failed/);
@@ -83,9 +83,10 @@ describe('resilient service client composition ( demo gate)', () => {
 
     test('retry sits inside the circuit: one chain pass counts one failure', async () => {
         fetchMock.mockResolvedValue(invalidBody());
+        // Equal order keeps registration order: the circuit wraps retry.
         const api = interceptMethods(serviceClient(ResilientAPI, http) as unknown as ResilientAPI, [
-            new CircuitBreakerInterceptor(),
-            new RetryInterceptor(),
+            { when: hasAnnotation(circuitBreaker), use: new CircuitBreakerInterceptor() },
+            { when: hasAnnotation(retry), use: new RetryInterceptor() },
         ]);
 
         await expect(api.items()).rejects.toThrow(/response validation failed/);
@@ -98,9 +99,9 @@ describe('resilient service client composition ( demo gate)', () => {
 
     test('a client with no annotated methods passes through unchanged', () => {
         const raw = serviceClient(PlainAPI, http);
-        const unannotated = interceptMethods(raw, [new RetryInterceptor()]);
+        const unannotated = interceptMethods(raw, [{ when: hasAnnotation(retry), use: new RetryInterceptor() }]);
 
-        // interceptMethods matched nothing — same object, no proxy.
+        // Nothing matched — the client itself comes back, unwrapped.
         expect(unannotated).toBe(raw);
     });
 });

@@ -33,6 +33,7 @@
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "devDependencies": {
+    "@ndigo/advice": "~0.0.1",
     "@ndigo/dispatcher": "~0.0.1",
     "@toon-format/toon": "catalog:"
   },

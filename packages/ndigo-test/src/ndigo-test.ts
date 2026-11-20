@@ -2,6 +2,7 @@
  * Boot helpers for `@ndigo/test` — boot a Ndigo application context and wire a.
  */
 import { MetadataConfigApplicationContext, ApplicationContext } from '@ndigo/context';
+import type { EntryProcessor } from '@ndigo/factory';
 import { isFunction } from '@ndigo/util/types';
 import { HANDLER_MAPPING, DISPATCHER } from '@ndigo/dispatcher';
 import { NodeDispatcher, NodeAutoConfiguration } from '@ndigo/platform-node';
@@ -19,6 +20,18 @@ export interface NdigoTestApp {
 }
 
 /**
+ * Options for {@link bootNodeApp}.
+ */
+export interface BootNodeAppOptions {
+    /**
+     * Entry processors applied to every entry the context creates, before and
+     * after initialization — registering the advice weaver here mirrors what
+     * `ApplicationBuilder.processors(...)` does for a real application.
+     */
+    readonly processors?: readonly EntryProcessor[];
+}
+
+/**
  * Boot a Ndigo application from configuration/controller classes and wire the
  * dispatcher.
  *
@@ -28,17 +41,23 @@ export interface NdigoTestApp {
  * which the handler mapping discovers during `init`.
  *
  * @param sources - Application configuration and/or controller classes.
+ * @param options - Optional entry processors, applied to every entry the
+ *   context creates during `refresh` — the test-side equivalent of
+ *   `ApplicationBuilder.processors(...)`.
  * @returns A booted app exposing the context and configured dispatcher.
  *
  * @example
  * ```ts
- * const app = bootNodeApp([HelloConfiguration]);
+ * const app = bootNodeApp([HelloConfiguration], { processors: [interception(rules)] });
  * const mockHTTP = new MockHTTP(app);
  * const res = await mockHTTP.get('/').exec();
  * ```
  */
-export function bootNodeApp(sources: Function[]): NdigoTestApp {
+export function bootNodeApp(sources: Function[], options: BootNodeAppOptions = {}): NdigoTestApp {
     const context = new MetadataConfigApplicationContext('ndigo-test-app');
+    for (const processor of options.processors ?? []) {
+        context.addProcessor(processor);
+    }
 
     context.register(NodeAutoConfiguration);
     for (const source of sources) {
@@ -91,8 +110,18 @@ function isConfiguration(source: Function): boolean {
 // this is safe *within* a file (and across files only when isolate: false).
 const cachedApps = new Map<string, { app: NdigoTestApp; refs: number; rawClose: () => void }>();
 
-function sourcesKey(sources: Function[]): string {
-    return sources.map((s) => s.name).join(',');
+/**
+ * Cache key for {@link cachedBootNodeApp}: the source names plus how many
+ * processors were supplied. An advised app must never be shared with an
+ * unadvised one, and the count is enough to keep those apart without trying to
+ * compare processor identities.
+ *
+ * @param sources - The sources the app is booted with.
+ * @param options - The boot options.
+ * @returns A stable key for the module-scoped cache.
+ */
+function appKey(sources: Function[], options: BootNodeAppOptions): string {
+    return `${sources.map((s) => s.name).join(',')}|${options.processors?.length ?? 0}`;
 }
 
 /**
@@ -108,7 +137,12 @@ function sourcesKey(sources: Function[]): string {
  * per-file isolation (e.g. `isolate: false` in the pool config) — a deliberate
  * safety trade-off: shared mutable context means suites can interfere.
  *
+ * Callers that need distinct advice sets should use {@link bootNodeApp}
+ * directly: the cache distinguishes an advised app from an unadvised one, but
+ * not two different processor lists of the same length.
+ *
  * @param sources - Application configuration and/or controller classes.
+ * @param options - Optional entry processors, as for {@link bootNodeApp}.
  * @returns A booted app.
  *
  * @example
@@ -118,21 +152,21 @@ function sourcesKey(sources: Function[]): string {
  * expect(app2).toBe(app); // same context
  * ```
  */
-export function cachedBootNodeApp(sources: Function[]): NdigoTestApp {
-    const key = sourcesKey(sources);
+export function cachedBootNodeApp(sources: Function[], options: BootNodeAppOptions = {}): NdigoTestApp {
+    const key = appKey(sources, options);
     const existing = cachedApps.get(key);
     if (existing) {
         existing.refs += 1;
         return existing.app;
     }
 
-    const app = bootNodeApp(sources);
+    const app = bootNodeApp(sources, options);
     const rawClose = app.close.bind(app);
     cachedApps.set(key, { app, refs: 1, rawClose });
 
     // Closing the app releases one cache reference (and closes on last).
     app.close = () => {
-        releaseCachedNodeApp(sources);
+        releaseCachedNodeApp(sources, options);
     };
 
     return app;
@@ -143,6 +177,7 @@ export function cachedBootNodeApp(sources: Function[]): NdigoTestApp {
  * when the last reference is released.
  *
  * @param sources - The sources the app was booted with.
+ * @param options - The boot options the app was created with.
  *
  * @example
  * ```ts
@@ -150,8 +185,8 @@ export function cachedBootNodeApp(sources: Function[]): NdigoTestApp {
  * releaseCachedNodeApp([AppConfiguration]);
  * ```
  */
-export function releaseCachedNodeApp(sources: Function[]): void {
-    const key = sourcesKey(sources);
+export function releaseCachedNodeApp(sources: Function[], options: BootNodeAppOptions = {}): void {
+    const key = appKey(sources, options);
     const entry = cachedApps.get(key);
     if (!entry) {
         return;

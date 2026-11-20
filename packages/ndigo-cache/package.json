@@ -1,7 +1,7 @@
 {
   "name": "@ndigo/cache",
   "version": "0.0.1",
-  "description": "Isomorphic caching for Ndigo — memory cache manager, memoize, and the @cached decorator",
+  "description": "Isomorphic caching for Ndigo \u2014 memory cache manager, memoize, and the @cached decorator",
   "keywords": [
     "ndigo",
     "ndigo",
@@ -31,11 +31,12 @@
   "license": "ISC",
   "sideEffects": false,
   "dependencies": {
-    "@ndigo/core": "~0.0.1",
-    "@ndigo/util": "~0.0.1",
-    "@tsmetadata/polyfill": "catalog:",
+    "@ndigo/advice": "~0.0.1",
     "@ndigo/context": "~0.0.1",
+    "@ndigo/core": "~0.0.1",
     "@ndigo/factory": "~0.0.1",
-    "@ndigo/log": "~0.0.1"
+    "@ndigo/log": "~0.0.1",
+    "@ndigo/util": "~0.0.1",
+    "@tsmetadata/polyfill": "catalog:"
   }
 }

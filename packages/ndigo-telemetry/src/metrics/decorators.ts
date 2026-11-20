@@ -1,53 +1,38 @@
 /**
- * Metric decorators and their metadata readers.
+ * `@counted` decorator and its metadata readers.
+ *
+ * The decorator declares the counter; the increment itself is recorded by
+ * `CountedInterceptor` (see `interceptor.ts`).
  */
 import '@tsmetadata/polyfill';
-import { getSymbolMetadata } from '@ndigo/core';
+import { annotationOf } from '@ndigo/core';
 import type { LogAttributes } from '@ndigo/log';
-import { FeatureMetricAggregator } from './feature-metric-aggregator';
-import { FEATURE_METRIC_AGGREGATOR } from './context-tokens';
-import { createLazyCounter } from './lazy-counter';
-import type { ApplicationContext } from '@ndigo/context';
+import type { FeatureMetricAggregator } from './feature-metric-aggregator';
+import { countedCounter } from './interceptor';
+import type { CountedMethodConfig } from './interceptor';
 
-const COUNTED_KEY = 'telemetry:counted';
-
-/**
- * Counter handle shared by every `@counted` method: instruments resolve
- * lazily on first recorded call (the decorator runs at class-definition
- * time, typically before any SDK registers a global `MeterProvider`).
- */
-const counters = createLazyCounter();
+export type { CountedMethodConfig } from './interceptor';
+export { CountedInterceptor, countedCounter } from './interceptor';
 
 /**
- * The configuration recorded for a method decorated with `counted`: the
- * counter name, attributes, and optional feature aggregation.
- */
-export interface CountedMethodConfig {
-    /** The counter name (defaults to `<method>.count`). */
-    name: string;
-    /** Attributes associated with the counter. */
-    attributes?: LogAttributes;
-    /** Optional aggregator for feature-scoped counters. */
-    featureAggregator?: FeatureMetricAggregator;
-    /** The attribute key holding the feature (defaults to 'feature'). */
-    featureKey?: string;
-}
-
-/**
- * Retrieves the configuration for a counted method, including its name and attributes.
- * @param target - The target object or prototype.
- * @param propertyKey - The name of the method.
- * @returns The counter configuration if the method is counted, otherwise `undefined`.
+ * Retrieves the declaration for a counted method.
+ *
+ * Walks the class hierarchy, so an inherited declaration resolves.
+ *
+ * @param target - The target object, its prototype, or the class.
+ * @param propertyKey - The method name.
+ * @returns The counter declaration, or `undefined` when the method is not counted.
  */
 export function getCounted(target: object, propertyKey: string | symbol): CountedMethodConfig | undefined {
-    return getSymbolMetadata(target)[`${COUNTED_KEY}:${String(propertyKey)}`];
+    return annotationOf(target, countedCounter, propertyKey);
 }
 
 /**
- * Checks if a method has been decorated with `counted`.
- * @param target - The target object or prototype.
- * @param propertyKey - The name of the method.
- * @returns `true` if the method is counted, otherwise `false`.
+ * Whether a method carries a `@counted` declaration.
+ *
+ * @param target - The target object, its prototype, or the class.
+ * @param propertyKey - The method name.
+ * @returns `true` when the method is counted.
  */
 export function hasCounted(target: object, propertyKey: string | symbol): boolean {
     return getCounted(target, propertyKey) !== undefined;
@@ -75,106 +60,33 @@ export interface CountedOptions {
     name?: string;
 }
 
-function createCountedDecorator(options: CountedOptions = {}) {
-    return function <This, Args extends unknown[], Return>(
-        target: (this: This, ...args: Args) => Return,
-        context: ClassMethodDecoratorContext<This, (this: This, ...args: Args) => Return>
-    ): (this: This, ...args: Args) => Return {
-        if (context.kind !== 'method') {
-            throw new TypeError('@counted can only be applied to methods');
-        }
-
-        const counterName = options.name || `${String(context.name)}.count`;
-
-        // Metadata is kept for introspection (`getCounted`/`hasCounted`) and
-        // for framework code that inspects the decorated signature.
-        context.metadata[`${COUNTED_KEY}:${String(context.name)}`] = {
-            name: counterName,
-            attributes: options.attributes,
-            featureAggregator: options.featureAggregator,
-            featureKey: options.featureKey,
-        };
-        context.metadata[`${COUNTED_KEY}:${String(context.name)}:original`] = target;
-
-        // Wrap the method directly (like `@traced`) — a lazily resolved
-        // counter incremented per call. No registry/scan indirection: the
-        // wrapper is live the moment the class is defined, whether or not an
-        // instrumentation is registered.
-        const { featureAggregator, featureKey } = options;
-        return function (this: This, ...args: Args): Return {
-            counters(counterName, options.attributes);
-
-            let aggregator = featureAggregator;
-            if (aggregator === undefined) {
-                const instance = this as {
-                    featureMetricAggregator?: FeatureMetricAggregator;
-                    applicationContext?: ApplicationContext;
-                };
-                aggregator = instance.featureMetricAggregator ?? undefined;
-                if (aggregator === undefined && instance.applicationContext) {
-                    const ctx = instance.applicationContext;
-                    try {
-                        if (typeof ctx.hasValue === 'function' && ctx.hasValue(FEATURE_METRIC_AGGREGATOR)) {
-                            aggregator = ctx.getValue(FEATURE_METRIC_AGGREGATOR);
-                        } else if (
-                            typeof ctx.hasValue === 'function' &&
-                            // oxlint-disable-next-line @ndigo/no-string-token-lookup -- metric token lives in @ndigo/management which depends on context
-                            ctx.hasValue('metricAggregator')
-                        ) {
-                            // oxlint-disable-next-line @ndigo/no-string-token-lookup -- metric token lives in @ndigo/management which depends on context
-                            aggregator = ctx.getValue('metricAggregator') as FeatureMetricAggregator;
-                        }
-                    } catch {
-                        aggregator = undefined;
-                    }
-                }
-            }
-
-            if (aggregator !== undefined) {
-                const key = featureKey ?? 'feature';
-                const feature = options.attributes?.[key];
-                if (typeof feature === 'string') {
-                    aggregator.incrementCounter(feature, counterName);
-                }
-            }
-            return target.apply(this, args);
-        };
-    };
-}
-
 /**
- * A method decorator that increments a counter each time the decorated method is called.
+ * Declares that a method increments a counter on every call.
  *
- * This decorator integrates with OpenTelemetry metrics to track method invocation counts.
- * It supports various ways of specifying the counter name and associated attributes.
+ * Records the counter name (defaulting to `<method>.count`), its attributes,
+ * and the feature aggregation settings, then returns the method unchanged.
  *
- * @param nameOrTarget - Overload 1: The name of the counter. Overload 2: An object of `CountedOptions`. Overload 3: The target function when used without parentheses.
- * @param attributesOrContext - Overload 1: Optional attributes for the counter. Overload 3: The decorator context.
- * @param maybeContext - Overload 3: The decorator context.
- * @returns A method decorator or the decorated method itself.
+ * A decorated method is inert on its own: `new Service().run()` records
+ * nothing until the instance is advised, through `interceptMethods` or the
+ * container's `interception(...)` processor.
+ *
+ * @param nameOrTarget - Overload 1: the counter name. Overload 2: `CountedOptions`. Overload 3: the method when used bare.
+ * @param attributesOrContext - Overload 1: attributes for the counter. Overload 3: the decorator context.
+ * @param maybeContext - Overload 3: the decorator context.
+ * @returns A method decorator, or the method unchanged.
  * @throws If applied to anything other than a method.
+ *
  * @example
- * ```typescript
+ * ```ts
  * class MyService {
- *   @counted()
- *   myMethod() {
- *     // Increments 'myMethod.count'
- *   }
+ *     @counted()
+ *     myMethod(): void {}
  *
- *   @counted('custom.event.count')
- *   anotherMethod() {
- *     // Increments 'custom.event.count'
- *   }
+ *     @counted('custom.event.count')
+ *     anotherMethod(): void {}
  *
- *   @counted({ name: 'api.calls', attributes: { endpoint: '/users' } })
- *   apiCall() {
- *     // Increments 'api.calls' with 'endpoint: /users'
- *   }
- *
- *   @counted('feature.usage', { feature: 'dashboard' })
- *   dashboardView() {
- *     // Increments 'feature.usage' with 'feature: dashboard'
- *   }
+ *     @counted({ name: 'api.calls', attributes: { endpoint: '/users' } })
+ *     apiCall(): void {}
  * }
  * ```
  */
@@ -188,29 +100,37 @@ export function counted(
     // the decorator — only `any` satisfies both call shapes.
     // oxlint-disable-next-line no-explicit-any -- untypeable dual-form decorator
 ): any {
+    const declare = (options: CountedOptions) =>
+        function <M extends Function>(target: M, context: ClassMethodDecoratorContext): M {
+            if (context.kind !== 'method') {
+                throw new TypeError('@counted can only be applied to methods');
+            }
+            return countedCounter({
+                name: options.name ?? `${String(context.name)}.count`,
+                attributes: options.attributes,
+                featureAggregator: options.featureAggregator,
+                featureKey: options.featureKey,
+            })(target, context);
+        };
+
     if (typeof nameOrTarget === 'string') {
-        return createCountedDecorator({
-            attributes: attributesOrContext as LogAttributes | undefined,
-            name: nameOrTarget,
-        });
+        return declare({ attributes: attributesOrContext as LogAttributes | undefined, name: nameOrTarget });
     }
 
     if (typeof nameOrTarget === 'object' && nameOrTarget !== null && !('kind' in nameOrTarget)) {
-        return createCountedDecorator(nameOrTarget as CountedOptions);
+        return declare(nameOrTarget as CountedOptions);
     }
 
     if (typeof attributesOrContext === 'object' && attributesOrContext !== null && 'kind' in attributesOrContext) {
-        return createCountedDecorator()(
-            nameOrTarget as (this: unknown, ...args: unknown[]) => unknown,
-            attributesOrContext as ClassMethodDecoratorContext
-        );
+        return declare({})(nameOrTarget as Function, attributesOrContext as ClassMethodDecoratorContext);
     }
 
     if (typeof maybeContext === 'object' && maybeContext !== null && 'kind' in maybeContext) {
-        return createCountedDecorator({
-            attributes: attributesOrContext as LogAttributes | undefined,
-        })(nameOrTarget as (this: unknown, ...args: unknown[]) => unknown, maybeContext);
+        return declare({ attributes: attributesOrContext as LogAttributes | undefined })(
+            nameOrTarget as Function,
+            maybeContext
+        );
     }
 
-    return createCountedDecorator();
+    return declare({});
 }

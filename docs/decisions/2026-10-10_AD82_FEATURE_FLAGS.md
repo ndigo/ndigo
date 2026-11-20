@@ -234,7 +234,7 @@ unmade (the SPI is the seam).
   conformance is still rolling (v0.9.0 compliance tracking across SDKs).
   The SPI keeps us SDK-free; the bridge provider is additive later.
 - **Method-scope gate for service entries** — deferred: automatic weaving of
-  non-route methods is AD-42's `@ndigo/proxy` interception territory, and no
+  non-route methods is `@ndigo/advice` territory (see AD-110), and no
   1.0 consumer needs it. Route-level gates + programmatic
   `evaluator.evaluate()` cover the documented patterns; service-method
   gating composes as an explicit check or an interceptor when a consumer

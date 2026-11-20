@@ -173,7 +173,7 @@ install are the ones your app imports.
 | Data          | `@ndigo/orm`, `@ndigo/orm-drizzle`, `@ndigo/cache`, `@ndigo/redis`                                                                                      | persistence, caching, shared stores                   |
 | Security      | `@ndigo/auth-core`, `@ndigo/auth-server`, `@ndigo/auth-client`, `@ndigo/rate-limit`                                                                     | credentials, sessions, JWT, OIDC, limits              |
 | Async         | `@ndigo/scheduler`, `@ndigo/jobs`, `@ndigo/locks`, `@ndigo/cluster`, `@ndigo/socket`                                                                    | scheduled/background work, coordination, realtime     |
-| Cross-cutting | `@ndigo/log`, `@ndigo/telemetry*`, `@ndigo/management`, `@ndigo/proxy`, `@ndigo/resilience`, `@ndigo/flags`, `@ndigo/content`                           | observability, interception, flags, i18n              |
+| Cross-cutting | `@ndigo/log`, `@ndigo/telemetry*`, `@ndigo/management`, `@ndigo/advice`, `@ndigo/resilience`, `@ndigo/flags`, `@ndigo/content`                          | observability, advice, flags, i18n                    |
 | Browser       | `@ndigo/signals`, `@ndigo/host`, `@ndigo/dom`                                                                                                           | reactive state, micro-frontend shell, DOM integration |
 
 The package READMEs are the per-package reference; the guides are the

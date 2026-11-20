@@ -216,8 +216,12 @@ Inbound socket frames are counted (`socket.inboundMessages`); the page's
   `configureTelemetry` (sampler presets, console/OTLP exporters, once-per-process
   providers), `HTTPServerInstrumentation`, `WebSocketServerInstrumentation`.
 - [`@ndigo/telemetry`](../../packages/ndigo-telemetry/README.md) — `@traced` /
-  `@counted`, `currentTraceContext()`, `DispatcherInstrumentation`,
+  `@counted` and the `TracedInterceptor` / `CountedInterceptor` pair that runs
+  them, `currentTraceContext()`, `DispatcherInstrumentation`,
   `FeatureMetricAggregator`.
+- [`@ndigo/advice`](../../packages/ndigo-advice/README.md) — the two rules
+  `src/index.ts` registers on the builder: `@traced` and `@counted` declare, the
+  interceptors run.
 - [`@ndigo/telemetry-web`](../../packages/ndigo-telemetry-web/README.md) —
   `configureBrowserTelemetry` (console by default, OTLP when the page is handed
   a collector URL).

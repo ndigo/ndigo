@@ -24,7 +24,14 @@ import {
     PeriodicExportingMetricReader,
 } from '@opentelemetry/sdk-metrics';
 import { BasicTracerProvider, InMemorySpanExporter, SimpleSpanProcessor } from '@opentelemetry/sdk-trace-base';
-import { FeatureMetricAggregator } from '@ndigo/telemetry';
+import {
+    CountedInterceptor,
+    countedCounter,
+    FeatureMetricAggregator,
+    TracedInterceptor,
+    tracedSpan,
+} from '@ndigo/telemetry';
+import { hasAnnotation, interceptMethods } from '@ndigo/advice';
 import { LAB_FEATURE, LabMetrics } from '../src/lab-metrics';
 import { LabTicker } from '../src/lab-ticker';
 import { WorkService } from '../src/work-service';
@@ -47,8 +54,14 @@ trace.setGlobalTracerProvider(new BasicTracerProvider({ spanProcessors: [new Sim
 
 const aggregator = new FeatureMetricAggregator();
 const labMetrics = new LabMetrics(aggregator);
-const work = new WorkService(labMetrics);
-const ticker = new LabTicker(labMetrics, work);
+// `@traced`/`@counted` declare only — advise the instances the way the app's
+// `interception(...)` processor does at boot.
+const advice = [
+    { when: hasAnnotation(tracedSpan), use: new TracedInterceptor() },
+    { when: hasAnnotation(countedCounter), use: new CountedInterceptor() },
+];
+const work = interceptMethods(new WorkService(labMetrics), advice);
+const ticker = interceptMethods(new LabTicker(labMetrics, work), advice);
 
 /**
  * Cumulative value of an OpenTelemetry counter via an explicit collect

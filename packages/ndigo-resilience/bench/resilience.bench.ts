@@ -2,8 +2,8 @@
 /**
  * `@ndigo/resilience` woven retry and circuit-breaker throughput.
  *
- * Interceptors are applied through `@ndigo/proxy` `interceptMethods` with
- * method annotations, exactly as applications wire them. Rows: unwoven
+ * Interceptors are applied through `@ndigo/advice` `interceptMethods` with
+ * rule matchers, exactly as applications wire them. Rows: unwoven
  * baseline, woven success (breaker + retry, both passing through), a
  * 3-attempt retry loop that exhausts, and the open-circuit fast-fail path.
  */
@@ -16,7 +16,7 @@ import {
     RetryInterceptor,
     fixedBackoff,
 } from '../src';
-import { interceptMethods } from '@ndigo/proxy';
+import { hasAnnotation, interceptMethods } from '@ndigo/advice';
 import { assertEquivalent, benchName, sink } from '../../../benchmarks/lib/verify';
 
 const BATCH = 200; // async rows: fewer iterations, longer bodies
@@ -45,9 +45,14 @@ class BreakerOnly {
 }
 
 const plain = new Service();
-const woven = interceptMethods(new Service(), [new CircuitBreakerInterceptor(), new RetryInterceptor()]);
-const exhausting = interceptMethods(new Exhausting(), [new RetryInterceptor()]);
-const breaker = interceptMethods(new BreakerOnly(), [new CircuitBreakerInterceptor()]);
+const woven = interceptMethods(new Service(), [
+    { when: hasAnnotation(circuitBreaker), use: new CircuitBreakerInterceptor() },
+    { when: hasAnnotation(retry), use: new RetryInterceptor() },
+]);
+const exhausting = interceptMethods(new Exhausting(), [{ when: hasAnnotation(retry), use: new RetryInterceptor() }]);
+const breaker = interceptMethods(new BreakerOnly(), [
+    { when: hasAnnotation(circuitBreaker), use: new CircuitBreakerInterceptor() },
+]);
 
 test('resilience — unwoven baseline', async ({ bench }) => {
     assertEquivalent('plain result', await plain.fetch(7), 7);

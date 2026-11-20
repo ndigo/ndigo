@@ -11,7 +11,7 @@
  * both the projected state and the fail-fast error class.
  */
 import { CircuitOpenError, circuitBreaker } from '@ndigo/resilience';
-import type { MethodDescriptor, MethodInterceptor, MethodInvocation } from '@ndigo/proxy';
+import type { MethodInterceptor, MethodInvocation } from '@ndigo/advice';
 import { getErrorMessage } from '@ndigo/util';
 import type { CircuitSnapshot, CircuitState } from './lab-types';
 
@@ -88,11 +88,6 @@ export class BreakerStateTracker implements MethodInterceptor {
     constructor(options: BreakerStateTrackerOptions) {
         this.#now = options.now;
         this.#observer = options.observer;
-    }
-
-    /** Projects only methods carrying the `@circuitBreaker` annotation. */
-    matches(method: MethodDescriptor): boolean {
-        return method.annotation(circuitBreaker) !== undefined;
     }
 
     /**

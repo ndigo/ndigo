@@ -1,7 +1,7 @@
 # AD-42: Method interception on JavaScript `Proxy` — `@ndigo/proxy`
 
 **Date:** 2026-10-03
-**Status:** Accepted — design and implementation plan: 2026-10-03_METHOD_INTERCEPTION
+**Status:** Superseded by [AD-110](2026-11-20_AD110_ANNOTATION_EXECUTION_RUNTIME.md) — `@ndigo/proxy` no longer exists
 
 ## Context
 

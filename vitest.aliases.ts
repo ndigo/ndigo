@@ -40,6 +40,7 @@ export const ndigoAliases: { find: RegExp; replacement: string }[] = [
     { find: /^@ndigo\/util\/types/, replacement: resolve(repoRoot, 'packages/ndigo-util/src/type') },
     { find: /^@ndigo\/util\/type/, replacement: resolve(repoRoot, 'packages/ndigo-util/src/type') },
 
+    { find: /^@ndigo\/advice$/, replacement: resolve(repoRoot, 'packages/ndigo-advice/src') },
     { find: /^@ndigo\/core$/, replacement: resolve(repoRoot, 'packages/ndigo-core/src') },
     { find: /^@ndigo\/dom$/, replacement: resolve(repoRoot, 'packages/ndigo-dom/src') },
     { find: /^@ndigo\/util$/, replacement: resolve(repoRoot, 'packages/ndigo-util/src') },
@@ -69,7 +70,6 @@ export const ndigoAliases: { find: RegExp; replacement: string }[] = [
     { find: /^@ndigo\/cluster$/, replacement: resolve(repoRoot, 'packages/ndigo-cluster/src') },
     { find: /^@ndigo\/cli$/, replacement: resolve(repoRoot, 'packages/ndigo-cli/src') },
     { find: /^@ndigo\/cache$/, replacement: resolve(repoRoot, 'packages/ndigo-cache/src') },
-    { find: /^@ndigo\/proxy$/, replacement: resolve(repoRoot, 'packages/ndigo-proxy/src') },
     { find: /^@ndigo\/resilience$/, replacement: resolve(repoRoot, 'packages/ndigo-resilience/src') },
     { find: /^@ndigo\/redis\/cache$/, replacement: resolve(repoRoot, 'packages/ndigo-redis/src/cache') },
     { find: /^@ndigo\/redis\/pubsub$/, replacement: resolve(repoRoot, 'packages/ndigo-redis/src/pubsub') },

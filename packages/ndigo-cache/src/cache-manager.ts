@@ -9,8 +9,9 @@ import { like } from '@ndigo/util/types';
 
 /**
  * Named-cache registry. Acquires local backend handles synchronously without
- * performing data I/O; the returned Cache operations are awaited. `@cached`
- * resolves its named cache through this contract (`this.cacheManager`).
+ * performing data I/O; the returned Cache operations are awaited.
+ * `CachedInterceptor` resolves a `@cached` method's named cache through this
+ * contract (`this.cacheManager`).
  */
 export interface CacheManager {
     /**

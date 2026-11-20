@@ -89,7 +89,7 @@ configureTelemetry({
   both views derive from the one meter snapshot, so the exported and the
   scraped picture can never diverge. Without a telemetry pull reader the
   endpoint serves the management auto-configuration's **feature-aggregator
-  fallback** (REV-003): counters/gauges/durations from `counted` /
+  fallback** (REV-003): counters/gauges/durations from `@counted` /
   `FeatureMetricAggregator` render as `{feature}.{name}` snapshots (durations
   as the histogram count/sum pair). With neither a reader nor the
   auto-configuration present, the endpoint answers
@@ -220,9 +220,12 @@ sustained p99 latency rather than on single spikes.
 by `ManagementAutoConfiguration`. Components that want feature-scoped counters
 from `@counted` can either pass an aggregator explicitly
 (`@counted({ featureAggregator })`) or implement `FeatureMetricAggregatorAware`
-/ be `ApplicationContextAware` — the decorator resolves the aggregator from the
-context (or an injected `featureMetricAggregator` property) at call time, so a
-`@counted` method on a context-registered bean needs no wiring. `configureTelemetry`
+/ be `ApplicationContextAware` — `CountedInterceptor` resolves the aggregator
+from the context (or an injected `featureMetricAggregator` property) at call
+time. The declaration itself is inert: a `@counted` method records nothing until
+the instance is advised, so register the rule once
+(`interception([{ when: hasAnnotation(countedCounter), use: new CountedInterceptor() }])`)
+— see [Guide 35](35-method-interception-and-resilience.md). `configureTelemetry`
 itself stays process-global: OpenTelemetry registers providers once per process,
 so exporter/sampling configuration is not per-context.
 

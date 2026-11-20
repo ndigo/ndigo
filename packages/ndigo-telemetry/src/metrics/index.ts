@@ -2,6 +2,7 @@
  * Telemetry metrics: counters, gauges, and feature-level aggregation.
  */
 export * from './decorators';
+export * from './interceptor';
 export * from './counter-rate-resolver';
 export * from './feature-metric-aggregator';
 export * from './lazy-counter';

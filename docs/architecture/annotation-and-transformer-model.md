@@ -19,11 +19,11 @@ the application context — not the decorator — composes the executors. The
 programmatic path is a first-class primitive, not a compatibility shim: every
 capability reachable through a container is reachable by hand.
 
-> **Status.** This page describes the target model recorded in AD-109. #546
-> implements it; until that lands, the tree still runs `@ndigo/proxy` and the
-> differences are called out where they matter (the `proxy:` namespace, the
-> fused `matches` method, Proxy-only weaving). The **inventory** in §8 reflects
-> the current tree, not the target.
+> **Status.** This page describes the model recorded in AD-109 and implemented
+> by AD-110. The tree runs `@ndigo/advice`; `@ndigo/proxy` is gone, no
+> annotation writes a `proxy:` key, selection lives on the rule, and shadow
+> weaving is the default strategy. The **inventory** in §8 reflects the current
+> tree.
 
 **Audience:** Framework contributors and package authors · **Prerequisites:**
 [AD-83](../decisions/2026-10-31_AD83_DECORATOR_CATEGORIES.md) (naming roles),
@@ -68,6 +68,58 @@ to change its name.
 If a capability only works inside a container, that is a design bug in the
 capability, not a property of the model. [§7](#7-running-by-hand) is the
 acceptance test.
+
+### Choosing a consumption seam
+
+The table above says what a decorator _is_. This one says how a declaration
+reaches whatever acts on it, because that choice is what a capability author
+actually makes — and there are exactly two answers.
+
+| Category      | Consumer                                                  | Lives in                              | Contract                                            |
+| :------------ | :-------------------------------------------------------- | :------------------------------------ | :-------------------------------------------------- |
+| **Processor** | Hook on each entry instance as the container creates it   | `@ndigo/factory` `entry-processor.ts` | `InitializationAwareProcessor` and its siblings     |
+| **Lifecycle** | Component the context drives, scanning the finished graph | `@ndigo/factory` `lifecycle.ts`       | `SmartLifecycle` (+ `Initializable`, `Destroyable`) |
+
+Pick **processor** when the declaration changes what an instance _is or does_,
+and the decision is per instance. Advice is the only current consumer: it must
+decide whether any rule matches and return a replacement for that instance,
+which is exactly `processAfterInitialization`'s contract.
+
+Pick **lifecycle** when the declaration contributes a fact to a _whole-graph
+table_ that is read once, and the consumer also has resources to start and stop.
+Scanning decorators are the consumers here, and they are ordered by `phase`:
+
+| Consumer                                                           | Trigger                                   | Phase |
+| :----------------------------------------------------------------- | :---------------------------------------- | ----: |
+| `ConfigurationProcessor` (`@configuration`, `@entry`, `@property`) | `EntryRegistryProcessor`, at registration |     — |
+| `AbstractHandlerMethodMapping` (`@routeMapping`)                   | `SmartLifecycle` on refresh               |  −100 |
+| `Dispatcher`                                                       | `SmartLifecycle` on refresh               |   −90 |
+| `ScheduleRegistry` (`@scheduled`)                                  | `SmartLifecycle` on refresh               |     0 |
+| `JobHandlerRegistry` (`@jobHandler`), `JobRunner`, `OutboxRelay`   | `SmartLifecycle` on refresh               | 0, 10 |
+| `HTTPServer`                                                       | `SmartLifecycle` on refresh               |     0 |
+
+The discriminator is not "which is newer" but what the consumer needs. A
+scanning consumer resolves its collaborators _at start_ — `ScheduleRegistry.start()`
+looks up the `taskScheduler` entry and throws when it is absent — so it must run
+after every entry exists. A processor runs during creation, where that
+collaborator may not exist yet, which is why the two cannot be swapped freely.
+
+They compose. The schedule registry captures `owner[methodName]` while scanning,
+and advice wove that instance earlier, so a `@scheduled` + `@traced` method
+reaches the woven method through the registry's own closure
+(`apps/17-ndigo-telemetry-lab/test/scheduled-advice.spec.ts`).
+
+> **Naming debt.** `SmartLifecycle` carries Spring's `Smart-` prefix, and
+> `LifecycleProcessor` is a driver of lifecycle components — not a processor in
+> the `EntryProcessor` sense — although both live in `@ndigo/factory`. The
+> contracts themselves are deliberate; the names are inherited.
+>
+> The word is also carrying unrelated meanings elsewhere: `@ndigo-orm` names its
+> entity persistence hooks (`prePersist`, `postLoad`, …) `lifecycle`, and guide
+> 20's “The lifecycle” is the migration pipeline. Nothing collides at the type
+> level — the identifiers differ — but the two files both called `lifecycle.ts`
+> are the sharpest case, and this page's **Lifecycle** row describes only the
+> container's. Tracked in #548, which owns `lifecycle.ts`.
 
 ## 2. Annotations — declaration only
 
@@ -181,13 +233,13 @@ interface MethodInterceptor {
 
 ```ts
 registry.add({
-    when: whenAnnotation(retry),
+    when: hasAnnotation(retry),
     use: new RetryInterceptor(),
     order: AdviceOrder.Resilience,
 });
 ```
 
-`whenAnnotation` — defined in [§6](#6-selection) — is the common matcher factory.
+`hasAnnotation` — defined in [§6](#6-selection) — is the common matcher factory.
 The registry is where independently-discovered rules accumulate; nothing is
 woven until the plan is compiled.
 
@@ -205,7 +257,7 @@ for paths and the dispatcher uses for route conditions. There is no new
 ```ts
 import { matchAll, matchAny, matchNot } from '@ndigo/core';
 
-when: matchAll(whenAnnotation(audited), matchNot(whenAnnotation(noAudit)), (method) => method.methodName !== 'health');
+when: matchAll(hasAnnotation(audited), matchNot(hasAnnotation(noAudit)), (method) => method.methodName !== 'health');
 ```
 
 `matchAll`, `matchAny`, and `matchNot` are combinators that live beside
@@ -240,14 +292,15 @@ configuration error, not a supported arrangement.
 
 ### Ordering
 
-Lower `order` runs closer to the caller (outermost). Absent `order` is
-`AdviceOrder.Application`. Ties keep registration order — the sort is stable,
-built from core's `compareBy` + `numberComparator`, so the sequence of
+Lower `order` runs closer to the caller (outermost). The rule's own `order`
+wins; when it names none, the interceptor's band applies; when neither does,
+the rule lands in `AdviceOrder.Application`. Ties keep registration order — the
+sort is stable on core's `compareBy` + `numberComparator`, so the sequence of
 `registry.add` calls is a deterministic tiebreaker:
 
 ```ts
-registry.add({ when: whenAnnotation(audited), use: new AuditInterceptor(), order: AdviceOrder.Application });
-registry.add({ when: whenAnnotation(retry), use: new RetryInterceptor(), order: AdviceOrder.Resilience });
+registry.add({ when: hasAnnotation(audited), use: new AuditInterceptor(), order: AdviceOrder.Application });
+registry.add({ when: hasAnnotation(retry), use: new RetryInterceptor(), order: AdviceOrder.Resilience });
 registry.add({ use: new MetricsInterceptor(), order: AdviceOrder.Observability });
 ```
 
@@ -267,6 +320,13 @@ pick a position without knowing the numbers:
 
 Only the **relative** order of the bands is contractual. The numeric values
 live in the `AdviceOrder` constant and may change without notice.
+
+A shipped capability declares its natural band on the interceptor — the
+telemetry advisories in `Observability`, resilience in `Resilience`, the
+transaction boundary in `Transaction`, caching in `Application` — so the safe
+arrangement is what an application gets without naming numbers. This refines
+AD-109 D7, which put order on the rule alone; the rule still has the last word,
+because a capability's band is a default and a composition is a decision.
 
 ### Composition order
 
@@ -350,10 +410,19 @@ only in where the plan is applied.
 
 ### Container weaving
 
-The preset registers one weaver as an initialization-aware entry processor. It
-runs after construction and after `ApplicationContextAwareProcessor` has
-injected the context, so advice can rely on `this.applicationContext` being
-present.
+The application registers one weaver as an initialization-aware entry
+processor — `builder.processors(interception(rules))`. It runs after
+construction and before `ApplicationContextAwareProcessor` has injected the
+context, because the builder's processors are added to the context before
+`refresh()` while the aware processor is appended during it.
+
+That ordering is why an interceptor reads instance state at **call** time, not
+while the plan is compiled: `invocation.target.applicationContext` is `undefined`
+during weaving and populated by the time any advised method runs. A matcher or a
+`validate` implementation must therefore select on
+`MethodDescriptor`/`targetType` — the static facts — and leave instance lookup to
+`invoke`. Weaving itself does not depend on injection: shadow weaving installs
+own wrappers, which the aware processor's property write does not disturb.
 
 **Shadow weaving is the default for object instances.** The weaver installs the
 advised methods as own properties on the instance, each wrapping the prototype
@@ -400,7 +469,7 @@ instance itself.
 import { interceptMethods } from '@ndigo/advice';
 
 const service = interceptMethods(new OrderService(), [
-    { when: whenAnnotation(retry), use: new RetryInterceptor(), order: AdviceOrder.Resilience },
+    { when: hasAnnotation(retry), use: new RetryInterceptor(), order: AdviceOrder.Resilience },
 ]);
 ```
 
@@ -445,14 +514,16 @@ metadata.
 The common matcher factory:
 
 ```ts
-function whenAnnotation<T>(key: AnnotationKey<T>): Matchable<MethodDescriptor>;
+function hasAnnotation<T>(key: AnnotationKey<T>, accept?: (value: T) => boolean): Matchable<MethodDescriptor>;
 ```
 
 It matches when the method — or its declaring class — carries a value under
-`key`. The two reads are distinct metadata keys (`ns:name:member` vs
-`ns:name`), so there is no ambiguity; a class-level declaration covers every
-method of the class, which is what `@authenticated` and `@rateLimit` mean when
-applied to a class.
+`key`, optionally narrowed by `accept`. The two reads are distinct metadata keys
+(`ns:name:member` vs `ns:name`), so there is no ambiguity; a class-level
+declaration covers every method of the class, which is what `@authenticated`
+and `@rateLimit` mean when applied to a class. The fallback lives in
+`MethodDescriptor.annotation`, so a matcher and the interceptor it selects for
+always agree on the effective value.
 
 The combinators:
 
@@ -494,10 +565,10 @@ class OrderService {
 **Execute without a container.**
 
 ```ts
-import { AdviceOrder, interceptMethods, whenAnnotation } from '@ndigo/advice';
+import { AdviceOrder, interceptMethods, hasAnnotation } from '@ndigo/advice';
 
 const service = interceptMethods(new OrderService(), [
-    { when: whenAnnotation(retry), use: new RetryInterceptor(), order: AdviceOrder.Resilience },
+    { when: hasAnnotation(retry), use: new RetryInterceptor(), order: AdviceOrder.Resilience },
 ]);
 
 await service.submit();
@@ -553,34 +624,60 @@ metadata **and** returns a replacement.
 The decorator itself is declaration-only; the capability pairs it with advice
 that ships in the same package.
 
-| Package             | Declarations                | Shipped advice                     | Pipeline |
-| :------------------ | :-------------------------- | :--------------------------------- | :------- |
-| `@ndigo/resilience` | `@retry`, `@circuitBreaker` | `RetryInterceptor`, breaker advice | Method   |
-| (application)       | any `methodAnnotation`      | any `MethodInterceptor`            | Method   |
+| Package             | Declarations                | Shipped advice                                  | Pipeline |
+| :------------------ | :-------------------------- | :---------------------------------------------- | :------- |
+| `@ndigo/resilience` | `@retry`, `@circuitBreaker` | `RetryInterceptor`, `CircuitBreakerInterceptor` | Method   |
+| `@ndigo/cache`      | `@cached`                   | `CachedInterceptor`                             | Method   |
+| `@ndigo/telemetry`  | `@traced`, `@counted`       | `TracedInterceptor`, `CountedInterceptor`       | Method   |
+| `@ndigo/orm`        | `@transactional`            | `TransactionalInterceptor`                      | Method   |
+| (application)       | any `methodAnnotation`      | any `MethodInterceptor`                         | Method   |
 
 A declaration-only policy becomes advice the moment a rule selects it. The
 table classifies the shipped capability; the pairing is application code.
 
+`TracedInterceptor` and `CountedInterceptor` stay synchronous on purpose:
+marking them `async` would make every advised method return a promise the type
+system cannot see. `TransactionalInterceptor` joins an open boundary instead of
+nesting, because both transaction managers reject an already-active transaction.
+
 ### Annotation + member transformer (hybrid)
 
-| Package            | Decorators            | Why the wrapper stays at definition time                                      |
-| :----------------- | :-------------------- | :---------------------------------------------------------------------------- |
-| `@ndigo/cache`     | `@cached`             | The wrapper holds the in-flight `WeakMap`; it must exist per decorated method |
-| `@ndigo/telemetry` | `@traced`, `@counted` | Span/metric naming is intrinsic; the `:original` entry serves introspection   |
-| `@ndigo/orm`       | `@transactional`      | The wrapper resolves `this.transactionManager`; degrades to call-through      |
-| `@ndigo/signals`   | `@reactive` (class)   | Rewrites accessors before field initializers run                              |
+| Package          | Decorators          | Why the wrapper stays at definition time         |
+| :--------------- | :------------------ | :----------------------------------------------- |
+| `@ndigo/signals` | `@reactive` (class) | Rewrites accessors before field initializers run |
 
 ### Notes on the inventory
 
-- **`@signal` / `@computed` / `@effect`** currently record into package-private
-  WeakMaps consumed by `@reactive`. #546 moves them onto the same
-  `Symbol.metadata` record as everything else, so one reader serves all
-  declaration-layer consumers. `@reactive` remains a member transformer: it
-  must redefine accessors during construction, which is not something a
-  post-construction executor can do.
+- **Every declaration-only decorator is consumed by exactly one seam.** Reading
+  this table, the question "who acts on this?" has a two-way answer: a
+  **processor** (per instance, as the container creates it) or a **lifecycle**
+  component (whole graph, on refresh). [§1](#choosing-a-consumption-seam) lists
+  which capability uses which, and why the choice is forced rather than
+  stylistic.
+- **`@signal` / `@computed` / `@effect`** are declaration-only, but their
+  declarations do not live in `Symbol.metadata`. Two different facts are in
+  play: _which_ members are reactive is a class-level fact and could live on the
+  metadata record, while _the initial value_ is per instance and cannot — the
+  record is per class.
+
+    The construction handoff (the initial value, and the bound `@effect`
+    methods) therefore lives on the instance itself, under the registered
+    `Symbol.for('ndigo.signals.pending')`, non-enumerable and deleted once
+    `@reactive` has drained it. It is scaffolding, not a registry: the
+    post-construction registries (`signalMap`, `computedMap`, `effectDisposers`)
+    stay invisible `WeakMap`s because they answer "which signals does this
+    instance have" for its whole life.
+
+    Moving the _declaration_ half onto `Symbol.metadata` needs a field/accessor
+    annotation primitive beside `methodAnnotation`/`classAnnotation`, and no
+    consumer reads it today — `@reactive` drains per-instance state and
+    `getSignal` reads the registry. `@reactive` remains a member transformer
+    regardless: it must redefine accessors during construction, which a
+    post-construction executor cannot do.
+
 - **`@retry` / `@circuitBreaker`** are declared in `@ndigo/resilience` and
-  selected by `whenAnnotation(...)`. Their keys move from the `proxy:` namespace
-  to `resilience:` as part of #546 — the namespace names the declaring package.
+  selected by `hasAnnotation(...)`. Their keys live in the `resilience:`
+  namespace — the namespace names the declaring package, never the consumer.
 - **`@rateLimit`** is declaration-only with two consumers: the platform HTTP
   pipeline for request limits and method advice for call limits. One
   declaration, two pipelines; that is the model working as intended.

@@ -1,6 +1,8 @@
 /**
  */
 import { configuration, entry, MetadataConfigApplicationContext } from '@ndigo/context';
+import { hasAnnotation, interception, MethodInterceptorRegistry } from '@ndigo/advice';
+import { CountedInterceptor, countedCounter, TracedInterceptor, tracedSpan } from '@ndigo/telemetry';
 import { WebAutoConfiguration } from '@ndigo/platform-web';
 import { I18nextMessageSource } from '@ndigo/content-i18next';
 import { LoggingRouteHandlerInterceptor, RadixMetadataHandlerMapping } from '@ndigo/dispatcher';
@@ -69,6 +71,18 @@ export const createTodoContext = async () => {
     // engine, argument resolvers) is registered explicitly; @ndigo/boot no
     // longer auto-registers it.
     const context = new MetadataConfigApplicationContext('ndigo-todo-web');
+
+    // `@traced` declares only; this is the runtime that opens the spans. One
+    // registry per context, filled before refresh so entries are advised as
+    // they are created.
+    context.addProcessor(
+        interception(
+            new MethodInterceptorRegistry()
+                .add({ when: hasAnnotation(tracedSpan), use: new TracedInterceptor() })
+                .add({ when: hasAnnotation(countedCounter), use: new CountedInterceptor() })
+        )
+    );
+
     context.register(WebAutoConfiguration);
     context.register(TodoConfiguration);
     context.refresh();

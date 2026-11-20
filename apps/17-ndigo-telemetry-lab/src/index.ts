@@ -14,6 +14,8 @@
  */
 import 'node:process';
 import { ApplicationBuilder } from '@ndigo/boot';
+import { hasAnnotation, interception, MethodInterceptorRegistry } from '@ndigo/advice';
+import { countedCounter, CountedInterceptor, TracedInterceptor, tracedSpan } from '@ndigo/telemetry';
 import { getEnv } from '@ndigo/context';
 import { ManagementAutoConfiguration } from '@ndigo/management';
 import { HTTP_SERVER, NodeAutoConfiguration, gracefulShutdown } from '@ndigo/platform-node';
@@ -38,11 +40,19 @@ async function main() {
     const telemetry = resolveLabTelemetry();
     const sdk = configureTelemetry(telemetry.config);
 
+    // `@traced` and `@counted` declare only; this is the runtime that runs
+    // them. One registry, one processor — the entries keep their identity.
+    const advice = new MethodInterceptorRegistry()
+        .add({ when: hasAnnotation(tracedSpan), use: new TracedInterceptor() })
+        .add({ when: hasAnnotation(countedCounter), use: new CountedInterceptor() });
+
     const context = await new ApplicationBuilder([
         NodeAutoConfiguration,
         ManagementAutoConfiguration,
         TelemetryLabConfiguration,
-    ]).run();
+    ])
+        .processors(interception(advice))
+        .run();
 
     // SEC-C: widen `connect-src` for the page's WebSocket (and the collector,
     // when one is configured) — the handler mapping entry exists post-refresh.

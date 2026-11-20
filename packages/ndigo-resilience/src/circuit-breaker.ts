@@ -1,8 +1,8 @@
 /**
  * Circuit-breaker policy, interceptor, and `@circuitBreaker` annotation.
  */
-import { ApplicationError } from '@ndigo/core';
-import { methodAnnotation, type MethodDescriptor, type MethodInvocation, type MethodInterceptor } from '@ndigo/proxy';
+import { ApplicationError, methodAnnotation } from '@ndigo/core';
+import { AdviceOrder, type MethodDescriptor, type MethodInvocation, type MethodInterceptor } from '@ndigo/advice';
 
 /**
  * `@circuitBreaker` annotation key: methods carrying a
@@ -22,7 +22,7 @@ import { methodAnnotation, type MethodDescriptor, type MethodInvocation, type Me
  * }
  * ```
  */
-export const circuitBreaker = methodAnnotation<CircuitBreakerSpec>('circuitBreaker');
+export const circuitBreaker = methodAnnotation<CircuitBreakerSpec>('resilience:circuit-breaker');
 
 /**
  * Circuit-breaking policy for one method: after
@@ -142,6 +142,13 @@ function validateCircuitBreakerSpec(spec: CircuitBreakerSpec): void {
  */
 export class CircuitBreakerInterceptor implements MethodInterceptor {
     /**
+     * The resilience band, tied with retry: both are registered in the same
+     * band, so registration order decides which wraps the other (register the
+     * circuit first to count one failure per chain pass).
+     */
+    readonly order = AdviceOrder.Resilience;
+
+    /**
      * The `Symbol.toStringTag` value for this instance.
      *
      * `Object.prototype.toString()` reads this symbol to render the
@@ -164,20 +171,17 @@ export class CircuitBreakerInterceptor implements MethodInterceptor {
     }
 
     /**
-     * Whether the method carries a valid `@circuitBreaker` spec.
+     * Rejects an invalid `@circuitBreaker` spec while the plan is compiled, so
+     * a bad annotation fails at startup rather than on the first call.
      *
-     * @param method - The method descriptor being woven.
-     * @returns `true` when the interceptor should advise the method.
-     * @throws When the annotation carries an invalid spec (fail loud at weave time).
+     * @param method - The method descriptor the interceptor was matched against.
+     * @throws When the annotation carries an invalid spec.
      */
-    matches(method: MethodDescriptor): boolean {
+    validate(method: MethodDescriptor): void {
         const spec = method.annotation(circuitBreaker);
         if (spec !== undefined) {
-            // Fail loud at weave time, not per call.
             validateCircuitBreakerSpec(spec);
-            return true;
         }
-        return false;
     }
 
     /**
@@ -190,7 +194,7 @@ export class CircuitBreakerInterceptor implements MethodInterceptor {
     async invoke(invocation: MethodInvocation, next: () => unknown): Promise<unknown> {
         const spec = invocation.annotation(circuitBreaker);
         if (spec === undefined) {
-            // matches() gates the chain; keep hand-built chains safe.
+            // A rule's matcher gates the chain; keep hand-built chains safe.
             return next();
         }
         validateCircuitBreakerSpec(spec);

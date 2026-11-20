@@ -1,15 +1,14 @@
 {
-  "name": "@ndigo/proxy",
+  "name": "@ndigo/advice",
   "version": "0.0.1",
-  "description": "Container-managed method interception for Ndigo — metadata annotations, interceptor chains, and Proxy-based weaving",
+  "description": "Runs the advice declared by annotations \u2014 rules, plan compilation, and weaving for Ndigo",
   "keywords": [
     "ndigo",
-    "ndigo",
     "ndigo-js",
-    "ndigo-proxy",
-    "proxy",
+    "ndigo-advice",
+    "annotation",
     "interception",
-    "aop"
+    "advice"
   ],
   "type": "module",
   "files": [
@@ -33,7 +32,9 @@
   "dependencies": {
     "@ndigo/core": "~0.0.1",
     "@ndigo/factory": "~0.0.1",
-    "@ndigo/log": "~0.0.1",
+    "@ndigo/log": "~0.0.1"
+  },
+  "devDependencies": {
     "@tsmetadata/polyfill": "catalog:"
   }
 }

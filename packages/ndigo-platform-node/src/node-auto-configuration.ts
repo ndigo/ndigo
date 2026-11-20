@@ -351,10 +351,10 @@ export class NodeAutoConfiguration extends AsApplicationContextAware(Null) {
     }
 
     /**
-     * The shared named-cache manager for `@cached` methods:
-     * `@cached` resolves the manager off the method's `this.cacheManager`
-     * (constructor or aware-injection) — zero wiring for Node apps, mirror
-     * of the scheduler entries above.
+     * The shared named-cache manager for `@cached` methods. `CachedInterceptor`
+     * resolves it off the advised instance's `this.cacheManager` (constructor
+     * or aware-injection), so a Node app provisions the store here and only
+     * has to register the rule — mirror of the scheduler entries above.
      *
      * @returns The cache manager.
      */

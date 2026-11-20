@@ -20,12 +20,13 @@ import {
     WebSocketServerInstrumentation,
 } from '@ndigo/telemetry-node';
 import { getLogger } from '@ndigo/log';
-import { interception } from '@ndigo/proxy';
+import { hasAnnotation, interception, MethodInterceptorRegistry } from '@ndigo/advice';
+import { CachedInterceptor, cachedSpec } from '@ndigo/cache';
 import { getErrorMessage } from '@ndigo/util';
 import { migrateOnBoot } from '@ndigo/orm-drizzle';
 import { fileURLToPath } from 'node:url';
 import { NodeAppConfiguration } from './node-app-configuration';
-import { AuditInterceptor } from './audit-interceptor';
+import { AuditInterceptor, audited } from './audit-interceptor';
 import { SecureDocsConfiguration } from './secure-docs-configuration';
 import { ManagementConfiguration } from './management-configuration';
 import { ServerConfig, SecretsConfig, MigrationsConfig, MIGRATIONS_CONFIG, SERVER_CONFIG } from './server-config';
@@ -114,12 +115,15 @@ async function main() {
                     });
                 }
 
-                // Method-interception demo gate: the audit
-                // interceptor is a first-class builder registration — the
+                // Method-advice demo gate: one registry, one processor. The
                 // context receives it before refresh, so even constructor
                 // entries eagerly created at refresh end (like
-                // `orderService`) are woven at creation.
-                builder.processors(interception([new AuditInterceptor()]));
+                // `orderService`) are advised at creation.
+                const advice = new MethodInterceptorRegistry()
+                    .add({ when: hasAnnotation(audited), use: new AuditInterceptor() })
+                    .add({ when: hasAnnotation(cachedSpec), use: new CachedInterceptor() });
+
+                builder.processors(interception(advice));
             },
             beforeStart: async (context) => {
                 // Apply pending journaled migrations at boot when

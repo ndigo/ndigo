@@ -25,17 +25,16 @@ export const LAYER_RANK: Record<string, number> = {
     cluster: 2,
     factory: 2,
     // 3 — primitives
-    socket: 3,
-    // 3 — primitives
+    advice: 3,
     content: 3,
+    socket: 3,
     flags: 3,
     http: 3,
     locks: 3,
-    orm: 3,
-    proxy: 3,
     'rate-limit': 3,
     // 4 — runtime layer
     ai: 4,
+    orm: 4,
     'auth-client': 4,
     'content-i18next': 4,
     context: 4,

@@ -56,11 +56,22 @@ All `Cache` operations are asynchronous, including the in-memory implementation:
 
 ## 2. Server: `@cached`
 
-Mark a method and the framework caches its result (cache-aside) — no
-pointcuts, no proxies: the decorator returns a wrapper that reads the
-`CacheManager` off the instance (`this.cacheManager`). When that property is
-absent the raw method runs (graceful degradation — unit tests see the plain
-method).
+`@cached` **declares** that a method is cached (cache-aside); it never wraps
+the method. `CachedInterceptor` serves the cache, and it runs where you
+register it — one rule on the builder covers the whole application:
+
+```ts
+import { hasAnnotation, interception } from '@ndigo/advice';
+import { CachedInterceptor, cachedSpec } from '@ndigo/cache';
+
+builder.processors(interception([{ when: hasAnnotation(cachedSpec), use: new CachedInterceptor() }]));
+```
+
+A decorated method on an instance that was never advised simply runs — the
+declaration is inert on its own. That is deliberate: a unit test can construct
+the class without a container. The interceptor reads the `CacheManager` off the
+instance (`this.cacheManager`, or lazily from `this.applicationContext`); when
+neither is reachable the call goes through and caching is disabled.
 
 ```ts
 import { cached } from '@ndigo/cache';
@@ -71,7 +82,8 @@ import { getMapping, requestMapping } from '@ndigo/dispatcher';
 export class ProductController {
     // Server apps: NodeAutoConfiguration provisions the `cacheManager` entry.
     // With `AsApplicationContextAware` (or `AsCacheManagerAware`) the processor
-    // injects it; `@cached` also resolves it lazily from `this.applicationContext`.
+    // injects it; CachedInterceptor also resolves it lazily from
+    // `this.applicationContext`.
     cacheManager?: CacheManager;
 
     @getMapping('/products/top')
@@ -115,14 +127,16 @@ Semantics:
   actual store, from backend read through computation and awaited write.
   Separate stores never share results; promise identity is not a contract.
 - **Backend errors** — read failures reject without invoking the method.
-  Decorator write failures emit a best-effort warning but still return the
-  computed value.
+  Write failures emit a best-effort warning but still return the computed
+  value.
 - **Keys** — default: JSON-serialized arguments (`{a:1,b:2}` ≠ `{b:2,a:1}`;
   `undefined`/`null` collapse). Customize with `key` — a static string (the
   method caches one value) or a `(...args) => string` function. No SpEL —
   plain JS only.
-- **Self-invocation is cached** — the wrapper replaces the prototype method,
-  so `this.method` calls inside the class hit the cache too.
+- **Self-invocation is cached** — the advice is installed on the instance, so
+  `this.method` calls inside the class hit the cache too. Two cases do not:
+  a frozen or sealed instance, and a function-shaped target, both of which are
+  advised through the proxy fallback (Guide 35, §3).
 - **Invalidation** — TTL expiry plus manual eviction:
   `await this.cacheManager.getCache('catalog').delete('…')` or
   `await this.cacheManager.getCache('catalog').clear`.
@@ -150,7 +164,7 @@ const result = await double(21); // 42; double(21) returns Promise<number>
 
 - Concurrent calls for the same key share work from cache read through
   computation and write; promise identity is not a contract.
-- Rejections are never cached; the next call re-invokes. Unlike the decorator's
+- Rejections are never cached; the next call re-invokes. Unlike `@cached`'s
   best-effort writes, `memoize` propagates cache write failures.
 - Options: `ttl`, `maxSize`, `eviction`, `key` (as in `@cached`).
 

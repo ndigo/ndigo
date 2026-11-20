@@ -63,8 +63,11 @@ methods on every registered entry at refresh.
 
 `OutboxStore.append()` inside a `@transactional` method joins the caller's
 transaction when the store shares the application's database client — commit
-publishes, rollback discards. Wire the libSQL store to the data source and a
-relay to the queue:
+publishes, rollback discards. The boundary needs the instance advised
+(`TransactionalInterceptor`, via a rule or `interceptMethods`); the declaration
+alone opens nothing, and a nested transactional call joins the open boundary
+rather than starting a second one. Wire the libSQL store to the data source and
+a relay to the queue:
 
 ```ts
 import { LibSQLOutboxStore } from '@ndigo/orm-drizzle';

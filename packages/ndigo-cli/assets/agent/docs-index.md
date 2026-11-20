@@ -41,7 +41,7 @@ matches the task; do not guess APIs from memory.
 - `32-telemetry` — Telemetry: How telemetry works in Ndigo: OpenTelemetry traces, metrics, and logs for Node and browser, the configureTelemetry knobs (sampling, exporters), and log↔trace correlation tooling. Node config lives in
 - `33-management-endpoints` — Management Endpoints: The management surface serves the operations endpoints every peer framework ships: /health + /metrics from day one , and — since — the actuator-parity set /loggers, /env, /configprops and composed hea
 - `34-feature-flags` — Feature Flags: Feature flags are runtime, refreshable switches — the @FeatureGate layer of the framework . They are not @whenProperty: @whenProperty (with @whenProfile) decides at boot whether a configuration class
-- `35-method-interception-and-resilience` — Method Interception & Resilience: How @ndigo/proxy and @ndigo/resilience work together: metadata-only method annotations, interceptor chains around managed methods, standalone weaving for service clients, and the retry + circuit-break
+- `35-method-interception-and-resilience` — Method Advice & Resilience: How @ndigo/advice and @ndigo/resilience work together: annotations that declare policy, rules that select the methods they apply to, and the retry and circuit-breaker advice on top.
 - `36-testing` — Testing with `@ndigo/test`: @ndigo/test is the in-process integration harness: bootNodeApp boots a real application context and dispatcher, and MockHTTP sends socket-free requests through the whole pipeline — interceptors, argum
 - `37-ndigo-cli` — The `ndigo` CLI: One ndigo entry replaces the bespoke per-app start scripts and covers the whole command surface: app lifecycle (serve/dev — serve replicates across worker slots), release-qc fronts (build/test/lint/fo
 - `38-deployment-and-production-readiness` — Deployment & Production Readiness: Deploying a Ndigo app is mostly assembly: build the packages and app, provide configuration and secrets, choose a process model, expose the health surface, and make shutdown orderly. The framework del
@@ -63,6 +63,7 @@ matches the task; do not guess APIs from memory.
 
 ## Packages
 
+- `@ndigo/advice` — Runs the advice declared by annotations — rules, plan compilation, and weaving for Ndigo
 - `@ndigo/ai` — Provider-agnostic agent contracts: chat messages, streaming events, structured output, and a tool-calling loop over MCP tools
 - `@ndigo/ai-sdk` — AI SDK integration layer for Ndigo: the only package that imports the Vercel AI SDK
 - `@ndigo/auth-client` — Client-side authentication for Ndigo — AuthClient, ClientAuthGuard, and OIDC adapter
@@ -95,10 +96,9 @@ matches the task; do not guess APIs from memory.
 - `@ndigo/oxlint-plugin` — Consumer-facing oxlint rules for Ndigo applications — paradigm, view, route, and logging guards
 - `@ndigo/platform-node` — Node.js platform adapter for Ndigo — HTTP server, auto-configuration, static files, multipart
 - `@ndigo/platform-web` — Browser platform adapter for Ndigo — dispatcher glue, history/cookie resolvers, themes
-- `@ndigo/proxy` — Container-managed method interception for Ndigo — metadata annotations, interceptor chains, and Proxy-based weaving
 - `@ndigo/rate-limit` — Fixed-window rate limiting for Node.js — the policy contract, the in-process default limiter, and the shared-store driver seam for Ndigo
 - `@ndigo/redis` — Node-only Redis connections, namespaced shared cache adapters, WebSocket pub/sub fan-out, distributed-lock/job drivers, and the shared-store rate limiter for Ndigo
-- `@ndigo/resilience` — Retry, circuit breaking, and backoff policies for Ndigo — interceptors built on @ndigo/proxy
+- `@ndigo/resilience` — Retry, circuit breaking, and backoff policies for Ndigo — annotations plus their advice
 - `@ndigo/router` — Route registry, path partitions, and feature routing for Ndigo
 - `@ndigo/scheduler` — Cron scheduling for Node.js — @scheduled tasks and the task registry
 - `@ndigo/service` — Typed service clients and server-sent event streaming for Ndigo

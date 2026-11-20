@@ -10,8 +10,10 @@ import { InMemoryDataSource } from './data-source';
  * Concrete implementations (e.g., `DrizzleTransactionManager`) wrap
  * the underlying database's begin/commit/rollback primitives.
  *
- * Inject a `TransactionManager` into a service class to enable the
- * {@link decorators.transactional | transactional} decorator to enforce transaction boundaries:
+ * Inject a `TransactionManager` into a service class, declare the boundary
+ * with {@link decorators.transactional | transactional}, and advise the
+ * instance with `TransactionalInterceptor` — the declaration alone opens
+ * nothing:
  *
  * @example
  * ```typescript
@@ -24,10 +26,18 @@ import { InMemoryDataSource } from './data-source';
  *
  *     @transactional()
  *     async placeOrder(order: Order): Promise<void> {
- *         // runs inside a transaction
+ *         // runs inside a transaction once the instance is advised
  *     }
  * }
+ *
+ * const orders = interceptMethods(new OrderService(tx), [
+ *     { when: hasAnnotation(transactionalMethod), use: new TransactionalInterceptor() },
+ * ]);
  * ```
+ *
+ * A transactional method that calls another one joins the open boundary rather
+ * than opening a second, because both implementations reject an
+ * already-active transaction.
  */
 export interface TransactionManager {
     /**

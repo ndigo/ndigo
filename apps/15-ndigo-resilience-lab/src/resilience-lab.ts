@@ -5,12 +5,14 @@
  * The client is a single object for the whole process:
  *
  * ```text
- * interceptMethods(serviceClient(UpstreamAPI, HTTP), [tracker, breaker, retry])
+ * interceptMethods(serviceClient(UpstreamAPI, HTTP), [trackerRule, breakerRule, retryRule])
  * ```
  *
- * `tracker` (the lab's breaker projection) runs outermost so it sees the final
- * outcome of one chain pass, `breaker` counts one failure per pass, and `retry`
- * re-invokes the tail with backoff — the composition prescribes.
+ * The tracker rule (the lab's breaker projection) runs outermost so it sees the
+ * final outcome of one chain pass, the breaker rule counts one failure per pass,
+ * and the retry rule re-invokes the tail with backoff — the composition
+ * prescribes. The client is a function-shaped target (a `serviceClient` proxy
+ * over the class), so it is advised through the Proxy strategy.
  */
 import { AsApplicationContextAware, ContextToken } from '@ndigo/context';
 import type { ApplicationContext } from '@ndigo/context';
@@ -18,8 +20,8 @@ import { HTTP } from '@ndigo/http';
 import type { Fetch } from '@ndigo/http';
 import { HEALTH_REGISTRY, METRIC_AGGREGATOR } from '@ndigo/management';
 import type { HealthRegistry } from '@ndigo/management';
-import { interceptMethods } from '@ndigo/proxy';
-import { CircuitBreakerInterceptor, RetryInterceptor } from '@ndigo/resilience';
+import { hasAnnotation, interceptMethods } from '@ndigo/advice';
+import { CircuitBreakerInterceptor, RetryInterceptor, circuitBreaker, retry } from '@ndigo/resilience';
 import { serviceClient } from '@ndigo/service';
 import type { FeatureMetricAggregator } from '@ndigo/telemetry';
 import { BreakerHealthIndicator } from './breaker-health-indicator';
@@ -140,7 +142,14 @@ export class ResilienceLab extends AsApplicationContextAware(Object) implements 
                     fetch: (input, init) => this.#transport(input, init),
                 })
             ),
-            [this.#tracker, new CircuitBreakerInterceptor({ now: () => this.#clock.now() }), new RetryInterceptor()]
+            [
+                { when: hasAnnotation(circuitBreaker), use: this.#tracker },
+                {
+                    when: hasAnnotation(circuitBreaker),
+                    use: new CircuitBreakerInterceptor({ now: () => this.#clock.now() }),
+                },
+                { when: hasAnnotation(retry), use: new RetryInterceptor() },
+            ]
         );
     }
 

@@ -11,10 +11,12 @@ This guide covers both paths: using ndigo-ui, and adopting any other Web
 Component library (Web Awesome is the worked example). The runnable ndigo-ui
 reference is [apps/20-ndigo-ui-lab](https://github.com/ndigo/ndigo/tree/main/apps/20-ndigo-ui-lab);
 [apps/07-ndigo-island](https://github.com/ndigo/ndigo/tree/main/apps/07-ndigo-island) is the migrated
-island app. The decision records are
-,
-(which supersedes ), and
-the superseded .
+island app. The decision records are the component-integration contract
+([AD-69 — component integration contract](../decisions/2026-10-06_AD69_COMPONENT_INTEGRATION_CONTRACT.md))
+and the owned-design-system decision
+([AD-95 — ndigo-ui](../decisions/2026-11-08_AD95_NDIGO_UI.md)); AD-95 supersedes the
+library-selection clauses of AD-69 and retires the Web Awesome path recorded in
+[AD-71 — component library selection](../decisions/archive/2026-10-07_AD71_COMPONENT_LIBRARY_SELECTION.md).
 
 **Audience:** Browser application developers · **Prerequisites:** [Guide 02](02-building-a-browser-app.md) · **Reference app:** [apps/20-ndigo-ui-lab](https://github.com/ndigo/ndigo/tree/main/apps/20-ndigo-ui-lab)
 
@@ -40,8 +42,7 @@ independently, and two apps in one monorepo may choose differently.
 
 ## 2. ndigo-ui quickstart
 
-ndigo-ui has two halves: a small `@ndigo/ui` package (tokens, theme, typed
-catalog) and a shadcn-compatible registry of copy-in components.
+ndigo-ui has two halves: a small `@ndigo/ui` package (tokens, theme, typed catalog) and a shadcn-compatible registry of copy-in components.
 
 Install the token package and import the stylesheets:
 
@@ -142,24 +143,18 @@ variant off the attribute instead of the media query:
 @custom-variant dark (&:where([data-theme="ndigo-dark"], [data-theme="solarized-dark"], [data-theme="high-contrast-dark"]));
 ```
 
-Persist the choice in a cookie or `localStorage` and apply it before first
-paint to avoid a flash; `@ndigo/ui-web` ships a theme adapter that negotiates
-the cookie for SSR.
+Persist the choice in a cookie or `localStorage` and apply it before first paint to avoid a flash; `@ndigo/ui-web` ships a theme adapter that negotiates the cookie for SSR.
 
-Switching `data-theme` (or calling `applyTheme`) then re-skins every Tailwind
-utility that references a `--nd-*` token, with no rebuild required. Keep the
-token stylesheet imported before Tailwind so the variables are defined.
+Switching `data-theme` (or calling `applyTheme`) then re-skins every Tailwind utility that references a `--nd-*` token, with no rebuild required. Keep the token stylesheet imported before Tailwind so the variables are defined.
 
-For an application in this monorepo or the lab, install copy-in items with the
-first-party CLI. Point the app at the repository registry:
+For an application in this monorepo or the lab, install copy-in items with the first-party CLI. Point the app at the repository registry:
 
 ```bash
 ndigo ui init apps/my-app --registry ../../registry.json
 ndigo ui add theme lib button input field dialog app-shell --dir apps/my-app
 ```
 
-In a checkout without the CLI on `PATH`, use
-`node packages/ndigo-cli/bin/run.js ui ...`. `ui init` writes `ndigo.ui.json`
+In a checkout without the CLI on `PATH`, use `node packages/ndigo-cli/bin/run.js ui ...`. `ui init` writes `ndigo.ui.json`
 with the registry source and aliases (`@ui` → `src/ui`, `@lib` → `src/lib`,
 `@components` → `src/components`, `@hooks` → `src/hooks`). `ui add` resolves
 registry dependencies, writes the files, records a SHA-256 per file in
@@ -167,8 +162,7 @@ registry dependencies, writes the files, records a SHA-256 per file in
 `--dryRun`, and `--overwrite` as needed. The `theme` item is the copy-in
 alternative to importing `@ndigo/ui/tokens.css`; use one or the other.
 
-External applications use the shadcn channel. Configure the namespace in
-`components.json`:
+External applications use the shadcn channel. Configure the namespace in `components.json`:
 
 ```json
 {
@@ -231,8 +225,7 @@ The contract is the Web Component, not the library:
 - The framework imports no UI package. `@ndigo/platform-web` and
   `@ndigo/view-webcomponent` provide the bridge, not components.
 - `@ndigo/ui` is optional; `pnpm remove @ndigo/ui` leaves a working app.
-- A third-party library is an **application** dependency; the framework
-  packages stay library-free .
+- A third-party library is an **application** dependency; the framework packages stay library-free.
 - A view engine (React/Vue) is a presentation choice, not a framework
   dependency. [Guide 41](41-custom-view-engines.md) covers adding one.
 
@@ -324,13 +317,11 @@ submit ordinary name/value pairs:
 
 ## 8. Theming and i18n
 
-- **ndigo-ui** — consume `--nd-*`; do not hard-code colors/spacing. The token
-  catalog (`TOKENS`, `resolveToken`) is the typed contract.
+- **ndigo-ui** — consume `--nd-*`; do not hard-code colors/spacing. The token catalog (`TOKENS`, `resolveToken`) is the typed contract.
 - **Third-party** — theme through the library's CSS custom properties; map
   your brand tokens onto its variables at the app boundary.
 - **i18n** — component chrome strings must be localizable. Pass the negotiated
-  locale (Guide 17) into the component's label/aria attributes; do not rely on
-  hard-coded English defaults.
+  locale (Guide 17) into the component's label/aria attributes; do not rely on hard-coded English defaults.
 - **RTL** — require logical properties; test one component per library.
 
 ### Theme selection
@@ -385,16 +376,13 @@ budget; a third-party library's claim is not a measurement.
 is no longer installed anywhere in this repository. The migration sequence
 remains the worked example for moving a third-party library onto ndigo-ui:
 
-1. Install the equivalent registry items (`theme`, `lib`, `button`, `input`,
-   `field`, ...).
-2. Replace `<wa-*>` with the native element or `<nd-*>`, keeping
-   `name`/attributes/events.
+1. Install the equivalent registry items (`theme`, `lib`, `button`, `input`, `field`, ...).
+2. Replace `<wa-*>` with the native element or `<nd-*>`, keeping `name`/attributes/events.
 3. Map Web Awesome CSS variables onto `--nd-*` at the app boundary.
 4. Remove the Web Awesome dependency and its per-component imports.
 5. Re-check form submission, fallback markup, and the bundle delta.
 
-Web Awesome stays in this guide as the vetting/fallback example, not as a
-current app dependency.
+Web Awesome stays in this guide as the vetting/fallback example, not as a current app dependency.
 
 ## See also
 

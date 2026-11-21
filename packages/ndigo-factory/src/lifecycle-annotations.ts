@@ -111,16 +111,35 @@ export class LifecycleAnnotationProcessor implements InitializationAwareProcesso
         return 'LifecycleAnnotationProcessor';
     }
 
+    /**
+     * Apply this processor to the given new instance _before_ any initialization callbacks. The instance will already be populated with property values. The returned instance may be a wrapper around the original.
+     *
+     * @param _name - The name of instance
+     * @param instance - The instance
+     * @returns The instance to use, either the original or a wrapped one; if `null`, no subsequent InitializationAwareProcessors will be invoked.
+     */
     processBeforeInitialization<T = unknown>(_name: string, instance: T): T {
         runAnnotated(instance, preInitSpec);
         return instance;
     }
 
+    /**
+     * Apply this processor to the given new instance _after_ any initialization callbacks. The instance will already be populated with property values. The returned instance may be a wrapper around the original.
+     *
+     * @param _name - The name of instance
+     * @param instance - The instance
+     * @returns The instance to use, either the original or a wrapped one; if `null`, no subsequent InitializationAwareProcessors will be invoked.
+     */
     processAfterInitialization<T = unknown>(_name: string, instance: T): T {
         runAnnotated(instance, postInitSpec);
         return instance;
     }
 
+    /**
+     * Apply this processor to the given instance before its destruction.
+     * @param _name - The name of instance
+     * @param instance - The instance to be destroyed.
+     */
     processBeforeDestruction<T = unknown>(_name: string, instance: T): void {
         runAnnotated(instance, preDestroySpec);
     }

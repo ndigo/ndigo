@@ -5,7 +5,6 @@
     "**/lib/**",
     ".opencode/**",
     "apps/05-ndigo-api/db/migrations/**",
-    "packages/create-ndigo-app/templates/**",
     "scripts/vite-plugin-lower-decorators.d.mts",
     "vitest.bench.config.ts",
     "benchmarks/http/ndigo-app.ts"
@@ -23,7 +22,6 @@
   "exclude": ["optionalPeerDependencies"],
   "ignoreIssues": {
     "**/_*.ts": ["exports", "types", "nsExports", "nsTypes"],
-    "packages/create-ndigo-app/**": ["exports", "types"],
     "packages/ndigo-cli/**": ["exports", "types"],
     "packages/ndigo-core/src/media-type.ts": ["exports", "types"],
     "packages/ndigo-http/src/response-error.ts": ["exports", "duplicates"],

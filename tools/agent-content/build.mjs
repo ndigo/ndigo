@@ -9,7 +9,8 @@
  *
  * Outputs:
  *   packages/ndigo-cli/assets/agent/**            version-matched runtime assets
- *   packages/create-ndigo-app/templates/*\/AGENTS.md.template
+ *   (AGENTS.md.template is no longer generated here; it lives in the
+ *    standalone create-ndigo-app repo and is refreshed manually)
  *   packages/<pkg>/docs/llms.txt                  per-package export index
  *   packages/<pkg>/skills/<id>/SKILL.md           skill fallback for packages
  *                                                 a skill declares via frontmatter
@@ -38,7 +39,9 @@ const SKILLS_SOURCE = join(SOURCE, 'skills');
 const CHECK = process.argv.includes('--check');
 const PACKAGES_ROOT = join(ROOT, 'packages');
 const CLI_ASSETS = join(PACKAGES_ROOT, 'ndigo-cli', 'assets', 'agent');
-const CNA_TEMPLATES = join(PACKAGES_ROOT, 'create-ndigo-app', 'templates');
+// NOTE: AGENTS.md.template for the standalone create-ndigo-app repo is no
+// longer generated here. It lives in github.com/ndigo/create-ndigo-app and is
+// refreshed manually from tools/agent-content/instructions/bootstrap.md.
 const MANIFEST_PATH = join(SOURCE, '.agent-content.json');
 const DOCS_INDEX_PATH = join(SOURCE, 'docs-index.md');
 const SKILLS_LOCK_PATH = join(SOURCE, 'skills.lock.json');
@@ -191,10 +194,6 @@ function outputPlan(skills, packages) {
             );
         }
         files.set(repoPath(join(pkg.root, 'skills', skill.id, 'SKILL.md')), skill.content);
-    }
-    const bootstrap = readFileSync(join(SOURCE, 'instructions', 'bootstrap.md'), 'utf8');
-    for (const kind of ['browser', 'node']) {
-        files.set(repoPath(join(CNA_TEMPLATES, kind, 'AGENTS.md.template')), bootstrap);
     }
     files.set(repoPath(DOCS_INDEX_PATH), docsIndex());
     return new Map([...files.entries()].sort(([left], [right]) => left.localeCompare(right)));

@@ -1,15 +1,8 @@
 /**
  * Aware mixins for injecting factory and context dependencies.
  */
+import { Constructable } from '@ndigo/core';
 import { like } from '@ndigo/util/types';
-//import { Constructable } from '@ndigo/core';
-
-/**
- * A generic constructor type.
- * @typeParam T - The type of the instance created by the constructor.
- */
-// oxlint-disable-next-line typescript/no-explicit-any -- TS2545 requires mixin superclass ctors to be exactly `...args: any[]`; no erasable alternative.
-type Constructable<T = {}> = new (...args: any[]) => T;
 
 export const $aware: unique symbol = Symbol.for('@@aware');
 

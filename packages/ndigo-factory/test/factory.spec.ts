@@ -73,7 +73,6 @@ describe('DefaultFactory', () => {
     });
 
     afterEach(() => {
-        // TODO call destroy later
         factory = processor = undefined;
     });
 
@@ -407,7 +406,6 @@ describe('ProxiedFactory', () => {
     });
 
     afterEach(() => {
-        // TODO call destroy later
         factory = undefined;
     });
 

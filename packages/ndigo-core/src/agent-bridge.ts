@@ -141,8 +141,18 @@ export interface AgentQueryMatch {
 export interface AgentBridge extends AgentToolHost {
     /** Lists the entities an agent can see right now. */
     snapshot(): readonly AgentEntity[];
-    /** Finds entities or their items by label, text, or kind. */
+    /**
+     * Finds entities or their items by label, text, or kind.
+     *
+     * @param query - The filter constraining the search.
+     * @returns The matching entities, or an error payload when the query cannot be served.
+     */
     query(query: AgentQuery): readonly AgentQueryMatch[] | { readonly error: string };
-    /** Applies steps in order through the entities' action APIs. */
+    /**
+     * Applies steps in order through the entities' action APIs.
+     *
+     * @param steps - The ordered steps to apply.
+     * @returns The outcome; `ok` is false when a step failed.
+     */
     act(steps: readonly AgentStep[]): Promise<AgentActResult>;
 }

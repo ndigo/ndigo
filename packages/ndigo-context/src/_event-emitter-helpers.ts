@@ -29,8 +29,13 @@ export type EventRegistry = {
  */
 export type EmitterWithStore = { [$events]?: EventRegistry } & EventEmitter;
 
-/** Reads an emitter's listener registry (or `undefined` when not initialized). */
-const getEvents = (emitter: EventEmitter): EventRegistry | undefined => (emitter as EmitterWithStore)[$events];
+/**
+ * Reads an emitter's listener registry (or `undefined` when not initialized).
+ *
+ * @param emitter - The emitter whose registry is read.
+ * @returns The listener registry, or `undefined` when the emitter has none yet.
+ */
+export const getEvents = (emitter: EventEmitter): EventRegistry | undefined => (emitter as EmitterWithStore)[$events];
 
 export const { defineProperty, deleteProperty } = Reflect;
 export const { keys } = Object;

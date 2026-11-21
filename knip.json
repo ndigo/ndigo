@@ -26,13 +26,15 @@
     "packages/ndigo-core/src/media-type.ts": ["exports", "types"],
     "packages/ndigo-http/src/response-error.ts": ["exports", "duplicates"],
     "packages/ndigo-management/src/metrics-controller.ts": ["exports"],
+    "packages/ndigo-management/src/management-properties.ts": ["exports"],
     "packages/ndigo-orm-drizzle/src/schema-snapshot.ts": ["exports"],
     "packages/ndigo-orm/src/metadata.ts": ["types"],
     "packages/ndigo-util/src/crypto/index.ts": ["exports"],
     "packages/ndigo-util/src/crypto/random-hex.ts": ["duplicates"],
     "packages/ndigo-util/src/crypto/random-token.ts": ["duplicates"],
     "packages/ndigo-util/src/type/like.ts": ["types"],
-    "packages/ndigo-platform-web/src/cookies.ts": ["duplicates"]
+    "packages/ndigo-platform-web/src/cookies.ts": ["duplicates"],
+    "tools/agent-content/_skills.mjs": ["exports"]
   },
   "workspaces": {
     ".": {

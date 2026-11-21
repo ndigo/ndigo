@@ -31,22 +31,11 @@
 import { FrameworkError } from '@ndigo/core';
 
 /** A STOMP body: text (string) or byte-exact binary (D8). */
-export type StompBody = string | Uint8Array;
+import type { StompBody, StompFrame, StompWireInput } from './stomp-frame-types';
 
-/** A parsed STOMP frame. `command: ''` marks a heart-beat ping. */
-export interface StompFrame {
-    /** Frame command (`CONNECT`, `SEND`, …, or `''` for a ping). */
-    command: string;
-    /** Decoded header map; names as sent, values unescaped. */
-    headers: Record<string, string>;
-    /** Frame body — string for text frames, bytes for binary (D8). */
-    body: StompBody;
-}
+// Re-export moved contracts for backward compat.
+export * from './stomp-frame-types';
 
-/** Byte-like inputs the codec accepts (binary WS frames, node Buffers). */
-export type StompWireInput = string | Uint8Array | ArrayBuffer;
-
-/** Raised on malformed frames (missing NUL, bad `content-length`, …). */
 export class StompProtocolError extends FrameworkError {
     /**
      * The `Symbol.toStringTag` value for this instance.

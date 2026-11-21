@@ -1,0 +1,155 @@
+/**
+ * `/queue` message store contracts.
+ */
+import type { StompBody } from './stomp-frame';
+
+/** A stored `/queue` message — the durable unit behind the backlog. */
+export interface StoredQueueMessage {
+    /** Broker-issued id; the dedupe key on replay (at-least-once). */
+    readonly messageId: string;
+    /** The `/queue/<name>` destination the message belongs to. */
+    readonly destination: string;
+    /** The message body — text or byte-exact binary (D8). */
+    readonly body: StompBody;
+    /** Extra headers (e.g. `content-type`), copied at append time. */
+    readonly headers: Readonly<Record<string, string>>;
+    /**
+     * Monotonic sequence — the ordering and gap-detection key, issued by
+     * the store. Per-destination and 1-based on the memory backend,
+     * globally monotonic on libsql; gaps are expected (see the module
+     * docblock), so only monotonicity within a replay window is portable.
+     */
+    readonly seq: number;
+    /** Append timestamp (epoch ms) — the retention (TTL) criterion. */
+    readonly storedAt: number;
+}
+
+/** What a caller asks the store to retain. */
+export interface QueueStoreRetention {
+    /** Drop messages this old or older (the boundary is inclusive). */
+    readonly ttlMs?: number;
+    /** Drop the oldest messages past this many per destination. */
+    readonly maxMessages?: number;
+}
+
+/**
+ * The store contract: append, ordered replay, retention pruning.
+ *
+ * Every method rejects with a `RangeError` when the destination is not a
+ * non-empty string (validated identically by every backend).
+ */
+export interface QueueMessageStore {
+    /**
+     * Backend identifier for observability/diagnostics
+     * (e.g. `'in-memory'`, `'libsql'`, `'redis'`).
+     */
+    readonly kind: string;
+
+    /**
+     * Persist one message and return it with the store-issued `seq` and
+     * `storedAt`. Applied in call order per destination. Rejects when the
+     * message cannot be stored (the caller owns fail-closed behavior).
+     *
+     * @param message - The message without store-issued fields.
+     * @returns The stored message.
+     */
+    append(message: Omit<StoredQueueMessage, 'seq' | 'storedAt'>): Promise<StoredQueueMessage>;
+
+    /**
+     * Replay a destination's messages, oldest first (ascending `seq`,
+     * newest last). `afterSeq` resumes after a gap (crash recovery);
+     * `limit` bounds the window to the newest `limit` messages (history
+     * length) — absent, `NaN` or `+Infinity` means the whole window, and
+     * negative values clamp to `0` (empty).
+     *
+     * @param destination - The `/queue/<name>` destination.
+     * @param options - Replay window.
+     * @returns The matching messages, append-ordered.
+     */
+    replay(destination: string, options?: { afterSeq?: number; limit?: number }): Promise<StoredQueueMessage[]>;
+
+    /**
+     * Enforce retention on one destination, dropping the oldest messages
+     * past the TTL and/or count bound. The TTL boundary is inclusive: a
+     * message whose age is exactly `ttlMs` is expired. Idempotent; safe to
+     * call on any cadence.
+     *
+     * @param destination - The `/queue/<name>` destination.
+     * @param retention - The policy to enforce.
+     * @returns How many messages were pruned.
+     */
+    prune(destination: string, retention: QueueStoreRetention): Promise<number>;
+
+    /**
+     * Whether a destination exists (has live or retained messages).
+     *
+     * @param destination - The `/queue/<name>` destination.
+     * @returns Whether the destination is known to the store.
+     */
+    has(destination: string): Promise<boolean>;
+
+    /**
+     * Optional teardown: release the backend's resources. The store's
+     * lifetime is the broker's, so an owner that shut a broker built with a
+     * durable store down SHOULD call this at shutdown. Idempotent.
+     *
+     * Backends document what a call after disposal does: the libsql backend
+     * rejects later operations and closes only owned clients (injected
+     * clients are borrowed by default); the in-memory backend forgets its
+     * data and stays usable. Stop and drain producers before disposal.
+     */
+    dispose?(): Promise<void> | void;
+}
+
+/** Options for {@link InMemoryQueueMessageStore}. */
+export interface InMemoryQueueStoreOptions {
+    /**
+     * Retained messages per destination (oldest dropped past the bound).
+     * Default `1000` — parity with the broker's `queueBacklog`. `0`
+     * disables the count bound.
+     */
+    maxMessagesPerDestination?: number;
+    /**
+     * Distinct destinations retained (the oldest destination is evicted
+     * whole past the bound). Default `1000`. `0` disables.
+     */
+    maxDestinations?: number;
+    /**
+     * Global retained-byte budget across all destinations (oldest messages
+     * evicted first). Default `67108864` (64 MiB) — parity with the
+     * broker's `maxBacklogBytes`. `0` disables.
+     */
+    maxBytes?: number;
+    /**
+     * Injectable clock for deterministic tests (the registry's `now` clock
+     * precedent). Defaults to `Date.now`.
+     * @internal
+     */
+    now?: () => number;
+}
+
+/** A snapshot of {@link InMemoryQueueMessageStore} retention ({@link InMemoryQueueMessageStore.stats}). */
+export interface InMemoryQueueStoreStats {
+    /** Distinct destinations currently retaining at least one message. */
+    readonly destinations: number;
+    /** Retained body octets across every destination. */
+    readonly retainedBytes: number;
+    /**
+     * Per-destination sequence counters held. Bounded by `destinations`:
+     * the counter of a dropped destination is dropped with it (SEC-1).
+     */
+    readonly seqEntries: number;
+}
+
+/**
+ * The default {@link QueueMessageStore}: bounded in-memory rings, one per
+ * destination — the same shape the broker's live backlog uses, so the
+ * durable phase can swap the backing without changing delivery semantics.
+ *
+ * Every bound is a drop-oldest watermark (matches the broker's fail-closed
+ * posture): exceeding a bound never throws — it evicts. Eviction is
+ * non-destructive to an in-flight `append`: a ring emptied by the count
+ * guard stays attached so the pending write lands in it (COR-9), and a
+ * ring that a budget drops whole takes its sequence counter with it, so
+ * `#seqs` can never outgrow the destination cap (SEC-1).
+ */

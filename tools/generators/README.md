@@ -6,7 +6,7 @@ is **repo-only tooling** (`tools/`): it hard-codes this repository's
 layout (`packages/ndigo-*`, `apps/NN-*`, `vitest.aliases.ts`) and bakes in
 the repo's manifest rules, so it is a private workspace member and is never
 published. Consumer scaffolding is
-[`create-ndigo-app`](../../packages/create-ndigo-app/README.md); the deferred
+[`create-ndigo-app`](https://github.com/ndigo/create-ndigo-app); the deferred
 consumer Nx story would be a new package, not this collection.
 
 ## Generators

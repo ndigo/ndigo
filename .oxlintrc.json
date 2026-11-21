@@ -134,11 +134,7 @@
       }
     },
     {
-      "files": [
-        "packages/create-ndigo-app/src/**/*.ts",
-        "packages/ndigo-log/src/**/*.ts",
-        "packages/ndigo-util/src/**/*.ts"
-      ],
+      "files": ["packages/ndigo-log/src/**/*.ts", "packages/ndigo-util/src/**/*.ts"],
       "rules": {
         "@ndigo/no-raw-console": "off"
       }

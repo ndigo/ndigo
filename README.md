@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/images/Ndigo.svg" alt="Ndigo logo" width="160" height="160">
+  <img src="https://github.com/ndigo/.github/raw/main/profile/assets/ndigo.svg" alt="Ndigo logo" width="160" height="160">
 </p>
 
 # Ndigo

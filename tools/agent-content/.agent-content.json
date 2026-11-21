@@ -1,8 +1,5 @@
 {
   "files": {
-    "packages/create-ndigo-app/docs/llms.txt": "d85d0f110fdc09d02d40af1c5646a28959856b6171f8303be730e372e42e20ee",
-    "packages/create-ndigo-app/templates/browser/AGENTS.md.template": "1f11d4d5949066f4e7f9f3cf01a8a0785f8882181fd76aa3c5f672afdfeea8f4",
-    "packages/create-ndigo-app/templates/node/AGENTS.md.template": "1f11d4d5949066f4e7f9f3cf01a8a0785f8882181fd76aa3c5f672afdfeea8f4",
     "packages/ndigo-advice/docs/llms.txt": "c14b8dee43cebcecd9d086a5ff3379afc805dee014a744f5c575f9cc1a3669f9",
     "packages/ndigo-ai-sdk/docs/llms.txt": "e880d956622043ffe010d9d77edfc3025f4ab0d6a47fed20cfdd25bbdc23ab3f",
     "packages/ndigo-ai/docs/llms.txt": "d545122c5ab608844601350215c24c55e4a64f34e8fc1fe330aa8039ccd40828",
@@ -11,7 +8,7 @@
     "packages/ndigo-auth-server/docs/llms.txt": "f2e5d1740c47cb3384e59d4eaf0f87ab71896c2c606bc9993062284eec3fbb07",
     "packages/ndigo-boot/docs/llms.txt": "7346ca19a48c362787800524600e038d4960994fd6bfb9589073cf8f5614384d",
     "packages/ndigo-cache/docs/llms.txt": "fb8d1276be014940a13eee8cde946b91238da6e8365dba21a7fce9a1a19e718d",
-    "packages/ndigo-cli/assets/agent/docs-index.md": "09af3d692c520ce8ecaa54cc26fd88088fdc158b3dce2e1fe0cffe9f759fa2be",
+    "packages/ndigo-cli/assets/agent/docs-index.md": "ffbf57a4cb54662742f573039d8f40f0d4f6608880ddeb79f5c31e95951aa446",
     "packages/ndigo-cli/assets/agent/instructions.md": "e77a25f81e7f41b9c01aea80a04e8e2359e98d82401a393b07c550e966535fb9",
     "packages/ndigo-cli/assets/agent/skills/ndigo-app/SKILL.md": "bc140d0d27bb341066c0a712a840d16635e9e76318418b8232454806b78b57f8",
     "packages/ndigo-cli/assets/agent/skills/ndigo-debug/SKILL.md": "583243d2ee73fbaf807cb143c23e617448f5eebb172ac87729bcec7ffe567db3",
@@ -71,6 +68,6 @@
     "packages/ndigo-view-webcomponent/docs/llms.txt": "5ac95e106b447ffb1519f0f4934fdaacfd18882414c7af605b128f13c4aab274",
     "packages/ndigo-view/docs/llms.txt": "be8af5d8c40ce0f70f0240443d78bb1a54aac1122f0957760f3b1a262d37834b",
     "packages/ndigo-view/skills/ndigo-views/SKILL.md": "f26136bb54ed176c4b01e90ea9cbfeeac97eabaf4a6c33c7131589c7e1f02d1e",
-    "tools/agent-content/docs-index.md": "09af3d692c520ce8ecaa54cc26fd88088fdc158b3dce2e1fe0cffe9f759fa2be"
+    "tools/agent-content/docs-index.md": "ffbf57a4cb54662742f573039d8f40f0d4f6608880ddeb79f5c31e95951aa446"
   }
 }

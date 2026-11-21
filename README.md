@@ -275,7 +275,7 @@ Telemetry:
 Tooling & scaffolding:
 
 - [ndigo-cli](packages/ndigo-cli/README.md) — the `ndigo` CLI: app lifecycle, scaffolding, db migrations, UI registry + MCP, and DX tools
-- [create-ndigo-app](packages/create-ndigo-app/README.md) — scaffold a standalone Ndigo application (node or browser)
+- [create-ndigo-app](https://github.com/ndigo/create-ndigo-app) — scaffold a standalone Ndigo application (node or browser); extracted repo, 0.x, not published
 - [ndigo-generators](tools/generators/README.md) — repo-local Nx scaffolding (the `ndigo new` / `ndigo generate` engines)
 
 Testing & quality:

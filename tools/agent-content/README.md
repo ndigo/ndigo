@@ -17,8 +17,10 @@ The authored store for Ndigo's agent-facing content.
 - `packages/ndigo-cli/assets/agent/**` — the version-matched CLI assets
   (`instructions.md`, `docs-index.md`, and every skill). These stay
   authoritative for every skill.
-- `packages/create-ndigo-app/templates/*/AGENTS.md.template` — the scaffold
-  bootstrap pointer.
+- (The scaffold bootstrap pointer previously written to
+  `packages/create-ndigo-app/templates/*/AGENTS.md.template` is now vendored in
+  the standalone `github.com/ndigo/create-ndigo-app` repo and refreshed
+  manually from `instructions/bootstrap.md`.)
 - `packages/<pkg>/docs/llms.txt` — a compressed export index for every
   package, generated from committed inputs only (`package.json`, the README,
   and the `src/index.ts` re-export graph; no build or TypeDoc run).

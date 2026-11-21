@@ -721,6 +721,13 @@ class UserProfileView {}
 
 **Rationale:** Decorators are functions that modify classes, methods, fields, or parameters. Following standard function naming conventions (camelCase) maintains consistency with JavaScript/TypeScript ecosystem patterns and TC39 decorator standards.
 
+**Decorators vs. annotations:** Ndigo distinguishes TC39 _decorators_ (functions that modify
+classes/methods/fields at definition time: `@service`, `@entity`, `@column`,
+`@authenticated`, `@signal`) from Ndigo _annotations_ (metadata keys created via
+`methodAnnotation()`/`classAnnotation()` and read via `annotationOf()`: `@preInit`,
+`@counted`, `@traced`, `@transactional`). Name files by their actual content —
+`*-decorators.ts` vs. `*-annotations.ts` (see §4.6). A file that mixes both must be split.
+
 ### 3.9. Acronym Casing [AUTOMATED: oxlint]
 
 **Automated:** `internal/no-mixed-case-acronyms` (error) rejects mixed-case acronyms (`Http`, `Json`, `Xml`) in type declaration names; identifier casing remains a review concern.
@@ -4454,6 +4461,59 @@ Ref: STYLE_GUIDE.md Section 4.5"
 - Run tests after each extraction
 - Commit working changes before next extraction
 - Document rationale in commit messages
+
+---
+
+### 4.6. Companion File Patterns (Extraction)
+
+When a module grows beyond the 300-line refactor threshold, split it into
+cohesive companion files following these naming patterns. The primary module
+keeps the main class/entry point and re-exports the moved contracts for
+backward compatibility.
+
+| Companion suffix         | Content                                                                                      | Example                                                                                                                                                  |
+| :----------------------- | :------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `*-types.ts`             | Type contracts, interfaces, duck-typing guards (`like*`)                                     | `oidc-types.ts`, `property-resolver-types.ts`, `event-emitter-types.ts`, `stomp-frame-types.ts`, `message-store-types.ts`, `task-scheduler-types.ts`     |
+| `*-index.ts`             | Index strategies / lookup implementations                                                    | `property-index.ts` (PrototypeChainIndex, FlatMergedIndex)                                                                                               |
+| `*-mixins.ts`            | Mixin factories (`As*`, `as*`)                                                               | `event-emitter-mixins.ts` (AsEventEmitter, AsConditionalEventEmitter, …)                                                                                 |
+| `*-stores.ts`            | Persistence seam implementations                                                             | `oidc-stores.ts` (InMemoryPendingAuthorizationStore, InMemoryRefreshTokenStore)                                                                          |
+| `*-annotations.ts`       | Ndigo annotation keys (`methodAnnotation`/`classAnnotation`) and annotation-based decorators | `lifecycle-annotations.ts`, `orm/annotations.ts` (`@transactional`), telemetry `metrics-annotations.ts` (`@counted`), `trace-annotations.ts` (`@traced`) |
+| `*-decorators.ts`        | TC39 decorators (`@service`, `@entity`, `@column`, `@authenticated`, `@signal`, …)           | `service-decorators.ts`, `orm/decorators.ts`, `auth-core/decorators.ts`, `signals/_decorators.ts`                                                        |
+| `*_helpers.ts` / `_*.ts` | Internal helper functions (underscore-prefixed = internal)                                   | `_oidc-helpers.ts`, `_node-http-server-adapter-helpers.ts`, `_event-emitter-helpers.ts`, `_stomp-broker-types.ts`                                        |
+
+**Rules:**
+
+1. **One concern per file.** A companion file should have a single, clearly
+   named responsibility (contracts, mixins, stores, helpers, annotations, or
+   decorators) — never a grab-bag.
+2. **Internal helpers are underscore-prefixed** (`_*.ts`) and never exported
+   across package boundaries. Public contracts are non-underscore and
+   re-exported from the primary module (and ultimately the package barrel
+   `index.ts`).
+3. **Backward compatibility via re-exports.** The primary module keeps
+   `export * from './<companion>'` (or named re-exports) so existing imports
+   continue to resolve. The companion files are implementation details that
+   consumers never import directly.
+4. **Decorators vs. annotations.** Ndigo distinguishes TC39 _decorators_
+   (functions that modify classes/methods/fields at definition time) from
+   Ndigo _annotations_ (metadata keys created via `methodAnnotation()`/
+   `classAnnotation()` and read via `annotationOf()`). Name files by their
+   actual content: `*-decorators.ts` for TC39 decorators, `*-annotations.ts`
+   for annotation keys/readers. A file that mixes both must be split.
+5. **Thresholds.** Ideal 20–150 lines; review >200 lines; refactor >300 lines
+   (likely violates SRP). Constant collections and complex single-responsibility
+   classes are accepted exceptions.
+6. **One public type per file** where practical; files under 300 lines.
+
+### 4.7. Module Size Reassessment
+
+After a reorganization, re-run the file-size census and update this section if
+new patterns emerge. Accepted large-file exceptions:
+
+- Constant collections (e.g., `http-headers.ts`: 725 lines, 124 constants).
+- Complex classes with a single responsibility (e.g., `StompBroker`,
+  `NodeHTTPServerAdapter`, `AbstractFactory`).
+- Framework integration modules.
 
 ---
 

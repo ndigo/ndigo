@@ -2,7 +2,7 @@
  * `@traced` execution: the span-name annotation and the interceptor that
  * opens the span.
  *
- * The decorator (see `decorators.ts`) only declares the name. A decorated
+ * The decorator (see `annotations.ts`) only declares the name. A decorated
  * method stays inert until something advises it — `interceptMethods` by hand,
  * or `interception(...)` in the container.
  */

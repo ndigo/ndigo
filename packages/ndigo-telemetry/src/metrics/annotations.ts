@@ -1,5 +1,5 @@
 /**
- * `@counted` decorator and its metadata readers.
+ * `@counted` annotation and its metadata readers.
  *
  * The decorator declares the counter; the increment itself is recorded by
  * `CountedInterceptor` (see `interceptor.ts`).

@@ -1,5 +1,5 @@
 /**
- * `@traced` decorator and trace metadata readers.
+ * `@traced` annotation and trace metadata readers.
  *
  * The decorator declares the span name on the class; the span itself is
  * opened by `TracedInterceptor` (see `interceptor.ts`).

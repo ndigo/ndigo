@@ -2,10 +2,10 @@
  */
 import { describe, expect, it } from 'vitest';
 import '@tsmetadata/polyfill';
-import { counted, CountedInterceptor, countedCounter, getCounted, hasCounted } from '../src/metrics/decorators';
+import { counted, CountedInterceptor, countedCounter, getCounted, hasCounted } from '../src/metrics/annotations';
 import { FeatureMetricAggregator } from '../src/metrics/feature-metric-aggregator';
 import { TracedInterceptor, tracedSpan } from '../src/trace/interceptor';
-import { getTraced, hasTraced, traced } from '../src/trace/decorators';
+import { getTraced, hasTraced, traced } from '../src/trace/annotations';
 import { hasAnnotation, interceptMethods } from '@ndigo/advice';
 
 describe('telemetry decorators (TC39)', () => {

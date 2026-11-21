@@ -2,7 +2,7 @@
  * `@counted` execution: the counter annotation and the interceptor that
  * records the increment.
  *
- * The decorator (see `decorators.ts`) only declares the counter. A decorated
+ * The decorator (see `annotations.ts`) only declares the counter. A decorated
  * method stays inert until something advises it — `interceptMethods` by hand,
  * or `interception(...)` in the container.
  */

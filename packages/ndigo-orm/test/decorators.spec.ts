@@ -15,8 +15,8 @@ import {
     postLoad,
     preUpdate,
     postRemove,
-    transactional as transactionalDecorator,
 } from '../src/decorators';
+import { transactional as transactionalDecorator } from '../src/annotations';
 import { getEntityMetadata, isEntity } from '../src/metadata';
 
 // Spec-side type wrappers; runtime-identical to the production decorators.

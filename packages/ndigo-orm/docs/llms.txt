@@ -43,10 +43,10 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `postLoad` — Marks a method to be invoked by the `EntityManager` **after** an entity is loaded from the data source.
 - `preUpdate` — Marks a method to be invoked by the `EntityManager` **before** an already-persisted entity is updated (update path).
 - `postRemove` — Marks a method to be invoked by the `EntityManager` **after** an entity has been removed from the data source.
+- `RelationOptions` *(type)* — Options for relation decorators. The join column must name an existing `@column` field — the FK lives in a declared column so it persists and reads through the…
 - `transactional` — Declares that a method runs inside a transaction.
 - `transactionalMethod` — `@transactional` annotation key. A method carrying it runs inside a transaction when its instance exposes a `transactionManager`.
 - `TransactionalInterceptor` — Runs `@transactional` methods inside a transaction.
-- `RelationOptions` *(type)* — Options for relation decorators. The join column must name an existing `@column` field — the FK lives in a declared column so it persists and reads through the…
 - `getEntityMetadata` — Retrieves the entity metadata for a given class.
 - `isEntity` — Checks if a given class is an entity.
 - `columnTypeFamily` — Classifies a declared column type into its ColumnTypeFamily using whole-word matching, so unrelated types (`point`, `interval`) are not mistaken for `int`.

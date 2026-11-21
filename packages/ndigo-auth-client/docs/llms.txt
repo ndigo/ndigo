@@ -17,12 +17,17 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `OIDCErrorCode` *(type)* — Error codes for OIDC failures. The message is safe to expose; the cause (when attached) carries internal detail.
 - `OIDCError` — An OIDC-specific failure. Every authorization/token failure mode throws this so callers can distinguish provider errors from programming errors.
 - `OIDCAdapterConfig` *(type)* — Configuration for the OIDC adapter.
-- `AuthorizationRequest` *(type)* — A pending authorization-code request created by OIDCAdapter.createAuthorizationRequest.
-- `PendingAuthorization` *(type)* — One pending authorization-code request: the values OIDCAdapter.createAuthorizationRequest generates and OIDCAdapter.exchangeCodeForTokens needs to redeem the c…
+- `AuthorizationRequest` *(type)* — A pending authorization-code request created by `OIDCAdapter.createAuthorizationRequest`.
+- `DiscoveryDocument` *(type)* — Validated subset of an OIDC discovery document.
+- `TokenResponse` *(type)* — Validated token-endpoint response.
+- `PendingAuthorization` *(type)* — One pending authorization-code request: the values `OIDCAdapter.createAuthorizationRequest` generates and `OIDCAdapter.exchangeCodeForTokens` needs to redeem t…
 - `PendingAuthorizationStore` *(type)* — Persistence seam for pending authorization requests.
-- `InMemoryPendingAuthorizationStore` — Default PendingAuthorizationStore: a bounded in-memory map scoped to a single adapter instance.
 - `RefreshTokenBinding` *(type)* — The subject binding recorded for a refresh token: which principal the token was issued for. Set when the code exchange (or a rotation) captures the token; cons…
 - `RefreshTokenStore` *(type)* — Persistence seam for refresh-token bindings.
-- `InMemoryRefreshTokenStore` — Default RefreshTokenStore: a bounded in-memory map scoped to a single adapter instance.
 - `OIDCResult` *(type)* — The result of a token-endpoint exchange: the `AuthResult` contract plus the provider's refresh token. `refreshToken` is `null` when the provider issued none fo…
-- `OIDCAdapter`
+- `AuthAdapter` *(type)*
+- `Principal` *(type)*
+- `AuthResult` *(type)*
+- `InMemoryPendingAuthorizationStore` — Default PendingAuthorizationStore: a bounded in-memory map scoped to a single adapter instance.
+- `InMemoryRefreshTokenStore` — Default RefreshTokenStore: a bounded in-memory map scoped to a single adapter instance.
+- `OIDCAdapter` — An AuthAdapter implementation for OpenID Connect (OIDC).

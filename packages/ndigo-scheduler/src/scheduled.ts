@@ -159,7 +159,7 @@ function validateCron(expression: string): void {
  * ```ts
  * class Reports {
  *     @scheduled('0 0 * * *')
- *     async nightly() { ... }
+ *     async nightly() {}
  * }
  * ```
  */

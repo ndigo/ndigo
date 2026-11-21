@@ -66,7 +66,7 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `likeEnvironmentSource` — Returns whether a value exposes an environment.
 - `MockEnvironment` — Environment implementation intended for tests.
 - `StandardEnvironment` — Default environment implementation used by application contexts.
-- `EventListener` *(type)* — Listener function shape used by the emitter implementation.
+- `EventListener` *(type)*
 - `EventHandler` *(type)* — A single listener or a listener list for an event type.
 - `EventHandlers` *(type)* — Mapping from event type to handler(s).
 - `EventType` *(type)* — Event type supported by the emitter.
@@ -117,12 +117,12 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `DependencyValidationResult` *(type)* — Result of validating a feature's dependency manifest against the registry.
 - `SharedDependencyRegistry` *(type)* — Registry that holds shared dependency declarations and validates feature manifests.
 - `DefaultSharedDependencyRegistry` — Default implementation of `SharedDependencyRegistry`.
-- `PropertyResolver` *(type)* — Resolves property values from a configured set of sources.
+- `PropertyResolver` *(type)*
 - `likePropertyResolver` — Returns whether a value behaves like a PropertyResolver.
-- `PropertyIndex` *(type)* — Internal lookup strategy behind PrototypalPropertyResolver.
+- `PropertyIndex` *(type)*
+- `ResolverOptions` *(type)*
 - `PrototypeChainIndex` — Index that layers sources through a prototype chain.
 - `FlatMergedIndex` — Index that merges sources into one flat object on build.
-- `ResolverOptions` *(type)* — Options controlling the resolver's internal lookup strategy.
 - `PrototypalPropertyResolver` — Property resolver that layers sources through a live property source registry.
 - `REDACTED_VALUE` — The placeholder substituted for any value when a secret decryptor is configured — the value may be decrypted secret plaintext.
 - `redactDiagnosticValue` — Formats a resolved property value for a diagnostic (error) message.

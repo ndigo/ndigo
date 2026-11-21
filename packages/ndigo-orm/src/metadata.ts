@@ -141,7 +141,7 @@ function getMetadata(target: Constructable): MetadataRecord {
  *
  * @example
  * ```ts
- * if (isEntity(User)) { ... }
+ * if (isEntity(User)) {}
  * ```
  */
 export function isEntity(target: Constructable): boolean {

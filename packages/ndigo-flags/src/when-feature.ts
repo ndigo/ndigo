@@ -37,9 +37,11 @@ export const WHEN_FEATURE_KEY = 'flags:whenFeature';
  *
  * @example
  * ```ts
- * @whenFeature('todo.dueDates')
- * @routeMapping('/todo/due')
- * async dueDates() { ... }
+ * class Example {
+ *     @whenFeature('todo.dueDates')
+ *     @routeMapping('/todo/due')
+ *     async dueDates() {}
+ * }
  * ```
  */
 export function whenFeature(flag: string) {

@@ -163,8 +163,10 @@ export const postCall = callDecorator('POST');
  *
  * @example
  * ```ts
- * @putCall('/items/:id')
- * updateItem(id: number, body: Item): Promise<Item> { return undefined as never; }
+ * class Example {
+ *     @putCall('/items/:id')
+ *     updateItem(id: number, body: Item): Promise<Item> { return undefined as never; }
+ * }
  * ```
  */
 export const putCall = callDecorator('PUT');
@@ -177,8 +179,10 @@ export const putCall = callDecorator('PUT');
  *
  * @example
  * ```ts
- * @deleteCall('/items/:id')
- * deleteItem(id: number): Promise<void> { return undefined as never; }
+ * class Example {
+ *     @deleteCall('/items/:id')
+ *     deleteItem(id: number): Promise<void> { return undefined as never; }
+ * }
  * ```
  */
 export const deleteCall = callDecorator('DELETE');
@@ -191,8 +195,10 @@ export const deleteCall = callDecorator('DELETE');
  *
  * @example
  * ```ts
- * @patchCall('/items/:id')
- * patchItem(id: number, body: Partial<Item>): Promise<Item> { return undefined as never; }
+ * class Example {
+ *     @patchCall('/items/:id')
+ *     patchItem(id: number, body: Partial<Item>): Promise<Item> { return undefined as never; }
+ * }
  * ```
  */
 export const patchCall = callDecorator('PATCH');
@@ -205,8 +211,10 @@ export const patchCall = callDecorator('PATCH');
  *
  * @example
  * ```ts
- * @queryCall('/items/search')
- * searchItems(body: SearchQuery): Promise<Item[]> { return undefined as never; }
+ * class Example {
+ *     @queryCall('/items/search')
+ *     searchItems(body: SearchQuery): Promise<Item[]> { return undefined as never; }
+ * }
  * ```
  */
 export const queryCall = callDecorator('QUERY');

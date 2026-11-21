@@ -1,7 +1,8 @@
 /**
  * Entry iterators and `Iterable`-related type helpers.
  */
-import { isNil, is } from '@ndigo/util/types';
+import { isNil } from '@ndigo/util/types';
+import { hasFunction } from './_guards.js';
 
 /**
  * Extracts the key type from a Map-like value.
@@ -95,16 +96,9 @@ export type Entries<Value> =
 
 const { isArray } = Array,
     { entries } = Object,
-    propIs =
-        (type: Function) =>
-        (name: string | symbol) =>
-        (obj: unknown): boolean =>
-            is(type, (obj as Record<PropertyKey, unknown> | undefined)?.[name]),
-    hasFunction = propIs(Function),
     hasEntries = hasFunction('entries'),
     _invokeEntries = (obj: object): IterableIterator<unknown> =>
         (obj as { entries(): IterableIterator<[PropertyKey, unknown]> }).entries(),
-    _T = (): boolean => true,
     _entriesToIterator = (obj: object) => indexedIterator(entries(obj));
 
 /**

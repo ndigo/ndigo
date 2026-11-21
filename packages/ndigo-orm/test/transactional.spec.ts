@@ -8,7 +8,7 @@ import {
     TransactionalInterceptor,
     transactional as transactionalDecorator,
     transactionalMethod,
-} from '../src/decorators';
+} from '../src/annotations';
 import { hasAnnotation, interceptMethods } from '@ndigo/advice';
 import { entity as entityDecorator, primaryColumn, column } from '../src/index';
 

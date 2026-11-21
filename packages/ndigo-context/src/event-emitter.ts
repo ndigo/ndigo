@@ -19,9 +19,9 @@ import {
     isPositiveNumber,
     removeAllEventListeners,
     removeEventListener,
+    getEvents,
     tickAllEvents,
 } from './_event-emitter-helpers';
-import type { EmitterWithStore } from './_event-emitter-helpers';
 
 /**
  * Listener function shape used by the emitter implementation.
@@ -382,7 +382,7 @@ export const AsEventEmitter = <T extends Constructable>(superclass: T): Construc
          * @returns The listener count.
          */
         listenerCount(type: string | symbol): number {
-            const registered = (this as EmitterWithStore)[$events]?.[type];
+            const registered = getEvents(this)?.[type];
             let count: number;
             if (!registered) {
                 count = 0;
@@ -403,7 +403,7 @@ export const AsEventEmitter = <T extends Constructable>(superclass: T): Construc
         listeners(type: string | symbol): Function[] {
             let listeners: EventListener[];
 
-            const handler: EventHandler | undefined = (this as EmitterWithStore)[$events]?.[type];
+            const handler: EventHandler | undefined = getEvents(this)?.[type];
 
             if (typeof handler === 'undefined') {
                 listeners = [];
@@ -455,7 +455,7 @@ export const AsEventEmitter = <T extends Constructable>(superclass: T): Construc
                 throw new TypeError('listener must be a function');
             }
 
-            if (!(this as EmitterWithStore)[$events]?.[type]) {
+            if (!getEvents(this)?.[type]) {
                 return this;
             }
 
@@ -519,7 +519,7 @@ export class Emitter extends AsEventEmitter(Null) implements Destroyable, Serial
      */
     toJSON(): JSONValue {
         const json: { listenerCount?: { [type: string]: number } } = createNull();
-        const types = keys((this as EmitterWithStore)[$events] || createNull());
+        const types = keys(getEvents(this) || createNull());
 
         const listenerCount: { [type: string]: number } = createNull();
         const length = types.length;

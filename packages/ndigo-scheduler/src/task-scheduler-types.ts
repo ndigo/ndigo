@@ -98,13 +98,21 @@ export interface TaskStats {
 }
 
 export interface TaskState {
+    /** The task definition. */
     readonly definition: ScheduledTaskDefinition;
+    /** Whether a run is currently in flight. */
     inFlight: boolean;
+    /** The next scheduled run time, or null when none. */
     nextRunAt: Date | null;
+    /** The number of runs completed. */
     runs: number;
+    /** The number of failed runs. */
     failures: number;
+    /** The last error, or null when none. */
     lastError: Error | null;
+    /** When the last run started, or null. */
     lastStartedAt: Date | null;
+    /** When the last run completed, or null. */
     lastCompletedAt: Date | null;
 }
 

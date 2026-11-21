@@ -50,7 +50,7 @@
     "packages/ndigo-redis/docs/llms.txt": "be65e6bee0dfbe84c784a53dec21dfec5bdc02820df83a5f0b1755fee8d966c7",
     "packages/ndigo-resilience/docs/llms.txt": "4d51a2d293d4df7a05772b782f78d0b64482f0295eb1223b61e110e040ef00bd",
     "packages/ndigo-router/docs/llms.txt": "62408e2e0edaa03786733ed897a2269e686ff24bc65eef48b7938bac826e6a95",
-    "packages/ndigo-scheduler/docs/llms.txt": "792c3a4270f92a744a9c84046578451ad74f4f21cd8551a5d5a60eb9f4d13d1d",
+    "packages/ndigo-scheduler/docs/llms.txt": "b4ea2f932d6b3023d56ebc5e3813f876f2dfee8c19942053e54390877986d650",
     "packages/ndigo-service/docs/llms.txt": "bf4f46531f4b8e9458ec3b8811a17268c28f9e66f8765a9e47603d31849cc00b",
     "packages/ndigo-signals/docs/llms.txt": "e88d5bfd76a96b35eeb6423ae15907745780b3e9843fefc857d937bced0d7fc0",
     "packages/ndigo-signals/skills/ndigo-reactive/SKILL.md": "5fdbdcf1ceb6cb6ab685fbdcf8976ebd0b0aaae572c7685a10e91afa24033c87",

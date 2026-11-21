@@ -29,9 +29,10 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `scheduleFromSpec` — Builds the Schedule for a normalized schedule spec.
 - `DEFAULT_LOCK_TTL_MS` — Default lease duration for `@scheduled({ lock })` acquisitions.
 - `DEFAULT_LOCK_WAIT_STEP_MS` — Default poll interval while waiting for a contended lock.
-- `ScheduledTaskDefinition` *(type)* — A runnable scheduled task as registered with TaskScheduler.
+- `ScheduledTaskDefinition` *(type)*
 - `TaskSchedulerOptions` *(type)* — Options for constructing a TaskScheduler.
 - `TaskStats` *(type)* — Observable statistics for a registered task.
-- `likeTaskScheduler` — Tests whether a value looks like a TaskScheduler.
-- `TaskScheduler` — The task-execution engine: next-fire tracking, single-flight runs, error isolation, `maxRunTime` races, and drain on destroy.
+- `TaskState` *(type)*
+- `likeTaskScheduler` — Largest delay `setTimeout` accepts — beyond this Node fires the timer after ~1ms instead, which would turn far-future schedules into a busy re-arm loop. The en…
+- `TaskScheduler` — Tests whether a value looks like a TaskScheduler.
 - `ScheduleRegistry` — Discovers `@scheduled` methods on application-context entries, registers them (telemetry-wrapped) with the context's `taskScheduler` entry, and manages the sch…

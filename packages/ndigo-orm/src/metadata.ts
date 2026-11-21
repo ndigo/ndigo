@@ -120,10 +120,18 @@ export interface EntityMetadata {
 
 type MetadataRecord = Record<string, unknown>;
 
+/**
+ * Shape of a decorated class constructor carrying the runtime TC39
+ * `Symbol.metadata` record.
+ */
+interface DecoratedConstructor {
+    [Symbol.metadata]?: MetadataRecord;
+}
+
 function getMetadata(target: Constructable): MetadataRecord {
     // TS's Function type doesn't declare the TC39 Symbol.metadata property;
     // it exists on every decorated class constructor at runtime.
-    return (target as unknown as { [Symbol.metadata]?: MetadataRecord })?.[Symbol.metadata] ?? {};
+    return (target as unknown as DecoratedConstructor)?.[Symbol.metadata] ?? {};
 }
 
 /**

@@ -16,7 +16,7 @@ export type EntityState = 'new' | 'managed' | 'removed';
  *
  * Use {@link InMemoryUnitOfWork} for in-memory stores or implement this interface
  * for SQL-backed data sources. Pair with {@link "transaction-manager".TransactionManager | TransactionManager} and the
- * {@link decorators.transactional | transactional} decorator for full transactional workflows.
+ * {@link annotations.transactional | transactional} decorator for full transactional workflows.
  */
 export interface UnitOfWork {
     /**

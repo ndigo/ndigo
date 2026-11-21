@@ -5,8 +5,7 @@ import type { StoredQueueMessage } from './message-store';
 import { RingBuffer } from '@ndigo/core';
 import type { SocketSession } from './socket-session';
 import type { StompBody } from './stomp-frame';
-
-export type StompAckMode = 'auto' | 'client' | 'client-individual';
+import type { StompAckMode } from './stomp-broker';
 
 export interface Subscription {
     session: SocketSession;

@@ -11,7 +11,7 @@ import { InMemoryDataSource } from './data-source';
  * the underlying database's begin/commit/rollback primitives.
  *
  * Inject a `TransactionManager` into a service class, declare the boundary
- * with {@link decorators.transactional | transactional}, and advise the
+ * with {@link annotations.transactional | transactional}, and advise the
  * instance with `TransactionalInterceptor` — the declaration alone opens
  * nothing:
  *

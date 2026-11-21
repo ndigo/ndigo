@@ -101,7 +101,7 @@ export interface QueueMessageStore {
     dispose?(): Promise<void> | void;
 }
 
-/** Options for {@link InMemoryQueueMessageStore}. */
+/** Options for `InMemoryQueueMessageStore`. */
 export interface InMemoryQueueStoreOptions {
     /**
      * Retained messages per destination (oldest dropped past the bound).
@@ -128,7 +128,7 @@ export interface InMemoryQueueStoreOptions {
     now?: () => number;
 }
 
-/** A snapshot of {@link InMemoryQueueMessageStore} retention ({@link InMemoryQueueMessageStore.stats}). */
+/** A snapshot of `InMemoryQueueMessageStore` retention (`InMemoryQueueMessageStore.stats`). */
 export interface InMemoryQueueStoreStats {
     /** Distinct destinations currently retaining at least one message. */
     readonly destinations: number;

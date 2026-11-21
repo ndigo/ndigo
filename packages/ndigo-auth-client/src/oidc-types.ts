@@ -138,7 +138,7 @@ export interface OIDCAdapterConfig {
 }
 
 /**
- * A pending authorization-code request created by {@link OIDCAdapter.createAuthorizationRequest}.
+ * A pending authorization-code request created by `OIDCAdapter.createAuthorizationRequest`.
  *
  * `state` is the callback correlation value; re-read it from the
  * authorization response. The nonce and PKCE verifier live in the adapter's
@@ -160,25 +160,34 @@ export interface AuthorizationRequest {
 
 /** Validated subset of an OIDC discovery document. */
 export interface DiscoveryDocument {
+    /** The issuer identifier. */
     issuer: string;
+    /** The authorization endpoint URL. */
     authorizationEndpoint: string;
+    /** The token endpoint URL. */
     tokenEndpoint: string;
+    /** The JWKS URI, or null when not advertised. */
     jwksUri: string | null;
+    /** The end-session endpoint URL, or null when not advertised. */
     endSessionEndpoint: string | null;
 }
 
 /** Validated token-endpoint response. */
 export interface TokenResponse {
+    /** The ID token. */
     idToken: string;
+    /** The access token, or null when none was issued. */
     accessToken: string | null;
+    /** The token lifetime in seconds, or null when not provided. */
     expiresIn: number | null;
+    /** The refresh token, or null when none was issued. */
     refreshToken: string | null;
 }
 
 /**
  * One pending authorization-code request: the values
- * {@link OIDCAdapter.createAuthorizationRequest} generates and
- * {@link OIDCAdapter.exchangeCodeForTokens} needs to redeem the code.
+ * `OIDCAdapter.createAuthorizationRequest` generates and
+ * `OIDCAdapter.exchangeCodeForTokens` needs to redeem the code.
  *
  * `nonce` and `codeVerifier` are secrets — treat them like credentials when
  * persisting; whoever holds them can bind a forged authorization response to
@@ -198,7 +207,7 @@ export interface PendingAuthorization {
 /**
  * Persistence seam for pending authorization requests.
  *
- * The adapter defaults to {@link InMemoryPendingAuthorizationStore}, an
+ * The adapter defaults to `InMemoryPendingAuthorizationStore`, an
  * in-memory map **scoped to one adapter instance**. That default cannot
  * survive the provider redirect when the callback is handled elsewhere — a
  * fresh page load, a process restart, or another server instance — so those
@@ -254,7 +263,7 @@ export interface RefreshTokenBinding {
 /**
  * Persistence seam for refresh-token bindings.
  *
- * The adapter defaults to {@link InMemoryRefreshTokenStore}, an in-memory
+ * The adapter defaults to `InMemoryRefreshTokenStore`, an in-memory
  * map **scoped to one adapter instance** — both the binding and the
  * single-use rotation bookkeeping live there. Deployments where a refresh
  * may arrive on another instance (a second tab, a restart, or another

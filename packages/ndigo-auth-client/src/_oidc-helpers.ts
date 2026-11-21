@@ -8,6 +8,12 @@ import { type JWTPayload, base64url } from 'jose';
 import { type Principal } from '@ndigo/auth-core';
 import { OIDCError } from './oidc-types';
 
+/**
+ * Reports whether `hostname` is a loopback address (localhost, 127.x, ::1, …).
+ *
+ * @param hostname - The hostname to test.
+ * @returns `true` when the host is loopback.
+ */
 export function isLoopbackHost(hostname: string): boolean {
     const host = hostname.toLowerCase().replace(/^\[|\]$/g, '');
     return (
@@ -32,17 +38,35 @@ export function assertTrustedUrl(url: URL, label: string): void {
     }
 }
 
+/**
+ * Computes the PKCE S256 code challenge for a verifier.
+ *
+ * @param verifier - The PKCE code verifier.
+ * @returns The base64url-encoded SHA-256 challenge.
+ */
 export async function pkceCodeChallenge(verifier: string): Promise<string> {
     const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(verifier));
     return base64url.encode(new Uint8Array(digest));
 }
 
+/**
+ * Reads the `roles` claim from a JWT payload.
+ *
+ * @param payload - The decoded JWT payload.
+ * @returns The list of role strings.
+ */
 export function readRoles(payload: JWTPayload): string[] {
     const raw = payload.roles;
     if (!Array.isArray(raw)) return [];
     return raw.filter((role): role is string => typeof role === 'string');
 }
 
+/**
+ * Reads the `scope`/`scp`/`scopes` claims from a JWT payload.
+ *
+ * @param payload - The decoded JWT payload.
+ * @returns The deduplicated list of scope strings.
+ */
 export function readScopes(payload: JWTPayload): string[] {
     // OAuth 2.0 `scope` is space-delimited; Azure AD's `scp` may be an array
     // or a space-delimited string; `scopes` is the custom-IdP array.
@@ -57,6 +81,12 @@ export function readScopes(payload: JWTPayload): string[] {
     return [...new Set(parts.filter((scope): scope is string => typeof scope === 'string' && scope.length > 0))];
 }
 
+/**
+ * Builds a {@link Principal} from a verified JWT payload.
+ *
+ * @param payload - The verified JWT payload.
+ * @returns The constructed principal.
+ */
 export function principalFromPayload(payload: JWTPayload): Principal {
     const sub = payload.sub;
     // #assertClaims rejects any token without a non-empty string `sub`; this guard
@@ -84,6 +114,12 @@ export function principalFromPayload(payload: JWTPayload): Principal {
     };
 }
 
+/**
+ * Hashes a refresh token for use as a store key (never store the raw bearer).
+ *
+ * @param token - The refresh token.
+ * @returns The SHA-256 hex digest.
+ */
 export function hashRefreshToken(token: string): string {
     return createHash('sha256').update(token).digest('hex');
 }

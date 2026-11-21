@@ -146,11 +146,10 @@ import type {
     QueueReplay,
     TransactionOp,
     TransactionBuffer,
-    StompAckMode,
 } from './_stomp-broker-types';
 
-// Re-export the public type only; the rest are internal contracts.
-export type { StompAckMode } from './_stomp-broker-types';
+/** STOMP ack modes (STOMP 1.2 §1.3.1). */
+export type StompAckMode = 'auto' | 'client' | 'client-individual';
 
 export interface StompBrokerOptions {
     /** Optional application-owned live transport; only `/topic/*` crosses nodes. */

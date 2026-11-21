@@ -66,11 +66,15 @@ export interface StrategyInitializer {
 const { isArray } = Array;
 
 /**
- * The mixin's strategy properties (init* methods) are name-driven and unknown
- * at compile time; this cast lets the anonymous class mount them without a
- * static schema.
+ * Shape of a strategy initializer mixin instance: the name-driven `init*`
+ * methods are unknown at compile time, so the anonymous mixin class mounts
+ * them into this ad-hoc record via the `dynamic` cast.
  */
-const dynamic = (target: object) => target as unknown as Record<string, unknown>;
+interface DynamicStrategyRecord {
+    [key: string]: unknown;
+}
+
+const dynamic = (target: object) => target as unknown as DynamicStrategyRecord;
 
 /**
  * Mixin that implements `StrategyInitializer`: tracks the strategy names a

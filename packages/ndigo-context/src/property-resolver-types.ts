@@ -2,7 +2,7 @@
  * Property resolver contracts: the resolver interface, the property index
  * strategy interface, and resolver options.
  */
-import { type ConversionService, JSONValue } from '@ndigo/core';
+import { type ConversionService, Constructable, JSONValue } from '@ndigo/core';
 import { like } from '@ndigo/util/types';
 import type { SecretDecryptor } from './secret-cipher';
 import type { PropertySource } from './property-source';
@@ -40,11 +40,7 @@ export interface PropertyResolver {
      * @returns The typed value or the default.
      * @throws When a present value cannot be converted.
      */
-    getPropertyAs<T>(
-        key: string,
-        targetType: (new (...args: never[]) => T) | (() => T) | T,
-        defaultValue?: T
-    ): T | undefined;
+    getPropertyAs<T>(key: string, targetType: Constructable<T> | (() => T) | T, defaultValue?: T): T | undefined;
     /**
      * Returns a typed property or throws when missing or unconvertible.
      *
@@ -53,7 +49,7 @@ export interface PropertyResolver {
      * @returns The typed value.
      * @throws When missing, unresolved, or unconvertible.
      */
-    getRequiredPropertyAs<T>(key: string, targetType: (new (...args: never[]) => T) | (() => T) | T): T;
+    getRequiredPropertyAs<T>(key: string, targetType: Constructable<T> | (() => T) | T): T;
     /**
      * Raw index lookup, bypassing placeholder resolution (internal use by the
      * placeholder resolver; consumers should use {@link getProperty}).

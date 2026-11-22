@@ -218,7 +218,7 @@ export class UnresolvedResource implements Resource<Error> {
  */
 export const AsModuleResourceLoader = <T extends Constructable>(superclass: T): Constructable<ResourceLoader> & T => {
     // TypeScript 5.7 requires explicit type assertion for mixin pattern
-    const LoaderClass = class extends (superclass as new (...args: never[]) => object) implements ResourceLoader {
+    const LoaderClass = class extends (superclass as Constructable<object>) implements ResourceLoader {
         async getResource(location: string): Promise<Resource> {
             try {
                 const value = await import(/* @vite-ignore */ location);

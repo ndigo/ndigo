@@ -14,12 +14,6 @@ import {
 } from './_constants';
 
 /**
- * A constructable class reference (`new (...args) => unknown`), used wherever
- * entity metadata has to name a class it resolves lazily.
- */
-export type ClassType = new (...args: unknown[]) => unknown;
-
-/**
  * The four relation shapes the decorators declare: `one-to-many`,
  * `many-to-one`, `many-to-many`, `one-to-one`.
  */

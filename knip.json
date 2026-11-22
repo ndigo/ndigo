@@ -28,7 +28,6 @@
     "packages/ndigo-management/src/metrics-controller.ts": ["exports"],
     "packages/ndigo-management/src/management-properties.ts": ["exports"],
     "packages/ndigo-orm-drizzle/src/schema-snapshot.ts": ["exports"],
-    "packages/ndigo-orm/src/metadata.ts": ["types"],
     "packages/ndigo-util/src/crypto/index.ts": ["exports"],
     "packages/ndigo-util/src/crypto/random-hex.ts": ["duplicates"],
     "packages/ndigo-util/src/crypto/random-token.ts": ["duplicates"],

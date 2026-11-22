@@ -1,7 +1,7 @@
 /**
  * `@configurationProperties` — type-safe binding from environment properties.
  */
-import { IllegalStateError, JSONValue } from '@ndigo/core';
+import { Constructable, IllegalStateError, JSONValue } from '@ndigo/core';
 import { getErrorMessage } from '@ndigo/util';
 import { z } from 'zod';
 import { property } from '@ndigo/context';
@@ -96,7 +96,7 @@ export interface ConfigurationPropertiesOptions {
  * ```
  */
 export function configurationProperties(prefix?: string, options?: ConfigurationPropertiesOptions) {
-    return function <T extends new (...args: never[]) => unknown>(target: T, context: ClassDecoratorContext): T {
+    return function <T extends Constructable<unknown>>(target: T, context: ClassDecoratorContext): T {
         context.metadata[CONFIG_PROPS] = true;
         if (prefix) {
             context.metadata[CONFIG_PROPS_PREFIX] = prefix;
@@ -400,7 +400,7 @@ function resolveFromSchema<T>(
  */
 function targetFor(instance: unknown, key: string, meta: Record<string, unknown>): string {
     const declared = meta[`${PROPERTY_KEY_TYPE}${key}`] as
-        | (new (...args: never[]) => number | boolean | Date | string)
+        | Constructable<number | boolean | Date | string>
         | string
         | undefined;
     if (typeof declared === 'string') return declared;

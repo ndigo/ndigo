@@ -3,7 +3,7 @@
  */
 import { toError } from '@ndigo/util';
 import '@tsmetadata/polyfill';
-import { annotationOf, classAnnotation, ensureSymbolMetadata, IllegalStateError } from '@ndigo/core';
+import { annotationOf, classAnnotation, Constructable, ensureSymbolMetadata, IllegalStateError } from '@ndigo/core';
 import { getLogger } from '@ndigo/log';
 
 const logger = getLogger('ndigo-factory:scope');
@@ -92,7 +92,7 @@ export const hasScope = (target: unknown): boolean => {
  * @returns TC39 class decorator
  */
 export function scope(scopeName: PossibleScope) {
-    return function <T extends new (...args: never[]) => unknown>(target: T, context: ClassDecoratorContext): T {
+    return function <T extends Constructable<unknown>>(target: T, context: ClassDecoratorContext): T {
         scopeMapping(scopeName)(target, context);
 
         return target;

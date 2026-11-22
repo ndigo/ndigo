@@ -13,7 +13,14 @@ import type { McpToolRegistry } from './registry.js';
 import { createMcpServer } from './server.js';
 import type { UiResource } from './ui-resource.js';
 
-/** Options for {@link McpHTTPEndpoint}. */
+/**
+ * Options for {@link McpHTTPEndpoint}.
+ *
+ * @example
+ * ```ts
+ * const options: McpHTTPEndpointOptions = { source: 'http' };
+ * ```
+ */
 export interface McpHTTPEndpointOptions {
     /** The application manifest, exposed as MCP resources. */
     readonly inspect?: InspectManifest;
@@ -34,6 +41,11 @@ export interface McpHTTPEndpointOptions {
  * ```ts
  * @requestMapping({ value: '/mcp' })
  * async mcp(route: Route) { await endpoint.handle(route); }
+ * ```
+ *
+ * @example
+ * ```ts
+ * const endpoint = new McpHTTPEndpoint(registry, { source: 'http' });
  * ```
  */
 export class McpHTTPEndpoint {
@@ -96,7 +108,17 @@ export class McpHTTPEndpoint {
     }
 }
 
-/** Options for {@link protectedResourceMetadata}. */
+/**
+ * Options for {@link protectedResourceMetadata}.
+ *
+ * @example
+ * ```ts
+ * const options: ProtectedResourceMetadataOptions = {
+ *     resource: 'https://mcp.example.com/mcp',
+ *     authorizationServers: ['https://auth.example.com'],
+ * };
+ * ```
+ */
 export interface ProtectedResourceMetadataOptions {
     /** The protected resource identifier (the MCP endpoint URL). */
     readonly resource: string;
@@ -111,6 +133,14 @@ export interface ProtectedResourceMetadataOptions {
  *
  * @param options - Resource identifier and authorization servers.
  * @returns The metadata document.
+ *
+ * @example
+ * ```ts
+ * const metadata = protectedResourceMetadata({
+ *     resource: 'https://mcp.example.com/mcp',
+ *     authorizationServers: ['https://auth.example.com'],
+ * });
+ * ```
  */
 export function protectedResourceMetadata(options: ProtectedResourceMetadataOptions): Record<string, unknown> {
     return {

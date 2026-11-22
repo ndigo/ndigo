@@ -12,12 +12,27 @@ import {
 import { getWhenFeature } from '@ndigo/flags';
 import { z } from 'zod';
 
-/** A JSON Schema object as carried by MCP `tools/list`. */
+/**
+ * A JSON Schema object as carried by MCP `tools/list`.
+ *
+ * @example
+ * ```ts
+ * const schema: JSONSchema = { type: 'object', properties: {} };
+ * ```
+ */
 export type JSONSchema = Record<string, unknown>;
 
 /** MCP tool names must be snake_case starting with a letter. */
 const toolNamePattern = /^[a-z][a-z0-9_]*$/u;
 
+/**
+ * The client-facing tool descriptor as reported by `tools/list`.
+ *
+ * @example
+ * ```ts
+ * const descriptor: ToolDescriptor = { name: 'send_email', inputSchema: { type: 'object', properties: {} } };
+ * ```
+ */
 export interface ToolDescriptor {
     /** Tool name (snake_case). */
     readonly name: string;
@@ -40,7 +55,14 @@ export interface ToolDescriptor {
     };
 }
 
-/** A projected tool with the handler needed to invoke it. */
+/**
+ * A projected tool with the handler needed to invoke it.
+ *
+ * @example
+ * ```ts
+ * const tool: RegisteredTool = { descriptor, handlerMethod, info, readOnly: false };
+ * ```
+ */
 export interface RegisteredTool {
     /** The client-facing descriptor. */
     readonly descriptor: ToolDescriptor;
@@ -56,7 +78,14 @@ export interface RegisteredTool {
     readonly secretFields?: readonly string[];
 }
 
-/** One `getMappingEntries()` row. */
+/**
+ * One `getMappingEntries()` row.
+ *
+ * @example
+ * ```ts
+ * const entry: MappingEntryLike = { mapping, handlerMethod };
+ * ```
+ */
 export interface MappingEntryLike {
     /** The route mapping. */
     readonly mapping: RouteMappingInfo;
@@ -64,13 +93,27 @@ export interface MappingEntryLike {
     readonly handlerMethod: RouteHandlerMethod;
 }
 
-/** A mapping table exposing the inspect-style read model. */
+/**
+ * A mapping table exposing the inspect-style read model.
+ *
+ * @example
+ * ```ts
+ * const table: MappingTableLike = { getMappingEntries: () => [] };
+ * ```
+ */
 export interface MappingTableLike {
     /** Enumerates registered mappings. */
     getMappingEntries?(): readonly MappingEntryLike[];
 }
 
-/** A dispatcher-like source: anything carrying handler mapping objects. */
+/**
+ * A dispatcher-like source: anything carrying handler mapping objects.
+ *
+ * @example
+ * ```ts
+ * const source: DispatcherLike = { handlerMappings: [] };
+ * ```
+ */
 export interface DispatcherLike {
     /** The dispatcher's registered handler mappings. */
     readonly handlerMappings?: readonly unknown[];
@@ -78,7 +121,14 @@ export interface DispatcherLike {
     readonly argumentResolvers?: readonly HandlerMethodArgumentResolver[];
 }
 
-/** Anything that can supply mapping entries to the projector. */
+/**
+ * Anything that can supply mapping entries to the projector.
+ *
+ * @example
+ * ```ts
+ * const source: MappingSource = [];
+ * ```
+ */
 export type MappingSource = DispatcherLike | MappingTableLike | readonly MappingTableLike[];
 
 function likeDispatcher(source: MappingSource): source is DispatcherLike {

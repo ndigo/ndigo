@@ -18,7 +18,14 @@ import type { InspectManifest } from '@ndigo/inspect';
 import type { McpToolRegistry, ToolCallContext } from './registry.js';
 import { MCP_APP_MIME_TYPE, type UiResource } from './ui-resource.js';
 
-/** Options for {@link createMcpServer}. */
+/**
+ * Options for {@link createMcpServer}.
+ *
+ * @example
+ * ```ts
+ * const options: McpServerOptions = { name: 'my-app', version: '1.0.0' };
+ * ```
+ */
 export interface McpServerOptions {
     /** Server name reported to clients. */
     readonly name?: string;

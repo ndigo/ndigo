@@ -14,7 +14,7 @@
  * \@ndigo/core (DataBinder's keypath family). A dotted source key that needs
  * array indexing should use a DataBinder-bound source instead.
  */
-import { isNil } from '@ndigo/util/types';
+import { getPath } from '@ndigo/core';
 
 /**
  * Reads a value from a record by exact key or dotted keypath.
@@ -34,17 +34,8 @@ export function readDottedValue(source: Record<string, unknown> | undefined, key
     if (!key.includes('.')) {
         return undefined;
     }
-    const tokens = key.split('.');
-    let value: unknown = source;
-    const length = tokens.length;
-    for (let index = 0; index < length; index++) {
-        const token = tokens[index];
-        // Only plain objects are traversable — a nil or non-object value ends
-        // the walk, as does a missing property.
-        if (isNil(value) || typeof value !== 'object' || !Object.prototype.hasOwnProperty.call(value, token)) {
-            return undefined;
-        }
-        value = (value as Record<string, unknown>)[token];
-    }
-    return value;
+    // Delegate the walk to core's getPath (property access, non-traversable
+    // intermediates yield undefined). Exact-key and dot-only guards above
+    // preserve readDottedValue's contract.
+    return getPath(key.split('.'), source);
 }

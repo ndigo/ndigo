@@ -8,7 +8,7 @@
  * to pull the whole boot layer (REU-9). The public functions are re-exported
  * from `@ndigo/boot` unchanged for API continuity.
  */
-import { compareBy, stringComparator } from '@ndigo/core';
+import { compareBy, getSymbolMetadata, stringComparator } from '@ndigo/core';
 import { z } from 'zod';
 
 /** Metadata-key constants and helpers shared with `@ndigo/boot`'s binding
@@ -39,7 +39,7 @@ export const PROPERTY_KEY_TYPE = 'config:propertyType:';
  * @returns The metadata record.
  */
 export function getMetadata(target: unknown): Record<string, unknown> {
-    return (target as { [Symbol.metadata]?: Record<string, unknown> })?.[Symbol.metadata] ?? {};
+    return getSymbolMetadata(target);
 }
 
 /**

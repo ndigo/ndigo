@@ -61,16 +61,12 @@ function extractMockToken(route: Route): string | null {
 }
 
 /**
- * Helper to set up Symbol.metadata on a handler function.
- * The guard reads: handler.constructor[Symbol.metadata]
- * Since TC39 decorators don't auto-apply in tests, we set this manually.
+ * Attaches decorator metadata the way TC39 decorators do: on the class
+ * constructor itself. `getSymbolMetadata` reads a constructor's own record and
+ * unwraps instances through their constructor.
  */
 function setHandlerMetadata(handler: object, metadata: Record<string, unknown>): void {
-    // `constructor` is not declared on TS's Function type; attach the carrier
-    // object matching the runtime decorator shape the guard reads
-    // (handler.constructor[Symbol.metadata]).
-    const carrier = { constructor: { [Symbol.metadata]: metadata } };
-    Object.assign(handler, carrier);
+    (handler as { [Symbol.metadata]?: Record<string, unknown> })[Symbol.metadata] = metadata;
 }
 
 describe('AuthRouteGuard', () => {

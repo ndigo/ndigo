@@ -9,6 +9,7 @@ import {
     denialOf,
 } from '@ndigo/dispatcher';
 import { type Route } from '@ndigo/router';
+import { getSymbolMetadata } from '@ndigo/core';
 import { AUTH_REQUIRED_KEY, AUTH_ROLES_KEY, AUTH_SCOPES_KEY } from '@ndigo/auth-core';
 import { type AuthServer } from './server';
 
@@ -92,11 +93,9 @@ export class AuthRouteGuard implements RouteHandlerInterceptor {
      */
     async preHandle(route: Route, handler: object | undefined): Promise<boolean | InterceptorDenial> {
         const methodHandler = handler as RouteHandlerMethod | undefined;
-        // constructor[Symbol.metadata] is a runtime TC39 decorator property
-        // that TS 5.7's Function type doesn't declare. The property exists on
-        const metadata: Record<string, unknown> = ((
-            methodHandler?.handler?.constructor as unknown as { [key: symbol]: unknown } | undefined
-        )?.[Symbol.metadata] ?? {}) as Record<string, unknown>;
+        // The metadata lives on the handler instance's constructor;
+        // getSymbolMetadata unwraps it and yields {} when nothing was recorded.
+        const metadata = getSymbolMetadata(methodHandler?.handler) as Record<string, unknown>;
         const methodName: string | null = typeof methodHandler?.method === 'string' ? methodHandler.method : null;
 
         const classRequiresAuth = Boolean(metadata[AUTH_REQUIRED_KEY]);

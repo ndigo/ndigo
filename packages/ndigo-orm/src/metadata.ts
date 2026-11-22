@@ -2,7 +2,7 @@
  * Entity metadata recorded by the ORM decorators.
  */
 import type { z } from 'zod';
-import { Constructable } from '@ndigo/core';
+import { Constructable, getSymbolMetadata } from '@ndigo/core';
 import {
     columnsMetadataKey,
     entityMetadataKey,
@@ -118,22 +118,6 @@ export interface EntityMetadata {
     entityHooks: EntityHookDefinition[];
 }
 
-type MetadataRecord = Record<string, unknown>;
-
-/**
- * Shape of a decorated class constructor carrying the runtime TC39
- * `Symbol.metadata` record.
- */
-interface DecoratedConstructor {
-    [Symbol.metadata]?: MetadataRecord;
-}
-
-function getMetadata(target: Constructable): MetadataRecord {
-    // TS's Function type doesn't declare the TC39 Symbol.metadata property;
-    // it exists on every decorated class constructor at runtime.
-    return (target as unknown as DecoratedConstructor)?.[Symbol.metadata] ?? {};
-}
-
 /**
  * Checks if a given class is an entity.
  * @param target - The class constructor to check.
@@ -145,7 +129,7 @@ function getMetadata(target: Constructable): MetadataRecord {
  * ```
  */
 export function isEntity(target: Constructable): boolean {
-    const metadata = getMetadata(target);
+    const metadata = getSymbolMetadata(target);
     return metadata[entityMetadataKey] === true;
 }
 
@@ -177,7 +161,7 @@ export function getEntityMetadata(target: Constructable): EntityMetadata {
         return cached;
     }
 
-    const metadata = getMetadata(target);
+    const metadata = getSymbolMetadata(target);
     const entityMetadata: EntityMetadata = {
         entityName: (metadata[entityNameMetadataKey] as string) ?? target.name,
         columns: (metadata[columnsMetadataKey] as ColumnDefinition[]) ?? [],

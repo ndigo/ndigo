@@ -2,6 +2,7 @@
  * Declarative service-client decorators.
  */
 import { HTTPMethod } from '@ndigo/http';
+import { getSymbolMetadata } from '@ndigo/core';
 import { z } from 'zod';
 
 /** Metadata key under which `@service` writes its config. */
@@ -60,10 +61,7 @@ export interface ServiceCallConfig {
  * ```
  */
 export function getServiceConfig(target: object): ServiceClientConfig | undefined {
-    // `object` doesn't declare TC39's Symbol.metadata; every @service-decorated target carries it at runtime.
-    const targetWithMetadata = target as { [Symbol.metadata]?: DecoratorMetadata };
-    const metadata = targetWithMetadata[Symbol.metadata];
-    return metadata?.[SERVICE_METADATA_KEY] as ServiceClientConfig | undefined;
+    return getSymbolMetadata(target)[SERVICE_METADATA_KEY] as ServiceClientConfig | undefined;
 }
 
 /**
@@ -79,14 +77,10 @@ export function getServiceConfig(target: object): ServiceClientConfig | undefine
  * ```
  */
 export function getServiceCalls(target: object): Record<string, ServiceCallConfig> {
-    // `object` doesn't declare TC39's Symbol.metadata; every @service-decorated target carries it at runtime.
-    const targetWithMetadata = target as { [Symbol.metadata]?: DecoratorMetadata };
-    const metadata = targetWithMetadata[Symbol.metadata];
-    return (metadata?.[SERVICE_CALL_METADATA_KEY] as Record<string, ServiceCallConfig> | undefined) ?? {};
+    return (
+        (getSymbolMetadata(target)[SERVICE_CALL_METADATA_KEY] as Record<string, ServiceCallConfig> | undefined) ?? {}
+    );
 }
-
-/** Minimal structural type for `Symbol.metadata` (keyed by string/symbol). */
-type DecoratorMetadata = { [key: string | symbol]: unknown };
 
 /**
  * `@service(name, config)` — class decorator declaring a named service client.

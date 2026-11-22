@@ -2,7 +2,7 @@
  * `@jobHandler` — declarative, Node-only job handler registration.
  */
 import '@tsmetadata/polyfill';
-import { FrameworkError } from '@ndigo/core';
+import { FrameworkError, getSymbolMetadata } from '@ndigo/core';
 
 /**
  * Metadata key prefix under which `@jobHandler` writes its per-method
@@ -111,6 +111,5 @@ export function jobHandler(type: string, options: JobHandlerOptions = {}) {
  * @returns The registration, or `undefined` when not a job handler.
  */
 export function getJobHandlerMetadata(target: object, methodName: string): JobHandlerMetadata | undefined {
-    const metadata = (target as { [Symbol.metadata]?: Record<string, unknown> })?.[Symbol.metadata] ?? {};
-    return metadata[`${JOB_HANDLER_METADATA_PREFIX}${methodName}`] as JobHandlerMetadata | undefined;
+    return getSymbolMetadata(target)[`${JOB_HANDLER_METADATA_PREFIX}${methodName}`] as JobHandlerMetadata | undefined;
 }

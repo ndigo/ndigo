@@ -6,6 +6,7 @@
  * decorator only opts it into an agent-facing tool surface.
  */
 import '@tsmetadata/polyfill';
+import { getSymbolMetadata } from '@ndigo/core';
 
 /**
  * Metadata key for `@toolMapping`; the method name is appended as
@@ -93,8 +94,5 @@ export function toolMapping(options: ToolMappingMetadata = {}) {
  * @returns The metadata, or `undefined` when the method is not a tool.
  */
 export function getToolMapping(target: unknown, methodName: string): ToolMappingMetadata | undefined {
-    const carrier = (typeof target === 'function' ? target : target?.constructor) as
-        | { [Symbol.metadata]?: Record<string, unknown> }
-        | undefined;
-    return carrier?.[Symbol.metadata]?.[`${TOOL_MAPPING_KEY}:${methodName}`] as ToolMappingMetadata | undefined;
+    return getSymbolMetadata(target)[`${TOOL_MAPPING_KEY}:${methodName}`] as ToolMappingMetadata | undefined;
 }

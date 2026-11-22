@@ -46,13 +46,12 @@ function createMockRoute(): Route {
 }
 
 /**
- * Records the metadata a handler carries on `constructor[Symbol.metadata]`, the
- * runtime TC39 decorator shape {@link AuthMatrixGuard} reads. TC39 decorators do
- * not auto-apply in tests, so this sets it by hand.
+ * Records the metadata a handler carries on the class constructor itself, the
+ * runtime TC39 decorator shape {@link AuthMatrixGuard} reads. TC39 decorators
+ * do not auto-apply in tests, so this sets it by hand.
  */
 function setHandlerMetadata(handler: object, metadata: Record<string, unknown>): void {
-    const carrier = { constructor: { [Symbol.metadata]: metadata } };
-    Object.assign(handler, carrier);
+    (handler as { [Symbol.metadata]?: Record<string, unknown> })[Symbol.metadata] = metadata;
 }
 
 /** Builds the `{ handler, method, path }` wrapper the guard reads metadata from. */
@@ -61,8 +60,8 @@ function handlerWith(classMeta: Record<string, unknown>): object {
         return {};
     }
     setHandlerMetadata(handlerFn, classMeta);
-    // The guard reads metadata off `methodHandler.handler.constructor[Symbol.metadata]`,
-    // so the decorated function must sit under `.handler`.
+    // The guard reads metadata off `methodHandler.handler`, so the decorated
+    // function must sit under `.handler`.
     return { handler: handlerFn, method: 'get', path: '/test' };
 }
 

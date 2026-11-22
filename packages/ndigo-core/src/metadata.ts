@@ -30,7 +30,7 @@ type MetadataCarrier = { [Symbol.metadata]?: unknown; constructor?: MetadataCarr
  * getSymbolMetadata(Foo); // {}
  * ```
  */
-// oxlint-disable-next-line typescript/no-explicit-any -- callers (ndigo-dispatcher, ndigo-telemetry) return values read from this record as their own typed payloads; `unknown` values would break those returns.
+// oxlint-disable-next-line typescript/no-explicit-any -- callers return values read from this record as their own typed payloads; `unknown` values would break those returns.
 export function getSymbolMetadata(target: unknown): Record<string, any> {
     const carrier = (typeof target === 'function' ? target : target?.constructor) as MetadataCarrier | undefined;
     const meta = carrier?.[Symbol.metadata];

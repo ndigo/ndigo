@@ -2,7 +2,7 @@
  * Scans `routeMapping` decorator metadata from registered entries and builds.
  */
 import { type Registry } from '@ndigo/factory';
-import { URLGlobPathMatcher } from '@ndigo/core';
+import { URLGlobPathMatcher, getSymbolMetadata } from '@ndigo/core';
 import { RouteDefinition } from './route-definition';
 
 /** Shared path matcher for merging class and method paths. */
@@ -44,7 +44,7 @@ interface RouteMappingMeta {
  * requiring a dependency on that package.
  */
 function getRouteMapping(target: unknown, propertyKey?: string | symbol): RouteMappingMeta | undefined {
-    const metadata = (target as { [Symbol.metadata]?: Record<string, unknown> } | undefined)?.[Symbol.metadata] ?? {};
+    const metadata = getSymbolMetadata(target);
     if (propertyKey) {
         return metadata[`route:mapping:${String(propertyKey)}`] as RouteMappingMeta | undefined;
     }
@@ -56,7 +56,7 @@ function getRouteMapping(target: unknown, propertyKey?: string | symbol): RouteM
  * Returns all keys that start with the route mapping prefix.
  */
 function getRouteMappingMethodKeys(target: unknown): string[] {
-    const metadata = (target as { [Symbol.metadata]?: Record<string, unknown> } | undefined)?.[Symbol.metadata] ?? {};
+    const metadata = getSymbolMetadata(target);
     const prefix = 'route:mapping:';
     return Object.keys(metadata)
         .filter((k) => k.startsWith(prefix))

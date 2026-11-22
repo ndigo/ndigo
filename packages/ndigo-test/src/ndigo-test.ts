@@ -2,6 +2,7 @@
  * Boot helpers for `@ndigo/test` — boot a Ndigo application context and wire a.
  */
 import { MetadataConfigApplicationContext, ApplicationContext } from '@ndigo/context';
+import { getSymbolMetadata } from '@ndigo/core';
 import type { EntryProcessor } from '@ndigo/factory';
 import { isFunction } from '@ndigo/util/types';
 import { HANDLER_MAPPING, DISPATCHER } from '@ndigo/dispatcher';
@@ -99,10 +100,7 @@ function isConfiguration(source: Function): boolean {
     if (!isFunction(source)) {
         return false;
     }
-    // The class's TC39 Symbol.metadata record, keyed by string/symbol. Not on
-    // Function's static type, so read through a record.
-    const meta = (source as { [Symbol.metadata]?: Record<string | symbol, unknown> })[Symbol.metadata];
-    return meta?.['config:constructor'] === true;
+    return getSymbolMetadata(source)['config:constructor'] === true;
 }
 
 // Per-module cache: multiple suites in the same worker that boot the same

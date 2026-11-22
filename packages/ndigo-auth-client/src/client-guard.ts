@@ -2,6 +2,7 @@
  * Router guard enforcing `@authenticated` / `@authorized` metadata.
  */
 import { AUTH_REQUIRED_KEY, AUTH_ROLES_KEY } from '@ndigo/auth-core';
+import { getSymbolMetadata } from '@ndigo/core';
 import { type AuthClient } from './client';
 
 /**
@@ -21,11 +22,9 @@ export interface AuthRouteMetadata {
  * @returns The authentication metadata for the route.
  */
 export function extractAuthMetadata(handler: object | undefined): AuthRouteMetadata {
-    // constructor[Symbol.metadata] is a runtime TC39 decorator property
-    // that TS 5.7's Function type doesn't declare. The property exists on
-    // every decorated class's constructor at runtime.
-    const metadata: Record<string, unknown> =
-        (handler?.constructor as { [Symbol.metadata]?: Record<string, unknown> } | undefined)?.[Symbol.metadata] ?? {};
+    // The metadata lives on the handler's constructor; getSymbolMetadata
+    // unwraps the instance and yields {} when nothing was recorded.
+    const metadata = getSymbolMetadata(handler) as Record<string, unknown>;
     const methodName: string | null =
         typeof (handler as { method?: unknown } | undefined)?.method === 'string'
             ? ((handler as { method?: unknown } | undefined)?.method as string)

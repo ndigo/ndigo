@@ -43,7 +43,14 @@ export const likePropertyValues = (value: unknown): value is PropertyValues =>
     likeIterable(value) && _likePropertyValuesShape(value);
 
 /**
- * A named value wrapper used for property bags and metadata.
+ * A named property value.
+ *
+ * @example
+ * ```ts
+ * const pv = new PropertyValue('name', 'ndigo');
+ * pv.name; // "name"
+ * pv.value; // "ndigo"
+ * ```
  */
 export class PropertyValue implements Equatable, Serializable {
     #name: string;

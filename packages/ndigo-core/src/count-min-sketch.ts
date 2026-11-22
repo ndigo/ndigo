@@ -1,6 +1,13 @@
 /**
  * A Count-Min sketch: sub-linear-memory approximate frequency counting.
  * `estimate()` never undercounts and overcounts with bounded error.
+ *
+ * @example
+ * ```ts
+ * const sketch = new CountMinSketch();
+ * sketch.add('apple', 3);
+ * sketch.estimate('apple'); // >= 3
+ * ```
  */
 import { Serializable } from './serializable.js';
 import { Equatable } from './equatable.js';

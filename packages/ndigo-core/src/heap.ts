@@ -4,6 +4,15 @@
  * Pass a comparator to build a max-heap or a priority queue over arbitrary
  * values; combine comparators with `chainComparisons`/`compareBy` for
  * multi-key ordering.
+ *
+ * @example
+ * ```ts
+ * const heap = new Heap<number>();
+ * heap.push(3);
+ * heap.push(1);
+ * heap.peek(); // 1
+ * heap.pop(); // 1
+ * ```
  */
 import { type comparison, naturalComparison } from './comparable.js';
 import { Equatable } from './equatable.js';
@@ -178,6 +187,15 @@ export class Heap<T> implements Serializable, Equatable<Heap<T>> {
 /**
  * A priority queue backed by a {@link Heap}: FIFO ordering is not
  * guaranteed for equal priorities (use a chained comparator to break ties).
+ *
+ * @example
+ * ```ts
+ * const queue = new PriorityQueue<number>((a, b) => a - b);
+ * queue.enqueue(3);
+ * queue.enqueue(1);
+ * queue.peek(); // 1
+ * queue.dequeue(); // 1
+ * ```
  */
 export class PriorityQueue<T> {
     /**

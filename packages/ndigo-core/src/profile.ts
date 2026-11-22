@@ -35,6 +35,12 @@ const namePattern = /^[a-zA-Z0-9_.:-]+$/u;
  * A composed profile expression. Immutable; `String(term)` yields the
  * canonical expression string, so terms drop into `@whenProfile(...)` and
  * `acceptsProfiles(...)` seamlessly.
+ *
+ * @example
+ * ```ts
+ * const term = Profile.and('admin', Profile.not('guest'));
+ * String(term); // "admin & !guest"
+ * ```
  */
 export class ProfileTerm implements Serializable, Equatable<ProfileTerm> {
     /**

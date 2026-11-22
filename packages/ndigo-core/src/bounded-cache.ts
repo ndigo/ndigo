@@ -30,6 +30,13 @@ export interface BoundedCacheOptions<K, V> {
  *
  * Backed by a hash map: LRU promotion uses delete-and-reinsert, FIFO keeps
  * insertion order. `onEvict` is reported on overflow eviction and `clear()`.
+ *
+ * @example
+ * ```ts
+ * const cache = new BoundedCache<string, number>({ maxSize: 128, policy: 'lru' });
+ * cache.set('a', 1);
+ * cache.get('a'); // 1
+ * ```
  */
 export class BoundedCache<K, V> {
     /**

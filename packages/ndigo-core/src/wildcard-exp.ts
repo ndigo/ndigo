@@ -4,8 +4,15 @@
 import { WildcardConverter } from './wildcard-converter.js';
 
 const wildcardConverter = new WildcardConverter();
+
 /**
  * A regular expression compiled from a wildcard pattern.
+ *
+ * @example
+ * ```ts
+ * const re = new WildcardExp('*.ts');
+ * re.test('foo.ts'); // true
+ * ```
  */
 export class WildcardExp extends RegExp {
     /**

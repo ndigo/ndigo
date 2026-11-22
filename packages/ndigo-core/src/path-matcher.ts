@@ -207,6 +207,13 @@ class GlobPatternComparator extends AbstractValueComparator {
  * Path matcher for literal comparison: `merge` joins two patterns and `match`
  * accepts only an exact string match. The identity matcher for callers that
  * need pattern plumbing without wildcard semantics.
+ *
+ * @example
+ * ```ts
+ * const matcher = new EqualsPathMatcher();
+ * matcher.match('/a', '/a'); // true
+ * matcher.match('/a', '/b'); // false
+ * ```
  */
 export class EqualsPathMatcher implements PathMatcher {
     /**
@@ -372,6 +379,12 @@ export class URLGlobPathMatcher implements PathMatcher {
  * Wildcard-pattern analysis used by `GlobPatternComparator`: counts `*` and
  * `**` occurrences and answers the specificity questions ordering depends on
  * (`isLeastSpecific`, `isPrefixPattern`).
+ *
+ * @example
+ * ```ts
+ * const info = new GlobPatternInfo('/users/*');
+ * info.singleWildcards; // 1
+ * ```
  */
 export class GlobPatternInfo {
     /**

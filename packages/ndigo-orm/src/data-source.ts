@@ -71,6 +71,11 @@ export interface DataSource extends Initializable, Destroyable {
 /**
  * An in-memory implementation of the `DataSource` interface.
  * It stores entity data in JavaScript Maps.
+ *
+ * @example
+ * ```ts
+ * const dataSource = new InMemoryDataSource();
+ * ```
  */
 export class InMemoryDataSource implements DataSource {
     /**

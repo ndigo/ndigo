@@ -2,7 +2,7 @@
  * Property index strategies: prototype-chain and flat-merged indexes, plus
  * the internal token cache and path helpers.
  */
-import { createNull, JSONValue, JSONObject, KeypathToken, KeypathConverter } from '@ndigo/core';
+import { createNull, getPath, JSONValue, JSONObject, KeypathToken, KeypathConverter } from '@ndigo/core';
 import { isNil } from '@ndigo/util/types';
 import type { PropertySource } from './property-source';
 import type { PropertyIndex } from './property-resolver-types';
@@ -10,12 +10,7 @@ import type { PropertyIndex } from './property-resolver-types';
 const keypathConverter = new KeypathConverter();
 
 const pathIsDefined = (keypath: KeypathToken[], obj: unknown): boolean => {
-    let value: unknown = obj;
-    for (const token of keypath) {
-        if (value === null || typeof value !== 'object') return false;
-        value = (value as Record<string | number, unknown>)[token];
-    }
-    return !isNil(value);
+    return !isNil(getPath(keypath, obj));
 };
 
 const linkPrototype = (current: object, next: object): object => {

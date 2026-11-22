@@ -19,6 +19,12 @@ export interface SocketRequestSources {
 
 /**
  * A live WebSocket connection as seen by a socket handler.
+ *
+ * @example
+ * ```ts
+ * const session: SocketSession = socketSession;
+ * await session.send('hello');
+ * ```
  */
 export interface SocketSession {
     /** The request path the socket was upgraded from (e.g. `/chat/room`). */

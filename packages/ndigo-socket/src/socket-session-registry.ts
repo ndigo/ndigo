@@ -19,6 +19,12 @@ import { like } from '@ndigo/util/types';
  * references it. Implementations (e.g. the Node transport) are registered
  * as application-context entries; any service with the registry can push to
  * a room (scheduler → room, HTTP → room).
+ *
+ * @example
+ * ```ts
+ * const registry: SocketSessionRegistry = sessionRegistry;
+ * registry.add(session);
+ * ```
  */
 export interface SocketSessionRegistry {
     /**

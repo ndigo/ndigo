@@ -19,6 +19,11 @@ import { readManagementSettings } from './management-properties';
  * that body. A producing view writes the document directly, so the health
  * payload survives alongside the `503` status (the actuator convention: a
  * DOWN aggregate is signalled by the status code, not by an error envelope).
+ *
+ * @example
+ * ```ts
+ * const view = new HealthResponseView(status, 503);
+ * ```
  */
 export class HealthResponseView {
     /**
@@ -76,6 +81,11 @@ export class HealthResponseView {
  * component is `DOWN`, `200 OK` otherwise (`UP` or `UNKNOWN`) — so
  * orchestrators (Kubernetes probes, load balancers) can route on the status
  * code alone, per the actuator convention.
+ *
+ * @example
+ * ```ts
+ * const controller = new HealthController();
+ * ```
  */
 @requestMapping('/health')
 export class HealthController extends AsApplicationContextAware(Null) {

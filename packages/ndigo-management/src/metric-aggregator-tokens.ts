@@ -8,5 +8,10 @@ import { FeatureMetricAggregator } from '@ndigo/telemetry';
  * Context token for the shared {@link FeatureMetricAggregator} entry that
  * management endpoints read. Apps wire one (e.g. via
  * `ManagementAutoConfiguration`) so `/metrics` reflects live counters.
+ *
+ * @example
+ * ```ts
+ * const aggregator = context.getValue<FeatureMetricAggregator>(METRIC_AGGREGATOR);
+ * ```
  */
 export const METRIC_AGGREGATOR = new ContextToken<FeatureMetricAggregator>('metricAggregator');

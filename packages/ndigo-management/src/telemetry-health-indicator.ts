@@ -11,6 +11,11 @@ import { HealthIndicator, HealthResult, HealthState } from './health';
  * Reports `UP` when a {@link FeatureMetricAggregator} is present (metrics are
  * being collected); details include the number of features tracked. Reports
  * `DOWN` when none is wired (management endpoints would serve empty metrics).
+ *
+ * @example
+ * ```ts
+ * const indicator = new TelemetryHealthIndicator(aggregator);
+ * ```
  */
 export class TelemetryHealthIndicator implements HealthIndicator {
     /**

@@ -55,6 +55,11 @@ function flatten(node: unknown, prefix: string, into: Map<string, unknown>): voi
  * even then only the raw stored text is emitted — decrypted plaintext
  * never reaches the wire. `?toMatch=` filters to sources whose
  * name contains the term plus properties whose key starts with it.
+ *
+ * @example
+ * ```ts
+ * const controller = new EnvironmentController();
+ * ```
  */
 @requestMapping('/env')
 export class EnvironmentController extends AsApplicationContextAware(Null) {

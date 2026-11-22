@@ -6,6 +6,11 @@ import { getErrorMessage } from '@ndigo/util';
 
 /**
  * The overall health of a subsystem.
+ *
+ * @example
+ * ```ts
+ * const state: HealthState = 'UP';
+ * ```
  */
 export type HealthState = 'UP' | 'DOWN' | 'UNKNOWN';
 
@@ -13,11 +18,21 @@ export type HealthState = 'UP' | 'DOWN' | 'UNKNOWN';
  * The marker `/health` reports when an indicator throws and error details
  * are redacted (SEC-5): the status stays `DOWN` and the component name
  * is preserved, but the exception text never reaches the wire.
+ *
+ * @example
+ * ```ts
+ * const redacted: string = HEALTH_ERROR_REDACTED;
+ * ```
  */
 export const HEALTH_ERROR_REDACTED = 'unavailable';
 
 /**
  * Options for {@link HealthRegistry}.
+ *
+ * @example
+ * ```ts
+ * const options: HealthRegistryOptions = { redactHealthErrors: true };
+ * ```
  */
 export interface HealthRegistryOptions {
     /**
@@ -31,6 +46,11 @@ export interface HealthRegistryOptions {
 
 /**
  * The health result of a single indicator.
+ *
+ * @example
+ * ```ts
+ * const result: HealthResult = { status: 'UP' };
+ * ```
  */
 export interface HealthResult {
     /** Overall state. */
@@ -41,6 +61,11 @@ export interface HealthResult {
 
 /**
  * A component that reports the health of one subsystem.
+ *
+ * @example
+ * ```ts
+ * const indicator: HealthIndicator = { name: 'telemetry', check: async () => ({ status: 'UP' }) };
+ * ```
  */
 export interface HealthIndicator {
     /** The stable name of the subsystem (e.g. `'telemetry'`). */
@@ -60,6 +85,13 @@ export interface HealthIndicator {
  * `DOWN` (or a check throws); otherwise `UNKNOWN`.
  * Indicators can be enumerated by name in registration order without
  * exposing the backing collection. Replacing an indicator keeps its position.
+ *
+ * @example
+ * ```ts
+ * const registry = new HealthRegistry();
+ * await registry.register(indicator);
+ * const status = await registry.checkAll();
+ * ```
  */
 export class HealthRegistry implements Enumerable<string, HealthIndicator> {
     /**
@@ -222,6 +254,11 @@ export class HealthRegistry implements Enumerable<string, HealthIndicator> {
 
 /**
  * The aggregated health status served by `/health`.
+ *
+ * @example
+ * ```ts
+ * const status: HealthStatus = { status: 'UP', components: {}, timestamp: '2026-01-01T00:00:00.000Z' };
+ * ```
  */
 export interface HealthStatus {
     /** Overall state across all indicators. */

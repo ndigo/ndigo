@@ -17,6 +17,15 @@ import type { FeatureActivationPolicy, PartitionRouter, Route } from '@ndigo/rou
  *
  * Adds the routing half (`prefix`, optional `onRoute`) to the mount-manager
  * registration contract.
+ *
+ * @example
+ * ```ts
+ * host.registerFeature({
+ *     name: 'catalog',
+ *     prefix: '/catalog',
+ *     loader: () => import('./features/catalog'),
+ * });
+ * ```
  */
 export interface HostRegistrationOptions extends FeatureRegistrationOptions {
     /**
@@ -37,6 +46,11 @@ export interface HostRegistrationOptions extends FeatureRegistrationOptions {
 
 /**
  * Options for the {@link HostManager}.
+ *
+ * @example
+ * ```ts
+ * const host = new HostManager(shellContext, { activationPolicy: 'exclusive' });
+ * ```
  */
 export interface HostManagerOptions {
     /**
@@ -61,6 +75,11 @@ export interface HostManagerOptions {
  * ContextToken for resolving the host orchestrator through the context
  * hierarchy — the same placement pattern as
  * `SHARED_DEPENDENCY_REGISTRY_TOKEN`.
+ *
+ * @example
+ * ```ts
+ * const host = context.get(HOST_MANAGER_TOKEN);
+ * ```
  */
 export const HOST_MANAGER_TOKEN = new ContextToken<HostManager>('ndigo:hostManager');
 
@@ -83,6 +102,16 @@ export const HOST_MANAGER_TOKEN = new ContextToken<HostManager>('ndigo:hostManag
  * Pure delegation: mount/unmount/dependency-validation/metrics behavior is
  * exactly the `FeatureContextMountManager` + `DefaultSharedDependencyRegistry`
  * + `FeatureRoutingRegistry` machinery this class assembles.
+ *
+ * @example
+ * ```ts
+ * const host = new HostManager(shellContext, { activationPolicy: 'exclusive' });
+ * host.registerFeature({
+ *     name: 'catalog',
+ *     prefix: '/catalog',
+ *     loader: () => import('./features/catalog'),
+ * });
+ * ```
  */
 export class HostManager {
     /**

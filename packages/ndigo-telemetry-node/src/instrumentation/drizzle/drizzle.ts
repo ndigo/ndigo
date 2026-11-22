@@ -12,6 +12,13 @@ import { AbstractBaseInstrumentation } from '@ndigo/telemetry';
 
 /**
  * OpenTelemetry instrumentation for `DrizzleInstrumentation`.
+ *
+ * @example
+ * ```ts
+ * configureTelemetry({
+ *     instrumentations: [new DrizzleInstrumentation()],
+ * });
+ * ```
  */
 export class DrizzleInstrumentation extends AbstractBaseInstrumentation {
     /**

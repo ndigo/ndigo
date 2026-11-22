@@ -10,6 +10,11 @@ import { SeverityNumber } from '@opentelemetry/api-logs';
  *
  * This processor wraps another `LogRecordProcessor` and only passes log records
  * to the delegate if their severity number meets or exceeds a configured minimum severity.
+ *
+ * @example
+ * ```ts
+ * const processor = new SeverityFilterLogRecordProcessor(delegate, SeverityNumber.INFO);
+ * ```
  */
 export class SeverityFilterLogRecordProcessor implements LogRecordProcessor {
     /**

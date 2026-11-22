@@ -7,6 +7,13 @@ import { AbstractBaseInstrumentation } from '@ndigo/telemetry';
 
 /**
  * OpenTelemetry instrumentation for `BootInstrumentation`.
+ *
+ * @example
+ * ```ts
+ * configureTelemetry({
+ *     instrumentations: [new BootInstrumentation()],
+ * });
+ * ```
  */
 export class BootInstrumentation extends AbstractBaseInstrumentation {
     /**

@@ -27,6 +27,14 @@ import type { MetricHistogramBucket, MetricPoint, MetricSnapshot } from '@ndigo/
 
 /**
  * A pull metric reader for the Prometheus text exposition format.
+ *
+ * @example
+ * ```ts
+ * const reader = new PrometheusMetricReader();
+ * // `configureTelemetry({ metricExporter: 'prometheus' })` binds this
+ * // reader as the process-wide snapshot source for the management
+ * // `/metrics` endpoint.
+ * ```
  */
 export class PrometheusMetricReader extends MetricReader {
     /**

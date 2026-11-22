@@ -12,6 +12,13 @@ import { AbstractBaseInstrumentation } from '@ndigo/telemetry';
 
 /**
  * OpenTelemetry instrumentation for `RedisInstrumentation`.
+ *
+ * @example
+ * ```ts
+ * configureTelemetry({
+ *     instrumentations: [new RedisInstrumentation()],
+ * });
+ * ```
  */
 export class RedisInstrumentation extends AbstractBaseInstrumentation {
     /**

@@ -7,6 +7,13 @@ import { AbstractBaseInstrumentation } from '@ndigo/telemetry';
 
 /**
  * OpenTelemetry instrumentation for `ClusterInstrumentation`.
+ *
+ * @example
+ * ```ts
+ * configureTelemetry({
+ *     instrumentations: [new ClusterInstrumentation()],
+ * });
+ * ```
  */
 export class ClusterInstrumentation extends AbstractBaseInstrumentation {
     /**

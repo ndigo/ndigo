@@ -29,6 +29,11 @@ const logger = getLogger('ndigo-platform-node:openapi-docs-controller');
  * stale within a running application (a `config:refresh`-time invalidation
  * is a recorded follow-up). A failed generation (see {@link OpenAPIDocsController.spec})
  * writes a 500 problem document; only successful documents are memoized.
+ *
+ * @example
+ * ```ts
+ * const instance = new OpenAPIDocsController();
+ * ```
  */
 export class OpenAPIDocsController extends AsApplicationContextAware(Null) {
     /**

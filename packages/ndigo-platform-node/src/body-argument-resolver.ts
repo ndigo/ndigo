@@ -15,6 +15,11 @@ import { getNodeRequest } from './node-request';
  * Node.js request body argument resolver.
  *
  * Use `name: '*'` to bind the entire parsed body object.
+ *
+ * @example
+ * ```ts
+ * const instance = new NodeBodyValueMethodArgumentResolver();
+ * ```
  */
 export class NodeBodyValueMethodArgumentResolver extends AbstractPlatformArgumentResolver {
     constructor() {

@@ -31,6 +31,11 @@ function normalize(item: unknown): ServerSentEvent {
 /**
  * A producing view that streams an async-iterable event source as
  * `text/event-stream`, one SSE frame per yielded value.
+ *
+ * @example
+ * ```ts
+ * const instance = new ServerSentEventView();
+ * ```
  */
 export class ServerSentEventView implements ProducerView {
     /**

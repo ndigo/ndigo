@@ -17,6 +17,11 @@ import { getNodeRequest } from './node-request';
  * Reads `request.session` — the server-side session bag populated by
  * middleware before dispatch (session persistence/restoration is an open
  * contract; see {@link node-request.NodeRequest#session | NodeRequest.session}).
+ *
+ * @example
+ * ```ts
+ * const instance = new NodeRequestSessionValueMethodArgumentResolver();
+ * ```
  */
 export class NodeRequestSessionValueMethodArgumentResolver extends AbstractPlatformArgumentResolver {
     constructor() {

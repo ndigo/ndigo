@@ -5,6 +5,11 @@ import { ResponseStatus, ResponseStatuses } from '@ndigo/http';
 
 /**
  * A response with an explicit HTTP status, headers, and body.
+ *
+ * @example
+ * ```ts
+ * const instance = new ResponseEntity();
+ * ```
  */
 export class ResponseEntity<T = unknown> {
     /**
@@ -193,6 +198,11 @@ export class ResponseEntity<T = unknown> {
  *
  * @param value - The value to test.
  * @returns `true` when the value is a `ResponseEntity` instance.
+ *
+ * @example
+ * ```ts
+ * isResponseEntity();
+ * ```
  */
 export function isResponseEntity(value: unknown): value is ResponseEntity<unknown> {
     return value instanceof ResponseEntity;

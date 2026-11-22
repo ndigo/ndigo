@@ -10,6 +10,11 @@ import { isProblemDetails, toProblemDetails, type ProblemDetails } from './probl
 /**
  * A view that produces a `ResponseEntity` (status, headers, body) as a
  * complete response document.
+ *
+ * @example
+ * ```ts
+ * const instance = new ResponseEntityView();
+ * ```
  */
 export class ResponseEntityView implements ProducerView {
     /**

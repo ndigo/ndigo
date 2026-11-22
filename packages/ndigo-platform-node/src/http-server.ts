@@ -19,6 +19,11 @@ import { readIntEnv } from './read-int-env';
 /**
  * Adapter interface for platform HTTP servers.
  * The default implementation wraps `node:http.createServer()`.
+ *
+ * @example
+ * ```ts
+ * const value = {} as HTTPServerAdapter;
+ * ```
  */
 export interface HTTPServerAdapter {
     /** Start listening on the given port and host. @param port - The port. @param host - The bind host. */
@@ -37,6 +42,11 @@ export interface HTTPServerAdapter {
  * time (Node's tls options take PEM content only). Present when the
  * origin should terminate TLS and negotiate HTTP/2; absent, the origin
  * stays plaintext HTTP/1.1 for the edge-terminated topology.
+ *
+ * @example
+ * ```ts
+ * const value = {} as TLSServerOptions;
+ * ```
  */
 export interface TLSServerOptions {
     /** PEM private key (inline) or path to the key file. */
@@ -76,6 +86,11 @@ export interface TLSServerOptions {
 
 /**
  * Options for creating an {@link HTTPServer}.
+ *
+ * @example
+ * ```ts
+ * const value = {} as HTTPServerOptions;
+ * ```
  */
 export interface HTTPServerOptions {
     /** TCP port to listen on. Defaults to `3000` or `process.env.PORT`. */

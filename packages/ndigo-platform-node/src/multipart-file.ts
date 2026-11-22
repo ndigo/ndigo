@@ -15,6 +15,11 @@ import { MultiValueMap } from '@ndigo/core';
  * `getInputStream`, `transferTo`). A part is backed either by an in-memory
  * buffer (small uploads) or a temp file (large uploads streamed above the
  * threshold); both are served through the same interface.
+ *
+ * @example
+ * ```ts
+ * const value = {} as MultipartFile;
+ * ```
  */
 export interface MultipartFile {
     /** The form field name (`getName`). */
@@ -38,6 +43,11 @@ export interface MultipartFile {
 /**
  * A parsed `multipart/form-data` request, stored on {@link node-request.NodeRequest#multipart | NodeRequest.multipart}.
  * Populated by the adapter before dispatch so argument resolvers can read it.
+ *
+ * @example
+ * ```ts
+ * const value = {} as MultipartContext;
+ * ```
  */
 export interface MultipartContext {
     /** Text fields keyed by form field name; repeated names collapse to an array. */
@@ -54,6 +64,14 @@ export interface MultipartContext {
 }
 
 /** Backing store for a parsed file part: in-memory buffer or temp-file handle. */
+/**
+ * Backing.
+ *
+ * @example
+ * ```ts
+ * type _Alias = Backing;
+ * ```
+ */
 export type Backing =
     | { readonly kind: 'buffer'; readonly data: Buffer }
     | { readonly kind: 'temp'; readonly path: string; readonly size: number };

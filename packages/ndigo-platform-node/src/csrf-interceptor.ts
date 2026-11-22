@@ -37,6 +37,11 @@ const CSRF_HEADER = String(HTTPHeaders.X_CSRF_TOKEN);
 
 /**
  * Options for the CSRF interceptor.
+ *
+ * @example
+ * ```ts
+ * const value = {} as CSRFInterceptorOptions;
+ * ```
  */
 export interface CSRFInterceptorOptions {
     /**
@@ -63,6 +68,11 @@ export interface CSRFInterceptorOptions {
  * ```ts
  * const mapping = new RadixMetadataHandlerMapping();
  * mapping.interceptors.push(new CSRFInterceptor());
+ * ```
+ *
+ * @example
+ * ```ts
+ * const instance = new CSRFInterceptor();
  * ```
  */
 export class CSRFInterceptor implements RouteHandlerInterceptor {

@@ -31,6 +31,11 @@ import { SESSION_COOKIE } from './session-cookie';
  * - the interceptor only reads cookies + the store; it never sets cookies
  *   (login/logout own that — see `setSessionCookie`/`clearSessionCookie`);
  * - token values are the opaque ids issued by the store.
+ *
+ * @example
+ * ```ts
+ * const instance = new NodeSessionInterceptor();
+ * ```
  */
 export class NodeSessionInterceptor implements RouteHandlerInterceptor {
     /**

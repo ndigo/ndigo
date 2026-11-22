@@ -38,6 +38,14 @@ import { NOSNIFF_HEADER, StaticResourceResolver, type StaticResourceResult } fro
 import { ProblemTypes, writeProblem } from './problem-details';
 
 /** Handler options (D-6) — defaults preserve today's plain-file behavior. */
+/**
+ * StaticHandlerOptions.
+ *
+ * @example
+ * ```ts
+ * const value = {} as StaticHandlerOptions;
+ * ```
+ */
 export interface StaticHandlerOptions {
     /** `Cache-Control` value on success; `null` omits the header. Default `'public, max-age=3600'`. */
     cacheControl?: string | null;
@@ -227,6 +235,11 @@ function ifRangeMatches(
  * problem+json documents; 404 file misses may fall back to the SPA index
  * (D-6). Writes directly, because status/header combinations like 206/304/416
  * cannot flow through `ResponseEntityView`.
+ *
+ * @example
+ * ```ts
+ * const instance = new StaticResourceHandler();
+ * ```
  */
 export class StaticResourceHandler {
     /**

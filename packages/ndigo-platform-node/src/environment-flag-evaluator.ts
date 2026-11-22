@@ -22,6 +22,11 @@ import {
 /**
  * Environment-backed flag evaluator: flags resolve from `feature.*`
  * properties (default provider namespace), read immediately.
+ *
+ * @example
+ * ```ts
+ * const instance = new EnvironmentFlagEvaluator();
+ * ```
  */
 export class EnvironmentFlagEvaluator extends AsApplicationContextAware(Null) implements FlagEvaluator {
     /**

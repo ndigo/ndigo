@@ -13,6 +13,11 @@ import { getNodeRequest } from './node-request';
 
 /**
  * Node.js request header argument resolver.
+ *
+ * @example
+ * ```ts
+ * const instance = new NodeHeaderValueMethodArgumentResolver();
+ * ```
  */
 export class NodeHeaderValueMethodArgumentResolver extends AbstractPlatformArgumentResolver {
     constructor() {

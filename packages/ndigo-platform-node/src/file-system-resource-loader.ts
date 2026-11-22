@@ -47,6 +47,11 @@ class FileResource<T = string> implements Resource<T> {
  * a traversal (`../`) or absolute location resolves to an unresolved resource
  * instead of reading outside the root. Without a `root` the loader stays
  * generic and reads the given path as-is.
+ *
+ * @example
+ * ```ts
+ * const instance = new FileSystemResourceLoader();
+ * ```
  */
 export class FileSystemResourceLoader implements ResourceLoader {
     /**

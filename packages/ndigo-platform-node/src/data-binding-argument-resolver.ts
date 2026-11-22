@@ -24,6 +24,11 @@ const NODE_BINDABLE_SOURCES: readonly DataBindingSource[] = ['body', 'cookie'];
  * (`dataBinderValue('body', ProfileForm)` → a real `ProfileForm` instance),
  * then through the shared conversion + Zod `convert` hook pipeline of the
  * `AbstractDataBindingArgumentResolver` base.
+ *
+ * @example
+ * ```ts
+ * const instance = new NodeDataBindingMethodArgumentResolver();
+ * ```
  */
 export class NodeDataBindingMethodArgumentResolver extends AbstractDataBindingArgumentResolver {
     /** The Node data sources this resolver binds. */

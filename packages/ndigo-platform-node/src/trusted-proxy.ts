@@ -214,6 +214,11 @@ function push16(bytes: number[], value: number): void {
  * patterns against values and does not fit a set that owns its entries).
  * Construction fails loud on malformed entries — a typo must not silently
  * narrow the trusted set.
+ *
+ * @example
+ * ```ts
+ * const instance = new TrustedProxySet();
+ * ```
  */
 export class TrustedProxySet implements Matchable<string> {
     /**
@@ -343,6 +348,11 @@ export class TrustedProxySet implements Matchable<string> {
  * @param trustedProxies - The configured trusted-proxy allowlist
  * (`Matchable<string>` membership test).
  * @returns The resolved client address, or `undefined` when no peer exists.
+ *
+ * @example
+ * ```ts
+ * resolveClientAddress();
+ * ```
  */
 export function resolveClientAddress(
     peer: string | undefined,

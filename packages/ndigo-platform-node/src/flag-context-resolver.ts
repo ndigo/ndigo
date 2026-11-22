@@ -16,6 +16,11 @@ import { getNodeRequest } from './node-request';
  * Builds the `FlagEvaluationContext` for a request's flag evaluation.
  * Implementations run on the request path: keep them synchronous and
  * side-effect-free.
+ *
+ * @example
+ * ```ts
+ * const value = {} as FlagEvaluationContextResolver;
+ * ```
  */
 export interface FlagEvaluationContextResolver {
     /**
@@ -32,6 +37,11 @@ export interface FlagEvaluationContextResolver {
  * The client-address resolver: targeting key = the `NodeRequest`'s
  * `remoteAddress` — the trusted-proxy-resolved client IP, the same
  * key the rate limiter uses. An absent address yields no context.
+ *
+ * @example
+ * ```ts
+ * const instance = new ClientAddressFlagContextResolver();
+ * ```
  */
 export class ClientAddressFlagContextResolver implements FlagEvaluationContextResolver {
     /**
@@ -81,6 +91,11 @@ export class ClientAddressFlagContextResolver implements FlagEvaluationContextRe
  * Targeting key = `principal.id`: a stable identity is a better rollout
  * bucket than the network address. Attributes carry the principal's roles
  * for provider targeting.
+ *
+ * @example
+ * ```ts
+ * const instance = new SessionPrincipalFlagContextResolver();
+ * ```
  */
 export class SessionPrincipalFlagContextResolver implements FlagEvaluationContextResolver {
     /**

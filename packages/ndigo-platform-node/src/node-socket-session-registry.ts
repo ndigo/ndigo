@@ -16,6 +16,11 @@ import { readIntEnv } from './read-int-env';
  * A peer that stops reading (stalled tab, throttled network) accumulates
  * buffered frames in its transport buffer (`ws` `bufferedAmount`). Without a
  * watermark, the memory cost of a room is set by its slowest member.
+ *
+ * @example
+ * ```ts
+ * type _Alias = SocketBackpressurePolicy;
+ * ```
  */
 export type SocketBackpressurePolicy = {
     /**
@@ -43,6 +48,11 @@ const DEFAULT_BACKPRESSURE: SocketBackpressurePolicy = Object.freeze({
 /**
  * Backpressure enforcement event — the decision-point seam for telemetry
  * and logging (the private `#safeSend` decision is otherwise unobservable).
+ *
+ * @example
+ * ```ts
+ * type _Alias = SocketBackpressureEvent;
+ * ```
  */
 export type SocketBackpressureEvent = {
     /** Endpoint path the session belongs to (auto-join set key). */
@@ -61,6 +71,11 @@ export type SocketBackpressureEvent = {
  * otherwise be JSON-encoded twice per broadcast. A fan-out to an empty
  * path/room (or one whose members have all closed) sends nothing and emits
  * nothing.
+ *
+ * @example
+ * ```ts
+ * type _Alias = SocketFanoutEvent;
+ * ```
  */
 export type SocketFanoutEvent = {
     /** Which index fanned out: the endpoint path or a named room. */
@@ -76,6 +91,11 @@ export type SocketFanoutEvent = {
 
 /**
  * Options for {@link NodeSocketSessionRegistry}.
+ *
+ * @example
+ * ```ts
+ * const value = {} as NodeSocketSessionRegistryOptions;
+ * ```
  */
 export interface NodeSocketSessionRegistryOptions {
     /** Application-owned cross-node transport. Await {@link NodeSocketSessionRegistry.connect} before publishing. */
@@ -126,6 +146,11 @@ export interface NodeSocketSessionRegistryOptions {
  *
  * @param env - Environment to read (defaults to `process.env`).
  * @returns Resolved registry options.
+ *
+ * @example
+ * ```ts
+ * resolveSocketRegistryOptions();
+ * ```
  */
 export function resolveSocketRegistryOptions(
     env: Readonly<Record<string, string | undefined>> = process.env
@@ -152,6 +177,11 @@ export function resolveSocketRegistryOptions(
  * setup; named rooms via `SocketSession.join`/`leave` provide finer grouping.
  * The implementation is registered as a context entry by
  * `NodeAutoConfiguration`; any service can inject it and push to a room.
+ *
+ * @example
+ * ```ts
+ * const instance = new NodeSocketSessionRegistry();
+ * ```
  */
 export class NodeSocketSessionRegistry implements SocketSessionRegistry, AsyncDestroyable {
     /**

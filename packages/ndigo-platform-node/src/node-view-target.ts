@@ -13,6 +13,11 @@ import { writeRenderResult } from './producer-writer';
 /**
  * A `ViewTarget` implementation that writes rendered view output to an HTTP
  * `ServerResponse`. Supports content negotiation via the `Accept` header.
+ *
+ * @example
+ * ```ts
+ * const instance = new HTTPResponseViewTarget();
+ * ```
  */
 export class HTTPResponseViewTarget implements ViewTarget {
     /**

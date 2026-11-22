@@ -22,6 +22,11 @@ export const SESSION_COOKIE = '__Host-ndigo-session';
 
 /**
  * Options for the session cookie.
+ *
+ * @example
+ * ```ts
+ * const value = {} as SessionCookieOptions;
+ * ```
  */
 export interface SessionCookieOptions {
     /**
@@ -64,6 +69,11 @@ function assertValidCookie(name: string, secure: boolean): void {
  * @param token - The session token.
  * @param options - Cookie name/security options.
  * @returns The `Set-Cookie` value.
+ *
+ * @example
+ * ```ts
+ * buildSessionCookie();
+ * ```
  */
 export function buildSessionCookie(token: string, options: SessionCookieOptions = {}): string {
     const name = options.name ?? SESSION_COOKIE;
@@ -84,6 +94,11 @@ export function buildSessionCookie(token: string, options: SessionCookieOptions 
  *
  * @param options - Cookie name/security options.
  * @returns The expiring `Set-Cookie` value.
+ *
+ * @example
+ * ```ts
+ * buildSessionCookieClear();
+ * ```
  */
 export function buildSessionCookieClear(options: SessionCookieOptions = {}): string {
     const name = options.name ?? SESSION_COOKIE;
@@ -102,6 +117,11 @@ export function buildSessionCookieClear(options: SessionCookieOptions = {}): str
  * @param route - The current route.
  * @param token - The session token.
  * @param options - Cookie name/security options.
+ *
+ * @example
+ * ```ts
+ * setSessionCookie();
+ * ```
  */
 export function setSessionCookie(route: Route, token: string, options?: SessionCookieOptions): void {
     const response = getNodeResponse(route);
@@ -117,6 +137,11 @@ export function setSessionCookie(route: Route, token: string, options?: SessionC
  *
  * @param route - The current route.
  * @param options - Cookie name/security options.
+ *
+ * @example
+ * ```ts
+ * clearSessionCookie();
+ * ```
  */
 export function clearSessionCookie(route: Route, options?: SessionCookieOptions): void {
     const response = getNodeResponse(route);

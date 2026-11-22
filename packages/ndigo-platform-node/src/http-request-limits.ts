@@ -5,6 +5,11 @@ import { FrameworkError, MediaType } from '@ndigo/core';
 import { contentTypeBase } from '@ndigo/http';
 /**
  * Tunable bounds for the Node HTTP request pipeline.
+ *
+ * @example
+ * ```ts
+ * const value = {} as HTTPRequestLimits;
+ * ```
  */
 export interface HTTPRequestLimits {
     /** Maximum request body size in bytes (default 1 MiB). Oversized bodies produce `413`. */
@@ -24,6 +29,14 @@ export interface HTTPRequestLimits {
 }
 
 /** Resolved, read-only limits with defaults applied. */
+/**
+ * ResolvedHTTPRequestLimits.
+ *
+ * @example
+ * ```ts
+ * const value = {} as ResolvedHTTPRequestLimits;
+ * ```
+ */
 export interface ResolvedHTTPRequestLimits {
     /** Maximum request body size in bytes. */
     readonly maxBodyBytes: number;
@@ -58,6 +71,11 @@ export const DEFAULT_HTTP_REQUEST_LIMITS: ResolvedHTTPRequestLimits = {
  *
  * @param limits - The user-provided limits.
  * @returns The resolved limits with defaults applied.
+ *
+ * @example
+ * ```ts
+ * resolveHTTPRequestLimits();
+ * ```
  */
 export function resolveHTTPRequestLimits(limits?: HTTPRequestLimits): ResolvedHTTPRequestLimits {
     const resolved: ResolvedHTTPRequestLimits = { ...DEFAULT_HTTP_REQUEST_LIMITS };
@@ -81,6 +99,11 @@ export function resolveHTTPRequestLimits(limits?: HTTPRequestLimits): ResolvedHT
  * (`413` oversized body, `408` timeout, `400` malformed input, …). Thrown by
  * the request pipeline so the adapter can map it to a problem document
  * without ever leaking internals to the client.
+ *
+ * @example
+ * ```ts
+ * const instance = new RequestLimitError();
+ * ```
  */
 export class RequestLimitError extends FrameworkError {
     /**
@@ -113,6 +136,11 @@ export class RequestLimitError extends FrameworkError {
 
 /**
  * Body parse outcomes. Malformed input is a `400` (never silently reshaped).
+ *
+ * @example
+ * ```ts
+ * type _Alias = BodyParseResult;
+ * ```
  */
 export type BodyParseResult =
     | { readonly kind: 'empty' }
@@ -128,6 +156,11 @@ export type BodyParseResult =
  * @param contentType - The declared content type.
  * @param raw - The raw body bytes.
  * @returns The parsed body result.
+ *
+ * @example
+ * ```ts
+ * parseBody();
+ * ```
  */
 export function parseBody(contentType: string | undefined, raw: Buffer): BodyParseResult {
     if (raw.length === 0) return { kind: 'empty' };
@@ -172,6 +205,11 @@ export function parseBody(contentType: string | undefined, raw: Buffer): BodyPar
  * @param contentType - The request's `Content-Type` header value.
  * @param raw - The raw body bytes.
  * @returns The body record bound on `NodeRequest.body`.
+ *
+ * @example
+ * ```ts
+ * parseBodyRecord();
+ * ```
  */
 export function parseBodyRecord(contentType: string | undefined, raw: Buffer): Record<string, unknown> {
     const result = parseBody(contentType, raw);

@@ -6,12 +6,36 @@ import { sep, resolve, isAbsolute } from 'node:path';
 import { MediaType, MediaTypes, stringComparator } from '@ndigo/core';
 
 /** Outcome kinds for a static-resource lookup. */
+/**
+ * StaticResourceKind.
+ *
+ * @example
+ * ```ts
+ * type _Alias = StaticResourceKind;
+ * ```
+ */
 export type StaticResourceKind = 'forbidden' | 'not-found' | 'internal-error' | 'ok';
 
 /** Content-Encoding of a precompressed variant (D-3). */
+/**
+ * StaticEncoding.
+ *
+ * @example
+ * ```ts
+ * type _Alias = StaticEncoding;
+ * ```
+ */
 export type StaticEncoding = 'br' | 'gzip';
 
 /** The result of resolving a static resource. */
+/**
+ * StaticResourceResult.
+ *
+ * @example
+ * ```ts
+ * const value = {} as StaticResourceResult;
+ * ```
+ */
 export interface StaticResourceResult {
     /** The resolution outcome. */
     readonly kind: StaticResourceKind;
@@ -98,6 +122,14 @@ const COMPRESSIBLE_EXTENSIONS: ReadonlySet<string> = new Set([
 export const NOSNIFF_HEADER = 'X-Content-Type-Options: nosniff';
 
 /** Options controlling resolution beyond the plain file (D-6/D-7). */
+/**
+ * StaticResolveOptions.
+ *
+ * @example
+ * ```ts
+ * const value = {} as StaticResolveOptions;
+ * ```
+ */
 export interface StaticResolveOptions {
     /** Directory index files, tried in order for a directory path. */
     indexNames?: readonly string[];
@@ -131,6 +163,11 @@ export interface StaticResolveOptions {
  *
  * @param header - The `Accept-Encoding` header.
  * @returns The chosen encoding, or `null`.
+ *
+ * @example
+ * ```ts
+ * negotiateEncoding();
+ * ```
  */
 export function negotiateEncoding(header: string | undefined): StaticEncoding | null {
     if (!header) {
@@ -190,6 +227,11 @@ function isDotfilePath(relative: string): boolean {
 
 /**
  * Resolves static files strictly inside a canonical base directory.
+ *
+ * @example
+ * ```ts
+ * const instance = new StaticResourceResolver();
+ * ```
  */
 export class StaticResourceResolver {
     /**
@@ -477,6 +519,11 @@ function escapeHtml(value: string): string {
  *
  * @param kind - The resolution kind.
  * @returns The HTTP status code.
+ *
+ * @example
+ * ```ts
+ * statusForKind();
+ * ```
  */
 export function statusForKind(kind: StaticResourceKind): number {
     switch (kind) {

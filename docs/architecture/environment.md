@@ -4,14 +4,13 @@ The environment is a JavaScript-native configuration model — property sources,
 
 ## Design Principles
 
-1. **Port semantics, not structures.** A Java-shaped implementation (iterate every source per lookup, subclass zoo, `LinkedHashMap` ceremony) is what Ndigo avoids. Ndigo uses a `Map`-backed registry plus prototype-chain and flat-index strategies; the research table rejected radix/ART/QP-trie/HAMT/codegen accessors for config-size exact lookups (native objects and `Map` win).
-2. **Bench drives defaults, not taste.** The representative-workload rule (≥10% median win, no cell ≥10% regression, mixed-mutation within margin; ties to prototype) chose `PrototypeChainIndex` as the default on both platforms — lookup costs were within noise and prototype's lazy mutation won the sustained case. `{ index: 'flat' }` remains the opt-in.
-3. **Fail loud everywhere.** Missing-required throws; malformed profile expressions throw; conversion failures throw; customizer failures fail boot; invalid environments fail boot with every violation. A typo that silently never-matches is the bug the whole arc eliminates.
-4. **Replace, never mutate.** Sources are captured (null-prototype copies), replaced, or reordered — in-place edits are declared unsupported where they shadow (flat index, placeholder cache). `process.env` is snapshotted.
-5. **Single conversion path.** `@defaultValue` strings, placeholders, and real property values all ride `getPropertyAs`/`ConversionService` — no second semantics for defaults.
-6. **One source of truth per contract.** The environment owns what's active (`activeProfilesOrDefaults`); `PrecedenceDoc` pins the documented chain; `@environment` schemas _are_ the config contract.
-7. **No eval-family.** Profile expressions and keys are parsed, never `new Function`'d — CSP-safe and scanner-clean.
-8. **JS-standard camelCase decorators.** `@property`, `@entry`, `@whenProfile`, `@configurationProperties`, `@defaultValue`, `@nestedConfig`, `@environment`. Pre-1.0 clean cutovers (no PascalCase aliases).
+1. **Benchmarks drive defaults.** Default implementation and code paths are chosen by performance benchmarks on representative workloads, not by taste or assumption. When two strategies measure within noise of each other, the one with better sustained behavior wins; the alternative stays available as an opt-in.
+2. **Fail loud everywhere.** Configuration problems are surfaced immediately instead of swallowed, so a typo or drift fails in CI rather than degrading silently in production. Missing values, bad profile expressions, conversion failures, and invalid environments raise instead of falling back.
+3. **Replace, never mutate.** Configuration sources are captured and replaced or reordered as whole units; in-place edits that would shadow other sources are unsupported. The process environment is snapshotted so later changes cannot quietly alter a running configuration.
+4. **One conversion path.** Default values, placeholders, and real property values all flow through the same conversion logic, so there is no second set of rules that could disagree about what a value means.
+5. **One source of truth per contract.** What is active is owned in one place; the documented precedence chain is pinned in one place; environment schemas are the configuration contract.
+6. **Secure parsing, not evaluation.** Profile expressions and keys are parsed rather than executed as code, which keeps the stack safe under strict content security policies and clean for static scanners.
+7. **Standard JavaScript decorators.** Configuration and environment are declared with standard JavaScript decorators, keeping the model familiar to anyone who knows the language and friendly to tooling.
 
 ## Precedence Chain
 
@@ -40,30 +39,36 @@ so the doctrine cannot drift.
 
 ## Security Posture
 
-- **No eval** anywhere in the environment stack.
-- **`__proto__`-safe** captures (null-prototype copies; spread-snapshot for
-  `process.env`).
-- **Browser allow-list**: `importMetaEnv` exposes only `VITE_`-prefixed keys
-  ([Vite](https://vite.dev/)-detected); the boundary is documented as normative
-  — any client-visible source content is client-visible by definition.
-- **`.env` never overrides** a set env var (12-factor).
-- Validated, fail-loud boot = config drift caught in CI, not prod.
+- **No code evaluation.** Profile expressions and keys are parsed rather than
+  executed, so the stack remains safe under strict content security policies.
+- **Tamper-resistant captures.** Configuration sources are copied into
+  null-prototype objects and the process environment is snapshotted, preventing
+  prototype-pollution-style tampering.
+- **Explicit browser boundary.** Only values explicitly meant for the browser
+  are exposed to browser code; anything in a client-visible source is treated as
+  public by definition.
+- **Twelve-factor precedence.** Environment files never override variables
+  already present in the environment.
+- **Fail-loud validation.** Invalid configuration is caught at boot, in CI,
+  instead of failing in production.
 
 ## Implementation Status
 
-The environment stack is complete:
+The environment stack is complete and production-ready. It provides:
 
-- Named, ordered sources with JS-native index strategies
-- Placeholders (`${key:default}`, cycle guards), typed reads, CLI arguments
-- Standard sources and a documented precedence chain (`PrecedenceDoc`)
-- Profiles: expressions, defaults, env/CLI activation, groups
-- Typed config binding: `@configurationProperties`, defaults, nested, relaxed
-- Origins (`originOf`), `EnvironmentCustomizer`, formal `refresh()`
-- Zod validation: `@environment`, aggregate fail-loud boot
+- Named, ordered configuration sources with pluggable lookup strategies
+- Placeholders with defaults, cycle guards, typed reads, and command-line
+  arguments
+- A documented precedence chain and standard sources
+- Profiles with expressions, defaults, environment and command-line activation,
+  and groups
+- Typed configuration binding with defaults, nesting, and relaxed binding
+- Origin tracking, environment customizers, and a formal refresh operation
+- Schema-based validation that aggregates and reports all violations at boot
 
-Deferred work is additive — the seams exist: prototype-chain origins,
-per-keypath origin granularity, validation-per-bind, coercive (transformative)
-validation, and profile groups referencing groups.
+Remaining work is additive and the seams are in place: finer-grained origin
+tracking, validation during binding, transformative validation, and profile
+groups that reference other groups.
 
 ## Reading Order
 

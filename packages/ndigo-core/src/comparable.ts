@@ -249,6 +249,11 @@ class NaturalComparator<T> extends PredicateComparator<T> {
 
 /**
  * A comparator for `number` objects.
+ *
+ * @example
+ * ```ts
+ * [3, 1, 2].sort(new NumberComparator()); // [1, 2, 3]
+ * ```
  */
 export class NumberComparator extends NaturalComparator<number> {
     /**
@@ -269,6 +274,11 @@ export class NumberComparator extends NaturalComparator<number> {
 
 /**
  * A comparator for `string` objects, with a method for case-insensitive comparison.
+ *
+ * @example
+ * ```ts
+ * ['b', 'A', 'a'].sort((a, b) => new StringComparator().compareIgnoreCase(a, b)); // ['A', 'a', 'b']
+ * ```
  */
 export class StringComparator extends NaturalComparator<string> {
     /**

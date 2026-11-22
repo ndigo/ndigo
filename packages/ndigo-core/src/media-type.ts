@@ -220,6 +220,12 @@ const stringifyParameters = (value: MediaTypeParameters): string => {
 
 /**
  * Comparator to sort `MediaType` in order of specificity.
+ *
+ * @example
+ * ```ts
+ * const cmp = new SpecificityComparator();
+ * ['text/html', 'text/*'].sort((a, b) => cmp.compare(MediaType.for(a)!, MediaType.for(b)!));
+ * ```
  */
 export class SpecificityComparator<T extends MediaType> implements Comparator<T> {
     /**

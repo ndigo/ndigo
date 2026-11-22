@@ -1,6 +1,14 @@
 /**
  * A prefix tree (trie) for string keys with O(m) insert/search/prefix
  * operations, where m is the key length.
+ *
+ * @example
+ * ```ts
+ * const trie = new Trie<number>();
+ * trie.insert('cat', 1);
+ * trie.search('cat'); // 1
+ * trie.startsWith('ca'); // true
+ * ```
  */
 import { Serializable, JSONArray, serialize } from './serializable.js';
 import { Equatable } from './equatable.js';

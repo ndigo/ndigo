@@ -1,5 +1,11 @@
 /**
  * An object with a `null` prototype.
+ *
+ * @example
+ * ```ts
+ * const obj = createNull();
+ * Object.getPrototypeOf(obj); // null
+ * ```
  */
 export class Null {
     /**

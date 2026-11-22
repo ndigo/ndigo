@@ -5,6 +5,15 @@
  * capacity is unbounded (unlike {@link RingBuffer}, which has a fixed cap).
  * Exact-size bounding is done by the caller (`if (deque.length > cap) deque.shift()`),
  * which is itself O(1).
+ *
+ * @example
+ * ```ts
+ * const deque = new Deque<number>();
+ * deque.push(1);
+ * deque.unshift(0);
+ * deque.pop(); // 1
+ * deque.shift(); // 0
+ * ```
  */
 import { Serializable, JSONArray, serialize } from './serializable.js';
 import { Equatable } from './equatable.js';

@@ -127,7 +127,12 @@ export const likeIterable = (value: unknown): value is Iterable<unknown> =>
 /**
  * An iterator for array-like objects, providing sequential access to elements by index.
  * @typeParam T - The type of elements in the indexed collection.
-
+ *
+ * @example
+ * ```ts
+ * const it = new IndexedIterator([1, 2, 3]);
+ * [...it]; // [1, 2, 3]
+ * ```
  */
 export class IndexedIterator<T = unknown> implements IterableIterator<T> {
     /**
@@ -193,7 +198,12 @@ export const indexedIterator = <T = unknown>(indexed: ArrayLike<T | undefined>):
  * An iterator for the key-value pairs (entries) of an object or collection.
  * It can adapt to objects with an `entries()` method, or fall back to `Object.entries()`.
  * @typeParam T - The type of values in the entries.
-
+ *
+ * @example
+ * ```ts
+ * const it = new EntriesIterator({ a: 1, b: 2 });
+ * [...it]; // [['a', 1], ['b', 2]]
+ * ```
  */
 export class EntriesIterator<T = unknown> implements IterableIterator<Entry<T>> {
     /**

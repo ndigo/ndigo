@@ -2,6 +2,13 @@
  * A probabilistic set membership filter: `has()` may return false positives
  * but never false negatives. Memory is O(bits) and independent of the
  * number of distinct values stored.
+ *
+ * @example
+ * ```ts
+ * const filter = new BloomFilter(1024, 3);
+ * filter.add('hello');
+ * filter.has('hello'); // true
+ * ```
  */
 import { Serializable } from './serializable.js';
 import { Equatable } from './equatable.js';

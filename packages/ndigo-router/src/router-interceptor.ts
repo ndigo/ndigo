@@ -15,6 +15,11 @@ import {
  * A function signature for a router middleware, which can optionally prevent further processing.
  * @param route - The `Route` object being processed.
  * @returns `true` to continue processing, `false` to stop, or `void` to continue by default.
+ *
+ * @example
+ * ```ts
+ * type _Alias = RouterMiddleware;
+ * ```
  */
 export type RouterMiddleware = (route: Route) => boolean | void | Promise<boolean | void>;
 

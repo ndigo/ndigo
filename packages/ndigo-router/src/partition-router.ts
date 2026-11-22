@@ -9,6 +9,11 @@ import { matchesPartitionPath, normalizePartitionPrefix, stripPartitionPrefix } 
 /**
  * A callback function type that is invoked when a feature route is matched.
  * @param route - The `Route` object representing the matched feature route.
+ *
+ * @example
+ * ```ts
+ * type _Alias = FeatureRouteCallback;
+ * ```
  */
 export type FeatureRouteCallback = (route: Route) => void;
 

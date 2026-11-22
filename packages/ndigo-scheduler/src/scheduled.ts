@@ -76,6 +76,11 @@ function resolveLockFields(spec: { lock?: unknown; lockWait?: unknown; lockWaitS
  *
  * @param spec - The supplied schedule.
  * @returns The normalized schedule record.
+ *
+ * @example
+ * ```ts
+ * const spec = resolveScheduledSpec({ cron: '0 0 * * *' });
+ * ```
  */
 export function resolveScheduledSpec(spec: ScheduledSpec): NormalizedScheduledSpec {
     if (typeof spec === 'string') {
@@ -187,6 +192,11 @@ export function scheduled(spec: ScheduledSpec) {
  * @param target - The decorated class constructor.
  * @param methodName - The decorated method name.
  * @returns The normalized schedule, or `undefined` when not scheduled.
+ *
+ * @example
+ * ```ts
+ * const spec = getScheduledSpec(AppService, 'nightly');
+ * ```
  */
 export function getScheduledSpec(target: object, methodName: string): NormalizedScheduledSpec | undefined {
     return getSymbolMetadata(target)[`${SCHEDULED_METADATA_PREFIX}${methodName}`] as

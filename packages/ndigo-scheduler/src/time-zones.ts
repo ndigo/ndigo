@@ -93,6 +93,11 @@ export const TimeZones = Object.freeze({
  *
  * @param zone - The IANA identifier to validate.
  * @returns Whether the identifier is a recognized time zone.
+ *
+ * @example
+ * ```ts
+ * isValidTimeZone('America/New_York'); // true
+ * ```
  */
 export function isValidTimeZone(zone: string): boolean {
     if (zone.length === 0) {

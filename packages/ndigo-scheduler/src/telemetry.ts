@@ -17,6 +17,12 @@ const TRACER_NAME = '@ndigo/scheduler';
  *
  * @param task - The task to instrument.
  * @returns A task whose `run` opens and closes the span.
+ *
+ * @example
+ * ```ts
+ * const task: ScheduledTaskDefinition = { name: 'nightly', schedule: new CronSchedule('0 0 * * *'), run: async () => {} };
+ * const instrumented = instrumentTask(task);
+ * ```
  */
 export function instrumentTask(task: ScheduledTaskDefinition): ScheduledTaskDefinition {
     return {

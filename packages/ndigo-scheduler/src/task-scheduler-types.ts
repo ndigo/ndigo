@@ -6,6 +6,14 @@ import { type LockDriver } from '@ndigo/locks';
 import type { Schedule } from './schedule';
 import type { TaskScheduler } from './task-scheduler';
 
+/**
+ * Task scheduler contracts.
+ *
+ * @example
+ * ```ts
+ * const task: ScheduledTaskDefinition = { name: 'nightly', schedule: new CronSchedule('0 0 * * *'), run: async () => {} };
+ * ```
+ */
 export interface ScheduledTaskDefinition {
     /**
      * Unique task name (used in diagnostics and stats).
@@ -49,6 +57,11 @@ export interface ScheduledTaskDefinition {
 
 /**
  * Options for constructing a {@link TaskScheduler}.
+ *
+ * @example
+ * ```ts
+ * const options: TaskSchedulerOptions = { clock: () => new Date() };
+ * ```
  */
 export interface TaskSchedulerOptions {
     /**
@@ -72,6 +85,11 @@ export interface TaskSchedulerOptions {
 
 /**
  * Observable statistics for a registered task.
+ *
+ * @example
+ * ```ts
+ * const stats: TaskStats = scheduler.getStats('nightly');
+ * ```
  */
 export interface TaskStats {
     /**
@@ -97,6 +115,15 @@ export interface TaskStats {
     readonly lastError: Error | null;
 }
 
+/**
+ * Runtime state of a registered task: next-fire bookkeeping, single-flight
+ * flag, and run statistics.
+ *
+ * @example
+ * ```ts
+ * const state: TaskState = { definition: task, inFlight: false, nextRunAt: null, runs: 0, failures: 0, lastError: null, lastStartedAt: null, lastCompletedAt: null };
+ * ```
+ */
 export interface TaskState {
     /** The task definition. */
     readonly definition: ScheduledTaskDefinition;

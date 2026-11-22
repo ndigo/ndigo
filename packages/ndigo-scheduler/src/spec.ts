@@ -5,6 +5,11 @@
 /**
  * A duration: milliseconds, or a compact unit string (`'10s'`, `'5m'`,
  * `'2h'`, `'1d'`).
+ *
+ * @example
+ * ```ts
+ * const duration: DurationValue = '5m';
+ * ```
  */
 export type DurationValue = number | string;
 
@@ -54,6 +59,11 @@ export function parseDuration(value: DurationValue, label = 'duration', options:
 
 /**
  * A cron trigger with optional time zone and run-time cap.
+ *
+ * @example
+ * ```ts
+ * const spec: CronScheduleSpec = { cron: '0 0 * * *' };
+ * ```
  */
 export interface CronScheduleSpec {
     /**
@@ -96,6 +106,11 @@ export interface CronScheduleSpec {
 /**
  * An interval trigger — `fixedRate` (period measured from run start) or
  * `fixedDelay` (period measured from run end). Exactly one is required.
+ *
+ * @example
+ * ```ts
+ * const spec: IntervalScheduleSpec = { fixedRate: '5m' };
+ * ```
  */
 export interface IntervalScheduleSpec {
     /**
@@ -127,12 +142,22 @@ export interface IntervalScheduleSpec {
 /**
  * What `@scheduled` accepts: a bare cron string, a cron spec, or an
  * interval spec.
+ *
+ * @example
+ * ```ts
+ * const spec: ScheduledSpec = { cron: '0 0 * * *' };
+ * ```
  */
 export type ScheduledSpec = string | CronScheduleSpec | IntervalScheduleSpec;
 
 /**
  * The normalized, validated schedule record written into `Symbol.metadata`
  * by `@scheduled`.
+ *
+ * @example
+ * ```ts
+ * const spec: NormalizedScheduledSpec = { cron: '0 0 * * *' };
+ * ```
  */
 export interface NormalizedScheduledSpec {
     /** Standard five-field cron expression, when the spec declared `cron`. */

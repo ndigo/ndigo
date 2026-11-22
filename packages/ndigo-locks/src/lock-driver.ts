@@ -18,6 +18,11 @@ import type { AsyncDestroyable } from '@ndigo/factory';
 
 /**
  * Options for acquiring a lock.
+ *
+ * @example
+ * ```ts
+ * const options: LockAcquireOptions = { ttlMs: 30_000 };
+ * ```
  */
 export interface LockAcquireOptions {
     /**
@@ -32,6 +37,14 @@ export interface LockAcquireOptions {
  * A held (or previously held) lease. The token is checked by the backend on
  * every mutation, so a handle whose token lost the lease fails loudly rather
  * than corrupting the successor's lease.
+ *
+ * @example
+ * ```ts
+ * const handle = await driver.acquire('job:1', { ttlMs: 30_000 });
+ * if (handle && await handle.isHeld()) {
+ *     await handle.release();
+ * }
+ * ```
  */
 export interface LockHandle {
     /**
@@ -76,6 +89,12 @@ export interface LockHandle {
  * crash-self-healing. Acquisition is **non-blocking** — waiting policies
  * belong to the caller (`@scheduled({ lock, lockWait })`), never to the
  * driver.
+ *
+ * @example
+ * ```ts
+ * const handle = await driver.acquire('job:1', { ttlMs: 30_000 });
+ * if (handle) await handle.release();
+ * ```
  */
 export interface LockDriver extends AsyncDestroyable {
     /**
@@ -113,6 +132,13 @@ export interface LockDriver extends AsyncDestroyable {
  *
  * @param value - The value to test.
  * @returns Whether the value satisfies the driver contract shape.
+ *
+ * @example
+ * ```ts
+ * if (likeLockDriver(value)) {
+ *     await value.acquire('job:1', { ttlMs: 30_000 });
+ * }
+ * ```
  */
 export function likeLockDriver(value: unknown): value is LockDriver {
     return like({ kind: String, acquire: Function, destroy: Function })(value);
@@ -120,6 +146,12 @@ export function likeLockDriver(value: unknown): value is LockDriver {
 
 /**
  * Marks an object that can receive a {@link LockDriver}.
+ *
+ * @example
+ * ```ts
+ * const aware = new MyService(); // implements LockDriverAware
+ * aware.setLockDriver(driver);
+ * ```
  */
 export interface LockDriverAware extends Aware {
     /**
@@ -135,6 +167,13 @@ export interface LockDriverAware extends Aware {
  *
  * @param superclass - Base class to extend.
  * @returns A subclass that can receive a lock driver.
+ *
+ * @example
+ * ```ts
+ * class MyService extends AsLockDriverAware(Base) {}
+ * const service = new MyService();
+ * service.setLockDriver(driver);
+ * ```
  */
 export const AsLockDriverAware = <T extends Constructable>(superclass: T): Constructable<LockDriverAware> & T =>
     class extends AsAware(superclass) implements LockDriverAware {
@@ -154,6 +193,13 @@ export const AsLockDriverAware = <T extends Constructable>(superclass: T): Const
  *
  * @param value - The candidate value.
  * @returns Whether the value can receive a lock driver.
+ *
+ * @example
+ * ```ts
+ * if (likeLockDriverAware(value)) {
+ *     value.setLockDriver(driver);
+ * }
+ * ```
  */
 export const likeLockDriverAware = likeAwareAnd(like({ setLockDriver: Function })) as (
     value: unknown

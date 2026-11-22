@@ -17,6 +17,11 @@ import type { LockDriver, LockHandle } from './lock-driver';
 
 /**
  * Options for constructing {@link InProcessLockDriver}.
+ *
+ * @example
+ * ```ts
+ * const options: InProcessLockDriverOptions = { prefix: 'my-app' };
+ * ```
  */
 export interface InProcessLockDriverOptions {
     /**
@@ -64,6 +69,13 @@ function requireTtl(ttlMs: number): void {
  * The in-process {@link LockDriver}. See the module doc for the shared-table
  * semantics; {@link InProcessLockDriver.destroy} releases only the leases this
  * instance acquired.
+ *
+ * @example
+ * ```ts
+ * const driver = new InProcessLockDriver();
+ * const handle = await driver.acquire('job:1', { ttlMs: 30_000 });
+ * if (handle) await handle.release();
+ * ```
  */
 export class InProcessLockDriver implements LockDriver {
     /**

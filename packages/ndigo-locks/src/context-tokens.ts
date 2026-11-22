@@ -9,5 +9,10 @@ import type { LockDriver } from './lock-driver';
  * the `@scheduled({ lock })` runner resolves the driver through it when no
  * driver was passed to the constructor (the `NodeAutoConfiguration`
  * single-entry wiring).
+ *
+ * @example
+ * ```ts
+ * const driver = context.get(LOCK_DRIVER);
+ * ```
  */
 export const LOCK_DRIVER = new ContextToken<LockDriver>('lockDriver');

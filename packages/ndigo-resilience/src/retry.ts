@@ -36,6 +36,11 @@ export const retry = methodAnnotation<RetrySpec>('resilience:retry');
  * Retry policy for one method. **Idempotency is the caller's contract**
  * retrying re-invokes the join point, so a non-idempotent call
  * must constrain {@link RetrySpec.retryable}.
+ *
+ * @example
+ * ```ts
+ * const value = {} as RetrySpec;
+ * ```
  */
 export interface RetrySpec {
     /**

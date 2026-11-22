@@ -42,6 +42,11 @@ export function fixedBackoff(ms: number): BackoffPolicy {
 
 /**
  * Options for {@link exponentialBackoff}.
+ *
+ * @example
+ * ```ts
+ * const value = {} as ExponentialBackoffOptions;
+ * ```
  */
 export interface ExponentialBackoffOptions {
     /**

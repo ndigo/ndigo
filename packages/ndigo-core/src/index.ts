@@ -25,7 +25,7 @@ export * from './matchable.js';
 export * from './metadata.js';
 export * from './annotation.js';
 export * from './server-sent-event.js';
-export { MediaType, parseMediaType } from './media-type.js';
+export { MediaType, parseMediaType, SpecificityComparator } from './media-type.js';
 export * from './multi-value-map.js';
 export * from './null.js';
 export * from './path-matcher.js';

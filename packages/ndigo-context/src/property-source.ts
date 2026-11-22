@@ -1,7 +1,7 @@
 /**
  * Named property source contract and `MapPropertySource`.
  */
-import { JSONObject, JSONValue, createNull, KeypathConverter } from '@ndigo/core';
+import { JSONObject, JSONValue, createNull, getPath, KeypathConverter } from '@ndigo/core';
 import { isNil } from '@ndigo/util/types';
 
 const keypathConverter = new KeypathConverter();
@@ -92,13 +92,7 @@ export class MapPropertySource implements PropertySource {
     getProperty(key: string): JSONValue | undefined {
         const keypath = keypathConverter.convert(key);
         if (!keypath) return undefined;
-        let value: unknown = this.#properties;
-        for (const token of keypath) {
-            if (value === null || typeof value !== 'object') return undefined;
-            // Narrowed object: index by the parsed token; structural cast only.
-            value = (value as Record<number | string, unknown>)[token];
-        }
-        return value as JSONValue | undefined;
+        return getPath(keypath, this.#properties) as JSONValue | undefined;
     }
 
     /** Whether a property exists. @param key - The key. @returns `true` when present. */
@@ -110,8 +104,9 @@ export class MapPropertySource implements PropertySource {
 }
 
 /**
- * Normalizes dotted keys (`server.port`) into nested objects
- * (`server: { port: ... }`) so keypath resolution can find them.
+ * Normalizes dotted and bracketed keys (`server.port`, `items[0].title`)
+ * into nested objects (`server: { port: ... }`, `items: [{ title }]`) so
+ * keypath resolution can find them.
  *
  * Produces a null-prototype copy — registration stays immune to caller
  * mutation and prototype pollution. Nested keys win collision (whatever
@@ -124,26 +119,44 @@ export class MapPropertySource implements PropertySource {
 function nestDottedKeys(source: JSONObject): JSONObject {
     const out: JSONObject = createNull();
     for (const [key, value] of Object.entries(source)) {
-        // Array-index paths (`items[0].name`) would be corrupted by nesting —
-        // leave them literal (keypath resolution still handles them).
-        if (!key.includes('.') || key.includes('[')) {
+        const tokens = keypathConverter.convert(key);
+        // Unparseable key: keep it literal (matches the previous behaviour for
+        // keys that were neither dotted nor bracketed).
+        if (!tokens) {
             out[key] = value;
             continue;
         }
-        const segments = key.split('.');
-        let cursor: JSONObject = out;
-        for (let index = 0; index < segments.length - 1; index++) {
-            const segment = segments[index];
-            const existing = cursor[segment];
-            if (existing === null || typeof existing !== 'object' || Array.isArray(existing)) {
-                const next: JSONObject = createNull();
-                cursor[segment] = next;
-                cursor = next;
-            } else {
-                cursor = existing as JSONObject;
-            }
+        // Single token: assign directly.
+        if (tokens.length === 1) {
+            out[tokens[0]] = value;
+            continue;
         }
-        cursor[segments[segments.length - 1]] = value;
+        // Walk/create intermediate containers by token. Objects stay
+        // null-prototype (prototype-pollution safety); numeric indices create
+        // arrays. This is what adds bracket-key support to writes: a key such
+        // as `items[0].title` now nests into `{ items: [{ title }] }`
+        // instead of staying a literal property.
+        let cursor: unknown = out;
+        for (let index = 0; index < tokens.length - 1; index++) {
+            const token = tokens[index];
+            const nextToken = tokens[index + 1];
+            const container = cursor as Record<PropertyKey, unknown>;
+            const existing = container[token];
+            let child: unknown;
+            if (typeof nextToken === 'number') {
+                child = Array.isArray(existing) ? existing : [];
+                if (!Array.isArray(existing)) {
+                    container[token] = child;
+                }
+            } else if (existing === null || typeof existing !== 'object') {
+                child = createNull();
+                container[token] = child;
+            } else {
+                child = existing;
+            }
+            cursor = child;
+        }
+        (cursor as Record<PropertyKey, unknown>)[tokens[tokens.length - 1]] = value;
     }
     return out;
 }

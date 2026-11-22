@@ -114,6 +114,15 @@ const { defineProperty } = Reflect,
 
 /**
  * Base comparator storing a readonly context string for pattern-ordering strategies.
+ *
+ * @example
+ * ```ts
+ * abstract class OrderTimeComparator extends AbstractValueComparator {
+ *     compare(pattern1: string, pattern2: string): number {
+ *         return pattern1.localeCompare(pattern2);
+ *     }
+ * }
+ * ```
  */
 export abstract class AbstractValueComparator implements Comparator<string> {
     /**

@@ -1,5 +1,14 @@
 /**
  * Contract for recording feature-level metrics.
+ *
+ * @example
+ * ```ts
+ * const recorder: FeatureMetricRecorder = {
+ *     incrementCounter: (feature, metricName, value = 1) => metrics.increment(`${feature}.${metricName}`, value),
+ *     recordDuration: (feature, metricName, durationMs) => metrics.recordDuration(`${feature}.${metricName}`, durationMs),
+ *     setGauge: (feature, metricName, value) => metrics.setGauge(`${feature}.${metricName}`, value),
+ * };
+ * ```
  */
 export interface FeatureMetricRecorder {
     /**

@@ -91,6 +91,11 @@ export function matchNot<TValue>(matcher: Matchable<TValue>): Matchable<TValue> 
  * Represents an object that returns a matching result for an input.
  * @typeParam TInput - The type of the input to match.
  * @typeParam TResult - The type of the matching result.
+ *
+ * @example
+ * ```ts
+ * const matcher: ResultMatcher<string, string | null> = { match: (input) => (input === 'a' ? 'a' : null) };
+ * ```
  */
 export interface ResultMatcher<TInput, TResult> {
     /**

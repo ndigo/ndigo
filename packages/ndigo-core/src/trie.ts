@@ -1,4 +1,16 @@
 /**
+ * A prefix tree (trie) for string keys with O(m) insert/search/prefix operations.
+ */
+import { Serializable, JSONArray, serialize } from './serializable.js';
+import { Equatable } from './equatable.js';
+
+interface TrieNode<V> {
+    children: Map<string, TrieNode<V>>;
+    value: V | undefined;
+    terminal: boolean;
+}
+
+/**
  * A prefix tree (trie) for string keys with O(m) insert/search/prefix
  * operations, where m is the key length.
  *
@@ -10,15 +22,6 @@
  * trie.startsWith('ca'); // true
  * ```
  */
-import { Serializable, JSONArray, serialize } from './serializable.js';
-import { Equatable } from './equatable.js';
-
-interface TrieNode<V> {
-    children: Map<string, TrieNode<V>>;
-    value: V | undefined;
-    terminal: boolean;
-}
-
 export class Trie<V = unknown> implements Serializable, Equatable<Trie<V>> {
     #root: TrieNode<V> = { children: new Map(), value: undefined, terminal: false };
     #size: number = 0;

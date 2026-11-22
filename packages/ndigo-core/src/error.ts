@@ -66,7 +66,11 @@ export class ApplicationError extends AsSerializableError(Error) {
 
 /**
  * Represents an error within the framework itself.
-
+ *
+ * @example
+ * ```ts
+ * throw new FrameworkError('cache backend unavailable', { cause: originalError });
+ * ```
  */
 export class FrameworkError extends AsSerializableError(Error) {
     /**
@@ -92,6 +96,11 @@ export class FrameworkError extends AsSerializableError(Error) {
 
 /**
  * Represents an error indicating that an operation cannot be completed due to an invalid state or misconfiguration.
+ *
+ * @example
+ * ```ts
+ * throw new IllegalStateError('Storage quota exceeded');
+ * ```
  */
 export class IllegalStateError extends FrameworkError {
     /**

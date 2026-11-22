@@ -17,6 +17,11 @@ import { IllegalStateError } from './error.js';
  * Shared formatting options. The locale is always explicit; the time zone is
  * always explicit for date/time formatting so server-rendered output can be
  * pinned and hydrated identically on the client (never ambient server time).
+ *
+ * @example
+ * ```ts
+ * const options: FormatOptions = { locale: 'en-US', timeZone: 'UTC' };
+ * ```
  */
 export interface FormatOptions {
     /**
@@ -31,6 +36,11 @@ export interface FormatOptions {
 
 /**
  * Options for {@link DateTimeFormatter}.
+ *
+ * @example
+ * ```ts
+ * const options: DateTimeFormatterOptions = { locale: 'en-US', timeZone: 'UTC', dateStyle: 'medium' };
+ * ```
  */
 export interface DateTimeFormatterOptions extends FormatOptions {
     /**
@@ -45,6 +55,11 @@ export interface DateTimeFormatterOptions extends FormatOptions {
 
 /**
  * Options for {@link NumberFormatter}.
+ *
+ * @example
+ * ```ts
+ * const options: NumberFormatterOptions = { locale: 'de-DE', style: 'currency', currency: 'EUR' };
+ * ```
  */
 export interface NumberFormatterOptions extends FormatOptions {
     /**
@@ -75,6 +90,11 @@ export interface NumberFormatterOptions extends FormatOptions {
 
 /**
  * Options for {@link RelativeTimeFormatter}.
+ *
+ * @example
+ * ```ts
+ * const options: RelativeTimeFormatterOptions = { locale: 'en', numeric: 'always' };
+ * ```
  */
 export interface RelativeTimeFormatterOptions extends FormatOptions {
     /**
@@ -89,6 +109,11 @@ export interface RelativeTimeFormatterOptions extends FormatOptions {
 
 /**
  * Options for {@link ListFormatter}.
+ *
+ * @example
+ * ```ts
+ * const options: ListFormatterOptions = { locale: 'en', type: 'conjunction' };
+ * ```
  */
 export interface ListFormatterOptions extends FormatOptions {
     /**
@@ -410,6 +435,11 @@ export class ListFormatter {
 
 /**
  * Options for {@link createFormattingService}.
+ *
+ * @example
+ * ```ts
+ * const options: FormattingServiceOptions = { locale: 'en-US', timeZone: 'UTC' };
+ * ```
  */
 export interface FormattingServiceOptions {
     /**
@@ -427,6 +457,11 @@ export interface FormattingServiceOptions {
 /**
  * Formatter options with all shared fields optional — used by
  * {@link FormattingService} where service-wide defaults fill the gaps.
+ *
+ * @example
+ * ```ts
+ * const options: DefaultableFormatOptions = { locale: 'en-US', timeZone: 'UTC' };
+ * ```
  */
 export interface DefaultableFormatOptions {
     /** Locale used for formatting. */
@@ -435,19 +470,47 @@ export interface DefaultableFormatOptions {
     timeZone?: string;
 }
 
-/** {@link DateTimeFormatter} options with optional shared fields (service-style). */
+/**
+ * {@link DateTimeFormatter} options with optional shared fields (service-style).
+ *
+ * @example
+ * ```ts
+ * const options: DateTimeFormatOptions = { locale: 'en-US', timeZone: 'UTC', dateStyle: 'medium' };
+ * ```
+ */
 export type DateTimeFormatOptions = Omit<DateTimeFormatterOptions, keyof DefaultableFormatOptions> &
     DefaultableFormatOptions;
 
-/** {@link NumberFormatter} options with optional shared fields (service-style). */
+/**
+ * {@link NumberFormatter} options with optional shared fields (service-style).
+ *
+ * @example
+ * ```ts
+ * const options: NumberFormatOptions = { locale: 'de-DE', style: 'currency', currency: 'EUR' };
+ * ```
+ */
 export type NumberFormatOptions = Omit<NumberFormatterOptions, keyof DefaultableFormatOptions> &
     DefaultableFormatOptions;
 
-/** {@link RelativeTimeFormatter} options with optional shared fields (service-style). */
+/**
+ * {@link RelativeTimeFormatter} options with optional shared fields (service-style).
+ *
+ * @example
+ * ```ts
+ * const options: RelativeTimeFormatOptions = { locale: 'en', numeric: 'always' };
+ * ```
+ */
 export type RelativeTimeFormatOptions = Omit<RelativeTimeFormatterOptions, keyof DefaultableFormatOptions> &
     DefaultableFormatOptions;
 
-/** {@link ListFormatter} options with optional shared fields (service-style). */
+/**
+ * {@link ListFormatter} options with optional shared fields (service-style).
+ *
+ * @example
+ * ```ts
+ * const options: ListFormatOptions = { locale: 'en', type: 'conjunction' };
+ * ```
+ */
 export type ListFormatOptions = Omit<ListFormatterOptions, keyof DefaultableFormatOptions> & DefaultableFormatOptions;
 
 /**
@@ -456,6 +519,12 @@ export type ListFormatOptions = Omit<ListFormatterOptions, keyof DefaultableForm
  * Each method returns a formatter with the service defaults applied; the
  * defaults can be overridden per formatter. Underlying `Intl` instances are
  * cached per option set, so repeated construction is cheap.
+ *
+ * @example
+ * ```ts
+ * const format = createFormattingService({ locale: 'en-US', timeZone: 'UTC' });
+ * format.date({ dateStyle: 'medium' });
+ * ```
  */
 export interface FormattingService {
     /**

@@ -62,6 +62,11 @@ export interface EntityManager {
 /**
  * An in-memory implementation of the `EntityManager` interface.
  * It uses an `InMemoryDataSource` to store and manage entities.
+ *
+ * @example
+ * ```ts
+ * const em = new InMemoryEntityManager(new InMemoryDataSource());
+ * ```
  */
 export class InMemoryEntityManager implements EntityManager {
     /**

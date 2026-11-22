@@ -57,6 +57,11 @@ export interface UnitOfWork {
  *
  * Use this class in tests or with `InMemoryEntityManager`. For SQL-backed stores,
  * implement `UnitOfWork` with your `EntityManager` adapter.
+ *
+ * @example
+ * ```ts
+ * const uow = new InMemoryUnitOfWork(entityManager);
+ * ```
  */
 export class InMemoryUnitOfWork implements UnitOfWork {
     /**

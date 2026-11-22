@@ -141,6 +141,13 @@ export function toAsyncRepository<T extends object, ID>(repository: Repository<T
  * Provides common functionality for interacting with an `EntityManager`.
  * @typeParam T - The type of the entity.
  * @typeParam ID - The type of the entity's primary identifier.
+ *
+ * @example
+ * ```ts
+ * class UserRepository extends AbstractRepository<User, number> {
+ *     constructor(em: EntityManager) { super(User, em); }
+ * }
+ * ```
  */
 export abstract class AbstractRepository<T extends object, ID> implements Repository<T, ID> {
     /**
@@ -281,6 +288,7 @@ export abstract class AbstractRepository<T extends object, ID> implements Reposi
  *
  * Concrete repositories declare derived methods and delegate to {@link derive}:
  *
+ * @example
  * ```ts
  * class AccountRepository extends InMemoryDerivedQueryRepository<Account, string> {
  *     findByEmail(email: string): Account[] {
@@ -341,6 +349,11 @@ export class InMemoryDerivedQueryRepository<T extends object, ID> extends Abstra
  * queries via {@link InMemoryDerivedQueryRepository.derive}.
  * @typeParam T - The type of the entity.
  * @typeParam ID - The type of the entity's primary identifier.
+ *
+ * @example
+ * ```ts
+ * const repo = new InMemoryRepository<User, number>(User, entityManager);
+ * ```
  */
 export class InMemoryRepository<T extends object, ID> extends InMemoryDerivedQueryRepository<T, ID> {
     /**

@@ -178,6 +178,20 @@ describe('StringTemplateView — integration (view.render pipeline)', () => {
         );
     });
 
+    it('renders end-to-end through view.render() with bracketed property access', async () => {
+        const view = new StringTemplateView('/test');
+        view.name = 'testView';
+        view.template = '<html><body>{{items[0].title}} and {{items[1]}}</body></html>';
+
+        await view.render({ items: [{ title: 'first' }, 'second'] }, {}, target);
+
+        expect(target.commit).toHaveBeenCalledWith(
+            '<html><body>first and second</body></html>',
+            { items: [{ title: 'first' }, 'second'] },
+            {}
+        );
+    });
+
     it('renders end-to-end with custom _createViewModel projection', async () => {
         class ProjectingView extends StringTemplateView {
             protected _createViewModel(model: unknown, request: unknown): unknown {

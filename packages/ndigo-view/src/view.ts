@@ -2,7 +2,16 @@
  * The view contract, abstract bases, and rendering lifecycle.
  */
 import { AsNameAware } from '@ndigo/factory';
-import { IllegalStateError, JSONObject, MediaType, MediaTypes, Serializable, createNull, Null } from '@ndigo/core';
+import {
+    IllegalStateError,
+    JSONObject,
+    KeypathConverter,
+    MediaType,
+    MediaTypes,
+    Serializable,
+    createNull,
+    Null,
+} from '@ndigo/core';
 import { AsApplicationContextAware } from '@ndigo/context';
 import type { ApplicationContext } from '@ndigo/context';
 import { QueryString, MatrixString } from '@ndigo/http';
@@ -10,6 +19,8 @@ import { ROUTER } from '@ndigo/router';
 import type { Route } from '@ndigo/router';
 
 import { ViewTarget } from './view-target.js';
+
+const keypathConverter = new KeypathConverter();
 
 /**
  * View for a web interaction. Implementations are responsible for rendering content, and exposing the model. A single view exposes multiple model attributes.
@@ -378,15 +389,34 @@ export class StringTemplateView extends AbstractTemplateView {
         return template.replace(/\{\{([^}]+)\}\}/g, (match, key) => {
             let value = model;
 
-            // Support nested property access: {{a.b.c}}
-            const parts = key.split('.');
-            for (const part of parts) {
-                if (typeof value === 'object' && value !== null && typeof part !== 'number') {
-                    value = (value as Record<string, unknown>)[part];
-                } else if (value instanceof Array && !isNaN(part)) {
-                    value = value[part];
-                } else {
-                    break;
+            const trimmed = String(key).trim();
+            const tokens = keypathConverter.convert(trimmed);
+            if (tokens) {
+                // Support nested property access, including bracket indices:
+                // {{a.b.c}}, {{items[0].title}}
+                for (const token of tokens) {
+                    if (typeof value !== 'object' || value === null) {
+                        value = undefined;
+                        break;
+                    }
+                    if (Array.isArray(value) && typeof token === 'number') {
+                        value = (value as unknown[])[token];
+                    } else {
+                        value = (value as Record<PropertyKey, unknown>)[token];
+                    }
+                }
+            } else {
+                // Fall back to dotted traversal for keys that are not valid
+                // keypaths.
+                const parts = trimmed.split('.');
+                for (const part of parts) {
+                    if (typeof value === 'object' && value !== null && typeof part !== 'number') {
+                        value = (value as Record<string, unknown>)[part];
+                    } else if (value instanceof Array && !isNaN(Number(part))) {
+                        value = (value as unknown[])[Number(part)];
+                    } else {
+                        break;
+                    }
                 }
             }
 

@@ -48,6 +48,16 @@ function decoratorNames(node: { decorators?: ESTree.Decorator[] }): string[] {
 /**
  * Reports classes mixing service-call and server-route-mapping decorators (on
  * the class OR any of its methods).
+ *
+ * @example
+ * ```ts
+ * import { defineConfig } from 'oxlint';
+ *
+ * export default defineConfig({
+ *     plugins: ['@ndigo'],
+ *     rules: { '@ndigo/no-mixed-decorator-paradigms': 'error' },
+ * });
+ * ```
  */
 export const noMixedDecoratorParadigms = {
     meta: {

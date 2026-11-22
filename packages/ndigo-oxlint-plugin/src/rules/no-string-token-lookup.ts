@@ -113,6 +113,16 @@ function bindPatternNames(pattern: ESTree.BindingPattern, bind: Scope): void {
  *   binding shadow an outer string `const`;
  * - an unresolvable identifier (e.g. an import-`*`-namespace member or a
  *   cross-module constant) is never assumed to be a string.
+ *
+ * @example
+ * ```ts
+ * import { defineConfig } from 'oxlint';
+ *
+ * export default defineConfig({
+ *     plugins: ['@ndigo'],
+ *     rules: { '@ndigo/no-string-token-lookup': 'error' },
+ * });
+ * ```
  */
 export const noStringTokenLookup = {
     meta: {

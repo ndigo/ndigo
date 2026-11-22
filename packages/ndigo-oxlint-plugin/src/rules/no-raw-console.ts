@@ -34,6 +34,16 @@ function readMethods(value: unknown): readonly string[] {
  * Reports `console.<method>(…)` calls. The rule is platform- and layout-blind:
  * where it applies is the consuming config's business, expressed as an
  * `overrides` entry rather than a path option here.
+ *
+ * @example
+ * ```ts
+ * import { defineConfig } from 'oxlint';
+ *
+ * export default defineConfig({
+ *     plugins: ['@ndigo'],
+ *     rules: { '@ndigo/no-raw-console': 'error' },
+ * });
+ * ```
  */
 export const noRawConsole = {
     meta: {

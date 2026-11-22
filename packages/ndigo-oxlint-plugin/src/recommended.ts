@@ -13,6 +13,14 @@ import type { OxlintConfig } from 'oxlint';
  *
  * Spec and test fixtures register duplicate mappings on purpose, so the preset
  * turns that one rule off there — the single exception to "error everywhere".
+ *
+ * @example
+ * ```ts
+ * import { defineConfig } from 'oxlint';
+ * import { recommended } from '@ndigo/oxlint-plugin/recommended';
+ *
+ * export default defineConfig({ extends: [recommended] });
+ * ```
  */
 export const recommended: OxlintConfig = {
     jsPlugins: ['@ndigo/oxlint-plugin'],

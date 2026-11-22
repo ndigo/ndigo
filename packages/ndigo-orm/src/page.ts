@@ -7,7 +7,12 @@ import { chainComparisons, compareBy, type comparison, invertComparison } from '
 
 export type SortDirection = 'asc' | 'desc';
 
-/** A single sort clause: an entity field name plus a direction (default `asc`). */
+/** A single sort clause: an entity field name plus a direction (default `asc`). *
+ * @example
+ * ```ts
+ * const sort: SortOrder = { property: 'name', direction: 'asc' };
+ * ```
+ */
 export interface SortOrder {
     /** The entity field to sort by. */
     property: string;
@@ -15,7 +20,12 @@ export interface SortOrder {
     direction?: SortDirection;
 }
 
-/** A page request: 1-based page index, positive size, optional multi-key sort. */
+/** A page request: 1-based page index, positive size, optional multi-key sort. *
+ * @example
+ * ```ts
+ * const req: PageRequest = { page: 1, size: 10 };
+ * ```
+ */
 export interface PageRequest {
     /** 1-based page index. */
     page: number;
@@ -25,7 +35,12 @@ export interface PageRequest {
     sort?: SortOrder[];
 }
 
-/** A page of results with its totals. Pages beyond the last one yield empty content. */
+/** A page of results with its totals. Pages beyond the last one yield empty content. *
+ * @example
+ * ```ts
+ * const page: Page<User> = { content: [user], totalElements: 1, totalPages: 1, number: 0, size: 10 };
+ * ```
+ */
 export interface Page<T> {
     /** The page content. */
     content: T[];

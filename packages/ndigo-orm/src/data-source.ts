@@ -42,6 +42,12 @@ export interface EntityCloneHook {
 /**
  * Represents a data source for managing entity stores.
  * It extends `Initializable` and `Destroyable` for lifecycle management.
+ *
+ * @example
+ * ```ts
+ * const ds: DataSource = new InMemoryDataSource();
+ * await ds.init();
+ * ```
  */
 export interface DataSource extends Initializable, Destroyable {
     /**

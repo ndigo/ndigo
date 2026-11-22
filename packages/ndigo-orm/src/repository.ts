@@ -20,6 +20,12 @@ export interface RelationFetchOptions {
  * Defines the basic contract for a repository, providing common data access operations for entities.
  * @typeParam T - The type of the entity.
  * @typeParam ID - The type of the entity's primary identifier.
+ *
+ * @example
+ * ```ts
+ * const repo: Repository<User, number> = new InMemoryRepository(User, entityManager);
+ * const user = repo.findById(1);
+ * ```
  */
 export interface Repository<T extends object, ID> {
     /**
@@ -79,6 +85,12 @@ export interface Repository<T extends object, ID> {
 /**
  * Promise-based counterpart to {@link Repository} for backend-neutral async consumers.
  * Missing entities resolve to `undefined`; operation failures reject the promise.
+ *
+ * @example
+ * ```ts
+ * const repo: AsyncRepository<User, number> = new InMemoryRepository(User, entityManager);
+ * const user = await repo.findById(1);
+ * ```
  */
 export interface AsyncRepository<T extends object, ID> {
     /** Persists an entity. @param entity - The entity to save. */

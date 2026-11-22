@@ -10,6 +10,12 @@ import { validateEntity } from './entity-schema';
 
 /**
  * Manages the lifecycle of entities, including persistence, retrieval, and removal.
+ *
+ * @example
+ * ```ts
+ * const em: EntityManager = new InMemoryEntityManager(new InMemoryDataSource());
+ * em.persist(user);
+ * ```
  */
 export interface EntityManager {
     /**

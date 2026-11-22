@@ -2,6 +2,8 @@
  * The cache contract, its miss sentinel, and the in-memory store.
  */
 
+import { BoundedCache } from '@ndigo/core';
+
 /**
  * Branded sentinel returned by {@link Cache#get} when no entry exists (or an
  * entry has expired). Distinguishes "no value cached" from a cached
@@ -144,10 +146,9 @@ export interface Cache<V = unknown> {
  * - **Expiry** is lazy: expired entries are removed on `get`/`has` access,
  *   never by a background sweep (the `TtlContentSource` model — no timers,
  *   safe in browsers and workers).
- * - **Eviction** follows the O(1) Map-order technique of the framework's
- *   internal LRU (`@ndigo/core` `_lru-cache.ts`): `lru` promotes hits by
- *   delete+reinsert and evicts the map's first key; `fifo` leaves order
- *   untouched on access and updates, evicting the oldest insertion.
+ * - **Eviction** delegates to `@ndigo/core` `BoundedCache`: `lru` promotes
+ *   hits by delete+reinsert and evicts the map's first key; `fifo` leaves
+ *   order untouched on access and updates, evicting the oldest insertion.
  * - `defaultTtl`/`maxSize`/`eviction` are fixed at construction — a shared
  *   instance has uniform behavior (configure per named cache via
  *   {@link "cache-manager".MemoryCacheManager | MemoryCacheManager}).
@@ -168,10 +169,8 @@ export class MemoryCache<V = unknown> implements Cache<V> {
         return 'MemoryCache';
     }
 
-    readonly #entries: Map<string, CacheEntry<V>> = new Map();
+    readonly #cache: BoundedCache<string, CacheEntry<V>>;
     readonly #defaultTtl: number | undefined;
-    readonly #maxSize: number;
-    readonly #eviction: 'lru' | 'fifo';
 
     /**
      * Creates a cache with the given options.
@@ -203,9 +202,14 @@ export class MemoryCache<V = unknown> implements Cache<V> {
         if (eviction !== 'lru' && eviction !== 'fifo') {
             throw new TypeError(`MemoryCache: eviction must be 'lru' or 'fifo' — got ${String(eviction)}`);
         }
-        this.#maxSize = maxSize;
         this.#defaultTtl = defaultTtl;
-        this.#eviction = eviction;
+        // maxSize 0 means "unbounded" in MemoryCache; BoundedCache treats 0 as
+        // "store nothing", so map it to Infinity to keep the no-eviction
+        // contract.
+        this.#cache = new BoundedCache<string, CacheEntry<V>>({
+            maxSize: maxSize === 0 ? Infinity : maxSize,
+            policy: eviction,
+        });
     }
 
     /**
@@ -214,7 +218,7 @@ export class MemoryCache<V = unknown> implements Cache<V> {
      * @returns The number of stored entries.
      */
     async size(): Promise<number> {
-        return this.#entries.size;
+        return this.#cache.size;
     }
 
     /**
@@ -224,18 +228,13 @@ export class MemoryCache<V = unknown> implements Cache<V> {
      * @returns The cached value, or the miss sentinel.
      */
     async get(key: string): Promise<V | CacheMiss> {
-        const entry = this.#entries.get(key);
+        const entry = this.#cache.get(key);
         if (entry === undefined) {
             return CacheMiss.INSTANCE;
         }
         if (this.#expired(entry)) {
-            this.#entries.delete(key);
+            this.#cache.delete(key);
             return CacheMiss.INSTANCE;
-        }
-        if (this.#eviction === 'lru') {
-            // Map-order promotion: re-inserting at the end marks MRU.
-            this.#entries.delete(key);
-            this.#entries.set(key, entry);
         }
         return entry.value;
     }
@@ -258,18 +257,7 @@ export class MemoryCache<V = unknown> implements Cache<V> {
         const ttlMs = ttl ?? this.#defaultTtl;
         const expiresAt = ttlMs === undefined ? undefined : Date.now() + ttlMs;
 
-        if (this.#maxSize > 0 && !this.#entries.has(key) && this.#entries.size >= this.#maxSize) {
-            // Evict the eviction candidate: Map's first key (LRU order under
-            // `lru` promotion; insertion order under `fifo`).
-            const candidate = this.#entries.keys().next().value;
-            if (candidate !== undefined) {
-                this.#entries.delete(candidate);
-            }
-        }
-        if (this.#eviction === 'lru' && this.#entries.has(key)) {
-            this.#entries.delete(key); // re-insert promotes the update to MRU
-        }
-        this.#entries.set(key, { value, expiresAt });
+        this.#cache.set(key, { value, expiresAt });
     }
 
     /**
@@ -279,12 +267,12 @@ export class MemoryCache<V = unknown> implements Cache<V> {
      * @returns Whether a live entry exists.
      */
     async has(key: string): Promise<boolean> {
-        const entry = this.#entries.get(key);
+        const entry = this.#cache.peek(key);
         if (entry === undefined) {
             return false;
         }
         if (this.#expired(entry)) {
-            this.#entries.delete(key);
+            this.#cache.delete(key);
             return false;
         }
         return true;
@@ -297,7 +285,7 @@ export class MemoryCache<V = unknown> implements Cache<V> {
      * @returns Whether the entry existed.
      */
     async delete(key: string): Promise<boolean> {
-        return this.#entries.delete(key);
+        return this.#cache.delete(key);
     }
 
     /**
@@ -306,7 +294,7 @@ export class MemoryCache<V = unknown> implements Cache<V> {
      * @returns A promise that resolves once cleared.
      */
     async clear(): Promise<void> {
-        this.#entries.clear();
+        this.#cache.clear();
     }
 
     #expired(entry: CacheEntry<V>): boolean {

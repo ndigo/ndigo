@@ -11,6 +11,15 @@
  *
  * @param error - The unknown thrown value.
  * @returns The error message as a string.
+ *
+ * @example
+ * ```ts
+ * try {
+ *     riskyOperation();
+ * } catch (error) {
+ *     logger.error(getErrorMessage(error));
+ * }
+ * ```
  */
 export function getErrorMessage(error: unknown): string {
     return error instanceof Error ? error.message : String(error);
@@ -26,6 +35,15 @@ export function getErrorMessage(error: unknown): string {
  *
  * @param error - The unknown thrown value.
  * @returns An `Error` instance.
+ *
+ * @example
+ * ```ts
+ * try {
+ *     await riskyOperation();
+ * } catch (error) {
+ *     throw toError(error);
+ * }
+ * ```
  */
 export function toError(error: unknown): Error {
     return error instanceof Error ? error : new Error(String(error));

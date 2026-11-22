@@ -14,6 +14,12 @@
  * @param name - The environment variable name.
  * @param fallback - Value returned when the variable is unset.
  * @returns The variable value, or `fallback` when unset.
+ *
+ * @example
+ * ```ts
+ * const dbUrl = getEnv('DATABASE_URL', 'postgres://localhost:5432/app');
+ * const nodeEnv = getEnv('NODE_ENV');
+ * ```
  */
 export function getEnv(name: string, fallback?: string): string | undefined {
     return (typeof process !== 'undefined' && process.env ? process.env[name] : undefined) ?? fallback;
@@ -25,6 +31,13 @@ export function getEnv(name: string, fallback?: string): string | undefined {
  * where it is absent (e.g. some browser/worker bundles).
  *
  * @returns `true` unless `NODE_ENV` is exactly `production`.
+ *
+ * @example
+ * ```ts
+ * if (isDevMode()) {
+ *     // development-only diagnostics
+ * }
+ * ```
  */
 export function isDevMode(): boolean {
     return typeof process !== 'undefined' && !!process.env && getEnv('NODE_ENV') !== 'production';

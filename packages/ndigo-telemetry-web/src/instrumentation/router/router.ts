@@ -19,6 +19,14 @@ interface HashRouterPatchTarget {
  *
  * This instrumentation automatically creates spans for the internal `_setRoute` method,
  * providing visibility into route change events within the application.
+ *
+ * @example
+ * ```ts
+ * const instrumentation = new RouterInstrumentation();
+ * instrumentation.enable();
+ * // ... later
+ * instrumentation.disable();
+ * ```
  */
 export class RouterInstrumentation extends AbstractBaseInstrumentation {
     /**

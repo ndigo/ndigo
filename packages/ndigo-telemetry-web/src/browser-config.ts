@@ -25,6 +25,11 @@ const logger = getLogger('ndigo-telemetry-web:browser-config');
  * Browser telemetry configuration: the service name reported on every signal,
  * an optional OTLP/HTTP `traceUrl`, and `useConsoleExporters` to silence the
  * console exporters in production.
+ *
+ * @example
+ * ```ts
+ * const telemetry = configureBrowserTelemetry({ serviceName: 'conduit-web' });
+ * ```
  */
 export interface BrowserTelemetryConfig {
     /** The service name reported as `service.name` on every signal. */
@@ -59,6 +64,13 @@ export interface BrowserTelemetryConfig {
 /**
  * Handle returned by {@link configureBrowserTelemetry} — explicit lifecycle
  * for hosts that own the page (SPAs, tests).
+ *
+ * @example
+ * ```ts
+ * const telemetry = configureBrowserTelemetry({ serviceName: 'conduit-web' });
+ * await telemetry.forceFlush();
+ * await telemetry.shutdown();
+ * ```
  */
 export interface BrowserTelemetryHandle {
     /** Flush pending spans/metrics/logs without shutting the providers down. */

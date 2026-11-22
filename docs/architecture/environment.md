@@ -4,13 +4,13 @@ The environment is a JavaScript-native configuration model — property sources,
 
 ## Design Principles
 
-1. **Bench drives defaults, not taste.** The representative-workload rule (≥10% median win, no cell ≥10% regression, mixed-mutation within margin; ties to prototype) chose the prototype-chain index as the default on both platforms — lookup costs were within noise and prototype's lazy mutation won the sustained case. A flat index remains available as an opt-in.
-2. **Fail loud everywhere.** Missing required values throw; malformed profile expressions throw; conversion failures throw; customizer failures fail boot; invalid environments fail boot with every violation reported. A typo that silently never matches is the bug the whole arc eliminates.
-3. **Replace, never mutate.** Sources are captured, replaced, or reordered — in-place edits are declared unsupported where they would shadow other sources. The process environment is snapshotted.
-4. **Single conversion path.** Default values, placeholders, and real property values all convert through one path — no second semantics for defaults.
-5. **One source of truth per contract.** The environment owns what is active; the documented precedence chain is pinned in one place; environment schemas are the config contract.
-6. **No eval-family.** Profile expressions and keys are parsed, never evaluated as code — CSP-safe and scanner-clean.
-7. **JS-standard camelCase decorators.** Configuration decorators use standard camelCase names; there are no PascalCase aliases. Pre-1.0 clean cutovers.
+1. **Benchmarks drive defaults.** Default implementation and code paths are chosen by performance benchmarks on representative workloads, not by taste or assumption. When two strategies measure within noise of each other, the one with better sustained behavior wins; the alternative stays available as an opt-in.
+2. **Fail loud everywhere.** Configuration problems are surfaced immediately instead of swallowed, so a typo or drift fails in CI rather than degrading silently in production. Missing values, bad profile expressions, conversion failures, and invalid environments raise instead of falling back.
+3. **Replace, never mutate.** Configuration sources are captured and replaced or reordered as whole units; in-place edits that would shadow other sources are unsupported. The process environment is snapshotted so later changes cannot quietly alter a running configuration.
+4. **One conversion path.** Default values, placeholders, and real property values all flow through the same conversion logic, so there is no second set of rules that could disagree about what a value means.
+5. **One source of truth per contract.** What is active is owned in one place; the documented precedence chain is pinned in one place; environment schemas are the configuration contract.
+6. **Secure parsing, not evaluation.** Profile expressions and keys are parsed rather than executed as code, which keeps the stack safe under strict content security policies and clean for static scanners.
+7. **Standard JavaScript decorators.** Configuration and environment are declared with standard JavaScript decorators, keeping the model familiar to anyone who knows the language and friendly to tooling.
 
 ## Precedence Chain
 

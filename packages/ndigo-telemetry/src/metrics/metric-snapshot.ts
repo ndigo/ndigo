@@ -37,6 +37,11 @@ export type MetricPointValue =
 
 /**
  * One aggregated point: the attribute set plus the aggregated value.
+ *
+ * @example
+ * ```ts
+ * const point: MetricPoint = { attributes: {}, value: 42 };
+ * ```
  */
 export interface MetricPoint {
     /** The point's attribute set. */
@@ -49,6 +54,11 @@ export interface MetricPoint {
  * The aggregated shape of one metric instrument at one collection. The
  * `type` mirrors the OTel aggregation kind (`sum` — counters and
  * up-down-counters; `gauge`; `histogram`).
+ *
+ * @example
+ * ```ts
+ * const snapshot: MetricSnapshot = { name: 'requests', type: 'sum', points: [] };
+ * ```
  */
 export interface MetricSnapshot {
     /** The metric name. */
@@ -66,6 +76,11 @@ export interface MetricSnapshot {
 /**
  * A source of metric snapshots. Implemented by the SDK-backed reader in
  * `@ndigo/telemetry-node`; read by the management `/metrics` controller.
+ *
+ * @example
+ * ```ts
+ * const provider: MetricSnapshotProvider = { getSnapshots: () => [] };
+ * ```
  */
 export interface MetricSnapshotProvider {
     /** Collects the current aggregated snapshot of every tracked instrument. */

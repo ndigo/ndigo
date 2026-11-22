@@ -32,6 +32,11 @@ export interface DurationSummary {
 
 /**
  * Represents a collection of metrics for a specific feature.
+ *
+ * @example
+ * ```ts
+ * const metrics: FeatureMetrics = { counters: new Map(), gauges: new Map(), durations: new Map(), updatedAt: new Date() };
+ * ```
  */
 export interface FeatureMetrics {
     /** Counter totals by name. */
@@ -48,6 +53,11 @@ export interface FeatureMetrics {
 
 /**
  * Options for configuring the `FeatureMetricAggregator`.
+ *
+ * @example
+ * ```ts
+ * const options: FeatureMetricAggregatorOptions = { maxFeatures: 100 };
+ * ```
  */
 export interface FeatureMetricAggregatorOptions {
     /** Maximum retained duration samples per series. */

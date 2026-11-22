@@ -40,6 +40,14 @@ export function hasCounted(target: object, propertyKey: string | symbol): boolea
 
 /**
  * Options for the `counted` decorator.
+ *
+ * @example
+ * ```ts
+ * class Service {
+ *     @counted({ name: 'requests_total' })
+ *     handle() { return 'ok'; }
+ * }
+ * ```
  */
 export interface CountedOptions {
     /**

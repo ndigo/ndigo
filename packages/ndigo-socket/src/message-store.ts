@@ -71,6 +71,14 @@ import type {
 // Re-export moved contracts for backward compat.
 export * from './message-store-types';
 
+/**
+ * In-memory queue message store.
+ *
+ * @example
+ * ```ts
+ * const store = new InMemoryQueueMessageStore();
+ * ```
+ */
 export class InMemoryQueueMessageStore implements QueueMessageStore {
     /**
      * The `Symbol.toStringTag` value for this instance.

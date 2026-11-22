@@ -27,6 +27,13 @@ import { RingBuffer, Deque } from '@ndigo/core';
  * (optionally) bytes; over a bound the newest values are dropped and
  * `onOverflow` fires once per episode, so one slow reader cannot grow the queue
  * without limit.
+ *
+ * @example
+ * ```ts
+ * const reader = new AsyncReader<string>(100);
+ * reader.push('hello');
+ * for await (const value of reader) console.log(value);
+ * ```
  */
 export class AsyncReader<T> {
     /**

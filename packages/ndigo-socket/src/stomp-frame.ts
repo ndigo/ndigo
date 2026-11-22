@@ -36,6 +36,14 @@ import type { StompBody, StompFrame, StompWireInput } from './stomp-frame-types'
 // Re-export moved contracts for backward compat.
 export * from './stomp-frame-types';
 
+/**
+ * Error thrown when a STOMP frame is malformed.
+ *
+ * @example
+ * ```ts
+ * throw new StompProtocolError('missing command');
+ * ```
+ */
 export class StompProtocolError extends FrameworkError {
     /**
      * The `Symbol.toStringTag` value for this instance.

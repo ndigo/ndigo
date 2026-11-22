@@ -24,6 +24,11 @@ import { RequestIdCorrelation } from './request-id-correlation';
 
 /**
  * Initializes a service call with HTTP, content, caching, and timeout options.
+ *
+ * @example
+ * ```ts
+ * const init: ServiceInit = { method: 'GET' };
+ * ```
  */
 export type ServiceInit = HTTPInit &
     ContentTypeInit &
@@ -143,6 +148,11 @@ export interface ResponseAwareServiceInterceptor<
 
 /**
  * Union of all supported service interceptor shapes.
+ *
+ * @example
+ * ```ts
+ * const interceptor: ServiceInterceptor = { postRequest: () => {} };
+ * ```
  */
 export type ServiceInterceptor =
     | CompletionAwareServiceInterceptor

@@ -21,6 +21,12 @@ import { PropertySource, wrapSource } from './property-source';
  * interface; mutators live on {@link MutablePropertySources}.
  *
  * @see module:context.ConfigurableEnvironment
+ *
+ * @example
+ * ```ts
+ * const sources: PropertySources = new MutablePropertySources();
+ * sources.addLast('defaults', { 'a': 1 });
+ * ```
  */
 export interface PropertySources extends Enumerable<string, PropertySource>, Iterable<PropertySource> {
     /**

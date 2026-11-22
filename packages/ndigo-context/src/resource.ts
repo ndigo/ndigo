@@ -19,6 +19,12 @@ export type ConfigFileReader = (path: string) => Promise<string | null>;
 
 /**
  * Represents a resolved resource handle and its loaded value.
+ *
+ * @example
+ * ```ts
+ * const resource: Resource<{ debug: boolean }> = new URLResource('/config.json', { debug: true });
+ * resource.exists; // true
+ * ```
  */
 export interface Resource<T = unknown> {
     /** Whether the resource exists. */
@@ -29,6 +35,12 @@ export interface Resource<T = unknown> {
 
 /**
  * Loads resources from a location string.
+ *
+ * @example
+ * ```ts
+ * const loader: ResourceLoader = new DefaultResourceLoader();
+ * const resource = loader.getResource('/config.json');
+ * ```
  */
 export interface ResourceLoader {
     /** Returns a resource handle for the location. @param location - The resource location. */

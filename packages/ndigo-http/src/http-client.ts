@@ -25,6 +25,12 @@ import { HTTPExecutionChain, isHTTPExecutionChain } from './http-execution-chain
 
 /**
  * HTTP client with interceptor support and convenience verb helpers.
+ *
+ * @example
+ * ```ts
+ * const http = new HTTP([], { baseURL: '/api' });
+ * const res = await http.get('/users');
+ * ```
  */
 export class HTTP {
     #fetch: Fetch;

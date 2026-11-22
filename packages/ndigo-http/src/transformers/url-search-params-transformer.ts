@@ -10,6 +10,11 @@ export type URLSearchParamsEntryTransform = (key: string, value: string) => [str
 
 /**
  * Transforms `URLSearchParams` entries one by one.
+ *
+ * @example
+ * ```ts
+ * const transformer = new URLSearchParamsTransformer((key, value) => [key, value]);
+ * ```
  */
 export class URLSearchParamsTransformer implements HTTPTransformer<URLSearchParams, URLSearchParams> {
     /**

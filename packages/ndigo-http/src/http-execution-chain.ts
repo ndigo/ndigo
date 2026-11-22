@@ -31,6 +31,12 @@ import { is } from '@ndigo/util/types';
  * capabilities are registered (completion/error/initialization/request/response
  * aware) so the chain can skip work it has no interceptor for, and runs the
  * hooks in registration order around each request.
+ *
+ * @example
+ * ```ts
+ * const chain = new HTTPExecutionChain(http, interceptors);
+ * const response = await chain.execute(request);
+ * ```
  */
 export class HTTPExecutionChain {
     #interceptors: HTTPInterceptor[];

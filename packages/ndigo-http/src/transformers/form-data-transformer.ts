@@ -10,6 +10,11 @@ export type FormDataEntryTransform = (key: string, value: FormDataEntryValue) =>
 
 /**
  * Transforms `FormData` entries one by one while preserving multipart semantics.
+ *
+ * @example
+ * ```ts
+ * const transformer = new FormDataTransformer((key, value) => [key, value]);
+ * ```
  */
 export class FormDataTransformer implements HTTPTransformer<FormData, FormData> {
     /**

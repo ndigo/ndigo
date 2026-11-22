@@ -28,6 +28,12 @@ import { is } from '@ndigo/util/types';
  * `PatternMatcher` over wildcard patterns: compiles each pattern once into a
  * `WildcardExp` (cached) and tests values against it — the mapping behind
  * URL-mapped interceptors.
+ *
+ * @example
+ * ```ts
+ * const matcher = new WildcardMatcher();
+ * matcher.matches('/api/*', '/api/users'); // true
+ * ```
  */
 export class WildcardMatcher implements PatternMatcher<string, string> {
     /**
@@ -72,6 +78,14 @@ export class WildcardMatcher implements PatternMatcher<string, string> {
     }
 }
 
+/**
+ * HTTP interceptor that maps request/response patterns to handlers.
+ *
+ * @example
+ * ```ts
+ * const interceptor = new MappedHTTPInterceptor(matcher, handler);
+ * ```
+ */
 export class MappedHTTPInterceptor
     implements
         CompletionAwareHTTPInterceptor,

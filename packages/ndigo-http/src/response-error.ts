@@ -14,6 +14,11 @@ const { defineProperty } = Reflect,
  *
  * It preserves the original response when possible so callers can inspect the
  * failed payload without losing fetch semantics.
+ *
+ * @example
+ * ```ts
+ * throw new ResponseError(response, 'Not found');
+ * ```
  */
 export class ResponseError extends FrameworkError implements Error, Response {
     #originalError: Error;

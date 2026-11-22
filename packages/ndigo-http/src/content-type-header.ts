@@ -53,6 +53,7 @@ export function multipartBoundary(contentType: string | undefined | null): strin
 /**
  * Content-Type header category: value parsing on the constant itself.
  *
+ * @example
  * ```ts
  * HTTPHeaders.CONTENT_TYPE.baseValue('multipart/form-data; boundary=abc'); // 'multipart/form-data'
  * HTTPHeaders.CONTENT_TYPE.boundary('multipart/form-data; BOUNDARY="x"');  // 'x'

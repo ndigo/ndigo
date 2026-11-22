@@ -199,6 +199,12 @@ function setHeader(headers: HeadersInit | HeaderRecord, name: string, value: unk
  *
  * The instance stores only the header name; read and write methods adapt the
  * name to `Headers`, header tuples, and plain object maps.
+ *
+ * @example
+ * ```ts
+ * const header = new HTTPHeader('X-Request-Id');
+ * header.get(headers);
+ * ```
  */
 export class HTTPHeader implements Serializable {
     /**

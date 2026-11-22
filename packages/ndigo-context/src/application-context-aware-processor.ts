@@ -15,6 +15,12 @@ import { defineProperty } from './context-shared';
 /**
  * Create a new ApplicationContextAwareProcessor for the given context.
  * An {@link InitializationAwareProcessor|InitializationAwareProcessor} implementation that passes the ApplicationContext to value that implement the `EnvironmentAware`, `ResourceLoaderAware`, `ApplicationEventEmitterAware`, `ContentSourceAware`, `MessageSourceAware`, and/or `ApplicationContextAware` interfaces.
+ *
+ * @example
+ * ```ts
+ * const processor = new ApplicationContextAwareProcessor(applicationContext);
+ * processor.processBeforeInitialization('orderService', orderService);
+ * ```
  */
 export class ApplicationContextAwareProcessor implements InitializationAwareProcessor {
     /**

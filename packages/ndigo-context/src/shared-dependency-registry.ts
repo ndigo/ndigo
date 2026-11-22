@@ -5,6 +5,11 @@ import { satisfiesVersion } from '@ndigo/core';
 
 /**
  * A single shared dependency entry.
+ *
+ * @example
+ * ```ts
+ * const entry: SharedDependencyEntry = { singleton: true, version: '1.2.0' };
+ * ```
  */
 export interface SharedDependencyEntry {
     /** Whether this dependency must be a singleton. Default `true`. */
@@ -15,6 +20,11 @@ export interface SharedDependencyEntry {
 
 /**
  * Result of validating a feature's dependency manifest against the registry.
+ *
+ * @example
+ * ```ts
+ * const result: DependencyValidationResult = { valid: true, missing: [], versionMismatches: [], warnings: [] };
+ * ```
  */
 export interface DependencyValidationResult {
     /** Whether validation passed. */
@@ -29,6 +39,12 @@ export interface DependencyValidationResult {
 
 /**
  * Registry that holds shared dependency declarations and validates feature manifests.
+ *
+ * @example
+ * ```ts
+ * const registry: SharedDependencyRegistry = new DefaultSharedDependencyRegistry();
+ * registry.getDependency('logger');
+ * ```
  */
 export interface SharedDependencyRegistry {
     /**
@@ -62,6 +78,13 @@ export interface SharedDependencyRegistry {
  * Validates feature dependencies against the ancestor context chain
  * at mount time, checking both the registry's declarations and actual
  * runtime entry presence.
+ *
+ * @example
+ * ```ts
+ * const registry = new DefaultSharedDependencyRegistry();
+ * registry.declare({ logger: { singleton: true, version: '1.2.0' } });
+ * const result = registry.validate({ logger: '^1.0.0' }, {});
+ * ```
  */
 export class DefaultSharedDependencyRegistry implements SharedDependencyRegistry {
     /**

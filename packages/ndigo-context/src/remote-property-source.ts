@@ -60,6 +60,14 @@ export const CONFIG_SERVER_SOURCE_NAME = 'configServer';
  * `globalThis.setInterval`/`clearInterval`. The handle type is opaque to the
  * source (Node's `setInterval` returns a `Timeout`, an injected fake may use
  * a number) — the seam owns its handle.
+ *
+ * @example
+ * ```ts
+ * const scheduler: RemoteSourceScheduler = {
+ *     setInterval: (cb, ms) => setInterval(cb, ms),
+ *     clearInterval: (handle) => clearInterval(handle as NodeJS.Timeout),
+ * };
+ * ```
  */
 export interface RemoteSourceScheduler {
     /**
@@ -78,6 +86,11 @@ export interface RemoteSourceScheduler {
 
 /**
  * Options accepted by {@link RemotePropertySource}.
+ *
+ * @example
+ * ```ts
+ * const options: RemoteSourceOptions = { pollIntervalMs: 1000 };
+ * ```
  */
 export interface RemoteSourceOptions {
     /**

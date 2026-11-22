@@ -54,6 +54,12 @@ export interface ResourceLoader {
 
 /**
  * Receives a resource loader during initialization.
+ *
+ * @example
+ * ```ts
+ * const aware: ResourceLoaderAware = new OrderService();
+ * aware.setResourceLoader(resourceLoader);
+ * ```
  */
 export interface ResourceLoaderAware extends Aware {
     /** Sets the resource loader. @param loader - The loader. */
@@ -193,6 +199,15 @@ export class URLResource<T = unknown> implements Resource<T> {
 
 /**
  * Resource wrapper used when loading fails.
+ *
+ * @example
+ * ```ts
+ * try {
+ *     const resource = await loader.getResource('/missing.json');
+ * } catch (error) {
+ *     const unresolved = new UnresolvedResource('/missing.json', error as Error);
+ * }
+ * ```
  */
 export class UnresolvedResource implements Resource<Error> {
     /**
@@ -261,6 +276,12 @@ export const AsModuleResourceLoader = <T extends Constructable>(superclass: T): 
  */
 /**
  * Resource loader that resolves modules through dynamic import.
+ *
+ * @example
+ * ```ts
+ * const loader = new DefaultResourceLoader();
+ * const module = await loader.getResource('./features/checkout-module');
+ * ```
  */
 export class DefaultResourceLoader extends AsModuleResourceLoader(Null) {
     /**

@@ -20,6 +20,11 @@ import type { ApplicationContext } from './context-interfaces';
 
 /**
  * Application-context lifecycle events and their payloads.
+ *
+ * @example
+ * ```ts
+ * context.on('context:refresh', (ctx) => ctx.isActive);
+ * ```
  */
 export interface ContextEvents {
     /** Emitted at the start of `refresh()` before processors run. */
@@ -34,6 +39,11 @@ export interface ContextEvents {
 
 /**
  * Environment events and their payloads.
+ *
+ * @example
+ * ```ts
+ * environment.on('config:refresh', () => rebuildSources());
+ * ```
  */
 export interface EnvironmentEvents {
     /** Emitted after the environment rebuilds from its sources. */

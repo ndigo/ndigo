@@ -52,6 +52,11 @@ export function getEnvironmentSchema(target: unknown): z.ZodType | undefined {
 /**
  * A single validation issue: the property path that failed, what was
  * expected, and what the environment actually held.
+ *
+ * @example
+ * ```ts
+ * const issue: EnvironmentIssue = { path: 'server.port', expected: 'Port must be >= 1', actual: 0 };
+ * ```
  */
 export interface EnvironmentIssue {
     /** The property keypath that failed (e.g. `server.port`). */
@@ -64,6 +69,11 @@ export interface EnvironmentIssue {
 
 /**
  * The structured result of validating an environment against a schema.
+ *
+ * @example
+ * ```ts
+ * const result: ValidationResult = { valid: false, issues: [{ path: 'server.port', expected: 'Port must be >= 1', actual: 0 }] };
+ * ```
  */
 export interface ValidationResult {
     /** Whether every resolved value satisfied the schema. */

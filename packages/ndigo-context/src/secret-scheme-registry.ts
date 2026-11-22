@@ -14,6 +14,13 @@ import { parseSecretMarker, SecretCipher, SecretDecryptContext, SecretDecryptor 
  *
  * Instances are immutable-safe by construction: ciphers are registered once
  * at wiring time; `get` performs the dispatch lookup.
+ *
+ * @example
+ * ```ts
+ * const registry = new SecretSchemeRegistry();
+ * registry.register(aesGcmCipher);
+ * const plaintext = registry.decrypt('{cipher:v1:abc}', { key: 'db.password' });
+ * ```
  */
 export class SecretSchemeRegistry implements SecretDecryptor {
     /**

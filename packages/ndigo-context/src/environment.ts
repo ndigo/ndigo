@@ -103,6 +103,12 @@ export interface Environment extends PropertyResolver {
 
 /**
  * Receives the current environment during initialization.
+ *
+ * @example
+ * ```ts
+ * const aware: EnvironmentAware = new OrderService();
+ * aware.setEnvironment(environment);
+ * ```
  */
 export interface EnvironmentAware extends Aware {
     /** Captures the environment. @param environment - The environment. */
@@ -111,6 +117,12 @@ export interface EnvironmentAware extends Aware {
 
 /**
  * Provides access to the environment associated with a component.
+ *
+ * @example
+ * ```ts
+ * const source: EnvironmentSource = new OrderComponent();
+ * const env = source.environment;
+ * ```
  */
 export interface EnvironmentSource {
     /**

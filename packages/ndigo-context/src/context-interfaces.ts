@@ -194,6 +194,12 @@ export interface ApplicationContext
  * This interface can also be implemented if an object needs access to file resources, i.e. wants to call {@link ResourceLoader#getResource|getResource}, wants to emit an application event, or requires access to the {@link ContentSource|ContentSource}. However, it is preferable to implement the more specific `ResourceLoaderAware`, `ApplicationEventEmitterAware` or `ContentSourceAware` interface in such a specific scenario.
  *
  * `AsApplicationContextAware` is a convenience mixin for application objects, implementing this interface.
+ *
+ * @example
+ * ```ts
+ * const service: ApplicationContextAware = new OrderService();
+ * service.setApplicationContext(applicationContext);
+ * ```
  */
 export interface ApplicationContextAware extends Aware {
     /**
@@ -217,6 +223,12 @@ export interface ApplicationContextAware extends Aware {
  * packages may keep using the module-level API.
  *
  * `AsLoggerAware` is a convenience mixin implementing this interface.
+ *
+ * @example
+ * ```ts
+ * const logger: LoggerAware = new OrderComponent();
+ * logger.setLogger(applicationContext.getLogger());
+ * ```
  */
 export interface LoggerAware extends Aware {
     /**

@@ -5,7 +5,12 @@
  */
 import { context, trace } from '@opentelemetry/api';
 
-/** The active trace context as plain ids, for stamping anything. */
+/** The active trace context as plain ids, for stamping anything. *
+ * @example
+ * ```ts
+ * const corr: TraceCorrelation = { traceId: 'abc', spanId: 'def' };
+ * ```
+ */
 export interface TraceCorrelation {
     /** The active trace id. */
     traceId: string;

@@ -12,6 +12,12 @@ import { like } from '@ndigo/util/types';
  * performing data I/O; the returned Cache operations are awaited.
  * `CachedInterceptor` resolves a `@cached` method's named cache through this
  * contract (`this.cacheManager`).
+ *
+ * @example
+ * ```ts
+ * const manager: CacheManager = new MemoryCacheManager();
+ * const cache = manager.getCache('users');
+ * ```
  */
 export interface CacheManager {
     /**
@@ -47,6 +53,11 @@ export interface CacheManager {
 
 /**
  * Options for a {@link MemoryCacheManager}.
+ *
+ * @example
+ * ```ts
+ * const options: CacheManagerOptions = { maxSize: 128 };
+ * ```
  */
 export interface CacheManagerOptions {
     /**
@@ -160,6 +171,13 @@ export class MemoryCacheManager implements CacheManager {
 
 /**
  * Marks an object that can receive a {@link CacheManager}.
+ *
+ * @example
+ * ```ts
+ * class MyService implements CacheManagerAware {
+ *     setCacheManager(manager: CacheManager) { this.cacheManager = manager; }
+ * }
+ * ```
  */
 export interface CacheManagerAware extends Aware {
     /**

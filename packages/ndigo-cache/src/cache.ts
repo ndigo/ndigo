@@ -65,6 +65,11 @@ export const isCacheMiss = (value: unknown): value is CacheMiss => value === Cac
 
 /**
  * Configuration for a {@link MemoryCache} store.
+ *
+ * @example
+ * ```ts
+ * const options: CacheOptions = { maxSize: 128, defaultTtl: 60_000 };
+ * ```
  */
 export interface CacheOptions {
     /**
@@ -96,6 +101,13 @@ interface CacheEntry<V> {
  * The generic awaitable cache contract. Backend failures reject rather than
  * becoming misses. Cache handles are acquired synchronously through the
  * manager; data operations are awaited for both memory and remote stores.
+ *
+ * @example
+ * ```ts
+ * const cache: Cache<number> = new MemoryCache<number>();
+ * cache.set('a', 1);
+ * await cache.get('a'); // 1
+ * ```
  */
 export interface Cache<V = unknown> {
     /**

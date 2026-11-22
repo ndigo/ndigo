@@ -12,6 +12,17 @@ import { FrameworkError } from '@ndigo/core';
  * message naming the offending specifier — instead of overflowing the call
  * stack (`RangeError: Maximum call stack size exceeded`) and leaking stray
  * unhandled rejections.
+ *
+ * @example
+ * ```ts
+ * try {
+ *     await engine.render(template, model, 'views/home');
+ * } catch (error) {
+ *     if (error instanceof EJSIncludeCycleError) {
+ *         // cyclic include detected
+ *     }
+ * }
+ * ```
  */
 export class EJSIncludeCycleError extends FrameworkError {
     /**
@@ -48,6 +59,11 @@ interface IncludeState {
 
 /**
  * Options accepted by {@link EJSTemplateEngine}.
+ *
+ * @example
+ * ```ts
+ * const engine = new EJSTemplateEngine({ options: { delimiter: '?' } });
+ * ```
  */
 export interface EJSTemplateEngineOptions {
     /**
@@ -96,6 +112,12 @@ const MAX_INCLUDE_DEPTH = 32;
  * relies on ejs's default `with (locals)` scoping; an `options.strict: true`
  * (which disables `with`) opts out of it, as does any template that references
  * ejs's own `include` parameter directly.
+ *
+ * @example
+ * ```ts
+ * const engine = new EJSTemplateEngine();
+ * const html = await engine.render('Hello <%= name %>', { name: 'world' });
+ * ```
  */
 export class EJSTemplateEngine {
     /**

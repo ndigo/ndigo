@@ -9,6 +9,11 @@ import { EJSView, EJSViewOptions } from './ejs-view';
 /**
  * Construction options for {@link EJSViewResolver}. Extends the shared view
  * options with the path framing this resolver applies around each name.
+ *
+ * @example
+ * ```ts
+ * const resolver = new EJSViewResolver({ prefix: 'views/', suffix: '.html' });
+ * ```
  */
 export interface EJSViewResolverOptions extends EJSViewOptions {
     /** Prefix applied before the resolved view name (e.g. `views/`). */
@@ -25,6 +30,11 @@ export interface EJSViewResolverOptions extends EJSViewOptions {
  * maps a controller's returned view name to a template on disk. Restrict the
  * names it serves by setting {@link EJSViewResolver.viewNames}; when left null
  * every name is resolved.
+ *
+ * @example
+ * ```ts
+ * const resolver = new EJSViewResolver({ prefix: 'views/', suffix: '.html' });
+ * ```
  */
 export class EJSViewResolver extends AbstractPathBasedViewResolver {
     /**

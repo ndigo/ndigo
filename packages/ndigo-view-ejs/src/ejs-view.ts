@@ -25,6 +25,11 @@ const DEFAULT_LOCALE = 'en-US';
  * `t` resolves messages through the view's application context (itself a
  * MessageSource from `@ndigo/content`); the formatter helpers wrap `Intl` through
  * `@ndigo/core` formatters and use the request's negotiated language.
+ *
+ * @example
+ * ```ts
+ * const helpers: EJSLocaleHelpers = { locale: 'en-US', t: async (k) => k };
+ * ```
  */
 export interface EJSLocaleHelpers {
     /**
@@ -77,6 +82,11 @@ export interface EJSLocaleHelpers {
 
 /**
  * Construction options for {@link EJSView}.
+ *
+ * @example
+ * ```ts
+ * const view = new EJSView('pages/home', { template: '<h1><%= await t("home.title") %></h1>' });
+ * ```
  */
 export interface EJSViewOptions {
     /**

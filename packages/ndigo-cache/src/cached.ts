@@ -35,6 +35,11 @@ export const DEFAULT_CACHE_NAME = 'default';
 
 /**
  * User-supplied `@cached` specification.
+ *
+ * @example
+ * ```ts
+ * const spec: CachedSpec = { cacheName: 'users', ttl: 60_000 };
+ * ```
  */
 export interface CachedSpec {
     /**
@@ -68,6 +73,11 @@ export interface CachedSpec {
  * Canonical `@cached` specification: validated by
  * {@link resolveCachedSpec} at decoration time and recorded on
  * `Symbol.metadata` for introspection.
+ *
+ * @example
+ * ```ts
+ * const spec: NormalizedCachedSpec = { cacheName: 'users', ttl: 60_000 };
+ * ```
  */
 export interface NormalizedCachedSpec {
     /** The resolved cache name. */

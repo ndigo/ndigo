@@ -6,6 +6,11 @@ import { serializeCacheKey } from './keys';
 
 /**
  * Options for {@link memoize}.
+ *
+ * @example
+ * ```ts
+ * const options: MemoizeOptions = { maxSize: 128 };
+ * ```
  */
 export interface MemoizeOptions<A extends unknown[] = unknown[]> {
     /**

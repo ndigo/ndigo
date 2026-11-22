@@ -7,6 +7,11 @@ import { z } from 'zod';
 /**
  * The endpoint ids the exposure model understands. `'*'` expands to this
  * set; `exclude` wins over `include`.
+ *
+ * @example
+ * ```ts
+ * const ids: readonly string[] = MANAGEMENT_ENDPOINT_IDS;
+ * ```
  */
 export const MANAGEMENT_ENDPOINT_IDS: readonly string[] = Object.freeze([
     'health',
@@ -29,6 +34,11 @@ const ENDPOINT_PATHS: Record<string, string> = Object.freeze({
  * The exposure defaults when neither options nor a `management.*` source
  * section is present: the two pre-existing endpoints stay
  * served, everything new is opt-in.
+ *
+ * @example
+ * ```ts
+ * const exposure: readonly string[] = DEFAULT_EXPOSURE; // ['health', 'metrics']
+ * ```
  */
 export const DEFAULT_EXPOSURE: readonly string[] = Object.freeze(['health', 'metrics']);
 
@@ -59,6 +69,11 @@ const healthShape = z.object({
  * file-model defaults live here (the shape that boot's schema
  * mode would apply; the reader below reuses it without importing
  * `@ndigo/boot`, per the REU-9 layering).
+ *
+ * @example
+ * ```ts
+ * const settings = managementSchema.parse({});
+ * ```
  */
 export const managementSchema = z
     .object({
@@ -67,7 +82,14 @@ export const managementSchema = z
     })
     .default(() => ({ endpoints: endpointsShape.parse({}), health: healthShape.parse({}) }));
 
-/** The validated `management.*` settings (see {@link managementSchema}). */
+/**
+ * The validated `management.*` settings (see {@link managementSchema}).
+ *
+ * @example
+ * ```ts
+ * const properties: ManagementProperties = {};
+ * ```
+ */
 export type ManagementProperties = z.infer<typeof managementSchema>;
 
 /** A plain JSON object (property-source documents are JSON). */

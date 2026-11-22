@@ -57,6 +57,11 @@ export function prefersJsonView(accept: string | undefined): boolean {
  * exposition document with `Content-Type: text/plain; version=0.0.4`.
  * When no snapshot source is registered (no telemetry configured), the
  * endpoint answers the classic error document.
+ *
+ * @example
+ * ```ts
+ * const controller = new MetricsController();
+ * ```
  */
 @requestMapping('/metrics')
 export class MetricsController extends AsApplicationContextAware(Null) {

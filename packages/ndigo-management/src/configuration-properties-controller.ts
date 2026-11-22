@@ -21,6 +21,11 @@ import { isEndpointExposed } from './management-properties';
  *
  * Payload shape: `{ entries: [{ name, properties: [{ key, type? }] }] }`,
  * deterministically sorted.
+ *
+ * @example
+ * ```ts
+ * const controller = new ConfigurationPropertiesController([UserConfig]);
+ * ```
  */
 @requestMapping('/configprops')
 export class ConfigurationPropertiesController extends AsApplicationContextAware(Null) {

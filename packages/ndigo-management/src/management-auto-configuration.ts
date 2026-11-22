@@ -26,6 +26,11 @@
  * `ManagementAutoConfiguration(options)` so the exposed management routes
  * require authentication, and/or firewall the management routes at the
  * network boundary.
+ *
+ * @example
+ * ```ts
+ * const autoConfiguration = new ManagementAutoConfiguration({ redactHealthErrors: true });
+ * ```
  */
 import { configuration, entry, AsApplicationContextAware, type ApplicationContext } from '@ndigo/context';
 import { Null } from '@ndigo/core';
@@ -205,6 +210,11 @@ export class ManagementAutoConfiguration extends AsApplicationContextAware(Null)
 
 /**
  * Options for {@link ManagementAutoConfiguration}.
+ *
+ * @example
+ * ```ts
+ * const options: ManagementAutoConfigurationOptions = { exposure: { include: ['health'] } };
+ * ```
  */
 export interface ManagementAutoConfigurationOptions {
     /**

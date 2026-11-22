@@ -1,13 +1,5 @@
 /**
- * A Count-Min sketch: sub-linear-memory approximate frequency counting.
- * `estimate()` never undercounts and overcounts with bounded error.
- *
- * @example
- * ```ts
- * const sketch = new CountMinSketch();
- * sketch.add('apple', 3);
- * sketch.estimate('apple'); // >= 3
- * ```
+ * Approximate frequency counting backed by a Count-Min sketch.
  */
 import { Serializable } from './serializable.js';
 import { Equatable } from './equatable.js';
@@ -15,6 +7,11 @@ import { Equatable } from './equatable.js';
 /**
  * The JSON form of a {@link CountMinSketch}: its dimensions, counter table,
  * and total observed count.
+ *
+ * @example
+ * ```ts
+ * const json: CountMinSketchJSON = { depth: 5, width: 1024, table: [], total: 3 };
+ * ```
  */
 export type CountMinSketchJSON = {
     /** Number of hash rows. */
@@ -47,6 +44,17 @@ function toKey(value: unknown): string {
     }
 }
 
+/**
+ * A Count-Min sketch: sub-linear-memory approximate frequency counting.
+ * `estimate()` never undercounts and overcounts with bounded error.
+ *
+ * @example
+ * ```ts
+ * const sketch = new CountMinSketch();
+ * sketch.add('apple', 3);
+ * sketch.estimate('apple'); // >= 3
+ * ```
+ */
 export class CountMinSketch implements Serializable, Equatable<CountMinSketch> {
     #depth: number;
     #width: number;

@@ -80,6 +80,11 @@ const { freeze, keys } = Object,
 /**
  * Represents the parameters associated with a media type, such as `charset` or `q` (quality factor).
  * Keys are parameter names, and values can be strings, numbers, or booleans.
+ *
+ * @example
+ * ```ts
+ * const params: MediaTypeParameters = { charset: 'UTF-8', q: 0.5 };
+ * ```
  */
 export type MediaTypeParameters = {
     [name: string]: string | number | boolean | undefined;

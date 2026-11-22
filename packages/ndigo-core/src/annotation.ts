@@ -23,6 +23,11 @@ import { getSymbolMetadata } from './metadata.js';
  * reader never cares which kind of member the declaration came from.
  *
  * @typeParam T - The annotation value type.
+ *
+ * @example
+ * ```ts
+ * const key: AnnotationKey<'orders'> = { key: 'orders:audited', name: 'audited' };
+ * ```
  */
 export interface AnnotationKey<T> {
     /** Namespace-stable metadata key (`"<namespace>:<name>"`). */
@@ -37,11 +42,27 @@ export interface AnnotationKey<T> {
 
 /**
  * A decorator that records a value on a method and returns it unchanged.
+ *
+ * @example
+ * ```ts
+ * const audited = methodAnnotation<{ action: string }>('orders:audited');
+ * class OrderService {
+ *     @audited({ action: 'order.submit' })
+ *     submit(): void {}
+ * }
+ * ```
  */
 export type MethodAnnotationDecorator = <M extends Function>(target: M, context: ClassMethodDecoratorContext) => M;
 
 /**
  * A decorator that records a value on a class and changes nothing.
+ *
+ * @example
+ * ```ts
+ * const audited = classAnnotation<{ action: string }>('orders:audited');
+ * @audited({ action: 'order.submit' })
+ * class OrderService {}
+ * ```
  */
 export type ClassAnnotationDecorator = (target: unknown, context: ClassDecoratorContext) => void;
 
@@ -49,6 +70,12 @@ export type ClassAnnotationDecorator = (target: unknown, context: ClassDecorator
  * An annotation handle whose decorator applies to methods.
  *
  * @typeParam T - The annotation value type.
+ *
+ * @example
+ * ```ts
+ * const audited = methodAnnotation<{ action: string }>('orders:audited');
+ * // audited(action) returns the method decorator that records the annotation
+ * ```
  */
 export interface MethodAnnotationKey<T> extends AnnotationKey<T> {
     /**
@@ -62,6 +89,12 @@ export interface MethodAnnotationKey<T> extends AnnotationKey<T> {
  * An annotation handle whose decorator applies to classes.
  *
  * @typeParam T - The annotation value type.
+ *
+ * @example
+ * ```ts
+ * const audited = classAnnotation<{ action: string }>('orders:audited');
+ * // audited(action) returns the class decorator that records the annotation
+ * ```
  */
 export interface ClassAnnotationKey<T> extends AnnotationKey<T> {
     /**

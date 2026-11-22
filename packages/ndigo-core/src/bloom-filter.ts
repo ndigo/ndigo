@@ -1,14 +1,5 @@
 /**
- * A probabilistic set membership filter: `has()` may return false positives
- * but never false negatives. Memory is O(bits) and independent of the
- * number of distinct values stored.
- *
- * @example
- * ```ts
- * const filter = new BloomFilter(1024, 3);
- * filter.add('hello');
- * filter.has('hello'); // true
- * ```
+ * Probabilistic set-membership filtering backed by Bloom-filter bitmaps.
  */
 import { Serializable } from './serializable.js';
 import { Equatable } from './equatable.js';
@@ -16,6 +7,11 @@ import { Equatable } from './equatable.js';
 /**
  * The JSON form of a {@link BloomFilter}: the bit width, hash count, packed
  * buckets, and insertion count.
+ *
+ * @example
+ * ```ts
+ * const json: BloomFilterJSON = { bits: 1024, hashes: 3, buckets: [], count: 1 };
+ * ```
  */
 export type BloomFilterJSON = {
     /** Number of bits in the filter. */
@@ -47,6 +43,18 @@ function toKey(value: unknown): string {
     }
 }
 
+/**
+ * A probabilistic set membership filter: `has()` may return false positives
+ * but never false negatives. Memory is O(bits) and independent of the
+ * number of distinct values stored.
+ *
+ * @example
+ * ```ts
+ * const filter = new BloomFilter(1024, 3);
+ * filter.add('hello');
+ * filter.has('hello'); // true
+ * ```
+ */
 export class BloomFilter implements Serializable, Equatable<BloomFilter> {
     #bits: number;
     #hashes: number;

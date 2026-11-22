@@ -1,5 +1,12 @@
 /**
  * A binary heap (min-heap by default) with O(log n) push/pop and O(1) peek.
+ */
+import { type comparison, naturalComparison } from './comparable.js';
+import { Equatable } from './equatable.js';
+import { Serializable, JSONArray, serialize } from './serializable.js';
+
+/**
+ * A binary heap (min-heap by default) with O(log n) push/pop and O(1) peek.
  *
  * Pass a comparator to build a max-heap or a priority queue over arbitrary
  * values; combine comparators with `chainComparisons`/`compareBy` for
@@ -14,9 +21,6 @@
  * heap.pop(); // 1
  * ```
  */
-import { type comparison, naturalComparison } from './comparable.js';
-import { Equatable } from './equatable.js';
-import { Serializable, JSONArray, serialize } from './serializable.js';
 
 export class Heap<T> implements Serializable, Equatable<Heap<T>> {
     #items: T[] = [];

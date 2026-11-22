@@ -7,60 +7,110 @@ import { hasFunction } from './_guards.js';
 /**
  * Extracts the key type from a Map-like value.
  * @typeParam Value - The Map-like value type.
+ *
+ * @example
+ * ```ts
+ * const key: MapKey<Map<string, number>> = 'userId';
+ * ```
  */
 export type MapKey<Value> = Value extends Map<infer KeyType, unknown> ? KeyType : unknown;
 
 /**
  * Extracts the value type from a Map-like value.
  * @typeParam Value - The Map-like value type.
+ *
+ * @example
+ * ```ts
+ * const value: MapValue<Map<string, number>> = 42;
+ * ```
  */
 export type MapValue<Value> = Value extends Map<unknown, infer ValueType> ? ValueType : unknown;
 
 /**
  * Represents an array of entries for an array-like value, where each entry is `[index, value]`.
  * @typeParam Value - The array-like value type.
+ *
+ * @example
+ * ```ts
+ * const entries: ArrayEntries<{ id: string }> = [[0, 'a']];
+ * ```
  */
 export type ArrayEntries<Value extends readonly unknown[]> = Array<ArrayEntry<Value>>;
 
 /**
  * Represents an array of entries for a Map-like value, where each entry is `[key, value]`.
  * @typeParam Value - The Map-like value type.
+ *
+ * @example
+ * ```ts
+ * const entries: MapEntries<{ id: string }> = [['id', 'a']];
+ * ```
  */
 export type MapEntries<Value> = Array<MapEntry<Value>>;
 
 /**
  * Represents an array of entries for an object-like value, where each entry is `[key, value]`.
  * @typeParam Value - The object-like value type.
+ *
+ * @example
+ * ```ts
+ * const entries: ObjectEntries<{ id: string }> = [['id', 'a']];
+ * ```
  */
 export type ObjectEntries<Value> = Array<ObjectEntry<Value>>;
 
 /**
  * Represents an array of entries for a Set-like value, where each entry is `[value, value]`.
  * @typeParam Value - The Set-like value type.
+ *
+ * @example
+ * ```ts
+ * const entries: SetEntries<Set<string>> = [['a', 'a']];
+ * ```
  */
 export type SetEntries<Value extends Set<unknown>> = Array<SetEntry<Value>>;
 
 /**
  * Represents a single entry for an array-like value, where the entry is `[index, value]`.
  * @typeParam Value - The array-like value type.
+ *
+ * @example
+ * ```ts
+ * const entry: ArrayEntry<{ id: string }> = [0, 'a'];
+ * ```
  */
 export type ArrayEntry<Value extends readonly unknown[]> = [number, Value[number]];
 
 /**
  * Represents a single entry for a Map-like value, where the entry is `[key, value]`.
  * @typeParam Value - The Map-like value type.
+ *
+ * @example
+ * ```ts
+ * const entry: MapEntry<{ id: string }> = ['id', 'a'];
+ * ```
  */
 export type MapEntry<Value> = [MapKey<Value>, MapValue<Value>];
 
 /**
  * Represents a single entry for an object-like value, where the entry is `[key, value]`.
  * @typeParam Value - The object-like value type.
+ *
+ * @example
+ * ```ts
+ * const entry: ObjectEntry<{ id: string }> = ['id', 'a'];
+ * ```
  */
 export type ObjectEntry<Value> = [keyof Value, Value[keyof Value]];
 
 /**
  * Represents a single entry for a Set-like value, where the entry is `[value, value]`.
  * @typeParam Value - The Set-like value type.
+ *
+ * @example
+ * ```ts
+ * const entry: SetEntry<Set<string>> = ['a', 'a'];
+ * ```
  */
 export type SetEntry<Value> = Value extends Set<infer ValueType> ? [ValueType, ValueType] : never;
 

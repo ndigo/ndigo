@@ -11,6 +11,11 @@ const { keys } = Object;
 
 /**
  * Represents an error that occurs during data binding operations.
+ *
+ * @example
+ * ```ts
+ * const error = new BindError('Required field "user.email" is missing');
+ * ```
  */
 export class BindError extends FrameworkError {
     /**

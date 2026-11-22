@@ -16,11 +16,21 @@ export type JSONValue = boolean | null | number | string | JSONObject | JSONArra
 
 /**
  * A JSON object value.
+ *
+ * @example
+ * ```ts
+ * const obj: JSONObject = { name: 'ndigo', count: 1 };
+ * ```
  */
 export interface JSONObject extends Record<string, JSONValue> {}
 
 /**
  * A JSON array value.
+ *
+ * @example
+ * ```ts
+ * const arr: JSONArray = [1, 2, 3];
+ * ```
  */
 export interface JSONArray extends Array<JSONValue> {}
 

@@ -10,7 +10,14 @@
  * while hosts come and go.
  */
 
-/** Safety hints understood by agent hosts. */
+/**
+ * Safety hints understood by agent hosts.
+ *
+ * @example
+ * ```ts
+ * const annotations: AgentToolAnnotations = { readOnlyHint: true };
+ * ```
+ */
 export interface AgentToolAnnotations {
     /** The tool only reads state. */
     readonly readOnlyHint?: boolean;
@@ -22,7 +29,19 @@ export interface AgentToolAnnotations {
     readonly debugging?: boolean;
 }
 
-/** A tool an agent host can call. */
+/**
+ * A tool an agent host can call.
+ *
+ * @example
+ * ```ts
+ * const tool: AgentTool = {
+ *     name: 'search-orders',
+ *     description: 'Search orders by customer id',
+ *     inputSchema: { type: 'object', properties: { customerId: { type: 'string' } } },
+ *     execute: async (args, context) => ({ orders: [] }),
+ * };
+ * ```
+ */
 export interface AgentTool {
     /** Tool name (unique per host and origin). */
     readonly name: string;
@@ -41,7 +60,14 @@ export interface AgentTool {
     readonly exposedTo?: readonly string[];
 }
 
-/** The outcome of a tool registration; `supported` is false when the host is absent. */
+/**
+ * The outcome of a tool registration; `supported` is false when the host is absent.
+ *
+ * @example
+ * ```ts
+ * const registration: AgentToolRegistration = { supported: true, dispose: () => {} };
+ * ```
+ */
 export interface AgentToolRegistration {
     /** Whether the host was available and the tools registered. */
     readonly supported: boolean;
@@ -49,7 +75,15 @@ export interface AgentToolRegistration {
     dispose(): void;
 }
 
-/** Options for {@link AgentToolHost.registerTools}. */
+/**
+ * Options for {@link AgentToolHost.registerTools}.
+ *
+ * @example
+ * ```ts
+ * const host = new AgentHost();
+ * const registration = await host.registerTools(tools, { signal: controller.signal });
+ * ```
+ */
 export interface AgentToolHostOptions {
     /** External cancellation signal; when supplied, `dispose` cannot abort it. */
     readonly signal?: AbortSignal;
@@ -58,6 +92,13 @@ export interface AgentToolHostOptions {
 /**
  * The host-side registration contract: any agent host an adapter can register
  * tools with — the browser's model context today, a UI SDK bridge later.
+ *
+ * @example
+ * ```ts
+ * const host: AgentToolHost = {
+ *     registerTools: async (tools) => ({ supported: true, dispose: () => {} }),
+ * };
+ * ```
  */
 export interface AgentToolHost {
     /**
@@ -70,7 +111,14 @@ export interface AgentToolHost {
     registerTools(tools: readonly AgentTool[], options?: AgentToolHostOptions): Promise<AgentToolRegistration>;
 }
 
-/** An entity an agent can see in {@link AgentBridge.snapshot}. */
+/**
+ * An entity an agent can see in {@link AgentBridge.snapshot}.
+ *
+ * @example
+ * ```ts
+ * const entity: AgentEntity = { ref: 'order:1234', component: 'order-card', label: 'Order 1234' };
+ * ```
+ */
 export interface AgentEntity {
     /** Stable reference used in {@link AgentStep.ref}. */
     readonly ref: string;
@@ -84,7 +132,14 @@ export interface AgentEntity {
     readonly actions?: readonly string[];
 }
 
-/** One step of {@link AgentBridge.act}. */
+/**
+ * One step of {@link AgentBridge.act}.
+ *
+ * @example
+ * ```ts
+ * const step: AgentStep = { ref: 'order:1234', action: 'cancel', args: ['reason'] };
+ * ```
+ */
 export interface AgentStep {
     /** The entity's ref or unique label. */
     readonly ref: string;
@@ -94,7 +149,14 @@ export interface AgentStep {
     readonly args?: readonly unknown[];
 }
 
-/** The result of {@link AgentBridge.act}. */
+/**
+ * The result of {@link AgentBridge.act}.
+ *
+ * @example
+ * ```ts
+ * const result: AgentActResult = { ok: true };
+ * ```
+ */
 export interface AgentActResult {
     /** Whether every step applied. */
     readonly ok: boolean;
@@ -104,7 +166,14 @@ export interface AgentActResult {
     readonly failedStep?: number;
 }
 
-/** An item of a closed-choice entity. */
+/**
+ * An item of a closed-choice entity.
+ *
+ * @example
+ * ```ts
+ * const item: AgentItem = { value: 'eu-west', label: 'EU West' };
+ * ```
+ */
 export interface AgentItem {
     /** The item's value. */
     readonly value: string;
@@ -112,7 +181,14 @@ export interface AgentItem {
     readonly label?: string;
 }
 
-/** A filter for {@link AgentBridge.query}. */
+/**
+ * A filter for {@link AgentBridge.query}.
+ *
+ * @example
+ * ```ts
+ * const query: AgentQuery = { text: 'order', kind: 'order-card' };
+ * ```
+ */
 export interface AgentQuery {
     /** Restrict the matches to the entity with this ref or label. */
     readonly within?: string;
@@ -122,7 +198,14 @@ export interface AgentQuery {
     readonly kind?: string;
 }
 
-/** A match returned by {@link AgentBridge.query}. */
+/**
+ * A match returned by {@link AgentBridge.query}.
+ *
+ * @example
+ * ```ts
+ * const match: AgentQueryMatch = { ref: 'order:1234', label: 'Order 1234' };
+ * ```
+ */
 export interface AgentQueryMatch {
     /** The matched entity's ref. */
     readonly ref: string;
@@ -137,6 +220,13 @@ export interface AgentQueryMatch {
  * adapter included) provides. The read and act verbs let an agent inspect and
  * operate the page's entities; {@link AgentToolHost.registerTools} exposes the
  * same page as callable tools.
+ *
+ * @example
+ * ```ts
+ * const entities = bridge.snapshot();
+ * const matches = bridge.query({ text: 'order' });
+ * const result = await bridge.act([{ ref: 'order:1234', action: 'cancel' }]);
+ * ```
  */
 export interface AgentBridge extends AgentToolHost {
     /** Lists the entities an agent can see right now. */

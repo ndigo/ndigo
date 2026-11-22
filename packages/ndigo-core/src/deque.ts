@@ -1,4 +1,10 @@
 /**
+ * A double-ended queue with O(1) amortized push/pop on both ends.
+ */
+import { Serializable, JSONArray, serialize } from './serializable.js';
+import { Equatable } from './equatable.js';
+
+/**
  * A dynamic double-ended queue with O(1) amortized push/pop on both ends.
  *
  * Backed by a circular buffer that grows by doubling when full, so logical
@@ -15,8 +21,6 @@
  * deque.shift(); // 0
  * ```
  */
-import { Serializable, JSONArray, serialize } from './serializable.js';
-import { Equatable } from './equatable.js';
 
 export class Deque<T> implements ArrayLike<T | undefined>, Iterable<T>, Serializable, Equatable<Deque<T>> {
     #capacity: number;

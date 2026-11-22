@@ -24,6 +24,14 @@ const WHEN_MISSING = 'boot:whenMissingEntry';
  * The runtime surface an active-condition evaluation needs: the environment
  * (for property conditions) and the entry registry (for missing-entry
  * conditions). Supplied by the bootstrap as it registers sources.
+ *
+ * @example
+ * ```ts
+ * const ctx: ConditionContext = {
+ *     getProperty: (key) => config[key],
+ *     hasValue: (name) => registry.has(name),
+ * };
+ * ```
  */
 export interface ConditionContext {
     /**
@@ -96,6 +104,11 @@ export function whenNode(target: Function, context: ClassDecoratorContext): void
 
 /**
  * Options for {@link whenProperty}.
+ *
+ * @example
+ * ```ts
+ * const options: WhenPropertyOptions = { name: 'app.management.enabled' };
+ * ```
  */
 export interface WhenPropertyOptions {
     /** The property name to check, e.g. `'app.management.enabled'`. */

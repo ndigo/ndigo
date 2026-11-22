@@ -15,6 +15,11 @@
 import { createNull } from './null.js';
 /**
  * Options for {@link BoundedCache}.
+ *
+ * @example
+ * ```ts
+ * const options: BoundedCacheOptions<string, number> = { maxSize: 128, policy: 'lru' };
+ * ```
  */
 export interface BoundedCacheOptions<K, V> {
     /** Maximum number of entries before eviction occurs. Default: 256. */

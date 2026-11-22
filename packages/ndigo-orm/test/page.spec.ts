@@ -10,7 +10,7 @@ import { InMemoryEntityManager } from '../src/entity-manager';
 // Spec-side type wrapper; runtime-identical to the production `entity` decorator.
 const entity = entityDecorator as unknown as (tableName?: string) => ClassDecorator;
 import { InMemoryRepository } from '../src/repository';
-import { pageFromAll, validatePageRequest, SortDirection } from '../src/page';
+import { pageFromAll, sortComparator, validatePageRequest, SortDirection } from '../src/page';
 
 @entity('page_things')
 class PageThing {
@@ -111,6 +111,60 @@ describe('pageFromAll', () => {
         expect(() => pageFromAll(items, { page: 1, size: 1, sort: [{ property: 'nope' }] }, allowed)).toThrow(
             'unknown sort property "nope"'
         );
+    });
+});
+
+describe('sortComparator', () => {
+    // Characterization specs: pin the pre-refactor ordering exactly so the
+    // combinator rewrite is provably behavior-preserving.
+    it('puts null first ascending and last descending', () => {
+        const items = [{ v: 3 }, { v: null }, { v: 1 }, { v: 2 }];
+
+        const asc = sortComparator<{ v: number | null }>([{ property: 'v' }]);
+        expect([...items].sort(asc).map((item) => item.v)).toEqual([null, 1, 2, 3]);
+
+        const desc = sortComparator<{ v: number | null }>([{ property: 'v', direction: 'desc' }]);
+        expect([...items].sort(desc).map((item) => item.v)).toEqual([3, 2, 1, null]);
+    });
+
+    it('treats undefined like null against a value', () => {
+        const items = [{ v: 3 }, { v: undefined }, { v: 1 }, { v: 2 }];
+
+        const asc = sortComparator<{ v: number | undefined }>([{ property: 'v' }]);
+        expect([...items].sort(asc).map((item) => item.v)).toEqual([undefined, 1, 2, 3]);
+
+        const desc = sortComparator<{ v: number | undefined }>([{ property: 'v', direction: 'desc' }]);
+        expect([...items].sort(desc).map((item) => item.v)).toEqual([3, 2, 1, undefined]);
+    });
+
+    it('pins the existing null-vs-undefined comparison: both directions report left-first', () => {
+        // Not a strict weak ordering — preserved deliberately. The refactor
+        // must keep the pair-wise result identical, quirk included.
+        const asc = sortComparator<{ v: unknown }>([{ property: 'v' }]);
+        expect(asc({ v: null }, { v: undefined })).toBe(-1);
+        expect(asc({ v: undefined }, { v: null })).toBe(-1);
+
+        const desc = sortComparator<{ v: unknown }>([{ property: 'v', direction: 'desc' }]);
+        expect(desc({ v: null }, { v: undefined })).toBe(1);
+        expect(desc({ v: undefined }, { v: null })).toBe(1);
+    });
+
+    it('compares mixed-type and NaN columns as equal', () => {
+        const asc = sortComparator<{ v: unknown }>([{ property: 'v' }]);
+
+        expect(asc({ v: 'b' }, { v: 1 })).toBe(0);
+        expect(asc({ v: 1 }, { v: 'b' })).toBe(0);
+        expect(asc({ v: Number.NaN }, { v: 1 })).toBe(0);
+        expect(asc({ v: Number.NaN }, { v: Number.NaN })).toBe(0);
+    });
+
+    it('applies clauses in order, returning zero for ties and empty sorts', () => {
+        const cmp = sortComparator<{ a: number; b: string }>([{ property: 'a' }, { property: 'b', direction: 'desc' }]);
+
+        expect(cmp({ a: 1, b: 'x' }, { a: 2, b: 'a' })).toBeLessThan(0);
+        expect(cmp({ a: 1, b: 'x' }, { a: 1, b: 'y' })).toBeGreaterThan(0);
+        expect(cmp({ a: 1, b: 'x' }, { a: 1, b: 'x' })).toBe(0);
+        expect(sortComparator<{ a: number }>([])({ a: 1 }, { a: 2 })).toBe(0);
     });
 });
 

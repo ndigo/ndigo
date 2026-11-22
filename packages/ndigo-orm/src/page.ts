@@ -3,6 +3,7 @@
  * Wave 2): 1-based page requests, multi-key sort orders, and stable page
  * math shared by every backend.
  */
+import { chainComparisons, compareBy, type comparison, invertComparison } from '@ndigo/core';
 
 export type SortDirection = 'asc' | 'desc';
 
@@ -114,20 +115,23 @@ export function pageFromAll<T>(all: T[], request: PageRequest, allowedProperties
  * ```
  */
 export function sortComparator<T>(sort: SortOrder[]): (left: T, right: T) => number {
-    return (left, right) => {
-        for (const clause of sort) {
-            const leftValue = (left as Record<string, unknown>)[clause.property];
-            const rightValue = (right as Record<string, unknown>)[clause.property];
-            const compared = compareValues(leftValue, rightValue);
-            if (compared !== 0) {
-                return (clause.direction ?? 'asc') === 'asc' ? compared : -compared;
-            }
-        }
-        return 0;
-    };
+    return chainComparisons(
+        ...sort.map((clause) =>
+            compareBy(
+                (value: T) => (value as Record<string, unknown>)[clause.property],
+                (clause.direction ?? 'asc') === 'asc' ? nullsFirst : nullsLast
+            )
+        )
+    );
 }
 
-function compareValues(left: unknown, right: unknown): number {
+/**
+ * Orders nullish values before every present value, then applies natural
+ * ordering. `null` and `undefined` both report first — the historical
+ * comparison, preserved verbatim so this stays a pure refactor rather than
+ * silently adopting `naturalComparison`'s different null placement.
+ */
+const nullsFirst: comparison<unknown> = (left, right) => {
     if (left === right) {
         return 0;
     }
@@ -138,4 +142,7 @@ function compareValues(left: unknown, right: unknown): number {
         return 1;
     }
     return left < right ? -1 : left > right ? 1 : 0;
-}
+};
+
+/** `nullsFirst` reversed: nullish values sort last. */
+const nullsLast = invertComparison(nullsFirst);

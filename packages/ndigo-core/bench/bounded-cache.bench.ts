@@ -8,14 +8,14 @@
  */
 import { LRUCache as NpmLRUCache } from 'lru-cache';
 import { test } from 'vitest';
-import { LRUCache } from '../src/_lru-cache';
+import { BoundedCache } from '../src/bounded-cache';
 import { assertEquivalent, benchName, sink } from '../../../benchmarks/lib/verify';
 
 const CAPACITY = 64;
 const BATCH = 1_000;
 const keys = Array.from({ length: CAPACITY }, (_, index) => `key${index}`);
 
-const ndigoHit = new LRUCache<string, number>(CAPACITY);
+const ndigoHit = new BoundedCache<string, number>({ maxSize: CAPACITY, policy: 'lru' });
 const npmHit = new NpmLRUCache<string, number>({ max: CAPACITY });
 for (const key of keys) {
     ndigoHit.set(key, Number(key.slice(3)));
@@ -34,7 +34,7 @@ function verifyHit(): void {
 }
 
 function verifyEviction(): void {
-    const ndigo = new LRUCache<string, number>(8);
+    const ndigo = new BoundedCache<string, number>({ maxSize: 8, policy: 'lru' });
     const npm = new NpmLRUCache<string, number>({ max: 8 });
     for (let i = 0; i < 20; i++) {
         ndigo.set(`evict${i}`, i);

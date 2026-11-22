@@ -6,7 +6,7 @@ import { AbstractValueComparator, Comparator } from './comparable.js';
 import { Constructable } from './constructable.js';
 import { FrameworkError } from './error.js';
 import { parseUrlGlob } from './url-glob.js';
-import { LRUCache } from './_lru-cache.js';
+import { BoundedCache } from './bounded-cache.js';
 import { Matchable, PatternMatcher } from './matchable.js';
 
 const DOT = '.',
@@ -299,13 +299,13 @@ export class URLGlobPathMatcher implements PathMatcher {
         return 'URLGlobPathMatcher';
     }
 
-    #cache: LRUCache<string, RegExp>;
+    #cache: BoundedCache<string, RegExp>;
 
     /**
      * @param cacheCapacity - Maximum number of compiled patterns to cache. Default: 256.
      */
     constructor(cacheCapacity = 256) {
-        this.#cache = new LRUCache(cacheCapacity);
+        this.#cache = new BoundedCache<string, RegExp>({ maxSize: cacheCapacity, policy: 'lru' });
     }
 
     /** {@inheritDoc PathMatcher#getPatternComparator} @param path - The path. */

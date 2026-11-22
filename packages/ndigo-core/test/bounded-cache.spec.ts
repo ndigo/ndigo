@@ -1,32 +1,32 @@
 /**
  */
 import { describe, it, expect } from 'vitest';
-import { LRUCache } from '../src/_lru-cache';
+import { BoundedCache } from '../src/bounded-cache';
 
-describe('LRUCache', () => {
+describe('BoundedCache', () => {
     it('stores and retrieves a value', () => {
-        const cache = new LRUCache<string, number>();
+        const cache = new BoundedCache<string, number>({ policy: 'lru' });
         cache.set('key', 42);
         expect(cache.get('key')).toBe(42);
     });
 
     it('returns undefined for missing keys', () => {
-        const cache = new LRUCache<string, number>();
+        const cache = new BoundedCache<string, number>({ policy: 'lru' });
         expect(cache.get('missing')).toBeUndefined();
     });
 
     it('defaults to capacity 256', () => {
-        const cache = new LRUCache<string, number>();
+        const cache = new BoundedCache<string, number>({ policy: 'lru' });
         expect(cache.capacity).toBe(256);
     });
 
     it('respects custom capacity', () => {
-        const cache = new LRUCache<string, number>(100);
+        const cache = new BoundedCache<string, number>({ maxSize: 100, policy: 'lru' });
         expect(cache.capacity).toBe(100);
     });
 
     it('evicts the least-recently-used entry when at capacity', () => {
-        const cache = new LRUCache<string, number>(2);
+        const cache = new BoundedCache<string, number>({ maxSize: 2, policy: 'lru' });
         cache.set('a', 1);
         cache.set('b', 2);
         cache.set('c', 3);
@@ -36,7 +36,7 @@ describe('LRUCache', () => {
     });
 
     it('promotes a hit to most-recently-used, preventing its eviction', () => {
-        const cache = new LRUCache<string, number>(2);
+        const cache = new BoundedCache<string, number>({ maxSize: 2, policy: 'lru' });
         cache.set('a', 1);
         cache.set('b', 2);
         cache.get('a'); // Access 'a' to promote it
@@ -47,7 +47,7 @@ describe('LRUCache', () => {
     });
 
     it('has() does not update recency', () => {
-        const cache = new LRUCache<string, number>(2);
+        const cache = new BoundedCache<string, number>({ maxSize: 2, policy: 'lru' });
         cache.set('a', 1);
         cache.set('b', 2);
         // Order: a (LRU) → b (MRU). has('a') must NOT promote 'a'.
@@ -60,14 +60,14 @@ describe('LRUCache', () => {
     });
 
     it('delete() removes an entry', () => {
-        const cache = new LRUCache<string, number>();
+        const cache = new BoundedCache<string, number>({ policy: 'lru' });
         cache.set('key', 42);
         expect(cache.delete('key')).toBe(true);
         expect(cache.get('key')).toBeUndefined();
     });
 
     it('clear() empties the cache', () => {
-        const cache = new LRUCache<string, number>();
+        const cache = new BoundedCache<string, number>({ policy: 'lru' });
         cache.set('key1', 1);
         cache.set('key2', 2);
         cache.clear();
@@ -77,7 +77,7 @@ describe('LRUCache', () => {
     });
 
     it('size reflects current entry count', () => {
-        const cache = new LRUCache<string, number>();
+        const cache = new BoundedCache<string, number>({ policy: 'lru' });
         expect(cache.size).toBe(0);
         cache.set('key1', 1);
         expect(cache.size).toBe(1);
@@ -90,7 +90,7 @@ describe('LRUCache', () => {
     });
 
     it('set() on existing key promotes to MRU (no duplicate eviction)', () => {
-        const cache = new LRUCache<string, number>(2);
+        const cache = new BoundedCache<string, number>({ maxSize: 2, policy: 'lru' });
         cache.set('a', 1);
         cache.set('b', 2);
         cache.set('a', 10); // Update 'a' value
@@ -101,7 +101,7 @@ describe('LRUCache', () => {
     });
 
     it('capacity getter returns the configured capacity', () => {
-        const cache = new LRUCache<string, number>(50);
+        const cache = new BoundedCache<string, number>({ maxSize: 50, policy: 'lru' });
         expect(cache.capacity).toBe(50);
     });
 });

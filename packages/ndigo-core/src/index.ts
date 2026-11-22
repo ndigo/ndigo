@@ -11,6 +11,7 @@ export * from './deque.js';
 export * from './heap.js';
 export * from './trie.js';
 export * from './bloom-filter.js';
+export * from './bounded-cache.js';
 export * from './count-min-sketch.js';
 export * from './comparable.js';
 export * from './constructable.js';

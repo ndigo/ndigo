@@ -1,5 +1,10 @@
 /**
  * Duck-typing predicate factory.
+ *
+ * @example
+ * ```ts
+ * const descriptor: LikeDescriptor = { then: Function };
+ * ```
  */
 export type LikeDescriptor = { [key: string]: Function | true };
 

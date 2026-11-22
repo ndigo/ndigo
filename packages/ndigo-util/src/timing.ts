@@ -14,6 +14,11 @@
  *
  * @param ms - Milliseconds to wait.
  * @returns A promise resolving once the delay has elapsed.
+ *
+ * @example
+ * ```ts
+ * await delay(1_000); // wait on the ambient timer queue
+ * ```
  */
 export function delay(ms: number): Promise<void> {
     const { promise, resolve } = Promise.withResolvers<void>();

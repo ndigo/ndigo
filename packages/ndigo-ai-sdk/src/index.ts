@@ -35,6 +35,11 @@ import type {
 /**
  * Optional identity overrides. Without them the adapter reads `provider` and
  * `modelId` from the AI SDK model and falls back to `ai-sdk`.
+ *
+ * @example
+ * ```ts
+ * const options: AISdkModelOptions = { provider: 'openai', model: 'gpt-4' };
+ * ```
  */
 export interface AISdkModelOptions {
     /** Provider name used in telemetry and rate-limit keys. */
@@ -50,6 +55,11 @@ export interface AISdkModelOptions {
  * The adapter declares tools to the model but never executes them — the
  * `@ndigo/ai` agent loop owns execution and telemetry, so MCP tools and local
  * sources behave identically across providers.
+ *
+ * @example
+ * ```ts
+ * const model = new AISdkModel(aiModel, { provider: 'openai', model: 'gpt-4' });
+ * ```
  */
 export class AISdkModel implements AIModel {
     /**
@@ -184,6 +194,11 @@ export class AISdkModel implements AIModel {
  * @param model - The AI SDK language model.
  * @param options - Optional identity overrides.
  * @returns The adapter.
+ *
+ * @example
+ * ```ts
+ * const model = aiSdkModel(aiModel, { provider: 'openai', model: 'gpt-4' });
+ * ```
  */
 export function aiSdkModel(model: LanguageModel, options: AISdkModelOptions = {}): AISdkModel {
     return new AISdkModel(model, options);

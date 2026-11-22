@@ -3,6 +3,7 @@
  */
 import '@tsmetadata/polyfill';
 import semver from 'semver';
+import { getSymbolMetadata } from './metadata.js';
 
 /** Metadata key under which `@sharedDependency` stores its options. */
 export const SHARED_KEY = 'ndigo:shared';
@@ -48,12 +49,8 @@ export function sharedDependency(
  * @returns The `SharedOptions` if the class is marked `@sharedDependency`, or `undefined`.
  */
 export function getSharedOptions(target: unknown): SharedOptions | undefined {
-    const carrier = (typeof target === 'function' ? target : target?.constructor) as
-        | { [Symbol.metadata]?: Record<string, unknown> }
-        | undefined;
-
     // Metadata polyfill guarantees a record on decorated classes; read and cast once.
-    return carrier?.[Symbol.metadata]?.[SHARED_KEY] as SharedOptions | undefined;
+    return getSymbolMetadata(target)[SHARED_KEY] as SharedOptions | undefined;
 }
 
 /**

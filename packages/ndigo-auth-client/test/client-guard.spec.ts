@@ -20,11 +20,12 @@ function createMockPrincipal(id = '1', name = 'Test', roles: string[] = ['user']
 }
 
 /**
- * Helper to set up Symbol.metadata on a handler function.
- * The guard reads: handler.constructor[Symbol.metadata]
+ * Attaches decorator metadata the way TC39 decorators do: on the class
+ * constructor itself. `getSymbolMetadata` reads a constructor's own record and
+ * unwraps instances through their constructor.
  */
-function setHandlerMetadata(handler: { constructor: object }, metadata: Record<string, unknown>): void {
-    handler.constructor = { [Symbol.metadata]: metadata };
+function setHandlerMetadata(handler: object, metadata: Record<string, unknown>): void {
+    (handler as { [Symbol.metadata]?: Record<string, unknown> })[Symbol.metadata] = metadata;
 }
 
 describe('extractAuthMetadata', () => {

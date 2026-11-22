@@ -2,17 +2,10 @@
  * Zod-based environment schema validation.
  */
 import { z } from 'zod';
-import { IllegalStateError, JSONValue } from '@ndigo/core';
+import { IllegalStateError, JSONValue, getSymbolMetadata } from '@ndigo/core';
 import type { PropertyResolver } from './property-resolver';
 
 const ENV_SCHEMA = 'boot:environmentSchema';
-
-/**
- * Reads the schema metadata from a class constructor.
- */
-function getMetadata(target: unknown): Record<string, unknown> {
-    return (target as { [Symbol.metadata]?: Record<string, unknown> })?.[Symbol.metadata] ?? {};
-}
 
 /**
  * Marks a configuration class with the zod schema of its resolved
@@ -48,7 +41,7 @@ export function environment(schema: z.ZodType) {
  * @returns The declared schema, or `undefined`.
  */
 export function getEnvironmentSchema(target: unknown): z.ZodType | undefined {
-    return getMetadata(target)[ENV_SCHEMA] as z.ZodType | undefined;
+    return getSymbolMetadata(target)[ENV_SCHEMA] as z.ZodType | undefined;
 }
 
 /**

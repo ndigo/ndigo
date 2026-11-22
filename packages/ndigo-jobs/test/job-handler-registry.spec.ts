@@ -41,6 +41,14 @@ describe('@jobHandler', () => {
         expect(getJobHandlerMetadata(EmailWorker, 'toString')).toBeUndefined();
     });
 
+    test('resolves metadata from an instance through its constructor', () => {
+        expect(getJobHandlerMetadata(new EmailWorker(), 'send')).toEqual({
+            type: 'email.send',
+            maxAttempts: 5,
+            timeoutMs: 250,
+        });
+    });
+
     test('validates its arguments', () => {
         expect(() => jobHandler('')).toThrow(/non-empty string/);
         expect(() => jobHandler('ok', { maxAttempts: 0 })).toThrow(/maxAttempts/);

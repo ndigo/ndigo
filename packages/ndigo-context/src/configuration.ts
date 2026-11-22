@@ -2,7 +2,7 @@
  * Configuration decorators: `@configuration`, `@entry`, `@environment`, `@configurationProperties`.
  */
 import '@tsmetadata/polyfill';
-import { FrameworkError, getProfileCondition } from '@ndigo/core';
+import { FrameworkError, getProfileCondition, getSymbolMetadata } from '@ndigo/core';
 import { GenericApplicationContext, ApplicationContextAwareProcessor } from './context';
 import { Environment, AsEnvironmentAware, StandardEnvironment, ConfigurableEnvironment } from './environment';
 import { EntryRegistryProcessor, Registry } from '@ndigo/factory';
@@ -28,15 +28,10 @@ const { defineProperty, getOwnPropertyDescriptor } = Reflect,
     CONFIG_NESTED = 'config:nested',
     CONFIG_PROPERTY_TYPE = 'config:propertyType',
     CONFIG_ENTRY = 'config:entry',
-    // Helper to get metadata from a class constructor.
-    // The decorator metadata store (Symbol.metadata) is dynamically typed at
-    // runtime; the typed getters below assert the shapes their decorators wrote.
-    getMetadata = (target: unknown): Record<string, unknown> => {
-        if (!target || typeof target !== 'function') {
-            return {};
-        }
-        return (target as { [Symbol.metadata]?: Record<string, unknown> })?.[Symbol.metadata] ?? {};
-    },
+    // Helper to get metadata from a class constructor. Instances are handled
+    // separately by getInstanceMetadata; the function guard keeps that split.
+    getMetadata = (target: unknown): Record<string, unknown> =>
+        typeof target === 'function' ? getSymbolMetadata(target) : {},
     // Helper to get metadata from an instance
     getInstanceMetadata = (instance: unknown): Record<string, unknown> => {
         if (!instance || typeof instance !== 'object') {

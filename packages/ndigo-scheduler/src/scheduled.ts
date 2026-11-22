@@ -3,7 +3,7 @@
  */
 import '@tsmetadata/polyfill';
 import { Cron } from 'croner';
-import { FrameworkError } from '@ndigo/core';
+import { FrameworkError, getSymbolMetadata } from '@ndigo/core';
 import { getErrorMessage } from '@ndigo/util';
 import { isValidTimeZone } from './time-zones';
 import { NormalizedScheduledSpec, ScheduledSpec, parseDuration } from './spec';
@@ -189,6 +189,7 @@ export function scheduled(spec: ScheduledSpec) {
  * @returns The normalized schedule, or `undefined` when not scheduled.
  */
 export function getScheduledSpec(target: object, methodName: string): NormalizedScheduledSpec | undefined {
-    const metadata = (target as { [Symbol.metadata]?: Record<string, unknown> })?.[Symbol.metadata] ?? {};
-    return metadata[`${SCHEDULED_METADATA_PREFIX}${methodName}`] as NormalizedScheduledSpec | undefined;
+    return getSymbolMetadata(target)[`${SCHEDULED_METADATA_PREFIX}${methodName}`] as
+        | NormalizedScheduledSpec
+        | undefined;
 }

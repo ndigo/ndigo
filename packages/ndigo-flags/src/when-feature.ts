@@ -10,6 +10,7 @@
  * interceptor.
  */
 import '@tsmetadata/polyfill';
+import { getSymbolMetadata } from '@ndigo/core';
 import { validateFlagKey } from './flag-evaluator';
 
 /**
@@ -71,12 +72,7 @@ export function whenFeature(flag: string) {
  * ```
  */
 export function getWhenFeature(target: unknown, methodName?: string): string | undefined {
-    // `Symbol.metadata` lives on the class constructor, not the instance or
-    // prototype — normalize like conditional.ts's metadata carrier.
-    const carrier = (typeof target === 'function' ? target : target?.constructor) as
-        | { [Symbol.metadata]?: Record<string, unknown> }
-        | undefined;
-    const metadata = carrier?.[Symbol.metadata] ?? {};
+    const metadata = getSymbolMetadata(target);
     if (methodName !== undefined) {
         const methodFlag = metadata[`${WHEN_FEATURE_KEY}:${methodName}`] as string | undefined;
         if (methodFlag !== undefined) return methodFlag;

@@ -9,6 +9,7 @@
  */
 
 import { MetadataConfigApplicationContext, ApplicationContext } from '@ndigo/context';
+import { getSymbolMetadata } from '@ndigo/core';
 import { isFunction } from '@ndigo/util/types';
 import { HANDLER_MAPPING } from '@ndigo/dispatcher';
 import type { BrowserDispatcher as BrowserDispatcherType } from '@ndigo/platform-web/browser-dispatcher';
@@ -109,8 +110,7 @@ function isConfiguration(source: Function): boolean {
     if (!isFunction(source)) {
         return false;
     }
-    const meta = (source as { [Symbol.metadata]?: Record<string | symbol, unknown> })[Symbol.metadata];
-    return meta?.['config:constructor'] === true;
+    return getSymbolMetadata(source)['config:constructor'] === true;
 }
 
 /**

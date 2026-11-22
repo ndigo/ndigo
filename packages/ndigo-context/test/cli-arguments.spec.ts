@@ -50,4 +50,19 @@ describe('parseCommandLineArgs', () => {
     test('empty args produce an empty map', () => {
         expect(parseCommandLineArgs([])).toEqual({});
     });
+
+    test('should nest bracketed array keys', () => {
+        expect(parseCommandLineArgs(['--items[0]=a', '--items[1]=b'])).toEqual({ items: ['a', 'b'] });
+    });
+
+    test('should nest mixed dotted and bracketed keys', () => {
+        expect(parseCommandLineArgs(['--server.port=9000', '--items[0].name=x'])).toEqual({
+            server: { port: '9000' },
+            items: [{ name: 'x' }],
+        });
+    });
+
+    test('should keep unparseable keys literal', () => {
+        expect(parseCommandLineArgs(['--foo-bar=baz'])).toEqual({ 'foo-bar': 'baz' });
+    });
 });

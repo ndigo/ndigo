@@ -1,24 +1,49 @@
 /**
  * Command-line argument parsing for the application context.
  */
-import { JSONObject, JSONValue } from '@ndigo/core';
+import { JSONObject, JSONValue, KeypathConverter } from '@ndigo/core';
 
 /**
- * Assigns a dotted key into a nested object (`'server.port', '9000'` →
- * `{ server: { port: '9000' } }`), matching keypath lookup semantics.
+ * Assigns a dotted or bracketed key into a nested object
+ * (`'server.port', '9000'` → `{ server: { port: '9000' } }`,
+ * `'items[0]', 'x'` → `{ items: ['x'] }`), matching keypath lookup
+ * semantics.
  */
+const keypathConverter = new KeypathConverter();
+
 const setNested = (target: JSONObject, key: string, value: JSONValue): void => {
-    const segments = key.split('.');
-    let cursor: JSONObject = target;
-    for (let i = 0; i < segments.length - 1; i++) {
-        const segment = segments[i];
-        const existing = cursor[segment];
-        if (existing === null || typeof existing !== 'object' || Array.isArray(existing)) {
-            cursor[segment] = {};
-        }
-        cursor = cursor[segment] as JSONObject;
+    // Only attempt keypath parsing when the key actually contains nesting
+    // markers; a plain name (including ones with dashes, like `foo-bar`) is
+    // kept literal. An unparseable dotted/bracketed key is also kept literal.
+    const tokens = key.includes('.') || key.includes('[') ? keypathConverter.convert(key) : null;
+    if (!tokens) {
+        target[key] = value;
+        return;
     }
-    cursor[segments[segments.length - 1]] = value;
+    if (tokens.length === 1) {
+        target[tokens[0]] = value;
+        return;
+    }
+    let cursor: JSONObject = target;
+    for (let index = 0; index < tokens.length - 1; index++) {
+        const token = tokens[index];
+        const nextToken = tokens[index + 1];
+        const existing = (cursor as Record<PropertyKey, unknown>)[token];
+        let child: unknown;
+        if (typeof nextToken === 'number') {
+            child = Array.isArray(existing) ? existing : [];
+            if (!Array.isArray(existing)) {
+                (cursor as Record<PropertyKey, unknown>)[token] = child;
+            }
+        } else if (existing === null || typeof existing !== 'object' || Array.isArray(existing)) {
+            child = {};
+            (cursor as Record<PropertyKey, unknown>)[token] = child;
+        } else {
+            child = existing;
+        }
+        cursor = child as JSONObject;
+    }
+    (cursor as Record<PropertyKey, unknown>)[tokens[tokens.length - 1]] = value;
 };
 
 /**

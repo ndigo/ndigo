@@ -20,6 +20,11 @@ export interface NameValueExpression<T> {
 
 /**
  * Contract for route matching conditions.
+ *
+ * @example
+ * ```ts
+ * const condition: RouteCondition = { matches: (route) => true };
+ * ```
  */
 export interface RouteCondition<T = unknown> extends ResultMatcher<Route, T> {
     /**

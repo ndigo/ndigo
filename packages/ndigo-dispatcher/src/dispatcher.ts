@@ -40,6 +40,12 @@ const logger = getLogger('ndigo-dispatcher:dispatcher');
 
 /**
  * Interface for dispatching routes.
+ *
+ * @example
+ * ```ts
+ * const dispatcher: RouteDispatcher = new NodeDispatcher();
+ * await dispatcher.dispatch(route);
+ * ```
  */
 export interface RouteDispatcher {
     /**
@@ -51,6 +57,12 @@ export interface RouteDispatcher {
 
 /**
  * Interface for rendering a {@link ModelAndView}.
+ *
+ * @example
+ * ```ts
+ * const renderer: RouteRenderer = dispatcher;
+ * await renderer.render(mv, route);
+ * ```
  */
 export interface RouteRenderer {
     /**

@@ -27,6 +27,11 @@ import { IllegalStateError } from '@ndigo/core';
  * Adapts a handler instance into route execution.
  *
  * Implementations decide whether they support a handler type and how to invoke it for the current route.
+ *
+ * @example
+ * ```ts
+ * const adapter: RouteHandlerAdapter = new MetadataHandlerAdapter();
+ * ```
  */
 export interface RouteHandlerAdapter {
     /**

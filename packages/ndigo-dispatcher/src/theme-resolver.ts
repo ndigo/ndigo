@@ -7,6 +7,11 @@ import { REQUESTED_THEME_ATTRIBUTE, Route } from '@ndigo/router';
 
 /**
  * Resolves the active theme name for a route.
+ *
+ * @example
+ * ```ts
+ * const resolver: ThemeResolver = new FixedThemeResolver('dark');
+ * ```
  */
 export interface ThemeResolver {
     /**

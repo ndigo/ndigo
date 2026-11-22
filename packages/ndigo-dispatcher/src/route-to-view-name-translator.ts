@@ -6,6 +6,11 @@ import { Route } from '@ndigo/router';
 
 /**
  * Translates a route into a view name.
+ *
+ * @example
+ * ```ts
+ * const translator: RouteToViewNameTranslator = new DefaultRouteToViewNameTranslator();
+ * ```
  */
 export interface RouteToViewNameTranslator {
     /**

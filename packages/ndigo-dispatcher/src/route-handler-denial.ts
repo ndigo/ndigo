@@ -7,6 +7,11 @@ import { Route } from '@ndigo/router';
  * The outcome of a denied `preHandle`. `statusCode` is the HTTP status the
  * platform adapter finalizes; `body` is a JSON-safe payload (never internal
  * detail); `redirect` optionally names a client-side redirect target.
+ *
+ * @example
+ * ```ts
+ * const denial: InterceptorDenial = { statusCode: 403, body: { error: 'forbidden' } };
+ * ```
  */
 export interface InterceptorDenial {
     /** HTTP status code for the finalized denial response (default `403`). */

@@ -13,6 +13,11 @@ type Model<T = unknown> = { [key: string]: T } | Map<string, T> | readonly unkno
 
 /**
  * Optional, additive settings for a {@link ModelAndView}.
+ *
+ * @example
+ * ```ts
+ * const opts: ModelAndViewOptions = { status: 201 };
+ * ```
  */
 export interface ModelAndViewOptions {
     /**

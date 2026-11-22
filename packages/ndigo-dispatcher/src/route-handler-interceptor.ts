@@ -19,6 +19,13 @@ export type PreHandleOutcome = boolean | InterceptorDenial;
  * (its outcome may short-circuit the chain), `postHandle` after a successful
  * return, and `completeHandle` once the request is done — including the error
  * path. Every hook may be async; the chain awaits each in turn.
+ *
+ * @example
+ * ```ts
+ * const interceptor: RouteHandlerInterceptor = {
+ *     preHandle: async () => true,
+ * };
+ * ```
  */
 export interface RouteHandlerInterceptor {
     /**

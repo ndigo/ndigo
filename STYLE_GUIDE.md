@@ -2,6 +2,8 @@
 
 This document defines the concrete implementation rules, naming conventions, and formatting standards for the Ndigo codebase. For architectural principles and design patterns, see the [Architecture Overview](./ARCHITECTURE.md).
 
+**Baseline conventions:** The generic, organization-wide baseline (formatting, TypeScript config, basic naming, documentation discipline) lives in the org [`CONVENTIONS.md`](https://github.com/ndigo/.github/blob/main/CONVENTIONS.md). This document covers the Ndigo framework-specific rules that extend it.
+
 ## Purpose and Scope
 
 **This guide answers:** "How do I name this file/variable/class?" and "How should this code be formatted?"

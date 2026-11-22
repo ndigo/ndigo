@@ -8,6 +8,11 @@ import { Route } from './route';
  * Runs a router's interceptors around one navigation: tracks the current
  * interceptor index so a pre-handle outcome can short-circuit, and drives the
  * post/complete hooks for whichever navigation actually ran.
+ *
+ * @example
+ * ```ts
+ * const chain = new RouterExecutionChain(interceptors);
+ * ```
  */
 export default class RouterExecutionChain {
     #interceptors: RouterInterceptor[];

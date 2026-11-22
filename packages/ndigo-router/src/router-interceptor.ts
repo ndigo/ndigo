@@ -64,6 +64,11 @@ export interface RouterInterceptorRegistry {
 /**
  * A `RouterInterceptor` that applies a wrapped interceptor only when the route matches specified include and exclude patterns.
  * It extends `AsPathMatcherFilter` to leverage path matching capabilities.
+ *
+ * @example
+ * ```ts
+ * const interceptor = new MappedRouterInterceptor(interceptor, { include: '/users/*' });
+ * ```
  */
 export class MappedRouterInterceptor extends AsPathMatcherFilter(Null) implements RouterInterceptor, PathMatcherFilter {
     /**

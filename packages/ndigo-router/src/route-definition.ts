@@ -25,6 +25,11 @@ export type RouteParams<T extends string> = T extends `${string}{${infer P}}${in
  * A route pattern bound to its registry: `url()` interpolates parameters into
  * an absolute path, `href()` into a fragment link, and both reject a missing or
  * unknown parameter instead of emitting a broken URL.
+ *
+ * @example
+ * ```ts
+ * const def = new RouteDefinition('/users/{id}');
+ * ```
  */
 export class RouteDefinition<TPattern extends string = string> implements Matchable<string> {
     /**

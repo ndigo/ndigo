@@ -2,7 +2,7 @@
  * Property index strategies: prototype-chain and flat-merged indexes, plus
  * the internal token cache and path helpers.
  */
-import { createNull, getPath, JSONValue, JSONObject, KeypathToken, KeypathConverter } from '@ndigo/core';
+import { BoundedCache, createNull, getPath, JSONValue, JSONObject, KeypathToken, KeypathConverter } from '@ndigo/core';
 import { isNil } from '@ndigo/util/types';
 import type { PropertySource } from './property-source';
 import type { PropertyIndex } from './property-resolver-types';
@@ -41,23 +41,14 @@ class TokenCache {
         return 'TokenCache';
     }
 
-    #entries = new Map<string, KeypathToken[]>();
-    #cap: number;
-
-    constructor(cap = 256) {
-        this.#cap = cap;
-    }
+    #cache = new BoundedCache<string, KeypathToken[]>({ maxSize: 256, policy: 'fifo' });
 
     get(key: string): KeypathToken[] | null {
-        const cached = this.#entries.get(key);
-        if (cached) return cached;
+        const cached = this.#cache.get(key);
+        if (cached !== undefined) return cached;
         const tokens = keypathConverter.convert(key);
         if (tokens) {
-            if (this.#entries.size >= this.#cap) {
-                // Evict the oldest entry (Map preserves insertion order).
-                this.#entries.delete(this.#entries.keys().next().value as string);
-            }
-            this.#entries.set(key, tokens);
+            this.#cache.set(key, tokens);
         }
         return tokens;
     }

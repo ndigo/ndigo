@@ -89,7 +89,11 @@ describe('FixedViewTargeter', () => {
 describe('BoundedCache onEvict', () => {
     it('reports the evicted value and key exactly once', () => {
         const evicted = vi.fn();
-        const cache = new BoundedCache<number>(evicted);
+        const cache = new BoundedCache<string, number>({
+            maxSize: MAX_VIEW_CACHE_ENTRIES,
+            policy: 'fifo',
+            onEvict: evicted,
+        });
 
         for (let index = 0; index < MAX_VIEW_CACHE_ENTRIES; index++) {
             cache.set(`k${index}`, index);
@@ -105,7 +109,11 @@ describe('BoundedCache onEvict', () => {
 
     it('does not evict when re-setting an existing key', () => {
         const evicted = vi.fn();
-        const cache = new BoundedCache<number>(evicted);
+        const cache = new BoundedCache<string, number>({
+            maxSize: MAX_VIEW_CACHE_ENTRIES,
+            policy: 'fifo',
+            onEvict: evicted,
+        });
 
         for (let index = 0; index < MAX_VIEW_CACHE_ENTRIES; index++) {
             cache.set(`k${index}`, index);

@@ -5,7 +5,7 @@ import { compareBy, FrameworkError, invertComparison, MediaType, MultiValueMap, 
 import { HTTPHeaders } from '@ndigo/http';
 import { isFunction, isNotNil } from '@ndigo/util/types';
 import { View } from './view.js';
-import { BoundedCache, createViewCacheKey, ViewResolver } from './view-resolver.js';
+import { BoundedCache, MAX_VIEW_CACHE_ENTRIES, createViewCacheKey, ViewResolver } from './view-resolver.js';
 import { NotAcceptableError } from './not-acceptable-error.js';
 
 /**
@@ -519,7 +519,7 @@ export class ContentNegotiationViewResolver implements ViewResolver {
      * map without limit — the same eviction contract as
      * {@link AbstractCachingViewResolver}.
      */
-    readonly #candidates = new BoundedCache<View[]>();
+    readonly #candidates = new BoundedCache<string, View[]>({ maxSize: MAX_VIEW_CACHE_ENTRIES, policy: 'fifo' });
 
     /**
      * Creates a resolver backed by the given negotiation manager.

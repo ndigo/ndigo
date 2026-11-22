@@ -2,7 +2,7 @@
  * View resolution: caches, name safety, and resolver contracts.
  */
 import { View } from './view.js';
-import { createNull, MediaType, MediaTypes, Null, Constructable } from '@ndigo/core';
+import { BoundedCache, MediaType, MediaTypes, Null, Constructable } from '@ndigo/core';
 import { Initializable, likeInitializable } from '@ndigo/factory';
 import { ApplicationContext, AsApplicationContextAware, likeApplicationContextAware } from '@ndigo/context';
 
@@ -63,108 +63,7 @@ const defineProperty = Reflect.defineProperty,
  */
 export const MAX_VIEW_CACHE_ENTRIES = 1024;
 
-/**
- * Insertion-ordered, bounded FIFO cache.
- *
- * Shared by every view resolver that memoizes request-derived lookups
- * ({@link AbstractCachingViewResolver} and `ContentNegotiationViewResolver`)
- * so the eviction contract is defined once: never more than
- * {@link MAX_VIEW_CACHE_ENTRIES} entries, the oldest key evicted first.
- */
-export class BoundedCache<V> {
-    /**
-     * The `Symbol.toStringTag` value for this instance.
-     *
-     * `Object.prototype.toString()` reads this symbol to render the
-     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
-     *
-     * @returns The string "BoundedCache".
-     *
-     * @example
-     * console.log(Object.prototype.toString.call(instance)); // "[object BoundedCache]"
-     */
-    get [Symbol.toStringTag](): string {
-        return 'BoundedCache';
-    }
-
-    readonly #entries = new Map<string, V>();
-    readonly #onEvict: ((value: V, key: string) => void) | undefined;
-
-    /**
-     * Creates a bounded cache.
-     *
-     * @param onEvict - Called with the value and key removed from the cache —
-     *   by overflow eviction or {@link BoundedCache.clear} — so owners of
-     *   stateful entries (DOM targets holding event listeners) can release
-     *   them instead of leaking them.
-     */
-    constructor(onEvict?: (value: V, key: string) => void) {
-        this.#onEvict = onEvict;
-    }
-
-    /**
-     * Number of cached entries.
-     */
-    get size(): number {
-        return this.#entries.size;
-    }
-
-    /**
-     * Looks up a cached value.
-     *
-     * @param key - The cache key.
-     * @returns The cached value, or `undefined`.
-     */
-    get(key: string): V | undefined {
-        return this.#entries.get(key);
-    }
-
-    /**
-     * Stores a value, evicting the oldest entry first when a new key would
-     * exceed the bound. Re-setting an existing key keeps its position.
-     *
-     * @param key - The cache key.
-     * @param value - The value to cache.
-     */
-    set(key: string, value: V): void {
-        if (!this.#entries.has(key) && this.#entries.size >= MAX_VIEW_CACHE_ENTRIES) {
-            const oldest = this.#entries.keys().next().value;
-            if (oldest !== undefined) {
-                const evicted = this.#entries.get(oldest);
-                this.#entries.delete(oldest);
-                if (evicted !== undefined) {
-                    this.#onEvict?.(evicted, oldest);
-                }
-            }
-        }
-        this.#entries.set(key, value);
-    }
-
-    /**
-     * Removes every cached value, reporting each to the eviction callback so
-     * owners can release stateful entries (DOM targets holding listeners).
-     */
-    clear(): void {
-        for (const [key, value] of this.#entries) {
-            this.#onEvict?.(value, key);
-        }
-        this.#entries.clear();
-    }
-
-    /**
-     * A null-prototype plain object mirror of the cache entries, preserving
-     * insertion order.
-     *
-     * @returns The entries as a keyed object.
-     */
-    toObject(): { [key: string]: V } {
-        const result = createNull() as { [key: string]: V };
-        for (const [key, value] of this.#entries) {
-            result[key] = value;
-        }
-        return result;
-    }
-}
+export { BoundedCache } from '@ndigo/core';
 
 /**
  * Builds an unambiguous cache key for a view name/language pair.
@@ -199,7 +98,7 @@ export abstract class AbstractCachingViewResolver implements ViewResolver {
         return 'AbstractCachingViewResolver';
     }
 
-    readonly #cache = new BoundedCache<View>();
+    readonly #cache = new BoundedCache<string, View>({ maxSize: MAX_VIEW_CACHE_ENTRIES, policy: 'fifo' });
     /**
      * Indicates whether resolved views should be cached.
      */

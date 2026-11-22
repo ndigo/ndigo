@@ -80,7 +80,7 @@ export class SelectorViewTargeter implements ViewTargeter, Destroyable {
     #applicationContext: ApplicationContext | null = null;
     #destroyed = false;
 
-    readonly #cache: BoundedCache<DOMViewTarget & Destroyable>;
+    readonly #cache: BoundedCache<string, DOMViewTarget & Destroyable>;
 
     /**
      * Creates a selector-driven targeter.
@@ -93,7 +93,11 @@ export class SelectorViewTargeter implements ViewTargeter, Destroyable {
         this.#mount = options.mount ?? 'element';
         this.#eventMap = options.eventMap ?? {};
         this.#document = options.document;
-        this.#cache = new BoundedCache<DOMViewTarget & Destroyable>((target) => target.destroy());
+        this.#cache = new BoundedCache<string, DOMViewTarget & Destroyable>({
+            maxSize: 1024,
+            policy: 'fifo',
+            onEvict: (target) => target.destroy(),
+        });
     }
 
     /** Whether the targeter has been destroyed. */

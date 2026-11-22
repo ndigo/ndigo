@@ -10,12 +10,22 @@ import type { RouteDefinition, RouteRegistry } from '@ndigo/router';
 /**
  * The manifest schema version. Bumped when the emitted shape changes
  * incompatibly; consumers switch on it.
+ *
+ * @example
+ * ```ts
+ * type _Alias = InspectManifestVersion;
+ * ```
  */
 export type InspectManifestVersion = 1;
 
 /**
  * The application identity block: the context name (when it has one) and the
  * active profile set.
+ *
+ * @example
+ * ```ts
+ * const value = {} as InspectApp;
+ * ```
  */
 export interface InspectApp {
     /** The application context's name. */
@@ -26,6 +36,11 @@ export interface InspectApp {
 
 /**
  * A declarative route definition as emitted by the manifest.
+ *
+ * @example
+ * ```ts
+ * const value = {} as InspectRoute;
+ * ```
  */
 export interface InspectRoute {
     /** The route's stable key (the `RouteRegistry` dotted key, or the pattern). */
@@ -36,6 +51,11 @@ export interface InspectRoute {
 
 /**
  * The handler a mapping dispatches to.
+ *
+ * @example
+ * ```ts
+ * const value = {} as InspectHandler;
+ * ```
  */
 export interface InspectHandler {
     /** The handler class name. */
@@ -46,6 +66,11 @@ export interface InspectHandler {
 
 /**
  * A handler method parameter and the source it binds from.
+ *
+ * @example
+ * ```ts
+ * const value = {} as InspectParameter;
+ * ```
  */
 export interface InspectParameter {
     /** The parameter's declared name (e.g. the extractor name). */
@@ -57,6 +82,11 @@ export interface InspectParameter {
 /**
  * A registered handler mapping: the pattern it claims, the HTTP methods it
  * accepts, and the handler method it resolves to. Values are never emitted.
+ *
+ * @example
+ * ```ts
+ * const value = {} as InspectMapping;
+ * ```
  */
 export interface InspectMapping {
     /** The route pattern the mapping claims. */
@@ -76,6 +106,11 @@ export interface InspectMapping {
  *
  * Deliberately value-free: only whether the environment currently supplies a
  * value is exposed, never the value itself.
+ *
+ * @example
+ * ```ts
+ * const value = {} as InspectConfigEntry;
+ * ```
  */
 export interface InspectConfigEntry {
     /** The full environment keypath (e.g. `server.port`). */
@@ -90,6 +125,11 @@ export interface InspectConfigEntry {
 
 /**
  * The deterministic, versioned application manifest.
+ *
+ * @example
+ * ```ts
+ * const value = {} as InspectManifest;
+ * ```
  */
 export interface InspectManifest {
     /** The manifest schema version. */
@@ -110,6 +150,11 @@ export interface InspectManifest {
  * A handler-mapping read model: the enumeration seam an
  * `AbstractHandlerMethodMapping` exposes. A structural subset, so callers may
  * pass any mapping that provides either accessor.
+ *
+ * @example
+ * ```ts
+ * const value = {} as InspectMappingTable;
+ * ```
  */
 export interface InspectMappingTable {
     /** Enumerate registered mapping entries, when the mapping supports it. */
@@ -121,6 +166,11 @@ export interface InspectMappingTable {
 /**
  * A dispatcher-like object whose `handlerMappings` collection carries the
  * registered handler mappings (e.g. an `AbstractDispatcher`).
+ *
+ * @example
+ * ```ts
+ * const value = {} as InspectDispatcherLike;
+ * ```
  */
 export interface InspectDispatcherLike {
     /** The registered handler mappings, in dispatch precedence order. */
@@ -132,6 +182,11 @@ export interface InspectDispatcherLike {
  * `[key, RouteDefinition]` entries (the shape `RouteRegistry.entries()`
  * yields), an iterable of bare `RouteDefinition`s, or explicit
  * {@link InspectRoute} descriptors.
+ *
+ * @example
+ * ```ts
+ * type _Alias = RouteSource;
+ * ```
  */
 export type RouteSource =
     | RouteRegistry
@@ -142,11 +197,21 @@ export type RouteSource =
 /**
  * A source of handler mappings: one or more mapping tables, or a dispatcher
  * whose `handlerMappings` are inspected.
+ *
+ * @example
+ * ```ts
+ * type _Alias = MappingSource;
+ * ```
  */
 export type MappingSource = readonly InspectMappingTable[] | InspectMappingTable | InspectDispatcherLike;
 
 /**
  * The input to {@link "inspect-application".inspectApplication | inspectApplication}.
+ *
+ * @example
+ * ```ts
+ * const value = {} as InspectInput;
+ * ```
  */
 export interface InspectInput {
     /** The application context to inspect. */

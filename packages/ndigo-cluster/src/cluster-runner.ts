@@ -25,6 +25,12 @@ const logger = getLogger('ndigo-cluster:runner');
 /**
  * A spawned child as the runner sees it. The default spawner wraps
  * `node:child_process`; tests inject a scripted handle.
+ *
+ * @example
+ * ```ts
+ * child.signal('SIGTERM');
+ * const exitCode = await child.waitForExit();
+ * ```
  */
 export interface ClusterChild {
     /** The operating-system process id. */
@@ -45,6 +51,11 @@ export interface ClusterChild {
  * The spawn seam: a function producing a {@link ClusterChild} from a
  * command and environment. Injectable so restart/signal logic is
  * unit-testable without real processes.
+ *
+ * @example
+ * ```ts
+ * const child = spawner({ command: ['node', 'dist/main.js'], env: { ...process.env } });
+ * ```
  */
 export interface ClusterSpawner {
     (options: { command: string[]; cwd?: string; env: Record<string, string> }): ClusterChild;
@@ -54,6 +65,12 @@ export interface ClusterSpawner {
  * The signal-delivery seam: where the runner registers its OS-signal
  * handlers. Injectable so a test can trigger the relay without signaling
  * the vitest worker. Defaults to `process`.
+ *
+ * @example
+ * ```ts
+ * signalHost.on('SIGTERM', () => runner.abort());
+ * signalHost.removeHandler('SIGTERM', handler);
+ * ```
  */
 export interface ClusterSignalHost {
     /**
@@ -74,6 +91,13 @@ export interface ClusterSignalHost {
 
 /**
  * Options for {@link ClusterRunner}.
+ *
+ * @example
+ * ```ts
+ * const options: ClusterRunnerOptions = { size: 2, command: ['node', 'dist/main.js'] };
+ * const runner = new ClusterRunner(options);
+ * const result = await runner.run();
+ * ```
  */
 export interface ClusterRunnerOptions {
     /** Number of worker slots (≥ 1). */
@@ -120,6 +144,12 @@ export interface ClusterRunnerOptions {
 
 /**
  * A snapshot of one slot's state.
+ *
+ * @example
+ * ```ts
+ * const snapshot = result.slots[0];
+ * // { slot: 0, pid: 4242, status: 'running', exitCode: null, restarts: 0 }
+ * ```
  */
 export interface ClusterSlotSnapshot {
     /** 0-based slot index. */
@@ -136,11 +166,21 @@ export interface ClusterSlotSnapshot {
 
 /**
  * Why the cluster stopped.
+ *
+ * @example
+ * ```ts
+ * const reason: ClusterStopReason = 'stopped';
+ * ```
  */
 export type ClusterStopReason = 'stopped' | 'aborted' | 'crash-loop';
 
 /**
  * The cluster outcome.
+ *
+ * @example
+ * ```ts
+ * const result: ClusterRunResult = { exitCode: 0, reason: 'stopped', slots: [] };
+ * ```
  */
 export interface ClusterRunResult {
     /** Process exit code: `0` after a clean stop, `1` otherwise. */
@@ -228,6 +268,12 @@ interface SlotState {
  * The cluster supervisor. Construct with
  * {@link ClusterRunnerOptions}, then `await run()`; the returned result
  * carries the resolved exit code and per-slot snapshots.
+ *
+ * @example
+ * ```ts
+ * const runner = new ClusterRunner({ size: 2, command: ['node', 'dist/main.js'] });
+ * const result = await runner.run();
+ * ```
  */
 export class ClusterRunner {
     /**
@@ -607,6 +653,11 @@ export class ClusterRunner {
  *
  * @param options - Cluster sizing, command, and tuning.
  * @returns The cluster outcome.
+ *
+ * @example
+ * ```ts
+ * const result = await runCluster({ size: 2, command: ['node', 'dist/main.js'] });
+ * ```
  */
 export function runCluster(options: ClusterRunnerOptions): Promise<ClusterRunResult> {
     return new ClusterRunner(options).run();

@@ -29,6 +29,11 @@ export const circuitBreaker = methodAnnotation<CircuitBreakerSpec>('resilience:c
  * `failureThreshold` consecutive failures the circuit opens and calls fail
  * fast; once `resetMs` has elapsed a single probe attempt runs the call —
  * success closes the circuit, failure re-opens it with a fresh window.
+ *
+ * @example
+ * ```ts
+ * const value = {} as CircuitBreakerSpec;
+ * ```
  */
 export interface CircuitBreakerSpec {
     /**
@@ -46,6 +51,11 @@ export interface CircuitBreakerSpec {
 
 /**
  * Thrown while a circuit is open: the call was not executed.
+ *
+ * @example
+ * ```ts
+ * const instance = new CircuitOpenError();
+ * ```
  */
 export class CircuitOpenError extends ApplicationError {
     /**
@@ -94,6 +104,11 @@ interface CircuitCell {
 
 /**
  * Options for {@link CircuitBreakerInterceptor}.
+ *
+ * @example
+ * ```ts
+ * const value = {} as CircuitBreakerInterceptorOptions;
+ * ```
  */
 export interface CircuitBreakerInterceptorOptions {
     /**

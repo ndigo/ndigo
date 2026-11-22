@@ -61,6 +61,12 @@ export interface FeatureMetricAggregatorOptions {
  *
  * This class provides methods to increment counters, set gauge values, and record durations,
  * organizing them by feature. It also offers a way to retrieve summarized metrics for analysis.
+ *
+ * @example
+ * ```ts
+ * const aggregator = new FeatureMetricAggregator();
+ * aggregator.incrementCounter('http', 'requests', 1);
+ * ```
  */
 export class FeatureMetricAggregator {
     /**

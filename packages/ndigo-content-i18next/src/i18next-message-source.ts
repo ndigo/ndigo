@@ -6,6 +6,14 @@ import { LanguageCode, MessageParams, MessageSource, normalizeLocale } from '@nd
 
 /**
  * Options for constructing an {@link I18nextMessageSource}.
+ *
+ * @example
+ * ```ts
+ * const options: I18nextMessageSourceOptions = {
+ *     resources: { en: { translation: { greeting: 'Hello {{name}}!' } } },
+ *     language: 'en',
+ * };
+ * ```
  */
 export interface I18nextMessageSourceOptions {
     /**

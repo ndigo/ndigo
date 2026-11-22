@@ -60,6 +60,12 @@ export interface CacheManagerOptions {
  * first `getCache(name)` with the manager defaults. Caches are owned for the
  * manager's lifetime — the auto-configuration `cacheManager` entry is a
  * singleton per application context.
+ *
+ * @example
+ * ```ts
+ * const manager = new MemoryCacheManager({ maxSize: 128 });
+ * const cache = manager.getCache('users');
+ * ```
  */
 export class MemoryCacheManager implements CacheManager {
     /**

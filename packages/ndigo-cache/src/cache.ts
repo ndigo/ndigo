@@ -152,6 +152,13 @@ export interface Cache<V = unknown> {
  * - `defaultTtl`/`maxSize`/`eviction` are fixed at construction — a shared
  *   instance has uniform behavior (configure per named cache via
  *   {@link "cache-manager".MemoryCacheManager | MemoryCacheManager}).
+ *
+ * @example
+ * ```ts
+ * const cache = new MemoryCache<number>({ maxSize: 128 });
+ * cache.set('a', 1);
+ * cache.get('a'); // 1
+ * ```
  */
 export class MemoryCache<V = unknown> implements Cache<V> {
     /**

@@ -83,6 +83,11 @@ export interface FeatureContextComposition {
 
 /**
  * Controls whether a feature context is closed or preserved during unmount.
+ *
+ * @example
+ * ```ts
+ * const policy: FeatureUnmountPolicy = 'preserve';
+ * ```
  */
 export type FeatureUnmountPolicy = 'close' | 'preserve';
 

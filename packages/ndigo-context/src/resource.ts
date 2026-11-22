@@ -14,6 +14,11 @@ import { Constructable, Null } from '@ndigo/core';
  * specs pass none (files skipped / fake reader). Return `null` for missing
  * files — do not throw. Lives here (the shared core) so both `@ndigo/boot` and
  * `@ndigo/platform-node` reference the same seam type.
+ *
+ * @example
+ * ```ts
+ * const reader: ConfigFileReader = async (path) => null;
+ * ```
  */
 export type ConfigFileReader = (path: string) => Promise<string | null>;
 

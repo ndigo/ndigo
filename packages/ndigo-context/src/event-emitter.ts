@@ -127,6 +127,11 @@ export class Emitter extends AsEventEmitter(Null) implements Destroyable, Serial
 
 /**
  * Internal target shape used by the object mixin helper.
+ *
+ * @example
+ * ```ts
+ * const target: EventEmitterTarget = {} as EventEmitterTarget;
+ * ```
  */
 export type EventEmitterTarget = EventEmitter & {
     '@@emitter/events'?: Emitter;

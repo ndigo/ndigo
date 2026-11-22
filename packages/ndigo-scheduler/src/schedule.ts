@@ -10,6 +10,11 @@ import { NormalizedScheduledSpec } from './spec';
  * A schedule's trigger kind. The engine anchors interval bookkeeping
  * differently per kind (start-anchored rate, end-anchored delay, and pure
  * time-sequence cron).
+ *
+ * @example
+ * ```ts
+ * const kind: ScheduleKind = 'cron';
+ * ```
  */
 export type ScheduleKind = 'cron' | 'fixedRate' | 'fixedDelay';
 
@@ -20,6 +25,11 @@ export type ScheduleKind = 'cron' | 'fixedRate' | 'fixedDelay';
  * relevant anchor afterwards — the fire time for cron and fixed-rate, the
  * completion time for fixed-delay. `next()` must return a time strictly
  * after the reference (or `null` when it never fires again).
+ *
+ * @example
+ * ```ts
+ * const schedule: Schedule = new CronSchedule('0 0 * * *');
+ * ```
  */
 export interface Schedule {
     /**
@@ -49,6 +59,11 @@ export interface Schedule {
  * run duration. Construction validates the expression (croner throws on
  * malformed patterns); time-zone validity is enforced earlier by the
  * `@scheduled` decorator's `Intl` probe.
+ *
+ * @example
+ * ```ts
+ * const schedule = new CronSchedule('0 0 * * *');
+ * ```
  */
 export class CronSchedule implements Schedule {
     /**
@@ -86,6 +101,11 @@ export class CronSchedule implements Schedule {
      *   in; when omitted the schedule uses the **system time zone** (pass an
      *   explicit zone for deterministic behavior).
      * @throws When the expression does not parse.
+     *
+     * @example
+     * ```ts
+     * const schedule = new CronSchedule('0 0 * * *');
+     * ```
      */
     constructor(expression: string, timeZone?: string) {
         try {
@@ -115,6 +135,11 @@ export class CronSchedule implements Schedule {
  * The anchor depends on the kind — `fixedRate` anchors at run start,
  * `fixedDelay` at run completion — which the engine applies; this schedule
  * only answers "the anchor plus the interval".
+ *
+ * @example
+ * ```ts
+ * const schedule = new IntervalSchedule('fixedRate', 60_000);
+ * ```
  */
 export class IntervalSchedule implements Schedule {
     /**
@@ -149,6 +174,11 @@ export class IntervalSchedule implements Schedule {
      *   (end-anchored).
      * @param intervalMs - The interval in milliseconds; must be positive.
      * @throws When the interval is not positive.
+     *
+     * @example
+     * ```ts
+     * const schedule = new IntervalSchedule('fixedRate', 60_000);
+     * ```
      */
     constructor(kind: 'fixedRate' | 'fixedDelay', intervalMs: number) {
         if (typeof intervalMs !== 'number' || !Number.isFinite(intervalMs) || intervalMs <= 0) {
@@ -176,6 +206,11 @@ export class IntervalSchedule implements Schedule {
  * @returns The schedule implementation for the spec's trigger.
  * @throws When the spec has no trigger — it should have
  *   been rejected at decoration time; this is defense in depth.
+ *
+ * @example
+ * ```ts
+ * const schedule = scheduleFromSpec({ cron: '0 0 * * *' });
+ * ```
  */
 export function scheduleFromSpec(spec: NormalizedScheduledSpec): Schedule {
     if (spec.cron !== undefined) {

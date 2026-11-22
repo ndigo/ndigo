@@ -42,6 +42,11 @@ const likeNormalizedSpec = (value: unknown): value is NormalizedScheduledSpec =>
  * `Symbol.metadata`, and each `schedule:<method>` entry is bound to its
  * owner instance. A `@scheduled` class registered as a prototype (not an
  * instance) has no resolvable owner and fails start loudly.
+ *
+ * @example
+ * ```ts
+ * const registry = new ScheduleRegistry();
+ * ```
  */
 export class ScheduleRegistry implements AsyncDestroyable {
     /**

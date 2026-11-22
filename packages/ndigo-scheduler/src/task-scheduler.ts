@@ -32,10 +32,12 @@ export * from './task-scheduler-types';
 const MAX_TIMER_DELAY_MS = 2_147_483_647;
 
 /**
- * Tests whether a value looks like a {@link TaskScheduler}.
+ * Task scheduler: drives scheduled task execution.
  *
- * @param value - The value to test.
- * @returns Whether the value matches the scheduler shape.
+ * @example
+ * ```ts
+ * const scheduler = new TaskScheduler();
+ * ```
  */
 export class TaskScheduler implements AsyncDestroyable {
     /**

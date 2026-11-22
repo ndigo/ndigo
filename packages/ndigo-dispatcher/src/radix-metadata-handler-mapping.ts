@@ -77,6 +77,14 @@ export const canonicalizeRouteMappingPath = (path: string): string => {
     return `/${normalized.join('/')}`;
 };
 
+/**
+ * Handler mapping backed by a radix tree of metadata-discovered handler methods.
+ *
+ * @example
+ * ```ts
+ * const mapping = new RadixMetadataHandlerMapping();
+ * ```
+ */
 export class RadixMetadataHandlerMapping
     extends AbstractHandlerMethodMapping<RouteMappingInfo>
     implements MatchableHandlerMapping

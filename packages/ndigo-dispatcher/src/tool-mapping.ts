@@ -17,7 +17,13 @@ export const TOOL_MAPPING_KEY = 'mcp:toolMapping';
 const toolNamePattern = /^[a-z][a-z0-9_]*$/u;
 const secretPathPattern = /^[A-Za-z_$][\w$]*(\.[A-Za-z_$][\w$]*)*$/u;
 
-/** Tool metadata declared by {@link toolMapping}. */
+/** Tool metadata declared by {@link toolMapping}.
+ *
+ * @example
+ * ```ts
+ * const metadata: ToolMappingMetadata = { name: 'get_order', readOnly: true };
+ * ```
+ */
 export interface ToolMappingMetadata {
     /** MCP tool name (snake_case); defaults to the method name. */
     readonly name?: string;
@@ -92,6 +98,11 @@ export function toolMapping(options: ToolMappingMetadata = {}) {
  * @param target - The decorated class constructor or instance.
  * @param methodName - The decorated method name.
  * @returns The metadata, or `undefined` when the method is not a tool.
+ *
+ * @example
+ * ```ts
+ * const metadata = getToolMapping(OrdersController.prototype, 'getOrder');
+ * ```
  */
 export function getToolMapping(target: unknown, methodName: string): ToolMappingMetadata | undefined {
     return getSymbolMetadata(target)[`${TOOL_MAPPING_KEY}:${methodName}`] as ToolMappingMetadata | undefined;

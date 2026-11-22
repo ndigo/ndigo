@@ -411,6 +411,11 @@ export function requestPart(
  * @param target - The DTO constructor.
  * @param options - Extractor options (`required`).
  * @returns The parameter extractor.
+ *
+ * @example
+ * ```ts
+ * parameters({ meta: requestPart(MetaDto) })
+ * ```
  */
 export function requestPart(target: new () => object, options?: ParameterExtractorOptions): ParameterExtractor;
 /**
@@ -420,6 +425,11 @@ export function requestPart(target: new () => object, options?: ParameterExtract
  * @param targetOrOptions - The DTO constructor or options.
  * @param options - Extractor options (`required`).
  * @returns The parameter extractor.
+ *
+ * @example
+ * ```ts
+ * parameters({ meta: requestPart('meta', MetaDto) })
+ * ```
  */
 export function requestPart(
     partNameOrTarget?: string | (new () => object),
@@ -486,6 +496,11 @@ export function routeValue(name?: string): ParameterExtractor {
  *
  * @param name - The extractor name (defaults to `'session'`).
  * @returns A socket-session extractor.
+ *
+ * @example
+ * ```ts
+ * parameters({ session: socketSessionValue() })
+ * ```
  */
 export function socketSessionValue(name: string = 'session'): ParameterExtractor {
     return {
@@ -503,6 +518,11 @@ export function socketSessionValue(name: string = 'session'): ParameterExtractor
  * Available on route, request, and socket mappings.
  *
  * @returns A full-path extractor.
+ *
+ * @example
+ * ```ts
+ * parameters({ path: pathValue() })
+ * ```
  */
 export function pathValue(): ParameterExtractor {
     return {
@@ -519,6 +539,11 @@ export function pathValue(): ParameterExtractor {
  * and request mappings.
  *
  * @returns A method extractor.
+ *
+ * @example
+ * ```ts
+ * parameters({ method: methodValue() })
+ * ```
  */
 export function methodValue(): ParameterExtractor {
     return {

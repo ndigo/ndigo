@@ -25,6 +25,12 @@ export interface LanguageResolver {
 
 /**
  * Base class for language resolvers with a configurable fallback language.
+ *
+ * @example
+ * ```ts
+ * const resolver = new FixedLanguageResolver('en');
+ * resolver.resolveLanguage(route); // 'en'
+ * ```
  */
 export abstract class AbstractLanguageResolver implements LanguageResolver {
     /**
@@ -74,6 +80,12 @@ export abstract class AbstractLanguageResolver implements LanguageResolver {
  * Resolves language from the browser's `navigator` object.
  *
  * @see https://developer.mozilla.org/en-US/docs/Web/API/NavigatorLanguage
+ *
+ * @example
+ * ```ts
+ * const resolver = new NavigatorLanguageResolver('en');
+ * resolver.resolveLanguage(route);
+ * ```
  */
 export class NavigatorLanguageResolver extends AbstractLanguageResolver {
     get [Symbol.toStringTag](): string {
@@ -97,6 +109,12 @@ export class NavigatorLanguageResolver extends AbstractLanguageResolver {
 
 /**
  * Always resolves the configured fallback language.
+ *
+ * @example
+ * ```ts
+ * const resolver = new FixedLanguageResolver('en');
+ * resolver.resolveLanguage(route); // 'en'
+ * ```
  */
 export class FixedLanguageResolver extends AbstractLanguageResolver {
     get [Symbol.toStringTag](): string {
@@ -121,6 +139,20 @@ export class FixedLanguageResolver extends AbstractLanguageResolver {
  * adapters — and parses it with the shared `parseAcceptLanguage` helper
  * (first q-weighted tag). Falls back to the configured default when the
  * header is absent, unparsable, or `*`.
+ */
+/**
+ * Resolves the primary language from the request's `Accept-Language` header.
+ *
+ * Reads {@link ACCEPT_LANGUAGE_ATTRIBUTE} from the route — set by platform
+ * adapters — and parses it with the shared `parseAcceptLanguage` helper
+ * (first q-weighted tag). Falls back to the configured default when the
+ * header is absent, unparsable, or `*`.
+ *
+ * @example
+ * ```ts
+ * const resolver = new AcceptHeaderLanguageResolver('en');
+ * resolver.resolveLanguage(route);
+ * ```
  */
 export class AcceptHeaderLanguageResolver extends AbstractLanguageResolver {
     get [Symbol.toStringTag](): string {

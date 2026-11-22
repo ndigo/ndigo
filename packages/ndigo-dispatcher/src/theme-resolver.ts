@@ -25,6 +25,11 @@ export interface ThemeResolver {
 
 /**
  * Base class for theme resolvers with a configurable fallback theme.
+ *
+ * @example
+ * ```ts
+ * const resolver = new FixedThemeResolver('ndigo-dark');
+ * ```
  */
 export abstract class AbstractThemeResolver implements ThemeResolver {
     /**
@@ -56,6 +61,12 @@ export abstract class AbstractThemeResolver implements ThemeResolver {
 
 /**
  * Resolve a fixed theme regardless of route.
+ *
+ * @example
+ * ```ts
+ * const resolver = new FixedThemeResolver('ndigo-dark');
+ * resolver.resolveThemeName(route); // 'ndigo-dark'
+ * ```
  */
 export class FixedThemeResolver extends AbstractThemeResolver {
     get [Symbol.toStringTag](): string {
@@ -80,6 +91,19 @@ export class FixedThemeResolver extends AbstractThemeResolver {
  * cookie), so the value is normalized before use; anything that does not
  * match the accepted name shape falls back to the configured default.
  */
+/**
+ * Resolves the theme name stamped on the route by a platform adapter.
+ *
+ * The attribute carries untrusted transport input (typically the `theme`
+ * cookie), so the value is normalized before use; anything that does not
+ * match the accepted name shape falls back to the configured default.
+ *
+ * @example
+ * ```ts
+ * const resolver = new AttributeThemeResolver('ndigo-dark');
+ * resolver.resolveThemeName(route);
+ * ```
+ */
 export class AttributeThemeResolver extends AbstractThemeResolver {
     get [Symbol.toStringTag](): string {
         return 'AttributeThemeResolver';
@@ -100,6 +124,11 @@ export class AttributeThemeResolver extends AbstractThemeResolver {
 
 /**
  * Preference mapping for {@link SystemThemeResolver}.
+ *
+ * @example
+ * ```ts
+ * const options: SystemThemeResolverOptions = { darkThemeName: 'ndigo-dark', lightThemeName: 'ndigo-light' };
+ * ```
  */
 export interface SystemThemeResolverOptions {
     /** Theme name used when the system prefers dark. Default: `ndigo-dark`. */
@@ -117,6 +146,12 @@ const LIGHT_COLOR_SCHEME_QUERY = '(prefers-color-scheme: light)';
  * `matchMedia` is read at call time (never cached), so an OS-level change is
  * honored on the next resolution. Outside a DOM runtime — or when the browser
  * reports no preference — the configured default applies.
+ *
+ * @example
+ * ```ts
+ * const resolver = new SystemThemeResolver();
+ * resolver.resolveThemeName(route);
+ * ```
  */
 export class SystemThemeResolver extends AbstractThemeResolver {
     #darkThemeName: string;

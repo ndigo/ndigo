@@ -12,6 +12,12 @@ import { AbstractDetectingPathHandlerMapping } from './abstract-path-handler-map
  */
 /**
  * Map handlers by application-context names that start with `/`.
+ *
+ * @example
+ * ```ts
+ * const mapping = new NamePathHandlerMapping();
+ * mapping.setApplicationContext(applicationContext);
+ * ```
  */
 export class NamePathHandlerMapping extends AbstractDetectingPathHandlerMapping {
     get [Symbol.toStringTag](): string {

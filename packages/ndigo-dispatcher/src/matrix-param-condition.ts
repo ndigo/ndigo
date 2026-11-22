@@ -13,6 +13,11 @@ const { defineProperty } = Reflect;
  * Repeated keys and comma-separated lists aggregate into arrays; a `key=value`
  * expression matches when any element equals `value`.
  * This expression walks every segment of the route looking for a matching name/value pair.
+ *
+ * @example
+ * ```ts
+ * const expression = new MatrixParamExpression('color=red');
+ * ```
  */
 export class MatrixParamExpression extends AbstractNameValueExpression<string> {
     /**
@@ -98,6 +103,11 @@ export class MatrixParamExpression extends AbstractNameValueExpression<string> {
 /**
  * A logical conjunction ('&&') route condition that matches a route against
  * a set of matrix-parameter expressions.
+ *
+ * @example
+ * ```ts
+ * const condition = new MatrixParamCondition('color=red');
+ * ```
  */
 export class MatrixParamCondition extends AbstractRouteCondition<MatrixParamCondition> {
     /**

@@ -11,6 +11,11 @@ import { type ParameterExtractor, type ParameterMap, bodyValue, queryValue } fro
  *
  * Mirrors the stable subset of a Zod v4 issue: the failing path, human
  * message, and error code (`too_small`, `invalid_type`, `email`, …).
+ *
+ * @example
+ * ```ts
+ * const issue: ValidationIssue = { path: ['title'], message: 'Required', code: 'invalid_type' };
+ * ```
  */
 export interface ValidationIssue {
     /** The failing path, e.g. `['title']` for a nested field. */
@@ -32,6 +37,11 @@ export interface ValidationIssue {
  * its `.stack` carries only the `name: message` header, because the thrown
  * `ParameterConversionError` already owns the single stack for the failure
  *. Engines without `Error.stackTraceLimit` keep their default capture.
+ *
+ * @example
+ * ```ts
+ * const error = new ZodValidationError('title: Required', [{ path: ['title'], message: 'Required', code: 'invalid_type' }]);
+ * ```
  */
 export class ZodValidationError extends FrameworkError {
     /**

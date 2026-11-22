@@ -15,6 +15,12 @@ const { keys } = Object;
  */
 /**
  * Map handlers from explicit path registrations.
+ *
+ * @example
+ * ```ts
+ * const mapping = new SimplePathHandlerMapping();
+ * mapping.registerHandler('/orders', orderHandler);
+ * ```
  */
 export class SimplePathHandlerMapping extends AbstractPathHandlerMapping {
     /**

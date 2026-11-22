@@ -38,6 +38,11 @@ export const METHOD_NOT_ALLOWED_ATTRIBUTE = '__mapping:methodNotAllowed';
  *
  * @param route - The route being resolved.
  * @param allow - The `Allow` header value (comma-separated methods).
+ *
+ * @example
+ * ```ts
+ * setMethodNotAllowed(route, 'GET, POST');
+ * ```
  */
 export function setMethodNotAllowed(route: Route, allow: string): void {
     route.attributes ??= {};
@@ -49,6 +54,11 @@ export function setMethodNotAllowed(route: Route, allow: string): void {
  *
  * @param route - The resolved route.
  * @returns The `Allow` header value, or `null` when no method-mismatch occurred.
+ *
+ * @example
+ * ```ts
+ * const allow = getMethodNotAllowed(route);
+ * ```
  */
 export function getMethodNotAllowed(route: Route): string | null {
     return (route.attributes?.[METHOD_NOT_ALLOWED_ATTRIBUTE] as string | undefined) ?? null;
@@ -68,6 +78,11 @@ export const DENIAL_STATUS = {
  * @param statusCode - HTTP status for the finalized denial (`401`/`403`).
  * @param options - Body and redirect for the denial outcome.
  * @returns The denial outcome.
+ *
+ * @example
+ * ```ts
+ * const denial = denialOf(403, { body: { error: 'forbidden' } });
+ * ```
  */
 export function denialOf(
     statusCode: number,
@@ -81,6 +96,11 @@ export function denialOf(
  *
  * @param route - The route being processed.
  * @param denial - The denial to store.
+ *
+ * @example
+ * ```ts
+ * setInterceptorDenial(route, denialOf(403));
+ * ```
  */
 export function setInterceptorDenial(route: Route, denial: InterceptorDenial): void {
     route.attributes ??= {};
@@ -92,6 +112,11 @@ export function setInterceptorDenial(route: Route, denial: InterceptorDenial): v
  *
  * @param route - The route being processed.
  * @returns The stored denial, or `null`.
+ *
+ * @example
+ * ```ts
+ * const denial = getInterceptorDenial(route);
+ * ```
  */
 export function getInterceptorDenial(route: Route): InterceptorDenial | null {
     return (route.attributes?.[INTERCEPTOR_DENIAL_ATTRIBUTE] as InterceptorDenial | undefined) ?? null;
@@ -105,6 +130,11 @@ export function getInterceptorDenial(route: Route): InterceptorDenial | null {
  * @param route - The route being processed.
  * @param outcome - The interceptor's `preHandle` outcome.
  * @returns `true` when processing should continue.
+ *
+ * @example
+ * ```ts
+ * resolvePreHandleOutcome(route, false);
+ * ```
  */
 export function resolvePreHandleOutcome(route: Route, outcome: boolean | InterceptorDenial): boolean {
     if (outcome === true) return true;

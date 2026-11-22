@@ -16,6 +16,13 @@ const { isArray } = Array;
 
 /**
  * Base class for path-based handler mappings.
+ *
+ * @example
+ * ```ts
+ * const mapping = new MyPathHandlerMapping();
+ * mapping.registerHandler('/orders', orderHandler);
+ * const chain = mapping.getHandler(route);
+ * ```
  */
 export abstract class AbstractPathHandlerMapping extends AbstractHandlerMapping implements MatchableHandlerMapping {
     /**
@@ -213,6 +220,12 @@ export abstract class AbstractPathHandlerMapping extends AbstractHandlerMapping 
 
 /**
  * Base class for path mappings that discover handlers from the application context.
+ *
+ * @example
+ * ```ts
+ * const mapping = new MyDetectingMapping();
+ * mapping.setApplicationContext(applicationContext);
+ * ```
  */
 export abstract class AbstractDetectingPathHandlerMapping extends AbstractPathHandlerMapping {
     /**

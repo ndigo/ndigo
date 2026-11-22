@@ -22,6 +22,11 @@ import { MatrixParamExpression } from './matrix-param-condition';
 
 /**
  * Options shared by the condition builders.
+ *
+ * @example
+ * ```ts
+ * const options: ConditionBuilderOptions = { negate: true };
+ * ```
  */
 export interface ConditionBuilderOptions {
     /**
@@ -65,6 +70,12 @@ function buildCondition(
  * @param value - The expected value, or omitted for a presence check.
  * @param options - Builder options (negation, case sensitivity).
  * @returns The condition expression.
+ *
+ * @example
+ * ```ts
+ * const condition = queryParamCondition('filter', 'all');
+ * // 'filter=all'
+ * ```
  */
 export function queryParamCondition(name: string, value?: string, options?: ConditionBuilderOptions): string {
     return buildCondition('query', name, value, options);
@@ -79,6 +90,12 @@ export function queryParamCondition(name: string, value?: string, options?: Cond
  * @param value - The expected value, or omitted for a presence check.
  * @param options - Builder options (negation, case sensitivity).
  * @returns The condition expression.
+ *
+ * @example
+ * ```ts
+ * const condition = matrixParamCondition('color', 'red');
+ * // 'color=red'
+ * ```
  */
 export function matrixParamCondition(name: string, value?: string, options?: ConditionBuilderOptions): string {
     return buildCondition('matrix', name, value, options);

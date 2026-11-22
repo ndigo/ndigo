@@ -37,6 +37,15 @@ export interface Controller {
 
 /**
  * Abstract base class for controllers that resolve view names from the route path.
+ *
+ * @example
+ * ```ts
+ * class OrdersController extends AbstractPathViewController {
+ *     protected _getViewNameForRoute(route: Route): string {
+ *         return 'views/orders/show';
+ *     }
+ * }
+ * ```
  */
 export abstract class AbstractPathViewController implements Controller {
     /**

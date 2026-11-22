@@ -11,6 +11,11 @@ import { toPascal } from '@ndigo/util/string';
  * names it contributed, plus initializers that read the application context and
  * install the configured strategy — falling back to the mixin's default when
  * the context names none.
+ *
+ * @example
+ * ```ts
+ * const initializer: StrategyInitializer = dispatcher;
+ * ```
  */
 export interface StrategyInitializer {
     /** Names of the strategies this composition contributes. */

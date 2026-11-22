@@ -13,6 +13,11 @@ const { defineProperty } = Reflect;
  * Repeated keys aggregate into arrays, and a `key=value` expression matches
  * when any element equals `value` (`?q=a&q=b` matches `q=a` and `q=b`).
  * For path-segment matrix parameters (`/path;key=value`), see {@link "matrix-param-condition".MatrixParamExpression | MatrixParamExpression}.
+ *
+ * @example
+ * ```ts
+ * const expression = new QueryParamExpression('filter=all');
+ * ```
  */
 export class QueryParamExpression extends AbstractNameValueExpression<string> {
     /**
@@ -102,6 +107,11 @@ export class QueryParamExpression extends AbstractNameValueExpression<string> {
 
 /**
  * A logical conjunction (' && ') route condition that matches a route against a set parameter expressions with syntax defined in `RouteMapping`.
+ *
+ * @example
+ * ```ts
+ * const condition = new QueryParamCondition('filter=all');
+ * ```
  */
 export class QueryParamCondition extends AbstractRouteCondition<QueryParamCondition> {
     /**

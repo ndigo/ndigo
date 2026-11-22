@@ -11,6 +11,11 @@ import type { InterceptorDenial } from './route-handler-denial';
  * The outcome of a `preHandle` invocation: `true` allows the request,
  * `false` is the default denial, and an explicit {@link InterceptorDenial}
  * carries the finalized status/body/redirect for the platform adapter.
+ *
+ * @example
+ * ```ts
+ * const outcome: PreHandleOutcome = true;
+ * ```
  */
 export type PreHandleOutcome = boolean | InterceptorDenial;
 
@@ -65,6 +70,11 @@ export interface RouteHandlerInterceptor {
  * for a large field of preprocessing aspects, e.g. for authorization checks,
  * or common handler behavior like locale or theme changes. Its main purpose
  * is to allow for factoring out repetitive handler code.
+ *
+ * @example
+ * ```ts
+ * const interceptor = new MappedHandlerInterceptor(inner, ['/orders/*']);
+ * ```
  */
 export class MappedHandlerInterceptor extends AsPathMatcherFilter(Null) implements RouteHandlerInterceptor {
     /**

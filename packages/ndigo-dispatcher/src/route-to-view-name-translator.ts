@@ -24,6 +24,14 @@ export interface RouteToViewNameTranslator {
 
 const slash = '/';
 
+/**
+ * Default translator that derives a view name from the route path.
+ *
+ * @example
+ * ```ts
+ * const translator = new DefaultRouteToViewNameTranslator();
+ * ```
+ */
 export class DefaultRouteToViewNameTranslator implements RouteToViewNameTranslator {
     /**
      * The `Symbol.toStringTag` value for this instance.

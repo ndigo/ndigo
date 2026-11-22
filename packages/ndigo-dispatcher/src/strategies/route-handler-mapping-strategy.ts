@@ -16,6 +16,11 @@ import { StrategyInitializer } from './strategy-initializer';
  * Strategy mixin contract for handler mappings: exposes the ordered mappings a
  * route is resolved against, and an initializer that installs them from the
  * application context.
+ *
+ * @example
+ * ```ts
+ * const strategy: RouteHandlerMappingStrategy = dispatcher;
+ * ```
  */
 export interface RouteHandlerMappingStrategy {
     /** The ordered mappings a route is resolved against. */

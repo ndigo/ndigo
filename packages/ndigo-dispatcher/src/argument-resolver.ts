@@ -63,6 +63,12 @@ export const likeArgumentResolver = like({
  * * Resolve names into argument values
  * * Handle missing argument values when argument values are required
  * * Optionally handle a resolved value
+ *
+ * @example
+ * ```ts
+ * const resolver = new PathValueMethodArgumentResolver();
+ * resolver.resolveArgument(parameter, route, mapping);
+ * ```
  */
 export abstract class AbstractNamedValueMethodArgumentResolver implements HandlerMethodArgumentResolver {
     /**
@@ -158,6 +164,12 @@ export abstract class AbstractNamedValueMethodArgumentResolver implements Handle
 
 /**
  * Resolves method arguments from matrix variables in the URL path.
+ *
+ * @example
+ * ```ts
+ * const resolver = new MatrixValueMethodArgumentResolver();
+ * resolver.resolveArgument(parameter, route, mapping);
+ * ```
  */
 export class MatrixValueMethodArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
     /**
@@ -223,6 +235,12 @@ export class MatrixValueMethodArgumentResolver extends AbstractNamedValueMethodA
 
 /**
  * Resolves method arguments from query parameters.
+ *
+ * @example
+ * ```ts
+ * const resolver = new QueryValueMethodArgumentResolver();
+ * resolver.resolveArgument(parameter, route, mapping);
+ * ```
  */
 export class QueryValueMethodArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
     /**
@@ -267,6 +285,12 @@ export class QueryValueMethodArgumentResolver extends AbstractNamedValueMethodAr
 
 /**
  * Resolves method arguments from path variables.
+ *
+ * @example
+ * ```ts
+ * const resolver = new PathValueMethodArgumentResolver();
+ * resolver.resolveArgument(parameter, route, mapping);
+ * ```
  */
 export class PathValueMethodArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
     /**
@@ -310,6 +334,12 @@ export class PathValueMethodArgumentResolver extends AbstractNamedValueMethodArg
 
 /**
  * Resolves method arguments from request attributes.
+ *
+ * @example
+ * ```ts
+ * const resolver = new AttributeValueMethodArgumentResolver();
+ * resolver.resolveArgument(parameter, route, mapping);
+ * ```
  */
 export class AttributeValueMethodArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
     /**
@@ -357,6 +387,12 @@ export class AttributeValueMethodArgumentResolver extends AbstractNamedValueMeth
  * `methodValue()` binds the request HTTP method, and the request id is
  * available via `requestIdValue()`. Reads `route.path`/`route.method`/
  * `route.id` by the extractor's name (the ROUTE meta source).
+ *
+ * @example
+ * ```ts
+ * const resolver = new RouteValueMethodArgumentResolver();
+ * resolver.resolveArgument(parameter, route, mapping);
+ * ```
  */
 export class RouteValueMethodArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
     /**
@@ -416,6 +452,11 @@ export class RouteValueMethodArgumentResolver extends AbstractNamedValueMethodAr
  * @param applicationContext - The application context to register into.
  * @param resolvers - The argument resolvers to register, in priority order.
  * @returns The registered resolvers.
+ *
+ * @example
+ * ```ts
+ * const resolvers = registerArgumentResolvers(applicationContext, [new PathValueMethodArgumentResolver()]);
+ * ```
  */
 export function registerArgumentResolvers(
     applicationContext: ApplicationContext,

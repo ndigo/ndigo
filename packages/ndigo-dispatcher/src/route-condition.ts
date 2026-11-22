@@ -8,6 +8,11 @@ import { Route } from '@ndigo/router';
 
 /**
  * Describes a parsed name/value expression.
+ *
+ * @example
+ * ```ts
+ * const expression: NameValueExpression<string> = { isNegated: false, name: 'filter', value: 'all' };
+ * ```
  */
 export interface NameValueExpression<T> {
     /** Whether the expression is negated (`!`). */
@@ -67,6 +72,11 @@ export const likeRouteCondition = like({ merge: Function, match: Function }) as 
 
 /**
  * Base class for parsed name/value expressions.
+ *
+ * @example
+ * ```ts
+ * const expression = new QueryParamExpression('filter=all');
+ * ```
  */
 export abstract class AbstractNameValueExpression<T> implements NameValueExpression<T>, Serializable, Matchable<Route> {
     /**
@@ -207,6 +217,14 @@ export abstract class AbstractNameValueExpression<T> implements NameValueExpress
     abstract parseValue(valueExpression: string): T;
 }
 
+/**
+ * Base class for route conditions built from one or more parsed expressions.
+ *
+ * @example
+ * ```ts
+ * const condition = new QueryParamCondition('filter=all');
+ * ```
+ */
 export abstract class AbstractRouteCondition<T extends AbstractRouteCondition<T>>
     implements Equatable, RouteCondition<T>, Serializable
 {
@@ -309,8 +327,12 @@ export abstract class AbstractRouteCondition<T extends AbstractRouteCondition<T>
 
 /**
  * The discrete items a route condition is composed of, e.g. URL patterns, param expressions, etc.
+ *
+ * @example
+ * ```ts
+ * const holder = new RouteConditionHolder(patterns);
+ * ```
  */
-
 export class RouteConditionHolder extends AbstractRouteCondition<RouteConditionHolder> {
     /**
      * The `Symbol.toStringTag` value for this instance.

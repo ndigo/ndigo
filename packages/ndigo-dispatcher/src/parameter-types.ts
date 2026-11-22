@@ -11,6 +11,11 @@ const { defineProperty } = Reflect;
 
 /**
  * Factory function return type - describes a parameter extraction
+ *
+ * @example
+ * ```ts
+ * const extractor: ParameterExtractor = { type: MethodParameterType.QUERY, name: 'page', required: false, defaultValue: null };
+ * ```
  */
 export type ParameterExtractor = {
     type: MethodParameterType;
@@ -39,7 +44,13 @@ export type ParameterExtractor = {
     target?: new () => object;
 };
 
-/** Options for creating a parameter extractor with type-based conversion support. */
+/** Options for creating a parameter extractor with type-based conversion support.
+ *
+ * @example
+ * ```ts
+ * const options: ParameterExtractorOptions = { required: true, defaultValue: '10' };
+ * ```
+ */
 export interface ParameterExtractorOptions {
     /** Whether the parameter is required. */
     required?: boolean;
@@ -53,6 +64,11 @@ export interface ParameterExtractorOptions {
  * Context handed to a `ParameterValueConverter`: the bound parameter name, the
  * `MethodParameter` it came from, and the route/mapping metadata the value is
  * being bound for.
+ *
+ * @example
+ * ```ts
+ * const context: ParameterValueConversionContext = { name: 'id', parameter, route, mapping };
+ * ```
  */
 export interface ParameterValueConversionContext {
     /** The bound parameter name. */
@@ -69,16 +85,31 @@ export interface ParameterValueConversionContext {
  * Converts one raw argument value into the type its `MethodParameter` declares.
  * A converter is chosen per source/target type pair (see
  * `ResolverConverterOption`) and may be async.
+ *
+ * @example
+ * ```ts
+ * const converter: ParameterValueConverter = (value) => Number(value);
+ * ```
  */
 export type ParameterValueConverter = (value: unknown, context: ParameterValueConversionContext) => unknown;
 
 /**
  * Parameter map for `parameters` decorator
+ *
+ * @example
+ * ```ts
+ * const map: ParameterMap = { id: pathVariable('id') };
+ * ```
  */
 export type ParameterMap = Record<string, ParameterExtractor>;
 
 /**
  * Method parameter type enum
+ *
+ * @example
+ * ```ts
+ * const type = MethodParameterType.QUERY;
+ * ```
  */
 export class MethodParameterType implements Equatable, Serializable {
     /** Cookie parameter type. */
@@ -223,6 +254,11 @@ MethodParameterType.REQUEST_PART = new MethodParameterType('request-part:value')
 
 /**
  * Method parameter metadata
+ *
+ * @example
+ * ```ts
+ * const parameter = new MethodParameter(MethodParameterType.QUERY, 'id', true);
+ * ```
  */
 export class MethodParameter implements Serializable {
     /**
@@ -342,5 +378,10 @@ export class MethodParameter implements Serializable {
  * The source is encoded in the resulting type (`data-{source}:value`), and
  * `SOURCES_BY_KIND` validates source-vs-mapping-kind compatibility at
  * registration time.
+ *
+ * @example
+ * ```ts
+ * const source: DataBindingSource = 'body';
+ * ```
  */
 export type DataBindingSource = 'query' | 'body' | 'cookie' | 'session-storage' | 'local-storage';

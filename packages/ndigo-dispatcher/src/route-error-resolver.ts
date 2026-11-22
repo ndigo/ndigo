@@ -109,6 +109,14 @@ const { defineProperty, getPrototypeOf } = Reflect,
         return null;
     };
 
+/**
+ * Base class for error resolvers that convert thrown errors into model-and-view responses.
+ *
+ * @example
+ * ```ts
+ * const resolver = new SimpleMappingErrorResolver();
+ * ```
+ */
 export abstract class AbstractRouteErrorResolver implements RouteErrorResolver {
     /**
      * Handlers explicitly targeted by this resolver, if any.
@@ -186,6 +194,14 @@ export abstract class AbstractRouteErrorResolver implements RouteErrorResolver {
     protected abstract _resolveError(route: Route, handler: object | null, error: Error): ModelAndView | null;
 }
 
+/**
+ * Base class for error resolvers that inspect handler-method `error:mapping` metadata.
+ *
+ * @example
+ * ```ts
+ * const resolver = new MetadataErrorResolver();
+ * ```
+ */
 export abstract class AbstractHandlerMethodErrorResolver extends AbstractRouteErrorResolver {
     /**
      * The `Symbol.toStringTag` value for this instance.
@@ -390,6 +406,11 @@ export class DefaultRouteErrorResolver extends AbstractRouteErrorResolver {
 
 /**
  * An {@link AbstractRouteErrorResolver|AbstractRouteErrorResolver} that resolves exceptions through 'error:mapping' metadata.
+ *
+ * @example
+ * ```ts
+ * const resolver = new MetadataErrorResolver();
+ * ```
  */
 export class MetadataErrorResolver extends AbstractHandlerMethodErrorResolver implements ApplicationContextAware {
     /**
@@ -499,6 +520,11 @@ export class MetadataErrorResolver extends AbstractHandlerMethodErrorResolver im
 /**
  * {@link RouteErrorResolver|RouteErrorResolver} implementation that allows for mapping exception class names to view names, either for a set of given handlers or for all handlers in the `Dispatcher`.
  * @see `Dispatcher`
+ *
+ * @example
+ * ```ts
+ * const resolver = new SimpleMappingErrorResolver();
+ * ```
  */
 export class SimpleMappingErrorResolver extends AbstractRouteErrorResolver {
     /**

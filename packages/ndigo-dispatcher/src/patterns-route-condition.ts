@@ -10,6 +10,14 @@ const { isArray } = Array;
 const preprendPeriod = (value: string) => (value[0] === '.' ? value : `.${value}`);
 const prependSlash = (value: string) => (value[0] === '/' ? value : `/${value}`);
 
+/**
+ * A route condition that matches a route against one or more path patterns.
+ *
+ * @example
+ * ```ts
+ * const condition = new PatternsRouteCondition('/orders/:id');
+ * ```
+ */
 export class PatternsRouteCondition extends AbstractRouteCondition<PatternsRouteCondition> {
     /**
      * The `Symbol.toStringTag` value for this instance.

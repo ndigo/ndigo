@@ -11,6 +11,11 @@ const separator = '';
  * Default naming strategy for route mappings: prefers the mapping's explicit
  * `name`, and otherwise joins the handler class and method with the static
  * `separator`.
+ *
+ * @example
+ * ```ts
+ * const strategy = new RouteMappingInfoHandlerMethodMappingNamingStrategy();
+ * ```
  */
 export class RouteMappingInfoHandlerMethodMappingNamingStrategy implements RouteHandlerMethodMappingNamingStrategy<RouteMappingInfo> {
     /**

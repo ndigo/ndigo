@@ -11,6 +11,11 @@ import { StrategyInitializer } from './strategy-initializer';
  * Strategy mixin contract for view targeting: exposes the ordered
  * `viewTargeters` that choose where a rendered view is committed, and an
  * initializer that installs them from the application context.
+ *
+ * @example
+ * ```ts
+ * const strategy: ViewTargeterStrategy = dispatcher;
+ * ```
  */
 export interface ViewTargeterStrategy {
     /** The ordered view targeters. */

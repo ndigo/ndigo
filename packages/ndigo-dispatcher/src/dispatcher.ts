@@ -94,6 +94,12 @@ export const DISPATCH_ERROR_ATTRIBUTE = '__dispatch:error';
  *
  * @param route - The route the dispatch was processing.
  * @param error - The error that remained unhandled after `completeHandle`.
+ *
+ * @example
+ * ```ts
+ * setDispatchError(route, error);
+ * const recorded = getDispatchError(route);
+ * ```
  */
 export function setDispatchError(route: Route, error: Error): void {
     if (route.attributes) {
@@ -107,6 +113,11 @@ export function setDispatchError(route: Route, error: Error): void {
  * @param route - The route the dispatch was processing.
  * @returns The recorded error, or `null` when dispatch completed
  *   without an unhandled failure.
+ *
+ * @example
+ * ```ts
+ * const error = getDispatchError(route);
+ * ```
  */
 export function getDispatchError(route: Route): Error | null {
     return (route.attributes?.[DISPATCH_ERROR_ATTRIBUTE] as Error | undefined) ?? null;

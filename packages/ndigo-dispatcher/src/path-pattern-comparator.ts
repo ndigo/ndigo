@@ -53,6 +53,11 @@ function hasWildcards(pattern: string): boolean {
  *    strictly less specific than any non-greedy pattern.
  * 3. Longer patterns beat shorter patterns.
  * 4. Fewer wildcard segments beat more wildcard segments.
+ *
+ * @example
+ * ```ts
+ * const cmp = PathPatternComparator.compare('/orders/:id', '/orders/**');
+ * ```
  */
 export class PathPatternComparator implements Comparator<string> {
     get [Symbol.toStringTag](): string {

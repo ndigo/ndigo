@@ -6,6 +6,11 @@ import type { HTTPMethod } from '@ndigo/http';
 
 /**
  * Represents a single segment within a route, including its name, associated data, and raw string value.
+ *
+ * @example
+ * ```ts
+ * const segment: RouteSegment = { name: 'users', data: {}, raw: 'users' };
+ * ```
  */
 export interface RouteSegment extends Serializable {
     /** The segment name. */
@@ -22,6 +27,11 @@ export interface RouteSegment extends Serializable {
  * Represents a complete route, composed of multiple segments, along with its parameters, path, and associated data.
  * It extends `ArrayLike<RouteSegment>` to allow iteration over its segments.
  * @typeParam TParams - A type representing the route parameters, defaulting to `Record<string, string>`.
+ *
+ * @example
+ * ```ts
+ * const route: Route = new PathRoute('/users/{id}');
+ * ```
  */
 export interface Route<TParams extends Record<string, string> = Record<string, string>>
     extends ArrayLike<RouteSegment>, Serializable {

@@ -21,6 +21,11 @@ export type RouterMiddleware = (route: Route) => boolean | void | Promise<boolea
 /**
  * Defines an interface for intercepting route processing at different stages.
  * Interceptors can perform actions before (`preRoute`) or after (`postRoute`) a route is handled.
+ *
+ * @example
+ * ```ts
+ * const interceptor: RouterInterceptor = { preRoute: (route) => {} };
+ * ```
  */
 export interface RouterInterceptor {
     /**
@@ -49,6 +54,12 @@ export interface RouterInterceptor {
 /**
  * Defines the interface for a registry that manages `RouterInterceptor` instances.
  * It provides methods to add interceptors and middleware, with support for path-based matching.
+ *
+ * @example
+ * ```ts
+ * const registry: RouterInterceptorRegistry = router;
+ * registry.addInterceptor(interceptor);
+ * ```
  */
 export interface RouterInterceptorRegistry {
     /** Adds one interceptor. @param interceptor - The interceptor. */

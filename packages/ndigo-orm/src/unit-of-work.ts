@@ -17,6 +17,13 @@ export type EntityState = 'new' | 'managed' | 'removed';
  * Use {@link InMemoryUnitOfWork} for in-memory stores or implement this interface
  * for SQL-backed data sources. Pair with {@link "transaction-manager".TransactionManager | TransactionManager} and the
  * {@link annotations.transactional | transactional} decorator for full transactional workflows.
+ *
+ * @example
+ * ```ts
+ * const uow: UnitOfWork = new InMemoryUnitOfWork(entityManager);
+ * uow.registerNew(user);
+ * await uow.commit();
+ * ```
  */
 export interface UnitOfWork {
     /**

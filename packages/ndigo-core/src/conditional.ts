@@ -198,6 +198,11 @@ export function whenMissingEntry(entryName: string) {
  *
  * @param target - The class constructor or instance to inspect.
  * @returns The required platform, or `undefined` when no condition is set.
+ *
+ * @example
+ * ```ts
+ * getConditionalPlatform(MyService); // 'node' | 'browser' | undefined
+ * ```
  */
 export function getConditionalPlatform(target: unknown): ConditionalPlatform | undefined {
     const meta = getSymbolMetadata(target);
@@ -213,6 +218,11 @@ export function getConditionalPlatform(target: unknown): ConditionalPlatform | u
  * @param target - The class constructor or instance to inspect.
  * @param methodName - When set, read the condition recorded for that method.
  * @returns The canonical profile expression, or `undefined` when unset.
+ *
+ * @example
+ * ```ts
+ * getProfileCondition(MyService); // 'prod & !test' | undefined
+ * ```
  */
 export function getProfileCondition(target: unknown, methodName?: string): string | undefined {
     const meta = getSymbolMetadata(target);
@@ -224,6 +234,11 @@ export function getProfileCondition(target: unknown, methodName?: string): strin
  *
  * @param target - The class constructor or instance to check.
  * @returns `true` when the class should be registered in this environment.
+ *
+ * @example
+ * ```ts
+ * isActiveForCurrentPlatform(MyService); // true
+ * ```
  */
 export function isActiveForCurrentPlatform(target: unknown): boolean {
     const platform = getConditionalPlatform(target);
@@ -254,6 +269,11 @@ export function isActiveForCurrentPlatform(target: unknown): boolean {
  * @param target - The class constructor or instance to check.
  * @param ctx - Optional context for property/entry conditions.
  * @returns `true` when all conditions pass.
+ *
+ * @example
+ * ```ts
+ * isActive(MyService); // true
+ * ```
  */
 export function isActive(target: unknown, ctx?: ConditionContext): boolean {
     if (!isActiveForCurrentPlatform(target)) {

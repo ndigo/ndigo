@@ -53,6 +53,12 @@ export function getSymbolMetadata(target: unknown): Record<string, any> {
  * @param target - A class constructor or instance.
  * @returns The class's metadata record, created when absent.
  * @throws When the target has no constructor to attach metadata to.
+ *
+ * @example
+ * ```ts
+ * const meta = ensureSymbolMetadata(MyClass);
+ * meta['my:key'] = 'value';
+ * ```
  */
 // oxlint-disable-next-line typescript/no-explicit-any -- same record shape as getSymbolMetadata: callers read values back as their own typed payloads.
 export function ensureSymbolMetadata(target: unknown): Record<string, any> {

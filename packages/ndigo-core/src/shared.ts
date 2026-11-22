@@ -53,6 +53,11 @@ export function sharedDependency(
  *
  * @param target - Class constructor, prototype, or instance.
  * @returns The `SharedOptions` if the class is marked `@sharedDependency`, or `undefined`.
+ *
+ * @example
+ * ```ts
+ * getSharedOptions(MySharedService); // { singleton: true } | undefined
+ * ```
  */
 export function getSharedOptions(target: unknown): SharedOptions | undefined {
     // Metadata polyfill guarantees a record on decorated classes; read and cast once.
@@ -64,6 +69,11 @@ export function getSharedOptions(target: unknown): SharedOptions | undefined {
  *
  * @param target - Class constructor, prototype, or instance.
  * @returns `true` if the class is decorated with `@sharedDependency`.
+ *
+ * @example
+ * ```ts
+ * isShared(MySharedService); // true
+ * ```
  */
 export function isShared(target: unknown): boolean {
     return getSharedOptions(target) !== undefined;

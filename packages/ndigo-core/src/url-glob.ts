@@ -28,6 +28,11 @@ const URL_POSIX_CLASSES = {
  *
  * @param pattern - The URL glob pattern to parse (e.g. `/api/*`, `**`, `[:alnum:]*`).
  * @returns An anchored regex source string, or `null` if the pattern is invalid.
+ *
+ * @example
+ * ```ts
+ * parseUrlGlob('/users/*'); // "^/users/[^/]+$"
+ * ```
  */
 export function parseUrlGlob(pattern: string): string | null {
     if (typeof pattern !== 'string') {

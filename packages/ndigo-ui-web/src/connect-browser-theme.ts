@@ -9,6 +9,12 @@ import { setVisualTheme } from './set-visual-theme';
 
 /**
  * Options for {@link connectBrowserTheme}.
+ *
+ * @example
+ * ```ts
+ * const connection = connectBrowserTheme(context, { cookieName: 'theme' });
+ * connection.setTheme('dark');
+ * ```
  */
 export interface ConnectBrowserThemeOptions extends BrowserThemeBootstrapOptions {
     /** Element the theme is applied to. Defaults to the document root. */
@@ -19,6 +25,13 @@ export interface ConnectBrowserThemeOptions extends BrowserThemeBootstrapOptions
 
 /**
  * Handle returned by {@link connectBrowserTheme}.
+ *
+ * @example
+ * ```ts
+ * const connection = connectBrowserTheme(context);
+ * const theme = connection.setTheme('dark');
+ * connection.destroy();
+ * ```
  */
 export interface BrowserThemeConnection {
     /** The applied theme, or `undefined` before the first successful apply. */
@@ -55,6 +68,12 @@ export interface BrowserThemeConnection {
  * @param context - The browser application context.
  * @param options - Cookie name, seed theme, target element, and theme map.
  * @returns A handle exposing the applied theme and a one-call switcher.
+ *
+ * @example
+ * ```ts
+ * const connection = connectBrowserTheme(context);
+ * connection.setTheme('dark');
+ * ```
  */
 export function connectBrowserTheme(
     context: ConfigurableApplicationContext,

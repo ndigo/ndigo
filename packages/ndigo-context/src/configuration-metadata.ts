@@ -37,6 +37,11 @@ export const PROPERTY_KEY_TYPE = 'config:propertyType:';
  * Reads configuration metadata from a class constructor.
  * @param target - The target.
  * @returns The metadata record.
+ *
+ * @example
+ * ```ts
+ * const meta = getMetadata(MyConfig);
+ * ```
  */
 export function getMetadata(target: unknown): Record<string, unknown> {
     return getSymbolMetadata(target);

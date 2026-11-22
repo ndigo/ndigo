@@ -27,6 +27,11 @@ export interface EnvironmentCustomizer {
  *
  * @param environment - The prepared environment.
  * @param customizers - The customizers to run (registration order).
+ *
+ * @example
+ * ```ts
+ * applyCustomizers(env, [new MyCustomizer()]);
+ * ```
  */
 export function applyCustomizers(
     environment: ConfigurableEnvironment,

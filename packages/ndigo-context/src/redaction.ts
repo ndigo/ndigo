@@ -21,6 +21,11 @@ export const REDACTED_VALUE = '<redacted>';
  * @param value - The resolved value to render.
  * @param secretContext - `true` when a decryptor is configured for the source.
  * @returns The diagnostic string.
+ *
+ * @example
+ * ```ts
+ * redactDiagnosticValue('secret', true); // "[REDACTED]"
+ * ```
  */
 export function redactDiagnosticValue(value: unknown, secretContext: boolean): string {
     if (secretContext) return REDACTED_VALUE;

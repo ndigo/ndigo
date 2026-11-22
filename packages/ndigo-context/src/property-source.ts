@@ -192,6 +192,11 @@ function nestDottedKeys(source: JSONObject): JSONObject {
  * @param name - The stable source name (used as an anchor for reordering).
  * @param source - The property values to capture.
  * @returns The captured property source.
+ *
+ * @example
+ * ```ts
+ * const source = wrapSource('defaults', { 'server.port': 8080 });
+ * ```
  */
 export function wrapSource(name: string, source: JSONObject): PropertySource {
     return new MapPropertySource(name, nestDottedKeys(source));

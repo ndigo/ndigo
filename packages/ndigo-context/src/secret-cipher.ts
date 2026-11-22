@@ -77,6 +77,11 @@ export interface SecretMarker {
  * fails loud at lookup when the scheme is not registered — config values
  * that look like markers cannot coexist with a wired decryptor.
  * @returns The parsed marker, or `null` when not in marker form.
+ *
+ * @example
+ * ```ts
+ * parseSecretMarker('{enc:v1:abc}'); // { scheme: 'enc', ... }
+ * ```
  */
 export function parseSecretMarker(value: string): SecretMarker | null {
     if (typeof value !== 'string' || value.length < 4 || value[0] !== '{' || !value.endsWith('}')) {
@@ -118,6 +123,11 @@ export function parseSecretMarker(value: string): SecretMarker | null {
  *
  * @param value - The candidate string.
  * @returns `true` when the value has the reserved `{scheme:...}` shape.
+ *
+ * @example
+ * ```ts
+ * isSecretMarkerLike('{enc:abc}'); // true
+ * ```
  */
 export function isSecretMarkerLike(value: unknown): boolean {
     if (typeof value !== 'string' || value.length < 4 || value[0] !== '{' || !value.endsWith('}')) {

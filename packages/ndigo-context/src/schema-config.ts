@@ -25,6 +25,11 @@ export type SchemaConfigResolver = Pick<PropertyResolver, 'getProperty'>;
  *   scalar schema for `resolveSchemaConfig`'s leaf mode).
  * @param raw - The resolved raw values, keyed by schema key.
  * @returns The parsed, typed value.
+ *
+ * @example
+ * ```ts
+ * parseSchemaConfig(z.object({ port: z.number() }), { port: 8080 }); // { port: 8080 }
+ * ```
  */
 export function parseSchemaConfig<S extends z.ZodType>(schema: S, raw: Record<string, unknown>): z.infer<S> {
     return schema.parse(raw) as z.infer<S>;
@@ -98,6 +103,11 @@ export type PropertyKeyMap<S extends object> = { [K in keyof S & string]: DeepPr
  *
  * @param shape - A literal-shaped sample of the configuration object.
  * @returns Leaf keypath strings in the same shape ('server.port').
+ *
+ * @example
+ * ```ts
+ * propertyKeys({ server: { port: 0, name: '' } }); // { server: { port: 'server.port', name: 'server.name' } }
+ * ```
  */
 export function propertyKeys<S extends object>(shape: S): PropertyKeyMap<S> {
     const isLeaf = (value: unknown): boolean => value === null || typeof value !== 'object' || Array.isArray(value);

@@ -39,6 +39,11 @@ export function environment(schema: z.ZodType) {
  *
  * @param target - The class (or instance constructor).
  * @returns The declared schema, or `undefined`.
+ *
+ * @example
+ * ```ts
+ * const schema = getEnvironmentSchema(AppConfig);
+ * ```
  */
 export function getEnvironmentSchema(target: unknown): z.ZodType | undefined {
     return getSymbolMetadata(target)[ENV_SCHEMA] as z.ZodType | undefined;

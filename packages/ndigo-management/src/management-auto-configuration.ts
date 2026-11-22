@@ -54,6 +54,11 @@ import { endpointPath, MANAGEMENT_ENDPOINT_IDS } from './management-properties';
 
 /**
  * Auto-configuration for management endpoints.
+ *
+ * @example
+ * ```ts
+ * const autoConfiguration = new ManagementAutoConfiguration({ redactHealthErrors: true });
+ * ```
  */
 @configuration
 export class ManagementAutoConfiguration extends AsApplicationContextAware(Null) {

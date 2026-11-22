@@ -1,6 +1,11 @@
 /**
  * Public API of `@ndigo/cluster` — the process supervisor for replicated
  * worker slots.
+ *
+ * @example
+ * ```ts
+ * runCluster({ size: 4, command: ['node', 'dist/main.js'] });
+ * ```
  */
 
 export {

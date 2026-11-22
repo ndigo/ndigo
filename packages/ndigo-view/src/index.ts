@@ -1,5 +1,8 @@
 /**
  * Public API of `@ndigo/view` — view resolution, targets, and renderers.
+ *
+ * Provides view resolution, view targets, and renderer contracts for
+ * content-negotiated responses.
  */
 export * from './view.js';
 export * from './view-mapping.js';

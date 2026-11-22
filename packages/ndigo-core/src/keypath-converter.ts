@@ -1,5 +1,14 @@
 /**
  * Parsing dotted/bracketed keypaths into ordered path tokens.
+ *
+ * `KeypathConverter` converts between a keypath string (e.g. `user.address[0].city`)
+ * and its ordered token list, handling quoting and bracketed indices.
+ *
+ * @example
+ * ```ts
+ * const converter = new KeypathConverter();
+ * converter.convert('user.address[0].city'); // ['user', 'address', 0, 'city']
+ * ```
  */
 import type { Converter } from './converter.js';
 

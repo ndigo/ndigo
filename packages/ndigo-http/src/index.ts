@@ -1,5 +1,14 @@
 /**
  * HTTP client with interceptor support and convenience verb helpers.
+ *
+ * Public API of `@ndigo/http`: the `HTTP` client, header value objects,
+ * interceptors, status codes, and execution chain.
+ *
+ * @example
+ * ```ts
+ * import { HTTP } from '@ndigo/http';
+ * const http = new HTTP([], { baseURL: '/api' });
+ * ```
  */
 
 import * as HTTPHeaders from './http-headers';

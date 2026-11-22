@@ -1,5 +1,15 @@
 /**
  * Environment and profile activation for the application context.
+ *
+ * `Environment` exposes property resolution plus active-profile management;
+ * `StandardEnvironment` is the default implementation backed by property sources.
+ *
+ * @example
+ * ```ts
+ * const env = new StandardEnvironment();
+ * env.setActiveProfiles('prod');
+ * env.getProperty('server.port');
+ * ```
  */
 import { Constructable, Null, JSONValue, JSONObject, evaluateProfileExpression } from '@ndigo/core';
 import type { ProfileTerm } from '@ndigo/core';

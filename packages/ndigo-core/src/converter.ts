@@ -1,5 +1,21 @@
 /**
  * Type conversion contracts and the `ConversionService`.
+ *
+ * This module provides the `Converter<S, T>` interface plus a registry-backed
+ * `ConversionService` that composes converters for arbitrary source/target type
+ * pairs. Use it when values need to be converted at runtime (path parameters,
+ * form fields, query strings) instead of hand-written switch statements.
+ *
+ * @remarks
+ * Converters are registered by source/target runtime identity. The service
+ * resolves the best match and supports chained conversions through the registry.
+ *
+ * @example
+ * ```ts
+ * const service = createConversionService();
+ * service.convert('42', Number); // 42
+ * service.convert(new Date(), String); // ISO string
+ * ```
  */
 import { Parser, Stringifier } from './parser';
 import { z } from 'zod';
@@ -65,6 +81,14 @@ function makeKey(sourceId: unknown, targetId: unknown): string {
  * Converters are looked up by the runtime identity of their source and target
  * types (e.g., `String`, `Date`). This enables the dispatch layer to resolve
  * conversions dynamically without hard-coded switch statements.
+ *
+ * @example
+ * ```ts
+ * const registry = new ConverterRegistry();
+ * registry.register(new UUIDConverter(), String, String);
+ * const converter = registry.getConverter(String, String);
+ * converter?.convert('123e4567-e89b-12d3-a456-426614174000');
+ * ```
  */
 export class ConverterRegistry {
     /**
@@ -457,6 +481,12 @@ export interface ConversionService {
  * Creates a new ConversionService instance with built-in converters registered.
  * @param options - Optional configuration for customizing the service.
  * @returns A configured {@link ConversionService}.
+ *
+ * @example
+ * ```ts
+ * const service = createConversionService();
+ * service.convert('42', Number); // 42
+ * ```
  */
 export function createConversionService(options: ConversionServiceOptions = {}): ConversionService {
     const registry = new ConverterRegistry();

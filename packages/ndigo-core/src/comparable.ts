@@ -1,5 +1,15 @@
 /**
  * Comparison contracts: `Comparable`, `Comparator`, and combinators for ordering values.
+ *
+ * Provides `Comparable`/`StringComparable` contracts, a `Comparator` type, and
+ * combinators (`chainComparisons`, `compareBy`, `invertComparison`) for
+ * building multi-key and reversed orderings.
+ *
+ * @example
+ * ```ts
+ * const byName = compareBy((u: { name: string }) => u.name);
+ * const users = [{ name: 'b' }, { name: 'a' }].sort(byName);
+ * ```
  */
 import { like } from '@ndigo/util';
 

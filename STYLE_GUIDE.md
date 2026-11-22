@@ -4526,30 +4526,43 @@ Ndigo source documentation follows the **TSDoc standard** as parsed by
 `--deny-warnings`, so a TSDoc syntax diagnostic is a hard error.
 
 Every source file begins with a single canonical TSDoc block at the very top
-of the file, before any imports. The block carries a one-line module summary;
-no tags. The summary is what the module-summary TypeDoc plugin lifts onto the
-generated module page (`packages/<name>/api/<file>/README.md`). The same
-plugin lifts the package README's blockquote tagline onto
-`packages/<name>/api/README.md`; `@packageDocumentation` is not used because
-TypeDoc ignores it under `entryPointStrategy: expand`. This is the
-standard form — `@ndigo/generators` emits it for new packages/components and
-the `header` generator adds/replaces it on existing files:
+of the file, before any imports. The block always opens with a one-line module
+summary, which is what the module-summary TypeDoc plugin lifts onto the
+generated module page (`packages/<name>/api/<file>/README.md`). Module files
+(non-internal `src` files) may extend that summary with additional paragraphs,
+a `@remarks` block, and one or more `@example` blocks to give the module page a
+richer overview and cross-cutting examples. The same plugin lifts the package
+README's blockquote tagline onto `packages/<name>/api/README.md`;
+`@packageDocumentation` is not used because TypeDoc ignores it under
+`entryPointStrategy: expand`. This is the standard form — `@ndigo/generators`
+emits it for new packages/components and the `header` generator adds/replaces
+it on existing files:
 
-```
+````
 /**
  * <One-line summary ending with a period>.
+ *
+ * <Optional additional paragraphs.>
+ *
+ * @remarks <Optional longer rationale.>
+ *
+ * @example
+ * ```ts
+ * <optional, valid TypeScript>
+ * ```
  */
-```
+````
 
 **Rules:**
 
 - ✅ One block per file, first thing in the file (before imports)
 - ✅ `<summary>` is a single sentence ending in a period; required for `src`
   modules, optional for test files
-- ✅ No tags in the file header — no `@since`, `@author`, `@module`,
-  `@category`, `@file`, or duplicate summary lines. Ndigo follows the TSDoc
-  standard, which defines no version/author tags; `@since`/`@author` are
-  deliberately not used.
+- ✅ Additional paragraphs, `@remarks`, and `@example` are allowed in module
+  (non-internal) file headers; keep them focused on the module as a whole
+- ✅ No `@since`, `@author`, `@module`, `@category`, `@file`, or duplicate
+  summary lines. Ndigo follows the TSDoc standard, which defines no
+  version/author tags; `@since`/`@author` are deliberately not used.
 - ❌ No `@module` tag: TypeDoc derives each module's name from its source path,
   and a package-wide tag collapses every file of the package into one module
   (see [Guide 90 — Package Documentation](./docs/guides/90-package-documentation.md))

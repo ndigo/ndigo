@@ -1,5 +1,13 @@
 /**
  * Router abstractions and implementations for client-side navigation.
+ *
+ * Provides `PathRoute`, `AbstractRouter`, and route registration helpers for
+ * client-side (and isomorphic) navigation.
+ *
+ * @example
+ * ```ts
+ * const router = new AbstractRouter({ onError: (err, route) => console.error(route, err) });
+ * ```
  */
 export * from './route';
 export * from './route-attributes';

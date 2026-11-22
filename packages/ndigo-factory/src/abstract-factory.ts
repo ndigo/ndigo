@@ -1,5 +1,15 @@
 /**
  * Abstract factory with scopes, lifecycle, and version checks.
+ *
+ * `AbstractFactory` is the base for context-aware factories: it manages bean
+ * definitions, scopes (singleton/prototype/refresh), and lifecycle callbacks.
+ *
+ * @example
+ * ```ts
+ * class MyFactory extends AbstractFactory {}
+ * const factory = new MyFactory();
+ * factory.registerScope('request', new PrototypeScope());
+ * ```
  */
 import {
     FrameworkError,

@@ -1,5 +1,15 @@
 /**
  * Locale-aware formatting services for dates, numbers, lists, and relative time.
+ *
+ * Each formatter is constructed with a locale and (optionally) an ICU-style
+ * options object, and exposes a `format` method. A `FormattingService`
+ * aggregates formatters for consistent, locale-aware rendering.
+ *
+ * @example
+ * ```ts
+ * const fmt = new DateTimeFormatter('en-US', { dateStyle: 'medium' });
+ * fmt.format(new Date('2024-01-02T00:00:00Z'));
+ * ```
  */
 import { IllegalStateError } from './error.js';
 

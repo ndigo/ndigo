@@ -1,5 +1,15 @@
 /**
  * The dispatcher contract and implementation.
+ *
+ * The dispatcher routes an incoming request to a handler and drives the
+ * interceptor chain. `AbstractDispatcher` is the base; concrete platforms
+ * (Node, web) provide transport-specific implementations.
+ *
+ * @example
+ * ```ts
+ * const dispatcher = new AbstractDispatcher();
+ * await dispatcher.dispatch(request, response);
+ * ```
  */
 
 import { Null } from '@ndigo/core';

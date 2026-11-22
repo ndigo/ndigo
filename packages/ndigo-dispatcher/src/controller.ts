@@ -1,5 +1,16 @@
 /**
  * Controller base class.
+ *
+ * `PathViewController` (and subclasses) group request-handling methods under a
+ * shared path prefix; handler methods are discovered via `@requestMapping`.
+ *
+ * @example
+ * ```ts
+ * class UsersController extends PathViewController {
+ *     @requestMapping({ value: '/{id}', method: 'GET' })
+ *     get(id: number) { return { id }; }
+ * }
+ * ```
  */
 
 import { ModelAndView } from './model-and-view';

@@ -1,5 +1,4 @@
 /**
- *
  * Public entry point for `@ndigo/inspect` — the programmatic manifest
  * generator. `inspectApplication()` produces a deterministic, versioned JSON
  * description of a running application: identity, routes, handler mappings and

@@ -1,5 +1,13 @@
 /**
  * Aware mixins for injecting factory and context dependencies.
+ *
+ * `AsAware` and friends let a bean declare dependencies (factory, context,
+ * environment) that the container injects after construction.
+ *
+ * @example
+ * ```ts
+ * class MyBean extends AsAware(AsFactoryAware(AsContextAware(Base))) {}
+ * ```
  */
 import { Constructable } from '@ndigo/core';
 import { like } from '@ndigo/util/types';

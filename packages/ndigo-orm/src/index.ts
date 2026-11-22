@@ -1,5 +1,17 @@
 /**
  * Public API of `@ndigo/orm` — entities, repositories, and pagination.
+ *
+ * Provides `@entity`, `@column`, and repository interfaces for data access,
+ * plus pagination and query helpers.
+ *
+ * @example
+ * ```ts
+ * @entity('users')
+ * class User {
+ *     @column() id!: number;
+ *     @column() name!: string;
+ * }
+ * ```
  */
 // Types and interfaces
 export type {

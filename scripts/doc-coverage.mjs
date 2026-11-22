@@ -25,6 +25,7 @@ const PACKAGES = join(ROOT, 'packages');
 const args = process.argv.slice(2);
 const JSON_OUT = args.includes('--json');
 const CHECK = args.includes('--check');
+const EXAMPLES = args.includes('--examples');
 
 function walk(dir, out = []) {
     for (const entry of readdirSync(dir)) {
@@ -79,6 +80,7 @@ function scanPackage(dir) {
         examples: 0,
         remarks: 0,
     };
+    const missingExamples = [];
     for (const file of walk(src)) {
         const text = readFileSync(file, 'utf8');
         stats.modules++;
@@ -87,6 +89,27 @@ function scanPackage(dir) {
         for (const stmt of sf.statements) {
             if (ts.isImportDeclaration(stmt) || ts.isExportDeclaration(stmt)) continue;
             if (!isExported(stmt)) continue;
+
+            const stmtName = stmt.name?.getText?.() ?? stmt.name?.text ?? null;
+            if (
+                stmtName &&
+                (ts.isClassDeclaration(stmt) ||
+                    ts.isInterfaceDeclaration(stmt) ||
+                    ts.isFunctionDeclaration(stmt) ||
+                    ts.isTypeAliasDeclaration(stmt))
+            ) {
+                const stmtTags = tagsOf(stmt);
+                if (!stmtTags.some((t) => tagName(t) === 'example')) {
+                    const kind = ts.isClassDeclaration(stmt)
+                        ? 'class'
+                        : ts.isInterfaceDeclaration(stmt)
+                          ? 'interface'
+                          : ts.isFunctionDeclaration(stmt)
+                            ? 'function'
+                            : 'type';
+                    missingExamples.push({ file: file.replace(src + '/', ''), name: stmtName, kind });
+                }
+            }
 
             if (ts.isClassDeclaration(stmt) || ts.isInterfaceDeclaration(stmt)) {
                 for (const m of stmt.members ?? []) {
@@ -144,6 +167,7 @@ function scanPackage(dir) {
             }
         }
     }
+    stats.missingExamples = missingExamples;
     return stats;
 }
 
@@ -154,6 +178,25 @@ const results = {};
 for (const dir of dirs) {
     const s = scanPackage(dir);
     if (s) results[dir] = s;
+}
+
+if (EXAMPLES) {
+    for (const dir of dirs) {
+        const s = results[dir];
+        if (!s || !s.missingExamples || s.missingExamples.length === 0) continue;
+        console.log(`\n## ${dir} (${s.missingExamples.length} top-level symbols without @example)`);
+        const byFile = {};
+        for (const m of s.missingExamples) {
+            (byFile[m.file] ||= []).push(m);
+        }
+        for (const file of Object.keys(byFile).sort()) {
+            console.log(`  ${file}`);
+            for (const m of byFile[file]) {
+                console.log(`    - ${m.kind} ${m.name}`);
+            }
+        }
+    }
+    process.exit(0);
 }
 
 if (JSON_OUT) {

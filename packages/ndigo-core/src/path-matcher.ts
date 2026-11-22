@@ -1,5 +1,15 @@
 /**
  * Path matching, globbing, and include/exclude filtering contracts.
+ *
+ * Provides `EqualsPathMatcher`, `GlobPatternInfo`, `URLGlobPathMatcher`, and
+ * comparator helpers for deciding whether a path matches a pattern or set of
+ * include/exclude globs.
+ *
+ * @example
+ * ```ts
+ * const matcher = new URLGlobPathMatcher();
+ * matcher.match('/users/*', '/users/42'); // true
+ * ```
  */
 import { like } from '@ndigo/util/types';
 import { AbstractValueComparator, Comparator } from './comparable.js';

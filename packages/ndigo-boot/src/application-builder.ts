@@ -19,6 +19,11 @@ import { parseToonDocument } from './_toon';
 
 /**
  * Options for `ApplicationBuilder.fromConfig`.
+ *
+ * @example
+ * ```ts
+ * const value = {} as FromConfigOptions;
+ * ```
  */
 export interface FromConfigOptions {
     /**
@@ -80,6 +85,11 @@ function assertAllowedConfigUrl(url: string | URL): void {
 
 /**
  * Builder for configuring and running an application bootstrap sequence.
+ *
+ * @example
+ * ```ts
+ * const instance = new ApplicationBuilder();
+ * ```
  */
 export class ApplicationBuilder {
     /**

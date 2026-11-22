@@ -50,6 +50,11 @@ const splitProfiles = (raw: string): string[] =>
  * @param name - The name of the application
 
 
+ *
+ * @example
+ * ```ts
+ * const instance = new Application();
+ * ```
  */
 export class Application extends Emitter {
     /**

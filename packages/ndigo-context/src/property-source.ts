@@ -1,5 +1,14 @@
 /**
  * Named property source contract and `MapPropertySource`.
+ *
+ * A `PropertySource` exposes a named, ordered set of key/value pairs; the
+ * context consults them in order when resolving `@Value`/`getProperty`.
+ *
+ * @example
+ * ```ts
+ * const source = new MapPropertySource('defaults', { 'server.port': 8080 });
+ * source.getProperty('server.port'); // 8080
+ * ```
  */
 import { JSONObject, JSONValue, createNull, getPath, KeypathConverter } from '@ndigo/core';
 import { isNil } from '@ndigo/util/types';

@@ -1,5 +1,8 @@
 /**
  * Declared annotations and their execution for Ndigo.
+ *
+ * Provides method interception, advice weaving, and interceptor ordering
+ * for cross-cutting concerns.
  */
 export * from './chain.js';
 export * from './diagnostics.js';

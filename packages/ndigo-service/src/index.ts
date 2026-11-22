@@ -1,5 +1,14 @@
 /**
  * Public API of `@ndigo/service` — declarative service calls and interceptors.
+ *
+ * Provides the `@service` decorator and client helpers for typed remote
+ * service calls, plus interceptors for cross-cutting concerns.
+ *
+ * @example
+ * ```ts
+ * @service('UserService')
+ * class UserServiceClient {}
+ * ```
  */
 export {
     MappedServiceInterceptor,

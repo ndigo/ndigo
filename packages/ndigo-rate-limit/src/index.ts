@@ -1,6 +1,13 @@
 /**
  * Public API of `@ndigo/rate-limit` — fixed-window rate limiting
  * (shared-store seam).
+ *
+ * @example
+ * ```ts
+ * const limiter = new FixedWindowRateLimiter();
+ * const result = await limiter.consume('client-1', { limit: 10, windowMs: 60_000 });
+ * if (!result.allowed) console.log('retry after', result.retryAfterMs);
+ * ```
  */
 
 export {

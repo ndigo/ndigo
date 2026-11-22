@@ -1,5 +1,17 @@
 /**
  * A radix tree for URL routing with parameter capture.
+ *
+ * `RadixTree` stores values keyed by path patterns supporting static
+ * segments, `:param`, single-segment `*`, and greedy `**`/`{*name}`. Probe
+ * order per segment is static → param → wildcard → greedy, with the deepest
+ * greedy child as a backtracking fallback.
+ *
+ * @example
+ * ```ts
+ * const tree = new RadixTree<string>();
+ * tree.insert('/users/:id', 'getUser');
+ * tree.lookup('/users/42')?.params; // { id: '42' }
+ * ```
  */
 import { createNull } from './null.js';
 import { JSONValue, Serializable } from './serializable.js';

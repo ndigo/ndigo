@@ -1,5 +1,16 @@
 /**
  * Scope contracts and implementations.
+ *
+ * Scopes (`singleton`, `prototype`, `refresh`) control instance lifetime for
+ * factory-managed objects; `RefreshScope` invalidates cached instances on
+ * demand.
+ *
+ * @example
+ * ```ts
+ * const scope = new RefreshScope();
+ * const value = scope.getValue('bean', () => new MyBean());
+ * scope.clear();
+ * ```
  */
 import { toError } from '@ndigo/util';
 import '@tsmetadata/polyfill';

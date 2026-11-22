@@ -1,5 +1,16 @@
 /**
  * Error-to-resolution mappings.
+ *
+ * Maps thrown errors to status codes, views, or problem details so the
+ * dispatcher can render a consistent error response.
+ *
+ * @example
+ * ```ts
+ * class UserController {
+ *     @errorMapping(IllegalStateError)
+ *     handle() { return null; }
+ * }
+ * ```
  */
 
 import '@tsmetadata/polyfill';

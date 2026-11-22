@@ -1,5 +1,14 @@
 /**
  * HTTP client with interceptor support and convenience verb helpers.
+ *
+ * `HTTP` wraps fetch with request/response interceptors, base URL handling,
+ * and verb helpers (`get`, `post`, …) for typed API calls.
+ *
+ * @example
+ * ```ts
+ * const http = new HTTP([], { baseURL: '/api' });
+ * const res = await http.get('/users');
+ * ```
  */
 /// <reference lib="dom" />
 // TypeScript 6.0 declaration generation fix

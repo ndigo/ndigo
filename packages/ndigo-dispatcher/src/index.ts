@@ -1,5 +1,18 @@
 /**
  * Public API of `@ndigo/dispatcher`.
+ *
+ * Re-exports the dispatcher, controllers, request mappings, argument resolvers,
+ * conditions, and error mappings that make up the routing layer.
+ *
+ * @example
+ * ```ts
+ * import { requestMapping, PathViewController } from '@ndigo/dispatcher';
+ *
+ * class UsersController extends PathViewController {
+ *     @requestMapping({ value: '/users', method: 'GET' })
+ *     list() { return []; }
+ * }
+ * ```
  */
 
 export * from './argument-resolver';

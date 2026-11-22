@@ -1,5 +1,15 @@
 /**
  * Ordered, mutable collection of property sources.
+ *
+ * `PropertySources` keeps sources in precedence order and exposes lookup plus
+ * mutation helpers used by the context during refresh.
+ *
+ * @example
+ * ```ts
+ * const sources = new MutablePropertySources();
+ * sources.addLast('defaults', { 'a': 1 });
+ * sources.get('defaults')?.properties; // { a: 1 }
+ * ```
  */
 import { IllegalStateError, JSONObject, type Enumerable } from '@ndigo/core';
 import { PropertySource, wrapSource } from './property-source';

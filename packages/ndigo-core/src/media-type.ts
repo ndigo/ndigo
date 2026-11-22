@@ -1,5 +1,21 @@
 /**
  * HTTP media type parsing, interning, comparison, and content negotiation.
+ *
+ * `MediaType` instances are interned process-wide: header parsing goes through
+ * the same canonical form, so equality and comparison are by reference after
+ * interning. Use this module to parse `Accept`/`Content-Type` headers, compare
+ * media types by specificity, and negotiate the best match.
+ *
+ * @remarks
+ * Interning means `MediaType.for(a) === MediaType.for(b)` whenever `a` and
+ * `b` parse to the same canonical media type. Quality factors default to `1`.
+ *
+ * @example
+ * ```ts
+ * const mt = MediaType.for('text/html;charset=UTF-8');
+ * mt.baseType; // "text/html"
+ * mt.qualityFactor; // 1
+ * ```
  */
 import { Serializable, JSONValue } from './serializable.js';
 import {

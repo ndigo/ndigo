@@ -1,5 +1,16 @@
 /**
  * A bounded cache with configurable eviction policy (LRU or FIFO).
+ *
+ * `BoundedCache` caps the number of stored entries and evicts according to the
+ * configured policy when the cap is exceeded. Use it for in-memory memoization
+ * with a predictable memory footprint.
+ *
+ * @example
+ * ```ts
+ * const cache = new BoundedCache<string, number>(128, 'lru');
+ * cache.set('a', 1);
+ * cache.get('a'); // 1
+ * ```
  */
 import { createNull } from './null.js';
 /**

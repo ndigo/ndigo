@@ -1,5 +1,8 @@
 /**
  * Public API of `@ndigo/auth-core` — principals, sessions, and adapters.
+ *
+ * Provides `Principal`, `AuthSession`, password encoders, and adapter
+ * contracts for authentication flows.
  */
 export * from './principal';
 export * from './state';

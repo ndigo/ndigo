@@ -1,5 +1,14 @@
 /**
  * Interceptor execution chain for HTTP requests.
+ *
+ * `HTTPExecutionChain` runs the request/response interceptor pipeline in
+ * order, short-circuiting on the first response or error.
+ *
+ * @example
+ * ```ts
+ * const chain = new HTTPExecutionChain(http, interceptors);
+ * const response = await chain.execute(request);
+ * ```
  */
 /// <reference lib="dom" />
 // TypeScript 6.0 declaration generation fix

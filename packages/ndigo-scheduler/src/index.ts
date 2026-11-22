@@ -1,5 +1,8 @@
 /**
  * Task scheduling with cron, interval, and fixed-delay triggers.
+ *
+ * Provides `TaskScheduler` and the `@scheduled` decorator for declaring
+ * recurring tasks.
  */
 export * from './context-tokens';
 export * from './spec';

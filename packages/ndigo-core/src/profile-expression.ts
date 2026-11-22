@@ -2,6 +2,11 @@
  * Reference-style profile expression grammar (`name`, `!`, `&`, `|`,
  * parentheses) — parsed, never eval'd. Re-homed from `@ndigo/context` with
  * the conditional-family profile unification.
+ *
+ * @example
+ * ```ts
+ * evaluateProfileExpression('admin & !disabled', new Set(['admin'])); // true
+ * ```
  */
 import { IllegalStateError } from './error.js';
 

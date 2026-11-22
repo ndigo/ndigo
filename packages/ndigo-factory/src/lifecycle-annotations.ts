@@ -6,6 +6,14 @@
  * container's `LifecycleAnnotationProcessor` reads them when it processes each
  * managed instance and invokes the declared methods at the matching hook
  * position. Standalone `new` instances stay inert.
+ *
+ * @example
+ * ```ts
+ * class MyBean {
+ *     @preInit
+ *     init() { return true; }
+ * }
+ * ```
  */
 import '@tsmetadata/polyfill';
 import { annotationOf, methodAnnotation, type MethodAnnotationKey } from '@ndigo/core';

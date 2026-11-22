@@ -1,5 +1,14 @@
 /**
  * Argument resolver contracts and built-in resolvers.
+ *
+ * Argument resolvers bind handler-method parameters from the request, path,
+ * query, body, and application context.
+ *
+ * @example
+ * ```ts
+ * const resolver = new PathValueMethodArgumentResolver();
+ * resolver.resolve(parameter, context);
+ * ```
  */
 
 import { ApplicationContext } from '@ndigo/context';

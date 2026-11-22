@@ -5,6 +5,12 @@
  * moved from `ndigo-dispatcher`, which re-exports them for handler
  * signatures) and the client story: `SocketClient`/`WebSocketClient` on
  * the WHATWG `WebSocket` global, with signal-based status and reconnect.
+ *
+ * @example
+ * ```ts
+ * const client = new SocketClient('ws://localhost:8080/ws');
+ * await client.connect();
+ * ```
  */
 export * from './socket-session';
 export * from './socket-session-registry';

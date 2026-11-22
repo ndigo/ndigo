@@ -1,5 +1,20 @@
 /**
  * Core primitives, containers, and patterns for the Ndigo framework.
+ *
+ * `@ndigo/core` is the foundation other Ndigo packages build on: data
+ * structures (deque, heap, trie, radix tree, ring buffer, bloom filter),
+ * comparison/equality/matching contracts, media types, keypath and wildcard
+ * conversion, formatting, and the `ConversionService`. Most applications
+ * consume these indirectly through higher-level packages.
+ *
+ * @example
+ * ```ts
+ * import { BoundedCache, MediaType, createConversionService } from '@ndigo/core';
+ *
+ * const cache = new BoundedCache<string, number>(128, 'lru');
+ * const service = createConversionService();
+ * const mt = MediaType.for('application/json');
+ * ```
  */
 
 import './_ndigo.js';

@@ -1,5 +1,13 @@
 /**
  * HTTP header value objects and header-name helpers.
+ *
+ * Provides typed header value objects (`Authorization`, `ContentType`,
+ * `SetCookie`, …) plus case-insensitive header-name helpers.
+ *
+ * @example
+ * ```ts
+ * foldHeaderName('Content-Type'); // "content-type"
+ * ```
  */
 import { isEntries, isJSONObject, JSONValue, Serializable } from '@ndigo/core';
 import { is } from '@ndigo/util/types';

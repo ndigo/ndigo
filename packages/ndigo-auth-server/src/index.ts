@@ -1,5 +1,8 @@
 /**
  * Server-side authentication: adapters, session stores, and route guards.
+ *
+ * Provides credentials/JWT adapters, in-memory session/user stores, and
+ * route guards for securing server endpoints.
  */
 export * from './server';
 export * from './route-guard';

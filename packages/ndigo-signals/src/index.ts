@@ -1,5 +1,8 @@
 /**
  * Re-exports from `@preact/signals-core` — the underlying signals engine.
+ *
+ * Ndigo's signal integration builds on `@preact/signals-core` and adds
+ * framework-aware bindings and decorators.
  */
 export { signal, computed, effect, batch, untracked, Signal } from '@preact/signals-core';
 

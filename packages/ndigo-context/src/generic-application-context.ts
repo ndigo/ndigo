@@ -1,5 +1,15 @@
 /**
  * Generic application context implementation.
+ *
+ * `GenericApplicationContext` is the default `ApplicationContext` implementation:
+ * it wires property sources, bean definitions, lifecycle processors, and event
+ * emission. Create one per module/feature and refresh it to materialize beans.
+ *
+ * @example
+ * ```ts
+ * const ctx = new GenericApplicationContext('feature');
+ * ctx.refresh();
+ * ```
  */
 import { toError } from '@ndigo/util';
 import { JSONObject } from '@ndigo/core';

@@ -4,14 +4,13 @@ The environment is a JavaScript-native configuration model — property sources,
 
 ## Design Principles
 
-1. **Port semantics, not structures.** A Java-shaped implementation (iterate every source per lookup, subclass zoo, `LinkedHashMap` ceremony) is what Ndigo avoids. Ndigo uses a `Map`-backed registry plus prototype-chain and flat-index strategies; the research table rejected radix/ART/QP-trie/HAMT/codegen accessors for config-size exact lookups (native objects and `Map` win).
-2. **Bench drives defaults, not taste.** The representative-workload rule (≥10% median win, no cell ≥10% regression, mixed-mutation within margin; ties to prototype) chose `PrototypeChainIndex` as the default on both platforms — lookup costs were within noise and prototype's lazy mutation won the sustained case. `{ index: 'flat' }` remains the opt-in.
-3. **Fail loud everywhere.** Missing-required throws; malformed profile expressions throw; conversion failures throw; customizer failures fail boot; invalid environments fail boot with every violation. A typo that silently never-matches is the bug the whole arc eliminates.
-4. **Replace, never mutate.** Sources are captured (null-prototype copies), replaced, or reordered — in-place edits are declared unsupported where they shadow (flat index, placeholder cache). `process.env` is snapshotted.
-5. **Single conversion path.** `@defaultValue` strings, placeholders, and real property values all ride `getPropertyAs`/`ConversionService` — no second semantics for defaults.
-6. **One source of truth per contract.** The environment owns what's active (`activeProfilesOrDefaults`); `PrecedenceDoc` pins the documented chain; `@environment` schemas _are_ the config contract.
-7. **No eval-family.** Profile expressions and keys are parsed, never `new Function`'d — CSP-safe and scanner-clean.
-8. **JS-standard camelCase decorators.** `@property`, `@entry`, `@whenProfile`, `@configurationProperties`, `@defaultValue`, `@nestedConfig`, `@environment`. Pre-1.0 clean cutovers (no PascalCase aliases).
+1. **Bench drives defaults, not taste.** The representative-workload rule (≥10% median win, no cell ≥10% regression, mixed-mutation within margin; ties to prototype) chose the prototype-chain index as the default on both platforms — lookup costs were within noise and prototype's lazy mutation won the sustained case. A flat index remains available as an opt-in.
+2. **Fail loud everywhere.** Missing required values throw; malformed profile expressions throw; conversion failures throw; customizer failures fail boot; invalid environments fail boot with every violation reported. A typo that silently never matches is the bug the whole arc eliminates.
+3. **Replace, never mutate.** Sources are captured, replaced, or reordered — in-place edits are declared unsupported where they would shadow other sources. The process environment is snapshotted.
+4. **Single conversion path.** Default values, placeholders, and real property values all convert through one path — no second semantics for defaults.
+5. **One source of truth per contract.** The environment owns what is active; the documented precedence chain is pinned in one place; environment schemas are the config contract.
+6. **No eval-family.** Profile expressions and keys are parsed, never evaluated as code — CSP-safe and scanner-clean.
+7. **JS-standard camelCase decorators.** Configuration decorators use standard camelCase names; there are no PascalCase aliases. Pre-1.0 clean cutovers.
 
 ## Precedence Chain
 

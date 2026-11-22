@@ -16,11 +16,21 @@ import { parseToonDocument } from './_toon';
  * `format` error out (imports inherit the rule). TOON files
  * follow spec v4.4 and decode through the optional `@toon-format/toon` peer
  * (see {@link StandardConfigFileLoader}).
+ *
+ * @example
+ * ```ts
+ * type _Alias = ConfigFileFormat;
+ * ```
  */
 export type ConfigFileFormat = 'auto' | 'json' | 'toon';
 
 /**
  * Options accepted by {@link StandardConfigFileLoader}.
+ *
+ * @example
+ * ```ts
+ * const value = {} as ConfigFileLoaderOptions;
+ * ```
  */
 export interface ConfigFileLoaderOptions {
     /**
@@ -69,6 +79,11 @@ const stripPrefix = (location: string): { path: string; optional: boolean; requi
  * @param path - The file path for diagnostics.
  * @returns The parsed JSON object.
  * @throws `IllegalStateError` when the document is not valid JSON.
+ *
+ * @example
+ * ```ts
+ * parseJsonConfig();
+ * ```
  */
 export function parseJsonConfig(content: string, path: string): JSONObject {
     let parsed: unknown;
@@ -128,6 +143,11 @@ const isPlainObject = (value: unknown): boolean => value !== null && typeof valu
  * applied and BEFORE CLI/builder wiring (CLI \> boot \> files \> env \>
  * defaults). See: TOON is an opt-in, decode-only authoring format;
  * JSON stays the default.
+ *
+ * @example
+ * ```ts
+ * const instance = new StandardConfigFileLoader();
+ * ```
  */
 export class StandardConfigFileLoader {
     /**

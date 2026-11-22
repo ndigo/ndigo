@@ -29,6 +29,11 @@ const CONFIG_PROPS = 'boot:configurationProperties';
 
 /**
  * Options for {@link configurationProperties}.
+ *
+ * @example
+ * ```ts
+ * const value = {} as ConfigurationPropertiesOptions;
+ * ```
  */
 export interface ConfigurationPropertiesOptions {
     /**
@@ -153,6 +158,11 @@ export type { DeclaredConfigurationProperty } from '@ndigo/context';
 
 /**
  * Result of resolving a configuration properties class against an application context.
+ *
+ * @example
+ * ```ts
+ * const value = {} as ConfigurationPropertiesResult;
+ * ```
  */
 export interface ConfigurationPropertiesResult<T> {
     /** The resolved instance with bound property values. */

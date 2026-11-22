@@ -12,10 +12,24 @@
 /** The MCP Apps HTML resource media type. */
 export const MCP_APP_MIME_TYPE = 'text/html;profile=mcp-app';
 
-/** Tool visibility inside an MCP App. */
+/**
+ * Tool visibility inside an MCP App.
+ *
+ * @example
+ * ```ts
+ * const visibility: UiVisibility = 'model';
+ * ```
+ */
 export type UiVisibility = 'model' | 'app';
 
-/** Domains the host adds to the app's Content-Security-Policy. */
+/**
+ * Domains the host adds to the app's Content-Security-Policy.
+ *
+ * @example
+ * ```ts
+ * const csp: UiCspConfig = { connectDomains: ['https://app.example.com'] };
+ * ```
+ */
 export interface UiCspConfig {
     /** `connect-src` targets (fetch, XHR, WebSocket). */
     readonly connectDomains?: readonly string[];
@@ -27,7 +41,14 @@ export interface UiCspConfig {
     readonly baseUriDomains?: readonly string[];
 }
 
-/** `_meta.ui` metadata for a tool or resource. */
+/**
+ * `_meta.ui` metadata for a tool or resource.
+ *
+ * @example
+ * ```ts
+ * const metadata: UiMetadata = { resourceUri: 'ui://panel', visibility: ['app'] };
+ * ```
+ */
 export interface UiMetadata {
     /** The `ui://` resource the host renders. */
     readonly resourceUri: string;
@@ -43,7 +64,18 @@ export interface UiMetadata {
     readonly domain?: string;
 }
 
-/** A `ui://` resource with its self-contained HTML. */
+/**
+ * A `ui://` resource with its self-contained HTML.
+ *
+ * @example
+ * ```ts
+ * const resource: UiResource = {
+ *     uri: 'ui://panel',
+ *     name: 'Panel',
+ *     html: '<!doctype html><html></html>',
+ * };
+ * ```
+ */
 export interface UiResource {
     /** Resource URI (`ui://…`). */
     readonly uri: string;
@@ -57,7 +89,14 @@ export interface UiResource {
     readonly ui?: Omit<UiMetadata, 'resourceUri'>;
 }
 
-/** Inputs for {@link createUiResource}. */
+/**
+ * Inputs for {@link createUiResource}.
+ *
+ * @example
+ * ```ts
+ * const input: UiResourceInput = { uri: 'ui://panel', name: 'Panel', body: '<main></main>' };
+ * ```
+ */
 export interface UiResourceInput {
     /** Resource URI (`ui://…`). */
     readonly uri: string;
@@ -101,6 +140,11 @@ export interface UiResourceInput {
  * @returns The resource served by `resources/read`.
  * @throws When the URI is not `ui://` or inlined CSS/JS would break out of its
  *   element.
+ *
+ * @example
+ * ```ts
+ * const resource = createUiResource({ uri: 'ui://panel', name: 'Panel', body: '<main></main>' });
+ * ```
  */
 export function createUiResource(input: UiResourceInput): UiResource {
     if (!input.uri.startsWith('ui://') || !/^ui:\/\/[A-Za-z0-9-]+(?:::.*)?$/u.test(input.uri)) {

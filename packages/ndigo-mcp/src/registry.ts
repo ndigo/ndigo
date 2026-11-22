@@ -24,7 +24,14 @@ import {
     type ToolDescriptor,
 } from './project.js';
 
-/** Per-call context carried from the transport. */
+/**
+ * Per-call context carried from the transport.
+ *
+ * @example
+ * ```ts
+ * const context: ToolCallContext = { callId: 'req-1', source: 'http' };
+ * ```
+ */
 export interface ToolCallContext {
     /** The MCP request id, recorded as `gen_ai.tool.call.id`. */
     readonly callId?: string;
@@ -32,7 +39,14 @@ export interface ToolCallContext {
     readonly source?: string;
 }
 
-/** One tool call under registry policy evaluation. */
+/**
+ * One tool call under registry policy evaluation.
+ *
+ * @example
+ * ```ts
+ * const call: McpToolCall = { tool: descriptor, args: {} };
+ * ```
+ */
 export interface McpToolCall {
     /** The tool's descriptor as reported by `tools/list`. */
     readonly tool: ToolDescriptor;
@@ -48,7 +62,14 @@ export interface McpToolCall {
     readonly confirm?: string;
 }
 
-/** Policy options for a registry. */
+/**
+ * Policy options for a registry.
+ *
+ * @example
+ * ```ts
+ * const options: McpToolRegistryOptions = { readOnly: true };
+ * ```
+ */
 export interface McpToolRegistryOptions {
     /** Omit mutating tools from `tools/list` and reject them on call. */
     readonly readOnly?: boolean;
@@ -93,6 +114,12 @@ function isDispatcherSource(source: MappingSource): source is DispatcherLike {
 
 /**
  * A registry of tools projected from dispatch metadata.
+ *
+ * @example
+ * ```ts
+ * const registry = await McpToolRegistry.from(dispatcher, { readOnly: true });
+ * const tools = await registry.listTools();
+ * ```
  */
 export class McpToolRegistry {
     /**

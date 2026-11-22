@@ -52,6 +52,11 @@ export function serializeCacheKey(...args: unknown[]): string {
  *
  * @param args - The method/function arguments.
  * @returns The cache key.
+ *
+ * @example
+ * ```ts
+ * serializeCacheKeyStrict(undefined, null); // distinct keys
+ * ```
  */
 export function serializeCacheKeyStrict(...args: unknown[]): string {
     return JSON.stringify(args.map(tagValue));

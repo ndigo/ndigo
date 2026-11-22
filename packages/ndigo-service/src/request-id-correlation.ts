@@ -24,6 +24,12 @@ export interface RequestIdCorrelation {
 
 /**
  * Request-ID correlation implementation using crypto.randomUUID().
+ *
+ * @example
+ * ```ts
+ * const correlation = new CryptoRequestIdCorrelation();
+ * correlation.generate(); // UUID string
+ * ```
  */
 export class CryptoRequestIdCorrelation implements RequestIdCorrelation {
     /**

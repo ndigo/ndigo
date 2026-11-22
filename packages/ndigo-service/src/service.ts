@@ -218,6 +218,11 @@ function globToRegExp(globPattern: string): RegExp {
 
 /**
  * Wraps an interceptor so it only applies to matching request paths.
+ *
+ * @example
+ * ```ts
+ * const mapped = new MappedServiceInterceptor(interceptor, ['/api/*']);
+ * ```
  */
 export class MappedServiceInterceptor {
     /**
@@ -298,6 +303,11 @@ export class MappedServiceInterceptor {
 
 /**
  * Builds and advances the interceptor chain for a service call.
+ *
+ * @example
+ * ```ts
+ * const chain = new ServiceExecutionChain(service, interceptors);
+ * ```
  */
 export class ServiceExecutionChain {
     #interceptors: ServiceInterceptor[];
@@ -382,6 +392,11 @@ export class ServiceExecutionChain {
 
 /**
  * A service that provides a high-level API for interacting with remote endpoints.
+ *
+ * @example
+ * ```ts
+ * const service = new Service('UserService', http, registry, telemetry, correlation);
+ * ```
  */
 export class Service implements AsyncDestroyable {
     #interceptors: ServiceInterceptor[] = [];

@@ -31,6 +31,12 @@ export interface ServiceRegistry {
 
 /**
  * Implementation of the ServiceRegistry using an in-memory Map.
+ *
+ * @example
+ * ```ts
+ * const registry = new MapServiceRegistry();
+ * registry.register('UserService', client);
+ * ```
  */
 export class MapServiceRegistry implements ServiceRegistry {
     /**

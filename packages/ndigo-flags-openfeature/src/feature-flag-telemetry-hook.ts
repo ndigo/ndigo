@@ -13,7 +13,8 @@
  *
  * The hook is synchronous, so the same instance also satisfies the web
  * SDK's hook contract (`OpenFeature.addHooks` in the browser).
- */ import { SpanKind, SpanStatusCode, trace, type Span } from '@opentelemetry/api';
+ */
+import { SpanKind, SpanStatusCode, trace, type Span } from '@opentelemetry/api';
 import { toError } from '@ndigo/util';
 import type {
     BeforeHookContext,
@@ -41,6 +42,11 @@ const FLAG_SPAN_KEY = 'ndigo:featureFlagSpan';
  * the span gets ERROR status, the exception, and the classification as
  * `error.type` (the OpenFeature error code when present, else the error's
  * name). Clean resolutions get reason/variant attributes.
+ *
+ * @example
+ * ```ts
+ * OpenFeature.addHooks(new FeatureFlagTelemetryHook());
+ * ```
  */
 export class FeatureFlagTelemetryHook implements Hook {
     /**

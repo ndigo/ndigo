@@ -37,6 +37,11 @@ export type ServiceInit = HTTPInit &
  *
  * Reuses the {@link CompletionAwareHTTPInterceptor} interface; `postRequest`
  * is the service-level "request completed" hook (HTTP's `postComplete`).
+ *
+ * @example
+ * ```ts
+ * const interceptor: CompletionAwareServiceInterceptor = { onComplete: async () => {} };
+ * ```
  */
 export interface CompletionAwareServiceInterceptor extends CompletionAwareHTTPInterceptor {
     /**
@@ -52,6 +57,11 @@ export interface CompletionAwareServiceInterceptor extends CompletionAwareHTTPIn
  *
  * Reuses the {@link ErrorAwareHTTPInterceptor} interface; `postFailure` is the
  * service-level "request failed" hook.
+ *
+ * @example
+ * ```ts
+ * const interceptor: ErrorAwareServiceInterceptor = { onError: async () => {} };
+ * ```
  */
 export interface ErrorAwareServiceInterceptor extends ErrorAwareHTTPInterceptor {
     /**
@@ -68,6 +78,11 @@ export interface ErrorAwareServiceInterceptor extends ErrorAwareHTTPInterceptor 
  *
  * Reuses the {@link InitializationAwareHTTPInterceptor} contract (settings are
  * `ServiceInit`, which extends `HTTPInit`).
+ *
+ * @example
+ * ```ts
+ * const interceptor: InitializationAwareServiceInterceptor = { onInit: async () => true };
+ * ```
  */
 export interface InitializationAwareServiceInterceptor<
     T extends ServiceInit = ServiceInit,
@@ -86,6 +101,11 @@ export interface InitializationAwareServiceInterceptor<
  * Service-level request interceptor.
  *
  * Reuses the {@link RequestAwareHTTPInterceptor} contract.
+ *
+ * @example
+ * ```ts
+ * const interceptor: RequestAwareServiceInterceptor = { onRequest: async (req) => req };
+ * ```
  */
 export interface RequestAwareServiceInterceptor extends RequestAwareHTTPInterceptor {
     /**
@@ -102,6 +122,11 @@ export interface RequestAwareServiceInterceptor extends RequestAwareHTTPIntercep
  *
  * Reuses the {@link ResponseAwareHTTPInterceptor} contract; `postSuccess` is the
  * service-level success hook (HTTP's `postResponse`).
+ *
+ * @example
+ * ```ts
+ * const interceptor: ResponseAwareServiceInterceptor = { onResponse: async (res) => res };
+ * ```
  */
 export interface ResponseAwareServiceInterceptor<
     T extends ServiceInit = ServiceInit,

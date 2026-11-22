@@ -5,6 +5,11 @@ import { EventEmitter } from '@ndigo/context';
 
 /**
  * Interface for telemetry hooks that track service request lifecycles.
+ *
+ * @example
+ * ```ts
+ * const hooks: TelemetryHooks = new EventEmitterTelemetryHooks(emitter);
+ * ```
  */
 export interface TelemetryHooks {
     /**

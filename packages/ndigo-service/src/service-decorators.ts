@@ -13,6 +13,11 @@ export const SERVICE_CALL_METADATA_KEY = 'service:call';
 
 /**
  * Configuration for a `@service`-decorated client.
+ *
+ * @example
+ * ```ts
+ * const config: ServiceClientConfig = { name: 'UserService', baseUrl: '/api' };
+ * ```
  */
 export interface ServiceClientConfig {
     /** The service name — the registry token / correlation tag. */
@@ -27,6 +32,11 @@ export interface ServiceClientConfig {
 
 /**
  * Configuration for a `@*Call`-decorated method.
+ *
+ * @example
+ * ```ts
+ * const config: ServiceCallConfig = { path: '/users/{id}', method: 'GET' };
+ * ```
  */
 export interface ServiceCallConfig {
     /** HTTP method for the call. */

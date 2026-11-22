@@ -13,6 +13,11 @@ import { like } from '@ndigo/util/types';
 
 /**
  * A flag value: boolean, number, string, or a JSON-like structure.
+ *
+ * @example
+ * ```ts
+ * type _Alias = FlagValue;
+ * ```
  */
 export type FlagValue = boolean | number | string | Record<string, unknown> | unknown[];
 
@@ -22,6 +27,11 @@ export type FlagValue = boolean | number | string | Record<string, unknown> | un
  * unrecognized provider reason surfaces as `UNKNOWN`). `DISABLED` is a
  * *successful* evaluation — the flag is off, the value is the caller's
  * default, and there is no `errorCode`.
+ *
+ * @example
+ * ```ts
+ * type _Alias = FlagEvaluationReason;
+ * ```
  */
 export type FlagEvaluationReason =
     | 'STATIC'
@@ -37,6 +47,11 @@ export type FlagEvaluationReason =
 /**
  * Machine-readable error classification for abnormal evaluations
  * (OpenFeature error-code vocabulary).
+ *
+ * @example
+ * ```ts
+ * type _Alias = FlagErrorCode;
+ * ```
  */
 export type FlagErrorCode =
     | 'FLAG_NOT_FOUND'
@@ -54,6 +69,11 @@ export type FlagErrorCode =
  * The `value` field is always set: abnormal execution returns the caller's
  * default with `reason: 'ERROR'` and an `errorCode` — evaluation never
  * throws.
+ *
+ * @example
+ * ```ts
+ * const value = {} as FlagEvaluation;
+ * ```
  */
 export interface FlagEvaluation<T extends FlagValue> {
     /** The evaluated flag value (the supplied default on abnormal execution). */
@@ -83,6 +103,11 @@ export interface FlagEvaluation<T extends FlagValue> {
  * Not every provider reads this; the property-backed provider is static
  * today. The seam exists so a targeting/traffic-split provider can
  * implement percentage rollouts per subject.
+ *
+ * @example
+ * ```ts
+ * const value = {} as FlagEvaluationContext;
+ * ```
  */
 export interface FlagEvaluationContext {
     /** Stable identifier for the subject (user, session, tenant, device…). */
@@ -95,6 +120,11 @@ export interface FlagEvaluationContext {
  * Feature-flag backend contract. Implementations MUST be safe for
  * concurrent use and MUST NOT throw from `evaluate` — a broken backend
  * degrades to the supplied default, never crashes the caller.
+ *
+ * @example
+ * ```ts
+ * const value = {} as FlagEvaluator;
+ * ```
  */
 export interface FlagEvaluator {
     /** Backend identifier e.g. `'property'`, `'openfeature'`. */
@@ -126,6 +156,11 @@ export interface FlagEvaluator {
  *
  * @param value - The value to inspect.
  * @returns `true` when the value has a string `kind` and an `evaluate` method.
+ *
+ * @example
+ * ```ts
+ * likeFlagEvaluator();
+ * ```
  */
 export function likeFlagEvaluator(value: unknown): value is FlagEvaluator {
     return like({ kind: String, evaluate: Function })(value);

@@ -18,6 +18,11 @@ import {
  * The property reader the provider evaluates against. The environment
  * satisfies this shape structurally (`getProperty(key)`), so the leaf
  * package never depends on `@ndigo/context`.
+ *
+ * @example
+ * ```ts
+ * type _Alias = FlagPropertyReader;
+ * ```
  */
 export type FlagPropertyReader = {
     getProperty(key: string): unknown;
@@ -25,6 +30,11 @@ export type FlagPropertyReader = {
 
 /**
  * Options for {@link PropertyFlagProvider}.
+ *
+ * @example
+ * ```ts
+ * const value = {} as PropertyFlagProviderOptions;
+ * ```
  */
 export interface PropertyFlagProviderOptions {
     /** The property reader (typically a `ConfigurableEnvironment`). */
@@ -156,6 +166,11 @@ function convertTo(
  *   `TYPE_MISMATCH` + default;
  * - object: JSON values and JSON-parsable strings pass through, else
  *   `PARSE_ERROR` + default.
+ *
+ * @example
+ * ```ts
+ * const instance = new PropertyFlagProvider();
+ * ```
  */
 export class PropertyFlagProvider implements FlagEvaluator {
     /**

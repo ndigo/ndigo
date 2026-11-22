@@ -1,5 +1,11 @@
 /**
  * Interface for a service registry that maps service tokens to endpoints.
+ *
+ * @example
+ * ```ts
+ * const registry: ServiceRegistry = new MapServiceRegistry();
+ * registry.register('UserService', client);
+ * ```
  */
 export interface ServiceRegistry {
     /**

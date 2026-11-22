@@ -1,5 +1,11 @@
 /**
  * Interface for request-ID correlation across service calls.
+ *
+ * @example
+ * ```ts
+ * const correlation: RequestIdCorrelation = new CryptoRequestIdCorrelation();
+ * correlation.generate(); // UUID
+ * ```
  */
 export interface RequestIdCorrelation {
     /**

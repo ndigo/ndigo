@@ -1,5 +1,10 @@
 /**
  * Provides an isomorphic abstraction over DOM parsing and element creation.
+ *
+ * @example
+ * ```ts
+ * const value = {} as DOMProvider;
+ * ```
  */
 export interface DOMProvider {
     /**

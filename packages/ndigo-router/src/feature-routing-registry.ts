@@ -43,6 +43,11 @@ export interface FeatureRouteRegistration {
 /**
  * Manages the registration and activation of features based on routing.
  * It allows features to be mounted at specific URL prefixes and provides policies for feature activation.
+ *
+ * @example
+ * ```ts
+ * const registry = new FeatureRoutingRegistry();
+ * ```
  */
 export class FeatureRoutingRegistry {
     /**

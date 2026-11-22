@@ -37,6 +37,11 @@ function nextRouteId(): number {
 /**
  * Represents a single segment of a `PathRoute`, including its name, matrix parameters, and raw string value.
  * It implements `RouteSegment` and `Serializable`.
+ *
+ * @example
+ * ```ts
+ * const segment = new PathRouteSegment('users');
+ * ```
  */
 export class PathRouteSegment implements RouteSegment, Serializable {
     /**
@@ -157,6 +162,11 @@ export class PathRouteSegment implements RouteSegment, Serializable {
  * Represents a concrete route based on a URL path, parsing segments, matrix parameters, and query strings.
  * It implements `Route` and `Serializable`.
  * @typeParam TParams - A type representing the route parameters, defaulting to `Record<string, string>`.
+ *
+ * @example
+ * ```ts
+ * const route = new PathRoute('/users/{id}');
+ * ```
  */
 export class PathRoute implements Route<Record<string, string>>, Serializable, Matchable<string> {
     /**

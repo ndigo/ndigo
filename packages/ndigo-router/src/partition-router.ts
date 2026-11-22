@@ -26,6 +26,12 @@ export interface FeatureRouteMount {
  * A concrete router implementation that extends `AbstractRouter` to manage
  * and navigate through partitioned routes.
  * It supports mounting feature-specific routes at defined prefixes.
+ *
+ * @example
+ * ```ts
+ * const router = new PartitionRouter();
+ * router.mount('/users', userRoutes);
+ * ```
  */
 export class PartitionRouter extends AbstractRouter {
     /**

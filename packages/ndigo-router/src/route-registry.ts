@@ -69,6 +69,11 @@ function getRouteMappingMethodKeys(target: unknown): string[] {
  * Created by scanning `routeMapping` decorator metadata from registered
  * source classes. Provides a nested tree of {@link RouteDefinition} instances
  * for URL generation, navigation, and route matching.
+ *
+ * @example
+ * ```ts
+ * const registry = new RouteRegistry();
+ * ```
  */
 export class RouteRegistry {
     /**

@@ -67,6 +67,11 @@ export interface Router {
 /**
  * An abstract base class that provides common functionality for router implementations.
  * It includes mechanisms for managing route interceptors.
+ *
+ * @example
+ * ```ts
+ * const router = new PartitionRouter();
+ * ```
  */
 export abstract class AbstractRouter implements Router, RouterInterceptorRegistry {
     /**

@@ -60,6 +60,11 @@ const errorClassMatchDepth = (mapping: string, error: Error): number => {
 
 /**
  * Resolves exceptions into a route-specific response.
+ *
+ * @example
+ * ```ts
+ * const resolver: RouteErrorResolver = new DefaultRouteErrorResolver();
+ * ```
  */
 export interface RouteErrorResolver {
     /**

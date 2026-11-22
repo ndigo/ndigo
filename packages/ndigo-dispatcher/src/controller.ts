@@ -18,6 +18,13 @@ import { PathRoute, Route } from '@ndigo/router';
 
 /**
  * Interface for a controller that handles routes.
+ *
+ * @example
+ * ```ts
+ * class MyController implements Controller {
+ *     handle(route: Route): Promise<ModelAndView> { return Promise.resolve(new ModelAndView('view')); }
+ * }
+ * ```
  */
 export interface Controller {
     /**

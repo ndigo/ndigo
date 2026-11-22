@@ -7,6 +7,11 @@ import { ACCEPT_LANGUAGE_ATTRIBUTE, Route } from '@ndigo/router';
 
 /**
  * Resolves the active language for a route.
+ *
+ * @example
+ * ```ts
+ * const resolver: LanguageResolver = new FixedLanguageResolver('en');
+ * ```
  */
 export interface LanguageResolver {
     /**

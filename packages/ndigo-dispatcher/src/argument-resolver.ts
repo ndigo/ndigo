@@ -22,6 +22,11 @@ import { MissingParameterError } from './error';
 
 /**
  * Strategy interface for resolving method parameters into argument values in the context of a given route.
+ *
+ * @example
+ * ```ts
+ * const resolver: HandlerMethodArgumentResolver = new PathValueMethodArgumentResolver();
+ * ```
  */
 export interface HandlerMethodArgumentResolver {
     /**

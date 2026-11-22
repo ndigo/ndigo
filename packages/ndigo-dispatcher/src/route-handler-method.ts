@@ -22,6 +22,11 @@ const typeName = (value: unknown): string =>
  * Anything that can be invoked with positional arguments — the minimal shape a
  * handler method must satisfy, kept separate so interceptors and mocks can
  * implement it without the route plumbing below.
+ *
+ * @example
+ * ```ts
+ * const invocable: Invocable = { invoke: (...args) => null };
+ * ```
  */
 export interface Invocable {
     /**
@@ -37,6 +42,11 @@ export interface Invocable {
  * A handler bound to a route: `invoke` receives the `Route` as its first
  * argument and returns the handler's result (`ModelAndView`, a view name, a
  * value).
+ *
+ * @example
+ * ```ts
+ * const handler: HandlerMethod = { invoke: (route) => new ModelAndView('view') };
+ * ```
  */
 export interface HandlerMethod extends Invocable {
     /**

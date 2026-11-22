@@ -7,6 +7,11 @@ import { routeMapping, RouteMappingConfiguration } from './route-mapping';
 /**
  * Configuration for the `requestMapping` decorator. Same shape as `RouteMappingConfiguration`
  * plus HTTP request semantics.
+ *
+ * @example
+ * ```ts
+ * const config: RequestMappingConfiguration = { value: '/users', method: 'GET' };
+ * ```
  */
 export interface RequestMappingConfiguration extends RouteMappingConfiguration {
     /** HTTP method this mapping handles; absent = any method. */

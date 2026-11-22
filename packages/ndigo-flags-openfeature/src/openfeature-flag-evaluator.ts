@@ -24,6 +24,11 @@ import { toFlagEvaluation, type OpenFeatureEvaluationDetails } from './_mapping'
 
 /**
  * Options for {@link OpenFeatureFlagEvaluator}.
+ *
+ * @example
+ * ```ts
+ * const evaluator = new OpenFeatureFlagEvaluator({ domain: 'billing' });
+ * ```
  */
 export interface OpenFeatureFlagEvaluatorOptions {
     /**
@@ -47,6 +52,12 @@ export interface OpenFeatureFlagEvaluatorOptions {
  * - A provider that supplies no reason resolves as `UNKNOWN`.
  * - `flagMetadata` is always an object (the SDK's details carry an empty
  *   record when the provider set none).
+ *
+ * @example
+ * ```ts
+ * const evaluator = new OpenFeatureFlagEvaluator({ domain: 'billing' });
+ * const result = await evaluator.evaluate<boolean>('checkout-enabled', false);
+ * ```
  */
 export class OpenFeatureFlagEvaluator implements FlagEvaluator {
     /**

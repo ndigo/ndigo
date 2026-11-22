@@ -31,6 +31,11 @@ import { toFlagEvaluation, type OpenFeatureEvaluationDetails } from '../_mapping
 
 /**
  * Options for {@link WebOpenFeatureFlagEvaluator}.
+ *
+ * @example
+ * ```ts
+ * const evaluator = new WebOpenFeatureFlagEvaluator({ client });
+ * ```
  */
 export interface WebOpenFeatureFlagEvaluatorOptions {
     /**
@@ -51,6 +56,12 @@ export interface WebOpenFeatureFlagEvaluatorOptions {
  *
  * The per-call `ctx` parameter is **not forwarded** (the web SDK's context
  * is static — see the module doc).
+ *
+ * @example
+ * ```ts
+ * const evaluator = new WebOpenFeatureFlagEvaluator({ client });
+ * const result = await evaluator.evaluate<boolean>('checkout-enabled', false);
+ * ```
  */
 export class WebOpenFeatureFlagEvaluator implements FlagEvaluator {
     /**

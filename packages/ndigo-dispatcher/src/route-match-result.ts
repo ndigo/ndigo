@@ -5,6 +5,11 @@ import { createNull, JSONValue, Serializable } from '@ndigo/core';
 
 /**
  * Result of matching a route pattern to a path.
+ *
+ * @example
+ * ```ts
+ * const result = new RouteMatchResult('/orders/:id', '/orders/42');
+ * ```
  */
 export class RouteMatchResult implements Serializable {
     /**

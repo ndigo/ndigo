@@ -25,6 +25,14 @@ export const STOMP_MAPPING_KEY = 'route:stomp';
  * @param route - The path to serve STOMP connections at, relative to any
  *   class-level mapping, or a full mapping configuration.
  * @returns A method decorator.
+ *
+ * @example
+ * ```ts
+ * class ChatController {
+ *   @stompMapping('/stomp')
+ *   handle(session: SocketSession) {}
+ * }
+ * ```
  */
 export function stompMapping(route: string | RouteMappingConfiguration) {
     return function (target: unknown, context: ClassDecoratorContext | ClassMethodDecoratorContext): void {
@@ -50,6 +58,11 @@ export function stompMapping(route: string | RouteMappingConfiguration) {
  * @param target - The class constructor or prototype to inspect.
  * @param propertyKey - The method name.
  * @returns `true` when the method is stomp-mapped.
+ *
+ * @example
+ * ```ts
+ * if (isStompMapping(ChatController.prototype, 'handle')) { doSomething(); }
+ * ```
  */
 export function isStompMapping(target: unknown, propertyKey: string | symbol): boolean {
     const metadata = getSymbolMetadata(target);

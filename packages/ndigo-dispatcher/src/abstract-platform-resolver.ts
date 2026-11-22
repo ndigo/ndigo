@@ -14,6 +14,11 @@ import { MethodParameter, MethodParameterType, type DataBindingSource } from './
  *
  * Each platform provides its own implementation (backed by ConversionService)
  * so that the shared `resolveArgument` pipeline can remain platform-agnostic.
+ *
+ * @example
+ * ```ts
+ * const convert: ConvertArgumentValueFn = (type, value, parameter) => value;
+ * ```
  */
 export type ConvertArgumentValueFn = (
     convertType: { source: unknown; target: unknown } | undefined,
@@ -42,6 +47,12 @@ export type ConvertArgumentValueFn = (
  *   the platform's bindable-source table and `getSourceData` lookup
  * - cookie values ({@link AbstractCookieValueArgumentResolver}) — the
  *   platform's whole-jar lookup
+ *
+ * @example
+ * ```ts
+ * const resolver = new MyPlatformResolver(convertArgumentValue);
+ * resolver.resolveArgument(parameter, route, mapping);
+ * ```
  */
 export abstract class AbstractPlatformArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
     /**
@@ -218,6 +229,12 @@ export abstract class AbstractPlatformArgumentResolver extends AbstractNamedValu
  * the source table and the source lookup, which subclasses declare.
  *
  * @see {@link AbstractPlatformArgumentResolver.resolveBoundArgument}
+ *
+ * @example
+ * ```ts
+ * const resolver = new MyDataBindingResolver();
+ * resolver.resolveArgument(parameter, route, mapping);
+ * ```
  */
 export abstract class AbstractDataBindingArgumentResolver extends AbstractPlatformArgumentResolver {
     /**
@@ -296,6 +313,12 @@ export abstract class AbstractDataBindingArgumentResolver extends AbstractPlatfo
  * (`cookieValue()` with no name) and the cookie parameter match were
  * duplicated across the browser and Node resolvers, which differed only in
  * how the cookie jar is read.
+ *
+ * @example
+ * ```ts
+ * const resolver = new MyCookieResolver();
+ * resolver.resolveArgument(parameter, route, mapping);
+ * ```
  */
 export abstract class AbstractCookieValueArgumentResolver extends AbstractPlatformArgumentResolver {
     /**

@@ -17,23 +17,52 @@ import { ParameterConversionError } from './error';
  *
  * Extends the dispatcher conversion context with the current route so platform
  * converters can resolve values from route-scoped data.
+ *
+ * @example
+ * ```ts
+ * const context: ArgumentValueConversionContext = { name: 'id', parameter, route, mapping };
+ * ```
  */
 export type ArgumentValueConversionContext = ParameterValueConversionContext & {
     route: Route;
 };
 
-/** Converts a raw argument value into the target parameter type. */
+/** Converts a raw argument value into the target parameter type.
+ *
+ * @example
+ * ```ts
+ * const converter: ArgumentValueConverter = (value) => Number(value);
+ * ```
+ */
 export type ArgumentValueConverter = (value: unknown, context: ArgumentValueConversionContext) => unknown;
 
-/** Registry of named converters available to resolver configuration. */
+/** Registry of named converters available to resolver configuration.
+ *
+ * @example
+ * ```ts
+ * const registry: ArgumentValueConverterRegistry = { number: (v) => Number(v) };
+ * ```
+ */
 export type ArgumentValueConverterRegistry = Record<string, ArgumentValueConverter>;
 
-/** Options that control how named converters are resolved. */
+/** Options that control how named converters are resolved.
+ *
+ * @example
+ * ```ts
+ * const options: ConverterResolutionOptions = { strictNamedLookup: true };
+ * ```
+ */
 export type ConverterResolutionOptions = {
     strictNamedLookup?: boolean;
 };
 
-/** A direct converter, a named converter reference, or an optional wrapper. */
+/** A direct converter, a named converter reference, or an optional wrapper.
+ *
+ * @example
+ * ```ts
+ * const option: ResolverConverterOption = 'number';
+ * ```
+ */
 export type ResolverConverterOption =
     | ArgumentValueConverter
     | keyof typeof argumentValueConverters
@@ -54,6 +83,11 @@ const toLowerString = (value: unknown): string => `${value}`.toLowerCase();
  *
  * @param value - The value to convert.
  * @returns The numeric value (`NaN` when not coercible).
+ *
+ * @example
+ * ```ts
+ * const n = toNumberValue('42'); // 42
+ * ```
  */
 export function toNumberValue(value: unknown): number {
     return Number(value);
@@ -64,6 +98,11 @@ export function toNumberValue(value: unknown): number {
  *
  * @param value - The value to convert.
  * @returns The converted boolean.
+ *
+ * @example
+ * ```ts
+ * const flag = toBooleanValue('yes'); // true
+ * ```
  */
 export function toBooleanValue(value: unknown): boolean {
     if (typeof value === 'boolean') {
@@ -88,6 +127,11 @@ export function toBooleanValue(value: unknown): boolean {
  *
  * @param value - A date string, timestamp, or `Date`.
  * @returns The parsed date.
+ *
+ * @example
+ * ```ts
+ * const date = toDateValue('2026-01-01');
+ * ```
  */
 export function toDateValue(value: unknown): Date {
     // Date's constructor accepts any coercible input (ISO strings, timestamps, Date).
@@ -99,6 +143,11 @@ export function toDateValue(value: unknown): Date {
  *
  * @param value - The JSON text.
  * @returns The parsed value.
+ *
+ * @example
+ * ```ts
+ * const value = toJSONStringValue('{\"a\":1}'); // { a: 1 }
+ * ```
  */
 export function toJSONStringValue(value: unknown): unknown {
     // JSON.parse coerces its argument to a string before parsing.
@@ -110,6 +159,12 @@ export function toJSONStringValue(value: unknown): unknown {
  *
  * @param separator - The separator to split on (default `,`).
  * @returns The split converter.
+ *
+ * @example
+ * ```ts
+ * const split = createStringSplitConverter(',');
+ * split('a,b,c', context); // ['a', 'b', 'c']
+ * ```
  */
 export function createStringSplitConverter(separator: string | RegExp = ','): ArgumentValueConverter {
     return (value) => `${value}`.split(separator);
@@ -120,6 +175,12 @@ export function createStringSplitConverter(separator: string | RegExp = ','): Ar
  *
  * @param converter - The converter to wrap.
  * @returns The optional-aware converter.
+ *
+ * @example
+ * ```ts
+ * const optional = createOptionalConverter(toNumberValue);
+ * optional(null, context); // null
+ * ```
  */
 export function createOptionalConverter(converter: ArgumentValueConverter): ArgumentValueConverter {
     return (value, context) => {
@@ -187,6 +248,11 @@ const converterCache = new Map<object, ArgumentValueConverter>();
  *
  * @param convertType - The source/target type pair.
  * @returns The matching converter, or an identity converter.
+ *
+ * @example
+ * ```ts
+ * const converter = resolveConverter({ source: String, target: Number });
+ * ```
  */
 export function resolveConverter(convertType?: { source: unknown; target: unknown }): ArgumentValueConverter {
     // Fast path: no conversion required.
@@ -217,6 +283,11 @@ function getParameterTypeName(parameter: MethodParameter): string {
  * @param route - The route being resolved.
  * @param mapping - The method's route mapping.
  * @returns The converted value.
+ *
+ * @example
+ * ```ts
+ * const value = convertArgumentValue({ source: String, target: Number }, '42', parameter, route, mapping);
+ * ```
  */
 export function convertArgumentValue(
     convertType: { source: unknown; target: unknown } | undefined,
@@ -251,6 +322,11 @@ export function convertArgumentValue(
  * @param _convertType - Ignored; present to match the converter signature.
  * @param value - The resolved value.
  * @returns The value unchanged.
+ *
+ * @example
+ * ```ts
+ * const value = passthroughArgumentValue(undefined, 42); // 42
+ * ```
  */
 export function passthroughArgumentValue(
     _convertType: { source: unknown; target: unknown } | undefined,

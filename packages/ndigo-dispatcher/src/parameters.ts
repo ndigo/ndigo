@@ -53,6 +53,11 @@ const PARAMETER_ARRAY_KEY = (name: string | symbol) => `method:parameter:${Strin
 /**
  * The mapping kind determines which sources exist for a handler method.
  * Named after how the value is bound per transport.
+ *
+ * @example
+ * ```ts
+ * const kind: ParameterMappingKind = 'request';
+ * ```
  */
 export type ParameterMappingKind = 'route' | 'request' | 'socket';
 
@@ -134,6 +139,11 @@ const SOURCE_LABEL: Record<ParameterMappingKind, string> = {
  * @param propertyKey - The method name.
  * @returns `'socket'` for socket-mapped methods, `'request'` when a verb is
  *   set (requestMapping/getMapping/…), else `'route'`.
+ *
+ * @example
+ * ```ts
+ * const kind = parameterMappingKind(MyController.prototype, 'handle');
+ * ```
  */
 export function parameterMappingKind(target: unknown, propertyKey: string | symbol): ParameterMappingKind {
     try {
@@ -152,6 +162,11 @@ export function parameterMappingKind(target: unknown, propertyKey: string | symb
  * @param target - The class prototype or constructor.
  * @param propertyKey - The method name.
  * @returns The name → extractor map, or `undefined` when not decorated.
+ *
+ * @example
+ * ```ts
+ * const map = getParameterMap(MyController.prototype, 'handle');
+ * ```
  */
 export function getParameterMap(target: unknown, propertyKey: string | symbol): ParameterMap | undefined {
     return getSymbolMetadata(target)[PARAMETER_MAP_KEY(propertyKey)];
@@ -179,6 +194,11 @@ export function getParameterMap(target: unknown, propertyKey: string | symbol): 
  * @param handlerMethod - The method function (for signature discovery).
  * @returns The converted parameters (may be the empty array).
  * @throws On source/kind incompatibility or a sparse positional map.
+ *
+ * @example
+ * ```ts
+ * const params = resolveParameters(MyController.prototype, 'handle', MyController.prototype.handle);
+ * ```
  */
 export function resolveParameters(
     target: unknown,
@@ -287,6 +307,11 @@ function toMethodParameter(paramName: string, extractor: ParameterExtractor): Me
  * @param target - The class prototype or constructor.
  * @param propertyKey - The method name.
  * @param resolvedParams - The resolved parameters to store.
+ *
+ * @example
+ * ```ts
+ * storeResolvedParameters(MyController.prototype, 'handle', params);
+ * ```
  */
 export function storeResolvedParameters(
     target: unknown,
@@ -309,6 +334,11 @@ export function storeResolvedParameters(
  * @param target - The class prototype or constructor.
  * @param propertyKey - The method name.
  * @returns The stored parameters, or `undefined` when none were registered.
+ *
+ * @example
+ * ```ts
+ * const params = getMethodParameter(MyController.prototype, 'handle');
+ * ```
  */
 export function getMethodParameter(target: unknown, propertyKey: string | symbol): MethodParameter[] | undefined {
     const metadata = getSymbolMetadata(target);
@@ -321,6 +351,11 @@ export function getMethodParameter(target: unknown, propertyKey: string | symbol
  * @param target - The class prototype or constructor.
  * @param propertyKey - The method name.
  * @returns `true` when parameters were registered for the method.
+ *
+ * @example
+ * ```ts
+ * if (hasMethodParameter(MyController.prototype, 'handle')) { doSomething(); }
+ * ```
  */
 export function hasMethodParameter(target: unknown, propertyKey: string | symbol): boolean {
     return getMethodParameter(target, propertyKey) !== undefined;

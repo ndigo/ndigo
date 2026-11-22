@@ -12,6 +12,11 @@ import { StrategyInitializer } from './strategy-initializer';
  * Strategy mixin contract for view-name translation: exposes the translator
  * that derives a view name from a route when a handler returns none, and an
  * initializer that installs it from the application context.
+ *
+ * @example
+ * ```ts
+ * const strategy: RouteToViewNameTranslatorStrategy = dispatcher;
+ * ```
  */
 export interface RouteToViewNameTranslatorStrategy {
     /** The translator that derives a view name from a route. */

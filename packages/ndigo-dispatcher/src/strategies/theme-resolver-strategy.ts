@@ -12,6 +12,11 @@ import { StrategyInitializer } from './strategy-initializer';
  * Strategy mixin contract for theme resolution: exposes the active
  * `themeResolver` and an initializer that builds it from the application
  * context (falling back to a context-backed fixed resolver).
+ *
+ * @example
+ * ```ts
+ * const strategy: ThemeResolverStrategy = dispatcher;
+ * ```
  */
 export interface ThemeResolverStrategy {
     /** The active theme resolver. */

@@ -11,6 +11,11 @@ import { StrategyInitializer } from './strategy-initializer';
  * Strategy mixin contract for handler adapters: exposes the ordered adapters
  * that turn a matched handler into a response, and an initializer that installs
  * them from the application context.
+ *
+ * @example
+ * ```ts
+ * const strategy: RouteHandlerAdapterStrategy = dispatcher;
+ * ```
  */
 export interface RouteHandlerAdapterStrategy {
     /** The ordered adapters consulted for a handler. */

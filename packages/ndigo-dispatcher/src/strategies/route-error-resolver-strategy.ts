@@ -11,6 +11,11 @@ import { StrategyInitializer } from './strategy-initializer';
  * Strategy mixin contract for error handling: exposes the ordered
  * `errorResolvers` that turn a thrown error into a response and a key under
  * which the collection is registered.
+ *
+ * @example
+ * ```ts
+ * const strategy: RouteErrorResolverStrategy = dispatcher;
+ * ```
  */
 export interface RouteErrorResolverStrategy {
     /** The ordered error resolvers. */

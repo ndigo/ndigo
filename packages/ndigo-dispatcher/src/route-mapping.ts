@@ -22,6 +22,11 @@ type RouteMappingValue = {
  * It is normally set via `requestMapping` / `@getMapping` (see
  * `request-mapping.ts` / `http-method-mapping.ts`), not `routeMapping`
  * directly, but the shared metadata record carries it.
+ *
+ * @example
+ * ```ts
+ * const config: RouteMappingConfiguration = { value: '/orders', private: false };
+ * ```
  */
 export type RouteMappingConfiguration = RouteMappingValue & {
     name?: string;

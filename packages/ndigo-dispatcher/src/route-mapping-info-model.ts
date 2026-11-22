@@ -13,6 +13,14 @@ import { PatternsRouteCondition } from './patterns-route-condition';
 
 const separator = '';
 
+/**
+ * Holds the parsed conditions and metadata for a single route mapping.
+ *
+ * @example
+ * ```ts
+ * const info = new RouteMappingInfo();
+ * ```
+ */
 export class RouteMappingInfo implements RouteCondition<RouteMappingInfo> {
     /**
      * The `Symbol.toStringTag` value for this instance.

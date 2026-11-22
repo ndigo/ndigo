@@ -11,6 +11,11 @@ import { StrategyInitializer } from './strategy-initializer';
  * Strategy mixin contract for view resolution: exposes the ordered
  * `viewResolvers` that resolve a view name to a rendered result, and an
  * initializer that installs them from the application context.
+ *
+ * @example
+ * ```ts
+ * const strategy: ViewResolverStrategy = dispatcher;
+ * ```
  */
 export interface ViewResolverStrategy {
     /** The ordered view resolvers. */

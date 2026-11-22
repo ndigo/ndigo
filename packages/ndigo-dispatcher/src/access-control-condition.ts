@@ -19,6 +19,11 @@ const { defineProperty } = Reflect;
 
 /**
  * The access level required for a route.
+ *
+ * @example
+ * ```ts
+ * const level: AccessLevel = 'private';
+ * ```
  */
 export type AccessLevel = 'public' | 'private';
 
@@ -32,6 +37,12 @@ export type AccessLevel = 'public' | 'private';
  *
  * This replaces the previous TODO comment in `route-mapping-info.ts`:
  * TODO Create a condition for public vs. private routes
+ *
+ * @example
+ * ```ts
+ * const condition = new AccessControlCondition('private');
+ * const matches = condition.match(route); // null without an authenticated principal
+ * ```
  */
 export class AccessControlCondition
     extends AbstractRouteCondition<AccessControlCondition>

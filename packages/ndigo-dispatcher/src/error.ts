@@ -11,6 +11,11 @@ const { defineProperty } = Reflect;
 /**
  * Error thrown when no suitable handler is found for a given route.
  * This typically indicates a misconfiguration or an unhandled route.
+ *
+ * @example
+ * ```ts
+ * throw new NoHandlerFoundError(route);
+ * ```
  */
 export class NoHandlerFoundError extends FrameworkError {
     /** The route with no handler. */
@@ -33,6 +38,11 @@ export class NoHandlerFoundError extends FrameworkError {
 /**
  * Error thrown when a view cannot be resolved for a given view name and route.
  * This indicates that the specified view template or component could not be located.
+ *
+ * @example
+ * ```ts
+ * throw new NoViewFoundError('orders/show', route);
+ * ```
  */
 export class NoViewFoundError extends FrameworkError {
     /** The route whose view could not be resolved. */
@@ -53,6 +63,11 @@ export class NoViewFoundError extends FrameworkError {
 
 /**
  * An error that represents a failure to retrieve a required {@link Route|Route} property.
+ *
+ * @example
+ * ```ts
+ * throw new RouteBindingError('Unable to bind "id" for route "/orders/42"');
+ * ```
  */
 export class RouteBindingError extends FrameworkError {
     /** The route being bound, or `null` for message-only errors. */
@@ -83,6 +98,10 @@ export class RouteBindingError extends FrameworkError {
  * Base error for method parameter binding issues.
  * Analogous to the request-binding error model.
  *
+ * @example
+ * ```ts
+ * throw new ParameterBindingError('Unable to bind method parameter', 'id', 'getOrder');
+ * ```
  */
 export class ParameterBindingError extends FrameworkError {
     /** The parameter name, when known. */
@@ -124,6 +143,10 @@ export class ParameterBindingError extends FrameworkError {
  * Thrown when parameter mapping configuration is invalid.
  * This is a CONFIGURATION error (application startup time).
  *
+ * @example
+ * ```ts
+ * throw new InvalidParameterMappingError('Unknown parameter kind', 'id');
+ * ```
  */
 export class InvalidParameterMappingError extends ParameterBindingError {
     get [Symbol.toStringTag](): string {
@@ -140,6 +163,10 @@ export class InvalidParameterMappingError extends ParameterBindingError {
  * This is a RUNTIME error (request processing time).
  * Analogous to the missing-parameter binding error.
  *
+ * @example
+ * ```ts
+ * throw new MissingParameterError('id', 'path:value');
+ * ```
  */
 export class MissingParameterError extends ParameterBindingError {
     /** The parameter type (e.g. `query:value`). */
@@ -184,6 +211,10 @@ export class MissingParameterError extends ParameterBindingError {
  * Thrown when a parameter converter fails at runtime.
  * This is a RUNTIME error (request processing time).
  *
+ * @example
+ * ```ts
+ * throw new ParameterConversionError('id', 'path:value', new Error('bad number'));
+ * ```
  */
 export class ParameterConversionError extends ParameterBindingError {
     /** The parameter type (e.g. `path:variable`). */

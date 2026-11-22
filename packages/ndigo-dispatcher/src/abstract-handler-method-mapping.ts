@@ -34,6 +34,13 @@ const defaultNamingStrategy = new RouteMappingInfoHandlerMethodMappingNamingStra
 
 /**
  * Base class for mappings that resolve handler methods from application context values.
+ *
+ * @example
+ * ```ts
+ * const mapping = new MyHandlerMapping();
+ * mapping.init();
+ * const methods = mapping.getHandlerMethods();
+ * ```
  */
 export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo>
     extends AbstractHandlerMapping

@@ -23,6 +23,11 @@ import { getPath } from '@ndigo/core';
  * @param key - The flat or dotted key (`'email'`, `'address.city'`).
  * @returns The value at the key, or `undefined` when the key is absent or
  *   the walk leaves the object graph.
+ *
+ * @example
+ * ```ts
+ * const value = readDottedValue(source, 'address.city');
+ * ```
  */
 export function readDottedValue(source: Record<string, unknown> | undefined, key: string): unknown {
     if (!source) {

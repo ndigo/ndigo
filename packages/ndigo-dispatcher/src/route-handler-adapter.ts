@@ -66,6 +66,14 @@ const { getPrototypeOf } = Reflect,
  */
 export const likeController = like({ handleRoute: Function }) as (value: unknown) => value is Controller;
 
+/**
+ * Base adapter for handlers backed by a method-level {@link RouteHandlerMethod}.
+ *
+ * @example
+ * ```ts
+ * const adapter = new MetadataHandlerAdapter();
+ * ```
+ */
 export abstract class AbstractHandlerMethodAdapter
     extends AsApplicationContextAware(Null)
     implements RouteHandlerAdapter
@@ -108,6 +116,11 @@ export abstract class AbstractHandlerMethodAdapter
 
 /**
  * This implementation expects the handler to be a `HandlerMethod`.
+ *
+ * @example
+ * ```ts
+ * const adapter = new ControllerHandlerAdapter();
+ * ```
  */
 export class ControllerHandlerAdapter implements RouteHandlerAdapter {
     get [Symbol.toStringTag](): string {
@@ -139,6 +152,11 @@ export class ControllerHandlerAdapter implements RouteHandlerAdapter {
 /**
  * Implementation of {@link AbstractHandlerMethodAdapter} that supports `HandlerMethods` decorated with `route:mapping` metadata. This is usually applied using `@RouteMapping`.
 
+ *
+ * @example
+ * ```ts
+ * const adapter = new MetadataHandlerAdapter();
+ * ```
  */
 export class MetadataHandlerAdapter extends AbstractHandlerMethodAdapter implements Initializable {
     /**

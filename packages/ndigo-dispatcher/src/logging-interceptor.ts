@@ -12,6 +12,11 @@ import { Route } from '@ndigo/router';
  * This interface is intentionally simple so that callers may supply any logger
  * implementation without depending on `@ndigo/telemetry`. When a `@ndigo/telemetry`
  * logger is provided, trace context (traceId, spanId) is automatically injected.
+ *
+ * @example
+ * ```ts
+ * const logger: InterceptorLogger = { info: (m, a) => logs.info(m, a), error: (m, e, a) => logs.error(m, e, a) };
+ * ```
  */
 export interface InterceptorLogger {
     /**
@@ -35,6 +40,12 @@ export interface InterceptorLogger {
 /**
  * A standard interceptor that logs the execution time and outcome of a route handler.
  * Useful for performance monitoring and debugging.
+ *
+ * @example
+ * ```ts
+ * const interceptor = new LoggingRouteHandlerInterceptor(logger);
+ * // preHandle/postHandle/completeHandle are driven by the dispatcher
+ * ```
  */
 export class LoggingRouteHandlerInterceptor implements RouteHandlerInterceptor {
     /**

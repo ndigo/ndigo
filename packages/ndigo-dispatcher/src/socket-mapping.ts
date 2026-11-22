@@ -13,6 +13,14 @@ export const SOCKET_MAPPING_KEY = 'route:socket';
  * @param route - The path to serve WebSocket connections at, relative to any
  *   class-level mapping, or a full mapping configuration.
  * @returns A method decorator.
+ *
+ * @example
+ * ```ts
+ * class ChatController {
+ *   @socketMapping('/chat')
+ *   handle(socket: Socket) {}
+ * }
+ * ```
  */
 export function socketMapping(route: string | RouteMappingConfiguration) {
     return function (target: unknown, context: ClassDecoratorContext | ClassMethodDecoratorContext): void {
@@ -37,6 +45,11 @@ export function socketMapping(route: string | RouteMappingConfiguration) {
  * @param target - The class constructor or prototype to inspect.
  * @param propertyKey - The method name.
  * @returns `true` when the method is socket-mapped.
+ *
+ * @example
+ * ```ts
+ * if (isSocketMapping(ChatController.prototype, 'handle')) { doSomething(); }
+ * ```
  */
 export function isSocketMapping(target: unknown, propertyKey: string | symbol): boolean {
     const metadata = getSymbolMetadata(target);

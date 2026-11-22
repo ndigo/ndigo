@@ -63,6 +63,11 @@ export interface HandlerMethod extends Invocable {
  * Assigns the name a handler method's mapping is registered and inspectable
  * under — the mapping's own name when it declares one, otherwise a name the
  * strategy derives from the handler and mapping metadata.
+ *
+ * @example
+ * ```ts
+ * const strategy: RouteHandlerMethodMappingNamingStrategy = new RouteMappingInfoHandlerMethodMappingNamingStrategy();
+ * ```
  */
 export interface RouteHandlerMethodMappingNamingStrategy<T = unknown> {
     /**
@@ -77,8 +82,12 @@ export interface RouteHandlerMethodMappingNamingStrategy<T = unknown> {
 
 /**
  * Encapsulates information about a handler method consisting of a `method` and `handler`.
+ *
+ * @example
+ * ```ts
+ * const method = new RouteHandlerMethod(handler, routeMapping);
+ * ```
  */
-
 export class RouteHandlerMethod implements HandlerMethod, Serializable {
     /**
      * The `Symbol.toStringTag` value for this instance.
@@ -230,6 +239,11 @@ export class RouteHandlerMethod implements HandlerMethod, Serializable {
  * Handler for the error path: `invoke` receives the `Route` and the thrown
  * error and returns the value the error resolver chain produced, mirroring
  * `RouteHandlerMethod`'s invocation contract.
+ *
+ * @example
+ * ```ts
+ * const method = new ErrorHandlerMethod(handler, routeMapping);
+ * ```
  */
 export class ErrorHandlerMethod extends RouteHandlerMethod {
     /**

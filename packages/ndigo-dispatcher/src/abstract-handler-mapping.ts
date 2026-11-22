@@ -26,6 +26,12 @@ const { defineProperty } = Reflect;
 
 /**
  * Resolves a route to a handler execution chain.
+ *
+ * @example
+ * ```ts
+ * const mapping: RouteHandlerMapping = new PathHandlerMapping();
+ * const chain = mapping.getHandler(route);
+ * ```
  */
 export interface RouteHandlerMapping {
     /**
@@ -39,6 +45,12 @@ export interface RouteHandlerMapping {
 
 /**
  * A handler mapping that can also report whether a route matches a pattern.
+ *
+ * @example
+ * ```ts
+ * const mapping: MatchableHandlerMapping = new PathHandlerMapping();
+ * const result = mapping.match(route, '/orders/:id');
+ * ```
  */
 export interface MatchableHandlerMapping extends RouteHandlerMapping {
     /**
@@ -53,6 +65,13 @@ export interface MatchableHandlerMapping extends RouteHandlerMapping {
 
 /**
  * Base class for handler mappings that resolve a route to a handler.
+ *
+ * @example
+ * ```ts
+ * const mapping = new MyHandlerMapping();
+ * mapping.setApplicationContext(applicationContext);
+ * const chain = mapping.getHandler(route);
+ * ```
  */
 export abstract class AbstractHandlerMapping
     extends AsNameAware(AsApplicationContextAware(Null))

@@ -11,6 +11,11 @@ import { StrategyInitializer } from './strategy-initializer';
  * Strategy mixin contract for locale resolution: exposes the active
  * `languageResolver` and an initializer that receives the application context
  * so the resolver can be built from environment settings.
+ *
+ * @example
+ * ```ts
+ * const strategy: LanguageResolverStrategy = dispatcher;
+ * ```
  */
 export interface LanguageResolverStrategy {
     /** The active locale resolver. */

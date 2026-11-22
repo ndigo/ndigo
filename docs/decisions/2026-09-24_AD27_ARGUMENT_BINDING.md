@@ -4,6 +4,12 @@
 **Status:** Accepted — decision recorded; implementation landed (see
 plan).
 
+> **Storage supersession (2026-11-21):** The private `DataBinder._assocPath`
+> referenced below is now public `setPath` in `@ndigo/core`
+> (`core/src/keypath.ts`), extracted in phase 5 of the core contract
+> migration. The in-place mutation semantics for non-plain targets are
+> unchanged.
+
 ## Background
 
 The gap analysis records three argument-binding gaps against enterprise

@@ -10,6 +10,11 @@ import { KeypathToken } from './keypath-converter.js';
  * @param tokens - The parsed keypath tokens.
  * @param obj - The root object to read from.
  * @returns The value at the path, or `undefined`.
+ *
+ * @example
+ * ```ts
+ * getPath(['user', 'name'], { user: { name: 'ndigo' } }); // 'ndigo'
+ * ```
  */
 export function getPath(tokens: KeypathToken[], obj: unknown): unknown {
     let value: unknown = obj;
@@ -34,6 +39,11 @@ export function getPath(tokens: KeypathToken[], obj: unknown): unknown {
  * @param value - The value to set.
  * @param obj - The root object to update.
  * @returns The updated root object.
+ *
+ * @example
+ * ```ts
+ * setPath(['user', 'name'], 'ndigo', { user: { name: 'old' } });
+ * ```
  */
 export function setPath(tokens: KeypathToken[], value: unknown, obj: unknown): unknown {
     if (tokens.length === 0) return value;

@@ -898,6 +898,12 @@ export class MediaType
  * @param value - - Media type string (e.g., "text/html;charset=UTF-8")
  * @returns MediaType instance from registry
  * @throws If value is invalid or cannot be parsed
+ *
+ * @example
+ * ```ts
+ * const mt = parseMediaType('text/html;charset=UTF-8');
+ * mt.baseType; // "text/html"
+ * ```
  */
 export function parseMediaType(value: string): MediaType {
     if (!value || typeof value !== 'string') {

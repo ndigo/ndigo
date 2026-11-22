@@ -91,6 +91,11 @@ export function direct<T extends ParentNode<T>>(
  * @param node - Starting node.
  * @param callback - Function invoked for each visited node; returning `false` stops traversal.
  * @param inclusive - When `true`, include the starting node in the traversal.
+ *
+ * @example
+ * ```ts
+ * escalate(node, (n) => console.log(n), true);
+ * ```
  */
 export function escalate<T extends ChildNode<T>>(
     node: T,

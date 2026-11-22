@@ -111,6 +111,11 @@ const asTerm = (value: ProfileExpressionInput): ProfileTerm => {
  * @param expression - The expression to validate.
  * @returns The trimmed expression (canonical form).
  * @throws On malformed expressions.
+ *
+ * @example
+ * ```ts
+ * validateProfileExpression('admin & !guest'); // 'admin & !guest'
+ * ```
  */
 export function validateProfileExpression(expression: string): string {
     const trimmed = expression.trim();
@@ -127,6 +132,12 @@ const wrapIf = (term: ProfileTerm, wrap: boolean): string => (wrap ? `(${term})`
  *
  * @param terms - Terms to conjoin.
  * @returns A composed profile term.
+ *
+ * @example
+ * ```ts
+ * const term = and('admin', 'active');
+ * String(term); // "admin & active"
+ * ```
  */
 export function and(...terms: ProfileExpressionInput[]): ProfileTerm {
     if (terms.length === 0) {
@@ -145,6 +156,12 @@ export function and(...terms: ProfileExpressionInput[]): ProfileTerm {
  *
  * @param terms - Terms to disjoin.
  * @returns A composed profile term.
+ *
+ * @example
+ * ```ts
+ * const term = or('admin', 'guest');
+ * String(term); // "admin | guest"
+ * ```
  */
 export function or(...terms: ProfileExpressionInput[]): ProfileTerm {
     if (terms.length === 0) {
@@ -162,6 +179,12 @@ export function or(...terms: ProfileExpressionInput[]): ProfileTerm {
  *
  * @param term - The term to negate.
  * @returns A composed profile term.
+ *
+ * @example
+ * ```ts
+ * const term = not('guest');
+ * String(term); // "!guest"
+ * ```
  */
 export function not(term: ProfileExpressionInput): ProfileTerm {
     const inner = asTerm(term);

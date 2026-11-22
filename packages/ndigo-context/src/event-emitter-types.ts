@@ -124,6 +124,13 @@ export interface AsyncEventEmitter extends EventEmitter {
 
 /**
  * Event emitter with conditional and finite listeners.
+ *
+ * @example
+ * ```ts
+ * emitter.many('change', 3, handler);
+ * emitter.once('change', handler);
+ * emitter.until('change', handler);
+ * ```
  */
 export interface ConditionalEventEmitter extends EventEmitter {
     /**
@@ -155,6 +162,12 @@ export interface ConditionalEventEmitter extends EventEmitter {
 
 /**
  * Event emitter that supports listener insertion positions.
+ *
+ * @example
+ * ```ts
+ * emitter.first('change', handler);
+ * emitter.at('change', 2, handler);
+ * ```
  */
 export interface PositionalEventEmitter extends EventEmitter {
     /**
@@ -178,6 +191,13 @@ export interface PositionalEventEmitter extends EventEmitter {
 
 /**
  * Receives the application event emitter during initialization.
+ *
+ * @example
+ * ```ts
+ * class MyService implements ApplicationEventEmitterAware {
+ *     setApplicationEventEmitter(emitter: EventEmitter) {}
+ * }
+ * ```
  */
 export interface ApplicationEventEmitterAware extends Aware {
     /**

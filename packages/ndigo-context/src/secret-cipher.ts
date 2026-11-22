@@ -43,6 +43,11 @@ const versionRe = /^[a-z][a-z0-9.]*$/;
 
 /**
  * A parsed secret marker.
+ *
+ * @example
+ * ```ts
+ * const marker: SecretMarker = { scheme: 'aes-gcm', version: 'v1', payload: '...' };
+ * ```
  */
 export interface SecretMarker {
     /**
@@ -141,6 +146,11 @@ export function isSecretMarkerLike(value: unknown): boolean {
 
 /**
  * Capability flags a cipher backend may declare.
+ *
+ * @example
+ * ```ts
+ * const caps: SecretCipherCapabilities = { aad: true };
+ * ```
  */
 export interface SecretCipherCapabilities {
     /**
@@ -159,6 +169,15 @@ export interface SecretCipherCapabilities {
  * Implementations are identified by their {@link SecretCipher#scheme} —
  * the marker's dispatch key. The contract is intentionally narrow:
  * `encrypt(plain, aad?) → marker`, `decrypt(marker, aad?) → plain`.
+ *
+ * @example
+ * ```ts
+ * const cipher: SecretCipher = {
+ *     scheme: 'aes-gcm',
+ *     encrypt: (plain, aad) => encryptAesGcm(plain, aad),
+ *     decrypt: (marker, aad) => decryptAesGcm(marker, aad),
+ * };
+ * ```
  */
 export interface SecretCipher {
     /**
@@ -190,6 +209,11 @@ export interface SecretCipher {
 
 /**
  * Context passed to a {@link SecretDecryptor} for each resolved value.
+ *
+ * @example
+ * ```ts
+ * const context: SecretDecryptContext = { key: 'db.password' };
+ * ```
  */
 export interface SecretDecryptContext {
     /**
@@ -207,6 +231,12 @@ export interface SecretDecryptContext {
  * after placeholder
  * resolution. Values that are not well-formed markers pass through unchanged;
  * marker values with an unknown scheme fail loud (never plaintext fallback).
+ *
+ * @example
+ * ```ts
+ * const decryptor: SecretDecryptor = new SecretSchemeRegistry();
+ * const plain = decryptor.decrypt('{cipher:abc}', 'db.password');
+ * ```
  */
 export interface SecretDecryptor {
     /**

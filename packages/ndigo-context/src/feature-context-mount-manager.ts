@@ -28,6 +28,11 @@ const logger = getLogger('ndigo-context:feature-context-mount-manager');
  */
 /**
  * A module loaded lazily by a feature's `loader`.
+ *
+ * @example
+ * ```ts
+ * const module: LazyFeatureModule = { createContext: (parent) => parent.newChild('orders') };
+ * ```
  */
 export interface LazyFeatureModule {
     /**
@@ -41,6 +46,11 @@ export interface LazyFeatureModule {
 
 /**
  * Options used to register a feature for mounting.
+ *
+ * @example
+ * ```ts
+ * manager.registerFeature({ name: 'orders', createContext: (parent) => parent.newChild('orders') });
+ * ```
  */
 export interface FeatureRegistrationOptions extends FeatureContextOptions {
     /** Policy applied when the feature is unmounted. */
@@ -74,6 +84,11 @@ export interface FeatureRegistrationOptions extends FeatureContextOptions {
 
 /**
  * Options for the feature context mount manager.
+ *
+ * @example
+ * ```ts
+ * const options: FeatureContextMountManagerOptions = { metricRecorder };
+ * ```
  */
 export interface FeatureContextMountManagerOptions {
     /** Optional metric recorder. */

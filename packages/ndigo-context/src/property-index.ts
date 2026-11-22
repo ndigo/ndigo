@@ -61,6 +61,12 @@ class TokenCache {
  * tokens index into the resolved value, matching the framework's historical
  * resolution semantics. Mutations to a captured source map remain visible
  * without a rebuild.
+ *
+ * @example
+ * ```ts
+ * const index = new PrototypeChainIndex();
+ * index.hasProperty('server.port'); // true
+ * ```
  */
 export class PrototypeChainIndex implements PropertyIndex {
     /**
@@ -114,6 +120,12 @@ export class PrototypeChainIndex implements PropertyIndex {
  * are retained for origin tracking (Phase 5). Captured source maps are
  * replaced, not mutated — in-place edits after build stay invisible until
  * the next rebuild.
+ *
+ * @example
+ * ```ts
+ * const index = new FlatMergedIndex();
+ * index.hasProperty('server.port'); // true
+ * ```
  */
 export class FlatMergedIndex implements PropertyIndex {
     /**

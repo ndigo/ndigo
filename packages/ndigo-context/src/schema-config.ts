@@ -53,6 +53,11 @@ export function parseSchemaConfig<S extends z.ZodType>(schema: S, raw: Record<st
  * @param resolver - The property resolver.
  * @returns The parsed typed value.
  * @throws When the resolved values violate the schema.
+ *
+ * @example
+ * ```ts
+ * const parsed = resolveSchemaConfig(AppSchema, raw);
+ * ```
  */
 export function resolveSchemaConfig<S extends z.ZodType>(
     schema: S,
@@ -94,6 +99,12 @@ export type PrimitiveValue = string | number | boolean | null | undefined;
  * the engine behind {@link PropertyKeyMap}. Leaves become their key path
  * (`'server.port'`); objects descend. Exposed so the keypath shape of a
  * configuration can be reasoned about in types.
+ *
+ * @example
+ * ```ts
+ * type Keys = DeepPropertyKey<{ server: { port: number } }>;
+ * // 'server.port'
+ * ```
  */
 export type DeepPropertyKey<T, P extends string> = T extends PrimitiveValue | readonly unknown[]
     ? P

@@ -10,6 +10,13 @@ import type { ConfigurableEnvironment } from './environment';
  *
  * Customizers run in registration order; a throwing customizer fails boot
  * loudly (a partial environment would poison later reads).
+ *
+ * @example
+ * ```ts
+ * const customizer: EnvironmentCustomizer = {
+ *     customize: (environment) => environment.setProperty('server.port', 8080),
+ * };
+ * ```
  */
 export interface EnvironmentCustomizer {
     /**

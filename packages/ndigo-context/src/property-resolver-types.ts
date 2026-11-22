@@ -7,6 +7,16 @@ import { like } from '@ndigo/util/types';
 import type { SecretDecryptor } from './secret-cipher';
 import type { PropertySource } from './property-source';
 
+/**
+ * Resolves property values through an ordered source registry, with
+ * optional typed reads and secret decryption.
+ *
+ * @example
+ * ```ts
+ * const resolver: PropertyResolver = new StandardEnvironment();
+ * const value = resolver.getProperty('server.port');
+ * ```
+ */
 export interface PropertyResolver {
     /**
      * Resolves a property value, falling back to a default when missing.
@@ -81,6 +91,17 @@ export const likePropertyResolver = like({
     hasProperty: Function,
 }) as (value: unknown) => value is PropertyResolver;
 
+/**
+ * Strategy interface for resolving property lookups from an ordered source
+ * list without walking the sources per lookup.
+ *
+ * @example
+ * ```ts
+ * const index: PropertyIndex = new FlatMergedIndex();
+ * index.build(sources);
+ * index.hasProperty('server.port');
+ * ```
+ */
 export interface PropertyIndex {
     /**
      * Rebuilds the index from the given ordered sources (first = highest
@@ -114,6 +135,14 @@ export interface PropertyIndex {
     originOf?(key: string): string | undefined;
 }
 
+/**
+ * Options for constructing a property resolver / index-backed lookup.
+ *
+ * @example
+ * ```ts
+ * const options: ResolverOptions = { index: 'flat', conversionService };
+ * ```
+ */
 export interface ResolverOptions {
     /**
      * The lookup index to use. Defaults to the prototype chain (the

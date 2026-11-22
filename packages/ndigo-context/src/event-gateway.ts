@@ -7,6 +7,11 @@ import type { ApplicationContext } from './context';
 
 /**
  * Maps an event emitted by the source context to a target event.
+ *
+ * @example
+ * ```ts
+ * const relay: ContextEventRelay = { from: 'orders:created', to: 'notifications:created' };
+ * ```
  */
 export interface ContextEventRelay {
     /**
@@ -21,6 +26,11 @@ export interface ContextEventRelay {
 
 /**
  * Result of validating a relay registration.
+ *
+ * @example
+ * ```ts
+ * const result: RelayValidationResult = { relay, valid: true };
+ * ```
  */
 export interface RelayValidationResult {
     /**
@@ -39,6 +49,12 @@ export interface RelayValidationResult {
 
 /**
  * Validates relay registrations before they are attached.
+ *
+ * @example
+ * ```ts
+ * const strategy: RelayValidationStrategy = new PermissiveRelayValidationStrategy();
+ * const result = strategy.validate(relay);
+ * ```
  */
 export interface RelayValidationStrategy {
     /**
@@ -52,6 +68,14 @@ export interface RelayValidationStrategy {
 
 /**
  * Receives relay registration and blocking diagnostics.
+ *
+ * @example
+ * ```ts
+ * const handler: GatewayDiagnosticHandler = {
+ *     onRelayBlocked: (result) => report(result),
+ *     onRelayRegistered: (relay) => track(relay),
+ * };
+ * ```
  */
 export interface GatewayDiagnosticHandler {
     /**
@@ -70,6 +94,11 @@ export interface GatewayDiagnosticHandler {
 
 /**
  * Configures relay validation and diagnostics for a gateway.
+ *
+ * @example
+ * ```ts
+ * const options: ContextEventGatewayOptions = { validationStrategy: new NamespaceRelayValidationStrategy() };
+ * ```
  */
 export interface ContextEventGatewayOptions {
     /**
@@ -88,6 +117,11 @@ export interface ContextEventGatewayOptions {
 
 /**
  * Options for namespace-based relay validation.
+ *
+ * @example
+ * ```ts
+ * const options: NamespaceRelayValidationOptions = { featureNamespace: 'orders' };
+ * ```
  */
 export interface NamespaceRelayValidationOptions {
     /**
@@ -113,6 +147,12 @@ const parseNamespace = (eventType: EventType): string | undefined => {
 
 /**
  * Permissive relay validator that accepts all relays.
+ *
+ * @example
+ * ```ts
+ * const strategy = new PermissiveRelayValidationStrategy();
+ * strategy.validate(relay); // { relay, valid: true }
+ * ```
  */
 export class PermissiveRelayValidationStrategy implements RelayValidationStrategy {
     /**
@@ -146,6 +186,12 @@ export class PermissiveRelayValidationStrategy implements RelayValidationStrateg
 
 /**
  * Namespace-based relay validator for `site:*` and `<feature>:*` contracts.
+ *
+ * @example
+ * ```ts
+ * const strategy = new NamespaceRelayValidationStrategy({ featureNamespace: 'orders' });
+ * const result = strategy.validate({ from: 'site:change', to: 'orders:change' });
+ * ```
  */
 export class NamespaceRelayValidationStrategy implements RelayValidationStrategy {
     /**
@@ -235,6 +281,11 @@ export class NamespaceRelayValidationStrategy implements RelayValidationStrategy
 
 /**
  * Error thrown when a relay is rejected and throw-on-invalid mode is enabled.
+ *
+ * @example
+ * ```ts
+ * throw new InvalidRelayError('Source namespace "orders" is not allowed');
+ * ```
  */
 export class InvalidRelayError extends FrameworkError {
     get [Symbol.toStringTag](): string {

@@ -10,6 +10,14 @@ import { ContextEventGateway, ContextEventGatewayOptions, ContextEventRelay } fr
 /**
  * Options for creating a shell context.
  */
+/**
+ * Options for creating a shell context.
+ *
+ * @example
+ * ```ts
+ * const shell = createShellContext({ name: 'shell', themeName: 'light' });
+ * ```
+ */
 export interface ShellContextOptions {
     /**
      * Optional shell context name.
@@ -39,6 +47,11 @@ export interface ShellContextOptions {
 
 /**
  * Options for creating a feature context and its optional relay gateway.
+ *
+ * @example
+ * ```ts
+ * const { context, gateway } = createFeatureContext(parent, { name: 'orders', relays: [relay] });
+ * ```
  */
 export interface FeatureContextOptions {
     /**
@@ -69,6 +82,15 @@ export interface FeatureContextOptions {
 
 /**
  * Result of mounting a feature context.
+ */
+/**
+ * Result of mounting a feature context.
+ *
+ * @example
+ * ```ts
+ * const composition = createFeatureContext(parent, { name: 'orders' });
+ * composition.context.refresh();
+ * ```
  */
 export interface FeatureContextComposition {
     /**

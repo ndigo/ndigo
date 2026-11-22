@@ -52,6 +52,11 @@ export function getMetadata(target: unknown): Record<string, unknown> {
  *
  * Deliberately value-free: it describes what a class *declares*, never what
  * the environment currently holds.
+ *
+ * @example
+ * ```ts
+ * const declared: DeclaredConfigurationProperty = { key: 'server.port', type: 'number' };
+ * ```
  */
 export interface DeclaredConfigurationProperty {
     /** The full environment keypath (`prefix.field`, e.g. `server.port`). */
@@ -199,6 +204,12 @@ function declaredTypeFromSchema(field: unknown): string | undefined {
  *
  * @param ctor - The configuration properties class constructor.
  * @returns The declared keys, sorted by key, with the declared type when known.
+ *
+ * @example
+ * ```ts
+ * const declared = declaredConfigurationProperties(AppConfig);
+ * // [{ key: 'server.port', type: 'number' }]
+ * ```
  */
 export function declaredConfigurationProperties(ctor: new () => unknown): DeclaredConfigurationProperty[] {
     const meta = getMetadata(ctor);
@@ -244,6 +255,12 @@ const camelize = (key: string): string => key.replace(/[-_]([a-z])/g, (_match, l
  *
  * @param key - The dotted keypath as declared (e.g. `server.hostName`).
  * @returns The lookup-ready candidate keys, exact key first.
+ *
+ * @example
+ * ```ts
+ * const candidates = relaxedKeyCandidates('server.hostName');
+ * // ['server.hostName', 'server.hostName', ...]
+ * ```
  */
 export function relaxedKeyCandidates(key: string): string[] {
     return dedupeLookups([
@@ -276,6 +293,12 @@ function dedupeLookups(spellings: string[]): string[] {
  *
  * @param key - The dotted keypath.
  * @returns The equivalent keypath the environment can resolve.
+ *
+ * @example
+ * ```ts
+ * const lookup = toLookupKey('server.host-name');
+ * // server["host-name"]
+ * ```
  */
 export function toLookupKey(key: string): string {
     let lookup = '';

@@ -302,14 +302,32 @@ function createEntryDecorator(entryName?: string | ContextToken<unknown>) {
 export type EntryDecorator = <M extends Function>(target: M, context: ClassMethodDecoratorContext) => M;
 
 /**
- * Can be used as `@entry()` or `@entry('customName')`.
+ * Creates an entry decorator from an explicit entry name (or context token).
  *
  * @param nameOrTarget - Entry name.
  * @returns A method decorator.
+ *
+ * @example
+ * ```ts
+ * class AppConfig {
+ *     @entry('greeting')
+ *     greeting() { return 'hello'; }
+ * }
+ * ```
  */
-/** Creates an entry decorator. @param nameOrTarget - Entry name. @returns A method decorator. */
 export function entry(nameOrTarget: string | ContextToken<unknown>): EntryDecorator;
-/** Creates an entry decorator. @returns A method decorator. */
+/**
+ * Creates an entry decorator that reads the entry name from the method name.
+ *
+ * @returns A method decorator.
+ *
+ * @example
+ * ```ts
+ * class AppConfig {
+ *     greeting() { return 'hello'; }
+ * }
+ * ```
+ */
 export function entry(): EntryDecorator;
 /**
  * Creates an entry decorator.
@@ -466,6 +484,12 @@ class ConfigurationParser {
 /**
  * A {@link EntryRegistryProcessor|EntryRegistryProcessor} used for processing of `configuration` classes.
  * This processor should be prioritized as it is important that any `entry` methods declared in the the `configuration` decorator classes have their values registered before any other `EntryProcessor` executes.
+ *
+ * @example
+ * ```ts
+ * const processor = new ConfigurationProcessor();
+ * processor.processEntryRegistry(metadataConfigApplicationContext);
+ * ```
  */
 export class ConfigurationProcessor
     extends AsResourceLoaderAware(AsEnvironmentAware(Null))

@@ -7,6 +7,13 @@ import { AbstractBaseInstrumentation } from '@ndigo/telemetry';
 
 /**
  * OpenTelemetry instrumentation for `AuthServerInstrumentation`.
+ *
+ * @example
+ * ```ts
+ * configureTelemetry({
+ *     instrumentations: [new AuthServerInstrumentation()],
+ * });
+ * ```
  */
 export class AuthServerInstrumentation extends AbstractBaseInstrumentation {
     /**

@@ -10,6 +10,11 @@ import { AbstractBaseInstrumentation, createLazyCounter } from '@ndigo/telemetry
 
 /**
  * Options for {@link WebSocketServerInstrumentation}.
+ *
+ * @example
+ * ```ts
+ * const options: WebSocketServerInstrumentationOptions = { roomAttribute: true };
+ * ```
  */
 export interface WebSocketServerInstrumentationOptions {
     /**

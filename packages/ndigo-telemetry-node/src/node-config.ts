@@ -31,6 +31,11 @@ const logger = getLogger('ndigo-telemetry-node:node-config');
  * samplers so child spans inherit the root decision; a raw OTel `Sampler`
  * passes through untouched. Default: `'always'` (100% sampling — today's
  * effective behavior).
+ *
+ * @example
+ * ```ts
+ * const sampler: SamplerSpec = { ratio: 0.25 };
+ * ```
  */
 export type SamplerSpec = { ratio: number } | 'always' | 'off' | Sampler;
 
@@ -48,6 +53,11 @@ export type SamplerSpec = { ratio: number } | 'always' | 'off' | Sampler;
  * - `{ url, headers? }` — OTLP/HTTP, headers forwarded (e.g. bearer auth;
  *   never logged). A `headers`-only spec still selects OTLP (explicit
  *   intent), using the default endpoint.
+ *
+ * @example
+ * ```ts
+ * const exporter: ExporterSpec = { url: 'http://localhost:4318/v1/traces' };
+ * ```
  */
 export type ExporterSpec =
     | { url?: string; headers?: Record<string, string>; console?: true }
@@ -59,6 +69,14 @@ export type ExporterSpec =
  * Node telemetry configuration: the exporter chosen per signal (traces,
  * metrics, logs), an optional sampler and instrumentation list, and the minimum
  * severity applied to the log pipeline.
+ *
+ * @example
+ * ```ts
+ * const config: TelemetryConfig = {
+ *     traceExporter: { url: 'http://localhost:4318/v1/traces' },
+ *     sampler: { ratio: 0.1 },
+ * };
+ * ```
  */
 export interface TelemetryConfig {
     /** Trace exporter spec; defaults to the console exporter. */
@@ -75,7 +93,14 @@ export interface TelemetryConfig {
     minimumSeverity?: SeverityNumber;
 }
 
-/** The resolved export choice for one signal. */
+/**
+ * The resolved export choice for one signal.
+ *
+ * @example
+ * ```ts
+ * const resolved: ResolvedExporter = { kind: 'otlp', url: 'http://localhost:4318/v1/traces' };
+ * ```
+ */
 export type ResolvedExporter =
     | { kind: 'console' }
     | { kind: 'none' }

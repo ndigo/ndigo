@@ -10,6 +10,12 @@ export const SHARED_KEY = 'ndigo:shared';
 
 /**
  * Options for the `@sharedDependency` class decorator.
+ *
+ * @example
+ * ```ts
+ * @sharedDependency({ singleton: true })
+ * class SharedService {}
+ * ```
  */
 export interface SharedOptions {
     /** Whether this entry must be a singleton across the context hierarchy. Default `true`. */

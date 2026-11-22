@@ -7,6 +7,13 @@ import { like } from '@ndigo/util/types';
 /**
  * Represents an object that can be compared for equality with another object of the same type.
  * @typeParam T - The type of the object being compared. Defaults to `unknown`.
+ *
+ * @example
+ * ```ts
+ * class Point implements Equatable<Point> {
+ *     equals(other: Point): boolean { return this.x === other.x && this.y === other.y; }
+ * }
+ * ```
  */
 export interface Equatable<T = unknown> {
     /**

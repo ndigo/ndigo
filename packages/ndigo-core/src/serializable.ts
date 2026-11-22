@@ -21,6 +21,14 @@ export interface JSONArray extends Array<JSONValue> {}
 
 /**
  * A value that can safely be converted to a string or JSON payload.
+ *
+ * @example
+ * ```ts
+ * class User implements Serializable {
+ *     toString() { return 'User'; }
+ *     toJSON() { return { name: 'ndigo' }; }
+ * }
+ * ```
  */
 export interface Serializable {
     /** Returns a string representation of the value. */

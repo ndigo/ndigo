@@ -10,6 +10,13 @@ import { createNull } from './null.js';
 
 /**
  * A collection that can look up property values by name.
+ *
+ * @example
+ * ```ts
+ * const values: PropertyValues = new MutablePropertyValues();
+ * values.add(new PropertyValue('name', 'ndigo'));
+ * values.get('name'); // PropertyValue
+ * ```
  */
 export interface PropertyValues extends Iterable<PropertyValue> {
     /** All property values in iteration order. */

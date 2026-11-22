@@ -20,6 +20,12 @@ type NodeKind = 'static' | 'param' | 'wildcard' | 'greedy';
 
 /**
  * Result of a successful radix tree path lookup.
+ *
+ * @example
+ * ```ts
+ * const match = tree.lookup('/users/42');
+ * match?.params; // { id: '42' }
+ * ```
  */
 export interface RadixMatch<V> {
     /** The value stored at the matched node. */

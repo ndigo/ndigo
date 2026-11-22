@@ -16,6 +16,11 @@ import { Aware, AsAware, likeAwareAnd } from '@ndigo/factory';
 /**
  * A route's rate-limit policy: at most `limit` requests per `windowMs`
  * per client key (SEC-6).
+ *
+ * @example
+ * ```ts
+ * const policy: RateLimitPolicy = { limit: 10, windowMs: 60_000 };
+ * ```
  */
 export interface RateLimitPolicy {
     /** Maximum requests allowed within the window. Positive integer. */
@@ -26,6 +31,11 @@ export interface RateLimitPolicy {
 
 /**
  * The outcome of {@link RateLimiter.consume}.
+ *
+ * @example
+ * ```ts
+ * const result: RateLimitResult = { allowed: true, retryAfterMs: 0 };
+ * ```
  */
 export interface RateLimitResult {
     /** Whether the request may proceed. */
@@ -42,6 +52,11 @@ export interface RateLimitResult {
  * fixed windows; the in-memory reference (single process) and the Redis
  * driver (shared store, multi-process) implement the same
  * semantics.
+ *
+ * @example
+ * ```ts
+ * const handle = await limiter.consume('client-1', { limit: 10, windowMs: 60_000 });
+ * ```
  */
 export interface RateLimiter {
     /** Backend identifier e.g. `'fixed-window'`, `'redis'`. */
@@ -85,6 +100,12 @@ export function likeRateLimiter(value: unknown): value is RateLimiter {
 
 /**
  * Marks an object that can receive a {@link RateLimiter}.
+ *
+ * @example
+ * ```ts
+ * const aware = new MyService(); // implements RateLimiterAware
+ * aware.setRateLimiter(limiter);
+ * ```
  */
 export interface RateLimiterAware extends Aware {
     /**
@@ -100,6 +121,13 @@ export interface RateLimiterAware extends Aware {
  *
  * @param superclass - Base class to extend.
  * @returns A subclass that can receive a rate limiter.
+ *
+ * @example
+ * ```ts
+ * class MyService extends AsRateLimiterAware(Base) {}
+ * const service = new MyService();
+ * service.setRateLimiter(limiter);
+ * ```
  */
 export const AsRateLimiterAware = <T extends Constructable>(superclass: T): Constructable<RateLimiterAware> & T =>
     class extends AsAware(superclass) implements RateLimiterAware {
@@ -125,6 +153,13 @@ export const AsRateLimiterAware = <T extends Constructable>(superclass: T): Cons
  *
  * @param value - The candidate value.
  * @returns Whether the value can receive a rate limiter.
+ *
+ * @example
+ * ```ts
+ * if (likeRateLimiterAware(value)) {
+ *     value.setRateLimiter(limiter);
+ * }
+ * ```
  */
 export const likeRateLimiterAware = likeAwareAnd(like({ setRateLimiter: Function })) as (
     value: unknown

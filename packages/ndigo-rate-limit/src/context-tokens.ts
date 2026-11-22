@@ -9,5 +9,10 @@ import type { RateLimiter } from './rate-limiter';
  * `NodeAutoConfiguration` registers the in-process default under it; apps
  * needing a shared store override the entry (e.g. with the
  * `@ndigo/redis/rate-limit` driver).
+ *
+ * @example
+ * ```ts
+ * const limiter = context.get(RATE_LIMITER);
+ * ```
  */
 export const RATE_LIMITER = new ContextToken<RateLimiter>('rateLimiter');

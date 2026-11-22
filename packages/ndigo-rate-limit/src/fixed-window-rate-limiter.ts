@@ -20,6 +20,12 @@ import { type RateLimitPolicy, type RateLimitResult, type RateLimiter, validateR
 /**
  * In-memory fixed-window reference implementation: one counter per
  * (key, window) pair, sliding to a fresh window once `windowMs` elapses.
+ *
+ * @example
+ * ```ts
+ * const limiter = new FixedWindowRateLimiter();
+ * const result = await limiter.consume('client-1', { limit: 10, windowMs: 60_000 });
+ * ```
  */
 export class FixedWindowRateLimiter implements RateLimiter {
     /**

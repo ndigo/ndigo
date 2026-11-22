@@ -50,6 +50,37 @@ describe('wrapSource', () => {
         expect((source.properties as Record<string, unknown>)['__proto__']).toEqual({ polluted: true });
         expect(({} as Record<string, unknown>).polluted).toBeUndefined();
     });
+
+    test('it should nest bracket keys into arrays and objects', () => {
+        const source = wrapSource('user', { 'items[0].title': 'x', 'items[1].title': 'y' });
+
+        expect(source.properties).toEqual({ items: [{ title: 'x' }, { title: 'y' }] });
+        expect(source.getProperty('items[0].title')).toBe('x');
+        expect(source.getProperty('items[1].title')).toBe('y');
+    });
+
+    test('it should nest mixed dotted and bracket keys', () => {
+        const source = wrapSource('user', { 'server.port': 9000, 'items[0]': 'a' });
+
+        expect(source.properties).toEqual({ server: { port: 9000 }, items: ['a'] });
+        expect(source.getProperty('server.port')).toBe(9000);
+        expect(source.getProperty('items[0]')).toBe('a');
+    });
+
+    test('it should keep dotted-form behavior unchanged', () => {
+        const source = wrapSource('user', { 'a.b': 1, 'c.d.e': 2 });
+
+        expect(source.properties).toEqual({ a: { b: 1 }, c: { d: { e: 2 } } });
+    });
+
+    test('it should not pollute the prototype for bracketed __proto__ keys', () => {
+        const source = wrapSource('user', { 'a["__proto__"]': 1 });
+
+        expect(Object.getPrototypeOf(source.properties)).toBeNull();
+        expect((source.properties as Record<string, unknown>).a).toBeDefined();
+        expect(((source.properties as Record<string, unknown>).a as Record<string, unknown>)['__proto__']).toBe(1);
+        expect(({} as Record<string, unknown>).polluted).toBeUndefined();
+    });
 });
 
 describe('MutablePropertySources', () => {

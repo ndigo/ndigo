@@ -37,11 +37,21 @@ import { IllegalStateError } from './error.js';
 /**
  * Represents a quality factor parameter for media types, typically used in HTTP Accept headers.
  * It's a number between 0.0 and 1.0, indicating preference.
+ *
+ * @example
+ * ```ts
+ * const q: QualityFactor = ';q=0.9';
+ * ```
  */
 export type QualityFactor = `;q=${0.1 | 0.2 | 0.3 | 0.4 | 0.5 | 0.6 | 0.7 | 0.8 | 0.9 | '1.0'}`;
 /**
  * Defines the set of supported top-level media types (e.g., 'application', 'audio', 'text').
  * The wildcard '*' is also supported.
+ *
+ * @example
+ * ```ts
+ * const mt: SupportedMediaType = 'application';
+ * ```
  */
 export type SupportedMediaType =
     | '*'

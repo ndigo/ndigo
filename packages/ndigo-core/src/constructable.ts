@@ -6,6 +6,11 @@ import { like } from '@ndigo/util/types';
 /**
  * Represents a constructor type, allowing for the creation of new instances of a class.
  * @typeParam T - The type of the instance created by the constructor. Defaults to an empty object.
+ *
+ * @example
+ * ```ts
+ * const Ctor: Constructable<{ name: string }> = class { name = 'ndigo'; };
+ * ```
  */
 // oxlint-disable-next-line typescript/no-explicit-any -- TS2545 requires mixin bases to be `new (...args: any[]) => T`; `unknown[]` breaks `class extends` in ndigo-dispatcher/ndigo-factory.
 export type Constructable<T = {}> = new (...args: any[]) => T;

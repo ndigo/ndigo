@@ -12,7 +12,12 @@
  */
 import type { Converter } from './converter.js';
 
-/** A token in a parsed keypath — either a string property name or a numeric array index. */
+/** A token in a parsed keypath — either a string property name or a numeric array index. *
+ * @example
+ * ```ts
+ * const tokens: KeypathToken[] = ['user', 0, 'name'];
+ * ```
+ */
 export type KeypathToken = string | number;
 
 function isIdentStart(ch: string): boolean {

@@ -280,6 +280,11 @@ export abstract class AbstractHandlerMethodErrorResolver extends AbstractRouteEr
  * `'FrameworkError'`) also covers its subclasses while a subclass-specific
  * key takes precedence.  Unmapped errors fall back to
  * {@link defaultErrorView}.
+ *
+ * @example
+ * ```ts
+ * const resolver = new DefaultRouteErrorResolver('error/default');
+ * ```
  */
 export class DefaultRouteErrorResolver extends AbstractRouteErrorResolver {
     /**

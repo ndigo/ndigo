@@ -416,6 +416,11 @@ export class RouteConditionHolder extends AbstractRouteCondition<RouteConditionH
  * Implements the {@link RouteCondition|RouteCondition} contract by delegating to multiple `RouteCondition` types and using a logical conjunction (' && ') to ensure all conditions match a given route.
  *
  * When `CompositeRouteCondition` instances are combined or compared they are expected to (a) contain the same number of conditions and (b) that conditions in the respective index are of the same type. It is acceptable to provide `null` conditions or no conditions at all to the constructor.
+ *
+ * @example
+ * ```ts
+ * const condition = new CompositeRouteCondition();
+ * ```
  */
 export class CompositeRouteCondition extends AbstractRouteCondition<CompositeRouteCondition> {
     /**

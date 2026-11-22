@@ -1,8 +1,8 @@
 /**
  * JSON serialization contracts and the `serialize` helper.
  */
-import { is } from '@ndigo/util/types';
 import { isNotPrimitive } from './primitive.js';
+import { hasFunction } from './_guards.js';
 
 /**
  * A value that can be represented in JSON.
@@ -36,16 +36,9 @@ export type serializable = JSONValue | Serializable;
 
 const { isArray } = Array,
     { parse, stringify } = JSON,
-    propIs =
-        (type: Function) =>
-        (name: string | symbol) =>
-        (obj: unknown): boolean =>
-            is(type, (obj as Record<PropertyKey, unknown> | undefined)?.[name]),
-    hasFunction = propIs(Function),
     hasToJSON = hasFunction('toJSON'),
     hasToString = hasFunction('toString'),
     isNotArray = (value: unknown) => !isArray(value),
-    _T = (): boolean => true,
     // `JSON.stringify` throws on cyclic structures and BigInt; a value that
     // cannot survive a JSON round trip is simply not a JSON value, so the
     // throw is folded into `false` rather than escaping the predicate.

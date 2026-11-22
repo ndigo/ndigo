@@ -21,8 +21,6 @@ import {
 } from './metadata';
 import { Constructable } from '@ndigo/core';
 
-type ClassType = new (...args: unknown[]) => unknown;
-
 /**
  * Decorator that marks a class as an entity.
  * It can optionally specify a custom table name for the entity.
@@ -36,7 +34,7 @@ type ClassType = new (...args: unknown[]) => unknown;
  * ```
  */
 export function entity(tableName?: string) {
-    return function <T extends ClassType>(target: T, context: ClassDecoratorContext): T {
+    return function <T extends Constructable<unknown>>(target: T, context: ClassDecoratorContext): T {
         context.metadata[entityMetadataKey] = true;
         context.metadata[entityNameMetadataKey] = tableName ?? target.name;
         return target;

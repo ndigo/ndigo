@@ -305,11 +305,7 @@ export abstract class AbstractEnvironment extends AsEventEmitter(Null) implement
      * @param defaultValue - Value returned when the key is absent.
      * @returns The converted value, or `defaultValue`.
      */
-    getPropertyAs<T>(
-        key: string,
-        targetType: (new (...args: never[]) => T) | (() => T) | T,
-        defaultValue?: T
-    ): T | undefined {
+    getPropertyAs<T>(key: string, targetType: Constructable<T> | (() => T) | T, defaultValue?: T): T | undefined {
         return this.#propertyResolver.getPropertyAs(key, targetType, defaultValue);
     }
 
@@ -321,7 +317,7 @@ export abstract class AbstractEnvironment extends AsEventEmitter(Null) implement
      * @returns The converted value.
      * @throws When the key has no value or conversion fails.
      */
-    getRequiredPropertyAs<T>(key: string, targetType: (new (...args: never[]) => T) | (() => T) | T): T {
+    getRequiredPropertyAs<T>(key: string, targetType: Constructable<T> | (() => T) | T): T {
         return this.#propertyResolver.getRequiredPropertyAs(key, targetType);
     }
 

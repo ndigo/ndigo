@@ -2,7 +2,7 @@
  * Configuration decorators: `@configuration`, `@entry`, `@environment`, `@configurationProperties`.
  */
 import '@tsmetadata/polyfill';
-import { FrameworkError, getProfileCondition, getSymbolMetadata } from '@ndigo/core';
+import { Constructable, FrameworkError, getProfileCondition, getSymbolMetadata } from '@ndigo/core';
 import { GenericApplicationContext, ApplicationContextAwareProcessor } from './context';
 import { Environment, AsEnvironmentAware, StandardEnvironment, ConfigurableEnvironment } from './environment';
 import { EntryRegistryProcessor, Registry } from '@ndigo/factory';
@@ -102,10 +102,7 @@ const { defineProperty, getOwnPropertyDescriptor } = Reflect,
  * }
  * ```
  */
-export function configuration<T extends new (...args: never[]) => unknown>(
-    target: T,
-    context: ClassDecoratorContext
-): T {
+export function configuration<T extends Constructable<unknown>>(target: T, context: ClassDecoratorContext): T {
     context.metadata[CONFIG_CONSTRUCTOR] = true;
     return target;
 }
@@ -119,12 +116,7 @@ export function configuration<T extends new (...args: never[]) => unknown>(
  */
 export function property(
     path: string,
-    propertyType?:
-        | (new (...args: never[]) => number)
-        | (new (...args: never[]) => boolean)
-        | (new (...args: never[]) => Date)
-        | (new (...args: never[]) => string)
-        | string
+    propertyType?: Constructable<number> | Constructable<boolean> | Constructable<Date> | Constructable<string> | string
 ) {
     return function (value: undefined, context: ClassFieldDecoratorContext) {
         if (context.kind !== 'field') {
@@ -196,7 +188,7 @@ export function nestedConfig(value: undefined, context: ClassFieldDecoratorConte
  * @returns A class decorator that prepends the source to metadata.
  */
 export function propertySource(source: JSONObject | Enumerable<string, JSONValue>) {
-    return function <T extends new (...args: never[]) => unknown>(target: T, context: ClassDecoratorContext): T {
+    return function <T extends Constructable<unknown>>(target: T, context: ClassDecoratorContext): T {
         let ps: JSONObject;
         if (likeEnumerable(source)) {
             ps = createNull();
@@ -341,7 +333,7 @@ class ConfigurationParser {
                 if (condition === undefined || this.environment.acceptsProfiles(condition)) {
                     // Candidates are decorated configuration classes (containers
                     // such as registries are skipped by the metadata check above)
-                    const config = new (configClass as new (...args: never[]) => object)();
+                    const config = new (configClass as Constructable<object>)();
                     if (hasPropertySourceMetadata(configClass)) {
                         this.processPropertySource(configClass, getPropertySourceMetadata(configClass));
                     }

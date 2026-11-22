@@ -2,7 +2,7 @@
  * Zod-based environment schema validation.
  */
 import { z } from 'zod';
-import { IllegalStateError, JSONValue, getSymbolMetadata } from '@ndigo/core';
+import { Constructable, IllegalStateError, JSONValue, getSymbolMetadata } from '@ndigo/core';
 import type { PropertyResolver } from './property-resolver';
 
 const ENV_SCHEMA = 'boot:environmentSchema';
@@ -28,7 +28,7 @@ const ENV_SCHEMA = 'boot:environmentSchema';
  * ```
  */
 export function environment(schema: z.ZodType) {
-    return function <T extends new (...args: never[]) => unknown>(target: T, context: ClassDecoratorContext): T {
+    return function <T extends Constructable<unknown>>(target: T, context: ClassDecoratorContext): T {
         context.metadata[ENV_SCHEMA] = schema;
         return target;
     };

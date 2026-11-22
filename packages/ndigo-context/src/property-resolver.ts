@@ -1,7 +1,7 @@
 /**
  * Property resolution with prototype-chain and merged indexes.
  */
-import { IllegalStateError, JSONValue } from '@ndigo/core';
+import { Constructable, IllegalStateError, JSONValue } from '@ndigo/core';
 import type { ConversionService } from '@ndigo/core';
 import { createConversionService } from '@ndigo/core';
 import { PropertySource } from './property-source';
@@ -130,11 +130,7 @@ export class PrototypalPropertyResolver implements PropertyResolver {
     }
 
     /** Gets a typed property. @param key - The key. @param targetType - Target type. @param defaultValue - Default. @returns The value. */
-    getPropertyAs<T>(
-        key: string,
-        targetType: (new (...args: never[]) => T) | (() => T) | T,
-        defaultValue?: T
-    ): T | undefined {
+    getPropertyAs<T>(key: string, targetType: Constructable<T> | (() => T) | T, defaultValue?: T): T | undefined {
         this.#syncRegistry();
         const raw = this.#index.getProperty(key);
         if (typeof raw === 'undefined') return defaultValue;
@@ -143,7 +139,7 @@ export class PrototypalPropertyResolver implements PropertyResolver {
     }
 
     /** Gets a required typed property. @param key - The key. @param targetType - Target type. @returns The value. */
-    getRequiredPropertyAs<T>(key: string, targetType: (new (...args: never[]) => T) | (() => T) | T): T {
+    getRequiredPropertyAs<T>(key: string, targetType: Constructable<T> | (() => T) | T): T {
         this.#syncRegistry();
         const raw = this.#index.getProperty(key);
         if (typeof raw === 'undefined') {
@@ -286,7 +282,7 @@ export class PrototypalPropertyResolver implements PropertyResolver {
     #convert<T>(
         key: string,
         value: JSONValue | undefined,
-        targetType: (new (...args: never[]) => T) | (() => T) | T
+        targetType: Constructable<T> | (() => T) | T
     ): T | undefined {
         const conversion = this.#options.conversionService ?? (this.#conversionService ??= createConversionService());
         if (value === undefined) return undefined;
@@ -296,7 +292,7 @@ export class PrototypalPropertyResolver implements PropertyResolver {
         const targetName = (targetType as { name?: string }).name;
         const primitiveName = targetName ? primitiveNameOf(targetName) : undefined;
         if (
-            value instanceof (targetType as { new (...args: never[]): T }) ||
+            value instanceof (targetType as Constructable<T>) ||
             (primitiveName !== undefined && typeof value === primitiveName)
         ) {
             return value as T;

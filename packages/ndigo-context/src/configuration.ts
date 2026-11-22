@@ -125,6 +125,14 @@ export function configuration<T extends Constructable<unknown>>(target: T, conte
  * @param path - The property path to resolve.
  * @param propertyType - Optional type constructor.
  * @returns A field decorator that captures the path in metadata.
+ *
+ * @example
+ * ```ts
+ * class AppConfig {
+ *     @property('server.port')
+ *     port = 8080;
+ * }
+ * ```
  */
 export function property(
     path: string,
@@ -198,6 +206,12 @@ export function nestedConfig(value: undefined, context: ClassFieldDecoratorConte
  *
  * @param source - The source object or enumerable of key/value pairs.
  * @returns A class decorator that prepends the source to metadata.
+ *
+ * @example
+ * ```ts
+ * @propertySource({ 'server.port': 8080 })
+ * class AppConfig {}
+ * ```
  */
 export function propertySource(source: JSONObject | Enumerable<string, JSONValue>) {
     return function <T extends Constructable<unknown>>(target: T, context: ClassDecoratorContext): T {
@@ -289,7 +303,19 @@ export type EntryDecorator = <M extends Function>(target: M, context: ClassMetho
 export function entry(nameOrTarget: string | ContextToken<unknown>): EntryDecorator;
 /** Creates an entry decorator. @returns A method decorator. */
 export function entry(): EntryDecorator;
-/** Creates an entry decorator. @param nameOrTarget - Entry name. @returns A method decorator. */
+/**
+ * Creates an entry decorator.
+ * @param nameOrTarget - Entry name.
+ * @returns A method decorator.
+ *
+ * @example
+ * ```ts
+ * class AppConfig {
+ *     @entry('greeting')
+ *     greeting() { return 'hello'; }
+ * }
+ * ```
+ */
 export function entry(nameOrTarget?: string | ContextToken<unknown>): EntryDecorator {
     if (typeof nameOrTarget === 'string' || isContextToken(nameOrTarget)) {
         return createEntryDecorator(nameOrTarget);

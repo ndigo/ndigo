@@ -13,6 +13,12 @@ const DEFAULT_COOKIE_NAME = 'theme';
  * Deliberately narrow: any application context (or test double) that exposes
  * the default theme name and a setter works, so this package never forces a
  * specific context implementation on its consumers.
+ *
+ * @example
+ * ```ts
+ * const themeContext: ThemeContextLike = context;
+ * themeContext.setThemeName('dark');
+ * ```
  */
 export interface ThemeContextLike {
     /** Current default theme name. */
@@ -27,6 +33,11 @@ export interface ThemeContextLike {
 
 /**
  * Options for {@link setVisualTheme}.
+ *
+ * @example
+ * ```ts
+ * const theme = setVisualTheme(context, 'dark');
+ * ```
  */
 export interface SetVisualThemeOptions {
     /** Element to apply the theme to. Defaults to the document root. */
@@ -52,6 +63,11 @@ export interface SetVisualThemeOptions {
  * @param name - Requested theme name.
  * @param options - Target element, theme map, and persistence settings.
  * @returns The applied theme, or `undefined` for an unknown name.
+ *
+ * @example
+ * ```ts
+ * const theme = setVisualTheme(context, 'dark');
+ * ```
  */
 export function setVisualTheme(
     context: ThemeContextLike,

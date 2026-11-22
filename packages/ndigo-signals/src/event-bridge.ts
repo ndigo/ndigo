@@ -9,6 +9,12 @@ import { Signal, effect } from '@preact/signals-core';
  * An emitter-shaped source of event occurrences. Deliberately structural:
  * any object exposing `on`/`off` — e.g. `@ndigo/context`'s `Emitter` —
  * satisfies it, so `@ndigo/signals` stays free of that dependency.
+ *
+ * @example
+ * ```ts
+ * const source: EventSource = context.eventEmitter;
+ * source.on('service:status', (status) => console.log(status));
+ * ```
  */
 export interface EventSource {
     /**
@@ -30,7 +36,15 @@ export interface EventSource {
     off(type: string | symbol, listener: (...args: unknown[]) => void): unknown;
 }
 
-/** An emitter-shaped sink that event occurrences are written to. */
+/**
+ * An emitter-shaped sink that event occurrences are written to.
+ *
+ * @example
+ * ```ts
+ * const sink: EventSink = context.eventEmitter;
+ * sink.emit('counter:changed', { count: 1 });
+ * ```
+ */
 export interface EventSink {
     /**
      * Writes an occurrence of `type` with `data` to the sink.
@@ -47,6 +61,11 @@ export interface EventSink {
  * source value to the emitted payload (default: the value itself) and
  * `emitInitial` to emit the current value once on subscribe (default `false` — a
  * subscription must not synthesize an occurrence from existing state).
+ *
+ * @example
+ * ```ts
+ * const options: SignalToEventsOptions<'up' | 'down'> = { transform: (v) => v, emitInitial: true };
+ * ```
  */
 export interface SignalToEventsOptions<T> {
     /** Maps the signal value to the emitted payload. Default: the value itself. */

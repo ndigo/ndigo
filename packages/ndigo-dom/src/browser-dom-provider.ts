@@ -6,6 +6,11 @@ import type { DOMProvider } from './dom-provider';
 /**
  * A `DOMProvider` backed by the native browser DOM APIs.
  * Requires a browser environment with `DOMParser` and `document` available.
+ *
+ * @example
+ * ```ts
+ * const instance = new BrowserDOMProvider();
+ * ```
  */
 export class BrowserDOMProvider implements DOMProvider {
     #parser: DOMParser;

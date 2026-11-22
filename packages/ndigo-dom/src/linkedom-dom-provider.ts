@@ -15,6 +15,11 @@ const fullDocumentPattern = /<html[\s>]/i;
 /**
  * A `DOMProvider` backed by linkedom for server-side or isomorphic
  * DOM operations without a real browser environment.
+ *
+ * @example
+ * ```ts
+ * const instance = new LinkedomDOMProvider();
+ * ```
  */
 export class LinkedomDOMProvider implements DOMProvider {
     #document: Document;

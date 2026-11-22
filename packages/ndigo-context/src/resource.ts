@@ -116,6 +116,12 @@ export const likeResourceLoaderAware = like({ setResourceLoader: Function }) as 
 
 /**
  * Resource implementation backed by a URL.
+ *
+ * @example
+ * ```ts
+ * const resource = new URLResource('/config/app.json', { debug: true });
+ * resource.exists; // true
+ * ```
  */
 export class URLResource<T = unknown> implements Resource<T> {
     /**

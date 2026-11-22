@@ -253,6 +253,12 @@ export class InvalidRelayError extends FrameworkError {
 
 /**
  * Relays selected events from one application context to another.
+ *
+ * @example
+ * ```ts
+ * const gateway = new ContextEventGateway(sourceCtx, targetCtx, [{ from: 'change', to: 'change' }]);
+ * gateway.connect();
+ * ```
  */
 export class ContextEventGateway {
     /**

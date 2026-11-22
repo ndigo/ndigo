@@ -492,6 +492,13 @@ export const likeEnvironmentSource = (value: unknown): value is EnvironmentSourc
 
 /**
  * Environment implementation intended for tests.
+ *
+ * @example
+ * ```ts
+ * const env = new MockEnvironment();
+ * env.setActiveProfiles('test');
+ * env.getProperty('foo'); // undefined
+ * ```
  */
 export class MockEnvironment extends AbstractEnvironment {
     /**
@@ -515,5 +522,11 @@ export class MockEnvironment extends AbstractEnvironment {
  *
  * The `Symbol.toStringTag` is inherited from {@link AbstractEnvironment},
  * which exposes the active profiles (`Environment:foo,bar`).
+ *
+ * @example
+ * ```ts
+ * const env = new StandardEnvironment();
+ * env.setActiveProfiles('prod');
+ * ```
  */
 export class StandardEnvironment extends AbstractEnvironment {}

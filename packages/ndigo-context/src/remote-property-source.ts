@@ -134,6 +134,12 @@ const DEFAULT_MAX_RESPONSE_BYTES = 1_048_576;
 /**
  * A named remote property source: fetches a JSON document, merges changes
  * into the environment, and (optionally) polls with ETag/body-text gating.
+ *
+ * @example
+ * ```ts
+ * const source = new RemotePropertySource(env, { url: 'https://config.example.com/app.json' });
+ * await source.refresh();
+ * ```
  */
 export class RemotePropertySource {
     /**

@@ -475,6 +475,13 @@ export class ConfigurationProcessor
 /**
  * Application context that parses `@configuration` classes and registers
  * their `@entry` values.
+ *
+ * @example
+ * ```ts
+ * const ctx = new MetadataConfigApplicationContext('app');
+ * ctx.register(AppConfig);
+ * ctx.refresh();
+ * ```
  */
 export class MetadataConfigApplicationContext extends GenericApplicationContext {
     /**

@@ -4,7 +4,12 @@
 
 export type StompBody = string | Uint8Array;
 
-/** A parsed STOMP frame. `command: ''` marks a heart-beat ping. */
+/** A parsed STOMP frame. `command: ''` marks a heart-beat ping. *
+ * @example
+ * ```ts
+ * const frame: StompFrame = { command: 'SEND', headers: {}, body: 'hello' };
+ * ```
+ */
 export interface StompFrame {
     /** Frame command (`CONNECT`, `SEND`, …, or `''` for a ping). */
     command: string;

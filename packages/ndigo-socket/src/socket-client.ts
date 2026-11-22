@@ -28,6 +28,11 @@ export type SocketStatus = 'connecting' | 'open' | 'reconnecting' | 'closed';
  * `WebSocketClient` never touches transports outside this surface, which is
  * exactly what browsers and Node ≥24 both implement — and what the unit
  * transport doubles implement.
+ *
+ * @example
+ * ```ts
+ * const transport: SocketTransport = new WebSocket('ws://localhost:8080/ws');
+ * ```
  */
 export interface SocketTransport {
     /** Binary frame delivery mode. Defaults to `'arraybuffer'` in the client. */
@@ -57,6 +62,11 @@ export interface SocketTransport {
 
 /**
  * Exponential backoff policy for unexpected-close reconnects.
+ *
+ * @example
+ * ```ts
+ * const policy: ReconnectPolicy = { initialDelay: 1000, maxDelay: 30000 };
+ * ```
  */
 export interface ReconnectPolicy {
     /** First delay in ms (default `1000`). */
@@ -84,6 +94,11 @@ export interface ReconnectTrigger {
 
 /**
  * Options for {@link WebSocketClient}.
+ *
+ * @example
+ * ```ts
+ * const options: WebSocketClientOptions = { url: 'ws://localhost:8080/ws' };
+ * ```
  */
 export interface WebSocketClientOptions {
     /**
@@ -133,6 +148,12 @@ export interface WebSocketClientOptions {
 
 /**
  * The client contract — what handlers, views, and services consume.
+ *
+ * @example
+ * ```ts
+ * const client: SocketClient = new SocketClient('ws://localhost:8080/ws');
+ * await client.connect();
+ * ```
  */
 export interface SocketClient {
     /** The endpoint URL the client connects to. */

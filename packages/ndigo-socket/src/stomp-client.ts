@@ -43,6 +43,11 @@ const DEFAULT_CONNECT_TIMEOUT_MS = 10_000;
 /**
  * A MESSAGE frame delivered to a subscription. The body is the wire
  * payload verbatim — a string for text frames, bytes for binary (D8); `json()` parses either (bytes decoded as UTF-8) on demand.
+ *
+ * @example
+ * ```ts
+ * const message: StompMessage = { body: 'hello', headers: {} };
+ * ```
  */
 export interface StompMessage<T = unknown> {
     /** The frame's destination. */
@@ -61,6 +66,11 @@ export interface StompMessage<T = unknown> {
 
 /**
  * Options for {@link StompClient}.
+ *
+ * @example
+ * ```ts
+ * const options: StompClientOptions = { url: 'ws://localhost:8080/ws' };
+ * ```
  */
 export interface StompClientOptions {
     /**
@@ -122,7 +132,12 @@ export interface StompClientOptions {
     onError?: (message: string) => void;
 }
 
-/** A live subscription: an async iterable of MESSAGE frames. */
+/** A live subscription: an async iterable of MESSAGE frames. *
+ * @example
+ * ```ts
+ * for await (const msg of subscription) console.log(msg.body);
+ * ```
+ */
 export interface StompSubscription {
     /** The client-chosen subscription id (server-echoed on MESSAGE). */
     readonly id: string;

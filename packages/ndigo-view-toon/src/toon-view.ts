@@ -17,6 +17,12 @@ import type { ToonEncodeOptions } from './toon-encode';
 /**
  * Serializes a model as `text/toon;charset=utf-8` — the provisional media
  * type's text/* default charset, matching spec §17.
+ *
+ * @example
+ * ```ts
+ * const view = new ToonView({ indentSize: 2 });
+ * const doc = view.serialize(model);
+ * ```
  */
 export class ToonView extends AbstractSerializingView {
     /**

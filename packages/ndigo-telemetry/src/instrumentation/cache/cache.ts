@@ -7,6 +7,12 @@ import { AbstractBaseInstrumentation } from '../base';
 
 /**
  * OpenTelemetry instrumentation for `CacheInstrumentation`.
+ *
+ * @example
+ * ```ts
+ * const instrumentation = new CacheInstrumentation();
+ * instrumentation.enable();
+ * ```
  */
 export class CacheInstrumentation extends AbstractBaseInstrumentation {
     /**

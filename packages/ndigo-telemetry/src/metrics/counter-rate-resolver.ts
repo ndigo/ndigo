@@ -47,6 +47,11 @@ export interface CounterRateResolverOptions {
  *
  * This class samples counter values over time and calculates their rates per second.
  * It can also trigger alerts if a counter's rate exceeds a predefined threshold.
+ *
+ * @example
+ * ```ts
+ * const resolver = new CounterRateResolver({ aggregator, windowSize: 5 });
+ * ```
  */
 export class CounterRateResolver {
     /**

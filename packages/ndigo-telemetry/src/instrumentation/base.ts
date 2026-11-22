@@ -127,6 +127,13 @@ function invokeOnEnd(
  * the first cycle, a repeated `enable()` (the SDK's `registerInstrumentations`)
  * is a no-op, and `disable()` unwinds the wrappers once and re-arms the next
  * `enable()`.
+ *
+ * @example
+ * ```ts
+ * class MyInstrumentation extends AbstractBaseInstrumentation {
+ *     constructor() { super('my-component'); }
+ * }
+ * ```
  */
 export abstract class AbstractBaseInstrumentation extends InstrumentationBase {
     /**

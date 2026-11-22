@@ -9,6 +9,11 @@ import { Equatable, Serializable } from '@ndigo/core';
  * At runtime, `description` is used as the backing string key.
  * The generic parameter `T` provides compile-time type association.
  * @typeParam _T - The type of the value associated with this token.
+ *
+ * @example
+ * ```ts
+ * const token = new ContextToken<string>('greeting');
+ * ```
  */
 export class ContextToken<_T> implements Equatable<ContextToken<_T>>, Serializable {
     /**

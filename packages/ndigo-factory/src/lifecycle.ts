@@ -141,6 +141,11 @@ export const likeManagedLifecycle = (value: unknown): value is ManagedLifecycle 
  * Default {@link LifecycleCoordinator}: on refresh starts auto-startup targets
  * in ascending phase order; on close stops running targets in descending
  * phase order.
+ *
+ * @example
+ * ```ts
+ * const coordinator = new DefaultLifecycleCoordinator();
+ * ```
  */
 export class DefaultLifecycleCoordinator implements LifecycleCoordinator {
     /**

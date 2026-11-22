@@ -113,6 +113,11 @@ export function preDestroy() {
 
 /**
  * Processor that executes the lifecycle-hook annotations.
+ *
+ * @example
+ * ```ts
+ * const processor = new LifecycleAnnotationProcessor();
+ * ```
  */
 export class LifecycleAnnotationProcessor implements InitializationAwareProcessor, DestructionAwareProcessor {
     get [Symbol.toStringTag](): string {

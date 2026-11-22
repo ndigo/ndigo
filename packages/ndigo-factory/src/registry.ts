@@ -45,6 +45,12 @@ export const likeRegistry = (value: unknown): value is Registry =>
  * to behave like a plain object. This is used to implement `ProxiedFactory`.
  *
  * @see {@link "default-factory".ProxiedFactory | ProxiedFactory}
+ *
+ * @example
+ * ```ts
+ * const handler = new RegistryProxyHandler<Registry>();
+ * const proxied = new Proxy(registry, handler);
+ * ```
  */
 export class RegistryProxyHandler<T extends Registry> implements ProxyHandler<T> {
     /**

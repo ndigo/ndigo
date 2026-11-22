@@ -14,6 +14,11 @@ import { getNodeResponse } from './node-request';
  * supplies its own target (`ModelAndView.viewTarget`) still wins, which is how
  * Node tests observe rendering and how streaming transports can redirect
  * output.
+ *
+ * @example
+ * ```ts
+ * const instance = new ResponseViewTargeter();
+ * ```
  */
 export class ResponseViewTargeter implements ViewTargeter {
     /**

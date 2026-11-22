@@ -11,6 +11,11 @@ import { getNodeRequest } from './node-request';
  * Binds `cookieValue()` (no name → the whole `request.cookies` jar) and
  * named cookie values through the shared
  * `AbstractCookieValueArgumentResolver` base.
+ *
+ * @example
+ * ```ts
+ * const instance = new NodeCookieValueMethodArgumentResolver();
+ * ```
  */
 export class NodeCookieValueMethodArgumentResolver extends AbstractCookieValueArgumentResolver {
     get [Symbol.toStringTag](): string {

@@ -22,6 +22,11 @@ import { getNodeRequest } from './node-request';
  * bind to an array — TypeScript types are erased at runtime, so arity is
  * disambiguated by part count. A missing part on a required parameter fails
  * like any other missing value (handled by the shared pipeline).
+ *
+ * @example
+ * ```ts
+ * const instance = new NodeMultipartFileMethodArgumentResolver();
+ * ```
  */
 export class NodeMultipartFileMethodArgumentResolver extends AbstractPlatformArgumentResolver {
     constructor() {

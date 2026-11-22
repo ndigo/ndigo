@@ -11,6 +11,11 @@ import { ResponseEntity } from './response-entity';
  * optional per the RFC (omitted `type` implies `about:blank`); `status` is
  * the HTTP status; `errors` is the Ndigo extension member for per-field
  * validation issues (Phase 4A).
+ *
+ * @example
+ * ```ts
+ * const value = {} as ProblemDetails;
+ * ```
  */
 export interface ProblemDetails {
     /** For known framework errors, a `urn:ndigo:<slug>`. Omit for `about:blank`. */
@@ -53,6 +58,11 @@ export const ProblemTypes = {
 /**
  * Minimal response writer accepted by {@link writeProblem} — compatible with
  * Node's `ServerResponse` and the in-memory MockHTTP sink.
+ *
+ * @example
+ * ```ts
+ * const value = {} as ProblemResponseWriter;
+ * ```
  */
 export interface ProblemResponseWriter {
     /** Write the status line + headers. @param status - The status code. @param headers - The headers. */
@@ -69,6 +79,11 @@ export interface ProblemResponseWriter {
  * @param res - The response writer (ServerResponse or MockHTTP sink).
  * @param details - The problem document.
  * @param headers - Additional response headers.
+ *
+ * @example
+ * ```ts
+ * writeProblem();
+ * ```
  */
 export function writeProblem(
     res: ProblemResponseWriter,
@@ -96,6 +111,11 @@ export function writeProblem(
  *
  * @param value - The response body.
  * @returns `true` when the value is a problem document.
+ *
+ * @example
+ * ```ts
+ * isProblemDetails();
+ * ```
  */
 export function isProblemDetails(value: unknown): value is ProblemDetails {
     return value !== null && typeof value === 'object' && typeof (value as { status?: unknown }).status === 'number';
@@ -113,6 +133,11 @@ export function isProblemDetails(value: unknown): value is ProblemDetails {
  * @param body - The original response body.
  * @param instance - The request path, when known.
  * @returns A problem document.
+ *
+ * @example
+ * ```ts
+ * toProblemDetails();
+ * ```
  */
 export function toProblemDetails(body: unknown, status: number, title: string, instance?: string): ProblemDetails {
     let detail: string | undefined;
@@ -138,6 +163,11 @@ export function toProblemDetails(body: unknown, status: number, title: string, i
  * @param status - The `ResponseStatus` for the problem (e.g. `UNPROCESSABLE_ENTITY`).
  * @param details - The problem document.
  * @returns An entity carrying the problem.
+ *
+ * @example
+ * ```ts
+ * problemEntity();
+ * ```
  */
 export function problemEntity(status: ResponseStatus, details: ProblemDetails): ResponseEntity<ProblemDetails> {
     return new ResponseEntity(details, status);

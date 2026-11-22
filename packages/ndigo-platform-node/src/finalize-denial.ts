@@ -16,6 +16,11 @@ const logger = getLogger('ndigo-platform-node:finalize-denial');
  * compatible with Node's `ServerResponse` and the in-memory MockHTTP sink.
  * `writableEnded`/`destroyed` are optional so a sink that models its own
  * completion (MockHTTP's `ResponseSink`) is still accepted.
+ *
+ * @example
+ * ```ts
+ * const value = {} as DenialResponseWriter;
+ * ```
  */
 export interface DenialResponseWriter extends ProblemResponseWriter {
     /** `ServerResponse`: the response was fully finalized. */
@@ -40,6 +45,11 @@ export interface DenialResponseWriter extends ProblemResponseWriter {
  *
  * @param res - The response writer (ServerResponse or MockHTTP sink).
  * @param denial - The denial recorded on the route.
+ *
+ * @example
+ * ```ts
+ * finalizeInterceptorDenial();
+ * ```
  */
 export function finalizeInterceptorDenial(res: DenialResponseWriter, denial: InterceptorDenial): void {
     if (res.writableEnded || res.destroyed) return;

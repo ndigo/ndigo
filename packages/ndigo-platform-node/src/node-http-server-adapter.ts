@@ -129,6 +129,11 @@ function likeScopePrincipal(value: unknown): value is { hasScope(scope: string):
  * `HTTPServer` also resolves an application-context entry named
  * `socketRequestAuthenticator` implementing this interface, so entry-based
  * applications wire identity without constructing the adapter.
+ *
+ * @example
+ * ```ts
+ * const value = {} as SocketRequestAuthenticator;
+ * ```
  */
 export interface SocketRequestAuthenticator {
     /**
@@ -144,6 +149,11 @@ export interface SocketRequestAuthenticator {
 
 /**
  * Options for {@link NodeHTTPServerAdapter}.
+ *
+ * @example
+ * ```ts
+ * const value = {} as NodeHTTPServerAdapterOptions;
+ * ```
  */
 export interface NodeHTTPServerAdapterOptions {
     /** Request pipeline limits/timeouts. Defaults are conservative and safe. */

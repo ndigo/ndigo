@@ -42,6 +42,11 @@ import { SecurityHeadersInterceptor } from './security-headers-interceptor';
 
 /**
  * Options for {@link OpenAPIDocsAutoConfiguration}.
+ *
+ * @example
+ * ```ts
+ * const value = {} as OpenAPIDocsAutoConfigurationOptions;
+ * ```
  */
 export interface OpenAPIDocsAutoConfigurationOptions extends OpenAPIGeneratorOptions {
     /** Kill switch for serving (generation stays usable via the library). */
@@ -66,6 +71,11 @@ export interface OpenAPIDocsAutoConfigurationOptions extends OpenAPIGeneratorOpt
 /**
  * Resolved docs options (defaults applied). `uiPath` is normalized to a
  * trailing-slash form so `{uiPath}{*file}` concatenation is clean.
+ *
+ * @example
+ * ```ts
+ * const value = {} as ResolvedOpenAPIDocsOptions;
+ * ```
  */
 export interface ResolvedOpenAPIDocsOptions extends OpenAPIGeneratorOptions {
     /** Whether the docs endpoints are enabled. */
@@ -84,6 +94,11 @@ export interface ResolvedOpenAPIDocsOptions extends OpenAPIGeneratorOptions {
  *
  * @param options - The caller options.
  * @returns The resolved options.
+ *
+ * @example
+ * ```ts
+ * resolveOpenAPIDocsOptions();
+ * ```
  */
 export function resolveOpenAPIDocsOptions(options: OpenAPIDocsAutoConfigurationOptions): ResolvedOpenAPIDocsOptions {
     const uiRaw = options.uiPath ?? '/swagger-ui/';
@@ -142,6 +157,13 @@ import type { Route } from '@ndigo/router';
  * paths — decorators cannot carry instance options), carrying a private
  * access condition so the spec never self-references (dispatch never reads
  * the access condition).
+/**
+ * OpenAPIDocsAutoConfiguration.
+ *
+ * @example
+ * ```ts
+ * const instance = new OpenAPIDocsAutoConfiguration();
+ * ```
  */
 @configuration
 export class OpenAPIDocsAutoConfiguration {

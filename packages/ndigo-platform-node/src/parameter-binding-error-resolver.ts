@@ -9,6 +9,11 @@ import { problemEntity, ProblemTypes } from './problem-details';
 /**
  * A {@link AbstractRouteErrorResolver} mapping {@link ParameterBindingError} to
  * 400/422 problem documents.
+ *
+ * @example
+ * ```ts
+ * const instance = new NodeParameterBindingErrorResolver();
+ * ```
  */
 export class NodeParameterBindingErrorResolver extends AbstractRouteErrorResolver {
     /**

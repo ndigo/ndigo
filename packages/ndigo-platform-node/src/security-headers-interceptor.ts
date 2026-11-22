@@ -21,6 +21,11 @@ type HeaderMiddleware = (req: IncomingMessage, res: ServerResponse, next: (err?:
  * disable that header, `true`/omitted for the framework default, or the
  * header's own option object. Construction validates (malformed options
  * throw a TypeError — Helmet's behavior, moved to entry startup).
+ *
+ * @example
+ * ```ts
+ * const value = {} as SecurityHeadersInterceptorOptions;
+ * ```
  */
 export interface SecurityHeadersInterceptorOptions {
     /**
@@ -67,6 +72,11 @@ const DEFAULT_CONNECT_SRC = ["'self'"];
  * - Error handling: middleware invocation failures propagate synchronously
  *   and surface through the pipeline's normal error path; header-writing is
  *   last-write-wins with app-level `setHeader` calls that run later.
+ *
+ * @example
+ * ```ts
+ * const instance = new SecurityHeadersInterceptor();
+ * ```
  */
 export class SecurityHeadersInterceptor implements RouteHandlerInterceptor {
     /**

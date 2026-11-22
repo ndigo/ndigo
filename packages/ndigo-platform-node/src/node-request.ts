@@ -23,6 +23,11 @@ export const NODE_INCOMING_ATTRIBUTE = '__node:incoming';
 /**
  * Minimal Node.js request abstraction stored in `route.attributes[NODE_REQUEST_ATTRIBUTE]`.
  * Middleware is responsible for populating this before the dispatcher resolves arguments.
+ *
+ * @example
+ * ```ts
+ * const value = {} as NodeRequest;
+ * ```
  */
 export interface NodeRequest {
     /** HTTP request headers (lower-cased names). */
@@ -69,6 +74,11 @@ export interface NodeRequest {
  *
  * @param route - The current route.
  * @returns The Node request context, or `undefined` if not set.
+ *
+ * @example
+ * ```ts
+ * getNodeRequest();
+ * ```
  */
 export function getNodeRequest(route: Route): NodeRequest | undefined {
     return route.attributes?.[NODE_REQUEST_ATTRIBUTE] as NodeRequest | undefined;
@@ -79,6 +89,11 @@ export function getNodeRequest(route: Route): NodeRequest | undefined {
  *
  * @param route - The route being handled.
  * @returns The response, or `undefined` outside an HTTP dispatch.
+ *
+ * @example
+ * ```ts
+ * getNodeResponse();
+ * ```
  */
 export function getNodeResponse(route: Route): ServerResponse | undefined {
     return route.attributes?.[NODE_RESPONSE_ATTRIBUTE] as ServerResponse | undefined;

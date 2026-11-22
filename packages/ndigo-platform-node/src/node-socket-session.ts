@@ -8,6 +8,11 @@ import { readIntEnv } from './read-int-env';
 
 /**
  * Tunable bounds for the WebSocket transport (frames + inbound buffering).
+ *
+ * @example
+ * ```ts
+ * const value = {} as SocketLimits;
+ * ```
  */
 export interface SocketLimits {
     /**
@@ -48,6 +53,14 @@ export interface SocketLimits {
 }
 
 /** Resolved, read-only socket limits with defaults applied. */
+/**
+ * ResolvedSocketLimits.
+ *
+ * @example
+ * ```ts
+ * const value = {} as ResolvedSocketLimits;
+ * ```
+ */
 export interface ResolvedSocketLimits {
     /** Maximum inbound frame size in bytes. */
     readonly maxPayloadBytes: number;
@@ -88,6 +101,11 @@ export const DEFAULT_SOCKET_LIMITS: ResolvedSocketLimits = {
  * @param limits - Explicit limits (win over environment).
  * @param env - Environment to read (defaults to `process.env`).
  * @returns Resolved socket limits.
+ *
+ * @example
+ * ```ts
+ * resolveSocketLimits();
+ * ```
  */
 export function resolveSocketLimits(
     limits: SocketLimits = {},
@@ -160,6 +178,11 @@ export function resolveSocketLimits(
  *
  * @param code - The close status code.
  * @param reason - The close reason.
+ *
+ * @example
+ * ```ts
+ * assertCloseFrame();
+ * ```
  */
 export function assertCloseFrame(code: number, reason: string): void {
     const validCode =
@@ -184,6 +207,11 @@ export function assertCloseFrame(code: number, reason: string): void {
  *   When `null`, room membership is a no-op.
  * @param limits - Transport bounds (frame payload, inbound queue cap).
  * @returns The session.
+ *
+ * @example
+ * ```ts
+ * nodeSocketSession();
+ * ```
  */
 export function nodeSocketSession(
     transport: WebSocket,

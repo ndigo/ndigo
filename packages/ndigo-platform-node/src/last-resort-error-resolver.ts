@@ -9,6 +9,11 @@ import { problemEntity, ProblemTypes } from './problem-details';
 /**
  * A {@link AbstractRouteErrorResolver} that always resolves — the final link in the
  * Node error chain. Maps any unhandled error to a 500 problem document.
+ *
+ * @example
+ * ```ts
+ * const instance = new NodeLastResortErrorResolver();
+ * ```
  */
 export class NodeLastResortErrorResolver extends AbstractRouteErrorResolver {
     /**

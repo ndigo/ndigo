@@ -41,6 +41,11 @@ import { SessionPrincipalFlagContextResolver, type FlagEvaluationContextResolver
  * tests. In the wired application the `FLAG_EVALUATOR` /
  * `FLAG_CONTEXT_RESOLVER` entries are the source, resolved per check so
  * app-level overrides apply.
+ *
+ * @example
+ * ```ts
+ * const value = {} as FeatureGateInterceptorOptions;
+ * ```
  */
 export interface FeatureGateInterceptorOptions {
     /** The evaluator to use instead of the `FLAG_EVALUATOR` entry. */
@@ -53,6 +58,11 @@ export interface FeatureGateInterceptorOptions {
  * Enforces `@whenFeature` gates: off flag → **404** problem
  * document (`urn:ndigo:not-found`), written before the denial finalizer so
  * the body survives.
+ *
+ * @example
+ * ```ts
+ * const instance = new FeatureGateInterceptor();
+ * ```
  */
 export class FeatureGateInterceptor implements RouteHandlerInterceptor, ApplicationContextAware {
     /**

@@ -39,6 +39,11 @@ const ASSET_NAMES = [
  * @param uiPath - The UI mount path (trailing slash).
  * @param path - The spec mount path.
  * @returns A relative URL (e.g. `../v3/api-docs`).
+ *
+ * @example
+ * ```ts
+ * relativeSpecUrl();
+ * ```
  */
 export function relativeSpecUrl(uiPath: string, path: string): string {
     const from = uiPath.replace(/\/+$/, '').split('/').filter(Boolean);
@@ -61,6 +66,11 @@ export function relativeSpecUrl(uiPath: string, path: string): string {
  *
  * @param title - The documented API title.
  * @returns The HTML page.
+ *
+ * @example
+ * ```ts
+ * renderSwaggerUiPage();
+ * ```
  */
 export function renderSwaggerUiPage(title: string): string {
     const safe = (value: string) =>
@@ -94,6 +104,11 @@ export function renderSwaggerUiPage(title: string): string {
  *
  * @param specUrl - The relative spec URL the UI fetches.
  * @returns The bootstrap JavaScript.
+ *
+ * @example
+ * ```ts
+ * renderSwaggerUiInitScript();
+ * ```
  */
 export function renderSwaggerUiInitScript(specUrl: string): string {
     return `window.addEventListener('load', () => {
@@ -115,6 +130,11 @@ export function renderSwaggerUiInitScript(specUrl: string): string {
  * `swagger-ui-dist` is a peer dependency resolved lazily: a missing or
  * unresolvable peer fails only the docs endpoints (500 problem document),
  * never boot of the whole docs auto-configuration (SEC-3).
+ *
+ * @example
+ * ```ts
+ * const instance = new SwaggerUIController();
+ * ```
  */
 export class SwaggerUIController {
     /**

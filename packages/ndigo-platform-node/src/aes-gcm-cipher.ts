@@ -81,6 +81,11 @@ const decodePayload = (payload: string): DecodedPayload => {
  *
  * The reference backend for at-rest config secrets: zero dependencies
  * (platform-standard `node:crypto`), versioned marker, key-path AAD binding.
+ *
+ * @example
+ * ```ts
+ * const instance = new AESGCMCipher();
+ * ```
  */
 export class AESGCMCipher implements SecretCipher {
     /**

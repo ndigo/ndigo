@@ -5,6 +5,11 @@ import type { ApplicationContext } from '@ndigo/context';
 
 /**
  * A resource with a closeable lifecycle, e.g. an {@link "http-server".HTTPServer | HTTPServer}.
+ *
+ * @example
+ * ```ts
+ * const value = {} as Closable;
+ * ```
  */
 export interface Closable {
     /** Close the resource. May be async; it is awaited during shutdown. */
@@ -13,6 +18,11 @@ export interface Closable {
 
 /**
  * Options for {@link gracefulShutdown}.
+ *
+ * @example
+ * ```ts
+ * const value = {} as GracefulShutdownOptions;
+ * ```
  */
 export interface GracefulShutdownOptions {
     /**
@@ -59,6 +69,11 @@ export interface GracefulShutdownOptions {
  * @param context - The application context to close on shutdown.
  * @param options - Shutdown configuration.
  * @returns A function that unregisters the signal listeners.
+ *
+ * @example
+ * ```ts
+ * gracefulShutdown();
+ * ```
  */
 export function gracefulShutdown(context: ApplicationContext, options: GracefulShutdownOptions = {}): () => void {
     const signals = options.signals ?? ['SIGINT', 'SIGTERM'];

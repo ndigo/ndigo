@@ -10,6 +10,11 @@ import { StaticResourceHandler, type StaticHandlerOptions } from './static-resou
  *
  * Delegates every HTTP concern (conditional GET, Range, cache headers,
  * precompressed variants, directory modes) to {@link StaticResourceHandler}.
+ *
+ * @example
+ * ```ts
+ * const instance = new StaticFileView();
+ * ```
  */
 export class StaticFileView {
     /**

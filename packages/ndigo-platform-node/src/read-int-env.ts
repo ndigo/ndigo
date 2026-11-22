@@ -12,6 +12,11 @@
 
 /**
  * Options for {@link readIntEnv}.
+ *
+ * @example
+ * ```ts
+ * const value = {} as ReadIntEnvOptions;
+ * ```
  */
 export interface ReadIntEnvOptions {
     /** Accept `0` as a valid value (default `false`: the value must be positive). */
@@ -26,6 +31,11 @@ export interface ReadIntEnvOptions {
  * @param options - `allowZero` to accept `0` (default rejects it).
  * @returns The parsed integer, or `undefined` when unset or empty.
  * @throws When the value is not an allowed integer literal.
+ *
+ * @example
+ * ```ts
+ * readIntEnv();
+ * ```
  */
 export function readIntEnv(
     env: Readonly<Record<string, string | undefined>>,

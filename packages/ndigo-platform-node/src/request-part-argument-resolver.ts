@@ -40,6 +40,11 @@ function parseJsonPart(raw: string): unknown {
  * `toMethodParameter`): the explicit `requestPart('meta')` name, or the
  * method-argument name when inferred. A missing part resolves like any other
  * missing value.
+ *
+ * @example
+ * ```ts
+ * const instance = new NodeRequestPartMethodArgumentResolver();
+ * ```
  */
 export class NodeRequestPartMethodArgumentResolver extends AbstractPlatformArgumentResolver {
     constructor() {

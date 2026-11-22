@@ -19,6 +19,11 @@ import { getNodeRequest, getNodeResponse } from './node-request';
 
 /**
  * Configuration for the server-side CORS interceptor.
+ *
+ * @example
+ * ```ts
+ * const value = {} as CORSInterceptorOptions;
+ * ```
  */
 export interface CORSInterceptorOptions {
     /**
@@ -66,6 +71,11 @@ const DEFAULT_ALLOWED_HEADERS = ['Content-Type', 'Authorization', 'X-Requested-W
  * @throws when `allowedOrigins: ['*']` is combined with
  *   `allowCredentials: true` — the browser forbids that combination and the
  *   misconfiguration must fail at startup, not at request time.
+ *
+ * @example
+ * ```ts
+ * const instance = new CORSInterceptor();
+ * ```
  */
 export class CORSInterceptor implements RouteHandlerInterceptor {
     /**

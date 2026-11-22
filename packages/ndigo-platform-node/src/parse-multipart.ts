@@ -29,6 +29,11 @@ import { HTTPHeaders } from '@ndigo/http';
  * Per-upload bounds. Every field is optional; {@link DEFAULT_MPART_LIMITS}
  * fills the rest. `0` is a valid bound; negative or non-finite values throw
  * a `RangeError` (fail-loud boot configuration).
+ *
+ * @example
+ * ```ts
+ * const value = {} as MultipartLimits;
+ * ```
  */
 export interface MultipartLimits {
     /** Maximum size of a single file part, in bytes (default 10 MiB). */
@@ -51,6 +56,14 @@ export interface MultipartLimits {
 }
 
 /** Options accepted by {@link parseMultipart}. */
+/**
+ * MultipartParseOptions.
+ *
+ * @example
+ * ```ts
+ * const value = {} as MultipartParseOptions;
+ * ```
+ */
 export interface MultipartParseOptions {
     /** Parsing limits. */
     limits?: MultipartLimits;
@@ -179,6 +192,11 @@ function sanitizeFilename(filename: string | undefined): string | null {
  * @param req - The incoming request.
  * @param options - Parsing limits and temp directory.
  * @returns The parsed multipart context.
+ *
+ * @example
+ * ```ts
+ * parseMultipart();
+ * ```
  */
 export async function parseMultipart(
     req: IncomingMessage,

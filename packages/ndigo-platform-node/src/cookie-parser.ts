@@ -11,6 +11,11 @@ export const DEFAULT_MAX_COOKIE_VALUE_BYTES = 4_096;
  * Limits applied while parsing a `Cookie` header: how many cookies are kept
  * (`maxCookies`) and how long a single value may be (`maxValueBytes`). Values
  * beyond either bound are rejected rather than truncated.
+ *
+ * @example
+ * ```ts
+ * const value = {} as CookieParseOptions;
+ * ```
  */
 export interface CookieParseOptions {
     /** Maximum number of cookies parsed per request (default 50). */
@@ -33,6 +38,11 @@ export interface CookieParseOptions {
  * @param header - The raw `Cookie` header value(s), or `undefined`.
  * @param name - The exact cookie name to count.
  * @returns `true` when `name` appears two or more times.
+ *
+ * @example
+ * ```ts
+ * hasDuplicateCookie();
+ * ```
  */
 export function hasDuplicateCookie(header: string | readonly string[] | undefined, name: string): boolean {
     if (header === undefined) return false;
@@ -60,6 +70,11 @@ export function hasDuplicateCookie(header: string | readonly string[] | undefine
  * @param header - The raw `Cookie` header.
  * @param options - Parsing limits.
  * @returns The parsed cookie record.
+ *
+ * @example
+ * ```ts
+ * parseCookies();
+ * ```
  */
 export function parseCookies(header: string | undefined, options: CookieParseOptions = {}): Record<string, string> {
     const cookies: Record<string, string> = {};

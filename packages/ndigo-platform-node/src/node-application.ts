@@ -20,6 +20,11 @@ const logger = getLogger('ndigo-platform-node:run-node-application');
 /**
  * Options for {@link createNodeApplication}. Every implicit action has an
  * opt-out; app-specific wiring belongs in the hooks and the returned context.
+ *
+ * @example
+ * ```ts
+ * const value = {} as CreateNodeApplicationOptions;
+ * ```
  */
 export interface CreateNodeApplicationOptions {
     /** Port used when `PORT` is unset; applied as the `server.port` property. */
@@ -58,6 +63,11 @@ export interface CreateNodeApplicationOptions {
 /**
  * A booted Node application: the refreshed context, the started server, the
  * bound port, and a programmatic teardown.
+ *
+ * @example
+ * ```ts
+ * const value = {} as NodeApplication;
+ * ```
  */
 export interface NodeApplication {
     /** The refreshed context — every entry stays reachable. */

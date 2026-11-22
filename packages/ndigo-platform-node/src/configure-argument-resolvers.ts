@@ -23,6 +23,11 @@ import { NodeRequestSessionValueMethodArgumentResolver } from './request-session
  * the two lists can never drift (HG-7).
  *
  * @returns The Node argument resolvers, in registration order.
+ *
+ * @example
+ * ```ts
+ * createNodeArgumentResolvers();
+ * ```
  */
 export function createNodeArgumentResolvers(): HandlerMethodArgumentResolver[] {
     return [
@@ -47,6 +52,11 @@ export function createNodeArgumentResolvers(): HandlerMethodArgumentResolver[] {
  * @param applicationContext - The application context to configure.
  * @param _options - Reserved options (unused).
  * @returns The registered argument resolvers.
+ *
+ * @example
+ * ```ts
+ * configureNodeArgumentResolvers();
+ * ```
  */
 export function configureNodeArgumentResolvers(
     applicationContext: ApplicationContext,

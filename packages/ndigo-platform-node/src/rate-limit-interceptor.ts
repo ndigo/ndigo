@@ -38,6 +38,11 @@ export const RATE_LIMIT_KEY = 'rate:limit';
  *
  * @param options - The rate-limit policy.
  * @returns The class/method decorator.
+ *
+ * @example
+ * ```ts
+ * rateLimit();
+ * ```
  */
 export function rateLimit(options: RateLimitPolicy) {
     validateRateLimitPolicy(options, '@rateLimit');
@@ -65,6 +70,11 @@ export function rateLimit(options: RateLimitPolicy) {
  * - **Opt-in**: handlers without `@rateLimit` metadata are untouched —
  *   the interceptor is a metadata gate, so registering it on the default
  *   mapping changes no existing route's behavior.
+ *
+ * @example
+ * ```ts
+ * const instance = new RateLimitInterceptor();
+ * ```
  */
 export class RateLimitInterceptor implements RouteHandlerInterceptor {
     readonly #limiter: RateLimiter;

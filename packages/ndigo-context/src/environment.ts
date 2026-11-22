@@ -33,6 +33,12 @@ export const CONFIG_REFRESH_EVENT = 'config:refresh';
 
 /**
  * Resolves properties and manages profile activation for an application environment.
+ *
+ * @example
+ * ```ts
+ * const env: Environment = new StandardEnvironment();
+ * env.setActiveProfiles('prod');
+ * ```
  */
 export interface Environment extends PropertyResolver {
     /**
@@ -115,6 +121,12 @@ export interface EnvironmentSource {
 
 /**
  * Environment variant that exposes its property registry and merge operations.
+ *
+ * @example
+ * ```ts
+ * const env: ConfigurableEnvironment = new StandardEnvironment();
+ * env.addPropertySource(new MapPropertySource('defaults', { 'a': 1 }));
+ * ```
  */
 export interface ConfigurableEnvironment extends Environment, EventEmitter {
     /**

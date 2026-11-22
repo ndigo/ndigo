@@ -22,6 +22,13 @@ import type { Logger } from '@ndigo/log';
 
 /**
  * Central application context: a hierarchical, configurable factory and event emitter.
+ *
+ * @example
+ * ```ts
+ * const ctx = new GenericApplicationContext('app');
+ * ctx.register(AppConfig);
+ * ctx.refresh();
+ * ```
  */
 export interface ApplicationContext
     extends
@@ -234,6 +241,13 @@ export const likeLoggerAware = likeAwareAnd(like({ setLogger: Function })) as (v
 
 /**
  * Mutable application-context variant used during configuration.
+ *
+ * @example
+ * ```ts
+ * const ctx: ConfigurableApplicationContext = new GenericApplicationContext('app');
+ * ctx.register(AppConfig);
+ * ctx.refresh();
+ * ```
  */
 export interface ConfigurableApplicationContext extends ApplicationContext {
     /**

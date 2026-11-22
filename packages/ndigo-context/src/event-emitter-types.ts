@@ -24,6 +24,13 @@ export type EventType = string | symbol;
 
 /**
  * Emits and manages event listeners.
+ *
+ * @example
+ * ```ts
+ * const emitter: EventEmitter = new Emitter();
+ * emitter.on('change', (v) => console.log(v));
+ * emitter.emit('change', 42);
+ * ```
  */
 export interface EventEmitter {
     /**
@@ -74,6 +81,12 @@ export interface EventEmitter {
 
 /**
  * Event emitter with microtask-based dispatch.
+ *
+ * @example
+ * ```ts
+ * const emitter: AsyncEventEmitter = new Emitter();
+ * emitter.emit('change', 42);
+ * ```
  */
 export interface AsyncEventEmitter extends EventEmitter {
     /**

@@ -24,6 +24,12 @@ const keypathConverter = new KeypathConverter();
  *
  * @see module:context.PropertySources
  * @see module:context.ConfigurableEnvironment
+ *
+ * @example
+ * ```ts
+ * const source: PropertySource = new MapPropertySource('defaults', { 'a': 1 });
+ * source.getProperty('a'); // 1
+ * ```
  */
 export interface PropertySource {
     /**

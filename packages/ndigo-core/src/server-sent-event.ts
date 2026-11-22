@@ -3,6 +3,11 @@
  */
 /**
  * One Server-Sent Event on the wire.
+ *
+ * @example
+ * ```ts
+ * const event: ServerSentEvent = { event: 'update', data: '{"count":1}' };
+ * ```
  */
 export interface ServerSentEvent {
     /** Optional event id from the `id:` field (last occurrence wins). */

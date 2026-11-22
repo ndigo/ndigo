@@ -1,5 +1,11 @@
 /**
  * Class-based interface for parsing a string into a structured value of type `T`.
+ *
+ * @example
+ * ```ts
+ * const parser: Parser<number> = { parse: (s) => parseInt(s, 10) };
+ * parser.parse('42'); // 42
+ * ```
  */
 export interface Parser<T = unknown> {
     /**
@@ -19,6 +25,12 @@ export interface Parser<T = unknown> {
  * and type with `Converter<T, string>` directly (imported from `'@ndigo/core'`).
  *
  * @typeParam T - The type of the value to stringify.
+ *
+ * @example
+ * ```ts
+ * const stringifier: Stringifier<Date> = { stringify: (d) => d.toISOString() };
+ * stringifier.stringify(new Date('2024-01-01T00:00:00Z'));
+ * ```
  */
 export interface Stringifier<T = unknown> {
     /**

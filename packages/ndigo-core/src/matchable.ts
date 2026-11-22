@@ -5,6 +5,12 @@ import { like } from '@ndigo/util/types';
 
 /**
  * Represents an object that can determine if it matches a given value.
+ *
+ * @example
+ * ```ts
+ * const m: Matchable<string> = { matches: (v) => v === 'admin' };
+ * m.matches('admin'); // true
+ * ```
  */
 export interface Matchable<TValue> {
     /**
@@ -99,6 +105,12 @@ export interface ResultMatcher<TInput, TResult> {
  * Represents an object that can match a pattern against a value.
  * @typeParam TPattern - The type of the pattern to match.
  * @typeParam TValue - The type of the value to match against.
+ *
+ * @example
+ * ```ts
+ * const m: PatternMatcher<string, string> = { match: (p, v) => p === v };
+ * m.match('a', 'a'); // true
+ * ```
  */
 export interface PatternMatcher<TPattern, TValue> {
     /**

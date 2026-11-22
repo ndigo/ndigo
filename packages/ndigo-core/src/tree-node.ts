@@ -1,5 +1,10 @@
 /**
  * A node that can reference its parent.
+ *
+ * @example
+ * ```ts
+ * const node: ChildNode = { parent: null };
+ * ```
  */
 export interface ChildNode<T = unknown> {
     /** The parent node, or `null`/`undefined` for roots. */
@@ -8,6 +13,11 @@ export interface ChildNode<T = unknown> {
 
 /**
  * A node that can enumerate its children.
+ *
+ * @example
+ * ```ts
+ * const node: ParentNode = { children: [] };
+ * ```
  */
 export interface ParentNode<T = unknown> {
     /** The node's direct children. */
@@ -16,6 +26,11 @@ export interface ParentNode<T = unknown> {
 
 /**
  * A tree node that supports bidirectional navigation and child mutation.
+ *
+ * @example
+ * ```ts
+ * const node: TreeNode = { parent: null, children: [], root: self };
+ * ```
  */
 export interface TreeNode<T = unknown> extends ChildNode<T>, ParentNode<T> {
     /** The root node of the tree. */

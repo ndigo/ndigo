@@ -35,6 +35,13 @@ export type predicate<T> = (value1: T, value2: T) => boolean;
 /**
  * Interface for objects that can be compared to another object of the same type.
  * @typeParam T - The type of the object being compared.
+ *
+ * @example
+ * ```ts
+ * class Version implements Comparable<Version> {
+ *     compare(other: Version): number { return this.value - other.value; }
+ * }
+ * ```
  */
 export interface Comparable<T> {
     /**
@@ -49,6 +56,13 @@ export interface Comparable<T> {
 /**
  * Interface for string-based objects that can be compared to another object of the same type, with case-insensitive comparison.
  * @typeParam T - The type of the string-based object being compared.
+ *
+ * @example
+ * ```ts
+ * class Name implements StringComparable<Name> {
+ *     compareIgnoreCase(other: Name): number { return this.value.localeCompare(other.value, undefined, { sensitivity: 'base' }); }
+ * }
+ * ```
  */
 export interface StringComparable<T> extends Comparable<T> {
     /**
@@ -63,6 +77,12 @@ export interface StringComparable<T> extends Comparable<T> {
 /**
  * Interface for objects that can compare two values of a specific type.
  * @typeParam T - The type of values being compared.
+ *
+ * @example
+ * ```ts
+ * const cmp: Comparator<number> = { compare: (a, b) => a - b };
+ * [3, 1, 2].sort(cmp.compare);
+ * ```
  */
 export interface Comparator<T> {
     /**

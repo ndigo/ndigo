@@ -30,6 +30,12 @@ const DOT = '.',
 /**
  * Defines a contract for matching and merging path patterns.
  * This interface extends `PatternMatcher` for string patterns and paths.
+ *
+ * @example
+ * ```ts
+ * const matcher: PathMatcher = new EqualsPathMatcher();
+ * matcher.match('/a', '/a'); // true
+ * ```
  */
 export interface PathMatcher extends PatternMatcher<string, string> {
     /**
@@ -62,6 +68,11 @@ export interface PathMatcher extends PatternMatcher<string, string> {
 /**
  * Defines a contract for filtering paths based on include and exclude patterns.
  * This interface is typically implemented by mixins or classes that need path filtering capabilities.
+ *
+ * @example
+ * ```ts
+ * const filter: PathMatcherFilter = new MappedRouterInterceptor(interceptor, { include: '/users/*' });
+ * ```
  */
 export interface PathMatcherFilter extends Matchable<string> {
     /**

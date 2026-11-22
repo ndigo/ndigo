@@ -29,6 +29,11 @@ export interface TelemetryHooks {
 
 /**
  * Telemetry hooks implementation that uses an EventEmitter to notify about service events.
+ *
+ * @example
+ * ```ts
+ * const hooks = new EventEmitterTelemetryHooks(context.eventEmitter);
+ * ```
  */
 export class EventEmitterTelemetryHooks implements TelemetryHooks {
     /**

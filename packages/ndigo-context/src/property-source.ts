@@ -52,6 +52,12 @@ export interface PropertySource {
 
 /**
  * Default {@link PropertySource} implementation wrapping a captured object.
+ *
+ * @example
+ * ```ts
+ * const source = new MapPropertySource('defaults', { 'server.port': 8080 });
+ * source.getProperty('server.port'); // 8080
+ * ```
  */
 export class MapPropertySource implements PropertySource {
     /**

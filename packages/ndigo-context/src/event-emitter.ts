@@ -23,6 +23,13 @@ export * from './event-emitter-mixins';
 
 /**
  * Standalone event emitter with destroy and serialization support.
+ *
+ * @example
+ * ```ts
+ * const emitter = new Emitter();
+ * emitter.on('change', (v) => console.log(v));
+ * emitter.emit('change', 42);
+ * ```
  */
 export class Emitter extends AsEventEmitter(Null) implements Destroyable, Serializable {
     /** Sentinel type matching every event. */

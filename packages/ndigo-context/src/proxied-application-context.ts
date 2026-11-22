@@ -8,6 +8,13 @@ import { GenericApplicationContext } from './generic-application-context';
 
  *
  * Application context proxy that exposes values as dynamic object properties.
+ *
+ * @example
+ * ```ts
+ * const ctx = new ProxiedGenericApplicationContext('app');
+ * ctx.refresh();
+ * const value = ctx.someBean;
+ * ```
  */
 export class ProxiedGenericApplicationContext extends GenericApplicationContext implements Record<string, unknown> {
     /**

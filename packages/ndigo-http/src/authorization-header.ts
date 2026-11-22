@@ -10,6 +10,7 @@ import { HTTPHeader } from './http-header';
  * Authorization header category: credential-scheme parsing on the constant
  * itself.
  *
+ * @example
  * ```ts
  * HTTPHeaders.AUTHORIZATION.bearerToken('Bearer abc.def') // 'abc.def'
  * HTTPHeaders.AUTHORIZATION.bearerToken(null)            // undefined

@@ -5,6 +5,11 @@ import { HTTPTransformer, TransformContext } from './http-transformer';
 
 /**
  * Composes a sequence of body transforms into a single transformer.
+ *
+ * @example
+ * ```ts
+ * const transformer = new CompositionTransformer([normalize, sanitize]);
+ * ```
  */
 export class CompositionTransformer<TInput = unknown, TOutput = unknown> implements HTTPTransformer<TInput, TOutput> {
     /**

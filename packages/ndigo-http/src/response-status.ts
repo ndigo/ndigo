@@ -29,6 +29,12 @@ const { assign } = Object,
  * possible.
  *
  * @see {@link https://www.rfc-editor.org/rfc/rfc9110.html#name-status-codes}
+ *
+ * @example
+ * ```ts
+ * const status = ResponseStatus.for(404, 'Not Found');
+ * status.code; // 404
+ * ```
  */
 export default class ResponseStatus implements Comparable<ResponseStatus>, Equatable, Serializable {
     /**

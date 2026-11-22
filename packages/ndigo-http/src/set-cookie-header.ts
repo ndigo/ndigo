@@ -10,6 +10,7 @@ import { HTTPHeader } from './http-header';
 /**
  * Set-Cookie header category: value construction on the constant itself.
  *
+ * @example
  * ```ts
  * HTTPHeaders.SET_COOKIE.buildValue('ndigo-session', 'tok', ['HttpOnly', 'SameSite=Lax', 'Path=/']);
  * // 'ndigo-session=tok; HttpOnly; SameSite=Lax; Path=/'

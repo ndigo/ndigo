@@ -6,6 +6,11 @@ import { HTTPTransformer, TransformContext } from './http-transformer';
 
 /**
  * Applies a pipeline of transforms to JSON bodies.
+ *
+ * @example
+ * ```ts
+ * const transformer = new JSONTransformer([(body) => ({ ...body, ts: Date.now() })]);
+ * ```
  */
 export class JSONTransformer implements HTTPTransformer<JSONObject, JSONObject> {
     /**

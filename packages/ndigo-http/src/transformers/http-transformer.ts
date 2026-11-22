@@ -5,6 +5,11 @@ import { MediaType } from '@ndigo/core';
 
 /**
  * Context information for conditional transformation logic.
+ *
+ * @example
+ * ```ts
+ * const ctx: TransformContext = { method: 'POST', url: '/api/users' };
+ * ```
  */
 export interface TransformContext {
     /**
@@ -38,6 +43,13 @@ export interface TransformContext {
  * Contract for request/response body transformers.
  *
  * Inspired by the `HttpMessageConverter` pattern.
+ *
+ * @example
+ * ```ts
+ * const transformer: HTTPTransformer<string, number> = {
+ *     transform: (value) => parseInt(value, 10),
+ * };
+ * ```
  */
 export interface HTTPTransformer<TInput = unknown, TOutput = unknown> {
     /**

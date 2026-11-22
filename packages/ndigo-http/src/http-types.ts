@@ -41,6 +41,11 @@ export type HTTPInit = RequestInit & {
  *
  * This extends {@link HTTPInit} with factory-specific options that are only
  * relevant when constructing a client through the convenience API.
+ *
+ * @example
+ * ```ts
+ * const config: HTTPConfig = { baseURL: '/api', interceptors: [] };
+ * ```
  */
 export interface HTTPConfig extends HTTPInit {
     /**
@@ -72,6 +77,11 @@ export type Fetch = (input: RequestInfo | URL, init?: RequestInit) => Promise<Re
 
 /**
  * Runs after a request finishes, whether it succeeded or failed.
+ *
+ * @example
+ * ```ts
+ * const interceptor: CompletionAwareHTTPInterceptor = { onComplete: async () => {} };
+ * ```
  */
 export interface CompletionAwareHTTPInterceptor {
     /**
@@ -88,6 +98,11 @@ export interface CompletionAwareHTTPInterceptor {
 
 /**
  * Handles failures that occur while executing a request.
+ *
+ * @example
+ * ```ts
+ * const interceptor: ErrorAwareHTTPInterceptor = { onError: async () => {} };
+ * ```
  */
 export interface ErrorAwareHTTPInterceptor {
     /**
@@ -107,6 +122,11 @@ export interface ErrorAwareHTTPInterceptor {
 
 /**
  * Allows a request to be rejected before it is initialized.
+ *
+ * @example
+ * ```ts
+ * const interceptor: InitializationAwareHTTPInterceptor = { onInit: async () => true };
+ * ```
  */
 export interface InitializationAwareHTTPInterceptor<T extends HTTPInit = HTTPInit> {
     /**
@@ -121,6 +141,11 @@ export interface InitializationAwareHTTPInterceptor<T extends HTTPInit = HTTPIni
 
 /**
  * Allows a request object to be replaced before fetch executes.
+ *
+ * @example
+ * ```ts
+ * const interceptor: RequestAwareHTTPInterceptor = { onRequest: async (req) => req };
+ * ```
  */
 export interface RequestAwareHTTPInterceptor {
     /**
@@ -139,6 +164,11 @@ export interface RequestAwareHTTPInterceptor {
 
 /**
  * Allows a response to be replaced after fetch completes.
+ *
+ * @example
+ * ```ts
+ * const interceptor: ResponseAwareHTTPInterceptor = { onResponse: async (res) => res };
+ * ```
  */
 export interface ResponseAwareHTTPInterceptor<T extends HTTPInit = HTTPInit> {
     /**
@@ -166,6 +196,13 @@ export type HTTPInterceptor =
 
 /**
  * Describes objects that can receive an {@link HTTP} instance.
+ *
+ * @example
+ * ```ts
+ * class MyService implements HTTPAware {
+ *     setHttp(http: HTTP) { this.http = http; }
+ * }
+ * ```
  */
 export interface HTTPAware extends Aware {
     /**

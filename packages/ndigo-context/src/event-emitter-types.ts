@@ -5,20 +5,43 @@
 import { like } from '@ndigo/util/types';
 import { Aware, likeAwareAnd } from '@ndigo/factory';
 
+/**
+ * A listener callback for an emitted event.
+ *
+ * @example
+ * ```ts
+ * const listener: EventListener = (value) => console.log(value);
+ * ```
+ */
 export type EventListener = { (...args: unknown[]): void; listener?: EventListener };
 
 /**
  * A single listener or a listener list for an event type.
+ *
+ * @example
+ * ```ts
+ * const handler: EventHandler = (v) => console.log(v);
+ * ```
  */
 export type EventHandler = EventListener | EventListener[];
 
 /**
  * Mapping from event type to handler(s).
+ *
+ * @example
+ * ```ts
+ * const handlers: EventHandlers = { change: (v) => console.log(v) };
+ * ```
  */
 export type EventHandlers = { [type: string]: EventHandler };
 
 /**
  * Event type supported by the emitter.
+ *
+ * @example
+ * ```ts
+ * const type: EventType = 'change';
+ * ```
  */
 export type EventType = string | symbol;
 

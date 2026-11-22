@@ -290,6 +290,14 @@ function createEntryDecorator(entryName?: string | ContextToken<unknown>) {
 
 /**
  * A method decorator that marks a configuration entry factory.
+ *
+ * @example
+ * ```ts
+ * class AppConfig {
+ *     @entry('greeting')
+ *     greeting() { return 'hello'; }
+ * }
+ * ```
  */
 export type EntryDecorator = <M extends Function>(target: M, context: ClassMethodDecoratorContext) => M;
 

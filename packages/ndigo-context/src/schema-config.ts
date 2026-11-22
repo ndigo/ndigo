@@ -12,6 +12,11 @@ import type { PropertyResolver } from './property-resolver';
 /**
  * The resolver surface schema binding needs: flat `getProperty` reads
  * (keypaths included — the resolver handles dotted paths).
+ *
+ * @example
+ * ```ts
+ * const resolver: SchemaConfigResolver = { getProperty: (k) => undefined };
+ * ```
  */
 export type SchemaConfigResolver = Pick<PropertyResolver, 'getProperty'>;
 
@@ -76,6 +81,11 @@ export function resolveSchemaConfig<S extends z.ZodType>(
 /**
  * The leaf values {@link PropertyKeyMap} terminates at: any primitive,
  * plus `null`/`undefined`. Everything else is descended into.
+ *
+ * @example
+ * ```ts
+ * const v: PrimitiveValue = 42;
+ * ```
  */
 export type PrimitiveValue = string | number | boolean | null | undefined;
 
@@ -93,6 +103,11 @@ export type DeepPropertyKey<T, P extends string> = T extends PrimitiveValue | re
  * The shape's leaf keypaths, mirroring the shape object: leaves become the
  * joined template-literal path (`{ server: { port: 0 } }` →
  * `'server.port'`), nested objects stay objects.
+ *
+ * @example
+ * ```ts
+ * type Keys = PropertyKeyMap<{ server: { port: number } }>; // { server: { port: 'server.port' } }
+ * ```
  */
 export type PropertyKeyMap<S extends object> = { [K in keyof S & string]: DeepPropertyKey<S[K], K> };
 

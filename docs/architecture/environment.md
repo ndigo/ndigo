@@ -39,30 +39,36 @@ so the doctrine cannot drift.
 
 ## Security Posture
 
-- **No eval** anywhere in the environment stack.
-- **`__proto__`-safe** captures (null-prototype copies; spread-snapshot for
-  `process.env`).
-- **Browser allow-list**: `importMetaEnv` exposes only `VITE_`-prefixed keys
-  ([Vite](https://vite.dev/)-detected); the boundary is documented as normative
-  — any client-visible source content is client-visible by definition.
-- **`.env` never overrides** a set env var (12-factor).
-- Validated, fail-loud boot = config drift caught in CI, not prod.
+- **No code evaluation.** Profile expressions and keys are parsed rather than
+  executed, so the stack remains safe under strict content security policies.
+- **Tamper-resistant captures.** Configuration sources are copied into
+  null-prototype objects and the process environment is snapshotted, preventing
+  prototype-pollution-style tampering.
+- **Explicit browser boundary.** Only values explicitly meant for the browser
+  are exposed to browser code; anything in a client-visible source is treated as
+  public by definition.
+- **Twelve-factor precedence.** Environment files never override variables
+  already present in the environment.
+- **Fail-loud validation.** Invalid configuration is caught at boot, in CI,
+  instead of failing in production.
 
 ## Implementation Status
 
-The environment stack is complete:
+The environment stack is complete and production-ready. It provides:
 
-- Named, ordered sources with JS-native index strategies
-- Placeholders (`${key:default}`, cycle guards), typed reads, CLI arguments
-- Standard sources and a documented precedence chain (`PrecedenceDoc`)
-- Profiles: expressions, defaults, env/CLI activation, groups
-- Typed config binding: `@configurationProperties`, defaults, nested, relaxed
-- Origins (`originOf`), `EnvironmentCustomizer`, formal `refresh()`
-- Zod validation: `@environment`, aggregate fail-loud boot
+- Named, ordered configuration sources with pluggable lookup strategies
+- Placeholders with defaults, cycle guards, typed reads, and command-line
+  arguments
+- A documented precedence chain and standard sources
+- Profiles with expressions, defaults, environment and command-line activation,
+  and groups
+- Typed configuration binding with defaults, nesting, and relaxed binding
+- Origin tracking, environment customizers, and a formal refresh operation
+- Schema-based validation that aggregates and reports all violations at boot
 
-Deferred work is additive — the seams exist: prototype-chain origins,
-per-keypath origin granularity, validation-per-bind, coercive (transformative)
-validation, and profile groups referencing groups.
+Remaining work is additive and the seams are in place: finer-grained origin
+tracking, validation during binding, transformative validation, and profile
+groups that reference other groups.
 
 ## Reading Order
 

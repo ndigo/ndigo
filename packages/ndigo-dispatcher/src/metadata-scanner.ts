@@ -23,6 +23,12 @@ const { defineProperty } = Reflect;
  * - `method:parameter:methodName` (method parameter info)
  *
  * @param target - - Class constructor, prototype, or instance
+ *
+ * @example
+ * ```ts
+ * const scanner = new MetadataScanner(MyController);
+ * scanner.scan();
+ * ```
  */
 export class MetadataScanner {
     /**

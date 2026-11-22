@@ -61,6 +61,12 @@ export abstract class AbstractPathViewController implements Controller {
 /**
  * Simple {@link Controller} implementation that transforms the path of a route into a view name.
  * Can optionally prepend a prefix and/or append a suffix to build the view name from the path.
+ *
+ * @example
+ * ```ts
+ * const controller = new PathViewController();
+ * controller.prefix = '/users';
+ * ```
  */
 export class PathViewController extends AbstractPathViewController {
     /**

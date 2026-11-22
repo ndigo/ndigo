@@ -9,6 +9,12 @@ import { Route } from '@ndigo/router';
 
 /**
  * Executes a handler through a chain of route interceptors.
+ *
+ * @example
+ * ```ts
+ * const chain = new RouteHandlerExecutionChain(handler, interceptors);
+ * await chain.execute(request);
+ * ```
  */
 export default class RouteHandlerExecutionChain {
     /**

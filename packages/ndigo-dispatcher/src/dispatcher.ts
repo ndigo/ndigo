@@ -110,6 +110,12 @@ export function getDispatchError(route: Route): Error | null {
  * `@ndigo/platform-node`'s `NodeDispatcher`).
  *
  * It can be used with just about any workflow, with the installation of the appropriate strategies and adapter classes.
+ *
+ * @example
+ * ```ts
+ * const dispatcher = new AbstractDispatcher();
+ * dispatcher.applicationContext = context;
+ * ```
  */
 export class AbstractDispatcher
     extends AsViewTargeterStrategy(

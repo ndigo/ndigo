@@ -28,6 +28,11 @@ export interface ModelAndViewOptions {
 
 /**
  * Holds a view plus its optional model data.
+ *
+ * @example
+ * ```ts
+ * const mav = new ModelAndView('users/list', { users });
+ * ```
  */
 export class ModelAndView {
     /**

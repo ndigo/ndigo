@@ -40,6 +40,7 @@ export * from './profile.js';
 export * from './profile-expression.js';
 export * from './tree-node.js';
 export { WildcardExp } from './wildcard-exp.js';
+export { getPath, setPath } from './keypath.js';
 export { KeypathConverter } from './keypath-converter.js';
 export { WildcardConverter } from './wildcard-converter.js';
 export type { KeypathToken } from './keypath-converter.js';

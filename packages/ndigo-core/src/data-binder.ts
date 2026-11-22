@@ -3,7 +3,8 @@
  */
 import { FrameworkError, IllegalStateError } from './error.js';
 import { MutablePropertyValues, PropertyValues } from './property-value.js';
-import { KeypathConverter, KeypathToken } from './keypath-converter.js';
+import { KeypathConverter } from './keypath-converter.js';
+import { setPath } from './keypath.js';
 
 const keypathConverter = new KeypathConverter();
 const { keys } = Object;
@@ -157,7 +158,7 @@ export class DataBinder {
                 if (property) {
                     const keypath = keypathConverter.convert(property.name);
                     if (keypath) {
-                        result = _assocPath(keypath, property.value, result);
+                        result = setPath(keypath, property.value, result);
                     }
                 }
             }
@@ -182,38 +183,4 @@ export class DataBinder {
             }
         }
     }
-}
-
-/**
- * Creates a new object with the value set at the specified keypath.
- * @param path - The keypath to set the value at
- * @param value - The value to set
- * @param obj - The object to modify
- * @returns A new object with the value set at the keypath
- */
-function _assocPath(path: KeypathToken[], value: unknown, obj: unknown): unknown {
-    if (path.length === 0) return value;
-    const head = path[0];
-    const tail = path.slice(1);
-    const current = (obj as Record<PropertyKey, unknown> | undefined)?.[head];
-    const updatedChild = _assocPath(
-        tail,
-        value,
-        tail.length > 0 && typeof tail[0] === 'number' ? (Array.isArray(current) ? current : []) : (current ?? {})
-    );
-    if (typeof head === 'number') {
-        const arr = Array.isArray(obj) ? [...(obj as unknown[])] : [];
-        arr[head] = updatedChild;
-        return arr;
-    }
-    // Class instances (whole-source binding into a DTO target, D-3) must keep
-    // their prototype and identity: spread would flatten the instance into a
-    // plain object and break `instanceof`. Plain objects and null-prototype
-    // objects keep the immutable spread semantics.
-    const proto = Object.getPrototypeOf(obj);
-    if (proto === Object.prototype || proto === null) {
-        return { ...(obj as object), [head]: updatedChild };
-    }
-    (obj as Record<PropertyKey, unknown>)[head] = updatedChild;
-    return obj;
 }

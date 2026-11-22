@@ -32,6 +32,11 @@ export type RouterErrorHandler = (error: unknown, route: Route) => void;
 
 /**
  * Options accepted by router implementations.
+ *
+ * @example
+ * ```ts
+ * const options: RouterOptions = { onError: (err, route) => console.error(route, err) };
+ * ```
  */
 export interface RouterOptions {
     /**
@@ -43,6 +48,12 @@ export interface RouterOptions {
 
 /**
  * Defines the core interface for a router, providing access to the current route and a mechanism to refresh it.
+ *
+ * @example
+ * ```ts
+ * const router: Router = new PartitionRouter();
+ * router.refresh();
+ * ```
  */
 export interface Router {
     /** The current route path. */

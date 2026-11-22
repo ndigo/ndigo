@@ -16,6 +16,11 @@ export type FeatureActivationPolicy = 'tracked' | 'exclusive';
 
 /**
  * Options for configuring the `FeatureRoutingRegistry`.
+ *
+ * @example
+ * ```ts
+ * const options: FeatureRoutingRegistryOptions = { mountPolicy: 'preserve' };
+ * ```
  */
 export interface FeatureRoutingRegistryOptions {
     /** Feature activation policy; defaults to `'tracked'`. */
@@ -26,6 +31,11 @@ export interface FeatureRoutingRegistryOptions {
 
 /**
  * Defines the structure for registering a feature with the `FeatureRoutingRegistry`.
+ *
+ * @example
+ * ```ts
+ * const reg: FeatureRouteRegistration = { prefix: '/users', callback: (route) => {} };
+ * ```
  */
 export interface FeatureRouteRegistration {
     /** The feature name. */

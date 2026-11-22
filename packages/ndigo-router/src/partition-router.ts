@@ -14,6 +14,11 @@ export type FeatureRouteCallback = (route: Route) => void;
 
 /**
  * Represents a mounted feature route, associating a callback with a URL prefix.
+ *
+ * @example
+ * ```ts
+ * const mount: FeatureRouteMount = { prefix: '/users', callback: (route) => {} };
+ * ```
  */
 export interface FeatureRouteMount {
     /** The feature's route callback. */

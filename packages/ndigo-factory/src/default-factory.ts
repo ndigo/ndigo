@@ -4,6 +4,14 @@
 import { RegistryProxyHandler } from './registry';
 import { AbstractFactory } from './abstract-factory';
 
+/**
+ * Default {@link AbstractFactory} implementation with no extra behavior.
+ *
+ * @example
+ * ```ts
+ * const factory = new DefaultFactory();
+ * ```
+ */
 export class DefaultFactory extends AbstractFactory {
     /**
      * The `Symbol.toStringTag` value for this instance.

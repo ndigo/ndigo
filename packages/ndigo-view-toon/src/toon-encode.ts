@@ -14,6 +14,11 @@ import { encode as encodeReference } from '@toon-format/toon';
  * (spec §9): indentation width for nested lines, and the row/inline-array
  * delimiter — `\t` or `|` are the tabular-friendly choices for LLM
  * consumers.
+ *
+ * @example
+ * ```ts
+ * const options: ToonEncodeOptions = { indentSize: 2, delimiter: '|' };
+ * ```
  */
 export interface ToonEncodeOptions {
     /**

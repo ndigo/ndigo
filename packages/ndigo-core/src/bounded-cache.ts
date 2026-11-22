@@ -96,6 +96,18 @@ export class BoundedCache<K, V> {
     }
 
     /**
+     * Looks up a cached value WITHOUT updating recency (no promotion, even
+     * under the `'lru'` policy). Use when the access must not affect eviction
+     * order.
+     *
+     * @param key - The cache key.
+     * @returns The cached value, or `undefined`.
+     */
+    peek(key: K): V | undefined {
+        return this.#entries.get(key);
+    }
+
+    /**
      * Stores a value, evicting the oldest entry first when a new key would
      * exceed the bound. Re-setting an existing key updates its value (and
      * promotes it for LRU). Calls `onEvict` on overflow eviction.

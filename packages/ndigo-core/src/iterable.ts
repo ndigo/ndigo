@@ -67,6 +67,11 @@ export type SetEntry<Value> = Value extends Set<infer ValueType> ? [ValueType, V
 /**
  * Represents a generic entry type, which can be an `ArrayEntry`, `MapEntry`, `ObjectEntry`, or `SetEntry`.
  * @typeParam Value - The original value type from which the entry is derived.
+ *
+ * @example
+ * ```ts
+ * const e: Entry<{ name: string }> = ['name', 'ndigo'];
+ * ```
  */
 export type Entry<Value> =
     Value extends Map<unknown, unknown>
@@ -82,6 +87,11 @@ export type Entry<Value> =
 /**
  * Represents a generic collection of entries, which can be `MapEntries`, `SetEntries`, `ArrayEntries`, or `ObjectEntries`.
  * @typeParam Value - The original value type from which the entries are derived.
+ *
+ * @example
+ * ```ts
+ * const e: Entries<{ name: string }> = [['name', 'ndigo']];
+ * ```
  */
 export type Entries<Value> =
     Value extends Map<unknown, unknown>

@@ -6,6 +6,11 @@ import { hasFunction } from './_guards.js';
 
 /**
  * A value that can be represented in JSON.
+ *
+ * @example
+ * ```ts
+ * const v: JSONValue = { name: 'ndigo', count: 1 };
+ * ```
  */
 export type JSONValue = boolean | null | number | string | JSONObject | JSONArray;
 
@@ -39,6 +44,11 @@ export interface Serializable {
 
 /**
  * A value that can be serialized to JSON directly or through a `Serializable` contract.
+ *
+ * @example
+ * ```ts
+ * const v: serializable = new Date();
+ * ```
  */
 export type serializable = JSONValue | Serializable;
 

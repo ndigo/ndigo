@@ -7,7 +7,12 @@ import { getSymbolMetadata } from './metadata.js';
 import { Profile } from './profile.js';
 import type { ProfileTerm } from './profile.js';
 
-/** Platform types for conditional auto-configuration. */
+/** Platform types for conditional auto-configuration. *
+ * @example
+ * ```ts
+ * const p: ConditionalPlatform = 'node';
+ * ```
+ */
 export type ConditionalPlatform = 'browser' | 'node';
 
 const WHEN_PLATFORM = 'boot:whenPlatform';

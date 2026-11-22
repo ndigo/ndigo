@@ -20,6 +20,11 @@ import { like } from '@ndigo/util';
  * @param value1 - The first value to compare.
  * @param value2 - The second value to compare.
  * @returns A negative integer, zero, or a positive integer as the first argument is less than, equal to, or greater than the second.
+ *
+ * @example
+ * ```ts
+ * const cmp: comparison<number> = (a, b) => a - b;
+ * ```
  */
 export type comparison<T> = (value1: T, value2: T) => number;
 
@@ -29,6 +34,11 @@ export type comparison<T> = (value1: T, value2: T) => number;
  * @param value1 - The first value.
  * @param value2 - The second value.
  * @returns `true` if the condition is met, `false` otherwise.
+ *
+ * @example
+ * ```ts
+ * const pred: predicate<number> = (a, b) => a > b;
+ * ```
  */
 export type predicate<T> = (value1: T, value2: T) => boolean;
 

@@ -26,6 +26,11 @@ import { Equatable } from './equatable.js';
  * The precedence-role a composed term plays in the grammar (loose → tight):
  * names and raw strings are treated as loose compounds when they contain
  * operator characters, so they parenthesize safely under every context.
+ *
+ * @example
+ * ```ts
+ * const kind: TermKind = 'and';
+ * ```
  */
 export type TermKind = 'name' | 'not' | 'and' | 'or' | 'compound';
 
@@ -91,6 +96,11 @@ export class ProfileTerm implements Serializable, Equatable<ProfileTerm> {
 
 /**
  * Accepts either a raw expression string or a composed term.
+ *
+ * @example
+ * ```ts
+ * const input: ProfileExpressionInput = 'admin & !guest';
+ * ```
  */
 export type ProfileExpressionInput = string | ProfileTerm;
 

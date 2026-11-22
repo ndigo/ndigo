@@ -1,5 +1,10 @@
 /**
  * A JavaScript primitive value.
+ *
+ * @example
+ * ```ts
+ * const p: primitive = 42;
+ * ```
  */
 export type primitive = boolean | null | number | string | symbol | bigint | undefined;
 

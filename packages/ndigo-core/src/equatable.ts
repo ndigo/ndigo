@@ -26,6 +26,11 @@ export interface Equatable<T = unknown> {
 
 /**
  * Represents a value that can be compared for equality, which can be either an `Equatable` object or a primitive type.
+ *
+ * @example
+ * ```ts
+ * const v: equatable = 42;
+ * ```
  */
 export type equatable = Equatable | primitive;
 

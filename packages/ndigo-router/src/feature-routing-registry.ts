@@ -11,6 +11,11 @@ import { PartitionRouter } from './partition-router';
  * Defines the policy for how features are activated within the `FeatureRoutingRegistry`.
  * - `'tracked'`: Allows multiple features to be active, tracking each one.
  * - `'exclusive'`: Only one feature can be active at a time; activating a new feature deactivates the previous one.
+ *
+ * @example
+ * ```ts
+ * type _Alias = FeatureActivationPolicy;
+ * ```
  */
 export type FeatureActivationPolicy = 'tracked' | 'exclusive';
 

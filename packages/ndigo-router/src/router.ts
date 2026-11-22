@@ -17,6 +17,11 @@ const logger = getLogger('ndigo-router:router');
 /**
  * A callback function type that is invoked when a route changes.
  * @param route - The new `Route` object.
+ *
+ * @example
+ * ```ts
+ * type _Alias = RouterCallback;
+ * ```
  */
 export type RouterCallback = (route: Route) => void;
 
@@ -27,6 +32,11 @@ export type RouterCallback = (route: Route) => void;
  *
  * @param error - The error raised by the pipeline.
  * @param route - The route whose navigation failed.
+ *
+ * @example
+ * ```ts
+ * type _Alias = RouterErrorHandler;
+ * ```
  */
 export type RouterErrorHandler = (error: unknown, route: Route) => void;
 

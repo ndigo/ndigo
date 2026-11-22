@@ -14,6 +14,11 @@ const pathMatcher = new URLGlobPathMatcher();
  * @param path - The route pattern (e.g. "/users", "/\{id\}", "/").
  * @param name - Optional explicit name from the routeMapping decorator's name option.
  * @returns The derived key (e.g. "users", "byId", "index").
+ *
+ * @example
+ * ```ts
+ * deriveKey();
+ * ```
  */
 export function deriveKey(path: string, name?: string): string {
     if (name) return name;

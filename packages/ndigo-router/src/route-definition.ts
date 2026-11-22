@@ -14,6 +14,11 @@ import type { Matchable } from '@ndigo/core';
  * The parameter object a route pattern requires, derived from its `{name}`
  * placeholders: each placeholder becomes a required `string` field, and a
  * pattern without placeholders needs no arguments.
+ *
+ * @example
+ * ```ts
+ * type _Alias = RouteParams;
+ * ```
  */
 export type RouteParams<T extends string> = T extends `${string}{${infer P}}${infer Rest}`
     ? Record<P, string> & RouteParams<Rest>

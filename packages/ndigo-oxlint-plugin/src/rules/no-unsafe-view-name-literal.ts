@@ -122,6 +122,16 @@ function isInvalidCustomElementName(name: string): boolean {
  * check branches on the callee: `IslandView` is validated against the
  * custom-element grammar, while `ModelAndView` and `resolveViewName` keep the
  * relative-path (DSV-SEC-1) contract.
+ *
+ * @example
+ * ```ts
+ * import { defineConfig } from 'oxlint';
+ *
+ * export default defineConfig({
+ *     plugins: ['@ndigo'],
+ *     rules: { '@ndigo/no-unsafe-view-name-literal': 'error' },
+ * });
+ * ```
  */
 export const noUnsafeViewNameLiteral = {
     meta: {

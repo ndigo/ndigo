@@ -304,6 +304,16 @@ function mappingPathLiteral(decorator: ESTree.Decorator, aliases: Map<string, st
  * Scope is best-effort and class-local: only mapping decorators syntactically
  * attached to methods of a single class declaration are compared. Paths
  * composed dynamically, or contributed by a base class, are not seen.
+ *
+ * @example
+ * ```ts
+ * import { defineConfig } from 'oxlint';
+ *
+ * export default defineConfig({
+ *     plugins: ['@ndigo'],
+ *     rules: { '@ndigo/no-duplicate-mapping': 'error' },
+ * });
+ * ```
  */
 export const noDuplicateMapping = {
     meta: {

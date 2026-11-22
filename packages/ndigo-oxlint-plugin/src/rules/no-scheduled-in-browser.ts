@@ -17,6 +17,16 @@ const browserPlatformPattern = /^@ndigo\/(?:platform-web|view-webcomponent)(?:\/
  * where browser glue is also imported is a platform-misuse smell. The rule
  * is a heuristic — the runtime platform guard and the documentation carry
  * the rest of the enforcement.
+ *
+ * @example
+ * ```ts
+ * import { defineConfig } from 'oxlint';
+ *
+ * export default defineConfig({
+ *     plugins: ['@ndigo'],
+ *     rules: { '@ndigo/no-scheduled-in-browser': 'error' },
+ * });
+ * ```
  */
 export const noScheduledInBrowser = {
     meta: {

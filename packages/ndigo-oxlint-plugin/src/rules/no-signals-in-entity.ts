@@ -14,6 +14,16 @@ function isEntityFile(filename: string): boolean {
 
 /**
  * Reports signals imports in files that declare `@entity` classes.
+ *
+ * @example
+ * ```ts
+ * import { defineConfig } from 'oxlint';
+ *
+ * export default defineConfig({
+ *     plugins: ['@ndigo'],
+ *     rules: { '@ndigo/no-signals-in-entity': 'error' },
+ * });
+ * ```
  */
 export const noSignalsInEntity = {
     meta: {

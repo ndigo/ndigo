@@ -203,6 +203,16 @@ function isInsideTypeofGuard(node: IdentifierLike): boolean {
  * the consuming config's business — scope it with `overrides` and exempt
  * browser-only packages there. Guarded access (`typeof window !== 'undefined'`)
  * and locally shadowed names stay legal.
+ *
+ * @example
+ * ```ts
+ * import { defineConfig } from 'oxlint';
+ *
+ * export default defineConfig({
+ *     plugins: ['@ndigo'],
+ *     rules: { '@ndigo/no-browser-globals': 'error' },
+ * });
+ * ```
  */
 export const noBrowserGlobals = {
     meta: {

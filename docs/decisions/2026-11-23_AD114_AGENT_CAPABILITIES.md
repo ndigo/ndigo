@@ -79,11 +79,12 @@ behaviour model. The capability layer reserves the adapter slot and does not
 import `@ui-sdk/*`.
 
 **D-6 — One operate contract.** `AgentBridge` (`packages/ndigo-core/src/agent-bridge.ts`),
-`@ndigo/mcp`'s tool policy, the WebMCP adapter, and A2UI surfaces share one
+`@ndigo/mcp`'s tool policy, the WebMCP adapter, and A2UI surfaces converge on one
 authorization vocabulary — `authorize`/`confirm`, `readOnly`, feature gates,
 `exposedTo` — and one attribution: `source: agent`, carried on
-`gen_ai.tool.call.source`. Every mutating surface, including install-capable
-catalog tools, is filtered by `--readOnly`, and installs are dry-run unless
+`gen_ai.tool.call.source`. MCP surfaces expose `--readOnly` (or the equivalent
+registry option) to omit mutating tools, install-capable catalog tools are
+marked mutating so it filters them, and installs are dry-run unless
 `dryRun: false` (AD-96 D-5).
 
 **D-7 — The runtime agent packages stay in this repository.** `@ndigo/mcp`,
@@ -105,8 +106,9 @@ the generators.
 - `ndigo mcp` gains two read-only tools (`list_capabilities`,
   `get_capability`) — no new surface: the CLI host already serves `ndigo mcp`
   and `ndigo ui mcp`. Install-capable tools are mutating and must be marked so.
-- Skills grow by at most two (`ndigo-agent`, `ndigo-model`); existing skills
-  gain capability rows rather than new prose.
+- Skills grow by at most two; whether that is two focused skills or one combined
+  is settled when they are authored. Existing skills gain capability rows rather
+  than new prose.
 - `manifest:check` learns to accept and validate the `ndigo` block.
 - Until the 1.0 publish gate (#10) closes, only the plan/dry-run half of
   `ndigo add <capability>` is exercisable by a real consumer; install fixtures

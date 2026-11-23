@@ -144,6 +144,11 @@ interface StoredJobData {
 
 /**
  * Options for {@link RedisJobDriver}.
+ *
+ * @example
+ * ```ts
+ * const value = {} as RedisJobDriverOptions;
+ * ```
  */
 export interface RedisJobDriverOptions {
     /** Borrowed connection (already connected or connected by the application). */
@@ -157,6 +162,11 @@ export interface RedisJobDriverOptions {
 /**
  * Durable {@link JobDriver} on Redis (standalone 7.2+; sorted sets and Lua
  * only). One handle per namespace; construct independently in every worker.
+ *
+ * @example
+ * ```ts
+ * const instance = new RedisJobDriver();
+ * ```
  */
 export class RedisJobDriver implements JobDriver {
     /**

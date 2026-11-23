@@ -6,6 +6,14 @@ import { RedisConnection } from '../connection';
 import { encode, decode } from './_codec';
 
 /** Redis-only policy: TTL, not memory's per-store LRU/FIFO or maxSize. */
+/**
+ * RedisCacheOptions.
+ *
+ * @example
+ * ```ts
+ * const value = {} as RedisCacheOptions;
+ * ```
+ */
 export interface RedisCacheOptions {
     /** Application/environment namespace; required and encoded independently of cacheName. */
     namespace: string;
@@ -27,6 +35,11 @@ function component(value: string): string {
  * Closing that connection invalidates all its handles. clear()/size() scan only
  * this namespace; stop concurrent writers for a stable clear/count. No FLUSHDB,
  * keyspace-wide KEYS command, cluster guarantee or per-cache eviction simulation.
+ *
+ * @example
+ * ```ts
+ * const instance = new RedisCache();
+ * ```
  */
 export class RedisCache<V = unknown> implements Cache<V> {
     /**

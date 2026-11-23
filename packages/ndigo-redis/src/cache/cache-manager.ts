@@ -9,6 +9,14 @@ import { RedisConnection, type RedisConnectionOptions } from '../connection';
 import { RedisCache } from './cache';
 
 /** Explicit connection plus application/environment namespace and TTL defaults. */
+/**
+ * RedisCacheManagerOptions.
+ *
+ * @example
+ * ```ts
+ * type _Alias = RedisCacheManagerOptions;
+ * ```
+ */
 export type RedisCacheManagerOptions = RedisConnectionOptions & {
     namespace: string;
     defaults?: { defaultTtl?: number };
@@ -19,6 +27,11 @@ export type RedisCacheManagerOptions = RedisConnectionOptions & {
  * no I/O; hasCache means this manager acquired a handle, not that Redis has data.
  * Container-compatible destroy() drains operations; a ready injected client is
  * borrowed and remains usable after manager shutdown.
+ *
+ * @example
+ * ```ts
+ * const instance = new RedisCacheManager();
+ * ```
  */
 export class RedisCacheManager implements CacheManager, AsyncDestroyable {
     /**

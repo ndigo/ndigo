@@ -3,19 +3,29 @@
 **Date:** 2026-11-10
 **Status:** Accepted — umbrella record for AD-97..AD-101. Superseded in part
 by AD-107 (D-2: skills are authored in the standalone `ndigo-skills`
-repository and vendored as a pinned snapshot).
+repository and vendored as a pinned snapshot). Amended by
+[AD-114](2026-11-23_AD114_AGENT_CAPABILITIES.md): the audiences are named
+_authoring agents_ and _runtime agents_.
 
 ## Context
 
 Two different agents now consume a Ndigo project, and they need different
 things:
 
-- **Development agents** write the application. They need `AGENTS.md`, workflow
+- **Authoring agents** write the application. They need `AGENTS.md`, workflow
   skills, version-matched docs, and a CLI that can be driven without parsing
   human prose.
-- **Product agents** run on top of the application. They need the application's
+- **Runtime agents** run on top of the application. They need the application's
   own tools, UI representation, and a model loop that respects the framework's
   telemetry, limits, and configuration.
+
+These names **replace** the original labels ("Development agents" / "Product
+agents"); the rewrite is recorded in
+[AD-114](2026-11-23_AD114_AGENT_CAPABILITIES.md), which also adds _capability_
+as the installable unit between a package and a workflow. Neither audience is
+the maintainer-only `development-agents/` store or the gitignored
+`agent-local/` tree; the consumer-facing content store is `tools/agent-content/`
+(D-2).
 
 Treating both as "AI documentation" produces two failure modes: a harness
 matrix that rots per client, and a second tool description that drifts from the
@@ -69,7 +79,7 @@ AD-98 (agent content), AD-99 (MCP host), AD-100 (`@ndigo/mcp`), and AD-101
   parity mechanically instead of by review.
 - A generated mirror plus the shared `AGENTS.md`/skills paths covers the
   harnesses that matter without owning each client's discovery rules.
-- Product agents need framework-grade instrumentation, not a second AI
+- Runtime agents need framework-grade instrumentation, not a second AI
   framework: `@ndigo/ai` owns the loop and `@ndigo/ai-sdk` is the only package
   importing the AI SDK.
 
@@ -93,7 +103,7 @@ AD-98 (agent content), AD-99 (MCP host), AD-100 (`@ndigo/mcp`), and AD-101
 - MCP Apps, A2UI, or WebMCP change their transport/extension contracts.
 - The AI SDK makes a breaking major release; `@ndigo/ai-sdk` absorbs it, but
   the adapter contract (`AIModel`) is the compatibility boundary.
-- A second product-agent consumer exposes a missing framework primitive, or the
+- A second runtime-agent consumer exposes a missing framework primitive, or the
   existing `@ndigo/ai` surface proves too thin to be Ndigo-shaped.
 
 ## Evidence
@@ -109,6 +119,8 @@ AD-98 (agent content), AD-99 (MCP host), AD-100 (`@ndigo/mcp`), and AD-101
 ## See Also
 
 - AD-97, AD-98, AD-99, AD-100, AD-101
+- [AD-114](2026-11-23_AD114_AGENT_CAPABILITIES.md) — capability vocabulary;
+  renames the audiences to authoring and runtime agents
 - AD-107 — skills authoring moves to the standalone `ndigo-skills` repository
 - AD-70 — introspection first
 - AD-75 — the CLI as a thin front

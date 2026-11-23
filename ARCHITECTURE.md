@@ -1280,6 +1280,33 @@ When adding a new external dependency:
 - **oxlint Plugin** (implemented): Custom rule to detect direct imports of encapsulated libraries (`internal/no-direct-integration-imports`, loaded from root `src/oxlint/` via oxlint JS Plugins; consumer-facing rules ship in `@ndigo/oxlint-plugin`)
 - **CI Manifest Checker** (implemented): `scripts/check-manifests.mjs` runs in CI (`pnpm manifest:check`; `.github/workflows/ci.yml`) and enforces the [Manifest Dependency Sections](#manifest-dependency-sections) contract plus the `@ndigo/*` `~0.0.1` protocol
 
+### Package Categories
+
+Three categories decide who consumes a package; they are orthogonal to the
+numeric layer ranks in `LAYER_RANK` (`src/oxlint/_layers.ts`), which decide what
+a package may import.
+
+| Category               | What it is                                                                                                     | Where it lives                                                            | Consumers                     |
+| :--------------------- | :------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------ | :---------------------------- |
+| **Tooling**            | Dev-time code that never runs inside an application                                                            | `TOOLING_PACKAGES` (`cli`, `oxlint-plugin`, `test`), `tools/`, `scripts/` | Maintainers, authoring agents |
+| **Runtime capability** | An opt-in package an application installs and runs                                                             | `packages/` — the published surface                                       | Applications                  |
+| **Agent surface**      | The agent-facing subset of runtime capabilities: MCP tools, MCP Apps, A2UI, WebMCP, the `AgentBridge` contract | Wherever the implementing package lives (for example `@ndigo/mcp`)        | Runtime agents                |
+
+A **capability** is the unit between a package and a workflow: the declared,
+installable thing an application gains ("agent surface", "shared cache"),
+implemented by one or more runtime packages or subpaths, with its wiring,
+checks, and teaching skill declared once in the CLI's catalog
+([AD-114](./docs/decisions/2026-11-23_AD114_AGENT_CAPABILITIES.md)).
+
+- Repo-only tooling never enters `packages/`; `scripts/package-surface.mjs`
+  enforces the split.
+- A runtime capability is installable on its own: its manifest carries the full
+  install closure ([Manifest Dependency Sections](#manifest-dependency-sections)).
+- "Agent surface" is a concern, not a directory — `@ndigo/mcp` is a runtime
+  capability, and `@ndigo/view-webcomponent`'s WebMCP adapter is part of one.
+- Do not add a package to `TOOLING_PACKAGES` to silence a layer violation; the
+  set is for packages outside the runtime graph by design.
+
 ### Type-Only Imports
 
 **Status:** Resolved. Type-only imports (`import type`) are permitted for

@@ -283,6 +283,8 @@ migration files, generation from entity metadata, and run-on-boot — is
 ## See also
 
 - [Guide 46 — Upgrading Ndigo](46-upgrading.md) — `update` and migration guides
+- [Guide 51 — Capabilities for Authoring Agents](51-capabilities-for-authoring-agents.md)
+  — what a capability is and the contract its CLI verbs follow
 - [Guide 25 — Clustering](25-clustering.md) — what `serve --cluster` runs
 - [Guide 22 — Jobs & Outbox](22-jobs-and-outbox.md) and [Guide 24 — Distributed Locks](24-distributed-locks.md) — the coordination the CLI fronts
 - [apps/05-ndigo-api/src/inspect.ts](https://github.com/ndigo/ndigo/blob/main/apps/05-ndigo-api/src/inspect.ts) — the inspect-entry template

@@ -4,7 +4,7 @@ Conceptual and hands-on guides for building applications with Ndigo. These
 complement the API reference; they explain the _how_ with runnable patterns
 grounded in the demo apps.
 
-The numbering is stable: **00–50** are application guides, **90–91** are
+The numbering is stable: **00–51** are application guides, **90–91** are
 contributor guides. Numbers are reading order within a section.
 
 > **Renumbered 2026-11-08.** Historical records (ADRs, plans, audits) still use
@@ -181,6 +181,10 @@ contributor guides. Numbers are reading order within a section.
   direction: `@toolMapping`, MCP over stdio and Streamable HTTP, MCP Apps
   `ui://` resources, A2UI through content negotiation, WebMCP browser tools,
   and the OpenAPI ↔ `tools/list` parity proof.
+- [51 — Capabilities for Authoring Agents](51-capabilities-for-authoring-agents.md)
+  — authoring agents vs runtime agents, the three package categories, what a
+  capability is (and is not), the CLI's plan/dry-run/apply contract, what a
+  skill may carry, and where facts live.
 - [34 — Feature Flags](34-feature-flags.md) — `@ndigo/flags` : the
   never-throw `FlagEvaluator` SPI, the zero-config property provider
   (`feature.*`, live refresh), `@whenFeature` route gates (404 when off), the

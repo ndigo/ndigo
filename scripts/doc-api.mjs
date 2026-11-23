@@ -155,6 +155,7 @@ function typedocConfig(pkgDir, manifest) {
             'typedoc-plugin-markdown',
             join(ROOT, 'scripts', 'typedoc-module-summary-plugin.mjs'),
             join(ROOT, 'scripts', 'typedoc-function-kind-plugin.mjs'),
+            join(ROOT, 'scripts', 'typedoc-strip-inherited-from-plugin.mjs'),
         ],
         readme: 'none',
         excludePrivate: true,

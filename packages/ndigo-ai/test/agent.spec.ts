@@ -72,7 +72,12 @@ class ScriptedModel implements AIModel {
 }
 
 class FakeTools implements AIToolSource {
-    readonly calls: Array<{ name: string; args: Record<string, unknown> | undefined; callId: string | undefined }> = [];
+    readonly calls: Array<{
+        name: string;
+        args: Record<string, unknown> | undefined;
+        callId: string | undefined;
+        source: string | undefined;
+    }> = [];
     readonly fail: boolean;
 
     constructor(fail = false) {
@@ -83,8 +88,12 @@ class FakeTools implements AIToolSource {
         return Promise.resolve([{ name: 'lookup', description: 'Looks up a value', inputSchema: { type: 'object' } }]);
     }
 
-    call(name: string, args?: Record<string, unknown>, context?: { callId?: string }): Promise<unknown> {
-        this.calls.push({ name, args, callId: context?.callId });
+    call(
+        name: string,
+        args?: Record<string, unknown>,
+        context?: { callId?: string; source?: string }
+    ): Promise<unknown> {
+        this.calls.push({ name, args, callId: context?.callId, source: context?.source });
         if (this.fail) {
             return Promise.reject(new Error('lookup failed'));
         }
@@ -113,7 +122,7 @@ describe('AIAgent', () => {
         expect(result.usage).toEqual({ inputTokens: 20, outputTokens: 10, totalTokens: 30 });
         expect(result.toolCalls).toEqual([CALL]);
         expect(result.toolResults).toEqual([{ callId: 'call-1', name: 'lookup', output: { found: 'a' } }]);
-        expect(tools.calls).toEqual([{ name: 'lookup', args: { id: 'a' }, callId: 'call-1' }]);
+        expect(tools.calls).toEqual([{ name: 'lookup', args: { id: 'a' }, callId: 'call-1', source: 'agent' }]);
         expect(result.messages.map((message) => message.role)).toEqual([
             'system',
             'user',

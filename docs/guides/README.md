@@ -4,7 +4,7 @@ Conceptual and hands-on guides for building applications with Ndigo. These
 complement the API reference; they explain the _how_ with runnable patterns
 grounded in the demo apps.
 
-The numbering is stable: **00–51** are application guides, **90–91** are
+The numbering is stable: **00–52** are application guides, **90–91** are
 contributor guides. Numbers are reading order within a section.
 
 > **Renumbered 2026-11-08.** Historical records (ADRs, plans, audits) still use
@@ -185,6 +185,10 @@ contributor guides. Numbers are reading order within a section.
   — authoring agents vs runtime agents, the three package categories, what a
   capability is (and is not), the CLI's plan/dry-run/apply contract, what a
   skill may carry, and where facts live.
+- [52 — The Agent Operate Contract](52-agent-operate-contract.md) — one
+  vocabulary across the in-page bridge, MCP, WebMCP, and A2UI: tool/entity/
+  snapshot/query/act, the safety-hint mapping each host can express, `source:
+  agent` attribution, denial as data, and the UI SDK adapter slot.
 - [34 — Feature Flags](34-feature-flags.md) — `@ndigo/flags` : the
   never-throw `FlagEvaluator` SPI, the zero-config property provider
   (`feature.*`, live refresh), `@whenFeature` route gates (404 when off), the

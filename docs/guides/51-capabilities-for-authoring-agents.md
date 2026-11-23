@@ -215,6 +215,8 @@ that changes one surface without the other is not finished.
   agent side
 - [Guide 48 — Agent-Facing Surfaces](48-agent-facing-surfaces.md) — one handler,
   many surfaces
+- [Guide 52 — The Agent Operate Contract](52-agent-operate-contract.md) — one
+  vocabulary and policy for the bridge, MCP, WebMCP, and A2UI
 - [AD-114 — Agent capabilities](../decisions/2026-11-23_AD114_AGENT_CAPABILITIES.md)
 - [AD-96 — Agent and LLM integration](../decisions/2026-11-10_AD96_LLM_AGENT_INTEGRATION.md)
 - [AD-107 — Skills authoring](../decisions/2026-11-18_AD107_SKILLS_AUTHORING.md)

@@ -117,6 +117,10 @@ Notes:
   confirmation round-trip, so a confirmed call is refused with
   `Needs a person: …` unless an `authorize` policy accepts it. Both run after
   the visibility policy and before argument binding.
+- **Consequential tools.** `@toolMapping({ consequential: true })` projects
+  `destructiveHint` and pairs with `confirm`; `readOnly` and `consequential`
+  together are rejected. The full hint mapping across hosts is in
+  [Guide 52](52-agent-operate-contract.md#3-one-declaration-mapped-hints).
 - **Secret results.** `@toolMapping({ secret: ['field.path'] })` replaces the
   declared result fields with the shared `<redacted>` sentinel before the
   result leaves the registry.
@@ -127,7 +131,8 @@ Notes:
   `@ndigo/rate-limit`; wrap downstream calls in `@circuitBreaker` / `@retry`.
 - **Telemetry.** Every call emits one `execute_tool <name>` span with
   `gen_ai.tool.name`, `gen_ai.tool.call.id`, and `gen_ai.tool.call.source` (the
-  transport: `stdio`, `http`); outbound HTTP spans nest under it. A policy
+  invoking surface: `stdio`, `http`, or `agent` from the `@ndigo/ai` loop);
+  outbound HTTP spans nest under it. A policy
   refusal is marked with `gen_ai.tool.call.denied` — an expected outcome, so
   the span does not become an error.
 - **Audit.** Log the tool name and principal in an interceptor; never log
@@ -324,4 +329,5 @@ installed-component rendering and unknown-component rejection.
 - [Guide 37 — The `ndigo` CLI](37-ndigo-cli.md)
 - [Guide 47 — AI Agents, MCP Tools & Streaming](47-ai-agents.md)
 - [Guide 51 — Capabilities for Authoring Agents](51-capabilities-for-authoring-agents.md)
+- [Guide 52 — The Agent Operate Contract](52-agent-operate-contract.md)
 - Reference apps: [apps/21-ndigo-agent-lab](https://github.com/ndigo/ndigo/tree/main/apps/21-ndigo-agent-lab), [apps/20-ndigo-ui-lab](https://github.com/ndigo/ndigo/tree/main/apps/20-ndigo-ui-lab)

@@ -24,7 +24,8 @@ export interface AIToolDescriptor {
 
 /**
  * Per-call context passed to {@link AIToolSource.call}. The `callId` is the
- * model-assigned tool-call id and is recorded as `gen_ai.tool.call.id`.
+ * model-assigned tool-call id and is recorded as `gen_ai.tool.call.id`; the
+ * source is recorded as `gen_ai.tool.call.source`.
  *
  * @example
  * ```ts
@@ -34,6 +35,8 @@ export interface AIToolDescriptor {
 export interface AIToolCallContext {
     /** The model-assigned tool-call id. */
     readonly callId?: string;
+    /** The invoking surface; the agent loop sets `agent`. */
+    readonly source?: string;
 }
 
 /**

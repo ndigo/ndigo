@@ -60,4 +60,15 @@ describe('@toolMapping', () => {
         }
         expect(getToolMapping(Controller, 'login')).toEqual({ secret: ['accessToken'] });
     });
+
+    it('records the consequential hint and rejects a read-only contradiction', () => {
+        class Controller {
+            @toolMapping({ name: 'delete_order', consequential: true })
+            deleteOrder(): void {}
+        }
+        expect(getToolMapping(Controller, 'deleteOrder')).toEqual({ name: 'delete_order', consequential: true });
+
+        expect(() => toolMapping({ readOnly: true, consequential: true })).toThrow(/readOnly and consequential/u);
+        expect(() => toolMapping({ readOnly: true, consequential: false })).not.toThrow();
+    });
 });

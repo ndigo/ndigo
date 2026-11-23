@@ -44,6 +44,8 @@ export interface ToolDescriptor {
     readonly annotations?: {
         /** The tool only reads state. */
         readonly readOnlyHint?: boolean;
+        /** The tool may perform destructive or hard-to-reverse updates. */
+        readonly destructiveHint?: boolean;
     };
     /** Protocol metadata (MCP Apps UI presentation). */
     readonly _meta?: {
@@ -193,7 +195,10 @@ export function projectTools(source: MappingSource): RegisteredTool[] {
                     name,
                     description: metadata.description ?? describe(entry),
                     inputSchema: inputSchemaOf(entry.handlerMethod),
-                    annotations: { readOnlyHint: readOnly },
+                    annotations: {
+                        readOnlyHint: readOnly,
+                        ...(metadata.consequential === undefined ? {} : { destructiveHint: metadata.consequential }),
+                    },
                     ...(metadata.ui === undefined ? {} : { _meta: { ui: { resourceUri: metadata.ui } } }),
                 },
                 handlerMethod: entry.handlerMethod,

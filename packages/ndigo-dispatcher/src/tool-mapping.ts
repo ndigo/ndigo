@@ -32,6 +32,12 @@ export interface ToolMappingMetadata {
     /** Mark the tool read-only (mutating tools are gated by policy). */
     readonly readOnly?: boolean;
     /**
+     * Mark the tool as significant or hard to reverse. Projected to MCP
+     * `destructiveHint` and to the neutral `consequentialHint`; hosts that
+     * support confirmations should ask a person first.
+     */
+    readonly consequential?: boolean;
+    /**
      * Dot-separated result field paths that are replaced with the shared
      * `<redacted>` sentinel before the result reaches the transport (for
      * example `['accessToken', 'profile.number']`). Array elements match
@@ -82,6 +88,11 @@ export function toolMapping(options: ToolMappingMetadata = {}) {
                 `@toolMapping secret paths must be dot-separated identifiers — received '${String(path)}'.`
             );
         }
+    }
+    if (options.readOnly === true && options.consequential === true) {
+        throw new TypeError(
+            '@toolMapping cannot be both readOnly and consequential — a read cannot be hard to reverse.'
+        );
     }
     return function (target: unknown, context: ClassMethodDecoratorContext): void {
         void target;

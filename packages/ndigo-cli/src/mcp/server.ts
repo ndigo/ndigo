@@ -23,6 +23,14 @@ import {
 } from './tools.js';
 
 /** Options for {@link createAppServer}. */
+/**
+ * AppServerOptions.
+ *
+ * @example
+ * ```ts
+ * const value = {} as AppServerOptions;
+ * ```
+ */
 export interface AppServerOptions {
     /** The application directory (absolute). */
     readonly dir: string;
@@ -40,6 +48,11 @@ const LIVE_HINT = 'add an "mcp" script that starts the application MCP server, e
  *
  * @param options - Application directory and mode.
  * @returns A server ready to connect to a transport.
+ *
+ * @example
+ * ```ts
+ * createAppServer();
+ * ```
  */
 export function createAppServer(options: AppServerOptions): McpServer {
     return createAppHost(options).server;
@@ -51,6 +64,11 @@ export function createAppServer(options: AppServerOptions): McpServer {
  *
  * @param options - Application directory and mode.
  * @returns A promise that settles when the server (or delegated script) ends.
+ *
+ * @example
+ * ```ts
+ * startAppServer();
+ * ```
  */
 export async function startAppServer(options: AppServerOptions): Promise<void> {
     if (options.live === true) {

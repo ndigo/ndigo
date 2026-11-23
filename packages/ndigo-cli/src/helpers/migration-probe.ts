@@ -21,6 +21,11 @@ const migrationFilePatternRule = /^(\d{4,})-[\w-]+\.(ts|mts|mjs)$/;
  *
  * @param dir - The migrations directory.
  * @returns The next version (1 for an empty or missing directory).
+ *
+ * @example
+ * ```ts
+ * nextMigrationVersion();
+ * ```
  */
 export async function nextMigrationVersion(dir: string): Promise<number> {
     let entries: string[] = [];

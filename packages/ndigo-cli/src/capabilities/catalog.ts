@@ -86,19 +86,49 @@ const packagesFileSchema = z.strictObject({ packages: z.array(packageFactSchema)
 const itemsFileSchema = z.strictObject({ items: z.array(itemSchema) });
 const checksFileSchema = z.strictObject({ checks: z.array(z.strictObject({ id: kebab, summary: z.string().min(1) })) });
 
-/** One declared wiring operation. */
+/** One declared wiring operation.
+ *
+ * @example
+ * ```ts
+ * type _Alias = CapabilityOp;
+ * ```
+ */
 export type CapabilityOp = z.infer<typeof capabilityOpSchema>;
 
-/** One authored capability entry. */
+/** One authored capability entry.
+ *
+ * @example
+ * ```ts
+ * type _Alias = CapabilityEntry;
+ * ```
+ */
 export type CapabilityEntry = z.infer<typeof capabilitySchema>;
 
-/** One UI registry item projected into the discovery index. */
+/** One UI registry item projected into the discovery index.
+ *
+ * @example
+ * ```ts
+ * type _Alias = CatalogItem;
+ * ```
+ */
 export type CatalogItem = z.infer<typeof itemSchema>;
 
-/** Facts a package declares about itself in its manifest `ndigo` block. */
+/** Facts a package declares about itself in its manifest `ndigo` block.
+ *
+ * @example
+ * ```ts
+ * type _Alias = PackageFact;
+ * ```
+ */
 export type PackageFact = z.infer<typeof packageFactSchema>;
 
-/** The result of loading the catalog: valid entries plus validation errors. */
+/** The result of loading the catalog: valid entries plus validation errors.
+ *
+ * @example
+ * ```ts
+ * const value = {} as CatalogLoad;
+ * ```
+ */
 export interface CatalogLoad {
     /** Capability entries, sorted by id. */
     readonly capabilities: readonly CapabilityEntry[];
@@ -108,7 +138,13 @@ export interface CatalogLoad {
     readonly errors: readonly string[];
 }
 
-/** One compact discovery record. */
+/** One compact discovery record.
+ *
+ * @example
+ * ```ts
+ * const value = {} as CatalogListEntry;
+ * ```
+ */
 export interface CatalogListEntry {
     /** Capability or item id. */
     readonly id: string;
@@ -122,7 +158,13 @@ export interface CatalogListEntry {
     readonly packages?: readonly string[];
 }
 
-/** A resolved entry, ready to return from `get`. */
+/** A resolved entry, ready to return from `get`.
+ *
+ * @example
+ * ```ts
+ * const value = {} as CatalogDetail;
+ * ```
+ */
 export interface CatalogDetail extends CatalogListEntry {
     /** The full authored record (ops, checks, packages, guide, skill, type, categories). */
     readonly record: CapabilityEntry | CatalogItem;
@@ -135,6 +177,11 @@ export interface CatalogDetail extends CatalogListEntry {
  * problem at once, while the list/get verbs fail with the first aggregate.
  *
  * @returns The valid entries and every error encountered.
+ *
+ * @example
+ * ```ts
+ * loadCatalog();
+ * ```
  */
 export function loadCatalog(): CatalogLoad {
     const errors: string[] = [];
@@ -147,6 +194,11 @@ export function loadCatalog(): CatalogLoad {
  * Loads the catalog and throws when any entry is invalid.
  *
  * @returns The valid catalog.
+ *
+ * @example
+ * ```ts
+ * loadCatalogOrThrow();
+ * ```
  */
 export function loadCatalogOrThrow(): CatalogLoad {
     const catalog = loadCatalog();
@@ -160,6 +212,11 @@ export function loadCatalogOrThrow(): CatalogLoad {
  * Lists capabilities and UI items in one stable, sorted index.
  *
  * @returns The compact discovery records, sorted by id then kind.
+ *
+ * @example
+ * ```ts
+ * listCatalog();
+ * ```
  */
 export function listCatalog(): CatalogListEntry[] {
     const catalog = loadCatalogOrThrow();
@@ -171,6 +228,11 @@ export function listCatalog(): CatalogListEntry[] {
  *
  * @param id - The capability or item id.
  * @returns The compact record plus the full authored entry, or undefined.
+ *
+ * @example
+ * ```ts
+ * getCatalogEntry();
+ * ```
  */
 export function getCatalogEntry(id: string): CatalogDetail | undefined {
     const catalog = loadCatalogOrThrow();
@@ -182,6 +244,11 @@ export function getCatalogEntry(id: string): CatalogDetail | undefined {
  *
  * @param errors - Collected when the file is missing or malformed.
  * @returns Package facts sorted by name.
+ *
+ * @example
+ * ```ts
+ * loadPackageFacts();
+ * ```
  */
 export function loadPackageFacts(errors: string[] = []): PackageFact[] {
     const file = join(CAPABILITIES_DIR, 'packages.json');
@@ -208,6 +275,11 @@ export function loadPackageFacts(errors: string[] = []): PackageFact[] {
  * Reads the declared check vocabulary.
  *
  * @returns Check ids in file order, empty when the file is missing.
+ *
+ * @example
+ * ```ts
+ * loadCheckIds();
+ * ```
  */
 export function loadCheckIds(): string[] {
     const file = join(CAPABILITIES_DIR, 'checks.json');
@@ -224,6 +296,11 @@ export function loadCheckIds(): string[] {
  * Reads the guide slugs listed in the shipped docs index.
  *
  * @returns Guide slugs, empty when the index is missing.
+ *
+ * @example
+ * ```ts
+ * loadGuideSlugs();
+ * ```
  */
 export function loadGuideSlugs(): string[] {
     const file = join(AGENT_ASSETS_DIR, 'docs-index.md');
@@ -241,6 +318,11 @@ export function loadGuideSlugs(): string[] {
  * Reads the skill ids shipped with the CLI.
  *
  * @returns Skill ids, sorted.
+ *
+ * @example
+ * ```ts
+ * loadSkillIds();
+ * ```
  */
 export function loadSkillIds(): string[] {
     const dir = join(AGENT_ASSETS_DIR, 'skills');

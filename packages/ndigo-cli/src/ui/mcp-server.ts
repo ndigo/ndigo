@@ -10,6 +10,14 @@ import { getCatalog, getItem, installItems, listItems, searchItems, validateRegi
 import type { RegistryToolContext } from './mcp-tools.js';
 
 /** Options for {@link createRegistryServer}. */
+/**
+ * RegistryServerOptions.
+ *
+ * @example
+ * ```ts
+ * const value = {} as RegistryServerOptions;
+ * ```
+ */
 export interface RegistryServerOptions extends RegistryToolContext {
     /** Expose discovery tools only; omit `install_items`. */
     readonly readOnly?: boolean;
@@ -19,6 +27,11 @@ export interface RegistryServerOptions extends RegistryToolContext {
  * Creates the MCP server and registers its tools.
  * @param options - Application directory, default registry, and mode.
  * @returns A server ready to connect to a transport.
+ *
+ * @example
+ * ```ts
+ * createRegistryServer();
+ * ```
  */
 export function createRegistryServer(options: RegistryServerOptions): McpServer {
     return createRegistryHost(options).server;
@@ -29,6 +42,11 @@ export function createRegistryServer(options: RegistryServerOptions): McpServer 
  * diagnostics go to stderr.
  * @param options - Application directory, default registry, and mode.
  * @returns A promise that resolves once the transport is connected.
+ *
+ * @example
+ * ```ts
+ * startRegistryServer();
+ * ```
  */
 export async function startRegistryServer(options: RegistryServerOptions): Promise<void> {
     await createRegistryHost(options).startStdio('ndigo ui mcp');

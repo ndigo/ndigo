@@ -15,6 +15,14 @@ const INSPECT_HINT =
     'add an "inspect" script that builds and prints the manifest, e.g. "inspect": "tsx src/inspect.ts"';
 
 /** A manifest route, projected from `@ndigo/inspect` v1. */
+/**
+ * AppRoute.
+ *
+ * @example
+ * ```ts
+ * const value = {} as AppRoute;
+ * ```
+ */
 export interface AppRoute {
     /** The route's stable key. */
     readonly name: string;
@@ -23,6 +31,14 @@ export interface AppRoute {
 }
 
 /** A manifest configuration key, projected from `@ndigo/inspect` v1. */
+/**
+ * AppConfigEntry.
+ *
+ * @example
+ * ```ts
+ * const value = {} as AppConfigEntry;
+ * ```
+ */
 export interface AppConfigEntry {
     /** The full environment keypath (e.g. `server.port`). */
     readonly key: string;
@@ -35,6 +51,14 @@ export interface AppConfigEntry {
 }
 
 /** The parts of the `@ndigo/inspect` v1 manifest the CLI consumes. */
+/**
+ * AppManifest.
+ *
+ * @example
+ * ```ts
+ * const value = {} as AppManifest;
+ * ```
+ */
 export interface AppManifest {
     /** The manifest schema version. */
     readonly version: number;
@@ -47,6 +71,14 @@ export interface AppManifest {
 }
 
 /** Per-server application context; the manifest is built once and cached. */
+/**
+ * AppToolContext.
+ *
+ * @example
+ * ```ts
+ * const value = {} as AppToolContext;
+ * ```
+ */
 export interface AppToolContext {
     /** The application directory (absolute). */
     readonly dir: string;
@@ -60,6 +92,11 @@ export interface AppToolContext {
  *
  * @param dir - The application directory (absolute).
  * @returns The context shared by every manifest-derived tool.
+ *
+ * @example
+ * ```ts
+ * createAppToolContext();
+ * ```
  */
 export function createAppToolContext(dir: string): AppToolContext {
     let pending: Promise<AppManifest> | undefined;
@@ -109,6 +146,11 @@ function likeManifest(value: unknown): value is AppManifest {
  *
  * @param context - The application context.
  * @returns The manifest.
+ *
+ * @example
+ * ```ts
+ * getManifest();
+ * ```
  */
 export async function getManifest(context: AppToolContext): Promise<AppManifest> {
     return context.manifest();
@@ -119,6 +161,11 @@ export async function getManifest(context: AppToolContext): Promise<AppManifest>
  *
  * @param context - The application context.
  * @returns The route list.
+ *
+ * @example
+ * ```ts
+ * getRoutes();
+ * ```
  */
 export async function getRoutes(context: AppToolContext): Promise<{ routes: readonly AppRoute[] }> {
     return { routes: (await context.manifest()).routes };
@@ -130,12 +177,25 @@ export async function getRoutes(context: AppToolContext): Promise<{ routes: read
  *
  * @param context - The application context.
  * @returns The value-free configuration entries.
+ *
+ * @example
+ * ```ts
+ * getConfigKeys();
+ * ```
  */
 export async function getConfigKeys(context: AppToolContext): Promise<{ keys: readonly AppConfigEntry[] }> {
     return { keys: (await context.manifest()).config };
 }
 
 /** One section of a best-practice document. */
+/**
+ * PracticeSection.
+ *
+ * @example
+ * ```ts
+ * const value = {} as PracticeSection;
+ * ```
+ */
 export interface PracticeSection {
     /** The `##` heading text. */
     readonly title: string;
@@ -144,6 +204,14 @@ export interface PracticeSection {
 }
 
 /** Request for {@link getBestPractices}. */
+/**
+ * PracticeRequest.
+ *
+ * @example
+ * ```ts
+ * const value = {} as PracticeRequest;
+ * ```
+ */
 export interface PracticeRequest {
     /** Case-insensitive heading filter. Omit for the section index. */
     readonly topic?: string;
@@ -156,6 +224,11 @@ export interface PracticeRequest {
  * @param context - The application context (document discovery starts here).
  * @param request - The optional topic filter.
  * @returns The source paths and selected sections.
+ *
+ * @example
+ * ```ts
+ * getBestPractices();
+ * ```
  */
 export async function getBestPractices(
     context: AppToolContext,
@@ -228,6 +301,11 @@ function sectionsOf(text: string): PracticeSection[] {
  *
  * @param context - The application context.
  * @returns The printable rows, failures, and exit code.
+ *
+ * @example
+ * ```ts
+ * getDiagnostics();
+ * ```
  */
 export async function getDiagnostics(context: AppToolContext) {
     const report = await collectDiagnostics(context.dir);
@@ -240,6 +318,14 @@ export async function getDiagnostics(context: AppToolContext) {
 }
 
 /** Request for {@link getLogs}. */
+/**
+ * LogRequest.
+ *
+ * @example
+ * ```ts
+ * const value = {} as LogRequest;
+ * ```
+ */
 export interface LogRequest {
     /** Log path override (defaults to `<dir>/logs/app.log`). */
     readonly file?: string;
@@ -253,6 +339,11 @@ export interface LogRequest {
  * @param context - The application context.
  * @param request - The path override and line count.
  * @returns The resolved path and retained text.
+ *
+ * @example
+ * ```ts
+ * getLogs();
+ * ```
  */
 export async function getLogs(context: AppToolContext, request: LogRequest = {}) {
     const file = resolveLogFile(context.dir, request.file);
@@ -264,6 +355,14 @@ export async function getLogs(context: AppToolContext, request: LogRequest = {})
 }
 
 /** The app scripts `run_target` can front. */
+/**
+ * AppTarget.
+ *
+ * @example
+ * ```ts
+ * type _Alias = AppTarget;
+ * ```
+ */
 export type AppTarget = 'build' | 'test' | 'lint';
 
 const TARGET_HINTS: Record<AppTarget, string> = {
@@ -279,6 +378,11 @@ const TARGET_HINTS: Record<AppTarget, string> = {
  * @param context - The application context.
  * @param request - The target script to run.
  * @returns The target, its exit code, and captured output.
+ *
+ * @example
+ * ```ts
+ * runTarget();
+ * ```
  */
 export async function runTarget(context: AppToolContext, request: { readonly target: AppTarget }) {
     const result = await captureAppOnce(context.dir, request.target, TARGET_HINTS[request.target]);
@@ -286,6 +390,14 @@ export async function runTarget(context: AppToolContext, request: { readonly tar
 }
 
 /** Request for {@link recordRule}. */
+/**
+ * RuleRequest.
+ *
+ * @example
+ * ```ts
+ * const value = {} as RuleRequest;
+ * ```
+ */
 export interface RuleRequest {
     /** Human-readable rule name; also the source of the file slug. */
     readonly name: string;
@@ -301,6 +413,11 @@ export interface RuleRequest {
  * @param context - The application context.
  * @param request - The rule name, text, and overwrite choice.
  * @returns The written paths relative to the application directory.
+ *
+ * @example
+ * ```ts
+ * recordRule();
+ * ```
  */
 export async function recordRule(context: AppToolContext, request: RuleRequest) {
     const name = request.name.trim();
@@ -343,6 +460,11 @@ function ruleTitle(file: string, fallback: string): string {
  * Lists every installable capability and UI registry item.
  *
  * @returns The compact discovery index.
+ *
+ * @example
+ * ```ts
+ * listCapabilities();
+ * ```
  */
 export function listCapabilities() {
     const entries = listCatalog();
@@ -354,6 +476,11 @@ export function listCapabilities() {
  *
  * @param id - The capability or item id.
  * @returns The full authored record plus its install command, when one exists.
+ *
+ * @example
+ * ```ts
+ * getCapability();
+ * ```
  */
 export function getCapability(id: string) {
     const entry = getCatalogEntry(id);

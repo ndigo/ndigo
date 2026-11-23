@@ -12,6 +12,14 @@ import { isRemoteSource, loadRegistry, normalizeRegistrySource, validateRegistry
 import type { LoadedRegistry, LocatedRegistryItem } from './registry-types.js';
 
 /** Server-wide registry context. */
+/**
+ * RegistryToolContext.
+ *
+ * @example
+ * ```ts
+ * const value = {} as RegistryToolContext;
+ * ```
+ */
 export interface RegistryToolContext {
     /** Application directory used for relative registry paths. */
     readonly dir: string;
@@ -20,6 +28,14 @@ export interface RegistryToolContext {
 }
 
 /** Optional filters for {@link listItems}. */
+/**
+ * ItemFilters.
+ *
+ * @example
+ * ```ts
+ * const value = {} as ItemFilters;
+ * ```
+ */
 export interface ItemFilters {
     /** Exact registry type, e.g. `registry:ui`. */
     readonly type?: string;
@@ -35,6 +51,14 @@ interface Loaded {
 }
 
 /** Request for {@link installItems}. */
+/**
+ * InstallRequest.
+ *
+ * @example
+ * ```ts
+ * const value = {} as InstallRequest;
+ * ```
+ */
 export interface InstallRequest {
     /** Registry item names to install. */
     readonly items: readonly string[];
@@ -55,6 +79,11 @@ export interface InstallRequest {
  * @param context - Registry context.
  * @param filters - Optional filters.
  * @returns The source and compact item records.
+ *
+ * @example
+ * ```ts
+ * listItems();
+ * ```
  */
 export async function listItems(context: RegistryToolContext, filters: ItemFilters & { registry?: string }) {
     const { registry, source } = await loadFor(context, filters.registry);
@@ -69,6 +98,11 @@ export async function listItems(context: RegistryToolContext, filters: ItemFilte
  * @param limit - Maximum results (default 10).
  * @param override - Optional registry source override.
  * @returns Ranked matches.
+ *
+ * @example
+ * ```ts
+ * searchItems();
+ * ```
  */
 export async function searchItems(context: RegistryToolContext, query: string, limit = 10, override?: string) {
     const needle = query.trim().toLowerCase();
@@ -88,6 +122,11 @@ export async function searchItems(context: RegistryToolContext, query: string, l
  * @param context - Registry context.
  * @param request - Item name, optional README switch, and registry override.
  * @returns The item record and README body when available.
+ *
+ * @example
+ * ```ts
+ * getItem();
+ * ```
  */
 export async function getItem(
     context: RegistryToolContext,
@@ -114,6 +153,11 @@ export async function getItem(
  * @param context - Registry context.
  * @param request - Items, target directory, and install flags.
  * @returns The plan and the installer result (a dry run by default).
+ *
+ * @example
+ * ```ts
+ * installItems();
+ * ```
  */
 export async function installItems(context: RegistryToolContext, request: InstallRequest) {
     const dir = resolveAppDir(request.dir ?? context.dir);
@@ -145,6 +189,11 @@ export async function installItems(context: RegistryToolContext, request: Instal
  * @param context - Registry context.
  * @param override - Optional registry source override.
  * @returns Validity, item count, and errors.
+ *
+ * @example
+ * ```ts
+ * validateRegistrySource();
+ * ```
  */
 export async function validateRegistrySource(context: RegistryToolContext, override?: string) {
     const source = registrySourceFor(context.dir, context.registry, override);
@@ -159,6 +208,11 @@ export async function validateRegistrySource(context: RegistryToolContext, overr
  * @param context - Registry context.
  * @param override - Optional registry source override.
  * @returns The registry source, installed item names, and the catalog.
+ *
+ * @example
+ * ```ts
+ * getCatalog();
+ * ```
  */
 export async function getCatalog(context: RegistryToolContext, override?: string) {
     const installed = readInstalledItems(context.dir);

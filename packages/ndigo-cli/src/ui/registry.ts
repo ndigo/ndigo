@@ -13,6 +13,11 @@ import type { LoadedRegistry, LocatedRegistryItem, RegistryChunk, RegistryFile }
  * Reports whether a registry source is an HTTP(S) URL.
  * @param source - Registry source.
  * @returns True for `http://` and `https://`.
+ *
+ * @example
+ * ```ts
+ * isRemoteSource();
+ * ```
  */
 export function isRemoteSource(source: string): boolean {
     return /^https?:\/\//u.test(source);
@@ -68,6 +73,11 @@ function ensureRegistryPathInsideRoot(
  * directory resolves to its `registry.json`.
  * @param source - Registry file, directory, or URL.
  * @returns The normalized source.
+ *
+ * @example
+ * ```ts
+ * normalizeRegistrySource();
+ * ```
  */
 export function normalizeRegistrySource(source: string): string {
     if (isRemoteSource(source)) return source;
@@ -80,6 +90,11 @@ export function normalizeRegistrySource(source: string): string {
  * Loads a registry and every chunk it includes.
  * @param source - Registry file, directory, or URL.
  * @returns The merged registry.
+ *
+ * @example
+ * ```ts
+ * loadRegistry();
+ * ```
  */
 export async function loadRegistry(source: string): Promise<LoadedRegistry> {
     const normalized = normalizeRegistrySource(source);
@@ -93,6 +108,11 @@ export async function loadRegistry(source: string): Promise<LoadedRegistry> {
  * @param item - Item that declared the file.
  * @param file - File entry to read.
  * @returns The file body.
+ *
+ * @example
+ * ```ts
+ * readRegistryFile();
+ * ```
  */
 export async function readRegistryFile(item: LocatedRegistryItem, file: RegistryFile): Promise<string> {
     if (file.content !== undefined) return file.content;
@@ -116,6 +136,11 @@ export async function readRegistryFile(item: LocatedRegistryItem, file: Registry
  * Validates the merged registry shape and local file existence.
  * @param registry - Loaded registry.
  * @returns One message per problem; empty when valid.
+ *
+ * @example
+ * ```ts
+ * validateRegistry();
+ * ```
  */
 export function validateRegistry(registry: LoadedRegistry): string[] {
     const errors: string[] = [];
@@ -141,6 +166,11 @@ export function validateRegistry(registry: LoadedRegistry): string[] {
  * @param registry - Loaded registry.
  * @param names - Requested item names.
  * @returns Items in dependency-first order.
+ *
+ * @example
+ * ```ts
+ * resolveItemClosure();
+ * ```
  */
 export function resolveItemClosure(registry: LoadedRegistry, names: readonly string[]): LocatedRegistryItem[] {
     const byName = new Map(registry.items.map((item) => [item.name, item]));

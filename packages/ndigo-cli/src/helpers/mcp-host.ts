@@ -11,12 +11,36 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
 
 /** A raw tool schema: named zod validators, as the MCP SDK expects. */
+/**
+ * ToolSchema.
+ *
+ * @example
+ * ```ts
+ * type _Alias = ToolSchema;
+ * ```
+ */
 export type ToolSchema = ZodRawShapeCompat;
 
 /** The validated arguments of a tool with schema `Shape`. */
+/**
+ * ToolArguments.
+ *
+ * @example
+ * ```ts
+ * type _Alias = ToolArguments;
+ * ```
+ */
 export type ToolArguments<Shape extends ToolSchema> = ShapeOutput<Shape>;
 
 /** Options for {@link createMcpHost}. */
+/**
+ * McpHostOptions.
+ *
+ * @example
+ * ```ts
+ * const value = {} as McpHostOptions;
+ * ```
+ */
 export interface McpHostOptions {
     /** Server name reported to clients. */
     readonly name: string;
@@ -29,6 +53,14 @@ export interface McpHostOptions {
 }
 
 /** One tool registered on an {@link McpHost}. */
+/**
+ * McpToolDefinition.
+ *
+ * @example
+ * ```ts
+ * const value = {} as McpToolDefinition;
+ * ```
+ */
 export interface McpToolDefinition<Shape extends ToolSchema = ToolSchema> {
     /** Stable tool name (snake_case). */
     readonly name: string;
@@ -47,6 +79,14 @@ export interface McpToolDefinition<Shape extends ToolSchema = ToolSchema> {
 }
 
 /** A configured MCP server plus registration and stdio helpers. */
+/**
+ * McpHost.
+ *
+ * @example
+ * ```ts
+ * const value = {} as McpHost;
+ * ```
+ */
 export interface McpHost {
     /** The underlying server, for tests and advanced wiring. */
     readonly server: McpServer;

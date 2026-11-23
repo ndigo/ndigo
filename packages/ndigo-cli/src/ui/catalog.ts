@@ -19,6 +19,14 @@ export const CATALOG_PROTOCOL_VERSION = '1.0';
 export const CATALOG_ID = 'ndigo-ui';
 
 /** One component definition in the A2UI catalog. */
+/**
+ * A2uiComponentDescriptor.
+ *
+ * @example
+ * ```ts
+ * const value = {} as A2uiComponentDescriptor;
+ * ```
+ */
 export interface A2uiComponentDescriptor {
     /** Every A2UI component is a JSON object. */
     readonly type: 'object';
@@ -37,6 +45,14 @@ export interface A2uiComponentDescriptor {
 }
 
 /** The A2UI catalog document. */
+/**
+ * A2uiCatalog.
+ *
+ * @example
+ * ```ts
+ * const value = {} as A2uiCatalog;
+ * ```
+ */
 export interface A2uiCatalog {
     /** JSON Schema dialect. */
     readonly $schema: string;
@@ -60,6 +76,11 @@ export interface A2uiCatalog {
  *
  * @param dir - Application directory.
  * @returns The installed item names, sorted.
+ *
+ * @example
+ * ```ts
+ * readInstalledItems();
+ * ```
  */
 export function readInstalledItems(dir: string): string[] {
     return Object.keys(readLock(dir).items).sort();
@@ -70,6 +91,11 @@ export function readInstalledItems(dir: string): string[] {
  *
  * @param dir - Application directory.
  * @returns The first recorded registry source, or `undefined`.
+ *
+ * @example
+ * ```ts
+ * readInstalledRegistry();
+ * ```
  */
 export function readInstalledRegistry(dir: string): string | undefined {
     const values = Object.values(readLock(dir).items);
@@ -117,6 +143,11 @@ function readLock(dir: string): LockShape {
  * @param registry - The loaded registry.
  * @param installed - Item names from `ui.lock.json`.
  * @returns The catalog document.
+ *
+ * @example
+ * ```ts
+ * buildCatalog();
+ * ```
  */
 export function buildCatalog(registry: LoadedRegistry, installed: readonly string[]): A2uiCatalog {
     const byName = new Map(registry.items.map((item) => [item.name, item]));

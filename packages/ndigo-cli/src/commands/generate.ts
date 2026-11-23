@@ -27,6 +27,11 @@ const GENERATOR_KINDS = [
  * surface (BLK-3): `ndigo generate component --name x --package y` (and
  * `ndigo generate header --file z`) must reach Nx — forwarding only `--name`
  * left component/header un-runnable when their required fields were missing.
+ *
+ * @example
+ * ```ts
+ * const value = {} as GenerateFlags;
+ * ```
  */
 export interface GenerateFlags {
     /** The generated symbol or package name. */

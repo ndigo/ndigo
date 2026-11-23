@@ -6,7 +6,8 @@ import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
 import { resolveAliases, resolveRegistrySource, resolveTargetPath, writeUiConfig } from '../src/ui/config.js';
-import { applyInstall, detectPackageManager, planInstall } from '../src/ui/install.js';
+import { applyInstall, planInstall } from '../src/ui/install.js';
+import { detectPackageManager } from '../src/helpers/package-manager.js';
 import { loadRegistry } from '../src/ui/registry.js';
 import { createRegistryFixture } from './_ui-registry-fixture.js';
 

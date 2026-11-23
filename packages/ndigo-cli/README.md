@@ -48,11 +48,11 @@ ndigo serve --cluster 4 --port 3000   # 4 replicated worker slots
 
 ### Scaffolding and generators
 
-| Command                 | What it does                                                                                             |
-| :---------------------- | :------------------------------------------------------------------------------------------------------- |
-| `ndigo new <name>`      | Scaffolds an app into `apps/` (`--kind`, `--preset`, `--port`, `--number`, `--description`, `--dryRun`). |
-| `ndigo generate <kind>` | Fronts `@ndigo/generators` via Nx (alias `ndigo g`; see below).                                          |
-| `ndigo add <package>`   | Installs an `@ndigo/*` package and runs its setup generator.                                             |
+| Command                  | What it does                                                                                             |
+| :----------------------- | :------------------------------------------------------------------------------------------------------- |
+| `ndigo new <name>`       | Scaffolds an app into `apps/` (`--kind`, `--preset`, `--port`, `--number`, `--description`, `--dryRun`). |
+| `ndigo generate <kind>`  | Fronts `@ndigo/generators` via Nx (alias `ndigo g`; see below).                                          |
+| `ndigo add <capability>` | Plans a catalog capability; `--apply` writes the wiring (`--var`, `--force`, `--skipInstall`).           |
 
 `generate` kinds: `package`, `component`, `readme`, `header`, `controller`,
 `service`, `entity`, `middleware`, `config`, `migration`.

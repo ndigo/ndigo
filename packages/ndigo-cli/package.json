@@ -45,8 +45,14 @@
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@ndigo/boot": "~0.0.1",
+    "@ndigo/context": "~0.0.1",
+    "@ndigo/dispatcher": "~0.0.1",
+    "@ndigo/inspect": "~0.0.1",
     "@ndigo/orm-drizzle": "~0.0.1",
-    "@ndigo/oxlint-plugin": "~0.0.1"
+    "@ndigo/oxlint-plugin": "~0.0.1",
+    "@ndigo/platform-node": "~0.0.1",
+    "@tsmetadata/polyfill": "catalog:"
   },
   "sideEffects": false
 }

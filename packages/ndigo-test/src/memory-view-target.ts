@@ -7,6 +7,11 @@ import { ViewTarget } from '@ndigo/view';
 /**
  * A captured render: the output element, the model it was rendered with, and
  * the route that produced it.
+ *
+ * @example
+ * ```ts
+ * const value = {} as CapturedRender;
+ * ```
  */
 export interface CapturedRender {
     /** The rendered output (typically an `HTMLElement` created by the engine). */
@@ -19,6 +24,11 @@ export interface CapturedRender {
 
 /**
  * Captures rendered view output instead of mounting it into a DOM container.
+ *
+ * @example
+ * ```ts
+ * const instance = new MemoryViewTarget();
+ * ```
  */
 export class MemoryViewTarget implements ViewTarget {
     /**

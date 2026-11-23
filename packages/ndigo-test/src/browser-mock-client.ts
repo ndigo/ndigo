@@ -18,6 +18,11 @@ import { MemoryViewTarget, CapturedRender } from './memory-view-target';
 
 /**
  * A browser application booted for in-process dispatch.
+ *
+ * @example
+ * ```ts
+ * const value = {} as BrowserTestApp;
+ * ```
  */
 export interface BrowserTestApp {
     /** The browser application context. */
@@ -121,6 +126,11 @@ function isConfiguration(source: Function): boolean {
  * when a targeter matches, the render goes there and the capture target stays
  * empty — assert that destination, or render a result that carries an explicit
  * `ModelAndView.viewTarget`.
+ *
+ * @example
+ * ```ts
+ * const instance = new MockWebClient();
+ * ```
  */
 export class MockWebClient {
     /**

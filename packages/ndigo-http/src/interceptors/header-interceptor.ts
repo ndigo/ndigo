@@ -6,6 +6,11 @@ import * as HTTPHeaders from '../http-headers';
 
 /**
  * Configuration options for the HeaderInterceptor.
+ *
+ * @example
+ * ```ts
+ * const value = {} as HeaderInterceptorConfig;
+ * ```
  */
 export interface HeaderInterceptorConfig {
     /**
@@ -30,6 +35,11 @@ export interface HeaderInterceptorConfig {
  * adds CSRF tokens, channel IDs, and request IDs to the request headers.
  *
 
+ *
+ * @example
+ * ```ts
+ * const instance = new HeaderInterceptor();
+ * ```
  */
 export class HeaderInterceptor implements RequestAwareHTTPInterceptor {
     /**

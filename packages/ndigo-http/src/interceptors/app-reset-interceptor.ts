@@ -5,6 +5,11 @@ import { HTTPInit, ResponseAwareHTTPInterceptor } from '../http';
 
 /**
  * Extends HTTP initialization with app-reset response handling options.
+ *
+ * @example
+ * ```ts
+ * type _Alias = AppResetInit;
+ * ```
  */
 export type AppResetInit = HTTPInit & {
     /**
@@ -35,6 +40,11 @@ const defaults: AppResetInit = {
  * - The hostname is not 'localhost'
  *
 
+ *
+ * @example
+ * ```ts
+ * const instance = new AppResetInterceptor();
+ * ```
  */
 export class AppResetInterceptor implements ResponseAwareHTTPInterceptor<AppResetInit> {
     /**

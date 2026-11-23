@@ -5,6 +5,11 @@ import { HTTPInit, ResponseAwareHTTPInterceptor, rebuildResponse } from '../http
 
 /**
  * Configuration options for the StatusInterceptor.
+ *
+ * @example
+ * ```ts
+ * const value = {} as StatusInterceptorConfig;
+ * ```
  */
 export interface StatusInterceptorConfig {
     /**
@@ -29,6 +34,11 @@ export interface StatusInterceptorConfig {
  * application to handle responses without relying on numeric HTTP codes.
  *
 
+ *
+ * @example
+ * ```ts
+ * const instance = new StatusInterceptor();
+ * ```
  */
 export class StatusInterceptor implements ResponseAwareHTTPInterceptor {
     /**

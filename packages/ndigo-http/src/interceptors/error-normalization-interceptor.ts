@@ -8,6 +8,11 @@ const { defineProperty } = Reflect;
 
 /**
  * Configuration options for the ErrorNormalizationInterceptor.
+ *
+ * @example
+ * ```ts
+ * const value = {} as ErrorNormalizationInterceptorConfig;
+ * ```
  */
 export interface ErrorNormalizationInterceptorConfig {
     /**
@@ -24,6 +29,11 @@ export interface ErrorNormalizationInterceptorConfig {
  * responses are normalized into a consistent format for the application.
  *
 
+ *
+ * @example
+ * ```ts
+ * const instance = new ErrorNormalizationInterceptor();
+ * ```
  */
 export class ErrorNormalizationInterceptor implements ResponseAwareHTTPInterceptor, ErrorAwareHTTPInterceptor {
     /**

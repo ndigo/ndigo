@@ -8,10 +8,20 @@ import { likeIterable, entriesIterator } from '@ndigo/core';
 
 /**
  * Body value accepted by {@link DataParameterInterceptor}.
+ *
+ * @example
+ * ```ts
+ * type _Alias = DataInit;
+ * ```
  */
 export type DataInit = BodyInit; // | JSONObject;
 /**
  * Request settings for {@link DataParameterInterceptor}.
+ *
+ * @example
+ * ```ts
+ * type _Alias = DataParameterInit;
+ * ```
  */
 export type DataParameterInit = HTTPInit & { data?: DataInit };
 
@@ -67,6 +77,11 @@ const getEntries = (data: DataInit) => entriesIterator(isString(data) ? QueryStr
 
 /**
  * Moves `data` into the URL for bodyless methods and into `body` otherwise.
+ *
+ * @example
+ * ```ts
+ * const instance = new DataParameterInterceptor();
+ * ```
  */
 export class DataParameterInterceptor implements InitializationAwareHTTPInterceptor<DataParameterInit> {
     /**

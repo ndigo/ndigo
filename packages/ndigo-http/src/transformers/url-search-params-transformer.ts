@@ -5,6 +5,11 @@ import { HTTPTransformer, TransformContext } from './http-transformer';
 
 /**
  * Transforms a single URLSearchParams entry.
+ *
+ * @example
+ * ```ts
+ * type _Alias = URLSearchParamsEntryTransform;
+ * ```
  */
 export type URLSearchParamsEntryTransform = (key: string, value: string) => [string, string] | null;
 

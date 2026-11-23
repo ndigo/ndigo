@@ -73,6 +73,11 @@ export interface HTTPTransformer<TInput = unknown, TOutput = unknown> {
 
 /**
  * User-provided transform function or transformer object.
+ *
+ * @example
+ * ```ts
+ * type _Alias = Transform;
+ * ```
  */
 export type Transform<TInput = unknown, TOutput = unknown> =
     | HTTPTransformer<TInput, TOutput>

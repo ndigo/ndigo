@@ -11,6 +11,11 @@ import * as HTTPHeaders from '../http-headers';
  *
  * It runs after header setup so transforms can rely on the declared content
  * type and other request context.
+ *
+ * @example
+ * ```ts
+ * const instance = new TransformInterceptor();
+ * ```
  */
 export class TransformInterceptor implements RequestAwareHTTPInterceptor, ResponseAwareHTTPInterceptor {
     /**

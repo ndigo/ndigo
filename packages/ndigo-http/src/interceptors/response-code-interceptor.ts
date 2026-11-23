@@ -9,6 +9,11 @@ import { HTTPInit, ResponseAwareHTTPInterceptor } from '../http';
 
 /**
  * Hooks keyed by exact HTTP status code.
+ *
+ * @example
+ * ```ts
+ * const value = {} as ResponseCodeAwareHTTPInterceptor;
+ * ```
  */
 export interface ResponseCodeAwareHTTPInterceptor {
     [statusCode: number]: (response: Response, settings: HTTPInit) => Promise<void>;
@@ -20,6 +25,11 @@ export interface ResponseCodeAwareHTTPInterceptor {
 
 /**
  * Dispatches response hooks based on the numeric status code.
+ *
+ * @example
+ * ```ts
+ * const instance = new MappedResponseCodeHTTPInterceptor();
+ * ```
  */
 export class MappedResponseCodeHTTPInterceptor implements ResponseAwareHTTPInterceptor {
     /**

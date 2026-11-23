@@ -7,11 +7,21 @@ import { CONTENT_TYPE } from '../http-headers';
 
 /**
  * Request settings for {@link ContentTypeInterceptor}.
+ *
+ * @example
+ * ```ts
+ * type _Alias = ContentTypeInit;
+ * ```
  */
 export type ContentTypeInit = HTTPInit & { contentType?: string | MediaType };
 
 /**
  * Adds a `Content-Type` header when request settings provide one.
+ *
+ * @example
+ * ```ts
+ * const instance = new ContentTypeInterceptor();
+ * ```
  */
 export class ContentTypeInterceptor implements InitializationAwareHTTPInterceptor<ContentTypeInit> {
     /**

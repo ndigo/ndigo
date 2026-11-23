@@ -14,6 +14,11 @@ import { REQUEST_TIMEOUT } from '../response-statuses';
 
 /**
  * Request settings for {@link TimeoutInterceptor}.
+ *
+ * @example
+ * ```ts
+ * type _Alias = TimeoutInit;
+ * ```
  */
 export type TimeoutInit = HTTPInit & { timeout?: number };
 
@@ -75,6 +80,11 @@ function composeSignals(caller: AbortSignal | null | undefined, timeout: AbortSi
  * only this interceptor's own timer yields a 408. Transport failures (DNS,
  * TLS, CORS, TypeError) fall through to other error-aware interceptors or
  * propagate to the caller.
+ *
+ * @example
+ * ```ts
+ * const instance = new TimeoutInterceptor();
+ * ```
  */
 export class TimeoutInterceptor
     implements

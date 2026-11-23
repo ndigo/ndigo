@@ -35,6 +35,11 @@ export const { assign, freeze } = Object,
  * @param body - The replacement body.
  * @param headers - Replacement headers; defaults to the source's headers.
  * @returns The rebuilt response with its metadata re-attached.
+ *
+ * @example
+ * ```ts
+ * rebuildResponse();
+ * ```
  */
 export function rebuildResponse(source: Response, body: BodyInit | null, headers?: Headers): Response {
     const rebuiltHeaders = new Headers(headers ?? source.headers);

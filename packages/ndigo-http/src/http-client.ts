@@ -431,6 +431,11 @@ export class HTTP {
 
 /**
  * Marks an object that can receive an {@link HTTP} client.
+ *
+ * @example
+ * ```ts
+ * const value = {} as HTTPAware;
+ * ```
  */
 export interface HTTPAware extends Aware {
     /**

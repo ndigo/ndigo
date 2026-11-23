@@ -6,6 +6,11 @@ import { ResponseError } from '../response-error';
 
 /**
  * Throws a {@link ResponseError} when the response status is outside 200-299.
+ *
+ * @example
+ * ```ts
+ * const instance = new NotOKInterceptor();
+ * ```
  */
 export class NotOKInterceptor implements ResponseAwareHTTPInterceptor {
     /**

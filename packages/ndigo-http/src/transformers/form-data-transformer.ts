@@ -5,6 +5,11 @@ import { HTTPTransformer, TransformContext } from './http-transformer';
 
 /**
  * Transforms a single `FormData` entry.
+ *
+ * @example
+ * ```ts
+ * type _Alias = FormDataEntryTransform;
+ * ```
  */
 export type FormDataEntryTransform = (key: string, value: FormDataEntryValue) => [string, FormDataEntryValue] | null;
 

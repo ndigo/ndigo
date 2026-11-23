@@ -9,21 +9,41 @@ import { ResponseError } from '../response-error';
 
 /**
  * Resolved parser that reads a response body into typed data.
+ *
+ * @example
+ * ```ts
+ * type _Alias = ResponseBodyParser;
+ * ```
  */
 export type ResponseBodyParser<T = unknown> = (response: Response) => Promise<T>;
 
 /**
  * Factory that produces a parser for a specific media type.
+ *
+ * @example
+ * ```ts
+ * type _Alias = ResponseParser;
+ * ```
  */
 export type ResponseParser<T = unknown> = (mediaType: string) => ResponseBodyParser<T>;
 
 /**
  * Map of media types to response parsers.
+ *
+ * @example
+ * ```ts
+ * type _Alias = ResponseParserMap;
+ * ```
  */
 export type ResponseParserMap = Map<MediaType, ResponseParser>;
 
 /**
  * Supported parser collections accepted by {@link ResponseTypeInterceptor}.
+ *
+ * @example
+ * ```ts
+ * type _Alias = ResponseParsers;
+ * ```
  */
 export type ResponseParsers =
     | ResponseParserMap
@@ -32,6 +52,11 @@ export type ResponseParsers =
 
 /**
  * Request settings for {@link ResponseTypeInterceptor}.
+ *
+ * @example
+ * ```ts
+ * type _Alias = ResponseTypeInit;
+ * ```
  */
 export type ResponseTypeInit = HTTPInit & {
     responseParsers?: ResponseParsers;
@@ -40,6 +65,11 @@ export type ResponseTypeInit = HTTPInit & {
 
 /**
  * Normalized request settings used after initialization.
+ *
+ * @example
+ * ```ts
+ * type _Alias = ResponseTypeSettings;
+ * ```
  */
 export type ResponseTypeSettings = HTTPInit & { responseParsers: ResponseParserMap; responseType: MediaType | true };
 
@@ -93,6 +123,11 @@ addDefaultParser(MediaTypes.TEXT_XML, markupParser);
 
 /**
  * Parses response bodies into typed data and attaches the result as `data`.
+ *
+ * @example
+ * ```ts
+ * const instance = new ResponseTypeInterceptor();
+ * ```
  */
 export class ResponseTypeInterceptor
     implements InitializationAwareHTTPInterceptor<ResponseTypeInit>, ResponseAwareHTTPInterceptor<ResponseTypeSettings>

@@ -7,15 +7,25 @@ description: Scaffolds, runs, configures, and updates a Ndigo application. Use w
 
 ## Decision table
 
-| Goal               | Command                                     |
-| :----------------- | :------------------------------------------ |
-| New app            | `ndigo new <name> --preset api`             |
-| Run locally        | `ndigo dev [dir]`                           |
-| Run supervised     | `ndigo serve [dir] --port 3000 --cluster 2` |
-| Env template check | `ndigo env [dir] --file .env.example`       |
-| Config values      | `ndigo config get\|set\|list`               |
-| Package versions   | `ndigo update [dir] --check`                |
-| Environment health | `ndigo doctor`                              |
+| Goal                   | Command                                     |
+| :--------------------- | :------------------------------------------ |
+| New app                | `ndigo new <name> --preset api`             |
+| Run locally            | `ndigo dev [dir]`                           |
+| Run supervised         | `ndigo serve [dir] --port 3000 --cluster 2` |
+| Env template check     | `ndigo env [dir] --file .env.example`       |
+| Config values          | `ndigo config get\|set\|list`               |
+| Package versions       | `ndigo update [dir] --check`                |
+| Environment health     | `ndigo doctor`                              |
+| Available capabilities | `ndigo capabilities --json`                 |
+| Install a capability   | `ndigo add <capability>` (plan); `--apply`  |
+
+## Capabilities
+
+A capability is the installable unit of behaviour: one or more packages plus
+wiring, files, and checks. `ndigo capabilities get <id> --json` is the fact
+source for what it installs, which variables it needs, and what it will write.
+`ndigo add <id>` prints the plan; `--apply` writes it; a second run is a no-op.
+
 
 ## The script contract
 

@@ -113,8 +113,8 @@ the reference app is [apps/21-ndigo-agent-lab](apps/21-ndigo-agent-lab/README.md
 #### Use your AI coding agent
 
 `ndigo ai:init` writes the version-matched agent context into an application:
-the managed `AGENTS.md` block, nine skills under `.agents/skills/`, and the
-Ndigo MCP server when run with `--mcp`. `ndigo ai:check` exits `1` when the
+the managed `AGENTS.md` block, the shipped skills under `.agents/skills/`, and
+the Ndigo MCP server when run with `--mcp`. `ndigo ai:check` exits `1` when the
 context is stale; `ndigo ai:update` refreshes it after a framework upgrade.
 Scaffolded apps already point their `AGENTS.md` at `ndigo ai:init`, and every
 `@ndigo/*` package ships a version-matched export index at

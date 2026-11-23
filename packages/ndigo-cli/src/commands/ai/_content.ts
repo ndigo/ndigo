@@ -34,7 +34,7 @@ export interface AgentContent {
     readonly instructions: string;
     /** Compressed docs index. */
     readonly docsIndex: string;
-    /** The nine skills. */
+    /** The shipped skills. */
     readonly skills: readonly SkillContent[];
 }
 

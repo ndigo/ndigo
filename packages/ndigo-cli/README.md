@@ -119,7 +119,7 @@ capability catalog (`list_capabilities`, `get_capability`).
 `run_target` (build/test/lint) and `record_rule` (`.ndigo/rules/`) are omitted
 under `--readOnly`; `--live` delegates to the application's own `scripts.mcp`.
 
-`ndigo ai:init [dir]` writes the managed `AGENTS.md` block and nine skills under
+`ndigo ai:init [dir]` writes the managed `AGENTS.md` block and the shipped skills under
 `.agents/skills/`; `--mcp` also merges the `ndigo` server into `.mcp.json`.
 `ndigo ai:check` exits `1` on stale content; `ndigo ai:update` refreshes it, and
 `--force` replaces drifted generated files.

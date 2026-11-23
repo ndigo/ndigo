@@ -24,7 +24,8 @@
   "files": [
     "api",
     "docs",
-    "lib"
+    "lib",
+    "skills"
   ],
   "exports": {
     ".": {

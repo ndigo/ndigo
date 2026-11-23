@@ -24,6 +24,11 @@ const REPORTED = new WeakSet<Function>();
  *
  * @param targetType - The declaring class.
  * @returns The member-scoped metadata keys.
+ *
+ * @example
+ * ```ts
+ * annotatedMembers();
+ * ```
  */
 export function annotatedMembers(targetType: Function): readonly string[] {
     const metadata = getSymbolMetadata(targetType);

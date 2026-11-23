@@ -29,6 +29,11 @@ import { createAdviceWrapper } from './wrapper';
  * @param target - The instance the wrappers execute against.
  * @param plans - The compiled per-method plans.
  * @returns A proxy over `target`.
+ *
+ * @example
+ * ```ts
+ * weaveMethodProxy();
+ * ```
  */
 export function weaveMethodProxy(target: object, plans: readonly MethodInterceptorPlan[]): object {
     const byName = new Map<string, MethodInterceptorPlan>();

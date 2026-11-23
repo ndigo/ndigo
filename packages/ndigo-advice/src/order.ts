@@ -50,5 +50,10 @@ export const DEFAULT_ADVICE_ORDER: number = AdviceOrder.Application;
 
 /**
  * The conventional order band values.
+ *
+ * @example
+ * ```ts
+ * type _Alias = AdviceOrderBand;
+ * ```
  */
 export type AdviceOrderBand = (typeof AdviceOrder)[keyof typeof AdviceOrder];

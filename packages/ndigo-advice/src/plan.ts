@@ -12,6 +12,11 @@ import {
 
 /**
  * One method with the advice that runs around it, fixed at weave time.
+ *
+ * @example
+ * ```ts
+ * const value = {} as MethodInterceptorPlan;
+ * ```
  */
 export interface MethodInterceptorPlan {
     /** The method's static descriptor. */

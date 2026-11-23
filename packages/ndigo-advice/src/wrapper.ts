@@ -19,6 +19,11 @@
  * @param declared - The function the instance would call without advice.
  * @param invoke - Runs the chain and returns its result.
  * @returns A wrapper that is introspectively identical to `declared`.
+ *
+ * @example
+ * ```ts
+ * createAdviceWrapper();
+ * ```
  */
 export function createAdviceWrapper(declared: Function, invoke: (...args: unknown[]) => unknown): Function {
     // `name` and `length` are configurable own properties of functions, so both

@@ -36,6 +36,11 @@ import type { MethodInvocation } from './interceptor';
  * - `proxy` — a `Proxy` stands in for the instance; identity is *not*
  *   preserved and self-invocation bypasses advice.
  * - `none` — nothing matched, the instance was returned unchanged.
+ *
+ * @example
+ * ```ts
+ * type _Alias = AdviceStrategy;
+ * ```
  */
 export type AdviceStrategy = 'shadow' | 'proxy' | 'none';
 
@@ -52,6 +57,11 @@ const SHADOW_WOVEN = new WeakSet<object>();
  *
  * @param instance - The object to inspect.
  * @returns The method surface, or `undefined` when there is none.
+ *
+ * @example
+ * ```ts
+ * methodSurfaceOf();
+ * ```
  */
 export function methodSurfaceOf(instance: object): object | undefined {
     if (typeof instance !== 'function') {
@@ -68,6 +78,11 @@ export function methodSurfaceOf(instance: object): object | undefined {
  *
  * @param instance - The object to inspect.
  * @returns The declaring constructor.
+ *
+ * @example
+ * ```ts
+ * targetTypeOf();
+ * ```
  */
 export function targetTypeOf(instance: object): Function {
     if (typeof instance === 'function') {
@@ -83,6 +98,11 @@ export function targetTypeOf(instance: object): Function {
  *
  * @param instance - The object to describe.
  * @returns The entry name.
+ *
+ * @example
+ * ```ts
+ * entryNameOf();
+ * ```
  */
 export function entryNameOf(instance: object): string {
     const name = targetTypeOf(instance).name;
@@ -95,6 +115,11 @@ export function entryNameOf(instance: object): string {
  *
  * @param instance - The instance or prototype to enumerate.
  * @returns The method names, in discovery order.
+ *
+ * @example
+ * ```ts
+ * enumerateMethodNames();
+ * ```
  */
 export function enumerateMethodNames(instance: object): readonly string[] {
     const surface = methodSurfaceOf(instance);
@@ -163,6 +188,11 @@ export function shadowObstacle(instance: object, methodNames: readonly PropertyK
  *
  * @param instance - The object to inspect.
  * @returns `true` when this module already installed wrappers on it.
+ *
+ * @example
+ * ```ts
+ * isShadowWoven();
+ * ```
  */
 export function isShadowWoven(instance: object): boolean {
     return SHADOW_WOVEN.has(instance);

@@ -15,6 +15,11 @@ export type { AnnotationKey, ClassAnnotationKey, MethodAnnotationKey } from '@nd
 
 /**
  * Static description of one managed method, shared by all of its calls.
+ *
+ * @example
+ * ```ts
+ * const value = {} as MethodDescriptor;
+ * ```
  */
 export interface MethodDescriptor {
     /**
@@ -49,6 +54,11 @@ export interface MethodDescriptor {
 /**
  * One managed call: the {@link MethodDescriptor} plus the receiver and the
  * arguments for this invocation.
+ *
+ * @example
+ * ```ts
+ * const value = {} as MethodInvocation;
+ * ```
  */
 export interface MethodInvocation extends MethodDescriptor {
     /**
@@ -66,6 +76,11 @@ export interface MethodInvocation extends MethodDescriptor {
  * A unit of cross-cutting policy: it runs around a matched call.
  *
  * An interceptor never decides *where* it applies — that is the rule's job.
+ *
+ * @example
+ * ```ts
+ * const value = {} as MethodInterceptor;
+ * ```
  */
 export interface MethodInterceptor {
     /**

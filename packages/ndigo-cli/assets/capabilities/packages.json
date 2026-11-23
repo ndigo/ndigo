@@ -1,0 +1,37 @@
+{
+  "packages": [
+    {
+      "name": "@ndigo/ai",
+      "description": "Provider-agnostic agent contracts: chat messages, streaming events, structured output, and a tool-calling loop over MCP tools",
+      "capabilities": [
+        "agent-model"
+      ],
+      "surfaces": [
+        "agent-loop",
+        "streaming-events",
+        "structured-output"
+      ]
+    },
+    {
+      "name": "@ndigo/ai-sdk",
+      "description": "AI SDK integration layer for Ndigo: the only package that imports the Vercel AI SDK",
+      "capabilities": [
+        "agent-model"
+      ],
+      "surfaces": [
+        "model-adapter"
+      ]
+    },
+    {
+      "name": "@ndigo/mcp",
+      "description": "Model Context Protocol tools projected from Ndigo dispatch metadata",
+      "capabilities": [
+        "agent-surface"
+      ],
+      "surfaces": [
+        "mcp-server",
+        "tool-registry"
+      ]
+    }
+  ]
+}

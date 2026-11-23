@@ -47,7 +47,7 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `likeHierarchicalFactory` — Determines whether or not the `value` provided is HierarchicalFactory.
 - `likeConfigurableFactory` — Determines whether or not the `value` provided is ConfigurableFactory.
 - `AbstractFactory` — An abstract base class for implementing a ConfigurableFactory and ScopedFactory.
-- `DefaultFactory`
+- `DefaultFactory` — Default AbstractFactory implementation with no extra behavior.
 - `ProxiedFactory` — A factory that uses a Proxy to allow direct property access for value manipulation.
 - `Destroyable` *(type)* — A value whose resources are released permanently.
 - `AsyncDestroyable` *(type)* — A Destroyable whose destruction is asynchronous.

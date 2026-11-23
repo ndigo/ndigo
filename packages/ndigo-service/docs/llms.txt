@@ -9,7 +9,7 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 
 ## Public exports
 
-- `MappedServiceInterceptor` — Wraps an interceptor so it only applies to matching request paths.
+- `MappedServiceInterceptor`
 - `ServiceExecutionChain` — Builds and advances the interceptor chain for a service call.
 - `likeCompletionAwareServiceInterceptor` — Tests whether a value provides completion-aware interceptor behavior.
 - `likeErrorAwareServiceInterceptor` — Tests whether a value provides failure-aware interceptor behavior.

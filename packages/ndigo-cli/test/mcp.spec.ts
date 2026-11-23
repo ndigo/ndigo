@@ -104,11 +104,13 @@ describe('ndigo mcp', () => {
         const client = await connect({ dir: createApp() });
         expect(await toolNames(client)).toEqual([
             'get_best_practices',
+            'get_capability',
             'get_commands',
             'get_config_keys',
             'get_logs',
             'get_manifest',
             'get_routes',
+            'list_capabilities',
             'record_rule',
             'run_doctor',
             'run_target',
@@ -131,6 +133,23 @@ describe('ndigo mcp', () => {
         expect(await call(client, 'get_config_keys', {})).toEqual({ keys: MANIFEST.config });
     });
 
+    it('serves the capability catalog read-only', async () => {
+        const client = await connect({ dir: createApp(), readOnly: true });
+        const index = (await call(client, 'list_capabilities', {})) as {
+            count: number;
+            entries: { id: string; kind: string }[];
+        };
+        expect(index.count).toBe(index.entries.length);
+        expect(index.entries.find((entry) => entry.id === 'agent-surface')?.kind).toBe('capability');
+
+        const surface = (await call(client, 'get_capability', { id: 'agent-surface' })) as {
+            packages: string[];
+            ops: { op: string }[];
+        };
+        expect(surface.packages).toEqual(['@ndigo/mcp']);
+        expect(surface.ops.map((op) => op.op)).toContain('addDependency');
+    });
+
     it('returns the command index through get_commands', async () => {
         buildCliApp();
         const client = await connect({ dir: createApp() });
@@ -138,6 +157,7 @@ describe('ndigo mcp', () => {
             commands: { command: string; flags: { name: string }[]; positionals: { name: string }[] }[];
         };
         expect(index.commands.map((entry) => entry.command)).toContain('commands');
+        expect(index.commands.map((entry) => entry.command)).toContain('capabilities');
         const mcp = index.commands.find((entry) => entry.command === 'mcp');
         expect(mcp?.flags.map((flag) => flag.name)).toEqual(['readOnly', 'live']);
         expect(mcp?.positionals.map((positional) => positional.name)).toEqual(['dir']);

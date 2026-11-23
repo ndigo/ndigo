@@ -1,0 +1,467 @@
+{
+  "items": [
+    {
+      "kind": "item",
+      "id": "a2ui-surface",
+      "type": "registry:ui",
+      "title": "A2UI surface",
+      "summary": "Renders A2UI 1.0 surfaces with the installed ndigo-ui custom elements.",
+      "categories": [
+        "agent",
+        "behaviour",
+        "ui"
+      ]
+    },
+    {
+      "kind": "item",
+      "id": "accordion",
+      "type": "registry:ui",
+      "title": "Accordion",
+      "summary": "Expandable items with single/multiple and collapsible modes.",
+      "categories": [
+        "behaviour",
+        "ui"
+      ]
+    },
+    {
+      "kind": "item",
+      "id": "alert",
+      "type": "registry:ui",
+      "title": "Alert",
+      "summary": "Inline status message with info, success, warning, and danger variants.",
+      "categories": [
+        "feedback",
+        "ui"
+      ]
+    },
+    {
+      "kind": "item",
+      "id": "app-shell",
+      "type": "registry:block",
+      "title": "App shell",
+      "summary": "Responsive application frame with a skip link, banner, primary nav, sidebar, main landmark, and footer.",
+      "categories": [
+        "block",
+        "layout"
+      ]
+    },
+    {
+      "kind": "item",
+      "id": "aspect-ratio",
+      "type": "registry:ui",
+      "title": "Aspect ratio",
+      "summary": "Fixed-ratio media frame that reserves space before loading.",
+      "categories": [
+        "layout",
+        "ui"
+      ]
+    },
+    {
+      "kind": "item",
+      "id": "badge",
+      "type": "registry:ui",
+      "title": "Badge",
+      "summary": "Compact status label with neutral, accent, and semantic variants.",
+      "categories": [
+        "feedback",
+        "ui"
+      ]
+    },
+    {
+      "kind": "item",
+      "id": "breadcrumb",
+      "type": "registry:ui",
+      "title": "Breadcrumb",
+      "summary": "Hierarchical page trail with links and a current-page marker.",
+      "categories": [
+        "navigation",
+        "ui"
+      ]
+    },
+    {
+      "kind": "item",
+      "id": "button",
+      "type": "registry:ui",
+      "title": "Button",
+      "summary": "Native-first button styles with variants and sizes; no runtime and no custom element.",
+      "categories": [
+        "form",
+        "ui"
+      ]
+    },
+    {
+      "kind": "item",
+      "id": "card",
+      "type": "registry:ui",
+      "title": "Card",
+      "summary": "Content surface with media, header, content, and footer parts.",
+      "categories": [
+        "layout",
+        "ui"
+      ]
+    },
+    {
+      "kind": "item",
+      "id": "checkbox",
+      "type": "registry:ui",
+      "title": "Checkbox and radio",
+      "summary": "Native checkboxes and radios with the brand accent, focus, and choice-group layout.",
+      "categories": [
+        "form",
+        "ui"
+      ]
+    },
+    {
+      "kind": "item",
+      "id": "code-block",
+      "type": "registry:block",
+      "title": "Code block",
+      "summary": "Preformatted code surface with a language label, copy button, and nd-copy event.",
+      "categories": [
+        "block",
+        "content"
+      ]
+    },
+    {
+      "kind": "item",
+      "id": "combobox",
+      "type": "registry:ui",
+      "title": "Combobox",
+      "summary": "Filterable single-select with an input, listbox, and filtered collection.",
+      "categories": [
+        "form",
+        "ui"
+      ]
+    },
+    {
+      "kind": "item",
+      "id": "command",
+      "type": "registry:block",
+      "title": "Command palette",
+      "summary": "Modal command palette: a combobox inside a dialog, opened with Cmd/Ctrl+K.",
+      "categories": [
+        "block",
+        "overlay"
+      ]
+    },
+    {
+      "kind": "item",
+      "id": "data-table",
+      "type": "registry:block",
+      "title": "Data table",
+      "summary": "Sortable, selectable, paged table composed from the table, checkbox, button, and pagination items.",
+      "categories": [
+        "block",
+        "data"
+      ]
+    },
+    {
+      "kind": "item",
+      "id": "date-picker",
+      "type": "registry:ui",
+      "title": "Date picker",
+      "summary": "Popup calendar with an ISO form value, keyboard navigation, and min/max bounds.",
+      "categories": [
+        "form",
+        "ui"
+      ]
+    },
+    {
+      "kind": "item",
+      "id": "dialog",
+      "type": "registry:ui",
+      "title": "Dialog",
+      "summary": "Modal dialog with focus trapping, dismissal, and ARIA wiring from the Zag.js dialog machine.",
+      "categories": [
+        "overlay",
+        "ui"
+      ]
+    },
+    {
+      "kind": "item",
+      "id": "drawer",
+      "type": "registry:ui",
+      "title": "Drawer",
+      "summary": "Edge-anchored dialog with end, start, bottom, and top placement.",
+      "categories": [
+        "overlay",
+        "ui"
+      ]
+    },
+    {
+      "kind": "item",
+      "id": "field",
+      "type": "registry:ui",
+      "title": "Field",
+      "summary": "Label, help, and error scaffolding for native form controls.",
+      "categories": [
+        "form",
+        "ui"
+      ]
+    },
+    {
+      "kind": "item",
+      "id": "file-upload",
+      "type": "registry:ui",
+      "title": "File upload",
+      "summary": "Dropzone with accept/size/count validation, a hidden file input, and a removable file list.",
+      "categories": [
+        "form",
+        "ui"
+      ]
+    },
+    {
+      "kind": "item",
+      "id": "input",
+      "type": "registry:ui",
+      "title": "Input",
+      "summary": "Native text inputs and textareas with focus, disabled, and invalid states.",
+      "categories": [
+        "form",
+        "ui"
+      ]
+    },
+    {
+      "kind": "item",
+      "id": "item",
+      "type": "registry:ui",
+      "title": "Item",
+      "summary": "List row with media, title, description, and trailing actions.",
+      "categories": [
+        "layout",
+        "ui"
+      ]
+    },
+    {
+      "kind": "item",
+      "id": "kbd",
+      "type": "registry:ui",
+      "title": "Keyboard key",
+      "summary": "Key caps and keyboard chords for shortcut hints.",
+      "categories": [
+        "content",
+        "ui"
+      ]
+    },
+    {
+      "kind": "item",
+      "id": "lib",
+      "type": "registry:lib",
+      "title": "Ndigo element foundation",
+      "summary": "Shared light-DOM custom-element base and the Zag.js machine controller.",
+      "categories": [
+        "behaviour",
+        "lib"
+      ]
+    },
+    {
+      "kind": "item",
+      "id": "menu",
+      "type": "registry:ui",
+      "title": "Menu",
+      "summary": "Dropdown menu with roving highlight, typeahead, and dismissal from the Zag.js menu machine.",
+      "categories": [
+        "overlay",
+        "ui"
+      ]
+    },
+    {
+      "kind": "item",
+      "id": "navigation-menu",
+      "type": "registry:ui",
+      "title": "Navigation menu",
+      "summary": "Site navigation with dropdown content, hover/click triggers, and keyboard item navigation.",
+      "categories": [
+        "navigation",
+        "ui"
+      ]
+    },
+    {
+      "kind": "item",
+      "id": "pagination",
+      "type": "registry:ui",
+      "title": "Pagination",
+      "summary": "Native page navigation with links, a current-page state, ellipsis, and disabled edges.",
+      "categories": [
+        "navigation",
+        "ui"
+      ]
+    },
+    {
+      "kind": "item",
+      "id": "popover",
+      "type": "registry:ui",
+      "title": "Popover",
+      "summary": "Non-modal overlay with a trigger, positioned surface, title/description, close, and arrow.",
+      "categories": [
+        "behaviour",
+        "ui"
+      ]
+    },
+    {
+      "kind": "item",
+      "id": "scroll-area",
+      "type": "registry:ui",
+      "title": "Scroll area",
+      "summary": "Styled scrolling viewport with custom scrollbars, corner, and hover/drag states.",
+      "categories": [
+        "layout",
+        "ui"
+      ]
+    },
+    {
+      "kind": "item",
+      "id": "select",
+      "type": "registry:ui",
+      "title": "Select",
+      "summary": "Single-select dropdown with a hidden native select and listbox options.",
+      "categories": [
+        "form",
+        "ui"
+      ]
+    },
+    {
+      "kind": "item",
+      "id": "separator",
+      "type": "registry:ui",
+      "title": "Separator",
+      "summary": "Horizontal or vertical rule for grouping content.",
+      "categories": [
+        "layout",
+        "ui"
+      ]
+    },
+    {
+      "kind": "item",
+      "id": "sidebar",
+      "type": "registry:block",
+      "title": "Sidebar",
+      "summary": "Sticky section navigation with native collapsible groups, active links, and a footer.",
+      "categories": [
+        "block",
+        "navigation"
+      ]
+    },
+    {
+      "kind": "item",
+      "id": "skeleton",
+      "type": "registry:ui",
+      "title": "Skeleton",
+      "summary": "Loading placeholder shapes with a reduced-motion-safe shimmer.",
+      "categories": [
+        "feedback",
+        "ui"
+      ]
+    },
+    {
+      "kind": "item",
+      "id": "slider",
+      "type": "registry:ui",
+      "title": "Slider",
+      "summary": "Single-value range with track, range, thumb, and keyboard steps.",
+      "categories": [
+        "form",
+        "ui"
+      ]
+    },
+    {
+      "kind": "item",
+      "id": "spinner",
+      "type": "registry:ui",
+      "title": "Spinner",
+      "summary": "Rotating loading indicator with sizes and reduced-motion handling.",
+      "categories": [
+        "feedback",
+        "ui"
+      ]
+    },
+    {
+      "kind": "item",
+      "id": "switch",
+      "type": "registry:ui",
+      "title": "Switch",
+      "summary": "Labelled toggle with a hidden checkbox and the ARIA switch contract.",
+      "categories": [
+        "form",
+        "ui"
+      ]
+    },
+    {
+      "kind": "item",
+      "id": "table",
+      "type": "registry:ui",
+      "title": "Table",
+      "summary": "Native tables with an overflow wrapper, sortable headers, numeric alignment, and row states.",
+      "categories": [
+        "data",
+        "ui"
+      ]
+    },
+    {
+      "kind": "item",
+      "id": "tabs",
+      "type": "registry:ui",
+      "title": "Tabs",
+      "summary": "Tablist, roving focus, arrow navigation, and tabpanels.",
+      "categories": [
+        "behaviour",
+        "ui"
+      ]
+    },
+    {
+      "kind": "item",
+      "id": "tags-input",
+      "type": "registry:ui",
+      "title": "Tags input",
+      "summary": "Removable tag chips with a hidden form value, max limit, paste parsing, and inline editing.",
+      "categories": [
+        "form",
+        "ui"
+      ]
+    },
+    {
+      "kind": "item",
+      "id": "theme",
+      "type": "registry:theme",
+      "title": "Ndigo theme",
+      "summary": "Ndigo brand tokens (--nd-*) plus the opt-in base layer for native elements.",
+      "categories": [
+        "theme",
+        "tokens"
+      ]
+    },
+    {
+      "kind": "item",
+      "id": "toast",
+      "type": "registry:ui",
+      "title": "Toast",
+      "summary": "Single transient notification with live-region semantics and auto-dismiss.",
+      "categories": [
+        "feedback",
+        "ui"
+      ]
+    },
+    {
+      "kind": "item",
+      "id": "tooltip",
+      "type": "registry:ui",
+      "title": "Tooltip",
+      "summary": "Hint surface with hover/focus delays, arrow, and aria-describedby wiring.",
+      "categories": [
+        "behaviour",
+        "ui"
+      ]
+    },
+    {
+      "kind": "item",
+      "id": "typography",
+      "type": "registry:ui",
+      "title": "Typography",
+      "summary": "Scoped prose styles for rendered long-form content.",
+      "categories": [
+        "content",
+        "ui"
+      ]
+    }
+  ]
+}

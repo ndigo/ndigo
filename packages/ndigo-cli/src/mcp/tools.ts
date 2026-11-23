@@ -6,6 +6,7 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 
 import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { collectDiagnostics } from '../commands/_diagnostics.js';
+import { getCatalogEntry, listCatalog } from '../capabilities/catalog.js';
 import { captureAppOnce, usageError } from '../helpers/app-scripts.js';
 import { readLogTail, resolveLogFile } from '../helpers/log-tail.js';
 
@@ -336,4 +337,26 @@ function writeRuleIndex(rulesDir: string): void {
 function ruleTitle(file: string, fallback: string): string {
     const firstLine = readFileSync(file, 'utf8').split('\n', 1)[0] ?? '';
     return firstLine.startsWith('# ') ? firstLine.slice(2).trim() : fallback.replace(/\.md$/u, '');
+}
+
+/**
+ * Lists every installable capability and UI registry item.
+ *
+ * @returns The compact discovery index.
+ */
+export function listCapabilities() {
+    const entries = listCatalog();
+    return { version: 1, count: entries.length, entries };
+}
+
+/**
+ * Returns one capability or UI item by id.
+ *
+ * @param id - The capability or item id.
+ * @returns The full authored record plus its install command, when one exists.
+ */
+export function getCapability(id: string) {
+    const entry = getCatalogEntry(id);
+    if (entry === undefined) throw new Error(`unknown capability or item '${id}'`);
+    return { ...entry.record, ...(entry.install === undefined ? {} : { install: entry.install }) };
 }

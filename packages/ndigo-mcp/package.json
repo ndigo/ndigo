@@ -10,6 +10,15 @@
     "tools",
     "agents"
   ],
+  "ndigo": {
+    "capabilities": [
+      "agent-surface"
+    ],
+    "surfaces": [
+      "mcp-server",
+      "tool-registry"
+    ]
+  },
   "type": "module",
   "files": [
     "api",

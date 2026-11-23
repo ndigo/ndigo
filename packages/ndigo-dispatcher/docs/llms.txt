@@ -58,12 +58,12 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `errorMapping` — Export errorMapping with utility methods
 - `RouteHandlerAdapter` *(type)* — Adapts a handler instance into route execution.
 - `likeController` — Returns whether a value behaves like a Controller.
-- `AbstractHandlerMethodAdapter`
+- `AbstractHandlerMethodAdapter` — Base adapter for handlers backed by a method-level RouteHandlerMethod.
 - `ControllerHandlerAdapter` — This implementation expects the handler to be a `HandlerMethod`.
 - `MetadataHandlerAdapter` — Implementation of AbstractHandlerMethodAdapter that supports `HandlerMethods` decorated with `route:mapping` metadata. This is usually applied using `@RouteMap…
 - `RouteErrorResolver` *(type)* — Resolves exceptions into a route-specific response.
-- `AbstractRouteErrorResolver`
-- `AbstractHandlerMethodErrorResolver`
+- `AbstractRouteErrorResolver` — Base class for error resolvers that convert thrown errors into model-and-view responses.
+- `AbstractHandlerMethodErrorResolver` — Base class for error resolvers that inspect handler-method `error:mapping` metadata.
 - `DefaultRouteErrorResolver` — The default implementation of the RouteErrorResolver interface, resolving standard Ndigo exceptions.
 - `MetadataErrorResolver` — An AbstractRouteErrorResolver that resolves exceptions through 'error:mapping' metadata.
 - `SimpleMappingErrorResolver` — RouteErrorResolver implementation that allows for mapping exception class names to view names, either for a set of given handlers or for all handlers in the `D…
@@ -79,7 +79,7 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `NamePathHandlerMapping` — Map handlers by application-context names that start with `/`.
 - `SimplePathHandlerMapping` — Map handlers from explicit path registrations.
 - `canonicalizeRouteMappingPath` — Canonicalizes a route pattern to the radix node it maps to.
-- `RadixMetadataHandlerMapping`
+- `RadixMetadataHandlerMapping` — Handler mapping backed by a radix tree of metadata-discovered handler methods.
 - `RouteMatchResult` — Result of matching a route pattern to a path.
 - `doesNotStartWithSlash`
 - `kindOf`
@@ -96,7 +96,7 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `RouteCondition` *(type)* — Contract for route matching conditions.
 - `likeRouteCondition` — Tests whether a value behaves like a RouteCondition.
 - `AbstractNameValueExpression` — Base class for parsed name/value expressions.
-- `AbstractRouteCondition`
+- `AbstractRouteCondition` — Base class for route conditions built from one or more parsed expressions.
 - `RouteConditionHolder` — The discrete items a route condition is composed of, e.g. URL patterns, param expressions, etc.
 - `CompositeRouteCondition` — Implements the RouteCondition contract by delegating to multiple `RouteCondition` types and using a logical conjunction (' && ') to ensure all conditions match…
 - `AccessLevel` *(type)* — The access level required for a route.
@@ -120,8 +120,8 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `QueryParamCondition` — A logical conjunction (' && ') route condition that matches a route against a set parameter expressions with syntax defined in `RouteMapping`.
 - `MatrixParamExpression` — Parses and matches a single matrix-parameter expression against a route segment.
 - `MatrixParamCondition` — A logical conjunction ('&&') route condition that matches a route against a set of matrix-parameter expressions.
-- `PatternsRouteCondition`
-- `RouteMappingInfo`
+- `PatternsRouteCondition` — A route condition that matches a route against one or more path patterns.
+- `RouteMappingInfo` — Holds the parsed conditions and metadata for a single route mapping.
 - `RouteMappingInfoHandlerMethodMappingNamingStrategy` — Default naming strategy for route mappings: prefers the mapping's explicit `name`, and otherwise joins the handler class and method with the static `separator`.
 - `ParameterExtractor` *(type)* — Factory function return type - describes a parameter extraction
 - `ParameterExtractorOptions` *(type)* — Options for creating a parameter extractor with type-based conversion support.
@@ -170,10 +170,10 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `validateParameters` — Convenience overlay for validatedBy over a whole `parameters` map.
 - `validatedBody` — Sugar for validating the entire parsed request body against a Zod schema.
 - `validatedQuery` — Sugar for validating the entire query object against a Zod schema.
-- `PathPatternComparator` — Compares two path patterns by specificity so that more specific patterns sort before less specific ones. This ensures deterministic route matching when multipl…
+- `PathPatternComparator` — '); ```
 - `pathPatternComparator` — Singleton instance of `PathPatternComparator` for reuse.
 - `RouteToViewNameTranslator` *(type)* — Translates a route into a view name.
-- `DefaultRouteToViewNameTranslator`
+- `DefaultRouteToViewNameTranslator` — Default translator that derives a view name from the route path.
 - `ThemeResolver` *(type)* — Resolves the active theme name for a route.
 - `AbstractThemeResolver` — Base class for theme resolvers with a configurable fallback theme.
 - `FixedThemeResolver` — Resolve a fixed theme regardless of route.
@@ -195,7 +195,7 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `SocketSessionRegistry` *(type)*
 - `PreHandleOutcome` *(type)* — The outcome of a `preHandle` invocation: `true` allows the request, `false` is the default denial, and an explicit InterceptorDenial carries the finalized stat…
 - `RouteHandlerInterceptor` *(type)* — Around-handler hooks, run in chain order: `preHandle` before the handler (its outcome may short-circuit the chain), `postHandle` after a successful return, and…
-- `MappedHandlerInterceptor` — Workflow interface that allows for customized handler execution chains. Applications can register any number of existing or custom interceptors for certain gro…
+- `MappedHandlerInterceptor`
 - `InterceptorDenial` *(type)* — The outcome of a denied `preHandle`. `statusCode` is the HTTP status the platform adapter finalizes; `body` is a JSON-safe payload (never internal detail); `re…
 - `INTERCEPTOR_DENIAL_ATTRIBUTE` — Route attribute key under which a denial outcome is stored after denial.
 - `METHOD_NOT_ALLOWED_ATTRIBUTE` — Route attribute key under which the `Allow` header value is stored when a path resolves but the request method matches none of its handlers (RFC 9110 §15.5.6).…

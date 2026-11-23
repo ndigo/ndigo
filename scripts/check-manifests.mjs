@@ -51,6 +51,10 @@
  *      package — a `package.json` must exist, must not be `private: true`,
  *      and must carry the consumer artifacts (legacy contract + docs
  * standard).
+ *  14. Capability facts: an optional `ndigo` block declares `surfaces`,
+ *      `capabilities`, and an optional `skill`. Unknown keys are rejected, and
+ *      every capability reference must agree with the shipped catalog in both
+ *      directions (the capability names the package; the package declares it).
  *
  * Run: `node scripts/check-manifests.mjs` (wired into `pnpm manifest:check`
  * and `.github/workflows/ci.yml`).
@@ -61,6 +65,7 @@ import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { importsOf, extractImports, tokenize, SKIP_DIRS, SOURCE_DIRS, DEV_DIRS } from './import-scanner.mjs';
 import { surfaceViolations } from './package-surface.mjs';
+import { ndigoBlockProblems, readCapabilityCatalog } from '../tools/agent-content/_capabilities.mjs';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const PACKAGES = join(ROOT, 'packages');
@@ -295,6 +300,18 @@ if (existsSync(toolsRoot)) {
 // it must be a consumer package: a `package.json` must exist and must not be
 // `private` (the `files`/`exports` requirement is the legacy contract checked
 // below).
+//
+// Rule 14 reads the shipped capability catalog once: the `ndigo` blocks in
+// package manifests are validated against the same authored entries the CLI
+// serves, so a stale fact fails here rather than in the consumer's editor.
+const capabilityCatalog = readCapabilityCatalog(join(PACKAGES, 'ndigo-cli', 'assets', 'capabilities'));
+const capabilityIds = new Set(capabilityCatalog.capabilities.map((capability) => capability.id));
+const skillsDir = join(ROOT, 'tools', 'agent-content', 'skills');
+const skillIds = new Set(
+    existsSync(skillsDir)
+        ? readdirSync(skillsDir).filter((entry) => existsSync(join(skillsDir, entry, 'SKILL.md')))
+        : []
+);
 for (const dir of readdirSync(PACKAGES)) {
     const pkgPath = join(PACKAGES, dir, 'package.json');
     if (!existsSync(pkgPath)) {
@@ -375,6 +392,18 @@ for (const dir of readdirSync(PACKAGES)) {
     // publishable package ships its compiled lib/ and generated api/.
     if (!Array.isArray(manifest.files) || !manifest.files.includes('api') || !manifest.files.includes('lib')) {
         fail(name, `files must include "api" and "lib" (docs standard)`);
+    }
+
+    // Rule 14: the optional `ndigo` block agrees with the shipped catalog.
+    if (manifest.ndigo !== undefined) {
+        for (const problem of ndigoBlockProblems(manifest.ndigo, {
+            packageName: name,
+            capabilityIds,
+            skillIds,
+            capabilities: capabilityCatalog.capabilities,
+        })) {
+            fail(name, problem);
+        }
     }
 
     // Rule 1: runtime closure — every src/ import is a dependency

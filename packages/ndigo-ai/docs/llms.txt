@@ -7,6 +7,10 @@ Version-matched export index for the installed package. Read `README.md`
 for usage; the workspace guide index ships with `@ndigo/cli` as
 `assets/agent/docs-index.md`.
 
+## Capabilities
+
+- `agent-model` — Add a bounded, provider-neutral tool-calling loop with streaming, structured output, and telemetry. Packages: `@ndigo/ai`, `@ndigo/ai-sdk`. Guide: `47-ai-agents`.
+
 ## Public exports
 
 - `AIAgent` — Drives one model through a bounded tool-calling loop.

@@ -44,6 +44,7 @@ import { dbSeedCommand } from './commands/db/seed.js';
 import { dbRollbackCommand } from './commands/db/rollback.js';
 import { uiRouteMap } from './commands/ui/index.js';
 import { aiRouteMap } from './commands/ai/index.js';
+import { capabilitiesCommand } from './commands/capabilities.js';
 import { commandsCommand } from './commands/commands.js';
 import { collectCommandIndex, setCommandIndex } from './commands/_command-registry.js';
 
@@ -84,6 +85,7 @@ export function buildCliApp() {
             routes: routesCommand,
             mcp: mcpCommand,
             commands: commandsCommand,
+            capabilities: capabilitiesCommand,
             doctor: doctorCommand,
             info: infoCommand,
             build: buildCmd,

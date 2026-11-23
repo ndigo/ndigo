@@ -9,6 +9,14 @@
     "ai-sdk",
     "llm"
   ],
+  "ndigo": {
+    "capabilities": [
+      "agent-model"
+    ],
+    "surfaces": [
+      "model-adapter"
+    ]
+  },
   "type": "module",
   "files": [
     "api",

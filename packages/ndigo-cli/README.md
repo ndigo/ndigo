@@ -52,7 +52,7 @@ ndigo serve --cluster 4 --port 3000   # 4 replicated worker slots
 | :---------------------- | :------------------------------------------------------------------------------------------------------- |
 | `ndigo new <name>`      | Scaffolds an app into `apps/` (`--kind`, `--preset`, `--port`, `--number`, `--description`, `--dryRun`). |
 | `ndigo generate <kind>` | Fronts `@ndigo/generators` via Nx (alias `ndigo g`; see below).                                          |
-| `ndigo add <package>`   | Installs an `@ndigo/*` capability and runs its setup generator.                                          |
+| `ndigo add <package>`   | Installs an `@ndigo/*` package and runs its setup generator.                                             |
 
 `generate` kinds: `package`, `component`, `readme`, `header`, `controller`,
 `service`, `entity`, `middleware`, `config`, `migration`.
@@ -114,7 +114,8 @@ reading a broader path.
 
 `ndigo mcp [dir]` runs the application's introspection tools as a stdio MCP
 server: `get_manifest`, `get_commands`, `get_routes`, `get_config_keys`
-(presence only), `get_best_practices`, `run_doctor`, and `get_logs`.
+(presence only), `get_best_practices`, `run_doctor`, `get_logs`, and the
+capability catalog (`list_capabilities`, `get_capability`).
 `run_target` (build/test/lint) and `record_rule` (`.ndigo/rules/`) are omitted
 under `--readOnly`; `--live` delegates to the application's own `scripts.mcp`.
 
@@ -128,6 +129,7 @@ under `--readOnly`; `--live` delegates to the application's own `scripts.mcp`.
 | Command               | What it does                                                                              |
 | :-------------------- | :---------------------------------------------------------------------------------------- |
 | `ndigo commands`      | Lists every verb with its flags, positionals, and exit codes (`--json`).                  |
+| `ndigo capabilities`  | Lists, shows, or validates capabilities and UI items (`list`, `get`, `check`; `--json`).  |
 | `ndigo ai`            | Generates agent context: `init`, `check`, `update` (`--skills`, `--mcp`, `--force`).      |
 | `ndigo doctor`        | Environment diagnostics — the issue-report starter.                                       |
 | `ndigo info`          | `doctor` plus the installed `@ndigo/*` packages.                                          |

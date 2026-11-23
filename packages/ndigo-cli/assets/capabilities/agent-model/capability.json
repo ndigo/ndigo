@@ -1,0 +1,19 @@
+{
+  "id": "agent-model",
+  "kind": "capability",
+  "summary": "Add a bounded, provider-neutral tool-calling loop with streaming, structured output, and telemetry.",
+  "packages": ["@ndigo/ai", "@ndigo/ai-sdk"],
+  "guide": "47-ai-agents",
+  "ops": [
+    {
+      "op": "addDependency",
+      "packages": ["@ndigo/ai", "@ndigo/ai-sdk"]
+    },
+    {
+      "op": "writeFile",
+      "template": "templates/ai-config.ts.tmpl",
+      "path": "src/ai-config.ts"
+    }
+  ],
+  "checks": ["app-boot", "typecheck"]
+}

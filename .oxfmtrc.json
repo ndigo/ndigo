@@ -17,6 +17,8 @@
     "packages/*/api/",
     "packages/ndigo-cli/assets/agent/docs-index.md",
     "packages/ndigo-cli/assets/agent/skills/",
+    "packages/ndigo-cli/assets/capabilities/items.json",
+    "packages/ndigo-cli/assets/capabilities/packages.json",
     "packages/*/skills/",
     "tools/agent-content/docs-index.md",
     "tools/agent-content/skills/",

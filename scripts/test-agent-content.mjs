@@ -7,13 +7,18 @@
  * deliberately escapes vitest's `*.test.*` glob.
  */
 import assert from 'node:assert/strict';
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { test } from 'node:test';
 import { fileURLToPath } from 'node:url';
 
 import { collectPublicExports, renderPackageIndex } from '../tools/agent-content/_package-index.mjs';
+import {
+    capabilityProblems,
+    readCapabilityCatalog,
+    renderCapabilityLine,
+} from '../tools/agent-content/_capabilities.mjs';
 import { readSkills } from '../tools/agent-content/_skills.mjs';
 
 const ROOT = dirname(dirname(fileURLToPath(import.meta.url)));
@@ -90,6 +95,72 @@ void test('the rendered package index carries the header, subpaths, and exports'
     assert.match(text, /# @ndigo\/core/u);
     assert.match(text, /## Public exports/u);
     assert.match(text, /- `MediaTypes`/u);
+});
+
+void test('the rendered package index carries composed capabilities', () => {
+    const root = join(ROOT, 'packages', 'ndigo-mcp');
+    const entry = {
+        id: 'agent-surface',
+        kind: 'capability',
+        summary: 'Probe capability.',
+        packages: ['@ndigo/mcp'],
+        guide: '48-agent-facing-surfaces',
+        ops: [],
+        checks: [],
+    };
+    const text = renderPackageIndex({
+        root,
+        manifest: JSON.parse(readFileSync(join(root, 'package.json'), 'utf8')),
+        capabilities: [entry],
+    });
+    assert.match(text, /## Capabilities/u);
+    assert.ok(text.includes(renderCapabilityLine(entry)));
+});
+
+/** Reads every workspace package manifest the generator sees. */
+function workspacePackages() {
+    return readdirSync(join(ROOT, 'packages'))
+        .filter((entry) => existsSync(join(ROOT, 'packages', entry, 'package.json')))
+        .map((entry) => ({
+            root: join(ROOT, 'packages', entry),
+            manifest: JSON.parse(readFileSync(join(ROOT, 'packages', entry, 'package.json'), 'utf8')),
+        }))
+        .sort((left, right) => left.manifest.name.localeCompare(right.manifest.name));
+}
+
+void test('the shipped capability catalog passes reference integrity', () => {
+    const catalogDir = join(ROOT, 'packages', 'ndigo-cli', 'assets', 'capabilities');
+    const catalog = readCapabilityCatalog(catalogDir);
+    assert.deepEqual(catalog.errors, []);
+    const problems = capabilityProblems({
+        root: ROOT,
+        catalogDir,
+        catalog,
+        packages: workspacePackages(),
+        skills: readSkills(join(ROOT, 'tools', 'agent-content', 'skills')),
+    });
+    assert.deepEqual(problems, []);
+});
+
+void test('a capability naming an unknown package fails validation', () => {
+    const catalogDir = join(ROOT, 'packages', 'ndigo-cli', 'assets', 'capabilities');
+    const catalog = readCapabilityCatalog(catalogDir);
+    const [first] = catalog.capabilities;
+    const broken = {
+        ...catalog,
+        capabilities: [{ ...first, packages: ['@ndigo/not-a-package'] }],
+    };
+    const problems = capabilityProblems({
+        root: ROOT,
+        catalogDir,
+        catalog: broken,
+        packages: workspacePackages(),
+        skills: readSkills(join(ROOT, 'tools', 'agent-content', 'skills')),
+    });
+    assert.ok(
+        problems.some((problem) => problem.includes('names unknown package "@ndigo/not-a-package"')),
+        problems.join('; ')
+    );
 });
 
 void test('a direct dependency exposes the installed llms.txt through node_modules', () => {

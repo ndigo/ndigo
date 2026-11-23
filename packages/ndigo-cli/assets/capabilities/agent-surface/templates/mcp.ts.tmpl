@@ -1,0 +1,22 @@
+/**
+ * MCP stdio server: exposes this application's `@toolMapping` handlers to any
+ * MCP host. Run it with the `mcp` script this capability adds.
+ */
+import 'node:process';
+import '@tsmetadata/polyfill';
+import { ApplicationBuilder } from '@ndigo/boot';
+import { ARGUMENT_RESOLVERS, DISPATCHER } from '@ndigo/dispatcher';
+import { McpToolRegistry, startStdioServer } from '@ndigo/mcp';
+import { NodeAutoConfiguration } from '@ndigo/platform-node';
+import { {{configuration}} } from './{{configurationFile}}';
+
+const context = await new ApplicationBuilder([NodeAutoConfiguration, {{configuration}}]).run();
+const registry = McpToolRegistry.from(context.getValue(DISPATCHER), {
+    readOnly: true,
+    argumentResolvers: context.getValue(ARGUMENT_RESOLVERS),
+});
+await startStdioServer(registry, { name: '{{appName}}' });
+
+process.on('SIGINT', () => {
+    context.close();
+});

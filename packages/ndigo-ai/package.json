@@ -10,6 +10,16 @@
     "llm",
     "tools"
   ],
+  "ndigo": {
+    "capabilities": [
+      "agent-model"
+    ],
+    "surfaces": [
+      "agent-loop",
+      "streaming-events",
+      "structured-output"
+    ]
+  },
   "type": "module",
   "files": [
     "api",

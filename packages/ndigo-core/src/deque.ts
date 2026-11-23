@@ -8,7 +8,7 @@ import { Equatable } from './equatable.js';
  * A dynamic double-ended queue with O(1) amortized push/pop on both ends.
  *
  * Backed by a circular buffer that grows by doubling when full, so logical
- * capacity is unbounded (unlike {@link RingBuffer}, which has a fixed cap).
+ * capacity is unbounded (unlike {@link "ring-buffer".RingBuffer | RingBuffer}, which has a fixed cap).
  * Exact-size bounding is done by the caller (`if (deque.length > cap) deque.shift()`),
  * which is itself O(1).
  *

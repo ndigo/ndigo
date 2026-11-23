@@ -17,6 +17,11 @@ import type { ViewTarget } from './view-target.js';
  * from the same {@link AbstractSerializingView.serialize | `serialize`} encoding.
  * Subclasses declare their `mediaType` in the constructor and implement
  * `serialize`.
+ *
+ * @example
+ * ```ts
+ * const instance = new AbstractSerializingView();
+ * ```
  */
 export abstract class AbstractSerializingView extends AbstractView implements ProducerView {
     /**

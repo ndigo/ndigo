@@ -28,6 +28,11 @@ const keypathConverter = new KeypathConverter();
  * View implementations may differ widely. This interface is designed to avoid restricting the range of possible implementations.
  *
  * They are likely to be instantiated by a `ViewResolver` .
+ *
+ * @example
+ * ```ts
+ * const value = {} as View;
+ * ```
  */
 export interface View {
     /**
@@ -58,6 +63,11 @@ export interface View {
 
 /**
  * Abstract base class for {@link View|`View`} implementations. Subclasses need to implement the actual rendering.
+ *
+ * @example
+ * ```ts
+ * const instance = new AbstractView();
+ * ```
  */
 export abstract class AbstractView extends AsNameAware(AsApplicationContextAware(Null)) implements Serializable, View {
     /**
@@ -153,6 +163,11 @@ export abstract class AbstractView extends AsNameAware(AsApplicationContextAware
 
 /**
  * Abstract base class for path-based views.
+ *
+ * @example
+ * ```ts
+ * const instance = new AbstractPathBasedView();
+ * ```
  */
 export abstract class AbstractPathBasedView extends AbstractView {
     /**
@@ -189,6 +204,11 @@ export abstract class AbstractPathBasedView extends AbstractView {
 
 /**
  * Abstract base class for template-based views.
+ *
+ * @example
+ * ```ts
+ * const instance = new AbstractTemplateView();
+ * ```
  */
 export abstract class AbstractTemplateView extends AbstractPathBasedView {
     /**
@@ -245,6 +265,11 @@ export abstract class AbstractTemplateView extends AbstractPathBasedView {
 
 /**
  * View that reroutes to an absolute, context relative, or current request relative route.
+ *
+ * @example
+ * ```ts
+ * const instance = new RerouteView();
+ * ```
  */
 export class RerouteView extends AbstractPathBasedView {
     /**
@@ -331,6 +356,11 @@ export class RerouteView extends AbstractPathBasedView {
  * and intentionally does not encode, so escaping is the caller's responsibility.
  *
  * @param path - The URL path for this view.
+ *
+ * @example
+ * ```ts
+ * const instance = new StringTemplateView();
+ * ```
  */
 export class StringTemplateView extends AbstractTemplateView {
     /**

@@ -21,6 +21,11 @@ const escapeAttributeValue = (value: string): string =>
  *
  * @param model - The model to serialize.
  * @returns The JSON string with HTML entities escaped.
+ *
+ * @example
+ * ```ts
+ * serializeModel();
+ * ```
  */
 export function serializeModel(model: unknown): string {
     const json = JSON.stringify(model ?? null);
@@ -40,6 +45,11 @@ export function serializeModel(model: unknown): string {
  * @param raw - The `data-ndigo-model` attribute value as returned by
  *   `getAttribute` (one-level HTML-decoded by the DOM parser).
  * @returns The parsed model, or `null` when absent/invalid.
+ *
+ * @example
+ * ```ts
+ * parseModel();
+ * ```
  */
 export function parseModel(raw: string | undefined): unknown {
     if (!raw) return null;
@@ -89,6 +99,11 @@ const RESERVED_CUSTOM_ELEMENT_NAMES: Record<string, true> = {
  *
  * @param name - The candidate tag name.
  * @returns `true` when the name may be used as a custom element tag.
+ *
+ * @example
+ * ```ts
+ * isValidCustomElementName();
+ * ```
  */
 export function isValidCustomElementName(name: string): boolean {
     return customElementNamePattern.test(name) && !(name in RESERVED_CUSTOM_ELEMENT_NAMES);
@@ -96,6 +111,11 @@ export function isValidCustomElementName(name: string): boolean {
 
 /**
  * Construction options for {@link IslandView}.
+ *
+ * @example
+ * ```ts
+ * const value = {} as IslandViewOptions;
+ * ```
  */
 export interface IslandViewOptions {
     /**

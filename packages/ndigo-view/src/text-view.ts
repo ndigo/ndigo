@@ -9,6 +9,11 @@ import { AbstractSerializingView } from './abstract-serializing-view.js';
  *
  * Nullish models render an empty document; other values are coerced with
  * `String`.
+ *
+ * @example
+ * ```ts
+ * const instance = new TextView();
+ * ```
  */
 export class TextView extends AbstractSerializingView {
     /**

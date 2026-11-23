@@ -10,6 +10,11 @@ import { NotAcceptableError } from './not-acceptable-error.js';
 
 /**
  * Resolves file extensions for a media type and can enumerate all known extensions.
+ *
+ * @example
+ * ```ts
+ * const value = {} as MediaTypeFileExtensionResolver;
+ * ```
  */
 export interface MediaTypeFileExtensionResolver {
     /**
@@ -30,6 +35,11 @@ export interface MediaTypeFileExtensionResolver {
 
 /**
  * Resolves the media types supported for a request.
+ *
+ * @example
+ * ```ts
+ * const value = {} as ContentNegotiationStrategy;
+ * ```
  */
 export interface ContentNegotiationStrategy {
     /**
@@ -64,6 +74,11 @@ export const likeMediaTypeFileExtensionResolver = (value: unknown): value is Med
 
 /**
  * Resolves file extensions from a map of extension-to-media-type pairs.
+ *
+ * @example
+ * ```ts
+ * const instance = new MappingMediaTypeFileExtensionResolver();
+ * ```
  */
 export class MappingMediaTypeFileExtensionResolver implements MediaTypeFileExtensionResolver {
     /**
@@ -155,6 +170,11 @@ export class MappingMediaTypeFileExtensionResolver implements MediaTypeFileExten
 
 /**
  * Returns the same media types for every request.
+ *
+ * @example
+ * ```ts
+ * const instance = new FixedContentNegotiationStrategy();
+ * ```
  */
 export class FixedContentNegotiationStrategy implements ContentNegotiationStrategy {
     /**
@@ -237,6 +257,11 @@ export const canServeMediaType = (candidate: MediaType, accepted: MediaType): bo
  * @param candidates - The media types the server can produce, in registration order.
  * @param acceptedRanges - The client-accepted ranges, in client-priority order.
  * @returns The first servable candidate, or `undefined` when none matches.
+ *
+ * @example
+ * ```ts
+ * firstServableMediaType();
+ * ```
  */
 export function firstServableMediaType(candidates: MediaType[], acceptedRanges: MediaType[]): MediaType | undefined {
     for (const accepted of acceptedRanges) {
@@ -251,6 +276,11 @@ export function firstServableMediaType(candidates: MediaType[], acceptedRanges: 
 
 /**
  * Base class for content negotiation strategies that also resolve file extensions.
+ *
+ * @example
+ * ```ts
+ * const instance = new AbstractMappingContentNegotiationStrategy();
+ * ```
  */
 export abstract class AbstractMappingContentNegotiationStrategy
     extends MappingMediaTypeFileExtensionResolver
@@ -304,6 +334,11 @@ export abstract class AbstractMappingContentNegotiationStrategy
 
 /**
  * Content negotiation strategy that is intended to derive media types from the request path extension.
+ *
+ * @example
+ * ```ts
+ * const instance = new PathExtensionContentNegotiationStrategy();
+ * ```
  */
 export class PathExtensionContentNegotiationStrategy
     extends MappingMediaTypeFileExtensionResolver
@@ -361,6 +396,11 @@ export class PathExtensionContentNegotiationStrategy
 
 /**
  * Aggregates content-negotiation strategies and file-extension resolvers.
+ *
+ * @example
+ * ```ts
+ * const instance = new ContentNegotiationManager();
+ * ```
  */
 export class ContentNegotiationManager implements ContentNegotiationStrategy, MediaTypeFileExtensionResolver {
     /**
@@ -477,6 +517,11 @@ export class ContentNegotiationManager implements ContentNegotiationStrategy, Me
 
 /**
  * Resolves views using content negotiation results.
+ *
+ * @example
+ * ```ts
+ * const instance = new ContentNegotiationViewResolver();
+ * ```
  */
 export class ContentNegotiationViewResolver implements ViewResolver {
     /**

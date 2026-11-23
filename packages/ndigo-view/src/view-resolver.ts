@@ -13,6 +13,11 @@ import { ApplicationContext, AsApplicationContextAware, likeApplicationContextAw
 
 /**
  * Resolves a view name to a concrete {@link View} instance.
+ *
+ * @example
+ * ```ts
+ * const value = {} as ViewResolver;
+ * ```
  */
 export interface ViewResolver {
     /**
@@ -77,11 +82,24 @@ export { BoundedCache } from '@ndigo/core';
  * @param name - The view name.
  * @param language - Optional language/locale hint.
  * @returns A collision-free cache key.
+ *
+ * @example
+ * ```ts
+ * createViewCacheKey();
+ * ```
  */
 export function createViewCacheKey(name: string, language?: unknown): string {
     return JSON.stringify([name, language == null ? '' : String(language)]);
 }
 
+/**
+ * AbstractCachingViewResolver.
+ *
+ * @example
+ * ```ts
+ * const instance = new AbstractCachingViewResolver();
+ * ```
+ */
 export abstract class AbstractCachingViewResolver implements ViewResolver {
     /**
      * The `Symbol.toStringTag` value for this instance.
@@ -203,6 +221,11 @@ export abstract class AbstractCachingViewResolver implements ViewResolver {
  *
  * @param name - The view name to validate.
  * @returns `true` when the name is safe to use as a relative path.
+ *
+ * @example
+ * ```ts
+ * isSafeViewName();
+ * ```
  */
 export function isSafeViewName(name: string): boolean {
     if (name.includes('\0')) {
@@ -218,6 +241,14 @@ export function isSafeViewName(name: string): boolean {
     return name.split(/[\\/]+/).every((segment) => segment.split(';', 1)[0].replace(/\s+$/, '') !== '..');
 }
 
+/**
+ * AbstractPathBasedViewResolver.
+ *
+ * @example
+ * ```ts
+ * const instance = new AbstractPathBasedViewResolver();
+ * ```
+ */
 export abstract class AbstractPathBasedViewResolver extends AbstractCachingViewResolver {
     /**
      * The `Symbol.toStringTag` value for this instance.
@@ -324,6 +355,11 @@ export abstract class AbstractPathBasedViewResolver extends AbstractCachingViewR
  * 
 
  * @see {@link AbstractCachingViewResolver#_loadView}
+ *
+ * @example
+ * ```ts
+ * const instance = new ImportViewResolver();
+ * ```
  */
 
 export class ImportViewResolver extends AbstractPathBasedViewResolver {
@@ -371,6 +407,11 @@ export class ImportViewResolver extends AbstractPathBasedViewResolver {
  *
  * This resolver can be handy for small applications, keeping all definitions ranging from controllers to views in the same place.
 
+ *
+ * @example
+ * ```ts
+ * const instance = new NameViewResolver();
+ * ```
  */
 export class NameViewResolver extends AsApplicationContextAware(Null) implements ViewResolver {
     /**
@@ -417,6 +458,11 @@ export class NameViewResolver extends AsApplicationContextAware(Null) implements
 
 /**
  * A {@link ViewResolver|`ViewResolver`} that delegates to others.
+ *
+ * @example
+ * ```ts
+ * const instance = new ViewResolverComposite();
+ * ```
  */
 export class ViewResolverComposite extends AsApplicationContextAware(Null) implements Initializable, ViewResolver {
     /**

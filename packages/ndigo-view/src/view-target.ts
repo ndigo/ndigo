@@ -9,6 +9,11 @@ import { like } from '@ndigo/util/types';
  *
  * Targets abstract the rendering surface so engines can write to DOM nodes,
  * iframes, streams, or other host-specific outputs.
+ *
+ * @example
+ * ```ts
+ * const value = {} as ViewTarget;
+ * ```
  */
 export interface ViewTarget {
     /**
@@ -55,6 +60,11 @@ export interface ViewTarget {
 
 /**
  * View target that forwards surface events back into the application layer.
+ *
+ * @example
+ * ```ts
+ * const value = {} as EventBridgeViewTarget;
+ * ```
  */
 export interface EventBridgeViewTarget extends ViewTarget {
     /**

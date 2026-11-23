@@ -7,6 +7,11 @@ import { customElementNamePattern, isValidCustomElementName, IslandView } from '
 
 /**
  * Configuration for {@link IslandViewResolver}.
+ *
+ * @example
+ * ```ts
+ * const value = {} as IslandViewResolverOptions;
+ * ```
  */
 export interface IslandViewResolverOptions {
     /**

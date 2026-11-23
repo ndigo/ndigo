@@ -6,6 +6,11 @@ import type { Route } from '@ndigo/router';
 
 /**
  * A complete response document produced by a {@link ProducerView}.
+ *
+ * @example
+ * ```ts
+ * const value = {} as RenderResult;
+ * ```
  */
 export interface RenderResult {
     /**
@@ -39,6 +44,11 @@ export interface RenderResult {
  * response. A producing view renders to any consumer (an HTTP response, a
  * capture target in tests) through the returned {@link RenderResult} and
  * never owns a destination.
+ *
+ * @example
+ * ```ts
+ * const value = {} as ProducerView;
+ * ```
  */
 export interface ProducerView {
     /**

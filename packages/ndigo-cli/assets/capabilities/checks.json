@@ -6,11 +6,13 @@
     },
     {
       "id": "mcp-stdio",
-      "summary": "The application's stdio MCP server answers a JSON-RPC request."
+      "summary": "The application's stdio MCP server answers a JSON-RPC request.",
+      "targets": ["tools/list"]
     },
     {
       "id": "route-parity",
-      "summary": "The OpenAPI document and the MCP tools/list describe the same operations."
+      "summary": "The OpenAPI document and the MCP tools/list describe the same operations.",
+      "targets": ["*"]
     },
     {
       "id": "typecheck",

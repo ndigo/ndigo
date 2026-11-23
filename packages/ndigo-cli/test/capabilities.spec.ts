@@ -13,6 +13,7 @@ import {
     listCatalog,
     loadCatalog,
     loadCheckIds,
+    loadCheckTargets,
     loadGuideSlugs,
     loadPackageFacts,
     loadSkillIds,
@@ -55,6 +56,7 @@ function references(overrides: Partial<CatalogReferences> = {}): CatalogReferenc
         skills: new Set(loadSkillIds()),
         packages: new Map(loadPackageFacts().map((fact) => [fact.name, fact])),
         checks: new Set(loadCheckIds()),
+        checkTargets: loadCheckTargets(),
         ...overrides,
     };
 }
@@ -127,6 +129,18 @@ describe('reference integrity', () => {
         );
         expect(problems).toContain('capability "agent-surface" names unknown guide "99-missing"');
         expect(problems).toContain('capability "agent-surface" names unknown check "nope:any"');
+    });
+
+    it('reports a check naming an unsupported target', () => {
+        // A typo'd target used to pass `ndigo capabilities check` and fail
+        // only later, at verify time.
+        const problems = validateCatalog(
+            catalogOf([{ ...AGENT_SURFACE, checks: ['mcp-stdio:resources/list'] }]),
+            references()
+        );
+        expect(problems).toContain(
+            'capability "agent-surface" check "mcp-stdio:resources/list" has an unsupported target — known targets: tools/list'
+        );
     });
 
     it('reports a missing template', () => {

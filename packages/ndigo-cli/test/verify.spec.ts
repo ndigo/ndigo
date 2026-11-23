@@ -24,7 +24,26 @@ interface FixtureOptions {
     readonly openapi?: boolean;
     readonly mcp?: boolean;
     readonly test?: boolean;
+    readonly exitsAfterInitialize?: boolean;
+    readonly floodsStdout?: boolean;
 }
+
+/** The manifest the fixture's inspect script prints. */
+const FIXTURE_MANIFEST = {
+    version: 1,
+    generatedAt: '2026-01-01T00:00:00.000Z',
+    app: { name: 'verify-fixture', profiles: [] },
+    routes: [{ name: 'lookup', path: '/orders/{id}' }],
+    mappings: [
+        {
+            pattern: '/orders/:id',
+            httpMethods: ['GET'],
+            tool: 'lookup_order',
+            handler: { class: 'OrdersController', method: 'lookup' },
+        },
+    ],
+    config: [],
+};
 
 function createApp(options: FixtureOptions = {}): string {
     const dir = mkdtempSync(join(tmpdir(), 'ndigo-verify-'));
@@ -43,23 +62,7 @@ function createApp(options: FixtureOptions = {}): string {
     );
     writeFileSync(
         join(dir, 'inspect.mjs'),
-        `process.stdout.write(${JSON.stringify(
-            JSON.stringify({
-                version: 1,
-                generatedAt: '2026-01-01T00:00:00.000Z',
-                app: { name: 'verify-fixture', profiles: [] },
-                routes: [{ name: 'lookup', path: '/orders/{id}' }],
-                mappings: [
-                    {
-                        pattern: '/orders/:id',
-                        httpMethods: ['GET'],
-                        tool: 'lookup_order',
-                        handler: { class: 'OrdersController', method: 'lookup' },
-                    },
-                ],
-                config: [],
-            })
-        )});\n`
+        `process.stdout.write(${JSON.stringify(JSON.stringify(FIXTURE_MANIFEST))});\n`
     );
     writeFileSync(
         join(dir, 'openapi.mjs'),
@@ -83,6 +86,30 @@ rl.on('line', (line) => {
 });
 `
     );
+    if (options.exitsAfterInitialize === true) {
+        // Answers initialize, then dies immediately: the "server boots,
+        // answers, crashes" input `ndigo verify` must survive (issue #730).
+        writeFileSync(
+            join(dir, 'mcp.mjs'),
+            `
+import { createInterface } from 'node:readline';
+const rl = createInterface({ input: process.stdin });
+const send = (value) => process.stdout.write(JSON.stringify(value) + '\\n');
+rl.on('line', (line) => {
+    const message = JSON.parse(line);
+    if (message.method === 'initialize') {
+        send({ jsonrpc: '2.0', id: message.id, result: { protocolVersion: '2024-11-05', capabilities: {}, serverInfo: { name: 'fixture', version: '1' } } });
+        process.exit(0);
+    }
+});
+`
+        );
+    }
+    if (options.floodsStdout === true) {
+        // Streams one unterminated line forever: the probe must cap its
+        // buffer instead of growing it without bound until the timeout.
+        writeFileSync(join(dir, 'mcp.mjs'), `setInterval(() => process.stdout.write('x'.repeat(8192)), 1);\n`);
+    }
     writeFileSync(join(dir, 'ok.mjs'), 'process.exit(0);\n');
     mkdirSync(join(dir, 'logs'));
     return dir;
@@ -151,11 +178,16 @@ describe('ndigo verify', () => {
         });
     });
 
-    it('skips the full lanes when the scripts are absent', async () => {
+    it('runs every lane with --full even when the capability declares none', async () => {
         const dir = createApp({ test: false });
-        const result = await runCli(['verify', '--full', '--json', dir]);
+        const result = await runCli(['verify', '--capability', 'agent-surface', '--full', '--json', dir]);
         expect(result.code).toBe(0);
         const report = JSON.parse(result.out) as Document;
+        // `--full` means every lane: typecheck runs alongside test and lint,
+        // even though agent-surface itself declares no typecheck.
+        expect(report.checks.find((check) => check.id === 'typecheck')?.status).toBe('pass');
+        // The fixture declares neither test nor lint, so both stay skips.
+        expect(report.checks.find((check) => check.id === 'test')?.status).toBe('skip');
         const lint = report.checks.find((check) => check.id === 'lint');
         expect(lint?.status).toBe('skip');
         expect(report.summary.skip).toBeGreaterThanOrEqual(1);
@@ -176,5 +208,61 @@ describe('ndigo verify', () => {
         const before = readFileSync(join(dir, 'package.json'), 'utf8');
         await runCli(['verify', dir]);
         expect(readFileSync(join(dir, 'package.json'), 'utf8')).toBe(before);
+    });
+
+    it('fails cleanly when the mcp script exits right after initialize', async () => {
+        const dir = createApp({ exitsAfterInitialize: true });
+        const result = await runCli(['verify', '--capability', 'agent-surface', '--json', dir]);
+        // A crashed server is a failed check, never a crashed CLI: the report
+        // still parses and the remaining checks still ran (issue #730).
+        expect(result.code).toBe(1);
+        const report = JSON.parse(result.out) as Document;
+        expect(report.checks.find((check) => check.id === 'mcp-stdio:tools/list')?.status).toBe('fail');
+        expect(result.err).not.toContain('Unhandled');
+    });
+
+    it('keeps the report complete when a declared script is malformed', async () => {
+        const dir = createApp();
+        const manifest = JSON.parse(readFileSync(join(dir, 'package.json'), 'utf8')) as {
+            scripts: Record<string, string>;
+        };
+        manifest.scripts.inspect = 'node inspect.mjs\nnode other.mjs';
+        writeFileSync(join(dir, 'package.json'), `${JSON.stringify(manifest, null, 2)}\n`);
+        const result = await runCli(['verify', '--capability', 'agent-surface', '--json', dir]);
+        expect(result.code).toBe(1);
+        const report = JSON.parse(result.out) as Document;
+        expect(report.checks.find((check) => check.id === 'route-parity:*')).toMatchObject({
+            status: 'fail',
+            message: expect.stringContaining('spans multiple lines'),
+        });
+        // One malformed script must not discard the checks around it.
+        expect(report.checks.find((check) => check.id === 'doctor')?.status).toBe('pass');
+        expect(report.checks.find((check) => check.id === 'mcp-stdio:tools/list')?.status).toBe('pass');
+    });
+
+    it('caps the probe buffer when the mcp script floods stdout', async () => {
+        const dir = createApp({ floodsStdout: true });
+        const result = await runCli(['verify', '--capability', 'agent-surface', '--json', dir]);
+        expect(result.code).toBe(1);
+        const report = JSON.parse(result.out) as Document;
+        expect(report.checks.find((check) => check.id === 'route-parity:*')?.message).toContain('more than');
+    });
+
+    it('boots each app script once per run', async () => {
+        const dir = createApp();
+        // Counting variants: every boot appends one mark, so duplicate
+        // spawns cannot hide behind a green report (issue #730).
+        writeFileSync(
+            join(dir, 'inspect.mjs'),
+            `import { appendFileSync } from 'node:fs';\nappendFileSync('inspect.count', 'x');\nprocess.stdout.write(${JSON.stringify(JSON.stringify(FIXTURE_MANIFEST))});\n`
+        );
+        writeFileSync(
+            join(dir, 'mcp.mjs'),
+            `import { appendFileSync } from 'node:fs';\nimport { createInterface } from 'node:readline';\nconst rl = createInterface({ input: process.stdin });\nconst send = (value) => process.stdout.write(JSON.stringify(value) + '\\n');\nlet counted = false;\nrl.on('line', (line) => {\n    if (!counted) {\n        counted = true;\n        appendFileSync('mcp.count', 'x');\n    }\n    const message = JSON.parse(line);\n    if (message.method === 'initialize') {\n        send({ jsonrpc: '2.0', id: message.id, result: { protocolVersion: '2024-11-05', capabilities: {}, serverInfo: { name: 'fixture', version: '1' } } });\n    } else if (message.method === 'tools/list') {\n        send({ jsonrpc: '2.0', id: message.id, result: { tools: [{ name: 'lookup_order', inputSchema: { type: 'object' } }] } });\n    }\n});\n`
+        );
+        const result = await runCli(['verify', '--capability', 'agent-surface', '--json', dir]);
+        expect(result.code).toBe(0);
+        expect(readFileSync(join(dir, 'inspect.count'), 'utf8')).toBe('x');
+        expect(readFileSync(join(dir, 'mcp.count'), 'utf8')).toBe('x');
     });
 });

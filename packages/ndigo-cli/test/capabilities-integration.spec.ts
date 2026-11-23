@@ -34,14 +34,18 @@ interface Result {
 function capture(proc: ReturnType<typeof spawn>): Promise<Result> {
     const out: string[] = [];
     const err: string[] = [];
-    if (proc.stdout !== null) {
+    // Hoisted into locals: the narrowing from the null checks below does not
+    // reach the `for await` closures through the mutable property access.
+    const stdout = proc.stdout;
+    const stderr = proc.stderr;
+    if (stdout !== null) {
         void (async () => {
-            for await (const chunk of proc.stdout) out.push(String(chunk));
+            for await (const chunk of stdout) out.push(String(chunk));
         })().catch(() => undefined);
     }
-    if (proc.stderr !== null) {
+    if (stderr !== null) {
         void (async () => {
-            for await (const chunk of proc.stderr) err.push(String(chunk));
+            for await (const chunk of stderr) err.push(String(chunk));
         })().catch(() => undefined);
     }
     return new Promise<number>((resolveCode) => {

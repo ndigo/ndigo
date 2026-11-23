@@ -9,6 +9,11 @@ import { type PasswordEncoder, schemePrefix, UnknownPasswordSchemeError } from '
  *
  * Cost parameters are serialized into every hash, so a deployment can bump
  * them and rely on `needsRehash` to migrate stored hashes at login time.
+ *
+ * @example
+ * ```ts
+ * const value = {} as ScryptOptions;
+ * ```
  */
 export interface ScryptOptions {
     /**
@@ -75,6 +80,11 @@ const MAX_KEY_LENGTH = 64;
  * - constant-time derived-key comparison (`timingSafeEqual`);
  * - malformed strings throw `UnknownPasswordSchemeError` — never a silent
  *   `false` that could mask a bad migration.
+ *
+ * @example
+ * ```ts
+ * const instance = new ScryptPasswordEncoder();
+ * ```
  */
 export class ScryptPasswordEncoder implements PasswordEncoder {
     /**

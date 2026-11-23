@@ -16,6 +16,11 @@ export const AUTH_SCOPES_KEY = 'auth:scopes';
  * @param target - The decorated class or method.
  * @param context - The decorator context.
  * @returns Nothing; metadata is recorded on the context.
+ *
+ * @example
+ * ```ts
+ * authenticated();
+ * ```
  */
 export function authenticated(target: unknown, context: ClassDecoratorContext | ClassMethodDecoratorContext): void {
     const kind = context.kind;

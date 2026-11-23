@@ -8,6 +8,11 @@ import { type AuthAdapter } from './adapter';
  *
  * Allows the framework to support multiple authentication providers
  * (e.g., OIDC, SAML, JWT) by registering them at startup.
+ *
+ * @example
+ * ```ts
+ * const instance = new AuthRegistry();
+ * ```
  */
 export class AuthRegistry {
     /**

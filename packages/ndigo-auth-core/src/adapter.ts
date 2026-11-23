@@ -9,6 +9,11 @@ import { type AuthResult } from './state';
  *
  * Implementations of this interface handle the protocol-specific logic
  * (e.g., OAuth2, OIDC, SAML) to verify identities and manage sessions.
+ *
+ * @example
+ * ```ts
+ * const value = {} as AuthAdapter;
+ * ```
  */
 export interface AuthAdapter {
     /**

@@ -7,6 +7,11 @@
 /**
  * One tool as reported by a source: the same shape as MCP `tools/list`
  * entries (`name`, `description`, JSON Schema `inputSchema`).
+ *
+ * @example
+ * ```ts
+ * const value = {} as AIToolDescriptor;
+ * ```
  */
 export interface AIToolDescriptor {
     /** The tool name the model must call. */
@@ -20,6 +25,11 @@ export interface AIToolDescriptor {
 /**
  * Per-call context passed to {@link AIToolSource.call}. The `callId` is the
  * model-assigned tool-call id and is recorded as `gen_ai.tool.call.id`.
+ *
+ * @example
+ * ```ts
+ * const value = {} as AIToolCallContext;
+ * ```
  */
 export interface AIToolCallContext {
     /** The model-assigned tool-call id. */
@@ -29,6 +39,11 @@ export interface AIToolCallContext {
 /**
  * A source of tools the agent may call. Implementations decide where tools
  * live and how they execute; `McpToolRegistry` is the canonical one.
+ *
+ * @example
+ * ```ts
+ * const value = {} as AIToolSource;
+ * ```
  */
 export interface AIToolSource {
     /**

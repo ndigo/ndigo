@@ -7,6 +7,11 @@ import type { AIStreamEvent } from './agent';
 
 /**
  * One SSE frame produced from an {@link AIStreamEvent}.
+ *
+ * @example
+ * ```ts
+ * const value = {} as AIServerSentEvent;
+ * ```
  */
 export interface AIServerSentEvent {
     /** The SSE `event:` name (`text-delta`, `tool-call`, `tool-result`, `finish`). */

@@ -34,7 +34,7 @@ the other machine-readable commands emit one JSON document on stdout.
    must have no `conflicts[]`; `--apply` exits `1` rather than writing a partial
    plan.
 5. `ndigo verify --capability <id> --json` runs the declared checks; `--full`
-   adds the app's test and lint lanes.
+   adds the app's typecheck, test, and lint lanes.
 6. Finish with `ndigo lint && ndigo typecheck && ndigo test`.
 
 ## Traps

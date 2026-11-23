@@ -8,6 +8,11 @@ import { Route } from '@ndigo/router';
 
 /**
  * Resolves a route to the view target that should handle it.
+ *
+ * @example
+ * ```ts
+ * const value = {} as ViewMapping;
+ * ```
  */
 export interface ViewMapping {
     /**
@@ -26,6 +31,11 @@ const { defineProperty } = Reflect;
  *
  * Subclasses are responsible for the route matching strategy; this class only
  * handles default-target fallback and shared mapping state.
+ *
+ * @example
+ * ```ts
+ * const instance = new AbstractViewMapping();
+ * ```
  */
 export abstract class AbstractViewMapping extends AsNameAware(AsApplicationContextAware(Null)) implements ViewMapping {
     /**
@@ -101,6 +111,11 @@ export abstract class AbstractViewMapping extends AsNameAware(AsApplicationConte
 
 /**
  * Base implementation for mappings that resolve targets by path.
+ *
+ * @example
+ * ```ts
+ * const instance = new AbstractPathViewMapping();
+ * ```
  */
 export abstract class AbstractPathViewMapping extends AbstractViewMapping {
     /**

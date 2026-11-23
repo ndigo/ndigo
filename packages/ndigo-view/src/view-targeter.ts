@@ -11,6 +11,11 @@ import type { ViewTarget } from './view-target.js';
  * The context is assembled by the dispatcher once per render pass and only
  * when a targeter chain is configured — a platform that renders into its
  * single registered target never pays for it.
+ *
+ * @example
+ * ```ts
+ * const value = {} as ViewTargetingContext;
+ * ```
  */
 export interface ViewTargetingContext {
     /**
@@ -45,6 +50,11 @@ export interface ViewTargetingContext {
  * Targeters select *where* output is written, never *which representation*
  * is produced — that remains the view-resolver chain's job. Returning `null`
  * declines, handing the decision to the next targeter in the chain.
+ *
+ * @example
+ * ```ts
+ * const value = {} as ViewTargeter;
+ * ```
  */
 export interface ViewTargeter {
     /**
@@ -63,6 +73,11 @@ export interface ViewTargeter {
  * Ordering is therefore policy — put the most specific targeter first. A
  * catch-all placed last deliberately makes the platform's fallback target
  * unreachable.
+ *
+ * @example
+ * ```ts
+ * const instance = new ViewTargeterComposite();
+ * ```
  */
 export class ViewTargeterComposite implements ViewTargeter {
     /**
@@ -126,6 +141,11 @@ export class ViewTargeterComposite implements ViewTargeter {
  * Intended for tests, single-surface applications, and platforms whose
  * destination is fixed for the application's lifetime. It is not a fallback:
  * the dispatcher's registered `VIEW_TARGET` already plays that role.
+ *
+ * @example
+ * ```ts
+ * const instance = new FixedViewTargeter();
+ * ```
  */
 export class FixedViewTargeter implements ViewTargeter {
     /**

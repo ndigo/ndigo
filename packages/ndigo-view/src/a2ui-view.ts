@@ -10,6 +10,11 @@ import type { ViewResolver } from './view-resolver.js';
 /**
  * Serializes an array of A2UI messages (for example `createSurface` and
  * `updateComponents`) as `application/a2ui+json`.
+ *
+ * @example
+ * ```ts
+ * const instance = new A2UIView();
+ * ```
  */
 export class A2UIView extends AbstractSerializingView {
     /**

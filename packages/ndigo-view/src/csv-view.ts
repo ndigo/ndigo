@@ -6,6 +6,11 @@ import { AbstractSerializingView } from './abstract-serializing-view.js';
 
 /**
  * Construction options for {@link CSVView}.
+ *
+ * @example
+ * ```ts
+ * const value = {} as CSVViewOptions;
+ * ```
  */
 export interface CSVViewOptions {
     /**
@@ -32,6 +37,11 @@ export interface CSVViewOptions {
  * A view that encodes an array of record objects as a CSV document
  * (`text/csv`), RFC 4180-style: a header row, `\r\n` row endings, and
  * quoting of fields containing the delimiter, double quotes, or line breaks.
+ *
+ * @example
+ * ```ts
+ * const instance = new CSVView();
+ * ```
  */
 export class CSVView extends AbstractSerializingView {
     /**

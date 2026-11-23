@@ -10,6 +10,11 @@ import { AbstractSerializingView } from './abstract-serializing-view.js';
  *
  * Accepts a `Uint8Array` (passed through), an `ArrayBuffer`, or a string
  * (UTF-8 encoded).
+ *
+ * @example
+ * ```ts
+ * const instance = new OctetStreamView();
+ * ```
  */
 export class OctetStreamView extends AbstractSerializingView {
     /**

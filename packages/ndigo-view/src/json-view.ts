@@ -12,6 +12,11 @@ import { AbstractSerializingView } from './abstract-serializing-view.js';
  * JSON (a `.json` path extension or `Accept: application/json`). Encoding
  * serializes the model with `JSON.stringify` — no platform I/O, so it serves
  * Node HTTP responses and browser SSR from the same class.
+ *
+ * @example
+ * ```ts
+ * const instance = new JSONView();
+ * ```
  */
 export class JSONView extends AbstractSerializingView {
     /**

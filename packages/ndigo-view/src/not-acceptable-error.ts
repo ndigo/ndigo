@@ -6,6 +6,14 @@
  */
 import { FrameworkError, MediaType } from '@ndigo/core';
 
+/**
+ * NotAcceptableError.
+ *
+ * @example
+ * ```ts
+ * const instance = new NotAcceptableError();
+ * ```
+ */
 export class NotAcceptableError extends FrameworkError {
     /**
      * The `Symbol.toStringTag` value for this instance.

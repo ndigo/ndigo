@@ -21,6 +21,11 @@ import { getApiDocs, type APIDocsMetadata, type OpenAPIResponseDocs } from './ap
  * What the generator needs from a handler mapping: the registered route
  * table. `RadixMetadataHandlerMapping` (and any
  * `AbstractHandlerMethodMapping`) satisfies it structurally.
+ *
+ * @example
+ * ```ts
+ * const value = {} as RouteMappingTable;
+ * ```
  */
 export interface RouteMappingTable {
     /**
@@ -33,6 +38,11 @@ export interface RouteMappingTable {
 
 /**
  * A JSON Schema object (subset) — the OpenAPI `schema` field.
+ *
+ * @example
+ * ```ts
+ * const value = {} as OpenAPISchemaObject;
+ * ```
  */
 export interface OpenAPISchemaObject {
     [key: string]: unknown;
@@ -40,6 +50,11 @@ export interface OpenAPISchemaObject {
 
 /**
  * An OpenAPI parameter object.
+ *
+ * @example
+ * ```ts
+ * const value = {} as OpenAPIParameter;
+ * ```
  */
 export interface OpenAPIParameter {
     /** Parameter name as it appears in the request. */
@@ -56,6 +71,11 @@ export interface OpenAPIParameter {
 
 /**
  * An OpenAPI request body.
+ *
+ * @example
+ * ```ts
+ * const value = {} as OpenAPIRequestBody;
+ * ```
  */
 export interface OpenAPIRequestBody {
     /** Whether a body is required. */
@@ -66,6 +86,11 @@ export interface OpenAPIRequestBody {
 
 /**
  * An OpenAPI operation response object.
+ *
+ * @example
+ * ```ts
+ * const value = {} as OpenAPIResponse;
+ * ```
  */
 export interface OpenAPIResponse {
     /** Human-readable response description. */
@@ -81,6 +106,11 @@ export interface OpenAPIResponse {
  * An OpenAPI security scheme object (the subset the generator carries).
  * Declared through {@link OpenAPIGeneratorOptions.securitySchemes} and
  * referenced by name from operation/`@apiDocs` `security` requirements.
+ *
+ * @example
+ * ```ts
+ * const value = {} as OpenAPISecurityScheme;
+ * ```
  */
 export interface OpenAPISecurityScheme {
     /** Security scheme type. */
@@ -104,6 +134,11 @@ export interface OpenAPISecurityScheme {
 /**
  * An OpenAPI operation object. Framework-specific conditions are preserved
  * under `x-ndigo-*` extensions rather than dropped.
+ *
+ * @example
+ * ```ts
+ * const value = {} as OpenAPIOperation;
+ * ```
  */
 export interface OpenAPIOperation {
     /** Unique operation id (defaults to the handler method name). */
@@ -136,11 +171,21 @@ export interface OpenAPIOperation {
 
 /**
  * An OpenAPI path item — operations keyed by lowercase HTTP method.
+ *
+ * @example
+ * ```ts
+ * type _Alias = OpenAPIPathItem;
+ * ```
  */
 export type OpenAPIPathItem = Partial<Record<string, OpenAPIOperation>>;
 
 /**
  * The generated OpenAPI 3.0.3 document.
+ *
+ * @example
+ * ```ts
+ * const value = {} as OpenAPIDocument;
+ * ```
  */
 export interface OpenAPIDocument {
     /** The OpenAPI version emitted (`3.0.3`). */
@@ -177,6 +222,11 @@ export interface OpenAPIDocument {
 
 /**
  * Options for {@link OpenAPISpecGenerator.generate}.
+ *
+ * @example
+ * ```ts
+ * const value = {} as OpenAPIGeneratorOptions;
+ * ```
  */
 export interface OpenAPIGeneratorOptions {
     /** Spec `info.title`; defaults to `'API'`. */
@@ -436,6 +486,11 @@ class SchemaComponents {
  *
  * Thread-safe and pure: `generate` reads dispatch metadata and returns a
  * fresh document; nothing is cached on the instance.
+ *
+ * @example
+ * ```ts
+ * const instance = new OpenAPISpecGenerator();
+ * ```
  */
 export class OpenAPISpecGenerator {
     /**

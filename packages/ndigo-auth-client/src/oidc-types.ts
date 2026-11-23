@@ -8,6 +8,11 @@ import type { AuthResult } from '@ndigo/auth-core';
 /**
  * Error codes for OIDC failures. The message is safe to expose; the cause
  * (when attached) carries internal detail.
+ *
+ * @example
+ * ```ts
+ * type _Alias = OIDCErrorCode;
+ * ```
  */
 export type OIDCErrorCode =
     | 'configuration'
@@ -22,6 +27,11 @@ export type OIDCErrorCode =
 /**
  * An OIDC-specific failure. Every authorization/token failure mode throws
  * this so callers can distinguish provider errors from programming errors.
+ *
+ * @example
+ * ```ts
+ * const instance = new OIDCError();
+ * ```
  */
 export class OIDCError extends FrameworkError {
     /**
@@ -69,6 +79,11 @@ export class OIDCError extends FrameworkError {
  * The adapter is **fail-closed**: at least one trusted token-verification
  * source is required at construction — `jwksUrl`, `discovery`, or an explicit
  * `tokenValidator`. Constructing without one throws.
+ *
+ * @example
+ * ```ts
+ * const value = {} as OIDCAdapterConfig;
+ * ```
  */
 export interface OIDCAdapterConfig {
     /** The issuer identifier (e.g., 'https://auth.example.com'). */
@@ -144,6 +159,11 @@ export interface OIDCAdapterConfig {
  * authorization response. The nonce and PKCE verifier live in the adapter's
  * configured {@link OIDCAdapterConfig.pendingStore} — see that option for
  * surviving the redirect across adapter instances.
+ *
+ * @example
+ * ```ts
+ * const value = {} as AuthorizationRequest;
+ * ```
  */
 export interface AuthorizationRequest {
     /** The full authorization-endpoint URL to redirect the user to. */
@@ -159,6 +179,14 @@ export interface AuthorizationRequest {
 }
 
 /** Validated subset of an OIDC discovery document. */
+/**
+ * DiscoveryDocument.
+ *
+ * @example
+ * ```ts
+ * const value = {} as DiscoveryDocument;
+ * ```
+ */
 export interface DiscoveryDocument {
     /** The issuer identifier. */
     issuer: string;
@@ -173,6 +201,14 @@ export interface DiscoveryDocument {
 }
 
 /** Validated token-endpoint response. */
+/**
+ * TokenResponse.
+ *
+ * @example
+ * ```ts
+ * const value = {} as TokenResponse;
+ * ```
+ */
 export interface TokenResponse {
     /** The ID token. */
     idToken: string;
@@ -192,6 +228,11 @@ export interface TokenResponse {
  * `nonce` and `codeVerifier` are secrets — treat them like credentials when
  * persisting; whoever holds them can bind a forged authorization response to
  * this request.
+ *
+ * @example
+ * ```ts
+ * const value = {} as PendingAuthorization;
+ * ```
  */
 export interface PendingAuthorization {
     /** The CSRF `state` value, used as the store key. */
@@ -218,6 +259,11 @@ export interface PendingAuthorization {
  * Redemption is single-use: the adapter deletes the entry after a successful
  * or expired lookup. Expiry is enforced by the adapter on every exchange;
  * implementations MAY additionally purge expired entries.
+ *
+ * @example
+ * ```ts
+ * const value = {} as PendingAuthorizationStore;
+ * ```
  */
 export interface PendingAuthorizationStore {
     /**
@@ -254,6 +300,11 @@ export interface PendingAuthorizationStore {
  * token was issued for. Set when the code exchange (or a rotation) captures
  * the token; consulted on every refresh so the new ID token cannot switch
  * subjects mid-session.
+ *
+ * @example
+ * ```ts
+ * const value = {} as RefreshTokenBinding;
+ * ```
  */
 export interface RefreshTokenBinding {
     /** The verified `sub` of the ID token the refresh token was issued with. */
@@ -274,6 +325,11 @@ export interface RefreshTokenBinding {
  * are redeemable — an access or ID token is never a refresh credential
  * (the SE-7 mirror: as refresh tokens never authenticate, access tokens
  * never refresh).
+ *
+ * @example
+ * ```ts
+ * const value = {} as RefreshTokenStore;
+ * ```
  */
 export interface RefreshTokenStore {
     /**
@@ -310,6 +366,11 @@ export interface RefreshTokenStore {
  * the provider's refresh token. `refreshToken` is `null` when the provider
  * issued none for this result (a previously captured token then stays
  * current).
+ *
+ * @example
+ * ```ts
+ * const value = {} as OIDCResult;
+ * ```
  */
 export interface OIDCResult extends AuthResult {
     /** The provider's refresh token (`refresh_token`), or null when none was issued. */

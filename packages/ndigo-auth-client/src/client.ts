@@ -11,6 +11,11 @@ import { AuthRegistry } from '@ndigo/auth-core';
  * Responsible for managing the authentication state, handling token storage,
  * and coordinating with authentication adapters for client-side flows
  * (e.g., redirects, callbacks, token storage).
+ *
+ * @example
+ * ```ts
+ * const instance = new AuthClient();
+ * ```
  */
 export class AuthClient {
     /**

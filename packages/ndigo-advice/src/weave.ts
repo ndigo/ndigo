@@ -23,6 +23,11 @@ import type { MethodInterceptorRule } from './interceptor';
  * The outcome of weaving one instance.
  *
  * @typeParam T - The instance type.
+ *
+ * @example
+ * ```ts
+ * const value = {} as WeaveResult;
+ * ```
  */
 export interface WeaveResult<T extends object> {
     /**
@@ -55,6 +60,11 @@ const WOVEN_BY = new WeakMap<object, object>();
  *
  * @param instance - The object to inspect.
  * @returns `true` when this module already wove it.
+ *
+ * @example
+ * ```ts
+ * isWoven();
+ * ```
  */
 export function isWoven(instance: object): boolean {
     return WOVEN.has(instance);
@@ -66,6 +76,11 @@ export function isWoven(instance: object): boolean {
  *
  * @param instance - The woven object to inspect.
  * @returns The owning processor, or `undefined`.
+ *
+ * @example
+ * ```ts
+ * wovenBy();
+ * ```
  */
 export function wovenBy(instance: object): object | undefined {
     return WOVEN_BY.get(instance);
@@ -77,6 +92,11 @@ export function wovenBy(instance: object): object | undefined {
  *
  * @param instance - The woven object.
  * @param owner - The processor that wove it.
+ *
+ * @example
+ * ```ts
+ * markWovenBy();
+ * ```
  */
 export function markWovenBy(instance: object, owner: object): void {
     WOVEN_BY.set(instance, owner);
@@ -129,6 +149,11 @@ export function weaveInstance<T extends object>(
  * @param instance - The object to advise.
  * @param plans - The compiled per-method plans.
  * @returns The instance to use and the strategy that produced it.
+ *
+ * @example
+ * ```ts
+ * weavePlans();
+ * ```
  */
 export function weavePlans<T extends object>(instance: T, plans: readonly MethodInterceptorPlan[]): WeaveResult<T> {
     if (plans.length === 0) {
@@ -217,6 +242,11 @@ export function createIntercepted<T extends object>(
  * @param rules - The rules to compile, or a registry holding them.
  * @param entryName - The container entry name; defaults to the class name.
  * @returns One plan per matched method.
+ *
+ * @example
+ * ```ts
+ * planFor();
+ * ```
  */
 export function planFor(
     instance: object,

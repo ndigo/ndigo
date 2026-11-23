@@ -17,6 +17,11 @@ import type { MethodInterceptor, MethodInterceptorRule, MethodInvocation } from 
  *
  * @param rule - The rule to read.
  * @returns The effective order.
+ *
+ * @example
+ * ```ts
+ * ruleOrder();
+ * ```
  */
 export function ruleOrder(rule: MethodInterceptorRule): number {
     return rule.order ?? rule.use.order ?? DEFAULT_ADVICE_ORDER;
@@ -28,6 +33,11 @@ export function ruleOrder(rule: MethodInterceptorRule): number {
  *
  * @param rules - The rules to sort.
  * @returns A new array in execution order.
+ *
+ * @example
+ * ```ts
+ * sortRules();
+ * ```
  */
 export function sortRules(rules: readonly MethodInterceptorRule[]): MethodInterceptorRule[] {
     return [...rules].sort(compareBy(ruleOrder, numberComparator.compare));
@@ -49,6 +59,11 @@ export function sortRules(rules: readonly MethodInterceptorRule[]): MethodInterc
  * @param invocation - The invocation passed to every interceptor.
  * @param tail - Invokes the installed method on the target.
  * @returns The chain's final result.
+ *
+ * @example
+ * ```ts
+ * invokeChain();
+ * ```
  */
 export function invokeChain(
     interceptors: readonly MethodInterceptor[],

@@ -82,6 +82,11 @@ function runAnnotated(instance: unknown, key: MethodAnnotationKey<true>): void {
  * `init()`.
  *
  * @returns A method decorator.
+ *
+ * @example
+ * ```ts
+ * preInit();
+ * ```
  */
 export function preInit() {
     return function <M extends Function>(target: M, context: ClassMethodDecoratorContext): M {
@@ -93,6 +98,11 @@ export function preInit() {
  * Marks a method to run after `init()`, before the instance is served.
  *
  * @returns A method decorator.
+ *
+ * @example
+ * ```ts
+ * postInit();
+ * ```
  */
 export function postInit() {
     return function <M extends Function>(target: M, context: ClassMethodDecoratorContext): M {
@@ -104,6 +114,11 @@ export function postInit() {
  * Marks a method to run before the release verb.
  *
  * @returns A method decorator.
+ *
+ * @example
+ * ```ts
+ * preDestroy();
+ * ```
  */
 export function preDestroy() {
     return function <M extends Function>(target: M, context: ClassMethodDecoratorContext): M {

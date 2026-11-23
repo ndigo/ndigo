@@ -6,6 +6,11 @@ import { ContextToken } from './context-tokens';
 
 /**
  * Interface that defines a registry for shared instances.
+ *
+ * @example
+ * ```ts
+ * const value = {} as Registry;
+ * ```
  */
 export interface Registry {
     /** Destroys a value by token. @param token - The value token. */

@@ -18,6 +18,11 @@ export const $aware: unique symbol = Symbol.for('@@aware');
  * An interface indicating that a value is eligible to be notified by the factory of a particular framework object through a callback-style method. The actual method signature is determined by individual subinterfaces but should typically consist of just one void-returning method that accepts a single argument, e.g. `setName( name )`.
  *
  * Note that merely implementing `Aware` provides no default functionality. Rather, processing must be done explicitly, for example in an `EntryProcessor`. Refer to `ApplicationContextAwareProcessor` for an example of processing specific `*Aware` interface callbacks
+ *
+ * @example
+ * ```ts
+ * const value = {} as Aware;
+ * ```
  */
 export interface Aware {
     /**
@@ -28,6 +33,11 @@ export interface Aware {
 
 /**
  * Interface to be implemented by values that want to be aware of their value name in a factory.
+ *
+ * @example
+ * ```ts
+ * const value = {} as NameAware;
+ * ```
  */
 export interface NameAware extends Aware {
     /**

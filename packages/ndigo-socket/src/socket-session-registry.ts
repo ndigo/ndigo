@@ -113,6 +113,11 @@ export interface SocketSessionRegistry {
 
 /**
  * Marks an object that can receive a {@link SocketSessionRegistry}.
+ *
+ * @example
+ * ```ts
+ * const value = {} as SocketSessionRegistryAware;
+ * ```
  */
 export interface SocketSessionRegistryAware extends Aware {
     /**

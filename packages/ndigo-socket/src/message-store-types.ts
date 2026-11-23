@@ -4,6 +4,14 @@
 import type { StompBody } from './stomp-frame';
 
 /** A stored `/queue` message — the durable unit behind the backlog. */
+/**
+ * StoredQueueMessage.
+ *
+ * @example
+ * ```ts
+ * const value = {} as StoredQueueMessage;
+ * ```
+ */
 export interface StoredQueueMessage {
     /** Broker-issued id; the dedupe key on replay (at-least-once). */
     readonly messageId: string;
@@ -25,6 +33,14 @@ export interface StoredQueueMessage {
 }
 
 /** What a caller asks the store to retain. */
+/**
+ * QueueStoreRetention.
+ *
+ * @example
+ * ```ts
+ * const value = {} as QueueStoreRetention;
+ * ```
+ */
 export interface QueueStoreRetention {
     /** Drop messages this old or older (the boundary is inclusive). */
     readonly ttlMs?: number;
@@ -37,6 +53,11 @@ export interface QueueStoreRetention {
  *
  * Every method rejects with a `RangeError` when the destination is not a
  * non-empty string (validated identically by every backend).
+ *
+ * @example
+ * ```ts
+ * const value = {} as QueueMessageStore;
+ * ```
  */
 export interface QueueMessageStore {
     /**
@@ -102,6 +123,14 @@ export interface QueueMessageStore {
 }
 
 /** Options for `InMemoryQueueMessageStore`. */
+/**
+ * InMemoryQueueStoreOptions.
+ *
+ * @example
+ * ```ts
+ * const value = {} as InMemoryQueueStoreOptions;
+ * ```
+ */
 export interface InMemoryQueueStoreOptions {
     /**
      * Retained messages per destination (oldest dropped past the bound).
@@ -129,6 +158,14 @@ export interface InMemoryQueueStoreOptions {
 }
 
 /** A snapshot of `InMemoryQueueMessageStore` retention (`InMemoryQueueMessageStore.stats`). */
+/**
+ * InMemoryQueueStoreStats.
+ *
+ * @example
+ * ```ts
+ * const value = {} as InMemoryQueueStoreStats;
+ * ```
+ */
 export interface InMemoryQueueStoreStats {
     /** Distinct destinations currently retaining at least one message. */
     readonly destinations: number;

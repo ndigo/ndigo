@@ -7,6 +7,11 @@
  * Request sources captured from the upgrade request — the same vocabulary
  * HTTP handlers use (`query`/`headers`/`cookies`), so WebSocket handlers can
  * read and validate them (e.g. `z.email().parse(session.query.user)`).
+ *
+ * @example
+ * ```ts
+ * const value = {} as SocketRequestSources;
+ * ```
  */
 export interface SocketRequestSources {
     /** Query parameters from the upgrade URL. */

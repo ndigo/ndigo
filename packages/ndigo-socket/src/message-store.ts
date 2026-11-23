@@ -38,6 +38,11 @@ import type { StompBody } from './stomp-frame';
  *
  * @param body - The message body.
  * @returns The transmitted octet count.
+ *
+ * @example
+ * ```ts
+ * materialOctets();
+ * ```
  */
 export function materialOctets(body: StompBody): number {
     return typeof body === 'string' ? new TextEncoder().encode(body).length : body.length;
@@ -51,6 +56,11 @@ export function materialOctets(body: StompBody): number {
  *
  * @param headers - The frame's headers.
  * @returns The transmitted header octet count.
+ *
+ * @example
+ * ```ts
+ * headerOctets();
+ * ```
  */
 export function headerOctets(headers: Readonly<Record<string, string>>): number {
     let total = 0;

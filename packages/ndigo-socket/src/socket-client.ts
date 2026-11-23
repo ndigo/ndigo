@@ -19,6 +19,11 @@ import { AsyncReader } from './async-reader';
  * - `reconnecting` — the peer dropped unexpectedly; a retry is scheduled.
  * - `closed` — deliberate close (or `reconnect: null` after a drop);
  * terminal, never reconnects.
+ *
+ * @example
+ * ```ts
+ * type _Alias = SocketStatus;
+ * ```
  */
 export type SocketStatus = 'connecting' | 'open' | 'reconnecting' | 'closed';
 
@@ -80,6 +85,11 @@ export interface ReconnectPolicy {
 /**
  * Environment wiring for an immediate retry (e.g. the browser `online`
  * event — `ndigo-platform-web` provides an implementation).
+ *
+ * @example
+ * ```ts
+ * const value = {} as ReconnectTrigger;
+ * ```
  */
 export interface ReconnectTrigger {
     /**

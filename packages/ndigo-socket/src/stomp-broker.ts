@@ -149,8 +149,24 @@ import type {
 } from './_stomp-broker-types';
 
 /** STOMP ack modes (STOMP 1.2 §1.3.1). */
+/**
+ * StompAckMode.
+ *
+ * @example
+ * ```ts
+ * type _Alias = StompAckMode;
+ * ```
+ */
 export type StompAckMode = 'auto' | 'client' | 'client-individual';
 
+/**
+ * StompBrokerOptions.
+ *
+ * @example
+ * ```ts
+ * const value = {} as StompBrokerOptions;
+ * ```
+ */
 export interface StompBrokerOptions {
     /** Optional application-owned live transport; only `/topic/*` crosses nodes. */
     fanout?: SocketFanout;

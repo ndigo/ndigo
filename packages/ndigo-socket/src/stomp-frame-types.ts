@@ -1,5 +1,10 @@
 /**
  * STOMP frame contracts.
+ *
+ * @example
+ * ```ts
+ * type _Alias = StompBody;
+ * ```
  */
 
 export type StompBody = string | Uint8Array;
@@ -20,6 +25,14 @@ export interface StompFrame {
 }
 
 /** Byte-like inputs the codec accepts (binary WS frames, node Buffers). */
+/**
+ * StompWireInput.
+ *
+ * @example
+ * ```ts
+ * type _Alias = StompWireInput;
+ * ```
+ */
 export type StompWireInput = string | Uint8Array | ArrayBuffer;
 
 /** Raised on malformed frames (missing NUL, bad `content-length`, …). */

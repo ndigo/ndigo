@@ -308,6 +308,11 @@ function assertTrailingEols(units: ArrayLike<string | number>, from: number): vo
  * @param frame - The wire frame (a WebSocket text or binary message).
  * @returns The parsed frame (`command: ''` for a ping).
  * @throws on malformed input.
+ *
+ * @example
+ * ```ts
+ * parseStompFrame();
+ * ```
  */
 export function parseStompFrame(frame: StompWireInput): StompFrame {
     if (typeof frame === 'string') {
@@ -387,6 +392,11 @@ export function parseStompFrame(frame: StompWireInput): StompFrame {
  * @param frame - The wire frame text.
  * @returns The parsed frame (`command: ''` for a ping).
  * @throws on malformed input.
+ *
+ * @example
+ * ```ts
+ * parseTextFrame();
+ * ```
  */
 export function parseTextFrame(frame: string): StompFrame {
     if (textPing.test(frame)) {
@@ -449,6 +459,11 @@ export function parseTextFrame(frame: string): StompFrame {
  * @param frame - The frame to serialize.
  * @returns The wire frame (string for text bodies, bytes for binary).
  * @throws on values that cannot be framed.
+ *
+ * @example
+ * ```ts
+ * serializeStompFrame();
+ * ```
  */
 export function serializeStompFrame(frame: StompFrame): StompBody {
     const { command, headers, body } = frame;
@@ -514,6 +529,11 @@ export function serializeStompFrame(frame: StompFrame): StompBody {
  *
  * @param body - The body.
  * @returns The text form.
+ *
+ * @example
+ * ```ts
+ * bodyAsText();
+ * ```
  */
 export function bodyAsText(body: StompBody): string {
     if (typeof body === 'string') {

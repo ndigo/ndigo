@@ -15,11 +15,21 @@ import type { LoadedRegistry } from './registry-types.js';
 
 /**
  * Package managers the installer can drive.
+ *
+ * @example
+ * ```ts
+ * type _Alias = PackageManager;
+ * ```
  */
 export type PackageManager = 'pnpm' | 'npm' | 'yarn' | 'bun';
 
 /**
  * One item in an install plan.
+ *
+ * @example
+ * ```ts
+ * const value = {} as InstallPlanItem;
+ * ```
  */
 export interface InstallPlanItem {
     /** Item name. */
@@ -30,6 +40,11 @@ export interface InstallPlanItem {
 
 /**
  * One file in an install plan.
+ *
+ * @example
+ * ```ts
+ * const value = {} as InstallPlanFile;
+ * ```
  */
 export interface InstallPlanFile {
     /** Item that declared the file. */
@@ -44,6 +59,11 @@ export interface InstallPlanFile {
 
 /**
  * A resolved install plan, before any filesystem changes.
+ *
+ * @example
+ * ```ts
+ * const value = {} as InstallPlan;
+ * ```
  */
 export interface InstallPlan {
     /** Root registry source. */
@@ -58,6 +78,11 @@ export interface InstallPlan {
 
 /**
  * Options for applying an install plan.
+ *
+ * @example
+ * ```ts
+ * const value = {} as InstallOptions;
+ * ```
  */
 export interface InstallOptions {
     /** Application directory. */
@@ -77,6 +102,11 @@ export interface InstallOptions {
 
 /**
  * Result of applying an install plan.
+ *
+ * @example
+ * ```ts
+ * const value = {} as InstallResult;
+ * ```
  */
 export interface InstallResult {
     /** Files written (or that would be written in a dry run). */
@@ -91,6 +121,11 @@ export interface InstallResult {
 
 /**
  * Lockfile entry for one installed item.
+ *
+ * @example
+ * ```ts
+ * const value = {} as UiLockEntry;
+ * ```
  */
 export interface UiLockEntry {
     /** Root registry source. */
@@ -105,6 +140,11 @@ export interface UiLockEntry {
 
 /**
  * Contents of `ui.lock.json`.
+ *
+ * @example
+ * ```ts
+ * const value = {} as UiLockFile;
+ * ```
  */
 export interface UiLockFile {
     /** Lockfile format version. */
@@ -120,6 +160,11 @@ export interface UiLockFile {
  * @param names - Requested item names.
  * @param aliases - Alias table.
  * @returns The install plan.
+ *
+ * @example
+ * ```ts
+ * planInstall();
+ * ```
  */
 export async function planInstall(
     registry: LoadedRegistry,
@@ -166,6 +211,11 @@ export async function planInstall(
  * @param plan - Resolved install plan.
  * @param options - Application directory and behavior flags.
  * @returns The written/unchanged files and dependencies.
+ *
+ * @example
+ * ```ts
+ * applyInstall();
+ * ```
  */
 export async function applyInstall(plan: InstallPlan, options: InstallOptions): Promise<InstallResult> {
     const { dir, dryRun = false, overwrite = false, install = true, dependencyStdio = 'inherit' } = options;
@@ -201,6 +251,11 @@ export async function applyInstall(plan: InstallPlan, options: InstallOptions): 
  * Detects the package manager from the application lockfile.
  * @param dir - Application directory.
  * @returns The package manager (defaults to npm).
+ *
+ * @example
+ * ```ts
+ * detectPackageManager();
+ * ```
  */
 export function detectPackageManager(dir: string): PackageManager {
     if (existsSync(join(dir, 'pnpm-lock.yaml'))) return 'pnpm';

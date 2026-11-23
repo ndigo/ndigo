@@ -7,7 +7,13 @@ import { join } from 'node:path';
 import { CAPABILITIES_DIR, loadCheckIds, loadGuideSlugs, loadPackageFacts, loadSkillIds } from './catalog.js';
 import type { CapabilityEntry, CatalogLoad, PackageFact } from './catalog.js';
 
-/** Everything a catalog entry may reference, resolved once per check pass. */
+/** Everything a catalog entry may reference, resolved once per check pass.
+ *
+ * @example
+ * ```ts
+ * const value = {} as CatalogReferences;
+ * ```
+ */
 export interface CatalogReferences {
     /** Guide slugs listed in the shipped docs index. */
     readonly guides: ReadonlySet<string>;
@@ -19,7 +25,13 @@ export interface CatalogReferences {
     readonly checks: ReadonlySet<string>;
 }
 
-/** The resolved reference sets plus any read errors from the generated indexes. */
+/** The resolved reference sets plus any read errors from the generated indexes.
+ *
+ * @example
+ * ```ts
+ * const value = {} as CatalogReferenceLoad;
+ * ```
+ */
 export interface CatalogReferenceLoad {
     /** The sets a catalog validates against. */
     readonly references: CatalogReferences;
@@ -31,6 +43,11 @@ export interface CatalogReferenceLoad {
  * Resolves the reference sets the catalog validates against.
  *
  * @returns The guides, skills, package facts, and checks shipped with the CLI.
+ *
+ * @example
+ * ```ts
+ * loadCatalogReferences();
+ * ```
  */
 export function loadCatalogReferences(): CatalogReferenceLoad {
     const errors: string[] = [];
@@ -52,6 +69,11 @@ export function loadCatalogReferences(): CatalogReferenceLoad {
  * @param catalog - The loaded capabilities and items.
  * @param references - The reference sets to resolve against.
  * @returns Human-readable problems; empty when the catalog is consistent.
+ *
+ * @example
+ * ```ts
+ * validateCatalog();
+ * ```
  */
 export function validateCatalog(catalog: CatalogLoad, references: CatalogReferences): string[] {
     const problems = [...catalog.errors];

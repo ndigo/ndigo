@@ -4,6 +4,11 @@
 
 /**
  * One file entry in a registry item.
+ *
+ * @example
+ * ```ts
+ * const value = {} as RegistryFile;
+ * ```
  */
 export interface RegistryFile {
     /** Path relative to the chunk that declared the item. */
@@ -18,6 +23,11 @@ export interface RegistryFile {
 
 /**
  * One item in a registry chunk.
+ *
+ * @example
+ * ```ts
+ * const value = {} as RegistryItem;
+ * ```
  */
 export interface RegistryItem {
     /** Unique item name, e.g. `dialog`. */
@@ -44,6 +54,11 @@ export interface RegistryItem {
 
 /**
  * A registry chunk (`registry.json`).
+ *
+ * @example
+ * ```ts
+ * const value = {} as RegistryChunk;
+ * ```
  */
 export interface RegistryChunk {
     /** Registry name (root chunks only). */
@@ -58,6 +73,11 @@ export interface RegistryChunk {
 
 /**
  * An item plus the location of the chunk that declared it.
+ *
+ * @example
+ * ```ts
+ * const value = {} as LocatedRegistryItem;
+ * ```
  */
 export interface LocatedRegistryItem extends RegistryItem {
     /** Directory or URL the item's file paths are relative to. */
@@ -68,6 +88,11 @@ export interface LocatedRegistryItem extends RegistryItem {
 
 /**
  * A fully merged registry, with includes resolved.
+ *
+ * @example
+ * ```ts
+ * const value = {} as LoadedRegistry;
+ * ```
  */
 export interface LoadedRegistry {
     /** Root source (absolute path or URL). */

@@ -18,6 +18,11 @@ export const DEFAULT_REGISTRY_SOURCE = 'https://ndigo.dev/r/registry.json';
 
 /**
  * Filesystem aliases used to resolve registry targets.
+ *
+ * @example
+ * ```ts
+ * const value = {} as UiAliases;
+ * ```
  */
 export interface UiAliases {
     /** Directory for `@ui/` targets. */
@@ -32,6 +37,11 @@ export interface UiAliases {
 
 /**
  * Contents of `ndigo.ui.json`.
+ *
+ * @example
+ * ```ts
+ * const value = {} as UiConfig;
+ * ```
  */
 export interface UiConfig {
     /** Root registry source (path or URL). */
@@ -58,6 +68,11 @@ const targetPattern = /^@(ui|lib|components|hooks)\/(.+)$/u;
  * Reads `ndigo.ui.json`; absent files return `null`.
  * @param dir - Application directory.
  * @returns The configuration, or `null` when absent.
+ *
+ * @example
+ * ```ts
+ * readUiConfig();
+ * ```
  */
 export function readUiConfig(dir: string): UiConfig | null {
     const path = join(dir, UI_CONFIG_FILE);
@@ -75,6 +90,11 @@ export function readUiConfig(dir: string): UiConfig | null {
  * @param config - Configuration to write.
  * @param force - Overwrite an existing file.
  * @returns The written path.
+ *
+ * @example
+ * ```ts
+ * writeUiConfig();
+ * ```
  */
 export function writeUiConfig(dir: string, config: UiConfig, force: boolean): string {
     const path = join(dir, UI_CONFIG_FILE);
@@ -95,6 +115,11 @@ export function writeUiConfig(dir: string, config: UiConfig, force: boolean): st
  * Resolves the full alias table for an application.
  * @param dir - Application directory.
  * @returns Defaults merged with the configuration overrides.
+ *
+ * @example
+ * ```ts
+ * resolveAliases();
+ * ```
  */
 export function resolveAliases(dir: string): UiAliases {
     return { ...DEFAULT_ALIASES, ...readUiConfig(dir)?.aliases };
@@ -105,6 +130,11 @@ export function resolveAliases(dir: string): UiAliases {
  * @param dir - Application directory (for the config lookup).
  * @param flag - `--registry` value, when provided.
  * @returns The normalized registry source.
+ *
+ * @example
+ * ```ts
+ * resolveRegistrySource();
+ * ```
  */
 export function resolveRegistrySource(dir: string, flag?: string): string {
     const source = flag ?? readUiConfig(dir)?.registry ?? DEFAULT_REGISTRY_SOURCE;
@@ -120,6 +150,11 @@ export function resolveRegistrySource(dir: string, flag?: string): string {
  * @param target - Target from the registry item, e.g. `@ui/nd-dialog/nd-dialog.ts`.
  * @param aliases - Alias table.
  * @returns The application-relative path.
+ *
+ * @example
+ * ```ts
+ * resolveTargetPath();
+ * ```
  */
 export function resolveTargetPath(target: string, aliases: UiAliases): string {
     const match = targetPattern.exec(target);

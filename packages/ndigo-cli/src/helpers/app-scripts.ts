@@ -80,6 +80,11 @@ export function resolveAppDir(dir: string | undefined): string {
  * @param scriptKey - The `scripts.<key>` to run (`start`, `dev`, `inspect`, ...).
  * @param hint - How to add the script (shown in the error).
  * @returns The resolved script and its execution environment.
+ *
+ * @example
+ * ```ts
+ * appScriptCommand();
+ * ```
  */
 export function appScriptCommand(
     dir: string,
@@ -142,6 +147,11 @@ export function appScriptCommand(
  * @param hint - The missing-script hint (see {@link appScriptCommand}).
  * @param options - `port` (base for `PORT`-derivation), `cluster` slots.
  * @returns The cluster outcome (children signal-relayed, exit-code observed).
+ *
+ * @example
+ * ```ts
+ * runAppSupervised();
+ * ```
  */
 export async function runAppSupervised(
     dir: string,
@@ -182,6 +192,11 @@ export async function runAppSupervised(
  *   environment, matching a bare `spawn`).
  * @returns The child's exit code (`128 + signal` when killed, `127` when
  *   the program could not be spawned).
+ *
+ * @example
+ * ```ts
+ * runInteractiveSpawn();
+ * ```
  */
 export async function runInteractiveSpawn(
     argv: string[],
@@ -231,6 +246,11 @@ export async function runInteractiveSpawn(
  * @param hint - The missing-script hint.
  * @param extraArgv - Arguments appended to the resolved script.
  * @returns The child's exit code.
+ *
+ * @example
+ * ```ts
+ * runAppOnce();
+ * ```
  */
 export async function runAppOnce(
     dir: string,
@@ -243,6 +263,14 @@ export async function runAppOnce(
 }
 
 /** The captured outcome of a one-shot app script. */
+/**
+ * CapturedRun.
+ *
+ * @example
+ * ```ts
+ * const value = {} as CapturedRun;
+ * ```
+ */
 export interface CapturedRun {
     /** The child's exit code (`128 + signal` when killed, `127` when missing). */
     readonly exitCode: number;
@@ -261,6 +289,11 @@ export interface CapturedRun {
  * @param hint - The missing-script hint.
  * @param extraArgv - Arguments appended to the resolved script.
  * @returns The exit code plus captured stdout and stderr.
+ *
+ * @example
+ * ```ts
+ * captureAppOnce();
+ * ```
  */
 export async function captureAppOnce(
     dir: string,
@@ -345,6 +378,11 @@ async function captureSpawn(argv: string[], options: { cwd?: string; env?: NodeJ
  * @param cwd - Directory the command runs in (workspace resolution
  *   happens there; defaults to the CLI's working directory).
  * @returns The child's exit code.
+ *
+ * @example
+ * ```ts
+ * runWorkspaceOnce();
+ * ```
  */
 export async function runWorkspaceOnce(extraArgv: string[], cwd?: string): Promise<number> {
     // Signal relay and spawn-failure handling come from runInteractiveSpawn

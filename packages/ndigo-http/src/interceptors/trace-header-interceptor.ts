@@ -6,6 +6,11 @@ import { HTTP, RequestAwareHTTPInterceptor } from '../http';
 
 /**
  * Options for the {@link TraceHeaderInterceptor}.
+ *
+ * @example
+ * ```ts
+ * const value = {} as TraceHeaderInterceptorOptions;
+ * ```
  */
 export interface TraceHeaderInterceptorOptions {
     /**

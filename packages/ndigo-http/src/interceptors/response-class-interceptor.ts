@@ -13,6 +13,11 @@ import ResponseStatus from '../response-status';
 
 /**
  * Handles informational responses.
+ *
+ * @example
+ * ```ts
+ * const value = {} as InformationAwareHTTPInterceptor;
+ * ```
  */
 export interface InformationAwareHTTPInterceptor {
     /**
@@ -27,6 +32,11 @@ export interface InformationAwareHTTPInterceptor {
 
 /**
  * Handles successful responses.
+ *
+ * @example
+ * ```ts
+ * const value = {} as SuccessAwareHTTPInterceptor;
+ * ```
  */
 export interface SuccessAwareHTTPInterceptor {
     /**
@@ -41,6 +51,11 @@ export interface SuccessAwareHTTPInterceptor {
 
 /**
  * Handles redirect responses.
+ *
+ * @example
+ * ```ts
+ * const value = {} as RedirectAwareHTTPInterceptor;
+ * ```
  */
 export interface RedirectAwareHTTPInterceptor {
     /**
@@ -55,6 +70,11 @@ export interface RedirectAwareHTTPInterceptor {
 
 /**
  * Handles client error responses.
+ *
+ * @example
+ * ```ts
+ * const value = {} as ClientErrorAwareHTTPInterceptor;
+ * ```
  */
 export interface ClientErrorAwareHTTPInterceptor {
     /**
@@ -69,6 +89,11 @@ export interface ClientErrorAwareHTTPInterceptor {
 
 /**
  * Handles server error responses.
+ *
+ * @example
+ * ```ts
+ * const value = {} as ServerErrorAwareHTTPInterceptor;
+ * ```
  */
 export interface ServerErrorAwareHTTPInterceptor {
     /**
@@ -83,6 +108,11 @@ export interface ServerErrorAwareHTTPInterceptor {
 
 /**
  * Union of all response-class-specific interceptor roles.
+ *
+ * @example
+ * ```ts
+ * type _Alias = ResponseClassAwareHTTPInterceptor;
+ * ```
  */
 export type ResponseClassAwareHTTPInterceptor =
     | InformationAwareHTTPInterceptor
@@ -143,6 +173,11 @@ export const likeServerErrorAwareHTTPInterceptor = like({ postServerErrorRespons
 
 /**
  * Dispatches response hooks based on the response status class.
+ *
+ * @example
+ * ```ts
+ * const instance = new MappedResponseClassHTTPInterceptor();
+ * ```
  */
 export class MappedResponseClassHTTPInterceptor implements ResponseAwareHTTPInterceptor {
     /**

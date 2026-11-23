@@ -5,6 +5,11 @@ import { HTTP, HTTPInit, RequestAwareHTTPInterceptor, ResponseAwareHTTPIntercept
 
 /**
  * Configuration options for the CacheInterceptor.
+ *
+ * @example
+ * ```ts
+ * const value = {} as CacheInterceptorConfig;
+ * ```
  */
 export interface CacheInterceptorConfig {
     /**
@@ -78,6 +83,11 @@ function hasCacheDirective(headers: Headers, directives: Record<string, true>): 
  * shared in-memory cache. Responses that forbid shared caching (`Set-Cookie`,
  * `Cache-Control: private`/`no-store`/`no-cache`, `Vary: *`) are never stored,
  * and a stored response is only replayed when its `Vary` request headers match.
+ *
+ * @example
+ * ```ts
+ * const instance = new CacheInterceptor();
+ * ```
  */
 export class CacheInterceptor implements RequestAwareHTTPInterceptor, ResponseAwareHTTPInterceptor {
     /**

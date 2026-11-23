@@ -6,6 +6,11 @@ import { ResponseError } from '../response-error';
 
 /**
  * Configuration options for the retry interceptor.
+ *
+ * @example
+ * ```ts
+ * type _Alias = RetryInit;
+ * ```
  */
 export type RetryInit = HTTPInit & {
     /**
@@ -79,6 +84,11 @@ type RetrySettings = HTTPInit & { [RETRY_ATTEMPT]?: number };
  * object, because other interceptors replace the `Request` before it reaches
  * fetch. The undisturbed body clone captured in `preRequest` and the attempt
  * counter both therefore survive `new Request(...)`.
+ *
+ * @example
+ * ```ts
+ * const instance = new RetryInterceptor();
+ * ```
  */
 export class RetryInterceptor implements ErrorAwareHTTPInterceptor, RequestAwareHTTPInterceptor {
     /**

@@ -6,11 +6,21 @@ import { ETAG, IF_MODIFIED_SINCE, IF_NONE_MATCH, LAST_MODIFIED } from '../http-h
 
 /**
  * Request settings for {@link IfModifiedInterceptor}.
+ *
+ * @example
+ * ```ts
+ * type _Alias = IfModifiedInit;
+ * ```
  */
 export type IfModifiedInit = HTTPInit & { ifModified?: boolean };
 
 /**
  * Adds conditional request headers and caches validators from prior responses.
+ *
+ * @example
+ * ```ts
+ * const instance = new IfModifiedInterceptor();
+ * ```
  */
 export class IfModifiedInterceptor
     implements InitializationAwareHTTPInterceptor<IfModifiedInit>, ResponseAwareHTTPInterceptor<IfModifiedInit>

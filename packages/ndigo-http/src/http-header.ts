@@ -21,6 +21,14 @@ const { defineProperty, deleteProperty, get, set } = Reflect,
 type HeaderEntries = Array<[string, string]>;
 
 /** Node `IncomingMessage`-style header record (lower-cased name → value or lines). */
+/**
+ * HeaderRecord.
+ *
+ * @example
+ * ```ts
+ * type _Alias = HeaderRecord;
+ * ```
+ */
 export type HeaderRecord = Record<string, string | string[] | undefined>;
 
 /**
@@ -35,6 +43,11 @@ export type HeaderRecord = Record<string, string | string[] | undefined>;
  *
  * @param name - The header name to fold.
  * @returns The lower-cased name.
+ *
+ * @example
+ * ```ts
+ * foldHeaderName();
+ * ```
  */
 export function foldHeaderName(name: string): string {
     return name.toLowerCase();

@@ -23,6 +23,11 @@ export const MULTIPART_FORM_DATA = String(MediaTypes.MULTIPART_FORM_DATA);
  *
  * @param contentType - The raw `Content-Type` header value.
  * @returns The lower-cased media type without parameters, or `null`.
+ *
+ * @example
+ * ```ts
+ * contentTypeBase();
+ * ```
  */
 export function contentTypeBase(contentType: string | undefined | null): string | null {
     if (!contentType) {
@@ -40,6 +45,11 @@ export function contentTypeBase(contentType: string | undefined | null): string 
  *
  * @param contentType - The raw `Content-Type` header value.
  * @returns The boundary value, or `null` when absent or no multipart type.
+ *
+ * @example
+ * ```ts
+ * multipartBoundary();
+ * ```
  */
 export function multipartBoundary(contentType: string | undefined | null): string | null {
     const mediaType = MediaType.for(contentType ?? '');

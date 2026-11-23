@@ -11,6 +11,11 @@ import type { ResponseError } from './response-error';
 /**
  * The HTTP request methods the framework routes and dispatches, including
  * `QUERY` — the safe, idempotent body-carrying method.
+ *
+ * @example
+ * ```ts
+ * type _Alias = HTTPMethod;
+ * ```
  */
 export type HTTPMethod =
     | 'CONNECT'
@@ -28,6 +33,11 @@ export type HTTPMethod =
  *
  * This extends `RequestInit` with Ndigo-specific options such as `baseURL`
  * and query parameter merging.
+ *
+ * @example
+ * ```ts
+ * type _Alias = HTTPInit;
+ * ```
  */
 export type HTTPInit = RequestInit & {
     method?: HTTPMethod;
@@ -72,6 +82,11 @@ export interface HTTPConfig extends HTTPInit {
 
 /**
  * Fetch implementation signature used by {@link HTTP}.
+ *
+ * @example
+ * ```ts
+ * type _Alias = Fetch;
+ * ```
  */
 export type Fetch = (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>;
 
@@ -186,6 +201,11 @@ export interface ResponseAwareHTTPInterceptor<T extends HTTPInit = HTTPInit> {
 
 /**
  * Supported HTTP interceptors recognized by {@link HTTP}.
+ *
+ * @example
+ * ```ts
+ * type _Alias = HTTPInterceptor;
+ * ```
  */
 export type HTTPInterceptor =
     | CompletionAwareHTTPInterceptor

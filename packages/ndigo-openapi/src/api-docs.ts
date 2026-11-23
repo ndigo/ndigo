@@ -16,11 +16,21 @@ import { FrameworkError, getSymbolMetadata } from '@ndigo/core';
  * typical case: the DTO schema the handler converts through, which
  * the generator embeds via Zod's `toJSONSchema` seam. The object form
  * additionally allows a custom `description`.
+ *
+ * @example
+ * ```ts
+ * type _Alias = OpenAPIResponseDocs;
+ * ```
  */
 export type OpenAPIResponseDocs = z.ZodType<unknown> | { description?: string; schema?: z.ZodType<unknown> };
 
 /**
  * Documentation metadata for a single handler method.
+ *
+ * @example
+ * ```ts
+ * const value = {} as APIDocsMetadata;
+ * ```
  */
 export interface APIDocsMetadata {
     /** Short operation label (OpenAPI `summary`). */

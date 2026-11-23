@@ -91,6 +91,9 @@ function get(flags: { json?: boolean }, id: string | undefined): void {
     if (entry.record.kind === 'capability') {
         rows.push(['guide', entry.record.guide]);
         rows.push(['packages', entry.record.packages.join(', ')]);
+        if (entry.record.variables !== undefined) {
+            rows.push(['variables', entry.record.variables.map((variable) => variable.name).join(', ')]);
+        }
         rows.push(['checks', entry.record.checks.join(', ')]);
         if (entry.record.skill !== undefined) rows.push(['skill', entry.record.skill]);
         rows.push(['ops', entry.record.ops.map(describeOp).join('; ')]);

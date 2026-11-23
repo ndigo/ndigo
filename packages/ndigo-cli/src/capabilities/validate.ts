@@ -2,7 +2,7 @@
  * Reference-integrity checks for the capability catalog: ids, packages,
  * guides, skills, templates, checks, and the manifest/catalog back-reference.
  */
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { CAPABILITIES_DIR, loadCheckIds, loadGuideSlugs, loadPackageFacts, loadSkillIds } from './catalog.js';
 import type { CapabilityEntry, CatalogLoad, PackageFact } from './catalog.js';
@@ -107,6 +107,8 @@ export function validateCatalog(catalog: CatalogLoad, references: CatalogReferen
 }
 
 function validateOps(capability: CapabilityEntry, problems: string[]): void {
+    const writes = new Set<string>();
+    const edits = new Set<string>();
     for (const op of capability.ops) {
         if (op.op === 'addDependency') {
             for (const package_ of op.packages) {
@@ -114,15 +116,25 @@ function validateOps(capability: CapabilityEntry, problems: string[]): void {
                     problems.push(`capability "${capability.id}" adds invalid package "${package_}"`);
             }
         } else if (op.op === 'writeFile') {
+            if (writes.has(op.path)) problems.push(`capability "${capability.id}" writes "${op.path}" twice`);
+            writes.add(op.path);
             if (!isSafeRelativePath(op.path)) {
                 problems.push(`capability "${capability.id}" writes outside the app: "${op.path}"`);
             }
             if (!isSafeRelativePath(op.template)) {
                 problems.push(`capability "${capability.id}" has an invalid template path "${op.template}"`);
-            } else if (!existsSync(join(CAPABILITIES_DIR, capability.id, op.template))) {
-                problems.push(`capability "${capability.id}" is missing template "${op.template}"`);
+            } else {
+                const template = join(CAPABILITIES_DIR, capability.id, op.template);
+                if (!existsSync(template)) {
+                    problems.push(`capability "${capability.id}" is missing template "${op.template}"`);
+                } else {
+                    problems.push(...templateVariableProblems(capability, template, op.template));
+                }
             }
         } else {
+            const target = `${op.path}#${op.pointer}`;
+            if (edits.has(target)) problems.push(`capability "${capability.id}" edits "${target}" twice`);
+            edits.add(target);
             if (!isSafeRelativePath(op.path)) {
                 problems.push(`capability "${capability.id}" edits outside the app: "${op.path}"`);
             }
@@ -133,11 +145,45 @@ function validateOps(capability: CapabilityEntry, problems: string[]): void {
     }
 }
 
-function isSafeRelativePath(path: string): boolean {
+/**
+ * Rejects absolute, traversal, and backslash paths.
+ *
+ * @param path - Application-relative path from the catalog.
+ * @returns Whether the path stays inside the application.
+ */
+export function isSafeRelativePath(path: string): boolean {
     if (path === '' || path.startsWith('/') || path.includes('\\')) return false;
     return path.split('/').every((segment) => segment !== '' && segment !== '.' && segment !== '..');
 }
 
 function isPackageName(value: string): boolean {
     return /^@ndigo\/[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/u.test(value);
+}
+
+/**
+ * Checks a template's placeholders against declared variables. `appName` is
+ * built in; every other placeholder must be declared, and every declaration
+ * must be used.
+ *
+ * @param capability - The catalog entry.
+ * @param file - Absolute template path.
+ * @param template - Catalog-relative template path, for messages.
+ * @returns Problems; empty when the template and declarations agree.
+ */
+function templateVariableProblems(capability: CapabilityEntry, file: string, template: string): string[] {
+    const text = readFileSync(file, 'utf8');
+    const declared = new Set((capability.variables ?? []).map((variable) => variable.name));
+    const used = new Set([...text.matchAll(/\{\{([a-z][a-zA-Z0-9]*)\}\}/gu)].map((match) => match[1]));
+    const problems: string[] = [];
+    for (const name of used) {
+        if (name !== 'appName' && !declared.has(name)) {
+            problems.push(
+                `capability "${capability.id}" template "${template}" uses undeclared variable "{{${name}}}"`
+            );
+        }
+    }
+    for (const name of declared) {
+        if (!used.has(name)) problems.push(`capability "${capability.id}" declares unused variable "${name}"`);
+    }
+    return problems;
 }

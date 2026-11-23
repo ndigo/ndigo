@@ -16,8 +16,9 @@ pnpm add @ndigo/mcp
 
 Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥12.
 
-`ndigo add @ndigo/mcp` installs the package and runs the `mcp-setup` generator,
-which writes an MCP wiring module and a sample tool controller.
+`ndigo add agent-surface` plans an MCP wiring module and the `mcp` script;
+`--apply` writes them. The package itself is added by that capability (or by
+`pnpm add @ndigo/mcp`).
 
 ## Getting Started
 

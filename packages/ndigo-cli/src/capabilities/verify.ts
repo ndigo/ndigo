@@ -8,6 +8,7 @@ import { readAppManifest, captureAppOnce } from '../helpers/app-scripts.js';
 import type { CapturedRun } from '../helpers/app-scripts.js';
 import { collectDiagnostics } from '../commands/_diagnostics.js';
 import { probeMcpTools } from './_mcp-probe.js';
+import { openApiProblems } from './_openapi-parity.js';
 import type { CapabilityEntry } from './catalog.js';
 
 /** How a check ended. */
@@ -69,9 +70,6 @@ const FULL_CHECKS = ['typecheck', 'test', 'lint'] as const;
 
 /** How much captured output a failure message quotes. */
 const OUTPUT_TAIL_LINES = 5;
-
-/** The OpenAPI operation keys a path item may carry; no other key counts as an operation. */
-const OPENAPI_OPERATION_KEYS = ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'] as const;
 
 /** The hint shown when the app has no `inspect` script. */
 const INSPECT_HINT = 'add an "inspect" script that prints the manifest';
@@ -325,38 +323,6 @@ async function inspectManifest(context: RunContext): Promise<InspectSubset | nul
     } catch {
         return null;
     }
-}
-
-function openApiProblems(
-    stdout: string,
-    mapped: ReadonlyMap<string, { pattern: string; methods: readonly string[] }>
-): string[] {
-    let document: { paths?: Record<string, Record<string, unknown>> };
-    try {
-        document = JSON.parse(stdout) as typeof document;
-    } catch {
-        return ['the "openapi" script printed invalid JSON'];
-    }
-    const paths = document.paths ?? {};
-    const problems: string[] = [];
-    for (const [tool, row] of mapped) {
-        const path = row.pattern.replace(/:([A-Za-z0-9_]+)/gu, '{$1}');
-        const item = paths[path];
-        if (item === undefined) {
-            problems.push(`tool '${tool}' has no OpenAPI path ${path}`);
-            continue;
-        }
-        // Without declared httpMethods, accept the path item only when it
-        // carries an actual operation — not metadata keys like `summary`.
-        const methods =
-            row.methods.length > 0
-                ? row.methods
-                : Object.keys(item).filter((key) => (OPENAPI_OPERATION_KEYS as readonly string[]).includes(key));
-        if (!methods.some((method) => item[method.toLowerCase()] !== undefined)) {
-            problems.push(`tool '${tool}' has no OpenAPI operation for ${methods.join('/')} ${path}`);
-        }
-    }
-    return problems;
 }
 
 function hasScript(context: RunContext, key: string): boolean {

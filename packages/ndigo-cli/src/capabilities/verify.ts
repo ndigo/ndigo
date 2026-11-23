@@ -68,6 +68,9 @@ const FULL_CHECKS = ['test', 'lint'] as const;
 /** How much captured output a failure message quotes. */
 const OUTPUT_TAIL_LINES = 5;
 
+/** The OpenAPI operation keys a path item may carry; no other key counts as an operation. */
+const OPENAPI_OPERATION_KEYS = ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'] as const;
+
 /**
  * Derives the check list: doctor first, then the named capability's declared
  * checks (or the catalog union), with `--full` adding test and lint.
@@ -123,7 +126,13 @@ async function runCheck(reference: string, options: VerifyOptions): Promise<Veri
     const id = separator === -1 ? reference : reference.slice(0, separator);
     const target = separator === -1 ? undefined : reference.slice(separator + 1);
     const started = performance.now();
-    const result = await execute(id, target, options);
+    // Every selected check gets a row: a check that throws (a malformed
+    // declared script, a failed spawn) fails its row instead of aborting the
+    // report and discarding the checks around it.
+    const result = await execute(id, target, options).catch((error: unknown): CheckOutcome => ({
+        status: 'fail',
+        message: error instanceof Error ? error.message : String(error),
+    }));
     return { id: reference, ...result, durationMs: Math.round(performance.now() - started) };
 }
 
@@ -171,7 +180,14 @@ async function runAppBoot(dir: string, strict: boolean): Promise<CheckOutcome> {
     }
     try {
         const manifest = JSON.parse(run.stdout) as { version?: unknown; app?: unknown; routes?: unknown };
-        if (manifest.version !== 1 || typeof manifest.app !== 'object' || !Array.isArray(manifest.routes)) {
+        // `typeof null === 'object'`, so a null manifest must be rejected
+        // explicitly.
+        if (
+            manifest.version !== 1 ||
+            typeof manifest.app !== 'object' ||
+            manifest.app === null ||
+            !Array.isArray(manifest.routes)
+        ) {
             return { status: 'fail', message: 'the inspect script did not print a v1 application manifest' };
         }
         return { status: 'pass', message: `manifest v1, ${manifest.routes.length} routes` };
@@ -284,7 +300,12 @@ function openApiProblems(
             problems.push(`tool '${tool}' has no OpenAPI path ${path}`);
             continue;
         }
-        const methods = row.methods.length > 0 ? row.methods : Object.keys(item).filter((key) => key !== 'parameters');
+        // Without declared httpMethods, accept the path item only when it
+        // carries an actual operation — not metadata keys like `summary`.
+        const methods =
+            row.methods.length > 0
+                ? row.methods
+                : Object.keys(item).filter((key) => (OPENAPI_OPERATION_KEYS as readonly string[]).includes(key));
         if (!methods.some((method) => item[method.toLowerCase()] !== undefined)) {
             problems.push(`tool '${tool}' has no OpenAPI operation for ${methods.join('/')} ${path}`);
         }

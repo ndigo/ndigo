@@ -24,6 +24,8 @@ interface FixtureOptions {
     readonly openapi?: boolean;
     readonly mcp?: boolean;
     readonly test?: boolean;
+    readonly exitsAfterInitialize?: boolean;
+    readonly floodsStdout?: boolean;
 }
 
 function createApp(options: FixtureOptions = {}): string {
@@ -83,6 +85,30 @@ rl.on('line', (line) => {
 });
 `
     );
+    if (options.exitsAfterInitialize === true) {
+        // Answers initialize, then dies immediately: the "server boots,
+        // answers, crashes" input `ndigo verify` must survive (issue #730).
+        writeFileSync(
+            join(dir, 'mcp.mjs'),
+            `
+import { createInterface } from 'node:readline';
+const rl = createInterface({ input: process.stdin });
+const send = (value) => process.stdout.write(JSON.stringify(value) + '\\n');
+rl.on('line', (line) => {
+    const message = JSON.parse(line);
+    if (message.method === 'initialize') {
+        send({ jsonrpc: '2.0', id: message.id, result: { protocolVersion: '2024-11-05', capabilities: {}, serverInfo: { name: 'fixture', version: '1' } } });
+        process.exit(0);
+    }
+});
+`
+        );
+    }
+    if (options.floodsStdout === true) {
+        // Streams one unterminated line forever: the probe must cap its
+        // buffer instead of growing it without bound until the timeout.
+        writeFileSync(join(dir, 'mcp.mjs'), `setInterval(() => process.stdout.write('x'.repeat(8192)), 1);\n`);
+    }
     writeFileSync(join(dir, 'ok.mjs'), 'process.exit(0);\n');
     mkdirSync(join(dir, 'logs'));
     return dir;
@@ -176,5 +202,43 @@ describe('ndigo verify', () => {
         const before = readFileSync(join(dir, 'package.json'), 'utf8');
         await runCli(['verify', dir]);
         expect(readFileSync(join(dir, 'package.json'), 'utf8')).toBe(before);
+    });
+
+    it('fails cleanly when the mcp script exits right after initialize', async () => {
+        const dir = createApp({ exitsAfterInitialize: true });
+        const result = await runCli(['verify', '--capability', 'agent-surface', '--json', dir]);
+        // A crashed server is a failed check, never a crashed CLI: the report
+        // still parses and the remaining checks still ran (issue #730).
+        expect(result.code).toBe(1);
+        const report = JSON.parse(result.out) as Document;
+        expect(report.checks.find((check) => check.id === 'mcp-stdio:tools/list')?.status).toBe('fail');
+        expect(result.err).not.toContain('Unhandled');
+    });
+
+    it('keeps the report complete when a declared script is malformed', async () => {
+        const dir = createApp();
+        const manifest = JSON.parse(readFileSync(join(dir, 'package.json'), 'utf8')) as {
+            scripts: Record<string, string>;
+        };
+        manifest.scripts.inspect = 'node inspect.mjs\nnode other.mjs';
+        writeFileSync(join(dir, 'package.json'), `${JSON.stringify(manifest, null, 2)}\n`);
+        const result = await runCli(['verify', '--capability', 'agent-surface', '--json', dir]);
+        expect(result.code).toBe(1);
+        const report = JSON.parse(result.out) as Document;
+        expect(report.checks.find((check) => check.id === 'route-parity:*')).toMatchObject({
+            status: 'fail',
+            message: expect.stringContaining('spans multiple lines'),
+        });
+        // One malformed script must not discard the checks around it.
+        expect(report.checks.find((check) => check.id === 'doctor')?.status).toBe('pass');
+        expect(report.checks.find((check) => check.id === 'mcp-stdio:tools/list')?.status).toBe('pass');
+    });
+
+    it('caps the probe buffer when the mcp script floods stdout', async () => {
+        const dir = createApp({ floodsStdout: true });
+        const result = await runCli(['verify', '--capability', 'agent-surface', '--json', dir]);
+        expect(result.code).toBe(1);
+        const report = JSON.parse(result.out) as Document;
+        expect(report.checks.find((check) => check.id === 'route-parity:*')?.message).toContain('more than');
     });
 });

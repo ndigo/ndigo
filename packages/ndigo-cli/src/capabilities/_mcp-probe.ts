@@ -10,8 +10,11 @@ import { spawn } from 'node:child_process';
 import type { ChildProcess } from 'node:child_process';
 import { appScriptCommand } from '../helpers/app-scripts.js';
 
-/** How long the probe waits for one response before failing the check. */
+/** How long the whole handshake (initialize plus tools/list) may take. */
 const PROBE_TIMEOUT_MS = 15_000;
+
+/** How much stdout the probe buffers while waiting for a complete response. */
+const MAX_PROBE_BUFFER_CHARS = 1024 * 1024;
 
 /** The hint shown when the app has no `mcp` script. */
 const MCP_HINT = 'install the agent-surface capability (`ndigo add agent-surface --apply`)';
@@ -73,10 +76,29 @@ function handshake(child: ChildProcess): Promise<string[]> {
         child.once('exit', (code) => {
             finish(new Error(`the "mcp" script exited (${String(code)}) before tools/list${tail(stderr)}`));
         });
+        // A dying server takes its stdin with it, and the handshake's
+        // follow-up writes then surface as EPIPE on this stream. Route the
+        // error into `finish` instead of letting the unhandled event crash
+        // the whole CLI — verify exists to check broken apps.
+        child.stdin?.on('error', (error: Error) => {
+            finish(new Error(`cannot write to the "mcp" script: ${error.message}${tail(stderr)}`));
+        });
 
         child.stdout?.setEncoding('utf8');
         child.stdout?.on('data', (chunk: string) => {
+            // The server may have died while this chunk was in flight; once
+            // the handshake is settled, neither parse further nor write into
+            // its dead stdin.
+            if (settled) return;
             buffer += chunk;
+            if (buffer.length > MAX_PROBE_BUFFER_CHARS) {
+                finish(
+                    new Error(
+                        `the "mcp" script wrote more than ${MAX_PROBE_BUFFER_CHARS} characters without a complete response${tail(stderr)}`
+                    )
+                );
+                return;
+            }
             for (;;) {
                 const newline = buffer.indexOf('\n');
                 if (newline === -1) break;

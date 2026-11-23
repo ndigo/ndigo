@@ -28,6 +28,11 @@ const SCHEMA = [
  * Options for `LibSQLSessionStore`: either a borrowed `client` (ownership
  * transfers only with `ownsClient`) or a `url`/`authToken` pair for a client the
  * store owns, plus the shared-table `maxSessions` cap.
+ *
+ * @example
+ * ```ts
+ * const value = {} as LibSQLSessionStoreOptions;
+ * ```
  */
 export interface LibSQLSessionStoreOptions {
     /**
@@ -63,6 +68,11 @@ export interface LibSQLSessionStoreOptions {
  *
  * Stop/drain consumers before close/dispose; pending operations are not drained.
  * `close` is the container's supported shutdown bridge, not automatic migration.
+ *
+ * @example
+ * ```ts
+ * const instance = new LibSQLSessionStore();
+ * ```
  */
 export class LibSQLSessionStore implements SessionStore, Destroyable {
     /**

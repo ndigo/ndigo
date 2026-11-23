@@ -13,6 +13,11 @@ import { DrizzleDataSource } from './drizzle-data-source';
  * through the data source's Drizzle database, validating every write against
  * the entity's derived schema and running entity hooks around
  * persist/find/remove.
+ *
+ * @example
+ * ```ts
+ * const instance = new DrizzleEntityManager();
+ * ```
  */
 export class DrizzleEntityManager {
     /**

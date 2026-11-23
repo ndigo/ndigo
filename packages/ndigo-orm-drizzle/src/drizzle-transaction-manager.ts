@@ -24,6 +24,11 @@ import { DrizzleDataSource } from './drizzle-data-source';
  *
  * Nested calls throw: `@transactional` already serializes the boundary
  * (DAT-F9), and a transaction owns one connection for its lifetime.
+ *
+ * @example
+ * ```ts
+ * const instance = new DrizzleTransactionManager();
+ * ```
  */
 export class DrizzleTransactionManager implements TransactionManager {
     /**

@@ -29,6 +29,11 @@ import { DrizzleRepository } from './drizzle-repository';
  *
  * @typeParam T - The entity type.
  * @typeParam ID - The entity's primary identifier type.
+ *
+ * @example
+ * ```ts
+ * const instance = new DrizzleDerivedQueryRepository();
+ * ```
  */
 export class DrizzleDerivedQueryRepository<T extends object, ID> extends DrizzleRepository<T, ID> {
     /**

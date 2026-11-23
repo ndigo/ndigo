@@ -22,6 +22,11 @@ import { DrizzleDataSource } from './drizzle-data-source';
  * journal row, so the migration is retried on the next run; author
  * idempotent DDL (`IF NOT EXISTS` style) or restore from backup when a
  * migration fails partway.
+ *
+ * @example
+ * ```ts
+ * const value = {} as Migration;
+ * ```
  */
 export interface Migration {
     /** Unique positive version. */
@@ -35,6 +40,11 @@ export interface Migration {
 /**
  * The SQL surface available to a migration, backed by the data source's
  * libSQL client.
+ *
+ * @example
+ * ```ts
+ * const value = {} as MigrationContext;
+ * ```
  */
 export interface MigrationContext {
     /** Executes a single statement (DDL or DML) with optional positional args. @param sql - The SQL. @param args - Positional arguments. */
@@ -46,6 +56,11 @@ export interface MigrationContext {
 /**
  * Whether a migration version is recorded in the journal as `applied` or still
  * `pending`.
+ *
+ * @example
+ * ```ts
+ * type _Alias = MigrationState;
+ * ```
  */
 export type MigrationState = 'applied' | 'pending';
 
@@ -53,6 +68,11 @@ export type MigrationState = 'applied' | 'pending';
  * One row of migration state as reported by the migrator: the version, its
  * description, whether the journal records it as applied, and — when it is —
  * the ISO-8601 timestamp recorded at apply time.
+ *
+ * @example
+ * ```ts
+ * const value = {} as MigrationStatus;
+ * ```
  */
 export interface MigrationStatus {
     /** The migration version. */

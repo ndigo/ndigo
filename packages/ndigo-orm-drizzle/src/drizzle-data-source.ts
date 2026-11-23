@@ -12,6 +12,11 @@ export type { LibSQLDatabase } from 'drizzle-orm/libsql';
 
 /**
  * Options for configuring the Drizzle data source.
+ *
+ * @example
+ * ```ts
+ * const value = {} as DrizzleDataSourceOptions;
+ * ```
  */
 export interface DrizzleDataSourceOptions {
     /** libSQL connection URL; defaults to `:memory:`. */
@@ -22,6 +27,11 @@ export interface DrizzleDataSourceOptions {
 
 /**
  * Drizzle-backed data source that maps `@ndigo/orm` entity metadata to SQL tables.
+ *
+ * @example
+ * ```ts
+ * const instance = new DrizzleDataSource();
+ * ```
  */
 export class DrizzleDataSource {
     /**
@@ -112,6 +122,11 @@ export class DrizzleDataSource {
  * @param entities - The entity classes declared with `@ndigo/orm` decorators.
  * @returns One statement per entity with declared columns; entities with no
  *   columns contribute nothing.
+ *
+ * @example
+ * ```ts
+ * createTableStatements();
+ * ```
  */
 export function createTableStatements(entities: Constructable[]): string[] {
     const statements: string[] = [];

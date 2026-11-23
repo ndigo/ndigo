@@ -1,5 +1,10 @@
 /**
  * Represents an authenticated user or entity in the system.
+ *
+ * @example
+ * ```ts
+ * const value = {} as Principal;
+ * ```
  */
 export interface Principal {
     /** Unique identifier for this principal. */
@@ -49,6 +54,11 @@ export interface Principal {
 
 /**
  * Sentinel principal representing an unauthenticated user.
+ *
+ * @example
+ * ```ts
+ * const instance = new AnonymousPrincipal();
+ * ```
  */
 export class AnonymousPrincipal implements Principal {
     /**
@@ -120,6 +130,11 @@ export class AnonymousPrincipal implements Principal {
  * The framework's concrete principal, used by authentication adapters to
  * materialize identities from user records (e.g.
  * `CredentialsAuthAdapter`).
+ *
+ * @example
+ * ```ts
+ * const instance = new DefaultPrincipal();
+ * ```
  */
 export class DefaultPrincipal implements Principal {
     /**
@@ -207,6 +222,11 @@ export class DefaultPrincipal implements Principal {
  *
  * @param value - The candidate value to inspect.
  * @returns `true` when the value has the principal shape.
+ *
+ * @example
+ * ```ts
+ * likePrincipal();
+ * ```
  */
 export function likePrincipal(value: unknown): value is Principal {
     return (

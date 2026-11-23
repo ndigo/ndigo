@@ -10,6 +10,11 @@
  * (typically a `@ndigo/orm`/Drizzle entity). The framework ships no
  * reference store; `packages/ndigo-auth-core/test/fixtures` provides an
  * in-memory implementation for tests and demos.
+ *
+ * @example
+ * ```ts
+ * const value = {} as UserRecord;
+ * ```
  */
 export interface UserRecord {
     /** Stable unique identifier (principal `id`). */
@@ -37,6 +42,11 @@ export interface UserRecord {
 /**
  * Lookup contract for first-party user accounts (Wave 1 of the auth
  * completion plan; consumed by the credentials adapter in Wave 2).
+ *
+ * @example
+ * ```ts
+ * const value = {} as UserStore;
+ * ```
  */
 export interface UserStore {
     /** Returns the account for `username`, or `null` when unknown. @param username - The account username. */

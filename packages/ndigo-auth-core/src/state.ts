@@ -31,6 +31,11 @@ export interface AuthResult {
 
 /**
  * Represents the current authentication state of a user.
+ *
+ * @example
+ * ```ts
+ * const value = {} as AuthenticationState;
+ * ```
  */
 export interface AuthenticationState {
     /** Whether the user is currently authenticated. */

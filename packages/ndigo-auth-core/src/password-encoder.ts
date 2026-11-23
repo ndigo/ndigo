@@ -7,6 +7,11 @@
  * scheme. Verification fails **loud** on unrecognized schemes (reference parity
  * Security 5.8+ parity): a silent `false` could hide a migration mistake
  * that locks users out — or, worse, a fallthrough that accepts a plaintext.
+ *
+ * @example
+ * ```ts
+ * const instance = new UnknownPasswordSchemeError();
+ * ```
  */
 export class UnknownPasswordSchemeError extends Error {
     /**
@@ -50,6 +55,11 @@ export class UnknownPasswordSchemeError extends Error {
  * Note: encoding/verification is CPU-bound synchronous work (scrypt,
  * ~100ms at default cost). Frame it behind rate limiting on credential
  * endpoints (see the auth completion plan, Wave 3).
+ *
+ * @example
+ * ```ts
+ * const value = {} as PasswordEncoder;
+ * ```
  */
 export interface PasswordEncoder {
     /**

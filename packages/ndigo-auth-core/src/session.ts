@@ -8,6 +8,11 @@ import { type Principal } from './principal';
  *
  * Sessions are managed by the framework and provide access to the current
  * principal, authentication token, and session lifecycle methods.
+ *
+ * @example
+ * ```ts
+ * const value = {} as AuthSession;
+ * ```
  */
 export interface AuthSession {
     /** The authenticated principal, or `null`. */
@@ -36,6 +41,11 @@ export interface AuthSession {
  *
  * Stores the principal and token in private fields. Starts in an
  * unauthenticated state with no principal or token.
+ *
+ * @example
+ * ```ts
+ * const instance = new DefaultAuthSession();
+ * ```
  */
 export class DefaultAuthSession implements AuthSession {
     /**

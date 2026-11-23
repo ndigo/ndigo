@@ -27,6 +27,11 @@ import { type PasswordEncoder, schemePrefix, UnknownPasswordSchemeError } from '
  * Adding argon2id later is purely additive: register the
  * adapter under `'argon2id'`; old scrypt hashes keep verifying and
  * `needsRehash` migrates logins onto the new default.
+ *
+ * @example
+ * ```ts
+ * const instance = new DelegatingPasswordEncoder();
+ * ```
  */
 export class DelegatingPasswordEncoder implements PasswordEncoder {
     /**

@@ -11,6 +11,11 @@ import { type Principal } from './principal';
  * Opaque sessions are trivially revocable (delete the record) and carry no
  * replay window — the deliberate contrast to JWTs, which stay for the
  * client/OIDC path.
+ *
+ * @example
+ * ```ts
+ * const value = {} as SessionRecord;
+ * ```
  */
 export interface SessionRecord {
     /** The authenticated principal. */
@@ -39,6 +44,11 @@ export interface SessionRecord {
  * storage (an unbounded live-session map is a memory DoS) — the reference
  * implementation rejects creates at its capacity (SEC-4, 2026-09-27
  * review).
+ *
+ * @example
+ * ```ts
+ * const value = {} as SessionStore;
+ * ```
  */
 export interface SessionStore {
     /**

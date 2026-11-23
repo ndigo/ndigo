@@ -157,6 +157,7 @@ describe('ndigo mcp', () => {
             commands: { command: string; flags: { name: string }[]; positionals: { name: string }[] }[];
         };
         expect(index.commands.map((entry) => entry.command)).toContain('commands');
+        expect(index.commands.map((entry) => entry.command)).toContain('capabilities');
         const mcp = index.commands.find((entry) => entry.command === 'mcp');
         expect(mcp?.flags.map((flag) => flag.name)).toEqual(['readOnly', 'live']);
         expect(mcp?.positionals.map((positional) => positional.name)).toEqual(['dir']);

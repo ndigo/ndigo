@@ -11,6 +11,11 @@ import type { UserStore } from '@ndigo/auth-core';
 
 /**
  * Marks an object that can receive an {@link AuthServer}.
+ *
+ * @example
+ * ```ts
+ * const value = {} as AuthServerAware;
+ * ```
  */
 export interface AuthServerAware extends Aware {
     /**
@@ -58,6 +63,11 @@ export const likeAuthServerAware = likeAwareAnd(like({ setAuthServer: Function }
 
 /**
  * Marks an object that can receive a {@link PasswordEncoder}.
+ *
+ * @example
+ * ```ts
+ * const value = {} as PasswordEncoderAware;
+ * ```
  */
 export interface PasswordEncoderAware extends Aware {
     /**
@@ -107,6 +117,11 @@ export const likePasswordEncoderAware = likeAwareAnd(like({ setPasswordEncoder: 
 
 /**
  * Marks an object that can receive a {@link SessionStore}.
+ *
+ * @example
+ * ```ts
+ * const value = {} as SessionStoreAware;
+ * ```
  */
 export interface SessionStoreAware extends Aware {
     /**
@@ -154,6 +169,11 @@ export const likeSessionStoreAware = likeAwareAnd(like({ setSessionStore: Functi
 
 /**
  * Marks an object that can receive a {@link UserStore}.
+ *
+ * @example
+ * ```ts
+ * const value = {} as UserStoreAware;
+ * ```
  */
 export interface UserStoreAware extends Aware {
     /**

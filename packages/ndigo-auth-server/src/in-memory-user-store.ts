@@ -11,6 +11,11 @@ import { type UserRecord, type UserStore } from '@ndigo/auth-core';
  * vanish with the process, which makes it the store for tests and
  * single-process demos. The constructor seeds it in bulk; `upsert` keeps both
  * indexes in step thereafter.
+ *
+ * @example
+ * ```ts
+ * const instance = new InMemoryUserStore();
+ * ```
  */
 export class InMemoryUserStore implements UserStore {
     /**

@@ -19,6 +19,11 @@ import { type AuthServer } from './server';
  * declaration order and validates the first non-empty credential it finds — so
  * a single route can accept, say, a session cookie AND a `Bearer` token without
  * either being validated against the wrong adapter.
+ *
+ * @example
+ * ```ts
+ * const value = {} as AuthScheme;
+ * ```
  */
 export interface AuthScheme {
     /** The explicit adapter id this scheme's credential is validated against. */
@@ -28,6 +33,14 @@ export interface AuthScheme {
 }
 
 /** Options for {@link AuthMatrixGuard}. */
+/**
+ * AuthMatrixGuardOptions.
+ *
+ * @example
+ * ```ts
+ * const value = {} as AuthMatrixGuardOptions;
+ * ```
+ */
 export interface AuthMatrixGuardOptions {
     /** The schemes to try, in fallback order — explicit adapter ids only. */
     readonly schemes: readonly AuthScheme[];
@@ -56,6 +69,11 @@ export interface AuthMatrixGuardOptions {
  * The credential extraction is injected per scheme (transport-agnostic), so this
  * guard carries no platform dependency — the caller supplies how each scheme's
  * credential is read and, optionally, where the resolved principal is stored.
+ *
+ * @example
+ * ```ts
+ * const instance = new AuthMatrixGuard();
+ * ```
  */
 export class AuthMatrixGuard implements RouteHandlerInterceptor {
     /**

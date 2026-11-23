@@ -14,6 +14,11 @@ import { ApplicationError } from '@ndigo/core';
 
 /**
  * Credential shape the adapter authenticates: `{ username, password }`.
+ *
+ * @example
+ * ```ts
+ * const value = {} as Credentials;
+ * ```
  */
 export interface Credentials {
     /** The account username. */
@@ -24,6 +29,11 @@ export interface Credentials {
 
 /**
  * Options for {@link CredentialsAuthAdapter}.
+ *
+ * @example
+ * ```ts
+ * const value = {} as CredentialsAuthAdapterOptions;
+ * ```
  */
 export interface CredentialsAuthAdapterOptions {
     /** First-party user lookup (app-owned store, typically over `ndigo-orm`). */
@@ -42,6 +52,11 @@ const DEFAULT_SESSION_TTL_MS = 30 * 60 * 1000;
  * One generic denial for every failure mode — wrong password, unknown
  * user, disabled account, malformed credentials — so responses never
  * leak which condition failed (no user enumeration via error text).
+ *
+ * @example
+ * ```ts
+ * const instance = new InvalidCredentialsError();
+ * ```
  */
 export class InvalidCredentialsError extends ApplicationError {
     /**
@@ -94,6 +109,11 @@ export class InvalidCredentialsError extends ApplicationError {
  * The rehash-on-login migration hook (`needsRehash`) is consumed at the
  * application layer (the `UserStore` contract has no password write in
  * v1 — see the auth completion plan, Wave 5 hardening).
+ *
+ * @example
+ * ```ts
+ * const instance = new CredentialsAuthAdapter();
+ * ```
  */
 export class CredentialsAuthAdapter implements AuthAdapter {
     /**

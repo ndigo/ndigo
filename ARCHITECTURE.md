@@ -1295,8 +1295,7 @@ a package may import.
 A **capability** is the unit between a package and a workflow: the declared,
 installable thing an application gains ("agent surface", "shared cache"),
 implemented by one or more runtime packages or subpaths, with its wiring,
-checks, and teaching skill declared once in the CLI's catalog
-([AD-114](./docs/decisions/2026-11-23_AD114_AGENT_CAPABILITIES.md)).
+checks, and teaching skill declared once in the CLI's catalog.
 
 - Repo-only tooling never enters `packages/`; `scripts/package-surface.mjs`
   enforces the split.

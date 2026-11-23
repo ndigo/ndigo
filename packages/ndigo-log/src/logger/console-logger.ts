@@ -7,6 +7,11 @@ import { Logger, LogAttributes } from './logger.js';
 
 /**
  * Logger that writes to the console, gated by a minimum severity.
+ *
+ * @example
+ * ```ts
+ * const instance = new ConsoleLogger();
+ * ```
  */
 export class ConsoleLogger implements Logger {
     /**

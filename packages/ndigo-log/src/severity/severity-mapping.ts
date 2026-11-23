@@ -9,6 +9,11 @@ import { SeverityNumber } from '@opentelemetry/api-logs';
  * - `'npm'`: Severity levels used by npm.
  * - `'apache'`: Severity levels used by Apache.
  * - `'cli'`: Common CLI logging levels.
+ *
+ * @example
+ * ```ts
+ * type _Alias = SeverityScheme;
+ * ```
  */
 export type SeverityScheme = 'syslog' | 'npm' | 'apache' | 'cli';
 
@@ -17,6 +22,11 @@ export type SeverityScheme = 'syslog' | 'npm' | 'apache' | 'cli';
  *
  * Implementations of this interface provide a way to standardize log severity across different
  * logging schemes (e.g., syslog, npm, Apache).
+ *
+ * @example
+ * ```ts
+ * const value = {} as SeverityMapping;
+ * ```
  */
 export interface SeverityMapping {
     /**

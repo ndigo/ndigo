@@ -13,6 +13,11 @@ import { ContextAwareLogger } from './context-aware-logger.js';
  * - `'open-telemetry'`: Uses OpenTelemetry for logging.
  * - `'console'`: Logs directly to the console.
  * - `'none'`: A no-operation logger that discards all log messages.
+ *
+ * @example
+ * ```ts
+ * type _Alias = LoggerType;
+ * ```
  */
 export type LoggerType = 'open-telemetry' | 'console' | 'none';
 
@@ -197,6 +202,11 @@ class ConfigurableLogger implements Logger {
  * and whether loggers should be context-aware (e.g., integrating with OpenTelemetry contexts).
  * Configuration changes apply to every logger already handed out — loggers are
  * lazily-resolved handles, not frozen snapshots.
+ *
+ * @example
+ * ```ts
+ * const instance = new LoggerFactory();
+ * ```
  */
 export class LoggerFactory {
     /**

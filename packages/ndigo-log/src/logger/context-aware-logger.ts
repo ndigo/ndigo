@@ -11,6 +11,11 @@ import { LogAttributes, Logger } from './logger.js';
  *
  * This logger wraps an existing `Logger` instance and enhances its logging methods
  * by adding `traceId` and `spanId` to the `LogAttributes` before passing them to the wrapped logger.
+ *
+ * @example
+ * ```ts
+ * const instance = new ContextAwareLogger();
+ * ```
  */
 export class ContextAwareLogger implements Logger {
     /**

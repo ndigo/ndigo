@@ -11,9 +11,11 @@ import { afterEach, describe, expect, it } from 'vitest';
 
 const BIN = resolve(dirname(fileURLToPath(import.meta.url)), '..', 'bin', 'run.js');
 const SKILLS = [
+    'ndigo-agent',
     'ndigo-app',
     'ndigo-debug',
     'ndigo-endpoint',
+    'ndigo-model',
     'ndigo-persistence',
     'ndigo-reactive',
     'ndigo-ui',
@@ -65,7 +67,7 @@ function skillPath(dir: string, id = 'ndigo-app'): string {
 }
 
 describe('ndigo ai', () => {
-    it('merges the managed block into an existing AGENTS.md and writes nine skills', async () => {
+    it('merges the managed block into an existing AGENTS.md and writes the shipped skills', async () => {
         const dir = createApp();
         writeFileSync(join(dir, 'AGENTS.md'), 'Hand-written intro.\n');
 

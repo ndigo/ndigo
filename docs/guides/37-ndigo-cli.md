@@ -109,7 +109,7 @@ clients, so an agent can discover the CLI surface without shelling out. The
 
 - the managed block in `AGENTS.md` between `<!-- BEGIN:ndigo-agent-rules -->`
   and `<!-- END:ndigo-agent-rules -->`, preserving everything outside;
-- nine skills under `.agents/skills/<id>/SKILL.md` (read by Codex, Cursor,
+- the shipped skills under `.agents/skills/<id>/SKILL.md` (read by Codex, Cursor,
   Copilot, Gemini CLI, OpenCode, Antigravity, Junie, and OpenClaw);
 - `.mcp.json` only with `--mcp`, merging the `ndigo` server and preserving every
   other server.

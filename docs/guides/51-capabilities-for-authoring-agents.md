@@ -152,17 +152,17 @@ the CLI, which is why the catalog is data rather than TypeScript.
 
 ## 6. Current state
 
-The vocabulary and the contract are settled (issue #701); the catalog and its
-read verbs ship in #705. Applying a capability, the capability skills, and
-runtime verification are later phases.
+The vocabulary and the contract are settled (issue #701); the catalog, its read
+verbs, `ndigo add`, and the coordination skills ship. Runtime verification is
+the remaining phase.
 
-| Piece                                                | Status                                                                |
-| :--------------------------------------------------- | :-------------------------------------------------------------------- |
-| Audience and category vocabulary, AD-114, this guide | Landed                                                                |
-| Capability catalog + `ndigo capabilities`            | Landed — declared entries, `list`/`get`/`check`, manifest facts       |
-| `ndigo add <capability>` (plan, dry run, apply)      | Landed — plan default, `--apply`, `--var`, `--force`; no `nx g`       |
-| Capability skills                                    | Planned — at most two; after the catalog so references can be checked |
-| `ndigo verify [capability]`                          | Planned — declared checks plus runtime probes                         |
+| Piece                                                | Status                                                                    |
+| :--------------------------------------------------- | :------------------------------------------------------------------------ |
+| Audience and category vocabulary, AD-114, this guide | Landed                                                                    |
+| Capability catalog + `ndigo capabilities`            | Landed — declared entries, `list`/`get`/`check`, manifest facts           |
+| `ndigo add <capability>` (plan, dry run, apply)      | Landed — plan default, `--apply`, `--var`, `--force`; no `nx g`           |
+| Capability skills                                    | Landed — `ndigo-agent`, `ndigo-model`; rows in `ndigo-app`/`ndigo-verify` |
+| `ndigo verify [capability]`                          | Planned — declared checks plus runtime probes                             |
 
 Until the 1.0 publish gate closes, only the plan/dry-run half of a consumer
 install is exercisable; install fixtures resolve workspace packages with

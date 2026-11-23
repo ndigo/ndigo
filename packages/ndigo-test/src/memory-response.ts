@@ -8,6 +8,11 @@ import { foldHeaderName } from '@ndigo/http';
  *
  * The body is captured raw (as delivered by `end`) — call `.json()` or
  * `.text()` to interpret it.
+ *
+ * @example
+ * ```ts
+ * const value = {} as MemoryResponse;
+ * ```
  */
 export interface MemoryResponse {
     /** HTTP status code (defaults to 200). */
@@ -27,6 +32,11 @@ const okStatus = 200;
  * `HTTPResponseViewTarget` / `ResponseEntityView` and server interceptors
  * (CORS, CSRF, security headers) touch — `writeHead` merges with headers set
  * earlier via {@link ResponseSink.setHeader}, mirroring Node's semantics.
+ *
+ * @example
+ * ```ts
+ * const value = {} as ResponseSink;
+ * ```
  */
 export interface ResponseSink {
     /** Whether the response head has been written. */

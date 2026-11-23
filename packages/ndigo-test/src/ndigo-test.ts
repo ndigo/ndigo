@@ -10,6 +10,11 @@ import { NodeDispatcher, NodeAutoConfiguration } from '@ndigo/platform-node';
 
 /**
  * A booted application ready for MockHTTP dispatch.
+ *
+ * @example
+ * ```ts
+ * const value = {} as NdigoTestApp;
+ * ```
  */
 export interface NdigoTestApp {
     /** The application context (real DI graph + auto-configs). */
@@ -22,6 +27,11 @@ export interface NdigoTestApp {
 
 /**
  * Options for {@link bootNodeApp}.
+ *
+ * @example
+ * ```ts
+ * const value = {} as BootNodeAppOptions;
+ * ```
  */
 export interface BootNodeAppOptions {
     /**

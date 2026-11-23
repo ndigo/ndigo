@@ -30,6 +30,11 @@ const logger = getLogger('ndigo-test:mock-http');
 
 /**
  * A dispatched mock request with a fluent response.
+ *
+ * @example
+ * ```ts
+ * const value = {} as MockResult;
+ * ```
  */
 export interface MockResult {
     /** The captured response. */
@@ -124,6 +129,11 @@ function toResult(prepared: PreparedRoute, response: MemoryResponse): MockResult
  * ```ts
  * const res = await mockHTTP.get('/todos').query({ filter: 'active' }).exec();
  * expect(res.json()).toEqual([...]);
+ * ```
+ *
+ * @example
+ * ```ts
+ * const instance = new MockHTTPRequestBuilder();
  * ```
  */
 export class MockHTTPRequestBuilder {

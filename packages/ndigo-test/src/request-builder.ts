@@ -19,6 +19,11 @@ import { ResponseSink } from './memory-response';
 
 /**
  * A mock HTTP request to be dispatched through the application's pipeline.
+ *
+ * @example
+ * ```ts
+ * const value = {} as MockRequest;
+ * ```
  */
 export interface MockRequest {
     /** HTTP method. Defaults to `GET`. */
@@ -57,6 +62,11 @@ export interface MockRequest {
 
 /**
  * A route with its request context populated, ready for dispatch.
+ *
+ * @example
+ * ```ts
+ * const value = {} as PreparedRoute;
+ * ```
  */
 export interface PreparedRoute {
     /** The assembled route. */

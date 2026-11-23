@@ -73,6 +73,11 @@ const CODE_VERIFIER_BYTES = 32;
  * instance or inject a shared store — see
  * {@link OIDCAdapterConfig.pendingStore} and
  * {@link OIDCAdapterConfig.refreshStore}.
+ *
+ * @example
+ * ```ts
+ * const instance = new OIDCAdapter();
+ * ```
  */
 export class OIDCAdapter implements AuthAdapter {
     /**

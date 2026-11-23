@@ -7,6 +7,11 @@ import { type AuthClient } from './client';
 
 /**
  * Metadata for a route's authentication requirements.
+ *
+ * @example
+ * ```ts
+ * const value = {} as AuthRouteMetadata;
+ * ```
  */
 export interface AuthRouteMetadata {
     /** Whether authentication is required. */
@@ -20,6 +25,11 @@ export interface AuthRouteMetadata {
  *
  * @param handler - The route handler object.
  * @returns The authentication metadata for the route.
+ *
+ * @example
+ * ```ts
+ * extractAuthMetadata();
+ * ```
  */
 export function extractAuthMetadata(handler: object | undefined): AuthRouteMetadata {
     // The metadata lives on the handler's constructor; getSymbolMetadata
@@ -47,6 +57,11 @@ export function extractAuthMetadata(handler: object | undefined): AuthRouteMetad
  *
  * This guard prevents unauthorized access to views by checking the {@link AuthClient}
  * state before allowing navigation to proceed.
+ *
+ * @example
+ * ```ts
+ * const instance = new ClientAuthGuard();
+ * ```
  */
 export class ClientAuthGuard {
     /**

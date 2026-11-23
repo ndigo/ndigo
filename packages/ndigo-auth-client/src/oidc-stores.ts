@@ -21,6 +21,11 @@ const MAX_REFRESH_BINDINGS = 100;
  * At the cap (20 entries) `set` evicts the oldest entry — the same memory
  * bound the adapter previously applied inline — so a creation flood cannot
  * grow the map without limit. Entries persist until redeemed or evicted.
+ *
+ * @example
+ * ```ts
+ * const instance = new InMemoryPendingAuthorizationStore();
+ * ```
  */
 export class InMemoryPendingAuthorizationStore implements PendingAuthorizationStore {
     /**
@@ -87,6 +92,11 @@ export class InMemoryPendingAuthorizationStore implements PendingAuthorizationSt
  *
  * At the cap (100 entries) `set` evicts the oldest binding, so a refresh
  * flood cannot grow the map without limit.
+ *
+ * @example
+ * ```ts
+ * const instance = new InMemoryRefreshTokenStore();
+ * ```
  */
 export class InMemoryRefreshTokenStore implements RefreshTokenStore {
     /**

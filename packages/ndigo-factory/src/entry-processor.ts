@@ -14,6 +14,11 @@ import { Factory } from './factory';
  * Hooks are optional: a processor implements exactly the hooks it needs, and
  * the factory invokes only the hooks that are present. An absent hook is
  * skipped entirely — it never needs a no-op stub.
+ *
+ * @example
+ * ```ts
+ * const value = {} as InitializationAwareProcessor;
+ * ```
  */
 export interface InitializationAwareProcessor {
     /**
@@ -43,6 +48,11 @@ export interface InitializationAwareProcessor {
  * the factory invokes only the hooks that are present.
  *
  * *Note:* This interface is mainly for internal use within the framework.
+ *
+ * @example
+ * ```ts
+ * const value = {} as ConstructionAwareProcessor;
+ * ```
  */
 export interface ConstructionAwareProcessor {
     /**
@@ -85,6 +95,11 @@ export interface ConstructionAwareProcessor {
  * Runs for every managed value the container releases, whether or not the
  * value implements `Destroyable` — a value with no release method can still
  * carry an annotated destruction hook.
+ *
+ * @example
+ * ```ts
+ * const value = {} as DestructionAwareProcessor;
+ * ```
  */
 export interface DestructionAwareProcessor {
     /**
@@ -97,6 +112,11 @@ export interface DestructionAwareProcessor {
 
 /**
  * Factory hook that allows for modification of an application context's values.
+ *
+ * @example
+ * ```ts
+ * const value = {} as EntryRegistryProcessor;
+ * ```
  */
 export interface EntryRegistryProcessor {
     /**
@@ -108,6 +128,11 @@ export interface EntryRegistryProcessor {
 
 /**
  * Factory hook that allows for custom modification of new instances, e.g. checking for marker interfaces or wrapping them with proxies.
+ *
+ * @example
+ * ```ts
+ * const value = {} as FactoryPostProcessor;
+ * ```
  */
 export interface FactoryPostProcessor {
     /**
@@ -119,6 +144,11 @@ export interface FactoryPostProcessor {
 
 /**
  * A union type representing all possible entry processor interfaces.
+ *
+ * @example
+ * ```ts
+ * type _Alias = EntryProcessor;
+ * ```
  */
 export type EntryProcessor =
     | InitializationAwareProcessor

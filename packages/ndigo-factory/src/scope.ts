@@ -21,22 +21,42 @@ const logger = getLogger('ndigo-factory:scope');
 
 /**
  * Scope names shipped by the factory.
+ *
+ * @example
+ * ```ts
+ * type _Alias = KnownScope;
+ * ```
  */
 export type KnownScope = 'singleton' | 'prototype' | 'route' | 'hash' | 'refresh';
 
 /**
  * Any scope name: a {@link KnownScope} or a custom registered scope.
+ *
+ * @example
+ * ```ts
+ * type _Alias = PossibleScope;
+ * ```
  */
 export type PossibleScope = KnownScope | string;
 
 /**
  * Lazy factory callback invoked by a scope when it needs to create a value.
+ *
+ * @example
+ * ```ts
+ * type _Alias = ObjectFactory;
+ * ```
  */
 export type ObjectFactory<T = unknown> = () => T;
 
 /**
  * A caching strategy: resolves named values through the supplied object
  * factory and can destroy cached values.
+ *
+ * @example
+ * ```ts
+ * const value = {} as Scope;
+ * ```
  */
 export interface Scope {
     /** Destroys a cached value. @param name - The value name. */
@@ -53,6 +73,11 @@ export interface Scope {
 
 /**
  * A factory that exposes named {@link Scope} strategies and destroys scoped values.
+ *
+ * @example
+ * ```ts
+ * const value = {} as ScopedFactory;
+ * ```
  */
 export interface ScopedFactory {
     /** Destroys a scoped value. @param scopeName - The scope. @param valueName - The value name. */
@@ -101,6 +126,11 @@ export const hasScope = (target: unknown): boolean => {
  * TC39 decorator for defining scope on a class
  * @param scopeName - - The scope name (singleton, prototype, route, etc.)
  * @returns TC39 class decorator
+ *
+ * @example
+ * ```ts
+ * scope();
+ * ```
  */
 export function scope(scopeName: PossibleScope) {
     return function <T extends Constructable<unknown>>(target: T, context: ClassDecoratorContext): T {
@@ -140,6 +170,11 @@ export const refreshScope = scope('refresh');
  * @internal This is an implementation detail of the scoped factory. Only the
  * {@link Scope} and {@link ScopedFactory} interfaces are part of the stable public API.
  * A future scoping split may move concrete scope implementations to a separate module.
+ *
+ * @example
+ * ```ts
+ * const instance = new PrototypeScope();
+ * ```
  */
 export class PrototypeScope implements Scope {
     /**
@@ -191,6 +226,11 @@ export class PrototypeScope implements Scope {
  * `RefreshScope.clear`.
  *
  * @internal Implementation detail — see {@link PrototypeScope} for rationale.
+ *
+ * @example
+ * ```ts
+ * const instance = new HashScope();
+ * ```
  */
 export class HashScope implements Scope {
     /**
@@ -338,6 +378,11 @@ export class HashScope implements Scope {
  * Destruction callbacks can be registered when an instance is created.
  *
  * @internal Implementation detail — see {@link PrototypeScope} for rationale.
+ *
+ * @example
+ * ```ts
+ * const instance = new SingletonScope();
+ * ```
  */
 export class SingletonScope implements Scope {
     /**
@@ -411,6 +456,11 @@ export class SingletonScope implements Scope {
  * `destroy()` run for each value (mirrors `SingletonScope.destroyValue`).
  *
  * @internal Implementation detail — see {@link PrototypeScope} for rationale.
+ *
+ * @example
+ * ```ts
+ * const instance = new RefreshScope();
+ * ```
  */
 export class RefreshScope implements Scope {
     /**

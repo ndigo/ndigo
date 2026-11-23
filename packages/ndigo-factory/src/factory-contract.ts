@@ -11,6 +11,11 @@ import { EntryProcessor } from './entry-processor';
  * The minimal container contract: `getInstance` resolves a registered name to
  * its value, instantiating constructors and returning registered instances
  * and primitives as-is (identity preserved).
+ *
+ * @example
+ * ```ts
+ * const value = {} as Factory;
+ * ```
  */
 export interface Factory {
     /**
@@ -30,6 +35,11 @@ export interface Factory {
 
 /**
  * Extends {@link Factory} to provide hierarchical factory capabilities.
+ *
+ * @example
+ * ```ts
+ * const value = {} as HierarchicalFactory;
+ * ```
  */
 export interface HierarchicalFactory extends Factory {
     /**
@@ -46,6 +56,11 @@ export interface HierarchicalFactory extends Factory {
 
 /**
  * Extends {@link HierarchicalFactory} and {@link Registry} to provide configurable factory capabilities.
+ *
+ * @example
+ * ```ts
+ * const value = {} as ConfigurableFactory;
+ * ```
  */
 export interface ConfigurableFactory extends HierarchicalFactory, Registry {
     /**
@@ -62,6 +77,11 @@ export interface ConfigurableFactory extends HierarchicalFactory, Registry {
 
 /**
  * Interface to be implemented by values that wish to be aware of their owning {@link Factory|Factory}.
+ *
+ * @example
+ * ```ts
+ * const value = {} as FactoryAware;
+ * ```
  */
 export interface FactoryAware extends Aware {
     /**

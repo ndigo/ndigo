@@ -11,6 +11,11 @@ import { Registry } from './registry';
  * Destruction is terminal: a destroyed value is never reused, and resolving
  * the entry again constructs a new instance. Async teardown bridges to
  * {@link AsyncDestroyable}; the synchronous context close does not await it.
+ *
+ * @example
+ * ```ts
+ * const value = {} as Destroyable;
+ * ```
  */
 export interface Destroyable {
     /**
@@ -24,6 +29,11 @@ export interface Destroyable {
 
 /**
  * A {@link Destroyable} whose destruction is asynchronous.
+ *
+ * @example
+ * ```ts
+ * const value = {} as AsyncDestroyable;
+ * ```
  */
 export interface AsyncDestroyable extends Destroyable {
     /** Releases the value's resources asynchronously. */
@@ -37,6 +47,11 @@ export interface AsyncDestroyable extends Destroyable {
  * after property population and aware callbacks — and the instance is never
  * initialized again. It is the irreversible setup half of the lifecycle;
  * {@link Lifecycle.start} is the reversible run phase.
+ *
+ * @example
+ * ```ts
+ * const value = {} as Initializable;
+ * ```
  */
 export interface Initializable {
     /**
@@ -53,6 +68,11 @@ export interface Initializable {
  * Unlike {@link Initializable.init}, `start()`/`stop()` may cycle: a running
  * component is stopped on context close, and {@link ManagedLifecycle} targets
  * cycle across context refreshes.
+ *
+ * @example
+ * ```ts
+ * const value = {} as Lifecycle;
+ * ```
  */
 export interface Lifecycle {
     /** Whether the component is running. */
@@ -65,6 +85,11 @@ export interface Lifecycle {
 
 /**
  * A component that runs in a numeric startup phase.
+ *
+ * @example
+ * ```ts
+ * const value = {} as Phased;
+ * ```
  */
 export interface Phased {
     /** The component's startup phase. */
@@ -74,6 +99,11 @@ export interface Phased {
 /**
  * A {@link Lifecycle} the container drives automatically: started in ascending
  * phase order on context refresh, stopped in descending phase order on close.
+ *
+ * @example
+ * ```ts
+ * const value = {} as ManagedLifecycle;
+ * ```
  */
 export interface ManagedLifecycle extends Lifecycle, Phased {
     /** Whether the component starts with the context. */
@@ -82,6 +112,11 @@ export interface ManagedLifecycle extends Lifecycle, Phased {
 
 /**
  * Drives registered {@link ManagedLifecycle} targets on context refresh and close.
+ *
+ * @example
+ * ```ts
+ * const value = {} as LifecycleCoordinator;
+ * ```
  */
 export interface LifecycleCoordinator extends Lifecycle {
     /**

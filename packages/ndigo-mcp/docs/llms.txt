@@ -12,7 +12,7 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `McpToolDeniedOptions` *(type)* — Options for McpToolDeniedError.
 - `McpToolDeniedError` — Thrown when a registry policy refuses a tool call. Transports render it as an `isError` tool result, never as a protocol failure.
 - `JSONSchema` *(type)* — A JSON Schema object as carried by MCP `tools/list`.
-- `ToolDescriptor` *(type)*
+- `ToolDescriptor` *(type)* — The client-facing tool descriptor as reported by `tools/list`.
 - `RegisteredTool` *(type)* — A projected tool with the handler needed to invoke it.
 - `MappingEntryLike` *(type)* — One `getMappingEntries()` row.
 - `MappingTableLike` *(type)* — A mapping table exposing the inspect-style read model.

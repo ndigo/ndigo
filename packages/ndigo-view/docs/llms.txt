@@ -20,7 +20,7 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `AbstractPathViewMapping` — Base implementation for mappings that resolve targets by path.
 - `ViewResolver` *(type)* — Resolves a view name to a concrete View instance.
 - `MAX_VIEW_CACHE_ENTRIES` — Upper bound on cached views. View names can be request-derived (default route names, path extensions), so an unbounded cache is a memory-growth vector; inserti…
-- `BoundedCache` — Insertion-ordered, bounded FIFO cache.
+- `BoundedCache`
 - `createViewCacheKey` — Builds an unambiguous cache key for a view name/language pair.
 - `AbstractCachingViewResolver`
 - `isSafeViewName` — Returns whether a view name is safe to interpolate into a resolver path.

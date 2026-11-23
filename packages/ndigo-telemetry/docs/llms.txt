@@ -16,7 +16,7 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `getTracedTracer` — The tracer every `@traced` method reports to.
 - `TracedInterceptor` — Opens a span around every `@traced` call.
 - `currentTraceContext` — Returns the active span's trace ids, or `undefined` when no span is active (no provider, or outside any span) — safe in pure-logging mode.
-- `TraceCorrelation` *(type)* — The active trace context as plain ids, for stamping anything.
+- `TraceCorrelation` *(type)* — The active trace context as plain ids, for stamping anything. *
 - `CountedMethodConfig` *(type)* — The declaration recorded for a method decorated with `@counted`: the counter name, attributes, and optional feature aggregation.
 - `CountedInterceptor` — Increments a counter for every `@counted` call.
 - `countedCounter` — `@counted` annotation key: the counter declaration for a method. Pass it to `hasAnnotation(...)` to select counted methods.

@@ -10,16 +10,19 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 ## Public exports
 
 - `parseMediaType` — Parses a media type string into a MediaType instance.
+- `SpecificityComparator`
 - `MediaTypes`
 - `RingBuffer` — A fixed-capacity ring buffer implementing `ArrayLike` and `Iterable`.
-- `Deque`
-- `Heap`
+- `Deque` — A dynamic double-ended queue with O(1) amortized push/pop on both ends.
+- `Heap` — A binary heap (min-heap by default) with O(log n) push/pop and O(1) peek.
 - `PriorityQueue` — A priority queue backed by a Heap: FIFO ordering is not guaranteed for equal priorities (use a chained comparator to break ties).
-- `Trie`
+- `Trie` — A prefix tree (trie) for string keys with O(m) insert/search/prefix operations, where m is the key length.
 - `BloomFilterJSON` *(type)* — The JSON form of a BloomFilter: the bit width, hash count, packed buckets, and insertion count.
-- `BloomFilter`
+- `BloomFilter` — A probabilistic set membership filter: `has()` may return false positives but never false negatives. Memory is O(bits) and independent of the number of distinc…
+- `BoundedCacheOptions` *(type)* — Options for BoundedCache.
+- `BoundedCache` — A bounded cache with configurable eviction policy (`'lru'` or `'fifo'`).
 - `CountMinSketchJSON` *(type)* — The JSON form of a CountMinSketch: its dimensions, counter table, and total observed count.
-- `CountMinSketch`
+- `CountMinSketch` — A Count-Min sketch: sub-linear-memory approximate frequency counting. `estimate()` never undercounts and overcounts with bounded error.
 - `comparison` *(type)* — A function that compares two values for order. Returns a negative integer, zero, or a positive integer as the first argument is less than, equal to, or greater…
 - `predicate` *(type)* — A function that evaluates a condition between two values, returning a boolean.
 - `Comparable` *(type)* — Interface for objects that can be compared to another object of the same type.
@@ -93,11 +96,11 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `Null` — An object with a `null` prototype.
 - `createNull` — Creates a plain object whose prototype is `null`.
 - `PathMatcher` *(type)* — Defines a contract for matching and merging path patterns. This interface extends `PatternMatcher` for string patterns and paths.
-- `PathMatcherFilter` *(type)* — Defines a contract for filtering paths based on include and exclude patterns. This interface is typically implemented by mixins or classes that need path filte…
+- `PathMatcherFilter` *(type)*
 - `likePathMatcher` — Type guard that checks if a given value is a PathMatcher. A value is considered a `PathMatcher` if it has `getPatternComparator`, `match`, and `merge` methods.
 - `EqualsPathMatcher` — Path matcher for literal comparison: `merge` joins two patterns and `match` accepts only an exact string match. The identity matcher for callers that need patt…
 - `URLGlobPathMatcher`
-- `GlobPatternInfo` — Wildcard-pattern analysis used by `GlobPatternComparator`: counts `*` and `**` occurrences and answers the specificity questions ordering depends on (`isLeastS…
+- `GlobPatternInfo`
 - `AsPathMatcherFilter` — Mixin adding include/exclude pattern filtering to a class that owns a `pathMatcher`: `matches()` accepts a path when it satisfies every include pattern and no…
 - `Parser` *(type)* — Class-based interface for parsing a string into a structured value of type `T`.
 - `Stringifier` *(type)* — Class-based interface for serializing a value of type `T` into a string.
@@ -135,7 +138,7 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `isNotPrimitive` — Tests whether a value is not a primitive.
 - `PropertyValues` *(type)* — A collection that can look up property values by name.
 - `likePropertyValues` — Tests whether a value behaves like a `PropertyValues` collection.
-- `PropertyValue` — A named value wrapper used for property bags and metadata.
+- `PropertyValue` — A named property value.
 - `MutablePropertyValues` — A mutable collection of named property values.
 - `JSONValue` *(type)* — A value that can be represented in JSON.
 - `JSONObject` *(type)* — A JSON object value.
@@ -153,7 +156,7 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `getSharedOptions` — Reads the `@sharedDependency` metadata from a class constructor or instance.
 - `isShared` — Checks whether a class or instance is marked with `@sharedDependency`.
 - `satisfiesVersion` — Checks whether the given version satisfies a semver range.
-- `ConditionalPlatform` *(type)* — Platform types for conditional auto-configuration.
+- `ConditionalPlatform` *(type)* — Platform types for conditional auto-configuration. *
 - `ConditionContext` *(type)* — The runtime surface an active-condition evaluation needs: the environment (for property conditions) and the entry registry (for missing-entry conditions). Supp…
 - `whenBrowser` — Marks a configuration class as browser-only.
 - `whenNode` — Marks a configuration class as node-only.
@@ -181,9 +184,11 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `escalate` — Traverses ancestors upward from the supplied node.
 - `indexOf` — Finds the index of a child within a list of tree nodes.
 - `WildcardExp` — A regular expression compiled from a wildcard pattern.
+- `getPath` — Reads the value at `tokens` in `obj`, returning `undefined` when the path is absent or leaves the object graph.
+- `setPath` — Sets `value` at `tokens` in `obj`, preserving class-instance prototypes (mutating in place) and using immutable spread for plain and null-prototype objects. Re…
 - `KeypathConverter` — Parses a dotted and bracketed property-access expression into an ordered array of path tokens.
 - `WildcardConverter` — Parses a wildcard pattern into a bounded regular-expression source string.
-- `KeypathToken` *(type)* — A token in a parsed keypath — either a string property name or a numeric array index.
+- `KeypathToken` *(type)* — A token in a parsed keypath — either a string property name or a numeric array index. *
 - `parseUrlGlob`
 - `RadixMatch` *(type)* — Result of a successful radix tree path lookup.
 - `RadixTree` — A radix tree implementation for URL routing.

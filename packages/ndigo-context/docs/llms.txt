@@ -39,7 +39,7 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `nestedConfig` — Marks a `@property('prefix')` field as a nested configuration object: bind recursively into this plain-class field under the property's keypath . One prefix me…
 - `propertySource` — Adds a property source to a configuration class.
 - `EntryDecorator` *(type)* — A method decorator that marks a configuration entry factory.
-- `entry` — Creates an entry decorator. @param nameOrTarget - Entry name. @returns A method decorator.
+- `entry` — Creates an entry decorator from an explicit entry name (or context token).
 - `ConfigurationProcessor` — A EntryRegistryProcessor used for processing of `configuration` classes. This processor should be prioritized as it is important that any `entry` methods decla…
 - `MetadataConfigApplicationContext` — Application context that parses `@configuration` classes and registers their `@entry` values.
 - `CONFIG_PROPS_PREFIX` — The `@configurationProperties` class prefix marker (`boot:configurationProperties:prefix`).
@@ -66,7 +66,7 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `likeEnvironmentSource` — Returns whether a value exposes an environment.
 - `MockEnvironment` — Environment implementation intended for tests.
 - `StandardEnvironment` — Default environment implementation used by application contexts.
-- `EventListener` *(type)*
+- `EventListener` *(type)* — A listener callback for an emitted event.
 - `EventHandler` *(type)* — A single listener or a listener list for an event type.
 - `EventHandlers` *(type)* — Mapping from event type to handler(s).
 - `EventType` *(type)* — Event type supported by the emitter.
@@ -117,10 +117,10 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `DependencyValidationResult` *(type)* — Result of validating a feature's dependency manifest against the registry.
 - `SharedDependencyRegistry` *(type)* — Registry that holds shared dependency declarations and validates feature manifests.
 - `DefaultSharedDependencyRegistry` — Default implementation of `SharedDependencyRegistry`.
-- `PropertyResolver` *(type)*
+- `PropertyResolver` *(type)* — Resolves property values through an ordered source registry, with optional typed reads and secret decryption.
 - `likePropertyResolver` — Returns whether a value behaves like a PropertyResolver.
-- `PropertyIndex` *(type)*
-- `ResolverOptions` *(type)*
+- `PropertyIndex` *(type)* — Strategy interface for resolving property lookups from an ordered source list without walking the sources per lookup.
+- `ResolverOptions` *(type)* — Options for constructing a property resolver / index-backed lookup.
 - `PrototypeChainIndex` — Index that layers sources through a prototype chain.
 - `FlatMergedIndex` — Index that merges sources into one flat object on build.
 - `PrototypalPropertyResolver` — Property resolver that layers sources through a live property source registry.

@@ -18,5 +18,5 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 ## Public exports
 
 - `RedisConnection` — Owns a URL-created client or borrows an already-ready client. Construction never connects. Owned connections fail fast without automatic reconnect or offline q…
-- `RedisClient` *(type)* — Standalone node-redis client with default string replies (no keyPrefix).
-- `RedisConnectionOptions` *(type)* — Explicit connection configuration; injected ready clients are always borrowed.
+- `RedisClient` *(type)* — RedisClient.
+- `RedisConnectionOptions` *(type)* — RedisConnectionOptions.

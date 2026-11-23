@@ -2,7 +2,7 @@
  * `@toolMapping` metadata: storage, defaults, and validation.
  */
 import { describe, expect, it } from 'vitest';
-import { getToolMapping, toolMapping } from '../src/tool-mapping';
+import { defaultToolName, getToolMapping, toolMapping } from '../src/tool-mapping';
 
 describe('@toolMapping', () => {
     it('records method metadata on the class', () => {
@@ -70,5 +70,11 @@ describe('@toolMapping', () => {
 
         expect(() => toolMapping({ readOnly: true, consequential: true })).toThrow(/readOnly and consequential/u);
         expect(() => toolMapping({ readOnly: true, consequential: false })).not.toThrow();
+    });
+
+    it('derives the default snake_case tool name', () => {
+        expect(defaultToolName('getOrder')).toBe('get_order');
+        expect(defaultToolName('lookupOrder2')).toBe('lookup_order2');
+        expect(defaultToolName('2lookup')).toBe('tool_2lookup');
     });
 });

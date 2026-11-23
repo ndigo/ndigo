@@ -18,6 +18,8 @@ description: Runs the project's verification lanes and interprets their output. 
 | CLI surface for an agent       | `ndigo commands --json`                |
 | Catalog integrity              | `ndigo capabilities check`             |
 | Capability apply plan          | `ndigo add <capability> --json`        |
+| Capability verification        | `ndigo verify --capability <id>`       |
+| Full verification              | `ndigo verify --full`                  |
 
 `lint` and `typecheck` accept `--json` (`{ target, exitCode, stdout, stderr }`);
 the other machine-readable commands emit one JSON document on stdout.
@@ -31,7 +33,9 @@ the other machine-readable commands emit one JSON document on stdout.
 4. For a capability, `ndigo capabilities check` must be green and the apply plan
    must have no `conflicts[]`; `--apply` exits `1` rather than writing a partial
    plan.
-5. Finish with `ndigo lint && ndigo typecheck && ndigo test`.
+5. `ndigo verify --capability <id> --json` runs the declared checks; `--full`
+   adds the app's test and lint lanes.
+6. Finish with `ndigo lint && ndigo typecheck && ndigo test`.
 
 ## Traps
 

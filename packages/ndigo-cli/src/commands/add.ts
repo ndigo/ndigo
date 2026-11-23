@@ -11,9 +11,8 @@ import {
     resolveCapabilityVariables,
 } from '../capabilities/apply.js';
 import type { CapabilityApplyResult, CapabilityExecution } from '../capabilities/apply.js';
-import { loadCatalog } from '../capabilities/catalog.js';
-import { loadCatalogReferences, validateCatalog } from '../capabilities/validate.js';
-import { readAppManifest, resolveAppDir, usageError } from '../helpers/app-scripts.js';
+import { loadValidatedCapabilities } from '../capabilities/validate.js';
+import { readAppManifest, resolveAppDir } from '../helpers/app-scripts.js';
 import { jsonFlag, writeJson } from './_output.js';
 
 /** Flags shared by the plan and apply halves. */
@@ -31,7 +30,7 @@ interface AddFlags {
 export const addCommand = buildCommand({
     async func(flags: AddFlags, target: string, dir: string) {
         const resolved = resolveAppDir(dir);
-        const capabilities = validatedCapabilities();
+        const capabilities = loadValidatedCapabilities();
         const capability = resolveCapability(target, capabilities);
         const variables = resolveCapabilityVariables(capability, flags.var, appNameOf(readAppManifest(resolved)));
         const execution = planCapability(capability, {
@@ -116,14 +115,6 @@ export const addCommand = buildCommand({
     },
     docs: { brief: 'Plan or apply a capability into an app' },
 });
-
-function validatedCapabilities() {
-    const catalog = loadCatalog();
-    const loaded = loadCatalogReferences();
-    const errors = [...loaded.errors, ...validateCatalog(catalog, loaded.references)];
-    if (errors.length > 0) throw usageError(`capability catalog is invalid:\n  ${errors.join('\n  ')}`);
-    return catalog.capabilities;
-}
 
 function planDocument(execution: CapabilityExecution) {
     const { plan } = execution;

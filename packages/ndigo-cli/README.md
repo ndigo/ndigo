@@ -32,19 +32,20 @@ ndigo serve --cluster 4 --port 3000   # 4 replicated worker slots
 
 ### Application lifecycle
 
-| Command                 | What it does                                                                     |
-| :---------------------- | :------------------------------------------------------------------------------- |
-| `ndigo serve [dir]`     | Runs the app under the supervisor (`--cluster <n>`, `--port <base>`).            |
-| `ndigo dev [dir]`       | Runs the app's `dev` script (vite) or `start` (Node apps), `--port`.             |
-| `ndigo build [dir]`     | Runs the app's `build` script (one-shot).                                        |
-| `ndigo test [dir]`      | Runs the app's `test` script.                                                    |
-| `ndigo lint [dir]`      | Runs the app's `lint` script.                                                    |
-| `ndigo format [dir]`    | Runs the app's `format` script.                                                  |
-| `ndigo typecheck [dir]` | Runs the app's `typecheck` script.                                               |
-| `ndigo clean [dir]`     | Removes `dist`/`lib`/`.nx`/`coverage` (`--dryRun` previews; `--force` required). |
-| `ndigo inspect [dir]`   | Runs the app's `inspect` entry (the manifest printer).                           |
-| `ndigo routes [dir]`    | Runs `inspect`; `--json` or `--toon` emits the manifest's route list.            |
-| `ndigo logs [dir]`      | Tails `logs/app.log` (`--file`, `--lines`, `--follow`).                          |
+| Command                 | What it does                                                                        |
+| :---------------------- | :---------------------------------------------------------------------------------- |
+| `ndigo serve [dir]`     | Runs the app under the supervisor (`--cluster <n>`, `--port <base>`).               |
+| `ndigo dev [dir]`       | Runs the app's `dev` script (vite) or `start` (Node apps), `--port`.                |
+| `ndigo build [dir]`     | Runs the app's `build` script (one-shot).                                           |
+| `ndigo test [dir]`      | Runs the app's `test` script.                                                       |
+| `ndigo lint [dir]`      | Runs the app's `lint` script.                                                       |
+| `ndigo format [dir]`    | Runs the app's `format` script.                                                     |
+| `ndigo typecheck [dir]` | Runs the app's `typecheck` script.                                                  |
+| `ndigo verify [dir]`    | Runs declared capability checks and app lanes (`--capability`, `--full`, `--json`). |
+| `ndigo clean [dir]`     | Removes `dist`/`lib`/`.nx`/`coverage` (`--dryRun` previews; `--force` required).    |
+| `ndigo inspect [dir]`   | Runs the app's `inspect` entry (the manifest printer).                              |
+| `ndigo routes [dir]`    | Runs `inspect`; `--json` or `--toon` emits the manifest's route list.               |
+| `ndigo logs [dir]`      | Tails `logs/app.log` (`--file`, `--lines`, `--follow`).                             |
 
 ### Scaffolding and generators
 

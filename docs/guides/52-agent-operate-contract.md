@@ -103,6 +103,9 @@ honoured, `dispose()` unregisters, and an unsupported host returns
 
 The contract is executable, not aspirational:
 
+- `ndigo verify --capability <id>` runs the declared checks against a live
+  application: `scripts.inspect` for the manifest, a JSON-RPC handshake with
+  `scripts.mcp`, and `scripts.openapi` for route parity.
 - `packages/ndigo-core/test/agent-bridge.spec.ts` — a stub adapter satisfies the
   full surface, annotations survive registration, a denied action returns a
   result, and an unservable query returns `{ error }`.

@@ -5,13 +5,17 @@
  * issue #148).
  */
 
-/** The registered top-level route names, excluding the `db` namespace and the two aliases. */
+/** The registered top-level route names, excluding the `db` namespace and the `g` alias. */
 export const CLI_ROUTE_NAMES = [
     'serve',
     'dev',
     'new',
     'generate',
     'inspect',
+    'routes',
+    'mcp',
+    'commands',
+    'capabilities',
     'doctor',
     'info',
     'build',
@@ -19,6 +23,7 @@ export const CLI_ROUTE_NAMES = [
     'lint',
     'format',
     'typecheck',
+    'verify',
     'clean',
     'config',
     'env',
@@ -26,9 +31,10 @@ export const CLI_ROUTE_NAMES = [
     'add',
     'update',
     'logs',
+    'ai',
     'ui',
     'completion',
 ] as const;
 
-/** Every tab-completable root token: the routes plus the `db` namespace and the two aliases. */
-export const COMPLETION_WORDS: readonly string[] = [...CLI_ROUTE_NAMES, 'db', 'g', 'routes'];
+/** Every tab-completable root token: the routes plus the `db` namespace and the `g` alias. */
+export const COMPLETION_WORDS: readonly string[] = [...CLI_ROUTE_NAMES, 'db', 'g'];

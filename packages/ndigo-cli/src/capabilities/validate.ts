@@ -4,7 +4,15 @@
  */
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { CAPABILITIES_DIR, loadCheckIds, loadGuideSlugs, loadPackageFacts, loadSkillIds } from './catalog.js';
+import { usageError } from '../helpers/app-scripts.js';
+import {
+    CAPABILITIES_DIR,
+    loadCatalog,
+    loadCheckIds,
+    loadGuideSlugs,
+    loadPackageFacts,
+    loadSkillIds,
+} from './catalog.js';
 import type { CapabilityEntry, CatalogLoad, PackageFact } from './catalog.js';
 
 /** Everything a catalog entry may reference, resolved once per check pass.
@@ -165,6 +173,20 @@ function validateOps(capability: CapabilityEntry, problems: string[]): void {
             }
         }
     }
+}
+
+/**
+ * Loads the catalog and fails when any entry or reference is invalid.
+ *
+ * @returns The valid capabilities.
+ * @throws A usage error listing every catalog problem.
+ */
+export function loadValidatedCapabilities(): readonly CapabilityEntry[] {
+    const catalog = loadCatalog();
+    const loaded = loadCatalogReferences();
+    const errors = [...loaded.errors, ...validateCatalog(catalog, loaded.references)];
+    if (errors.length > 0) throw usageError(`capability catalog is invalid:\n  ${errors.join('\n  ')}`);
+    return catalog.capabilities;
 }
 
 /**

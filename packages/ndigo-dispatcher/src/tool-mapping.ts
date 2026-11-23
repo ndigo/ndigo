@@ -104,6 +104,36 @@ export function toolMapping(options: ToolMappingMetadata = {}) {
 }
 
 /**
+ * Derives the default snake_case tool name from a handler method name.
+ *
+ * The rule is shared with `@ndigo/inspect`, so a manifest and `tools/list`
+ * cannot disagree about an unnamed tool.
+ *
+ * @param methodName - The decorated method name.
+ * @returns The snake_case tool name.
+ * @throws When the derived name is not valid snake_case.
+ *
+ * @example
+ * ```ts
+ * defaultToolName('getOrder'); // 'get_order'
+ * ```
+ */
+export function defaultToolName(methodName: string): string {
+    const name = methodName
+        .replace(/([a-z0-9])([A-Z])/gu, '$1_$2')
+        .replace(/[^A-Za-z0-9_]/gu, '_')
+        .toLowerCase();
+    const candidate = /^[a-z]/u.test(name) ? name : `tool_${name}`;
+    if (toolNamePattern.test(candidate) === false) {
+        throw new Error(
+            `generated MCP tool name '${candidate}' is not snake_case — declare a valid @toolMapping name` +
+                ` for '${methodName}'`
+        );
+    }
+    return candidate;
+}
+
+/**
  * Reads the tool metadata recorded by {@link toolMapping}.
  *
  * @param target - The decorated class constructor or instance.

@@ -46,8 +46,8 @@ only declares tools, and the agent loop executes them.
 
 ## Verify
 
-`ndigo typecheck` and `ndigo build` are green; one run streams text and a tool
-call; structured output validates against its schema.
+`ndigo verify --capability agent-model --json` is green; one run streams text
+and a tool call; structured output validates against its schema.
 
 ## Example prompt
 

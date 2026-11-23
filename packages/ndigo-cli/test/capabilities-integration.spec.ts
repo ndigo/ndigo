@@ -168,4 +168,16 @@ describe('capability apply (fixture app)', () => {
             await client.close();
         }
     });
+
+    it('verifies the capability against the running app', async () => {
+        const result = await runCli(['verify', '--capability', 'agent-surface', '--json']);
+        expect(result.code).toBe(0);
+        const report = JSON.parse(result.out) as {
+            ok: boolean;
+            checks: { id: string; status: string; message?: string }[];
+        };
+        expect(report.ok).toBe(true);
+        expect(report.checks.find((check) => check.id === 'mcp-stdio:tools/list')?.status).toBe('pass');
+        expect(report.checks.find((check) => check.id === 'route-parity:*')?.status).toBe('pass');
+    });
 });

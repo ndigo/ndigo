@@ -63,6 +63,11 @@ export const normalizeLocale = (value: unknown): string | undefined => {
  * LanguageCode.for('en_us');      // null
  * String(LanguageCodes.EN_US);    // 'en-US'
  * ```
+ *
+ * @example
+ * ```ts
+ * const instance = new LanguageCode();
+ * ```
  */
 export class LanguageCode implements Serializable, Equatable<LanguageCode>, StringComparable<LanguageCode> {
     /**

@@ -6,6 +6,11 @@ import { ContentSource } from './content';
 
 /**
  * Describes a named theme and the content source it exposes.
+ *
+ * @example
+ * ```ts
+ * const value = {} as Theme;
+ * ```
  */
 export interface Theme {
     /**
@@ -21,6 +26,11 @@ export interface Theme {
 
 /**
  * Looks up themes by name — the theme registry.
+ *
+ * @example
+ * ```ts
+ * const value = {} as ThemeSource;
+ * ```
  */
 export interface ThemeSource {
     /**
@@ -34,6 +44,11 @@ export interface ThemeSource {
 
 /**
  * In-memory theme source for static theme maps.
+ *
+ * @example
+ * ```ts
+ * const instance = new StaticThemeSource();
+ * ```
  */
 export class StaticThemeSource implements ThemeSource {
     /**

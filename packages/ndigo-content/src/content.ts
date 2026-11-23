@@ -10,6 +10,11 @@ import * as LanguageCodes from './language-codes';
 
 /**
  * Resolves localized content for a given key and language.
+ *
+ * @example
+ * ```ts
+ * const value = {} as ContentSource;
+ * ```
  */
 export interface ContentSource {
     /**
@@ -28,11 +33,21 @@ export interface ContentSource {
 
 /**
  * Nested dictionary of content keyed by content id and language code.
+ *
+ * @example
+ * ```ts
+ * type _Alias = ContentDictionary;
+ * ```
  */
 export type ContentDictionary = Record<string, Record<string, string>>;
 
 /**
  * In-memory content source with language fallback support.
+ *
+ * @example
+ * ```ts
+ * const instance = new StaticContentSource();
+ * ```
  */
 export class StaticContentSource implements ContentSource {
     /**
@@ -105,6 +120,11 @@ export class StaticContentSource implements ContentSource {
 
 /**
  * Marks an object that can receive a content source.
+ *
+ * @example
+ * ```ts
+ * const value = {} as ContentSourceAware;
+ * ```
  */
 export interface ContentSourceAware extends Aware {
     /**

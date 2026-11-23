@@ -58,7 +58,8 @@ function createRunContext(options: VerifyOptions): RunContext {
 
 /**
  * Derives the check list: doctor first, then the named capability's declared
- * checks (or the catalog union), with `--full` adding test and lint.
+ * checks (or the catalog union), with `--full` adding typecheck, test, and
+ * lint.
  *
  * @param capability - The named capability, when one was given.
  * @param catalog - Every catalog capability.

@@ -40,6 +40,11 @@ function builderForSqliteType(name: string, sqlType: SqliteStorageType) {
  *
  * @param entityClass - The `@entity`-decorated class.
  * @returns A Drizzle sqlite table.
+ *
+ * @example
+ * ```ts
+ * drizzleTableForEntity();
+ * ```
  */
 export function drizzleTableForEntity<E extends object>(entityClass: Constructable<E>) {
     const metadata = getEntityMetadata(entityClass);
@@ -77,6 +82,11 @@ export function drizzleTableForEntity<E extends object>(entityClass: Constructab
  *
  * @param entityClass - The `@entity`-decorated class.
  * @returns A Zod schema.
+ *
+ * @example
+ * ```ts
+ * insertSchemaForEntity();
+ * ```
  */
 export function insertSchemaForEntity<E extends object>(entityClass: Constructable<E>): z.ZodType {
     // NOTE: bridging to Parameters<typeof createInsertSchema>[0] — the source type is wider than this consumer's contract.
@@ -90,6 +100,11 @@ export function insertSchemaForEntity<E extends object>(entityClass: Constructab
  *
  * @param entityClass - The `@entity`-decorated class.
  * @returns A Zod schema.
+ *
+ * @example
+ * ```ts
+ * selectSchemaForEntity();
+ * ```
  */
 export function selectSchemaForEntity<E extends object>(entityClass: Constructable<E>): z.ZodType {
     // The metadata-built table's columns are dynamic (typed `Record<string,

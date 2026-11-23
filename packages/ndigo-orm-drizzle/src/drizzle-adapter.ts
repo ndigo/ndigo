@@ -10,6 +10,14 @@ import { DrizzleMigrator } from './drizzle-migrator.js';
 import type { Migration } from './drizzle-migrator.js';
 import type { NdigoDatabaseAdapter, MigrationStatus as AdapterMigrationStatus } from '@ndigo/orm';
 
+/**
+ * DrizzleAdapterOptions.
+ *
+ * @example
+ * ```ts
+ * const value = {} as DrizzleAdapterOptions;
+ * ```
+ */
 export interface DrizzleAdapterOptions {
     /** Adapter name used for `--db <name>` selection. */
     name: string;
@@ -36,6 +44,11 @@ export interface DrizzleAdapterOptions {
  *
  * @param options - Data source, migrations, name, and app-owned hooks.
  * @returns The database adapter.
+ *
+ * @example
+ * ```ts
+ * createDrizzleAdapter();
+ * ```
  */
 export function createDrizzleAdapter(options: DrizzleAdapterOptions): NdigoDatabaseAdapter {
     const migrator = new DrizzleMigrator(options.dataSource);

@@ -69,6 +69,11 @@ type Row = [id: string, type: string, payload: string, occurredAt: number];
 
 /**
  * Options for {@link LibSQLOutboxStore}.
+ *
+ * @example
+ * ```ts
+ * const value = {} as LibSQLOutboxStoreOptions;
+ * ```
  */
 export interface LibSQLOutboxStoreOptions {
     /**
@@ -90,6 +95,11 @@ export interface LibSQLOutboxStoreOptions {
  * Durable {@link OutboxStore} on libSQL. Every method awaits schema creation;
  * clients created by the store are owned, injected clients are borrowed by
  * default.
+ *
+ * @example
+ * ```ts
+ * const instance = new LibSQLOutboxStore();
+ * ```
  */
 export class LibSQLOutboxStore implements OutboxStore {
     /**

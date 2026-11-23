@@ -68,6 +68,11 @@ const SELECT_COLUMNS = 'destination, id, message_id, body, body_kind, headers, s
 
 /**
  * Options for {@link LibSQLQueueMessageStore}.
+ *
+ * @example
+ * ```ts
+ * const value = {} as LibSQLQueueMessageStoreOptions;
+ * ```
  */
 export interface LibSQLQueueMessageStoreOptions {
     /**
@@ -88,6 +93,11 @@ export interface LibSQLQueueMessageStoreOptions {
  * Multi-writer processes on one database are safe by virtue of atomic
  * AUTOINCREMENT — seq issuance is a single INSERT. Clients created by the
  * store are owned; injected clients are borrowed by default.
+ *
+ * @example
+ * ```ts
+ * const instance = new LibSQLQueueMessageStore();
+ * ```
  */
 export class LibSQLQueueMessageStore implements QueueMessageStore {
     /**

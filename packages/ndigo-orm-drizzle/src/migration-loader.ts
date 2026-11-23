@@ -27,6 +27,11 @@ const migrationFilePatternRule = /^(\d{4,})-[\w-]+\.(ts|mts|mjs)$/;
  *
  * @param dir - The migrations directory.
  * @returns The loaded migrations, filename-sorted.
+ *
+ * @example
+ * ```ts
+ * loadMigrations();
+ * ```
  */
 export async function loadMigrations(dir: string): Promise<Migration[]> {
     let entries: string[] = [];
@@ -62,6 +67,11 @@ export async function loadMigrations(dir: string): Promise<Migration[]> {
  *
  * @param dir - The migrations directory.
  * @returns The next version (1 for an empty or missing directory).
+ *
+ * @example
+ * ```ts
+ * nextMigrationVersion();
+ * ```
  */
 export async function nextMigrationVersion(dir: string): Promise<number> {
     let entries: string[] = [];
@@ -86,6 +96,11 @@ export async function nextMigrationVersion(dir: string): Promise<number> {
 
 /**
  * Options for {@link migrateOnBoot}.
+ *
+ * @example
+ * ```ts
+ * const value = {} as MigrateOnBootOptions;
+ * ```
  */
 export interface MigrateOnBootOptions {
     /** The data source the migrations apply to. */
@@ -103,6 +118,11 @@ export interface MigrateOnBootOptions {
  *
  * @param options - The data source and migrations directory.
  * @returns The post-run migration status, for boot logs.
+ *
+ * @example
+ * ```ts
+ * migrateOnBoot();
+ * ```
  */
 export async function migrateOnBoot(options: MigrateOnBootOptions): Promise<MigrationStatus[]> {
     const migrations = await loadMigrations(options.dir);

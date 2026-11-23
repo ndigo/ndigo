@@ -69,6 +69,11 @@ type Row = [
 
 /**
  * Options for {@link LibSQLJobStore}.
+ *
+ * @example
+ * ```ts
+ * const value = {} as LibSQLJobStoreOptions;
+ * ```
  */
 export interface LibSQLJobStoreOptions {
     /**
@@ -92,6 +97,11 @@ export interface LibSQLJobStoreOptions {
 /**
  * Durable {@link JobDriver} on libSQL. Clients created by the store are
  * owned; injected clients are borrowed by default.
+ *
+ * @example
+ * ```ts
+ * const instance = new LibSQLJobStore();
+ * ```
  */
 export class LibSQLJobStore implements JobDriver {
     /**

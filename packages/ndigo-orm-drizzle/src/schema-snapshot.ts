@@ -19,12 +19,25 @@ import { primaryKeyStorageType, sqliteTypeForColumnType } from './_column-types'
 export const SNAPSHOT_PREDICATE = 1;
 
 /** SQLite storage classes the metadata → SQL mapping can emit. */
+/**
+ * SqliteStorageType.
+ *
+ * @example
+ * ```ts
+ * type _Alias = SqliteStorageType;
+ * ```
+ */
 export type SqliteStorageType = 'INTEGER' | 'REAL' | 'NUMERIC' | 'BLOB' | 'TEXT';
 
 /**
  * One column as the DDL predicate models it. `nullable` is the resolved
  * nullability (`createTableStatements` semantics: explicit `nullable: true`
  * or a non-PK generated column, which `persist()` skips while undefined).
+ *
+ * @example
+ * ```ts
+ * const value = {} as ColumnProjection;
+ * ```
  */
 export interface ColumnProjection {
     /** The column name. */
@@ -40,6 +53,14 @@ export interface ColumnProjection {
 }
 
 /** One table's projection. */
+/**
+ * TableProjection.
+ *
+ * @example
+ * ```ts
+ * const value = {} as TableProjection;
+ * ```
+ */
 export interface TableProjection {
     /** The table name. */
     name: string;
@@ -48,6 +69,14 @@ export interface TableProjection {
 }
 
 /** The committed, normalized metadata projection (`db/schema.json`). */
+/**
+ * SchemaSnapshot.
+ *
+ * @example
+ * ```ts
+ * const value = {} as SchemaSnapshot;
+ * ```
+ */
 export interface SchemaSnapshot {
     /** The snapshot predicate version and capabilities. */
     predicate: typeof SNAPSHOT_PREDICATE;
@@ -56,6 +85,14 @@ export interface SchemaSnapshot {
 }
 
 /** The delta between two projections, as rendered for a migration. */
+/**
+ * ProjectionDelta.
+ *
+ * @example
+ * ```ts
+ * const value = {} as ProjectionDelta;
+ * ```
+ */
 export interface ProjectionDelta {
     /** SQL statements for the migration body (table creates first, then column changes, then drops). */
     statements: string[];
@@ -79,6 +116,11 @@ export interface ProjectionDelta {
  *
  * @param entities - The entity classes declared with `@ndigo/orm` decorators.
  * @returns The metadata projection.
+ *
+ * @example
+ * ```ts
+ * projectEntities();
+ * ```
  */
 export function projectEntities(entities: Constructable[]): SchemaSnapshot {
     const tables: TableProjection[] = [];
@@ -148,6 +190,11 @@ function renderCreateTable(table: TableProjection): string {
  * @param before - The committed projection, or `null` when none exists.
  * @param after - The current projection (from `projectEntities`).
  * @returns The rendered delta.
+ *
+ * @example
+ * ```ts
+ * diffProjections();
+ * ```
  */
 export function diffProjections(before: SchemaSnapshot | null, after: SchemaSnapshot): ProjectionDelta {
     const statements: string[] = [];
@@ -244,6 +291,11 @@ function renderColumn(column: ColumnProjection): string {
  * @param description - Human summary (from `diffProjections`).
  * @param statements - The migration body's SQL statements.
  * @returns The migration module source.
+ *
+ * @example
+ * ```ts
+ * renderMigrationFile();
+ * ```
  */
 export function renderMigrationFile(version: number, description: string, statements: string[]): string {
     const body = statements.map((statement) => `            ${quote(statement)},`).join('\n');
@@ -285,6 +337,11 @@ function quote(value: string): string {
  *
  * @param snapshot - The projection.
  * @returns The pretty-printed JSON document.
+ *
+ * @example
+ * ```ts
+ * renderSnapshot();
+ * ```
  */
 export function renderSnapshot(snapshot: SchemaSnapshot): string {
     return `${JSON.stringify(snapshot, null, 2)}\n`;
@@ -297,6 +354,11 @@ export function renderSnapshot(snapshot: SchemaSnapshot): string {
  *
  * @param source - The snapshot document from `renderSnapshot`.
  * @returns The parsed snapshot.
+ *
+ * @example
+ * ```ts
+ * readSnapshot();
+ * ```
  */
 export function readSnapshot(source: string): SchemaSnapshot {
     const parsed = JSON.parse(source) as { predicate?: unknown; tables?: unknown };

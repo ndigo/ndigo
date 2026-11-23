@@ -10,6 +10,11 @@ import { DrizzleEntityManager } from './drizzle-entity-manager';
  *
  * @typeParam T - The entity type.
  * @typeParam ID - The entity's primary identifier type.
+ *
+ * @example
+ * ```ts
+ * const instance = new DrizzleRepository();
+ * ```
  */
 export class DrizzleRepository<T extends object, ID> implements AsyncRepository<T, ID> {
     /**

@@ -7,6 +7,11 @@ import { DrizzleEntityManager } from './drizzle-entity-manager';
 /**
  * Tracks new, dirty, and removed entities and flushes them to a Drizzle store
  * as a single async batch.
+ *
+ * @example
+ * ```ts
+ * const instance = new DrizzleUnitOfWork();
+ * ```
  */
 export class DrizzleUnitOfWork {
     /**

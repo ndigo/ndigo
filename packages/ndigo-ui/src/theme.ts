@@ -9,16 +9,31 @@ import type { TokenName } from './token-name.js';
 
 /**
  * Light or dark presentation of a theme.
+ *
+ * @example
+ * ```ts
+ * type _Alias = ThemeColorScheme;
+ * ```
  */
 export type ThemeColorScheme = 'light' | 'dark';
 
 /**
  * Partial map of design-token names to override values for a theme.
+ *
+ * @example
+ * ```ts
+ * type _Alias = ThemeTokens;
+ * ```
  */
 export type ThemeTokens = Readonly<Partial<Record<TokenName, string>>>;
 
 /**
  * A named theme: an identity, a color scheme, and its token overrides.
+ *
+ * @example
+ * ```ts
+ * const value = {} as Theme;
+ * ```
  */
 export interface Theme {
     /** Human-readable, unique theme name (e.g. `solarized-dark`). */

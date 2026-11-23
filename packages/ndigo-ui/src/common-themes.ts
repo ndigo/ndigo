@@ -196,6 +196,11 @@ export const COMMON_THEMES: readonly Theme[] = [
  * Finds a built-in theme by name.
  * @param name - Theme name.
  * @returns The theme, or `undefined` when not a built-in.
+ *
+ * @example
+ * ```ts
+ * getCommonTheme();
+ * ```
  */
 export function getCommonTheme(name: string): Theme | undefined {
     return COMMON_THEMES.find((theme) => theme.name === name);

@@ -9,6 +9,11 @@ import type { Theme } from './theme.js';
  * Spread onto the root element (`<html {...themeAttributes(theme)}>`) so the
  * same attributes that `applyTheme` sets at runtime are present in the SSR
  * document, letting hydration skip re-resolving the theme.
+ *
+ * @example
+ * ```ts
+ * const value = {} as ThemeAttributes;
+ * ```
  */
 export interface ThemeAttributes {
     /** Selects the theme's CSS rules and exposes the active theme to scripts. */
@@ -39,6 +44,11 @@ const escapeAttributeValue = (value: string): string =>
  *
  * @param theme - Theme to serialize.
  * @returns Attribute names mapped to escaped values.
+ *
+ * @example
+ * ```ts
+ * themeAttributes();
+ * ```
  */
 export function themeAttributes(theme: Theme): ThemeAttributes {
     return {

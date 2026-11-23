@@ -6,6 +6,11 @@ import type { TokenName } from './token-name.js';
 
 /**
  * Catalog entry for one design token.
+ *
+ * @example
+ * ```ts
+ * const value = {} as TokenDefinition;
+ * ```
  */
 export interface TokenDefinition {
     /** CSS custom property name, e.g. `--nd-color-bg`. */

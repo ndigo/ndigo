@@ -7,6 +7,11 @@ import type { Theme } from './theme.js';
 /**
  * Minimal structural shape of a theming target, so this module does not
  * depend on DOM type declarations.
+ *
+ * @example
+ * ```ts
+ * type _Alias = ThemeTarget;
+ * ```
  */
 export type ThemeTarget = {
     style: {
@@ -45,6 +50,11 @@ function clearInlineTokens(target: ThemeTarget): void {
  *
  * @param theme - Theme to apply.
  * @param target - Element to apply to. Defaults to the document root.
+ *
+ * @example
+ * ```ts
+ * applyTheme();
+ * ```
  */
 export function applyTheme(theme: Theme, target?: ThemeTarget): void {
     const resolved = resolveTarget(target);
@@ -69,6 +79,11 @@ export function applyTheme(theme: Theme, target?: ThemeTarget): void {
  * Removes an applied theme from `target`, clearing inline overrides and the
  * theme attributes.
  * @param target - Element to clear. Defaults to the document root.
+ *
+ * @example
+ * ```ts
+ * removeTheme();
+ * ```
  */
 export function removeTheme(target?: ThemeTarget): void {
     const resolved = resolveTarget(target);

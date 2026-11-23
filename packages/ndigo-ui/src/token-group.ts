@@ -15,5 +15,10 @@ export const TOKEN_GROUPS = [
 
 /**
  * One of the stable token groups.
+ *
+ * @example
+ * ```ts
+ * type _Alias = TokenGroup;
+ * ```
  */
 export type TokenGroup = (typeof TOKEN_GROUPS)[number];

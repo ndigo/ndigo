@@ -8,6 +8,11 @@ import type { Theme } from './theme.js';
  * @param theme - Theme to serialize.
  * @param selector - CSS selector to target. Defaults to `:root`.
  * @returns CSS text.
+ *
+ * @example
+ * ```ts
+ * themeToCss();
+ * ```
  */
 export function themeToCss(theme: Theme, selector: string = ':root'): string {
     const declarations = Object.entries(theme.tokens)

@@ -125,6 +125,11 @@ export const TOKEN_NAMES: readonly TokenName[] = TOKENS.map((token) => token.nam
  * Looks up the catalog definition for a token name.
  * @param name - Token name to find.
  * @returns The definition, or `undefined` when the name is not catalogued.
+ *
+ * @example
+ * ```ts
+ * getTokenDefinition();
+ * ```
  */
 export function getTokenDefinition(name: TokenName): TokenDefinition | undefined {
     return DEFINITIONS_BY_NAME.get(name);

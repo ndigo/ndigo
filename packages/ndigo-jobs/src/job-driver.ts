@@ -24,6 +24,11 @@ import type { ClaimOptions, JobId, JobRecord, JobRequest } from './job';
  *
  * Implementations are registered under the `jobDriver` entry; the default is
  * {@link "in-process-job-driver".InProcessJobDriver | InProcessJobDriver}, which is explicitly non-durable.
+ *
+ * @example
+ * ```ts
+ * const value = {} as JobDriver;
+ * ```
  */
 export interface JobDriver extends AsyncDestroyable {
     /** Backend discriminator (`'in-process'`, `'libsql'`, `'redis'`). */

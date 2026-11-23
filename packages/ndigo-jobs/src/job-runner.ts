@@ -24,6 +24,11 @@ function defaultBackoffMs(attempt: number): number {
 
 /**
  * Options for {@link JobRunner}.
+ *
+ * @example
+ * ```ts
+ * const value = {} as JobRunnerOptions;
+ * ```
  */
 export interface JobRunnerOptions {
     /** The driver to claim from; resolved from the `jobDriver` entry when omitted. */
@@ -66,6 +71,11 @@ export interface JobRunnerOptions {
  * on context close).
  *
  * Deterministic tests drive {@link tick} directly with an injected clock.
+ *
+ * @example
+ * ```ts
+ * const instance = new JobRunner();
+ * ```
  */
 export class JobRunner implements AsyncDestroyable {
     /**

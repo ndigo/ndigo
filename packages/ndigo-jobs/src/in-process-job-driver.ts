@@ -19,6 +19,11 @@ interface StoredJob {
 
 /**
  * Options for {@link InProcessJobDriver}.
+ *
+ * @example
+ * ```ts
+ * const value = {} as InProcessJobDriverOptions;
+ * ```
  */
 export interface InProcessJobDriverOptions {
     /** Clock override for deterministic tests; defaults to `Date.now`. */
@@ -38,6 +43,11 @@ export interface InProcessJobDriverOptions {
  *
  * Payloads round-trip through JSON like every driver, so handlers see the
  * same shape they would after a restart.
+ *
+ * @example
+ * ```ts
+ * const instance = new InProcessJobDriver();
+ * ```
  */
 export class InProcessJobDriver implements JobDriver {
     /**

@@ -19,6 +19,11 @@ interface StoredOutboxEntry {
 
 /**
  * Options for {@link InProcessOutboxStore}.
+ *
+ * @example
+ * ```ts
+ * const value = {} as InProcessOutboxStoreOptions;
+ * ```
  */
 export interface InProcessOutboxStoreOptions {
     /** Clock override for deterministic tests; defaults to `Date.now`. */
@@ -35,6 +40,11 @@ const DEFAULT_LEASE_MS = 60_000;
  * transaction to join**: `append` succeeds unconditionally, so it is a test
  * double and development default, not a correctness guarantee.
  * Entries vanish with the process.
+ *
+ * @example
+ * ```ts
+ * const instance = new InProcessOutboxStore();
+ * ```
  */
 export class InProcessOutboxStore implements OutboxStore {
     /**

@@ -10,6 +10,11 @@ import { JOB_DRIVER } from './context-tokens';
 
 /**
  * Options for {@link JobQueue}.
+ *
+ * @example
+ * ```ts
+ * const value = {} as JobQueueOptions;
+ * ```
  */
 export interface JobQueueOptions {
     /**
@@ -28,6 +33,11 @@ export interface JobQueueOptions {
  * Produces a single place where defaults live: drivers
  * normalize and validate, the queue only fills in the configured default
  * `maxAttempts` and forwards.
+ *
+ * @example
+ * ```ts
+ * const instance = new JobQueue();
+ * ```
  */
 export class JobQueue {
     /**

@@ -4,6 +4,11 @@
 
 /**
  * Identifier of a queued job (a UUID string).
+ *
+ * @example
+ * ```ts
+ * type _Alias = JobId;
+ * ```
  */
 export type JobId = string;
 
@@ -13,6 +18,11 @@ export type JobId = string;
  * Either `delayMs` or `runAt` may be given (not both): the two spellings of
  * "do not run before". `payload` must be JSON-serializable — drivers fail
  * loud at enqueue on functions, symbols, bigints, and circular structures.
+ *
+ * @example
+ * ```ts
+ * const value = {} as JobRequest;
+ * ```
  */
 export interface JobRequest {
     /** Job type, matched against registered `@jobHandler` types. */
@@ -32,6 +42,11 @@ export interface JobRequest {
 /**
  * A normalized request as stored by a driver: `runAt` and `maxAttempts`
  * are resolved, and `delayMs` is gone.
+ *
+ * @example
+ * ```ts
+ * const value = {} as ResolvedJobRequest;
+ * ```
  */
 export interface ResolvedJobRequest {
     /** Job type, matched against registered `@jobHandler` types. */
@@ -49,6 +64,11 @@ export interface ResolvedJobRequest {
 /**
  * A stored job as returned by a driver — the record handed to
  * `JobDriver.claim` callers and into handler execution.
+ *
+ * @example
+ * ```ts
+ * const value = {} as JobRecord;
+ * ```
  */
 export interface JobRecord {
     /** Unique job id. */
@@ -73,6 +93,11 @@ export interface JobRecord {
 
 /**
  * Claim window for `JobDriver.claim`.
+ *
+ * @example
+ * ```ts
+ * const value = {} as ClaimOptions;
+ * ```
  */
 export interface ClaimOptions {
     /** Maximum number of jobs to claim in one call. */

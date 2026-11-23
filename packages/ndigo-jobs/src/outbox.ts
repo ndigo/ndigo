@@ -9,6 +9,11 @@ import type { JobQueue } from './job-queue';
 
 /**
  * One recorded side effect awaiting publication.
+ *
+ * @example
+ * ```ts
+ * const value = {} as OutboxEntry;
+ * ```
  */
 export interface OutboxEntry {
     /** Entry identifier. */
@@ -23,6 +28,11 @@ export interface OutboxEntry {
 
 /**
  * Claim window for {@link OutboxStore.claimPending}.
+ *
+ * @example
+ * ```ts
+ * const value = {} as OutboxClaimOptions;
+ * ```
  */
 export interface OutboxClaimOptions {
     /** Maximum entries per claim; default 100. */
@@ -43,6 +53,11 @@ export interface OutboxClaimOptions {
  * Publication is at-least-once: a claimed entry becomes claimable again after
  * its lease expires (crashed relay, failed publish), so consumers subscribe
  * idempotently.
+ *
+ * @example
+ * ```ts
+ * const value = {} as OutboxStore;
+ * ```
  */
 export interface OutboxStore extends AsyncDestroyable {
     /**
@@ -109,6 +124,11 @@ export const likeOutboxStore = (value: unknown): value is OutboxStore =>
 /**
  * Publishes one outbox entry. Implementations must be idempotent-friendly:
  * a failed publish is retried after the claim lease expires.
+ *
+ * @example
+ * ```ts
+ * const value = {} as OutboxPublisher;
+ * ```
  */
 export interface OutboxPublisher {
     /**
@@ -123,6 +143,11 @@ export interface OutboxPublisher {
  * The canonical publisher: outbox entries become jobs on a {@link JobQueue}
  * (`type` → job type, `payload` → job payload) — the transactional side
  * effect of `outbox.append(…)` is delivered through the durable queue.
+ *
+ * @example
+ * ```ts
+ * const instance = new JobOutboxPublisher();
+ * ```
  */
 export class JobOutboxPublisher implements OutboxPublisher {
     /**

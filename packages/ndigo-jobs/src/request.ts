@@ -23,6 +23,11 @@ export const DEFAULT_MAX_ATTEMPTS = 3;
  * @param request - The producer-supplied request.
  * @param now - Current epoch milliseconds (injected for determinism).
  * @returns The normalized request drivers store.
+ *
+ * @example
+ * ```ts
+ * resolveJobRequest();
+ * ```
  */
 export function resolveJobRequest(request: JobRequest, now: number): ResolvedJobRequest {
     if (request === null || typeof request !== 'object') {
@@ -77,6 +82,11 @@ export function resolveJobRequest(request: JobRequest, now: number): ResolvedJob
  *
  * @param payload - The payload to serialize.
  * @returns The JSON text a driver stores.
+ *
+ * @example
+ * ```ts
+ * serializeJobPayload();
+ * ```
  */
 export function serializeJobPayload(payload: unknown): string {
     const serialized = JSON.stringify(payload ?? null, (_key, value: unknown) => {
@@ -99,6 +109,11 @@ export function serializeJobPayload(payload: unknown): string {
  *
  * @param serialized - The stored JSON text.
  * @returns The payload value.
+ *
+ * @example
+ * ```ts
+ * parseJobPayload();
+ * ```
  */
 export function parseJobPayload(serialized: string): unknown {
     try {

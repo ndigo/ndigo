@@ -5,6 +5,7 @@
  */
 import { performance } from 'node:perf_hooks';
 import { readAppManifest, captureAppOnce } from '../helpers/app-scripts.js';
+import type { CapturedRun } from '../helpers/app-scripts.js';
 import { collectDiagnostics } from '../commands/_diagnostics.js';
 import { probeMcpTools } from './_mcp-probe.js';
 import type { CapabilityEntry } from './catalog.js';
@@ -72,6 +73,41 @@ const OUTPUT_TAIL_LINES = 5;
 /** The OpenAPI operation keys a path item may carry; no other key counts as an operation. */
 const OPENAPI_OPERATION_KEYS = ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'] as const;
 
+/** The hint shown when the app has no `inspect` script. */
+const INSPECT_HINT = 'add an "inspect" script that prints the manifest';
+
+/** Per-run state: memoized app boots so no check spawns the same process twice. */
+interface RunContext {
+    /** The verify options the checks read (`dir`, `capability`, `full`). */
+    readonly options: VerifyOptions;
+    /** The app manifest, read once even though `hasScript` consults it per check. */
+    manifestOnce: () => Record<string, unknown> | null;
+    /** One `tools/list` probe per run, shared by the mcp-stdio and route-parity checks. */
+    probeOnce: () => Promise<string[]>;
+    /** One captured `inspect` boot, shared by the app-boot and route-parity checks. */
+    inspectOnce: () => Promise<CapturedRun>;
+}
+
+/**
+ * Creates the per-run context. A failed probe or inspect boot is memoized
+ * too, so every check that needs it reports the same deterministic failure
+ * instead of re-booting the app.
+ */
+function createRunContext(options: VerifyOptions): RunContext {
+    let manifest: Record<string, unknown> | null | undefined;
+    let probe: Promise<string[]> | undefined;
+    let inspect: Promise<CapturedRun> | undefined;
+    return {
+        options,
+        manifestOnce: () => {
+            if (manifest === undefined) manifest = readAppManifest(options.dir);
+            return manifest;
+        },
+        probeOnce: () => (probe ??= probeMcpTools(options.dir)),
+        inspectOnce: () => (inspect ??= captureAppOnce(options.dir, 'inspect', INSPECT_HINT)),
+    };
+}
+
 /**
  * Derives the check list: doctor first, then the named capability's declared
  * checks (or the catalog union), with `--full` adding test and lint.
@@ -102,11 +138,12 @@ export function selectChecks(
  */
 export async function runVerification(options: VerifyOptions): Promise<VerifyReport> {
     const checks: VerifyCheckResult[] = [];
+    const context = createRunContext(options);
     for (const check of selectChecks(options.capability, options.catalog, options.full === true)) {
         // Sequential by design: each check may spawn an app process, and stable
         // ordering keeps the report diffable.
         // oxlint-disable-next-line no-await-in-loop -- bounded process spawning, stable order
-        checks.push(await runCheck(check, options));
+        checks.push(await runCheck(check, context));
     }
     const summary = {
         pass: checks.filter((check) => check.status === 'pass').length,
@@ -122,7 +159,7 @@ export async function runVerification(options: VerifyOptions): Promise<VerifyRep
     };
 }
 
-async function runCheck(reference: string, options: VerifyOptions): Promise<VerifyCheckResult> {
+async function runCheck(reference: string, context: RunContext): Promise<VerifyCheckResult> {
     const separator = reference.indexOf(':');
     const id = separator === -1 ? reference : reference.slice(0, separator);
     const target = separator === -1 ? undefined : reference.slice(separator + 1);
@@ -130,7 +167,7 @@ async function runCheck(reference: string, options: VerifyOptions): Promise<Veri
     // Every selected check gets a row: a check that throws (a malformed
     // declared script, a failed spawn) fails its row instead of aborting the
     // report and discarding the checks around it.
-    const result = await execute(id, target, options).catch((error: unknown): CheckOutcome => ({
+    const result = await execute(id, target, context).catch((error: unknown): CheckOutcome => ({
         status: 'fail',
         message: error instanceof Error ? error.message : String(error),
     }));
@@ -142,20 +179,20 @@ interface CheckOutcome {
     readonly message?: string;
 }
 
-async function execute(id: string, target: string | undefined, options: VerifyOptions): Promise<CheckOutcome> {
+async function execute(id: string, target: string | undefined, context: RunContext): Promise<CheckOutcome> {
     switch (id) {
         case 'doctor':
-            return runDoctor(options.dir);
+            return runDoctor(context.options.dir);
         case 'app-boot':
-            return runAppBoot(options.dir, options.capability !== undefined);
+            return runAppBoot(context);
         case 'mcp-stdio':
-            return runMcpCheck(target, options);
+            return runMcpCheck(target, context);
         case 'route-parity':
-            return runParityCheck(target, options);
+            return runParityCheck(target, context);
         case 'typecheck':
         case 'test':
         case 'lint':
-            return runScriptCheck(id, options.dir);
+            return runScriptCheck(id, context);
         default:
             return {
                 status: 'fail',
@@ -173,9 +210,10 @@ async function runDoctor(dir: string): Promise<CheckOutcome> {
     };
 }
 
-async function runAppBoot(dir: string, strict: boolean): Promise<CheckOutcome> {
-    if (!hasScript(dir, 'inspect')) return missingScript('inspect', strict);
-    const run = await captureAppOnce(dir, 'inspect', 'add an "inspect" script that prints the manifest');
+async function runAppBoot(context: RunContext): Promise<CheckOutcome> {
+    const strict = context.options.capability !== undefined;
+    if (!hasScript(context, 'inspect')) return missingScript('inspect', strict);
+    const run = await context.inspectOnce();
     if (run.exitCode !== 0) {
         return { status: 'fail', message: `"inspect" exited ${run.exitCode}${outputTail(run)}` };
     }
@@ -197,32 +235,32 @@ async function runAppBoot(dir: string, strict: boolean): Promise<CheckOutcome> {
     }
 }
 
-async function runMcpCheck(target: string | undefined, options: VerifyOptions): Promise<CheckOutcome> {
+async function runMcpCheck(target: string | undefined, context: RunContext): Promise<CheckOutcome> {
     if (target !== undefined && target !== 'tools/list') {
         return { status: 'fail', message: `unsupported mcp-stdio target '${target}' — only tools/list is defined` };
     }
-    if (!hasScript(options.dir, 'mcp')) return missingScript('mcp', options.capability !== undefined);
+    if (!hasScript(context, 'mcp')) return missingScript('mcp', context.options.capability !== undefined);
     try {
-        const tools = await probeMcpTools(options.dir);
+        const tools = await context.probeOnce();
         return { status: 'pass', message: `${tools.length} tools` };
     } catch (error) {
         return { status: 'fail', message: error instanceof Error ? error.message : String(error) };
     }
 }
 
-async function runParityCheck(target: string | undefined, options: VerifyOptions): Promise<CheckOutcome> {
+async function runParityCheck(target: string | undefined, context: RunContext): Promise<CheckOutcome> {
     if (target !== undefined && target !== '*') {
         return { status: 'fail', message: `unsupported route-parity target '${target}' — only * is defined` };
     }
-    const strict = options.capability !== undefined;
-    if (!hasScript(options.dir, 'inspect')) return missingScript('inspect', strict);
-    if (!hasScript(options.dir, 'mcp')) return missingScript('mcp', strict);
+    const strict = context.options.capability !== undefined;
+    if (!hasScript(context, 'inspect')) return missingScript('inspect', strict);
+    if (!hasScript(context, 'mcp')) return missingScript('mcp', strict);
 
-    const manifest = await inspectManifest(options.dir);
+    const manifest = await inspectManifest(context);
     if (manifest === null) return { status: 'fail', message: 'the inspect script did not print a JSON manifest' };
     let tools: string[];
     try {
-        tools = await probeMcpTools(options.dir);
+        tools = await context.probeOnce();
     } catch (error) {
         return { status: 'fail', message: error instanceof Error ? error.message : String(error) };
     }
@@ -245,8 +283,12 @@ async function runParityCheck(target: string | undefined, options: VerifyOptions
     }
 
     let note = '';
-    if (hasScript(options.dir, 'openapi')) {
-        const run = await captureAppOnce(options.dir, 'openapi', 'add an "openapi" script that prints the spec');
+    if (hasScript(context, 'openapi')) {
+        const run = await captureAppOnce(
+            context.options.dir,
+            'openapi',
+            'add an "openapi" script that prints the spec'
+        );
         if (run.exitCode !== 0) {
             problems.push(`"openapi" exited ${run.exitCode}${outputTail(run)}`);
         } else {
@@ -259,9 +301,9 @@ async function runParityCheck(target: string | undefined, options: VerifyOptions
     return { status: 'pass', message: `${mapped.size} tools match the manifest and OpenAPI${note}` };
 }
 
-async function runScriptCheck(id: 'typecheck' | 'test' | 'lint', dir: string): Promise<CheckOutcome> {
-    if (!hasScript(dir, id)) return { status: 'skip', message: `no "${id}" script` };
-    const run = await captureAppOnce(dir, id, `add a "${id}" script`);
+async function runScriptCheck(id: 'typecheck' | 'test' | 'lint', context: RunContext): Promise<CheckOutcome> {
+    if (!hasScript(context, id)) return { status: 'skip', message: `no "${id}" script` };
+    const run = await captureAppOnce(context.options.dir, id, `add a "${id}" script`);
     if (run.exitCode !== 0) return { status: 'fail', message: `"${id}" exited ${run.exitCode}${outputTail(run)}` };
     return { status: 'pass' };
 }
@@ -274,8 +316,8 @@ interface InspectSubset {
     }[];
 }
 
-async function inspectManifest(dir: string): Promise<InspectSubset | null> {
-    const run = await captureAppOnce(dir, 'inspect', 'add an "inspect" script that prints the manifest');
+async function inspectManifest(context: RunContext): Promise<InspectSubset | null> {
+    const run = await context.inspectOnce();
     if (run.exitCode !== 0) return null;
     try {
         const parsed = JSON.parse(run.stdout) as { mappings?: unknown };
@@ -317,8 +359,8 @@ function openApiProblems(
     return problems;
 }
 
-function hasScript(dir: string, key: string): boolean {
-    const scripts = readAppManifest(dir)?.['scripts'];
+function hasScript(context: RunContext, key: string): boolean {
+    const scripts = context.manifestOnce()?.['scripts'];
     if (typeof scripts !== 'object' || scripts === null) return false;
     return typeof (scripts as Record<string, unknown>)[key] === 'string';
 }

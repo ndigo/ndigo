@@ -28,6 +28,23 @@ interface FixtureOptions {
     readonly floodsStdout?: boolean;
 }
 
+/** The manifest the fixture's inspect script prints. */
+const FIXTURE_MANIFEST = {
+    version: 1,
+    generatedAt: '2026-01-01T00:00:00.000Z',
+    app: { name: 'verify-fixture', profiles: [] },
+    routes: [{ name: 'lookup', path: '/orders/{id}' }],
+    mappings: [
+        {
+            pattern: '/orders/:id',
+            httpMethods: ['GET'],
+            tool: 'lookup_order',
+            handler: { class: 'OrdersController', method: 'lookup' },
+        },
+    ],
+    config: [],
+};
+
 function createApp(options: FixtureOptions = {}): string {
     const dir = mkdtempSync(join(tmpdir(), 'ndigo-verify-'));
     dirs.push(dir);
@@ -45,23 +62,7 @@ function createApp(options: FixtureOptions = {}): string {
     );
     writeFileSync(
         join(dir, 'inspect.mjs'),
-        `process.stdout.write(${JSON.stringify(
-            JSON.stringify({
-                version: 1,
-                generatedAt: '2026-01-01T00:00:00.000Z',
-                app: { name: 'verify-fixture', profiles: [] },
-                routes: [{ name: 'lookup', path: '/orders/{id}' }],
-                mappings: [
-                    {
-                        pattern: '/orders/:id',
-                        httpMethods: ['GET'],
-                        tool: 'lookup_order',
-                        handler: { class: 'OrdersController', method: 'lookup' },
-                    },
-                ],
-                config: [],
-            })
-        )});\n`
+        `process.stdout.write(${JSON.stringify(JSON.stringify(FIXTURE_MANIFEST))});\n`
     );
     writeFileSync(
         join(dir, 'openapi.mjs'),
@@ -245,5 +246,23 @@ describe('ndigo verify', () => {
         expect(result.code).toBe(1);
         const report = JSON.parse(result.out) as Document;
         expect(report.checks.find((check) => check.id === 'route-parity:*')?.message).toContain('more than');
+    });
+
+    it('boots each app script once per run', async () => {
+        const dir = createApp();
+        // Counting variants: every boot appends one mark, so duplicate
+        // spawns cannot hide behind a green report (issue #730).
+        writeFileSync(
+            join(dir, 'inspect.mjs'),
+            `import { appendFileSync } from 'node:fs';\nappendFileSync('inspect.count', 'x');\nprocess.stdout.write(${JSON.stringify(JSON.stringify(FIXTURE_MANIFEST))});\n`
+        );
+        writeFileSync(
+            join(dir, 'mcp.mjs'),
+            `import { appendFileSync } from 'node:fs';\nimport { createInterface } from 'node:readline';\nconst rl = createInterface({ input: process.stdin });\nconst send = (value) => process.stdout.write(JSON.stringify(value) + '\\n');\nlet counted = false;\nrl.on('line', (line) => {\n    if (!counted) {\n        counted = true;\n        appendFileSync('mcp.count', 'x');\n    }\n    const message = JSON.parse(line);\n    if (message.method === 'initialize') {\n        send({ jsonrpc: '2.0', id: message.id, result: { protocolVersion: '2024-11-05', capabilities: {}, serverInfo: { name: 'fixture', version: '1' } } });\n    } else if (message.method === 'tools/list') {\n        send({ jsonrpc: '2.0', id: message.id, result: { tools: [{ name: 'lookup_order', inputSchema: { type: 'object' } }] } });\n    }\n});\n`
+        );
+        const result = await runCli(['verify', '--capability', 'agent-surface', '--json', dir]);
+        expect(result.code).toBe(0);
+        expect(readFileSync(join(dir, 'inspect.count'), 'utf8')).toBe('x');
+        expect(readFileSync(join(dir, 'mcp.count'), 'utf8')).toBe('x');
     });
 });

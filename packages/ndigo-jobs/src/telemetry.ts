@@ -9,6 +9,11 @@ const TRACER_NAME = '@ndigo/jobs';
 
 /**
  * One in-flight job-execution span, ended exactly once by the runner.
+ *
+ * @example
+ * ```ts
+ * const value = {} as JobSpan;
+ * ```
  */
 export interface JobSpan {
     /**
@@ -29,6 +34,11 @@ export interface JobSpan {
  *
  * @param job - The claimed job this execution belongs to.
  * @returns The span handle the runner ends.
+ *
+ * @example
+ * ```ts
+ * startJobSpan();
+ * ```
  */
 export function startJobSpan(job: Pick<JobRecord, 'id' | 'type' | 'attempts'>): JobSpan {
     const tracer = trace.getTracer(TRACER_NAME);

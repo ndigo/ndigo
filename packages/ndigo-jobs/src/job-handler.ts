@@ -13,6 +13,11 @@ export const JOB_HANDLER_METADATA_PREFIX = 'jobs:handler:';
 /**
  * Per-handler policy overrides. Either value, when set, wins over the
  * per-request value stored on the job record.
+ *
+ * @example
+ * ```ts
+ * const value = {} as JobHandlerOptions;
+ * ```
  */
 export interface JobHandlerOptions {
     /** Attempts allowed before the job is failed terminally. */
@@ -23,6 +28,11 @@ export interface JobHandlerOptions {
 
 /**
  * The registration `@jobHandler` records for a method.
+ *
+ * @example
+ * ```ts
+ * const value = {} as JobHandlerMetadata;
+ * ```
  */
 export interface JobHandlerMetadata extends JobHandlerOptions {
     /** Job type this handler serves. */
@@ -31,6 +41,11 @@ export interface JobHandlerMetadata extends JobHandlerOptions {
 
 /**
  * Execution context handed to a handler alongside the payload.
+ *
+ * @example
+ * ```ts
+ * const value = {} as JobHandlerContext;
+ * ```
  */
 export interface JobHandlerContext {
     /** The claimed job's identifier. */
@@ -49,6 +64,11 @@ export interface JobHandlerContext {
 /**
  * A job handler: receives the payload and execution context, resolves when
  * the work is done. Failures (throw / rejection) drive the retry policy.
+ *
+ * @example
+ * ```ts
+ * type _Alias = JobHandler;
+ * ```
  */
 export type JobHandler = (payload: unknown, context: JobHandlerContext) => void | Promise<void>;
 
@@ -109,6 +129,11 @@ export function jobHandler(type: string, options: JobHandlerOptions = {}) {
  * @param target - The decorated class constructor (or an instance).
  * @param methodName - The decorated method name.
  * @returns The registration, or `undefined` when not a job handler.
+ *
+ * @example
+ * ```ts
+ * getJobHandlerMetadata();
+ * ```
  */
 export function getJobHandlerMetadata(target: object, methodName: string): JobHandlerMetadata | undefined {
     return getSymbolMetadata(target)[`${JOB_HANDLER_METADATA_PREFIX}${methodName}`] as JobHandlerMetadata | undefined;

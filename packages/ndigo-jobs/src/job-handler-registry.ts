@@ -9,6 +9,11 @@ import { JOB_HANDLER_METADATA_PREFIX, type JobHandler, type JobHandlerMetadata }
 
 /**
  * One registered handler, ready to execute.
+ *
+ * @example
+ * ```ts
+ * const value = {} as RegisteredJobHandler;
+ * ```
  */
 export interface RegisteredJobHandler {
     /** The job type served. */
@@ -33,6 +38,11 @@ export interface RegisteredJobHandler {
  *
  * Duplicate types, handlers on class (not instance) registrations, and
  * non-callable members all fail loud at start.
+ *
+ * @example
+ * ```ts
+ * const instance = new JobHandlerRegistry();
+ * ```
  */
 export class JobHandlerRegistry implements AsyncDestroyable {
     /**

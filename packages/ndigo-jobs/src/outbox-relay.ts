@@ -15,6 +15,11 @@ import {
 
 /**
  * Options for {@link OutboxRelay}.
+ *
+ * @example
+ * ```ts
+ * const value = {} as OutboxRelayOptions;
+ * ```
  */
 export interface OutboxRelayOptions {
     /** The store entries are claimed from. */
@@ -43,6 +48,11 @@ export interface OutboxRelayOptions {
  * Lifecycle: `ManagedLifecycle`, phase 10, auto-start when registered as a
  * entry; `close()` stops and awaits the pass in flight. Direct construction is
  * the standalone/test path.
+ *
+ * @example
+ * ```ts
+ * const instance = new OutboxRelay();
+ * ```
  */
 export class OutboxRelay implements AsyncDestroyable {
     /**

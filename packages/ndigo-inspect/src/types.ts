@@ -95,6 +95,8 @@ export interface InspectMapping {
     httpMethods?: string[];
     /** `true` when the mapping is a WebSocket endpoint. */
     socket?: boolean;
+    /** The MCP tool name, when the handler declares `@toolMapping`. */
+    tool?: string;
     /** The resolved handler class + method. */
     handler: InspectHandler;
     /** The handler method's parameters and their binding sources, when declared. */

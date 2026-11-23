@@ -100,6 +100,7 @@ ndigo doctor --json        # environment, workspace, failed checks
 ndigo capabilities --json  # capabilities plus UI items, one sorted index
 ndigo capabilities check   # catalog reference integrity
 ndigo add agent-surface    # the install plan (nothing is written)
+ndigo verify --capability agent-surface  # declared checks + runtime probes
 ndigo inspect              # the app manifest: routes, mappings, config keys
 ndigo routes --json        # the route list alone
 ndigo openapi              # the generated OpenAPI document
@@ -152,9 +153,9 @@ the CLI, which is why the catalog is data rather than TypeScript.
 
 ## 6. Current state
 
-The vocabulary and the contract are settled (issue #701); the catalog, its read
-verbs, `ndigo add`, and the coordination skills ship. Runtime verification is
-the remaining phase.
+The vocabulary and the contract are settled (issue #701); every phase of the
+layer — the catalog, `ndigo add`, the coordination skills, and runtime
+verification — has landed.
 
 | Piece                                                | Status                                                                    |
 | :--------------------------------------------------- | :------------------------------------------------------------------------ |
@@ -162,7 +163,7 @@ the remaining phase.
 | Capability catalog + `ndigo capabilities`            | Landed — declared entries, `list`/`get`/`check`, manifest facts           |
 | `ndigo add <capability>` (plan, dry run, apply)      | Landed — plan default, `--apply`, `--var`, `--force`; no `nx g`           |
 | Capability skills                                    | Landed — `ndigo-agent`, `ndigo-model`; rows in `ndigo-app`/`ndigo-verify` |
-| `ndigo verify [capability]`                          | Planned — declared checks plus runtime probes                             |
+| `ndigo verify [capability]`                          | Landed — declared checks, MCP probe, manifest ↔ OpenAPI parity            |
 
 Until the 1.0 publish gate closes, only the plan/dry-run half of a consumer
 install is exercisable; install fixtures resolve workspace packages with

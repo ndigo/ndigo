@@ -186,6 +186,7 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `TOOL_MAPPING_KEY` — Metadata key for `@toolMapping`; the method name is appended as `${TOOL_MAPPING_KEY}:<methodName>` (one tool per method).
 - `ToolMappingMetadata` *(type)* — Tool metadata declared by toolMapping.
 - `toolMapping` — Marks a handler method as an MCP tool.
+- `defaultToolName` — Derives the default snake_case tool name from a handler method name.
 - `getToolMapping` — Reads the tool metadata recorded by toolMapping.
 - `STOMP_MAPPING_KEY` — Metadata key marking a method as a STOMP endpoint.
 - `stompMapping` — Marks a method as a STOMP endpoint at the given path.

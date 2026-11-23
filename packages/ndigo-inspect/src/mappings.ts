@@ -6,7 +6,7 @@
  */
 
 import { chainComparisons, compareBy, FrameworkError, stringComparator } from '@ndigo/core';
-import { isSocketMapping } from '@ndigo/dispatcher';
+import { defaultToolName, getToolMapping, isSocketMapping } from '@ndigo/dispatcher';
 import type { RouteHandlerMethod, RouteMappingInfo } from '@ndigo/dispatcher';
 import type {
     InspectDispatcherLike,
@@ -48,6 +48,16 @@ function isSocketHandler(handlerMethod: RouteHandlerMethod): boolean {
 }
 
 /**
+ * The projected MCP tool name, when the handler declares `@toolMapping`.
+ * Uses the same default-name rule as the MCP projector.
+ */
+function toolOf(handlerMethod: RouteHandlerMethod): string | undefined {
+    const metadata = getToolMapping(handlerMethod.handler, handlerMethod.method);
+    if (metadata === undefined) return undefined;
+    return metadata.name ?? defaultToolName(handlerMethod.method);
+}
+
+/**
  * Expand one registered mapping into rows — one per pattern it claims.
  */
 function mappingsFor(info: RouteMappingInfo, handlerMethod: RouteHandlerMethod): InspectMapping[] {
@@ -58,11 +68,13 @@ function mappingsFor(info: RouteMappingInfo, handlerMethod: RouteHandlerMethod):
     const handler: InspectHandler = { class: classNameOf(handlerMethod.handler), method: handlerMethod.method };
     const parameters = parameterRows(handlerMethod);
     const socket = isSocketHandler(handlerMethod);
+    const tool = toolOf(handlerMethod);
 
     return patterns.map((pattern) => {
         const row: InspectMapping = { pattern, handler };
         if (method !== undefined) row.httpMethods = [method];
         if (socket) row.socket = true;
+        if (tool !== undefined) row.tool = tool;
         if (parameters.length > 0) row.parameters = parameters;
         return row;
     });

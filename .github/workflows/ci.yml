@@ -169,6 +169,11 @@ jobs:
           APPS_SMOKE_PORT_OFFSET: ${{ vars.CI_RUNNER != '' && '10000' || '0' }}
         run: pnpm apps:smoke
 
+      - name: Capability authoring smoke
+        # Link:-installed fixture app: apply agent-surface and agent-model,
+        # boot inspect, speak MCP to the generated entry, and run ndigo verify.
+        run: pnpm capability:smoke
+
       - name: Lint (zero warnings)
         run: pnpm lint
 

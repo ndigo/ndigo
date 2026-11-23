@@ -10,6 +10,7 @@ import {
     requestMapping,
     routeMapping,
     socketMapping,
+    toolMapping,
 } from '@ndigo/dispatcher';
 import { RouteRegistry } from '@ndigo/router';
 import { configurationProperties } from '@ndigo/boot';
@@ -34,6 +35,15 @@ class DemoController {
     @socketMapping('/chat')
     chat() {
         return 'ok';
+    }
+}
+
+@routeMapping('/tools')
+class ToolController {
+    @requestMapping({ value: '/orders/{id}', method: 'GET', private: false })
+    @toolMapping()
+    lookupOrder(): string {
+        return 'a-1';
     }
 }
 
@@ -181,6 +191,25 @@ describe('inspectApplication', () => {
         });
 
         expect(manifest.mappings).toHaveLength(3);
+    });
+
+    test('carries the projected MCP tool name for @toolMapping handlers', () => {
+        const ctx = new GenericApplicationContext('inspect-tools');
+        ctx.setValue('toolController', new ToolController());
+        const mapping = new RadixMetadataHandlerMapping();
+        mapping.setApplicationContext(ctx);
+        mapping.init();
+
+        const manifest = inspectApplication({ context: contextWith(), mappings: mapping, now: FIXED_NOW });
+
+        expect(manifest.mappings).toEqual([
+            {
+                pattern: '/tools/orders/{id}',
+                httpMethods: ['GET'],
+                tool: 'lookup_order',
+                handler: { class: 'ToolController', method: 'lookupOrder' },
+            },
+        ]);
     });
 
     test('emits sorted declared config keys with presence and origin but never values', () => {

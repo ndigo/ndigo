@@ -51,8 +51,9 @@ capability does not add a second declaration.
 
 ## Verify
 
-`ndigo capabilities check` is green; `ndigo inspect` lists the handlers; the
-app's `mcp` script lists the expected tools and answers one call.
+`ndigo verify --capability agent-surface --json` is green; `ndigo inspect` lists
+the handlers; the app's `mcp` script lists the expected tools and answers one
+call.
 
 ## Example prompt
 

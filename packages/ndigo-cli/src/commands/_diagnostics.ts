@@ -80,13 +80,33 @@ function workspaceRoot(from: string): string | undefined {
 }
 
 /**
+ * Options for {@link collectDiagnostics}.
+ *
+ * @example
+ * ```ts
+ * const options: DiagnosticsOptions = { requireWorkspace: false };
+ * ```
+ */
+export interface DiagnosticsOptions {
+    /**
+     * Require a pnpm workspace above the directory (default `true`). A
+     * standalone application has none, so `ndigo verify` disables the check.
+     */
+    readonly requireWorkspace?: boolean;
+}
+
+/**
  * Collects the environment and workspace diagnostics without printing them.
  *
  * @param cwd - The directory the checks describe (defaults to the process
  *   working directory).
+ * @param options - Whether a pnpm workspace is required.
  * @returns The printable rows and any failures.
  */
-export async function collectDiagnostics(cwd = process.cwd()): Promise<DiagnosticsReport> {
+export async function collectDiagnostics(
+    cwd = process.cwd(),
+    options: DiagnosticsOptions = {}
+): Promise<DiagnosticsReport> {
     const failures: string[] = [];
     const check = (ok: boolean, message: string): void => {
         if (!ok) failures.push(message);
@@ -101,7 +121,9 @@ export async function collectDiagnostics(cwd = process.cwd()): Promise<Diagnosti
     check(!pnpm.missing, 'pnpm is not on PATH — install pnpm (the workspace package manager)');
     rows.push(`pnpm ${pnpm.missing ? 'n/a (not found)' : pnpm.value}`);
     const root = workspaceRoot(cwd);
-    check(root !== undefined, 'not inside a Ndigo workspace — no pnpm-workspace.yaml above the cwd');
+    if (options.requireWorkspace !== false) {
+        check(root !== undefined, 'not inside a Ndigo workspace — no pnpm-workspace.yaml above the cwd');
+    }
     rows.push(`workspace ${root ?? 'n/a (not found)'}`);
     const git = await capture(['git', 'rev-parse', '--short', 'HEAD'], cwd);
     check(!git.missing, 'git is not on PATH');

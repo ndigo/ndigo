@@ -51,6 +51,7 @@ const TOP_LEVEL = [
     'typecheck',
     'ui',
     'update',
+    'verify',
 ];
 const DB_COMMANDS = ['generate', 'list', 'migrate', 'new', 'pull', 'push', 'rollback', 'seed', 'status', 'studio'];
 const UI_COMMANDS = ['add', 'catalog', 'init', 'list', 'mcp', 'validate', 'view'];

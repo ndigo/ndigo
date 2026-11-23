@@ -24,6 +24,7 @@ import { testCommand } from './commands/test.js';
 import { lintRouteMap } from './commands/lint/index.js';
 import { formatCommand } from './commands/format.js';
 import { typecheckCommand } from './commands/typecheck.js';
+import { verifyCommand } from './commands/verify.js';
 import { cleanCommand } from './commands/clean.js';
 import { configCommand } from './commands/config.js';
 import { completionCommand } from './commands/completion.js';
@@ -93,6 +94,7 @@ export function buildCliApp() {
             lint: lintRouteMap,
             format: formatCommand,
             typecheck: typecheckCommand,
+            verify: verifyCommand,
             clean: cleanCommand,
             config: configCommand,
             completion: completionCommand,

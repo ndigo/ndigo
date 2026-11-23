@@ -64,6 +64,24 @@ call.
 - Guide 37 — the `ndigo mcp` profiles and tool list.
 - PR #327.
 
+## Amendment 2026-11-23 — capability catalog tools stay on the CLI host
+
+Revisit trigger 3 (tool-level authorization beyond read-only) was evaluated
+for the capability catalog (AD-114). `list_capabilities` and `get_capability`
+are **CLI-local read-only tools** registered on `createMcpHost`, not entries in
+`@ndigo/mcp`'s `McpToolRegistry`. The two surfaces answer different questions:
+`@ndigo/mcp` projects the application's own `@toolMapping` handlers and applies
+the application's runtime policy; the catalog tools report what the installed
+CLI ships (entries, packages, wiring ops, checks). Reusing the runtime registry
+would require booting the application to answer a question whose answer is
+version-matched CLI data.
+
+The existing host policy is sufficient: both tools are `readOnlyHint` and carry
+no `mutating` flag, so they stay visible under `--readOnly`. When P2 adds an
+apply tool, it must set `mutating: true` so the same flag omits it. No new
+authorization layer is introduced until a tool needs a permission the host
+does not already express.
+
 ## See Also
 
 - AD-96 — umbrella

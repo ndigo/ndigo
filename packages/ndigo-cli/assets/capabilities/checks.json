@@ -1,0 +1,20 @@
+{
+  "checks": [
+    {
+      "id": "app-boot",
+      "summary": "The application boots and answers its inspect script."
+    },
+    {
+      "id": "mcp-stdio",
+      "summary": "The application's stdio MCP server answers a JSON-RPC request."
+    },
+    {
+      "id": "route-parity",
+      "summary": "The OpenAPI document and the MCP tools/list describe the same operations."
+    },
+    {
+      "id": "typecheck",
+      "summary": "The application typechecks after the capability is applied."
+    }
+  ]
+}

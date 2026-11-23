@@ -45,7 +45,7 @@ Built on `@stricli/core` as an embedded library — commands, typed flags,
 | :---------------------- | :----------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------- |
 | `ndigo new <name>`      | the `app` generator (a new app under `apps/NN-ndigo-<name>`) | `ndigo new todo-widget --preset api`                                                                       |
 | `ndigo generate <kind>` | `@ndigo/generators` via Nx                                   | `ndigo generate entity --name note --package demo`                                                         |
-| `ndigo add <package>`   | `pnpm add` + the capability's setup generator                | `ndigo add @ndigo/redis ./[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)` |
+| `ndigo add <package>`   | `pnpm add` + the package's setup generator                   | `ndigo add @ndigo/redis ./[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)` |
 
 ### Database
 
@@ -93,9 +93,11 @@ so an agent's component vocabulary is exactly what the application ships.
 exposes `get_manifest` (the `scripts.inspect` output), `get_routes`,
 `get_config_keys` (presence only — values are never in the manifest),
 `get_best_practices` (`STYLE_GUIDE.md`/`ARCHITECTURE.md` sections), `run_doctor`,
-and `get_logs`. `run_target` (`scripts.build`/`test`/`lint`) and `record_rule`
-(`.ndigo/rules/*.md` plus an index) are omitted under `--readOnly`. `--live`
-hands stdio to the application's own `scripts.mcp` instead of the static set.
+`get_logs`, and the capability catalog (`list_capabilities`,
+`get_capability`). `run_target` (`scripts.build`/`test`/`lint`) and
+`record_rule` (`.ndigo/rules/*.md` plus an index) are omitted under
+`--readOnly`. `--live` hands stdio to the application's own `scripts.mcp`
+instead of the static set.
 
 `get_commands` exposes the same command index (`ndigo commands --json`) to MCP
 clients, so an agent can discover the CLI surface without shelling out. The
@@ -153,17 +155,18 @@ transports, policy, MCP Apps, and WebMCP are covered end-to-end in
 
 ### Maintenance
 
-| Command            | Runs…                                                                                                                         | Example                                           |
-| :----------------- | :---------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------ |
-| `ndigo commands`   | (CLI-owned: every verb, flag, positional, and exit code; `--json`)                                                            | `ndigo commands --json`                           |
-| `ndigo ai`         | `init`/`check`/`update` — `AGENTS.md` rules, `.agents/skills/`, optional `.mcp.json`                                          | `ndigo ai:init`                                   |
-| `ndigo doctor`     | (self-diagnostics: versions, workspace, git, checks)                                                                          | `ndigo doctor`                                    |
-| `ndigo info`       | `doctor` + installed `@ndigo/*` packages                                                                                      | `ndigo info`                                      |
-| `ndigo update`     | (CLI-owned: applies exact pins from a version manifest, then `pnpm install`; `--check` compares, `--manifest` picks the file) | `ndigo update --check`                            |
-| `ndigo config`     | `.ndigorc.json` get/set/list                                                                                                  | `ndigo config set db.primary analytics`           |
-| `ndigo env`        | validates env vars against `.env.example`                                                                                     | `ndigo env --file .env.example`                   |
-| `ndigo openapi`    | `scripts.openapi` (`--out`, `--format json\|yaml`)                                                                            | `ndigo openapi --out openapi.json`                |
-| `ndigo completion` | prints a bash completion script                                                                                               | `ndigo completion > /etc/bash_completion.d/ndigo` |
+| Command              | Runs…                                                                                                                         | Example                                           |
+| :------------------- | :---------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------ |
+| `ndigo commands`     | (CLI-owned: every verb, flag, positional, and exit code; `--json`)                                                            | `ndigo commands --json`                           |
+| `ndigo capabilities` | `list`/`get`/`check` over the shipped catalog and UI registry items (`--json`)                                                | `ndigo capabilities check`                        |
+| `ndigo ai`           | `init`/`check`/`update` — `AGENTS.md` rules, `.agents/skills/`, optional `.mcp.json`                                          | `ndigo ai:init`                                   |
+| `ndigo doctor`       | (self-diagnostics: versions, workspace, git, checks)                                                                          | `ndigo doctor`                                    |
+| `ndigo info`         | `doctor` + installed `@ndigo/*` packages                                                                                      | `ndigo info`                                      |
+| `ndigo update`       | (CLI-owned: applies exact pins from a version manifest, then `pnpm install`; `--check` compares, `--manifest` picks the file) | `ndigo update --check`                            |
+| `ndigo config`       | `.ndigorc.json` get/set/list                                                                                                  | `ndigo config set db.primary analytics`           |
+| `ndigo env`          | validates env vars against `.env.example`                                                                                     | `ndigo env --file .env.example`                   |
+| `ndigo openapi`      | `scripts.openapi` (`--out`, `--format json\|yaml`)                                                                            | `ndigo openapi --out openapi.json`                |
+| `ndigo completion`   | prints a bash completion script                                                                                               | `ndigo completion > /etc/bash_completion.d/ndigo` |
 
 Every command follows the Stricli contract: `--help`/`-h`, `--version`/`-v`,
 exit `0` ok / `2` usage / `1` runtime. `ndigo doctor` exits `1` when a check

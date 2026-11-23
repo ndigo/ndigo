@@ -27,6 +27,7 @@ const MANIFEST = {
 const TOP_LEVEL = [
     'add',
     'build',
+    'capabilities',
     'clean',
     'commands',
     'completion',

@@ -104,11 +104,13 @@ describe('ndigo mcp', () => {
         const client = await connect({ dir: createApp() });
         expect(await toolNames(client)).toEqual([
             'get_best_practices',
+            'get_capability',
             'get_commands',
             'get_config_keys',
             'get_logs',
             'get_manifest',
             'get_routes',
+            'list_capabilities',
             'record_rule',
             'run_doctor',
             'run_target',
@@ -129,6 +131,23 @@ describe('ndigo mcp', () => {
         expect(await call(client, 'get_manifest', {})).toEqual(MANIFEST);
         expect(await call(client, 'get_routes', {})).toEqual({ routes: MANIFEST.routes });
         expect(await call(client, 'get_config_keys', {})).toEqual({ keys: MANIFEST.config });
+    });
+
+    it('serves the capability catalog read-only', async () => {
+        const client = await connect({ dir: createApp(), readOnly: true });
+        const index = (await call(client, 'list_capabilities', {})) as {
+            count: number;
+            entries: { id: string; kind: string }[];
+        };
+        expect(index.count).toBe(index.entries.length);
+        expect(index.entries.find((entry) => entry.id === 'agent-surface')?.kind).toBe('capability');
+
+        const surface = (await call(client, 'get_capability', { id: 'agent-surface' })) as {
+            packages: string[];
+            ops: { op: string }[];
+        };
+        expect(surface.packages).toEqual(['@ndigo/mcp']);
+        expect(surface.ops.map((op) => op.op)).toContain('addDependency');
     });
 
     it('returns the command index through get_commands', async () => {

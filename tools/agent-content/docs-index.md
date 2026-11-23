@@ -62,6 +62,11 @@ matches the task; do not guess APIs from memory.
 - `91-application-conventions` — Application Conventions: How the demo applications under apps/ are named and laid out. The rules keep the ladder readable, keep package names stable across renumbering, and make a file's role obvious before it is opened. They
 - `coverage` — Package → Guide Coverage: Every public package has a documentation home: a guide, a package README/API tree, or an explicit “internal” note. pnpm guides:check verifies that each package name appears in this table, so a new pac
 
+## Capabilities
+
+- `agent-model` — Add a bounded, provider-neutral tool-calling loop with streaming, structured output, and telemetry. Packages: `@ndigo/ai`, `@ndigo/ai-sdk`. Guide: `47-ai-agents`.
+- `agent-surface` — Expose an application's dispatch handlers as MCP tools over a stdio server. Packages: `@ndigo/mcp`. Guide: `48-agent-facing-surfaces`.
+
 ## Packages
 
 - `@ndigo/advice` — Runs the advice declared by annotations — rules, plan compilation, and weaving for Ndigo

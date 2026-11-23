@@ -11,11 +11,13 @@ import { requireCommandIndex } from '../commands/_command-registry.js';
 import {
     createAppToolContext,
     getBestPractices,
+    getCapability,
     getConfigKeys,
     getDiagnostics,
     getLogs,
     getManifest,
     getRoutes,
+    listCapabilities,
     recordRule,
     runTarget,
 } from './tools.js';
@@ -70,8 +72,8 @@ function createAppHost(options: AppServerOptions): McpHost {
         version: '0.0.1',
         readOnly,
         instructions: readOnly
-            ? 'Read-only Ndigo application tools: manifest, routes, configuration keys, best-practice docs, diagnostics, and logs.'
-            : 'Ndigo application tools: manifest, routes, configuration keys, best-practice docs, diagnostics, logs, build/test/lint targets, and recorded rules. run_target executes the app script and returns its captured output.',
+            ? 'Read-only Ndigo application tools: manifest, routes, configuration keys, best-practice docs, diagnostics, logs, and the installable capability catalog.'
+            : 'Ndigo application tools: manifest, routes, configuration keys, best-practice docs, diagnostics, logs, the installable capability catalog, build/test/lint targets, and recorded rules. run_target executes the app script and returns its captured output.',
     });
 
     host.registerTool({
@@ -101,6 +103,28 @@ function createAppHost(options: AppServerOptions): McpHost {
         inputSchema: {},
         annotations: { readOnlyHint: true },
         run: () => getRoutes(context),
+    });
+
+    host.registerTool({
+        name: 'list_capabilities',
+        title: 'List installable capabilities',
+        description:
+            'Return the version-matched capability catalog: installable capabilities (with their packages) and UI registry items (with their install command).',
+        inputSchema: {},
+        annotations: { readOnlyHint: true },
+        run: () => listCapabilities(),
+    });
+
+    host.registerTool({
+        name: 'get_capability',
+        title: 'Get a capability',
+        description:
+            'Return one capability or UI item by id: its summary, packages or install command, wiring operations, checks, and guide.',
+        inputSchema: {
+            id: z.string().min(1).describe('Capability or UI item id, e.g. "agent-surface".'),
+        },
+        annotations: { readOnlyHint: true },
+        run: (args) => getCapability(args.id),
     });
 
     host.registerTool({

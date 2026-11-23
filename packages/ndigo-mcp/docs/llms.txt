@@ -7,6 +7,10 @@ Version-matched export index for the installed package. Read `README.md`
 for usage; the workspace guide index ships with `@ndigo/cli` as
 `assets/agent/docs-index.md`.
 
+## Capabilities
+
+- `agent-surface` — Expose an application's dispatch handlers as MCP tools over a stdio server. Packages: `@ndigo/mcp`. Guide: `48-agent-facing-surfaces`.
+
 ## Public exports
 
 - `McpToolDeniedOptions` *(type)* — Options for McpToolDeniedError.

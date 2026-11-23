@@ -8,6 +8,11 @@ import { EntityManager } from './entity-manager';
  * - 'new': The entity has been created but not yet persisted.
  * - 'managed': The entity is being tracked and its changes will be persisted.
  * - 'removed': The entity has been marked for removal.
+ *
+ * @example
+ * ```ts
+ * type _Alias = EntityState;
+ * ```
  */
 export type EntityState = 'new' | 'managed' | 'removed';
 

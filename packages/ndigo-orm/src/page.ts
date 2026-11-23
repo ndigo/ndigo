@@ -5,6 +5,14 @@
  */
 import { chainComparisons, compareBy, type comparison, invertComparison } from '@ndigo/core';
 
+/**
+ * SortDirection.
+ *
+ * @example
+ * ```ts
+ * type _Alias = SortDirection;
+ * ```
+ */
 export type SortDirection = 'asc' | 'desc';
 
 /** A single sort clause: an entity field name plus a direction (default `asc`). *

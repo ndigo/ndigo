@@ -23,12 +23,22 @@ import { SortOrder } from './page';
  * The result of a derived query: always a list, since the method name decides
  * filtering, ordering and the optional `First`/`TopN` limit rather than the
  * return type.
+ *
+ * @example
+ * ```ts
+ * type _Alias = DerivedQueryResult;
+ * ```
  */
 export type DerivedQueryResult<T> = T[];
 
 /**
  * A parsed derived-query method name: equality filters plus optional
  * ordering (single clause) and limit (`First`/`TopN`).
+ *
+ * @example
+ * ```ts
+ * const value = {} as DerivedQuery;
+ * ```
  */
 export interface DerivedQuery {
     /** Equality filters parsed from the method name. */
@@ -48,6 +58,11 @@ const ORDER_BY_MARKER = 'OrderBy';
  * @param columns - The entity's declared columns.
  * @returns The parsed query, or `null` if the method name is not a
  *   supported derived query.
+ *
+ * @example
+ * ```ts
+ * parseDerivedQuery();
+ * ```
  */
 export function parseDerivedQuery(methodName: string, columns: ColumnDefinition[]): DerivedQuery | null {
     const props = columns.map((c) => c.fieldName);

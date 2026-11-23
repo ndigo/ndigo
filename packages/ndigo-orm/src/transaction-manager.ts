@@ -71,6 +71,11 @@ export interface TransactionManager {
  * Overlapping `run()` calls are rejected (the backing store can only hold one
  * snapshot at a time); a second concurrent call fails loud rather than
  * silently discarding the first run's commits on rollback (DAT-F2).
+ *
+ * @example
+ * ```ts
+ * const instance = new InMemoryTransactionManager();
+ * ```
  */
 export class InMemoryTransactionManager implements TransactionManager {
     /**

@@ -10,6 +10,11 @@ import { Page, PageRequest, pageFromAll, sortComparator } from './page';
 /**
  * Options controlling relation loading for find operations
  * (ORM completion plan, Wave 3). Names must match declared relation fields.
+ *
+ * @example
+ * ```ts
+ * const value = {} as RelationFetchOptions;
+ * ```
  */
 export interface RelationFetchOptions {
     /** Relations to load eagerly and assign onto each returned entity. */
@@ -118,6 +123,11 @@ export interface AsyncRepository<T extends object, ID> {
  *
  * @param repository - The synchronous repository to adapt.
  * @returns Its promise-based counterpart.
+ *
+ * @example
+ * ```ts
+ * toAsyncRepository();
+ * ```
  */
 export function toAsyncRepository<T extends object, ID>(repository: Repository<T, ID>): AsyncRepository<T, ID> {
     return {

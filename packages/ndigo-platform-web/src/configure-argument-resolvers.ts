@@ -15,6 +15,11 @@ import { BrowserStorageValueMethodArgumentResolver } from './browser-storage-arg
  * so the two lists can never drift (HG-7).
  *
  * @returns The browser argument resolvers, in registration order.
+ *
+ * @example
+ * ```ts
+ * createBrowserArgumentResolvers();
+ * ```
  */
 export function createBrowserArgumentResolvers(): HandlerMethodArgumentResolver[] {
     return [
@@ -40,6 +45,11 @@ export function createBrowserArgumentResolvers(): HandlerMethodArgumentResolver[
  * @param applicationContext - The application context to configure.
  * @param _options - Reserved options (unused).
  * @returns The registered argument resolvers.
+ *
+ * @example
+ * ```ts
+ * configureBrowserArgumentResolvers();
+ * ```
  */
 export function configureBrowserArgumentResolvers(
     applicationContext: ApplicationContext,

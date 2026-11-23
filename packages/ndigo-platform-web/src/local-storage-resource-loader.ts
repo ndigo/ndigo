@@ -1,5 +1,10 @@
 /**
  * Resource loader that persists data to `localStorage`.
+ *
+ * @example
+ * ```ts
+ * const instance = new LocalStorageResourceLoader();
+ * ```
  */
 export class LocalStorageResourceLoader {
     /**

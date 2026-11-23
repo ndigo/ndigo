@@ -54,6 +54,11 @@ const resolveRoot = (root: string | Element): Element => {
 /**
  * Options for {@link createWebApplication}. Every implicit action has an
  * opt-out; app-specific wiring belongs in the hooks and the returned context.
+ *
+ * @example
+ * ```ts
+ * const value = {} as CreateWebApplicationOptions;
+ * ```
  */
 export interface CreateWebApplicationOptions {
     /** Context name. Defaults to `ndigo-web-application`. */
@@ -87,6 +92,11 @@ export interface CreateWebApplicationOptions {
 /**
  * A booted browser application: the refreshed context, the wired runtime, and
  * a programmatic teardown.
+ *
+ * @example
+ * ```ts
+ * const value = {} as WebApplication;
+ * ```
  */
 export interface WebApplication {
     /** The refreshed context — every entry stays reachable. */

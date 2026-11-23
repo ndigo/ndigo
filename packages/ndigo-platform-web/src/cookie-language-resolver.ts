@@ -13,6 +13,11 @@ import { Cookies } from './cookies';
  *
  * The persisted user choice wins over the browser/navigator language —
  * the precedence rule for client-side locale resolution.
+ *
+ * @example
+ * ```ts
+ * const instance = new CookieLanguageResolver();
+ * ```
  */
 export class CookieLanguageResolver extends AbstractLanguageResolver {
     #fallback: AbstractLanguageResolver;

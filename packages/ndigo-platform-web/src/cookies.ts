@@ -9,6 +9,14 @@ import { getLogger } from '@ndigo/log';
 const logger = getLogger('ndigo-platform-web:cookies');
 
 /** Parsed cookie structure returned by cookie parsing helpers. */
+/**
+ * Cookie.
+ *
+ * @example
+ * ```ts
+ * const value = {} as Cookie;
+ * ```
+ */
 export interface Cookie {
     /** Cookie name. */
     name: string;
@@ -29,6 +37,14 @@ export interface Cookie {
 }
 
 /** Minimal cookie-jar API exposed by the platform-web package. */
+/**
+ * CookieJar.
+ *
+ * @example
+ * ```ts
+ * const value = {} as CookieJar;
+ * ```
+ */
 export interface CookieJar {
     /** Reads a cookie value. @param key - The cookie name. */
     get(key: string): JSONValue | undefined;
@@ -46,6 +62,11 @@ type CookieAttributeValue = string | number | boolean | Date;
 
 /**
  * Additional attributes to append to a cookie (e.g. path, expires, secure).
+ *
+ * @example
+ * ```ts
+ * type _Alias = CookieAttributes;
+ * ```
  */
 export type CookieAttributes = {
     [name: string]: CookieAttributeValue;
@@ -57,6 +78,11 @@ type CookieConverter = {
 
 /**
  * Parsed result returned by the cookie parser.
+ *
+ * @example
+ * ```ts
+ * type _Alias = CookieParseResult;
+ * ```
  */
 export type CookieParseResult =
     | { isError: false; result: JSONObject; index: number; data: unknown }

@@ -16,6 +16,11 @@ const percentDecode = (value: string): string => {
  *
  * @param input - The raw `Cookie` header.
  * @returns The percent-decoded cookie record.
+ *
+ * @example
+ * ```ts
+ * parseCookieHeader();
+ * ```
  */
 export function parseCookieHeader(input: string): Record<string, string> {
     const result = Object.create(null) as Record<string, string>;

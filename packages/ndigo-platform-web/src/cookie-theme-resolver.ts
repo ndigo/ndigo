@@ -14,6 +14,11 @@ import { Cookies } from './cookies';
  * The persisted user choice wins over the system preference — the precedence
  * rule for client-side theme resolution. Cookie values are untrusted input
  * and are normalized before use.
+ *
+ * @example
+ * ```ts
+ * const instance = new CookieThemeResolver();
+ * ```
  */
 export class CookieThemeResolver extends AbstractThemeResolver {
     #fallback: AbstractThemeResolver;

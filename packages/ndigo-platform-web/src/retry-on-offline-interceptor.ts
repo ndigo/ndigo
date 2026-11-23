@@ -50,6 +50,11 @@ export const DEFAULT_MAX_RETRY_INTERVAL = 30000;
 
 /**
  * Configuration options for the RetryOnOfflineInterceptor.
+ *
+ * @example
+ * ```ts
+ * const value = {} as RetryOnOfflineConfig;
+ * ```
  */
 export interface RetryOnOfflineConfig {
     /**

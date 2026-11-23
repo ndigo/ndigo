@@ -1,5 +1,10 @@
 /**
  * Configuration options for the IndexedDB resource loader.
+ *
+ * @example
+ * ```ts
+ * const value = {} as IndexedDBConfig;
+ * ```
  */
 export interface IndexedDBConfig {
     /** Database name. Defaults to `'ndigo-store'`. */

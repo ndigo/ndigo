@@ -39,6 +39,11 @@ export function baseSchemaForType(type: string): z.ZodType {
  *
  * @param column - The column definition from entity metadata.
  * @returns The column's Zod schema.
+ *
+ * @example
+ * ```ts
+ * schemaForColumn();
+ * ```
  */
 export function schemaForColumn(column: ColumnDefinition): z.ZodType {
     let schema = column.schema ?? (column.type ? baseSchemaForType(column.type) : z.unknown());

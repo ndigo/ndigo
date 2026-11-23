@@ -16,6 +16,11 @@ import {
 /**
  * The four relation shapes the decorators declare: `one-to-many`,
  * `many-to-one`, `many-to-many`, `one-to-one`.
+ *
+ * @example
+ * ```ts
+ * type _Alias = RelationKind;
+ * ```
  */
 export type RelationKind = 'one-to-many' | 'many-to-one' | 'many-to-many' | 'one-to-one';
 
@@ -23,6 +28,11 @@ export type RelationKind = 'one-to-many' | 'many-to-one' | 'many-to-many' | 'one
  * Metadata recorded for one `@relation` field: the relation kind, the owning
  * field, the lazily-resolved target entity, and the join columns for either
  * side of the relation.
+ *
+ * @example
+ * ```ts
+ * const value = {} as RelationDefinition;
+ * ```
  */
 export interface RelationDefinition {
     /** The relation shape. */
@@ -46,12 +56,22 @@ export interface RelationDefinition {
 /**
  * The entity hook moments a hook can be attached to: `prePersist`,
  * `postLoad`, `preUpdate`, `postRemove`.
+ *
+ * @example
+ * ```ts
+ * type _Alias = EntityHookEvent;
+ * ```
  */
 export type EntityHookEvent = 'prePersist' | 'postLoad' | 'preUpdate' | 'postRemove';
 
 /**
  * One registered entity hook: the event it fires on and the method the
  * manager invokes when that event occurs.
+ *
+ * @example
+ * ```ts
+ * const value = {} as EntityHookDefinition;
+ * ```
  */
 export interface EntityHookDefinition {
     /** The entity hook event. */
@@ -62,6 +82,11 @@ export interface EntityHookDefinition {
 
 /**
  * Options for defining a column in an entity.
+ *
+ * @example
+ * ```ts
+ * const value = {} as ColumnOptions;
+ * ```
  */
 export interface ColumnOptions {
     /** Column name override. */
@@ -80,6 +105,11 @@ export interface ColumnOptions {
 
 /**
  * Defines a column's properties within an entity.
+ *
+ * @example
+ * ```ts
+ * const value = {} as ColumnDefinition;
+ * ```
  */
 export interface ColumnDefinition {
     /** The entity field name. */
@@ -96,6 +126,11 @@ export interface ColumnDefinition {
 
 /**
  * Represents the metadata for an entity, including its name, columns, primary key, and generated columns.
+ *
+ * @example
+ * ```ts
+ * const value = {} as EntityMetadata;
+ * ```
  */
 export interface EntityMetadata {
     /** The entity name. */

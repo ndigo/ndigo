@@ -8,6 +8,11 @@
 /**
  * The broad family a declared column type belongs to. `unknown` covers both an
  * omitted type and any type outside the recognized families.
+ *
+ * @example
+ * ```ts
+ * type _Alias = ColumnTypeFamily;
+ * ```
  */
 export type ColumnTypeFamily = 'integer' | 'real' | 'blob' | 'boolean' | 'json' | 'text' | 'date' | 'unknown';
 

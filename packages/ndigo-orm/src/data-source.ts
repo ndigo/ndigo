@@ -34,6 +34,11 @@ export const ENTITY_CLONE: unique symbol = Symbol.for('@ndigo/orm:entityClone');
 /**
  * Contract for classes that customize their snapshot clone; see
  * {@link ENTITY_CLONE}.
+ *
+ * @example
+ * ```ts
+ * const value = {} as EntityCloneHook;
+ * ```
  */
 export interface EntityCloneHook {
     [ENTITY_CLONE](): object;
@@ -299,6 +304,11 @@ function cloneStoredValue<T>(value: T, seen: Map<object, unknown>): T {
 
 /**
  * Marks an object that can receive a {@link DataSource}.
+ *
+ * @example
+ * ```ts
+ * const value = {} as DataSourceAware;
+ * ```
  */
 export interface DataSourceAware extends Aware {
     /**

@@ -38,6 +38,6 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `AIStepStreamEvent` *(type)* — Incremental step output. The agent forwards `text-delta` events and collects `tool-call` events; the generator's return value is the settled AIStepResult.
 - `AIServerSentEvent` *(type)* — One SSE frame produced from an AIStreamEvent.
 - `toServerSentEvents` — Maps agent events to `ServerSentEventView` frames.
-- `AIToolCallContext` *(type)* — Per-call context passed to AIToolSource.call. The `callId` is the model-assigned tool-call id and is recorded as `gen_ai.tool.call.id`.
+- `AIToolCallContext` *(type)* — Per-call context passed to AIToolSource.call. The `callId` is the model-assigned tool-call id and is recorded as `gen_ai.tool.call.id`; the source is recorded…
 - `AIToolDescriptor` *(type)* — One tool as reported by a source: the same shape as MCP `tools/list` entries (`name`, `description`, JSON Schema `inputSchema`).
 - `AIToolSource` *(type)* — A source of tools the agent may call. Implementations decide where tools live and how they execute; `McpToolRegistry` is the canonical one.

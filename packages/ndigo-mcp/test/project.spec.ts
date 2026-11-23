@@ -55,6 +55,22 @@ describe('projectTools', () => {
         expect(tools[0]?.descriptor._meta).toEqual({ ui: { resourceUri: 'ui://orders' } });
     });
 
+    it('maps the consequential hint to destructiveHint', () => {
+        class OrdersController {
+            @toolMapping({ name: 'delete_order', consequential: true })
+            remove(): unknown {
+                return { ok: true };
+            }
+        }
+
+        const tools = projectTools(
+            table([
+                { mapping: mapping('/orders/:id'), handlerMethod: handlerMethod(new OrdersController(), 'remove', []) },
+            ])
+        );
+        expect(tools[0]?.descriptor.annotations).toEqual({ readOnlyHint: false, destructiveHint: true });
+    });
+
     it('derives a snake_case name and a route description by default', () => {
         class OrdersController {
             @toolMapping()

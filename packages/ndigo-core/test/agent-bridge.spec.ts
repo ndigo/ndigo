@@ -40,6 +40,9 @@ function createStubBridge(): { bridge: AgentBridge; registered: AgentTool[] } {
                 if (step.ref !== 'c1' && step.ref !== 'Project name') {
                     return { ok: false, error: `no entity '${step.ref}'`, failedStep: index };
                 }
+                if (step.action === 'delete') {
+                    return { ok: false, error: 'action denied by policy', failedStep: index };
+                }
                 if (step.action !== 'setValue') {
                     return { ok: false, error: `no action '${step.action}'`, failedStep: index };
                 }
@@ -76,6 +79,18 @@ describe('AgentBridge contract', () => {
 
         const failed = await bridge.act([{ ref: 'missing', action: 'setValue' }]);
         expect(failed).toEqual({ ok: false, error: "no entity 'missing'", failedStep: 0 });
+    });
+
+    test('a denied action is a result, not an exception', async () => {
+        const { bridge } = createStubBridge();
+        const denied = await bridge.act([{ ref: 'c1', action: 'delete' }]);
+        expect(denied).toEqual({ ok: false, error: 'action denied by policy', failedStep: 0 });
+        expect(bridge.snapshot()[0]?.value).toBe('Apollo');
+    });
+
+    test('an unservable query returns an error payload', () => {
+        const { bridge } = createStubBridge();
+        expect(bridge.query({ text: 'invoice' })).toEqual({ error: "no match for 'invoice'" });
     });
 
     test('tool annotations survive registration and disposal', async () => {

@@ -391,7 +391,7 @@ export class AIAgent {
             return { callId: call.id, name: call.name, output: { error: `no tool source exposes '${call.name}'` } };
         }
         try {
-            const output = await this.#tools.call(call.name, call.input, { callId: call.id });
+            const output = await this.#tools.call(call.name, call.input, { callId: call.id, source: 'agent' });
             return { callId: call.id, name: call.name, output };
         } catch (error) {
             return {

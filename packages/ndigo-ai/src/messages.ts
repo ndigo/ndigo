@@ -6,6 +6,11 @@
 /**
  * A tool call produced by a model. `input` is the decoded JSON arguments
  * object; the model's schema has already been applied by the adapter.
+ *
+ * @example
+ * ```ts
+ * const value = {} as AIToolCall;
+ * ```
  */
 export interface AIToolCall {
     /** Provider-assigned call id, used to pair the call with its result. */
@@ -19,6 +24,11 @@ export interface AIToolCall {
 /**
  * Token usage reported by a provider. Fields are optional because not every
  * provider reports every counter; the agent sums the values it receives.
+ *
+ * @example
+ * ```ts
+ * const value = {} as AITokenUsage;
+ * ```
  */
 export interface AITokenUsage {
     /** Input (prompt) tokens. */
@@ -32,6 +42,11 @@ export interface AITokenUsage {
 /**
  * Why a model step or the whole run finished. `max-steps` is produced by the
  * agent loop; the remaining values mirror the provider finish reasons.
+ *
+ * @example
+ * ```ts
+ * type _Alias = AIFinishReason;
+ * ```
  */
 export type AIFinishReason =
     | 'stop'
@@ -49,6 +64,11 @@ export type AIFinishReason =
  * Assistant messages may carry tool calls alongside text. Tool messages are
  * produced by the agent loop after executing those calls; callers normally
  * construct only `system`, `user`, and `assistant` messages.
+ *
+ * @example
+ * ```ts
+ * type _Alias = AIMessage;
+ * ```
  */
 export type AIMessage =
     | { readonly role: 'system'; readonly content: string }
@@ -67,6 +87,11 @@ export type AIMessage =
 
 /**
  * A completed tool execution, as reported in `AIRunResult`.
+ *
+ * @example
+ * ```ts
+ * const value = {} as AIToolResult;
+ * ```
  */
 export interface AIToolResult {
     /** The call id this result answers. */

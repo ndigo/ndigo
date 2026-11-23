@@ -10,6 +10,11 @@ import type { AIToolDescriptor } from './tools';
 /**
  * Human-readable model identity used in telemetry attributes and rate-limit
  * keys.
+ *
+ * @example
+ * ```ts
+ * const value = {} as AIModelInfo;
+ * ```
  */
 export interface AIModelInfo {
     /** Provider name, e.g. `lmstudio` or `openai`. */
@@ -22,6 +27,11 @@ export interface AIModelInfo {
  * One model call, including the full conversation so far and the tools the
  * model may call. Adapters MUST NOT execute tools: the agent loop does that,
  * which keeps execution and telemetry provider-independent.
+ *
+ * @example
+ * ```ts
+ * const value = {} as AIStepRequest;
+ * ```
  */
 export interface AIStepRequest {
     /** The conversation, including prior tool results. */
@@ -38,6 +48,11 @@ export interface AIStepRequest {
 
 /**
  * One completed model step: text, tool calls (if any), and usage.
+ *
+ * @example
+ * ```ts
+ * const value = {} as AIStepResult;
+ * ```
  */
 export interface AIStepResult {
     /** The assistant text produced in this step. */
@@ -54,6 +69,11 @@ export interface AIStepResult {
  * Incremental step output. The agent forwards `text-delta` events and
  * collects `tool-call` events; the generator's return value is the settled
  * {@link AIStepResult}.
+ *
+ * @example
+ * ```ts
+ * type _Alias = AIStepStreamEvent;
+ * ```
  */
 export type AIStepStreamEvent =
     | { readonly type: 'text-delta'; readonly text: string }
@@ -62,12 +82,22 @@ export type AIStepStreamEvent =
 /**
  * A streaming model step. The generator returns the settled step once the
  * provider stream ends.
+ *
+ * @example
+ * ```ts
+ * type _Alias = AIStepStream;
+ * ```
  */
 export type AIStepStream = AsyncGenerator<AIStepStreamEvent, AIStepResult, void>;
 
 /**
  * A structured-output request: the model must return an object matching the
  * Zod schema.
+ *
+ * @example
+ * ```ts
+ * const value = {} as AIObjectRequest;
+ * ```
  */
 export interface AIObjectRequest<T> {
     /** The schema the returned object must satisfy. */
@@ -84,6 +114,11 @@ export interface AIObjectRequest<T> {
 
 /**
  * A structured-output result.
+ *
+ * @example
+ * ```ts
+ * const value = {} as AIObjectResult;
+ * ```
  */
 export interface AIObjectResult<T> {
     /** The schema-validated object. */
@@ -96,6 +131,11 @@ export interface AIObjectResult<T> {
 
 /**
  * The provider-neutral language-model contract.
+ *
+ * @example
+ * ```ts
+ * const value = {} as AIModel;
+ * ```
  */
 export interface AIModel {
     /** Identity used in telemetry and rate limits. */

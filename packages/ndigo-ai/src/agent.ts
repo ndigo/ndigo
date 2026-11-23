@@ -16,6 +16,11 @@ import type { AIToolDescriptor, AIToolSource } from './tools';
 /**
  * Per-run rate-limit policy. The limiter is the shared `@ndigo/rate-limit`
  * backend; the key defaults to `provider:model`.
+ *
+ * @example
+ * ```ts
+ * const value = {} as AIRateLimitOptions;
+ * ```
  */
 export interface AIRateLimitOptions {
     /** The shared rate-limiter backend. */
@@ -29,6 +34,11 @@ export interface AIRateLimitOptions {
 /**
  * Model-rollout gate. The flag is evaluated as a boolean with a `false`
  * default, so a broken or missing flag disables the model (fail closed).
+ *
+ * @example
+ * ```ts
+ * const value = {} as AIRolloutOptions;
+ * ```
  */
 export interface AIRolloutOptions {
     /** The feature-flag evaluator. */
@@ -39,6 +49,11 @@ export interface AIRolloutOptions {
 
 /**
  * Agent construction options.
+ *
+ * @example
+ * ```ts
+ * const value = {} as AIAgentOptions;
+ * ```
  */
 export interface AIAgentOptions {
     /** The provider-neutral model. */
@@ -55,6 +70,11 @@ export interface AIAgentOptions {
 
 /**
  * One agent run request.
+ *
+ * @example
+ * ```ts
+ * const value = {} as AIRunRequest;
+ * ```
  */
 export interface AIRunRequest {
     /** The conversation, typically system + user messages. */
@@ -69,6 +89,11 @@ export interface AIRunRequest {
 
 /**
  * The settled result of a run.
+ *
+ * @example
+ * ```ts
+ * const value = {} as AIRunResult;
+ * ```
  */
 export interface AIRunResult {
     /** Assistant text from the final step. */
@@ -89,6 +114,11 @@ export interface AIRunResult {
 
 /**
  * Incremental events from {@link AIAgent.stream}.
+ *
+ * @example
+ * ```ts
+ * type _Alias = AIStreamEvent;
+ * ```
  */
 export type AIStreamEvent =
     | { readonly type: 'text-delta'; readonly text: string }
@@ -99,6 +129,11 @@ export type AIStreamEvent =
 /**
  * The streaming run handle: an async generator of events whose return value
  * is the settled {@link AIRunResult}.
+ *
+ * @example
+ * ```ts
+ * type _Alias = AIAgentStream;
+ * ```
  */
 export type AIAgentStream = AsyncGenerator<AIStreamEvent, AIRunResult, void>;
 
@@ -106,6 +141,11 @@ const DEFAULT_MAX_STEPS = 8;
 
 /**
  * Drives one model through a bounded tool-calling loop.
+ *
+ * @example
+ * ```ts
+ * const instance = new AIAgent();
+ * ```
  */
 export class AIAgent {
     /**

@@ -6,6 +6,11 @@ import { ApplicationError } from '@ndigo/core';
 /**
  * The rate limiter refused the model call. The caller may retry after
  * {@link AIRateLimitError.retryAfterMs}.
+ *
+ * @example
+ * ```ts
+ * const instance = new AIRateLimitError();
+ * ```
  */
 export class AIRateLimitError extends ApplicationError {
     /**
@@ -40,6 +45,11 @@ export class AIRateLimitError extends ApplicationError {
 
 /**
  * The model rollout flag evaluated to `false`, so the agent refused the call.
+ *
+ * @example
+ * ```ts
+ * const instance = new AIModelDisabledError();
+ * ```
  */
 export class AIModelDisabledError extends ApplicationError {
     /**

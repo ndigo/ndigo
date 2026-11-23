@@ -7,6 +7,11 @@ import { AbstractBaseInstrumentation } from '../base';
 
 /**
  * OpenTelemetry instrumentation for `LockInstrumentation`.
+ *
+ * @example
+ * ```ts
+ * const instance = new LockInstrumentation();
+ * ```
  */
 export class LockInstrumentation extends AbstractBaseInstrumentation {
     /**

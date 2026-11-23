@@ -7,6 +7,11 @@ import { AbstractBaseInstrumentation } from '../base';
 
 /**
  * OpenTelemetry instrumentation for `ResilienceInstrumentation`.
+ *
+ * @example
+ * ```ts
+ * const instance = new ResilienceInstrumentation();
+ * ```
  */
 export class ResilienceInstrumentation extends AbstractBaseInstrumentation {
     /**

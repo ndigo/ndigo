@@ -11,6 +11,11 @@ import { AbstractBaseInstrumentation } from '../base';
  * This instrumentation automatically creates spans for the `destroy` and
  * `refresh` methods, providing visibility into application context teardown
  * and refresh processes.
+ *
+ * @example
+ * ```ts
+ * const instance = new ContextInstrumentation();
+ * ```
  */
 export class ContextInstrumentation extends AbstractBaseInstrumentation {
     /**

@@ -18,6 +18,11 @@ import type { FeatureMetricAggregator } from './feature-metric-aggregator';
 /**
  * The declaration recorded for a method decorated with `@counted`: the
  * counter name, attributes, and optional feature aggregation.
+ *
+ * @example
+ * ```ts
+ * const value = {} as CountedMethodConfig;
+ * ```
  */
 export interface CountedMethodConfig {
     /** The counter name (defaults to `<method>.count`). */

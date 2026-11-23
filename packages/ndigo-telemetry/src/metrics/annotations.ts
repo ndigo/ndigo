@@ -22,6 +22,11 @@ export { CountedInterceptor, countedCounter } from './interceptor';
  * @param target - The target object, its prototype, or the class.
  * @param propertyKey - The method name.
  * @returns The counter declaration, or `undefined` when the method is not counted.
+ *
+ * @example
+ * ```ts
+ * getCounted();
+ * ```
  */
 export function getCounted(target: object, propertyKey: string | symbol): CountedMethodConfig | undefined {
     return annotationOf(target, countedCounter, propertyKey);
@@ -33,6 +38,11 @@ export function getCounted(target: object, propertyKey: string | symbol): Counte
  * @param target - The target object, its prototype, or the class.
  * @param propertyKey - The method name.
  * @returns `true` when the method is counted.
+ *
+ * @example
+ * ```ts
+ * hasCounted();
+ * ```
  */
 export function hasCounted(target: object, propertyKey: string | symbol): boolean {
     return getCounted(target, propertyKey) !== undefined;

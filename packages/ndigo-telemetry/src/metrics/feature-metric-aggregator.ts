@@ -16,6 +16,11 @@ interface MutableFeatureMetrics {
 
 /**
  * Represents a statistical summary of recorded durations.
+ *
+ * @example
+ * ```ts
+ * const value = {} as DurationSummary;
+ * ```
  */
 export interface DurationSummary {
     /** Number of retained samples. */
@@ -290,6 +295,11 @@ export class FeatureMetricAggregator {
  * - name collisions within one snapshot (same feature + metric name across
  *   two kinds) keep the first entry — the wire views key by name, so a
  *   duplicate would clobber in the JSON view.
+ *
+ * @example
+ * ```ts
+ * const instance = new FeatureMetricAggregatorProvider();
+ * ```
  */
 export class FeatureMetricAggregatorProvider implements MetricSnapshotProvider {
     /**
@@ -376,6 +386,11 @@ export class FeatureMetricAggregatorProvider implements MetricSnapshotProvider {
 
 /**
  * Marks an object that can receive a {@link FeatureMetricAggregator}.
+ *
+ * @example
+ * ```ts
+ * const value = {} as FeatureMetricAggregatorAware;
+ * ```
  */
 export interface FeatureMetricAggregatorAware extends Aware {
     /**

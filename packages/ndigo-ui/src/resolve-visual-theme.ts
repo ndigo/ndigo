@@ -8,6 +8,11 @@ import type { Theme } from './theme.js';
  * Application-supplied map of theme names to themes.
  *
  * Names may deliberately shadow a built-in theme; the map wins.
+ *
+ * @example
+ * ```ts
+ * type _Alias = VisualThemeMap;
+ * ```
  */
 export type VisualThemeMap = Readonly<Record<string, Theme>>;
 
@@ -22,6 +27,11 @@ export type VisualThemeMap = Readonly<Record<string, Theme>>;
  * @param name - Theme name, normally the negotiated route theme.
  * @param themes - Optional application theme map.
  * @returns The matching theme, or `undefined` when the name is unknown.
+ *
+ * @example
+ * ```ts
+ * resolveVisualTheme();
+ * ```
  */
 export function resolveVisualTheme(name: string, themes?: VisualThemeMap): Theme | undefined {
     if (themes && Object.hasOwn(themes, name)) {

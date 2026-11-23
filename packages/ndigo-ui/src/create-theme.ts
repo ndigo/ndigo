@@ -6,6 +6,11 @@ import { COMMON_THEMES } from './common-themes.js';
 
 /**
  * Options for {@link createTheme}.
+ *
+ * @example
+ * ```ts
+ * type _Alias = CreateThemeOptions;
+ * ```
  */
 export type CreateThemeOptions = {
     /** Theme name. */
@@ -28,6 +33,11 @@ export type CreateThemeOptions = {
  *
  * @param options - Theme construction options.
  * @returns A new theme.
+ *
+ * @example
+ * ```ts
+ * createTheme();
+ * ```
  */
 export function createTheme(options: CreateThemeOptions): Theme {
     const base =
@@ -53,6 +63,11 @@ export function createTheme(options: CreateThemeOptions): Theme {
  * @param theme - Source theme.
  * @param tokens - Overrides to merge.
  * @returns A new theme.
+ *
+ * @example
+ * ```ts
+ * withThemeTokens();
+ * ```
  */
 export function withThemeTokens(theme: Theme, tokens: ThemeTokens): Theme {
     return {

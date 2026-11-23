@@ -8,6 +8,11 @@ import type { TokenName } from './token-name.js';
  * @param name - Token to reference.
  * @param fallback - Value used when the custom property is unset.
  * @returns A CSS `var()` expression.
+ *
+ * @example
+ * ```ts
+ * resolveToken();
+ * ```
  */
 export function resolveToken(name: TokenName, fallback?: string): string {
     return fallback === undefined ? `var(${name})` : `var(${name}, ${fallback})`;

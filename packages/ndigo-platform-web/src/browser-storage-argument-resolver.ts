@@ -19,6 +19,11 @@ import { Route } from '@ndigo/router';
  *   `null`/`undefined` when unavailable (e.g. prerendering, tests without a
  *   browser environment). Absent storage yields an empty record.
  * @returns The storage contents keyed by storage key.
+ *
+ * @example
+ * ```ts
+ * dumpStorage();
+ * ```
  */
 export function dumpStorage(storage: Storage | null | undefined): Record<string, unknown> {
     const jar: Record<string, unknown> = {};
@@ -44,6 +49,11 @@ export function dumpStorage(storage: Storage | null | undefined): Record<string,
  * constructor takes the storage accessor, the `MethodParameterType` to match,
  * and the `Symbol.toStringTag` label, so the session/local registrations stay
  * distinguishable (D-2).
+ *
+ * @example
+ * ```ts
+ * const instance = new BrowserStorageValueMethodArgumentResolver();
+ * ```
  */
 export class BrowserStorageValueMethodArgumentResolver extends AbstractPlatformArgumentResolver {
     readonly #storage: () => Storage | null;

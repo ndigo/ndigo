@@ -102,6 +102,11 @@ class RouteTransaction {
  * It manages routing based on the URL hash fragment, supports route interceptors, and maintains a route history.
  * This class structurally conforms to the `Destroyable` shape (`destroyed` + `destroy()`) without importing the interface,
  * so `likeDestroyable` checks can still identify it by duck typing.
+ *
+ * @example
+ * ```ts
+ * const instance = new HashRouter();
+ * ```
  */
 export class HashRouter extends AbstractRouter {
     /**

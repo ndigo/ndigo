@@ -60,6 +60,11 @@ export const currentLocale: Signal<string> = new Proxy(Object.create(null) as Si
  * the current locale and cookie are left untouched.
  *
  * @param language - The language tag to activate.
+ *
+ * @example
+ * ```ts
+ * changeLocale();
+ * ```
  */
 export function changeLocale(language: string): void {
     const normalized = normalizeLocale(language);

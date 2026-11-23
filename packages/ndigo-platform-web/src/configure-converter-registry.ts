@@ -10,6 +10,11 @@ import { ArgumentValueConverterRegistry } from '@ndigo/dispatcher';
  * @param applicationContext - The application context to update.
  * @param registry - The converter registry to expose.
  * @returns The registered converter registry.
+ *
+ * @example
+ * ```ts
+ * configureArgumentValueConverterRegistry();
+ * ```
  */
 export function configureArgumentValueConverterRegistry(
     applicationContext: ApplicationContext,

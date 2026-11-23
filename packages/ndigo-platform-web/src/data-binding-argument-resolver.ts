@@ -23,6 +23,11 @@ const BROWSER_BINDABLE_SOURCES: readonly DataBindingSource[] = ['query', 'cookie
  * objects using the shared `DataBinder` pipeline (the
  * `AbstractDataBindingArgumentResolver` base): source data → prefix filter
  * → `DataBinder` → conversion → Zod hook.
+ *
+ * @example
+ * ```ts
+ * const instance = new BrowserDataBindingMethodArgumentResolver();
+ * ```
  */
 export class BrowserDataBindingMethodArgumentResolver extends AbstractDataBindingArgumentResolver {
     /** The browser data sources this resolver binds. */

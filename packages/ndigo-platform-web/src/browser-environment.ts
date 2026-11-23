@@ -21,6 +21,11 @@ const IMPORT_META_PREFIX = 'VITE_';
  * @param env - The raw environment object (typically `import.meta.env`).
  * @param prefix - The key prefix to expose (default `VITE_`).
  * @returns The filtered, client-visible property map.
+ *
+ * @example
+ * ```ts
+ * filterImportMetaEnv();
+ * ```
  */
 export function filterImportMetaEnv(env: Record<string, unknown> | undefined, prefix = IMPORT_META_PREFIX): JSONObject {
     const filtered: JSONObject = {};
@@ -61,6 +66,11 @@ const hasImportMetaEnv = (override?: boolean): boolean => {
  * **Secret boundary**: anything in `importMetaEnv` or `bootstrap` is
  * client-visible by definition — secrets belong in server-only sources and
  * are never registered on browser environments.
+ *
+ * @example
+ * ```ts
+ * const instance = new BrowserEnvironment();
+ * ```
  */
 export class BrowserEnvironment extends StandardEnvironment {
     /**

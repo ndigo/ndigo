@@ -6,6 +6,11 @@ import { CookieThemeResolver, configureCookieThemeResolver } from './cookie-them
 
 /**
  * Options used to bootstrap browser theme support.
+ *
+ * @example
+ * ```ts
+ * type _Alias = BrowserThemeBootstrapOptions;
+ * ```
  */
 export type BrowserThemeBootstrapOptions = {
     /**

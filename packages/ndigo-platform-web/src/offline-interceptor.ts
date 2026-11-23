@@ -6,6 +6,11 @@ import { HTTPInit, ResponseAwareHTTPInterceptor } from '@ndigo/http';
 
 /**
  * Configuration options for the OfflineInterceptor.
+ *
+ * @example
+ * ```ts
+ * const value = {} as OfflineInterceptorConfig;
+ * ```
  */
 export interface OfflineInterceptorConfig {
     /**
@@ -23,6 +28,11 @@ export interface OfflineInterceptorConfig {
  *
  * The window listeners and heartbeat interval run until
  * {@link OfflineInterceptor.dispose | dispose()} is called.
+ *
+ * @example
+ * ```ts
+ * const instance = new OfflineInterceptor();
+ * ```
  */
 export class OfflineInterceptor implements ResponseAwareHTTPInterceptor {
     /**

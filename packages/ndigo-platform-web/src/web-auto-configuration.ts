@@ -53,6 +53,14 @@ class LazyWebComponentViewResolver implements ViewResolver {
  * Auto-configuration for browser-based applications.
  * Provisions argument resolvers and converter registries.
  */
+/**
+ * WebAutoConfiguration.
+ *
+ * @example
+ * ```ts
+ * const instance = new WebAutoConfiguration();
+ * ```
+ */
 @whenBrowser
 @configuration
 export class WebAutoConfiguration {

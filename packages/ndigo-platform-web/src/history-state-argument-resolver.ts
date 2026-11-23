@@ -12,6 +12,11 @@ import { Route } from '@ndigo/router';
 
 /**
  * Browser history-state argument resolver.
+ *
+ * @example
+ * ```ts
+ * const instance = new BrowserHistoryStateValueMethodArgumentResolver();
+ * ```
  */
 export class BrowserHistoryStateValueMethodArgumentResolver extends AbstractPlatformArgumentResolver {
     constructor() {

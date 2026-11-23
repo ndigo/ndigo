@@ -10,6 +10,11 @@ import { Cookies } from './cookies';
  *
  * Binds `cookieValue()` (no name → the whole parsed jar) and named cookie
  * values through the shared `AbstractCookieValueArgumentResolver` base.
+ *
+ * @example
+ * ```ts
+ * const instance = new BrowserCookieValueMethodArgumentResolver();
+ * ```
  */
 export class BrowserCookieValueMethodArgumentResolver extends AbstractCookieValueArgumentResolver {
     get [Symbol.toStringTag](): string {

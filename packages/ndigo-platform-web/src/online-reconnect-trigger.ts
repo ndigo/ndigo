@@ -10,6 +10,11 @@ import { type ReconnectTrigger } from '@ndigo/socket';
 
 /**
  * Browser-backed `ReconnectTrigger` wiring.
+ *
+ * @example
+ * ```ts
+ * const value = {} as OnlineReconnectTrigger;
+ * ```
  */
 export interface OnlineReconnectTrigger extends ReconnectTrigger {
     /** True while the browser reports online (`navigator.onLine` + events). */

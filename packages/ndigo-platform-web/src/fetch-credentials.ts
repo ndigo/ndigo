@@ -10,6 +10,11 @@ import { HTTP, RequestAwareHTTPInterceptor } from '@ndigo/http';
  * outgoing request so the browser performs the cross-origin handshake. It is
  * NOT a server-side CORS boundary — the server must attach the allow headers
  * (see `@ndigo/platform-node` `CORSInterceptor`).
+ *
+ * @example
+ * ```ts
+ * const value = {} as FetchCredentialsInterceptorConfig;
+ * ```
  */
 export interface FetchCredentialsInterceptorConfig {
     /**

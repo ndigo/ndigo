@@ -172,6 +172,8 @@ jobs:
       - name: Capability authoring smoke
         # Link:-installed fixture app: apply agent-surface and agent-model,
         # boot inspect, speak MCP to the generated entry, and run ndigo verify.
+        # This spec also runs in the `pnpm test` lane below; this early copy is
+        # the fail-fast gate (MIN-1), and the duplicate execution is accepted.
         run: pnpm capability:smoke
 
       - name: Lint (zero warnings)

@@ -48,7 +48,7 @@ export const verifyCommand = buildCommand({
             },
             full: {
                 kind: 'boolean',
-                brief: 'Also run the app test and lint lanes.',
+                brief: 'Also run the app typecheck, test, and lint lanes.',
                 optional: true,
             },
             json: jsonFlag,

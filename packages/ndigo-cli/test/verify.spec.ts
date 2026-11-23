@@ -177,11 +177,16 @@ describe('ndigo verify', () => {
         });
     });
 
-    it('skips the full lanes when the scripts are absent', async () => {
+    it('runs every lane with --full even when the capability declares none', async () => {
         const dir = createApp({ test: false });
-        const result = await runCli(['verify', '--full', '--json', dir]);
+        const result = await runCli(['verify', '--capability', 'agent-surface', '--full', '--json', dir]);
         expect(result.code).toBe(0);
         const report = JSON.parse(result.out) as Document;
+        // `--full` means every lane: typecheck runs alongside test and lint,
+        // even though agent-surface itself declares no typecheck.
+        expect(report.checks.find((check) => check.id === 'typecheck')?.status).toBe('pass');
+        // The fixture declares neither test nor lint, so both stay skips.
+        expect(report.checks.find((check) => check.id === 'test')?.status).toBe('skip');
         const lint = report.checks.find((check) => check.id === 'lint');
         expect(lint?.status).toBe('skip');
         expect(report.summary.skip).toBeGreaterThanOrEqual(1);

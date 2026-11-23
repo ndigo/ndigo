@@ -96,7 +96,16 @@ export const packageFactSchema = z.strictObject({
 
 const packagesFileSchema = z.strictObject({ packages: z.array(packageFactSchema) });
 const itemsFileSchema = z.strictObject({ items: z.array(itemSchema) });
-const checksFileSchema = z.strictObject({ checks: z.array(z.strictObject({ id: kebab, summary: z.string().min(1) })) });
+const checksFileSchema = z.strictObject({
+    checks: z.array(
+        z.strictObject({
+            id: kebab,
+            summary: z.string().min(1),
+            /** Targets a check reference may name (`mcp-stdio` → `tools/list`); absent when any is accepted. */
+            targets: z.array(z.string().min(1)).optional(),
+        })
+    ),
+});
 
 /** One declared wiring operation.
  *
@@ -301,6 +310,33 @@ export function loadCheckIds(): string[] {
         return parsed.success ? parsed.data.checks.map((check) => check.id) : [];
     } catch {
         return [];
+    }
+}
+
+/**
+ * Reads the target vocabulary each declared check defines, when any.
+ *
+ * @returns One entry per check that declares targets, mapping the check id
+ *   to its allowed targets; checks without declared targets accept any.
+ *
+ * @example
+ * ```ts
+ * loadCheckTargets();
+ * ```
+ */
+export function loadCheckTargets(): ReadonlyMap<string, ReadonlySet<string>> {
+    const file = join(CAPABILITIES_DIR, 'checks.json');
+    if (!existsSync(file)) return new Map();
+    try {
+        const parsed = checksFileSchema.safeParse(JSON.parse(readFileSync(file, 'utf8')));
+        if (!parsed.success) return new Map();
+        const targets = new Map<string, ReadonlySet<string>>();
+        for (const check of parsed.data.checks) {
+            if (check.targets !== undefined) targets.set(check.id, new Set(check.targets));
+        }
+        return targets;
+    } catch {
+        return new Map();
     }
 }
 

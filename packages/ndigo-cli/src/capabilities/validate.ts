@@ -9,6 +9,7 @@ import {
     CAPABILITIES_DIR,
     loadCatalog,
     loadCheckIds,
+    loadCheckTargets,
     loadGuideSlugs,
     loadPackageFacts,
     loadSkillIds,
@@ -31,6 +32,8 @@ export interface CatalogReferences {
     readonly packages: ReadonlyMap<string, PackageFact>;
     /** Check ids in the declared check vocabulary. */
     readonly checks: ReadonlySet<string>;
+    /** Per-check target vocabulary (`mcp-stdio` → `tools/list`); absent when the check defines none. */
+    readonly checkTargets: ReadonlyMap<string, ReadonlySet<string>>;
 }
 
 /** The resolved reference sets plus any read errors from the generated indexes.
@@ -66,6 +69,7 @@ export function loadCatalogReferences(): CatalogReferenceLoad {
             skills: new Set(loadSkillIds()),
             packages: new Map(packages.map((fact) => [fact.name, fact])),
             checks: new Set(loadCheckIds()),
+            checkTargets: loadCheckTargets(),
         },
         errors,
     };
@@ -99,9 +103,18 @@ export function validateCatalog(catalog: CatalogLoad, references: CatalogReferen
             problems.push(`capability "${capability.id}" names unknown skill "${capability.skill}"`);
         }
         for (const check of capability.checks) {
-            const id = check.split(':')[0] ?? check;
+            const separator = check.indexOf(':');
+            const id = separator === -1 ? check : check.slice(0, separator);
             if (!references.checks.has(id)) {
                 problems.push(`capability "${capability.id}" names unknown check "${check}"`);
+                continue;
+            }
+            const target = separator === -1 ? undefined : check.slice(separator + 1);
+            const allowed = references.checkTargets.get(id);
+            if (target !== undefined && allowed !== undefined && !allowed.has(target)) {
+                problems.push(
+                    `capability "${capability.id}" check "${check}" has an unsupported target — known targets: ${[...allowed].join(', ')}`
+                );
             }
         }
         for (const package_ of capability.packages) {

@@ -1,6 +1,7 @@
 /**
- * `ndigo verify` check runner: the declared catalog checks plus the built-in
- * doctor/typecheck/test/lint lanes, each executed against one application.
+ * `ndigo verify` check runner: the declared catalog checks plus `doctor`,
+ * with `--full` adding the app's typecheck, test, and lint lanes — each
+ * executed against one application.
  */
 import { performance } from 'node:perf_hooks';
 import { readAppManifest, captureAppOnce } from '../helpers/app-scripts.js';
@@ -35,7 +36,7 @@ export interface VerifySummary {
 
 /** The machine-readable verify report. */
 export interface VerifyReport {
-    /** Whether every executed check passed. */
+    /** Whether no check failed; skipped checks do not fail the run. */
     readonly ok: boolean;
     /** Absolute application directory. */
     readonly app: string;
@@ -62,8 +63,8 @@ export interface VerifyOptions {
 /** The execution order of known checks. */
 const CHECK_ORDER = ['doctor', 'app-boot', 'mcp-stdio', 'route-parity', 'typecheck', 'test', 'lint'] as const;
 
-/** Checks added by `--full`. */
-const FULL_CHECKS = ['test', 'lint'] as const;
+/** The app lanes `--full` adds, on top of the declared checks and `doctor`. */
+const FULL_CHECKS = ['typecheck', 'test', 'lint'] as const;
 
 /** How much captured output a failure message quotes. */
 const OUTPUT_TAIL_LINES = 5;
@@ -150,7 +151,7 @@ async function execute(id: string, target: string | undefined, options: VerifyOp
         case 'mcp-stdio':
             return runMcpCheck(target, options);
         case 'route-parity':
-            return runParityCheck(options);
+            return runParityCheck(target, options);
         case 'typecheck':
         case 'test':
         case 'lint':
@@ -209,7 +210,10 @@ async function runMcpCheck(target: string | undefined, options: VerifyOptions): 
     }
 }
 
-async function runParityCheck(options: VerifyOptions): Promise<CheckOutcome> {
+async function runParityCheck(target: string | undefined, options: VerifyOptions): Promise<CheckOutcome> {
+    if (target !== undefined && target !== '*') {
+        return { status: 'fail', message: `unsupported route-parity target '${target}' — only * is defined` };
+    }
     const strict = options.capability !== undefined;
     if (!hasScript(options.dir, 'inspect')) return missingScript('inspect', strict);
     if (!hasScript(options.dir, 'mcp')) return missingScript('mcp', strict);

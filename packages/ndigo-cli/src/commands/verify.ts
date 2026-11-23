@@ -5,10 +5,10 @@
 import { buildCommand } from '@stricli/core';
 import { resolveCapability } from '../capabilities/apply.js';
 import { runVerification } from '../capabilities/verify.js';
-import type { VerifyReport } from '../capabilities/verify.js';
 import { loadValidatedCapabilities } from '../capabilities/validate.js';
 import { resolveAppDir } from '../helpers/app-scripts.js';
 import { jsonFlag, writeJson } from './_output.js';
+import type { VerifyReport } from '../capabilities/report.js';
 
 /** Flags of the verify command. */
 interface VerifyFlags {

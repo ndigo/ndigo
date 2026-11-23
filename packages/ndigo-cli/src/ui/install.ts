@@ -2,26 +2,15 @@
  * Plans and applies registry installs: dependency-ordered items, target
  * mapping, conflict checks, `ui.lock.json`, and npm dependency installation.
  */
-import { spawn } from 'node:child_process';
-import type { ChildProcess } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, isAbsolute, join, normalize, relative } from 'node:path';
 import { usageError } from '../helpers/app-scripts.js';
+import { addPackages } from '../helpers/package-manager.js';
 import { UI_LOCK_FILE, resolveTargetPath } from './config.js';
 import type { UiAliases } from './config.js';
 import { isRemoteSource, readRegistryFile, resolveItemClosure } from './registry.js';
 import type { LoadedRegistry } from './registry-types.js';
-
-/**
- * Package managers the installer can drive.
- *
- * @example
- * ```ts
- * type _Alias = PackageManager;
- * ```
- */
-export type PackageManager = 'pnpm' | 'npm' | 'yarn' | 'bun';
 
 /**
  * One item in an install plan.
@@ -247,24 +236,6 @@ export async function applyInstall(plan: InstallPlan, options: InstallOptions): 
     return { written, unchanged, dependencies: plan.dependencies, lockPath: join(dir, UI_LOCK_FILE) };
 }
 
-/**
- * Detects the package manager from the application lockfile.
- * @param dir - Application directory.
- * @returns The package manager (defaults to npm).
- *
- * @example
- * ```ts
- * detectPackageManager();
- * ```
- */
-export function detectPackageManager(dir: string): PackageManager {
-    if (existsSync(join(dir, 'pnpm-lock.yaml'))) return 'pnpm';
-    if (existsSync(join(dir, 'yarn.lock'))) return 'yarn';
-    if (existsSync(join(dir, 'bun.lock')) || existsSync(join(dir, 'bun.lockb'))) return 'bun';
-    if (existsSync(join(dir, 'package-lock.json'))) return 'npm';
-    return 'npm';
-}
-
 function writeLockFile(dir: string, plan: InstallPlan): void {
     const path = join(dir, UI_LOCK_FILE);
     const lock = readLockFile(path);
@@ -306,20 +277,9 @@ async function installDependencies(
     dependencies: readonly string[],
     dependencyStdio: 'inherit' | 'stderr'
 ): Promise<void> {
-    const manager = detectPackageManager(dir);
-    const args = manager === 'npm' ? ['install', ...dependencies] : ['add', ...dependencies];
-    // fd 2 is the parent's stderr: an MCP server's stdout is the protocol channel.
-    const child: ChildProcess =
-        dependencyStdio === 'stderr'
-            ? spawn(manager, args, { cwd: dir, stdio: ['ignore', 2, 2] })
-            : spawn(manager, args, { cwd: dir, stdio: 'inherit' });
-    await new Promise<void>((resolvePromise, rejectPromise) => {
-        child.once('error', (error) => {
-            rejectPromise(usageError(`cannot run ${manager}: ${error.message}`));
-        });
-        child.once('exit', (code) => {
-            if (code === 0) resolvePromise();
-            else rejectPromise(usageError(`${manager} ${args[0]} failed (exit ${String(code)})`));
-        });
-    });
+    try {
+        await addPackages(dir, dependencies, dependencyStdio);
+    } catch (error) {
+        throw usageError(error instanceof Error ? error.message : String(error));
+    }
 }

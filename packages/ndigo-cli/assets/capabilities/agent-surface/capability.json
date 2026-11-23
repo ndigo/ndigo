@@ -4,6 +4,16 @@
   "summary": "Expose an application's dispatch handlers as MCP tools over a stdio server.",
   "packages": ["@ndigo/mcp"],
   "guide": "48-agent-facing-surfaces",
+  "variables": [
+    {
+      "name": "configuration",
+      "description": "Application configuration class that the stdio entry boots."
+    },
+    {
+      "name": "configurationFile",
+      "description": "Module (without extension) that exports the configuration class."
+    }
+  ],
   "ops": [
     {
       "op": "addDependency",

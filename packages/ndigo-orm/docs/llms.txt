@@ -28,8 +28,8 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `TransactionManager` *(type)* — Manages transaction boundaries for a data source.
 - `Repository` *(type)* — Defines the basic contract for a repository, providing common data access operations for entities.
 - `AsyncRepository` *(type)* — Promise-based counterpart to Repository for backend-neutral async consumers. Missing entities resolve to `undefined`; operation failures reject the promise.
-- `NdigoDatabaseAdapter` *(type)* — Engine-agnostic database adapter used by `ndigo db *`.
-- `MigrationStatus` *(type)* — Status of a single migration in the journal.
+- `NdigoDatabaseAdapter` *(type)* — NdigoDatabaseAdapter.
+- `MigrationStatus` *(type)* — MigrationStatus.
 - `runDbCommand` — In-app runner used by `ndigo db *`. Resolves the adapter for the requested (or default) database, invokes the action, and returns a process exit code.
 - `entity` — Decorator that marks a class as an entity. It can optionally specify a custom table name for the entity.
 - `column` — Decorator that marks a class property as a column in the entity's table. It can optionally specify column options like name, type, and nullability.
@@ -71,7 +71,7 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `DerivedQueryResult` *(type)* — The result of a derived query: always a list, since the method name decides filtering, ordering and the optional `First`/`TopN` limit rather than the return ty…
 - `Page` *(type)* — A page of results with its totals. Pages beyond the last one yield empty content. *
 - `PageRequest` *(type)* — A page request: 1-based page index, positive size, optional multi-key sort. *
-- `SortDirection` *(type)*
+- `SortDirection` *(type)* — SortDirection.
 - `SortOrder` *(type)* — A single sort clause: an entity field name plus a direction (default `asc`). *
 - `DATA_SOURCE` — Token for the application's shared DataSource entry. Apps register their chosen implementation (`InMemoryDataSource`, `DrizzleDataSource`, …) under it; consume…
 - `pageFromAll` — Sorts and slices a full result set into a page (in-memory backends). Multi-key sort is stable per clause; ties keep their input order.

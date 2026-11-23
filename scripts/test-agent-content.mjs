@@ -163,6 +163,28 @@ void test('a capability naming an unknown package fails validation', () => {
     );
 });
 
+void test('an undeclared template placeholder fails validation', () => {
+    const catalogDir = join(ROOT, 'packages', 'ndigo-cli', 'assets', 'capabilities');
+    const catalog = readCapabilityCatalog(catalogDir);
+    const surface = catalog.capabilities.find((capability) => capability.id === 'agent-surface');
+    assert.ok(surface !== undefined);
+    const broken = {
+        ...catalog,
+        capabilities: [{ ...surface, variables: [] }],
+    };
+    const problems = capabilityProblems({
+        root: ROOT,
+        catalogDir,
+        catalog: broken,
+        packages: workspacePackages(),
+        skills: readSkills(join(ROOT, 'tools', 'agent-content', 'skills')),
+    });
+    assert.ok(
+        problems.some((problem) => problem.includes('uses undeclared variable "{{configuration}}"')),
+        problems.join('; ')
+    );
+});
+
 void test('a direct dependency exposes the installed llms.txt through node_modules', () => {
     const index = join(ROOT, 'apps', '05-ndigo-api', 'node_modules', '@ndigo', 'core', 'docs', 'llms.txt');
     assert.ok(existsSync(index), `expected ${index}; run pnpm install and pnpm agent-content:build`);

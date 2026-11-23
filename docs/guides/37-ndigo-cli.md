@@ -41,11 +41,11 @@ Built on `@stricli/core` as an embedded library — commands, typed flags,
 
 ### Scaffolding
 
-| Command                 | Runs…                                                        | Example                                                                                                    |
-| :---------------------- | :----------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------- |
-| `ndigo new <name>`      | the `app` generator (a new app under `apps/NN-ndigo-<name>`) | `ndigo new todo-widget --preset api`                                                                       |
-| `ndigo generate <kind>` | `@ndigo/generators` via Nx                                   | `ndigo generate entity --name note --package demo`                                                         |
-| `ndigo add <package>`   | `pnpm add` + the package's setup generator                   | `ndigo add @ndigo/redis ./[apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)` |
+| Command                  | Runs…                                                                                         | Example                                                                                                  |
+| :----------------------- | :-------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------- |
+| `ndigo new <name>`       | the `app` generator (a new app under `apps/NN-ndigo-<name>`)                                  | `ndigo new todo-widget --preset api`                                                                     |
+| `ndigo generate <kind>`  | `@ndigo/generators` via Nx                                                                    | `ndigo generate entity --name note --package demo`                                                       |
+| `ndigo add <capability>` | plans a catalog capability; `--apply` writes the wiring (`--var`, `--force`, `--skipInstall`) | `ndigo add agent-surface --var configuration=AppConfiguration --var configurationFile=app-configuration` |
 
 ### Database
 
@@ -148,9 +148,10 @@ getOrder({ id }: { id: string }) {
 }
 ```
 
-`ndigo add @ndigo/mcp` installs the package and runs the `mcp-setup` generator
-(a wiring module, a `scripts.mcp` entry, and a sample tool). Projection,
-transports, policy, MCP Apps, and WebMCP are covered end-to-end in
+`ndigo add agent-surface` plans the stdio server wiring; `--apply` writes
+`src/mcp.ts` and the `mcp` script. The capability names the packages it needs,
+so `@ndigo/mcp` is resolved through the catalog rather than the command line.
+Projection, transports, policy, MCP Apps, and WebMCP are covered end-to-end in
 [Guide 48 — Agent-Facing Surfaces](48-agent-facing-surfaces.md).
 
 ### Maintenance

@@ -102,8 +102,10 @@ Notes:
 - Build the endpoint lazily in the real app: the registry projects the
   dispatcher's mappings, so it must run after every controller is registered
   (see `#resolveEndpoint` in the demo).
-- `ndigo add @ndigo/mcp` installs the package and runs the `mcp-setup`
-  generator: a wiring module, a `scripts.mcp` entry, and one sample tool.
+- `ndigo add agent-surface` plans the wiring — a stdio entry, a `scripts.mcp`
+  entry, and the `@ndigo/mcp` dependency; `--apply` writes it. The entry boots
+  the application's configuration, so pass `--var configuration=<Class>` and
+  `--var configurationFile=<module>` when the class is not at a known path.
 
 ## 4. Policy, auth, and telemetry
 

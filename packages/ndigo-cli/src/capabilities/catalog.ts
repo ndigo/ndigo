@@ -54,6 +54,12 @@ const editJsonOp = z.strictObject({
 
 const capabilityOpSchema = z.discriminatedUnion('op', [addDependencyOp, writeFileOp, editJsonOp]);
 
+const capabilityVariableSchema = z.strictObject({
+    name: z.string().regex(/^[a-z][a-zA-Z0-9]*$/u, 'expected camelCase'),
+    description: z.string().min(1),
+    default: z.string().optional(),
+});
+
 const capabilitySchema = z.strictObject({
     id: kebab,
     kind: z.literal('capability'),
@@ -61,6 +67,7 @@ const capabilitySchema = z.strictObject({
     packages: z.array(packageName).min(1),
     guide: guideSlug,
     skill: kebab.optional(),
+    variables: z.array(capabilityVariableSchema).optional(),
     ops: z.array(capabilityOpSchema).min(1),
     checks: z.array(z.string().regex(checkPattern, 'expected id or id:target')),
 });

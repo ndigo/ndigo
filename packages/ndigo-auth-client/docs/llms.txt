@@ -18,8 +18,8 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `OIDCError` — An OIDC-specific failure. Every authorization/token failure mode throws this so callers can distinguish provider errors from programming errors.
 - `OIDCAdapterConfig` *(type)* — Configuration for the OIDC adapter.
 - `AuthorizationRequest` *(type)* — A pending authorization-code request created by `OIDCAdapter.createAuthorizationRequest`.
-- `DiscoveryDocument` *(type)* — Validated subset of an OIDC discovery document.
-- `TokenResponse` *(type)* — Validated token-endpoint response.
+- `DiscoveryDocument` *(type)* — DiscoveryDocument.
+- `TokenResponse` *(type)* — TokenResponse.
 - `PendingAuthorization` *(type)* — One pending authorization-code request: the values `OIDCAdapter.createAuthorizationRequest` generates and `OIDCAdapter.exchangeCodeForTokens` needs to redeem t…
 - `PendingAuthorizationStore` *(type)* — Persistence seam for pending authorization requests.
 - `RefreshTokenBinding` *(type)* — The subject binding recorded for a refresh token: which principal the token was issued for. Set when the code exchange (or a rotation) captures the token; cons…

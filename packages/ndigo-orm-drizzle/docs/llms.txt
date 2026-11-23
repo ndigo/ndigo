@@ -26,11 +26,11 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `renderMigrationFile` — Renders a versioned migration module (`db/migrations/<NNNN>-<slug>.ts`) — the artifact `ndigo db generate` commits. Statements and the description are emitted…
 - `renderSnapshot` — Renders the committed snapshot document (`db/schema.json`). Key order is stable so regeneration is byte-identical for the freshness gate.
 - `readSnapshot` — Parses a committed snapshot document, failing loud on an unknown `predicate` (a metadata growth that changes the projection must bump the format, not silently…
-- `SchemaSnapshot` *(type)* — The committed, normalized metadata projection (`db/schema.json`).
-- `TableProjection` *(type)* — One table's projection.
+- `SchemaSnapshot` *(type)* — SchemaSnapshot.
+- `TableProjection` *(type)* — TableProjection.
 - `ColumnProjection` *(type)* — One column as the DDL predicate models it. `nullable` is the resolved nullability (`createTableStatements` semantics: explicit `nullable: true` or a non-PK gen…
-- `ProjectionDelta` *(type)* — The delta between two projections, as rendered for a migration.
-- `SqliteStorageType` *(type)* — SQLite storage classes the metadata → SQL mapping can emit.
+- `ProjectionDelta` *(type)* — ProjectionDelta.
+- `SqliteStorageType` *(type)* — SqliteStorageType.
 - `LibSQLQueueMessageStore` — Durable `/queue` backend on libsql. Every method awaits schema creation. Multi-writer processes on one database are safe by virtue of atomic AUTOINCREMENT — se…
 - `LibSQLQueueMessageStoreOptions` *(type)* — Options for LibSQLQueueMessageStore.
 - `LibSQLJobStore` — Durable JobDriver on libSQL. Clients created by the store are owned; injected clients are borrowed by default.
@@ -48,4 +48,4 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `insertSchemaForEntity` — Derives a Zod **insert** schema (the entity's writable shape) from a Drizzle table built from entity metadata.
 - `selectSchemaForEntity` — Derives a Zod **select** schema (the entity's readable shape) from a Drizzle table built from entity metadata.
 - `createDrizzleAdapter` — Builds a `NdigoDatabaseAdapter` around a Drizzle data source and migrations.
-- `DrizzleAdapterOptions` *(type)*
+- `DrizzleAdapterOptions` *(type)* — DrizzleAdapterOptions.

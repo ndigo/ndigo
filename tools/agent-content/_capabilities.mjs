@@ -16,7 +16,7 @@ const packagePattern = /^@ndigo\/[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/u;
 const checkPattern = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*(?::\S+)?$/u;
 
 /** Capability keys, in the authored order the docs render. */
-const CAPABILITY_KEYS = new Set(['id', 'kind', 'summary', 'packages', 'guide', 'skill', 'ops', 'checks']);
+const CAPABILITY_KEYS = new Set(['id', 'kind', 'summary', 'packages', 'guide', 'skill', 'variables', 'ops', 'checks']);
 
 /** Manifest `ndigo` block keys. */
 const BLOCK_KEYS = new Set(['surfaces', 'capabilities', 'skill']);
@@ -174,8 +174,12 @@ export function capabilityProblems(input) {
                 problems.push(`capability "${capability.id}" names ${packageName}, but its ndigo block omits it`);
             }
         }
+        const writes = new Set();
+        const edits = new Set();
         for (const op of capability.ops) {
             if (op.op === 'writeFile') {
+                if (writes.has(op.path)) problems.push(`capability "${capability.id}" writes "${op.path}" twice`);
+                writes.add(op.path);
                 if (!isSafeRelativePath(op.path)) {
                     problems.push(`capability "${capability.id}" writes outside the app: "${op.path}"`);
                 }
@@ -183,8 +187,15 @@ export function capabilityProblems(input) {
                     problems.push(`capability "${capability.id}" has an invalid template path "${op.template}"`);
                 } else if (!existsSync(join(catalogDir, capability.id, op.template))) {
                     problems.push(`capability "${capability.id}" is missing template "${op.template}"`);
+                } else {
+                    problems.push(
+                        ...templateProblems(capability, join(catalogDir, capability.id, op.template), op.template)
+                    );
                 }
             } else if (op.op === 'editJson') {
+                const target = `${op.path}#${op.pointer}`;
+                if (edits.has(target)) problems.push(`capability "${capability.id}" edits "${target}" twice`);
+                edits.add(target);
                 if (!isSafeRelativePath(op.path)) {
                     problems.push(`capability "${capability.id}" edits outside the app: "${op.path}"`);
                 }
@@ -297,6 +308,17 @@ function capabilityShapeProblems(data, directory) {
     ) {
         problems.push('checks must be an array of id or id:target strings');
     }
+    if (data.variables !== undefined) {
+        if (!Array.isArray(data.variables)) {
+            problems.push('variables must be an array');
+        } else {
+            for (const [index, variable] of data.variables.entries()) {
+                problems.push(...variableProblems(variable, index));
+            }
+            const names = data.variables.map((variable) => variable?.name).filter((name) => typeof name === 'string');
+            if (new Set(names).size !== names.length) problems.push('variable names must be unique');
+        }
+    }
     if (!Array.isArray(data.ops) || data.ops.length === 0) {
         problems.push('ops must be a non-empty array');
     } else {
@@ -325,6 +347,53 @@ function opProblems(op, index) {
         return ok ? [] : [`ops[${index}] editJson needs path and a JSON pointer`];
     }
     return [`ops[${index}].op "${String(op.op)}" is not supported`];
+}
+
+function variableProblems(variable, index) {
+    if (typeof variable !== 'object' || variable === null || Array.isArray(variable)) {
+        return [`variables[${index}] must be an object`];
+    }
+    const problems = [];
+    for (const key of Object.keys(variable)) {
+        if (key !== 'name' && key !== 'description' && key !== 'default') {
+            problems.push(`variables[${index}].${key} is not a known key`);
+        }
+    }
+    if (typeof variable.name !== 'string' || !/^[a-z][a-zA-Z0-9]*$/u.test(variable.name)) {
+        problems.push(`variables[${index}].name must be camelCase`);
+    }
+    if (typeof variable.description !== 'string' || variable.description.length === 0) {
+        problems.push(`variables[${index}].description must be a non-empty string`);
+    }
+    if (variable.default !== undefined && typeof variable.default !== 'string') {
+        problems.push(`variables[${index}].default must be a string`);
+    }
+    return problems;
+}
+
+/**
+ * Checks a template's placeholders against the capability's declared
+ * variables. `appName` is built in; every other placeholder must be declared,
+ * and every declared variable must be used.
+ */
+function templateProblems(capability, file, templatePath) {
+    const text = readFileSync(file, 'utf8');
+    const declared = new Set((capability.variables ?? []).map((variable) => variable.name));
+    const used = new Set([...text.matchAll(/\{\{([a-z][a-zA-Z0-9]*)\}\}/gu)].map((match) => match[1]));
+    const problems = [];
+    for (const name of used) {
+        if (name !== 'appName' && !declared.has(name)) {
+            problems.push(
+                `capability "${capability.id}" template "${templatePath}" uses undeclared variable "{{${name}}}"`
+            );
+        }
+    }
+    for (const name of declared) {
+        if (!used.has(name)) {
+            problems.push(`capability "${capability.id}" declares unused variable "${name}"`);
+        }
+    }
+    return problems;
 }
 
 function isSafeRelativePath(path) {

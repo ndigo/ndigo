@@ -11,6 +11,11 @@ import { Theme, ThemeSource } from './theme';
  * `getContent` tries each source in order and returns the first result that
  * is not identical to the requested key (i.e. a real translation was found).
  * Falls back to the key itself when all sources return the key unchanged.
+ *
+ * @example
+ * ```ts
+ * const instance = new CompositeContentSource();
+ * ```
  */
 export class CompositeContentSource implements ContentSource {
     /**
@@ -66,6 +71,11 @@ export class CompositeContentSource implements ContentSource {
  *
  * `getTheme` tries each source in order and returns the first successful
  * result. Throws when all sources fail to resolve the theme.
+ *
+ * @example
+ * ```ts
+ * const instance = new CompositeThemeSource();
+ * ```
  */
 export class CompositeThemeSource implements ThemeSource {
     /**

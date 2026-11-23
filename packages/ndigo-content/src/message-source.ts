@@ -13,6 +13,11 @@ import { LanguageCode } from './language-code';
  * named interpolation values (i18next `replace` / ICU `values`), a plural
  * count (i18next plural keys / ICU `plural`), and a variant selector
  * (i18next context suffix / ICU `select`).
+ *
+ * @example
+ * ```ts
+ * const value = {} as MessageParams;
+ * ```
  */
 export interface MessageParams {
     /**
@@ -62,6 +67,11 @@ export interface MessageSource {
 
 /**
  * Marks an object that can receive a message source.
+ *
+ * @example
+ * ```ts
+ * const value = {} as MessageSourceAware;
+ * ```
  */
 export interface MessageSourceAware extends Aware {
     /**

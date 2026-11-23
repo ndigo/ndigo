@@ -6,6 +6,11 @@ import { LanguageCode } from './language-code';
 
 /**
  * An async loader function that resolves content for a given key and language.
+ *
+ * @example
+ * ```ts
+ * type _Alias = ContentLoader;
+ * ```
  */
 export type ContentLoader = (key: string, language: string | LanguageCode) => Promise<string>;
 
@@ -14,6 +19,11 @@ export type ContentLoader = (key: string, language: string | LanguageCode) => Pr
  *
  * `getContent` is async by contract; the loader runs once per key+language
  * pair and the result is cached until it expires.
+ *
+ * @example
+ * ```ts
+ * const instance = new TtlContentSource();
+ * ```
  */
 export class TtlContentSource implements ContentSource {
     /**

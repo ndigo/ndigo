@@ -9,6 +9,11 @@ import { AuthRegistry } from '@ndigo/auth-core';
  *
  * Responsible for validating incoming requests using the configured
  * authentication adapters and resolving the associated principal.
+ *
+ * @example
+ * ```ts
+ * const instance = new AuthServer();
+ * ```
  */
 export class AuthServer {
     /**

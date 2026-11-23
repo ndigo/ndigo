@@ -12,6 +12,14 @@ import { AUTH_SERVER, PASSWORD_ENCODER, SESSION_STORE, USER_STORE } from './cont
 /**
  * Auto-configuration for authentication defaults.
  */
+/**
+ * AuthAutoConfiguration.
+ *
+ * @example
+ * ```ts
+ * const instance = new AuthAutoConfiguration();
+ * ```
+ */
 @configuration
 export class AuthAutoConfiguration extends AsApplicationContextAware(Null) {
     /**

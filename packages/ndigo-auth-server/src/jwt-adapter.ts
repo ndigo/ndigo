@@ -16,6 +16,11 @@ import { type AuthAdapter, type AuthResult, type Principal, type UserStore, Defa
 
 /**
  * Configuration for the JWT adapter.
+ *
+ * @example
+ * ```ts
+ * const value = {} as JWTAdapterConfig;
+ * ```
  */
 export interface JWTAdapterConfig {
     /** The issuer (iss) claim to validate. */
@@ -74,6 +79,11 @@ import { FrameworkError } from '@ndigo/core';
  * Error for refresh/issue/revocation failures: invalid, superseded or
  * revoked tokens, unknown/disabled accounts, and configuration that
  * cannot issue tokens. Always a `401`-class outcome at the flow level.
+ *
+ * @example
+ * ```ts
+ * const instance = new JWTTokenError();
+ * ```
  */
 export class JWTTokenError extends FrameworkError {
     /**
@@ -100,6 +110,11 @@ export class JWTTokenError extends FrameworkError {
 /**
  * The result of {@link JWTAdapter.refresh}: the `AuthResult` contract
  * (`token` = the new access token) plus the rotated refresh token.
+ *
+ * @example
+ * ```ts
+ * const value = {} as JWTRefreshResult;
+ * ```
  */
 export interface JWTRefreshResult extends AuthResult {
     /** New access token. */
@@ -112,6 +127,11 @@ export interface JWTRefreshResult extends AuthResult {
  * The identity to issue tokens for (`JWTAdapter.issueTokens`). When a
  * user store is wired, the store's record wins (roles + current
  * `tokenVersion`); the subject fields are the store-less fallback.
+ *
+ * @example
+ * ```ts
+ * const value = {} as TokenSubject;
+ * ```
  */
 export interface TokenSubject {
     /** Account id (the `sub` claim). */
@@ -160,6 +180,11 @@ const MAX_REVOCATION_CACHE_ENTRIES = 10_000;
  * every older access AND refresh token dies, so reuse of a rotated-out
  * refresh is rejected by construction (no ledger needed — the family
  * moves forward); `logout` advances the version outright.
+ *
+ * @example
+ * ```ts
+ * const instance = new JWTAdapter();
+ * ```
  */
 export class JWTAdapter implements AuthAdapter {
     /**

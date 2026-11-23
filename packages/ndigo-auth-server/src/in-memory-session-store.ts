@@ -5,6 +5,14 @@ import { randomToken } from '@ndigo/util';
 import { type SessionRecord, type SessionStore } from '@ndigo/auth-core';
 
 /** Options for the in-memory session store. */
+/**
+ * InMemorySessionStoreOptions.
+ *
+ * @example
+ * ```ts
+ * const value = {} as InMemorySessionStoreOptions;
+ * ```
+ */
 export interface InMemorySessionStoreOptions {
     /**
      * Hard cap on concurrently stored sessions (default 512). The
@@ -34,6 +42,11 @@ const DEFAULT_MAX_SESSIONS = 512;
  * swept opportunistically at the capacity (`maxSessions`, default 512);
  * a create that still finds the store full after the sweep throws — the
  * cap bounds the live-session map (SEC-4, 2026-09-27 review).
+ *
+ * @example
+ * ```ts
+ * const instance = new InMemorySessionStore();
+ * ```
  */
 export class InMemorySessionStore implements SessionStore {
     /**

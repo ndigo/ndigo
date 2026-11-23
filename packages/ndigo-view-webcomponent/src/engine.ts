@@ -14,6 +14,11 @@ import { DOMEventBinder } from './_dom-event-binder';
 /**
  * A DOM node that can host a rendered subtree: an element, a shadow root,
  * an iframe document, or a fragment.
+ *
+ * @example
+ * ```ts
+ * type _Alias = RenderHost;
+ * ```
  */
 export type RenderHost = Element | ShadowRoot | DocumentFragment | Document;
 
@@ -22,6 +27,11 @@ export type RenderHost = Element | ShadowRoot | DocumentFragment | Document;
  *
  * It extends the shared event-bridge target with a concrete host node so the
  * target can reuse or replace the rendered subtree.
+ *
+ * @example
+ * ```ts
+ * const value = {} as DOMViewTarget;
+ * ```
  */
 export interface DOMViewTarget extends EventBridgeViewTarget {
     /**
@@ -45,6 +55,11 @@ export const likeDOMViewTarget = (value: unknown): value is DOMViewTarget =>
 
 /**
  * View target implementation that renders into a host DOM node.
+ *
+ * @example
+ * ```ts
+ * const instance = new DOMElementViewTarget();
+ * ```
  */
 export class DOMElementViewTarget implements DOMViewTarget, Destroyable {
     /**

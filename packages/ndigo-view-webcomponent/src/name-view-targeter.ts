@@ -10,6 +10,11 @@ import { SelectorViewTargeter, type SelectorViewTargeterOptions } from './select
  * The map form is the safe default: a view name is only a lookup key, never
  * interpolated into selector text. The function form receives the name and is
  * responsible for escaping it (`idSelector` is the short safe form).
+ *
+ * @example
+ * ```ts
+ * type _Alias = NameSelectorResolver;
+ * ```
  */
 export type NameSelectorResolver = Record<string, string> | ((viewName: string) => string | null | undefined);
 

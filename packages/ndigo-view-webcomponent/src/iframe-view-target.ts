@@ -12,6 +12,11 @@ import { DOMElementViewTarget, type DOMViewTarget, type RenderHost } from './eng
  *
  * Cross-origin (or sandboxed-without-`allow-same-origin`) iframes cannot be
  * rendered into and throw `IllegalStateError`.
+ *
+ * @example
+ * ```ts
+ * const instance = new IframeViewTarget();
+ * ```
  */
 export class IframeViewTarget implements DOMViewTarget, Destroyable {
     /**

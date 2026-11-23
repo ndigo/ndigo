@@ -12,6 +12,11 @@ import { DOMElementViewTarget, type DOMViewTarget, type RenderHost } from './eng
  * If constructed with a host element, an open shadow root is attached on demand
  * (reusing an existing open shadow root when present). Closed shadow roots
  * cannot be rendered into and throw.
+ *
+ * @example
+ * ```ts
+ * const instance = new ShadowRootViewTarget();
+ * ```
  */
 export class ShadowRootViewTarget implements DOMViewTarget, Destroyable {
     /**

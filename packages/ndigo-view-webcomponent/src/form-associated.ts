@@ -24,6 +24,11 @@ const DISABLED_ATTRIBUTE = 'data-ndigo-disabled';
  * ancestor toggled), `formStateRestoreCallback` (browser restore/autofill) —
  * are implemented by the mixin; see {@link AsFormAssociated} for the full
  * lifecycle table.
+ *
+ * @example
+ * ```ts
+ * const value = {} as FormAssociatedElement;
+ * ```
  */
 export interface FormAssociatedElement {
     /**

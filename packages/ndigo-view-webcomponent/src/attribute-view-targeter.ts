@@ -6,6 +6,11 @@ import { SelectorViewTargeter, type SelectorViewTargeterOptions } from './select
 
 /**
  * Options for {@link AttributeViewTargeter}.
+ *
+ * @example
+ * ```ts
+ * const value = {} as AttributeViewTargeterOptions;
+ * ```
  */
 export interface AttributeViewTargeterOptions extends SelectorViewTargeterOptions {
     /**

@@ -11,11 +11,21 @@ import { SelectorViewTargeter, type SelectorViewTargeterOptions } from './select
  * Patterns use the URL glob syntax the router uses (`*`, `**`, `?`,
  * character classes) and are consulted in declaration order — put the most
  * specific pattern first.
+ *
+ * @example
+ * ```ts
+ * type _Alias = RouteSelectorMap;
+ * ```
  */
 export type RouteSelectorMap = Record<string, string> | Map<string, string>;
 
 /**
  * Options for {@link RouteViewTargeter}.
+ *
+ * @example
+ * ```ts
+ * const value = {} as RouteViewTargeterOptions;
+ * ```
  */
 export interface RouteViewTargeterOptions extends SelectorViewTargeterOptions {
     /** The pattern matcher. Defaults to `URLGlobPathMatcher`. */

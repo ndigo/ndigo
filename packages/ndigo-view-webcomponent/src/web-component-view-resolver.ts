@@ -14,6 +14,11 @@ interface ComponentModule {
 
 /**
  * Configuration for {@link WebComponentViewResolver}.
+ *
+ * @example
+ * ```ts
+ * const value = {} as WebComponentViewResolverOptions;
+ * ```
  */
 export interface WebComponentViewResolverOptions {
     /**

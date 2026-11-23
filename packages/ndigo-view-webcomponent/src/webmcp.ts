@@ -21,19 +21,45 @@ import { z } from 'zod';
 /**
  * Safety hints understood by WebMCP hosts — the neutral
  * {@link AgentToolAnnotations} vocabulary.
+ *
+ * @example
+ * ```ts
+ * type _Alias = WebMcpToolAnnotations;
+ * ```
  */
 export type WebMcpToolAnnotations = AgentToolAnnotations;
 
 /** A tool registered with the browser's model context — the neutral {@link AgentTool} shape. */
+/**
+ * WebMcpTool.
+ *
+ * @example
+ * ```ts
+ * type _Alias = WebMcpTool;
+ * ```
+ */
 export type WebMcpTool = AgentTool;
 
 /**
  * Registration outcome — the neutral {@link AgentToolRegistration} handle.
  * `supported` is false when the browser lacks WebMCP.
+ *
+ * @example
+ * ```ts
+ * type _Alias = WebMcpRegistration;
+ * ```
  */
 export type WebMcpRegistration = AgentToolRegistration;
 
 /** Options for {@link provideWebMcpTools}. */
+/**
+ * WebMcpOptions.
+ *
+ * @example
+ * ```ts
+ * type _Alias = WebMcpOptions;
+ * ```
+ */
 export type WebMcpOptions = AgentToolHostOptions;
 
 interface ModelContextTool {
@@ -68,6 +94,11 @@ function getModelContext(): ModelContextLike | undefined {
  * @param tool - The tool definition.
  * @param options - Optional external cancellation signal.
  * @returns The registration handle.
+ *
+ * @example
+ * ```ts
+ * declareWebMcpTool();
+ * ```
  */
 export async function declareWebMcpTool(tool: WebMcpTool, options: WebMcpOptions = {}): Promise<WebMcpRegistration> {
     return provideWebMcpTools([tool], options);
@@ -79,6 +110,11 @@ export async function declareWebMcpTool(tool: WebMcpTool, options: WebMcpOptions
  * @param tools - The tools to register.
  * @param options - Optional external cancellation signal.
  * @returns The registration handle; `dispose()` aborts the internal signal.
+ *
+ * @example
+ * ```ts
+ * provideWebMcpTools();
+ * ```
  */
 export async function provideWebMcpTools(
     tools: readonly WebMcpTool[],
@@ -118,6 +154,14 @@ export const webMcpAgentHost: AgentToolHost = {
 };
 
 /** Options for {@link webMcpToolForHandler}. */
+/**
+ * WebMcpHandlerToolOptions.
+ *
+ * @example
+ * ```ts
+ * const value = {} as WebMcpHandlerToolOptions;
+ * ```
+ */
 export interface WebMcpHandlerToolOptions {
     /** The handler instance (or class instance) carrying `@parameters`. */
     readonly handler: object;
@@ -143,6 +187,11 @@ export interface WebMcpHandlerToolOptions {
  * @param options - Handler, method, and tool description.
  * @returns The WebMCP tool.
  * @throws When the method does not exist.
+ *
+ * @example
+ * ```ts
+ * webMcpToolForHandler();
+ * ```
  */
 export function webMcpToolForHandler(options: WebMcpHandlerToolOptions): WebMcpTool {
     const handler = options.handler as Record<string, unknown>;
@@ -194,6 +243,11 @@ export function webMcpToolForHandler(options: WebMcpHandlerToolOptions): WebMcpT
 /**
  * The element base contract the WebMCP mixin requires: a host element with the
  * optional custom-element lifecycle callbacks the mixin chains into.
+ *
+ * @example
+ * ```ts
+ * const value = {} as WebMcpElementBase;
+ * ```
  */
 export interface WebMcpElementBase extends HTMLElement {
     /** Custom-element connect hook, when the base class defines one. */
@@ -209,6 +263,11 @@ export interface WebMcpElementBase extends HTMLElement {
  *
  * @param superclass - The element base class.
  * @returns A subclass with the WebMCP lifecycle.
+ *
+ * @example
+ * ```ts
+ * AsWebMcpElement();
+ * ```
  */
 
 export function AsWebMcpElement<T extends Constructable<WebMcpElementBase>>(
@@ -246,6 +305,14 @@ export function AsWebMcpElement<T extends Constructable<WebMcpElementBase>>(
 }
 
 /** The element contract added by {@link AsWebMcpElement}. */
+/**
+ * WebMcpElement.
+ *
+ * @example
+ * ```ts
+ * const value = {} as WebMcpElement;
+ * ```
+ */
 export interface WebMcpElement {
     /** The tools this element exposes while connected. */
     webMcpTools(): readonly WebMcpTool[];

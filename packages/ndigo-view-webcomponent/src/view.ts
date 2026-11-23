@@ -7,6 +7,11 @@ import type { Route } from '@ndigo/router';
 
 /**
  * An HTMLElement that carries the view model used to render it.
+ *
+ * @example
+ * ```ts
+ * const value = {} as ModelAwareElement;
+ * ```
  */
 export interface ModelAwareElement extends HTMLElement {
     /** The view model used to render the element. */
@@ -26,6 +31,11 @@ export interface ModelAwareElement extends HTMLElement {
  * DOM, so `connectedCallback` never fires under test harnesses (and
  * `requestAnimationFrame`-gated targets defer attach). Treat
  * `connectedCallback` as a real-DOM fallback only.
+ *
+ * @example
+ * ```ts
+ * const instance = new WebComponentView();
+ * ```
  */
 export class WebComponentView extends AbstractView {
     /**

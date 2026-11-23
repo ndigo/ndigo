@@ -21,6 +21,11 @@ const logger = getLogger('ndigo-view-webcomponent:selector-view-targeter');
  *
  * Selector text must come from static configuration. A selector derived from
  * request data must be escaped (`CSS.escape`) before interpolation.
+ *
+ * @example
+ * ```ts
+ * type _Alias = ViewTargetSelector;
+ * ```
  */
 export type ViewTargetSelector = (context: ViewTargetingContext) => string | null | undefined;
 
@@ -30,11 +35,21 @@ export type ViewTargetSelector = (context: ViewTargetingContext) => string | nul
  * - `element` — the element's own children (default).
  * - `shadow` — an open shadow root attached to the element.
  * - `iframe` — a same-origin iframe's document.
+ *
+ * @example
+ * ```ts
+ * type _Alias = ViewTargetMount;
+ * ```
  */
 export type ViewTargetMount = 'element' | 'shadow' | 'iframe';
 
 /**
  * Options for {@link SelectorViewTargeter}.
+ *
+ * @example
+ * ```ts
+ * const value = {} as SelectorViewTargeterOptions;
+ * ```
  */
 export interface SelectorViewTargeterOptions {
     /** Mount mode for resolved elements. Defaults to `element`. */
@@ -56,6 +71,11 @@ export interface SelectorViewTargeterOptions {
  * declines (`null`) — assignment never breaks routing. Cached targets are
  * keyed by selector, so selectors should be stable per destination; a
  * selector derived from unbounded request data will churn the cache.
+ *
+ * @example
+ * ```ts
+ * const instance = new SelectorViewTargeter();
+ * ```
  */
 export class SelectorViewTargeter implements ViewTargeter, Destroyable {
     /**

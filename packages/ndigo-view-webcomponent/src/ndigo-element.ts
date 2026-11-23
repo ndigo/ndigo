@@ -6,6 +6,11 @@ import { Constructable } from '@ndigo/core';
 /**
  * Contract for a custom element that exposes a name: the element's tag name
  * reflected as a `name` property by the `AsNdigoElement` mixin.
+ *
+ * @example
+ * ```ts
+ * const value = {} as NdigoElement;
+ * ```
  */
 export interface NdigoElement {
     /** The element's tag name. */

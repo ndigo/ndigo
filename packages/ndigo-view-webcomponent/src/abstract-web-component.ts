@@ -12,6 +12,11 @@ import { DOMEventBinder } from './_dom-event-binder';
  *
  * Provides a DOM-backed implementation of the EventEmitter interface,
  * batched rendering, and lifecycle hooks.
+ *
+ * @example
+ * ```ts
+ * const instance = new AbstractWebComponent();
+ * ```
  */
 export abstract class AbstractWebComponent
     extends AsNdigoElement(HTMLElement)

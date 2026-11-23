@@ -44,6 +44,11 @@ return { count, redis.call('PTTL', KEYS[1]) }`;
 
 /**
  * Options for {@link RedisRateLimiter}.
+ *
+ * @example
+ * ```ts
+ * const value = {} as RedisRateLimiterOptions;
+ * ```
  */
 export interface RedisRateLimiterOptions {
     /** Borrowed connection (already connected or connected by the application). */
@@ -62,6 +67,11 @@ export interface RedisRateLimiterOptions {
  * Multi-node {@link RateLimiter} on Redis (standalone 6.2+, Lua only).
  * One handle per namespace; construct independently in every node — the
  * Redis keys are the shared truth.
+ *
+ * @example
+ * ```ts
+ * const instance = new RedisRateLimiter();
+ * ```
  */
 export class RedisRateLimiter implements RateLimiter, AsyncDestroyable {
     /**

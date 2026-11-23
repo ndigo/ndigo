@@ -12,6 +12,11 @@ import { RedisConnection } from '../connection';
  * dedicated `subscriberUrl` for the fan-out's own subscription, the
  * `namespace` isolating applications, and size/timeout bounds for message
  * payloads and connect attempts.
+ *
+ * @example
+ * ```ts
+ * const value = {} as RedisSocketFanoutOptions;
+ * ```
  */
 export interface RedisSocketFanoutOptions {
     /** Borrowed publisher; never subscribed or closed by this adapter. */
@@ -39,6 +44,11 @@ export interface RedisSocketFanoutOptions {
  * @param wire - The JSON envelope.
  * @param maxBytes - Reject envelopes above this serialized size.
  * @returns The origin id and the message.
+ *
+ * @example
+ * ```ts
+ * decodeSocketFanoutEnvelope();
+ * ```
  */
 export function decodeSocketFanoutEnvelope(
     wire: string,
@@ -99,6 +109,14 @@ export function decodeSocketFanoutEnvelope(
 }
 
 /** Redis Pub/Sub live fan-out: at-most-once, no replay, reconnect, or offline queue. */
+/**
+ * RedisSocketFanout.
+ *
+ * @example
+ * ```ts
+ * const instance = new RedisSocketFanout();
+ * ```
+ */
 export class RedisSocketFanout implements SocketFanout, AsyncDestroyable {
     /**
      * The `Symbol.toStringTag` value for this instance.

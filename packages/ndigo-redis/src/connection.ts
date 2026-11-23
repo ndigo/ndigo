@@ -6,9 +6,25 @@ import { createClient, type RedisClientType } from '@redis/client';
 import type { AsyncDestroyable } from '@ndigo/factory';
 
 /** Standalone node-redis client with default string replies (no keyPrefix). */
+/**
+ * RedisClient.
+ *
+ * @example
+ * ```ts
+ * type _Alias = RedisClient;
+ * ```
+ */
 export type RedisClient = RedisClientType;
 
 /** Explicit connection configuration; injected ready clients are always borrowed. */
+/**
+ * RedisConnectionOptions.
+ *
+ * @example
+ * ```ts
+ * type _Alias = RedisConnectionOptions;
+ * ```
+ */
 export type RedisConnectionOptions =
     | { url: string; client?: never; connectTimeout?: number }
     | { client: RedisClient; url?: never; connectTimeout?: never };
@@ -18,6 +34,11 @@ export type RedisConnectionOptions =
  * never connects. Owned connections fail fast without automatic reconnect or
  * offline queues; call and await connect() before use. Errors are observable
  * through lastError and command rejections, never logged with credentials.
+ *
+ * @example
+ * ```ts
+ * const instance = new RedisConnection();
+ * ```
  */
 export class RedisConnection implements AsyncDestroyable {
     /**

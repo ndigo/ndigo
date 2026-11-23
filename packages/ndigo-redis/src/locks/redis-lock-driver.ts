@@ -98,6 +98,11 @@ function requireTtl(ttlMs: number): void {
 
 /**
  * Options for {@link RedisLockDriver}.
+ *
+ * @example
+ * ```ts
+ * const value = {} as RedisLockDriverOptions;
+ * ```
  */
 export interface RedisLockDriverOptions {
     /** Borrowed connection (already connected or connected by the application). */
@@ -110,6 +115,11 @@ export interface RedisLockDriverOptions {
  * Multi-node `LockDriver` on Redis (standalone 6.2+, `SET NX PX` and
  * Lua only). One handle per namespace; construct independently in every
  * node — the Redis keys are the shared truth.
+ *
+ * @example
+ * ```ts
+ * const instance = new RedisLockDriver();
+ * ```
  */
 export class RedisLockDriver implements LockDriver {
     /**

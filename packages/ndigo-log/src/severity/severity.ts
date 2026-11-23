@@ -37,6 +37,11 @@ export function getSeverityMapping(scheme: SeverityScheme): SeverityMapping {
  * This function uses a heuristic to guess the most likely scheme.
  * @param levelName - The string name of the log level.
  * @returns The detected `SeverityScheme`. Defaults to `'apache'` if no specific scheme is detected.
+ *
+ * @example
+ * ```ts
+ * detectSeverityScheme();
+ * ```
  */
 export function detectSeverityScheme(levelName: string): SeverityScheme {
     const level = levelName.toLowerCase();
@@ -88,6 +93,11 @@ export function levelToSeverityNumber(levelName: string, scheme?: SeverityScheme
  * @param severityNumber - The `SeverityNumber` to convert.
  * @param scheme - Optional. The `SeverityScheme` to use for conversion. Defaults to `'apache'`.
  * @returns The string name of the log level.
+ *
+ * @example
+ * ```ts
+ * severityNumberToLevel();
+ * ```
  */
 export function severityNumberToLevel(severityNumber: SeverityNumber, scheme: SeverityScheme = 'apache'): string {
     return getSeverityMapping(scheme).toSeverityText(severityNumber);
@@ -100,6 +110,11 @@ export function severityNumberToLevel(severityNumber: SeverityNumber, scheme: Se
  * @param levelName - The string name of the log level.
  * @param scheme - Optional. The `SeverityScheme` to use for conversion.
  * @returns The string representation of the severity.
+ *
+ * @example
+ * ```ts
+ * levelToSeverityText();
+ * ```
  */
 export function levelToSeverityText(levelName: string, scheme?: SeverityScheme): string {
     const severityNumber = levelToSeverityNumber(levelName, scheme);
@@ -143,6 +158,11 @@ export const LOGGER_LEVEL_NAMES: readonly string[] = Object.freeze(Object.keys(L
  *
  * @param levelName - The level name (case-insensitive).
  * @returns The threshold severity, or `undefined` when unknown.
+ *
+ * @example
+ * ```ts
+ * resolveLoggerLevel();
+ * ```
  */
 export function resolveLoggerLevel(levelName: string): SeverityNumber | undefined {
     const name = levelName.toLowerCase();
@@ -158,6 +178,11 @@ export function resolveLoggerLevel(levelName: string): SeverityNumber | undefine
  *
  * @param severityNumber - The threshold severity.
  * @returns The level name.
+ *
+ * @example
+ * ```ts
+ * loggerLevelName();
+ * ```
  */
 export function loggerLevelName(severityNumber: SeverityNumber): string {
     for (const [name, severity] of Object.entries(LOGGER_THRESHOLDS)) {

@@ -7,6 +7,11 @@ import { SeverityNumber } from '@opentelemetry/api-logs';
 /**
  * Represents a collection of attributes to be associated with a log entry.
  * These attributes provide additional context and metadata for the log.
+ *
+ * @example
+ * ```ts
+ * type _Alias = LogAttributes;
+ * ```
  */
 export type LogAttributes = Attributes;
 
@@ -15,6 +20,11 @@ export type LogAttributes = Attributes;
  *
  * Implementations of this interface are responsible for processing and emitting log entries,
  * potentially integrating with OpenTelemetry logging systems.
+ *
+ * @example
+ * ```ts
+ * const value = {} as Logger;
+ * ```
  */
 export interface Logger {
     /**

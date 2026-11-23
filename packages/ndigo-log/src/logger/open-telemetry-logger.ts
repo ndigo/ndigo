@@ -8,6 +8,11 @@ import { severityNumberToLevel } from '../severity/index.js';
 
 /**
  * Logger that emits records through the OpenTelemetry logs API.
+ *
+ * @example
+ * ```ts
+ * const instance = new OpenTelemetryLogger();
+ * ```
  */
 export class OpenTelemetryLogger implements Logger {
     /**

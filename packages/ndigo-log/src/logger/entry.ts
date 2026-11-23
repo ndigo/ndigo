@@ -10,6 +10,11 @@ import { LogAttributes } from './logger.js';
  * Represents a single log entry with structured information.
  * This interface defines the common properties expected for a log record,
  * including severity, message body, attributes, and optional OpenTelemetry trace context.
+ *
+ * @example
+ * ```ts
+ * const value = {} as LogEntry;
+ * ```
  */
 export interface LogEntry {
     /**

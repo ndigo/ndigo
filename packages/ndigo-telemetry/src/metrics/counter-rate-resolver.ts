@@ -6,6 +6,11 @@ import { FeatureMetricAggregator } from './feature-metric-aggregator';
 
 /**
  * Represents a snapshot of a counter's rate per second for a specific feature.
+ *
+ * @example
+ * ```ts
+ * const value = {} as CounterRateSnapshot;
+ * ```
  */
 export interface CounterRateSnapshot {
     /** The counter's map key. */
@@ -18,6 +23,11 @@ export interface CounterRateSnapshot {
 
 /**
  * Represents an alert triggered when a counter's rate per second exceeds a defined threshold.
+ *
+ * @example
+ * ```ts
+ * const value = {} as CounterRateAlert;
+ * ```
  */
 export interface CounterRateAlert {
     /** The counter's map key. */
@@ -32,6 +42,11 @@ export interface CounterRateAlert {
 
 /**
  * Options for configuring the `CounterRateResolver`.
+ *
+ * @example
+ * ```ts
+ * const value = {} as CounterRateResolverOptions;
+ * ```
  */
 export interface CounterRateResolverOptions {
     /** The aggregator whose counters are sampled. */

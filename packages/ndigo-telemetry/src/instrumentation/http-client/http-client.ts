@@ -11,6 +11,11 @@ import { AbstractBaseInstrumentation } from '../base';
  * Wraps `HTTP#request` so every outbound request produces a CLIENT span
  * carrying the method, target URL, response status, and duration. Child
  * spans of the request (transforms, fetch) nest under it.
+ *
+ * @example
+ * ```ts
+ * const instance = new HTTPClientInstrumentation();
+ * ```
  */
 export class HTTPClientInstrumentation extends AbstractBaseInstrumentation {
     /**

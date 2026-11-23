@@ -32,6 +32,11 @@ let tracedTracer: Tracer | undefined;
  * is typically before an SDK registers a global provider.
  *
  * @returns The shared tracer.
+ *
+ * @example
+ * ```ts
+ * getTracedTracer();
+ * ```
  */
 export function getTracedTracer(): Tracer {
     return (tracedTracer ??= trace.getTracer('@ndigo/telemetry'));

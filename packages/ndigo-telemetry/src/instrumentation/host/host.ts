@@ -7,6 +7,11 @@ import { AbstractBaseInstrumentation } from '../base';
 
 /**
  * OpenTelemetry instrumentation for `HostInstrumentation`.
+ *
+ * @example
+ * ```ts
+ * const instance = new HostInstrumentation();
+ * ```
  */
 export class HostInstrumentation extends AbstractBaseInstrumentation {
     /**

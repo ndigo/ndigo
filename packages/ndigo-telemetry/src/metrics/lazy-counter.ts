@@ -14,18 +14,33 @@ import type { Attributes, Counter, Histogram } from '@opentelemetry/api';
 /**
  * A counter handle keyed by metric name: creates the instrument on first use
  * and records `value` (default `1`) against it thereafter.
+ *
+ * @example
+ * ```ts
+ * type _Alias = LazyCounter;
+ * ```
  */
 export type LazyCounter = (name: string, attributes?: Attributes, value?: number) => void;
 
 /**
  * A histogram handle keyed by metric name: creates the instrument on first
  * use and records `value` (default `1`) against it thereafter.
+ *
+ * @example
+ * ```ts
+ * type _Alias = LazyHistogram;
+ * ```
  */
 export type LazyHistogram = (name: string, attributes?: Attributes, value?: number) => void;
 
 /**
  * Options for {@link createLazyHistogram} — applied to every instrument the
  * returned handle creates.
+ *
+ * @example
+ * ```ts
+ * const value = {} as LazyHistogramOptions;
+ * ```
  */
 export interface LazyHistogramOptions {
     /**
@@ -76,6 +91,11 @@ function createLazyInstrument<T>(
  * meter provider registered by the time the first datapoint is recorded.
  *
  * @returns A counter handle that resolves instruments lazily.
+ *
+ * @example
+ * ```ts
+ * createLazyCounter();
+ * ```
  */
 export function createLazyCounter(): LazyCounter {
     return createLazyInstrument<Counter>(
@@ -96,6 +116,11 @@ export function createLazyCounter(): LazyCounter {
  *
  * @param options - The instrument options applied per created histogram.
  * @returns A histogram handle that resolves instruments lazily.
+ *
+ * @example
+ * ```ts
+ * createLazyHistogram();
+ * ```
  */
 export function createLazyHistogram(options: LazyHistogramOptions = {}): LazyHistogram {
     const unit = options.unit;

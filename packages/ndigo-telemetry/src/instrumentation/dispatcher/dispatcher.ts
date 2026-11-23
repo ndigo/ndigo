@@ -24,6 +24,11 @@ interface DispatcherPatchTarget {
  *
  * This instrumentation automatically creates spans for the `dispatch` method,
  * providing visibility into route dispatching processes.
+ *
+ * @example
+ * ```ts
+ * const instance = new DispatcherInstrumentation();
+ * ```
  */
 export class DispatcherInstrumentation extends AbstractBaseInstrumentation {
     /**

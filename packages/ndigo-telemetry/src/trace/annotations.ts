@@ -32,6 +32,11 @@ export function getTraced(target: object, propertyKey: string | symbol): string 
  * @param target - The target object, its prototype, or the class.
  * @param propertyKey - The method name.
  * @returns `true` when the method is traced.
+ *
+ * @example
+ * ```ts
+ * hasTraced();
+ * ```
  */
 export function hasTraced(target: object, propertyKey: string | symbol): boolean {
     return getTraced(target, propertyKey) !== undefined;

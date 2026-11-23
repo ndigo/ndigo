@@ -29,6 +29,11 @@ const invalidNameCharacter = /[^a-zA-Z0-9_:.]/g;
  *
  * @param name - The instrument or attribute name.
  * @returns The Prometheus-safe name.
+ *
+ * @example
+ * ```ts
+ * sanitizePrometheusName();
+ * ```
  */
 export function sanitizePrometheusName(name: string): string {
     const sanitized = name.replace(invalidNameCharacter, '_');
@@ -58,6 +63,11 @@ function scalarLiteral(value: AttributeValue): string | undefined {
  *
  * @param attributes - The point's attribute set.
  * @returns The rendered `{k="v",...}` attribute block.
+ *
+ * @example
+ * ```ts
+ * renderPrometheusAttributes();
+ * ```
  */
 export function renderPrometheusAttributes(attributes: Readonly<Record<string, AttributeValue>>): string {
     const parts: string[] = [];
@@ -84,6 +94,11 @@ function dataLine(name: string, attributes: Readonly<Record<string, AttributeVal
  *
  * @param snapshots - The snapshot array to render.
  * @returns The exposition-format document (trailing newline, never a bare join).
+ *
+ * @example
+ * ```ts
+ * renderPrometheusText();
+ * ```
  */
 export function renderPrometheusText(snapshots: readonly MetricSnapshot[]): string {
     const lines: string[] = [];

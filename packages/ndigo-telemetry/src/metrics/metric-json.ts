@@ -10,6 +10,11 @@ import { MetricHistogramBucket, MetricSnapshot } from './metric-snapshot';
 
 /**
  * The JSON form of one aggregated point.
+ *
+ * @example
+ * ```ts
+ * const value = {} as MetricJSONPoint;
+ * ```
  */
 export interface MetricJSONPoint {
     /** The point's attribute set. */
@@ -28,6 +33,11 @@ export interface MetricJSONPoint {
 
 /**
  * The JSON form of one snapshot.
+ *
+ * @example
+ * ```ts
+ * const value = {} as MetricJSONEntry;
+ * ```
  */
 export interface MetricJSONEntry {
     /** The metric type. */
@@ -42,6 +52,11 @@ export interface MetricJSONEntry {
 
 /**
  * The complete JSON projection: `{ metrics: { <name>: MetricJSONEntry } }`.
+ *
+ * @example
+ * ```ts
+ * const value = {} as MetricJSONView;
+ * ```
  */
 export interface MetricJSONView {
     /** Snapshots keyed by metric name. */
@@ -53,6 +68,11 @@ export interface MetricJSONView {
  *
  * @param snapshots - The snapshot array to project.
  * @returns The view document.
+ *
+ * @example
+ * ```ts
+ * renderMetricJson();
+ * ```
  */
 export function renderMetricJson(snapshots: readonly MetricSnapshot[]): MetricJSONView {
     const metrics: Record<string, MetricJSONEntry> = {};

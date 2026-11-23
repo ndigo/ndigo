@@ -14,6 +14,11 @@ import { createLazyCounter } from '../metrics/lazy-counter';
 
 /**
  * Shared span configuration for method instrumentation.
+ *
+ * @example
+ * ```ts
+ * const value = {} as SpanConfig;
+ * ```
  */
 export interface SpanConfig {
     /** Span name as it appears in traces. */
@@ -42,6 +47,11 @@ export interface SpanConfig {
 
 /**
  * Configuration for counter instrumentation.
+ *
+ * @example
+ * ```ts
+ * const value = {} as CountConfig;
+ * ```
  */
 export interface CountConfig {
     /** The name of the counter. */

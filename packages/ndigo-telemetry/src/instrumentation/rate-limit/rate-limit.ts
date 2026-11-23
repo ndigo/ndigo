@@ -7,6 +7,11 @@ import { AbstractBaseInstrumentation } from '../base';
 
 /**
  * OpenTelemetry instrumentation for `RateLimitInstrumentation`.
+ *
+ * @example
+ * ```ts
+ * const instance = new RateLimitInstrumentation();
+ * ```
  */
 export class RateLimitInstrumentation extends AbstractBaseInstrumentation {
     /**

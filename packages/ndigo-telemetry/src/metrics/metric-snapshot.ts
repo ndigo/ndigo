@@ -11,6 +11,11 @@ import type { AttributeValue } from '@opentelemetry/api';
 
 /**
  * One aggregated histogram bucket: `count` occurrences in `[low, high)`.
+ *
+ * @example
+ * ```ts
+ * const value = {} as MetricHistogramBucket;
+ * ```
  */
 export interface MetricHistogramBucket {
     /** Bucket occurrence count. */
@@ -23,6 +28,11 @@ export interface MetricHistogramBucket {
 
 /**
  * The aggregated value of one metric point.
+ *
+ * @example
+ * ```ts
+ * type _Alias = MetricPointValue;
+ * ```
  */
 export type MetricPointValue =
     | { readonly kind: 'scalar'; readonly value: number }
@@ -108,6 +118,11 @@ let fallback: MetricSnapshotProvider | undefined;
  * registration (hot reload, tests).
  *
  * @param provider - The provider to register (e.g. a bound `PrometheusMetricReader`).
+ *
+ * @example
+ * ```ts
+ * registerMetricSnapshotProvider();
+ * ```
  */
 export function registerMetricSnapshotProvider(provider: MetricSnapshotProvider): void {
     current = provider;
@@ -116,6 +131,11 @@ export function registerMetricSnapshotProvider(provider: MetricSnapshotProvider)
 /**
  * Clears the registered metric snapshot source — the fallback slot (when
  * set) now answers.
+ *
+ * @example
+ * ```ts
+ * unregisterMetricSnapshotProvider();
+ * ```
  */
 export function unregisterMetricSnapshotProvider(): void {
     current = undefined;
@@ -127,6 +147,11 @@ export function unregisterMetricSnapshotProvider(): void {
  * no-telemetry default. `undefined` clears.
  *
  * @param provider - The fallback provider, or `undefined` to clear.
+ *
+ * @example
+ * ```ts
+ * setFallbackMetricSnapshotProvider();
+ * ```
  */
 export function setFallbackMetricSnapshotProvider(provider: MetricSnapshotProvider | undefined): void {
     fallback = provider;
@@ -139,6 +164,11 @@ export function setFallbackMetricSnapshotProvider(provider: MetricSnapshotProvid
  * source" document).
  *
  * @returns The active snapshot provider, or `undefined`.
+ *
+ * @example
+ * ```ts
+ * getMetricSnapshotProvider();
+ * ```
  */
 export function getMetricSnapshotProvider(): MetricSnapshotProvider | undefined {
     return current ?? fallback;

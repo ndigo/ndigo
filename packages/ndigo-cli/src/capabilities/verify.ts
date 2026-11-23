@@ -10,7 +10,7 @@ import { collectDiagnostics } from '../commands/_diagnostics.js';
 import { probeMcpTools } from './_mcp-probe.js';
 import { openApiProblems } from './_openapi-parity.js';
 import type { CapabilityEntry } from './catalog.js';
-import type { VerifyCheckResult, VerifyOptions, VerifyReport, VerifyStatus, VerifySummary } from './report.js';
+import type { VerifyCheckResult, VerifyOptions, VerifyReport, VerifyStatus } from './report.js';
 
 /** The execution order of known checks. */
 const CHECK_ORDER = ['doctor', 'app-boot', 'mcp-stdio', 'route-parity', 'typecheck', 'test', 'lint'] as const;

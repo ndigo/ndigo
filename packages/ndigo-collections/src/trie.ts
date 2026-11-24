@@ -1,8 +1,7 @@
 /**
  * A prefix tree (trie) for string keys with O(m) insert/search/prefix operations.
  */
-import { Serializable, JSONArray, serialize } from './serializable.js';
-import { Equatable } from './equatable.js';
+import { Serializable, JSONArray, serialize, Equatable } from '@ndigo/core';
 
 interface TrieNode<V> {
     children: Map<string, TrieNode<V>>;

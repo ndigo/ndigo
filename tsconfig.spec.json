@@ -32,6 +32,8 @@
       "@ndigo/util/type/*": ["./packages/ndigo-util/src/type/*"],
       "@ndigo/core": ["./packages/ndigo-core/src"],
       "@ndigo/core/*": ["./packages/ndigo-core/src/*"],
+      "@ndigo/collections": ["./packages/ndigo-collections/src"],
+      "@ndigo/collections/*": ["./packages/ndigo-collections/src/*"],
       "@ndigo/util": ["./packages/ndigo-util/src"],
       "@ndigo/ui": ["./packages/ndigo-ui/src"],
       "@ndigo/ui/*": ["./packages/ndigo-ui/src/*"],

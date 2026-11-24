@@ -22,6 +22,7 @@ export const LAYER_RANK: Record<string, number> = {
     signals: 1,
     // 2 — building blocks
     cluster: 2,
+    collections: 2,
     factory: 2,
     // 3 — primitives
     advice: 3,

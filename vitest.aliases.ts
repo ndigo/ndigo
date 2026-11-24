@@ -45,6 +45,7 @@ export const ndigoAliases: { find: RegExp; replacement: string }[] = [
     { find: /^@ndigo\/util$/, replacement: resolve(repoRoot, 'packages/ndigo-util/src') },
     { find: /^@ndigo\/ui$/, replacement: resolve(repoRoot, 'packages/ndigo-ui/src') },
     { find: /^@ndigo\/ui-web$/, replacement: resolve(repoRoot, 'packages/ndigo-ui-web/src') },
+    { find: /^@ndigo\/collections$/, replacement: resolve(repoRoot, 'packages/ndigo-collections/src') },
     { find: /^@ndigo\/factory$/, replacement: resolve(repoRoot, 'packages/ndigo-factory/src') },
     { find: /^@ndigo\/flags$/, replacement: resolve(repoRoot, 'packages/ndigo-flags/src') },
     { find: /^@ndigo\/context$/, replacement: resolve(repoRoot, 'packages/ndigo-context/src') },

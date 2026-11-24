@@ -44,6 +44,7 @@
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "dependencies": {
+    "@ndigo/collections": "~0.0.1",
     "@ndigo/context": "~0.0.1",
     "@ndigo/core": "~0.0.1",
     "@ndigo/factory": "~0.0.1",

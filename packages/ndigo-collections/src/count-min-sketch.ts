@@ -1,8 +1,7 @@
 /**
  * Approximate frequency counting backed by a Count-Min sketch.
  */
-import { Serializable } from './serializable.js';
-import { Equatable } from './equatable.js';
+import { Serializable, Equatable } from '@ndigo/core';
 
 /**
  * The JSON form of a {@link CountMinSketch}: its dimensions, counter table,

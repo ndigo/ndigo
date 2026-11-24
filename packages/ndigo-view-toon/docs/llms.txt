@@ -7,6 +7,10 @@ Version-matched export index for the installed package. Read `README.md`
 for usage; the workspace guide index ships with `@ndigo/cli` as
 `assets/agent/docs-index.md`.
 
+## Subpaths
+
+- `@ndigo/view-toon/encode`
+
 ## Public exports
 
 - `TOONView`

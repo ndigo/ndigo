@@ -13,8 +13,7 @@
  * tree.lookup('/users/42')?.params; // { id: '42' }
  * ```
  */
-import { createNull } from './null.js';
-import { JSONValue, Serializable } from './serializable.js';
+import { createNull, JSONValue, Serializable } from '@ndigo/core';
 
 type NodeKind = 'static' | 'param' | 'wildcard' | 'greedy';
 

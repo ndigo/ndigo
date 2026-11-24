@@ -1,0 +1,36 @@
+{
+  "name": "@ndigo/collections",
+  "version": "0.0.1",
+  "description": "Ndigo Collections – data structures for the Ndigo framework: heaps, tries, radix trees, multi-value maps, and probabilistic sketches",
+  "type": "module",
+  "files": [
+    "api",
+    "docs",
+    "lib"
+  ],
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "import": "./lib/index.js"
+    }
+  },
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build:lib": "tsc -b tsconfig.build.json",
+    "test": "vitest run --config ../../vitest.config.ts",
+    "test:watch": "vitest --config ../../vitest.config.ts"
+  },
+  "keywords": [
+    "ndigo",
+    "ndigo-js",
+    "ndigo-collections",
+    "collections",
+    "data-structures"
+  ],
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@ndigo/core": "~0.0.1"
+  },
+  "sideEffects": false
+}

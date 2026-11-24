@@ -65,7 +65,7 @@ describe('Dispatcher Decorators - TC39 Behavioral Tests', () => {
                 });
             });
 
-            it('should make method enumerable', async () => {
+            it('should make method enumerable', () => {
                 class TestController {
                     @routeMapping('/test')
                     testMethod() {}
@@ -73,7 +73,6 @@ describe('Dispatcher Decorators - TC39 Behavioral Tests', () => {
 
                 // Need to instantiate to trigger initializer
                 const instance = new TestController();
-                await new Promise((resolve) => setTimeout(resolve, 0));
 
                 const descriptor = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(instance), 'testMethod');
                 expect(descriptor?.enumerable).toBe(true);
@@ -162,7 +161,7 @@ describe('Dispatcher Decorators - TC39 Behavioral Tests', () => {
             expect(errors).toContain(AnotherError);
         });
 
-        it('should make method enumerable', async () => {
+        it('should make method enumerable', () => {
             class ErrorController {
                 @errorMapping(CustomError)
                 handleError() {}
@@ -170,7 +169,6 @@ describe('Dispatcher Decorators - TC39 Behavioral Tests', () => {
 
             // Need to instantiate to trigger initializer
             const instance = new ErrorController();
-            await new Promise((resolve) => setTimeout(resolve, 0));
 
             const descriptor = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(instance), 'handleError');
             expect(descriptor?.enumerable).toBe(true);

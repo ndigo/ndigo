@@ -49,8 +49,8 @@ import { NodeSocketSessionRegistry } from './node-socket-session-registry';
 import { parseMultipart } from './parse-multipart';
 import type { MultipartLimits } from './parse-multipart';
 import type { MultipartContext } from './multipart-file';
-import { contentTypeBase, MULTIPART_FORM_DATA, HTTPHeaders } from '@ndigo/http';
-import { ProblemTypes, writeProblem } from './problem-details';
+import { contentTypeBase, MULTIPART_FORM_DATA, HTTPHeaders, ProblemTypes, ResponseStatuses } from '@ndigo/http';
+import { writeProblem } from './problem-details';
 import { finalizeInterceptorDenial } from './finalize-denial';
 import type { NodeDispatcher } from './node-dispatcher';
 import type { HTTPServerAdapter, TLSServerOptions } from './http-server';
@@ -1273,12 +1273,24 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
                 if (settled) return;
                 settled = true;
                 req.destroy();
-                reject(new RequestLimitError(408, 'request_timeout', 'Request body timed out'));
+                reject(
+                    new RequestLimitError(
+                        ResponseStatuses.REQUEST_TIMEOUT,
+                        ProblemTypes.requestTimeout,
+                        'Request body timed out'
+                    )
+                );
             }, this.#limits.requestTimeoutMs);
             timer.unref?.();
 
             const onAbort = (): void =>
-                settleError(new RequestLimitError(400, 'request_aborted', 'Request aborted before completion'));
+                settleError(
+                    new RequestLimitError(
+                        ResponseStatuses.BAD_REQUEST,
+                        ProblemTypes.requestAborted,
+                        'Request aborted before completion'
+                    )
+                );
             req.once('aborted', onAbort);
 
             void (async () => {
@@ -1293,8 +1305,8 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
                             // ever being buffered here.
                             settleError(
                                 new RequestLimitError(
-                                    413,
-                                    'body_too_large',
+                                    ResponseStatuses.PAYLOAD_TOO_LARGE,
+                                    ProblemTypes.payloadTooLarge,
                                     'Request body exceeds the configured limit'
                                 )
                             );

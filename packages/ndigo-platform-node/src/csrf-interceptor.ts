@@ -18,7 +18,8 @@ import { Route } from '@ndigo/router';
 import { RouteHandlerInterceptor } from '@ndigo/dispatcher';
 import { HTTPHeaders } from '@ndigo/http';
 import { getNodeRequest, getNodeResponse, NodeRequest } from './node-request';
-import { ProblemTypes, writeProblem } from './problem-details';
+import { ProblemTypes } from '@ndigo/http';
+import { writeProblem } from './problem-details';
 
 /**
  * The cookie name holding the CSRF token.

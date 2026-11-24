@@ -7,6 +7,7 @@ import type { IncomingMessage } from 'node:http';
 import { mkdtempSync, readdirSync, existsSync, readlinkSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { ProblemTypes } from '@ndigo/http';
 import { parseMultipart, type MultipartLimits } from '../src/parse-multipart';
 
 /** Wrap a raw multipart body in an IncomingMessage with the matching Content-Type. */
@@ -43,9 +44,9 @@ function body(
     return Buffer.from(chunks.join(''));
 }
 
-/** Assert a parse promise rejects with a RequestLimitError carrying the given status + code. */
-async function expectLimit(p: Promise<unknown>, statusCode: number, code: string): Promise<void> {
-    await expect(p).rejects.toMatchObject({ statusCode, code });
+/** Assert a parse promise rejects with a RequestLimitError carrying the given status + problem type. */
+async function expectLimit(p: Promise<unknown>, statusCode: number, problemType: string): Promise<void> {
+    await expect(p).rejects.toMatchObject({ problemStatus: { code: statusCode }, problemType });
 }
 
 describe('parseMultipart', () => {
@@ -137,7 +138,7 @@ describe('parseMultipart', () => {
                 limits: { maxFileSize: 1024 },
             }),
             413,
-            'file_too_large'
+            ProblemTypes.fileTooLarge
         );
     });
 
@@ -149,14 +150,14 @@ describe('parseMultipart', () => {
         await expectLimit(
             parseMultipart(req(many), { limits: { maxRequestSize: 5_000, maxFileSize: 1_000_000 } }),
             413,
-            'request_too_large'
+            ProblemTypes.requestTooLarge
         );
     });
 
     it('rejects a non-multipart body with 400 missing_boundary', async () => {
         const r = Readable.from([Buffer.from('not multipart')]) as unknown as IncomingMessage;
         (r as unknown as { headers: Record<string, string> }).headers = { 'content-type': 'text/plain' };
-        await expectLimit(parseMultipart(r), 400, 'missing_boundary');
+        await expectLimit(parseMultipart(r), 400, ProblemTypes.missingBoundary);
     });
 
     it('never stores a filename that could escape the upload directory', async () => {
@@ -204,7 +205,7 @@ describe('parseMultipart', () => {
         await expectLimit(
             parseMultipart(req(many), { limits: { maxFiles: 1, maxRequestSize: 1_000_000 } }),
             413,
-            'too_many_files'
+            ProblemTypes.tooManyFiles
         );
     });
 
@@ -213,7 +214,7 @@ describe('parseMultipart', () => {
             { name: 'a', value: '1' },
             { name: 'b', value: '2' },
         ]);
-        await expectLimit(parseMultipart(req(many), { limits: { maxFields: 1 } }), 413, 'too_many_fields');
+        await expectLimit(parseMultipart(req(many), { limits: { maxFields: 1 } }), 413, ProblemTypes.tooManyFields);
     });
 
     it('rejects with 413 too_many_parts when the parts limit is exceeded', async () => {
@@ -222,7 +223,7 @@ describe('parseMultipart', () => {
             { name: 'b', value: '2' },
             { name: 'c', value: '3' },
         ]);
-        await expectLimit(parseMultipart(req(many), { limits: { maxParts: 2 } }), 413, 'too_many_parts');
+        await expectLimit(parseMultipart(req(many), { limits: { maxParts: 2 } }), 413, ProblemTypes.tooManyParts);
     });
 
     it('rejects a malformed boundary body with 400 malformed_multipart', async () => {
@@ -232,12 +233,12 @@ describe('parseMultipart', () => {
         (r as unknown as { headers: Record<string, string> }).headers = {
             'content-type': 'multipart/form-data; boundary=declared',
         };
-        await expectLimit(parseMultipart(r, {}), 400, 'malformed_multipart');
+        await expectLimit(parseMultipart(r, {}), 400, ProblemTypes.malformedMultipart);
     });
 
     it('rejects an over-cap text field with 413 field_too_large (SEC-9)', async () => {
         const many = body([{ name: 'meta', value: 'y'.repeat(64) }]);
-        await expectLimit(parseMultipart(req(many), { limits: { maxFieldSize: 16 } }), 413, 'field_too_large');
+        await expectLimit(parseMultipart(req(many), { limits: { maxFieldSize: 16 } }), 413, ProblemTypes.fieldTooLarge);
     });
 
     it('rejects on Content-Length over the cap before consuming the body (SEC-5)', async () => {
@@ -251,7 +252,7 @@ describe('parseMultipart', () => {
             'content-type': 'multipart/form-data; boundary=----ndigoTest',
             'content-length': String(many.length + 10_000),
         });
-        await expectLimit(parseMultipart(r, { limits: { maxRequestSize: 1_000 } }), 413, 'request_too_large');
+        await expectLimit(parseMultipart(r, { limits: { maxRequestSize: 1_000 } }), 413, ProblemTypes.requestTooLarge);
         expect(consumed).toBe(0);
     });
 
@@ -262,7 +263,7 @@ describe('parseMultipart', () => {
         });
         const promise = parseMultipart(r, { limits: { maxRequestSize: 1_000, fileThreshold: 64 } });
         source.end(body([{ name: 'a', value: 'y'.repeat(4_000), filename: 'a.txt' }]));
-        await expectLimit(promise, 413, 'request_too_large');
+        await expectLimit(promise, 413, ProblemTypes.requestTooLarge);
     });
 
     it('a text field named __proto__ is an ordinary key on the null-prototype fields record (SEC-1)', async () => {
@@ -293,7 +294,7 @@ describe('parseMultipart', () => {
                 tmpDir: workDir,
             }),
             413,
-            'request_too_large'
+            ProblemTypes.requestTooLarge
         );
     });
 
@@ -318,7 +319,7 @@ describe('parseMultipart', () => {
         // The client aborts before the closing boundary ever arrives.
         r.emit('aborted');
 
-        await expectLimit(promise, 400, 'request_aborted');
+        await expectLimit(promise, 400, ProblemTypes.requestAborted);
         // The parser settles and its 'close' handler unlinks the temp file
         // (the rejection lands as soon as the abort fires; the async busboy
         // 'close' cleanup completes right behind it).

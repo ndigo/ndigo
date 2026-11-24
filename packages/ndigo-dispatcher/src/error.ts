@@ -3,6 +3,7 @@
  */
 
 import { FrameworkError } from '@ndigo/core';
+import { ProblemTypes, ResponseStatuses } from '@ndigo/http';
 import { Route } from '@ndigo/router';
 import { isString } from '@ndigo/util/types';
 
@@ -30,7 +31,11 @@ export class NoHandlerFoundError extends FrameworkError {
          * Creates an instance of NoHandlerFoundError.
          * @param route - The route for which no handler was found.
          */
-        super(`No handler found for route "${route.path}"`);
+        super(`No handler found for route "${route.path}"`, {
+            disposition: 'client',
+            problemStatus: ResponseStatuses.NOT_FOUND,
+            problemType: ProblemTypes.notFound,
+        });
         this.route = route;
     }
 }
@@ -55,7 +60,11 @@ export class NoViewFoundError extends FrameworkError {
     }
 
     constructor(viewName: string, route: Route) {
-        super(`Could not resolve view with name "${viewName}" for route "${route.path}"`);
+        super(`Could not resolve view with name "${viewName}" for route "${route.path}"`, {
+            disposition: 'client',
+            problemStatus: ResponseStatuses.NOT_FOUND,
+            problemType: ProblemTypes.notFound,
+        });
         this.route = route;
         this.viewName = viewName;
     }
@@ -116,7 +125,11 @@ export class ParameterBindingError extends FrameworkError {
     }
 
     constructor(message: string, parameterName?: string, methodName?: string, controllerName?: string) {
-        super(message);
+        super(message, {
+            disposition: 'client',
+            problemStatus: ResponseStatuses.BAD_REQUEST,
+            problemType: ProblemTypes.bindingFailed,
+        });
 
         defineProperty(this, 'parameterName', {
             value: parameterName ?? null,

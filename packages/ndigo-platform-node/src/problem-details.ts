@@ -33,29 +33,6 @@ export interface ProblemDetails {
 }
 
 /**
- * Ndigo problem-type URIs (placeholder `urn:` scheme — see module docs).
- * Slugs use `-` separators; underscore-bearing transport codes keep their
- * code shape where they exist.
- */
-export const ProblemTypes = {
-    bindingFailed: 'urn:ndigo:binding-failed',
-    validationFailed: 'urn:ndigo:validation-failed',
-    unauthorized: 'urn:ndigo:unauthorized',
-    forbidden: 'urn:ndigo:forbidden',
-    notFound: 'urn:ndigo:not-found',
-    methodNotAllowed: 'urn:ndigo:method-not-allowed',
-    notAcceptable: 'urn:ndigo:not-acceptable',
-    payloadTooLarge: 'urn:ndigo:payload-too-large',
-    unsupportedMediaType: 'urn:ndigo:unsupported-media-type',
-    malformedBody: 'urn:ndigo:malformed-body',
-    malformedUrl: 'urn:ndigo:malformed-url',
-    requestAborted: 'urn:ndigo:request-aborted',
-    rateLimited: 'urn:ndigo:rate-limited',
-    serviceUnavailable: 'urn:ndigo:service-unavailable',
-    internalError: 'urn:ndigo:internal-error',
-} as const;
-
-/**
  * Minimal response writer accepted by {@link writeProblem} — compatible with
  * Node's `ServerResponse` and the in-memory MockHTTP sink.
  *

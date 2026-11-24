@@ -4,7 +4,8 @@
 import { AbstractRouteErrorResolver, ParameterBindingError, ModelAndView, ZodValidationError } from '@ndigo/dispatcher';
 import { Route } from '@ndigo/router';
 import { ResponseStatuses } from '@ndigo/http';
-import { problemEntity, ProblemTypes } from './problem-details';
+import { ProblemTypes } from '@ndigo/http';
+import { problemEntity } from './problem-details';
 
 /**
  * A {@link AbstractRouteErrorResolver} mapping {@link ParameterBindingError} to

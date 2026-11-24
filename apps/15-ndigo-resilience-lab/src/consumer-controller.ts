@@ -5,8 +5,8 @@
  */
 import '@tsmetadata/polyfill';
 import { getMapping, requestMapping } from '@ndigo/dispatcher';
-import { ResponseStatuses } from '@ndigo/http';
-import { ProblemTypes, ResponseEntity } from '@ndigo/platform-node';
+import { ProblemTypes, ResponseStatuses } from '@ndigo/http';
+import { ResponseEntity } from '@ndigo/platform-node';
 import { CircuitOpenError } from '@ndigo/resilience';
 import { getErrorMessage } from '@ndigo/util';
 import { labProblem } from './lab-problem';

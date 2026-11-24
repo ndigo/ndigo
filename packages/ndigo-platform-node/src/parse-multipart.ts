@@ -21,9 +21,8 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { randomHex } from '@ndigo/util';
 import { RequestLimitError } from './http-request-limits';
-import { multipartBoundary } from '@ndigo/http';
+import { HTTPHeaders, multipartBoundary, ProblemTypes, ResponseStatuses } from '@ndigo/http';
 import { NodeMultipartContext, NodeMultipartFile, type Backing, type MultipartFile } from './multipart-file';
-import { HTTPHeaders } from '@ndigo/http';
 
 /**
  * Per-upload bounds. Every field is optional; {@link DEFAULT_MPART_LIMITS}
@@ -203,7 +202,11 @@ export async function parseMultipart(
     options: MultipartParseOptions = {}
 ): Promise<NodeMultipartContext> {
     if (!extractBoundary(HTTPHeaders.CONTENT_TYPE.get(req.headers) ?? undefined)) {
-        throw new RequestLimitError(400, 'missing_boundary', 'Request is not a valid multipart/form-data body');
+        throw new RequestLimitError(
+            ResponseStatuses.BAD_REQUEST,
+            ProblemTypes.missingBoundary,
+            'Request is not a valid multipart/form-data body'
+        );
     }
 
     const limits = resolveMultipartLimits(options.limits);
@@ -216,17 +219,17 @@ export async function parseMultipart(
     const declaredLength = contentLengthOf(req);
     if (declaredLength !== null && declaredLength > limits.maxRequestSize) {
         throw new RequestLimitError(
-            413,
-            'request_too_large',
+            ResponseStatuses.PAYLOAD_TOO_LARGE,
+            ProblemTypes.requestTooLarge,
             'Total multipart request exceeds the maximum allowed size'
         );
     }
 
     let totalBytes = 0;
     let aborted: RequestLimitError | null = null;
-    const flagAbort = (code: string, message: string): void => {
+    const flagAbort = (problemType: string, message: string): void => {
         if (!aborted) {
-            aborted = new RequestLimitError(413, code, message);
+            aborted = new RequestLimitError(ResponseStatuses.PAYLOAD_TOO_LARGE, problemType, message);
         }
     };
 
@@ -275,12 +278,12 @@ export async function parseMultipart(
     gate.on('data', (chunk: Buffer) => {
         totalBytes += chunk.length;
         if (totalBytes > limits.maxRequestSize) {
-            flagAbort('request_too_large', 'Total multipart request exceeds the maximum allowed size');
+            flagAbort(ProblemTypes.requestTooLarge, 'Total multipart request exceeds the maximum allowed size');
             gate.destroy();
             bb.destroy(
                 new RequestLimitError(
-                    413,
-                    'request_too_large',
+                    ResponseStatuses.PAYLOAD_TOO_LARGE,
+                    ProblemTypes.requestTooLarge,
                     'Total multipart request exceeds the maximum allowed size'
                 )
             );
@@ -299,11 +302,11 @@ export async function parseMultipart(
         if (info.valueTruncated) {
             // SEC-9: busboy truncated this field at the field-size limit —
             // bind nothing; the abort rejects with 413 field_too_large.
-            flagAbort('field_too_large', 'A text field exceeds the maximum allowed size');
+            flagAbort(ProblemTypes.fieldTooLarge, 'A text field exceeds the maximum allowed size');
             return;
         }
         if (totalBytes > limits.maxRequestSize) {
-            flagAbort('request_too_large', 'Total multipart request exceeds the maximum allowed size');
+            flagAbort(ProblemTypes.requestTooLarge, 'Total multipart request exceeds the maximum allowed size');
             return;
         }
         context.setField(name, value);
@@ -334,10 +337,13 @@ export async function parseMultipart(
                     // this only re-checks the accumulated total (adding here
                     // would double-count file chunks against the cap).
                     if (totalBytes > limits.maxRequestSize) {
-                        flagAbort('request_too_large', 'Total multipart request exceeds the maximum allowed size');
+                        flagAbort(
+                            ProblemTypes.requestTooLarge,
+                            'Total multipart request exceeds the maximum allowed size'
+                        );
                     }
                 },
-                () => flagAbort('file_too_large', 'A file part exceeds the maximum allowed size')
+                () => flagAbort(ProblemTypes.fileTooLarge, 'A file part exceeds the maximum allowed size')
             ).then(
                 (part) => context.addFile(_name, part),
                 () => {}
@@ -345,9 +351,9 @@ export async function parseMultipart(
         );
     });
 
-    bb.on('filesLimit', () => flagAbort('too_many_files', 'Too many file parts were uploaded'));
-    bb.on('fieldsLimit', () => flagAbort('too_many_fields', 'Too many text fields were uploaded'));
-    bb.on('partsLimit', () => flagAbort('too_many_parts', 'Too many parts were uploaded'));
+    bb.on('filesLimit', () => flagAbort(ProblemTypes.tooManyFiles, 'Too many file parts were uploaded'));
+    bb.on('fieldsLimit', () => flagAbort(ProblemTypes.tooManyFields, 'Too many text fields were uploaded'));
+    bb.on('partsLimit', () => flagAbort(ProblemTypes.tooManyParts, 'Too many parts were uploaded'));
     bb.on('error', (error) => {
         // A parse error (e.g. a malformed boundary) is a client mistake, not
         // an overload. The streaming gate's own cap error passes through with
@@ -358,8 +364,8 @@ export async function parseMultipart(
         }
         settleError(
             new RequestLimitError(
-                400,
-                'malformed_multipart',
+                ResponseStatuses.BAD_REQUEST,
+                ProblemTypes.malformedMultipart,
                 `Failed to parse multipart body: ${(error as Error).message}`
             )
         );
@@ -396,7 +402,13 @@ export async function parseMultipart(
     // would hang forever with spilled `ndigo-upload-*` files and open fds
     // behind it.
     const onAbort = (): void => {
-        settleError(new RequestLimitError(400, 'request_aborted', 'Request aborted before completion'));
+        settleError(
+            new RequestLimitError(
+                ResponseStatuses.BAD_REQUEST,
+                ProblemTypes.requestAborted,
+                'Request aborted before completion'
+            )
+        );
         gate.destroy();
         bb.destroy();
     };
@@ -504,7 +516,13 @@ function collectFile(
             // abort so the pending bookkeeping clears; the parser-level
             // cleanup unlinks the temp file (COR-16).
             closeSpill();
-            reject(new RequestLimitError(400, 'request_aborted', 'Request aborted before completion'));
+            reject(
+                new RequestLimitError(
+                    ResponseStatuses.BAD_REQUEST,
+                    ProblemTypes.requestAborted,
+                    'Request aborted before completion'
+                )
+            );
         });
     });
 }

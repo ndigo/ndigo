@@ -1842,6 +1842,11 @@ Guides: start with [Guide 00 — Core Concepts](./docs/guides/00-core-concepts.m
 [Guide 03 — Environment & Configuration](docs/guides/03-environment-configuration.md),
 [Environment & Configuration](docs/architecture/environment.md).
 
+**Agent-first architecture** (authoring/runtime agents, capabilities as the
+installable unit, `ndigo verify` as the executable contract):
+[Agent-First](docs/architecture/agent-first.md),
+[Guide 51 — Capabilities for Authoring Agents](docs/guides/51-capabilities-for-authoring-agents.md).
+
 [rfc9457]: https://www.rfc-editor.org/rfc/rfc9457.html
 
 ## Roadmap

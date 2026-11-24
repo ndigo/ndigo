@@ -452,6 +452,7 @@ When organizing helper functions and utilities, follow the extraction hierarchy:
             - `@ndigo/dom` - Isomorphic DOM parsing/creation (linkedom wrappers) - For HTML parsing, element creation
             - `@ndigo/validate` - (retired 2026-09-05; use `zod` via `@ndigo/orm` entity schemas / `@ndigo/dispatcher` `validatedBy`)
             - `@ndigo/core` - Core primitives, containers, patterns - Use for application context, DI, base types
+    - **Step 2b - Prefer capabilities over hand-wiring:** Before wiring packages into an app by hand, check the capability catalog — `ndigo capabilities --json` lists what an app can gain, `ndigo add <capability>` plans the wiring without writing, and `ndigo verify --capability <id>` proves the outcome (see [Guide 51](docs/guides/51-capabilities-for-authoring-agents.md)).
     - **After big changes:** refresh the graph with `graft build`.
 3.  **Plan:** Check `docs/migrations/` or `ARCHITECTURE.md` for recent architectural shifts.
 4.  **Design Decisions:** Consider API design patterns:

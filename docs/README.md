@@ -46,8 +46,9 @@ rule, at the URL every diagnostic links to
 - **Dated filenames sort history** (`migrations/`, `decisions/`); **stable
   slugs identify living docs**
   (`guides/`, `architecture/`, root `ARCHITECTURE.md`, `STYLE_GUIDE.md`).
-- **ADR links are the source of truth for "why"** — every implemented plan
-  and feature surface may cite its decision record.
+- **Published prose stays reader-facing** — decision records are internal
+  history; guides and concept pages carry the rationale readers need and do
+  not cite record IDs.
 - **Generated API reference is single-sourced from JSDoc**
   (`pnpm doc:api` → `packages/<name>/api/`, indexed by `API.md`; generated on
   demand, not committed). Package READMEs follow the guide-12 standard.

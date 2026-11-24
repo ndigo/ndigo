@@ -4864,7 +4864,7 @@ A file containing one public type documents the relationship between name and co
 | Intentionally unused                | Delete it. Source control remembers it.                                                                |
 | Kept for future activation          | `@deprecated` with a `@remarks` explaining when it will be needed, or move to an `_archive/` directory |
 | Commented-out                       | Delete it.                                                                                             |
-| Optional path you chose not to take | Document the decision in a decision record or the commit message                                       |
+| Optional path you chose not to take | Document the decision in the commit message or an architecture note                                    |
 
 ### 8.8. Reuse the Contract Before Hand-Rolling
 

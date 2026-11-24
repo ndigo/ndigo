@@ -197,7 +197,7 @@ export class StompSubscriptionRegistry {
         const bySubId = this.#subscriptions.get(session);
         bySubId?.delete(subscription.subId);
         subscription.buffered = [];
-        this.#untrackAll(subscription);
+        this.extractUnacked(subscription, () => true);
 
         if (subscription.destination.startsWith('/user/')) {
             // REV-005: use the principal bound at SUBSCRIBE time — a re-resolve
@@ -380,11 +380,6 @@ export class StompSubscriptionRegistry {
                 state.messageIds.delete(entry.messageId);
             }
         }
-    }
-
-    /** Releases every tracked delivery of a subscription. */
-    #untrackAll(subscription: Subscription): void {
-        this.extractUnacked(subscription, () => true);
     }
 
     /** Drops a user's now-empty scope (and empty user entry). */

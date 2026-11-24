@@ -79,7 +79,12 @@ describe('shipped catalog', () => {
     it('loads the declared capabilities and the UI item index', () => {
         const catalog = loadCatalog();
         expect(catalog.errors).toEqual([]);
-        expect(catalog.capabilities.map((capability) => capability.id)).toEqual(['agent-model', 'agent-surface']);
+        expect(catalog.capabilities.map((capability) => capability.id)).toEqual([
+            'agent-model',
+            'agent-surface',
+            'background-jobs',
+            'shared-cache',
+        ]);
         expect(catalog.items.length).toBeGreaterThan(0);
         expect(catalog.items.every((item) => item.kind === 'item')).toBe(true);
     });
@@ -244,7 +249,7 @@ describe('ndigo capabilities', () => {
         expect(result.code).toBe(0);
         expect(JSON.parse(result.out)).toEqual({
             valid: true,
-            capabilities: 2,
+            capabilities: 4,
             items: expect.any(Number),
             errors: [],
         });

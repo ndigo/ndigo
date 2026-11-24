@@ -16,6 +16,16 @@
     "docs",
     "lib"
   ],
+  "ndigo": {
+    "capabilities": [
+      "background-jobs"
+    ],
+    "surfaces": [
+      "job-queue",
+      "job-runner",
+      "outbox"
+    ]
+  },
   "exports": {
     ".": {
       "types": "./lib/index.d.ts",

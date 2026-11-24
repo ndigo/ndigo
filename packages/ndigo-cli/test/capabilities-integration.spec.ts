@@ -21,7 +21,19 @@ const TSX = join(ROOT, 'node_modules', 'tsx', 'dist', 'cli.mjs');
 const FIXTURE = join(TEST_DIR, 'fixtures', 'capability-app');
 
 /** Packages the fixture declares, resolved to the workspace tree by `link:`. */
-const LINKED = ['boot', 'context', 'dispatcher', 'inspect', 'mcp', 'platform-node', 'ai', 'ai-sdk'];
+const LINKED = [
+    'boot',
+    'cache',
+    'context',
+    'dispatcher',
+    'inspect',
+    'jobs',
+    'mcp',
+    'platform-node',
+    'ai',
+    'ai-sdk',
+    'redis',
+];
 
 let app: string;
 
@@ -102,6 +114,31 @@ afterAll(() => {
 });
 
 describe('capability apply (fixture app)', () => {
+    it('applies shared-cache and background-jobs, then round-trips a job', async () => {
+        const cache = await runCli([
+            'add',
+            'shared-cache',
+            '--apply',
+            '--json',
+            '--var',
+            'namespace=capability-fixture',
+        ]);
+        expect(cache.code).toBe(0);
+        expect((JSON.parse(cache.out) as { applied: boolean }).applied).toBe(true);
+        expect(readFileSync(join(app, 'src', 'cache.ts'), 'utf8')).toContain("namespace: 'capability-fixture'");
+
+        const jobs = await runCli(['add', 'background-jobs', '--apply', '--json']);
+        expect(jobs.code).toBe(0);
+        expect((JSON.parse(jobs.out) as { applied: boolean }).applied).toBe(true);
+        expect(readFileSync(join(app, 'src', 'jobs.ts'), 'utf8')).toContain('class EmailWorker');
+
+        // The applied wiring boots and delivers: the queue, the explicitly
+        // started runner, and the handler round-trip one job end to end.
+        const smoke = await runTsx('src/jobs-smoke.ts');
+        expect(smoke.code).toBe(0);
+        expect(smoke.out).toContain('jobs-smoke: ok');
+    });
+
     it('applies agent-surface and agent-model, then reports nothing to do', async () => {
         const surface = await runCli([
             'add',
@@ -183,5 +220,20 @@ describe('capability apply (fixture app)', () => {
         expect(report.ok).toBe(true);
         expect(report.checks.find((check) => check.id === 'mcp-stdio:tools/list')?.status).toBe('pass');
         expect(report.checks.find((check) => check.id === 'route-parity:*')?.status).toBe('pass');
+    });
+
+    it('verifies the wave capabilities against the running app', async () => {
+        for (const capability of ['shared-cache', 'background-jobs']) {
+            const result = await runCli(['verify', '--capability', capability, '--json']);
+            expect(result.code).toBe(0);
+            const report = JSON.parse(result.out) as {
+                ok: boolean;
+                checks: { id: string; status: string }[];
+            };
+            expect(report.ok).toBe(true);
+            // app-boot runs the inspect script, which boots the applied
+            // `CacheConfiguration` assembly; typecheck skips (no script).
+            expect(report.checks.find((check) => check.id === 'app-boot')?.status).toBe('pass');
+        }
     });
 });

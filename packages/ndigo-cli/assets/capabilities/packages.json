@@ -23,6 +23,18 @@
       ]
     },
     {
+      "name": "@ndigo/jobs",
+      "description": "Durable job queues, worker execution, and the transactional outbox for Node.js",
+      "capabilities": [
+        "background-jobs"
+      ],
+      "surfaces": [
+        "job-queue",
+        "job-runner",
+        "outbox"
+      ]
+    },
+    {
       "name": "@ndigo/mcp",
       "description": "Model Context Protocol tools projected from Ndigo dispatch metadata",
       "capabilities": [
@@ -31,6 +43,20 @@
       "surfaces": [
         "mcp-server",
         "tool-registry"
+      ]
+    },
+    {
+      "name": "@ndigo/redis",
+      "description": "Node-only Redis connections, namespaced shared cache adapters, WebSocket pub/sub fan-out, distributed-lock/job drivers, and the shared-store rate limiter for Ndigo",
+      "capabilities": [
+        "shared-cache"
+      ],
+      "surfaces": [
+        "lock-driver",
+        "pubsub-fanout",
+        "rate-limiter",
+        "redis-connection",
+        "shared-cache"
       ]
     }
   ]

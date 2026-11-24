@@ -1,0 +1,58 @@
+/**
+ * Background jobs wiring: a sample worker plus the explicit start helper.
+ * `NodeAutoConfiguration` already provides the in-process driver, the
+ * queue, the handler registry, and the runner — this module adds the
+ * worker and the one call that arms it.
+ */
+import 'node:process';
+import type { ApplicationContext } from '@ndigo/context';
+import { configuration, entry } from '@ndigo/context';
+import { JOB_RUNNER, jobHandler } from '@ndigo/jobs';
+
+/**
+ * A sample worker. Handlers are idempotent (at-least-once delivery) and
+ * should set `timeoutMs` so shutdown cannot block on them. Enqueue with
+ * `context.getValue(JOB_QUEUE).enqueue({ type, payload })` from any
+ * service; replace this class with the real workers.
+ */
+export class EmailWorker {
+    /**
+     * Deliver one email.
+     *
+     * @param payload - The JSON value enqueued with the job.
+     */
+    @jobHandler('email.send', { maxAttempts: 3, timeoutMs: 30_000 })
+    async send(payload: unknown): Promise<void> {
+        void payload;
+    }
+}
+
+/**
+ * The jobs wiring. Register `JobsConfiguration` in the application's
+ * assembly; the handler registry discovers `@jobHandler` methods on every
+ * registered entry at refresh.
+ */
+@configuration
+export class JobsConfiguration {
+    /**
+     * @returns The sample worker.
+     */
+    @entry()
+    emailWorker(): EmailWorker {
+        return new EmailWorker();
+    }
+}
+
+/**
+ * Arms the worker engine. The runner starts explicitly — a pending poll
+ * timer keeps the process alive, the same reason `HTTPServer` does not
+ * self-start — so worker processes call this in their entry point and
+ * API-only processes leave it stopped (Guide 22). Pass
+ * `new JobRunner({ autoStart: true })` under `JOB_RUNNER` instead when the
+ * process should always run workers.
+ *
+ * @param context - The application context.
+ */
+export function startJobs(context: ApplicationContext): void {
+    context.getValue(JOB_RUNNER).start();
+}

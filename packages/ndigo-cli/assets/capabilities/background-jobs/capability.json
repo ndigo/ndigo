@@ -1,0 +1,19 @@
+{
+  "id": "background-jobs",
+  "kind": "capability",
+  "summary": "Deliver background work: a sample worker plus the queue and runner — swap drivers from in-process to durable without touching handlers.",
+  "packages": ["@ndigo/jobs"],
+  "guide": "22-jobs-and-outbox",
+  "ops": [
+    {
+      "op": "addDependency",
+      "packages": ["@ndigo/jobs"]
+    },
+    {
+      "op": "writeFile",
+      "template": "templates/jobs.ts.tmpl",
+      "path": "src/jobs.ts"
+    }
+  ],
+  "checks": ["app-boot", "typecheck"]
+}

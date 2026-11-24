@@ -1,0 +1,32 @@
+/**
+ * Shared cache wiring: a Redis-backed `CacheManager` replaces the
+ * per-process memory default. The URL is read from `NDIGO_CACHE_URL` (set
+ * it in the deployment environment); keys are namespaced server-side, so
+ * multiple applications can share one Redis.
+ */
+import 'node:process';
+import { configuration, entry } from '@ndigo/context';
+import { CACHE_MANAGER } from '@ndigo/cache';
+import { RedisCacheManager } from '@ndigo/redis/cache';
+
+/**
+ * The shared-cache wiring. Register `CacheConfiguration` in the
+ * application's assembly and it replaces `NodeAutoConfiguration`'s
+ * `MemoryCacheManager` default. Construction connects nothing — the first
+ * cache operation opens the connection, per the memory-first doctrine
+ * (Guide 21). Move the URL through a `@configurationProperties` schema when
+ * the deployment needs `{cipher:…}` values.
+ */
+@configuration
+export class CacheConfiguration {
+    /**
+     * @returns The shared cache manager.
+     */
+    @entry(CACHE_MANAGER)
+    cacheManager(): RedisCacheManager {
+        return new RedisCacheManager({
+            url: process.env['NDIGO_CACHE_URL'] ?? 'redis://127.0.0.1:6379',
+            namespace: '{{namespace}}',
+        });
+    }
+}

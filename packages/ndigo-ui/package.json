@@ -63,6 +63,6 @@
     "@zag-js/tags-input": "~1.47.0",
     "@zag-js/tooltip": "~1.47.0",
     "@zag-js/vanilla": "~1.47.0",
-    "axe-core": "^4.14.0"
+    "axe-core": "^4.14.1"
   }
 }

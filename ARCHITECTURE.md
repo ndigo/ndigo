@@ -1188,15 +1188,28 @@ one-shot probes in `scripts/`.
 
 **Current Integration Layers:**
 
-| Integration Layer | Encapsulated Libraries | Purpose                        |
-| :---------------- | :--------------------- | :----------------------------- |
-| `@ndigo/ai-sdk`   | `ai`                   | Provider-neutral model adapter |
+| Integration layer  | Encapsulated libraries | Kind     | Why                                                                                                         |
+| :----------------- | :--------------------- | :------- | :---------------------------------------------------------------------------------------------------------- |
+| `@ndigo/ai-sdk`    | `ai`                   | Adapter  | Takes upstream values at its entry points (`LanguageModel`) and exposes the framework contract (`AIModel`). |
+| `@ndigo/boot`      | `@toon-format/toon`    | Boundary | Decodes TOON through an injectable function; no SDK type escapes.                                           |
+| `@ndigo/view-toon` | `@toon-format/toon`    | Boundary | Encodes TOON; owns `TOONEncodeOptions` and the sanitized `IllegalStateError`.                               |
+| `@ndigo/signals`   | `@preact/signals-core` | Facade   | Deliberately re-exports the upstream API; upstream types are the contract.                                  |
+
+**Direct dependencies** — zod, OpenTelemetry, ejs, i18next, OpenFeature, `ws`,
+`helmet`, `jose`, `@redis/client`, `drizzle-orm` — are imported where needed
+and are not wrapped.
+
+**When to add a layer:** use an adapter when a consumer must supply an upstream
+value; a boundary when the framework owns the contract and the upstream is an
+implementation detail; a facade when the upstream API is deliberately adopted.
+If none applies, do not create a package — a wrapper with no integration point
+is not a capability (`@ndigo/dom`, #741).
 
 The encapsulated-library set is the set enforced by the
 `internal/no-direct-integration-imports` oxlint rule (`INTEGRATION_LAYER_MAP` in
-`src/oxlint/_constants.ts`, wired through `.oxlintrc.json`; the lint lane runs
-`--deny-warnings`, so a violation fails CI). Add the library there first, then
-here.
+`src/oxlint/_constants.ts`, wired through `.oxlintrc.json`, severity `error`).
+The rule covers static imports, named re-exports, `export *`, and dynamic
+`import()`. Add the library there first, then here.
 
 ### Manifest Dependency Sections
 

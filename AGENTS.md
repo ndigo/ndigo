@@ -263,29 +263,22 @@ pnpm format
 
 ### Library Integration Layer Pattern
 
-**Critical Rule:** External dependencies must be imported through their designated integration layer packages, never directly.
+**Critical Rule:** A dependency listed in `INTEGRATION_LAYER_MAP` must be imported through its designated integration layer package, never directly. Dependencies outside that map are **direct** and may be imported normally.
 
-**Integration Layer Packages:**
+**Integration Layers:**
 
-| Package      | Encapsulates | Import From  |
-| :----------- | :----------- | :----------- |
-| `@ndigo/ai-sdk` | `ai` (Vercel AI SDK) | `@ndigo/ai-sdk` |
+| Package          | Encapsulates           | Kind     | Contract                                                              |
+| :--------------- | :--------------------- | :------- | :-------------------------------------------------------------------- |
+| `@ndigo/ai-sdk`  | `ai` (Vercel AI SDK)   | Adapter  | Takes upstream values at its entry points; exposes `AIModel`.         |
+| `@ndigo/boot`    | `@toon-format/toon`    | Boundary | Decodes through an injectable function; no SDK types escape.          |
+| `@ndigo/view-toon` | `@toon-format/toon`  | Boundary | Owns `TOONEncodeOptions` and the sanitized `IllegalStateError`.       |
+| `@ndigo/signals` | `@preact/signals-core` | Facade   | Re-exports the upstream API as the contract.                          |
 
-**Import Rules by Package Type:**
+**Import Rules by Kind:**
 
-1. **Integration Layer Packages** (`@ndigo/ai-sdk`):
-
-    - ✅ May import directly from their encapsulated libraries
-    - ✅ Must re-export functionality through `src/index.ts`
-
-2. **All Other Packages** (`@ndigo/core`, `@ndigo/context`, etc.):
-
-    - ✅ Must import from integration layer packages
-    - ❌ Must never import directly from encapsulated libraries
-
-3. **Test Files** (`*.spec.ts`, `*.test.ts`):
-    - ✅ May import external libraries for mocking purposes
-    - ✅ May import directly for test utilities (e.g., `vitest`, `jsdom`)
+1. **Adapter / boundary / facade packages** are the only importers of their encapsulated library. A facade re-exports the upstream types; a boundary hides them; an adapter exposes them only at its entry points.
+2. **All other packages** must import from the integration layer, never from the encapsulated library.
+3. **Test files** (`*.spec.ts`, `*.test.ts`) may import the library directly for decoding/mocking; document why.
 
 **Code Examples:**
 
@@ -316,7 +309,7 @@ consumer-facing `@ndigo/oxlint-plugin`:
 
 | Rule                                     | Severity | Description                                                                                                                                        |
 | :--------------------------------------- | :------- | :------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `internal/no-direct-integration-imports` | warn     | Forbids importing encapsulated libraries (ai, etc.) outside their integration layer packages. Allows in integration packages and test files. |
+| `internal/no-direct-integration-imports` | error    | Forbids importing encapsulated libraries (`ai`, TOON, `@preact/signals-core`) outside their integration layer packages. Covers imports, re-exports, `export *`, and `import()`. Allows in owner packages and test files. |
 | `internal/no-internal-file-imports`      | error    | Forbids cross-package imports of internal files (`@ndigo/<pkg>/_*`), including `export * from '@ndigo/<pkg>/_*'`.                                  |
 | `internal/no-internal-file-exports`      | error    | Forbids re-exporting internal files (`./_*`) — both `export * from './_*'` and named re-exports (`export { foo } from './_*'`).                    |
 
@@ -332,8 +325,8 @@ When reviewing or writing code:
 
 When adding new integration layers or encapsulated libraries:
 
-1. Update this section with the new mapping
-2. Update the internal plugin constants in `src/oxlint/_constants.ts`
+1. Choose the kind (adapter, boundary, facade) and add the mapping to `INTEGRATION_LAYER_MAP` + `INTEGRATION_LAYER_KINDS` in `src/oxlint/_constants.ts`
+2. Update this section with the same mapping
 3. Update `ARCHITECTURE.md` "Dependency Management Strategy" section
 
 ### Decorator Naming and Conventions

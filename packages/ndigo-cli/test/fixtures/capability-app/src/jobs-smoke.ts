@@ -67,6 +67,7 @@ try {
 
     // The runner polls on its own interval; wait for the delivery.
     for (let waited = 0; waited < 10_000 && !existsSync(OUT); waited += 250) {
+        // oxlint-disable-next-line no-await-in-loop -- polling wait: each sleep must observe the file written by the previous interval.
         await sleep(250);
     }
     if (!existsSync(OUT) || readFileSync(OUT, 'utf8') !== 'ok') {

@@ -1,8 +1,7 @@
 /**
  * Probabilistic set-membership filtering backed by Bloom-filter bitmaps.
  */
-import { Serializable } from './serializable.js';
-import { Equatable } from './equatable.js';
+import { Serializable, Equatable } from '@ndigo/core';
 
 /**
  * The JSON form of a {@link BloomFilter}: the bit width, hash count, packed

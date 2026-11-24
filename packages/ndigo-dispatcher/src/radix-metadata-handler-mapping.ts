@@ -2,7 +2,8 @@
  * Radix-tree metadata handler mapping.
  */
 
-import { RadixTree, RadixMatch, Comparator, MultiValueMap } from '@ndigo/core';
+import { RadixTree, RadixMatch, MultiValueMap } from '@ndigo/collections';
+import { Comparator } from '@ndigo/core';
 import type { HTTPMethod } from '@ndigo/http';
 import { Route } from '@ndigo/router';
 import {

@@ -2053,6 +2053,12 @@ importers:
         specifier: ~0.0.1
         version: link:../ndigo-util
 
+  packages/ndigo-collections:
+    dependencies:
+      '@ndigo/core':
+        specifier: ~0.0.1
+        version: link:../ndigo-core
+
   packages/ndigo-content:
     dependencies:
       '@ndigo/core':
@@ -2076,6 +2082,9 @@ importers:
 
   packages/ndigo-context:
     dependencies:
+      '@ndigo/collections':
+        specifier: ~0.0.1
+        version: link:../ndigo-collections
       '@ndigo/content':
         specifier: ~0.0.1
         version: link:../ndigo-content
@@ -2131,6 +2140,9 @@ importers:
 
   packages/ndigo-dispatcher:
     dependencies:
+      '@ndigo/collections':
+        specifier: ~0.0.1
+        version: link:../ndigo-collections
       '@ndigo/content':
         specifier: ~0.0.1
         version: link:../ndigo-content
@@ -2300,6 +2312,9 @@ importers:
 
   packages/ndigo-jobs:
     dependencies:
+      '@ndigo/collections':
+        specifier: ~0.0.1
+        version: link:../ndigo-collections
       '@ndigo/context':
         specifier: ~0.0.1
         version: link:../ndigo-context
@@ -2546,6 +2561,9 @@ importers:
       '@ndigo/cache':
         specifier: ~0.0.1
         version: link:../ndigo-cache
+      '@ndigo/collections':
+        specifier: ~0.0.1
+        version: link:../ndigo-collections
       '@ndigo/context':
         specifier: ~0.0.1
         version: link:../ndigo-context
@@ -3174,6 +3192,9 @@ importers:
 
   packages/ndigo-view:
     dependencies:
+      '@ndigo/collections':
+        specifier: ~0.0.1
+        version: link:../ndigo-collections
       '@ndigo/context':
         specifier: ~0.0.1
         version: link:../ndigo-context

@@ -99,6 +99,7 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `QueryString`
 - `ResponseStatus`
 - `ResponseStatuses`
+- `ProblemTypes` — RFC 9457 problem-type URIs used by the HTTP error contract.
 - `TransformContext` *(type)* — Context information for conditional transformation logic.
 - `HTTPTransformer` *(type)* — Contract for request/response body transformers.
 - `Transform` *(type)* — User-provided transform function or transformer object.

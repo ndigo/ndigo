@@ -1,7 +1,8 @@
 /**
  * Application context, environment, and awareness interfaces.
  */
-import { JSONObject, type ChildNode, type ParentNode } from '@ndigo/core';
+import { JSONObject } from '@ndigo/core';
+import type { ChildNode, ParentNode } from '@ndigo/collections';
 import type { z } from 'zod';
 import { ContentSource, MessageSource, Theme, ThemeSource, likeContentSource, likeMessageSource } from '@ndigo/content';
 import { like } from '@ndigo/util/types';

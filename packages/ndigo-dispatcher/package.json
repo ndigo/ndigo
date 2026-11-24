@@ -34,6 +34,7 @@
     "radix3": "^1.1.2"
   },
   "dependencies": {
+    "@ndigo/collections": "~0.0.1",
     "@ndigo/content": "~0.0.1",
     "@ndigo/context": "~0.0.1",
     "@ndigo/core": "~0.0.1",

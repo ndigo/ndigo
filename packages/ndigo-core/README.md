@@ -140,8 +140,10 @@ pnpm --filter @ndigo/core test
 ## See Also
 
 - [@ndigo/util](../ndigo-util/README.md) — higher-level type/string helpers
+- [@ndigo/collections](../ndigo-collections/README.md) — standalone heaps, tries,
+  radix trees, and sketches
 - [@ndigo/dispatcher](../ndigo-dispatcher/README.md) — consumes the radix tree
-  for handler mapping
+  from `@ndigo/collections` for handler mapping
 
 ## Contributing
 

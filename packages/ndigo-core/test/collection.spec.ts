@@ -1,7 +1,6 @@
 /**
  */
 import { describe, test, expect, beforeEach, afterEach } from 'vitest';
-import { MultiValueMap } from '../src/multi-value-map.js';
 import { RingBuffer } from '../src/ring-buffer.js';
 
 const toString = Object.prototype.toString;
@@ -184,28 +183,5 @@ describe('RingBuffer', () => {
             (rb as { capacity: unknown }).capacity = 'a';
             expect(rb.capacity).toBe(RingBuffer.MIN_CAPACITY);
         });
-    });
-});
-
-describe('MultiValueMap', () => {
-    let map: MultiValueMap<string, string>;
-
-    beforeEach(() => {
-        map = new MultiValueMap();
-    });
-
-    afterEach(() => {
-        map = undefined as unknown as MultiValueMap<string, string>;
-    });
-
-    test('it should add values to a key', () => {
-        map.add('key', 'value1');
-        map.add('key', 'value2');
-        expect(map.size).toBe(1);
-        expect(map.get('key')).toEqual(['value1', 'value2']);
-    });
-
-    test('it should be serializable', () => {
-        expect(toString.call(map)).toBe('[object MultiValueMap]');
     });
 });

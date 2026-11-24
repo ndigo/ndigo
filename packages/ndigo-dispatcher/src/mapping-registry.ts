@@ -2,7 +2,7 @@
  * Handler-mapping registry.
  */
 
-import { MultiValueMap } from '@ndigo/core';
+import { MultiValueMap } from '@ndigo/collections';
 import { RouteHandlerMethod } from './route-handler-method';
 
 /**

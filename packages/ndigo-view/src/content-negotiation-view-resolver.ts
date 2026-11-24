@@ -1,7 +1,8 @@
 /**
  * Media-type negotiation and extension mapping for view resolvers.
  */
-import { compareBy, FrameworkError, invertComparison, MediaType, MultiValueMap, numberComparator } from '@ndigo/core';
+import { MultiValueMap } from '@ndigo/collections';
+import { compareBy, FrameworkError, invertComparison, MediaType, numberComparator } from '@ndigo/core';
 import { HTTPHeaders } from '@ndigo/http';
 import { isFunction, isNotNil } from '@ndigo/util/types';
 import { View } from './view.js';

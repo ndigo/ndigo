@@ -2,7 +2,8 @@
  * Decorator metadata scanning.
  */
 
-import { MultiValueMap, getSymbolMetadata } from '@ndigo/core';
+import { MultiValueMap } from '@ndigo/collections';
+import { getSymbolMetadata } from '@ndigo/core';
 
 const { defineProperty } = Reflect;
 

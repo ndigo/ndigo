@@ -1,6 +1,6 @@
 # ndigo Decision Records (ADRs)
 
-Architecture Decision Records for the ndigo monorepo — **AD-01..AD-116**,
+Architecture Decision Records for the ndigo monorepo — **AD-01..AD-117**,
 contiguous. Every record captures a decision with its context, the evidence
 (plan, code, commits), the decided shape, consequences, and a revisit trigger.
 
@@ -128,6 +128,7 @@ contiguous. Every record captures a decision with its context, the evidence
 | **AD-114** | 2026-11-23    | Accepted                     | [Agent capabilities — the CLI executes, skills coordinate](2026-11-23_AD114_AGENT_CAPABILITIES.md)                                                                                                                             |
 | **AD-115** | 2026-11-24    | Accepted                     | [Boundary relationships — adapter, boundary, facade, direct](2026-11-24_AD115_BOUNDARY_RELATIONSHIPS.md)                                                                                                                       |
 | **AD-116** | 2026-11-24    | Accepted                     | [Error disposition and problem status are data](2026-11-24_AD116_ERROR_DISPOSITION.md)                                                                                                                                         |
+| **AD-117** | 2026-11-24    | Accepted                     | [The collections package — standalone containers move, kernel-coupled containers stay](2026-11-24_AD117_COLLECTIONS_PACKAGE.md)                                                                                                |
 
 ## Archived ADRs
 

@@ -1,9 +1,7 @@
 /**
  * A binary heap (min-heap by default) with O(log n) push/pop and O(1) peek.
  */
-import { type comparison, naturalComparison } from './comparable.js';
-import { Equatable } from './equatable.js';
-import { Serializable, JSONArray, serialize } from './serializable.js';
+import { type comparison, naturalComparison, Equatable, Serializable, JSONArray, serialize } from '@ndigo/core';
 
 /**
  * A binary heap (min-heap by default) with O(log n) push/pop and O(1) peek.

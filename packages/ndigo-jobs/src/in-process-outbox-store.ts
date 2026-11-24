@@ -1,7 +1,8 @@
 /**
  * The in-process reference outbox store (development and tests).
  */
-import { FrameworkError, Heap } from '@ndigo/core';
+import { FrameworkError } from '@ndigo/core';
+import { Heap } from '@ndigo/collections';
 import { randomUUID } from 'node:crypto';
 import type { JobId } from './job';
 import type { OutboxClaimOptions, OutboxEntry, OutboxStore } from './outbox';

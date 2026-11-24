@@ -5,7 +5,7 @@ import { Readable } from 'node:stream';
 import { createReadStream } from 'node:fs';
 import { copyFile, mkdir, readFile, unlink, writeFile } from 'node:fs/promises';
 import { dirname } from 'node:path';
-import { MultiValueMap } from '@ndigo/core';
+import { MultiValueMap } from '@ndigo/collections';
 
 /**
  * A single part of a `multipart/form-data` request — an uploaded file.

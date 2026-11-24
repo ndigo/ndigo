@@ -47,7 +47,6 @@ function decodeURIComponentList(components: string[], index: number = 1): string
         right = components.slice(index);
 
     return [...decodeURIComponentList(left), ...decodeURIComponentList(right)];
-    //return Array.prototype.concat.call( [], decodeURIComponentList( left ), decodeURIComponentList( right ) );
 }
 
 /** Escapes characters that are significant in a `RegExp` source. */

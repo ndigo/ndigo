@@ -7,6 +7,7 @@
  * runner contract is unchanged; these helpers only discover and
  * order the files, so `DrizzleMigrator` internals stay untouched.
  */
+import { IllegalStateError } from '@ndigo/core';
 import { readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -39,7 +40,7 @@ export async function loadMigrations(dir: string): Promise<Migration[]> {
         entries = await readdir(dir);
     } catch (error) {
         if ((error as { code?: string }).code === 'ENOENT') {
-            throw new Error(
+            throw new IllegalStateError(
                 `loadMigrations: no migrations directory at "${dir}" — run \`ndigo db new\` to scaffold the first migration`,
                 { cause: error }
             );
@@ -53,7 +54,9 @@ export async function loadMigrations(dir: string): Promise<Migration[]> {
         const module = (await import(pathToFileURL(join(dir, file)).href)) as { default?: Migration };
         const migration = module.default;
         if (migration === undefined || typeof migration.version !== 'number' || typeof migration.up !== 'function') {
-            throw new Error(`loadMigrations: "${join(dir, file)}" does not export a Migration as its default export`);
+            throw new IllegalStateError(
+                `loadMigrations: "${join(dir, file)}" does not export a Migration as its default export`
+            );
         }
         migrations.push(migration);
     }

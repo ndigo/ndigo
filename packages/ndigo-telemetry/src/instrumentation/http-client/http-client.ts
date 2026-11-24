@@ -65,7 +65,7 @@ export class HTTPClientInstrumentation extends AbstractBaseInstrumentation {
                         span.setAttribute('error.type', 'http');
                     }
                 },
-                // eslint-disable-next-line typescript/no-explicit-any
+                // eslint-disable-next-line typescript/no-explicit-any -- the patched request signature is wider than the wrapper's; this cast is the instrumentation boundary.
             }) as any
         );
     }

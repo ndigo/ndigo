@@ -14,7 +14,6 @@
 export const LAYER_RANK: Record<string, number> = {
     // 0 — foundations: no framework imports
     'auth-core': 0,
-    dom: 0,
     log: 0,
     ui: 0,
     util: 0,

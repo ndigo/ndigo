@@ -20,7 +20,7 @@ pnpm lint            # Check code quality
 
 ⚠️ **Section 5 (Research Workflow)** - ALWAYS perform two-step reconnaissance before writing code. This repo is graft-indexed: run `graft ask`/`graft callers` (see the Graft section at the end) to understand code or trace callers before grepping/reading; use raw grep only for unindexed files or exhaustive checks.
 
-⚠️ **Section 4.4 (Library Integration Layer)** - Most common error: importing linkedom directly instead of through @ndigo/dom
+⚠️ **Section 4.4 (Library Integration Layer)** - External dependencies must be imported through their designated integration layer packages, never directly.
 
 ⚠️ **Section 3.8 (Decorator Naming)** - All decorators MUST use camelCase; each decorator category fixes its name's form (STYLE_GUIDE.md §3.17)
 
@@ -106,7 +106,7 @@ The project maintains two complementary documentation files for different purpos
 
 | Concern               | ARCHITECTURE.md                                           | STYLE_GUIDE.md                                            |
 | :-------------------- | :-------------------------------------------------------- | :-------------------------------------------------------- |
-| Dependency Management | "Use Library Integration Layer pattern"                   | "Import from @ndigo/dom, not from linkedom"               |
+| Dependency Management | "Use Library Integration Layer pattern"                   | "Import from @ndigo/ai-sdk, not from ai"                  |
 | Code Organization     | "Use Strategy Pattern for parsers"                        | "Name parser files: kebab-case.ts in src/"                |
 | Module Visibility     | "Internal modules are implementation details"             | "Prefix internal files with underscore: \_util.ts"        |
 | Naming Philosophy     | "Use `is` prefix for type checks, `like` for duck-typing" | "isString checks with typeof, returns boolean"            |
@@ -269,11 +269,11 @@ pnpm format
 
 | Package      | Encapsulates | Import From  |
 | :----------- | :----------- | :----------- |
-| `@ndigo/dom` | `linkedom`   | `@ndigo/dom` |
+| `@ndigo/ai-sdk` | `ai` (Vercel AI SDK) | `@ndigo/ai-sdk` |
 
 **Import Rules by Package Type:**
 
-1. **Integration Layer Packages** (`@ndigo/dom`):
+1. **Integration Layer Packages** (`@ndigo/ai-sdk`):
 
     - ✅ May import directly from their encapsulated libraries
     - ✅ Must re-export functionality through `src/index.ts`
@@ -291,20 +291,20 @@ pnpm format
 
 ```typescript
 // ✅ CORRECT: Import from integration layer
-import { createDOMProvider } from '@ndigo/dom';
+import { aiSdkModel } from '@ndigo/ai-sdk';
 
 // ❌ INCORRECT: Direct import bypasses integration layer
-import { parseHTML } from 'linkedom'; // Wrong! Use @ndigo/dom
+import { generateText } from 'ai'; // Wrong! Use @ndigo/ai-sdk
 ```
 
 **Common Violations to Avoid:**
 
 ```typescript
-// ❌ In @ndigo/view/src/renderer.ts
-import { parse } from 'linkedom'; // WRONG
+// ❌ In @ndigo/core/src/container.ts
+import { generateText } from 'ai'; // WRONG
 
 // ✅ Correct version:
-import { createDOMProvider } from '@ndigo/dom';
+import { aiSdkModel } from '@ndigo/ai-sdk';
 ```
 
 **Enforcement:**
@@ -316,7 +316,7 @@ consumer-facing `@ndigo/oxlint-plugin`:
 
 | Rule                                     | Severity | Description                                                                                                                                        |
 | :--------------------------------------- | :------- | :------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `internal/no-direct-integration-imports` | warn     | Forbids importing encapsulated libraries (linkedom, etc.) outside their integration layer packages. Allows in integration packages and test files. |
+| `internal/no-direct-integration-imports` | warn     | Forbids importing encapsulated libraries (ai, etc.) outside their integration layer packages. Allows in integration packages and test files. |
 | `internal/no-internal-file-imports`      | error    | Forbids cross-package imports of internal files (`@ndigo/<pkg>/_*`), including `export * from '@ndigo/<pkg>/_*'`.                                  |
 | `internal/no-internal-file-exports`      | error    | Forbids re-exporting internal files (`./_*`) — both `export * from './_*'` and named re-exports (`export { foo } from './_*'`).                    |
 
@@ -449,7 +449,6 @@ When organizing helper functions and utilities, follow the extraction hierarchy:
         - **Step 1 - Scan target package:** Search for related functionality, established patterns, internal utilities (`_util.ts`, `_parsers.ts`), naming conventions, and design patterns currently in use.
         - **Step 2 - Scan related packages:** Check common utilities and specialized tools:
             - `@ndigo/util` - Common utilities (type guards, string utils, environment, crypto) - **Check first!**
-            - `@ndigo/dom` - Isomorphic DOM parsing/creation (linkedom wrappers) - For HTML parsing, element creation
             - `@ndigo/validate` - (retired 2026-09-05; use `zod` via `@ndigo/orm` entity schemas / `@ndigo/dispatcher` `validatedBy`)
             - `@ndigo/core` - Core primitives, containers, patterns - Use for application context, DI, base types
     - **Step 2b - Prefer capabilities over hand-wiring:** Before wiring packages into an app by hand, check the capability catalog — `ndigo capabilities --json` lists what an app can gain, `ndigo add <capability>` plans the wiring without writing, and `ndigo verify --capability <id>` proves the outcome (see [Guide 51](docs/guides/51-capabilities-for-authoring-agents.md)).

@@ -210,7 +210,6 @@ Core & infrastructure:
 - [ndigo-flags](packages/ndigo-flags/README.md) — feature flags: `FlagEvaluator` SPI, property provider, `@whenFeature`
 - [ndigo-flags-openfeature](packages/ndigo-flags-openfeature/README.md) — OpenFeature bridge over the flags SPI
 - [ndigo-signals](packages/ndigo-signals/README.md) — reactive state
-- [ndigo-dom](packages/ndigo-dom/README.md) — isomorphic DOM providers
 - [ndigo-cache](packages/ndigo-cache/README.md) — cache manager + `@cached` decorator
 
 Content & i18n:

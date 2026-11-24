@@ -88,7 +88,6 @@ matches the task; do not guess APIs from memory.
 - `@ndigo/context` — Application context, environments, configuration, and events for Ndigo
 - `@ndigo/core` — Foundational primitives, contracts, and utilities for Ndigo
 - `@ndigo/dispatcher` — Request dispatch, parameter binding, and radix handler mappings for Ndigo
-- `@ndigo/dom` — Ndigo DOM – Isomorphic DOM parsing integration layer
 - `@ndigo/factory` — IoC factory with scopes, lifecycle, and aware processors for Ndigo
 - `@ndigo/flags` — Feature flags for Ndigo — the FlagEvaluator SPI (typed, async, never-throw), the property-backed local provider, and the @whenFeature gate metadata
 - `@ndigo/flags-openfeature` — OpenFeature bridge for Ndigo flags — the FlagEvaluator over @openfeature/server-sdk (and the web SDK for the ./web entry), so vendor providers (flagd, OFREP, LaunchDarkly, …) arrive behind the existing SPI

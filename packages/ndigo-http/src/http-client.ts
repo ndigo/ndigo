@@ -156,6 +156,82 @@ export class HTTP {
      * @returns The final response.
      */
     async request(input: string, init: HTTPInit | null = null): Promise<Response> {
+        const { settings, url } = this.#prepare(input, init);
+
+        // No interceptors, so simplify execution
+        if (!this.#interceptors.length) {
+            freeze(settings);
+            const directRequest = new Request(url.toString(), settings);
+            try {
+                return await this.#fetch(directRequest);
+            } catch (error) {
+                return new ResponseError(undefined, error as Error);
+            }
+        }
+
+        const chain = this._getHTTPExecutionChain(this, url.href);
+
+        if (chain.applyPreInit(url, settings) === false) {
+            const cancelled = new Response(null, settings);
+            this.#completeCancelled(chain, url, settings, cancelled);
+            return cancelled;
+        }
+
+        freeze(settings);
+
+        let request = new Request(url.toString(), settings);
+        let response: Response | undefined;
+
+        try {
+            const preRequestResult = await chain.applyPreRequest(request, this, settings);
+            if (likeResponse(preRequestResult)) {
+                // A short-circuit (e.g. a cache hit) is still a response
+                // the pipeline must observe: run the postResponse
+                // transforms so hits and misses agree (HTT-REV-002).
+                response = await chain.applyPostResponse(preRequestResult, settings, request);
+            } else {
+                request = preRequestResult as Request;
+                response = await this.#fetch(request);
+                response = await chain.applyPostResponse(response, settings, request);
+            }
+        } catch (error) {
+            // Failures raised before fetch (e.g. by a request transform)
+            // follow the same error/completion contract as transport ones.
+            try {
+                response = await chain.applyPostError(error as Error, request, this, settings);
+            } catch (postErrorFailure) {
+                // A throwing error-aware interceptor must not strand
+                // per-request resources (e.g. the timeout timer): complete
+                // the request before propagating the failure (HTT-REV-009).
+                chain.applyPostComplete(request, new ResponseError(undefined, postErrorFailure as Error), settings);
+                throw postErrorFailure;
+            }
+
+            if (!likeResponse(response)) {
+                response = likeResponse(error)
+                    ? error
+                    : error instanceof ResponseError
+                      ? error
+                      : new ResponseError(undefined, error as Error);
+            }
+        } finally {
+            if (response) {
+                chain.applyPostComplete(request, response, settings);
+            }
+        }
+
+        return response;
+    }
+
+    /**
+     * Merges instance settings, headers, base URL, and query parameters into
+     * the per-request settings.
+     *
+     * @param input - The request URL.
+     * @param init - Request options.
+     * @returns The merged settings and resolved URL.
+     */
+    #prepare(input: string, init: HTTPInit | null): { settings: HTTPInit; url: URL } {
         const settings = init === null ? assign({}, this.settings) : assign({}, this.settings, init);
 
         const instanceHeaders = new Headers(this.settings.headers || {});
@@ -192,71 +268,7 @@ export class HTTP {
             url.searchParams.set(key, value);
         });
 
-        let response: Response | ResponseError | undefined;
-
-        // No interceptors, so simplify execution
-        if (!this.#interceptors.length) {
-            freeze(settings);
-
-            const request = new Request(url.toString(), settings);
-            try {
-                response = await this.#fetch(request);
-            } catch (error) {
-                response = new ResponseError(undefined, error as Error);
-            }
-        } else {
-            const chain = this._getHTTPExecutionChain(this, url.href);
-
-            if (chain.applyPreInit(url, settings) === false) {
-                const cancelled = new Response(null, settings);
-                this.#completeCancelled(chain, url, settings, cancelled);
-                return cancelled;
-            }
-
-            freeze(settings);
-
-            let request = new Request(url.toString(), settings);
-
-            try {
-                const preRequestResult = await chain.applyPreRequest(request, this, settings);
-                if (likeResponse(preRequestResult)) {
-                    // A short-circuit (e.g. a cache hit) is still a response
-                    // the pipeline must observe: run the postResponse
-                    // transforms so hits and misses agree (HTT-REV-002).
-                    response = await chain.applyPostResponse(preRequestResult, settings, request);
-                } else {
-                    request = preRequestResult as Request;
-                    response = await this.#fetch(request);
-                    response = await chain.applyPostResponse(response as Response, settings, request);
-                }
-            } catch (error) {
-                // Failures raised before fetch (e.g. by a request transform)
-                // follow the same error/completion contract as transport ones.
-                try {
-                    response = await chain.applyPostError(error as Error, request, this, settings);
-                } catch (postErrorFailure) {
-                    // A throwing error-aware interceptor must not strand
-                    // per-request resources (e.g. the timeout timer): complete
-                    // the request before propagating the failure (HTT-REV-009).
-                    chain.applyPostComplete(request, new ResponseError(undefined, postErrorFailure as Error), settings);
-                    throw postErrorFailure;
-                }
-
-                if (!likeResponse(response)) {
-                    response = likeResponse(error)
-                        ? error
-                        : error instanceof ResponseError
-                          ? error
-                          : new ResponseError(undefined, error as Error);
-                }
-            } finally {
-                if (response) {
-                    chain.applyPostComplete(request, response as Response, settings);
-                }
-            }
-        }
-
-        return response;
+        return { settings, url };
     }
 
     /**

@@ -242,6 +242,15 @@ function ifRangeMatches(
  * const instance = new StaticResourceHandler();
  * ```
  */
+/** Response context for one resolved representation. */
+interface RepresentationContext {
+    readonly res: ServerResponse;
+    readonly result: StaticResourceResult;
+    readonly successHeaders: Record<string, string>;
+    readonly headers: Record<string, string | string[] | undefined>;
+    readonly method: string | undefined;
+}
+
 export class StaticResourceHandler {
     /**
      * The `Symbol.toStringTag` value for this instance.
@@ -289,9 +298,30 @@ export class StaticResourceHandler {
             this.#sendProblem(res, route, 405, 'Method Not Allowed', ProblemTypes.methodNotAllowed);
             return;
         }
-        const request = getNodeRequest(route);
-        const headers: Record<string, string | string[] | undefined> = request?.headers ?? {};
+        const headers: Record<string, string | string[] | undefined> = getNodeRequest(route)?.headers ?? {};
 
+        const resolved = await this.#resolveForResponse(route, requestPath);
+        if (resolved === null) {
+            return;
+        }
+
+        const successHeaders = this.#successHeaders(resolved.result, resolved.spaFallbackServed);
+        await this.#sendRepresentation({ res, result: resolved.result, successHeaders, headers, method });
+    }
+
+    /**
+     * Resolves the requested path, applying the SPA fallback when configured.
+     * Sends the problem document and returns `null` when resolution fails.
+     */
+    async #resolveForResponse(
+        route: Route,
+        requestPath: string
+    ): Promise<{ result: StaticResourceResult; spaFallbackServed: boolean } | null> {
+        const res = getNodeResponse(route);
+        if (!res) {
+            return null;
+        }
+        const headers: Record<string, string | string[] | undefined> = getNodeRequest(route)?.headers ?? {};
         let result = await this.#resolver.resolve(requestPath, {
             indexNames: this.#options.indexNames ?? DEFAULT_INDEX_NAMES,
             listDirectories: this.#options.listDirectories,
@@ -304,40 +334,34 @@ export class StaticResourceHandler {
         // never replayed to clients that did not accept HTML.
         let spaFallbackServed = false;
 
-        if (result.kind !== 'ok') {
-            if (
-                result.kind === 'not-found' &&
-                this.#options.spaFallback &&
-                acceptsHtml(ACCEPT.get(headers) ?? undefined)
-            ) {
-                const indexName = this.#options.indexNames?.[0] ?? DEFAULT_INDEX_NAMES[0];
-                const index = await this.#resolver.resolve(indexName, {
-                    acceptEncoding: undefined,
-                    maxFileSizeBytes: this.#options.maxFileSizeBytes,
-                    serveDotfiles: this.#options.serveDotfiles,
-                });
-                if (index.kind === 'ok') {
-                    result = index;
-                    spaFallbackServed = true;
-                }
-            }
-            if (result.kind !== 'ok') {
-                if (result.kind === 'forbidden') {
-                    this.#sendProblem(res, route, 403, 'Forbidden', ProblemTypes.forbidden);
-                } else if (result.kind === 'internal-error') {
-                    this.#sendProblem(res, route, 500, 'Internal Server Error', ProblemTypes.internalError);
-                } else {
-                    this.#sendProblem(res, route, 404, 'Not Found', ProblemTypes.notFound);
-                }
-                return;
+        if (result.kind === 'not-found' && this.#options.spaFallback && acceptsHtml(ACCEPT.get(headers) ?? undefined)) {
+            const indexName = this.#options.indexNames?.[0] ?? DEFAULT_INDEX_NAMES[0];
+            const index = await this.#resolver.resolve(indexName, {
+                acceptEncoding: undefined,
+                maxFileSizeBytes: this.#options.maxFileSizeBytes,
+                serveDotfiles: this.#options.serveDotfiles,
+            });
+            if (index.kind === 'ok') {
+                result = index;
+                spaFallbackServed = true;
             }
         }
 
-        const etag = result.etag;
-        const fileBacked = etag !== undefined;
+        if (result.kind === 'ok') {
+            return { result, spaFallbackServed };
+        }
+        if (result.kind === 'forbidden') {
+            this.#sendProblem(res, route, 403, 'Forbidden', ProblemTypes.forbidden);
+        } else if (result.kind === 'internal-error') {
+            this.#sendProblem(res, route, 500, 'Internal Server Error', ProblemTypes.internalError);
+        } else {
+            this.#sendProblem(res, route, 404, 'Not Found', ProblemTypes.notFound);
+        }
+        return null;
+    }
 
-        // Common headers for every successful representation. Write-side names use
-        // the @ndigo/http constants (RUS-2); reads stay lowercase literals.
+    /** Builds the success headers shared by every representation. */
+    #successHeaders(result: StaticResourceResult, spaFallbackServed: boolean): Record<string, string> {
         const successHeaders: Record<string, string> = {
             [CONTENT_TYPE.name]: result.contentType ?? String(MediaTypes.APPLICATION_OCTET_STREAM),
         };
@@ -361,8 +385,8 @@ export class StaticResourceHandler {
             successHeaders[VARY.name] =
                 successHeaders[VARY.name] === undefined ? 'Accept' : `${successHeaders[VARY.name]}, Accept`;
         }
-        if (etag) {
-            successHeaders[ETAG.name] = etag;
+        if (result.etag) {
+            successHeaders[ETAG.name] = result.etag;
         }
         if (result.mtimeMs !== undefined) {
             successHeaders[LAST_MODIFIED.name] = toHttpDate(result.mtimeMs);
@@ -370,13 +394,20 @@ export class StaticResourceHandler {
         if (result.encoding) {
             successHeaders[CONTENT_ENCODING.name] = result.encoding;
         }
-        if (fileBacked) {
+        if (result.etag !== undefined) {
             successHeaders[ACCEPT_RANGES.name] = 'bytes';
         }
+        return successHeaders;
+    }
+
+    /** Sends a 304, a byte range, a streamed file, or a generated payload. */
+    async #sendRepresentation(context: RepresentationContext): Promise<void> {
+        const { res, result, successHeaders, headers, method } = context;
+        const fileBacked = result.etag !== undefined;
 
         // Conditional GET — answered from stat metadata only, the file is
         // never opened for a 304 (SEC-8).
-        if (etag && isNotModified(headers, result)) {
+        if (result.etag && isNotModified(headers, result)) {
             this.#send(res, 304, successHeaders, undefined);
             return;
         }

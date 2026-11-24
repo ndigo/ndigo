@@ -39,9 +39,9 @@
     "@zag-js/navigation-menu": "~1.47.0",
     "@zag-js/popover": "~1.47.0",
     "@zag-js/scroll-area": "~1.47.0",
-    "@zag-js/select": "~1.47.0",
+    "@zag-js/select": "~1.48.0",
     "@zag-js/slider": "~1.47.0",
-    "@zag-js/switch": "~1.47.0",
+    "@zag-js/switch": "~1.48.0",
     "@zag-js/tabs": "~1.47.0",
     "@zag-js/tags-input": "~1.47.0",
     "@zag-js/tooltip": "~1.47.0",
@@ -49,7 +49,7 @@
     "zod": "catalog:"
   },
   "devDependencies": {
-    "axe-core": "^4.14.0",
+    "axe-core": "^4.14.1",
     "vite": "catalog:"
   }
 }

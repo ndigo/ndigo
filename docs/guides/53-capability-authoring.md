@@ -7,7 +7,7 @@ capability is data: the CLI executes it, skills only coordinate it, and
 
 **Audience:** framework authors adding capabilities to the catalog ·
 **Prerequisites:** [Guide 51](51-capabilities-for-authoring-agents.md) ·
-**Reference:** `packages/ndigo-cli/assets/capabilities/`
+**Reference package:** `packages/ndigo-cli`
 
 ## What you'll learn
 

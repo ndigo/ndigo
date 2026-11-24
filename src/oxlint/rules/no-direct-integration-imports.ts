@@ -63,47 +63,45 @@ export const noDirectIntegrationImports = {
             return {};
         }
 
+        const reportIfMapped = (source: ESTree.StringLiteral | null): void => {
+            if (source === null) {
+                return;
+            }
+
+            const match = getIntegrationLayerLibrary(source.value);
+
+            if (!match) {
+                return;
+            }
+
+            context.report({
+                node: source,
+                messageId: 'directImport',
+                data: match,
+            });
+        };
+
         return {
-            before() {
-                // Per-file setup if needed in the future
-            },
             ImportDeclaration(node: ESTree.ImportDeclaration) {
-                const match = getIntegrationLayerLibrary(node.source.value);
-
-                if (!match) {
-                    return;
-                }
-
-                context.report({
-                    node: node.source,
-                    messageId: 'directImport',
-                    data: {
-                        library: match.library,
-                        integrationLayer: match.integrationLayer,
-                    },
-                });
+                reportIfMapped(node.source);
             },
             ExportNamedDeclaration(node: ESTree.ExportNamedDeclaration) {
-                const source = node.source;
+                reportIfMapped(node.source);
+            },
+            ExportAllDeclaration(node: ESTree.ExportAllDeclaration) {
+                reportIfMapped(node.source);
+            },
+            ImportExpression(node: ESTree.ImportExpression) {
+                const { source } = node;
 
-                if (source === null) {
+                // Only a literal specifier names one library; a computed import
+                // cannot be classified statically and is left to the consumer's
+                // bundler/runtime.
+                if (source.type !== 'Literal' || typeof source.value !== 'string') {
                     return;
                 }
 
-                const match = getIntegrationLayerLibrary(source.value);
-
-                if (!match) {
-                    return;
-                }
-
-                context.report({
-                    node: source,
-                    messageId: 'directImport',
-                    data: {
-                        library: match.library,
-                        integrationLayer: match.integrationLayer,
-                    },
-                });
+                reportIfMapped(source);
             },
         };
     },

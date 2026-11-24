@@ -69,7 +69,7 @@
     ],
     "@typescript-eslint/no-require-imports": "off",
     "@typescript-eslint/prefer-namespace-keyword": "error",
-    "internal/no-direct-integration-imports": "warn",
+    "internal/no-direct-integration-imports": "error",
     "internal/no-internal-file-imports": "error",
     "internal/no-internal-file-exports": "error",
     "internal/no-uppercase-regexp-constants": "error",

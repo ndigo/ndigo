@@ -126,6 +126,7 @@ contiguous. Every record captures a decision with its context, the evidence
 | **AD-112** | 2026-11-20    | Accepted                     | [Lifecycle consolidation — `destroy()` is the single release contract, teardown mirrors construction](2026-11-20_AD112_LIFECYCLE_CONSOLIDATION.md)                                                                             |
 | **AD-113** | 2026-11-21    | Accepted                     | [Public surface policy — internal non-usage is not a removal criterion; untested public API is the defect](2026-11-21_AD113_PUBLIC_SURFACE_POLICY.md)                                                                          |
 | **AD-114** | 2026-11-23    | Accepted                     | [Agent capabilities — the CLI executes, skills coordinate](2026-11-23_AD114_AGENT_CAPABILITIES.md)                                                                                                                             |
+| **AD-115** | 2026-11-24    | Accepted                     | [Boundary relationships — adapter, boundary, facade, direct](2026-11-24_AD115_BOUNDARY_RELATIONSHIPS.md)                                                                                                                       |
 | **AD-116** | 2026-11-24    | Accepted                     | [Error disposition and problem status are data](2026-11-24_AD116_ERROR_DISPOSITION.md)                                                                                                                                         |
 
 ## Archived ADRs

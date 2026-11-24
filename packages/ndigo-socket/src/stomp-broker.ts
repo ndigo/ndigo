@@ -61,7 +61,6 @@
  */
 import { RingBuffer } from '@ndigo/core';
 import {
-    headerOctets,
     InMemoryQueueMessageStore,
     materialOctets,
     type QueueMessageStore,
@@ -76,6 +75,9 @@ import {
 } from './stomp-frame';
 import type { SocketSession } from './socket-session';
 import type { SocketFanout } from './socket-fanout';
+import { StompFanout } from './_stomp-fanout';
+import { StompLimits } from './_stomp-limits';
+import { StompTransactionManager } from './_stomp-transactions';
 
 /** STOMP ack modes (STOMP 1.2 §1.3.1). */
 
@@ -114,18 +116,6 @@ const DEFAULT_MAX_UNACKED_SESSION_BYTES = 16 * 1024 * 1024;
 /** Default per-session budget for backlog replay + replay-time live buffering (SEC-6). */
 const DEFAULT_MAX_REPLAY_BYTES_PER_SESSION = 16 * 1024 * 1024;
 
-/** Headers whose value is a protocol identifier — capped by `maxIdentifierLength`. */
-const IDENTIFIER_HEADERS: readonly string[] = [
-    'destination',
-    'id',
-    'subscription',
-    'transaction',
-    'receipt',
-    // `accept-version` is split on commas into the offered-version list, so
-    // an unbounded header is an unbounded allocation (REV-009).
-    'accept-version',
-];
-
 /**
  * SEND headers that are framing rather than user payload (COR-7, STOMP 1.2
  * §2.1): they are consumed by the broker and never forwarded into MESSAGE
@@ -139,14 +129,7 @@ const SEND_FRAMING_HEADERS: Record<string, true> = {
 };
 
 /** A live subscription: one (session, sub-id) → destination binding. */
-import type {
-    Subscription,
-    StoredMessage,
-    SessionState,
-    QueueReplay,
-    TransactionOp,
-    TransactionBuffer,
-} from './_stomp-broker-types';
+import type { Subscription, StoredMessage, SessionState, QueueReplay, TransactionOp } from './_stomp-broker-types';
 
 /** STOMP ack modes (STOMP 1.2 §1.3.1). */
 /**
@@ -377,16 +360,10 @@ export class StompBroker {
     readonly #maxUnacked: number;
     readonly #maxUnackedBytes: number;
     readonly #maxUnackedSessionBytes: number;
-    readonly #maxReplayBytesPerSession: number;
-    readonly #maxIdentifierLength: number;
-    readonly #maxHeaderBytes: number;
     readonly #verifyCredentials: NonNullable<StompBrokerOptions['verifyCredentials']> | null;
     readonly #authorize: NonNullable<StompBrokerOptions['authorize']> | null;
     readonly #queueBacklog: number;
     readonly #maxSubscriptionsPerSession: number;
-    readonly #maxTransactionsPerSession: number;
-    readonly #maxTransactionOps: number;
-    readonly #maxTransactionBytes: number;
     /** `/queue` history window (ttl + count) — enforced via the store. */
     readonly #retention: { ttlMs?: number; maxMessages?: number } | null;
     /** `/queue` persistence layer — the durable-queue seam. */
@@ -397,19 +374,16 @@ export class StompBroker {
     readonly #byDestination = new Map<string, Subscription[]>();
     /** User scopes (D10): user → destination-suffix → subscriptions. */
     readonly #byUser = new Map<string, Map<string, Subscription[]>>();
-    /** Per-session transaction buffers (D7): session → txId → ops + bytes. */
-    readonly #transactions = new Map<SocketSession, Map<string, TransactionBuffer>>();
+    /** Per-session transaction buffers (D7). */
+    readonly #transactions: StompTransactionManager;
     /** Every session under protocol control (for `closeAll`). */
     readonly #sessions = new Set<SocketSession>();
     /** Per-session delivery accounting: ack index + the byte budgets. */
     readonly #sessionState = new Map<SocketSession, SessionState>();
     /** Monotonic delivery tag — makes the oldest tracked delivery knowable. */
     #deliverySeq = 0;
-    readonly #fanout: SocketFanout | undefined;
-    #fanoutReady = false;
-    #fanoutConnecting: Promise<void> | undefined;
-    #fanoutUnsubscribe: (() => Promise<void>) | undefined;
-    #fanoutClosing: Promise<void> | undefined;
+    readonly #fanout: StompFanout;
+    readonly #limits: StompLimits;
     #closed = false;
 
     /**
@@ -418,7 +392,11 @@ export class StompBroker {
      * @param options - Routing seam and test hooks.
      */
     constructor(options: StompBrokerOptions = {}) {
-        this.#fanout = options.fanout;
+        this.#fanout = new StompFanout({
+            fanout: options.fanout,
+            isClosed: () => this.#closed,
+            onLocal: (destination, body, headers) => this.#fanoutLocal(destination, body, headers),
+        });
         this.#onMessage = options.onMessage ?? null;
         this.#nextMessageId = options.nextMessageId ?? ((): string => crypto.randomUUID());
         this.#resolveUser =
@@ -430,16 +408,31 @@ export class StompBroker {
         this.#maxUnacked = options.maxUnacked ?? DEFAULT_MAX_UNACKED;
         this.#maxUnackedBytes = options.maxUnackedBytes ?? DEFAULT_MAX_UNACKED_BYTES;
         this.#maxUnackedSessionBytes = options.maxUnackedSessionBytes ?? DEFAULT_MAX_UNACKED_SESSION_BYTES;
-        this.#maxReplayBytesPerSession = options.maxReplayBytesPerSession ?? DEFAULT_MAX_REPLAY_BYTES_PER_SESSION;
-        this.#maxIdentifierLength = options.maxIdentifierLength ?? DEFAULT_MAX_IDENTIFIER_LENGTH;
-        this.#maxHeaderBytes = options.maxHeaderBytes ?? DEFAULT_MAX_HEADER_BYTES;
+        this.#limits = new StompLimits({
+            maxIdentifierLength: options.maxIdentifierLength ?? DEFAULT_MAX_IDENTIFIER_LENGTH,
+            maxHeaderBytes: options.maxHeaderBytes ?? DEFAULT_MAX_HEADER_BYTES,
+            maxReplayBytesPerSession: options.maxReplayBytesPerSession ?? DEFAULT_MAX_REPLAY_BYTES_PER_SESSION,
+            fail: (session, frame, message, code) => this.#fail(session, frame, message, code),
+            stateFor: (session) => this.#stateFor(session),
+        });
         this.#verifyCredentials = options.verifyCredentials ?? null;
         this.#authorize = options.authorize ?? null;
         this.#queueBacklog = options.queueBacklog ?? DEFAULT_QUEUE_BACKLOG;
         this.#maxSubscriptionsPerSession = options.maxSubscriptionsPerSession ?? DEFAULT_MAX_SUBSCRIPTIONS_PER_SESSION;
-        this.#maxTransactionsPerSession = options.maxTransactionsPerSession ?? DEFAULT_MAX_TRANSACTIONS_PER_SESSION;
-        this.#maxTransactionOps = options.maxTransactionOps ?? DEFAULT_MAX_TRANSACTION_OPS;
-        this.#maxTransactionBytes = options.maxTransactionBytes ?? DEFAULT_MAX_TRANSACTION_BYTES;
+        this.#transactions = new StompTransactionManager(
+            {
+                fail: (session, frame, message, code) => this.#fail(session, frame, message, code),
+                receipt: (session, frame) => this.#receipt(session, frame),
+                controlSend: (session, frame) => this.#controlSend(session, frame),
+                applySend: (session, frame, op) => this.#applyBufferedSend(session, frame, op),
+                applyAck: (session, op) => this.#applyBufferedAck(session, op),
+            },
+            {
+                maxTransactionsPerSession: options.maxTransactionsPerSession ?? DEFAULT_MAX_TRANSACTIONS_PER_SESSION,
+                maxTransactionOps: options.maxTransactionOps ?? DEFAULT_MAX_TRANSACTION_OPS,
+                maxTransactionBytes: options.maxTransactionBytes ?? DEFAULT_MAX_TRANSACTION_BYTES,
+            }
+        );
         const retention = options.retention;
         if (retention !== undefined) {
             const clean: { ttlMs?: number; maxMessages?: number } = {};
@@ -488,17 +481,7 @@ export class StompBroker {
      */
     connect(): Promise<void> {
         if (this.#closed) return Promise.reject(new Error('StompBroker is closed'));
-        this.#fanoutConnecting ??= (async () => {
-            if (this.#fanout) {
-                this.#fanoutUnsubscribe = await this.#fanout.subscribe('topic', (message) => {
-                    if (!this.#closed && message.key.startsWith('/topic/')) {
-                        this.#fanoutLocal(message.key, message.body, message.headers ?? {});
-                    }
-                });
-            }
-            this.#fanoutReady = true;
-        })();
-        return this.#fanoutConnecting;
+        return this.#fanout.connect();
     }
 
     /**
@@ -507,14 +490,10 @@ export class StompBroker {
      * @returns A promise that resolves once the broker is closed.
      */
     close(): Promise<void> {
-        if (this.#fanoutClosing) return this.#fanoutClosing;
+        if (this.#closed) return this.#fanout.close();
         this.#closed = true;
         this.closeAll();
-        this.#fanoutClosing = (async () => {
-            if (this.#fanoutConnecting) await this.#fanoutConnecting.catch(() => undefined);
-            await this.#fanoutUnsubscribe?.();
-        })();
-        return this.#fanoutClosing;
+        return this.#fanout.close();
     }
 
     /** Total subscription count across all sessions (observability). */
@@ -615,27 +594,6 @@ export class StompBroker {
     }
 
     /**
-     * Charge one session's replay budget (SEC-6) — backlog replay and the
-     * live deliveries buffered during it share the one cumulative bound.
-     *
-     * @param session - The session consuming the budget.
-     * @param octets - The body octets to charge.
-     * @returns `false` when the budget is exhausted (the caller fails closed).
-     */
-    #chargeReplay(session: SocketSession, octets: number): boolean {
-        const budget = this.#maxReplayBytesPerSession;
-        if (budget <= 0) {
-            return true;
-        }
-        const state = this.#stateFor(session);
-        if (state.replayBytes + octets > budget) {
-            return false;
-        }
-        state.replayBytes += octets;
-        return true;
-    }
-
-    /**
      * Run the STOMP endpoint protocol for one connection.
      *
      * Consumes `session.messages` until the connection closes: parses each
@@ -648,7 +606,7 @@ export class StompBroker {
      * @returns A promise that resolves when the session stream ends.
      */
     async handleSocket(session: SocketSession): Promise<void> {
-        if (this.#closed || (this.#fanout && !this.#fanoutReady)) {
+        if (this.#closed || !this.#fanout.isReady) {
             throw new Error('StompBroker is not ready; await connect()');
         }
         const state: { connected: boolean; version: string | null; sessionId: string | null } = {
@@ -691,11 +649,8 @@ export class StompBroker {
         headers: Record<string, string> = {}
     ): Promise<StoredQueueMessage | undefined> {
         if (this.#closed) throw new Error('StompBroker is closed');
-        this.#assertDeliverable(destination, headers);
-        if (this.#fanout && destination.startsWith('/topic/')) {
-            if (!this.#fanoutReady) throw new Error('StompBroker is not ready; await connect()');
-            await this.#fanout.publish('topic', { key: destination, body, headers });
-        }
+        this.#limits.assertDeliverable(destination, headers);
+        await this.#fanout.publish(destination, body, headers);
         const messageId = this.#nextMessageId();
         let stored: StoredQueueMessage | undefined;
         if (destination.startsWith('/queue/') && this.#queueBacklog > 0) {
@@ -734,7 +689,7 @@ export class StompBroker {
         // REV-006: validate before touching subscribers so a
         // peer/programmatic envelope that cannot be framed fails loudly
         // (throws to the caller) instead of being dropped per subscriber.
-        this.#assertDeliverable(destination, headers);
+        this.#limits.assertDeliverable(destination, headers);
         const subscribers = this.#byDestination.get(destination);
         if (subscribers) {
             for (const subscription of Array.from(subscribers)) {
@@ -761,7 +716,7 @@ export class StompBroker {
         const suffix = destination.replace(/^\/+/, '');
         // REV-006: surface an unframeable envelope here rather than letting
         // `#deliverNow` swallow the serialization fault per subscriber.
-        this.#assertDeliverable(`/user/${suffix}`, headers);
+        this.#limits.assertDeliverable(`/user/${suffix}`, headers);
         const scope = this.#byUser.get(user)?.get(suffix);
         if (!scope) {
             return;
@@ -824,12 +779,12 @@ export class StompBroker {
         // SEC-2: every identifier-valued header is bounded on every
         // non-ping frame (including CONNECT — `login`/`passcode` are
         // credentials, capped by their own verifier).
-        if (!this.#assertIdentifiers(session, frame)) {
+        if (!this.#limits.assertIdentifiers(session, frame)) {
             return Promise.resolve(false);
         }
         // REV-002: the serialized header block is capped too, so headers
         // cannot dwarf the body budgets the broker charges.
-        if (!this.#assertHeaderBudget(session, frame)) {
+        if (!this.#limits.assertHeaderBudget(session, frame)) {
             return Promise.resolve(false);
         }
         if (!state.connected) {
@@ -851,11 +806,11 @@ export class StompBroker {
             case 'DISCONNECT':
                 return Promise.resolve(this.#disconnect(session, frame));
             case 'BEGIN':
-                return Promise.resolve(this.#begin(session, frame));
+                return Promise.resolve(this.#transactions.begin(session, frame));
             case 'COMMIT':
-                return this.#commit(session, frame);
+                return this.#transactions.commit(session, frame);
             case 'ABORT':
-                return Promise.resolve(this.#abort(session, frame));
+                return Promise.resolve(this.#transactions.abort(session, frame));
             default:
                 return Promise.resolve(this.#fail(session, frame, `unknown command: ${frame.command}`));
         }
@@ -1040,7 +995,7 @@ export class StompBroker {
                 return this.#fail(session, frame, 'queue store unavailable', 1011);
             }
             const replayOctets = replay.messages.reduce((total, stored) => total + materialOctets(stored.body), 0);
-            if (!this.#chargeReplay(session, replayOctets)) {
+            if (!this.#limits.chargeReplay(session, replayOctets)) {
                 // SEC-6: re-subscribing re-materializes the window; the
                 // per-session budget bounds how often a peer can force it.
                 return this.#fail(session, frame, 'replay budget exhausted', 1013);
@@ -1096,75 +1051,6 @@ export class StompBroker {
     }
 
     /**
-     * Enforce `maxIdentifierLength` (SEC-2) on every identifier-valued
-     * header of a frame.
-     *
-     * @param session - The sending session.
-     * @param frame - The frame to check.
-     * @returns `true` when within bounds, `false` after the fail-closed reply.
-     */
-    #assertIdentifiers(session: SocketSession, frame: StompFrame): boolean {
-        const max = this.#maxIdentifierLength;
-        if (max <= 0) {
-            return true;
-        }
-        for (const name of IDENTIFIER_HEADERS) {
-            const value = frame.headers[name];
-            if (value !== undefined && value.length > max) {
-                return this.#fail(session, frame, `${name} header exceeds ${max} characters`);
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Enforce `maxHeaderBytes` (REV-002) on a frame's serialized header
-     * block — the header counterpart of the body byte budgets.
-     *
-     * @param session - The sending session.
-     * @param frame - The frame to check.
-     * @returns `true` when within bounds, `false` after the fail-closed reply.
-     */
-    #assertHeaderBudget(session: SocketSession, frame: StompFrame): boolean {
-        const max = this.#maxHeaderBytes;
-        if (max <= 0 || headerOctets(frame.headers) <= max) {
-            return true;
-        }
-        return this.#fail(session, frame, `frame headers exceed ${max} octets`);
-    }
-
-    /**
-     * Reject a programmatic `publish`/`sendToUser` destination or headers
-     * that cannot be framed into a MESSAGE (REV-006). A header name
-     * containing `:`, CR, LF or NUL would re-split or forge a header line,
-     * and a NUL in a value (or the destination) would corrupt the frame;
-     * without this check the fault surfaces only as `serializeStompFrame`
-     * throwing inside `#deliverNow`, which swallows it per subscriber — the
-     * destination is blackholed with no signal to the publisher.
-     *
-     * @param destination - The destination the MESSAGE would carry.
-     * @param headers - The pass-through headers.
-     * @throws on a value that cannot be framed.
-     */
-    #assertDeliverable(destination: string, headers: Record<string, string>): void {
-        if (destination.includes('\0')) {
-            throw new StompProtocolError('destination contains a NUL character');
-        }
-        const max = this.#maxHeaderBytes;
-        if (max > 0 && headerOctets(headers) > max) {
-            throw new StompProtocolError(`headers exceed ${max} octets`);
-        }
-        for (const [name, value] of Object.entries(headers)) {
-            if (name === '' || /[\n\r:\0]/.test(name)) {
-                throw new StompProtocolError(`invalid header name: "${name}"`);
-            }
-            if (value.includes('\0')) {
-                throw new StompProtocolError(`header value contains NUL: "${name}"`);
-            }
-        }
-    }
-
-    /**
      * Remove a subscription.
      *
      * @param session - The session.
@@ -1212,22 +1098,25 @@ export class StompBroker {
         const headers = this.#sendHeaders(frame);
         const txId = frame.headers['transaction'];
         if (txId !== undefined) {
-            const buffer = this.#transactions.get(session)?.get(txId);
-            if (buffer === undefined) {
+            const octets = materialOctets(frame.body);
+            const result = this.#transactions.append(
+                session,
+                txId,
+                {
+                    kind: 'send',
+                    destination,
+                    body: frame.body,
+                    headers,
+                    receipt: frame.headers['receipt'] ?? null,
+                },
+                octets
+            );
+            if (result === 'unknown') {
                 return this.#fail(session, frame, `unknown transaction id: ${txId}`);
             }
-            const octets = materialOctets(frame.body);
-            if (buffer.ops.length >= this.#maxTransactionOps || buffer.bytes + octets > this.#maxTransactionBytes) {
+            if (result === 'limit') {
                 return this.#fail(session, frame, 'transaction buffer limit reached');
             }
-            buffer.ops.push({
-                kind: 'send',
-                destination,
-                body: frame.body,
-                headers,
-                receipt: frame.headers['receipt'] ?? null,
-            });
-            buffer.bytes += octets;
             return true;
         }
         // The routing seam sees every SEND — the same order the transactional
@@ -1412,10 +1301,6 @@ export class StompBroker {
         const nack = frame.command === 'NACK';
         const txId = frame.headers['transaction'];
         if (txId !== undefined) {
-            const buffer = this.#transactions.get(session)?.get(txId);
-            if (buffer === undefined) {
-                return this.#fail(session, frame, `unknown transaction id: ${txId}`);
-            }
             // COR-10: a buffered ack is as much buffered state as a SEND —
             // it obeys the same op count and byte budget (its identifiers
             // are retained too, so they count toward the bytes).
@@ -1430,11 +1315,18 @@ export class StompBroker {
                     materialOctets(messageId) +
                     materialOctets(target.subId) +
                     (opReceipt === null ? 0 : materialOctets(opReceipt));
-                if (buffer.ops.length >= this.#maxTransactionOps || buffer.bytes + octets > this.#maxTransactionBytes) {
+                const result = this.#transactions.append(
+                    session,
+                    txId,
+                    { kind: 'ack', nack, messageId, subId: target.subId, receipt: opReceipt },
+                    octets
+                );
+                if (result === 'unknown') {
+                    return this.#fail(session, frame, `unknown transaction id: ${txId}`);
+                }
+                if (result === 'limit') {
                     return this.#fail(session, frame, 'transaction buffer limit reached');
                 }
-                buffer.ops.push({ kind: 'ack', nack, messageId, subId: target.subId, receipt: opReceipt });
-                buffer.bytes += octets;
             }
             return true;
         }
@@ -1491,139 +1383,56 @@ export class StompBroker {
     }
 
     /**
-     * BEGIN — open a named transaction buffer (D7).
-     *
-     * @param session - The session.
-     * @param frame - The BEGIN frame.
-     * @returns `false` on a duplicate or missing transaction id.
-     */
-    #begin(session: SocketSession, frame: StompFrame): boolean {
-        const txId = frame.headers['transaction'];
-        if (txId === undefined) {
-            return this.#fail(session, frame, 'BEGIN requires a transaction header');
-        }
-        let byTx = this.#transactions.get(session);
-        if (byTx === undefined) {
-            byTx = new Map();
-            this.#transactions.set(session, byTx);
-        }
-        if (byTx.has(txId)) {
-            return this.#fail(session, frame, `transaction already active: ${txId}`);
-        }
-        if (byTx.size >= this.#maxTransactionsPerSession) {
-            return this.#fail(session, frame, `transaction limit reached (max ${this.#maxTransactionsPerSession})`);
-        }
-        byTx.set(txId, { ops: [], bytes: 0 });
-        return this.#receipt(session, frame);
-    }
-
-    /**
-     * COMMIT — apply the buffered operations in order (D7). Receipts
-     * requested by buffered frames are held and emitted here, then the
-     * COMMIT's own receipt — unless an op failed closed, in which case the
-     * transaction is dropped, no further op is applied and no receipt is
-     * emitted (COR-11: a partial transaction must never read as committed).
-     *
-     * @param session - The session.
-     * @param frame - The COMMIT frame.
-     * @returns `false` on an unknown transaction id or a failed op.
-     */
-    async #commit(session: SocketSession, frame: StompFrame): Promise<boolean> {
-        const txId = frame.headers['transaction'];
-        if (txId === undefined) {
-            return this.#fail(session, frame, 'COMMIT requires a transaction header');
-        }
-        const buffer = this.#transactions.get(session)?.get(txId);
-        if (buffer === undefined) {
-            return this.#fail(session, frame, `unknown transaction id: ${txId}`);
-        }
-        const byTx = this.#transactions.get(session);
-        // Ops apply in order, each send awaiting its durable append — the
-        // COMMIT receipt follows, so "committed" implies "stored".
-        for (const op of buffer.ops) {
-            // oxlint-disable-next-line no-await-in-loop -- COMMIT applies buffered ops in order (STOMP 1.2 §1.7.1).
-            if (!(await this.#applyOp(session, op, frame))) {
-                byTx?.delete(txId);
-                return false;
-            }
-        }
-        byTx?.delete(txId);
-        return this.#receipt(session, frame);
-    }
-
-    /**
-     * ABORT — discard the buffered operations; their receipts are never
-     * sent (the effects never happened, STOMP 1.2 §1.7.2).
-     *
-     * @param session - The session.
-     * @param frame - The ABORT frame.
-     * @returns `false` on an unknown transaction id.
-     */
-    #abort(session: SocketSession, frame: StompFrame): boolean {
-        const txId = frame.headers['transaction'];
-        if (txId === undefined) {
-            return this.#fail(session, frame, 'ABORT requires a transaction header');
-        }
-        const buffer = this.#transactions.get(session)?.get(txId);
-        if (buffer === undefined) {
-            return this.#fail(session, frame, `unknown transaction id: ${txId}`);
-        }
-        this.#transactions.get(session)?.delete(txId);
-        return this.#receipt(session, frame);
-    }
-
-    /**
-     * Apply one buffered transaction op (D7). Receipts for buffered
-     * frames are emitted here, after the op's effect — an op that fails
-     * closed emits nothing (COR-11).
+     * Applies one buffered SEND at COMMIT: honors `onMessage` suppression,
+     * routes `/user/` through the same principal-scope seam as a live SEND,
+     * and requires a durable append for store-managed `/queue/` destinations.
      *
      * @param session - The owning session.
-     * @param op - The op to apply.
-     * @param frame - The COMMIT frame (failure attribution: an ERROR from a
-     *   buffered op echoes the COMMIT's `receipt`).
-     * @returns `true` when the op applied (or was suppressed by
-     *   `onMessage`); `false` after a fail-closed reply — the session is
-     *   closing and COMMIT must stop.
+     * @param frame - The COMMIT frame (failure attribution).
+     * @param op - The buffered SEND.
+     * @returns `true` when applied; `false` after a fail-closed reply.
      */
-    async #applyOp(session: SocketSession, op: TransactionOp, frame: StompFrame): Promise<boolean> {
-        const receipt = op.receipt ?? null;
-        if (op.kind === 'send') {
-            const suppress = this.#onMessage?.(op.destination, op.body, op.headers, session);
-            if (suppress !== false) {
-                if (op.destination.startsWith('/user/')) {
-                    // A transaction-buffered SEND must ride the same
-                    // principal-scope routing and policy check as a live
-                    // SEND — `publish` only serves /topic-style
-                    // destinations (previously a silent no-op).
-                    if (!this.#sendToUserScope(session, frame, op.destination, op.body, op.headers)) {
-                        return false;
-                    }
-                } else {
-                    const storeManaged = op.destination.startsWith('/queue/') && this.#queueStore !== null;
-                    let stored: StoredQueueMessage | undefined;
-                    try {
-                        stored = await this.publish(op.destination, op.body, op.headers);
-                    } catch {
-                        return this.#fail(session, frame, 'topic fanout unavailable', 1011);
-                    }
-                    if (storeManaged && stored === undefined) {
-                        // Same posture as the live SEND path (COR-8): the
-                        // append did not persist, so the transaction cannot
-                        // be reported committed.
-                        return this.#fail(session, frame, 'queue store unavailable', 1011);
-                    }
-                }
-            }
-        } else {
-            const subscription = this.#subscriptions.get(session)?.get(op.subId);
-            if (subscription !== undefined) {
-                this.#resolveAck(subscription, op.messageId, op.nack);
-            }
+    async #applyBufferedSend(
+        session: SocketSession,
+        frame: StompFrame,
+        op: Extract<TransactionOp, { kind: 'send' }>
+    ): Promise<boolean> {
+        const suppress = this.#onMessage?.(op.destination, op.body, op.headers, session);
+        if (suppress === false) {
+            return true;
         }
-        if (receipt !== null) {
-            this.#controlSend(session, { command: 'RECEIPT', headers: { 'receipt-id': receipt }, body: '' });
+        if (op.destination.startsWith('/user/')) {
+            // A transaction-buffered SEND must ride the same principal-scope
+            // routing and policy check as a live SEND — `publish` only serves
+            // /topic-style destinations.
+            return this.#sendToUserScope(session, frame, op.destination, op.body, op.headers);
+        }
+        const storeManaged = op.destination.startsWith('/queue/') && this.#queueStore !== null;
+        let stored: StoredQueueMessage | undefined;
+        try {
+            stored = await this.publish(op.destination, op.body, op.headers);
+        } catch {
+            return this.#fail(session, frame, 'topic fanout unavailable', 1011);
+        }
+        if (storeManaged && stored === undefined) {
+            // Same posture as the live SEND path (COR-8): the append did not
+            // persist, so the transaction cannot be reported committed.
+            return this.#fail(session, frame, 'queue store unavailable', 1011);
         }
         return true;
+    }
+
+    /**
+     * Applies one buffered ACK/NACK at COMMIT.
+     *
+     * @param session - The owning session.
+     * @param op - The buffered ACK/NACK.
+     */
+    #applyBufferedAck(session: SocketSession, op: Extract<TransactionOp, { kind: 'ack' }>): void {
+        const subscription = this.#subscriptions.get(session)?.get(op.subId);
+        if (subscription !== undefined) {
+            this.#resolveAck(subscription, op.messageId, op.nack);
+        }
     }
 
     /**
@@ -1648,7 +1457,7 @@ export class StompBroker {
         redelivered: boolean
     ): void {
         if (subscription.replaying) {
-            if (!this.#chargeReplay(subscription.session, materialOctets(body))) {
+            if (!this.#limits.chargeReplay(subscription.session, materialOctets(body))) {
                 // The live buffer shares the replay budget (SEC-6): a peer
                 // that publishes at itself while its own replay runs cannot
                 // pin memory through the buffer.
@@ -2053,7 +1862,7 @@ export class StompBroker {
             this.#subscriptions.delete(session);
         }
         this.#sessionState.delete(session);
-        this.#transactions.delete(session);
+        this.#transactions.closeSession(session);
         this.#sessions.delete(session);
     }
 }

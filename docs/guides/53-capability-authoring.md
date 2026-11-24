@@ -157,4 +157,3 @@ directories for the reference implementations of every rule above.
   sits behind.
 - [Agent-First](../architecture/agent-first.md): the concept this authoring
   loop serves.
-- AD-114 — agent capabilities: the decision record.

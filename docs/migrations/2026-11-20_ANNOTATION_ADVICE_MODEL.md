@@ -13,9 +13,8 @@ features could not advise the same method without one knowing about the other.
 And `@ndigo/proxy` was Proxy-only, which meant an advised entry was a different
 object from the one the factory built and `this.sibling()` bypassed advice.
 
-The full reasoning is in [AD-110](../decisions/2026-11-20_AD110_ANNOTATION_EXECUTION_RUNTIME.md);
-the vocabulary is in
-[AD-109](../decisions/2026-11-19_AD109_ANNOTATION_ADVICE_MODEL.md).
+The full reasoning and the vocabulary live in
+[Annotation, Advice & Member Transformer](../architecture/annotation-and-transformer-model.md).
 
 **There is no alias layer and no deprecation window.** Pre-1.0 renames are hard
 cuts here; `@ndigo/proxy` is deleted.
@@ -151,8 +150,5 @@ writes persistent state, so a rollback is a code revert plus `pnpm install`.
 
 ## References
 
-- [AD-110](../decisions/2026-11-20_AD110_ANNOTATION_EXECUTION_RUNTIME.md) — why the runtime is `@ndigo/advice`
-- [AD-109](../decisions/2026-11-19_AD109_ANNOTATION_ADVICE_MODEL.md) — the vocabulary
-- [AD-42](../decisions/2026-10-03_AD42_METHOD_INTERCEPTION.md) — superseded
 - [Annotation, advice, and member transformers](../architecture/annotation-and-transformer-model.md)
 - [Guide 35 — Method Advice & Resilience](../guides/35-method-interception-and-resilience.md)

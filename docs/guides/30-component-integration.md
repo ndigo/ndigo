@@ -11,12 +11,9 @@ This guide covers both paths: using ndigo-ui, and adopting any other Web
 Component library (Web Awesome is the worked example). The runnable ndigo-ui
 reference is [apps/20-ndigo-ui-lab](https://github.com/ndigo/ndigo/tree/main/apps/20-ndigo-ui-lab);
 [apps/07-ndigo-island](https://github.com/ndigo/ndigo/tree/main/apps/07-ndigo-island) is the migrated
-island app. The decision records are the component-integration contract
-([AD-69 — component integration contract](../decisions/2026-10-06_AD69_COMPONENT_INTEGRATION_CONTRACT.md))
-and the owned-design-system decision
-([AD-95 — ndigo-ui](../decisions/2026-11-08_AD95_NDIGO_UI.md)); AD-95 supersedes the
-library-selection clauses of AD-69 and retires the Web Awesome path recorded in
-[AD-71 — component library selection](../decisions/archive/2026-10-07_AD71_COMPONENT_LIBRARY_SELECTION.md).
+island app. ndigo-ui is the owned design system: optional, but the recommended
+default. The earlier library-selection path is retired; the framework still owns
+only the bridge to the component ecosystem, never the components themselves.
 
 **Audience:** Browser application developers · **Prerequisites:** [Guide 02](02-building-a-browser-app.md) · **Reference app:** [apps/20-ndigo-ui-lab](https://github.com/ndigo/ndigo/tree/main/apps/20-ndigo-ui-lab)
 

@@ -10,10 +10,11 @@
  * node_modules/) are not walked.
  *
  * Catches: renamed/moved files, wrong relative depth, wrong link dates,
- * and heading anchors that no longer exist. It also rejects internal
- * decision-record IDs and links into the internal record trees on the pages
- * published as the site's Concepts section — readers there cannot resolve
- * repository bookkeeping. Root-relative targets
+ * and heading anchors that no longer exist. On every published markdown file
+ * and package source file it also rejects internal decision-record IDs; the
+ * pages published as the site's Concepts section additionally reject internal
+ * security IDs and links into the internal record trees — readers there cannot
+ * resolve repository bookkeeping. Root-relative targets
  * (`/reference/…`, `/guides/…`, …) are site routes on the published docs
  * site, not repository paths — the checker cannot resolve them without the
  * site's route table, so it counts and skips them. Run via `pnpm docs:links`.
@@ -109,8 +110,26 @@ function isConceptPage(file) {
     );
 }
 
+/**
+ * Internal-only trees and the maintainer contract are not published prose:
+ * decision records keep their IDs, and plans, audits, and references are
+ * local-only. Everywhere else, an ADR ID is a reader-facing defect.
+ */
+function isInternalDoc(file) {
+    const rel = file.slice(root.length + 1);
+    return (
+        rel === 'AGENTS.md' ||
+        rel.startsWith(`docs/decisions/`) ||
+        rel.startsWith(`docs/plans/`) ||
+        rel.startsWith(`docs/audits/`) ||
+        rel.startsWith(`docs/reference/`)
+    );
+}
+
+const PUBLISHED_DOC_VIOLATIONS = [{ pattern: /\bAD-\d+\b/, label: 'decision-record ID' }];
+
 const CONCEPT_VIOLATIONS = [
-    { pattern: /\bAD-\d+\b/, label: 'decision-record ID' },
+    ...PUBLISHED_DOC_VIOLATIONS,
     { pattern: /\bSEC-\d+\b/, label: 'internal security ID' },
     { pattern: /\]\([^)]*docs\/(?:decisions|plans|audits|reference)\//, label: 'link into internal records' },
 ];
@@ -194,14 +213,50 @@ for (const file of files) {
 }
 
 const internalRefs = [];
+let publishedDocCount = 0;
 let conceptPageCount = 0;
 for (const file of files) {
-    if (!isConceptPage(file)) continue;
-    conceptPageCount++;
+    if (isInternalDoc(file)) continue;
+    publishedDocCount++;
+    const concept = isConceptPage(file);
+    if (concept) conceptPageCount++;
+    const rules = concept ? CONCEPT_VIOLATIONS : PUBLISHED_DOC_VIOLATIONS;
     const lines = readFileSync(file, 'utf8').split('\n');
     for (const [index, line] of lines.entries()) {
-        const hit = CONCEPT_VIOLATIONS.find(({ pattern }) => pattern.test(line));
+        const hit = rules.find(({ pattern }) => pattern.test(line));
         if (hit) internalRefs.push(`${file}:${index + 1} -> ${hit.label}: ${line.trim()}`);
+    }
+}
+
+/**
+ * Package source reaches readers through the generated API reference, so
+ * public TSDoc must not cite decision records either. Tests and app code are
+ * not published as API and stay out of scope.
+ */
+function collectPackageSourceFiles() {
+    const sources = [];
+    const walk = (dir) => {
+        for (const entry of readdirSync(dir)) {
+            const full = join(dir, entry);
+            if (statSync(full).isDirectory()) walk(full);
+            else if (/\.(?:ts|tsx|mts|cts)$/.test(entry)) sources.push(full);
+        }
+    };
+    for (const pkg of readdirSync(join(root, 'packages'))) {
+        const src = join(root, 'packages', pkg, 'src');
+        const stat = statOrNull(src);
+        if (stat?.isDirectory()) walk(src);
+    }
+    return sources;
+}
+
+const sourceFiles = collectPackageSourceFiles();
+for (const file of sourceFiles) {
+    const lines = readFileSync(file, 'utf8').split('\n');
+    for (const [index, line] of lines.entries()) {
+        if (/\bAD-\d+\b/.test(line)) {
+            internalRefs.push(`${file}:${index + 1} -> decision-record ID: ${line.trim()}`);
+        }
     }
 }
 
@@ -211,13 +266,14 @@ if (broken.length > 0 || internalRefs.length > 0) {
         for (const b of broken) console.error(`  - ${b}`);
     }
     if (internalRefs.length > 0) {
-        console.error(`Internal references in published concepts (${internalRefs.length}):`);
+        console.error(`Internal references in published docs and package source (${internalRefs.length}):`);
         for (const ref of internalRefs) console.error(`  - ${ref}`);
         console.error('Use prose or a public guide link; decision records stay in docs/decisions/.');
     }
     process.exit(1);
 }
 console.log(
-    `docs link check: ${files.length} files, ${linkCount} relative links, ${siteRouteCount} site routes, ` +
-        `${conceptPageCount} concept pages free of internal record IDs — OK`
+    `docs link check: ${files.length} files, ${linkCount} relative links, ${siteRouteCount} site routes; ` +
+        `${publishedDocCount} published docs (${conceptPageCount} concepts) and ${sourceFiles.length} package sources ` +
+        `free of internal record IDs — OK`
 );

@@ -23,21 +23,21 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `WebSocketClientOptions` *(type)* — Options for WebSocketClient.
 - `SocketClient` *(type)* — The client contract — what handlers, views, and services consume.
 - `WebSocketClient` — WHATWG-`WebSocket`-based client with reconnect.
-- `StompBody` *(type)* — STOMP frame contracts.
-- `StompFrame` *(type)* — A parsed STOMP frame. `command: ''` marks a heart-beat ping. *
-- `StompWireInput` *(type)* — StompWireInput.
-- `StompProtocolError` — Error thrown when a STOMP frame is malformed.
+- `STOMPBody` *(type)* — STOMP frame contracts.
+- `STOMPFrame` *(type)* — A parsed STOMP frame. `command: ''` marks a heart-beat ping. *
+- `STOMPWireInput` *(type)* — STOMPWireInput.
+- `STOMPProtocolError` — Error thrown when a STOMP frame is malformed.
 - `parseStompFrame` — Parse a wire frame into its command/headers/body.
 - `parseTextFrame` — Parse a text frame (string input).
 - `serializeStompFrame` — Serialize a frame to the wire format (NUL-terminated, escaped headers).
 - `bodyAsText` — Interpret a STOMP body as text (UTF-8 for byte bodies).
-- `StompAckMode` *(type)* — STOMP ack modes (STOMP 1.2 §1.3.1).
-- `StompBrokerOptions` *(type)* — StompBrokerOptions.
-- `StompBroker` — STOMP 1.2 broker — transport-agnostic, one instance per destination namespace (app-scoped entry).
-- `StompMessage` *(type)* — A MESSAGE frame delivered to a subscription. The body is the wire payload verbatim — a string for text frames, bytes for binary (D8); `json()` parses either (b…
-- `StompClientOptions` *(type)* — Options for StompClient.
-- `StompSubscription` *(type)* — A live subscription: an async iterable of MESSAGE frames. *
-- `StompClient` — STOMP 1.2 client over any SocketClient.
+- `STOMPAckMode` *(type)* — STOMP ack modes (STOMP 1.2 §1.3.1).
+- `STOMPBrokerOptions` *(type)* — STOMPBrokerOptions.
+- `STOMPBroker` — STOMP 1.2 broker — transport-agnostic, one instance per destination namespace (app-scoped entry).
+- `STOMPMessage` *(type)* — A MESSAGE frame delivered to a subscription. The body is the wire payload verbatim — a string for text frames, bytes for binary (D8); `json()` parses either (b…
+- `STOMPClientOptions` *(type)* — Options for STOMPClient.
+- `STOMPSubscription` *(type)* — A live subscription: an async iterable of MESSAGE frames. *
+- `STOMPClient` — STOMP 1.2 client over any SocketClient.
 - `materialOctets` — Body size as transmitted: UTF-8 octets for text, raw length for bytes. Shared by the store's byte budget and the broker's transaction budget.
 - `headerOctets` — Serialized header size as transmitted: for every entry, the UTF-8 octets of its name and value plus the `:` separator and the line's EOL. Shared by the broker'…
 - `StoredQueueMessage` *(type)* — StoredQueueMessage.

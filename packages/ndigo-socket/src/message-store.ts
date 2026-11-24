@@ -30,7 +30,7 @@
  * redelivery).
  */
 import { RingBuffer } from '@ndigo/core';
-import type { StompBody } from './stomp-frame';
+import type { STOMPBody } from './stomp-frame';
 
 /**
  * Body size as transmitted: UTF-8 octets for text, raw length for bytes.
@@ -44,7 +44,7 @@ import type { StompBody } from './stomp-frame';
  * materialOctets();
  * ```
  */
-export function materialOctets(body: StompBody): number {
+export function materialOctets(body: STOMPBody): number {
     return typeof body === 'string' ? new TextEncoder().encode(body).length : body.length;
 }
 

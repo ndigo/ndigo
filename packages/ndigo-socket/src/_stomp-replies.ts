@@ -2,7 +2,7 @@
  * STOMP control replies: the guarded control-frame write plus the
  * fail-closed ERROR-and-close path.
  */
-import { serializeStompFrame, type StompFrame } from './stomp-frame';
+import { serializeStompFrame, type STOMPFrame } from './stomp-frame';
 import type { SocketSession } from './socket-session';
 
 /**
@@ -17,7 +17,7 @@ import type { SocketSession } from './socket-session';
  * @param session - The session to write to.
  * @param frame - The control frame.
  */
-export function controlSend(session: SocketSession, frame: StompFrame): void {
+export function controlSend(session: SocketSession, frame: STOMPFrame): void {
     if (session.isClosed) {
         return;
     }
@@ -37,7 +37,7 @@ export function controlSend(session: SocketSession, frame: StompFrame): void {
  * @param frame - The requesting frame.
  * @returns Always `true` — the connection stays open.
  */
-export function receipt(session: SocketSession, frame: StompFrame): boolean {
+export function receipt(session: SocketSession, frame: STOMPFrame): boolean {
     if (frame.headers['receipt'] !== undefined) {
         controlSend(session, {
             command: 'RECEIPT',
@@ -64,7 +64,7 @@ export function receipt(session: SocketSession, frame: StompFrame): boolean {
  * @param code - Close status code (default `1002`).
  * @returns Always `false` — the connection ends.
  */
-export function fail(session: SocketSession, frame: StompFrame | null, message: string, code: number = 1002): boolean {
+export function fail(session: SocketSession, frame: STOMPFrame | null, message: string, code: number = 1002): boolean {
     const headers: Record<string, string> = { message };
     if (frame !== null && frame.headers['receipt'] !== undefined) {
         headers['receipt-id'] = frame.headers['receipt'] as string;

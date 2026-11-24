@@ -1,7 +1,7 @@
 /**
  * `/queue` message store contracts.
  */
-import type { StompBody } from './stomp-frame';
+import type { STOMPBody } from './stomp-frame';
 
 /** A stored `/queue` message — the durable unit behind the backlog. */
 /**
@@ -18,7 +18,7 @@ export interface StoredQueueMessage {
     /** The `/queue/<name>` destination the message belongs to. */
     readonly destination: string;
     /** The message body — text or byte-exact binary (D8). */
-    readonly body: StompBody;
+    readonly body: STOMPBody;
     /** Extra headers (e.g. `content-type`), copied at append time. */
     readonly headers: Readonly<Record<string, string>>;
     /**

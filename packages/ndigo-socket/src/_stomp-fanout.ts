@@ -4,18 +4,18 @@
  * to the backend when one is configured.
  */
 import type { SocketFanout } from './socket-fanout';
-import type { StompBody } from './stomp-frame';
+import type { STOMPBody } from './stomp-frame';
 
 /**
- * Construction seams for {@link StompFanout}.
+ * Construction seams for {@link STOMPFanout}.
  */
-export interface StompFanoutOptions {
+export interface STOMPFanoutOptions {
     /** The application-owned backend, or `undefined` for local-only fan-out. */
     readonly fanout: SocketFanout | undefined;
     /** Reads the broker's closed flag at delivery time (not at construction). */
     readonly isClosed: () => boolean;
     /** Delivers one backend message to the broker's local subscribers. */
-    readonly onLocal: (destination: string, body: StompBody, headers: Record<string, string>) => void;
+    readonly onLocal: (destination: string, body: STOMPBody, headers: Record<string, string>) => void;
 }
 
 /**
@@ -24,14 +24,14 @@ export interface StompFanoutOptions {
  *
  * @example
  * ```ts
- * const fanout = new StompFanout({ fanout: backend, isClosed: () => false, onLocal: deliver });
+ * const fanout = new STOMPFanout({ fanout: backend, isClosed: () => false, onLocal: deliver });
  * await fanout.connect();
  * ```
  */
-export class StompFanout {
+export class STOMPFanout {
     readonly #fanout: SocketFanout | undefined;
     readonly #isClosed: () => boolean;
-    readonly #onLocal: (destination: string, body: StompBody, headers: Record<string, string>) => void;
+    readonly #onLocal: (destination: string, body: STOMPBody, headers: Record<string, string>) => void;
     #ready = false;
     #connecting: Promise<void> | undefined;
     #unsubscribe: (() => Promise<void>) | undefined;
@@ -40,7 +40,7 @@ export class StompFanout {
     /**
      * @param options - The backend and the broker's local delivery seams.
      */
-    constructor(options: StompFanoutOptions) {
+    constructor(options: STOMPFanoutOptions) {
         this.#fanout = options.fanout;
         this.#isClosed = options.isClosed;
         this.#onLocal = options.onLocal;
@@ -95,12 +95,12 @@ export class StompFanout {
      * @param headers - Application headers.
      * @throws When the backend exists but has not been connected yet.
      */
-    async publish(destination: string, body: StompBody, headers: Record<string, string>): Promise<void> {
+    async publish(destination: string, body: STOMPBody, headers: Record<string, string>): Promise<void> {
         if (!this.#fanout || !destination.startsWith('/topic/')) {
             return;
         }
         if (!this.#ready) {
-            throw new Error('StompBroker is not ready; await connect()');
+            throw new Error('STOMPBroker is not ready; await connect()');
         }
         await this.#fanout.publish('topic', { key: destination, body, headers });
     }

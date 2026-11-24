@@ -2,7 +2,7 @@
  * STOMP transaction buffers: BEGIN/COMMIT/ABORT, ordered op application, and
  * the per-session op/byte bounds.
  */
-import type { StompFrame } from './stomp-frame';
+import type { STOMPFrame } from './stomp-frame';
 import type { SocketSession } from './socket-session';
 import type { TransactionBuffer, TransactionOp } from './_stomp-broker-types';
 
@@ -12,17 +12,17 @@ export type TransactionAppendResult = 'appended' | 'unknown' | 'limit';
 /**
  * The broker seams a transaction needs to apply buffered operations.
  */
-export interface StompTransactionHost {
+export interface STOMPTransactionHost {
     /** Fail-closed protocol reply owned by the broker. */
-    readonly fail: (session: SocketSession, frame: StompFrame, message: string, code?: number) => boolean;
+    readonly fail: (session: SocketSession, frame: STOMPFrame, message: string, code?: number) => boolean;
     /** Emit a RECEIPT for a frame, when one was requested. */
-    readonly receipt: (session: SocketSession, frame: StompFrame) => boolean;
+    readonly receipt: (session: SocketSession, frame: STOMPFrame) => boolean;
     /** Emit a control frame (the buffered receipt at COMMIT). */
-    readonly controlSend: (session: SocketSession, frame: StompFrame) => void;
+    readonly controlSend: (session: SocketSession, frame: STOMPFrame) => void;
     /** Apply one buffered SEND (authorize/onMessage/routing already ran at buffer time). */
     readonly applySend: (
         session: SocketSession,
-        frame: StompFrame,
+        frame: STOMPFrame,
         op: Extract<TransactionOp, { kind: 'send' }>
     ) => Promise<boolean>;
     /** Apply one buffered ACK/NACK. */
@@ -30,7 +30,7 @@ export interface StompTransactionHost {
 }
 
 /** Per-session transaction bounds. */
-export interface StompTransactionLimits {
+export interface STOMPTransactionLimits {
     readonly maxTransactionsPerSession: number;
     readonly maxTransactionOps: number;
     readonly maxTransactionBytes: number;
@@ -42,20 +42,20 @@ export interface StompTransactionLimits {
  *
  * @example
  * ```ts
- * const transactions = new StompTransactionManager(host, limits);
+ * const transactions = new STOMPTransactionManager(host, limits);
  * transactions.begin(session, frame);
  * ```
  */
-export class StompTransactionManager {
-    readonly #host: StompTransactionHost;
-    readonly #limits: StompTransactionLimits;
+export class STOMPTransactionManager {
+    readonly #host: STOMPTransactionHost;
+    readonly #limits: STOMPTransactionLimits;
     readonly #transactions = new Map<SocketSession, Map<string, TransactionBuffer>>();
 
     /**
      * @param host - The broker's reply and apply seams.
      * @param limits - The per-session transaction bounds.
      */
-    constructor(host: StompTransactionHost, limits: StompTransactionLimits) {
+    constructor(host: STOMPTransactionHost, limits: STOMPTransactionLimits) {
         this.#host = host;
         this.#limits = limits;
     }
@@ -92,7 +92,7 @@ export class StompTransactionManager {
      * @param frame - The BEGIN frame.
      * @returns `false` on a duplicate or missing transaction id.
      */
-    begin(session: SocketSession, frame: StompFrame): boolean {
+    begin(session: SocketSession, frame: STOMPFrame): boolean {
         const txId = frame.headers['transaction'];
         if (txId === undefined) {
             return this.#host.fail(session, frame, 'BEGIN requires a transaction header');
@@ -123,7 +123,7 @@ export class StompTransactionManager {
      * @param frame - The COMMIT frame.
      * @returns `false` on an unknown transaction id or a failed op.
      */
-    async commit(session: SocketSession, frame: StompFrame): Promise<boolean> {
+    async commit(session: SocketSession, frame: STOMPFrame): Promise<boolean> {
         const txId = frame.headers['transaction'];
         if (txId === undefined) {
             return this.#host.fail(session, frame, 'COMMIT requires a transaction header');
@@ -153,7 +153,7 @@ export class StompTransactionManager {
      * @param frame - The ABORT frame.
      * @returns `false` on an unknown transaction id.
      */
-    abort(session: SocketSession, frame: StompFrame): boolean {
+    abort(session: SocketSession, frame: STOMPFrame): boolean {
         const txId = frame.headers['transaction'];
         if (txId === undefined) {
             return this.#host.fail(session, frame, 'ABORT requires a transaction header');
@@ -183,7 +183,7 @@ export class StompTransactionManager {
      * @param frame - The COMMIT frame (failure attribution).
      * @returns `true` when the op applied; `false` after a fail-closed reply.
      */
-    async #applyOp(session: SocketSession, op: TransactionOp, frame: StompFrame): Promise<boolean> {
+    async #applyOp(session: SocketSession, op: TransactionOp, frame: STOMPFrame): Promise<boolean> {
         const receipt = op.receipt ?? null;
         if (op.kind === 'send') {
             if (!(await this.#host.applySend(session, frame, op))) {

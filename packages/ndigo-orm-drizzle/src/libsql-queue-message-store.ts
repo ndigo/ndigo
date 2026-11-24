@@ -6,7 +6,7 @@
  * Swap it in as the broker's `queueStore` for persistence:
  *
  * ```ts
- * const broker = new StompBroker({ queueStore: new LibSQLQueueMessageStore({ url: 'file:queues.db' }) });
+ * const broker = new STOMPBroker({ queueStore: new LibSQLQueueMessageStore({ url: 'file:queues.db' }) });
  * ```
  *
  * Contract parity with the in-memory backend (the reference): the replay
@@ -44,7 +44,7 @@
  */
 import { createClient, type Client } from '@libsql/client';
 import { IllegalStateError } from '@ndigo/core';
-import type { QueueMessageStore, StoredQueueMessage, StompBody } from '@ndigo/socket';
+import type { QueueMessageStore, StoredQueueMessage, STOMPBody } from '@ndigo/socket';
 
 /** Table/column layout (column names stay stable for migrations). One
  * statement each — `execute` is single-statement; schema DDL runs through
@@ -324,7 +324,7 @@ function decodeRow(row: Row): StoredQueueMessage {
 }
 
 /** Encode a body for storage: BLOB bytes + 0 text / 1 binary tag. */
-function encodeBody(body: StompBody): { body: Uint8Array; bodyKind: number } {
+function encodeBody(body: STOMPBody): { body: Uint8Array; bodyKind: number } {
     if (typeof body === 'string') {
         return { body: new TextEncoder().encode(body), bodyKind: 0 };
     }

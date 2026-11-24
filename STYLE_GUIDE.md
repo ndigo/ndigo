@@ -840,6 +840,7 @@ Examples from the codebase (not an exhaustive list):
 - **DTO** - Data Transfer Object
 - **DAO** - Data Access Object
 - **UUID** - Universally Unique Identifier
+- **STOMP** - Simple (or Streaming) Text Oriented Messaging Protocol
 - **OTEL** - OpenTelemetry
 
 **Rationale:** Consistent acronym casing improves readability and prevents confusion. Modern tooling (autocomplete, minification) eliminates concerns about verbosity. The all-uppercase pattern in type names clearly identifies acronyms, while the all-lowercase or all-uppercase pattern in identifiers maintains readability.

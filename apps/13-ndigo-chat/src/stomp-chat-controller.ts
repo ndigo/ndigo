@@ -1,7 +1,7 @@
 /**
  * The STOMP interop endpoint: `WS /stomp/chat`.
  *
- * The platform's `StompBroker` owns this destination namespace, so a
+ * The platform's `STOMPBroker` owns this destination namespace, so a
  * third-party STOMP 1.2 client (e.g. `@stomp/stompjs`) can connect, subscribe
  * to `/topic/chat`, SEND, and receive its own fan-out (room-echo parity) —
  * the transport-agnostic cross-check of the raw `@socketMapping` room. The
@@ -10,19 +10,19 @@
  */
 import '@tsmetadata/polyfill';
 import { parameters, requestMapping, socketSessionValue, stompMapping, type SocketSession } from '@ndigo/dispatcher';
-import { StompBroker } from '@ndigo/socket';
+import { STOMPBroker } from '@ndigo/socket';
 
 /** The destination STOMP chat clients subscribe to. */
 export const CHAT_DESTINATION = '/topic/chat';
 
 /**
- * The STOMP chat broker — one `StompBroker` owns the destination namespace for
+ * The STOMP chat broker — one `STOMPBroker` owns the destination namespace for
  * this app.
  */
 @requestMapping('/stomp')
-export class StompChatController {
+export class STOMPChatController {
     /** The broker serving every `/stomp/chat` connection. */
-    readonly broker = new StompBroker();
+    readonly broker = new STOMPBroker();
 
     /**
      * STOMP endpoint: the broker runs the full protocol for this connection

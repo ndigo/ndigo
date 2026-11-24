@@ -2,12 +2,12 @@
  * Ack semantics, identifier/header/replay budgets, authorization, and guarded sends.
  */
 import { describe, expect, test, vi } from 'vitest';
-import { StompBroker, StompProtocolError } from '../src/index';
+import { STOMPBroker, STOMPProtocolError } from '../src/index';
 import { connect, FakeSession, GatedStore } from './_stomp-broker-harness';
 
-describe('StompBroker ack semantics (COR-1/COR-4)', () => {
+describe('STOMPBroker ack semantics (COR-1/COR-4)', () => {
     test('client-individual ACK of the newest leaves the earlier obligation outstanding', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -33,7 +33,7 @@ describe('StompBroker ack semantics (COR-1/COR-4)', () => {
     });
 
     test('MESSAGE carries the ack header and ACK works from the id header alone (COR-4)', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -58,7 +58,7 @@ describe('StompBroker ack semantics (COR-1/COR-4)', () => {
     });
 
     test("an ACK for another session's message fails closed (COR-4)", async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const subscriber = new FakeSession();
         const other = new FakeSession();
         void subscriber.handled(broker);
@@ -80,7 +80,7 @@ describe('StompBroker ack semantics (COR-1/COR-4)', () => {
     });
 
     test('an id the subscription no longer tracks is a tolerated no-op (id + subscription)', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -104,9 +104,9 @@ describe('StompBroker ack semantics (COR-1/COR-4)', () => {
     });
 });
 
-describe('StompBroker identifier caps (SEC-2)', () => {
+describe('STOMPBroker identifier caps (SEC-2)', () => {
     test('an over-long destination fails closed', async () => {
-        const broker = new StompBroker({ maxIdentifierLength: 16 });
+        const broker = new STOMPBroker({ maxIdentifierLength: 16 });
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -118,7 +118,7 @@ describe('StompBroker identifier caps (SEC-2)', () => {
     });
 
     test('an over-long receipt id fails closed before any effect', async () => {
-        const broker = new StompBroker({ maxIdentifierLength: 16 });
+        const broker = new STOMPBroker({ maxIdentifierLength: 16 });
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -130,12 +130,12 @@ describe('StompBroker identifier caps (SEC-2)', () => {
     });
 });
 
-describe('StompBroker authorization seam (SEC-4)', () => {
+describe('STOMPBroker authorization seam (SEC-4)', () => {
     test('a denied SUBSCRIBE fails closed before the backlog is replayed', async () => {
         const authorize = vi.fn(
             (destination: string, action: string) => !(action === 'subscribe' && destination === '/queue/secret')
         );
-        const broker = new StompBroker({ authorize });
+        const broker = new STOMPBroker({ authorize });
         await broker.publish('/queue/secret', 'classified');
         const session = new FakeSession();
         void session.handled(broker);
@@ -157,7 +157,7 @@ describe('StompBroker authorization seam (SEC-4)', () => {
         const authorize = vi.fn(
             async (destination: string, action: string) => !(action === 'send' && destination === '/topic/denied')
         );
-        const broker = new StompBroker({ authorize });
+        const broker = new STOMPBroker({ authorize });
         const subscriber = new FakeSession();
         void subscriber.handled(broker);
         connect(broker, subscriber);
@@ -189,7 +189,7 @@ describe('StompBroker authorization seam (SEC-4)', () => {
 
     test('onMessage sees /user SENDs identically live and transactional (SEC-4)', async () => {
         const calls: Array<{ body: unknown; headers: Record<string, string> }> = [];
-        const broker = new StompBroker({
+        const broker = new STOMPBroker({
             onMessage: (_destination, body, headers) => {
                 calls.push({ body, headers });
             },
@@ -218,7 +218,7 @@ describe('StompBroker authorization seam (SEC-4)', () => {
 
     test('the authorize seam sees subscribe and send in order, before onMessage', async () => {
         const calls: string[] = [];
-        const broker = new StompBroker({
+        const broker = new STOMPBroker({
             authorize: (destination, action) => {
                 calls.push(`authorize:${action}:${destination}`);
                 return true;
@@ -242,12 +242,12 @@ describe('StompBroker authorization seam (SEC-4)', () => {
     });
 });
 
-describe('StompBroker unacked byte budgets (SEC-5)', () => {
+describe('STOMPBroker unacked byte budgets (SEC-5)', () => {
     test('the count bound stays exact at a power-of-two bound', async () => {
         // 16 is the ring's own capacity granularity: at that bound a silent
         // overwrite would escape the byte/ack-index accounting, so the
         // gauge must read exactly 16 (not 15) after 17 deliveries.
-        const broker = new StompBroker({ maxUnacked: 16, maxUnackedBytes: 130 });
+        const broker = new STOMPBroker({ maxUnacked: 16, maxUnackedBytes: 130 });
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -261,7 +261,7 @@ describe('StompBroker unacked byte budgets (SEC-5)', () => {
     });
 
     test('maxUnackedBytes evicts the oldest tracked delivery', async () => {
-        const broker = new StompBroker({ maxUnackedBytes: 10 });
+        const broker = new STOMPBroker({ maxUnackedBytes: 10 });
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -284,7 +284,7 @@ describe('StompBroker unacked byte budgets (SEC-5)', () => {
     });
 
     test('maxUnackedSessionBytes evicts the session-wide oldest delivery', async () => {
-        const broker = new StompBroker({ maxUnackedSessionBytes: 10 });
+        const broker = new STOMPBroker({ maxUnackedSessionBytes: 10 });
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -306,9 +306,9 @@ describe('StompBroker unacked byte budgets (SEC-5)', () => {
     });
 });
 
-describe('StompBroker replay budget (SEC-6)', () => {
+describe('STOMPBroker replay budget (SEC-6)', () => {
     test('exhausting the replay budget fails the SUBSCRIBE closed', async () => {
-        const broker = new StompBroker({ maxReplayBytesPerSession: 10 });
+        const broker = new STOMPBroker({ maxReplayBytesPerSession: 10 });
         await broker.publish('/queue/budget', '0123456789ab'); // 12 octets retained
         const session = new FakeSession();
         void session.handled(broker);
@@ -326,7 +326,7 @@ describe('StompBroker replay budget (SEC-6)', () => {
 
     test('live deliveries buffered by a replay consume the same budget', async () => {
         const store = new GatedStore();
-        const broker = new StompBroker({ queueStore: store, maxReplayBytesPerSession: 6 });
+        const broker = new STOMPBroker({ queueStore: store, maxReplayBytesPerSession: 6 });
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -345,9 +345,9 @@ describe('StompBroker replay budget (SEC-6)', () => {
     });
 });
 
-describe('StompBroker header budget (PRT-REV-002)', () => {
+describe('STOMPBroker header budget (PRT-REV-002)', () => {
     test('a frame whose serialized headers exceed maxHeaderBytes fails closed', async () => {
-        const broker = new StompBroker({ maxHeaderBytes: 128 });
+        const broker = new STOMPBroker({ maxHeaderBytes: 128 });
         const session = new FakeSession();
         const handling = session.handled(broker);
         connect(broker, session);
@@ -359,16 +359,16 @@ describe('StompBroker header budget (PRT-REV-002)', () => {
     });
 
     test('publish rejects programmatic headers over the cap', async () => {
-        const broker = new StompBroker({ maxHeaderBytes: 64 });
+        const broker = new STOMPBroker({ maxHeaderBytes: 64 });
         await expect(broker.publish('/topic/x', 'm', { 'x-big': 'y'.repeat(100) })).rejects.toBeInstanceOf(
-            StompProtocolError
+            STOMPProtocolError
         );
     });
 });
 
-describe('StompBroker duplicate message-id ACK indexing (PRT-REV-004)', () => {
+describe('STOMPBroker duplicate message-id ACK indexing (PRT-REV-004)', () => {
     test('an id-only ACK settles every subscription that received the id', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -390,7 +390,7 @@ describe('StompBroker duplicate message-id ACK indexing (PRT-REV-004)', () => {
     });
 
     test('a dual-subscription id-only NACK redelivers to each owner', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -418,9 +418,9 @@ describe('StompBroker duplicate message-id ACK indexing (PRT-REV-004)', () => {
     });
 });
 
-describe('StompBroker /user unsubscribe binding (PRT-REV-005)', () => {
+describe('STOMPBroker /user unsubscribe binding (PRT-REV-005)', () => {
     test('UNSUBSCRIBE uses the principal bound at subscribe time', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const session = new FakeSession();
         session.attributes['user'] = 'alice';
         void session.handled(broker);
@@ -442,31 +442,31 @@ describe('StompBroker /user unsubscribe binding (PRT-REV-005)', () => {
     });
 });
 
-describe('StompBroker serialization-fault surfacing (PRT-REV-006)', () => {
+describe('STOMPBroker serialization-fault surfacing (PRT-REV-006)', () => {
     test('publish throws on a header value that cannot be framed', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         await expect(broker.publish('/topic/x', 'm', { 'x-bad': 'a\u0000b' })).rejects.toBeInstanceOf(
-            StompProtocolError
+            STOMPProtocolError
         );
     });
 
     test('publish throws on an invalid header name or a NUL destination', async () => {
-        const broker = new StompBroker();
-        await expect(broker.publish('/topic/x', 'm', { 'bad:name': 'v' })).rejects.toBeInstanceOf(StompProtocolError);
-        await expect(broker.publish('/topic/x\u0000y', 'm')).rejects.toBeInstanceOf(StompProtocolError);
+        const broker = new STOMPBroker();
+        await expect(broker.publish('/topic/x', 'm', { 'bad:name': 'v' })).rejects.toBeInstanceOf(STOMPProtocolError);
+        await expect(broker.publish('/topic/x\u0000y', 'm')).rejects.toBeInstanceOf(STOMPProtocolError);
     });
 
     test('sendToUser throws before fan-out on an unframeable header', () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         expect(() => broker.sendToUser('alice', '/queue/errors', 'm', { 'x-bad': 'a\u0000b' })).toThrow(
-            StompProtocolError
+            STOMPProtocolError
         );
     });
 });
 
-describe('StompBroker accept-version cap (PRT-REV-009)', () => {
+describe('STOMPBroker accept-version cap (PRT-REV-009)', () => {
     test('an over-long accept-version fails closed without splitting it', async () => {
-        const broker = new StompBroker({ maxIdentifierLength: 32 });
+        const broker = new STOMPBroker({ maxIdentifierLength: 32 });
         const session = new FakeSession();
         const handling = session.handled(broker);
         session.push('CONNECT', { 'accept-version': '1.2,'.repeat(40), host: 'x' });
@@ -477,9 +477,9 @@ describe('StompBroker accept-version cap (PRT-REV-009)', () => {
     });
 });
 
-describe('StompBroker guarded control sends (PRT-REV-011)', () => {
+describe('STOMPBroker guarded control sends (PRT-REV-011)', () => {
     test('a CONNECTED that cannot be written does not reject handleSocket', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const session = new FakeSession();
         // The transport races to CLOSING before CONNECTED is written.
         session.failSends = true;
@@ -490,7 +490,7 @@ describe('StompBroker guarded control sends (PRT-REV-011)', () => {
     });
 
     test('a control RECEIPT that cannot be written does not reject handleSocket', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const session = new FakeSession();
         const handling = session.handled(broker);
         connect(broker, session);

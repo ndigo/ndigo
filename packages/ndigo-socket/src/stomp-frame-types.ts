@@ -3,36 +3,36 @@
  *
  * @example
  * ```ts
- * type _Alias = StompBody;
+ * type _Alias = STOMPBody;
  * ```
  */
 
-export type StompBody = string | Uint8Array;
+export type STOMPBody = string | Uint8Array;
 
 /** A parsed STOMP frame. `command: ''` marks a heart-beat ping. *
  * @example
  * ```ts
- * const frame: StompFrame = { command: 'SEND', headers: {}, body: 'hello' };
+ * const frame: STOMPFrame = { command: 'SEND', headers: {}, body: 'hello' };
  * ```
  */
-export interface StompFrame {
+export interface STOMPFrame {
     /** Frame command (`CONNECT`, `SEND`, …, or `''` for a ping). */
     command: string;
     /** Decoded header map; names as sent, values unescaped. */
     headers: Record<string, string>;
     /** Frame body — string for text frames, bytes for binary (D8). */
-    body: StompBody;
+    body: STOMPBody;
 }
 
 /** Byte-like inputs the codec accepts (binary WS frames, node Buffers). */
 /**
- * StompWireInput.
+ * STOMPWireInput.
  *
  * @example
  * ```ts
- * type _Alias = StompWireInput;
+ * type _Alias = STOMPWireInput;
  * ```
  */
-export type StompWireInput = string | Uint8Array | ArrayBuffer;
+export type STOMPWireInput = string | Uint8Array | ArrayBuffer;
 
 /** Raised on malformed frames (missing NUL, bad `content-length`, …). */

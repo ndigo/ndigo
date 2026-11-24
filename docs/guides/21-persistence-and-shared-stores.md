@@ -147,7 +147,7 @@ See [Guide 26 §5](26-authentication-and-sessions.md) for the
 `subscribe(scope, receive)` / `publish(scope, { key, body, headers? })` for
 paths, rooms, and STOMP `/topic/*`. Wire it through
 `new NodeSocketSessionRegistry({ fanout })` and/or
-`new StompBroker({ fanout })`; the server must have the registry before
+`new STOMPBroker({ fanout })`; the server must have the registry before
 serving, and all consumers connect before `server.start`.
 
 Details — delivery semantics (live at-most-once, no replay/reconnect/global

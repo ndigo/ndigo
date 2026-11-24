@@ -2,31 +2,31 @@
  * OpenTelemetry instrumentation for `@ndigo/socket` STOMP surfaces.
  */
 import { SpanKind } from '@opentelemetry/api';
-import { StompBroker, StompClient } from '@ndigo/socket';
+import { STOMPBroker, STOMPClient } from '@ndigo/socket';
 import { AbstractBaseInstrumentation } from '../base';
 
 /**
- * OpenTelemetry instrumentation for `StompInstrumentation`.
+ * OpenTelemetry instrumentation for `STOMPInstrumentation`.
  *
  * @example
  * ```ts
- * const instance = new StompInstrumentation();
+ * const instance = new STOMPInstrumentation();
  * ```
  */
-export class StompInstrumentation extends AbstractBaseInstrumentation {
+export class STOMPInstrumentation extends AbstractBaseInstrumentation {
     /**
      * The `Symbol.toStringTag` value for this instance.
      *
      * `Object.prototype.toString()` reads this symbol to render the
      * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
      *
-     * @returns The string "StompInstrumentation".
+     * @returns The string "STOMPInstrumentation".
      *
      * @example
-     * console.log(Object.prototype.toString.call(instance)); // "[object StompInstrumentation]"
+     * console.log(Object.prototype.toString.call(instance)); // "[object STOMPInstrumentation]"
      */
     get [Symbol.toStringTag](): string {
-        return 'StompInstrumentation';
+        return 'STOMPInstrumentation';
     }
 
     constructor() {
@@ -38,31 +38,31 @@ export class StompInstrumentation extends AbstractBaseInstrumentation {
      */
     enable(): void {
         this._wrap(
-            StompBroker.prototype,
+            STOMPBroker.prototype,
             'handleSocket',
-            this._patch({ name: 'StompBroker.handleSocket', kind: SpanKind.INTERNAL })
+            this._patch({ name: 'STOMPBroker.handleSocket', kind: SpanKind.INTERNAL })
         );
         this._wrap(
-            StompBroker.prototype,
+            STOMPBroker.prototype,
             'publish',
-            this._patch({ name: 'StompBroker.publish', kind: SpanKind.INTERNAL })
+            this._patch({ name: 'STOMPBroker.publish', kind: SpanKind.INTERNAL })
         );
         this._wrap(
-            StompBroker.prototype,
+            STOMPBroker.prototype,
             'history',
-            this._patch({ name: 'StompBroker.history', kind: SpanKind.INTERNAL })
+            this._patch({ name: 'STOMPBroker.history', kind: SpanKind.INTERNAL })
         );
 
         this._wrap(
-            StompClient.prototype,
+            STOMPClient.prototype,
             'subscribe',
-            this._patchSync({ name: 'StompClient.subscribe', kind: SpanKind.INTERNAL })
+            this._patchSync({ name: 'STOMPClient.subscribe', kind: SpanKind.INTERNAL })
         );
-        this._wrap(StompClient.prototype, 'send', this._patch({ name: 'StompClient.send', kind: SpanKind.CLIENT }));
+        this._wrap(STOMPClient.prototype, 'send', this._patch({ name: 'STOMPClient.send', kind: SpanKind.CLIENT }));
         this._wrap(
-            StompClient.prototype,
+            STOMPClient.prototype,
             'disconnect',
-            this._patchSync({ name: 'StompClient.disconnect', kind: SpanKind.INTERNAL })
+            this._patchSync({ name: 'STOMPClient.disconnect', kind: SpanKind.INTERNAL })
         );
     }
 
@@ -70,12 +70,12 @@ export class StompInstrumentation extends AbstractBaseInstrumentation {
      * Restores the original methods.
      */
     disable(): void {
-        this._unwrap(StompBroker.prototype, 'handleSocket');
-        this._unwrap(StompBroker.prototype, 'publish');
-        this._unwrap(StompBroker.prototype, 'history');
+        this._unwrap(STOMPBroker.prototype, 'handleSocket');
+        this._unwrap(STOMPBroker.prototype, 'publish');
+        this._unwrap(STOMPBroker.prototype, 'history');
 
-        this._unwrap(StompClient.prototype, 'subscribe');
-        this._unwrap(StompClient.prototype, 'send');
-        this._unwrap(StompClient.prototype, 'disconnect');
+        this._unwrap(STOMPClient.prototype, 'subscribe');
+        this._unwrap(STOMPClient.prototype, 'send');
+        this._unwrap(STOMPClient.prototype, 'disconnect');
     }
 }

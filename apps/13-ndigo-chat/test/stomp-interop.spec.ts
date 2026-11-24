@@ -15,7 +15,7 @@ import { ChatConfiguration } from '../src/chat-configuration';
 import { CHAT_DESTINATION } from '../src/stomp-chat-controller';
 
 /** A connected `@stomp/stompjs` client plus its teardown. */
-interface StompPeer {
+interface STOMPPeer {
     readonly client: Client;
     deactivate(): Promise<void>;
 }
@@ -26,7 +26,7 @@ interface StompPeer {
  * @param url - The broker's WebSocket URL.
  * @returns The connected peer.
  */
-async function stompConnect(url: string): Promise<StompPeer> {
+async function stompConnect(url: string): Promise<STOMPPeer> {
     const client = new Client({
         brokerURL: url,
         // STOMP 1.2 requires `host` on CONNECT; the broker enforces it.
@@ -78,7 +78,7 @@ async function waitFor(predicate: () => boolean, timeoutMs = 5_000): Promise<voi
 describe('ndigo-chat STOMP interop via @stomp/stompjs', () => {
     let context: Awaited<ReturnType<ApplicationBuilder['run']>>;
     let brokerUrl: string;
-    const peers: StompPeer[] = [];
+    const peers: STOMPPeer[] = [];
 
     beforeAll(async () => {
         process.env['PORT'] = '0';
@@ -103,7 +103,7 @@ describe('ndigo-chat STOMP interop via @stomp/stompjs', () => {
     });
 
     /** Connects a client and tracks it for teardown. */
-    const connect = async (): Promise<StompPeer> => {
+    const connect = async (): Promise<STOMPPeer> => {
         const peer = await stompConnect(brokerUrl);
         peers.push(peer);
         return peer;

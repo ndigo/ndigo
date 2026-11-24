@@ -2,12 +2,12 @@
  * Transactions, ack tracking, /user scope, /queue backlog, binary bodies, and fan-out.
  */
 import { describe, expect, test, vi } from 'vitest';
-import { StompBroker } from '../src/index';
+import { STOMPBroker } from '../src/index';
 import { connect, FakeSession, FailingStore } from './_stomp-broker-harness';
 
-describe('StompBroker transactions', () => {
+describe('STOMPBroker transactions', () => {
     test('BEGIN/COMMIT applies buffered SENDs in order', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -25,7 +25,7 @@ describe('StompBroker transactions', () => {
     });
 
     test('ABORT discards the buffered operations', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -39,7 +39,7 @@ describe('StompBroker transactions', () => {
     });
 
     test('receipts requested inside a transaction are held until COMMIT', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -53,7 +53,7 @@ describe('StompBroker transactions', () => {
     });
 
     test('frames on an unknown transaction fail closed', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -63,7 +63,7 @@ describe('StompBroker transactions', () => {
     });
 
     test('a duplicate BEGIN fails closed', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -74,7 +74,7 @@ describe('StompBroker transactions', () => {
     });
 
     test('COMMIT on an unknown transaction fails closed', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -84,7 +84,7 @@ describe('StompBroker transactions', () => {
     });
 
     test('buffered ACK/NACK ops obey maxTransactionOps (COR-10)', async () => {
-        const broker = new StompBroker({ maxTransactionOps: 3 });
+        const broker = new STOMPBroker({ maxTransactionOps: 3 });
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -106,7 +106,7 @@ describe('StompBroker transactions', () => {
     });
 
     test('buffered ACK ops count their identifier bytes (COR-10)', async () => {
-        const broker = new StompBroker({ maxTransactionBytes: 20, nextMessageId: () => 'm'.repeat(40) });
+        const broker = new STOMPBroker({ maxTransactionBytes: 20, nextMessageId: () => 'm'.repeat(40) });
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -121,7 +121,7 @@ describe('StompBroker transactions', () => {
     });
 
     test('a failed op aborts the COMMIT — no receipt, no later ops (COR-11)', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -145,7 +145,7 @@ describe('StompBroker transactions', () => {
     });
 
     test('a store fault during COMMIT aborts it closed (COR-8/COR-11)', async () => {
-        const broker = new StompBroker({ queueStore: new FailingStore() });
+        const broker = new STOMPBroker({ queueStore: new FailingStore() });
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -162,9 +162,9 @@ describe('StompBroker transactions', () => {
     });
 });
 
-describe('StompBroker ack tracking + redelivery', () => {
+describe('STOMPBroker ack tracking + redelivery', () => {
     test('client-individual ACK removes exactly the named message', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -186,7 +186,7 @@ describe('StompBroker ack tracking + redelivery', () => {
     });
 
     test('client-mode ACK acknowledges cumulatively', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -205,7 +205,7 @@ describe('StompBroker ack tracking + redelivery', () => {
     });
 
     test('auto ack mode requires no tracking (acks are accepted no-ops)', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -218,7 +218,7 @@ describe('StompBroker ack tracking + redelivery', () => {
     });
 
     test('maxUnacked: 0 disables tracking but keeps delivery', async () => {
-        const broker = new StompBroker({ maxUnacked: 0 });
+        const broker = new STOMPBroker({ maxUnacked: 0 });
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -231,7 +231,7 @@ describe('StompBroker ack tracking + redelivery', () => {
     });
 
     test('maxUnacked: 0 accepts an id-only ACK/NACK as a receipted no-op (PR-3 regression)', async () => {
-        const broker = new StompBroker({ maxUnacked: 0 });
+        const broker = new STOMPBroker({ maxUnacked: 0 });
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -260,7 +260,7 @@ describe('StompBroker ack tracking + redelivery', () => {
     });
 
     test('redelivery keeps an empty-queue broker consistent', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -276,9 +276,9 @@ describe('StompBroker ack tracking + redelivery', () => {
     });
 });
 
-describe('StompBroker /user destinations', () => {
+describe('STOMPBroker /user destinations', () => {
     test('resolveUser default reads session.attributes.user', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const alice = new FakeSession();
         const bob = new FakeSession();
         alice.attributes['user'] = 'alice';
@@ -301,7 +301,7 @@ describe('StompBroker /user destinations', () => {
     });
 
     test('a session without a resolved user cannot bind /user/*', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -312,7 +312,7 @@ describe('StompBroker /user destinations', () => {
     });
 
     test('SEND to /user/* reaches only the sender scope', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const alice = new FakeSession();
         const bob = new FakeSession();
         alice.attributes['user'] = 'alice';
@@ -332,15 +332,15 @@ describe('StompBroker /user destinations', () => {
     });
 
     test('sendToUser with no scope is a no-op', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         broker.sendToUser('nobody', '/queue/events', 'x');
         expect(broker.subscriptions).toBe(0);
     });
 });
 
-describe('StompBroker /queue backlog', () => {
+describe('STOMPBroker /queue backlog', () => {
     test('a new subscriber replays the backlog before live traffic', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const early = new FakeSession();
         void early.handled(broker);
         connect(broker, early);
@@ -357,7 +357,7 @@ describe('StompBroker /queue backlog', () => {
     });
 
     test('backlog messages carry their stored message-id (not redelivered)', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         await broker.publish('/queue/jobs', 'j');
         const late = new FakeSession();
         void late.handled(broker);
@@ -370,7 +370,7 @@ describe('StompBroker /queue backlog', () => {
     });
 
     test('queueBacklog: 0 disables storage (live fan-out only)', async () => {
-        const broker = new StompBroker({ queueBacklog: 0 });
+        const broker = new STOMPBroker({ queueBacklog: 0 });
         await broker.publish('/queue/jobs', 'j');
         const late = new FakeSession();
         void late.handled(broker);
@@ -380,7 +380,7 @@ describe('StompBroker /queue backlog', () => {
     });
 
     test('the backlog is bounded (FIFO eviction)', async () => {
-        const broker = new StompBroker({ queueBacklog: 2 });
+        const broker = new STOMPBroker({ queueBacklog: 2 });
         await broker.publish('/queue/jobs', 'j-1');
         await broker.publish('/queue/jobs', 'j-2');
         await broker.publish('/queue/jobs', 'j-3');
@@ -394,9 +394,9 @@ describe('StompBroker /queue backlog', () => {
     });
 });
 
-describe('StompBroker binary bodies', () => {
+describe('STOMPBroker binary bodies', () => {
     test('publish delivers byte-exact binary bodies', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -409,7 +409,7 @@ describe('StompBroker binary bodies', () => {
     });
 
     test('binary SEND fans out with the byte body intact', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -422,9 +422,9 @@ describe('StompBroker binary bodies', () => {
     });
 });
 
-describe('StompBroker fan-out robustness', () => {
+describe('STOMPBroker fan-out robustness', () => {
     test('one failing subscriber does not abort the fan-out or the sender', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const good = new FakeSession();
         const failing = new FakeSession();
         void good.handled(broker);
@@ -450,9 +450,9 @@ describe('StompBroker fan-out robustness', () => {
     });
 });
 
-describe('StompBroker ack tracking + redelivery', () => {
+describe('STOMPBroker ack tracking + redelivery', () => {
     test('NACK redelivery keeps exactly one outstanding entry', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -480,9 +480,9 @@ describe('StompBroker ack tracking + redelivery', () => {
     });
 });
 
-describe('StompBroker transactions + /user', () => {
+describe('STOMPBroker transactions + /user', () => {
     test('transaction-buffered SEND to /user/* reaches the principal scope', async () => {
-        const broker = new StompBroker({ resolveUser: (s) => s.attributes['user'] as string | null });
+        const broker = new STOMPBroker({ resolveUser: (s) => s.attributes['user'] as string | null });
         const sender = new FakeSession();
         sender.attributes['user'] = 'alice';
         const alice = new FakeSession();
@@ -502,7 +502,7 @@ describe('StompBroker transactions + /user', () => {
     });
 
     test('transaction-buffered SEND to /user/* without a principal fails closed at COMMIT', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);

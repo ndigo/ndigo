@@ -320,7 +320,7 @@ Client-side, `WebSocketClient.send` drops non-serializable payloads
 (`undefined`, functions, symbols) instead of queueing a frame that would
 wedge the reconnect flush; a partial `reconnect` policy falls back to the
 documented defaults per field instead of producing NaN retry delays; and
-`maxInboundMessages` (opt-in) caps the inbound queue. `StompClient`
+`maxInboundMessages` (opt-in) caps the inbound queue. `STOMPClient`
 buffers sends while disconnected under `maxPendingSends` (default 10 000,
 drop-oldest) and bounds each subscription's MESSAGE queue under
 `maxSubscriptionMessages` (default 4096, drop-newest) — a stalled
@@ -359,8 +359,8 @@ transport.
   STOMP
 - Demo: `ChatController` in [apps/05-ndigo-api/src/chat-controller.ts](https://github.com/ndigo/ndigo/blob/main/apps/05-ndigo-api/src/chat-controller.ts) e2e in
   [apps/05-ndigo-api/test/chat.spec.ts](https://github.com/ndigo/ndigo/blob/main/apps/05-ndigo-api/test/chat.spec.ts) (driven by `WebSocketClient`);
-  `StompChatController` in [apps/05-ndigo-api/src/stomp-chat-controller.ts](https://github.com/ndigo/ndigo/blob/main/apps/05-ndigo-api/src/stomp-chat-controller.ts)
-  e2e in [apps/05-ndigo-api/test/stomp.spec.ts](https://github.com/ndigo/ndigo/blob/main/apps/05-ndigo-api/test/stomp.spec.ts) (driven by `StompClient`)
+  `STOMPChatController` in [apps/05-ndigo-api/src/stomp-chat-controller.ts](https://github.com/ndigo/ndigo/blob/main/apps/05-ndigo-api/src/stomp-chat-controller.ts)
+  e2e in [apps/05-ndigo-api/test/stomp.spec.ts](https://github.com/ndigo/ndigo/blob/main/apps/05-ndigo-api/test/stomp.spec.ts) (driven by `STOMPClient`)
 - Package surfaces: [`@ndigo/socket`](../../packages/ndigo-socket/README.md)
   (contracts + client + STOMP), `@ndigo/dispatcher` (handler vocabulary),
   [`@ndigo/platform-node`](../../packages/ndigo-platform-node/README.md)

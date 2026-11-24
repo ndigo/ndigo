@@ -3,29 +3,29 @@
  * routing, queue replay, and the delivery side of buffered transactions.
  */
 import { materialOctets, type QueueMessageStore, type StoredQueueMessage } from './message-store';
-import { serializeStompFrame, type StompBody, type StompFrame } from './stomp-frame';
+import { serializeStompFrame, type STOMPBody, type STOMPFrame } from './stomp-frame';
 import type { SocketSession } from './socket-session';
 import type { QueueReplay, StoredMessage, Subscription, TransactionOp } from './_stomp-broker-types';
-import type { StompLimits } from './_stomp-limits';
-import type { StompSubscriptionRegistry } from './_stomp-subscriptions';
+import type { STOMPLimits } from './_stomp-limits';
+import type { STOMPSubscriptionRegistry } from './_stomp-subscriptions';
 import { fail } from './_stomp-replies';
 
 /**
  * The broker-owned seams delivery needs.
  */
-export interface StompDeliveryHost {
-    readonly registry: StompSubscriptionRegistry;
-    readonly limits: StompLimits;
+export interface STOMPDeliveryHost {
+    readonly registry: STOMPSubscriptionRegistry;
+    readonly limits: STOMPLimits;
     readonly queueStore: QueueMessageStore | null;
     readonly retention: { ttlMs?: number; maxMessages?: number } | null;
     readonly onMessage:
-        | ((destination: string, body: StompBody, headers: Record<string, string>, session: SocketSession) => unknown)
+        | ((destination: string, body: STOMPBody, headers: Record<string, string>, session: SocketSession) => unknown)
         | null;
     readonly resolveUser: (session: SocketSession) => string | null;
     readonly nextMessageId: () => string;
     publish(
         destination: string,
-        body: StompBody,
+        body: STOMPBody,
         headers: Record<string, string>
     ): Promise<StoredQueueMessage | undefined>;
 }
@@ -33,13 +33,13 @@ export interface StompDeliveryHost {
 /**
  * Delivers MESSAGE frames to subscriptions and resolves their acknowledgements.
  */
-export class StompDelivery {
-    readonly #host: StompDeliveryHost;
+export class STOMPDelivery {
+    readonly #host: STOMPDeliveryHost;
 
     /**
      * @param host - The broker's registry, bounds, and routing seams.
      */
-    constructor(host: StompDeliveryHost) {
+    constructor(host: STOMPDeliveryHost) {
         this.#host = host;
     }
 
@@ -60,7 +60,7 @@ export class StompDelivery {
         subscription: Subscription,
         messageId: string,
         destination: string,
-        body: StompBody,
+        body: STOMPBody,
         headers: Record<string, string>,
         redelivered: boolean
     ): void {
@@ -92,7 +92,7 @@ export class StompDelivery {
         subscription: Subscription,
         messageId: string,
         destination: string,
-        body: StompBody,
+        body: STOMPBody,
         headers: Record<string, string>,
         redelivered: boolean
     ): void {
@@ -194,9 +194,9 @@ export class StompDelivery {
      */
     sendToUserScope(
         session: SocketSession,
-        frame: StompFrame,
+        frame: STOMPFrame,
         destination: string,
-        body: StompBody,
+        body: STOMPBody,
         headers: Record<string, string>
     ): boolean {
         const user = this.#host.resolveUser(session);
@@ -231,7 +231,7 @@ export class StompDelivery {
      */
     async applyBufferedSend(
         session: SocketSession,
-        frame: StompFrame,
+        frame: STOMPFrame,
         op: Extract<TransactionOp, { kind: 'send' }>
     ): Promise<boolean> {
         const suppress = this.#host.onMessage?.(op.destination, op.body, op.headers, session);

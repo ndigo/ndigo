@@ -19,7 +19,7 @@ export const STOMP_MAPPING_KEY = 'route:stomp';
  * Marks a method as a STOMP endpoint at the given path.
  *
  * Implies `@socketMapping` (the connection is a WebSocket); handlers
- * receive a `SocketSession` and typically hand it to a `StompBroker`
+ * receive a `SocketSession` and typically hand it to a `STOMPBroker`
  * (e.g. `await broker.handleSocket(session)`).
  *
  * @param route - The path to serve STOMP connections at, relative to any

@@ -67,6 +67,6 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `LockInstrumentation` — OpenTelemetry instrumentation for `LockInstrumentation`.
 - `RateLimitInstrumentation` — OpenTelemetry instrumentation for `RateLimitInstrumentation`.
 - `ResilienceInstrumentation` — OpenTelemetry instrumentation for `ResilienceInstrumentation`.
-- `StompInstrumentation` — OpenTelemetry instrumentation for `StompInstrumentation`.
+- `STOMPInstrumentation` — OpenTelemetry instrumentation for `STOMPInstrumentation`.
 - `CacheInstrumentation` — OpenTelemetry instrumentation for `CacheInstrumentation`.
 - `HTTPClientInstrumentation` — An OpenTelemetry instrumentation for the `@ndigo/http` client.

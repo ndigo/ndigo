@@ -4,14 +4,14 @@
  */
 import { RingBuffer } from '@ndigo/core';
 import { materialOctets, type QueueMessageStore, type StoredQueueMessage } from './message-store';
-import type { StompBody, StompFrame } from './stomp-frame';
+import type { STOMPBody, STOMPFrame } from './stomp-frame';
 import type { SocketSession } from './socket-session';
 import type { StoredMessage, Subscription } from './_stomp-broker-types';
-import type { StompAckMode } from './stomp-broker';
-import type { StompDelivery } from './_stomp-delivery';
-import type { StompLimits } from './_stomp-limits';
-import type { StompSubscriptionRegistry } from './_stomp-subscriptions';
-import type { StompTransactionManager } from './_stomp-transactions';
+import type { STOMPAckMode } from './stomp-broker';
+import type { STOMPDelivery } from './_stomp-delivery';
+import type { STOMPLimits } from './_stomp-limits';
+import type { STOMPSubscriptionRegistry } from './_stomp-subscriptions';
+import type { STOMPTransactionManager } from './_stomp-transactions';
 import { fail, receipt } from './_stomp-replies';
 
 /** SEND headers that are framing rather than user payload (COR-7, STOMP 1.2 §2.1). */
@@ -25,24 +25,24 @@ const SEND_FRAMING_HEADERS: Record<string, true> = {
 /**
  * The broker-owned seams the command handlers need.
  */
-export interface StompCommandHost {
+export interface STOMPCommandHost {
     readonly maxSubscriptionsPerSession: number;
     readonly maxUnacked: number;
     readonly queueBacklog: number;
     readonly retention: { ttlMs?: number; maxMessages?: number } | null;
     readonly queueStore: QueueMessageStore | null;
     readonly onMessage:
-        | ((destination: string, body: StompBody, headers: Record<string, string>, session: SocketSession) => unknown)
+        | ((destination: string, body: STOMPBody, headers: Record<string, string>, session: SocketSession) => unknown)
         | null;
     readonly authorize: ((destination: string, action: 'subscribe' | 'send', session: SocketSession) => unknown) | null;
     readonly resolveUser: (session: SocketSession) => string | null;
-    readonly limits: StompLimits;
-    readonly registry: StompSubscriptionRegistry;
-    readonly transactions: StompTransactionManager;
-    readonly delivery: StompDelivery;
+    readonly limits: STOMPLimits;
+    readonly registry: STOMPSubscriptionRegistry;
+    readonly transactions: STOMPTransactionManager;
+    readonly delivery: STOMPDelivery;
     publish(
         destination: string,
-        body: StompBody,
+        body: STOMPBody,
         headers: Record<string, string>
     ): Promise<StoredQueueMessage | undefined>;
 }
@@ -50,13 +50,13 @@ export interface StompCommandHost {
 /**
  * Handles the STOMP commands that mutate broker state.
  */
-export class StompCommands {
-    readonly #host: StompCommandHost;
+export class STOMPCommands {
+    readonly #host: STOMPCommandHost;
 
     /**
      * @param host - The broker's registry, policy, and delivery seams.
      */
-    constructor(host: StompCommandHost) {
+    constructor(host: STOMPCommandHost) {
         this.#host = host;
     }
 
@@ -73,7 +73,7 @@ export class StompCommands {
      * @returns `false` on duplicate id / missing headers / denied
      *   destination / store or replay-budget failure (ERROR + close).
      */
-    async subscribe(session: SocketSession, frame: StompFrame): Promise<boolean> {
+    async subscribe(session: SocketSession, frame: STOMPFrame): Promise<boolean> {
         const destination = frame.headers['destination'];
         const subId = frame.headers['id'];
         if (destination === undefined) {
@@ -82,7 +82,7 @@ export class StompCommands {
         if (subId === undefined) {
             return fail(session, frame, 'SUBSCRIBE requires an id header');
         }
-        const ack = (frame.headers['ack'] ?? 'auto') as StompAckMode;
+        const ack = (frame.headers['ack'] ?? 'auto') as STOMPAckMode;
         if (ack !== 'auto' && ack !== 'client' && ack !== 'client-individual') {
             return fail(session, frame, `invalid ack mode: ${ack}`);
         }
@@ -201,7 +201,7 @@ export class StompCommands {
      */
     async #authorizeDestination(
         session: SocketSession,
-        frame: StompFrame,
+        frame: STOMPFrame,
         destination: string,
         action: 'subscribe' | 'send'
     ): Promise<boolean> {
@@ -222,7 +222,7 @@ export class StompCommands {
      * @param frame - The UNSUBSCRIBE frame.
      * @returns `false` on unknown id (ERROR + close).
      */
-    unsubscribe(session: SocketSession, frame: StompFrame): boolean {
+    unsubscribe(session: SocketSession, frame: STOMPFrame): boolean {
         const subId = frame.headers['id'];
         if (subId === undefined) {
             return fail(session, frame, 'UNSUBSCRIBE requires an id header');
@@ -248,7 +248,7 @@ export class StompCommands {
      * @param session - The sending session.
      * @param frame - The SEND frame.
      */
-    async send(session: SocketSession, frame: StompFrame): Promise<boolean> {
+    async send(session: SocketSession, frame: STOMPFrame): Promise<boolean> {
         const destination = frame.headers['destination'];
         if (destination === undefined) {
             return fail(session, frame, 'SEND requires a destination header');
@@ -318,7 +318,7 @@ export class StompCommands {
      */
     async #publishAndReceipt(
         session: SocketSession,
-        frame: StompFrame,
+        frame: STOMPFrame,
         destination: string,
         headers: Record<string, string>
     ): Promise<boolean> {
@@ -348,7 +348,7 @@ export class StompCommands {
      * @param frame - The SEND frame.
      * @returns The pass-through headers.
      */
-    #sendHeaders(frame: StompFrame): Record<string, string> {
+    #sendHeaders(frame: STOMPFrame): Record<string, string> {
         const headers: Record<string, string> = {};
         for (const [name, value] of Object.entries(frame.headers)) {
             if (SEND_FRAMING_HEADERS[name] !== true) {

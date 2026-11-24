@@ -3,34 +3,34 @@
  * that delivered the message, live or buffered in a transaction.
  */
 import { materialOctets } from './message-store';
-import type { StompFrame } from './stomp-frame';
+import type { STOMPFrame } from './stomp-frame';
 import type { SocketSession } from './socket-session';
 import type { Subscription } from './_stomp-broker-types';
-import type { StompDelivery } from './_stomp-delivery';
-import type { StompSubscriptionRegistry } from './_stomp-subscriptions';
-import type { StompTransactionManager } from './_stomp-transactions';
+import type { STOMPDelivery } from './_stomp-delivery';
+import type { STOMPSubscriptionRegistry } from './_stomp-subscriptions';
+import type { STOMPTransactionManager } from './_stomp-transactions';
 import { fail, receipt } from './_stomp-replies';
 
 /**
  * The broker-owned seams the ACK/NACK handler needs.
  */
-export interface StompAckHost {
+export interface STOMPAckHost {
     readonly maxUnacked: number;
-    readonly registry: StompSubscriptionRegistry;
-    readonly transactions: StompTransactionManager;
-    readonly delivery: StompDelivery;
+    readonly registry: STOMPSubscriptionRegistry;
+    readonly transactions: STOMPTransactionManager;
+    readonly delivery: STOMPDelivery;
 }
 
 /**
  * Resolves ACK/NACK frames against delivery tracking.
  */
-export class StompAckHandler {
-    readonly #host: StompAckHost;
+export class STOMPAckHandler {
+    readonly #host: STOMPAckHost;
 
     /**
      * @param host - The broker's registry and transaction seams.
      */
-    constructor(host: StompAckHost) {
+    constructor(host: STOMPAckHost) {
         this.#host = host;
     }
 
@@ -68,7 +68,7 @@ export class StompAckHandler {
      * @param frame - The ACK/NACK frame.
      * @returns `false` when the frame violates the contract.
      */
-    ack(session: SocketSession, frame: StompFrame): boolean {
+    ack(session: SocketSession, frame: STOMPFrame): boolean {
         const messageId = frame.headers['id'];
         if (messageId === undefined) {
             return fail(session, frame, 'ACK/NACK requires an id header');

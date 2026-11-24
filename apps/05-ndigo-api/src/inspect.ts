@@ -24,7 +24,7 @@ import { ServerConfig, SecretsConfig } from './server-config';
 import { GreetingController } from './greeting-controller';
 import { AuthController } from './auth-controller';
 import { ChatController } from './chat-controller';
-import { StompChatController } from './stomp-chat-controller';
+import { STOMPChatController } from './stomp-chat-controller';
 import { NoteController } from './note-controller';
 import { DrizzleNoteController } from './drizzle-note-controller';
 import { ProductController } from './product-controller';
@@ -45,7 +45,7 @@ const CONTROLLERS = [
     GreetingController,
     AuthController,
     ChatController,
-    StompChatController,
+    STOMPChatController,
     NoteController,
     DrizzleNoteController,
     ProductController,

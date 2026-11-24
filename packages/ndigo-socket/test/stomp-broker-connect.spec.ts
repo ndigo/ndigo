@@ -2,12 +2,12 @@
  * CONNECT negotiation, subscriptions, SEND routing, receipts, and shutdown.
  */
 import { describe, expect, test, vi } from 'vitest';
-import { StompBroker } from '../src/index';
+import { STOMPBroker } from '../src/index';
 import { connect, FakeSession } from './_stomp-broker-harness';
 
-describe('StompBroker CONNECT', () => {
+describe('STOMPBroker CONNECT', () => {
     test('answers CONNECTED with negotiated version and session id', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -20,7 +20,7 @@ describe('StompBroker CONNECT', () => {
     });
 
     test('negotiates the highest mutual version', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const session = new FakeSession();
         void session.handled(broker);
         session.push('CONNECT', { 'accept-version': '1.0', host: 'example.com' });
@@ -28,7 +28,7 @@ describe('StompBroker CONNECT', () => {
     });
 
     test('a missing accept-version means "1.0 only" (STOMP 1.2 §1.1)', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const session = new FakeSession();
         void session.handled(broker);
         // No accept-version and no host: a 1.0 client, which needs neither.
@@ -40,7 +40,7 @@ describe('StompBroker CONNECT', () => {
     });
 
     test('CONNECT credentials are rejected while no verifier is configured (SEC-7)', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const session = new FakeSession();
         void session.handled(broker);
         session.push('CONNECT', { 'accept-version': '1.2', host: 'example.com', login: 'alice', passcode: 'secret' });
@@ -55,7 +55,7 @@ describe('StompBroker CONNECT', () => {
         const verifyCredentials = vi.fn(
             (login: string, passcode: string) => login === 'alice' && passcode === 'secret'
         );
-        const broker = new StompBroker({ verifyCredentials });
+        const broker = new STOMPBroker({ verifyCredentials });
         const accepted = new FakeSession();
         void accepted.handled(broker);
         accepted.push('CONNECT', { 'accept-version': '1.2', host: 'example.com', login: 'alice', passcode: 'secret' });
@@ -72,7 +72,7 @@ describe('StompBroker CONNECT', () => {
     });
 
     test('rejects a frame that is not CONNECT first', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const session = new FakeSession();
         void session.handled(broker);
         session.push('SEND', { destination: '/topic/x' }, 'hi');
@@ -83,7 +83,7 @@ describe('StompBroker CONNECT', () => {
     });
 
     test('rejects an unsupported accept-version', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const session = new FakeSession();
         void session.handled(broker);
         session.push('CONNECT', { 'accept-version': '0.9' });
@@ -92,7 +92,7 @@ describe('StompBroker CONNECT', () => {
     });
 
     test('rejects a missing host on STOMP 1.1+', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const session = new FakeSession();
         void session.handled(broker);
         session.push('CONNECT', { 'accept-version': '1.2' });
@@ -101,7 +101,7 @@ describe('StompBroker CONNECT', () => {
     });
 
     test('ignores heart-beat ping frames', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -112,7 +112,7 @@ describe('StompBroker CONNECT', () => {
     });
 
     test('rejects a non-text inbound frame', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -124,9 +124,9 @@ describe('StompBroker CONNECT', () => {
     });
 });
 
-describe('StompBroker subscriptions', () => {
+describe('STOMPBroker subscriptions', () => {
     test('SUBSCRIBE then publish delivers MESSAGE with the subscriber id', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -143,7 +143,7 @@ describe('StompBroker subscriptions', () => {
     });
 
     test('two subscriptions to one destination get distinct MESSAGE frames', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -157,7 +157,7 @@ describe('StompBroker subscriptions', () => {
     });
 
     test('two sessions receive the same publish, each with their own id', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const a = new FakeSession();
         const b = new FakeSession();
         void a.handled(broker);
@@ -177,7 +177,7 @@ describe('StompBroker subscriptions', () => {
     });
 
     test('duplicate subscription id fails with ERROR', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -191,7 +191,7 @@ describe('StompBroker subscriptions', () => {
     });
 
     test('UNSUBSCRIBE removes the subscription and stops delivery', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -206,7 +206,7 @@ describe('StompBroker subscriptions', () => {
     });
 
     test('UNSUBSCRIBE of an unknown id fails with ERROR', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -216,7 +216,7 @@ describe('StompBroker subscriptions', () => {
     });
 
     test('session-close drops all its subscriptions', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -228,9 +228,9 @@ describe('StompBroker subscriptions', () => {
     });
 });
 
-describe('StompBroker SEND routing', () => {
+describe('STOMPBroker SEND routing', () => {
     test('SEND fans out to subscribers, including the sender when subscribed', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const sender = new FakeSession();
         const other = new FakeSession();
         void sender.handled(broker);
@@ -252,7 +252,7 @@ describe('StompBroker SEND routing', () => {
 
     test('onMessage returning false suppresses the default fan-out', async () => {
         const onMessage = vi.fn(() => false as unknown);
-        const broker = new StompBroker({ onMessage });
+        const broker = new STOMPBroker({ onMessage });
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -269,7 +269,7 @@ describe('StompBroker SEND routing', () => {
     });
 
     test('SEND without a destination fails with ERROR', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -279,7 +279,7 @@ describe('StompBroker SEND routing', () => {
     });
 
     test('user-defined SEND headers reach the MESSAGE frame (COR-7)', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -300,7 +300,7 @@ describe('StompBroker SEND routing', () => {
     });
 
     test('a transactional SEND produces the same MESSAGE headers as a live one (COR-7)', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -328,7 +328,7 @@ describe('StompBroker SEND routing', () => {
     });
 
     test('a SEND cannot spoof broker-owned MESSAGE headers (COR-7 guard)', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -354,9 +354,9 @@ describe('StompBroker SEND routing', () => {
     });
 });
 
-describe('StompBroker receipts and acks', () => {
+describe('STOMPBroker receipts and acks', () => {
     test('frames with a receipt header get a RECEIPT', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -367,7 +367,7 @@ describe('StompBroker receipts and acks', () => {
     });
 
     test('ERROR carries the receipt-id of the offending frame', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -377,7 +377,7 @@ describe('StompBroker receipts and acks', () => {
     });
 
     test('ACK/NACK validates the subscription', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -392,9 +392,9 @@ describe('StompBroker receipts and acks', () => {
     });
 });
 
-describe('StompBroker shutdown', () => {
+describe('STOMPBroker shutdown', () => {
     test('closeAll closes every tracked session', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const a = new FakeSession();
         const b = new FakeSession();
         void a.handled(broker);
@@ -410,7 +410,7 @@ describe('StompBroker shutdown', () => {
     });
 
     test('publish to a destination with no subscribers is a no-op', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);

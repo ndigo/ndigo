@@ -227,6 +227,15 @@ function ifRangeMatches(
     return false;
 }
 
+/** Response context for one resolved representation. */
+interface RepresentationContext {
+    readonly res: ServerResponse;
+    readonly result: StaticResourceResult;
+    readonly successHeaders: Record<string, string>;
+    readonly headers: Record<string, string | string[] | undefined>;
+    readonly method: string | undefined;
+}
+
 /**
  * The HTTP half of static serving: one `handle(route, requestPath)` call
  * turns a path into a complete response (D-5).
@@ -242,15 +251,6 @@ function ifRangeMatches(
  * const instance = new StaticResourceHandler();
  * ```
  */
-/** Response context for one resolved representation. */
-interface RepresentationContext {
-    readonly res: ServerResponse;
-    readonly result: StaticResourceResult;
-    readonly successHeaders: Record<string, string>;
-    readonly headers: Record<string, string | string[] | undefined>;
-    readonly method: string | undefined;
-}
-
 export class StaticResourceHandler {
     /**
      * The `Symbol.toStringTag` value for this instance.

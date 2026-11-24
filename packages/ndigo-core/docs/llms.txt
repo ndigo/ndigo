@@ -44,6 +44,11 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `likeEquatable` — Type guard to check if a value implements the `Equatable` interface.
 - `equates` — Compares arbitrary values using strict primitive equality (`NaN` is unequal; +/-0 are equal). When both values expose `equals`, delegates to the left value, in…
 - `AsSerializableError` — A mixin that adds serialization capabilities to an Error class, allowing it to be converted to a JSON object.
+- `ErrorDisposition` *(type)* — Whose fault the failure is and how loudly it should be logged.
+- `ProblemStatus` *(type)* — The minimal status shape an error carries. `ResponseStatus` satisfies it structurally; the reason phrase is optional so the kernel does not depend on `@ndigo/h…
+- `NdigoErrorOptions` *(type)* — Options accepted by `ApplicationError` and `FrameworkError`.
+- `ClientProblem` *(type)* — A thrown value that carries the client-error rendering contract.
+- `likeClientProblem` — Structural check for a client error. Never uses `instanceof`: the contract is the shape, so it survives duplicate package copies and serialized errors.
 - `ApplicationError` — Represents a general application-level error.
 - `FrameworkError` — Represents an error within the framework itself.
 - `IllegalStateError` — Represents an error indicating that an operation cannot be completed due to an invalid state or misconfiguration.

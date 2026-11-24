@@ -7,6 +7,10 @@ Version-matched export index for the installed package. Read `README.md`
 for usage; the workspace guide index ships with `@ndigo/cli` as
 `assets/agent/docs-index.md`.
 
+## Capabilities
+
+- `background-jobs` — Deliver background work: a sample worker plus the queue and runner — swap drivers from in-process to durable without touching handlers. Packages: `@ndigo/jobs`. Guide: `22-jobs-and-outbox`.
+
 ## Public exports
 
 - `ClaimOptions` *(type)* — Claim window for `JobDriver.claim`.

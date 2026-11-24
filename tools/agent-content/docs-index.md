@@ -67,6 +67,8 @@ matches the task; do not guess APIs from memory.
 
 - `agent-model` — Add a bounded, provider-neutral tool-calling loop with streaming, structured output, and telemetry. Packages: `@ndigo/ai`, `@ndigo/ai-sdk`. Guide: `47-ai-agents`.
 - `agent-surface` — Expose an application's dispatch handlers as MCP tools over a stdio server. Packages: `@ndigo/mcp`. Guide: `48-agent-facing-surfaces`.
+- `background-jobs` — Deliver background work: a sample worker plus the queue and runner — swap drivers from in-process to durable without touching handlers. Packages: `@ndigo/jobs`. Guide: `22-jobs-and-outbox`.
+- `shared-cache` — Share the cache across processes: a Redis-backed CacheManager replaces the per-process memory default. Packages: `@ndigo/redis`. Guide: `21-persistence-and-shared-stores`.
 
 ## Packages
 

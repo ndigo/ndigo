@@ -1,0 +1,26 @@
+{
+  "id": "shared-cache",
+  "kind": "capability",
+  "summary": "Share the cache across processes: a Redis-backed CacheManager replaces the per-process memory default.",
+  "packages": ["@ndigo/redis"],
+  "guide": "21-persistence-and-shared-stores",
+  "variables": [
+    {
+      "name": "namespace",
+      "description": "Redis namespace separating this application's keys",
+      "default": "app"
+    }
+  ],
+  "ops": [
+    {
+      "op": "addDependency",
+      "packages": ["@ndigo/redis"]
+    },
+    {
+      "op": "writeFile",
+      "template": "templates/cache.ts.tmpl",
+      "path": "src/cache.ts"
+    }
+  ],
+  "checks": ["app-boot", "typecheck"]
+}

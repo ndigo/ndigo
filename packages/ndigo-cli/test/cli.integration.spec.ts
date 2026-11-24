@@ -783,8 +783,8 @@ describe('ndigo script fronts, env, and passthrough (issue #152)', () => {
     });
 
     test('add explains a package no capability composes', async () => {
-        const { code, err } = await runCli(['add', '@ndigo/redis', frontsAppDir]);
+        const { code, err } = await runCli(['add', '@ndigo/socket', frontsAppDir]);
         expect(code).toBe(2);
-        expect(err).toContain('no capability installs @ndigo/redis yet');
+        expect(err).toContain('no capability installs @ndigo/socket yet');
     });
 });

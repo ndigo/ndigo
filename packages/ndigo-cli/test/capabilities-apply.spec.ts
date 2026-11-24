@@ -85,8 +85,8 @@ describe('capability resolution', () => {
 
     it('rejects an unknown id and a package no capability installs', () => {
         expect(() => resolveCapability('nope', catalog.capabilities)).toThrow(/unknown capability 'nope'/u);
-        expect(() => resolveCapability('@ndigo/redis', catalog.capabilities)).toThrow(
-            /no capability installs @ndigo\/redis yet/u
+        expect(() => resolveCapability('@ndigo/socket', catalog.capabilities)).toThrow(
+            /no capability installs @ndigo\/socket yet/u
         );
     });
 

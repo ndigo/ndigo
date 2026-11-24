@@ -3,6 +3,18 @@
   "version": "0.0.1",
   "description": "Node-only Redis connections, namespaced shared cache adapters, WebSocket pub/sub fan-out, distributed-lock/job drivers, and the shared-store rate limiter for Ndigo",
   "type": "module",
+  "ndigo": {
+    "capabilities": [
+      "shared-cache"
+    ],
+    "surfaces": [
+      "redis-connection",
+      "shared-cache",
+      "pubsub-fanout",
+      "lock-driver",
+      "rate-limiter"
+    ]
+  },
   "files": [
     "api",
     "docs",

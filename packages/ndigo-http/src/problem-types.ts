@@ -1,7 +1,7 @@
 /**
  * RFC 9457 problem-type URIs used by the HTTP error contract.
  *
- * The `urn:ndigo:` scheme is a self-contained placeholder (AD-10); real HTTPS
+ * The `urn:ndigo:` scheme is a self-contained placeholder; real HTTPS
  * URIs replace it before the first public release. Slugs use `-` separators.
  */
 export const ProblemTypes = {

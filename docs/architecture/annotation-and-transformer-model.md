@@ -19,23 +19,21 @@ the application context — not the decorator — composes the executors. The
 programmatic path is a first-class primitive, not a compatibility shim: every
 capability reachable through a container is reachable by hand.
 
-> **Status.** This page describes the model recorded in AD-109 and implemented
-> by AD-110. The tree runs `@ndigo/advice`; `@ndigo/proxy` is gone, no
-> annotation writes a `proxy:` key, selection lives on the rule, and shadow
-> weaving is the default strategy. The **inventory** in §8 reflects the current
-> tree.
+> **Status.** This page describes the current model, not a migration path. The
+> tree runs `@ndigo/advice`; `@ndigo/proxy` is gone, no annotation writes a
+> `proxy:` key, selection lives on the rule, and shadow weaving is the default
+> strategy. The **inventory** in §8 reflects the current tree.
 
-**Audience:** Framework contributors and package authors · **Prerequisites:**
-[AD-83](../decisions/2026-10-31_AD83_DECORATOR_CATEGORIES.md) (naming roles),
-[AD-42](../decisions/2026-10-03_AD42_METHOD_INTERCEPTION.md) (the interception
-predecessor) · **Decisions:** [AD-109](../decisions/2026-11-19_AD109_ANNOTATION_ADVICE_MODEL.md)
+**Audience:** Framework contributors and package authors · **Related:**
+[STYLE_GUIDE §3.17 — decorator categories and naming](../../STYLE_GUIDE.md#317-decorator-categories--naming),
+[Guide 35 — method advice and resilience](../guides/35-method-interception-and-resilience.md)
 
 ## 1. One vocabulary, several axes
 
 Three questions get confused constantly, so they are answered on separate axes:
 
 1. **Role** — what does the name describe? A stereotype, a condition, a
-   registration, a policy, a binding. Answered by AD-83 and
+   registration, a policy, a binding. Answered by the decorator taxonomy in
    [STYLE_GUIDE §3.17](../../STYLE_GUIDE.md#317-decorator-categories--naming).
 2. **Mechanism** — what does the decorator actually do at runtime? Annotation,
    advice, or member transformation. Answered by this page.
@@ -109,8 +107,7 @@ and advice wove that instance earlier, so a `@scheduled` + `@traced` method
 reaches the woven method through the registry's own closure
 (`apps/17-ndigo-telemetry-lab/test/scheduled-advice.spec.ts`).
 
-> **Names, resolved ([AD-112](../decisions/2026-11-20_AD112_LIFECYCLE_CONSOLIDATION.md)).**
-> The Spring-inherited names were renamed in the #548 consolidation:
+> **Names, resolved.** The framework-inherited names were deliberately renamed:
 > `ManagedLifecycle` (was `SmartLifecycle` — the `Smart-` prefix was jargon)
 > and `LifecycleCoordinator` (was `LifecycleProcessor` — a driver of lifecycle
 > components, not a processor in the `EntryProcessor` sense).
@@ -324,9 +321,9 @@ live in the `AdviceOrder` constant and may change without notice.
 A shipped capability declares its natural band on the interceptor — the
 telemetry advisories in `Observability`, resilience in `Resilience`, the
 transaction boundary in `Transaction`, caching in `Application` — so the safe
-arrangement is what an application gets without naming numbers. This refines
-AD-109 D7, which put order on the rule alone; the rule still has the last word,
-because a capability's band is a default and a composition is a decision.
+arrangement is what an application gets without naming numbers. Order belongs
+to the rule by default, but a capability's band is the safer default; the rule
+still has the last word, because a composition is a decision.
 
 ### Composition order
 
@@ -715,9 +712,10 @@ collision case may not.
 
 ### Decorators are named by role, never by mechanism
 
-`@retry` is not `@methodAdvice`; `@cached` is not `@cacheTransformer`. AD-83
-fixes the name by the annotated element's role, and this page does not add a
-second naming rule. A decorator that changes mechanism keeps its name.
+`@retry` is not `@methodAdvice`; `@cached` is not `@cacheTransformer`. The
+decorator taxonomy fixes the name by the annotated element's role, and this
+page does not add a second naming rule. A decorator that changes mechanism
+keeps its name.
 
 ### Banned names
 
@@ -726,7 +724,7 @@ second naming rule. A decorator that changes mechanism keeps its name.
 | `Pointcut`, `JoinPoint`                           | AOP vocabulary with no Ndigo equivalent; `Matchable` and `MethodInvocation` are the contracts |
 | `Aspect`                                          | Names a rejected library shape; use "rule" or "interceptor"                                   |
 | `Advice` as a decorator name                      | "advice" names execution, not declaration                                                     |
-| `Annotation` as a naming category                 | AD-83 category 8 is **Bindings & exposures** (see the amendment)                              |
+| `Annotation` as a naming category                 | The taxonomy's category is **Bindings & exposures**                                           |
 | `Interceptor` unqualified when a collision exists | Two `RetryInterceptor`s already prove the cost                                                |
 | `apply`, `call`, `bind` as public API names       | Reserved by `Function.prototype`; they shadow the intrinsic methods                           |
 
@@ -760,7 +758,7 @@ describing a different framework.
 | :------------------------------ | :------------------------------------------------- | :------------------------------------------------------------------------- |
 | Spring `@Aspect` + `@Around`    | A `MethodInterceptorRule` with an interceptor      | No aspect class; rules are values, not annotated classes                   |
 | Spring pointcut expression      | `Matchable<MethodDescriptor>`                      | Predicates are code; no expression parser                                  |
-| Spring `@Transactional`         | `@transactional` (annotation + member transformer) | Reconciliation with method advice is tracked in #47                        |
+| Spring `@Transactional`         | `@transactional` (annotation + member transformer) | Reconciliation with method advice is a known open point                    |
 | Spring `@Order` / `Ordered`     | `order` on the rule + `AdviceOrder` bands          | Ordering belongs to the composition, not the advice class                  |
 | Angular HTTP interceptor        | `HTTPInterceptor`                                  | Same idea; phase hooks instead of a single `intercept(req, next)`          |
 | Angular DI-provided interceptor | Rule with `use` resolved from the context          | Interceptors are context citizens, not module providers by default         |
@@ -770,37 +768,19 @@ describing a different framework.
 
 What is deliberately **not** adopted: pointcut languages, introductions
 (inter-type declarations), constructor interception, property get/set
-interception, and compile-time weaving. AD-42 D-7 rejected the first four;
-nothing in this model reopens them.
+interception, and compile-time weaving. The framework rejected the first four
+when the interception facility was designed; nothing in this model reopens
+them.
 
-## 12. Relationship to prior decisions
+## 12. Open questions
 
-- **[AD-42](../decisions/2026-10-03_AD42_METHOD_INTERCEPTION.md)** — the
-  interception facility. D-1 (package named `@ndigo/proxy`), D-3 (fused
-  `matches` + `invoke`), and D-6 (proxy-only composition) are superseded by
-  #546. D-2 (metadata-only annotations), D-4 (target-bound receivers), D-5 (no
-  proxy when nothing matches), and D-7 (scope) survive in adapted form.
-- **[AD-43](../decisions/2026-10-04_AD43_RETRY_AND_CIRCUIT_BREAKER.md)** — the
-  proof case. Retry and circuit breaking keep their semantics; the selection
-  and validation split is the only contract change.
-- **[AD-83](../decisions/2026-10-31_AD83_DECORATOR_CATEGORIES.md)** — role
-  taxonomy. D1's category 8 is renamed **Bindings & exposures**; the taxonomy
-  is about names, not mechanisms, and is unchanged otherwise. D5's
-  interface-first lifecycle position stands; [AD-111](../decisions/2026-11-20_AD111_ANNOTATION_LIFECYCLE_HOOKS.md)
-  decides the annotation family beside it (`@preInit`/`@postInit`/`@preDestroy`,
-  gated on #548).
-- **[AD-91](../decisions/2026-11-02_AD91_1_0_API_FREEZE.md)** — the freeze.
-  This work is a pre-1.0 break, recorded in AD-109 and applied without aliases.
+| Question                                                                   | Resolution                                                                                   |
+| :------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------- |
+| Does `@transactional` join an active transaction or self-invoke unadvised? | Resolved — nesting joins; self-invocation is advised                                         |
+| Is `preInit` a real lifecycle stage, or covered by existing hooks?         | Resolved — `@preInit` fronts `processBeforeInitialization`; no new stage                     |
+| Can an application override an annotation's value per context?             | Deferred — an optional overlay, not a requirement of the model                               |
+| Does `@cached` move from member transformer to advice?                     | Deferred — only if per-application reconfiguration is required                               |
+| Should destruction processors run in reverse registration order?           | Resolved — reverse of construction: processors reverse registration, values reverse creation |
 
-## 13. Open questions
-
-| Question                                                                   | Owner                                                                                                 |
-| :------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------- |
-| Does `@transactional` join an active transaction or self-invoke unadvised? | Resolved — AD-110 D-11 (nesting joins; self-invocation is advised)                                    |
-| Is `preInit` a real lifecycle stage, or covered by existing hooks?         | Resolved — AD-111 (`@preInit` fronts `processBeforeInitialization`; no new stage)                     |
-| Can an application override an annotation's value per context?             | Deferred — an optional overlay, not a requirement of the model                                        |
-| Does `@cached` move from member transformer to advice?                     | Deferred — only if per-application reconfiguration is required                                        |
-| Should destruction processors run in reverse registration order?           | Resolved — AD-112 (reverse of construction: processors reverse registration, values reverse creation) |
-
-Open questions do not block the vocabulary. Each is a capability decision made
-inside the issue that owns it.
+Open questions do not block the vocabulary. Each is decided by the capability
+that needs it.

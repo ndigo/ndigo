@@ -1776,7 +1776,7 @@ The working rules:
    application-domain failures extend `ApplicationError`. The class says who
    threw it; `disposition` (`framework`, `application`, `client`) says whose
    fault it is, and a client error also carries a structural `problemStatus`
-   and a `problemType` URI (AD-116). Dependency-free contract packages
+   and a `problemType` URI. Dependency-free contract packages
    (`@ndigo/auth-core`) keep plain `Error` by design.
 
 ## Node Platform & Application Lifecycle
@@ -1831,10 +1831,10 @@ NodeHTTPServerAdapter → NodeDispatcher → handler mapping → interceptors
 Every 4xx/5xx response is an [`application/problem+json`][rfc9457] document:
 `type` (`urn:ndigo:*` placeholder), `title`, `status`, `detail`, `instance`,
 plus the `errors` extension for validation issues.
-Status conventions are canonical (AD-10) — 400 binding, 401 + `WWW-Authenticate`,
+Status conventions are canonical: 400 binding, 401 + `WWW-Authenticate`,
 403, 404, 405 + `Allow`, 413/408 transport, 415, 422 validation, 429, 503,
 500 last-resort. Client errors carry their own `ResponseStatus` and
-`ProblemTypes` URI (AD-116), so the adapter renders them by shape; the
+`ProblemTypes` URI, so the adapter renders them by shape; the
 last-resort resolver only 500s when the error is not client-classified. Real
 HTTPS problem-type URIs replace the `urn:` scheme before first public release.
 

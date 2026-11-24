@@ -27,10 +27,9 @@ A Ndigo project meets two different agents, and they need different things.
 | **Authoring agent** | Writes the application on a user's behalf | `AGENTS.md`, skills, version-matched docs, the `ndigo` CLI    |
 | **Runtime agent**   | Uses the finished application at runtime  | MCP tools, MCP Apps, A2UI, WebMCP, the `AgentBridge` contract |
 
-These names replace AD-96's original "Development agents" / "Product agents"
-([AD-114](../decisions/2026-11-23_AD114_AGENT_CAPABILITIES.md)). Neither is the
-maintainer-only `development-agents/` store or the gitignored `agent-local/`
-tree.
+These names replace the earlier "Development agents" / "Product agents"
+labels. Neither audience is the maintainer-only `development-agents/` store or
+the gitignored `agent-local/` tree.
 
 Three categories describe the code those audiences touch
 ([ARCHITECTURE.md](../../ARCHITECTURE.md#package-categories)):
@@ -78,13 +77,12 @@ command must meet one contract:
 
 - **Plan, then apply.** The default is a dry run; applying takes an explicit
   opt-in flag.
-- **`--json` on every verb** — one document on stdout, diagnostics on stderr
-  ([AD-97](../decisions/archive/2026-11-10_AD97_CLI_JSON_CONTRACT.md)).
+- **`--json` on every verb** — one document on stdout, diagnostics on stderr.
 - **Stable exit codes.** Non-zero means the plan could not be produced or the
   apply failed; it never means "probably fine".
 - **No network while planning, no Nx generator, no monorepo checkout.** Applying
   delegates dependency installation to the package manager; Nx generators stay
-  internal to `tools/` ([AD-93](../decisions/2026-11-05_AD93_INTERNALIZE_GENERATORS.md)).
+  internal to `tools/`.
 - **Idempotence.** Re-running a plan over an already-wired app reports "nothing
   to do" and exits zero.
 - **Conflicts are data.** The plan reports them; applying stops before writing
@@ -112,8 +110,7 @@ consumer-side install path is `ndigo add <capability>` (section 6).
 
 ## 4. What a skill owns
 
-A skill is a router over verbs, not documentation
-([AD-96](../decisions/2026-11-10_AD96_LLM_AGENT_INTEGRATION.md) D-1):
+A skill is a router over verbs, not documentation:
 
 | The skill carries                      | The skill never carries                        |
 | :------------------------------------- | :--------------------------------------------- |
@@ -125,8 +122,7 @@ A skill is a router over verbs, not documentation
 Facts come from machine output — `ndigo commands --json`, `ndigo inspect`, and
 the installed package's `docs/llms.txt`. Hand-written skill content stays at or
 below 120 lines and router-shaped; frontmatter, length, and package resolution
-are checked mechanically, router shape is a review check
-([AD-107](../decisions/2026-11-18_AD107_SKILLS_AUTHORING.md)).
+are checked mechanically, router shape is a review check.
 
 ## 5. Where facts live
 
@@ -157,13 +153,13 @@ The vocabulary and the contract are settled (issue #701); every phase of the
 layer — the catalog, `ndigo add`, the coordination skills, and runtime
 verification — has landed.
 
-| Piece                                                | Status                                                                    |
-| :--------------------------------------------------- | :------------------------------------------------------------------------ |
-| Audience and category vocabulary, AD-114, this guide | Landed                                                                    |
-| Capability catalog + `ndigo capabilities`            | Landed — declared entries, `list`/`get`/`check`, manifest facts           |
-| `ndigo add <capability>` (plan, dry run, apply)      | Landed — plan default, `--apply`, `--var`, `--force`; no `nx g`           |
-| Capability skills                                    | Landed — `ndigo-agent`, `ndigo-model`; rows in `ndigo-app`/`ndigo-verify` |
-| `ndigo verify [capability]`                          | Landed — declared checks, MCP probe, manifest ↔ OpenAPI parity            |
+| Piece                                           | Status                                                                    |
+| :---------------------------------------------- | :------------------------------------------------------------------------ |
+| Audience and category vocabulary, this guide    | Landed                                                                    |
+| Capability catalog + `ndigo capabilities`       | Landed — declared entries, `list`/`get`/`check`, manifest facts           |
+| `ndigo add <capability>` (plan, dry run, apply) | Landed — plan default, `--apply`, `--var`, `--force`; no `nx g`           |
+| Capability skills                               | Landed — `ndigo-agent`, `ndigo-model`; rows in `ndigo-app`/`ndigo-verify` |
+| `ndigo verify [capability]`                     | Landed — declared checks, MCP probe, manifest ↔ OpenAPI parity            |
 
 Until the 1.0 publish gate closes, only the plan/dry-run half of a consumer
 install is exercisable; install fixtures resolve workspace packages with
@@ -175,7 +171,7 @@ install is exercisable; install fixtures resolve workspace packages with
   `@ndigo/ai-sdk` are not extracted: one `@parameters` + `validatedBy`
   declaration projects to the route, the OpenAPI operation, and `tools/list`,
   and that projection needs the dispatcher, the inspector, and the generators
-  in one tree ([AD-114](../decisions/2026-11-23_AD114_AGENT_CAPABILITIES.md) D-7).
+  in one tree.
 - **UI behaviours are vendored.** When UI SDK leaves beta, `@ndigo/ui` moves
   behind an integration adapter and registry items re-point at it. The
   capability layer reserves the slot and imports no `@ui-sdk/*` package.
@@ -195,7 +191,7 @@ install is exercisable; install fixtures resolve workspace packages with
 Run the repository gates that cover this layer:
 
 ```bash
-pnpm docs:links          # ADR, guide, and cross-links resolve
+pnpm docs:links          # docs links and internal-reference gate
 pnpm guides:check        # guide contract: H1, audience block, fences, index
 pnpm agent-content:check # emitted facts match their inputs
 pnpm manifest:check      # manifests and README/files gates
@@ -218,6 +214,3 @@ that changes one surface without the other is not finished.
   many surfaces
 - [Guide 52 — The Agent Operate Contract](52-agent-operate-contract.md) — one
   vocabulary and policy for the bridge, MCP, WebMCP, and A2UI
-- [AD-114 — Agent capabilities](../decisions/2026-11-23_AD114_AGENT_CAPABILITIES.md)
-- [AD-96 — Agent and LLM integration](../decisions/2026-11-10_AD96_LLM_AGENT_INTEGRATION.md)
-- [AD-107 — Skills authoring](../decisions/2026-11-18_AD107_SKILLS_AUTHORING.md)

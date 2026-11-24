@@ -10,8 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Every merged change that alters user-visible behavior adds an entry under
   `[Unreleased]` in the matching category (Added / Changed / Deprecated /
   Removed / Fixed / Security).
-- Feature work links its decision record (`AD-XX`) where one exists — the
-  [ADR index](docs/decisions/README.md) is the source of truth for _why_;
+- Feature work links the relevant guide or architecture page where one exists;
   this file is the user-facing _what changed_.
 - Entries are imperative, user-facing, and unnumbered; keep them short
   enough for release notes. Formatting is oxfmt-checked.
@@ -348,7 +347,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `setVisualTheme` performs a single switch. `@ndigo/ui` gains the pure
   `resolveVisualTheme` and `themeAttributes` helpers, so framework packages
   never take a UI dependency.
-- `@ndigo/oxlint-plugin`: the consumer lint surface (AD-108). The plugin now
+- `@ndigo/oxlint-plugin`: the consumer lint surface. The plugin now
   ships eight rules and a typed `recommended` preset
   (`@ndigo/oxlint-plugin/recommended`), and every rule carries
   `meta.docs.url` plus its page URL at the end of every diagnostic
@@ -365,8 +364,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   one advice chain per method. Shadow weaving is the default — identity is
   preserved and self-invocation is advised — with a `Proxy` fallback for
   frozen, sealed, and function-shaped targets. `interceptMethods` and
-  `createIntercepted` run the same compiler without a container
-  ([AD-110](docs/decisions/2026-11-20_AD110_ANNOTATION_EXECUTION_RUNTIME.md)).
+  `createIntercepted` run the same compiler without a container.
 - `@ndigo/core`: annotation primitives — `AnnotationKey`,
   `methodAnnotation`, `classAnnotation`, `annotationOf` (inheritance walk), and
   `ensureSymbolMetadata` — plus `matchAll`, `matchAny`, and `matchNot` beside
@@ -411,7 +409,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Annotation and advice model ([AD-110](docs/decisions/2026-11-20_AD110_ANNOTATION_EXECUTION_RUNTIME.md)):
+- Annotation and advice model:
   `@cached`, `@traced`, `@counted`, and `@transactional` now declare instead of
   wrapping the method, and an interceptor runs each one. A decorated method on
   an unadvised instance is inert, so applications register a rule for the
@@ -431,7 +429,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `no-string-registry-lookup` → `no-string-token-lookup`,
   `no-duplicate-mapping-path` → `no-duplicate-mapping`,
   `internal/requires-doc-header` → `internal/require-doc-header`,
-  `internal/tsdoc-syntax` → `internal/valid-tsdoc` (AD-108).
+  `internal/tsdoc-syntax` → `internal/valid-tsdoc`.
 - Every app under `apps/` declares `"lint": "oxlint"`; the in-repo `app`
   generator writes the same script (in-repo apps inherit the root config).
 - Agent skills are authored in the standalone
@@ -440,7 +438,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   recorded in `skills.lock.json` (source, version, commit, per-file sha256);
   `pnpm agent-content:sync` refreshes it from a clean checkout and
   `agent-content:check` fails on drift, so builds no longer depend on a
-  sibling repository being present (AD-107).
+  sibling repository being present.
 - `@ndigo/platform-node`: rename `runNodeApplication` to `createNodeApplication`
   (and `RunNodeApplicationOptions` to `CreateNodeApplicationOptions`) for naming
   parity with `@ndigo/platform-web`'s `createWebApplication`. Hard cutover, no
@@ -621,7 +619,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
-- `@ndigo/proxy` is removed with no alias ([AD-110](docs/decisions/2026-11-20_AD110_ANNOTATION_EXECUTION_RUNTIME.md));
+- `@ndigo/proxy` is removed with no alias;
   `@ndigo/advice` replaces it. Selection moves to the rule, weaving defaults to
   shadow weaving, and annotation keys move to the declaring package's namespace
   (`proxy:retry` → `resilience:retry`, `cache:<method>` →

@@ -17,7 +17,7 @@ import {
     socketSessionValue,
     type SocketSession,
 } from '@ndigo/dispatcher';
-import { StompBroker, parseStompFrame, serializeStompFrame, type StompFrame, type StompBody } from '@ndigo/socket';
+import { STOMPBroker, parseStompFrame, serializeStompFrame, type STOMPFrame, type STOMPBody } from '@ndigo/socket';
 import { NodeAutoConfiguration } from '../src/node-auto-configuration';
 import { NodeDispatcher } from '../src/node-dispatcher';
 import { NodeHTTPServerAdapter } from '../src/node-http-server-adapter';
@@ -25,12 +25,12 @@ import { HTTPServer } from '../src/http-server';
 import { WebSocket } from 'ws';
 
 /** Wire helper: serialize a STOMP frame for `ws.send`. */
-const frame = (command: string, headers: Record<string, string> = {}, body = ''): StompBody =>
+const frame = (command: string, headers: Record<string, string> = {}, body = ''): STOMPBody =>
     serializeStompFrame({ command, headers, body });
 
 /** Await one WS message and parse it as a STOMP frame (text or binary). */
-const waitFrame = (ws: WebSocket): Promise<StompFrame> => {
-    const { promise, resolve } = Promise.withResolvers<StompFrame>();
+const waitFrame = (ws: WebSocket): Promise<STOMPFrame> => {
+    const { promise, resolve } = Promise.withResolvers<STOMPFrame>();
     // ws v8 delivers Buffers with an `isBinary` flag: text frames must be
     // decoded to strings, binary frames parsed byte-exact.
     ws.once('message', (data: unknown, isBinary: boolean) => {
@@ -58,8 +58,8 @@ async function waitFor(predicate: () => boolean): Promise<void> {
 }
 
 @requestMapping('/')
-class StompController {
-    readonly broker = new StompBroker();
+class STOMPController {
+    readonly broker = new STOMPBroker();
 
     @stompMapping('/stomp')
     @parameters({ session: socketSessionValue('session') })
@@ -82,13 +82,13 @@ class StompController {
 describe('STOMP over WebSocket', () => {
     let server: HTTPServer;
     let wsUrl: string;
-    let controller: StompController;
+    let controller: STOMPController;
 
     beforeAll(async () => {
         const context = new MetadataConfigApplicationContext('stomp-integration');
         context.register(NodeAutoConfiguration);
-        controller = new StompController();
-        context.setValue(StompController.name, controller);
+        controller = new STOMPController();
+        context.setValue(STOMPController.name, controller);
         context.refresh();
 
         const dispatcher = context.getValue<NodeDispatcher>('dispatcher');
@@ -282,7 +282,7 @@ describe('STOMP over WebSocket', () => {
         // Collect both expected frames up front: the replay MESSAGE and the
         // SUBSCRIBE's RECEIPT are emitted back-to-back, so registering the
         // second waiter after the first resolves would miss it.
-        const collected: StompFrame[] = [];
+        const collected: STOMPFrame[] = [];
         ws.on('message', (data: unknown, isBinary: boolean) => {
             collected.push(isBinary ? parseStompFrame(data as Uint8Array) : parseStompFrame(String(data)));
         });

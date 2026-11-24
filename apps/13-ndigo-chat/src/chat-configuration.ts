@@ -10,7 +10,7 @@ import { EJSViewResolver } from '@ndigo/view-ejs';
 import { ChatController } from './chat-controller';
 import { RoomController } from './room-controller';
 import { RoomService } from './room-service';
-import { StompChatController } from './stomp-chat-controller';
+import { STOMPChatController } from './stomp-chat-controller';
 
 /**
  * Ndigo Chat configuration.
@@ -34,7 +34,7 @@ export class ChatConfiguration {
      */
     @entry()
     stompChatController() {
-        return new StompChatController();
+        return new STOMPChatController();
     }
 
     /**

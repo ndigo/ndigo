@@ -106,7 +106,7 @@ upgrade URL (the only channel a WHATWG `WebSocket` client has) or an
 side uses. It returns `{ principal, user }` — which also makes the STOMP
 broker's `/user/*` scope real.
 
-`StompChatController.chat` is marked `@authenticated`, and HTTP interceptors
+`STOMPChatController.chat` is marked `@authenticated`, and HTTP interceptors
 do not run on sockets: the platform adapter enforces that metadata at
 dispatch, closing an upgrade without a principal with `1008`. Log in first,
 then connect:

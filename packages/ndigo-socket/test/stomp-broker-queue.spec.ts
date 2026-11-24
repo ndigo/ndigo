@@ -2,12 +2,12 @@
  * /queue caps, store seams, history/retention, and replay ordering.
  */
 import { describe, expect, test, vi } from 'vitest';
-import { InMemoryQueueMessageStore, StompBroker } from '../src/index';
+import { InMemoryQueueMessageStore, STOMPBroker } from '../src/index';
 import { connect, FakeSession, FailingStore, ReplayFaultStore, GatedStore } from './_stomp-broker-harness';
 
-describe('StompBroker resource caps', () => {
+describe('STOMPBroker resource caps', () => {
     test('subscription cap fails closed', async () => {
-        const broker = new StompBroker({ maxSubscriptionsPerSession: 1 });
+        const broker = new STOMPBroker({ maxSubscriptionsPerSession: 1 });
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -20,7 +20,7 @@ describe('StompBroker resource caps', () => {
     });
 
     test('transaction count cap fails closed on BEGIN', async () => {
-        const broker = new StompBroker({ maxTransactionsPerSession: 1 });
+        const broker = new STOMPBroker({ maxTransactionsPerSession: 1 });
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -33,7 +33,7 @@ describe('StompBroker resource caps', () => {
     });
 
     test('transaction buffer caps fail closed on SEND', async () => {
-        const broker = new StompBroker({ maxTransactionOps: 1 });
+        const broker = new STOMPBroker({ maxTransactionOps: 1 });
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -45,9 +45,9 @@ describe('StompBroker resource caps', () => {
     });
 });
 
-describe('StompBroker /queue backlog bounds (D11 hardening)', () => {
+describe('STOMPBroker /queue backlog bounds (D11 hardening)', () => {
     test('whole-destination eviction drops the oldest /queue destination', async () => {
-        const broker = new StompBroker({ maxBacklogDestinations: 2, queueBacklog: 10 });
+        const broker = new STOMPBroker({ maxBacklogDestinations: 2, queueBacklog: 10 });
         await broker.publish('/queue/a', 'a1');
         await broker.publish('/queue/b', 'b1');
         await broker.publish('/queue/c', 'c1'); // evicts /queue/a
@@ -61,7 +61,7 @@ describe('StompBroker /queue backlog bounds (D11 hardening)', () => {
     });
 
     test('global byte budget evicts oldest messages across destinations', async () => {
-        const broker = new StompBroker({ maxBacklogBytes: 30, queueBacklog: 100 });
+        const broker = new STOMPBroker({ maxBacklogBytes: 30, queueBacklog: 100 });
         // 3 × 12-octet bodies = 36 octets > 30 → the oldest is evicted.
         await broker.publish('/queue/x', '0123456789ab');
         await broker.publish('/queue/x', '0123456789ab');
@@ -74,9 +74,9 @@ describe('StompBroker /queue backlog bounds (D11 hardening)', () => {
     });
 });
 
-describe('StompBroker queue store seam (durable /queue)', () => {
+describe('STOMPBroker queue store seam (durable /queue)', () => {
     test('default wiring: every /queue append is written through the in-memory store', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         await broker.publish('/queue/seam', 'hello');
         const store = broker.queueStore;
         expect(store).not.toBeNull();
@@ -90,7 +90,7 @@ describe('StompBroker queue store seam (durable /queue)', () => {
 
     test('an injected store is used as-is, and its own bounds apply', async () => {
         const injected = new InMemoryQueueMessageStore({ maxMessagesPerDestination: 2 });
-        const broker = new StompBroker({ queueStore: injected });
+        const broker = new STOMPBroker({ queueStore: injected });
         await broker.publish('/queue/seam', 'one');
         await broker.publish('/queue/seam', 'two');
         await broker.publish('/queue/seam', 'three');
@@ -100,7 +100,7 @@ describe('StompBroker queue store seam (durable /queue)', () => {
     });
 
     test('queueBacklog: 0 disables the store (live fan-out only)', async () => {
-        const broker = new StompBroker({ queueBacklog: 0 });
+        const broker = new STOMPBroker({ queueBacklog: 0 });
         expect(broker.queueStore).toBeNull();
         await broker.publish('/queue/x', 'v'); // storage layer absent — no throw
         // Live fan-out still works end to end: a new subscriber replays
@@ -115,13 +115,13 @@ describe('StompBroker queue store seam (durable /queue)', () => {
     });
 
     test('queueStore: null disables the seam even with a backlog configured', async () => {
-        const broker = new StompBroker({ queueStore: null });
+        const broker = new STOMPBroker({ queueStore: null });
         expect(broker.queueStore).toBeNull();
         await broker.publish('/queue/x', 'v');
     });
 
     test('topic publishes never touch the store', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         await broker.publish('/topic/seam', 'hello');
         const store = broker.queueStore;
         expect(store).not.toBeNull();
@@ -129,7 +129,7 @@ describe('StompBroker queue store seam (durable /queue)', () => {
     });
 });
 
-describe('StompBroker store-read phase (receipt-after-persist)', () => {
+describe('STOMPBroker store-read phase (receipt-after-persist)', () => {
     /** A store whose append resolves only after an explicit release. */
     class DelayedStore implements QueueMessageStore {
         readonly kind = 'delayed';
@@ -154,7 +154,7 @@ describe('StompBroker store-read phase (receipt-after-persist)', () => {
         const gate = new Promise<void>((resolve) => {
             release = resolve;
         });
-        const broker = new StompBroker({ queueStore: new DelayedStore(gate) });
+        const broker = new STOMPBroker({ queueStore: new DelayedStore(gate) });
         const subscriber = new FakeSession();
         void subscriber.handled(broker);
         connect(broker, subscriber);
@@ -177,7 +177,7 @@ describe('StompBroker store-read phase (receipt-after-persist)', () => {
     });
 
     test('a store failure withholds the receipt, surfaces an ERROR, and closes 1011 (COR-8)', async () => {
-        const broker = new StompBroker({ queueStore: new FailingStore() });
+        const broker = new STOMPBroker({ queueStore: new FailingStore() });
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -193,7 +193,7 @@ describe('StompBroker store-read phase (receipt-after-persist)', () => {
     });
 
     test('a failing store never touches /topic sends or their receipts', async () => {
-        const broker = new StompBroker({ queueStore: new FailingStore() });
+        const broker = new STOMPBroker({ queueStore: new FailingStore() });
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -203,7 +203,7 @@ describe('StompBroker store-read phase (receipt-after-persist)', () => {
     });
 
     test('subscribe replay reads the store and receipts only after replay', async () => {
-        const broker = new StompBroker({ queueBacklog: 10 });
+        const broker = new STOMPBroker({ queueBacklog: 10 });
         await broker.publish('/queue/r', 'one');
         await broker.publish('/queue/r', 'two');
         const session = new FakeSession();
@@ -221,7 +221,7 @@ describe('StompBroker store-read phase (receipt-after-persist)', () => {
     });
 
     test('a failing replay fails the SUBSCRIBE closed, while history() stays fail-open (COR-8)', async () => {
-        const broker = new StompBroker({ queueStore: new ReplayFaultStore() });
+        const broker = new STOMPBroker({ queueStore: new ReplayFaultStore() });
         const session = new FakeSession();
         void session.handled(broker);
         connect(broker, session);
@@ -239,9 +239,9 @@ describe('StompBroker store-read phase (receipt-after-persist)', () => {
     });
 });
 
-describe('StompBroker history + retention (message history)', () => {
+describe('STOMPBroker history + retention (message history)', () => {
     test('publish resolves with the stored message for /queue, undefined otherwise', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         const stored = await broker.publish('/queue/p', 'x');
         expect(stored?.seq).toBe(1);
         expect(stored?.destination).toBe('/queue/p');
@@ -249,7 +249,7 @@ describe('StompBroker history + retention (message history)', () => {
     });
 
     test('history queries the retained window with limit and afterSeq', async () => {
-        const broker = new StompBroker();
+        const broker = new STOMPBroker();
         await broker.publish('/queue/h', 'm1');
         await broker.publish('/queue/h', 'm2');
         await broker.publish('/queue/h', 'm3');
@@ -261,7 +261,7 @@ describe('StompBroker history + retention (message history)', () => {
     });
 
     test('retention.maxMessages bounds both durable retention and subscribe replay', async () => {
-        const broker = new StompBroker({ queueBacklog: 10, retention: { maxMessages: 2 } });
+        const broker = new STOMPBroker({ queueBacklog: 10, retention: { maxMessages: 2 } });
         await broker.publish('/queue/win', 'one');
         await broker.publish('/queue/win', 'two');
         await broker.publish('/queue/win', 'three');
@@ -277,7 +277,7 @@ describe('StompBroker history + retention (message history)', () => {
     test('retention TTL expires messages before replay and history reads', async () => {
         let now = 1_000;
         const store = new InMemoryQueueMessageStore({ now: () => now });
-        const broker = new StompBroker({ queueStore: store, retention: { ttlMs: 500 } });
+        const broker = new STOMPBroker({ queueStore: store, retention: { ttlMs: 500 } });
         await broker.publish('/queue/ttl', 'fresh');
         now = 1_600;
         await broker.publish('/queue/ttl', 'kept');
@@ -292,7 +292,7 @@ describe('StompBroker history + retention (message history)', () => {
     });
 
     test('queueStore: null stops replay (live fan-out only)', async () => {
-        const broker = new StompBroker({ queueStore: null });
+        const broker = new STOMPBroker({ queueStore: null });
         await broker.publish('/queue/x', 'v');
         const session = new FakeSession();
         void session.handled(broker);
@@ -304,10 +304,10 @@ describe('StompBroker history + retention (message history)', () => {
         await vi.waitFor(() => expect(session.sent.some((f) => f.command === 'MESSAGE')).toBe(true));
     });
 });
-describe('StompBroker /queue replay ordering (COR-2)', () => {
+describe('STOMPBroker /queue replay ordering (COR-2)', () => {
     test('live traffic during a replay is buffered behind the backlog and deduped', async () => {
         const store = new GatedStore();
-        const broker = new StompBroker({ queueStore: store });
+        const broker = new STOMPBroker({ queueStore: store });
         await broker.publish('/queue/ordered', 'old1');
 
         const session = new FakeSession();

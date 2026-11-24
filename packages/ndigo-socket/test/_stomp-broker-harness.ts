@@ -3,7 +3,7 @@
  */
 import {
     AsyncReader,
-    StompBroker,
+    STOMPBroker,
     parseStompFrame,
     serializeStompFrame,
     type QueueMessageStore,
@@ -92,7 +92,7 @@ export class FakeSession implements SocketSession {
     }
 
     /** Wait for `handleSocket` to finish (stream complete or protocol close). */
-    async handled(broker: StompBroker): Promise<void> {
+    async handled(broker: STOMPBroker): Promise<void> {
         await broker.handleSocket(this);
     }
 }
@@ -132,7 +132,7 @@ export class ReplayFaultStore implements QueueMessageStore {
 }
 
 /** Boot a session through the CONNECT handshake on a broker. */
-export function connect(broker: StompBroker, session: FakeSession, host = 'example.com'): void {
+export function connect(broker: STOMPBroker, session: FakeSession, host = 'example.com'): void {
     session.push('CONNECT', { 'accept-version': '1.2,1.1,1.0', host, 'heart-beat': '0,0' });
 }
 

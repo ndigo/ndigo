@@ -2,7 +2,7 @@
  * STOMP server broker — endpoint state machine + destination fan-out
  * (second wave D7–D11).
  *
- * A `StompBroker` instance owns a destination namespace: `handleSocket`
+ * A `STOMPBroker` instance owns a destination namespace: `handleSocket`
  * runs the STOMP 1.2 endpoint protocol over one `SocketSession` (CONNECT
  * negotiation, SUBSCRIBE/UNSUBSCRIBE, SEND, ACK/NACK, transactions,
  * receipts, ERROR + close on violations), `publish`/`sendToUser` fan out
@@ -60,15 +60,15 @@
  *   `maxIdentifierLength` caps every identifier-valued header.
  */
 import { InMemoryQueueMessageStore, type QueueMessageStore, type StoredQueueMessage } from './message-store';
-import type { StompBody } from './stomp-frame';
+import type { STOMPBody } from './stomp-frame';
 import type { SocketSession } from './socket-session';
 import type { SocketFanout } from './socket-fanout';
-import { StompFanout } from './_stomp-fanout';
-import { StompLimits } from './_stomp-limits';
-import { StompTransactionManager } from './_stomp-transactions';
-import { StompSubscriptionRegistry } from './_stomp-subscriptions';
-import { StompEndpoint } from './_stomp-endpoint';
-import { StompDelivery } from './_stomp-delivery';
+import { STOMPFanout } from './_stomp-fanout';
+import { STOMPLimits } from './_stomp-limits';
+import { STOMPTransactionManager } from './_stomp-transactions';
+import { STOMPSubscriptionRegistry } from './_stomp-subscriptions';
+import { STOMPEndpoint } from './_stomp-endpoint';
+import { STOMPDelivery } from './_stomp-delivery';
 import { controlSend, fail, receipt } from './_stomp-replies';
 
 /** STOMP ack modes (STOMP 1.2 §1.3.1). */
@@ -106,17 +106,17 @@ const DEFAULT_MAX_UNACKED_SESSION_BYTES = 16 * 1024 * 1024;
 const DEFAULT_MAX_REPLAY_BYTES_PER_SESSION = 16 * 1024 * 1024;
 
 /** STOMP ack modes (STOMP 1.2 §1.3.1). */
-export type StompAckMode = 'auto' | 'client' | 'client-individual';
+export type STOMPAckMode = 'auto' | 'client' | 'client-individual';
 
 /**
- * StompBrokerOptions.
+ * STOMPBrokerOptions.
  *
  * @example
  * ```ts
- * const value = {} as StompBrokerOptions;
+ * const value = {} as STOMPBrokerOptions;
  * ```
  */
-export interface StompBrokerOptions {
+export interface STOMPBrokerOptions {
     /** Optional application-owned live transport; only `/topic/*` crosses nodes. */
     fanout?: SocketFanout;
     /**
@@ -126,7 +126,7 @@ export interface StompBrokerOptions {
      */
     onMessage?: (
         destination: string,
-        body: StompBody,
+        body: STOMPBody,
         headers: Record<string, string>,
         session: SocketSession
     ) => unknown;
@@ -191,7 +191,7 @@ export interface StompBrokerOptions {
      * of the body byte budgets: without it a peer could attach up to the
      * transport payload cap of headers per message. Exceeding it fails
      * closed (ERROR + close `1002`); a programmatic call throws a
-     * `StompProtocolError`. Default `16384` (16 KiB); `0` disables.
+     * `STOMPProtocolError`. Default `16384` (16 KiB); `0` disables.
      */
     maxHeaderBytes?: number;
     /**
@@ -291,7 +291,7 @@ export interface StompBrokerOptions {
  *
  * @example
  * ```ts
- * const broker = new StompBroker();
+ * const broker = new STOMPBroker();
  * @requestMapping('/stomp')
  * class ChatController {
  *     @stompMapping('/chat')
@@ -304,28 +304,28 @@ export interface StompBrokerOptions {
  * }
  * ```
  */
-export class StompBroker {
+export class STOMPBroker {
     /**
      * The `Symbol.toStringTag` value for this instance.
      *
      * `Object.prototype.toString()` reads this symbol to render the
      * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
      *
-     * @returns The string "StompBroker".
+     * @returns The string "STOMPBroker".
      *
      * @example
-     * console.log(Object.prototype.toString.call(instance)); // "[object StompBroker]"
+     * console.log(Object.prototype.toString.call(instance)); // "[object STOMPBroker]"
      */
     get [Symbol.toStringTag](): string {
-        return 'StompBroker';
+        return 'STOMPBroker';
     }
 
-    readonly #onMessage: StompBrokerOptions['onMessage'] | null;
+    readonly #onMessage: STOMPBrokerOptions['onMessage'] | null;
     readonly #nextMessageId: () => string;
-    readonly #resolveUser: NonNullable<StompBrokerOptions['resolveUser']>;
+    readonly #resolveUser: NonNullable<STOMPBrokerOptions['resolveUser']>;
     readonly #maxUnacked: number;
-    readonly #verifyCredentials: NonNullable<StompBrokerOptions['verifyCredentials']> | null;
-    readonly #authorize: NonNullable<StompBrokerOptions['authorize']> | null;
+    readonly #verifyCredentials: NonNullable<STOMPBrokerOptions['verifyCredentials']> | null;
+    readonly #authorize: NonNullable<STOMPBrokerOptions['authorize']> | null;
     readonly #queueBacklog: number;
     readonly #maxSubscriptionsPerSession: number;
     /** `/queue` history window (ttl + count) — enforced via the store. */
@@ -333,16 +333,16 @@ export class StompBroker {
     /** `/queue` persistence layer — the durable-queue seam. */
     readonly #queueStore: QueueMessageStore | null;
     /** Subscription placement and delivery accounting. */
-    readonly #registry: StompSubscriptionRegistry;
+    readonly #registry: STOMPSubscriptionRegistry;
     /** Per-session transaction buffers (D7). */
-    readonly #transactions: StompTransactionManager;
+    readonly #transactions: STOMPTransactionManager;
     /** Subscription fan-out, delivery tracking, and queue replay. */
-    readonly #delivery: StompDelivery;
-    readonly #endpoint: StompEndpoint;
+    readonly #delivery: STOMPDelivery;
+    readonly #endpoint: STOMPEndpoint;
     /** Every session under protocol control (for `closeAll`). */
     readonly #sessions = new Set<SocketSession>();
-    readonly #fanout: StompFanout;
-    readonly #limits: StompLimits;
+    readonly #fanout: STOMPFanout;
+    readonly #limits: STOMPLimits;
     #closed = false;
 
     /**
@@ -350,8 +350,8 @@ export class StompBroker {
      *
      * @param options - Routing seam and test hooks.
      */
-    constructor(options: StompBrokerOptions = {}) {
-        this.#fanout = new StompFanout({
+    constructor(options: STOMPBrokerOptions = {}) {
+        this.#fanout = new STOMPFanout({
             fanout: options.fanout,
             isClosed: () => this.#closed,
             onLocal: (destination, body, headers) => this.#fanoutLocal(destination, body, headers),
@@ -365,12 +365,12 @@ export class StompBroker {
                 return typeof user === 'string' ? user : null;
             });
         this.#maxUnacked = options.maxUnacked ?? DEFAULT_MAX_UNACKED;
-        this.#registry = new StompSubscriptionRegistry({
+        this.#registry = new STOMPSubscriptionRegistry({
             maxUnacked: this.#maxUnacked,
             maxUnackedBytes: options.maxUnackedBytes ?? DEFAULT_MAX_UNACKED_BYTES,
             maxUnackedSessionBytes: options.maxUnackedSessionBytes ?? DEFAULT_MAX_UNACKED_SESSION_BYTES,
         });
-        this.#limits = new StompLimits({
+        this.#limits = new STOMPLimits({
             maxIdentifierLength: options.maxIdentifierLength ?? DEFAULT_MAX_IDENTIFIER_LENGTH,
             maxHeaderBytes: options.maxHeaderBytes ?? DEFAULT_MAX_HEADER_BYTES,
             maxReplayBytesPerSession: options.maxReplayBytesPerSession ?? DEFAULT_MAX_REPLAY_BYTES_PER_SESSION,
@@ -381,7 +381,7 @@ export class StompBroker {
         this.#authorize = options.authorize ?? null;
         this.#queueBacklog = options.queueBacklog ?? DEFAULT_QUEUE_BACKLOG;
         this.#maxSubscriptionsPerSession = options.maxSubscriptionsPerSession ?? DEFAULT_MAX_SUBSCRIPTIONS_PER_SESSION;
-        this.#transactions = new StompTransactionManager(
+        this.#transactions = new STOMPTransactionManager(
             {
                 fail,
                 receipt,
@@ -434,7 +434,7 @@ export class StompBroker {
                       maxDestinations: options.maxBacklogDestinations ?? DEFAULT_MAX_BACKLOG_DESTINATIONS,
                       maxBytes: options.maxBacklogBytes ?? DEFAULT_MAX_BACKLOG_BYTES,
                   }));
-        this.#delivery = new StompDelivery({
+        this.#delivery = new STOMPDelivery({
             registry: this.#registry,
             limits: this.#limits,
             queueStore: this.#queueStore,
@@ -444,7 +444,7 @@ export class StompBroker {
             nextMessageId: this.#nextMessageId,
             publish: (destination, body, headers) => this.publish(destination, body, headers),
         });
-        this.#endpoint = new StompEndpoint({
+        this.#endpoint = new STOMPEndpoint({
             maxSubscriptionsPerSession: this.#maxSubscriptionsPerSession,
             maxUnacked: this.#maxUnacked,
             queueBacklog: this.#queueBacklog,
@@ -471,7 +471,7 @@ export class StompBroker {
      * @returns A promise that resolves once the fan-out subscription is ready.
      */
     connect(): Promise<void> {
-        if (this.#closed) return Promise.reject(new Error('StompBroker is closed'));
+        if (this.#closed) return Promise.reject(new Error('STOMPBroker is closed'));
         return this.#fanout.connect();
     }
 
@@ -568,10 +568,10 @@ export class StompBroker {
      */
     async publish(
         destination: string,
-        body: StompBody,
+        body: STOMPBody,
         headers: Record<string, string> = {}
     ): Promise<StoredQueueMessage | undefined> {
-        if (this.#closed) throw new Error('StompBroker is closed');
+        if (this.#closed) throw new Error('STOMPBroker is closed');
         this.#limits.assertDeliverable(destination, headers);
         await this.#fanout.publish(destination, body, headers);
         const messageId = this.#nextMessageId();
@@ -598,14 +598,14 @@ export class StompBroker {
                 }
             }
         }
-        if (this.#closed) throw new Error('StompBroker is closed');
+        if (this.#closed) throw new Error('STOMPBroker is closed');
         this.#fanoutLocal(destination, body, headers, messageId);
         return stored;
     }
 
     #fanoutLocal(
         destination: string,
-        body: StompBody,
+        body: STOMPBody,
         headers: Record<string, string>,
         messageId = this.#nextMessageId()
     ): void {
@@ -635,7 +635,7 @@ export class StompBroker {
      * @param body - The message body (text or bytes — D8).
      * @param headers - Extra headers on the MESSAGE frames.
      */
-    sendToUser(user: string, destination: string, body: StompBody, headers: Record<string, string> = {}): void {
+    sendToUser(user: string, destination: string, body: STOMPBody, headers: Record<string, string> = {}): void {
         const suffix = destination.replace(/^\/+/, '');
         // REV-006: surface an unframeable envelope here rather than letting
         // `deliverNow` swallow the serialization fault per subscriber.

@@ -23,7 +23,7 @@ import { OrderService } from './order-service';
 import { Heartbeat } from './heartbeat';
 import { AuthController } from './auth-controller';
 import { ChatController } from './chat-controller';
-import { StompChatController } from './stomp-chat-controller';
+import { STOMPChatController } from './stomp-chat-controller';
 import { NoteController } from './note-controller';
 import { DrizzleNoteController } from './drizzle-note-controller';
 import { ProductController } from './product-controller';
@@ -74,7 +74,7 @@ export class NodeAppConfiguration {
         return new ChatController();
     }
     @entry() stompChatController() {
-        return new StompChatController();
+        return new STOMPChatController();
     }
 
     /**

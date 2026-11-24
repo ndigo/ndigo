@@ -25,6 +25,7 @@ const ACRONYMS: ReadonlySet<string> = new Set([
     'JWT',
     'OIDC',
     'SSE',
+    'STOMP',
     'SDK',
     'A2UI',
     'UI',

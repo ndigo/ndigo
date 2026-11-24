@@ -313,7 +313,7 @@ Stop producers and close the server, then await `registry.close()` (unsubscribe
 and stop heartbeat), `fanout.close()` (owned subscriber), and
 `publisher.close()` before synchronous context shutdown. Ensure later cleanup
 runs with `finally` even on failure, including failed startup. The registry does
-not own/close the transport. `StompBroker({ fanout })` can share it for topics;
+not own/close the transport. `STOMPBroker({ fanout })` can share it for topics;
 await `broker.connect()` before serving and `broker.close()` before transport
 shutdown. Each transport permits one consumer per scope. See the
 [STOMP & fan-out guide](../../docs/guides/42-stomp.md#2-cross-node-live-fan-out-opt-in)

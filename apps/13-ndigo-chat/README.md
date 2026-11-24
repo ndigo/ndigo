@@ -68,7 +68,7 @@ history by `id`, so a reconnect re-joining the same path never duplicates.
 - **Web Component + signals** — `@ndigo/view-webcomponent` element rendering from
   `@ndigo/signals`; the client reconnects with bounded exponential backoff and
   resubscribes by re-entering the path-bound room.
-- **STOMP interop** — the platform `StompBroker` at `/stomp/chat`, consumed by a
+- **STOMP interop** — the platform `STOMPBroker` at `/stomp/chat`, consumed by a
   third-party client (`@stomp/stompjs`) in `test/stomp-interop.spec.ts` and the
   live interop command below.
 - **Management** — `/health` and `/metrics` come for free from

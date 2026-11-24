@@ -1,7 +1,7 @@
 /**
  * STOMP client — CONNECT negotiation, subscriptions, receipts (D1/D2).
  *
- * `StompClient` wraps any {@link SocketClient} (the isomorphic
+ * `STOMPClient` wraps any {@link SocketClient} (the isomorphic
  * `WebSocketClient`) and owns the STOMP session on top of the raw
  * message stream: sends CONNECT as the first frame of every transport
  * connection, awaits CONNECTED, routes MESSAGE frames to per-subscription
@@ -26,9 +26,9 @@
  */
 import { effect, signal, type Signal } from '@ndigo/signals';
 import { RingBuffer } from '@ndigo/core';
-import { serializeStompFrame, StompProtocolError, parseStompFrame, type StompFrame } from './stomp-frame';
+import { serializeStompFrame, STOMPProtocolError, parseStompFrame, type STOMPFrame } from './stomp-frame';
 import type { SocketClient } from './socket-client';
-import type { StompAckMode } from './stomp-broker';
+import type { STOMPAckMode } from './stomp-broker';
 import { AsyncReader } from './async-reader';
 import { bodyAsText } from './stomp-frame';
 
@@ -46,10 +46,10 @@ const DEFAULT_CONNECT_TIMEOUT_MS = 10_000;
  *
  * @example
  * ```ts
- * const message: StompMessage = { body: 'hello', headers: {} };
+ * const message: STOMPMessage = { body: 'hello', headers: {} };
  * ```
  */
-export interface StompMessage<T = unknown> {
+export interface STOMPMessage<T = unknown> {
     /** The frame's destination. */
     readonly destination: string;
     /** The frame's `message-id` (unique per broker instance). */
@@ -65,14 +65,14 @@ export interface StompMessage<T = unknown> {
 }
 
 /**
- * Options for {@link StompClient}.
+ * Options for {@link STOMPClient}.
  *
  * @example
  * ```ts
- * const options: StompClientOptions = { url: 'ws://localhost:8080/ws' };
+ * const options: STOMPClientOptions = { url: 'ws://localhost:8080/ws' };
  * ```
  */
-export interface StompClientOptions {
+export interface STOMPClientOptions {
     /**
      * `accept-version` values offered on CONNECT (comma-separated).
      * Default `'1.2,1.1,1.0'` — the server negotiates the highest mutual.
@@ -127,7 +127,7 @@ export interface StompClientOptions {
     /**
      * Error observer: invoked with the `message` header of a server ERROR
      * frame (and on protocol violations). All outstanding `send()`
-     * promises reject with a `StompProtocolError` carrying the same text.
+     * promises reject with a `STOMPProtocolError` carrying the same text.
      */
     onError?: (message: string) => void;
 }
@@ -138,13 +138,13 @@ export interface StompClientOptions {
  * for await (const msg of subscription) console.log(msg.body);
  * ```
  */
-export interface StompSubscription {
+export interface STOMPSubscription {
     /** The client-chosen subscription id (server-echoed on MESSAGE). */
     readonly id: string;
     /** The destination this subscription is bound to. */
     readonly destination: string;
     /** Delivered MESSAGE frames, in order. Stalls across reconnects. */
-    readonly messages: AsyncIterable<StompMessage>;
+    readonly messages: AsyncIterable<STOMPMessage>;
     /** Send UNSUBSCRIBE + complete the stream. Idempotent. */
     unsubscribe(): void;
     /** Send an ACK frame for a delivered message (client acks, §1.4). @param messageId - The delivered message id. */
@@ -188,8 +188,8 @@ interface Handshake {
 interface SubscriptionEntry {
     destination: string;
     /** The requested ack mode — replayed verbatim on every SUBSCRIBE. */
-    ack: StompAckMode;
-    reader: AsyncReader<StompMessage>;
+    ack: STOMPAckMode;
+    reader: AsyncReader<STOMPMessage>;
     /** `pending` — not yet sent on this connection; `live` — SUBSCRIBEd. */
     state: 'pending' | 'live';
 }
@@ -200,7 +200,7 @@ interface SubscriptionEntry {
  * @example
  * ```ts
  * const socket = new WebSocketClient('ws://localhost:3000/stomp/chat');
- * const stomp = new StompClient(socket, { host: 'localhost:3000' });
+ * const stomp = new STOMPClient(socket, { host: 'localhost:3000' });
  *
  * const sub = stomp.subscribe('/topic/chat');
  * for await (const message of sub.messages) {
@@ -209,24 +209,24 @@ interface SubscriptionEntry {
  * stomp.send('/topic/chat', JSON.stringify({ hello: 'world' }));
  * ```
  */
-export class StompClient {
+export class STOMPClient {
     /**
      * The `Symbol.toStringTag` value for this instance.
      *
      * `Object.prototype.toString()` reads this symbol to render the
      * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
      *
-     * @returns The string "StompClient".
+     * @returns The string "STOMPClient".
      *
      * @example
-     * console.log(Object.prototype.toString.call(instance)); // "[object StompClient]"
+     * console.log(Object.prototype.toString.call(instance)); // "[object STOMPClient]"
      */
     get [Symbol.toStringTag](): string {
-        return 'StompClient';
+        return 'STOMPClient';
     }
 
     readonly #socket: SocketClient;
-    readonly #options: StompClientOptions;
+    readonly #options: STOMPClientOptions;
     /** Reactive STOMP-session state: connected after CONNECTED. */
     readonly connected: Signal<boolean> = signal(false);
     /** Subscriptions by id (stays stable across reconnects). */
@@ -258,7 +258,7 @@ export class StompClient {
      * @param socket - The underlying connection (any `SocketClient`).
      * @param options - CONNECT headers and lifecycle policy.
      */
-    constructor(socket: SocketClient, options: StompClientOptions = {}) {
+    constructor(socket: SocketClient, options: STOMPClientOptions = {}) {
         this.#socket = socket;
         this.#options = options;
         this.#maxPendingSends = options.maxPendingSends ?? DEFAULT_MAX_PENDING_SENDS;
@@ -275,7 +275,7 @@ export class StompClient {
         // CONNECT, then re-SUBSCRIBE, then flush.
         const sessionEnded = (): void => {
             this.connected.value = false;
-            this.#settleReceipts(new StompProtocolError('connection closed'));
+            this.#settleReceipts(new STOMPProtocolError('connection closed'));
             this.#drainPendingSends();
             for (const subscription of this.#subscriptions.values()) {
                 subscription.reader.complete();
@@ -360,9 +360,9 @@ export class StompClient {
      *   (disconnect, ERROR, transport closed) — a new subscription could
      *   never receive frames.
      */
-    subscribe(destination: string, opts: { id?: string; ack?: StompAckMode } = {}): StompSubscription {
+    subscribe(destination: string, opts: { id?: string; ack?: STOMPAckMode } = {}): STOMPSubscription {
         if (this.#done) {
-            throw new StompProtocolError('client is closed');
+            throw new STOMPProtocolError('client is closed');
         }
         const id = opts.id ?? crypto.randomUUID();
         const ack = opts.ack ?? 'auto';
@@ -377,7 +377,7 @@ export class StompClient {
         // overflow posture, mirroring `maxInboundMessages`). `0` = unbounded.
         const maxQueued =
             this.#maxSubscriptionMessages === 0 ? Number.POSITIVE_INFINITY : this.#maxSubscriptionMessages;
-        const reader = new AsyncReader<StompMessage>(maxQueued);
+        const reader = new AsyncReader<STOMPMessage>(maxQueued);
         const entry: SubscriptionEntry = { destination, ack, reader, state: 'pending' };
         this.#subscriptions.set(id, entry);
         if (this.connected.value) {
@@ -436,7 +436,7 @@ export class StompClient {
      * @param body - The message body.
      * @param headers - Extra headers (`content-type`, caller-supplied
      *   `receipt`, …). A `receipt` id a pending send already carries
-     *   rejects this send with a `StompProtocolError` — reusing it would
+     *   rejects this send with a `STOMPProtocolError` — reusing it would
      *   overwrite the receipt correlation and strand the first promise;
      *   the id is reusable once its RECEIPT settles.
      * @returns A promise resolving on RECEIPT.
@@ -447,7 +447,7 @@ export class StompClient {
             // buffered frame can never be flushed or receipted — reject
             // now instead of pinning the caller's promise forever.
             const { promise, reject } = Promise.withResolvers<void>();
-            reject(new StompProtocolError('client is closed'));
+            reject(new STOMPProtocolError('client is closed'));
             return promise;
         }
         const payload: string | Uint8Array =
@@ -470,7 +470,7 @@ export class StompClient {
             // promise (its RECEIPT resolves the newer entry). Reject the
             // newcomer instead.
             const { promise, reject } = Promise.withResolvers<void>();
-            reject(new StompProtocolError('duplicate receipt id'));
+            reject(new STOMPProtocolError('duplicate receipt id'));
             return promise;
         }
         const { promise, resolve, reject } = Promise.withResolvers<void>();
@@ -486,7 +486,7 @@ export class StompClient {
                 this.#sendFrame({ command: 'SEND', headers: { destination, ...ownHeaders }, body: payload });
             } catch (error) {
                 this.#receipts.delete(receiptId);
-                reject(error instanceof Error ? error : new StompProtocolError(String(error)));
+                reject(error instanceof Error ? error : new STOMPProtocolError(String(error)));
                 return;
             }
             receipt.sent = true;
@@ -496,7 +496,7 @@ export class StompClient {
         } else if (this.#maxPendingSends === 0) {
             // Buffering disabled — reject immediately; nothing is queued.
             this.#receipts.delete(receiptId);
-            reject(new StompProtocolError('client is not connected'));
+            reject(new STOMPProtocolError('client is not connected'));
         } else {
             this.#pendingSends.put({ receiptId, send });
             if (this.#pendingSends.length > this.#maxPendingSends) {
@@ -507,7 +507,7 @@ export class StompClient {
                     const pending = this.#receipts.get(evicted.receiptId);
                     if (pending !== undefined) {
                         this.#receipts.delete(evicted.receiptId);
-                        pending.reject(new StompProtocolError('send buffer overflow'));
+                        pending.reject(new STOMPProtocolError('send buffer overflow'));
                     }
                 }
             }
@@ -531,7 +531,7 @@ export class StompClient {
             this.#sendFrame({ command: 'DISCONNECT', headers: {}, body: '' });
         }
         this.connected.value = false;
-        this.#settleReceipts(new StompProtocolError('client disconnected'));
+        this.#settleReceipts(new STOMPProtocolError('client disconnected'));
         for (const subscription of this.#subscriptions.values()) {
             subscription.reader.complete();
         }
@@ -552,11 +552,11 @@ export class StompClient {
                 if (typeof raw !== 'string' && !(raw instanceof Uint8Array) && !(raw instanceof ArrayBuffer)) {
                     continue; // not a frame-carrying payload
                 }
-                let frame: StompFrame;
+                let frame: STOMPFrame;
                 try {
                     frame = parseStompFrame(raw as string);
                 } catch (error) {
-                    this.#fail(error instanceof StompProtocolError ? error.message : 'malformed STOMP frame');
+                    this.#fail(error instanceof STOMPProtocolError ? error.message : 'malformed STOMP frame');
                     continue;
                 }
                 if (frame.command === '') {
@@ -697,7 +697,7 @@ export class StompClient {
                 const receipt = this.#receipts.get(pending.receiptId);
                 if (receipt !== undefined) {
                     this.#receipts.delete(pending.receiptId);
-                    receipt.reject(error instanceof Error ? error : new StompProtocolError(String(error)));
+                    receipt.reject(error instanceof Error ? error : new STOMPProtocolError(String(error)));
                 }
             }
         }
@@ -712,7 +712,7 @@ export class StompClient {
      *
      * @param frame - The parsed frame.
      */
-    #handle(frame: StompFrame): void {
+    #handle(frame: STOMPFrame): void {
         switch (frame.command) {
             case 'CONNECTED':
                 this.connected.value = true;
@@ -773,7 +773,7 @@ export class StompClient {
         this.#epoch += 1;
         this.#abortHandshake();
         this.connected.value = false;
-        this.#settleReceipts(new StompProtocolError(message));
+        this.#settleReceipts(new STOMPProtocolError(message));
         this.#drainPendingSends();
         // Fail closed: end the subscription streams and the closed reader
         // so no app iterator hangs on a dead session. (The broker closes
@@ -829,7 +829,7 @@ export class StompClient {
                 continue;
             }
             this.#receipts.delete(receiptId);
-            pending.reject(new StompProtocolError('connection closed'));
+            pending.reject(new STOMPProtocolError('connection closed'));
         }
     }
 
@@ -857,7 +857,7 @@ export class StompClient {
      *
      * @param frame - The frame to send.
      */
-    #sendFrame(frame: StompFrame): void {
+    #sendFrame(frame: STOMPFrame): void {
         this.#socket.send(serializeStompFrame(frame));
     }
 

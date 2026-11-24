@@ -4,8 +4,8 @@
 import type { StoredQueueMessage } from './message-store';
 import { RingBuffer } from '@ndigo/core';
 import type { SocketSession } from './socket-session';
-import type { StompBody } from './stomp-frame';
-import type { StompAckMode } from './stomp-broker';
+import type { STOMPBody } from './stomp-frame';
+import type { STOMPAckMode } from './stomp-broker';
 
 export interface Subscription {
     session: SocketSession;
@@ -18,7 +18,7 @@ export interface Subscription {
      * leak the scope. `null` for non-`/user/` destinations.
      */
     user: string | null;
-    ack: StompAckMode;
+    ack: STOMPAckMode;
     /** Delivered-but-unacked messages (D9, ack ≠ auto) — head-indexed
      * ring: FIFO eviction at the `maxUnacked` bound is O(1). Created with
      * capacity `maxUnacked + 1` so a full ring never overwrites silently:
@@ -40,7 +40,7 @@ export interface Subscription {
 export interface BufferedDelivery {
     messageId: string;
     destination: string;
-    body: StompBody;
+    body: STOMPBody;
     headers: Record<string, string>;
     redelivered: boolean;
 }
@@ -49,7 +49,7 @@ export interface BufferedDelivery {
 export interface StoredMessage {
     messageId: string;
     destination: string;
-    body: StompBody;
+    body: STOMPBody;
     /** Extra headers (e.g. `content-type`); `subscription` added per send. */
     headers: Record<string, string>;
     /** Body octets, cached for the byte budgets (SEC-5). */
@@ -80,7 +80,7 @@ export type QueueReplay = { ok: true; messages: StoredQueueMessage[] } | { ok: f
 
 /** A buffered transactional operation (D7). */
 export type TransactionOp =
-    | { kind: 'send'; destination: string; body: StompBody; headers: Record<string, string>; receipt: string | null }
+    | { kind: 'send'; destination: string; body: STOMPBody; headers: Record<string, string>; receipt: string | null }
     | { kind: 'ack'; nack: boolean; messageId: string; subId: string; receipt: string | null };
 
 /** One session's transaction buffer: ordered ops + running body-byte total. */
@@ -89,4 +89,4 @@ export interface TransactionBuffer {
     bytes: number;
 }
 
-/** Options for {@link StompBroker}. */
+/** Options for {@link STOMPBroker}. */

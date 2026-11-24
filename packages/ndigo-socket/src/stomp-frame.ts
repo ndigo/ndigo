@@ -31,7 +31,7 @@
 import { FrameworkError } from '@ndigo/core';
 
 /** A STOMP body: text (string) or byte-exact binary (D8). */
-import type { StompBody, StompFrame, StompWireInput } from './stomp-frame-types';
+import type { STOMPBody, STOMPFrame, STOMPWireInput } from './stomp-frame-types';
 
 // Re-export moved contracts for backward compat.
 export * from './stomp-frame-types';
@@ -41,23 +41,23 @@ export * from './stomp-frame-types';
  *
  * @example
  * ```ts
- * throw new StompProtocolError('missing command');
+ * throw new STOMPProtocolError('missing command');
  * ```
  */
-export class StompProtocolError extends FrameworkError {
+export class STOMPProtocolError extends FrameworkError {
     /**
      * The `Symbol.toStringTag` value for this instance.
      *
      * `Object.prototype.toString()` reads this symbol to render the
      * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
      *
-     * @returns The string "StompProtocolError".
+     * @returns The string "STOMPProtocolError".
      *
      * @example
-     * console.log(Object.prototype.toString.call(instance)); // "[object StompProtocolError]"
+     * console.log(Object.prototype.toString.call(instance)); // "[object STOMPProtocolError]"
      */
     get [Symbol.toStringTag](): string {
-        return 'StompProtocolError';
+        return 'STOMPProtocolError';
     }
 
     /**
@@ -67,7 +67,7 @@ export class StompProtocolError extends FrameworkError {
      */
     constructor(message: string) {
         super(message);
-        this.name = 'StompProtocolError';
+        this.name = 'STOMPProtocolError';
     }
 }
 
@@ -155,7 +155,7 @@ function unescapeHeaderValue(value: string): string {
         } else if (next === '\\') {
             out += '\\';
         } else {
-            throw new StompProtocolError(`undefined header escape: "\\${next ?? ''}"`);
+            throw new STOMPProtocolError(`undefined header escape: "\\${next ?? ''}"`);
         }
         i += 1;
     }
@@ -184,10 +184,10 @@ function parseHeaderBlock(headerBlock: string): { command: string; headers: Reco
     const rawCommand = lines[0] as string;
     const command = rawCommand.endsWith('\r') ? rawCommand.slice(0, -1) : rawCommand;
     if (command === '') {
-        throw new StompProtocolError('frame has an empty command');
+        throw new STOMPProtocolError('frame has an empty command');
     }
     if (command.includes('\r') || command.includes('\0')) {
-        throw new StompProtocolError('command line contains raw CR or NUL');
+        throw new STOMPProtocolError('command line contains raw CR or NUL');
     }
     // Null-prototype map: untrusted header names (`__proto__`, `constructor`, …)
     // must land as ordinary keys, never touch the object prototype.
@@ -202,11 +202,11 @@ function parseHeaderBlock(headerBlock: string): { command: string; headers: Reco
         const line = rawLine.endsWith('\r') ? rawLine.slice(0, -1) : rawLine;
         // STOMP 1.2 forbids raw CR and NUL in header lines.
         if (line.includes('\r') || line.includes('\0')) {
-            throw new StompProtocolError('header line contains raw CR or NUL');
+            throw new STOMPProtocolError('header line contains raw CR or NUL');
         }
         const colon = line.indexOf(':');
         if (colon <= 0) {
-            throw new StompProtocolError(`malformed header line: "${line}"`);
+            throw new STOMPProtocolError(`malformed header line: "${line}"`);
         }
         const name = line.slice(0, colon);
         // Only the first entry of a repeated header is used (STOMP 1.2 §1.2).
@@ -291,7 +291,7 @@ function assertTrailingEols(units: ArrayLike<string | number>, from: number): vo
             i += 1;
             continue;
         }
-        throw new StompProtocolError('frame has trailing data after the terminating NUL');
+        throw new STOMPProtocolError('frame has trailing data after the terminating NUL');
     }
 }
 
@@ -314,7 +314,7 @@ function assertTrailingEols(units: ArrayLike<string | number>, from: number): vo
  * parseStompFrame();
  * ```
  */
-export function parseStompFrame(frame: StompWireInput): StompFrame {
+export function parseStompFrame(frame: STOMPWireInput): STOMPFrame {
     if (typeof frame === 'string') {
         return parseTextFrame(frame);
     }
@@ -339,31 +339,31 @@ export function parseStompFrame(frame: StompWireInput): StompFrame {
     }
     const terminator = headerTerminatorAt(bytes);
     if (terminator < 0) {
-        throw new StompProtocolError('frame has no header terminator');
+        throw new STOMPProtocolError('frame has no header terminator');
     }
     let headerBlock: string;
     try {
         headerBlock = TEXT_DECODER.decode(bytes.slice(0, headerBlockEnd(bytes, terminator)));
     } catch {
-        throw new StompProtocolError('frame headers are not valid UTF-8');
+        throw new STOMPProtocolError('frame headers are not valid UTF-8');
     }
     const { command, headers } = parseHeaderBlock(headerBlock);
     const bodyStart = terminator + 1;
     const contentLength = headers['content-length'];
     if (contentLength !== undefined) {
         if (!/^\d+$/.test(contentLength)) {
-            throw new StompProtocolError(`invalid content-length: "${contentLength}"`);
+            throw new STOMPProtocolError(`invalid content-length: "${contentLength}"`);
         }
         const length = Number(contentLength);
         if (!Number.isSafeInteger(length)) {
-            throw new StompProtocolError(`content-length out of range: "${contentLength}"`);
+            throw new STOMPProtocolError(`content-length out of range: "${contentLength}"`);
         }
         if (bytes.length < bodyStart + length) {
-            throw new StompProtocolError(`body shorter than content-length ${length}`);
+            throw new STOMPProtocolError(`body shorter than content-length ${length}`);
         }
         const body = bytes.slice(bodyStart, bodyStart + length);
         if (bodyStart + length >= bytes.length || bytes[bodyStart + length] !== 0x00) {
-            throw new StompProtocolError('frame not NUL-terminated after content-length body');
+            throw new STOMPProtocolError('frame not NUL-terminated after content-length body');
         }
         assertTrailingEols(bytes, bodyStart + length + 1);
         return { command, headers, body };
@@ -377,7 +377,7 @@ export function parseStompFrame(frame: StompWireInput): StompFrame {
         }
     }
     if (nul < 0) {
-        throw new StompProtocolError('frame missing NUL terminator');
+        throw new STOMPProtocolError('frame missing NUL terminator');
     }
     assertTrailingEols(bytes, nul + 1);
     return { command, headers, body: bytes.slice(bodyStart, nul) };
@@ -398,7 +398,7 @@ export function parseStompFrame(frame: StompWireInput): StompFrame {
  * parseTextFrame();
  * ```
  */
-export function parseTextFrame(frame: string): StompFrame {
+export function parseTextFrame(frame: string): STOMPFrame {
     if (textPing.test(frame)) {
         return { command: '', headers: {}, body: '' };
     }
@@ -407,18 +407,18 @@ export function parseTextFrame(frame: string): StompFrame {
     // the terminator).
     const terminator = headerTerminatorAt(frame);
     if (terminator < 0) {
-        throw new StompProtocolError('frame has no header terminator');
+        throw new STOMPProtocolError('frame has no header terminator');
     }
     const { command, headers } = parseHeaderBlock(frame.slice(0, headerBlockEnd(frame, terminator)));
     const bodyStart = terminator + 1;
     const contentLength = headers['content-length'];
     if (contentLength !== undefined) {
         if (!/^\d+$/.test(contentLength)) {
-            throw new StompProtocolError(`invalid content-length: "${contentLength}"`);
+            throw new STOMPProtocolError(`invalid content-length: "${contentLength}"`);
         }
         const length = Number(contentLength);
         if (!Number.isSafeInteger(length)) {
-            throw new StompProtocolError(`content-length out of range: "${contentLength}"`);
+            throw new STOMPProtocolError(`content-length out of range: "${contentLength}"`);
         }
         // STOMP counts `content-length` in octets; JS string indexes are
         // UTF-16 code units (equal only for ASCII). Do the length math on
@@ -428,10 +428,10 @@ export function parseTextFrame(frame: string): StompFrame {
         const encoded = new TextEncoder().encode(frame);
         const bodyStartBytes = new TextEncoder().encode(frame.slice(0, bodyStart)).length;
         if (encoded.length < bodyStartBytes + length) {
-            throw new StompProtocolError(`body shorter than content-length ${length}`);
+            throw new STOMPProtocolError(`body shorter than content-length ${length}`);
         }
         if (encoded[bodyStartBytes + length] !== 0x00) {
-            throw new StompProtocolError('frame not NUL-terminated after content-length body');
+            throw new STOMPProtocolError('frame not NUL-terminated after content-length body');
         }
         assertTrailingEols(encoded, bodyStartBytes + length + 1);
         const body = new TextDecoder('utf-8', { fatal: false }).decode(
@@ -442,7 +442,7 @@ export function parseTextFrame(frame: string): StompFrame {
     // NUL-terminated body.
     const nul = frame.indexOf('\0', bodyStart);
     if (nul < 0) {
-        throw new StompProtocolError('frame missing NUL terminator');
+        throw new STOMPProtocolError('frame missing NUL terminator');
     }
     assertTrailingEols(frame, nul + 1);
     return { command, headers, body: frame.slice(bodyStart, nul) };
@@ -465,23 +465,23 @@ export function parseTextFrame(frame: string): StompFrame {
  * serializeStompFrame();
  * ```
  */
-export function serializeStompFrame(frame: StompFrame): StompBody {
+export function serializeStompFrame(frame: STOMPFrame): STOMPBody {
     const { command, headers, body } = frame;
     if (command === '') {
-        throw new StompProtocolError('cannot serialize a heart-beat ping');
+        throw new STOMPProtocolError('cannot serialize a heart-beat ping');
     }
     if (!/^[A-Z][A-Z0-9-]*$/.test(command)) {
-        throw new StompProtocolError(`invalid command: "${command}"`);
+        throw new STOMPProtocolError(`invalid command: "${command}"`);
     }
     const textBody = typeof body === 'string';
     // STOMP `content-length` counts octets: binary bodies are byte-exact;
     // text bodies measure their UTF-8 encoding (a JS string's `.length` is
     // UTF-16 code units — equal only for ASCII).
-    const octets = (candidate: StompBody): number =>
+    const octets = (candidate: STOMPBody): number =>
         typeof candidate === 'string' ? new TextEncoder().encode(candidate).length : candidate.length;
     const callerContentLength = headers['content-length'];
     if (callerContentLength !== undefined && callerContentLength !== String(octets(body))) {
-        throw new StompProtocolError(
+        throw new STOMPProtocolError(
             `content-length ${callerContentLength} does not match body (${String(octets(body))} octets)`
         );
     }
@@ -495,10 +495,10 @@ export function serializeStompFrame(frame: StompFrame): StompBody {
         // `:` would re-split on parse, CR/LF would forge header lines, and
         // NUL would corrupt the frame — all rejected up front.
         if (name === '' || /[\n\r:\0]/.test(name)) {
-            throw new StompProtocolError(`invalid header name: "${name}"`);
+            throw new STOMPProtocolError(`invalid header name: "${name}"`);
         }
         if (value.includes('\0') || (exempt && /[\n\r]/.test(value))) {
-            throw new StompProtocolError(`invalid header value for ${command}: "${name}"`);
+            throw new STOMPProtocolError(`invalid header value for ${command}: "${name}"`);
         }
         serializedHeaders.push([name, exempt ? value : escapeHeaderValue(value)]);
     }
@@ -535,7 +535,7 @@ export function serializeStompFrame(frame: StompFrame): StompBody {
  * bodyAsText();
  * ```
  */
-export function bodyAsText(body: StompBody): string {
+export function bodyAsText(body: STOMPBody): string {
     if (typeof body === 'string') {
         return body;
     }

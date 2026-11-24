@@ -1,11 +1,11 @@
 /**
  * End-to-end STOMP demo gate: the ndigo-api STOMP chat
- * destination consumed through `StompClient` over the `@ndigo/socket`
+ * destination consumed through `STOMPClient` over the `@ndigo/socket`
  * `WebSocketClient` — the node global WHATWG `WebSocket` transport, same
  * wire as a browser.
  *
  * Boots the real application stack on an ephemeral port, logs in through
- * `/auth/login`, connects two `StompClient`s to `/stomp/chat` (the endpoint
+ * `/auth/login`, connects two `STOMPClient`s to `/stomp/chat` (the endpoint
  * is `@authenticated`, so the demo token rides the upgrade URL), and
  * asserts the destination fan-out (including the sender when subscribed),
  * receipt-resolved sends, the scheduler-driven `chat-tick` (scheduler →
@@ -19,7 +19,7 @@ import type { ApplicationContext } from '@ndigo/context';
 import { ApplicationBuilder } from '@ndigo/boot';
 import { ManagementAutoConfiguration } from '@ndigo/management';
 import { NodeAutoConfiguration, HTTPServer } from '@ndigo/platform-node';
-import { WebSocketClient, StompClient, type StompSubscription, bodyAsText } from '@ndigo/socket';
+import { WebSocketClient, STOMPClient, type STOMPSubscription, bodyAsText } from '@ndigo/socket';
 import { WebSocket } from 'ws';
 import { NodeAppConfiguration } from '../src/node-app-configuration';
 import { ServerConfig } from '../src/server-config';
@@ -31,7 +31,7 @@ import { initAuth } from '../src/auth-store';
  * @param sub - The subscription.
  * @returns The collected bodies and a promise completing on stream end.
  */
-function collect(sub: StompSubscription): { bodies: string[]; done: Promise<void> } {
+function collect(sub: STOMPSubscription): { bodies: string[]; done: Promise<void> } {
     const bodies: string[] = [];
     const done = (async () => {
         for await (const message of sub.messages) {
@@ -58,7 +58,7 @@ async function waitFor(predicate: () => boolean, timeoutMs: number): Promise<voi
     }
 }
 
-describe('ndigo-api STOMP chat via StompClient', () => {
+describe('ndigo-api STOMP chat via STOMPClient', () => {
     let context: ApplicationContext;
     let wsUrl: string;
     let token: string;
@@ -106,10 +106,10 @@ describe('ndigo-api STOMP chat via StompClient', () => {
         delete process.env['PORT'];
     });
 
-    const stomp = (): StompClient => {
+    const stomp = (): STOMPClient => {
         const socket = new WebSocketClient(`${wsUrl}/stomp/chat?token=${token}`, { reconnect: null });
         clients.push(socket);
-        return new StompClient(socket, { host: 'stomp-spec', reconnect: false });
+        return new STOMPClient(socket, { host: 'stomp-spec', reconnect: false });
     };
 
     test('an unauthenticated upgrade to /stomp/chat is closed with 1008', async () => {

@@ -3,12 +3,12 @@
  * indexes, and the delivery-tracking accounting (ack index, byte bounds).
  */
 import type { SocketSession } from './socket-session';
-import type { StompBody } from './stomp-frame';
+import type { STOMPBody } from './stomp-frame';
 import { materialOctets } from './message-store';
 import type { SessionState, StoredMessage, Subscription } from './_stomp-broker-types';
 
 /** The delivery bounds the registry enforces. */
-export interface StompSubscriptionLimits {
+export interface STOMPSubscriptionLimits {
     /** Maximum tracked unacked messages per subscription; `0` disables. */
     readonly maxUnacked: number;
     /** Maximum tracked unacked octets per subscription; `0` disables. */
@@ -24,12 +24,12 @@ export interface StompSubscriptionLimits {
  *
  * @example
  * ```ts
- * const registry = new StompSubscriptionRegistry({ maxUnacked: 1000, maxUnackedBytes: 0, maxUnackedSessionBytes: 0 });
+ * const registry = new STOMPSubscriptionRegistry({ maxUnacked: 1000, maxUnackedBytes: 0, maxUnackedSessionBytes: 0 });
  * registry.add(subscription);
  * ```
  */
-export class StompSubscriptionRegistry {
-    readonly #limits: StompSubscriptionLimits;
+export class STOMPSubscriptionRegistry {
+    readonly #limits: STOMPSubscriptionLimits;
     /** Per-session subscription map: session → subId → subscription. */
     readonly #subscriptions = new Map<SocketSession, Map<string, Subscription>>();
     /** Fan-out index: destination → subscriptions (user scopes excluded). */
@@ -44,7 +44,7 @@ export class StompSubscriptionRegistry {
     /**
      * @param limits - The delivery-tracking bounds.
      */
-    constructor(limits: StompSubscriptionLimits) {
+    constructor(limits: STOMPSubscriptionLimits) {
         this.#limits = limits;
     }
 
@@ -264,7 +264,7 @@ export class StompSubscriptionRegistry {
         subscription: Subscription,
         messageId: string,
         destination: string,
-        body: StompBody,
+        body: STOMPBody,
         headers: Record<string, string>
     ): void {
         if (subscription.ack === 'auto' || this.#limits.maxUnacked <= 0) {

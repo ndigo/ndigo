@@ -1,5 +1,5 @@
 /**
- * `StompClient` unit tests — `SocketClient` doubles with a
+ * `STOMPClient` unit tests — `SocketClient` doubles with a
  * status signal + AsyncReader message stream, plus one end-to-end case over
  * the real `WebSocketClient`. Covers the CONNECT handshake (resolver-driven
  * timeout, RT-1), subscription routing, send/receipt correlation and its
@@ -10,8 +10,8 @@ import { describe, expect, test, vi } from 'vitest';
 import { signal, type Signal } from '@ndigo/signals';
 import {
     AsyncReader,
-    StompClient,
-    StompProtocolError,
+    STOMPClient,
+    STOMPProtocolError,
     WebSocketClient,
     parseStompFrame,
     serializeStompFrame,
@@ -98,12 +98,12 @@ class FakeSocket implements SocketClient {
 }
 
 /** Wire a client to a fresh fake and bring it through the handshake. */
-function openClient(options: ConstructorParameters<typeof StompClient>[1] = {}): {
+function openClient(options: ConstructorParameters<typeof STOMPClient>[1] = {}): {
     socket: FakeSocket;
-    client: StompClient;
+    client: STOMPClient;
 } {
     const socket = new FakeSocket();
-    const client = new StompClient(socket, options);
+    const client = new STOMPClient(socket, options);
     socket.open();
     socket.connected();
     return { socket, client };
@@ -156,10 +156,10 @@ class FakeTransport implements SocketTransport {
     }
 }
 
-describe('StompClient CONNECT', () => {
+describe('STOMPClient CONNECT', () => {
     test('sends CONNECT with default accept-version and host derived from the URL', async () => {
         const socket = new FakeSocket();
-        const client = new StompClient(socket);
+        const client = new STOMPClient(socket);
         socket.open();
         await vi.waitFor(() => expect(socket.frames.length).toBe(1));
         const [connect] = socket.frames;
@@ -172,7 +172,7 @@ describe('StompClient CONNECT', () => {
 
     test('honors custom acceptVersion, host, login, passcode, heartBeat', async () => {
         const socket = new FakeSocket();
-        const client = new StompClient(socket, {
+        const client = new STOMPClient(socket, {
             acceptVersion: '1.2',
             host: 'stomp.example.test',
             login: 'alice',
@@ -197,7 +197,7 @@ describe('StompClient CONNECT', () => {
     });
 });
 
-describe('StompClient subscriptions', () => {
+describe('STOMPClient subscriptions', () => {
     test('subscribe while connected sends SUBSCRIBE with id + ack', async () => {
         const { socket, client } = openClient();
         await vi.waitFor(() => expect(client.connected.value).toBe(true));
@@ -288,7 +288,7 @@ describe('StompClient subscriptions', () => {
     });
 });
 
-describe('StompClient sends and receipts', () => {
+describe('STOMPClient sends and receipts', () => {
     test('send resolves when the matching RECEIPT arrives', async () => {
         const { socket, client } = openClient();
         let resolved = false;
@@ -328,7 +328,7 @@ describe('StompClient sends and receipts', () => {
             firstResolved = true;
         });
         const duplicate = client.send('/topic/y', 'b', { receipt: 'reused' });
-        await expect(duplicate).rejects.toBeInstanceOf(StompProtocolError);
+        await expect(duplicate).rejects.toBeInstanceOf(STOMPProtocolError);
         await expect(duplicate).rejects.toThrow('duplicate receipt id');
         expect(firstResolved).toBe(false);
         // Only the first SEND reached the wire; its receipt still resolves it
@@ -359,7 +359,7 @@ describe('StompClient sends and receipts', () => {
 
     test('pending sends flush after a reconnect handshake', async () => {
         const socket = new FakeSocket();
-        const client = new StompClient(socket);
+        const client = new STOMPClient(socket);
         socket.open();
         socket.connected();
         await vi.waitFor(() => expect(client.connected.value).toBe(true));
@@ -381,7 +381,7 @@ describe('StompClient sends and receipts', () => {
 
     test('a send buffered for the new session survives a further drop (COR-12)', async () => {
         const socket = new FakeSocket();
-        const client = new StompClient(socket);
+        const client = new STOMPClient(socket);
         socket.open();
         socket.connected();
         await vi.waitFor(() => expect(client.connected.value).toBe(true));
@@ -453,11 +453,11 @@ describe('StompClient sends and receipts', () => {
     });
 });
 
-describe('StompClient errors and teardown', () => {
+describe('STOMPClient errors and teardown', () => {
     test('a server ERROR invokes onError and rejects pending sends', async () => {
         const socket = new FakeSocket();
         const onError = vi.fn();
-        const client = new StompClient(socket, { onError });
+        const client = new STOMPClient(socket, { onError });
         socket.open();
         socket.connected();
         await vi.waitFor(() => expect(client.connected.value).toBe(true));
@@ -467,7 +467,7 @@ describe('StompClient errors and teardown', () => {
         });
         socket.push('ERROR', { message: 'destination unknown' });
         await vi.waitFor(() => expect(rejection).not.toBeNull());
-        expect(rejection).toBeInstanceOf(StompProtocolError);
+        expect(rejection).toBeInstanceOf(STOMPProtocolError);
         expect((rejection as unknown as Error).message).toBe('destination unknown');
         expect(onError).toHaveBeenCalledWith('destination unknown');
         await vi.waitFor(() => expect(client.connected.value).toBe(false));
@@ -488,14 +488,14 @@ describe('StompClient errors and teardown', () => {
         // Regression: with `reconnect: true` (the default) the new STOMP
         // session can never receipt the old id — the promise used to hang.
         await sending;
-        expect(rejection).toBeInstanceOf(StompProtocolError);
+        expect(rejection).toBeInstanceOf(STOMPProtocolError);
         expect((rejection as unknown as Error).message).toBe('connection closed');
         client.disconnect();
     });
 
     test('reconnect: false ends the session at the first drop', async () => {
         const socket = new FakeSocket();
-        const client = new StompClient(socket, { reconnect: false });
+        const client = new STOMPClient(socket, { reconnect: false });
         socket.open();
         socket.connected();
         await vi.waitFor(() => expect(client.connected.value).toBe(true));
@@ -513,7 +513,7 @@ describe('StompClient errors and teardown', () => {
         socket.drop();
         await vi.waitFor(() => expect(client.connected.value).toBe(false));
         await vi.waitFor(() => expect(ended.length).toBe(1));
-        expect(rejected).toBeInstanceOf(StompProtocolError);
+        expect(rejected).toBeInstanceOf(STOMPProtocolError);
         client.disconnect();
     });
 
@@ -537,7 +537,7 @@ describe('StompClient errors and teardown', () => {
 
     test('subscribe before the first open is buffered and sent after CONNECTED', async () => {
         const socket = new FakeSocket();
-        const client = new StompClient(socket);
+        const client = new STOMPClient(socket);
         const sub = client.subscribe('/topic/chat', { id: 'early' });
         await vi.waitFor(() => expect(socket.frames.length).toBe(0)); // nothing sent pre-open
         socket.open();
@@ -550,7 +550,7 @@ describe('StompClient errors and teardown', () => {
 
     test('a buffered subscription replays its requested ack mode', async () => {
         const socket = new FakeSocket();
-        const client = new StompClient(socket);
+        const client = new STOMPClient(socket);
         client.subscribe('/topic/chat', { id: 'early', ack: 'client-individual' });
         socket.open();
         socket.connected();
@@ -560,11 +560,11 @@ describe('StompClient errors and teardown', () => {
     });
 });
 
-describe('StompClient lifecycle hardening', () => {
+describe('STOMPClient lifecycle hardening', () => {
     test('send after the session ended rejects immediately', async () => {
         const { client } = openClient();
         client.disconnect();
-        await expect(client.send('/topic/x', 'late')).rejects.toMatchObject({ name: 'StompProtocolError' });
+        await expect(client.send('/topic/x', 'late')).rejects.toMatchObject({ name: 'STOMPProtocolError' });
     });
 
     test('a server ERROR ends the session: streams complete, later sends reject', async () => {
@@ -589,14 +589,14 @@ describe('StompClient lifecycle hardening', () => {
         await vi.waitFor(() => expect(closed).toBe(true));
         await vi.waitFor(() => expect(subEnded).toBe(true));
         // The session is terminal — no zombie buffering or re-CONNECT.
-        await expect(client.send('/topic/x', 'after')).rejects.toMatchObject({ name: 'StompProtocolError' });
+        await expect(client.send('/topic/x', 'after')).rejects.toMatchObject({ name: 'STOMPProtocolError' });
         await vi.waitFor(() => expect(socket.frames.filter((frame) => frame.command === 'SEND').length).toBe(0));
     });
 
     test('a CONNECT timeout ends the session with onError and rejects later sends', async () => {
         const socket = new FakeSocket();
         const onError = vi.fn();
-        const client = new StompClient(socket, { connectTimeoutMs: 30, onError });
+        const client = new STOMPClient(socket, { connectTimeoutMs: 30, onError });
         let closed = false;
         void (async () => {
             for await (const _ of client.closed) {
@@ -609,7 +609,7 @@ describe('StompClient lifecycle hardening', () => {
         await vi.waitFor(() => expect(closed).toBe(true), { timeout: 2000 });
         expect(onError).toHaveBeenCalledWith('CONNECT timed out');
         expect(client.connected.value).toBe(false);
-        await expect(client.send('/topic/x', 'late')).rejects.toMatchObject({ name: 'StompProtocolError' });
+        await expect(client.send('/topic/x', 'late')).rejects.toMatchObject({ name: 'STOMPProtocolError' });
     });
 
     test('the handshake arms one timer, times out, and leaves nothing scheduled (RT-1)', async () => {
@@ -625,7 +625,7 @@ describe('StompClient lifecycle hardening', () => {
         try {
             const socket = new FakeSocket();
             const onError = vi.fn();
-            const client = new StompClient(socket, { connectTimeoutMs: 5000, onError });
+            const client = new STOMPClient(socket, { connectTimeoutMs: 5000, onError });
             socket.open();
             await flushMicrotasks(); // effect → microtask → CONNECT + timer
             expect(socket.frames.filter((frame) => frame.command === 'CONNECT').length).toBe(1);
@@ -648,7 +648,7 @@ describe('StompClient lifecycle hardening', () => {
         try {
             const socket = new FakeSocket();
             const onError = vi.fn();
-            const client = new StompClient(socket, { connectTimeoutMs: 5000, onError });
+            const client = new STOMPClient(socket, { connectTimeoutMs: 5000, onError });
             const sub = client.subscribe('/topic/chat', { id: 's1' });
             const received: Array<string | Uint8Array> = [];
             void (async () => {
@@ -678,7 +678,7 @@ describe('StompClient lifecycle hardening', () => {
 
     test('a drop re-CONNECTs and re-SUBSCRIBEs the active subscriptions (RT-1)', async () => {
         const socket = new FakeSocket();
-        const client = new StompClient(socket);
+        const client = new STOMPClient(socket);
         const sub = client.subscribe('/topic/chat', { id: 's1', ack: 'client-individual' });
         const received: Array<string | Uint8Array> = [];
         void (async () => {
@@ -710,7 +710,7 @@ describe('StompClient lifecycle hardening', () => {
     test('a superseded handshake never fails the newer session (RT-1)', async () => {
         const socket = new FakeSocket();
         const onError = vi.fn();
-        const client = new StompClient(socket, { connectTimeoutMs: 40, onError });
+        const client = new STOMPClient(socket, { connectTimeoutMs: 40, onError });
         socket.open();
         await flushMicrotasks(); // CONNECT #1 sent, its handshake armed
         expect(socket.frames.filter((frame) => frame.command === 'CONNECT').length).toBe(1);
@@ -733,7 +733,7 @@ describe('StompClient lifecycle hardening', () => {
     test('a handshake superseded inside the same epoch never fails the session (RT-1)', async () => {
         const socket = new FakeSocket();
         const onError = vi.fn();
-        const client = new StompClient(socket, { connectTimeoutMs: 40, onError });
+        const client = new STOMPClient(socket, { connectTimeoutMs: 40, onError });
         // All three transitions land before the queued handshake pass runs:
         // two passes queue inside the same epoch, each arming a handshake.
         socket.open();
@@ -758,7 +758,7 @@ describe('StompClient lifecycle hardening', () => {
 
     test('pending sends are bounded; the oldest rejects on overflow', async () => {
         const socket = new FakeSocket();
-        const client = new StompClient(socket, { maxPendingSends: 2 });
+        const client = new STOMPClient(socket, { maxPendingSends: 2 });
         let first: string | null = null;
         let second: string | null = null;
         const firstSend = client.send('/topic/x', '1').then(
@@ -823,7 +823,7 @@ describe('StompClient lifecycle hardening', () => {
     });
 });
 
-describe('StompClient exception safety (PRT-REV-001/008)', () => {
+describe('STOMPClient exception safety (PRT-REV-001/008)', () => {
     test('an invalid header rejects the connected send without stranding a receipt', async () => {
         const { socket, client } = openClient();
         await vi.waitFor(() => expect(client.connected.value).toBe(true));
@@ -832,7 +832,7 @@ describe('StompClient exception safety (PRT-REV-001/008)', () => {
         // Pre-fix this threw synchronously out of `send()` and stranded the
         // receipt entry; now it is a rejected promise.
         await expect(client.send('/topic/x', 'bad', { 'x-bad': 'a\u0000b' })).rejects.toBeInstanceOf(
-            StompProtocolError
+            STOMPProtocolError
         );
         expect(sends()).toBe(before); // the frame never left the wire
         // The client stays usable: a later valid send is still receipted.
@@ -847,13 +847,13 @@ describe('StompClient exception safety (PRT-REV-001/008)', () => {
         const { client } = openClient();
         await vi.waitFor(() => expect(client.connected.value).toBe(true));
         // The destination becomes a MESSAGE header value; NUL cannot be framed.
-        await expect(client.send('/topic/x\u0000y', 'bad')).rejects.toBeInstanceOf(StompProtocolError);
+        await expect(client.send('/topic/x\u0000y', 'bad')).rejects.toBeInstanceOf(STOMPProtocolError);
         client.disconnect();
     });
 
     test('a buffered send with an invalid header is fault-isolated during the flush', async () => {
         const socket = new FakeSocket();
-        const client = new StompClient(socket);
+        const client = new STOMPClient(socket);
         socket.open();
         socket.connected();
         await vi.waitFor(() => expect(client.connected.value).toBe(true));
@@ -866,7 +866,7 @@ describe('StompClient exception safety (PRT-REV-001/008)', () => {
         // Pre-fix the bad buffered send threw inside the flush loop,
         // aborting the whole queue (the good send never went out) and
         // leaving an unhandled rejection.
-        await expect(bad).rejects.toBeInstanceOf(StompProtocolError);
+        await expect(bad).rejects.toBeInstanceOf(STOMPProtocolError);
         await vi.waitFor(() => expect(socket.frames.filter((frame) => frame.command === 'SEND').length).toBe(1));
         expect(socket.frames.find((frame) => frame.command === 'SEND')?.body).toBe('good');
         socket.replyLastSend();
@@ -877,7 +877,7 @@ describe('StompClient exception safety (PRT-REV-001/008)', () => {
     test('subscribe after a deliberate disconnect throws', async () => {
         const { client } = openClient();
         client.disconnect();
-        expect(() => client.subscribe('/topic/x')).toThrow(StompProtocolError);
+        expect(() => client.subscribe('/topic/x')).toThrow(STOMPProtocolError);
     });
 
     test('subscribe after a server ERROR throws (session is terminal)', async () => {
@@ -885,11 +885,11 @@ describe('StompClient exception safety (PRT-REV-001/008)', () => {
         await vi.waitFor(() => expect(client.connected.value).toBe(true));
         socket.push('ERROR', { message: 'boom' });
         await vi.waitFor(() => expect(client.connected.value).toBe(false));
-        expect(() => client.subscribe('/topic/x')).toThrow(StompProtocolError);
+        expect(() => client.subscribe('/topic/x')).toThrow(STOMPProtocolError);
     });
 });
 
-describe('StompClient over the real WebSocketClient', () => {
+describe('STOMPClient over the real WebSocketClient', () => {
     test('an unexpected transport drop rejects the in-flight send (COR-12)', async () => {
         const created: Array<FakeTransport> = [];
         const socket = new WebSocketClient('ws://realtime.example.test:3000/stomp/chat', {
@@ -899,7 +899,7 @@ describe('StompClient over the real WebSocketClient', () => {
                 return transport;
             },
         });
-        const client = new StompClient(socket);
+        const client = new STOMPClient(socket);
         const transport = created[0];
         transport.fireOpen();
         transport.fireMessage(serializeStompFrame({ command: 'CONNECTED', headers: { version: '1.2' }, body: '' }));
@@ -915,7 +915,7 @@ describe('StompClient over the real WebSocketClient', () => {
         // left the wire can never be receipted — the app's await settles.
         transport.fireClose(1006);
         await sending;
-        expect(rejection).toBeInstanceOf(StompProtocolError);
+        expect(rejection).toBeInstanceOf(STOMPProtocolError);
         expect((rejection as unknown as Error).message).toBe('connection closed');
         client.disconnect();
         expect(socket.status.value).toBe('closed');

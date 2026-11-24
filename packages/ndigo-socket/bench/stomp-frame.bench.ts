@@ -8,14 +8,14 @@
  * work — so its ratio is not a like-for-like claim.
  */
 import { test } from 'vitest';
-import { bodyAsText, parseStompFrame, serializeStompFrame, type StompFrame } from '../src/stomp-frame';
+import { bodyAsText, parseStompFrame, serializeStompFrame, type STOMPFrame } from '../src/stomp-frame';
 import { assertEquivalent, benchName, sink } from '../../../benchmarks/lib/verify';
 
 const BATCH = 1_000;
 const retain = sink;
 
 const payload = JSON.stringify({ type: 'chat', room: 'lobby', sender: 'alice', text: 'hello world' });
-const frame: StompFrame = {
+const frame: STOMPFrame = {
     command: 'MESSAGE',
     headers: {
         destination: '/topic/lobby',
@@ -27,7 +27,7 @@ const frame: StompFrame = {
 };
 
 const largeBody = 'x'.repeat(2_048);
-const largeFrame: StompFrame = { command: 'MESSAGE', headers: frame.headers, body: largeBody };
+const largeFrame: STOMPFrame = { command: 'MESSAGE', headers: frame.headers, body: largeBody };
 
 const wireText = serializeStompFrame(frame) as string;
 const wireBytes = new TextEncoder().encode(wireText);

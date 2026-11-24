@@ -2,8 +2,8 @@
  * Protocol bounds for the STOMP broker: identifier caps, header budget,
  * deliverable framing, and the per-session replay budget.
  */
-import type { StompFrame } from './stomp-frame';
-import { StompProtocolError } from './stomp-frame';
+import type { STOMPFrame } from './stomp-frame';
+import { STOMPProtocolError } from './stomp-frame';
 import type { SocketSession } from './socket-session';
 import type { SessionState } from './_stomp-broker-types';
 import { headerOctets } from './message-store';
@@ -21,9 +21,9 @@ const IDENTIFIER_HEADERS: readonly string[] = [
 ];
 
 /**
- * Construction seams for {@link StompLimits}.
+ * Construction seams for {@link STOMPLimits}.
  */
-export interface StompLimitOptions {
+export interface STOMPLimitOptions {
     /** Maximum identifier header length; `0` disables the cap. */
     readonly maxIdentifierLength: number;
     /** Maximum serialized header octets; `0` disables the cap. */
@@ -31,7 +31,7 @@ export interface StompLimitOptions {
     /** Per-session replay budget; `0` disables the cap. */
     readonly maxReplayBytesPerSession: number;
     /** Fail-closed protocol reply owned by the broker. */
-    readonly fail: (session: SocketSession, frame: StompFrame, message: string, code?: number) => boolean;
+    readonly fail: (session: SocketSession, frame: STOMPFrame, message: string, code?: number) => boolean;
     /** Per-session delivery accounting, created on first use. */
     readonly stateFor: (session: SocketSession) => SessionState;
 }
@@ -41,21 +41,21 @@ export interface StompLimitOptions {
  *
  * @example
  * ```ts
- * const limits = new StompLimits({ maxIdentifierLength: 1024, maxHeaderBytes: 16384, maxReplayBytesPerSession: 0, fail, stateFor });
+ * const limits = new STOMPLimits({ maxIdentifierLength: 1024, maxHeaderBytes: 16384, maxReplayBytesPerSession: 0, fail, stateFor });
  * limits.assertIdentifiers(session, frame);
  * ```
  */
-export class StompLimits {
+export class STOMPLimits {
     readonly #maxIdentifierLength: number;
     readonly #maxHeaderBytes: number;
     readonly #maxReplayBytesPerSession: number;
-    readonly #fail: StompLimitOptions['fail'];
-    readonly #stateFor: StompLimitOptions['stateFor'];
+    readonly #fail: STOMPLimitOptions['fail'];
+    readonly #stateFor: STOMPLimitOptions['stateFor'];
 
     /**
      * @param options - The configured bounds and the broker's reply seams.
      */
-    constructor(options: StompLimitOptions) {
+    constructor(options: STOMPLimitOptions) {
         this.#maxIdentifierLength = options.maxIdentifierLength;
         this.#maxHeaderBytes = options.maxHeaderBytes;
         this.#maxReplayBytesPerSession = options.maxReplayBytesPerSession;
@@ -70,7 +70,7 @@ export class StompLimits {
      * @param frame - The frame to check.
      * @returns `true` when within bounds, `false` after the fail-closed reply.
      */
-    assertIdentifiers(session: SocketSession, frame: StompFrame): boolean {
+    assertIdentifiers(session: SocketSession, frame: STOMPFrame): boolean {
         const max = this.#maxIdentifierLength;
         if (max <= 0) {
             return true;
@@ -91,7 +91,7 @@ export class StompLimits {
      * @param frame - The frame to check.
      * @returns `true` when within bounds, `false` after the fail-closed reply.
      */
-    assertHeaderBudget(session: SocketSession, frame: StompFrame): boolean {
+    assertHeaderBudget(session: SocketSession, frame: STOMPFrame): boolean {
         const max = this.#maxHeaderBytes;
         if (max <= 0 || headerOctets(frame.headers) <= max) {
             return true;
@@ -108,18 +108,18 @@ export class StompLimits {
      */
     assertDeliverable(destination: string, headers: Record<string, string>): void {
         if (destination.includes('\0')) {
-            throw new StompProtocolError('destination contains a NUL character');
+            throw new STOMPProtocolError('destination contains a NUL character');
         }
         const max = this.#maxHeaderBytes;
         if (max > 0 && headerOctets(headers) > max) {
-            throw new StompProtocolError(`headers exceed ${max} octets`);
+            throw new STOMPProtocolError(`headers exceed ${max} octets`);
         }
         for (const [name, value] of Object.entries(headers)) {
             if (name === '' || /[\n\r:\0]/.test(name)) {
-                throw new StompProtocolError(`invalid header name: "${name}"`);
+                throw new STOMPProtocolError(`invalid header name: "${name}"`);
             }
             if (value.includes('\0')) {
-                throw new StompProtocolError(`header value contains NUL: "${name}"`);
+                throw new STOMPProtocolError(`header value contains NUL: "${name}"`);
             }
         }
     }

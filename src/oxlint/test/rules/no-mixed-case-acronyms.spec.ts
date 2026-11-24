@@ -24,6 +24,14 @@ ruleTester.run('no-mixed-case-acronyms', noMixedCaseAcronyms, {
             filename: '/packages/ndigo-core/src/parser.ts',
         },
         {
+            code: 'class STOMPBroker { }',
+            filename: '/packages/ndigo-socket/src/stomp-broker.ts',
+        },
+        {
+            code: 'interface STOMPFrame { command: string; }',
+            filename: '/packages/ndigo-socket/src/stomp-frame-types.ts',
+        },
+        {
             code: 'type UUIDConverter = (value: string) => string;',
             filename: '/packages/ndigo-core/src/converter.ts',
         },
@@ -41,6 +49,11 @@ ruleTester.run('no-mixed-case-acronyms', noMixedCaseAcronyms, {
         {
             code: 'class HttpTransformer { transform(): unknown { return null; } }',
             filename: '/packages/ndigo-core/src/transformer.ts',
+            errors: [{ messageId: 'mixedCaseAcronym' }],
+        },
+        {
+            code: 'class StompBroker { }',
+            filename: '/packages/ndigo-socket/src/stomp-broker.ts',
             errors: [{ messageId: 'mixedCaseAcronym' }],
         },
         {

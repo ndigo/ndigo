@@ -85,7 +85,7 @@ accepted by this wrapper, and closes only internally created clients.
 ```ts
 import { RedisConnection } from '@ndigo/redis';
 import { RedisSocketFanout } from '@ndigo/redis/pubsub';
-import { StompBroker } from '@ndigo/socket';
+import { STOMPBroker } from '@ndigo/socket';
 import { HTTPServer, NodeSocketSessionRegistry } from '@ndigo/platform-node';
 
 const url = process.env.REDIS_URL!;
@@ -96,7 +96,7 @@ const fanout = new RedisSocketFanout({
     namespace: 'my-app.production',
 });
 const registry = new NodeSocketSessionRegistry({ fanout });
-const broker = new StompBroker({ fanout });
+const broker = new STOMPBroker({ fanout });
 // dispatcher is your existing NodeDispatcher; endpoint handlers use this broker.
 const server = new HTTPServer(dispatcher, { socketRegistry: registry });
 await publisher.connect();

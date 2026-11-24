@@ -10,11 +10,11 @@ import { NodeSocketSessionRegistry, nodeSocketSession } from '@ndigo/platform-no
 import {
     AsyncReader,
     InMemoryQueueMessageStore,
-    StompBroker,
+    STOMPBroker,
     parseStompFrame,
     serializeStompFrame,
     type SocketSession,
-    type StompFrame,
+    type STOMPFrame,
 } from '@ndigo/socket';
 import { RedisConnection } from '../src';
 import { RedisSocketFanout } from '../src/pubsub';
@@ -61,7 +61,7 @@ class Session implements SocketSession {
     push(command: string, headers: Record<string, string> = {}, body: string | Uint8Array = ''): void {
         this.inbound.push(serializeStompFrame({ command, headers, body }));
     }
-    get sent(): StompFrame[] {
+    get sent(): STOMPFrame[] {
         return this.outbound.map((raw) => parseStompFrame(raw));
     }
     get deliveries(): Array<{
@@ -91,7 +91,7 @@ live('Redis socket fan-out (live standalone Redis)', () => {
     const transports: RedisSocketFanout[] = [];
     const connections: RedisConnection[] = [];
     const registries: NodeSocketSessionRegistry[] = [];
-    const brokers: StompBroker[] = [];
+    const brokers: STOMPBroker[] = [];
     const sessions: Session[] = [];
     const handled: Promise<void>[] = [];
 
@@ -126,13 +126,13 @@ live('Redis socket fan-out (live standalone Redis)', () => {
         return { session, received, ws };
     }
 
-    function broker(fanout: RedisSocketFanout, queueStore = new InMemoryQueueMessageStore()): StompBroker {
-        const result = new StompBroker({ fanout, queueStore });
+    function broker(fanout: RedisSocketFanout, queueStore = new InMemoryQueueMessageStore()): STOMPBroker {
+        const result = new STOMPBroker({ fanout, queueStore });
         brokers.push(result);
         return result;
     }
 
-    async function client(owner: StompBroker): Promise<Session> {
+    async function client(owner: STOMPBroker): Promise<Session> {
         const session = new Session();
         sessions.push(session);
         handled.push(owner.handleSocket(session));

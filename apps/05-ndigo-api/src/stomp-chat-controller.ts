@@ -21,7 +21,7 @@
 import '@tsmetadata/polyfill';
 import { authenticated } from '@ndigo/auth-core';
 import { parameters, requestMapping, stompMapping, socketSessionValue, type SocketSession } from '@ndigo/dispatcher';
-import { StompBroker } from '@ndigo/socket';
+import { STOMPBroker } from '@ndigo/socket';
 import { scheduled } from '@ndigo/scheduler';
 
 /** The destination every chat client subscribes to. */
@@ -32,9 +32,9 @@ export const CHAT_DESTINATION = '/topic/chat';
  * (`scheduled`) on one registered entry.
  */
 @requestMapping('/stomp')
-export class StompChatController {
+export class STOMPChatController {
     /** The broker owns the destination namespace for this app (D5). */
-    readonly broker = new StompBroker();
+    readonly broker = new STOMPBroker();
 
     /**
      * STOMP endpoint: the broker runs the protocol for this connection

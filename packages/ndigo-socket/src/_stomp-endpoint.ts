@@ -2,17 +2,17 @@
  * STOMP endpoint protocol: the per-connection frame loop, handshake, and
  * command dispatch. The broker owns fan-out, delivery, and the public API.
  */
-import { parseStompFrame, StompProtocolError, type StompFrame } from './stomp-frame';
+import { parseStompFrame, STOMPProtocolError, type STOMPFrame } from './stomp-frame';
 import type { SocketSession } from './socket-session';
-import { StompAckHandler, type StompAckHost } from './_stomp-ack';
-import { StompCommands, type StompCommandHost } from './_stomp-commands';
+import { STOMPAckHandler, type STOMPAckHost } from './_stomp-ack';
+import { STOMPCommands, type STOMPCommandHost } from './_stomp-commands';
 import { controlSend, fail } from './_stomp-replies';
 
 /** Version negotiation set — we speak 1.2 semantics, accept 1.0–1.2. */
 const SUPPORTED_VERSIONS: readonly string[] = ['1.2', '1.1', '1.0'];
 
 /** Per-connection protocol state. */
-interface StompConnectionState {
+interface STOMPConnectionState {
     connected: boolean;
     version: string | null;
     sessionId: string | null;
@@ -21,7 +21,7 @@ interface StompConnectionState {
 /**
  * The broker-owned seams the endpoint needs.
  */
-export interface StompEndpointHost extends StompCommandHost, StompAckHost {
+export interface STOMPEndpointHost extends STOMPCommandHost, STOMPAckHost {
     readonly verifyCredentials: ((login: string, passcode: string, session: SocketSession) => unknown) | null;
     readonly nextMessageId: () => string;
     readonly sessions: Set<SocketSession>;
@@ -36,18 +36,18 @@ export interface StompEndpointHost extends StompCommandHost, StompAckHost {
  * await endpoint.handleSocket(session);
  * ```
  */
-export class StompEndpoint {
-    readonly #host: StompEndpointHost;
-    readonly #commands: StompCommands;
-    readonly #acks: StompAckHandler;
+export class STOMPEndpoint {
+    readonly #host: STOMPEndpointHost;
+    readonly #commands: STOMPCommands;
+    readonly #acks: STOMPAckHandler;
 
     /**
      * @param host - The broker's fan-out, delivery, and reply seams.
      */
-    constructor(host: StompEndpointHost) {
+    constructor(host: STOMPEndpointHost) {
         this.#host = host;
-        this.#commands = new StompCommands(host);
-        this.#acks = new StompAckHandler(host);
+        this.#commands = new STOMPCommands(host);
+        this.#acks = new STOMPAckHandler(host);
     }
 
     /**
@@ -64,9 +64,9 @@ export class StompEndpoint {
      */
     async handleSocket(session: SocketSession): Promise<void> {
         if (!this.#host.isReady()) {
-            throw new Error('StompBroker is not ready; await connect()');
+            throw new Error('STOMPBroker is not ready; await connect()');
         }
-        const state: StompConnectionState = {
+        const state: STOMPConnectionState = {
             connected: false,
             version: null,
             sessionId: null,
@@ -94,16 +94,16 @@ export class StompEndpoint {
      * @returns `false` when the connection should end (protocol error or
      *   DISCONNECT); `true` to keep reading.
      */
-    #process(session: SocketSession, state: StompConnectionState, message: unknown): Promise<boolean> {
+    #process(session: SocketSession, state: STOMPConnectionState, message: unknown): Promise<boolean> {
         if (typeof message !== 'string' && !(message instanceof Uint8Array) && !(message instanceof ArrayBuffer)) {
             return Promise.resolve(fail(session, null, 'STOMP frames must be text or binary'));
         }
-        let frame: StompFrame;
+        let frame: STOMPFrame;
         try {
             frame = parseStompFrame(message as string);
         } catch (error) {
             return Promise.resolve(
-                fail(session, null, error instanceof StompProtocolError ? error.message : 'malformed frame')
+                fail(session, null, error instanceof STOMPProtocolError ? error.message : 'malformed frame')
             );
         }
         // Heart-beat pings (bare newlines) — nothing to do.
@@ -159,7 +159,7 @@ export class StompEndpoint {
      * @param frame - The CONNECT/STOMP frame.
      * @returns Always `true` (a failed handshake closes the session).
      */
-    async #connect(session: SocketSession, state: StompConnectionState, frame: StompFrame): Promise<boolean> {
+    async #connect(session: SocketSession, state: STOMPConnectionState, frame: STOMPFrame): Promise<boolean> {
         // STOMP 1.2 §1.1: "If the accept-version header is missing, it
         // means that the client only supports version 1.0 of the protocol."
         const acceptVersion = frame.headers['accept-version'];
@@ -212,7 +212,7 @@ export class StompEndpoint {
      * @param frame - The DISCONNECT frame.
      * @returns Always `false` — the connection ends.
      */
-    #disconnect(session: SocketSession, frame: StompFrame): boolean {
+    #disconnect(session: SocketSession, frame: STOMPFrame): boolean {
         if (frame.headers['receipt'] !== undefined) {
             controlSend(session, {
                 command: 'RECEIPT',

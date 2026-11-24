@@ -8,10 +8,10 @@
  * malformed-frame errors.
  */
 import { describe, expect, test } from 'vitest';
-import { StompProtocolError, bodyAsText, parseStompFrame, serializeStompFrame, type StompFrame } from '../src/index';
+import { STOMPProtocolError, bodyAsText, parseStompFrame, serializeStompFrame, type STOMPFrame } from '../src/index';
 
 /** Round-trip helper: parse(serialize(frame)) equals the original. */
-function roundTrip(frame: StompFrame): StompFrame {
+function roundTrip(frame: STOMPFrame): STOMPFrame {
     return parseStompFrame(serializeStompFrame(frame));
 }
 
@@ -39,8 +39,8 @@ describe('parseStompFrame', () => {
     test('rejects undefined escape sequences as a fatal protocol error', () => {
         // STOMP 1.2 §1.2: "Undefined escape sequences such as \t MUST be
         // treated as a fatal protocol error."
-        expect(() => parseStompFrame('SEND\ndestination:/topic/x\\t\n\n\0')).toThrow(StompProtocolError);
-        expect(() => parseStompFrame('SEND\nnote:trailing\\\n\n\0')).toThrow(StompProtocolError);
+        expect(() => parseStompFrame('SEND\ndestination:/topic/x\\t\n\n\0')).toThrow(STOMPProtocolError);
+        expect(() => parseStompFrame('SEND\nnote:trailing\\\n\n\0')).toThrow(STOMPProtocolError);
     });
 
     test('honors content-length with a NUL inside the body', () => {
@@ -50,11 +50,11 @@ describe('parseStompFrame', () => {
 
     test('rejects a content-length shorter than the body prefix', () => {
         // content-length:3 with a 6-char body: the "terminator" lands mid-body.
-        expect(() => parseStompFrame('SEND\ncontent-length:3\n\nabcdef\0')).toThrow(StompProtocolError);
+        expect(() => parseStompFrame('SEND\ncontent-length:3\n\nabcdef\0')).toThrow(STOMPProtocolError);
     });
 
     test('rejects a content-length longer than the delivered body', () => {
-        expect(() => parseStompFrame('SEND\ncontent-length:9\n\nabcdef\0')).toThrow(StompProtocolError);
+        expect(() => parseStompFrame('SEND\ncontent-length:9\n\nabcdef\0')).toThrow(STOMPProtocolError);
     });
 
     test('treats a bare newline as a heart-beat ping', () => {
@@ -65,25 +65,25 @@ describe('parseStompFrame', () => {
     });
 
     test('rejects a frame with no header terminator', () => {
-        expect(() => parseStompFrame('CONNECT\naccept-version:1.2\0')).toThrow(StompProtocolError);
+        expect(() => parseStompFrame('CONNECT\naccept-version:1.2\0')).toThrow(STOMPProtocolError);
     });
 
     test('rejects an empty command', () => {
-        expect(() => parseStompFrame('\n\n\0')).toThrow(StompProtocolError);
+        expect(() => parseStompFrame('\n\n\0')).toThrow(STOMPProtocolError);
     });
 
     test('rejects malformed header lines', () => {
-        expect(() => parseStompFrame('SEND\nbadline\n\n\0')).toThrow(StompProtocolError);
-        expect(() => parseStompFrame('SEND\n:value\n\n\0')).toThrow(StompProtocolError);
+        expect(() => parseStompFrame('SEND\nbadline\n\n\0')).toThrow(STOMPProtocolError);
+        expect(() => parseStompFrame('SEND\n:value\n\n\0')).toThrow(STOMPProtocolError);
     });
 
     test('rejects invalid content-length values', () => {
-        expect(() => parseStompFrame('SEND\ncontent-length:abc\n\nbody\0')).toThrow(StompProtocolError);
-        expect(() => parseStompFrame('SEND\ncontent-length:-1\n\nbody\0')).toThrow(StompProtocolError);
+        expect(() => parseStompFrame('SEND\ncontent-length:abc\n\nbody\0')).toThrow(STOMPProtocolError);
+        expect(() => parseStompFrame('SEND\ncontent-length:-1\n\nbody\0')).toThrow(STOMPProtocolError);
     });
 
     test('rejects a frame missing its NUL terminator', () => {
-        expect(() => parseStompFrame('SEND\ndestination:/topic/x\n\nbody')).toThrow(StompProtocolError);
+        expect(() => parseStompFrame('SEND\ndestination:/topic/x\n\nbody')).toThrow(STOMPProtocolError);
     });
 
     test('parses multi-word header values and repeated sends', () => {
@@ -129,17 +129,17 @@ describe('CRLF frames (STOMP 1.2 EOL = [CR] LF)', () => {
     });
 
     test('rejects a raw CR that is not a line-ending CR', () => {
-        expect(() => parseStompFrame('SEND\ndestination:/t\rX\n\n\0')).toThrow(StompProtocolError);
-        expect(() => parseStompFrame('SEND\ndestination:/t\r\r\n\n\0')).toThrow(StompProtocolError);
+        expect(() => parseStompFrame('SEND\ndestination:/t\rX\n\n\0')).toThrow(STOMPProtocolError);
+        expect(() => parseStompFrame('SEND\ndestination:/t\r\r\n\n\0')).toThrow(STOMPProtocolError);
         expect(() => parseStompFrame(new TextEncoder().encode('SEND\r\ndestination:/t\rX\r\n\r\nhi\0'))).toThrow(
-            StompProtocolError
+            STOMPProtocolError
         );
     });
 });
 
 describe('serializeStompFrame', () => {
     test('serializes a headerless frame without a spare LF', () => {
-        const original: StompFrame = { command: 'DISCONNECT', headers: {}, body: '' };
+        const original: STOMPFrame = { command: 'DISCONNECT', headers: {}, body: '' };
         const wire = serializeStompFrame(original);
         // STOMP 1.2: "Only SEND, MESSAGE and ERROR frames MAY have a body" —
         // an extra LF would re-parse as a body of "\n".
@@ -155,7 +155,7 @@ describe('serializeStompFrame', () => {
     });
 
     test('round-trips a CONNECT frame', () => {
-        const original: StompFrame = {
+        const original: STOMPFrame = {
             command: 'CONNECT',
             headers: { 'accept-version': '1.2', host: 'example.com' },
             body: '',
@@ -166,7 +166,7 @@ describe('serializeStompFrame', () => {
     });
 
     test('round-trips escaped values', () => {
-        const original: StompFrame = {
+        const original: STOMPFrame = {
             command: 'SEND',
             headers: { destination: '/topic/a:b', note: 'line1\nline2\rcr\\end' },
             body: '',
@@ -196,7 +196,7 @@ describe('serializeStompFrame', () => {
     });
 
     test('round-trips a caller-declared content-length', () => {
-        const original: StompFrame = {
+        const original: STOMPFrame = {
             command: 'MESSAGE',
             headers: { 'content-length': '5' },
             body: 'ab\0cd',
@@ -207,20 +207,20 @@ describe('serializeStompFrame', () => {
     });
 
     test('rejects serializing a heart-beat ping', () => {
-        expect(() => serializeStompFrame({ command: '', headers: {}, body: '' })).toThrow(StompProtocolError);
+        expect(() => serializeStompFrame({ command: '', headers: {}, body: '' })).toThrow(STOMPProtocolError);
     });
 
     test('rejects invalid header names', () => {
         expect(() => serializeStompFrame({ command: 'SEND', headers: { 'bad\nname': 'x' }, body: '' })).toThrow(
-            StompProtocolError
+            STOMPProtocolError
         );
         expect(() => serializeStompFrame({ command: 'SEND', headers: { '': 'x' }, body: '' })).toThrow(
-            StompProtocolError
+            STOMPProtocolError
         );
     });
 
     test('round-trips an empty-body frame with headers', () => {
-        const original: StompFrame = { command: 'CONNECTED', headers: { version: '1.2', session: 's1' }, body: '' };
+        const original: STOMPFrame = { command: 'CONNECTED', headers: { version: '1.2', session: 's1' }, body: '' };
         const parsed = roundTrip(original);
         expect(parsed).toEqual(original);
     });
@@ -257,12 +257,12 @@ describe('parseStompFrame binary', () => {
     });
 
     test('rejects binary frames with a missing NUL terminator', () => {
-        expect(() => parseStompFrame(ascii('SEND\ndestination:/t\n\nbody'))).toThrow(StompProtocolError);
+        expect(() => parseStompFrame(ascii('SEND\ndestination:/t\n\nbody'))).toThrow(STOMPProtocolError);
     });
 
     test('rejects a truncated content-length body', () => {
         const bytes = ascii('SEND\ncontent-length:9\n\nbody\0');
-        expect(() => parseStompFrame(bytes)).toThrow(StompProtocolError);
+        expect(() => parseStompFrame(bytes)).toThrow(STOMPProtocolError);
     });
 });
 
@@ -309,7 +309,7 @@ describe('content-length byte semantics (octets, not UTF-16 units)', () => {
     });
 
     test('rejects a content-length that under-counts non-ASCII octets', () => {
-        expect(() => parseStompFrame('SEND\ncontent-length:4\n\ncaf\u00e9\0')).toThrow(StompProtocolError);
+        expect(() => parseStompFrame('SEND\ncontent-length:4\n\ncaf\u00e9\0')).toThrow(STOMPProtocolError);
     });
 
     test('serializes content-length in octets for NUL-bearing non-ASCII text bodies', () => {
@@ -327,7 +327,7 @@ describe('content-length byte semantics (octets, not UTF-16 units)', () => {
                 headers: { destination: '/t', 'content-length': '3' },
                 body: 'abcd',
             })
-        ).toThrow(StompProtocolError);
+        ).toThrow(STOMPProtocolError);
     });
 });
 
@@ -351,24 +351,24 @@ describe('header hygiene', () => {
     });
 
     test('rejects raw CR or NUL in header lines', () => {
-        expect(() => parseStompFrame('SEND\naccept-version\ra:1\n\n\0')).toThrow(StompProtocolError);
-        expect(() => parseStompFrame('SEND\na:x\0y\n\n\0')).toThrow(StompProtocolError);
+        expect(() => parseStompFrame('SEND\naccept-version\ra:1\n\n\0')).toThrow(STOMPProtocolError);
+        expect(() => parseStompFrame('SEND\na:x\0y\n\n\0')).toThrow(STOMPProtocolError);
     });
 
     test('rejects invalid commands and header names on serialize', () => {
-        expect(() => serializeStompFrame({ command: 'SEND\nX:1', headers: {}, body: '' })).toThrow(StompProtocolError);
-        expect(() => serializeStompFrame({ command: 'send', headers: {}, body: '' })).toThrow(StompProtocolError);
+        expect(() => serializeStompFrame({ command: 'SEND\nX:1', headers: {}, body: '' })).toThrow(STOMPProtocolError);
+        expect(() => serializeStompFrame({ command: 'send', headers: {}, body: '' })).toThrow(STOMPProtocolError);
         expect(() => serializeStompFrame({ command: 'SEND', headers: { 'a:b': 'x' }, body: '' })).toThrow(
-            StompProtocolError
+            STOMPProtocolError
         );
         expect(() => serializeStompFrame({ command: 'SEND', headers: { 'a\r': 'x' }, body: '' })).toThrow(
-            StompProtocolError
+            STOMPProtocolError
         );
     });
 
     test('rejects NUL in header values on serialize', () => {
         expect(() => serializeStompFrame({ command: 'SEND', headers: { a: 'x\0y' }, body: '' })).toThrow(
-            StompProtocolError
+            STOMPProtocolError
         );
     });
 });
@@ -392,23 +392,23 @@ describe('frame boundary strictness', () => {
 
     test('rejects a bare CR after the terminating NUL', () => {
         // A CR is only an EOL as part of a CRLF pair (`EOL = [CR] LF`).
-        expect(() => parseStompFrame('SEND\ndestination:/t\n\nhi\0\r')).toThrow(StompProtocolError);
-        expect(() => parseStompFrame(ascii('SEND\ndestination:/t\n\nhi\0\r'))).toThrow(StompProtocolError);
+        expect(() => parseStompFrame('SEND\ndestination:/t\n\nhi\0\r')).toThrow(STOMPProtocolError);
+        expect(() => parseStompFrame(ascii('SEND\ndestination:/t\n\nhi\0\r'))).toThrow(STOMPProtocolError);
     });
 
     test('rejects trailing data after the terminating NUL (text)', () => {
-        expect(() => parseStompFrame('SEND\ndestination:/t\n\nbody\0garbage')).toThrow(StompProtocolError);
-        expect(() => parseStompFrame('SEND\ncontent-length:4\n\nbody\0garbage')).toThrow(StompProtocolError);
+        expect(() => parseStompFrame('SEND\ndestination:/t\n\nbody\0garbage')).toThrow(STOMPProtocolError);
+        expect(() => parseStompFrame('SEND\ncontent-length:4\n\nbody\0garbage')).toThrow(STOMPProtocolError);
     });
 
     test('rejects trailing data after the terminating NUL (binary)', () => {
         const bytes = new Uint8Array([...ascii('SEND\ndestination:/t\n\nbody\0'), 0x78]);
-        expect(() => parseStompFrame(bytes)).toThrow(StompProtocolError);
+        expect(() => parseStompFrame(bytes)).toThrow(STOMPProtocolError);
     });
 
     test('rejects invalid UTF-8 in binary frame headers', () => {
         const bytes = new Uint8Array([...ascii('SEND\ndestination:/t'), 0x80, 0xc3, 0x28, ...ascii('\n\nx\0')]);
-        expect(() => parseStompFrame(bytes)).toThrow(StompProtocolError);
+        expect(() => parseStompFrame(bytes)).toThrow(STOMPProtocolError);
     });
 });
 
@@ -439,7 +439,7 @@ describe('CONNECT/CONNECTED header escaping exemption (STOMP 1.2 §1.2)', () => 
     });
 
     test('round-trips CONNECT credentials containing backslashes and colons', () => {
-        const frame: StompFrame = {
+        const frame: STOMPFrame = {
             command: 'CONNECT',
             headers: { host: 'x', login: 'a:b', passcode: 'b\\c\\n' },
             body: '',
@@ -448,15 +448,15 @@ describe('CONNECT/CONNECTED header escaping exemption (STOMP 1.2 §1.2)', () => 
     });
 
     test('still rejects NUL/CR in a CONNECT value and CR/LF on serialize', () => {
-        expect(() => parseStompFrame('CONNECT\nhost:x\nlogin:a\0b\n\n\0')).toThrow(StompProtocolError);
-        expect(() => parseStompFrame('CONNECT\nhost:x\nlogin:a\rb\n\n\0')).toThrow(StompProtocolError);
+        expect(() => parseStompFrame('CONNECT\nhost:x\nlogin:a\0b\n\n\0')).toThrow(STOMPProtocolError);
+        expect(() => parseStompFrame('CONNECT\nhost:x\nlogin:a\rb\n\n\0')).toThrow(STOMPProtocolError);
         // No escaping is available for an exempt frame, so CR/LF cannot be
         // framed at all.
         expect(() => serializeStompFrame({ command: 'CONNECT', headers: { login: 'a\rb' }, body: '' })).toThrow(
-            StompProtocolError
+            STOMPProtocolError
         );
         expect(() => serializeStompFrame({ command: 'CONNECTED', headers: { session: 'a\nb' }, body: '' })).toThrow(
-            StompProtocolError
+            STOMPProtocolError
         );
     });
 });

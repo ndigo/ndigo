@@ -27,7 +27,7 @@ isomorphic (`@ndigo/socket`) and transport-agnostic:
 ```ts
 // server: a broker owns the destination namespace; the handler runs the
 // protocol for each connection
-const broker = new StompBroker();   // app-scoped entry
+const broker = new STOMPBroker();   // app-scoped entry
 
 @stompMapping('/chat')
 @parameters({ session: socketSessionValue('session') })
@@ -44,7 +44,7 @@ async tick() {
 
 ```ts
 // client: STOMP over the isomorphic WebSocketClient
-const stomp = new StompClient(new WebSocketClient('ws://host/stomp/chat'));
+const stomp = new STOMPClient(new WebSocketClient('ws://host/stomp/chat'));
 const sub = stomp.subscribe('/topic/chat');
 for await (const message of sub.messages) {
     applyMessage(message.json());
@@ -160,7 +160,7 @@ an existing `NodeDispatcher` named `dispatcher` and an application context named
 ```ts
 import { RedisConnection } from '@ndigo/redis';
 import { RedisSocketFanout } from '@ndigo/redis/pubsub';
-import { StompBroker } from '@ndigo/socket';
+import { STOMPBroker } from '@ndigo/socket';
 import { HTTPServer, NodeSocketSessionRegistry } from '@ndigo/platform-node';
 
 const url = process.env.REDIS_URL!; // explicit redis:// or rediss://
@@ -171,7 +171,7 @@ const fanout = new RedisSocketFanout({
     namespace: 'my-app.production',
 });
 const registry = new NodeSocketSessionRegistry({ fanout });
-const broker = new StompBroker({ fanout });
+const broker = new STOMPBroker({ fanout });
 const server = new HTTPServer(dispatcher, { socketRegistry: registry });
 
 await publisher.connect();

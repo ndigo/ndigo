@@ -771,6 +771,9 @@ importers:
       '@ndigo/view':
         specifier: ~0.0.1
         version: link:../../packages/ndigo-view
+      '@ndigo/view-toon':
+        specifier: ~0.0.1
+        version: link:../../packages/ndigo-view-toon
       '@tsmetadata/polyfill':
         specifier: 'catalog:'
         version: 1.1.3

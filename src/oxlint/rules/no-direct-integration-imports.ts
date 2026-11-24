@@ -20,14 +20,17 @@ function isTestFile(filename: string): boolean {
         filename.includes('.spec.ts') ||
         filename.includes('.test.ts') ||
         filename.includes('/test/') ||
-        filename.includes('\\test\\')
+        filename.includes('\\test\\') ||
+        filename.includes('/scripts/') ||
+        filename.includes('\\scripts\\')
     );
 }
 
 function getIntegrationLayerLibrary(source: string): { library: string; integrationLayer: string } | null {
     for (const [library, integrationLayer] of Object.entries(INTEGRATION_LAYER_MAP)) {
         if (source === library || source.startsWith(`${library}/`)) {
-            return { library, integrationLayer };
+            const layers = Array.isArray(integrationLayer) ? integrationLayer : [integrationLayer];
+            return { library, integrationLayer: layers.join(' or ') };
         }
     }
 

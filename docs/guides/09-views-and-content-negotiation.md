@@ -121,8 +121,9 @@ resolver serves the first candidate, so registration order is what keeps JSON
 the default for unopinionated clients. A `.toon` path extension works only if
 the application adds `'toon'` to its own extension map — the framework's
 wiring registers nothing for it, and it is a provisional media type (not
-IANA-registered), so the representation is opt-in per route and marked
-experimental while TOON remains a Working Draft.
+IANA-registered), so the representation is opt-in per route. The token is
+usable today — `MediaTypes.TEXT_TOON` interns, compares, and accepts
+`withCharset(...)` — and `@ndigo/view-toon` is the supported way to serve it.
 
 Choose TOON for its design win: uniform arrays of flat objects — one field
 header instead of a key repetition per row. It is neutral-to-worse on small

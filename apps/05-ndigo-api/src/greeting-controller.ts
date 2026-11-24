@@ -84,6 +84,11 @@ export class GreetingController {
         return this.#report();
     }
 
+    @getMapping('/report.toon')
+    reportTOON() {
+        return this.#report();
+    }
+
     #report(): ModelAndView {
         return new ModelAndView('report', {
             rows: [

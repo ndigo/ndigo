@@ -43,6 +43,7 @@
     "@ndigo/telemetry-node": "~0.0.1",
     "@ndigo/util": "~0.0.1",
     "@ndigo/view": "~0.0.1",
+    "@ndigo/view-toon": "~0.0.1",
     "@tsmetadata/polyfill": "catalog:",
     "swagger-ui-dist": "catalog:",
     "zod": "catalog:"

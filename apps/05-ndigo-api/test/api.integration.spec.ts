@@ -265,6 +265,20 @@ describe('ndigo-api through @ndigo/test', () => {
         expect(res.text()).toBe('name,role\r\nAda,admin\r\nGrace,user');
     });
 
+    test('GET /api/report.toon serves the same model as TOON via negotiation', async () => {
+        const res = await mockHTTP.get('/api/report.toon').exec();
+        expect(res.response.status).toBe(200);
+        expect(res.response.headers['content-type']).toContain('text/toon');
+        expect(res.text()).toContain('[2]{name,role}:');
+    });
+
+    test('GET /api/report honors the Accept header (TOON without extension)', async () => {
+        const res = await mockHTTP.get('/api/report').headers({ accept: 'text/toon' }).exec();
+        expect(res.response.status).toBe(200);
+        expect(res.response.headers['content-type']).toContain('text/toon');
+        expect(res.text()).toContain('[2]{name,role}:');
+    });
+
     test('GET /api/report honors the Accept header (JSON explicitly)', async () => {
         const res = await mockHTTP.get('/api/report').headers({ accept: 'application/json' }).exec();
         expect(res.response.status).toBe(200);

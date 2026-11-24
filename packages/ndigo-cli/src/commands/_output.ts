@@ -11,22 +11,20 @@
 import { usageError } from '../helpers/app-scripts.js';
 
 /**
- * Loader for the reference TOON encoder. DELIBERATE dynamic import: the CLI
- * binary starts tens of times per script run; a static import would pay the
- * SDK load on every invocation. A literal specifier keeps the module a
- * declared runtime dependency (check-manifests rule 1). No `@vite-ignore`
- * needed: the binary runs from compiled lib/ under node — no bundler in
- * this lane.
+ * Loader for the framework-owned TOON encoder. DELIBERATE dynamic import: the
+ * CLI binary starts tens of times per script run; a static import would pay
+ * the encoder load on every invocation. The subpath keeps the dependency on
+ * `@ndigo/view-toon` narrow — this module carries no view stack. The encoder
+ * owns the diagnostic contract (bounded, control-stripped
+ * `IllegalStateError`), so the CLI cannot leak a raw SDK failure or an
+ * unbounded payload excerpt.
  *
- * The manifest scanner now captures dynamic imports inside `export`ed
- * statements too (issue #354), so the non-exported/defined-before-exports
- * shape is no longer required for correctness — retained as-is to keep the
+ * The manifest scanner captures dynamic imports (issue #354), so the
+ * non-exported/defined-before-exports shape is retained only to keep the
  * loader private and the module's public surface unchanged.
  */
 async function loadToonEncoder(): Promise<(value: unknown) => string> {
-    // The SDK's `encode` runs on any JSON-model input; the narrower package
-    // contract keeps every writer commentary-free.
-    return (await import('@toon-format/toon')).encode as (value: unknown) => string;
+    return (await import('@ndigo/view-toon/encode')).encodeToon;
 }
 
 /** The shared `--json` flag definition. */
@@ -77,11 +75,9 @@ export function writeJson(value: unknown): void {
 }
 
 /**
- * Loader for the reference TOON encoder. NOT exported — an `export`d function
-/**
  * Writes one TOON document, newline-terminated. The encoder loads lazily so
- * the CLI's startup path is untouched — `ndigo` never imports the SDK unless
- * a `--toon` document is actually emitted.
+ * the CLI's startup path is untouched — `ndigo` never imports the encoder
+ * unless a `--toon` document is actually emitted.
  *
  * @param value - The command's result.
  */

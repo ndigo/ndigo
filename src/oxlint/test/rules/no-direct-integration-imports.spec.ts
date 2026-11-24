@@ -27,11 +27,19 @@ ruleTester.run('no-direct-integration-imports', noDirectIntegrationImports, {
             filename: '/packages/ndigo-view-toon/src/toon-encode.ts',
         },
         {
+            code: "import { signal } from '@preact/signals-core';",
+            filename: '/packages/ndigo-signals/src/index.ts',
+        },
+        {
             code: "import { generateText } from 'ai';",
             filename: '/packages/ndigo-core/test/something.spec.ts',
         },
         {
             code: "import { describe } from 'vitest';",
+            filename: '/packages/ndigo-core/src/container.ts',
+        },
+        {
+            code: 'async function load(name: string) { return await import(name); }',
             filename: '/packages/ndigo-core/src/container.ts',
         },
     ],
@@ -71,6 +79,58 @@ ruleTester.run('no-direct-integration-imports', noDirectIntegrationImports, {
                     data: {
                         library: 'ai',
                         integrationLayer: '@ndigo/ai-sdk',
+                    },
+                },
+            ],
+        },
+        {
+            code: "export * from 'ai';",
+            filename: '/packages/ndigo-core/src/container.ts',
+            errors: [
+                {
+                    messageId: 'directImport',
+                    data: {
+                        library: 'ai',
+                        integrationLayer: '@ndigo/ai-sdk',
+                    },
+                },
+            ],
+        },
+        {
+            code: "export { generateText } from 'ai';",
+            filename: '/packages/ndigo-core/src/container.ts',
+            errors: [
+                {
+                    messageId: 'directImport',
+                    data: {
+                        library: 'ai',
+                        integrationLayer: '@ndigo/ai-sdk',
+                    },
+                },
+            ],
+        },
+        {
+            code: "async function load() { return await import('@toon-format/toon'); }",
+            filename: '/packages/ndigo-core/src/container.ts',
+            errors: [
+                {
+                    messageId: 'directImport',
+                    data: {
+                        library: '@toon-format/toon',
+                        integrationLayer: '@ndigo/boot or @ndigo/view-toon',
+                    },
+                },
+            ],
+        },
+        {
+            code: "async function load() { return await import('@preact/signals-core'); }",
+            filename: '/packages/ndigo-core/src/container.ts',
+            errors: [
+                {
+                    messageId: 'directImport',
+                    data: {
+                        library: '@preact/signals-core',
+                        integrationLayer: '@ndigo/signals',
                     },
                 },
             ],

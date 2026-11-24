@@ -12,6 +12,10 @@
     ".": {
       "default": "./lib/index.js",
       "types": "./lib/index.d.ts"
+    },
+    "./encode": {
+      "default": "./lib/toon-encode.js",
+      "types": "./lib/toon-encode.d.ts"
     }
   },
   "types": "lib/index.d.ts",

@@ -3,13 +3,13 @@
  * parsing, header-limit enforcement, and safe error responses.
  */
 import { toError } from '@ndigo/util';
+import { likeClientProblem } from '@ndigo/core';
 import { IncomingMessage, ServerResponse } from 'node:http';
-import { HTTPHeaders } from '@ndigo/http';
-import { ProblemTypes, writeProblem } from './problem-details';
+import { HTTPHeaders, ProblemTypes, ResponseStatuses } from '@ndigo/http';
+import { writeProblem } from './problem-details';
 import { RequestLimitError } from './http-request-limits';
 import { parseCookies } from './cookie-parser';
 import type { ResolvedHTTPRequestLimits } from './http-request-limits';
-import { NotAcceptableError } from '@ndigo/view';
 import { getLogger } from '@ndigo/log';
 
 const logger = getLogger('ndigo-platform-node:node-http-server-adapter');
@@ -33,22 +33,15 @@ export function writeErrorResponse(res: ServerResponse, error: unknown): void {
         res.destroy();
         return;
     }
-    if (error instanceof RequestLimitError) {
-        if (error.code === 'malformed_body') {
-            // Same registered problem type as the JSON-syntax path so
-            // clients see one contract for malformed bodies.
-            writeProblem(res, {
-                type: ProblemTypes.malformedBody,
-                title: 'Bad Request',
-                status: 400,
-                detail: 'malformed_body',
-            });
-            return;
-        }
+    if (likeClientProblem(error)) {
+        // The error carries its own rendering contract: the exporter reads the
+        // status, problem type, and detail structurally, so a duplicate package
+        // copy or a serialized error still renders identically.
         writeProblem(res, {
-            type: `urn:ndigo:${error.code}`,
-            status: error.statusCode,
-            detail: error.code,
+            type: error.problemType,
+            ...(error.problemStatus.text === undefined ? {} : { title: error.problemStatus.text }),
+            status: error.problemStatus.code,
+            detail: error.message,
         });
         return;
     }
@@ -70,18 +63,6 @@ export function writeErrorResponse(res: ServerResponse, error: unknown): void {
         });
         return;
     }
-    if (error instanceof NotAcceptableError) {
-        // Content negotiation resolved candidates but none served the
-        // request's accepted media types: the route/handler exists, so
-        // this is 406 — never the 404 used for a missing view.
-        writeProblem(res, {
-            type: ProblemTypes.notAcceptable,
-            title: 'Not Acceptable',
-            status: 406,
-            detail: error.message,
-        });
-        return;
-    }
     const message = toError(error).stack ?? toError(error).message;
     logger.error('dispatch failure:', message);
     writeProblem(res, {
@@ -100,7 +81,11 @@ export function buildUrl(req: IncomingMessage): URL {
     try {
         return new URL(url, `http://${host ?? 'localhost'}`);
     } catch {
-        throw new RequestLimitError(400, 'malformed_url', `Malformed request URL: ${url}`);
+        throw new RequestLimitError(
+            ResponseStatuses.BAD_REQUEST,
+            ProblemTypes.malformedUrl,
+            `Malformed request URL: ${url}`
+        );
     }
 }
 
@@ -115,7 +100,11 @@ export function parseRequestCookies(req: IncomingMessage): Record<string, string
         return parseCookies(HTTPHeaders.COOKIE.get(req.headers) ?? undefined);
     } catch (error) {
         if (error instanceof RangeError) {
-            throw new RequestLimitError(431, 'headers_too_large', 'Cookie header exceeds the configured limit');
+            throw new RequestLimitError(
+                ResponseStatuses.REQUEST_HEADER_FIELDS_TOO_LARGE,
+                ProblemTypes.headersTooLarge,
+                'Cookie header exceeds the configured limit'
+            );
         }
         throw error;
     }
@@ -131,7 +120,11 @@ export function assertHeaderLimits(req: IncomingMessage, limits: ResolvedHTTPReq
         }
     }
     if (cookieBytes > limits.maxHeaderBytes) {
-        throw new RequestLimitError(431, 'headers_too_large', 'Cookie header exceeds the configured limit');
+        throw new RequestLimitError(
+            ResponseStatuses.REQUEST_HEADER_FIELDS_TOO_LARGE,
+            ProblemTypes.headersTooLarge,
+            'Cookie header exceeds the configured limit'
+        );
     }
 }
 

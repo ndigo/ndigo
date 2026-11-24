@@ -7,7 +7,8 @@
 import type { InterceptorDenial } from '@ndigo/dispatcher';
 import { HTTPHeaders, ResponseStatus } from '@ndigo/http';
 import { getLogger } from '@ndigo/log';
-import { ProblemTypes, writeProblem, type ProblemResponseWriter } from './problem-details';
+import { ProblemTypes } from '@ndigo/http';
+import { writeProblem, type ProblemResponseWriter } from './problem-details';
 
 const logger = getLogger('ndigo-platform-node:finalize-denial');
 

@@ -227,7 +227,7 @@ describe('Node multipart request wiring', () => {
                 });
             });
             expect(res.status).toBe(413);
-            expect(res.json).toMatchObject({ type: 'urn:ndigo:request_too_large', status: 413 });
+            expect(res.json).toMatchObject({ type: 'urn:ndigo:request-too-large', status: 413 });
         } finally {
             await limited.close();
         }

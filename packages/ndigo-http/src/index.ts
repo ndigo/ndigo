@@ -23,6 +23,7 @@ export * from './set-cookie-header';
 export * from './interceptors';
 export { ResponseStatus };
 export { ResponseStatuses };
+export * from './problem-types';
 export * from './transformers';
 export * from './http-headers';
 export { HTTPHeaders };

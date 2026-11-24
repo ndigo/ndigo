@@ -15,7 +15,8 @@ import { Null } from '@ndigo/core';
 import { OpenAPISpecGenerator, type OpenAPIDocument, type RouteMappingTable } from '@ndigo/openapi';
 import type { Route } from '@ndigo/router';
 import { getNodeResponse } from './node-request';
-import { ProblemTypes, writeProblem } from './problem-details';
+import { ProblemTypes } from '@ndigo/http';
+import { writeProblem } from './problem-details';
 import { type ResolvedOpenAPIDocsOptions } from './openapi-docs-auto-configuration';
 import { getLogger } from '@ndigo/log';
 

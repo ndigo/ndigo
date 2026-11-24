@@ -245,9 +245,9 @@ describe('MockHTTP', () => {
                 .exec();
             expect(res.response.status).toBe(413);
             expect(res.json()).toMatchObject({
-                type: 'urn:ndigo:too_many_parts',
+                type: 'urn:ndigo:too-many-parts',
                 status: 413,
-                detail: 'too_many_parts',
+                detail: 'Too many parts were uploaded',
             });
             expect(res.response.headers['content-type']).toContain('application/problem+json');
         } finally {
@@ -279,7 +279,7 @@ describe('MockHTTP', () => {
         expect(res.json()).toMatchObject({
             type: 'urn:ndigo:malformed-body',
             status: 400,
-            detail: 'malformed_body',
+            detail: 'JSON body must be an object',
         });
     });
 
@@ -316,9 +316,9 @@ describe('MockHTTP', () => {
             .exec();
         expect(res.response.status).toBe(431);
         expect(res.json()).toMatchObject({
-            type: 'urn:ndigo:headers_too_large',
+            type: 'urn:ndigo:headers-too-large',
             status: 431,
-            detail: 'headers_too_large',
+            detail: 'Cookie header exceeds the configured limit',
         });
     });
 
@@ -332,9 +332,9 @@ describe('MockHTTP', () => {
                 .exec();
             expect(res.response.status).toBe(413);
             expect(res.json()).toMatchObject({
-                type: 'urn:ndigo:body_too_large',
+                type: 'urn:ndigo:payload-too-large',
                 status: 413,
-                detail: 'body_too_large',
+                detail: 'Request body exceeds the configured limit',
             });
         } finally {
             app.close();
@@ -345,9 +345,9 @@ describe('MockHTTP', () => {
         const res = await mockHTTP.get('/').abort().exec();
         expect(res.response.status).toBe(400);
         expect(res.json()).toMatchObject({
-            type: 'urn:ndigo:request_aborted',
+            type: 'urn:ndigo:request-aborted',
             status: 400,
-            detail: 'request_aborted',
+            detail: 'Request aborted before completion',
         });
     });
 
@@ -355,9 +355,9 @@ describe('MockHTTP', () => {
         const res = await mockHTTP.get('/').timeout().exec();
         expect(res.response.status).toBe(408);
         expect(res.json()).toMatchObject({
-            type: 'urn:ndigo:request_timeout',
+            type: 'urn:ndigo:request-timeout',
             status: 408,
-            detail: 'request_timeout',
+            detail: 'Request body timed out',
         });
     });
 });

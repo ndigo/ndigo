@@ -5,6 +5,7 @@
  * view, which stays `NoViewFoundError`/404.
  */
 import { FrameworkError, MediaType } from '@ndigo/core';
+import { ProblemTypes, ResponseStatuses } from '@ndigo/http';
 
 /**
  * NotAcceptableError.
@@ -49,7 +50,12 @@ export class NotAcceptableError extends FrameworkError {
         super(
             `No acceptable representation for view "${viewName}"; accepted: ${
                 acceptedMediaTypes.map((mediaType) => String(mediaType)).join(', ') || '(none)'
-            }`
+            }`,
+            {
+                disposition: 'client',
+                problemStatus: ResponseStatuses.NOT_ACCEPTABLE,
+                problemType: ProblemTypes.notAcceptable,
+            }
         );
         this.viewName = viewName;
         this.acceptedMediaTypes = acceptedMediaTypes;

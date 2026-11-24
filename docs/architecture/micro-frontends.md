@@ -1,136 +1,122 @@
 # Micro Frontends
 
-**Status:** Implemented and demonstrated in the example applications.
+A micro frontend architecture lets one application be composed from slices
+that are built, shipped, and reasoned about independently. Ndigo supports two
+shapes — hosted feature applications and server-rendered islands — and treats
+their boundaries as data contracts rather than shared code. This page maps the
+two shapes, the lifecycle they follow, and the rules that keep them
+independent.
 
-This is the cross-cutting map for Ndigo micro frontends: how the shell
-hosts feature contexts, how islands fit in, and where the seams and
-contracts sit.
+## Two Shapes
 
-## Two Mechanisms
+| Shape              | What it is                                                                                   | Boundary                                                                           |
+| :----------------- | :------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------- |
+| **Hosted feature** | A child application mounted into the shell and loaded lazily when its route prefix activates | The context tree, the shared-dependency contract, and an allowlisted event gateway |
+| **Island**         | A server-rendered web component hydrated on the client from a serialized model               | The serialized model, its schema, and the component's tag name                     |
 
-Ndigo has **two** micro frontend shapes, used independently or together:
-
-| Shape              | What it is                                                                           | Boundary                                                  | Where                                            |
-| ------------------ | ------------------------------------------------------------------------------------ | --------------------------------------------------------- | ------------------------------------------------ |
-| **Hosted feature** | A child `ApplicationContext` mounted into the shell, lazy-loaded on route activation | Context tree + shared-dependency contract + event gateway | `@ndigo/host`, `@ndigo/context`, `@ndigo/router` |
-| **Island**         | A server-rendered web component (`data-ndigo-island` marker) hydrated on the client  | Serialized model (JSON) + zod schema + tag name           | `@ndigo/view`, `@ndigo/view-webcomponent`        |
-
-The host/feature path is for _application slices_ with their own services and
-lifecycle; the island path is for _presentation units_ that should render
-fast and stay independent.
+The hosted path is for _application slices_ with their own services and
+lifecycle. The island path is for _presentation units_ that should render fast
+and stay independent. They compose: a hosted feature can contain islands.
 
 ## Host Stack
 
 ```
-HashRouter / BrowserDispatcher        ← URL source of truth (platform)
-        │ navigate(path)
-        ▼
-HostManager  (resolvable via HOST_MANAGER_TOKEN from the shell context)
-        │ delegates
-        ├──► FeatureRoutingRegistry ── PartitionRouter   (prefix partitions; exclusive/tracked)
-        └──► FeatureContextMountManager ── SharedDependencyRegistry (semver validation at mount)
-                     │
-        context tree:  shell ─ newChild → feature contexts (relay gateways, event isolation)
+URL (source of truth)
+   │ navigation
+   ▼
+Shell host ── route partitions ──▶ feature contexts
+   │                                  │
+   ├── shared dependencies, validated at mount
+   └── event gateways, relay only what is allowlisted
 ```
+
+The shell owns navigation and composition. A feature owns the routes under its
+prefix and the services it creates. Communication across the boundary is
+explicit in both directions: through declared shared dependencies and through
+allowlisted event relays.
 
 ## Registration and Lifecycle
 
-One call per feature (`@ndigo/host`):
+A feature is declared once: its name, route prefix, how to load it, the
+dependencies it requires or optionally accepts, the relays it needs, and what
+should happen when it is deactivated.
 
-```ts
-host.registerFeature({
-    name: 'catalog',
-    prefix: '/catalog',
-    loader: () => import('./features/catalog'),   // or createContext(parent)
-    dependencies: { requires: { router: '^1.0.0' } },  // validated at mount
-    relays: [...],        // event-gateway relays (optional)
-    unmountPolicy: 'preserve',  // 'preserve' | 'close'
-    onRoute: (route) => {},          // feature-local route dispatch
-    onDeactivate: () => {},           // post-unmount hook
-});
-```
-
-| Phase      | API                      | Semantics                                                           |
-| ---------- | ------------------------ | ------------------------------------------------------------------- |
-| register   | `registerFeature`        | one call = mount registry + route partition; duplicate name throws  |
-| activate   | `navigate` / `refresh`   | route matches prefix → mount (lazy via `mountLazy`, dedup, retry)   |
-| deactivate | policy-driven            | `exclusive`: prior feature unmounted; `tracked`: tracked            |
-| unmount    | `unmount(name, policy?)` | `preserve` keeps context alive; `close` destroys it and its gateway |
-| remove     | `unregister(name)`       | close + remove from both registries; name is free again             |
-| teardown   | `destroy()`              | unregister everything                                               |
+| Phase      | What happens                                                                                                        |
+| :--------- | :------------------------------------------------------------------------------------------------------------------ |
+| Register   | One declaration adds the feature to the mount registry and claims its route partition; duplicate names are rejected |
+| Activate   | Navigation matches the prefix; the feature is loaded lazily, mounted once, and retried on failure                   |
+| Deactivate | The routing policy decides whether the previous feature is unmounted or kept tracked                                |
+| Unmount    | The policy decides whether the context is preserved for return or destroyed with its gateway                        |
+| Remove     | The feature leaves both registries and its name becomes available again                                             |
+| Teardown   | The host unregisters everything                                                                                     |
 
 ## Shared Dependencies
 
-- Shell declares shared singletons via `SharedDependencyRegistry`
-  (`SHARED_DEPENDENCY_REGISTRY_TOKEN` in the shell context); features declare
-  `requires`/`optional` ranges; validation runs at mount time (missing or
-  [semver](https://semver.org/)-mismatched required deps throw).
-- `@sharedDependency()` decorator marks an entry shell-managed: child contexts
-  skip registration and resolve from the parent chain (enforced in
-  `AbstractFactory`).
-- This is the runtime equivalent of [import maps](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/importmap)
-  — no build-level module deduplication by design (features stay standalone).
+- The shell declares shared singletons; features declare required and optional
+  version ranges. A missing or incompatible required dependency fails at mount
+  time rather than surfacing later as a subtle duplicate.
+- A shared dependency is shell-managed: child contexts resolve it from the
+  parent chain instead of registering their own copy.
+- This is the runtime equivalent of import maps. There is deliberately no
+  build-level module deduplication, because features stay standalone.
 
 ## Event Isolation
 
-- Each feature context is a child of the shell; cross-context events flow
-  **only** through explicitly allowlisted relays
-  (`ContextEventGateway`), validated by namespace
-  (`NamespaceRelayValidationStrategy`: `site:*` shell-owned,
-  `<feature>:*` feature-owned).
-- No relay = no cross-feature communication; blocked relays are
-  logged/counted per feature telemetry.
+- Each feature context is a child of the shell. Cross-context events flow only
+  through explicitly allowlisted relays.
+- Relays are validated by namespace: the shell owns its namespace, each
+  feature owns its own. A feature cannot emit into another feature's namespace
+  by accident.
+- No relay means no cross-feature communication. Blocked relays are visible in
+  that feature's telemetry rather than failing silently.
 
 ## Islands
 
-- Server: `IslandView` emits `<tag data-ndigo-island data-ndigo-model="…">`;
-  `IslandViewResolver` resolves a view name → island marker (the
-  controller↔client link).
-- Client: `hydrateIslands()` upgrades markers to live
-  [custom elements](https://developer.mozilla.org/en-US/docs/Web/API/Web_components)
-  (`@TagMapping`-registered), restores `.model`, replaces inert markup.
-- Reactive half: the server pushes model updates over
-  [server-sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events)
-  (`ServerSentEventView`/`SSEEmitter`); the island subscribes via a typed
-  service-stream into `@ndigo/signals` (`streamToSignal`) and re-renders.
-- The integration contract is the **name ↔ tag ↔ [zod](https://zod.dev/) schema**
-  triple — documented in the view-resolution strategy, not yet enforced by a
-  registry.
+- The server renders a marker carrying the island's serialized model and names
+  the component that should take over.
+- The client upgrades the marker to a live custom element, restores the model,
+  and replaces the inert markup.
+- For reactive updates, the server pushes model changes over server-sent
+  events; the island subscribes through a typed stream and re-renders.
+- The integration contract is the name–tag–schema triple. It is documented but
+  not yet enforced by a registry.
 
 ## Standalone Principles
 
 Minimize integration testing: features and islands must not import one
-another's code. Their boundaries are **data contracts** (context values and
-the serialized island model), so an integration surface is one schema, not
-a graph of call sites. Both demo hosts exercise this discipline.
+another's code. Their boundaries are data contracts — context values and the
+serialized island model — so an integration surface is one schema, not a graph
+of call sites. Both demo hosts exercise this discipline.
 
 ## Comparison with single-SPA
 
-| [single-SPA](https://single-spa.js.org/)      | Ndigo                                                              | Note                                 |
-| --------------------------------------------- | ------------------------------------------------------------------ | ------------------------------------ |
-| `registerApplication` + activity fn           | `HostManager.registerFeature({name, prefix, …})`                   | Prefix partitions; single call       |
-| bootstrap/mount/unmount                       | `mount`/`mountLazy`/`unmount(policy)`/`unregister`                 | No separate bootstrap phase          |
-| `start()` gating                              | —                                                                  | Not implemented; composition is sync |
-| import maps / shared deps                     | `SharedDependencyRegistry` + `@sharedDependency` + semver at mount | Runtime-validated, stronger          |
-| framework-agnostic apps                       | Web components + context values                                    | Islands = data-bound components      |
-| standalone apps / minimal integration testing | Island model contracts; feature contexts with gateways             | Same doctrine                        |
+| Concern                       | [single-SPA](https://single-spa.js.org/) | Ndigo                                                         |
+| :---------------------------- | :--------------------------------------- | :------------------------------------------------------------ |
+| Registration                  | Application registration plus activity   | One declaration per feature, partitioned by route prefix      |
+| Lifecycle                     | Separate bootstrap, mount, and unmount   | Mount and unmount are the only phases; no separate bootstrap  |
+| Startup gating                | Explicit start step                      | No gating step; composition is synchronous                    |
+| Shared dependencies           | Import maps                              | Runtime registry with version ranges validated at mount       |
+| Framework-agnostic components | Framework adapters                       | Web components and context values; islands are data-bound     |
+| Integration testing           | Application-level integration            | Data contracts; features and islands never import one another |
 
 ## See Also
 
-- [Guide 29 — Signals & Islands](../guides/29-signals-and-islands.md) —
-  the reactive half in detail (`@ndigo/signals` primitives and decorators,
-  stream/event bridges, `hydrateIslands()` and SSE-driven re-render).
+- [Guide 29 — Signals & Islands](../guides/29-signals-and-islands.md) — the
+  reactive half in detail: streaming, event bridges, hydration, and
+  server-sent updates.
 - [Guide 31 — Micro Frontends with `@ndigo/host`](../guides/31-micro-frontends.md)
   — the host and feature tutorial.
-- [Package index](https://ndigo.dev/reference/packages/) — `@ndigo/host`, `@ndigo/context`,
-  `@ndigo/router`, `@ndigo/view`, and `@ndigo/view-webcomponent`.
-- [Examples](https://ndigo.dev/examples/) — the host demos and the reactive island demo.
+- [Package index](https://ndigo.dev/reference/packages/) — the host, context,
+  router, view, and web-component packages.
+- [Examples](https://ndigo.dev/examples/) — the host demos and the reactive
+  island demo.
 
 ## Known Gaps
 
-1. **Page concept / TTFB-vs-TTI contract** — the open design conversation;
-   its registration-API half was answered by the host runtime only.
-2. **Island name ↔ tag ↔ schema triple** — documented contract, no
-   enforcement or registry yet.
-3. **Runtime self-registration** — the `HOST_MANAGER_TOKEN` seam makes it
-   possible; the deployment model stays compile-time.
+1. **Page concept and the time-to-first-byte vs time-to-interactive contract** —
+   still an open design conversation; the registration mechanism now exists,
+   but the page model does not.
+2. **Island name–tag–schema triple** — documented contract, no enforcement or
+   registry yet.
+3. **Runtime self-registration** — the seam exists; the deployment model stays
+   compile-time.

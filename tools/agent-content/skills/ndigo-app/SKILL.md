@@ -18,6 +18,8 @@ description: Scaffolds, runs, configures, and updates a Ndigo application. Use w
 | Environment health     | `ndigo doctor`                              |
 | Available capabilities | `ndigo capabilities --json`                 |
 | Install a capability   | `ndigo add <capability>` (plan); `--apply`  |
+| Verify a capability    | `ndigo verify --capability <id>`            |
+| Full verification      | `ndigo verify --full`                       |
 
 ## Capabilities
 
@@ -25,6 +27,9 @@ A capability is the installable unit of behaviour: one or more packages plus
 wiring, files, and checks. `ndigo capabilities get <id> --json` is the fact
 source for what it installs, which variables it needs, and what it will write.
 `ndigo add <id>` prints the plan; `--apply` writes it; a second run is a no-op.
+`ndigo verify --capability <id>` executes the capability's declared checks
+against the live app — a named capability makes every declared check required
+(missing scripts fail rather than skip).
 
 
 ## The script contract

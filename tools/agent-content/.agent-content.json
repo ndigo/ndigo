@@ -9,10 +9,10 @@
     "packages/ndigo-auth-server/docs/llms.txt": "915145a0656837dbfea5ae16342ff7623db803da5d6b9b0f60fbfb4920327853",
     "packages/ndigo-boot/docs/llms.txt": "7346ca19a48c362787800524600e038d4960994fd6bfb9589073cf8f5614384d",
     "packages/ndigo-cache/docs/llms.txt": "fb8d1276be014940a13eee8cde946b91238da6e8365dba21a7fce9a1a19e718d",
-    "packages/ndigo-cli/assets/agent/docs-index.md": "8cec07e79654c2da225e2154dec965425787c3ea75ba9ff0ad4c546506083299",
+    "packages/ndigo-cli/assets/agent/docs-index.md": "ebf5471d0933f226a35c90b066e008e701b0d56a4b4acfd6b0cd3b2d57227150",
     "packages/ndigo-cli/assets/agent/instructions.md": "e77a25f81e7f41b9c01aea80a04e8e2359e98d82401a393b07c550e966535fb9",
     "packages/ndigo-cli/assets/agent/skills/ndigo-agent/SKILL.md": "03998a51e34c74761b43b3f95eff3f9f1c24f14e65cb70eb923c36d8333a05b8",
-    "packages/ndigo-cli/assets/agent/skills/ndigo-app/SKILL.md": "0b1f66f5bc83bba49d3d5d29d46818842ec334ae5653062e64372c78794ea807",
+    "packages/ndigo-cli/assets/agent/skills/ndigo-app/SKILL.md": "4098bbcf582dbd739dda7d86620df56179141c5ccff59aeba2c691141846de08",
     "packages/ndigo-cli/assets/agent/skills/ndigo-debug/SKILL.md": "583243d2ee73fbaf807cb143c23e617448f5eebb172ac87729bcec7ffe567db3",
     "packages/ndigo-cli/assets/agent/skills/ndigo-endpoint/SKILL.md": "13993adc33bde7d9130bcd2fd684924877206542e55c7f1a52c4121b86166c31",
     "packages/ndigo-cli/assets/agent/skills/ndigo-model/SKILL.md": "32cba74edbeff23f90e7e41ebbb361f4e97b58abad7318d1c7a4d0ae83e52dbd",
@@ -74,6 +74,6 @@
     "packages/ndigo-view-webcomponent/docs/llms.txt": "68bf6b14d69e9b91c5ef343dfba72a8f89c1b077fe38a140b09610e51b447390",
     "packages/ndigo-view/docs/llms.txt": "602a484c99fa7e3d349a79f8602d59bd69c8fd11ba1fea7bb85d61244380e0af",
     "packages/ndigo-view/skills/ndigo-views/SKILL.md": "f26136bb54ed176c4b01e90ea9cbfeeac97eabaf4a6c33c7131589c7e1f02d1e",
-    "tools/agent-content/docs-index.md": "8cec07e79654c2da225e2154dec965425787c3ea75ba9ff0ad4c546506083299"
+    "tools/agent-content/docs-index.md": "ebf5471d0933f226a35c90b066e008e701b0d56a4b4acfd6b0cd3b2d57227150"
   }
 }

@@ -31,7 +31,8 @@ import { FLAG_EVALUATOR, getWhenFeature, type FlagEvaluator } from '@ndigo/flags
 import { $aware } from '@ndigo/factory';
 import { IllegalStateError } from '@ndigo/core';
 import type { ApplicationContext, ApplicationContextAware } from '@ndigo/context';
-import { ProblemTypes, writeProblem } from './problem-details';
+import { ProblemTypes } from '@ndigo/http';
+import { writeProblem } from './problem-details';
 import { getNodeResponse } from './node-request';
 import { FLAG_CONTEXT_RESOLVER } from './context-tokens';
 import { SessionPrincipalFlagContextResolver, type FlagEvaluationContextResolver } from './flag-context-resolver';

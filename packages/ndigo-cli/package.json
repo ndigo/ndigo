@@ -46,6 +46,7 @@
   },
   "devDependencies": {
     "@ndigo/boot": "~0.0.1",
+    "@ndigo/jobs": "~0.0.1",
     "@ndigo/context": "~0.0.1",
     "@ndigo/dispatcher": "~0.0.1",
     "@ndigo/inspect": "~0.0.1",

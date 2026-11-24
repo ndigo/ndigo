@@ -2022,6 +2022,9 @@ importers:
       '@ndigo/inspect':
         specifier: ~0.0.1
         version: link:../ndigo-inspect
+      '@ndigo/jobs':
+        specifier: ~0.0.1
+        version: link:../ndigo-jobs
       '@ndigo/orm-drizzle':
         specifier: ~0.0.1
         version: link:../ndigo-orm-drizzle

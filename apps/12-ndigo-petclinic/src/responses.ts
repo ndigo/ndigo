@@ -9,8 +9,8 @@
  * helper returns the framework's problem entity.
  */
 import { ModelAndView } from '@ndigo/dispatcher';
-import { HTTPHeaders, ResponseStatuses } from '@ndigo/http';
-import { ResponseEntity, problemEntity, ProblemTypes, type ProblemDetails } from '@ndigo/platform-node';
+import { HTTPHeaders, ProblemTypes, ResponseStatuses } from '@ndigo/http';
+import { ResponseEntity, problemEntity, type ProblemDetails } from '@ndigo/platform-node';
 import { NOT_FOUND_VIEW } from './views/status-view-resolver';
 
 /**

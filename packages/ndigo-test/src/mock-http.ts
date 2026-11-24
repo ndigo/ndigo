@@ -2,11 +2,11 @@
  * MockHTTP — in-process, socket-free integration-test client for Ndigo applications.
  */
 import { toError } from '@ndigo/util';
-import { HTTPHeaders, contentTypeBase, MULTIPART_FORM_DATA } from '@ndigo/http';
+import { likeClientProblem } from '@ndigo/core';
+import { HTTPHeaders, contentTypeBase, MULTIPART_FORM_DATA, ProblemTypes, ResponseStatuses } from '@ndigo/http';
 import { NodeDispatcher } from '@ndigo/platform-node';
 import { getMethodNotAllowed, getInterceptorDenial, isSocketMapping } from '@ndigo/dispatcher';
 import {
-    ProblemTypes,
     writeProblem,
     parseMultipart,
     parseBodyRecord,
@@ -368,10 +368,18 @@ export class MockHTTP {
             // Transport-level failures the in-process harness cannot otherwise
             // reproduce (HTT-REV-014).
             if (req.transport === 'aborted') {
-                throw new RequestLimitError(400, 'request_aborted', 'Request aborted before completion');
+                throw new RequestLimitError(
+                    ResponseStatuses.BAD_REQUEST,
+                    ProblemTypes.requestAborted,
+                    'Request aborted before completion'
+                );
             }
             if (req.transport === 'timeout') {
-                throw new RequestLimitError(408, 'request_timeout', 'Request body timed out');
+                throw new RequestLimitError(
+                    ResponseStatuses.REQUEST_TIMEOUT,
+                    ProblemTypes.requestTimeout,
+                    'Request body timed out'
+                );
             }
             // Mirror NodeHTTPServerAdapter's transport limits (HTT-REV-014).
             this.#assertLimits(req);
@@ -475,26 +483,15 @@ export class MockHTTP {
             }
         } catch (err: unknown) {
             if (!response.completed) {
-                if (err instanceof RequestLimitError) {
-                    // SEC-13/HTT-REV-012: mirror
-                    // NodeHTTPServerAdapter.#writeErrorResponse — limit/parse
-                    // rejections are problem documents at their own status with
-                    // a `urn:ndigo:<code>` type, not plain 500 JSON. A malformed
-                    // body shares the registered `urn:ndigo:malformed-body` type.
-                    if (err.code === 'malformed_body') {
-                        writeProblem(sink, {
-                            type: ProblemTypes.malformedBody,
-                            title: 'Bad Request',
-                            status: 400,
-                            detail: 'malformed_body',
-                        });
-                    } else {
-                        writeProblem(sink, {
-                            type: `urn:ndigo:${err.code}`,
-                            status: err.statusCode,
-                            detail: err.code,
-                        });
-                    }
+                if (likeClientProblem(err)) {
+                    // Mirror NodeHTTPServerAdapter.#writeErrorResponse — the
+                    // error carries its own status, problem type, and detail.
+                    writeProblem(sink, {
+                        type: err.problemType,
+                        ...(err.problemStatus.text === undefined ? {} : { title: err.problemStatus.text }),
+                        status: err.problemStatus.code,
+                        detail: err.message,
+                    });
                 } else if (err instanceof SyntaxError) {
                     // HTT-REV-012: the adapter maps a raw JSON `SyntaxError`
                     // from body parsing to the same 400 malformed-body problem,
@@ -602,13 +599,21 @@ export class MockHTTP {
         const cookieHeader = findHeader(req.headers, 'cookie');
         if (cookieHeader !== undefined) {
             if (Buffer.byteLength(cookieHeader, 'utf-8') > this.#limits.maxHeaderBytes) {
-                throw new RequestLimitError(431, 'headers_too_large', 'Cookie header exceeds the configured limit');
+                throw new RequestLimitError(
+                    ResponseStatuses.REQUEST_HEADER_FIELDS_TOO_LARGE,
+                    ProblemTypes.headersTooLarge,
+                    'Cookie header exceeds the configured limit'
+                );
             }
             try {
                 parseCookies(cookieHeader);
             } catch (error) {
                 if (error instanceof RangeError) {
-                    throw new RequestLimitError(431, 'headers_too_large', 'Cookie header exceeds the configured limit');
+                    throw new RequestLimitError(
+                        ResponseStatuses.REQUEST_HEADER_FIELDS_TOO_LARGE,
+                        ProblemTypes.headersTooLarge,
+                        'Cookie header exceeds the configured limit'
+                    );
                 }
                 throw error;
             }
@@ -620,7 +625,11 @@ export class MockHTTP {
         }
         const bodyBytes = requestBodyBytes(req);
         if (bodyBytes !== null && bodyBytes > this.#limits.maxBodyBytes) {
-            throw new RequestLimitError(413, 'body_too_large', 'Request body exceeds the configured limit');
+            throw new RequestLimitError(
+                ResponseStatuses.PAYLOAD_TOO_LARGE,
+                ProblemTypes.payloadTooLarge,
+                'Request body exceeds the configured limit'
+            );
         }
     }
 

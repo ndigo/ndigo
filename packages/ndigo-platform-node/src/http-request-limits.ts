@@ -2,7 +2,7 @@
  * Request-pipeline limits and timeouts for {@link NodeHTTPServerAdapter}.
  */
 import { FrameworkError, MediaType } from '@ndigo/core';
-import { contentTypeBase } from '@ndigo/http';
+import { contentTypeBase, ProblemTypes, ResponseStatuses, type ResponseStatus } from '@ndigo/http';
 /**
  * Tunable bounds for the Node HTTP request pipeline.
  *
@@ -102,7 +102,11 @@ export function resolveHTTPRequestLimits(limits?: HTTPRequestLimits): ResolvedHT
  *
  * @example
  * ```ts
- * const instance = new RequestLimitError();
+ * const instance = new RequestLimitError(
+ *     ResponseStatuses.PAYLOAD_TOO_LARGE,
+ *     ProblemTypes.payloadTooLarge,
+ *     'Request body exceeds the configured limit'
+ * );
  * ```
  */
 export class RequestLimitError extends FrameworkError {
@@ -121,16 +125,16 @@ export class RequestLimitError extends FrameworkError {
         return 'RequestLimitError';
     }
 
-    /** The HTTP status to report. */
-    readonly statusCode: number;
-    /** The machine-readable failure code. */
-    readonly code: string;
-
-    constructor(statusCode: number, code: string, message: string) {
-        super(message);
+    /**
+     * Creates a client-facing transport failure.
+     *
+     * @param status - The response status to render.
+     * @param problemType - The `urn:ndigo:*` problem type.
+     * @param message - The human-readable detail.
+     */
+    constructor(status: ResponseStatus, problemType: string, message: string) {
+        super(message, { disposition: 'client', problemStatus: status, problemType });
         this.name = 'RequestLimitError';
-        this.statusCode = statusCode;
-        this.code = code;
     }
 }
 
@@ -170,7 +174,11 @@ export function parseBody(contentType: string | undefined, raw: Buffer): BodyPar
         const text = raw.toString('utf-8');
         const parsed: unknown = JSON.parse(text);
         if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
-            throw new RequestLimitError(400, 'malformed_body', 'JSON body must be an object');
+            throw new RequestLimitError(
+                ResponseStatuses.BAD_REQUEST,
+                ProblemTypes.malformedBody,
+                'JSON body must be an object'
+            );
         }
         return { kind: 'json', value: parsed as Record<string, unknown> };
     }

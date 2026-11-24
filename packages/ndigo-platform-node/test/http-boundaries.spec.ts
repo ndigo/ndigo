@@ -79,9 +79,9 @@ describe('HTTP request pipeline boundaries', () => {
         });
         expect(res.status).toBe(413);
         expect(await res.json()).toMatchObject({
-            type: 'urn:ndigo:body_too_large',
+            type: 'urn:ndigo:payload-too-large',
             status: 413,
-            detail: 'body_too_large',
+            detail: 'Request body exceeds the configured limit',
         });
     });
 
@@ -114,7 +114,7 @@ describe('HTTP request pipeline boundaries', () => {
             expect(await res.json()).toMatchObject({
                 type: 'urn:ndigo:malformed-body',
                 status: 400,
-                detail: 'malformed_body',
+                detail: 'JSON body must be an object',
             });
         }
     });
@@ -146,9 +146,9 @@ describe('HTTP request pipeline boundaries', () => {
         );
         expect(res.status).toBe(413);
         expect(await res.json()).toMatchObject({
-            type: 'urn:ndigo:body_too_large',
+            type: 'urn:ndigo:payload-too-large',
             status: 413,
-            detail: 'body_too_large',
+            detail: 'Request body exceeds the configured limit',
         });
     });
 
@@ -175,9 +175,9 @@ describe('HTTP request pipeline boundaries', () => {
         const res = await fetch(base + '/probe', { headers: { cookie: cookies } });
         expect(res.status).toBe(431);
         expect(await res.json()).toMatchObject({
-            type: 'urn:ndigo:headers_too_large',
+            type: 'urn:ndigo:headers-too-large',
             status: 431,
-            detail: 'headers_too_large',
+            detail: 'Cookie header exceeds the configured limit',
         });
     });
 
@@ -188,9 +188,9 @@ describe('HTTP request pipeline boundaries', () => {
         const res = await fetch(base + '/probe', { headers: { cookie: `big=${'x'.repeat(4097)}` } });
         expect(res.status).toBe(431);
         expect(await res.json()).toMatchObject({
-            type: 'urn:ndigo:headers_too_large',
+            type: 'urn:ndigo:headers-too-large',
             status: 431,
-            detail: 'headers_too_large',
+            detail: 'Cookie header exceeds the configured limit',
         });
     });
 });

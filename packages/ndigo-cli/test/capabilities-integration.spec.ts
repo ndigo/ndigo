@@ -224,6 +224,7 @@ describe('capability apply (fixture app)', () => {
 
     it('verifies the wave capabilities against the running app', async () => {
         for (const capability of ['shared-cache', 'background-jobs']) {
+            // oxlint-disable-next-line no-await-in-loop -- capabilities boot the same fixture sequentially; parallel boots would contend for the fixture's ports.
             const result = await runCli(['verify', '--capability', capability, '--json']);
             expect(result.code).toBe(0);
             const report = JSON.parse(result.out) as {

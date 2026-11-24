@@ -13,7 +13,8 @@ import { getSymbolMetadata } from '@ndigo/core';
 import { getNodeRequest } from './node-request';
 import { HTTPHeaders } from '@ndigo/http';
 import { type RateLimiter, type RateLimitPolicy, validateRateLimitPolicy } from '@ndigo/rate-limit';
-import { ProblemTypes, writeProblem } from './problem-details';
+import { ProblemTypes } from '@ndigo/http';
+import { writeProblem } from './problem-details';
 import type { ServerResponse } from 'node:http';
 import { NODE_RESPONSE_ATTRIBUTE } from './node-request';
 

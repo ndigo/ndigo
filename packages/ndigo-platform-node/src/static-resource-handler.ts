@@ -35,7 +35,8 @@ import {
 } from '@ndigo/http';
 import { getNodeRequest, getNodeResponse } from './node-request';
 import { NOSNIFF_HEADER, StaticResourceResolver, type StaticResourceResult } from './static-resource-resolver';
-import { ProblemTypes, writeProblem } from './problem-details';
+import { ProblemTypes } from '@ndigo/http';
+import { writeProblem } from './problem-details';
 
 /** Handler options (D-6) — defaults preserve today's plain-file behavior. */
 /**

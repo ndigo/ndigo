@@ -59,31 +59,19 @@
  *   rejected outright while no verifier is configured), and
  *   `maxIdentifierLength` caps every identifier-valued header.
  */
-import { RingBuffer } from '@ndigo/core';
-import {
-    InMemoryQueueMessageStore,
-    materialOctets,
-    type QueueMessageStore,
-    type StoredQueueMessage,
-} from './message-store';
-import {
-    parseStompFrame,
-    serializeStompFrame,
-    StompProtocolError,
-    type StompFrame,
-    type StompBody,
-} from './stomp-frame';
+import { InMemoryQueueMessageStore, type QueueMessageStore, type StoredQueueMessage } from './message-store';
+import type { StompBody } from './stomp-frame';
 import type { SocketSession } from './socket-session';
 import type { SocketFanout } from './socket-fanout';
 import { StompFanout } from './_stomp-fanout';
 import { StompLimits } from './_stomp-limits';
 import { StompTransactionManager } from './_stomp-transactions';
 import { StompSubscriptionRegistry } from './_stomp-subscriptions';
+import { StompEndpoint } from './_stomp-endpoint';
+import { StompDelivery } from './_stomp-delivery';
+import { controlSend, fail, receipt } from './_stomp-replies';
 
 /** STOMP ack modes (STOMP 1.2 §1.3.1). */
-
-/** Version negotiation set — we speak 1.2 semantics, accept 1.0–1.2. */
-const SUPPORTED_VERSIONS: readonly string[] = ['1.2', '1.1', '1.0'];
 
 /** Default bound on unacked-message tracking per subscription (D9). */
 const DEFAULT_MAX_UNACKED = 1000;
@@ -117,30 +105,7 @@ const DEFAULT_MAX_UNACKED_SESSION_BYTES = 16 * 1024 * 1024;
 /** Default per-session budget for backlog replay + replay-time live buffering (SEC-6). */
 const DEFAULT_MAX_REPLAY_BYTES_PER_SESSION = 16 * 1024 * 1024;
 
-/**
- * SEND headers that are framing rather than user payload (COR-7, STOMP 1.2
- * §2.1): they are consumed by the broker and never forwarded into MESSAGE
- * frames or the `onMessage` seam.
- */
-const SEND_FRAMING_HEADERS: Record<string, true> = {
-    destination: true,
-    transaction: true,
-    receipt: true,
-    'content-length': true,
-};
-
-/** A live subscription: one (session, sub-id) → destination binding. */
-import type { Subscription, StoredMessage, QueueReplay, TransactionOp } from './_stomp-broker-types';
-
 /** STOMP ack modes (STOMP 1.2 §1.3.1). */
-/**
- * StompAckMode.
- *
- * @example
- * ```ts
- * type _Alias = StompAckMode;
- * ```
- */
 export type StompAckMode = 'auto' | 'client' | 'client-individual';
 
 /**
@@ -371,6 +336,9 @@ export class StompBroker {
     readonly #registry: StompSubscriptionRegistry;
     /** Per-session transaction buffers (D7). */
     readonly #transactions: StompTransactionManager;
+    /** Subscription fan-out, delivery tracking, and queue replay. */
+    readonly #delivery: StompDelivery;
+    readonly #endpoint: StompEndpoint;
     /** Every session under protocol control (for `closeAll`). */
     readonly #sessions = new Set<SocketSession>();
     readonly #fanout: StompFanout;
@@ -406,7 +374,7 @@ export class StompBroker {
             maxIdentifierLength: options.maxIdentifierLength ?? DEFAULT_MAX_IDENTIFIER_LENGTH,
             maxHeaderBytes: options.maxHeaderBytes ?? DEFAULT_MAX_HEADER_BYTES,
             maxReplayBytesPerSession: options.maxReplayBytesPerSession ?? DEFAULT_MAX_REPLAY_BYTES_PER_SESSION,
-            fail: (session, frame, message, code) => this.#fail(session, frame, message, code),
+            fail,
             stateFor: (session) => this.#registry.stateFor(session),
         });
         this.#verifyCredentials = options.verifyCredentials ?? null;
@@ -415,11 +383,11 @@ export class StompBroker {
         this.#maxSubscriptionsPerSession = options.maxSubscriptionsPerSession ?? DEFAULT_MAX_SUBSCRIPTIONS_PER_SESSION;
         this.#transactions = new StompTransactionManager(
             {
-                fail: (session, frame, message, code) => this.#fail(session, frame, message, code),
-                receipt: (session, frame) => this.#receipt(session, frame),
-                controlSend: (session, frame) => this.#controlSend(session, frame),
-                applySend: (session, frame, op) => this.#applyBufferedSend(session, frame, op),
-                applyAck: (session, op) => this.#applyBufferedAck(session, op),
+                fail,
+                receipt,
+                controlSend,
+                applySend: (session, frame, op) => this.#delivery.applyBufferedSend(session, frame, op),
+                applyAck: (session, op) => this.#delivery.applyBufferedAck(session, op),
             },
             {
                 maxTransactionsPerSession: options.maxTransactionsPerSession ?? DEFAULT_MAX_TRANSACTIONS_PER_SESSION,
@@ -466,6 +434,35 @@ export class StompBroker {
                       maxDestinations: options.maxBacklogDestinations ?? DEFAULT_MAX_BACKLOG_DESTINATIONS,
                       maxBytes: options.maxBacklogBytes ?? DEFAULT_MAX_BACKLOG_BYTES,
                   }));
+        this.#delivery = new StompDelivery({
+            registry: this.#registry,
+            limits: this.#limits,
+            queueStore: this.#queueStore,
+            retention: this.#retention,
+            onMessage: this.#onMessage,
+            resolveUser: this.#resolveUser,
+            nextMessageId: this.#nextMessageId,
+            publish: (destination, body, headers) => this.publish(destination, body, headers),
+        });
+        this.#endpoint = new StompEndpoint({
+            maxSubscriptionsPerSession: this.#maxSubscriptionsPerSession,
+            maxUnacked: this.#maxUnacked,
+            queueBacklog: this.#queueBacklog,
+            retention: this.#retention,
+            queueStore: this.#queueStore,
+            onMessage: this.#onMessage,
+            verifyCredentials: this.#verifyCredentials,
+            authorize: this.#authorize,
+            resolveUser: this.#resolveUser,
+            nextMessageId: this.#nextMessageId,
+            limits: this.#limits,
+            registry: this.#registry,
+            transactions: this.#transactions,
+            delivery: this.#delivery,
+            sessions: this.#sessions,
+            isReady: () => !this.#closed && this.#fanout.isReady,
+            publish: (destination, body, headers) => this.publish(destination, body, headers),
+        });
     }
 
     /**
@@ -535,7 +532,7 @@ export class StompBroker {
         if (!destination.startsWith('/queue/')) {
             return [];
         }
-        const replay = await this.#replayQueue(destination, options);
+        const replay = await this.#delivery.replayQueue(destination, options);
         // The read-only history query keeps its documented fail-open: a
         // store fault reads as "no history" (SUBSCRIBE, which must hand a
         // client an honest answer, fails closed instead — COR-8).
@@ -543,61 +540,13 @@ export class StompBroker {
     }
 
     /**
-     * Store-backed `/queue` replay: prune expired messages per the
-     * retention TTL, then read the ordered window. The fault is reported,
-     * never swallowed: SUBSCRIBE fails closed on `ok: false` while
-     * `history()` maps it to its documented empty read.
-     *
-     * @param destination - The `/queue/<name>` destination.
-     * @param options - The replay window (`limit` = newest `N`).
-     * @returns The stored messages (append-ordered), or the fault.
-     */
-    async #replayQueue(destination: string, options: { afterSeq?: number; limit?: number } = {}): Promise<QueueReplay> {
-        const store = this.#queueStore;
-        if (store === null) {
-            return { ok: true, messages: [] };
-        }
-        try {
-            if (this.#retention?.ttlMs !== undefined) {
-                await store.prune(destination, { ttlMs: this.#retention.ttlMs });
-            }
-            return { ok: true, messages: await store.replay(destination, options) };
-        } catch {
-            return { ok: false };
-        }
-    }
-
-    /**
      * Run the STOMP endpoint protocol for one connection.
-     *
-     * Consumes `session.messages` until the connection closes: parses each
-     * frame, answers CONNECT with CONNECTED, maintains the session's
-     * subscriptions, fans out SEND frames, validates ACK/NACK, emits
-     * receipts, and fails closed on protocol violations. Session
-     * subscriptions are dropped when the stream ends.
      *
      * @param session - The socket session (any transport).
      * @returns A promise that resolves when the session stream ends.
      */
-    async handleSocket(session: SocketSession): Promise<void> {
-        if (this.#closed || !this.#fanout.isReady) {
-            throw new Error('StompBroker is not ready; await connect()');
-        }
-        const state: { connected: boolean; version: string | null; sessionId: string | null } = {
-            connected: false,
-            version: null,
-            sessionId: null,
-        };
-        try {
-            this.#sessions.add(session);
-            for await (const message of session.messages) {
-                if (!(await this.#process(session, state, message))) {
-                    return;
-                }
-            }
-        } finally {
-            this.#dropSession(session);
-        }
+    handleSocket(session: SocketSession): Promise<void> {
+        return this.#endpoint.handleSocket(session);
     }
 
     /**
@@ -668,7 +617,7 @@ export class StompBroker {
         if (subscribers) {
             for (const subscription of Array.from(subscribers)) {
                 if (!subscription.session.isClosed) {
-                    this.#deliver(subscription, messageId, destination, body, headers, false);
+                    this.#delivery.deliver(subscription, messageId, destination, body, headers, false);
                 }
             }
         }
@@ -689,7 +638,7 @@ export class StompBroker {
     sendToUser(user: string, destination: string, body: StompBody, headers: Record<string, string> = {}): void {
         const suffix = destination.replace(/^\/+/, '');
         // REV-006: surface an unframeable envelope here rather than letting
-        // `#deliverNow` swallow the serialization fault per subscriber.
+        // `deliverNow` swallow the serialization fault per subscriber.
         this.#limits.assertDeliverable(`/user/${suffix}`, headers);
         const scope = this.#registry.byUser(user, suffix);
         if (!scope) {
@@ -701,7 +650,7 @@ export class StompBroker {
             if (subscription.session.isClosed) {
                 continue;
             }
-            this.#deliver(subscription, messageId, userDestination, body, headers, false);
+            this.#delivery.deliver(subscription, messageId, userDestination, body, headers, false);
         }
     }
 
@@ -719,857 +668,5 @@ export class StompBroker {
                 session.close(code, reason);
             }
         }
-    }
-
-    /**
-     * Process one inbound message for a session.
-     *
-     * @param session - The owning session.
-     * @param state - Per-connection protocol state.
-     * @param message - The raw inbound message (text or binary frame).
-     * @returns `false` when the connection should end (protocol error or
-     *   DISCONNECT); `true` to keep reading.
-     */
-    #process(
-        session: SocketSession,
-        state: { connected: boolean; version: string | null; sessionId: string | null },
-        message: unknown
-    ): Promise<boolean> {
-        if (typeof message !== 'string' && !(message instanceof Uint8Array) && !(message instanceof ArrayBuffer)) {
-            return Promise.resolve(this.#fail(session, null, 'STOMP frames must be text or binary'));
-        }
-        let frame: StompFrame;
-        try {
-            frame = parseStompFrame(message as string);
-        } catch (error) {
-            return Promise.resolve(
-                this.#fail(session, null, error instanceof StompProtocolError ? error.message : 'malformed frame')
-            );
-        }
-        // Heart-beat pings (bare newlines) — nothing to do.
-        if (frame.command === '') {
-            return Promise.resolve(true);
-        }
-        // SEC-2: every identifier-valued header is bounded on every
-        // non-ping frame (including CONNECT — `login`/`passcode` are
-        // credentials, capped by their own verifier).
-        if (!this.#limits.assertIdentifiers(session, frame)) {
-            return Promise.resolve(false);
-        }
-        // REV-002: the serialized header block is capped too, so headers
-        // cannot dwarf the body budgets the broker charges.
-        if (!this.#limits.assertHeaderBudget(session, frame)) {
-            return Promise.resolve(false);
-        }
-        if (!state.connected) {
-            if (frame.command === 'CONNECT' || frame.command === 'STOMP') {
-                return this.#connect(session, state, frame);
-            }
-            return Promise.resolve(this.#fail(session, frame, 'CONNECT must be the first frame'));
-        }
-        switch (frame.command) {
-            case 'SUBSCRIBE':
-                return this.#subscribe(session, frame);
-            case 'UNSUBSCRIBE':
-                return Promise.resolve(this.#unsubscribe(session, frame));
-            case 'SEND':
-                return this.#send(session, frame);
-            case 'ACK':
-            case 'NACK':
-                return Promise.resolve(this.#ack(session, frame));
-            case 'DISCONNECT':
-                return Promise.resolve(this.#disconnect(session, frame));
-            case 'BEGIN':
-                return Promise.resolve(this.#transactions.begin(session, frame));
-            case 'COMMIT':
-                return this.#transactions.commit(session, frame);
-            case 'ABORT':
-                return Promise.resolve(this.#transactions.abort(session, frame));
-            default:
-                return Promise.resolve(this.#fail(session, frame, `unknown command: ${frame.command}`));
-        }
-    }
-
-    /**
-     * The CONNECT handshake: version negotiation, optional credential
-     * verification, CONNECTED reply.
-     *
-     * @param session - The connecting session.
-     * @param state - Per-connection protocol state (mutated on success).
-     * @param frame - The CONNECT/STOMP frame.
-     * @returns Always `true` (a failed handshake closes the session).
-     */
-    async #connect(
-        session: SocketSession,
-        state: { connected: boolean; version: string | null; sessionId: string | null },
-        frame: StompFrame
-    ): Promise<boolean> {
-        // STOMP 1.2 §1.1: "If the accept-version header is missing, it
-        // means that the client only supports version 1.0 of the protocol."
-        const acceptVersion = frame.headers['accept-version'];
-        const offered = (acceptVersion ?? '1.0').split(',').map((v) => v.trim());
-        const mutual = SUPPORTED_VERSIONS.find((version) => offered.includes(version)) ?? null;
-        if (mutual === null) {
-            return this.#fail(session, frame, `no supported version in accept-version: ${offered.join(', ')}`);
-        }
-        // SEC-7: credentials are verified or refused — never ignored.
-        const login = frame.headers['login'];
-        const passcode = frame.headers['passcode'];
-        if (login !== undefined || passcode !== undefined) {
-            const verify = this.#verifyCredentials;
-            if (verify === null) {
-                return this.#fail(
-                    session,
-                    frame,
-                    'CONNECT credentials rejected: no credential verifier is configured',
-                    1008
-                );
-            }
-            const verified = await verify(login ?? '', passcode ?? '', session);
-            if (!verified) {
-                return this.#fail(session, frame, 'invalid credentials', 1008);
-            }
-        }
-        // STOMP 1.1+ requires `host` (the virtual host). A 1.0-only client
-        // has none — accept it (we still negotiate the frame we got).
-        if (mutual !== '1.0' && frame.headers['host'] === undefined) {
-            return this.#fail(session, frame, 'CONNECT requires a host header (STOMP 1.1+)');
-        }
-        state.connected = true;
-        state.version = mutual;
-        state.sessionId = this.#nextMessageId();
-        this.#controlSend(session, {
-            command: 'CONNECTED',
-            headers: {
-                version: mutual,
-                session: state.sessionId,
-                server: 'Ndigo',
-                // Liveness is the WS layer's job; negotiate
-                // STOMP heartbeats off.
-                'heart-beat': '0,0',
-            },
-            body: '',
-        });
-        return true;
-    }
-
-    /**
-     * Register a subscription for the session.
-     *
-     * A `/queue` SUBSCRIBE registers first, replays the retained window
-     * with live deliveries buffered (nothing is lost, ordering holds, the
-     * buffered frames the replay already carried are dropped by
-     * `message-id`), and only then starts receiving live traffic directly.
-     *
-     * @param session - The subscribing session.
-     * @param frame - The SUBSCRIBE frame.
-     * @returns `false` on duplicate id / missing headers / denied
-     *   destination / store or replay-budget failure (ERROR + close).
-     */
-    async #subscribe(session: SocketSession, frame: StompFrame): Promise<boolean> {
-        const destination = frame.headers['destination'];
-        const subId = frame.headers['id'];
-        if (destination === undefined) {
-            return this.#fail(session, frame, 'SUBSCRIBE requires a destination header');
-        }
-        if (subId === undefined) {
-            return this.#fail(session, frame, 'SUBSCRIBE requires an id header');
-        }
-        const ack = (frame.headers['ack'] ?? 'auto') as StompAckMode;
-        if (ack !== 'auto' && ack !== 'client' && ack !== 'client-individual') {
-            return this.#fail(session, frame, `invalid ack mode: ${ack}`);
-        }
-        // SEC-4: policy first — no registration, no replay for a denied
-        // destination (the replay would otherwise disclose the backlog).
-        if (!(await this.#authorizeDestination(session, frame, destination, 'subscribe'))) {
-            return false;
-        }
-        if (this.#registry.has(session, subId)) {
-            return this.#fail(session, frame, `subscription id already in use: ${subId}`);
-        }
-        if (this.#registry.countForSession(session) >= this.#maxSubscriptionsPerSession) {
-            return this.#fail(session, frame, `subscription limit reached (max ${this.#maxSubscriptionsPerSession})`);
-        }
-
-        const userScoped = destination.startsWith('/user/');
-        if (userScoped) {
-            // Principal-scoped routing (D10): the subscribe attaches to the
-            // session's resolved identity — no anonymous `/user` binds.
-            const user = this.#resolveUser(session);
-            if (user === null) {
-                return this.#fail(session, frame, 'cannot bind a /user destination without a resolved user', 1008);
-            }
-            const subscription: Subscription = {
-                session,
-                subId,
-                destination,
-                user,
-                ack,
-                unacked: new RingBuffer<StoredMessage>(this.#maxUnacked + 1),
-                unackedBytes: 0,
-                replaying: false,
-                buffered: [],
-            };
-            this.#registry.add(subscription);
-            return this.#receipt(session, frame);
-        }
-
-        const subscription: Subscription = {
-            session,
-            subId,
-            destination,
-            user: null,
-            ack,
-            unacked: new RingBuffer<StoredMessage>(this.#maxUnacked + 1),
-            unackedBytes: 0,
-            replaying: false,
-            buffered: [],
-        };
-        this.#registry.add(subscription);
-        // `/queue` backward replay (D11 + history + COR-2): the
-        // subscription is live in the fan-out index before the replay
-        // starts, so nothing published meanwhile is lost — those frames
-        // buffer (`#deliver`) and flush after the retained window has gone
-        // out, minus the ones the replay already carried. The subscriber
-        // therefore never observes `live, old, live`.
-        if (destination.startsWith('/queue/') && this.#queueBacklog > 0) {
-            subscription.replaying = true;
-            const limit = this.#retention?.maxMessages ?? this.#queueBacklog;
-            const replay = await this.#replayQueue(destination, { limit });
-            if (session.isClosed) {
-                return false; // closed under us (transport or budget) — nothing to send
-            }
-            if (!replay.ok) {
-                // COR-8: a store that cannot hand over its history must not
-                // read as "empty queue" — ERROR + close, same posture as the
-                // failing SEND append.
-                return this.#fail(session, frame, 'queue store unavailable', 1011);
-            }
-            const replayOctets = replay.messages.reduce((total, stored) => total + materialOctets(stored.body), 0);
-            if (!this.#limits.chargeReplay(session, replayOctets)) {
-                // SEC-6: re-subscribing re-materializes the window; the
-                // per-session budget bounds how often a peer can force it.
-                return this.#fail(session, frame, 'replay budget exhausted', 1013);
-            }
-            const replayedIds = new Set(replay.messages.map((stored) => stored.messageId));
-            subscription.replaying = false;
-            for (const stored of replay.messages) {
-                this.#deliverNow(subscription, stored.messageId, destination, stored.body, stored.headers, false);
-            }
-            const held = subscription.buffered;
-            subscription.buffered = [];
-            for (const delivery of held) {
-                if (replayedIds.has(delivery.messageId)) {
-                    continue; // the replay already carried it — no duplicate
-                }
-                this.#deliverNow(
-                    subscription,
-                    delivery.messageId,
-                    delivery.destination,
-                    delivery.body,
-                    delivery.headers,
-                    delivery.redelivered
-                );
-            }
-        }
-        return this.#receipt(session, frame);
-    }
-
-    /**
-     * Consult the `authorize` policy seam (SEC-4) and fail closed on a
-     * denial — before any replay, registration, buffering or fan-out.
-     *
-     * @param session - The session requesting the action.
-     * @param frame - The offending frame (failure attribution).
-     * @param destination - The destination being subscribed or sent to.
-     * @param action - The action being authorized.
-     * @returns `true` when allowed, `false` after the fail-closed reply.
-     */
-    async #authorizeDestination(
-        session: SocketSession,
-        frame: StompFrame,
-        destination: string,
-        action: 'subscribe' | 'send'
-    ): Promise<boolean> {
-        if (this.#authorize === null) {
-            return true;
-        }
-        const allowed = await this.#authorize(destination, action, session);
-        if (allowed === false) {
-            return this.#fail(session, frame, `${action} denied: ${destination}`, 1008);
-        }
-        return true;
-    }
-
-    /**
-     * Remove a subscription.
-     *
-     * @param session - The session.
-     * @param frame - The UNSUBSCRIBE frame.
-     * @returns `false` on unknown id (ERROR + close).
-     */
-    #unsubscribe(session: SocketSession, frame: StompFrame): boolean {
-        const subId = frame.headers['id'];
-        if (subId === undefined) {
-            return this.#fail(session, frame, 'UNSUBSCRIBE requires an id header');
-        }
-        const subscription = this.#registry.get(session, subId);
-        if (subscription === undefined) {
-            return this.#fail(session, frame, `unknown subscription id: ${subId}`);
-        }
-        this.#registry.remove(session, subscription);
-        return this.#receipt(session, frame);
-    }
-
-    /**
-     * A SEND: fan out to the destination's subscribers (unless the
-     * `onMessage` seam suppresses it). Transactions (D7): a SEND carrying
-     * `transaction:` is buffered and applied at COMMIT.
-     *
-     * Both seams run in one order in both forms — `authorize` first (so a
-     * denied SEND never reaches the buffer, the routing seam or the
-     * fan-out), then `onMessage` — whether the client wrapped the SEND in a
-     * transaction or not.
-     *
-     * @param session - The sending session.
-     * @param frame - The SEND frame.
-     */
-    async #send(session: SocketSession, frame: StompFrame): Promise<boolean> {
-        const destination = frame.headers['destination'];
-        if (destination === undefined) {
-            return this.#fail(session, frame, 'SEND requires a destination header');
-        }
-        // Before the buffer, the routing seam and the fan-out — so a denied
-        // SEND behaves the same whether or not it was wrapped in a
-        // transaction (no receipt, no delivery, ERROR + close 1008).
-        if (!(await this.#authorizeDestination(session, frame, destination, 'send'))) {
-            return false;
-        }
-        const headers = this.#sendHeaders(frame);
-        const txId = frame.headers['transaction'];
-        if (txId !== undefined) {
-            const octets = materialOctets(frame.body);
-            const result = this.#transactions.append(
-                session,
-                txId,
-                {
-                    kind: 'send',
-                    destination,
-                    body: frame.body,
-                    headers,
-                    receipt: frame.headers['receipt'] ?? null,
-                },
-                octets
-            );
-            if (result === 'unknown') {
-                return this.#fail(session, frame, `unknown transaction id: ${txId}`);
-            }
-            if (result === 'limit') {
-                return this.#fail(session, frame, 'transaction buffer limit reached');
-            }
-            return true;
-        }
-        // The routing seam sees every SEND — the same order the transactional
-        // path applies at COMMIT (authorize → onMessage → route), so an
-        // application's interception no longer depends on how the client
-        // framed the send (SEC-4/COR-7).
-        const suppress = this.#onMessage?.(destination, frame.body, headers, session);
-        if (suppress === false) {
-            return this.#receipt(session, frame);
-        }
-        // User-scoped SEND (D10): only the sender's own principal scope —
-        // shares routing with transaction COMMIT (#applyOp).
-        if (destination.startsWith('/user/')) {
-            if (!this.#sendToUserScope(session, frame, destination, frame.body, headers)) {
-                return false;
-            }
-            return this.#receipt(session, frame);
-        }
-        return this.#publishAndReceipt(session, frame, destination, headers);
-    }
-
-    /**
-     * Fan a SEND out and receipt it — holding the `RECEIPT` until a
-     * `/queue` append has actually persisted (receipt means "stored" for
-     * durable destinations). A store failure fails closed: the receipt is
-     * withheld (nothing was persisted), an ERROR frame reports it, and the
-     * connection closes `1011` — STOMP 1.2 §1.5 requires the server to
-     * close just after sending an ERROR frame (COR-8).
-     *
-     * @param session - The sending session.
-     * @param frame - The SEND frame.
-     * @param destination - The frame's destination.
-     * @param headers - The pass-through headers for the MESSAGE frames.
-     * @returns `false` after a store fault (the session closes).
-     */
-    async #publishAndReceipt(
-        session: SocketSession,
-        frame: StompFrame,
-        destination: string,
-        headers: Record<string, string>
-    ): Promise<boolean> {
-        let stored: StoredQueueMessage | undefined;
-        try {
-            stored = await this.publish(destination, frame.body, headers);
-        } catch {
-            return this.#fail(session, frame, 'topic fanout unavailable', 1011);
-        }
-        const storeManaged = destination.startsWith('/queue/') && this.#queueStore !== null;
-        if (storeManaged && stored === undefined) {
-            return this.#fail(session, frame, 'queue store unavailable', 1011);
-        }
-        return this.#receipt(session, frame);
-    }
-
-    /**
-     * Deliver a SEND to the sender's own principal scope (D10) — the
-     * shared path for live SENDs and transaction COMMITs. No scope bound
-     * to the suffix → nothing to deliver; an unresolvable principal fails
-     * closed (ERROR + close 1008). Receipts are the caller's: the live
-     * path answers its own frame, COMMIT answers the buffered op.
-     *
-     * @param session - The sending session (identity source).
-     * @param frame - The frame a failure is attributed to (the SEND frame
-     *   live, the COMMIT frame when applied from a transaction).
-     * @param destination - The `/user/...` destination.
-     * @param body - The message body.
-     * @param headers - The SEND pass-through headers (see `#sendHeaders`).
-     * @returns `true` when the session survives, `false` after a failure.
-     */
-    #sendToUserScope(
-        session: SocketSession,
-        frame: StompFrame,
-        destination: string,
-        body: StompBody,
-        headers: Record<string, string>
-    ): boolean {
-        const user = this.#resolveUser(session);
-        if (user === null) {
-            return this.#fail(session, frame, 'SEND to /user requires a resolved user', 1008);
-        }
-        const suffix = destination.slice('/user/'.length);
-        const scope = this.#registry.byUser(user, suffix);
-        if (scope !== undefined) {
-            const messageId = this.#nextMessageId();
-            // Snapshot: a delivery may synchronously close one of the
-            // sessions in the scope.
-            for (const subscription of Array.from(scope)) {
-                if (subscription.session.isClosed) {
-                    continue;
-                }
-                this.#deliver(subscription, messageId, destination, body, headers, false);
-            }
-        }
-        return true;
-    }
-
-    /**
-     * The user-defined headers carried from a SEND into MESSAGE frames and
-     * into the `onMessage` seam (COR-7) — STOMP 1.2 §2.1: "The user defined
-     * headers MUST be passed through in the MESSAGE frame". Only the
-     * framing headers stay behind: `destination` (supplied per
-     * subscriber), `transaction`/`receipt` (consumed by the broker) and
-     * `content-length` (recomputed by the serializer). Both SEND paths —
-     * live and transactional — use this one set, so a buffered SEND
-     * produces the identical MESSAGE headers as a direct one.
-     *
-     * @param frame - The SEND frame.
-     * @returns The pass-through headers.
-     */
-    #sendHeaders(frame: StompFrame): Record<string, string> {
-        const headers: Record<string, string> = {};
-        for (const [name, value] of Object.entries(frame.headers)) {
-            if (SEND_FRAMING_HEADERS[name] !== true) {
-                headers[name] = value;
-            }
-        }
-        return headers;
-    }
-
-    /**
-     * ACK/NACK (STOMP 1.2 §1.4, D9): ack modes `client`/`client-individual`
-     * track delivered messages; for `client` an ACK covers everything
-     * through the named message, for `client-individual` exactly the named
-     * one. NACK removes the same way **and redelivers only the named
-     * message** with `redelivered: true`.
-     *
-     * The `id` header is required and sufficient (COR-4): without a
-     * `subscription` header the per-session delivery index resolves the
-     * owning subscription. When the `subscription` header *is* present it
-     * must name one of the sender's own subscriptions, and an id the
-     * subscription no longer tracks (already acked or evicted past the
-     * bounds) is a tolerated no-op.
-     *
-     * An id-only ACK/NACK settles **every** subscription the id is
-     * outstanding under (REV-004): one logical message fans out to each
-     * subscription of the destination, so two subscriptions of one session
-     * can share the id — the second must not fail closed.
-     *
-     * A `client`/`client-individual` session whose bare `id` resolves to no
-     * delivery this session ever made fails closed: the broker cannot know
-     * which tracking set the frame settles, and silently discarding it
-     * would leave the delivery outstanding forever. The one exception is
-     * tracking disabled (`maxUnacked: 0`): no delivery is ever outstanding,
-     * so a bare id settles nothing and is a receipted no-op — a STOMP
-     * client ACKing the MESSAGE's `ack` header must not be closed out.
-     *
-     * Allowed inside transactions too (D7): buffered under the same
-     * op/byte caps as SEND, applied at COMMIT.
-     *
-     * @param session - The acking session.
-     * @param frame - The ACK/NACK frame.
-     * @returns `false` when the frame violates the contract.
-     */
-    #ack(session: SocketSession, frame: StompFrame): boolean {
-        const messageId = frame.headers['id'];
-        if (messageId === undefined) {
-            return this.#fail(session, frame, 'ACK/NACK requires an id header');
-        }
-        const subId = frame.headers['subscription'];
-        let owners: Subscription[];
-        if (subId === undefined) {
-            const tracked = this.#registry.ownersOf(session, messageId);
-            if (tracked === undefined) {
-                if (this.#maxUnacked <= 0) {
-                    // Tracking disabled: nothing is ever outstanding, so
-                    // the id settles nothing — accept and receipt it.
-                    return this.#receipt(session, frame);
-                }
-                return this.#fail(session, frame, `unknown message id: ${messageId}`);
-            }
-            // REV-004: settle every subscription the id is outstanding
-            // under. Snapshot first — a NACK redelivery re-tracks and
-            // mutates the owner list.
-            owners = [...tracked];
-        } else {
-            const subscription = this.#registry.get(session, subId);
-            if (subscription === undefined) {
-                return this.#fail(session, frame, `unknown subscription: ${subId}`);
-            }
-            owners = [subscription];
-        }
-        const nack = frame.command === 'NACK';
-        const txId = frame.headers['transaction'];
-        if (txId !== undefined) {
-            // COR-10: a buffered ack is as much buffered state as a SEND —
-            // it obeys the same op count and byte budget (its identifiers
-            // are retained too, so they count toward the bytes).
-            const receipt = frame.headers['receipt'] ?? null;
-            for (let index = 0; index < owners.length; index += 1) {
-                const target = owners[index] as Subscription;
-                // One RECEIPT for the whole ACK/NACK: only the last buffered
-                // op carries the receipt id (a per-op receipt would emit
-                // duplicates at COMMIT).
-                const opReceipt = index === owners.length - 1 ? receipt : null;
-                const octets =
-                    materialOctets(messageId) +
-                    materialOctets(target.subId) +
-                    (opReceipt === null ? 0 : materialOctets(opReceipt));
-                const result = this.#transactions.append(
-                    session,
-                    txId,
-                    { kind: 'ack', nack, messageId, subId: target.subId, receipt: opReceipt },
-                    octets
-                );
-                if (result === 'unknown') {
-                    return this.#fail(session, frame, `unknown transaction id: ${txId}`);
-                }
-                if (result === 'limit') {
-                    return this.#fail(session, frame, 'transaction buffer limit reached');
-                }
-            }
-            return true;
-        }
-        for (const owner of owners) {
-            this.#resolveAck(owner, messageId, nack);
-        }
-        return this.#receipt(session, frame);
-    }
-
-    /**
-     * Apply an ack/nack to one subscription's tracking (D9).
-     *
-     * `client` drops the delivered prefix through the named message;
-     * `client-individual` removes only the named entry and re-queues the
-     * earlier ones, so their obligations survive (STOMP 1.2 §1.4.1: an
-     * ACK/NACK for a subsequent message MUST NOT acknowledge a previous
-     * one). Locating the entry is a scan of the ring — inherent for an
-     * id-based lookup — and the removal is O(n) dequeues/puts rather than
-     * an array splice.
-     *
-     * @param subscription - The target subscription.
-     * @param messageId - The acknowledged message.
-     * @param nack - `true` for NACK (removal + redelivery).
-     */
-    #resolveAck(subscription: Subscription, messageId: string, nack: boolean): void {
-        const { unacked, ack } = subscription;
-        if (ack === 'auto' || unacked.length === 0) {
-            return;
-        }
-        let named: StoredMessage | undefined;
-        for (const entry of unacked) {
-            if (entry.messageId === messageId) {
-                named = entry;
-                break;
-            }
-        }
-        if (named === undefined) {
-            return; // already acked or evicted — tolerated no-op
-        }
-        // Delivery tags are issued monotonically, so the named entry's tag
-        // is the exact cumulative boundary for `client`.
-        const boundary = named.deliverySeq;
-        const removed = this.#registry.extractUnacked(subscription, (entry) =>
-            ack === 'client' ? entry.deliverySeq <= boundary : entry.messageId === messageId
-        );
-        if (!nack) {
-            return;
-        }
-        const target = removed.find((entry) => entry.messageId === messageId) ?? named;
-        // Redelivery: same message-id, `redelivered: true` (§1.4.2), and the
-        // message stays outstanding — `#deliver` re-tracks it through the
-        // same bounded path, so a repeated NACK never grows the tracking set.
-        this.#deliver(subscription, target.messageId, target.destination, target.body, target.headers, true);
-    }
-
-    /**
-     * Applies one buffered SEND at COMMIT: honors `onMessage` suppression,
-     * routes `/user/` through the same principal-scope seam as a live SEND,
-     * and requires a durable append for store-managed `/queue/` destinations.
-     *
-     * @param session - The owning session.
-     * @param frame - The COMMIT frame (failure attribution).
-     * @param op - The buffered SEND.
-     * @returns `true` when applied; `false` after a fail-closed reply.
-     */
-    async #applyBufferedSend(
-        session: SocketSession,
-        frame: StompFrame,
-        op: Extract<TransactionOp, { kind: 'send' }>
-    ): Promise<boolean> {
-        const suppress = this.#onMessage?.(op.destination, op.body, op.headers, session);
-        if (suppress === false) {
-            return true;
-        }
-        if (op.destination.startsWith('/user/')) {
-            // A transaction-buffered SEND must ride the same principal-scope
-            // routing and policy check as a live SEND — `publish` only serves
-            // /topic-style destinations.
-            return this.#sendToUserScope(session, frame, op.destination, op.body, op.headers);
-        }
-        const storeManaged = op.destination.startsWith('/queue/') && this.#queueStore !== null;
-        let stored: StoredQueueMessage | undefined;
-        try {
-            stored = await this.publish(op.destination, op.body, op.headers);
-        } catch {
-            return this.#fail(session, frame, 'topic fanout unavailable', 1011);
-        }
-        if (storeManaged && stored === undefined) {
-            // Same posture as the live SEND path (COR-8): the append did not
-            // persist, so the transaction cannot be reported committed.
-            return this.#fail(session, frame, 'queue store unavailable', 1011);
-        }
-        return true;
-    }
-
-    /**
-     * Applies one buffered ACK/NACK at COMMIT.
-     *
-     * @param session - The owning session.
-     * @param op - The buffered ACK/NACK.
-     */
-    #applyBufferedAck(session: SocketSession, op: Extract<TransactionOp, { kind: 'ack' }>): void {
-        const subscription = this.#registry.get(session, op.subId);
-        if (subscription !== undefined) {
-            this.#resolveAck(subscription, op.messageId, op.nack);
-        }
-    }
-
-    /**
-     * Deliver one MESSAGE to a subscription: per-subscription framing
-     * (including the `ack` header on non-`auto` subscriptions — COR-4),
-     * ack tracking (D9), redelivery flag. While a `/queue` replay is in
-     * flight the delivery is buffered instead of sent (COR-2).
-     *
-     * @param subscription - The target subscription.
-     * @param messageId - The message id (shared per logical message).
-     * @param destination - The destination header (e.g. `/topic/chat`).
-     * @param body - The body.
-     * @param headers - Pass-through headers (merged under the frame's own).
-     * @param redelivered - `true` for NACK redelivery (D9).
-     */
-    #deliver(
-        subscription: Subscription,
-        messageId: string,
-        destination: string,
-        body: StompBody,
-        headers: Record<string, string>,
-        redelivered: boolean
-    ): void {
-        if (subscription.replaying) {
-            if (!this.#limits.chargeReplay(subscription.session, materialOctets(body))) {
-                // The live buffer shares the replay budget (SEC-6): a peer
-                // that publishes at itself while its own replay runs cannot
-                // pin memory through the buffer.
-                this.#fail(subscription.session, null, 'replay budget exhausted', 1013);
-                return;
-            }
-            subscription.buffered.push({ messageId, destination, body, headers, redelivered });
-            return;
-        }
-        this.#deliverNow(subscription, messageId, destination, body, headers, redelivered);
-    }
-
-    /**
-     * Send one MESSAGE and track it for ACK/NACK (the direct delivery path).
-     *
-     * @param subscription - The target subscription.
-     * @param messageId - The message id.
-     * @param destination - The `destination` header.
-     * @param body - The body.
-     * @param headers - Pass-through headers.
-     * @param redelivered - `true` for NACK redelivery (D9).
-     */
-    #deliverNow(
-        subscription: Subscription,
-        messageId: string,
-        destination: string,
-        body: StompBody,
-        headers: Record<string, string>,
-        redelivered: boolean
-    ): void {
-        const { session, subId, ack } = subscription;
-        const frameHeaders: Record<string, string> = {
-            ...headers,
-            destination,
-            subscription: subId,
-            'message-id': messageId,
-        };
-        // The broker owns these MESSAGE headers: a SEND cannot spoof them
-        // (COR-7 passes user headers through, so they must be cleared when
-        // the broker does not set them).
-        if (redelivered) {
-            frameHeaders['redelivered'] = 'true';
-        } else {
-            delete frameHeaders['redelivered'];
-        }
-        if (ack !== 'auto') {
-            // STOMP 1.2 §1.4: the `ack` header relates the MESSAGE to the
-            // later ACK/NACK — it carries the id those frames must name.
-            frameHeaders['ack'] = messageId;
-        } else {
-            delete frameHeaders['ack'];
-        }
-        try {
-            session.send(serializeStompFrame({ command: 'MESSAGE', headers: frameHeaders, body }));
-        } catch {
-            // A subscriber mid-close (the transport races to CLOSING while
-            // this fan-out runs) must not abort the broadcast — the
-            // registry's #safeSend tolerates the same raced close. The
-            // failed delivery is not ack-tracked: no delivery, no NACK
-            // obligation.
-            return;
-        }
-        this.#registry.track(subscription, messageId, destination, body, headers);
-    }
-
-    /**
-     * DISCONNECT: reply RECEIPT when asked, then close the connection.
-     *
-     * @param session - The session.
-     * @param frame - The DISCONNECT frame.
-     * @returns Always `false` — the connection ends.
-     */
-    #disconnect(session: SocketSession, frame: StompFrame): boolean {
-        if (frame.headers['receipt'] !== undefined) {
-            this.#receipt(session, frame);
-        }
-        if (!session.isClosed) {
-            session.close(1000, 'disconnect');
-        }
-        return false;
-    }
-
-    /**
-     * Guarded control-path send (REV-011). The transport can race to
-     * CLOSING between the broker's status check and the write, so
-     * `session.send` may throw a mid-close `InvalidStateError`. A control
-     * reply (CONNECTED/RECEIPT/ERROR) that cannot be written must not
-     * reject `handleSocket` (which its owner may invoke without awaiting):
-     * the session is already closing and its close path is authoritative.
-     *
-     * @param session - The session to write to.
-     * @param frame - The control frame.
-     */
-    #controlSend(session: SocketSession, frame: StompFrame): void {
-        if (session.isClosed) {
-            return;
-        }
-        try {
-            session.send(serializeStompFrame(frame));
-        } catch {
-            // Raced close (or an unserializable frame): the session's
-            // close path owns the outcome — never reject the read loop.
-        }
-    }
-
-    /**
-     * Emit a RECEIPT frame when the processed frame asked for one
-     * (`receipt:` header, STOMP 1.2 §1.6).
-     *
-     * @param session - The session to reply to.
-     * @param frame - The requesting frame.
-     * @returns Always `true` — the connection stays open.
-     */
-    #receipt(session: SocketSession, frame: StompFrame): boolean {
-        if (frame.headers['receipt'] !== undefined) {
-            this.#controlSend(session, {
-                command: 'RECEIPT',
-                headers: { 'receipt-id': frame.headers['receipt'] as string },
-                body: '',
-            });
-        }
-        return true;
-    }
-
-    /**
-     * Fail closed: send an ERROR frame (with `receipt-id` when the frame
-     * asked for one), then close — STOMP 1.2 §1.5 requires the close just
-     * after the ERROR. Codes: `1002` protocol (default; includes an
-     * over-long identifier), `1008` policy (missing user identity on a
-     * `/user` bind/SEND, `authorize` or `verifyCredentials` denial),
-     * `1011` `/queue` store fault, `1013` replay-budget exhaustion. The
-     * caller's frame has already been rejected — no further frames are
-     * processed.
-     *
-     * @param session - The session.
-     * @param frame - The offending frame, or `null` when unparseable (or
-     *   when the failure is not attributable to one frame).
-     * @param message - Human-readable error detail.
-     * @param code - Close status code (default `1002`).
-     * @returns Always `false` — the connection ends.
-     */
-    #fail(session: SocketSession, frame: StompFrame | null, message: string, code: number = 1002): boolean {
-        const headers: Record<string, string> = { message };
-        if (frame !== null && frame.headers['receipt'] !== undefined) {
-            headers['receipt-id'] = frame.headers['receipt'] as string;
-        }
-        if (!session.isClosed) {
-            this.#controlSend(session, { command: 'ERROR', headers, body: '' });
-            session.close(code, 'protocol error');
-        }
-        return false;
-    }
-
-    /**
-     * Remove every subscription, transaction buffer, delivery-tracking
-     * state and the session itself on stream end.
-     *
-     * @param session - The ended session.
-     */
-    #dropSession(session: SocketSession): void {
-        this.#registry.dropSession(session);
-        this.#transactions.closeSession(session);
-        this.#sessions.delete(session);
     }
 }

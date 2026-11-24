@@ -123,9 +123,9 @@ A browser view can expose a handler as a WebMCP tool with the same
 `@parameters` + `validatedBy` metadata the HTTP route uses:
 
 ```ts
-import { AbstractWebComponent, AsWebMcpElement, webMcpToolForHandler } from '@ndigo/view-webcomponent';
+import { AbstractWebComponent, AsWebMCPElement, webMcpToolForHandler } from '@ndigo/view-webcomponent';
 
-class CatalogueView extends AsWebMcpElement(AbstractWebComponent) {
+class CatalogueView extends AsWebMCPElement(AbstractWebComponent) {
     @parameters({ query: validatedBy(z.string().min(2), queryValue('query')) })
     search(query: string) {
         return catalogue.search(query);
@@ -145,7 +145,7 @@ class CatalogueView extends AsWebMcpElement(AbstractWebComponent) {
 }
 ```
 
-`AsWebMcpElement` registers the tools on connect and aborts the registration on
+`AsWebMCPElement` registers the tools on connect and aborts the registration on
 disconnect (a reconnect registers again). `provideWebMcpTools` /
 `declareWebMcpTool` are available for non-element code; both feature-detect
 `document.modelContext` and return a no-op registration (`supported: false`) in

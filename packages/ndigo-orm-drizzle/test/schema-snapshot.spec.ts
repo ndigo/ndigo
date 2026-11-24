@@ -12,7 +12,7 @@ import {
     readSnapshot,
     SNAPSHOT_PREDICATE,
 } from '../src/schema-snapshot';
-import type { SchemaSnapshot, ColumnProjection, SqliteStorageType } from '../src/schema-snapshot';
+import type { SchemaSnapshot, ColumnProjection, SQLiteStorageType } from '../src/schema-snapshot';
 
 // Spec-side type wrapper; runtime-identical to the production `entity` decorator.
 const entity = entityDecorator as unknown as (tableName?: string) => ClassDecorator;
@@ -42,7 +42,7 @@ function table(name: string, columns: ColumnProjection[]): SchemaSnapshot {
     return { predicate: SNAPSHOT_PREDICATE, tables: [{ name, columns }] };
 }
 
-function col(name: string, type: SqliteStorageType = 'TEXT', extra: Partial<ColumnProjection> = {}): ColumnProjection {
+function col(name: string, type: SQLiteStorageType = 'TEXT', extra: Partial<ColumnProjection> = {}): ColumnProjection {
     return { name, type, primaryKey: false, generated: false, nullable: false, ...extra };
 }
 

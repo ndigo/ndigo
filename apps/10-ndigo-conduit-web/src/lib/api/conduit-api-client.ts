@@ -1,9 +1,9 @@
 /**
- * `@ndigo/http`-backed implementation of the {@link ConduitApi} port.
+ * `@ndigo/http`-backed implementation of the {@link ConduitAPI} port.
  *
  * Every endpoint collapses to one `#send` path: dispatch through the
  * interceptor chain, decode the body, translate a non-2xx status into a
- * {@link ConduitApiError} carrying the RealWorld `{"errors":{…}}` envelope.
+ * {@link ConduitAPIError} carrying the RealWorld `{"errors":{…}}` envelope.
  * Services therefore never look at a status code — they catch one typed error
  * whose `errors` member already maps onto the form fields that caused it.
  *
@@ -18,9 +18,9 @@
 import type { HTTP } from '@ndigo/http';
 import { buildQuery } from './conduit-http';
 import {
-    ConduitApiError,
+    ConduitAPIError,
     type ConduitAccountPatch,
-    type ConduitApi,
+    type ConduitAPI,
     type ConduitArticle,
     type ConduitArticleDraft,
     type ConduitArticlePage,
@@ -61,7 +61,7 @@ async function readJson(response: Response): Promise<unknown> {
 /**
  * The HTTP-backed Conduit API client.
  */
-export class ConduitApiClient implements ConduitApi {
+export class ConduitAPIClient implements ConduitAPI {
     readonly #http: HTTP;
 
     /**
@@ -80,7 +80,7 @@ export class ConduitApiClient implements ConduitApi {
      * @param path - API-relative path, e.g. `/articles` (the prefix is added).
      * @param body - Optional JSON body.
      * @returns The decoded payload (`null` for `204`).
-     * @throws {ConduitApiError} When the response is not 2xx.
+     * @throws {ConduitAPIError} When the response is not 2xx.
      */
     async #send(verb: Verb, path: string, body?: unknown): Promise<unknown> {
         const response = await this.#http.request(`${API_PREFIX}${path}`, {
@@ -89,16 +89,16 @@ export class ConduitApiClient implements ConduitApi {
         });
 
         if (response.status === SYNTHETIC_TRANSPORT_STATUS && !response.ok) {
-            throw new ConduitApiError(0, { body: ['The API could not be reached.'] }, 'Conduit API unreachable');
+            throw new ConduitAPIError(0, { body: ['The API could not be reached.'] }, 'Conduit API unreachable');
         }
 
         const payload = response.status === 204 ? null : await readJson(response);
 
         if (!response.ok) {
-            throw new ConduitApiError(response.status, ConduitApiError.envelopeOf(response.status, payload));
+            throw new ConduitAPIError(response.status, ConduitAPIError.envelopeOf(response.status, payload));
         }
         if (response.status !== 204 && payload === null) {
-            throw new ConduitApiError(response.status, { body: ['The API returned an unreadable body.'] });
+            throw new ConduitAPIError(response.status, { body: ['The API returned an unreadable body.'] });
         }
         return payload;
     }
@@ -120,7 +120,7 @@ export class ConduitApiClient implements ConduitApi {
         const wrapped = payload as Record<string, T> | null;
         const value = wrapped?.[member];
         if (value === undefined) {
-            throw new ConduitApiError(200, { body: [`The API response carried no "${member}" member.`] });
+            throw new ConduitAPIError(200, { body: [`The API response carried no "${member}" member.`] });
         }
         return value;
     }

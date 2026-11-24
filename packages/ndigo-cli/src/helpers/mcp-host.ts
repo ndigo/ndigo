@@ -32,16 +32,16 @@ export type ToolSchema = ZodRawShapeCompat;
  */
 export type ToolArguments<Shape extends ToolSchema> = ShapeOutput<Shape>;
 
-/** Options for {@link createMcpHost}. */
+/** Options for {@link createMCPHost}. */
 /**
- * McpHostOptions.
+ * MCPHostOptions.
  *
  * @example
  * ```ts
- * const value = {} as McpHostOptions;
+ * const value = {} as MCPHostOptions;
  * ```
  */
-export interface McpHostOptions {
+export interface MCPHostOptions {
     /** Server name reported to clients. */
     readonly name: string;
     /** Server version reported to clients. */
@@ -52,16 +52,16 @@ export interface McpHostOptions {
     readonly readOnly?: boolean;
 }
 
-/** One tool registered on an {@link McpHost}. */
+/** One tool registered on an {@link MCPHost}. */
 /**
- * McpToolDefinition.
+ * MCPToolDefinition.
  *
  * @example
  * ```ts
- * const value = {} as McpToolDefinition;
+ * const value = {} as MCPToolDefinition;
  * ```
  */
-export interface McpToolDefinition<Shape extends ToolSchema = ToolSchema> {
+export interface MCPToolDefinition<Shape extends ToolSchema = ToolSchema> {
     /** Stable tool name (snake_case). */
     readonly name: string;
     /** Human-readable title. */
@@ -80,22 +80,22 @@ export interface McpToolDefinition<Shape extends ToolSchema = ToolSchema> {
 
 /** A configured MCP server plus registration and stdio helpers. */
 /**
- * McpHost.
+ * MCPHost.
  *
  * @example
  * ```ts
- * const value = {} as McpHost;
+ * const value = {} as MCPHost;
  * ```
  */
-export interface McpHost {
+export interface MCPHost {
     /** The underlying server, for tests and advanced wiring. */
     readonly server: McpServer;
     /**
-     * Registers a tool, skipping it under {@link McpHostOptions.readOnly}.
+     * Registers a tool, skipping it under {@link MCPHostOptions.readOnly}.
      *
      * @param tool - The tool definition to register.
      */
-    registerTool<Shape extends ToolSchema>(tool: McpToolDefinition<Shape>): void;
+    registerTool<Shape extends ToolSchema>(tool: MCPToolDefinition<Shape>): void;
     /**
      * Connects a stdio transport and writes the listening line to stderr.
      *
@@ -112,18 +112,18 @@ export interface McpHost {
  *
  * @example
  * ```ts
- * const host = createMcpHost({ name: 'my-app', version: '1.0.0' });
+ * const host = createMCPHost({ name: 'my-app', version: '1.0.0' });
  * host.registerTool({ name: 'greet', title: 'Greet', description: 'Say hi', inputSchema: {}, run: () => 'hi' });
  * await host.startStdio('my-app');
  * ```
  */
-export function createMcpHost(options: McpHostOptions): McpHost {
+export function createMCPHost(options: MCPHostOptions): MCPHost {
     const server = new McpServer(
         { name: options.name, version: options.version },
         options.instructions === undefined ? undefined : { instructions: options.instructions }
     );
 
-    function registerTool<Shape extends ToolSchema>(tool: McpToolDefinition<Shape>): void {
+    function registerTool<Shape extends ToolSchema>(tool: MCPToolDefinition<Shape>): void {
         if (options.readOnly === true && tool.mutating === true) return;
         // `ToolCallback<Shape>` cannot resolve its conditional argument type
         // while `Shape` is generic (TS erases it to the constraint), so the

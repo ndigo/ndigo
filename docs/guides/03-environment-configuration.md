@@ -236,10 +236,10 @@ import { configurationProperties } from '@ndigo/boot';
 class ServerConfig {
     @property('port', Number) @defaultValue('8080') port!: number;
     @property('host', String) @defaultValue('localhost') host!: string;
-    @nestedConfig db: DbConfig = new DbConfig();
+    @nestedConfig db: DBConfig = new DBConfig();
 }
 
-class DbConfig {
+class DBConfig {
     @property('url', String) @defaultValue('postgres://localhost') url!: string;
 }
 

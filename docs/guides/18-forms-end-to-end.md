@@ -95,7 +95,7 @@ try {
     await api.updateArticle(slug, input);
     router.navigate(`/article/${slug}`);
 } catch (error) {
-    if (error instanceof ConduitApiError) {
+    if (error instanceof ConduitAPIError) {
         renderFieldErrors(error.errors); // field → messages
         return;
     }

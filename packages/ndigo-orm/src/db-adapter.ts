@@ -79,7 +79,7 @@ const SUPPORTED_ACTIONS = [
     'rollback',
 ] as const;
 
-type DbAction = (typeof SUPPORTED_ACTIONS)[number];
+type DBAction = (typeof SUPPORTED_ACTIONS)[number];
 
 /**
  * Parses `--db <name>` out of an argv, returning the name (if any) and the
@@ -138,7 +138,7 @@ export async function runDbCommand(
     argv: string[]
 ): Promise<number> {
     const { db: requested, rest } = extractDbFlag(argv);
-    const action = rest[0] as DbAction | undefined;
+    const action = rest[0] as DBAction | undefined;
     const actionArgs = rest.slice(1);
 
     const names = Object.keys(registry);

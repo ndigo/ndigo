@@ -13,7 +13,7 @@ export type {
     TableProjection,
     ColumnProjection,
     ProjectionDelta,
-    SqliteStorageType,
+    SQLiteStorageType,
 } from './schema-snapshot';
 export { LibSQLQueueMessageStore } from './libsql-queue-message-store';
 export type { LibSQLQueueMessageStoreOptions } from './libsql-queue-message-store';

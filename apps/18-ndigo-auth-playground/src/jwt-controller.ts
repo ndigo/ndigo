@@ -30,7 +30,7 @@ import type { AuthStack } from './auth-stack';
 const JWT_PROBLEM_TYPE = 'urn:ndigo-auth-playground:jwt';
 
 /** Distinguishable JWT failure codes. */
-export type JwtFailureCode =
+export type JWTFailureCode =
     | 'invalid_credentials'
     | 'token_missing'
     | 'token_expired'
@@ -38,15 +38,15 @@ export type JwtFailureCode =
     | 'refresh_rejected';
 
 /** A JWT problem document, carrying its machine-readable `code`. */
-export interface JwtProblem extends ProblemDetails {
-    readonly code: JwtFailureCode;
+export interface JWTProblem extends ProblemDetails {
+    readonly code: JWTFailureCode;
 }
 
 /**
  * The mode's whole failure vocabulary, in one static table: same `type`, a
  * distinct `code` and a `detail` that says what to do next.
  */
-export const JWT_FAILURES: Record<JwtFailureCode, JwtProblem> = {
+export const JWT_FAILURES: Record<JWTFailureCode, JWTProblem> = {
     invalid_credentials: {
         type: JWT_PROBLEM_TYPE,
         title: 'Unauthorized',
@@ -139,7 +139,7 @@ async function expiredAccessToken(token: string, config: PlaygroundConfig): Prom
  * JWT mode: issue a token pair, read it back, rotate it.
  */
 @requestMapping('/jwt')
-export class JwtController {
+export class JWTController {
     readonly #stack: AuthStack;
     readonly #config: PlaygroundConfig;
 

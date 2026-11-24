@@ -7,7 +7,7 @@ import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
 import { Constructable } from '@ndigo/core';
 import { getEntityMetadata } from '@ndigo/orm';
-import { type SqliteStorageType, sqliteTypeForColumnType } from './_column-types';
+import { type SQLiteStorageType, sqliteTypeForColumnType } from './_column-types';
 
 /**
  * Builds the sqlite-core column builder for a resolved storage type. The
@@ -15,7 +15,7 @@ import { type SqliteStorageType, sqliteTypeForColumnType } from './_column-types
  * `SQLiteColumnBuilder` base cannot type the variable; the inferred union
  * keeps every builder's own API available.
  */
-function builderForSqliteType(name: string, sqlType: SqliteStorageType) {
+function builderForSqliteType(name: string, sqlType: SQLiteStorageType) {
     switch (sqlType) {
         case 'INTEGER':
             return integer(name);

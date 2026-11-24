@@ -22,8 +22,8 @@ import type { SocketRequestAuthenticator } from '@ndigo/platform-node';
 import { EJSViewResolver } from '@ndigo/view-ejs';
 import { AUTH_SCHEME_ORDER, type AuthStack } from './auth-stack';
 import type { PlaygroundConfig } from './config';
-import { JwtController } from './jwt-controller';
-import { OidcController } from './oidc-controller';
+import { JWTController } from './jwt-controller';
+import { OIDCController } from './oidc-controller';
 import { PageController } from './page-controller';
 import { RolesController } from './roles-controller';
 import { RolesSocketController } from './roles-socket-controller';
@@ -95,7 +95,7 @@ export class PlaygroundConfiguration {
      */
     @entry()
     jwtController() {
-        return new JwtController(this.#stack, this.#config);
+        return new JWTController(this.#stack, this.#config);
     }
 
     /**
@@ -125,7 +125,7 @@ export class PlaygroundConfiguration {
      */
     @entry()
     oidcController() {
-        return new OidcController(this.#stack, this.#config);
+        return new OIDCController(this.#stack, this.#config);
     }
 
     /**

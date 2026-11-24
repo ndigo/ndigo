@@ -38,10 +38,10 @@ import type {
  *
  * @example
  * ```ts
- * const options: AISdkModelOptions = { provider: 'openai', model: 'gpt-4' };
+ * const options: AISDKModelOptions = { provider: 'openai', model: 'gpt-4' };
  * ```
  */
-export interface AISdkModelOptions {
+export interface AISDKModelOptions {
     /** Provider name used in telemetry and rate-limit keys. */
     readonly provider?: string;
     /** Model id used in telemetry and rate-limit keys. */
@@ -58,23 +58,23 @@ export interface AISdkModelOptions {
  *
  * @example
  * ```ts
- * const model = new AISdkModel(aiModel, { provider: 'openai', model: 'gpt-4' });
+ * const model = new AISDKModel(aiModel, { provider: 'openai', model: 'gpt-4' });
  * ```
  */
-export class AISdkModel implements AIModel {
+export class AISDKModel implements AIModel {
     /**
      * The `Symbol.toStringTag` value for this instance.
      *
      * `Object.prototype.toString()` reads this symbol to render the
      * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
      *
-     * @returns The string "AISdkModel".
+     * @returns The string "AISDKModel".
      *
      * @example
-     * console.log(Object.prototype.toString.call(instance)); // "[object AISdkModel]"
+     * console.log(Object.prototype.toString.call(instance)); // "[object AISDKModel]"
      */
     get [Symbol.toStringTag](): string {
-        return 'AISdkModel';
+        return 'AISDKModel';
     }
 
     /** Model identity used in telemetry and rate-limit keys. */
@@ -85,7 +85,7 @@ export class AISdkModel implements AIModel {
      * @param model - The AI SDK language model (provider package output).
      * @param options - Optional identity overrides.
      */
-    constructor(model: LanguageModel, options: AISdkModelOptions = {}) {
+    constructor(model: LanguageModel, options: AISDKModelOptions = {}) {
         this.#model = model;
         const candidate = model as { readonly provider?: string; readonly modelId?: string };
         this.info = {
@@ -189,7 +189,7 @@ export class AISdkModel implements AIModel {
 }
 
 /**
- * Creates an {@link AISdkModel} without `new`.
+ * Creates an {@link AISDKModel} without `new`.
  *
  * @param model - The AI SDK language model.
  * @param options - Optional identity overrides.
@@ -200,8 +200,8 @@ export class AISdkModel implements AIModel {
  * const model = aiSdkModel(aiModel, { provider: 'openai', model: 'gpt-4' });
  * ```
  */
-export function aiSdkModel(model: LanguageModel, options: AISdkModelOptions = {}): AISdkModel {
-    return new AISdkModel(model, options);
+export function aiSdkModel(model: LanguageModel, options: AISDKModelOptions = {}): AISDKModel {
+    return new AISDKModel(model, options);
 }
 
 /**

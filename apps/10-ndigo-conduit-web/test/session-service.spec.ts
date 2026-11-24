@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { ConduitApiError, type ConduitApi, type ConduitSession } from '../src/lib/api/conduit-types';
+import { ConduitAPIError, type ConduitAPI, type ConduitSession } from '../src/lib/api/conduit-types';
 import { ConduitTokenStorage, CONDUIT_TOKEN_KEY, SessionService } from '../src/services/session-service';
 import { contextWithRouter, createRouterDouble, createStubApi, sessionFixture } from './support/fixtures';
 
@@ -14,7 +14,7 @@ describe('SessionService', () => {
         router.navigate.mockClear();
     });
 
-    function serviceWith(api: ConduitApi, initial: ConduitSession | null = null) {
+    function serviceWith(api: ConduitAPI, initial: ConduitSession | null = null) {
         const service = new SessionService(api, storage, initial);
         service.setApplicationContext(contextWithRouter(router));
         return service;
@@ -36,7 +36,7 @@ describe('SessionService', () => {
 
     test('a rejected login records the envelope for the login form only', async () => {
         const api = createStubApi({
-            login: () => Promise.reject(new ConduitApiError(401, { credentials: ['invalid'] })),
+            login: () => Promise.reject(new ConduitAPIError(401, { credentials: ['invalid'] })),
         });
         const service = serviceWith(api);
 
@@ -52,7 +52,7 @@ describe('SessionService', () => {
 
     test('a duplicate registration maps onto the offending field', async () => {
         const api = createStubApi({
-            register: () => Promise.reject(new ConduitApiError(422, { username: ['has already been taken'] })),
+            register: () => Promise.reject(new ConduitAPIError(422, { username: ['has already been taken'] })),
         });
         const service = serviceWith(api);
 
@@ -64,7 +64,7 @@ describe('SessionService', () => {
 
     test('a successful write clears the recorded envelope', async () => {
         const api = createStubApi({
-            login: () => Promise.reject(new ConduitApiError(401, { credentials: ['invalid'] })),
+            login: () => Promise.reject(new ConduitAPIError(401, { credentials: ['invalid'] })),
             register: async () => sessionFixture(),
         });
         const service = serviceWith(api);
@@ -126,7 +126,7 @@ describe('SessionService', () => {
     test('restore forgets a token the API rejects', async () => {
         storage.write('stale-jwt');
         const service = serviceWith(
-            createStubApi({ currentUser: () => Promise.reject(new ConduitApiError(401, { token: ['is invalid'] })) })
+            createStubApi({ currentUser: () => Promise.reject(new ConduitAPIError(401, { token: ['is invalid'] })) })
         );
 
         await service.restore();

@@ -12,7 +12,7 @@ import { AsApplicationContextAware, type ApplicationContext } from '@ndigo/conte
 import { Null } from '@ndigo/core';
 import { ROUTER } from '@ndigo/router';
 import { signal, type Signal } from '@ndigo/signals';
-import type { ConduitApi, ConduitArticleSummary, ConduitProfile } from '../lib/api/conduit-types';
+import type { ConduitAPI, ConduitArticleSummary, ConduitProfile } from '../lib/api/conduit-types';
 import { FEED_PAGE_SIZE } from './article-service';
 
 /** Which of a profile's article tabs is showing. */
@@ -46,7 +46,7 @@ export class ProfileService extends AsApplicationContextAware(Null) {
     /** Injected by the container (`ApplicationContextAware`). */
     declare readonly applicationContext: ApplicationContext;
 
-    readonly #api: ConduitApi;
+    readonly #api: ConduitAPI;
     readonly #state: Signal<ConduitProfileState>;
 
     /** The query key the state currently holds, or `null` when nothing is loaded. */
@@ -60,7 +60,7 @@ export class ProfileService extends AsApplicationContextAware(Null) {
      *
      * @param api - The Conduit API port.
      */
-    constructor(api: ConduitApi) {
+    constructor(api: ConduitAPI) {
         super();
         this.#api = api;
         this.#state = signal(EMPTY_STATE);

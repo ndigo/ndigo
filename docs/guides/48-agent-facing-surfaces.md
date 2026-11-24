@@ -70,7 +70,7 @@ export class OrderTools {
 Build one registry from the dispatcher, then attach a transport:
 
 ```ts
-const registry = McpToolRegistry.from(context.getValue(DISPATCHER), {
+const registry = MCPToolRegistry.from(context.getValue(DISPATCHER), {
     readOnly: true,
     argumentResolvers: context.getValue(ARGUMENT_RESOLVERS),
 });
@@ -83,8 +83,8 @@ transport sees the request:
 
 ```ts
 @requestMapping('/')
-export class McpHTTPController {
-    readonly #endpoint = new McpHTTPEndpoint(registry, { uiResources: [ordersUi] });
+export class MCPHTTPController {
+    readonly #endpoint = new MCPHTTPEndpoint(registry, { uiResources: [ordersUi] });
 
     @requestMapping('/mcp')
     @parameters({ route: routeValue() })
@@ -187,7 +187,7 @@ export const ordersUi = createUiResource({
   permissions, border, domain).
 - Declare every external origin in `csp`; never use `*`.
 - Pass the resource to both transports: `startStdioServer(registry, {
-   uiResources })` and `new McpHTTPEndpoint(registry, { uiResources })`.
+   uiResources })` and `new MCPHTTPEndpoint(registry, { uiResources })`.
 
 ## 6. A2UI
 
@@ -251,7 +251,7 @@ The client renders the messages with `<nd-a2ui-surface>` from the `@ndigo/ui`
 registry:
 
 ```ts
-const surface = document.querySelector<NdA2uiSurface>('#a2ui-demo');
+const surface = document.querySelector<NdA2UISurface>('#a2ui-demo');
 surface.messages = orderSurfaceMessages();
 ```
 
@@ -267,13 +267,13 @@ A browser view exposes a handler as a WebMCP tool with the same metadata an
 HTTP route binds:
 
 ```ts
-export class WebMcpDemo extends AsWebMcpElement(NdElement) {
+export class WebMCPDemo extends AsWebMCPElement(NdElement) {
     @parameters({ query: validatedBy(z.string().min(2), queryValue('query', { required: true })) })
     search(query: string): readonly CatalogueItem[] {
         return CATALOGUE.filter((item) => item.name.toLowerCase().includes(query.toLowerCase()));
     }
 
-    override webMcpTools(): readonly WebMcpTool[] {
+    override webMcpTools(): readonly WebMCPTool[] {
         return [
             webMcpToolForHandler({
                 handler: this,
@@ -287,7 +287,7 @@ export class WebMcpDemo extends AsWebMcpElement(NdElement) {
 }
 ```
 
-- `AsWebMcpElement` registers the tools on connect and aborts the registration
+- `AsWebMCPElement` registers the tools on connect and aborts the registration
   on disconnect; a reconnect registers again.
 - The input schema comes from the same `@parameters` + `validatedBy` metadata.
 - Browsers without `document.modelContext` get a no-op registration

@@ -9,7 +9,7 @@ import { ContextToken } from '@ndigo/context';
 import { DISPATCHER, HANDLER_MAPPING, VIEW_TARGET } from '@ndigo/dispatcher';
 import { ROUTER } from '@ndigo/router';
 import type { ConduitServices } from './conduit-services';
-import type { ConduitApi } from '../lib/api/conduit-types';
+import type { ConduitAPI } from '../lib/api/conduit-types';
 import type { ArticleService } from '../services/article-service';
 import type { CommentService } from '../services/comment-service';
 import type { ProfileService } from '../services/profile-service';
@@ -21,8 +21,8 @@ export { DISPATCHER, HANDLER_MAPPING, ROUTER, VIEW_TARGET };
 /** The assembled service graph. */
 export const CONDUIT_SERVICES = new ContextToken<ConduitServices>('conduitServices');
 
-/** The `ConduitApi` port (the HTTP-backed client in the running app). */
-export const CONDUIT_API = new ContextToken<ConduitApi>('conduitApi');
+/** The `ConduitAPI` port (the HTTP-backed client in the running app). */
+export const CONDUIT_API = new ContextToken<ConduitAPI>('conduitApi');
 
 /** The authenticated-session service. */
 export const SESSION_SERVICE = new ContextToken<SessionService>('sessionService');

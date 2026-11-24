@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { ArticleService, FEED_PAGE_SIZE } from '../src/services/article-service';
 import { ConduitTokenStorage, SessionService } from '../src/services/session-service';
-import { ConduitApiError } from '../src/lib/api/conduit-types';
+import { ConduitAPIError } from '../src/lib/api/conduit-types';
 import {
     articleFixture,
     contextWithRouter,
@@ -96,7 +96,7 @@ describe('ArticleService', () => {
 
     test('a failing feed records the message instead of throwing', async () => {
         const articles = serviceWith(
-            createStubApi({ listArticles: () => Promise.reject(new ConduitApiError(500, { body: ['boom'] })) })
+            createStubApi({ listArticles: () => Promise.reject(new ConduitAPIError(500, { body: ['boom'] })) })
         );
 
         await expect(articles.ensureFeed()).resolves.toBeUndefined();
@@ -109,7 +109,7 @@ describe('ArticleService', () => {
         const articles = serviceWith(
             createStubApi({
                 listArticles: async () => pageFixture([article]),
-                favoriteArticle: () => Promise.reject(new ConduitApiError(500, { body: ['boom'] })),
+                favoriteArticle: () => Promise.reject(new ConduitAPIError(500, { body: ['boom'] })),
             })
         );
         await articles.ensureFeed();
@@ -149,7 +149,7 @@ describe('ArticleService', () => {
         const articles = serviceWith(
             createStubApi({
                 listArticles: async () => pageFixture([article]),
-                unfavoriteArticle: () => Promise.reject(new ConduitApiError(500, { body: ['boom'] })),
+                unfavoriteArticle: () => Promise.reject(new ConduitAPIError(500, { body: ['boom'] })),
             })
         );
         await articles.ensureFeed();
@@ -195,7 +195,7 @@ describe('ArticleService', () => {
 
     test('ensureArticle caches by slug and flags a 404 as notFound', async () => {
         const getArticle = vi.fn(async (slug: string) =>
-            slug === 'missing' ? Promise.reject(new ConduitApiError(404, { article: ['not found'] })) : articleFixture()
+            slug === 'missing' ? Promise.reject(new ConduitAPIError(404, { article: ['not found'] })) : articleFixture()
         );
         const articles = serviceWith(createStubApi({ getArticle }));
 
@@ -225,7 +225,7 @@ describe('ArticleService', () => {
     test('a rejected save records the editor envelope and stays put', async () => {
         const articles = serviceWith(
             createStubApi({
-                createArticle: () => Promise.reject(new ConduitApiError(422, { title: ["can't be blank"] })),
+                createArticle: () => Promise.reject(new ConduitAPIError(422, { title: ["can't be blank"] })),
             })
         );
 

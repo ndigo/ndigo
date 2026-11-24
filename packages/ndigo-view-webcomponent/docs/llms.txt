@@ -40,15 +40,15 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `AttributeViewTargeterOptions` *(type)* — Options for AttributeViewTargeter.
 - `AttributeViewTargeter` — Targets the element named by a route attribute.
 - `hydrateIslands` — Hydrates all islands in a root element: finds every `[data-ndigo-island]` marker, connects it to its serialized `data-ndigo-model`, and drives the element's fi…
-- `WebMcpToolAnnotations` *(type)* — Safety hints understood by WebMCP hosts — the neutral AgentToolAnnotations vocabulary.
-- `WebMcpTool` *(type)* — WebMcpTool.
-- `WebMcpRegistration` *(type)* — Registration outcome — the neutral AgentToolRegistration handle. `supported` is false when the browser lacks WebMCP.
-- `WebMcpOptions` *(type)* — WebMcpOptions.
+- `WebMCPToolAnnotations` *(type)* — Safety hints understood by WebMCP hosts — the neutral AgentToolAnnotations vocabulary.
+- `WebMCPTool` *(type)* — WebMCPTool.
+- `WebMCPRegistration` *(type)* — Registration outcome — the neutral AgentToolRegistration handle. `supported` is false when the browser lacks WebMCP.
+- `WebMCPOptions` *(type)* — WebMCPOptions.
 - `declareWebMcpTool` — Registers one WebMCP tool. Unsupported browsers return a no-op registration.
 - `provideWebMcpTools` — Registers a set of WebMCP tools under one AbortController.
 - `webMcpAgentHost` — The WebMCP adapter over the neutral AgentToolHost contract — the first host adapter. Code that registers tools through this binding is host-agnostic: the plann…
-- `WebMcpHandlerToolOptions` *(type)* — WebMcpHandlerToolOptions.
+- `WebMCPHandlerToolOptions` *(type)* — WebMCPHandlerToolOptions.
 - `webMcpToolForHandler` — Projects a handler method and its `@parameters`/`validatedBy` metadata into a WebMCP tool. Arguments are validated with the same extractor converters the HTTP…
-- `WebMcpElementBase` *(type)* — The element base contract the WebMCP mixin requires: a host element with the optional custom-element lifecycle callbacks the mixin chains into.
-- `AsWebMcpElement` — Mixin that registers an element's WebMCP tools on connect and aborts them on disconnect. Subclasses implement WebMcpElement.webMcpTools; they can read dependen…
-- `WebMcpElement` *(type)* — WebMcpElement.
+- `WebMCPElementBase` *(type)* — The element base contract the WebMCP mixin requires: a host element with the optional custom-element lifecycle callbacks the mixin chains into.
+- `AsWebMCPElement` — Mixin that registers an element's WebMCP tools on connect and aborts them on disconnect. Subclasses implement WebMCPElement.webMcpTools; they can read dependen…
+- `WebMCPElement` *(type)* — WebMCPElement.

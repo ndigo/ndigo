@@ -16,7 +16,7 @@ describe('mcp-setup generator', () => {
         expect(tree.exists('apps/demo/src/mcp.ts')).toBe(true);
         expect(tree.exists('apps/demo/src/mcp-sample-controller.ts')).toBe(true);
         const wiring = tree.read('apps/demo/src/mcp.ts', 'utf-8') ?? '';
-        expect(wiring).toContain('McpToolRegistry.from');
+        expect(wiring).toContain('MCPToolRegistry.from');
         expect(wiring).toContain('startStdioServer');
         const sample = tree.read('apps/demo/src/mcp-sample-controller.ts', 'utf-8') ?? '';
         expect(sample).toContain("@toolMapping({ name: 'sample_echo'");

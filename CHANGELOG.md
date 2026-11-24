@@ -43,7 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   flags error together, `--json` stays canonical, the flag brief is marked
   `[experimental]` while TOON is a Working Draft, and the SDK arrives as a
   regular lazily imported dependency (CLI startup untouched).
-- `@ndigo/view-toon`: the TOON view technology — `ToonView`
+- `@ndigo/view-toon`: the TOON view technology — `TOONView`
   (`text/toon;charset=utf-8`), `toonViewResolver(viewName, options?)` for
   opt-in per-route negotiation (register the JSON resolver first:
   registration order is what keeps JSON the default), and `encodeToon()`
@@ -61,7 +61,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   sources, with GenAI spans, rate limits, and rollout flags.
 - `@ndigo/ai-sdk`: the Vercel AI SDK integration layer (`ai`), the only package
   that imports the SDK; tools are declared but executed by the agent loop.
-- `@ndigo/mcp`: `McpToolRegistry.from(dispatcher)` now accepts the real
+- `@ndigo/mcp`: `MCPToolRegistry.from(dispatcher)` now accepts the real
   dispatcher type, and `argumentResolvers` binds parameterized tools through
   the same chain HTTP uses. Tools without it fail with a clear error instead
   of a missing-resolver crash.
@@ -115,7 +115,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `mcp-setup` generator. `@ndigo/platform-node` exposes the raw request on the
   route for transport-owning handlers.
 - `@ndigo/view-webcomponent`: WebMCP tools — `provideWebMcpTools` /
-  `declareWebMcpTool` (AbortSignal lifecycle), `AsWebMcpElement`
+  `declareWebMcpTool` (AbortSignal lifecycle), `AsWebMCPElement`
   (connect/disconnect registration), and `webMcpToolForHandler` (schema from
   `@parameters` + `validatedBy`).
 - `@ndigo/mcp`: MCP Apps — `_meta.ui.resourceUri` from `@toolMapping({ ui })`,

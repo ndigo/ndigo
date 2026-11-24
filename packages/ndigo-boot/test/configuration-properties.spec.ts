@@ -15,7 +15,7 @@ import {
 } from '../src/index';
 import { property, defaultValue, nestedConfig, configuration, entry, StandardEnvironment } from '@ndigo/context';
 
-class DbConfig {
+class DBConfig {
     @property('url', String as unknown as new (...args: never[]) => string)
     @defaultValue('mongodb://localhost')
     url!: string;
@@ -27,7 +27,7 @@ class DbConfig {
 class ServerConfig {
     @property('port', Number as unknown as new (...args: never[]) => number) @defaultValue('8080') port!: number;
     @property('host', String as unknown as new (...args: never[]) => string) @defaultValue('localhost') host!: string;
-    @nestedConfig db: DbConfig = new DbConfig();
+    @nestedConfig db: DBConfig = new DBConfig();
 }
 
 @configurationProperties()
@@ -119,7 +119,7 @@ describe('declaredConfigurationProperties (value-free inspection seam)', () => {
         class ThrowingConfig {
             @property('port', Number as unknown as new (...args: never[]) => number) port!: number;
             @property('name', String as unknown as new (...args: never[]) => string) name = 'fallback';
-            @nestedConfig db!: DbConfig;
+            @nestedConfig db!: DBConfig;
 
             constructor() {
                 throw new Error('no instance for you');
@@ -360,12 +360,12 @@ describe('relaxed binding + untyped inference (CTX-01/CTX-10/CTX-11)', () => {
     });
 
     test('CTX-01: nested relaxed binding reads the winning key', async () => {
-        class NestedDb {
+        class NestedDB {
             @property('userName', String as unknown as new (...args: never[]) => string) userName!: string;
         }
         @configurationProperties('db', { relaxed: true })
         class RelaxedNested {
-            @nestedConfig connection: NestedDb = new NestedDb();
+            @nestedConfig connection: NestedDB = new NestedDB();
         }
         const context = await runBoot({ db: { connection: { 'user-name': 'app' } } });
 

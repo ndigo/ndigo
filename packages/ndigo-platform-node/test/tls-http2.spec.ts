@@ -53,7 +53,7 @@ function hasOpenssl(): boolean {
 const OPENSSL_AVAILABLE = hasOpenssl();
 
 @requestMapping('/')
-class TlsProbeController {
+class TLSProbeController {
     @getMapping('/probe')
     probe() {
         return { ok: true };
@@ -77,7 +77,7 @@ class TlsProbeController {
 async function boot(tls: TLSServerOptions, limits?: HTTPRequestLimits): Promise<NodeHTTPServerAdapter> {
     const context = new MetadataConfigApplicationContext('tls-http2');
     context.register(NodeAutoConfiguration);
-    context.setValue(TlsProbeController.name, new TlsProbeController());
+    context.setValue(TLSProbeController.name, new TLSProbeController());
     context.refresh();
     const dispatcher = context.getValue<NodeDispatcher>('dispatcher');
     const adapter = new NodeHTTPServerAdapter(dispatcher, { tls, ...(limits !== undefined ? { limits } : {}) });

@@ -12,7 +12,7 @@
 import { MediaTypes } from '@ndigo/core';
 import { AbstractSerializingView } from '@ndigo/view';
 import { encodeToon } from './toon-encode';
-import type { ToonEncodeOptions } from './toon-encode';
+import type { TOONEncodeOptions } from './toon-encode';
 
 /**
  * Serializes a model as `text/toon;charset=utf-8` — the provisional media
@@ -20,34 +20,34 @@ import type { ToonEncodeOptions } from './toon-encode';
  *
  * @example
  * ```ts
- * const view = new ToonView({ indentSize: 2 });
+ * const view = new TOONView({ indentSize: 2 });
  * const doc = view.serialize(model);
  * ```
  */
-export class ToonView extends AbstractSerializingView {
+export class TOONView extends AbstractSerializingView {
     /**
      * The `Symbol.toStringTag` value for this instance.
      *
      * `Object.prototype.toString()` reads this symbol to render the
      * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
      *
-     * @returns The string "ToonView".
+     * @returns The string "TOONView".
      *
      * @example
-     * console.log(Object.prototype.toString.call(instance)); // "[object ToonView]"
+     * console.log(Object.prototype.toString.call(instance)); // "[object TOONView]"
      */
     get [Symbol.toStringTag](): string {
-        return 'ToonView';
+        return 'TOONView';
     }
 
-    readonly #options: ToonEncodeOptions;
+    readonly #options: TOONEncodeOptions;
 
     /**
      * Creates the view; per-route options tune indentation and delimiter.
      *
      * @param options - TOON encoding options.
      */
-    constructor(options: ToonEncodeOptions = {}) {
+    constructor(options: TOONEncodeOptions = {}) {
         super();
         this.mediaType = MediaTypes.TEXT_TOON?.withCharset('UTF-8') ?? null;
         this.#options = { ...options };

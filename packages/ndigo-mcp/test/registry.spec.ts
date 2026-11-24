@@ -16,8 +16,8 @@ import { SpanStatusCode, trace } from '@opentelemetry/api';
 import { BasicTracerProvider, InMemorySpanExporter, SimpleSpanProcessor } from '@opentelemetry/sdk-trace-base';
 import type { Route } from '@ndigo/router';
 import { describe, expect, it } from 'vitest';
-import { McpToolDeniedError } from '../src/errors';
-import { McpToolRegistry, type McpToolCall } from '../src/registry';
+import { MCPToolDeniedError } from '../src/errors';
+import { MCPToolRegistry, type MCPToolCall } from '../src/registry';
 import { handlerMethod, mapping, table } from './_fixtures';
 
 const PARAMETERS = [
@@ -25,7 +25,7 @@ const PARAMETERS = [
     new MethodParameter(MethodParameterType.QUERY, 'verbose', false, null, undefined, null, undefined, 'verbose'),
 ];
 
-describe('McpToolRegistry', () => {
+describe('MCPToolRegistry', () => {
     it('omits mutating tools in read-only mode from list and call', async () => {
         class Controller {
             @toolMapping({ name: 'get_order', readOnly: true })
@@ -38,7 +38,7 @@ describe('McpToolRegistry', () => {
                 return null;
             }
         }
-        const registry = McpToolRegistry.from(
+        const registry = MCPToolRegistry.from(
             table([
                 {
                     mapping: mapping('/orders/:id'),
@@ -68,14 +68,14 @@ describe('McpToolRegistry', () => {
             { mapping: mapping('/orders/export'), handlerMethod: handlerMethod(new Controller(), 'exportOrders', []) },
         ]);
 
-        const closed = McpToolRegistry.from(source);
+        const closed = MCPToolRegistry.from(source);
         expect(await closed.listTools()).toEqual([]);
         await expect(closed.call('export_orders')).rejects.toThrow(/unknown or unavailable/u);
 
-        const off = McpToolRegistry.from(source, { isFeatureEnabled: () => false });
+        const off = MCPToolRegistry.from(source, { isFeatureEnabled: () => false });
         expect(await off.listTools()).toEqual([]);
 
-        const on = McpToolRegistry.from(source, { isFeatureEnabled: () => true });
+        const on = MCPToolRegistry.from(source, { isFeatureEnabled: () => true });
         expect((await on.listTools()).map((tool) => tool.name)).toEqual(['export_orders']);
     });
 
@@ -87,7 +87,7 @@ describe('McpToolRegistry', () => {
             }
         }
         let captured: Route | undefined;
-        const registry = McpToolRegistry.from(
+        const registry = MCPToolRegistry.from(
             table([
                 {
                     mapping: mapping('/orders/:id'),
@@ -119,12 +119,12 @@ describe('McpToolRegistry', () => {
             return [{ mapping: mapping('/orders/:id'), handlerMethod: method }];
         }
 
-        const registry = McpToolRegistry.from(table(entries()), {
+        const registry = MCPToolRegistry.from(table(entries()), {
             argumentResolvers: [new PathValueMethodArgumentResolver()],
         });
         expect(await registry.call('get_order', { id: '42' })).toEqual({ id: '42' });
 
-        const unbound = McpToolRegistry.from(table(entries()));
+        const unbound = MCPToolRegistry.from(table(entries()));
         await expect(unbound.call('get_order', { id: '42' })).rejects.toThrow(/argument resolvers/u);
     });
 
@@ -140,7 +140,7 @@ describe('McpToolRegistry', () => {
                 return null;
             }
         }
-        const modelRegistry = McpToolRegistry.from(
+        const modelRegistry = MCPToolRegistry.from(
             table([
                 {
                     mapping: mapping('/model'),
@@ -155,7 +155,7 @@ describe('McpToolRegistry', () => {
         );
         expect(await modelRegistry.call('model')).toEqual({ value: 1 });
 
-        const entityRegistry = McpToolRegistry.from(
+        const entityRegistry = MCPToolRegistry.from(
             table([
                 {
                     mapping: mapping('/entity'),
@@ -180,7 +180,7 @@ describe('McpToolRegistry', () => {
                     return null;
                 }
             }
-            const registry = McpToolRegistry.from(
+            const registry = MCPToolRegistry.from(
                 table([
                     {
                         mapping: mapping('/orders/:id'),
@@ -209,7 +209,7 @@ describe('McpToolRegistry', () => {
                 return null;
             }
         }
-        const registry = McpToolRegistry.from(
+        const registry = MCPToolRegistry.from(
             table([
                 {
                     mapping: mapping('/surface'),
@@ -226,7 +226,7 @@ describe('McpToolRegistry', () => {
     });
 
     it('reports an unknown tool', async () => {
-        const registry = McpToolRegistry.from(table([]));
+        const registry = MCPToolRegistry.from(table([]));
         await expect(registry.call('missing')).rejects.toThrow("unknown or unavailable MCP tool 'missing'");
     });
 
@@ -238,7 +238,7 @@ describe('McpToolRegistry', () => {
                 return null;
             }
         }
-        const registry = McpToolRegistry.from(
+        const registry = MCPToolRegistry.from(
             table([
                 {
                     mapping: mapping('/orders/:id', 'DELETE'),
@@ -258,14 +258,14 @@ describe('McpToolRegistry', () => {
     });
 
     it('passes the call to authorize and awaits async policies', async () => {
-        const seen: McpToolCall[] = [];
+        const seen: MCPToolCall[] = [];
         class Controller {
             @toolMapping({ name: 'get_order', readOnly: true })
             getOrder(): unknown {
                 return null;
             }
         }
-        const registry = McpToolRegistry.from(
+        const registry = MCPToolRegistry.from(
             table([
                 {
                     mapping: mapping('/orders/:id'),
@@ -301,16 +301,16 @@ describe('McpToolRegistry', () => {
                 handlerMethod: handlerMethod(new Controller(), 'buyCredits', [], () => ({ bought: true })),
             },
         ]);
-        const confirm = (call: McpToolCall): string | undefined =>
+        const confirm = (call: MCPToolCall): string | undefined =>
             call.args['amount'] === undefined ? undefined : 'Charges the card for 1,000 credits';
 
-        const withholding = McpToolRegistry.from(source, { confirm });
+        const withholding = MCPToolRegistry.from(source, { confirm });
         const denial = await withholding.call('buy_credits', { amount: 20 }).catch((error: unknown) => error);
-        expect(denial).toBeInstanceOf(McpToolDeniedError);
-        expect((denial as McpToolDeniedError).confirm).toBe('Charges the card for 1,000 credits');
+        expect(denial).toBeInstanceOf(MCPToolDeniedError);
+        expect((denial as MCPToolDeniedError).confirm).toBe('Charges the card for 1,000 credits');
         expect((denial as Error).message).toContain('Needs a person: Charges the card for 1,000 credits');
 
-        const accepting = McpToolRegistry.from(source, {
+        const accepting = MCPToolRegistry.from(source, {
             confirm,
             authorize: (call) => call.confirm === 'Charges the card for 1,000 credits',
         });
@@ -325,7 +325,7 @@ describe('McpToolRegistry', () => {
                 return null;
             }
         }
-        const registry = McpToolRegistry.from(
+        const registry = MCPToolRegistry.from(
             table([
                 {
                     mapping: mapping('/login'),
@@ -358,7 +358,7 @@ describe('McpToolRegistry', () => {
                     return null;
                 }
             }
-            const registry = McpToolRegistry.from(
+            const registry = MCPToolRegistry.from(
                 table([
                     {
                         mapping: mapping('/orders/:id'),
@@ -367,7 +367,7 @@ describe('McpToolRegistry', () => {
                 ]),
                 { authorize: () => false }
             );
-            await expect(registry.call('get_order', { id: '7' })).rejects.toThrow(McpToolDeniedError);
+            await expect(registry.call('get_order', { id: '7' })).rejects.toThrow(MCPToolDeniedError);
 
             const spans = exporter.getFinishedSpans();
             expect(spans[0]?.attributes['gen_ai.tool.call.denied']).toBe(true);

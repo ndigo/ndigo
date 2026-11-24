@@ -1,7 +1,7 @@
 /**
  * Test doubles and fixtures shared by the app's specs.
  *
- * The stub API is a hand-written implementation of the {@link ConduitApi} port
+ * The stub API is a hand-written implementation of the {@link ConduitAPI} port
  * (not a mocking framework): every method rejects until a spec stubs it, so a
  * test that forgets a call fails loudly instead of silently resolving.
  */
@@ -9,7 +9,7 @@ import { vi, type Mock } from 'vitest';
 import type { ApplicationContext } from '@ndigo/context';
 import { ROUTER } from '@ndigo/router';
 import type {
-    ConduitApi,
+    ConduitAPI,
     ConduitArticle,
     ConduitArticlePage,
     ConduitComment,
@@ -55,9 +55,9 @@ export function contextWithRouter(router: RouterDouble): ApplicationContext {
  * @param overrides - The methods this spec exercises.
  * @returns The stub API.
  */
-export function createStubApi(overrides: Partial<ConduitApi> = {}): ConduitApi {
+export function createStubApi(overrides: Partial<ConduitAPI> = {}): ConduitAPI {
     const unstubbed = (name: string) => () => Promise.reject(new Error(`stub ${name} was not configured`));
-    const stub: ConduitApi = {
+    const stub: ConduitAPI = {
         register: unstubbed('register'),
         login: unstubbed('login'),
         currentUser: unstubbed('currentUser'),

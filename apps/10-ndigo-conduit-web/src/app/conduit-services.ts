@@ -9,12 +9,12 @@
  * keeps both objects constructor-complete and free of setters.
  *
  * Everything is constructed here and nowhere else, so a spec can build the same
- * graph against a stub {@link ConduitApi} or a `fetch` double.
+ * graph against a stub {@link ConduitAPI} or a `fetch` double.
  */
 import type { HTTP } from '@ndigo/http';
-import { ConduitApiClient } from '../lib/api/conduit-api-client';
+import { ConduitAPIClient } from '../lib/api/conduit-api-client';
 import { createConduitHttp } from '../lib/api/conduit-http';
-import type { ConduitApi } from '../lib/api/conduit-types';
+import type { ConduitAPI } from '../lib/api/conduit-types';
 import { ArticleService } from '../services/article-service';
 import { CommentService } from '../services/comment-service';
 import { ProfileService } from '../services/profile-service';
@@ -28,7 +28,7 @@ export interface ConduitServices {
     /** The HTTP client (auth + 401 interceptors installed). */
     http: HTTP;
     /** The API port bound to the app's client. */
-    api: ConduitApi;
+    api: ConduitAPI;
     /** The authenticated-session service. */
     session: SessionService;
     /** The article/feed service. */
@@ -61,7 +61,7 @@ export function createConduitServices(): ConduitServices {
             globalThis.location.hash = '#/login';
         },
     });
-    const api = new ConduitApiClient(http);
+    const api = new ConduitAPIClient(http);
     const session = new SessionService(api, storage);
 
     const services: ConduitServices = {

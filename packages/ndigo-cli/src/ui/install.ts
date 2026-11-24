@@ -8,7 +8,7 @@ import { dirname, isAbsolute, join, normalize, relative } from 'node:path';
 import { usageError } from '../helpers/app-scripts.js';
 import { addPackages } from '../helpers/package-manager.js';
 import { UI_LOCK_FILE, resolveTargetPath } from './config.js';
-import type { UiAliases } from './config.js';
+import type { UIAliases } from './config.js';
 import { isRemoteSource, readRegistryFile, resolveItemClosure } from './registry.js';
 import type { LoadedRegistry } from './registry-types.js';
 
@@ -113,10 +113,10 @@ export interface InstallResult {
  *
  * @example
  * ```ts
- * const value = {} as UiLockEntry;
+ * const value = {} as UILockEntry;
  * ```
  */
-export interface UiLockEntry {
+export interface UILockEntry {
     /** Root registry source. */
     readonly registry: string;
     /** Registry item type. */
@@ -132,14 +132,14 @@ export interface UiLockEntry {
  *
  * @example
  * ```ts
- * const value = {} as UiLockFile;
+ * const value = {} as UILockFile;
  * ```
  */
-export interface UiLockFile {
+export interface UILockFile {
     /** Lockfile format version. */
     readonly version: 1;
     /** Installed items keyed by name. */
-    readonly items: Record<string, UiLockEntry>;
+    readonly items: Record<string, UILockEntry>;
 }
 
 /**
@@ -158,7 +158,7 @@ export interface UiLockFile {
 export async function planInstall(
     registry: LoadedRegistry,
     names: readonly string[],
-    aliases: UiAliases
+    aliases: UIAliases
 ): Promise<InstallPlan> {
     const closure = resolveItemClosure(registry, names);
     const files = new Map<string, InstallPlanFile>();
@@ -259,10 +259,10 @@ function portableSource(source: string, dir: string): string {
     return isRemoteSource(source) ? source : relative(dir, source);
 }
 
-function readLockFile(path: string): UiLockFile {
+function readLockFile(path: string): UILockFile {
     if (!existsSync(path)) return { version: 1, items: {} };
     try {
-        const parsed = JSON.parse(readFileSync(path, 'utf8')) as Partial<UiLockFile>;
+        const parsed = JSON.parse(readFileSync(path, 'utf8')) as Partial<UILockFile>;
         if (parsed.version !== 1 || parsed.items === undefined || parsed.items === null) {
             throw new Error('unsupported lockfile');
         }

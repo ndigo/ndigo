@@ -6,7 +6,7 @@
 `@ndigo/ai` owns the loop, not the provider. A model adapter performs one
 model step; the agent executes the tool calls the model requests, feeds the
 results back, and records one GenAI span per run. Because the tool source is
-structural, `McpToolRegistry` from `@ndigo/mcp` is a tool source with no
+structural, `MCPToolRegistry` from `@ndigo/mcp` is a tool source with no
 adapter class.
 
 ## Installation
@@ -22,9 +22,9 @@ Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥12.
 ```ts
 import { AIAgent } from '@ndigo/ai';
 import { aiSdkModel } from '@ndigo/ai-sdk';
-import { McpToolRegistry } from '@ndigo/mcp';
+import { MCPToolRegistry } from '@ndigo/mcp';
 
-const tools = McpToolRegistry.from(dispatcher, { readOnly: true });
+const tools = MCPToolRegistry.from(dispatcher, { readOnly: true });
 const agent = new AIAgent({ model: aiSdkModel(provider.chatModel('qwen3')), tools });
 
 const result = await agent.run({
@@ -50,7 +50,7 @@ return new ServerSentEventView(toServerSentEvents(agent.stream({ messages: [{ ro
 | `AIModel`            | One provider step plus structured output.                  |
 | `AIMessage`          | System/user/assistant/tool message union.                  |
 | `AIStepResult`       | Text, tool calls, finish reason, token usage for one step. |
-| `AIToolSource`       | `listTools()` + `call()`; satisfied by `McpToolRegistry`.  |
+| `AIToolSource`       | `listTools()` + `call()`; satisfied by `MCPToolRegistry`.  |
 | `AIAgent`            | Bounded multi-step loop, telemetry, limits, rollout gate.  |
 | `toServerSentEvents` | Maps agent events to `{ event, data }` frames.             |
 

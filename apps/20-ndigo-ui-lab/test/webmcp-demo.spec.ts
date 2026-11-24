@@ -5,7 +5,7 @@
  * `document.modelContext`.
  */
 import { afterEach, describe, expect, it } from 'vitest';
-import { WebMcpDemo } from '../src/components/webmcp/webmcp-demo';
+import { WebMCPDemo } from '../src/components/webmcp/webmcp-demo';
 
 afterEach(() => {
     document.body.innerHTML = '';
@@ -13,7 +13,7 @@ afterEach(() => {
 
 describe('<nd-webmcp-demo>', () => {
     it('projects the handler metadata into a tool descriptor', () => {
-        const element = new WebMcpDemo();
+        const element = new WebMCPDemo();
         const [tool] = element.webMcpTools();
 
         expect(tool?.name).toBe('search_catalogue');
@@ -26,13 +26,13 @@ describe('<nd-webmcp-demo>', () => {
     });
 
     it('searches the catalogue', () => {
-        const element = new WebMcpDemo();
+        const element = new WebMCPDemo();
 
         expect(element.search('match')).toEqual([{ id: 'tea-3', name: 'Matcha', price: 22 }]);
     });
 
     it('registers a no-op when the browser has no WebMCP', async () => {
-        const element = document.createElement('nd-webmcp-demo') as WebMcpDemo;
+        const element = document.createElement('nd-webmcp-demo') as WebMCPDemo;
         document.body.append(element);
         await new Promise<void>((resolve) => setTimeout(resolve, 0));
 

@@ -3,7 +3,7 @@
  */
 import { describe, expect, it } from 'vitest';
 import { createUiResource, MCP_APP_MIME_TYPE } from '../src/ui-resource';
-import type { UiResourceInput } from '../src/ui-resource';
+import type { UIResourceInput } from '../src/ui-resource';
 
 describe('createUiResource', () => {
     it('builds one self-contained document with inlined CSS and a module script', () => {
@@ -58,7 +58,7 @@ describe('createUiResource', () => {
                 body: '',
                 script: 'console.log(1);',
                 // Test seam: cast only reaches the runtime value guard.
-                scriptType: untrustedScriptType as unknown as UiResourceInput['scriptType'],
+                scriptType: untrustedScriptType as unknown as UIResourceInput['scriptType'],
             })
         ).toThrow(/must be 'module' or 'classic'/u);
     });

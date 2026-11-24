@@ -12,8 +12,8 @@ import { NODE_INCOMING_ATTRIBUTE, NODE_REQUEST_ATTRIBUTE, NODE_RESPONSE_ATTRIBUT
 import type { Route } from '@ndigo/router';
 import { afterEach, describe, expect, it } from 'vitest';
 import { getErrorMessage } from '@ndigo/util';
-import { McpHTTPEndpoint, type McpHTTPEndpointOptions, protectedResourceMetadata } from '../src/http';
-import { McpToolRegistry } from '../src/registry';
+import { MCPHTTPEndpoint, type MCPHTTPEndpointOptions, protectedResourceMetadata } from '../src/http';
+import { MCPToolRegistry } from '../src/registry';
 import { createUiResource, MCP_APP_MIME_TYPE } from '../src/ui-resource';
 import { handlerMethod, mapping, table } from './_fixtures';
 
@@ -24,11 +24,11 @@ class Controller {
     }
 }
 
-function registry(): McpToolRegistry {
+function registry(): MCPToolRegistry {
     const parameters = [
         new MethodParameter(MethodParameterType.PATH, 'id', true, null, undefined, null, undefined, 'id'),
     ];
-    return McpToolRegistry.from(
+    return MCPToolRegistry.from(
         table([
             {
                 mapping: mapping('/orders/:id'),
@@ -52,8 +52,8 @@ afterEach(async () => {
     }
 });
 
-async function start(options: McpHTTPEndpointOptions = {}): Promise<Client> {
-    const endpoint = new McpHTTPEndpoint(registry(), options);
+async function start(options: MCPHTTPEndpointOptions = {}): Promise<Client> {
+    const endpoint = new MCPHTTPEndpoint(registry(), options);
     const server = createServer((req, res) => {
         void (async () => {
             const chunks: Buffer[] = [];
@@ -96,7 +96,7 @@ async function start(options: McpHTTPEndpointOptions = {}): Promise<Client> {
     return mcp;
 }
 
-describe('McpHTTPEndpoint', () => {
+describe('MCPHTTPEndpoint', () => {
     it('serves tools/list and tools/call over Streamable HTTP', async () => {
         const mcp = await start();
         const { tools } = await mcp.listTools();

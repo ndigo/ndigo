@@ -18,7 +18,7 @@ class RefreshableServerConfig {
 }
 
 @configurationProperties('db')
-class DbPasswordConfig {
+class DBPasswordConfig {
     @property('password', String as unknown as new (...args: never[]) => string)
     @defaultValue('none')
     password!: string;
@@ -261,7 +261,7 @@ describe('config-server full loop', () => {
 
         @configuration
         class BootConfig {}
-        const app = new ApplicationBuilder([BootConfig, DbPasswordConfig]);
+        const app = new ApplicationBuilder([BootConfig, DBPasswordConfig]);
         app.secrets(cipher); // wired — but does not know the `jwe` scheme
         app.configServer({ url: 'https://cfg.example/app.json', fetch });
         const err = await app.run().then(

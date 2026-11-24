@@ -738,6 +738,11 @@ classes/methods/fields at definition time: `@service`, `@entity`, `@column`,
 
 Acronyms must use **consistent casing**: all-uppercase in type names (classes/interfaces), and all-lowercase OR all-uppercase in identifiers (variables/parameters/functions). Never use mixed-case acronyms like `Http`, `Json`, or `Xml`.
 
+**Scope:** this rule covers acronyms and initialisms — words formed from
+initial letters (`HTTP`, `JSON`, `UUID`, `MCP`, `TOON`). Clipped abbreviations
+such as `Id` (from _identifier_) are not acronyms and are unaffected; they
+keep their conventional spelling.
+
 **Type Names (Classes/Interfaces/Types):**
 
 ```typescript

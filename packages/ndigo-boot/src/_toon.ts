@@ -21,7 +21,7 @@ export const TOON_PEER_VERSION = '4.4.0';
  * requires the optional peer to resolve: the lazy dynamic import in
  * {@link loadToonDecoder} is the only load site.
  */
-interface ToonDecoderModule {
+interface TOONDecoderModule {
     decode(content: string): unknown;
 }
 
@@ -34,9 +34,9 @@ interface ToonDecoderModule {
  * `toon-spec: 4.4` (https://github.com/toon-format/spec).
  */
 export const loadToonDecoder = async (): Promise<(content: string) => JSONObject> => {
-    let peer: ToonDecoderModule;
+    let peer: TOONDecoderModule;
     try {
-        peer = (await import(/* @vite-ignore */ '@toon-format/toon')) as ToonDecoderModule;
+        peer = (await import(/* @vite-ignore */ '@toon-format/toon')) as TOONDecoderModule;
     } catch (cause) {
         // Every resolution failure maps to "not installed": the peer is
         // optional, so a missing/corrupt install is the expected case. A

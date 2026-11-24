@@ -17,10 +17,10 @@ import { encode as encodeReference } from '@toon-format/toon';
  *
  * @example
  * ```ts
- * const options: ToonEncodeOptions = { indentSize: 2, delimiter: '|' };
+ * const options: TOONEncodeOptions = { indentSize: 2, delimiter: '|' };
  * ```
  */
-export interface ToonEncodeOptions {
+export interface TOONEncodeOptions {
     /**
      * Spaces per indentation level. Defaults to `2`.
      */
@@ -33,7 +33,7 @@ export interface ToonEncodeOptions {
 }
 
 /** Maps package options onto the SDK surface (without leaking its type). */
-const toEncodeOptions = (options: ToonEncodeOptions): EncodeOptions => {
+const toEncodeOptions = (options: TOONEncodeOptions): EncodeOptions => {
     const result: EncodeOptions = {};
     if (options.indentSize !== undefined) result.indentSize = options.indentSize;
     if (options.delimiter !== undefined) result.delimiter = options.delimiter;
@@ -73,7 +73,7 @@ const sanitizeDiagnosticMessage = (message: string): string => {
  * // rows[2]{id,qty}: a,2 / b,5 — the tabular form TOON exists for
  * ```
  */
-export function encodeToon(value: unknown, options: ToonEncodeOptions = {}): string {
+export function encodeToon(value: unknown, options: TOONEncodeOptions = {}): string {
     try {
         return encodeReference(value, toEncodeOptions(options));
     } catch (cause) {

@@ -17,20 +17,20 @@ export const MCP_APP_MIME_TYPE = 'text/html;profile=mcp-app';
  *
  * @example
  * ```ts
- * const visibility: UiVisibility = 'model';
+ * const visibility: UIVisibility = 'model';
  * ```
  */
-export type UiVisibility = 'model' | 'app';
+export type UIVisibility = 'model' | 'app';
 
 /**
  * Domains the host adds to the app's Content-Security-Policy.
  *
  * @example
  * ```ts
- * const csp: UiCspConfig = { connectDomains: ['https://app.example.com'] };
+ * const csp: UICSPConfig = { connectDomains: ['https://app.example.com'] };
  * ```
  */
-export interface UiCspConfig {
+export interface UICSPConfig {
     /** `connect-src` targets (fetch, XHR, WebSocket). */
     readonly connectDomains?: readonly string[];
     /** `script-src` / `style-src` / `img-src` / `font-src` / `media-src` targets. */
@@ -46,16 +46,16 @@ export interface UiCspConfig {
  *
  * @example
  * ```ts
- * const metadata: UiMetadata = { resourceUri: 'ui://panel', visibility: ['app'] };
+ * const metadata: UIMetadata = { resourceUri: 'ui://panel', visibility: ['app'] };
  * ```
  */
-export interface UiMetadata {
+export interface UIMetadata {
     /** The `ui://` resource the host renders. */
     readonly resourceUri: string;
     /** Who may call the tool (defaults to the host's policy). */
-    readonly visibility?: readonly UiVisibility[];
+    readonly visibility?: readonly UIVisibility[];
     /** External domains the host should allow. */
-    readonly csp?: UiCspConfig;
+    readonly csp?: UICSPConfig;
     /** Browser capabilities the app requests (`camera`, `clipboardWrite`, …). */
     readonly permissions?: readonly string[];
     /** Ask the host to draw a border. */
@@ -69,14 +69,14 @@ export interface UiMetadata {
  *
  * @example
  * ```ts
- * const resource: UiResource = {
+ * const resource: UIResource = {
  *     uri: 'ui://panel',
  *     name: 'Panel',
  *     html: '<!doctype html><html></html>',
  * };
  * ```
  */
-export interface UiResource {
+export interface UIResource {
     /** Resource URI (`ui://…`). */
     readonly uri: string;
     /** Human-readable resource name. */
@@ -86,7 +86,7 @@ export interface UiResource {
     /** The complete HTML document. */
     readonly html: string;
     /** Presentation metadata, excluding the resource URI (added by the server). */
-    readonly ui?: Omit<UiMetadata, 'resourceUri'>;
+    readonly ui?: Omit<UIMetadata, 'resourceUri'>;
 }
 
 /**
@@ -94,10 +94,10 @@ export interface UiResource {
  *
  * @example
  * ```ts
- * const input: UiResourceInput = { uri: 'ui://panel', name: 'Panel', body: '<main></main>' };
+ * const input: UIResourceInput = { uri: 'ui://panel', name: 'Panel', body: '<main></main>' };
  * ```
  */
-export interface UiResourceInput {
+export interface UIResourceInput {
     /** Resource URI (`ui://…`). */
     readonly uri: string;
     /** Resource name. */
@@ -122,7 +122,7 @@ export interface UiResourceInput {
     /** Document language (default `en`). */
     readonly lang?: string;
     /** Content-Security-Policy domains declared to the host. */
-    readonly csp?: UiCspConfig;
+    readonly csp?: UICSPConfig;
     /** Requested browser capabilities. */
     readonly permissions?: readonly string[];
     /** Ask the host for a border. */
@@ -130,7 +130,7 @@ export interface UiResourceInput {
     /** Requested sandbox domain. */
     readonly domain?: string;
     /** Tool visibility metadata. */
-    readonly visibility?: readonly UiVisibility[];
+    readonly visibility?: readonly UIVisibility[];
 }
 
 /**
@@ -146,7 +146,7 @@ export interface UiResourceInput {
  * const resource = createUiResource({ uri: 'ui://panel', name: 'Panel', body: '<main></main>' });
  * ```
  */
-export function createUiResource(input: UiResourceInput): UiResource {
+export function createUiResource(input: UIResourceInput): UIResource {
     if (!input.uri.startsWith('ui://') || !/^ui:\/\/[A-Za-z0-9-]+(?:::.*)?$/u.test(input.uri)) {
         throw new TypeError(`createUiResource uri must be a ui:// resource URI — received '${input.uri}'.`);
     }
@@ -185,7 +185,7 @@ ${input.trustedMarkup === true ? input.body : escapeHtml(input.body)}
 ${script}    </body>
 </html>
 `;
-    const ui: Omit<UiMetadata, 'resourceUri'> = {
+    const ui: Omit<UIMetadata, 'resourceUri'> = {
         ...(input.visibility === undefined ? {} : { visibility: input.visibility }),
         ...(input.csp === undefined ? {} : { csp: input.csp }),
         ...(input.permissions === undefined ? {} : { permissions: input.permissions }),

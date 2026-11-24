@@ -4,8 +4,8 @@
  */
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
-import { createMcpHost } from '../helpers/mcp-host.js';
-import type { McpHost } from '../helpers/mcp-host.js';
+import { createMCPHost } from '../helpers/mcp-host.js';
+import type { MCPHost } from '../helpers/mcp-host.js';
 import { getCatalog, getItem, installItems, listItems, searchItems, validateRegistrySource } from './mcp-tools.js';
 import type { RegistryToolContext } from './mcp-tools.js';
 
@@ -52,9 +52,9 @@ export async function startRegistryServer(options: RegistryServerOptions): Promi
     await createRegistryHost(options).startStdio('ndigo ui mcp');
 }
 
-function createRegistryHost(options: RegistryServerOptions): McpHost {
+function createRegistryHost(options: RegistryServerOptions): MCPHost {
     const readOnly = options.readOnly === true;
-    const host = createMcpHost({
+    const host = createMCPHost({
         name: 'ndigo-ui',
         version: '0.0.1',
         readOnly,
@@ -68,7 +68,7 @@ function createRegistryHost(options: RegistryServerOptions): McpHost {
     return host;
 }
 
-function registerDiscoveryTools(host: McpHost, options: RegistryServerOptions): void {
+function registerDiscoveryTools(host: MCPHost, options: RegistryServerOptions): void {
     host.registerTool({
         name: 'list_items',
         title: 'List Ndigo UI items',
@@ -133,7 +133,7 @@ function registerDiscoveryTools(host: McpHost, options: RegistryServerOptions): 
     });
 }
 
-function registerInstallTool(host: McpHost, options: RegistryServerOptions): void {
+function registerInstallTool(host: MCPHost, options: RegistryServerOptions): void {
     host.registerTool({
         name: 'install_items',
         title: 'Install Ndigo UI items',

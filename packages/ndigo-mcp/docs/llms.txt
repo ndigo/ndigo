@@ -13,8 +13,8 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 
 ## Public exports
 
-- `McpToolDeniedOptions` *(type)* — Options for McpToolDeniedError.
-- `McpToolDeniedError` — Thrown when a registry policy refuses a tool call. Transports render it as an `isError` tool result, never as a protocol failure.
+- `MCPToolDeniedOptions` *(type)* — Options for MCPToolDeniedError.
+- `MCPToolDeniedError` — Thrown when a registry policy refuses a tool call. Transports render it as an `isError` tool result, never as a protocol failure.
 - `JSONSchema` *(type)* — A JSON Schema object as carried by MCP `tools/list`.
 - `ToolDescriptor` *(type)* — The client-facing tool descriptor as reported by `tools/list`.
 - `RegisteredTool` *(type)* — A projected tool with the handler needed to invoke it.
@@ -24,20 +24,20 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `MappingSource` *(type)* — Anything that can supply mapping entries to the projector.
 - `projectTools` — Projects every `@toolMapping` handler in the source into a registered tool.
 - `ToolCallContext` *(type)* — Per-call context carried from the transport.
-- `McpToolCall` *(type)* — One tool call under registry policy evaluation.
-- `McpToolRegistryOptions` *(type)* — Policy options for a registry.
-- `McpToolRegistry` — A registry of tools projected from dispatch metadata.
-- `McpServerOptions` *(type)* — Options for createMcpServer.
+- `MCPToolCall` *(type)* — One tool call under registry policy evaluation.
+- `MCPToolRegistryOptions` *(type)* — Policy options for a registry.
+- `MCPToolRegistry` — A registry of tools projected from dispatch metadata.
+- `MCPServerOptions` *(type)* — Options for createMcpServer.
 - `createMcpServer` — Creates an MCP server over a tool registry.
 - `startStdioServer` — Starts a server on stdin/stdout. Stdout is reserved for JSON-RPC.
-- `McpHTTPEndpointOptions` *(type)* — Options for McpHTTPEndpoint.
-- `McpHTTPEndpoint` — A stateless Streamable HTTP MCP endpoint.
+- `MCPHTTPEndpointOptions` *(type)* — Options for MCPHTTPEndpoint.
+- `MCPHTTPEndpoint` — A stateless Streamable HTTP MCP endpoint.
 - `ProtectedResourceMetadataOptions` *(type)* — Options for protectedResourceMetadata.
 - `protectedResourceMetadata` — Builds RFC 9728 protected-resource metadata for an MCP endpoint.
 - `MCP_APP_MIME_TYPE` — The MCP Apps HTML resource media type.
-- `UiVisibility` *(type)* — Tool visibility inside an MCP App.
-- `UiCspConfig` *(type)* — Domains the host adds to the app's Content-Security-Policy.
-- `UiMetadata` *(type)* — `_meta.ui` metadata for a tool or resource.
-- `UiResource` *(type)* — A `ui://` resource with its self-contained HTML.
-- `UiResourceInput` *(type)* — Inputs for createUiResource.
+- `UIVisibility` *(type)* — Tool visibility inside an MCP App.
+- `UICSPConfig` *(type)* — Domains the host adds to the app's Content-Security-Policy.
+- `UIMetadata` *(type)* — `_meta.ui` metadata for a tool or resource.
+- `UIResource` *(type)* — A `ui://` resource with its self-contained HTML.
+- `UIResourceInput` *(type)* — Inputs for createUiResource.
 - `createUiResource` — Builds one self-contained MCP App document.

@@ -5,7 +5,7 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
-import { resolveAliases, resolveRegistrySource, resolveTargetPath, writeUiConfig } from '../src/ui/config.js';
+import { resolveAliases, resolveRegistrySource, resolveTargetPath, writeUIConfig } from '../src/ui/config.js';
 import { applyInstall, planInstall } from '../src/ui/install.js';
 import { detectPackageManager } from '../src/helpers/package-manager.js';
 import { loadRegistry } from '../src/ui/registry.js';
@@ -59,7 +59,7 @@ describe('install planning', () => {
 
     it('maps overridden aliases', async () => {
         const { fixture, registry } = await setup();
-        writeUiConfig(fixture.app, { registry: '../registry.json', aliases: { ui: 'app/ui' } }, false);
+        writeUIConfig(fixture.app, { registry: '../registry.json', aliases: { ui: 'app/ui' } }, false);
 
         const aliases = resolveAliases(fixture.app);
         const plan = await planInstall(registry, ['dialog'], aliases);
@@ -127,11 +127,11 @@ describe('configuration and package managers', () => {
     it('writes ndigo.ui.json once and force-overwrites on request', async () => {
         const { fixture } = await setup();
 
-        const path = writeUiConfig(fixture.app, { registry: 'https://example.test/registry.json' }, false);
+        const path = writeUIConfig(fixture.app, { registry: 'https://example.test/registry.json' }, false);
         expect(existsSync(path)).toBe(true);
-        expect(() => writeUiConfig(fixture.app, { registry: 'other' }, false)).toThrow(/already exists/);
+        expect(() => writeUIConfig(fixture.app, { registry: 'other' }, false)).toThrow(/already exists/);
 
-        writeUiConfig(fixture.app, { registry: 'other' }, true);
+        writeUIConfig(fixture.app, { registry: 'other' }, true);
         const parsed = JSON.parse(readFileSync(path, 'utf8')) as { registry: string; aliases: { ui: string } };
         expect(parsed.registry).toBe('other');
         expect(parsed.aliases.ui).toBe('src/ui');

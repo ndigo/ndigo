@@ -18,8 +18,8 @@ import { Null } from '@ndigo/core';
 import { ROUTER } from '@ndigo/router';
 import { signal, type Signal } from '@ndigo/signals';
 import {
-    ConduitApiError,
-    type ConduitApi,
+    ConduitAPIError,
+    type ConduitAPI,
     type ConduitArticle,
     type ConduitArticleDraft,
     type ConduitArticleSummary,
@@ -67,7 +67,7 @@ export class ArticleService extends AsApplicationContextAware(Null) {
     /** Injected by the container (`ApplicationContextAware`). */
     declare readonly applicationContext: ApplicationContext;
 
-    readonly #api: ConduitApi;
+    readonly #api: ConduitAPI;
     readonly #session: SessionService;
     readonly #feed: Signal<ConduitFeedState>;
     readonly #article: Signal<ConduitArticleState>;
@@ -91,7 +91,7 @@ export class ArticleService extends AsApplicationContextAware(Null) {
      * @param session - The session, needed for the authenticated feed and for
      *   the view-relative `favorited`/`following` flags the API returns.
      */
-    constructor(api: ConduitApi, session: SessionService) {
+    constructor(api: ConduitAPI, session: SessionService) {
         super();
         this.#api = api;
         this.#session = session;
@@ -204,7 +204,7 @@ export class ArticleService extends AsApplicationContextAware(Null) {
             const article = await this.#api.getArticle(slug);
             this.#article.value = { slug, article, notFound: false };
         } catch (error) {
-            this.#article.value = { slug, article: null, notFound: ConduitApiError.from(error)?.status === 404 };
+            this.#article.value = { slug, article: null, notFound: ConduitAPIError.from(error)?.status === 404 };
         }
     }
 
@@ -279,7 +279,7 @@ export class ArticleService extends AsApplicationContextAware(Null) {
             await this.#navigate(`/article/${article.slug}`);
             return null;
         } catch (error) {
-            const errors = ConduitApiError.from(error)?.errors ?? { body: ['The article could not be saved.'] };
+            const errors = ConduitAPIError.from(error)?.errors ?? { body: ['The article could not be saved.'] };
             this.#errors.set('editor', errors);
             this.#refresh();
             return errors;

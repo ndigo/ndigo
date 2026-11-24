@@ -35,7 +35,7 @@ an adapter never re-describes it. And a **denial is data**, not an exception
 
 | Surface      | Entry point                                 | Direction            | Policy owner                              |
 | :----------- | :------------------------------------------ | :------------------- | :---------------------------------------- |
-| MCP server   | `McpToolRegistry`, stdio or Streamable HTTP | application → agent  | registry `readOnly`/`authorize`/`confirm` |
+| MCP server   | `MCPToolRegistry`, stdio or Streamable HTTP | application → agent  | registry `readOnly`/`authorize`/`confirm` |
 | MCP Apps     | `ui` on `@toolMapping` + `createUiResource` | result rendering     | host rendering + app resource             |
 | A2UI         | `a2uiViewResolver` over content negotiation | result rendering     | installed-component allowlist             |
 | WebMCP       | `webMcpAgentHost`, `webMcpToolForHandler`   | page → browser agent | browser host consent                      |
@@ -78,7 +78,7 @@ call passes the host's source the same way.
 
 | Surface      | Denied call looks like                                                                |
 | :----------- | :------------------------------------------------------------------------------------ |
-| MCP          | `McpToolDeniedError` → `isError` result (`Needs a person: …`), not a protocol failure |
+| MCP          | `MCPToolDeniedError` → `isError` result (`Needs a person: …`), not a protocol failure |
 | Agent bridge | `{ ok: false, error, failedStep }` from `act`                                         |
 | WebMCP       | the browser host refuses; the tool result reports the refusal                         |
 | A2UI         | the component is not in the installed allowlist; the view is unavailable              |

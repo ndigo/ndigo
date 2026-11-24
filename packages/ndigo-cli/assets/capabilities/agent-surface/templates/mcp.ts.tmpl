@@ -6,12 +6,12 @@ import 'node:process';
 import '@tsmetadata/polyfill';
 import { ApplicationBuilder } from '@ndigo/boot';
 import { ARGUMENT_RESOLVERS, DISPATCHER } from '@ndigo/dispatcher';
-import { McpToolRegistry, startStdioServer } from '@ndigo/mcp';
+import { MCPToolRegistry, startStdioServer } from '@ndigo/mcp';
 import { NodeAutoConfiguration } from '@ndigo/platform-node';
 import { {{configuration}} } from './{{configurationFile}}';
 
 const context = await new ApplicationBuilder([NodeAutoConfiguration, {{configuration}}]).run();
-const registry = McpToolRegistry.from(context.getValue(DISPATCHER), {
+const registry = MCPToolRegistry.from(context.getValue(DISPATCHER), {
     readOnly: true,
     argumentResolvers: context.getValue(ARGUMENT_RESOLVERS),
 });

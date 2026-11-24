@@ -20,14 +20,14 @@ export const SNAPSHOT_PREDICATE = 1;
 
 /** SQLite storage classes the metadata → SQL mapping can emit. */
 /**
- * SqliteStorageType.
+ * SQLiteStorageType.
  *
  * @example
  * ```ts
- * type _Alias = SqliteStorageType;
+ * type _Alias = SQLiteStorageType;
  * ```
  */
-export type SqliteStorageType = 'INTEGER' | 'REAL' | 'NUMERIC' | 'BLOB' | 'TEXT';
+export type SQLiteStorageType = 'INTEGER' | 'REAL' | 'NUMERIC' | 'BLOB' | 'TEXT';
 
 /**
  * One column as the DDL predicate models it. `nullable` is the resolved
@@ -43,7 +43,7 @@ export interface ColumnProjection {
     /** The column name. */
     name: string;
     /** The SQLite storage class. */
-    type: SqliteStorageType;
+    type: SQLiteStorageType;
     /** Whether the column is the primary key. */
     primaryKey: boolean;
     /** Whether the column is generated. */

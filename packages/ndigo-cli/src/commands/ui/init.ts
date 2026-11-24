@@ -3,7 +3,7 @@
  */
 import { buildCommand } from '@stricli/core';
 import { resolveAppDir } from '../../helpers/app-scripts.js';
-import { DEFAULT_ALIASES, DEFAULT_REGISTRY_SOURCE, writeUiConfig } from '../../ui/config.js';
+import { DEFAULT_ALIASES, DEFAULT_REGISTRY_SOURCE, writeUIConfig } from '../../ui/config.js';
 import { appDirPositional } from '../_script-fronts.js';
 
 /**
@@ -12,7 +12,7 @@ import { appDirPositional } from '../_script-fronts.js';
 export const initUiCommand = buildCommand({
     async func(flags: { registry?: string; force?: boolean }, dir: string) {
         const appDir = resolveAppDir(dir);
-        const path = writeUiConfig(
+        const path = writeUIConfig(
             appDir,
             { registry: flags.registry ?? DEFAULT_REGISTRY_SOURCE, aliases: DEFAULT_ALIASES },
             flags.force === true

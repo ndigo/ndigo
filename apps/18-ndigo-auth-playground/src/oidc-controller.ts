@@ -62,7 +62,7 @@ import type { AuthStack } from './auth-stack';
 const OIDC_PROBLEM_TYPE = 'urn:ndigo-auth-playground:oidc';
 
 /** Distinguishable OIDC failure codes. */
-export type OidcFailureCode =
+export type OIDCFailureCode =
     | 'oidc_disabled'
     | 'oidc_missing_code'
     | 'oidc_state_invalid'
@@ -73,12 +73,12 @@ export type OidcFailureCode =
     | 'oidc_refresh_failed';
 
 /** An OIDC problem document, carrying its machine-readable `code`. */
-export interface OidcProblem extends ProblemDetails {
-    readonly code: OidcFailureCode;
+export interface OIDCProblem extends ProblemDetails {
+    readonly code: OIDCFailureCode;
 }
 
 /** The mode's failure vocabulary in one static table. */
-export const OIDC_FAILURES: Record<OidcFailureCode, OidcProblem> = {
+export const OIDC_FAILURES: Record<OIDCFailureCode, OIDCProblem> = {
     oidc_disabled: {
         type: OIDC_PROBLEM_TYPE,
         title: 'Service Unavailable',
@@ -147,7 +147,7 @@ const MAX_TRACKED_REFRESH_SESSIONS = 256;
  * refresh the server-held token.
  */
 @requestMapping('/oidc')
-export class OidcController {
+export class OIDCController {
     readonly #stack: AuthStack;
     readonly #config: PlaygroundConfig;
     readonly #cookie: SessionCookieOptions;

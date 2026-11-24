@@ -18,6 +18,7 @@ import {
     JSONView,
 } from '@ndigo/view';
 import { GreetingController } from './greeting-controller';
+import { toonViewResolver } from '@ndigo/view-toon';
 import { OrderService } from './order-service';
 import { Heartbeat } from './heartbeat';
 import { AuthController } from './auth-controller';
@@ -187,8 +188,9 @@ export class NodeAppConfiguration {
 
     /**
      * Content-negotiating view resolver: the same logical `report` view is
-     * served as JSON (default) or CSV (`.csv` path extension) — the
-     * representation-family demo (JSONView / CSVView).
+     * served as JSON (default), CSV (`.csv` path extension), or TOON
+     * (`.toon` path extension) — the representation-family demo
+     * (JSONView / CSVView / TOONView).
      */
     @entry()
     viewResolver() {
@@ -198,16 +200,18 @@ export class NodeAppConfiguration {
         const csvReport: ViewResolver = {
             resolveViewName: async (name: string) => (name === 'report' ? new CSVView({ records: 'rows' }) : null),
         };
+        const toonReport = toonViewResolver('report');
         const manager = new ContentNegotiationManager([
             new PathExtensionContentNegotiationStrategy(
                 new Map([
                     ['json', MediaTypes.APPLICATION_JSON],
                     ['csv', MediaTypes.TEXT_CSV],
+                    ['toon', MediaTypes.TEXT_TOON],
                 ])
             ),
         ]);
         const resolver = new ContentNegotiationViewResolver(manager);
-        resolver.viewResolvers = [jsonReport, csvReport];
+        resolver.viewResolvers = [jsonReport, csvReport, toonReport];
         return resolver;
     }
 }

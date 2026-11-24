@@ -108,3 +108,10 @@ the constant and this package are the entire rename surface pre-1.0.
   [AD-101](archive/2026-11-10_AD101_A2UI_ADOPTION.md) (the A2UI adoption this record
   aligns the representation policy with),
   [spec v4.4 §17–§19](https://github.com/toon-format/spec/blob/main/SPEC.md).
+- **Lint map:** `@toon-format/toon` is the only encapsulated library with two
+  integration sites. `INTEGRATION_LAYER_MAP` in `src/oxlint/_constants.ts` was
+  widened to `Record<string, string | readonly string[]>` to list both
+  `@ndigo/boot` (lazy optional peer, decode) and `@ndigo/view-toon` (static
+  dependency, encode), so the rule still rejects a **third** importer. Both
+  packages are in `INTEGRATION_LAYER_PACKAGES` and exempt. The rule's
+  `getIntegrationLayerLibrary` joins the list for the error message.

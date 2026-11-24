@@ -85,8 +85,10 @@ export const TEXT_PLAIN = MediaType.registered('text', 'plain');
 /**
  * Provisional media type per the TOON specification §17
  * (https://github.com/toon-format/spec) — `text/toon`, always UTF-8. Not yet
- * registered with IANA; kept as an inert token so user views/interceptors can
- * compose with it until the format settles (Ndigo pre-1.0).
+ * registered with IANA (Ndigo pre-1.0), but fully usable today: it interns,
+ * compares, and accepts `withCharset(...)`. `@ndigo/view-toon` is the
+ * supported way to serve it; user views and interceptors may compose with
+ * this token directly.
  */
 export const TEXT_TOON = MediaType.registered('text', 'toon');
 /** Well-known wildcard media type. */

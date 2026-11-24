@@ -23,6 +23,10 @@ ruleTester.run('no-direct-integration-imports', noDirectIntegrationImports, {
             filename: '/packages/ndigo-ai-sdk/src/model.ts',
         },
         {
+            code: "import { encode as encodeReference } from '@toon-format/toon';",
+            filename: '/packages/ndigo-view-toon/src/toon-encode.ts',
+        },
+        {
             code: "import { generateText } from 'ai';",
             filename: '/packages/ndigo-core/test/something.spec.ts',
         },
@@ -41,6 +45,19 @@ ruleTester.run('no-direct-integration-imports', noDirectIntegrationImports, {
                     data: {
                         library: 'ai',
                         integrationLayer: '@ndigo/ai-sdk',
+                    },
+                },
+            ],
+        },
+        {
+            code: "import { encode } from '@toon-format/toon';",
+            filename: '/packages/ndigo-core/src/container.ts',
+            errors: [
+                {
+                    messageId: 'directImport',
+                    data: {
+                        library: '@toon-format/toon',
+                        integrationLayer: '@ndigo/boot or @ndigo/view-toon',
                     },
                 },
             ],

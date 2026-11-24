@@ -10,7 +10,10 @@
  * node_modules/) are not walked.
  *
  * Catches: renamed/moved files, wrong relative depth, wrong link dates,
- * and heading anchors that no longer exist. Root-relative targets
+ * and heading anchors that no longer exist. It also rejects internal
+ * decision-record IDs and links into the internal record trees on the pages
+ * published as the site's Concepts section — readers there cannot resolve
+ * repository bookkeeping. Root-relative targets
  * (`/reference/…`, `/guides/…`, …) are site routes on the published docs
  * site, not repository paths — the checker cannot resolve them without the
  * site's route table, so it counts and skips them. Run via `pnpm docs:links`.
@@ -93,6 +96,26 @@ let siteRouteCount = 0;
 const SITE_ROUTE_PREFIXES = ['/reference/', '/guides/', '/concepts/', '/ui/'];
 
 /**
+ * Pages published as the documentation site's Concepts section. Readers of
+ * these pages cannot resolve repository bookkeeping, so internal record IDs
+ * and links into the internal record trees are rejected.
+ */
+function isConceptPage(file) {
+    const rel = file.slice(root.length + 1);
+    return (
+        rel === 'ARCHITECTURE.md' ||
+        rel === 'STYLE_GUIDE.md' ||
+        (rel.startsWith('docs/architecture/') && rel.endsWith('.md'))
+    );
+}
+
+const CONCEPT_VIOLATIONS = [
+    { pattern: /\bAD-\d+\b/, label: 'decision-record ID' },
+    { pattern: /\bSEC-\d+\b/, label: 'internal security ID' },
+    { pattern: /\]\([^)]*docs\/(?:decisions|plans|audits|reference)\//, label: 'link into internal records' },
+];
+
+/**
  * Decodes a percent-encoded link segment; malformed input (`%zz`, bare `%`)
  * must not crash the gate — returning the raw value lets it fail (or
  * resolve) like a literal.
@@ -170,9 +193,31 @@ for (const file of files) {
     }
 }
 
-if (broken.length > 0) {
-    console.error(`Broken links (${broken.length}):`);
-    for (const b of broken) console.error(`  - ${b}`);
+const internalRefs = [];
+let conceptPageCount = 0;
+for (const file of files) {
+    if (!isConceptPage(file)) continue;
+    conceptPageCount++;
+    const lines = readFileSync(file, 'utf8').split('\n');
+    for (const [index, line] of lines.entries()) {
+        const hit = CONCEPT_VIOLATIONS.find(({ pattern }) => pattern.test(line));
+        if (hit) internalRefs.push(`${file}:${index + 1} -> ${hit.label}: ${line.trim()}`);
+    }
+}
+
+if (broken.length > 0 || internalRefs.length > 0) {
+    if (broken.length > 0) {
+        console.error(`Broken links (${broken.length}):`);
+        for (const b of broken) console.error(`  - ${b}`);
+    }
+    if (internalRefs.length > 0) {
+        console.error(`Internal references in published concepts (${internalRefs.length}):`);
+        for (const ref of internalRefs) console.error(`  - ${ref}`);
+        console.error('Use prose or a public guide link; decision records stay in docs/decisions/.');
+    }
     process.exit(1);
 }
-console.log(`docs link check: ${files.length} files, ${linkCount} relative links, ${siteRouteCount} site routes — OK`);
+console.log(
+    `docs link check: ${files.length} files, ${linkCount} relative links, ${siteRouteCount} site routes, ` +
+        `${conceptPageCount} concept pages free of internal record IDs — OK`
+);

@@ -60,7 +60,7 @@
     "packages/ndigo-service/docs/llms.txt": "f2e864e12f96f9c3db42bcdb79406e0f297188973c14bc479972c741a4189def",
     "packages/ndigo-signals/docs/llms.txt": "e88d5bfd76a96b35eeb6423ae15907745780b3e9843fefc857d937bced0d7fc0",
     "packages/ndigo-signals/skills/ndigo-reactive/SKILL.md": "5fdbdcf1ceb6cb6ab685fbdcf8976ebd0b0aaae572c7685a10e91afa24033c87",
-    "packages/ndigo-socket/docs/llms.txt": "a7a21212e42427b6fc48d40e3c494113bed8f5dd22141d54b5d7ac2c23d19973",
+    "packages/ndigo-socket/docs/llms.txt": "94fbec276090b0792475d51596ce3a806b631f7c58bf04723123e2b7aa2f3478",
     "packages/ndigo-telemetry-node/docs/llms.txt": "22f64b12ee8d00eb49f2c6de0940788c85e29e5504e6384461b7b5f406fe3243",
     "packages/ndigo-telemetry-web/docs/llms.txt": "8c18d6e817000db5d683d630e7ee25c02b8897f5e5b410881f40156832f797ec",
     "packages/ndigo-telemetry/docs/llms.txt": "66463bc22cea5236d4bab2b76e35ce3b5cf3f5a0d0164271489f9e3a1bdaa014",

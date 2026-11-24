@@ -4518,8 +4518,8 @@ After a reorganization, re-run the file-size census and update this section if
 new patterns emerge. Accepted large-file exceptions:
 
 - Constant collections (e.g., `http-headers.ts`: 725 lines, 124 constants).
-- Complex classes with a single responsibility (e.g., `StompBroker`,
-  `NodeHTTPServerAdapter`, `AbstractFactory`).
+- Complex classes with a single responsibility (e.g., `NodeHTTPServerAdapter`,
+  `AbstractFactory`).
 - Framework integration modules.
 
 ---

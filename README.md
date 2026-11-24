@@ -198,7 +198,8 @@ package, and file-naming convention is
 
 Core & infrastructure:
 
-- [ndigo-core](packages/ndigo-core/README.md) — primitives, radix tree, media types
+- [ndigo-core](packages/ndigo-core/README.md) — primitives, kernel containers, media types
+- [ndigo-collections](packages/ndigo-collections/README.md) — standalone containers: heaps, tries, radix trees, multi-value maps, sketches
 - [ndigo-util](packages/ndigo-util/README.md) — native helper utilities
 - [ndigo-log](packages/ndigo-log/README.md) — logging core, severity mappings, thresholds (re-exported by `@ndigo/telemetry`)
 - [ndigo-factory](packages/ndigo-factory/README.md) — IoC factory + scopes

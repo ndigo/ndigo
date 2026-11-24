@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/schema",
+  "id": "NdigoCapability",
+  "title": "Scaffold a Capability",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Capability id in kebab-case — it names the catalog directory (e.g., 'shared-cache')",
+      "x-prompt": "What is the capability id?"
+    },
+    "summary": {
+      "type": "string",
+      "description": "One-line summary (1-160 chars) shown by `ndigo capabilities`",
+      "x-prompt": "One-line summary?"
+    },
+    "packages": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Composing @ndigo/* packages (e.g., @ndigo/cache) — their manifests must declare the capability",
+      "x-prompt": "Composing packages (comma-separated)?"
+    },
+    "guide": {
+      "type": "string",
+      "description": "Guide slug the capability links to (e.g., '21-persistence-and-shared-stores')"
+    },
+    "catalog": {
+      "type": "string",
+      "description": "Capability catalog root (default: packages/ndigo-cli/assets/capabilities)"
+    }
+  },
+  "required": ["id", "summary", "packages", "guide"]
+}

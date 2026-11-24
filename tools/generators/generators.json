@@ -40,6 +40,11 @@
       "schema": "./src/generators/entity/schema.json",
       "description": "Generate an @ndigo/orm entity class"
     },
+    "capability": {
+      "factory": "./src/generators/capability/generator",
+      "schema": "./src/generators/capability/schema.json",
+      "description": "Scaffold a capability entry in the CLI's capability catalog"
+    },
     "middleware": {
       "factory": "./src/generators/middleware/generator",
       "schema": "./src/generators/middleware/schema.json",

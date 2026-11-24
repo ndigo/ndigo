@@ -11,6 +11,7 @@
  * silently dropped — growing the metadata later must bump `predicate` so
  * committed snapshots fail the freshness check instead of diverging.
  */
+import { IllegalStateError } from '@ndigo/core';
 import type { Constructable } from '@ndigo/core';
 import { getEntityMetadata, isEntity } from '@ndigo/orm';
 import { primaryKeyStorageType, sqliteTypeForColumnType } from './_column-types';
@@ -363,7 +364,7 @@ export function renderSnapshot(snapshot: SchemaSnapshot): string {
 export function readSnapshot(source: string): SchemaSnapshot {
     const parsed = JSON.parse(source) as { predicate?: unknown; tables?: unknown };
     if (parsed.predicate !== SNAPSHOT_PREDICATE) {
-        throw new Error(
+        throw new IllegalStateError(
             `readSnapshot: unsupported schema snapshot predicate ${JSON.stringify(parsed.predicate)} — ` +
                 `expected ${SNAPSHOT_PREDICATE}; regenerate with the current framework`
         );

@@ -5,6 +5,7 @@
  * generate callback so `@ndigo/cli` can drive migrations without knowing
  * anything about Drizzle.
  */
+import { IllegalStateError } from '@ndigo/core';
 import { DrizzleDataSource } from './drizzle-data-source.js';
 import { DrizzleMigrator } from './drizzle-migrator.js';
 import type { Migration } from './drizzle-migrator.js';
@@ -63,7 +64,7 @@ export function createDrizzleAdapter(options: DrizzleAdapterOptions): NdigoDatab
 
         async generate(): Promise<void> {
             if (!options.generate) {
-                throw new Error('generate is not configured for this adapter');
+                throw new IllegalStateError('generate is not configured for this adapter');
             }
             await options.generate();
         },

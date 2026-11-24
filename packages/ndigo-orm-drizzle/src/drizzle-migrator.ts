@@ -5,7 +5,7 @@
  * {@link Migration.up} for the `batch()` constraint).
  */
 import type { InValue } from '@libsql/client';
-import { compareBy, numberComparator } from '@ndigo/core';
+import { compareBy, numberComparator, IllegalStateError } from '@ndigo/core';
 
 import { DrizzleDataSource } from './drizzle-data-source';
 
@@ -227,14 +227,14 @@ function orderedMigrations(migrations: Migration[]): Migration[] {
 
     for (const migration of migrations) {
         if (!Number.isInteger(migration.version) || migration.version <= 0) {
-            throw new Error(
+            throw new IllegalStateError(
                 `DrizzleMigrator: migration version must be a positive integer, got ${JSON.stringify(
                     migration.version
                 )}`
             );
         }
         if (seen.has(migration.version)) {
-            throw new Error(`DrizzleMigrator: duplicate migration version ${migration.version}`);
+            throw new IllegalStateError(`DrizzleMigrator: duplicate migration version ${migration.version}`);
         }
         seen.add(migration.version);
     }

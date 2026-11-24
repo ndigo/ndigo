@@ -144,7 +144,7 @@ export class LibSQLSessionStore implements SessionStore, Destroyable {
             ],
             'write'
         );
-        if (results[1].rows.length !== 1) throw new Error('LibSQL session store at capacity');
+        if (results[1].rows.length !== 1) throw new IllegalStateError('LibSQL session store at capacity');
         return id;
     }
 
@@ -191,7 +191,7 @@ export class LibSQLSessionStore implements SessionStore, Destroyable {
             args: [sessionId],
         });
         const row = result.rows[0];
-        if (row === undefined) throw new Error('LibSQL session not found or expired');
+        if (row === undefined) throw new IllegalStateError('LibSQL session not found or expired');
         const { expiresAt } = decodeRow(row);
         const now = Date.now();
         if (expiresAt <= now) {
@@ -199,7 +199,7 @@ export class LibSQLSessionStore implements SessionStore, Destroyable {
                 sql: `DELETE FROM ${TABLE} WHERE session_id = ? AND expires_at <= ?`,
                 args: [sessionId, now],
             });
-            throw new Error('LibSQL session not found or expired');
+            throw new IllegalStateError('LibSQL session not found or expired');
         }
         const id = randomToken(32);
         // The id and expiry predicates are checked by SQLite inside the write.
@@ -212,10 +212,10 @@ export class LibSQLSessionStore implements SessionStore, Destroyable {
                   WHERE session_id = ? AND expires_at > ? RETURNING expires_at`,
             args: [id, ...values, sessionId, Date.now()],
         });
-        if (updated.rows.length !== 1) throw new Error('LibSQL session not found or expired');
+        if (updated.rows.length !== 1) throw new IllegalStateError('LibSQL session not found or expired');
         const effectiveExpiry = updated.rows[0][0];
         if (typeof effectiveExpiry !== 'number' || !Number.isSafeInteger(effectiveExpiry)) {
-            throw new Error('Malformed LibSQL session expiry');
+            throw new IllegalStateError('Malformed LibSQL session expiry');
         }
         return { id, expiresAt: effectiveExpiry };
     }
@@ -270,16 +270,16 @@ function encodeRecord(record: SessionRecord): InValue[] {
 }
 
 function decodeRow(row: Row): { record: SessionRecord; expiresAt: number } {
-    if (typeof row[2] !== 'string') throw new Error('Malformed LibSQL session roles');
+    if (typeof row[2] !== 'string') throw new IllegalStateError('Malformed LibSQL session roles');
     let roles: unknown;
     try {
         roles = JSON.parse(row[2]);
     } catch {
-        throw new Error('Malformed LibSQL session roles');
+        throw new IllegalStateError('Malformed LibSQL session roles');
     }
     assertFields(row[0], row[1], roles, row[3], row[4]);
     if (typeof row[5] !== 'number' || !Number.isSafeInteger(row[5])) {
-        throw new Error('Malformed LibSQL session expiry');
+        throw new IllegalStateError('Malformed LibSQL session expiry');
     }
     return {
         record: {
@@ -303,6 +303,6 @@ function assertFields(id: unknown, name: unknown, roles: unknown, tokenVersion: 
         typeof issuedAt !== 'number' ||
         !Number.isSafeInteger(issuedAt)
     ) {
-        throw new Error('Malformed LibSQL session record');
+        throw new IllegalStateError('Malformed LibSQL session record');
     }
 }

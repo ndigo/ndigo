@@ -2,6 +2,7 @@
  * Drizzle-backed derived-query repository (ORM completion plan, Wave 4):
  * Derived-query method names evaluated to SQL.
  */
+import { IllegalStateError } from '@ndigo/core';
 import { getEntityMetadata, parseDerivedQuery } from '@ndigo/orm';
 import { DrizzleRepository } from './drizzle-repository';
 
@@ -64,7 +65,9 @@ export class DrizzleDerivedQueryRepository<T extends object, ID> extends Drizzle
         const meta = getEntityMetadata(entityClass);
         const query = parseDerivedQuery(methodName, meta.columns);
         if (!query) {
-            throw new Error(`DrizzleDerivedQueryRepository: unsupported derived query method: ${methodName}`);
+            throw new IllegalStateError(
+                `DrizzleDerivedQueryRepository: unsupported derived query method: ${methodName}`
+            );
         }
 
         const columnNameByField = new Map(meta.columns.map((column) => [column.fieldName, column.columnName]));

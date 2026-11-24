@@ -173,7 +173,7 @@ export class LibSQLQueueMessageStore implements QueueMessageStore {
         });
         const row = existing.rows[0];
         if (row === undefined) {
-            throw new Error('libsql queue append conflicted but no row found');
+            throw new IllegalStateError('libsql queue append conflicted but no row found');
         }
         // NOTE: bridging to Row — the source type is wider than this consumer's contract.
         return decodeRow(row as unknown as Row);

@@ -1,5 +1,5 @@
 /**
- * `ToonView`: media type, round-trip contract, resolver, and negotiation —
+ * `TOONView`: media type, round-trip contract, resolver, and negotiation —
  * the A2UI view's test shape, with conformance against the same pinned SDK's
  * `decode` (not a mock): the decoder is the spec's referee for `encode`.
  */
@@ -16,7 +16,7 @@ import type { View, ViewResolver } from '@ndigo/view';
 import { decode } from '@toon-format/toon';
 import { describe, expect, it } from 'vitest';
 import { encodeToon } from '../src/toon-encode';
-import { ToonView, toonViewResolver } from '../src';
+import { TOONView, toonViewResolver } from '../src';
 
 /** A delegate resolver that always returns the same view. */
 const staticResolver = (view: View): ViewResolver => ({
@@ -35,14 +35,14 @@ const UNIFORM_ROWS = [
     { id: 'nd-input', type: 'ui', downloads: 980 },
 ];
 
-describe('ToonView', () => {
+describe('TOONView', () => {
     it('declares the text/toon media type with the utf-8 charset', () => {
-        expect(new ToonView().mediaType?.toString()).toContain('text/toon');
-        expect(new ToonView().mediaType?.toString()).toContain('charset=UTF-8');
+        expect(new TOONView().mediaType?.toString()).toContain('text/toon');
+        expect(new TOONView().mediaType?.toString()).toContain('charset=UTF-8');
     });
 
     it('round-trips uniform tabular rows through the reference decoder', async () => {
-        const result = await new ToonView().renderTo(UNIFORM_ROWS, ROUTE);
+        const result = await new TOONView().renderTo(UNIFORM_ROWS, ROUTE);
 
         expect(result.mediaType?.toString()).toContain('text/toon');
         expect(decode(result.body as string)).toEqual(UNIFORM_ROWS);
@@ -51,7 +51,7 @@ describe('ToonView', () => {
     });
 
     it('round-trips nested, scalar, and degenerate payloads', async () => {
-        const view = new ToonView();
+        const view = new TOONView();
         const models: unknown[] = [
             { server: { port: 8080 }, profiles: ['production', 'us-east'] },
             [1, 2, 3],
@@ -66,22 +66,22 @@ describe('ToonView', () => {
 
     it('round-trips strings with newlines, quotes, and unicode', async () => {
         const model = { note: 'line one\nline "two" — é?' };
-        const result = await new ToonView().renderTo(model, ROUTE);
+        const result = await new TOONView().renderTo(model, ROUTE);
         expect(decode(result.body as string)).toEqual(model);
     });
 
     it('honors the delimiter option', async () => {
-        const result = await new ToonView({ delimiter: '|' }).renderTo(UNIFORM_ROWS, ROUTE);
+        const result = await new TOONView({ delimiter: '|' }).renderTo(UNIFORM_ROWS, ROUTE);
         expect(decode(result.body as string)).toEqual(UNIFORM_ROWS);
         // The delimiter is honored end to end: the tabular body differs from
         // the comma default (the decoder infers it from the document marker).
-        const comma = await new ToonView().renderTo(UNIFORM_ROWS, ROUTE);
+        const comma = await new TOONView().renderTo(UNIFORM_ROWS, ROUTE);
         expect(result.body).not.toBe(comma.body);
     });
 
     it('honors the indentSize option', async () => {
         const model = { outer: { inner: 1 } };
-        const result = await new ToonView({ indentSize: 4 }).renderTo(model, ROUTE);
+        const result = await new TOONView({ indentSize: 4 }).renderTo(model, ROUTE);
         expect(result.body as string).toContain('    inner: 1');
         // Indentation units are part of the document, so decoding mirrors them.
         expect(decode(result.body as string, { indentSize: 4 })).toEqual(model);
@@ -93,7 +93,7 @@ describe('ToonView', () => {
 
         let caught: unknown;
         try {
-            await new ToonView().renderTo(circular, ROUTE);
+            await new TOONView().renderTo(circular, ROUTE);
         } catch (error) {
             caught = error;
         }
@@ -105,13 +105,13 @@ describe('ToonView', () => {
 
     it('resolves only its configured view name', async () => {
         const resolver = toonViewResolver();
-        expect(await resolver.resolveViewName('toon')).toBeInstanceOf(ToonView);
+        expect(await resolver.resolveViewName('toon')).toBeInstanceOf(TOONView);
         expect(await resolver.resolveViewName('report')).toBeNull();
     });
 
     it('produces an options-tuned view per resolution', async () => {
         const resolver = toonViewResolver('report', { delimiter: '|' });
-        const view = (await resolver.resolveViewName('report')) as ToonView;
+        const view = (await resolver.resolveViewName('report')) as TOONView;
         const result = await view.renderTo(UNIFORM_ROWS, ROUTE);
         expect(decode(result.body as string)).toEqual(UNIFORM_ROWS);
     });
@@ -136,7 +136,7 @@ describe('toon negotiation (opt-in)', () => {
         // makes JSON the default for unopinionated clients.
         resolver.viewResolvers = [staticResolver(new JSONView()), toonViewResolver('report')];
 
-        expect(await resolver.resolveViewName('report', '', { path: '/report.toon' })).toBeInstanceOf(ToonView);
+        expect(await resolver.resolveViewName('report', '', { path: '/report.toon' })).toBeInstanceOf(TOONView);
         expect(await resolver.resolveViewName('report', '', { path: '/report.json' })).toBeInstanceOf(JSONView);
         // An unopinionated client gets the default: JSON.
         expect(await resolver.resolveViewName('report', '', { path: '/report' })).toBeInstanceOf(JSONView);
@@ -162,7 +162,7 @@ describe('toon negotiation (opt-in)', () => {
 
 describe('encodeToon', () => {
     it('matches the view serialize output', async () => {
-        const result = await new ToonView().renderTo(UNIFORM_ROWS, ROUTE);
+        const result = await new TOONView().renderTo(UNIFORM_ROWS, ROUTE);
         expect(encodeToon(UNIFORM_ROWS)).toBe(result.body);
     });
 });

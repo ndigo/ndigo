@@ -1,12 +1,12 @@
 /**
  */
 import { describe, test, expect, vi } from 'vitest';
-import { TtlContentSource } from '../src/ttl';
+import { TTLContentSource } from '../src/ttl';
 
-describe('TtlContentSource', () => {
+describe('TTLContentSource', () => {
     test('loads and caches content', async () => {
         const loader = vi.fn().mockResolvedValue('Hello');
-        const source = new TtlContentSource(loader);
+        const source = new TTLContentSource(loader);
 
         const result = await source.getContent('welcome', 'en');
         expect(result).toBe('Hello');
@@ -20,7 +20,7 @@ describe('TtlContentSource', () => {
 
     test('caches per key+language pair', async () => {
         const loader = vi.fn().mockResolvedValue('Bonjour');
-        const source = new TtlContentSource(loader);
+        const source = new TTLContentSource(loader);
 
         expect(await source.getContent('welcome', 'fr')).toBe('Bonjour');
         expect(await source.getContent('welcome', 'en')).toBe('Bonjour');
@@ -29,7 +29,7 @@ describe('TtlContentSource', () => {
 
     test('invalidate clears all cache entries', async () => {
         const loader = vi.fn().mockResolvedValue('Hello');
-        const source = new TtlContentSource(loader);
+        const source = new TTLContentSource(loader);
 
         await source.getContent('welcome', 'en');
         source.invalidate();
@@ -40,7 +40,7 @@ describe('TtlContentSource', () => {
 
     test('invalidateEntry removes a single cache entry', async () => {
         const loader = vi.fn().mockResolvedValue('Hello');
-        const source = new TtlContentSource(loader);
+        const source = new TTLContentSource(loader);
 
         await source.getContent('welcome', 'en');
         await source.getContent('goodbye', 'en');
@@ -57,7 +57,7 @@ describe('TtlContentSource', () => {
         vi.useFakeTimers();
         try {
             const loader = vi.fn().mockResolvedValue('Hello');
-            const source = new TtlContentSource(loader, 1000);
+            const source = new TTLContentSource(loader, 1000);
 
             await source.getContent('a', 'en');
             await source.getContent('b', 'en');
@@ -77,7 +77,7 @@ describe('TtlContentSource', () => {
     test('reloads after TTL expires', async () => {
         vi.useFakeTimers();
         const loader = vi.fn().mockResolvedValue('Hello');
-        const source = new TtlContentSource(loader, 1000);
+        const source = new TTLContentSource(loader, 1000);
 
         await source.getContent('welcome', 'en');
         expect(loader).toHaveBeenCalledTimes(1);

@@ -211,7 +211,7 @@ export class OpenAPIDocsAutoConfiguration {
      * @returns The UI controller.
      */
     @entry()
-    swaggerUiController(): SwaggerUIController {
+    swaggerUIController(): SwaggerUIController {
         return this.#ui;
     }
 

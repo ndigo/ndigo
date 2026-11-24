@@ -7,7 +7,7 @@ import { resolveAppDir } from '../helpers/app-scripts.js';
 import { startAppServer } from '../mcp/server.js';
 import { appDirPositional } from './_script-fronts.js';
 
-interface McpFlags {
+interface MCPFlags {
     readOnly?: boolean;
     live?: boolean;
 }
@@ -16,7 +16,7 @@ interface McpFlags {
  * The application MCP server command.
  */
 export const mcpCommand = buildCommand({
-    async func(flags: McpFlags, dir: string) {
+    async func(flags: MCPFlags, dir: string) {
         await startAppServer({
             dir: resolveAppDir(dir),
             readOnly: flags.readOnly === true,

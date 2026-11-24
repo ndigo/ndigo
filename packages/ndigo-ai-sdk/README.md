@@ -47,7 +47,7 @@ const agent = new AIAgent({
 | structured output (Zod)          | `zodSchema()`                                      |
 | `streamStep`                     | `streamText().stream`                              |
 
-`AISdkModel.info` reads `provider` / `modelId` from the model and can be
+`AISDKModel.info` reads `provider` / `modelId` from the model and can be
 overridden for stable telemetry and rate-limit keys.
 
 ### Integration-layer rule

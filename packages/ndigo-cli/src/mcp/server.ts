@@ -5,8 +5,8 @@
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 import { appScriptCommand, runInteractiveSpawn } from '../helpers/app-scripts.js';
-import { createMcpHost } from '../helpers/mcp-host.js';
-import type { McpHost } from '../helpers/mcp-host.js';
+import { createMCPHost } from '../helpers/mcp-host.js';
+import type { MCPHost } from '../helpers/mcp-host.js';
 import { requireCommandIndex } from '../commands/_command-registry.js';
 import {
     createAppToolContext,
@@ -82,10 +82,10 @@ export async function startAppServer(options: AppServerOptions): Promise<void> {
     await createAppHost(options).startStdio('ndigo mcp');
 }
 
-function createAppHost(options: AppServerOptions): McpHost {
+function createAppHost(options: AppServerOptions): MCPHost {
     const readOnly = options.readOnly === true;
     const context = createAppToolContext(options.dir);
-    const host = createMcpHost({
+    const host = createMCPHost({
         name: 'ndigo',
         version: '0.0.1',
         readOnly,

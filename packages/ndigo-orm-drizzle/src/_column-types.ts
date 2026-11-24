@@ -6,7 +6,7 @@
 import { columnTypeFamily } from '@ndigo/orm';
 
 /** SQLite storage classes the metadata → SQL mapping can emit. */
-export type SqliteStorageType = 'INTEGER' | 'REAL' | 'NUMERIC' | 'BLOB' | 'TEXT';
+export type SQLiteStorageType = 'INTEGER' | 'REAL' | 'NUMERIC' | 'BLOB' | 'TEXT';
 
 /**
  * Maps a declared `@column({ type })` to its SQLite storage type:
@@ -18,7 +18,7 @@ export type SqliteStorageType = 'INTEGER' | 'REAL' | 'NUMERIC' | 'BLOB' | 'TEXT'
  * @param type - The declared column type; `undefined` for untyped columns.
  * @returns The SQLite storage type for the column.
  */
-export function sqliteTypeForColumnType(type: string | undefined): SqliteStorageType {
+export function sqliteTypeForColumnType(type: string | undefined): SQLiteStorageType {
     switch (columnTypeFamily(type)) {
         case 'integer':
             return 'INTEGER';
@@ -47,7 +47,7 @@ export function sqliteTypeForColumnType(type: string | undefined): SqliteStorage
  * @param generated - Whether the key field is marked `@generatedColumn`.
  * @returns The SQLite storage type for the primary key column.
  */
-export function primaryKeyStorageType(type: string | undefined, generated: boolean): SqliteStorageType {
+export function primaryKeyStorageType(type: string | undefined, generated: boolean): SQLiteStorageType {
     if (type !== undefined) return sqliteTypeForColumnType(type);
     return generated ? 'INTEGER' : 'NUMERIC';
 }

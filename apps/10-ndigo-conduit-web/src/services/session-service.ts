@@ -17,9 +17,9 @@ import { Null } from '@ndigo/core';
 import { ROUTER } from '@ndigo/router';
 import { signal, type Signal } from '@ndigo/signals';
 import {
-    ConduitApiError,
+    ConduitAPIError,
     type ConduitAccountPatch,
-    type ConduitApi,
+    type ConduitAPI,
     type ConduitErrors,
     type ConduitSession,
     type ConduitUser,
@@ -88,7 +88,7 @@ export class SessionService extends AsApplicationContextAware(Null) {
     /** Injected by the container (`ApplicationContextAware`). */
     declare readonly applicationContext: ApplicationContext;
 
-    readonly #api: ConduitApi;
+    readonly #api: ConduitAPI;
     readonly #storage: ConduitTokenStorage;
     readonly #session: Signal<ConduitSession | null>;
     readonly #errors: FormErrorState;
@@ -100,7 +100,7 @@ export class SessionService extends AsApplicationContextAware(Null) {
      * @param storage - Token persistence.
      * @param initial - A session to start from (tests); the token is not persisted.
      */
-    constructor(api: ConduitApi, storage: ConduitTokenStorage, initial: ConduitSession | null = null) {
+    constructor(api: ConduitAPI, storage: ConduitTokenStorage, initial: ConduitSession | null = null) {
         super();
         this.#api = api;
         this.#storage = storage;
@@ -242,7 +242,7 @@ export class SessionService extends AsApplicationContextAware(Null) {
             this.#refresh();
             return null;
         } catch (error) {
-            const errors = ConduitApiError.from(error)?.errors ?? { body: ['Sign-in failed.'] };
+            const errors = ConduitAPIError.from(error)?.errors ?? { body: ['Sign-in failed.'] };
             this.#errors.set(form, errors);
             this.#refresh();
             return errors;

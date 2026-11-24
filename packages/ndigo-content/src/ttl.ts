@@ -22,23 +22,23 @@ export type ContentLoader = (key: string, language: string | LanguageCode) => Pr
  *
  * @example
  * ```ts
- * const instance = new TtlContentSource();
+ * const instance = new TTLContentSource();
  * ```
  */
-export class TtlContentSource implements ContentSource {
+export class TTLContentSource implements ContentSource {
     /**
      * The `Symbol.toStringTag` value for this instance.
      *
      * `Object.prototype.toString()` reads this symbol to render the
      * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
      *
-     * @returns The string "TtlContentSource".
+     * @returns The string "TTLContentSource".
      *
      * @example
-     * console.log(Object.prototype.toString.call(instance)); // "[object TtlContentSource]"
+     * console.log(Object.prototype.toString.call(instance)); // "[object TTLContentSource]"
      */
     get [Symbol.toStringTag](): string {
-        return 'TtlContentSource';
+        return 'TTLContentSource';
     }
 
     #loader: ContentLoader;

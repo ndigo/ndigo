@@ -5,10 +5,10 @@ import { SpecVersion } from '@a2ui/web_core';
 import { afterEach, describe, expect, it } from 'vitest';
 import { flush } from './_fixtures';
 import '../registry/ui/switch/nd-switch';
-import { NdA2uiSurface } from '../registry/ui/a2ui-surface/nd-a2ui-surface';
+import { NdA2UISurface } from '../registry/ui/a2ui-surface/nd-a2ui-surface';
 
-function mount(): NdA2uiSurface {
-    const surface = document.createElement('nd-a2ui-surface') as NdA2uiSurface;
+function mount(): NdA2UISurface {
+    const surface = document.createElement('nd-a2ui-surface') as NdA2UISurface;
     document.body.append(surface);
     return surface;
 }
@@ -26,7 +26,7 @@ describe('<nd-a2ui-surface>', () => {
         expect(customElements.get('nd-a2ui-surface')).toBeDefined();
         expect(customElements.get('nd-switch')).toBeDefined();
         const surface = mount();
-        expect(surface).toBeInstanceOf(NdA2uiSurface);
+        expect(surface).toBeInstanceOf(NdA2UISurface);
         surface.messages = [
             { version: '1.0', createSurface: { surfaceId: 's1', catalogId: 'ndigo-ui' } },
             {

@@ -4,7 +4,7 @@ import { describe, test, expect } from 'vitest';
 import { StaticContentSource } from '../src/content';
 import { NegotiatingContentSource } from '../src/negotiation';
 import { LanguageCode } from '../src/language-code';
-import { TtlContentSource } from '../src/ttl';
+import { TTLContentSource } from '../src/ttl';
 import * as LanguageCodes from '../src/language-codes';
 
 describe('LanguageCodes', () => {
@@ -41,8 +41,8 @@ describe('LanguageCode in content sources', () => {
         expect(await negotiator.getContent('title', LanguageCodes.FR_CH)).toBe('Bonjour');
     });
 
-    test('TtlContentSource caches LanguageCode lookups', async () => {
-        const ttl = new TtlContentSource((key, lang) => source.getContent(key, lang), 60_000);
+    test('TTLContentSource caches LanguageCode lookups', async () => {
+        const ttl = new TTLContentSource((key, lang) => source.getContent(key, lang), 60_000);
         expect(await ttl.getContent('title', LanguageCodes.FR)).toBe('Bonjour');
         expect(await ttl.getContent('title', 'fr')).toBe('Bonjour');
     });

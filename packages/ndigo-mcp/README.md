@@ -40,9 +40,9 @@ export class OrdersController {
 Expose the dispatcher's tools over stdio:
 
 ```ts
-import { McpToolRegistry, startStdioServer } from '@ndigo/mcp';
+import { MCPToolRegistry, startStdioServer } from '@ndigo/mcp';
 
-const registry = McpToolRegistry.from(dispatcher, {
+const registry = MCPToolRegistry.from(dispatcher, {
     readOnly: process.env['NDIGO_MCP_READ_ONLY'] === 'true',
     // Bind tool arguments through the same resolvers HTTP uses.
     argumentResolvers: context.getValue(ARGUMENT_RESOLVERS),
@@ -54,7 +54,7 @@ await startStdioServer(registry);
 
 ### Projection
 
-`McpToolRegistry.from(dispatcher, options)` walks the registered mapping tables
+`MCPToolRegistry.from(dispatcher, options)` walks the registered mapping tables
 and projects every `@toolMapping` handler:
 
 - **Name** — `options.name` or the snake_case method name.
@@ -92,10 +92,10 @@ and projects every `@toolMapping` handler:
 Mount one route; every HTTP method reaches the same endpoint:
 
 ```ts
-import { McpHTTPEndpoint } from '@ndigo/mcp';
+import { MCPHTTPEndpoint } from '@ndigo/mcp';
 import { requestMapping } from '@ndigo/dispatcher';
 
-const endpoint = new McpHTTPEndpoint(registry, { inspect: manifest });
+const endpoint = new MCPHTTPEndpoint(registry, { inspect: manifest });
 
 @requestMapping({ value: '/mcp' })
 async mcp(route: Route): Promise<void> {
@@ -150,7 +150,7 @@ schema-validated view where the engine controls the render.
 `ndigo://manifest`, `ndigo://routes`, and `ndigo://config` resources. Each tool
 call emits one `execute_tool <name>` span with `gen_ai.tool.name`,
 `gen_ai.tool.call.id`, and `gen_ai.tool.call.source` (the transport: `stdio`
-from `startStdioServer`, `http` from `McpHTTPEndpoint`) attributes; outbound
+from `startStdioServer`, `http` from `MCPHTTPEndpoint`) attributes; outbound
 HTTP spans nest under it.
 
 ## API

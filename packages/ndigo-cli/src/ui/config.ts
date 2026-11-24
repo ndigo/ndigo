@@ -21,10 +21,10 @@ export const DEFAULT_REGISTRY_SOURCE = 'https://ndigo.dev/r/registry.json';
  *
  * @example
  * ```ts
- * const value = {} as UiAliases;
+ * const value = {} as UIAliases;
  * ```
  */
-export interface UiAliases {
+export interface UIAliases {
     /** Directory for `@ui/` targets. */
     readonly ui: string;
     /** Directory for `@lib/` targets. */
@@ -40,14 +40,14 @@ export interface UiAliases {
  *
  * @example
  * ```ts
- * const value = {} as UiConfig;
+ * const value = {} as UIConfig;
  * ```
  */
-export interface UiConfig {
+export interface UIConfig {
     /** Root registry source (path or URL). */
     readonly registry?: string;
     /** Alias overrides. */
-    readonly aliases?: Partial<UiAliases>;
+    readonly aliases?: Partial<UIAliases>;
     /** Authoring flavour (`webcomponent`, `ejs`, or `both`). */
     readonly flavour?: string;
 }
@@ -55,7 +55,7 @@ export interface UiConfig {
 /**
  * Default aliases, relative to the application directory.
  */
-export const DEFAULT_ALIASES: UiAliases = {
+export const DEFAULT_ALIASES: UIAliases = {
     ui: 'src/ui',
     lib: 'src/lib',
     components: 'src/components',
@@ -71,14 +71,14 @@ const targetPattern = /^@(ui|lib|components|hooks)\/(.+)$/u;
  *
  * @example
  * ```ts
- * readUiConfig();
+ * readUIConfig();
  * ```
  */
-export function readUiConfig(dir: string): UiConfig | null {
+export function readUIConfig(dir: string): UIConfig | null {
     const path = join(dir, UI_CONFIG_FILE);
     if (!existsSync(path)) return null;
     try {
-        return JSON.parse(readFileSync(path, 'utf8')) as UiConfig;
+        return JSON.parse(readFileSync(path, 'utf8')) as UIConfig;
     } catch {
         throw usageError(`invalid JSON in ${path}`);
     }
@@ -93,10 +93,10 @@ export function readUiConfig(dir: string): UiConfig | null {
  *
  * @example
  * ```ts
- * writeUiConfig();
+ * writeUIConfig();
  * ```
  */
-export function writeUiConfig(dir: string, config: UiConfig, force: boolean): string {
+export function writeUIConfig(dir: string, config: UIConfig, force: boolean): string {
     const path = join(dir, UI_CONFIG_FILE);
     if (existsSync(path) && !force) {
         throw usageError(`${path} already exists (use --force to overwrite)`);
@@ -121,8 +121,8 @@ export function writeUiConfig(dir: string, config: UiConfig, force: boolean): st
  * resolveAliases();
  * ```
  */
-export function resolveAliases(dir: string): UiAliases {
-    return { ...DEFAULT_ALIASES, ...readUiConfig(dir)?.aliases };
+export function resolveAliases(dir: string): UIAliases {
+    return { ...DEFAULT_ALIASES, ...readUIConfig(dir)?.aliases };
 }
 
 /**
@@ -137,7 +137,7 @@ export function resolveAliases(dir: string): UiAliases {
  * ```
  */
 export function resolveRegistrySource(dir: string, flag?: string): string {
-    const source = flag ?? readUiConfig(dir)?.registry ?? DEFAULT_REGISTRY_SOURCE;
+    const source = flag ?? readUIConfig(dir)?.registry ?? DEFAULT_REGISTRY_SOURCE;
     if (isRemoteSource(source)) return source;
     // Config paths are app-relative so the committed ndigo.ui.json stays
     // portable; a CLI flag keeps the caller's cwd semantics.
@@ -156,12 +156,12 @@ export function resolveRegistrySource(dir: string, flag?: string): string {
  * resolveTargetPath();
  * ```
  */
-export function resolveTargetPath(target: string, aliases: UiAliases): string {
+export function resolveTargetPath(target: string, aliases: UIAliases): string {
     const match = targetPattern.exec(target);
     if (match === null) {
         if (target.startsWith('@')) throw usageError(`unknown registry target '${target}'`);
         return target;
     }
-    const kind = match[1] as keyof UiAliases;
+    const kind = match[1] as keyof UIAliases;
     return join(aliases[kind], match[2]);
 }

@@ -7,7 +7,7 @@
  * `{articles,articlesCount}`, `{comments}`, `{tags}`). Nothing here validates
  * at runtime: the API is an in-repo sibling whose shapes are pinned by its own
  * conformance suite, so the client trusts the contract and surfaces transport
- * failures as {@link ConduitApiError}.
+ * failures as {@link ConduitAPIError}.
  *
  * @module ndigo-conduit-web
  */
@@ -121,7 +121,7 @@ export interface ConduitArticleDraft {
  * response carried no parseable envelope. Views read `errors` field-by-field,
  * so a per-field message lands on the field that caused it.
  */
-export class ConduitApiError extends Error {
+export class ConduitAPIError extends Error {
     /** The HTTP status of the failed response (`0` for a transport failure). */
     readonly status: number;
 
@@ -137,19 +137,19 @@ export class ConduitApiError extends Error {
      */
     constructor(status: number, errors: ConduitErrors, message?: string) {
         super(message ?? `Conduit request failed with status ${status}`);
-        this.name = 'ConduitApiError';
+        this.name = 'ConduitAPIError';
         this.status = status;
         this.errors = errors;
     }
 
     /**
-     * Narrows a thrown value to a {@link ConduitApiError}.
+     * Narrows a thrown value to a {@link ConduitAPIError}.
      *
      * @param error - The thrown value.
-     * @returns The error when it is a {@link ConduitApiError}, otherwise `null`.
+     * @returns The error when it is a {@link ConduitAPIError}, otherwise `null`.
      */
-    static from(error: unknown): ConduitApiError | null {
-        return error instanceof ConduitApiError ? error : null;
+    static from(error: unknown): ConduitAPIError | null {
+        return error instanceof ConduitAPIError ? error : null;
     }
 
     /**
@@ -177,7 +177,7 @@ export class ConduitApiError extends Error {
  * implementation, so a spec drives them with a hand-written stub (token
  * discipline does not apply: this is a plain, replaceable port).
  */
-export interface ConduitApi {
+export interface ConduitAPI {
     /** `POST /api/users` — registers an account. */
     register(input: { username: string; email: string; password: string }): Promise<ConduitSession>;
 

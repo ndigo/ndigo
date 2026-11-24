@@ -156,7 +156,7 @@ export interface Cache<V = unknown> {
  * In-memory cache with TTL expiry and bounded-size eviction.
  *
  * - **Expiry** is lazy: expired entries are removed on `get`/`has` access,
- *   never by a background sweep (the `TtlContentSource` model — no timers,
+ *   never by a background sweep (the `TTLContentSource` model — no timers,
  *   safe in browsers and workers).
  * - **Eviction** delegates to `@ndigo/core` `BoundedCache`: `lru` promotes
  *   hits by delete+reinsert and evicts the map's first key; `fifo` leaves

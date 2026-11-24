@@ -2,9 +2,9 @@
 // the platform default (`http://localhost/`) with no `location` present.
 import { describe, expect, test, vi } from 'vitest';
 import type { Fetch } from '@ndigo/http';
-import { ConduitApiClient } from '../src/lib/api/conduit-api-client';
+import { ConduitAPIClient } from '../src/lib/api/conduit-api-client';
 import { createConduitHttp } from '../src/lib/api/conduit-http';
-import { ConduitApiError, type ConduitArticle } from '../src/lib/api/conduit-types';
+import { ConduitAPIError, type ConduitArticle } from '../src/lib/api/conduit-types';
 
 /**
  * A fetch double that records the requests it saw and answers from a queue.
@@ -23,10 +23,10 @@ function jsonResponse(status: number, body: unknown): Response {
     return new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });
 }
 
-describe('ConduitApiClient over @ndigo/http', () => {
+describe('ConduitAPIClient over @ndigo/http', () => {
     test('stamps the session token onto every outgoing request', async () => {
         const { requests, fetchDouble } = createFetchDouble(() => jsonResponse(200, { tags: ['realworld'] }));
-        const api = new ConduitApiClient(
+        const api = new ConduitAPIClient(
             createConduitHttp({ getToken: () => 'jwt-123', onUnauthorized: () => undefined, fetch: fetchDouble })
         );
 
@@ -38,7 +38,7 @@ describe('ConduitApiClient over @ndigo/http', () => {
 
     test('sends no Authorization header for an anonymous visitor', async () => {
         const { requests, fetchDouble } = createFetchDouble(() => jsonResponse(200, { tags: [] }));
-        const api = new ConduitApiClient(
+        const api = new ConduitAPIClient(
             createConduitHttp({ getToken: () => null, onUnauthorized: () => undefined, fetch: fetchDouble })
         );
 
@@ -46,9 +46,9 @@ describe('ConduitApiClient over @ndigo/http', () => {
         expect(requests[0]?.headers.get('Authorization')).toBeNull();
     });
 
-    test('maps a 422 envelope into a ConduitApiError with its field messages', async () => {
+    test('maps a 422 envelope into a ConduitAPIError with its field messages', async () => {
         const { fetchDouble } = createFetchDouble(() => jsonResponse(422, { errors: { title: ["can't be blank"] } }));
-        const api = new ConduitApiClient(
+        const api = new ConduitAPIClient(
             createConduitHttp({ getToken: () => null, onUnauthorized: () => undefined, fetch: fetchDouble })
         );
 
@@ -56,22 +56,22 @@ describe('ConduitApiClient over @ndigo/http', () => {
             .createArticle({ title: '', description: 'd', body: 'b', tagList: [] })
             .catch((error: unknown) => error);
 
-        expect(failure).toBeInstanceOf(ConduitApiError);
-        expect((failure as ConduitApiError).status).toBe(422);
-        expect((failure as ConduitApiError).errors).toEqual({ title: ["can't be blank"] });
+        expect(failure).toBeInstanceOf(ConduitAPIError);
+        expect((failure as ConduitAPIError).status).toBe(422);
+        expect((failure as ConduitAPIError).errors).toEqual({ title: ["can't be blank"] });
     });
 
     test('invokes the unauthorized hook on a 401 and still surfaces the envelope', async () => {
         const onUnauthorized = vi.fn();
         const { fetchDouble } = createFetchDouble(() => jsonResponse(401, { errors: { credentials: ['invalid'] } }));
-        const api = new ConduitApiClient(
+        const api = new ConduitAPIClient(
             createConduitHttp({ getToken: () => 'stale', onUnauthorized, fetch: fetchDouble })
         );
 
         const failure = await api.login({ email: 'a@example.com', password: 'nope' }).catch((error: unknown) => error);
 
         expect(onUnauthorized).toHaveBeenCalledTimes(1);
-        expect((failure as ConduitApiError).errors).toEqual({ credentials: ['invalid'] });
+        expect((failure as ConduitAPIError).errors).toEqual({ credentials: ['invalid'] });
     });
 
     test('splits the JWT out of the wire {user} payload', async () => {
@@ -82,7 +82,7 @@ describe('ConduitApiClient over @ndigo/http', () => {
                 user: { email: 'alice@example.com', token: 'jwt-abc', username: 'alice', bio: null, image: null },
             })
         );
-        const api = new ConduitApiClient(
+        const api = new ConduitAPIClient(
             createConduitHttp({ getToken: () => null, onUnauthorized: () => undefined, fetch: fetchDouble })
         );
 
@@ -95,7 +95,7 @@ describe('ConduitApiClient over @ndigo/http', () => {
     test('does not invoke the unauthorized hook for a successful call', async () => {
         const onUnauthorized = vi.fn();
         const { fetchDouble } = createFetchDouble(() => jsonResponse(200, { articles: [], articlesCount: 0 }));
-        const api = new ConduitApiClient(
+        const api = new ConduitAPIClient(
             createConduitHttp({ getToken: () => 'jwt', onUnauthorized, fetch: fetchDouble })
         );
 
@@ -105,7 +105,7 @@ describe('ConduitApiClient over @ndigo/http', () => {
 
     test('unwraps a 204 delete without reading a body', async () => {
         const { fetchDouble } = createFetchDouble(() => new Response(null, { status: 204 }));
-        const api = new ConduitApiClient(
+        const api = new ConduitAPIClient(
             createConduitHttp({ getToken: () => 'jwt', onUnauthorized: () => undefined, fetch: fetchDouble })
         );
 
@@ -116,20 +116,20 @@ describe('ConduitApiClient over @ndigo/http', () => {
         const fetchDouble: Fetch = async () => {
             throw new TypeError('Failed to fetch');
         };
-        const api = new ConduitApiClient(
+        const api = new ConduitAPIClient(
             createConduitHttp({ getToken: () => null, onUnauthorized: () => undefined, fetch: fetchDouble })
         );
 
         const failure = await api.getArticle('x').catch((error: unknown) => error);
-        expect((failure as ConduitApiError).status).toBe(0);
-        expect((failure as ConduitApiError).errors.body?.[0]).toContain('could not be reached');
+        expect((failure as ConduitAPIError).status).toBe(0);
+        expect((failure as ConduitAPIError).errors.body?.[0]).toContain('could not be reached');
     });
 
     test('serializes only the query members that are present', async () => {
         const { requests, fetchDouble } = createFetchDouble(() =>
             jsonResponse(200, { articles: [], articlesCount: 0 })
         );
-        const api = new ConduitApiClient(
+        const api = new ConduitAPIClient(
             createConduitHttp({ getToken: () => null, onUnauthorized: () => undefined, fetch: fetchDouble })
         );
 
@@ -151,7 +151,7 @@ describe('ConduitApiClient over @ndigo/http', () => {
             author: { username: 'alice', bio: null, image: null, following: false },
         } satisfies ConduitArticle;
         const { requests, fetchDouble } = createFetchDouble(() => jsonResponse(200, { article }));
-        const api = new ConduitApiClient(
+        const api = new ConduitAPIClient(
             createConduitHttp({ getToken: () => 'jwt', onUnauthorized: () => undefined, fetch: fetchDouble })
         );
 

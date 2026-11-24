@@ -1,5 +1,5 @@
 /**
- * The tool-source contract the agent loop consumes. `McpToolRegistry`
+ * The tool-source contract the agent loop consumes. `MCPToolRegistry`
  * (`@ndigo/mcp`) satisfies it structurally, so the loop never imports the
  * Node-only MCP package.
  */
@@ -41,7 +41,7 @@ export interface AIToolCallContext {
 
 /**
  * A source of tools the agent may call. Implementations decide where tools
- * live and how they execute; `McpToolRegistry` is the canonical one.
+ * live and how they execute; `MCPToolRegistry` is the canonical one.
  *
  * @example
  * ```ts

@@ -7,7 +7,7 @@
 import { ApplicationBuilder } from '@ndigo/boot';
 import type { ApplicationContext } from '@ndigo/context';
 import { ARGUMENT_RESOLVERS, DISPATCHER } from '@ndigo/dispatcher';
-import { McpToolRegistry } from '@ndigo/mcp';
+import { MCPToolRegistry } from '@ndigo/mcp';
 import { OpenAPISpecGenerator, type RouteMappingTable } from '@ndigo/openapi';
 import { NodeAutoConfiguration } from '@ndigo/platform-node';
 import type { Route } from '@ndigo/router';
@@ -30,7 +30,7 @@ afterAll(() => {
     context.close();
 });
 
-const registry = McpToolRegistry.from(context.getValue(DISPATCHER), {
+const registry = MCPToolRegistry.from(context.getValue(DISPATCHER), {
     readOnly: true,
     argumentResolvers: context.getValue(ARGUMENT_RESOLVERS),
 });

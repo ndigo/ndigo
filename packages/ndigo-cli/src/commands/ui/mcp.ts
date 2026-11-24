@@ -5,7 +5,7 @@ import { buildCommand } from '@stricli/core';
 import { resolveAppDir } from '../../helpers/app-scripts.js';
 import { startRegistryServer } from '../../ui/mcp-server.js';
 
-interface McpFlags {
+interface MCPFlags {
     dir?: string;
     registry?: string;
     readOnly?: boolean;
@@ -15,7 +15,7 @@ interface McpFlags {
  * The MCP server command.
  */
 export const mcpUiCommand = buildCommand({
-    async func(flags: McpFlags) {
+    async func(flags: MCPFlags) {
         await startRegistryServer({
             dir: resolveAppDir(flags.dir ?? '.'),
             ...(flags.registry === undefined ? {} : { registry: flags.registry }),

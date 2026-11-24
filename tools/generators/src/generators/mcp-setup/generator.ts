@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 /** Options for the `mcp-setup` generator. */
-export interface McpSetupGeneratorSchema {
+export interface MCPSetupGeneratorSchema {
     /** Application directory (repo-relative or absolute). */
     directory: string;
 }
@@ -20,7 +20,7 @@ export interface McpSetupGeneratorSchema {
  * @param schema - The application directory.
  * @returns A promise that resolves once the files are formatted.
  */
-export default async function mcpSetupGenerator(tree: Tree, schema: McpSetupGeneratorSchema): Promise<void> {
+export default async function mcpSetupGenerator(tree: Tree, schema: MCPSetupGeneratorSchema): Promise<void> {
     generateFiles(tree, join(__dirname, 'files'), schema.directory, { tmpl: '' });
     await formatFiles(tree);
 }

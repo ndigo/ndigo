@@ -191,7 +191,7 @@ export function defaultValue(rawDefault: string) {
  * @configurationProperties('server')
  * class ServerConfig {
  * }
- * class DbConfig { @property('url') url!: string; } // binds server.db.url
+ * class DBConfig { @property('url') url!: string; } // binds server.db.url
  * ```
  */
 export function nestedConfig(value: undefined, context: ClassFieldDecoratorContext): void {

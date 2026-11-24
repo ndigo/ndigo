@@ -15,7 +15,7 @@ import {
     type ViewResolver,
 } from '@ndigo/view';
 import { ChatController } from './chat-controller';
-import { McpHTTPController } from './http-mcp-controller';
+import { MCPHTTPController } from './http-mcp-controller';
 import { OrderTools } from './order-tools';
 import { ReportController } from './report-controller';
 
@@ -26,7 +26,7 @@ import { ReportController } from './report-controller';
 export class AgentLabConfiguration {
     readonly #chat = new ChatController();
     readonly #orders = new OrderTools();
-    readonly #mcp = new McpHTTPController();
+    readonly #mcp = new MCPHTTPController();
     readonly #reports = new ReportController();
 
     /**
@@ -49,7 +49,7 @@ export class AgentLabConfiguration {
      * @returns The Streamable HTTP MCP endpoint.
      */
     @entry()
-    mcpController(): McpHTTPController {
+    mcpController(): MCPHTTPController {
         return this.#mcp;
     }
 

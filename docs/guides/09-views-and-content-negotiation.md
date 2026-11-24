@@ -78,7 +78,7 @@ A `ResponseEntity` adds an explicit status and headers; the platform rewrites a
 | ----------------- | -------------------------- | -------------------------------------------------- |
 | `JSONView`        | `application/json`         | `JSON.stringify` with the route as context         |
 | `A2UIView`        | `application/a2ui+json`    | Array of A2UI messages for agent-driven surfaces   |
-| `ToonView`        | `text/toon`                | Tabular/agent payloads as TOON                     |
+| `TOONView`        | `text/toon`                | Tabular/agent payloads as TOON                     |
 | `CSVView`         | `text/csv`                 | Records from a model field (`{ records: 'rows' }`) |
 | `TextView`        | `text/plain`               | Plain string bodies                                |
 | `OctetStreamView` | `application/octet-stream` | Binary bodies                                      |
@@ -111,7 +111,7 @@ for the sandbox to render.
 ### TOON (`@ndigo/view-toon`)
 
 TOON (Token-Oriented Object Notation) is a line-oriented encoding of the JSON
-data model, tuned for LLM prompts. `ToonView` serializes a model as
+data model, tuned for LLM prompts. `TOONView` serializes a model as
 `text/toon;charset=utf-8`, and `encodeToon` renders the same document
 synchronously for in-process prompt composition — no view or HTTP involved.
 

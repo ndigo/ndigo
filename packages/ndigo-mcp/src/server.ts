@@ -15,18 +15,18 @@ import {
     ReadResourceRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
 import type { InspectManifest } from '@ndigo/inspect';
-import type { McpToolRegistry, ToolCallContext } from './registry.js';
-import { MCP_APP_MIME_TYPE, type UiResource } from './ui-resource.js';
+import type { MCPToolRegistry, ToolCallContext } from './registry.js';
+import { MCP_APP_MIME_TYPE, type UIResource } from './ui-resource.js';
 
 /**
  * Options for {@link createMcpServer}.
  *
  * @example
  * ```ts
- * const options: McpServerOptions = { name: 'my-app', version: '1.0.0' };
+ * const options: MCPServerOptions = { name: 'my-app', version: '1.0.0' };
  * ```
  */
-export interface McpServerOptions {
+export interface MCPServerOptions {
     /** Server name reported to clients. */
     readonly name?: string;
     /** Server version reported to clients. */
@@ -34,7 +34,7 @@ export interface McpServerOptions {
     /** The application manifest, exposed as MCP resources. */
     readonly inspect?: InspectManifest;
     /** MCP Apps `ui://` resources served as `text/html;profile=mcp-app`. */
-    readonly uiResources?: readonly UiResource[];
+    readonly uiResources?: readonly UIResource[];
     /**
      * The transport label recorded on tool-call spans as
      * `gen_ai.tool.call.source`; {@link startStdioServer} defaults to `'stdio'`.
@@ -54,7 +54,7 @@ export interface McpServerOptions {
  * const server = createMcpServer(registry, { name: 'my-app', version: '1.0.0' });
  * ```
  */
-export function createMcpServer(registry: McpToolRegistry, options: McpServerOptions = {}): Server {
+export function createMcpServer(registry: MCPToolRegistry, options: MCPServerOptions = {}): Server {
     const uiResources = options.uiResources ?? [];
     const server = new Server(
         { name: options.name ?? 'ndigo', version: options.version ?? '0.0.1' },
@@ -148,14 +148,14 @@ export function createMcpServer(registry: McpToolRegistry, options: McpServerOpt
  * await startStdioServer(registry, { name: 'my-app', version: '1.0.0' });
  * ```
  */
-export async function startStdioServer(registry: McpToolRegistry, options: McpServerOptions = {}): Promise<void> {
+export async function startStdioServer(registry: MCPToolRegistry, options: MCPServerOptions = {}): Promise<void> {
     const server = createMcpServer(registry, { source: 'stdio', ...options });
     const transport = new StdioServerTransport();
     await server.connect(transport);
     process.stderr.write(`${options.name ?? 'ndigo'}: listening on stdio\n`);
 }
 
-function resourcesOf(manifest: InspectManifest | undefined, uiResources: readonly UiResource[]) {
+function resourcesOf(manifest: InspectManifest | undefined, uiResources: readonly UIResource[]) {
     const manifestResources =
         manifest === undefined
             ? []

@@ -81,8 +81,8 @@ nothing for it; JSON remains what clients with no preference get.
 The full API is at `api/` (generated; run `pnpm doc:api`). Primary exports live in
 [`src/index.ts`](src/index.ts);
 
-- **`ToonView`** — a serializing view over `text/toon;charset=utf-8`
-- **`toonViewResolver`** — a resolver serving `ToonView` for one logical view name
+- **`TOONView`** — a serializing view over `text/toon;charset=utf-8`
+- **`toonViewResolver`** — a resolver serving `TOONView` for one logical view name
 - **`encodeToon`** — the synchronous prompt-composition encoder
 
 ## Development

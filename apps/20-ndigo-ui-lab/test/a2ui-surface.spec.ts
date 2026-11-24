@@ -6,7 +6,7 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import '../src/ui/nd-switch/nd-switch';
 import '../src/ui/nd-a2ui-surface/nd-a2ui-surface';
-import type { NdA2uiSurface } from '../src/ui/nd-a2ui-surface/nd-a2ui-surface';
+import type { NdA2UISurface } from '../src/ui/nd-a2ui-surface/nd-a2ui-surface';
 
 afterEach(() => {
     document.body.innerHTML = '';
@@ -14,7 +14,7 @@ afterEach(() => {
 
 describe('<nd-a2ui-surface> (installed item)', () => {
     it('renders an installed ndigo-ui component', async () => {
-        const surface = document.createElement('nd-a2ui-surface') as NdA2uiSurface;
+        const surface = document.createElement('nd-a2ui-surface') as NdA2UISurface;
         document.body.append(surface);
         surface.messages = [
             { version: '1.0', createSurface: { surfaceId: 's1', catalogId: 'ndigo-ui' } },
@@ -32,7 +32,7 @@ describe('<nd-a2ui-surface> (installed item)', () => {
     });
 
     it('rejects an unknown component', async () => {
-        const surface = document.createElement('nd-a2ui-surface') as NdA2uiSurface;
+        const surface = document.createElement('nd-a2ui-surface') as NdA2UISurface;
         document.body.append(surface);
         surface.messages = [
             { version: '1.0', createSurface: { surfaceId: 's1', catalogId: 'ndigo-ui' } },

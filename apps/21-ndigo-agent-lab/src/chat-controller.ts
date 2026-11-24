@@ -20,7 +20,7 @@ import {
 } from '@ndigo/dispatcher';
 import { $aware } from '@ndigo/factory';
 import { PropertyFlagProvider } from '@ndigo/flags';
-import { McpToolRegistry } from '@ndigo/mcp';
+import { MCPToolRegistry } from '@ndigo/mcp';
 import { ServerSentEventView } from '@ndigo/platform-node';
 import { FixedWindowRateLimiter } from '@ndigo/rate-limit';
 import { z } from 'zod';
@@ -103,7 +103,7 @@ export class ChatController implements ApplicationContextAware {
             provider: 'lmstudio',
             model: config.model,
         });
-        const tools = McpToolRegistry.from(context.getValue(DISPATCHER), {
+        const tools = MCPToolRegistry.from(context.getValue(DISPATCHER), {
             readOnly: true,
             argumentResolvers: context.getValue(ARGUMENT_RESOLVERS),
         });

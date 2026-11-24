@@ -9,7 +9,7 @@ stream the result over SSE with one GenAI trace.
 ## What you'll learn
 
 - How `@ndigo/ai` separates the agent loop from the provider adapter.
-- How `McpToolRegistry` doubles as the agent's tool source with no adapter.
+- How `MCPToolRegistry` doubles as the agent's tool source with no adapter.
 - How to generate a schema-validated object and implement the `AIModel` contract.
 - How to stream agent events over the existing SSE write path.
 - How rate limits, rollout flags, secrets, and resilience apply to model calls.
@@ -20,7 +20,7 @@ stream the result over SSE with one GenAI trace.
 | :--------------- | :---------------------------------------------------------------- |
 | `@ndigo/ai`      | `AIMessage`, `AIModel`, `AIAgent`, stream events, SSE framing.    |
 | `@ndigo/ai-sdk`  | The only package that imports the Vercel AI SDK.                  |
-| `@ndigo/mcp`     | Projects `@toolMapping` handlers into an `McpToolRegistry`.       |
+| `@ndigo/mcp`     | Projects `@toolMapping` handlers into an `MCPToolRegistry`.       |
 | provider package | App-owned, e.g. `@ai-sdk/openai-compatible` for LM Studio/Ollama. |
 
 The loop is deliberately outside the adapter. A model step returns text, tool
@@ -52,7 +52,7 @@ tool description to keep in sync.
 ```ts
 import { AIAgent } from '@ndigo/ai';
 import { aiSdkModel } from '@ndigo/ai-sdk';
-import { McpToolRegistry } from '@ndigo/mcp';
+import { MCPToolRegistry } from '@ndigo/mcp';
 import { createOpenAICompatible } from '@ai-sdk/openai-compatible';
 
 const provider = createOpenAICompatible({
@@ -61,7 +61,7 @@ const provider = createOpenAICompatible({
     apiKey: config.apiKey,
     includeUsage: true,
 });
-const tools = McpToolRegistry.from(dispatcher, {
+const tools = MCPToolRegistry.from(dispatcher, {
     readOnly: true,
     argumentResolvers: context.getValue(ARGUMENT_RESOLVERS),
 });
@@ -72,7 +72,7 @@ const agent = new AIAgent({
 });
 ```
 
-`McpToolRegistry` satisfies `AIToolSource` structurally: `listTools` supplies
+`MCPToolRegistry` satisfies `AIToolSource` structurally: `listTools` supplies
 the descriptors and `call(name, args, { callId })` executes them through the
 normal dispatcher binding pipeline.
 

@@ -10,24 +10,24 @@ import { html } from 'lit';
 import { readmeDescription } from '../../_readme';
 
 /** A single A2UI component node, structurally typed for the story controls. */
-interface A2uiNode {
+interface A2UINode {
     id: string;
     component: string;
     [prop: string]: unknown;
 }
 
-interface A2uiMessage {
+interface A2UIMessage {
     version: '1.0';
     createSurface?: { surfaceId: string; catalogId: string };
-    updateComponents?: { surfaceId: string; components: A2uiNode[] };
+    updateComponents?: { surfaceId: string; components: A2UINode[] };
 }
 
 interface SurfaceArgs {
     /** A2UI 1.0 message payload: create the surface, then update its components. */
-    messages: A2uiMessage[];
+    messages: A2UIMessage[];
 }
 
-const NOTIFICATION_MESSAGES: A2uiMessage[] = [
+const NOTIFICATION_MESSAGES: A2UIMessage[] = [
     { version: '1.0', createSurface: { surfaceId: 'settings', catalogId: 'ndigo-ui' } },
     {
         version: '1.0',

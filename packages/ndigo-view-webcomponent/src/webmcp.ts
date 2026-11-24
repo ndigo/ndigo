@@ -24,21 +24,21 @@ import { z } from 'zod';
  *
  * @example
  * ```ts
- * type _Alias = WebMcpToolAnnotations;
+ * type _Alias = WebMCPToolAnnotations;
  * ```
  */
-export type WebMcpToolAnnotations = AgentToolAnnotations;
+export type WebMCPToolAnnotations = AgentToolAnnotations;
 
 /** A tool registered with the browser's model context — the neutral {@link AgentTool} shape. */
 /**
- * WebMcpTool.
+ * WebMCPTool.
  *
  * @example
  * ```ts
- * type _Alias = WebMcpTool;
+ * type _Alias = WebMCPTool;
  * ```
  */
-export type WebMcpTool = AgentTool;
+export type WebMCPTool = AgentTool;
 
 /**
  * Registration outcome — the neutral {@link AgentToolRegistration} handle.
@@ -46,28 +46,28 @@ export type WebMcpTool = AgentTool;
  *
  * @example
  * ```ts
- * type _Alias = WebMcpRegistration;
+ * type _Alias = WebMCPRegistration;
  * ```
  */
-export type WebMcpRegistration = AgentToolRegistration;
+export type WebMCPRegistration = AgentToolRegistration;
 
 /** Options for {@link provideWebMcpTools}. */
 /**
- * WebMcpOptions.
+ * WebMCPOptions.
  *
  * @example
  * ```ts
- * type _Alias = WebMcpOptions;
+ * type _Alias = WebMCPOptions;
  * ```
  */
-export type WebMcpOptions = AgentToolHostOptions;
+export type WebMCPOptions = AgentToolHostOptions;
 
 interface ModelContextTool {
     readonly name: string;
     readonly description: string;
     readonly inputSchema: Record<string, unknown>;
-    readonly execute: WebMcpTool['execute'];
-    readonly annotations?: WebMcpToolAnnotations;
+    readonly execute: WebMCPTool['execute'];
+    readonly annotations?: WebMCPToolAnnotations;
 }
 
 interface ModelContextLike {
@@ -100,7 +100,7 @@ function getModelContext(): ModelContextLike | undefined {
  * declareWebMcpTool();
  * ```
  */
-export async function declareWebMcpTool(tool: WebMcpTool, options: WebMcpOptions = {}): Promise<WebMcpRegistration> {
+export async function declareWebMcpTool(tool: WebMCPTool, options: WebMCPOptions = {}): Promise<WebMCPRegistration> {
     return provideWebMcpTools([tool], options);
 }
 
@@ -117,9 +117,9 @@ export async function declareWebMcpTool(tool: WebMcpTool, options: WebMcpOptions
  * ```
  */
 export async function provideWebMcpTools(
-    tools: readonly WebMcpTool[],
-    options: WebMcpOptions = {}
-): Promise<WebMcpRegistration> {
+    tools: readonly WebMCPTool[],
+    options: WebMCPOptions = {}
+): Promise<WebMCPRegistration> {
     const context = getModelContext();
     const controller = options.signal === undefined ? new AbortController() : undefined;
     const signal = options.signal ?? controller?.signal;
@@ -155,14 +155,14 @@ export const webMcpAgentHost: AgentToolHost = {
 
 /** Options for {@link webMcpToolForHandler}. */
 /**
- * WebMcpHandlerToolOptions.
+ * WebMCPHandlerToolOptions.
  *
  * @example
  * ```ts
- * const value = {} as WebMcpHandlerToolOptions;
+ * const value = {} as WebMCPHandlerToolOptions;
  * ```
  */
-export interface WebMcpHandlerToolOptions {
+export interface WebMCPHandlerToolOptions {
     /** The handler instance (or class instance) carrying `@parameters`. */
     readonly handler: object;
     /** The decorated method name. */
@@ -174,7 +174,7 @@ export interface WebMcpHandlerToolOptions {
     /** Read-only hint. */
     readonly readOnly?: boolean;
     /** Additional safety hints. */
-    readonly annotations?: WebMcpToolAnnotations;
+    readonly annotations?: WebMCPToolAnnotations;
     /** Origins allowed to use the tool. */
     readonly exposedTo?: readonly string[];
 }
@@ -193,7 +193,7 @@ export interface WebMcpHandlerToolOptions {
  * webMcpToolForHandler();
  * ```
  */
-export function webMcpToolForHandler(options: WebMcpHandlerToolOptions): WebMcpTool {
+export function webMcpToolForHandler(options: WebMCPHandlerToolOptions): WebMCPTool {
     const handler = options.handler as Record<string, unknown>;
     const method = handler[options.method];
     if (typeof method !== 'function') {
@@ -246,10 +246,10 @@ export function webMcpToolForHandler(options: WebMcpHandlerToolOptions): WebMcpT
  *
  * @example
  * ```ts
- * const value = {} as WebMcpElementBase;
+ * const value = {} as WebMCPElementBase;
  * ```
  */
-export interface WebMcpElementBase extends HTMLElement {
+export interface WebMCPElementBase extends HTMLElement {
     /** Custom-element connect hook, when the base class defines one. */
     connectedCallback?(): void;
     /** Custom-element disconnect hook, when the base class defines one. */
@@ -258,7 +258,7 @@ export interface WebMcpElementBase extends HTMLElement {
 
 /**
  * Mixin that registers an element's WebMCP tools on connect and aborts them on
- * disconnect. Subclasses implement {@link WebMcpElement.webMcpTools}; they can
+ * disconnect. Subclasses implement {@link WebMCPElement.webMcpTools}; they can
  * read dependencies from `this.applicationContext` on `AbstractWebComponent`.
  *
  * @param superclass - The element base class.
@@ -266,18 +266,18 @@ export interface WebMcpElementBase extends HTMLElement {
  *
  * @example
  * ```ts
- * AsWebMcpElement();
+ * AsWebMCPElement();
  * ```
  */
 
-export function AsWebMcpElement<T extends Constructable<WebMcpElementBase>>(
+export function AsWebMCPElement<T extends Constructable<WebMCPElementBase>>(
     superclass: T
-): T & Constructable<WebMcpElementBase & WebMcpElement> {
-    return class extends superclass implements WebMcpElement {
-        #registration: WebMcpRegistration | undefined;
+): T & Constructable<WebMCPElementBase & WebMCPElement> {
+    return class extends superclass implements WebMCPElement {
+        #registration: WebMCPRegistration | undefined;
 
         /** The tools this element exposes while connected. */
-        webMcpTools(): readonly WebMcpTool[] {
+        webMcpTools(): readonly WebMCPTool[] {
             return [];
         }
 
@@ -304,18 +304,18 @@ export function AsWebMcpElement<T extends Constructable<WebMcpElementBase>>(
     };
 }
 
-/** The element contract added by {@link AsWebMcpElement}. */
+/** The element contract added by {@link AsWebMCPElement}. */
 /**
- * WebMcpElement.
+ * WebMCPElement.
  *
  * @example
  * ```ts
- * const value = {} as WebMcpElement;
+ * const value = {} as WebMCPElement;
  * ```
  */
-export interface WebMcpElement {
+export interface WebMCPElement {
     /** The tools this element exposes while connected. */
-    webMcpTools(): readonly WebMcpTool[];
+    webMcpTools(): readonly WebMCPTool[];
 }
 
 function parameterKey(parameter: MethodParameter): string {

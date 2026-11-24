@@ -15,7 +15,7 @@ import {
 import { NODE_REQUEST_ATTRIBUTE, type NodeRequest } from '@ndigo/platform-node';
 import type { Route } from '@ndigo/router';
 import { SpanStatusCode, trace } from '@opentelemetry/api';
-import { McpToolDeniedError } from './errors.js';
+import { MCPToolDeniedError } from './errors.js';
 import {
     projectTools,
     type DispatcherLike,
@@ -44,10 +44,10 @@ export interface ToolCallContext {
  *
  * @example
  * ```ts
- * const call: McpToolCall = { tool: descriptor, args: {} };
+ * const call: MCPToolCall = { tool: descriptor, args: {} };
  * ```
  */
-export interface McpToolCall {
+export interface MCPToolCall {
     /** The tool's descriptor as reported by `tools/list`. */
     readonly tool: ToolDescriptor;
     /** The call arguments. */
@@ -67,10 +67,10 @@ export interface McpToolCall {
  *
  * @example
  * ```ts
- * const options: McpToolRegistryOptions = { readOnly: true };
+ * const options: MCPToolRegistryOptions = { readOnly: true };
  * ```
  */
-export interface McpToolRegistryOptions {
+export interface MCPToolRegistryOptions {
     /** Omit mutating tools from `tools/list` and reject them on call. */
     readonly readOnly?: boolean;
     /**
@@ -84,14 +84,14 @@ export interface McpToolRegistryOptions {
      * the visibility policy and before argument binding; read `call.confirm`
      * when the call requires a person's confirmation.
      */
-    readonly authorize?: (call: McpToolCall) => boolean | Promise<boolean>;
+    readonly authorize?: (call: MCPToolCall) => boolean | Promise<boolean>;
     /**
      * Per-call confirmation. Return a sentence describing what a person must
      * confirm; MCP has no confirmation round-trip, so the call is refused
      * with `Needs a person: <sentence>` unless an `authorize` policy accepts
      * it.
      */
-    readonly confirm?: (call: McpToolCall) => string | undefined | Promise<string | undefined>;
+    readonly confirm?: (call: MCPToolCall) => string | undefined | Promise<string | undefined>;
     /**
      * The dispatcher's argument-resolver chain (the `ARGUMENT_RESOLVERS`
      * context entry). Tool calls bind path/query/header/body arguments through
@@ -117,33 +117,33 @@ function isDispatcherSource(source: MappingSource): source is DispatcherLike {
  *
  * @example
  * ```ts
- * const registry = await McpToolRegistry.from(dispatcher, { readOnly: true });
+ * const registry = await MCPToolRegistry.from(dispatcher, { readOnly: true });
  * const tools = await registry.listTools();
  * ```
  */
-export class McpToolRegistry {
+export class MCPToolRegistry {
     /**
      * The `Symbol.toStringTag` value for this instance.
      *
      * `Object.prototype.toString()` reads this symbol to render the
      * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
      *
-     * @returns The string "McpToolRegistry".
+     * @returns The string "MCPToolRegistry".
      *
      * @example
-     * console.log(Object.prototype.toString.call(instance)); // "[object McpToolRegistry]"
+     * console.log(Object.prototype.toString.call(instance)); // "[object MCPToolRegistry]"
      */
     get [Symbol.toStringTag](): string {
-        return 'McpToolRegistry';
+        return 'MCPToolRegistry';
     }
 
     readonly #tools: readonly RegisteredTool[];
     readonly #readOnly: boolean;
     readonly #isFeatureEnabled: ((flag: string) => boolean | Promise<boolean>) | undefined;
-    readonly #authorize: ((call: McpToolCall) => boolean | Promise<boolean>) | undefined;
-    readonly #confirm: ((call: McpToolCall) => string | undefined | Promise<string | undefined>) | undefined;
+    readonly #authorize: ((call: MCPToolCall) => boolean | Promise<boolean>) | undefined;
+    readonly #confirm: ((call: MCPToolCall) => string | undefined | Promise<string | undefined>) | undefined;
 
-    private constructor(tools: readonly RegisteredTool[], options: McpToolRegistryOptions) {
+    private constructor(tools: readonly RegisteredTool[], options: MCPToolRegistryOptions) {
         this.#tools = tools;
         this.#readOnly = options.readOnly === true;
         this.#isFeatureEnabled = options.isFeatureEnabled;
@@ -158,7 +158,7 @@ export class McpToolRegistry {
      * @param options - Read-only and feature policy.
      * @returns The registry.
      */
-    static from(source: MappingSource, options: McpToolRegistryOptions = {}): McpToolRegistry {
+    static from(source: MappingSource, options: MCPToolRegistryOptions = {}): MCPToolRegistry {
         const tools = projectTools(source);
         const resolvers =
             options.argumentResolvers ?? (isDispatcherSource(source) ? source.argumentResolvers : undefined);
@@ -167,7 +167,7 @@ export class McpToolRegistry {
                 tool.handlerMethod.argumentResolvers = [...resolvers];
             }
         }
-        return new McpToolRegistry(tools, options);
+        return new MCPToolRegistry(tools, options);
     }
 
     /**
@@ -201,7 +201,7 @@ export class McpToolRegistry {
         ) {
             throw new Error(
                 `MCP tool '${name}' declares parameters but the registry has no argument resolvers — ` +
-                    'pass `argumentResolvers` to McpToolRegistry.from()'
+                    'pass `argumentResolvers` to MCPToolRegistry.from()'
             );
         }
         const tracer = trace.getTracer('@ndigo/mcp');
@@ -220,7 +220,7 @@ export class McpToolRegistry {
                     const route = toolRoute(tool, args);
                     return redactSecrets(normalizeResult(await tool.handlerMethod.invoke(route)), tool);
                 } catch (error) {
-                    if (error instanceof McpToolDeniedError) {
+                    if (error instanceof MCPToolDeniedError) {
                         // A policy refusal is an expected outcome, not a fault:
                         // the attribute is the trace signal.
                         span.setAttribute('gen_ai.tool.call.denied', true);
@@ -241,7 +241,7 @@ export class McpToolRegistry {
         args: Record<string, unknown>,
         context: ToolCallContext
     ): Promise<void> {
-        const base: McpToolCall = {
+        const base: MCPToolCall = {
             tool: tool.descriptor,
             args,
             ...(context.callId === undefined ? {} : { callId: context.callId }),
@@ -251,15 +251,15 @@ export class McpToolRegistry {
             const sentence = await this.#confirm(base);
             if (typeof sentence === 'string' && sentence.length > 0) confirm = sentence;
         }
-        const evaluated: McpToolCall = confirm === undefined ? base : { ...base, confirm };
+        const evaluated: MCPToolCall = confirm === undefined ? base : { ...base, confirm };
         if (this.#authorize !== undefined) {
             if (!(await this.#authorize(evaluated))) {
-                throw new McpToolDeniedError(tool.descriptor.name);
+                throw new MCPToolDeniedError(tool.descriptor.name);
             }
             return;
         }
         if (confirm !== undefined) {
-            throw new McpToolDeniedError(tool.descriptor.name, { confirm });
+            throw new MCPToolDeniedError(tool.descriptor.name, { confirm });
         }
     }
 

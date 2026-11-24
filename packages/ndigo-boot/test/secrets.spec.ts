@@ -9,7 +9,7 @@ import { ApplicationBuilder, configurationProperties, resolveConfigurationProper
 import { property, defaultValue, configuration, SecretCipher, REDACTED_VALUE } from '@ndigo/context';
 
 @configurationProperties('db')
-class DbConfig {
+class DBConfig {
     @property('password', String as unknown as new (...args: never[]) => string)
     @defaultValue('none')
     password!: string;
@@ -58,12 +58,12 @@ describe('builder.secrets', () => {
 
         @configuration
         class BootConfig {}
-        const app = new ApplicationBuilder([BootConfig, DbConfig]);
+        const app = new ApplicationBuilder([BootConfig, DBConfig]);
         app.properties({ db: { user: 'app-user', password: marker } });
         app.secrets(cipher);
 
         const context = await app.run();
-        const db = context.getValue<DbConfig>('dbConfig');
+        const db = context.getValue<DBConfig>('dbConfig');
 
         expect(db.password).toBe('s3cret-pass'); // decrypted at bind time
         expect(db.user).toBe('app-user'); // non-marker untouched
@@ -75,11 +75,11 @@ describe('builder.secrets', () => {
 
         @configuration
         class BootConfig {}
-        const app = new ApplicationBuilder([BootConfig, DbConfig]);
+        const app = new ApplicationBuilder([BootConfig, DBConfig]);
         app.properties({ db: { password: marker } });
 
         const context = await app.run();
-        const db = context.getValue<DbConfig>('dbConfig');
+        const db = context.getValue<DBConfig>('dbConfig');
 
         expect(db.password).toBe(marker); // raw marker — no decryptor wired
     });
@@ -87,7 +87,7 @@ describe('builder.secrets', () => {
     test('unknown-scheme markers fail boot loudly (never plaintext fallback)', async () => {
         @configuration
         class BootConfig {}
-        const app = new ApplicationBuilder([BootConfig, DbConfig]);
+        const app = new ApplicationBuilder([BootConfig, DBConfig]);
         app.properties({ db: { user: 'x', password: '{jwe:eyJ…}' } });
         app.secrets(fakeCipher());
 
@@ -107,12 +107,12 @@ describe('builder.secrets', () => {
 
         @configuration
         class BootConfig {}
-        const app = new ApplicationBuilder([BootConfig, DbConfig]);
+        const app = new ApplicationBuilder([BootConfig, DBConfig]);
         app.properties({ db: { password: marker } });
         app.secrets(cipher);
 
         const context = await app.run();
-        const db = context.getValue<DbConfig>('dbConfig');
+        const db = context.getValue<DBConfig>('dbConfig');
 
         expect(db.password.length).toBeGreaterThan(0);
         expect(db.password).toBe('s3cret-pass');
@@ -152,12 +152,12 @@ describe('builder.secrets', () => {
 
         @configuration
         class BootConfig {}
-        const app = new ApplicationBuilder([BootConfig, DbConfig]);
+        const app = new ApplicationBuilder([BootConfig, DBConfig]);
         app.properties({ db: { user: 'app-user', password: marker } });
         app.secrets(cipher);
 
         const context = await app.run();
-        const { instance, bindings } = resolveConfigurationProperties(DbConfig, context);
+        const { instance, bindings } = resolveConfigurationProperties(DBConfig, context);
 
         expect(instance.password).toBe('s3cret-pass'); // instance binds plaintext
         expect(bindings['db.password']).toBe(REDACTED_VALUE); // map never carries it
@@ -172,11 +172,11 @@ describe('builder.secrets', () => {
 
         @configuration
         class BootConfig {}
-        const app = new ApplicationBuilder([BootConfig, DbConfig]);
+        const app = new ApplicationBuilder([BootConfig, DBConfig]);
         app.properties({ db: { password: marker } });
 
         const context = await app.run();
-        const { bindings } = resolveConfigurationProperties(DbConfig, context);
+        const { bindings } = resolveConfigurationProperties(DBConfig, context);
 
         expect(bindings['db.password']).toBe(REDACTED_VALUE);
         expect(JSON.stringify(bindings)).not.toContain(marker);

@@ -17,7 +17,7 @@ import {
     SESSION_SERVICE,
     TAG_SERVICE,
 } from '../src/app/conduit-tokens';
-import { ConduitApiError } from '../src/lib/api/conduit-types';
+import { ConduitAPIError } from '../src/lib/api/conduit-types';
 import { ArticleService } from '../src/services/article-service';
 import { CommentService } from '../src/services/comment-service';
 import { ProfileService } from '../src/services/profile-service';
@@ -44,13 +44,13 @@ const stubApi = createStubApi({
     getFeed: async () => pageFixture([articleFixture()]),
     getArticle: async (slug: string) =>
         slug === 'missing'
-            ? Promise.reject(new ConduitApiError(404, { article: ['not found'] }))
+            ? Promise.reject(new ConduitAPIError(404, { article: ['not found'] }))
             : articleFixture({ slug }),
     listComments: async () => [commentFixture()],
     listTags: async () => ['realworld', 'ndigo'],
     getProfile: async (username: string) =>
         username === 'ghost'
-            ? Promise.reject(new ConduitApiError(404, { profile: ['not found'] }))
+            ? Promise.reject(new ConduitAPIError(404, { profile: ['not found'] }))
             : profileFixture({ username }),
     login: async () => sessionFixture(),
     register: async () => sessionFixture(),
@@ -190,7 +190,7 @@ describe('route wiring through MockWebClient', () => {
 
     test('a failed login reaches the login model as per-field errors', async () => {
         const resolving = stubApi.login;
-        stubApi.login = () => Promise.reject(new ConduitApiError(401, { credentials: ['invalid'] }));
+        stubApi.login = () => Promise.reject(new ConduitAPIError(401, { credentials: ['invalid'] }));
         try {
             await session.login({ email: 'a@example.com', password: 'wrong' });
             const { model } = await browser.dispatch('/login');

@@ -9,7 +9,7 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 
 ## Public exports
 
-- `ToonView`
-- `toonViewResolver` — Builds a resolver that serves ToonView for one logical view name.
-- `ToonEncodeOptions` *(type)* — TOON encoding options, mirroring the reference encoder's supported surface (spec §9): indentation width for nested lines, and the row/inline-array delimiter —…
+- `TOONView`
+- `toonViewResolver` — Builds a resolver that serves TOONView for one logical view name.
+- `TOONEncodeOptions` *(type)* — TOON encoding options, mirroring the reference encoder's supported surface (spec §9): indentation width for nested lines, and the row/inline-array delimiter —…
 - `encodeToon` — Encodes a JSON-model value as a TOON document (spec v4.4).

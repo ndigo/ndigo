@@ -7,7 +7,7 @@ import '@tsmetadata/polyfill';
 import type { ApplicationContext, ApplicationContextAware } from '@ndigo/context';
 import { ARGUMENT_RESOLVERS, DISPATCHER, parameters, requestMapping, routeValue } from '@ndigo/dispatcher';
 import { $aware } from '@ndigo/factory';
-import { McpHTTPEndpoint, McpToolRegistry } from '@ndigo/mcp';
+import { MCPHTTPEndpoint, MCPToolRegistry } from '@ndigo/mcp';
 import type { Route } from '@ndigo/router';
 import { ordersUi } from './orders-ui';
 
@@ -15,9 +15,9 @@ import { ordersUi } from './orders-ui';
  * Serves the MCP tool registry over Streamable HTTP at `/mcp`.
  */
 @requestMapping('/')
-export class McpHTTPController implements ApplicationContextAware {
+export class MCPHTTPController implements ApplicationContextAware {
     #context: ApplicationContext | null = null;
-    #endpoint: McpHTTPEndpoint | null = null;
+    #endpoint: MCPHTTPEndpoint | null = null;
 
     /**
      * Marks this entry for aware injection; the endpoint is resolved lazily so
@@ -46,16 +46,16 @@ export class McpHTTPController implements ApplicationContextAware {
         await this.#resolveEndpoint().handle(route);
     }
 
-    #resolveEndpoint(): McpHTTPEndpoint {
+    #resolveEndpoint(): MCPHTTPEndpoint {
         if (this.#endpoint !== null) return this.#endpoint;
         if (this.#context === null) {
-            throw new Error('McpHTTPController has no application context');
+            throw new Error('MCPHTTPController has no application context');
         }
-        const registry = McpToolRegistry.from(this.#context.getValue(DISPATCHER), {
+        const registry = MCPToolRegistry.from(this.#context.getValue(DISPATCHER), {
             readOnly: true,
             argumentResolvers: this.#context.getValue(ARGUMENT_RESOLVERS),
         });
-        this.#endpoint = new McpHTTPEndpoint(registry, { uiResources: [ordersUi] });
+        this.#endpoint = new MCPHTTPEndpoint(registry, { uiResources: [ordersUi] });
         return this.#endpoint;
     }
 }

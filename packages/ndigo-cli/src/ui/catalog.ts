@@ -20,14 +20,14 @@ export const CATALOG_ID = 'ndigo-ui';
 
 /** One component definition in the A2UI catalog. */
 /**
- * A2uiComponentDescriptor.
+ * A2UIComponentDescriptor.
  *
  * @example
  * ```ts
- * const value = {} as A2uiComponentDescriptor;
+ * const value = {} as A2UIComponentDescriptor;
  * ```
  */
-export interface A2uiComponentDescriptor {
+export interface A2UIComponentDescriptor {
     /** Every A2UI component is a JSON object. */
     readonly type: 'object';
     /** Human-readable description shown to the agent. */
@@ -46,14 +46,14 @@ export interface A2uiComponentDescriptor {
 
 /** The A2UI catalog document. */
 /**
- * A2uiCatalog.
+ * A2UICatalog.
  *
  * @example
  * ```ts
- * const value = {} as A2uiCatalog;
+ * const value = {} as A2UICatalog;
  * ```
  */
-export interface A2uiCatalog {
+export interface A2UICatalog {
     /** JSON Schema dialect. */
     readonly $schema: string;
     /** Unique catalog identifier. */
@@ -61,7 +61,7 @@ export interface A2uiCatalog {
     /** A2UI protocol version. */
     readonly protocolVersion: string;
     /** Component definitions keyed by component name. */
-    readonly components: Record<string, A2uiComponentDescriptor>;
+    readonly components: Record<string, A2UIComponentDescriptor>;
     /** The `anyComponent` union used by A2UI payloads. */
     readonly $defs: {
         readonly anyComponent: {
@@ -149,7 +149,7 @@ function readLock(dir: string): LockShape {
  * buildCatalog();
  * ```
  */
-export function buildCatalog(registry: LoadedRegistry, installed: readonly string[]): A2uiCatalog {
+export function buildCatalog(registry: LoadedRegistry, installed: readonly string[]): A2UICatalog {
     const byName = new Map(registry.items.map((item) => [item.name, item]));
     const missing = installed.filter((name) => !byName.has(name));
     if (missing.length > 0) {
@@ -186,7 +186,7 @@ function componentName(itemName: string): string {
         .join('');
 }
 
-function descriptor(item: LocatedRegistryItem): A2uiComponentDescriptor {
+function descriptor(item: LocatedRegistryItem): A2UIComponentDescriptor {
     const name = componentName(item.name);
     return {
         type: 'object',

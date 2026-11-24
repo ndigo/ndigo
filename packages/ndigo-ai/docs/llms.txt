@@ -40,4 +40,4 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `toServerSentEvents` — Maps agent events to `ServerSentEventView` frames.
 - `AIToolCallContext` *(type)* — Per-call context passed to AIToolSource.call. The `callId` is the model-assigned tool-call id and is recorded as `gen_ai.tool.call.id`; the source is recorded…
 - `AIToolDescriptor` *(type)* — One tool as reported by a source: the same shape as MCP `tools/list` entries (`name`, `description`, JSON Schema `inputSchema`).
-- `AIToolSource` *(type)* — A source of tools the agent may call. Implementations decide where tools live and how they execute; `McpToolRegistry` is the canonical one.
+- `AIToolSource` *(type)* — A source of tools the agent may call. Implementations decide where tools live and how they execute; `MCPToolRegistry` is the canonical one.

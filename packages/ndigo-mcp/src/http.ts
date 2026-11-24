@@ -9,23 +9,23 @@ import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/
 import type { InspectManifest } from '@ndigo/inspect';
 import { getNodeRequest, NODE_INCOMING_ATTRIBUTE, NODE_RESPONSE_ATTRIBUTE } from '@ndigo/platform-node';
 import type { Route } from '@ndigo/router';
-import type { McpToolRegistry } from './registry.js';
+import type { MCPToolRegistry } from './registry.js';
 import { createMcpServer } from './server.js';
-import type { UiResource } from './ui-resource.js';
+import type { UIResource } from './ui-resource.js';
 
 /**
- * Options for {@link McpHTTPEndpoint}.
+ * Options for {@link MCPHTTPEndpoint}.
  *
  * @example
  * ```ts
- * const options: McpHTTPEndpointOptions = { source: 'http' };
+ * const options: MCPHTTPEndpointOptions = { source: 'http' };
  * ```
  */
-export interface McpHTTPEndpointOptions {
+export interface MCPHTTPEndpointOptions {
     /** The application manifest, exposed as MCP resources. */
     readonly inspect?: InspectManifest;
     /** MCP Apps `ui://` resources served as `text/html;profile=mcp-app`. */
-    readonly uiResources?: readonly UiResource[];
+    readonly uiResources?: readonly UIResource[];
     /**
      * The transport label recorded on tool-call spans as
      * `gen_ai.tool.call.source`; the endpoint defaults to `'http'`.
@@ -45,27 +45,27 @@ export interface McpHTTPEndpointOptions {
  *
  * @example
  * ```ts
- * const endpoint = new McpHTTPEndpoint(registry, { source: 'http' });
+ * const endpoint = new MCPHTTPEndpoint(registry, { source: 'http' });
  * ```
  */
-export class McpHTTPEndpoint {
+export class MCPHTTPEndpoint {
     /**
      * The `Symbol.toStringTag` value for this instance.
      *
      * `Object.prototype.toString()` reads this symbol to render the
      * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
      *
-     * @returns The string "McpHTTPEndpoint".
+     * @returns The string "MCPHTTPEndpoint".
      *
      * @example
-     * console.log(Object.prototype.toString.call(instance)); // "[object McpHTTPEndpoint]"
+     * console.log(Object.prototype.toString.call(instance)); // "[object MCPHTTPEndpoint]"
      */
     get [Symbol.toStringTag](): string {
-        return 'McpHTTPEndpoint';
+        return 'MCPHTTPEndpoint';
     }
 
-    readonly #registry: McpToolRegistry;
-    readonly #options: McpHTTPEndpointOptions;
+    readonly #registry: MCPToolRegistry;
+    readonly #options: MCPHTTPEndpointOptions;
 
     /**
      * Creates the endpoint.
@@ -73,7 +73,7 @@ export class McpHTTPEndpoint {
      * @param registry - The projected tools.
      * @param options - Endpoint options.
      */
-    constructor(registry: McpToolRegistry, options: McpHTTPEndpointOptions = {}) {
+    constructor(registry: MCPToolRegistry, options: MCPHTTPEndpointOptions = {}) {
         this.#registry = registry;
         this.#options = options;
     }

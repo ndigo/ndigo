@@ -4,14 +4,14 @@
  */
 
 /**
- * Options for {@link McpToolDeniedError}.
+ * Options for {@link MCPToolDeniedError}.
  *
  * @example
  * ```ts
- * const options: McpToolDeniedOptions = { confirm: 'Ask the person before sending.' };
+ * const options: MCPToolDeniedOptions = { confirm: 'Ask the person before sending.' };
  * ```
  */
-export interface McpToolDeniedOptions {
+export interface MCPToolDeniedOptions {
     /** The person-facing confirmation sentence that withheld the call. */
     readonly confirm?: string;
 }
@@ -22,10 +22,10 @@ export interface McpToolDeniedOptions {
  *
  * @example
  * ```ts
- * throw new McpToolDeniedError('send_email', { confirm: 'Ask the person before sending.' });
+ * throw new MCPToolDeniedError('send_email', { confirm: 'Ask the person before sending.' });
  * ```
  */
-export class McpToolDeniedError extends Error {
+export class MCPToolDeniedError extends Error {
     /** The refused tool's name. */
     readonly tool: string;
     /** The required confirmation sentence, when the refusal is a pending confirmation. */
@@ -37,11 +37,11 @@ export class McpToolDeniedError extends Error {
      * @param tool - The refused tool's name.
      * @param options - The confirmation sentence, when there is one.
      */
-    constructor(tool: string, options: McpToolDeniedOptions = {}) {
+    constructor(tool: string, options: MCPToolDeniedOptions = {}) {
         super(
             options.confirm === undefined ? `MCP tool '${tool}' denied by policy` : `Needs a person: ${options.confirm}`
         );
-        this.name = 'McpToolDeniedError';
+        this.name = 'MCPToolDeniedError';
         this.tool = tool;
         if (options.confirm !== undefined) this.confirm = options.confirm;
     }

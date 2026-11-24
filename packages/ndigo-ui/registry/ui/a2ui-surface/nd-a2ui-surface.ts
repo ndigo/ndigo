@@ -27,14 +27,14 @@ import type {
 import { defineElement, NdElement } from '@/lib/base-element';
 import { COMPONENT_ELEMENTS } from './component-map';
 
-type A2uiNode = ComponentNode;
+type A2UINode = ComponentNode;
 
 const CATALOG_ID = 'ndigo-ui';
 
 /**
  * The A2UI surface element.
  */
-export class NdA2uiSurface extends NdElement {
+export class NdA2UISurface extends NdElement {
     #messages: ProcessableMessagePayload | undefined;
     #processor: MessageProcessor | undefined;
     #resolvers: NodeResolver[] = [];
@@ -160,7 +160,7 @@ export class NdA2uiSurface extends NdElement {
         ) as unknown as CatalogType<ComponentApi, FunctionImplementation>;
     }
 
-    #renderNode(node: A2uiNode): Node {
+    #renderNode(node: A2UINode): Node {
         const tag = COMPONENT_ELEMENTS[node.type];
         if (tag === undefined || customElements.get(tag) === undefined) {
             this.#fail(`unknown or uninstalled A2UI component '${node.type}'`);
@@ -171,11 +171,11 @@ export class NdA2uiSurface extends NdElement {
         for (const [key, value] of Object.entries(getValue(node.props))) {
             if (key === 'component' || key === 'id' || key === 'catalogId') continue;
             if (isComponentNode(value)) {
-                element.append(this.#renderNode(value as A2uiNode));
+                element.append(this.#renderNode(value as A2UINode));
                 continue;
             }
             if (Array.isArray(value) && value.length > 0 && value.every((item) => isComponentNode(item))) {
-                for (const child of value) element.append(this.#renderNode(child as A2uiNode));
+                for (const child of value) element.append(this.#renderNode(child as A2UINode));
                 continue;
             }
             if (typeof value === 'function') {
@@ -249,4 +249,4 @@ function actionEvent(key: string): string {
     return key.startsWith('on') ? key.slice(2).toLowerCase() : key;
 }
 
-defineElement('nd-a2ui-surface', NdA2uiSurface);
+defineElement('nd-a2ui-surface', NdA2UISurface);

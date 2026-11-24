@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { ProfileService } from '../src/services/profile-service';
 import { FEED_PAGE_SIZE } from '../src/services/article-service';
-import { ConduitApiError } from '../src/lib/api/conduit-types';
+import { ConduitAPIError } from '../src/lib/api/conduit-types';
 import {
     articleFixture,
     contextWithRouter,
@@ -70,7 +70,7 @@ describe('ProfileService', () => {
 
     test('an unknown user flags notFound', async () => {
         const profiles = serviceWith(
-            createStubApi({ getProfile: () => Promise.reject(new ConduitApiError(404, { profile: ['not found'] })) })
+            createStubApi({ getProfile: () => Promise.reject(new ConduitAPIError(404, { profile: ['not found'] })) })
         );
 
         profiles.setRouteTarget('ghost', 'author');
@@ -86,7 +86,7 @@ describe('ProfileService', () => {
             createStubApi({
                 getProfile: async () => profileFixture({ username: 'alice', following: false }),
                 listArticles: async () => pageFixture([article]),
-                follow: () => Promise.reject(new ConduitApiError(500, { body: ['boom'] })),
+                follow: () => Promise.reject(new ConduitAPIError(500, { body: ['boom'] })),
             })
         );
         profiles.setRouteTarget('alice', 'author');

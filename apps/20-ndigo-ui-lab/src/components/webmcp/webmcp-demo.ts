@@ -1,12 +1,12 @@
 /**
  * WebMCP demo: the same handler metadata an HTTP route binds is projected into
- * a browser tool. `AsWebMcpElement` registers on connect and aborts on
+ * a browser tool. `AsWebMCPElement` registers on connect and aborts on
  * disconnect; browsers without `document.modelContext` get a no-op
  * registration, so the element ships everywhere.
  */
 import '@tsmetadata/polyfill';
 import { parameters, queryValue, validatedBy } from '@ndigo/dispatcher';
-import { AsWebMcpElement, type WebMcpTool, webMcpToolForHandler } from '@ndigo/view-webcomponent';
+import { AsWebMCPElement, type WebMCPTool, webMcpToolForHandler } from '@ndigo/view-webcomponent';
 import { z } from 'zod';
 import { defineElement, NdElement } from '@/lib/base-element';
 
@@ -28,7 +28,7 @@ const CATALOGUE: readonly CatalogueItem[] = [
 /**
  * `<nd-webmcp-demo>` exposes a catalogue search as a WebMCP tool.
  */
-export class WebMcpDemo extends AsWebMcpElement(NdElement) {
+export class WebMCPDemo extends AsWebMCPElement(NdElement) {
     /**
      * Searches the catalogue by name.
      *
@@ -44,7 +44,7 @@ export class WebMcpDemo extends AsWebMcpElement(NdElement) {
     /**
      * @returns The tools this element registers while connected.
      */
-    override webMcpTools(): readonly WebMcpTool[] {
+    override webMcpTools(): readonly WebMCPTool[] {
         return [
             webMcpToolForHandler({
                 handler: this,
@@ -57,4 +57,4 @@ export class WebMcpDemo extends AsWebMcpElement(NdElement) {
     }
 }
 
-defineElement('nd-webmcp-demo', WebMcpDemo);
+defineElement('nd-webmcp-demo', WebMCPDemo);

@@ -7,13 +7,13 @@ import { parameters, queryValue, validatedBy } from '@ndigo/dispatcher';
 import { afterEach, describe, expect, it } from 'vitest';
 import { z } from 'zod';
 import {
-    AsWebMcpElement,
+    AsWebMCPElement,
     declareWebMcpTool,
     provideWebMcpTools,
     webMcpAgentHost,
     webMcpToolForHandler,
 } from '../src/webmcp';
-import type { WebMcpTool } from '../src/webmcp';
+import type { WebMCPTool } from '../src/webmcp';
 
 interface RegisterOptions {
     readonly signal?: AbortSignal;
@@ -32,7 +32,7 @@ function installFakeContext(): void {
     Object.defineProperty(document, 'modelContext', { configurable: true, value: context });
 }
 
-const ECHO: WebMcpTool = {
+const ECHO: WebMCPTool = {
     name: 'echo',
     description: 'Echo a value.',
     inputSchema: { type: 'object', properties: { value: { type: 'string' } } },
@@ -71,11 +71,11 @@ describe('provideWebMcpTools', () => {
     });
 });
 
-describe('AsWebMcpElement', () => {
+describe('AsWebMCPElement', () => {
     it('registers on connect and aborts on disconnect', async () => {
         installFakeContext();
-        class TestToolElement extends AsWebMcpElement(HTMLElement) {
-            override webMcpTools(): readonly WebMcpTool[] {
+        class TestToolElement extends AsWebMCPElement(HTMLElement) {
+            override webMcpTools(): readonly WebMCPTool[] {
                 return [ECHO];
             }
         }

@@ -81,7 +81,7 @@ Unauthenticated access to a guarded route is refused at the router and lands on
 - **`@ndigo/http` with an auth-header interceptor and a global 401 reaction.** One
   client instance stamps `Authorization: Token <jwt>` from the session and turns
   any `401` into "drop the session, go to login"; callers never touch a status
-  code — the `{errors:{…}}` envelope arrives as one typed `ConduitApiError`.
+  code — the `{errors:{…}}` envelope arrives as one typed `ConduitAPIError`.
 - **The RealWorld error envelope mapped onto forms.** Field keys render under the
   offending input, everything else (`credentials`, `body`) renders as a
   form-level message; the envelope is stamped with the form that produced it, so

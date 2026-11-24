@@ -11,7 +11,7 @@ import { AsApplicationContextAware, type ApplicationContext } from '@ndigo/conte
 import { Null } from '@ndigo/core';
 import { ROUTER } from '@ndigo/router';
 import { signal, type Signal } from '@ndigo/signals';
-import { ConduitApiError, type ConduitApi, type ConduitComment, type ConduitErrors } from '../lib/api/conduit-types';
+import { ConduitAPIError, type ConduitAPI, type ConduitComment, type ConduitErrors } from '../lib/api/conduit-types';
 import { FormErrorState } from './form-errors';
 
 /**
@@ -21,7 +21,7 @@ export class CommentService extends AsApplicationContextAware(Null) {
     /** Injected by the container (`ApplicationContextAware`). */
     declare readonly applicationContext: ApplicationContext;
 
-    readonly #api: ConduitApi;
+    readonly #api: ConduitAPI;
     readonly #comments: Signal<ConduitComment[]>;
     readonly #errors: FormErrorState;
 
@@ -33,7 +33,7 @@ export class CommentService extends AsApplicationContextAware(Null) {
      *
      * @param api - The Conduit API port.
      */
-    constructor(api: ConduitApi) {
+    constructor(api: ConduitAPI) {
         super();
         this.#api = api;
         this.#comments = signal([]);
@@ -96,7 +96,7 @@ export class CommentService extends AsApplicationContextAware(Null) {
             this.#refresh();
             return null;
         } catch (error) {
-            const errors = ConduitApiError.from(error)?.errors ?? { body: ['The comment could not be added.'] };
+            const errors = ConduitAPIError.from(error)?.errors ?? { body: ['The comment could not be added.'] };
             this.#errors.set('comment', errors);
             this.#refresh();
             return errors;

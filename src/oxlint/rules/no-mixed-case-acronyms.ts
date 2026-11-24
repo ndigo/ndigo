@@ -1,11 +1,76 @@
 /**
- * Rule that flags mixed-case acronyms (Http, Json, Xml, Url, Api, Html, Dto,.
+ * Rule that flags mixed-case acronyms (Http, Json, Xml, Url, Api, Html, Dto,
+ * Uuid, Uri, and others) in type declaration names.
+ *
+ * Acronyms are split into PascalCase segments (digit-aware) so that a
+ * mixed-case acronym is detected as a whole word, not as a substring of an
+ * ordinary identifier (`Uint8Array` is fine; `MCPToolRegistry` is not).
  */
 import type { Context, ESTree } from '@oxlint/plugins';
 
-const titleCaseAcronyms = /(Http|Json|Xml|Url|Api|Html|Dto|Uuid|Uri)/u;
+const ACRONYMS: ReadonlySet<string> = new Set([
+    'HTTP',
+    'JSON',
+    'XML',
+    'URL',
+    'API',
+    'HTML',
+    'DTO',
+    'UUID',
+    'URI',
+    'CSV',
+    'EJS',
+    'TOON',
+    'MCP',
+    'JWT',
+    'OIDC',
+    'SSE',
+    'SDK',
+    'A2UI',
+    'UI',
+    'DB',
+    'SQL',
+    'TTL',
+    'CSP',
+    'LRU',
+    'LFU',
+    'CSS',
+    'SVG',
+    'YAML',
+    'CORS',
+    'TLS',
+    'RPC',
+    'ORM',
+    'WS',
+    'TSV',
+    'IP',
+]);
 
-type TypeLikeDeclaration = ESTree.Class | ESTree.TSInterfaceDeclaration | ESTree.TSTypeAliasDeclaration;
+/** Split a PascalCase identifier into its constituent words. */
+function splitSegments(name: string): string[] {
+    return name
+        .replace(/([a-z0-9])([A-Z])/gu, '$1 $2')
+        .replace(/([A-Z]+)([A-Z][a-z])/gu, '$1 $2')
+        .split(/\s+/u)
+        .filter(Boolean);
+}
+
+/** Returns the offending mixed-case acronym, or `null` when the name is clean. */
+function findMixedCaseAcronym(name: string): string | null {
+    for (const segment of splitSegments(name)) {
+        const upper = segment.toUpperCase();
+        if (ACRONYMS.has(upper) && segment !== upper) {
+            return segment;
+        }
+    }
+    return null;
+}
+
+type TypeLikeDeclaration =
+    | ESTree.Class
+    | ESTree.TSInterfaceDeclaration
+    | ESTree.TSTypeAliasDeclaration
+    | ESTree.TSEnumDeclaration;
 
 /**
  * Reports type declaration names containing mixed-case acronyms.
@@ -30,14 +95,14 @@ export const noMixedCaseAcronyms = {
                 return;
             }
             const name = id.name;
-            const match = titleCaseAcronyms.exec(name);
-            if (match !== null) {
+            const acronym = findMixedCaseAcronym(name);
+            if (acronym !== null) {
                 context.report({
                     node: id,
                     messageId: 'mixedCaseAcronym',
                     data: {
                         name,
-                        acronym: match[1],
+                        acronym,
                     },
                 });
             }
@@ -54,6 +119,9 @@ export const noMixedCaseAcronyms = {
                 checkName(node);
             },
             TSTypeAliasDeclaration(node: ESTree.TSTypeAliasDeclaration) {
+                checkName(node);
+            },
+            TSEnumDeclaration(node: ESTree.TSEnumDeclaration) {
                 checkName(node);
             },
         };

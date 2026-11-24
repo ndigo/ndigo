@@ -32,7 +32,7 @@ interface LoadedItem extends RegistryItem {
     readonly base: string;
 }
 
-interface UiLock {
+interface UILock {
     readonly items: Record<string, { readonly files: readonly { readonly target: string; readonly sha256: string }[] }>;
 }
 
@@ -70,7 +70,7 @@ for (const app of APPS) {
     const appDir = join(REPO_ROOT, app);
     const lockPath = join(appDir, 'ui.lock.json');
     if (!existsSync(lockPath)) continue;
-    const lock = JSON.parse(readFileSync(lockPath, 'utf8')) as UiLock;
+    const lock = JSON.parse(readFileSync(lockPath, 'utf8')) as UILock;
     const config = JSON.parse(readFileSync(join(appDir, 'ndigo.ui.json'), 'utf8')) as {
         aliases?: Record<string, string>;
     };

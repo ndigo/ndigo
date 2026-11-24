@@ -33,7 +33,17 @@ const logger = getLogger('ndigo-boot:application');
  * Derives the entry name from a class name (`ServerConfig` →
  * `serverConfig` — the repo's `@entry()` `serverConfig()` idiom).
  */
-const camelCaseName = (className: string): string => className.charAt(0).toLowerCase() + className.slice(1);
+const camelCaseName = (className: string): string => {
+    // Lowercase a leading run of uppercase letters, preserving the last
+    // uppercase letter when it begins the next word (PascalCase boundary).
+    // Handles acronym-prefixed names such as DBConfig -> dbConfig and
+    // HTTPTransformer -> httpTransformer, not just single-letter prefixes.
+    const match = /^([A-Z]+)([A-Z][a-z])/.exec(className);
+    if (match) {
+        return match[1].toLowerCase() + match[2] + className.slice(match[0].length);
+    }
+    return className.charAt(0).toLowerCase() + className.slice(1);
+};
 
 /**
  * Splits a comma-separated profile list, trimming + dropping empties.

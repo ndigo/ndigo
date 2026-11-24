@@ -6,10 +6,10 @@ import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
 import { CallToolResultSchema } from '@modelcontextprotocol/sdk/types.js';
 import { MethodParameter, MethodParameterType, toolMapping } from '@ndigo/dispatcher';
 import { afterEach, describe, expect, it } from 'vitest';
-import { McpToolRegistry } from '../src/registry';
+import { MCPToolRegistry } from '../src/registry';
 import { createMcpServer } from '../src/server';
 import { createUiResource, MCP_APP_MIME_TYPE } from '../src/ui-resource';
-import type { UiResource } from '../src/ui-resource';
+import type { UIResource } from '../src/ui-resource';
 import { handlerMethod, mapping, table } from './_fixtures';
 
 let close: (() => Promise<void>) | undefined;
@@ -36,7 +36,7 @@ class Controller {
     }
 }
 
-function registry(): McpToolRegistry {
+function registry(): MCPToolRegistry {
     const parameters = [
         new MethodParameter(MethodParameterType.PATH, 'id', true, null, undefined, null, undefined, 'id'),
         new MethodParameter(
@@ -50,7 +50,7 @@ function registry(): McpToolRegistry {
             'verbose'
         ),
     ];
-    return McpToolRegistry.from(
+    return MCPToolRegistry.from(
         table([
             {
                 mapping: mapping('/orders/:id'),
@@ -72,7 +72,7 @@ function registry(): McpToolRegistry {
 }
 
 async function connect(
-    options: { registry?: McpToolRegistry; uiResources?: readonly UiResource[] } = {}
+    options: { registry?: MCPToolRegistry; uiResources?: readonly UIResource[] } = {}
 ): Promise<Client> {
     const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
     const server = createMcpServer(
@@ -121,17 +121,17 @@ describe('createMcpServer', () => {
     });
 
     it('serves MCP Apps resources and advertises the extension', async () => {
-        class UiController {
+        class UIController {
             @toolMapping({ name: 'render_orders', readOnly: true, ui: 'ui://orders' })
             render(): unknown {
                 return null;
             }
         }
-        const uiRegistry = McpToolRegistry.from(
+        const uiRegistry = MCPToolRegistry.from(
             table([
                 {
                     mapping: mapping('/orders/ui'),
-                    handlerMethod: handlerMethod(new UiController(), 'render', [], () => ({ rendered: true })),
+                    handlerMethod: handlerMethod(new UIController(), 'render', [], () => ({ rendered: true })),
                 },
             ])
         );
@@ -179,7 +179,7 @@ describe('createMcpServer', () => {
                 return null;
             }
         }
-        const denied = McpToolRegistry.from(
+        const denied = MCPToolRegistry.from(
             table([
                 {
                     mapping: mapping('/orders/:id', 'DELETE'),

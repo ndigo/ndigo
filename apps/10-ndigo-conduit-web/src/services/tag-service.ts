@@ -6,13 +6,13 @@
  * must not turn into another request for the same sidebar.
  */
 import { signal, type Signal } from '@ndigo/signals';
-import type { ConduitApi } from '../lib/api/conduit-types';
+import type { ConduitAPI } from '../lib/api/conduit-types';
 
 /**
  * The tag service.
  */
 export class TagService {
-    readonly #api: ConduitApi;
+    readonly #api: ConduitAPI;
     readonly #tags: Signal<string[]>;
 
     /** Whether a successful fetch has already populated the signal. */
@@ -23,7 +23,7 @@ export class TagService {
      *
      * @param api - The Conduit API port.
      */
-    constructor(api: ConduitApi) {
+    constructor(api: ConduitAPI) {
         this.#api = api;
         this.#tags = signal([]);
     }

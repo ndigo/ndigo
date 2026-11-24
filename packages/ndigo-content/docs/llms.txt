@@ -68,7 +68,7 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `likeThemeSource` — Tests whether a value looks like a theme source.
 - `normalizeThemeName` — Validates a theme name from an untrusted source (cookie, header, query).
 - `ContentLoader` *(type)* — An async loader function that resolves content for a given key and language.
-- `TtlContentSource` — Content source that wraps a loader with a TTL-based in-memory cache.
+- `TTLContentSource` — Content source that wraps a loader with a TTL-based in-memory cache.
 - `CompositeContentSource` — Merges multiple content sources in priority order.
 - `CompositeThemeSource` — Chains multiple theme sources in priority order.
 - `parseAcceptLanguage` — Parses the preferred language tag from an `Accept-Language` header value.

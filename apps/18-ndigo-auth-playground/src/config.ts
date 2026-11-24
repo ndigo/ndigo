@@ -40,7 +40,7 @@ export const LOGIN_RATE_LIMIT: RateLimitPolicy = { limit: 5, windowMs: 60_000 };
 export const PLAIN_HTTP_SESSION_COOKIE = 'ndigo-session';
 
 /** Embedded OIDC issuer settings (mode 6). */
-export interface OidcConfig {
+export interface OIDCConfig {
     /** Start the in-process issuer at all. */
     readonly enabled: boolean;
     /** The issuer identifier — the discovery document's `issuer` must equal it. */
@@ -76,7 +76,7 @@ export interface PlaygroundConfig {
         readonly refreshTtlMs: number;
     };
     /** Embedded OIDC issuer settings. */
-    readonly oidc: OidcConfig;
+    readonly oidc: OIDCConfig;
 }
 
 /** Reads an environment flag; anything but `false`/`0` is `true`. */

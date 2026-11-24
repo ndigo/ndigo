@@ -78,6 +78,7 @@ import type { SocketFanout } from './socket-fanout';
 import { StompFanout } from './_stomp-fanout';
 import { StompLimits } from './_stomp-limits';
 import { StompTransactionManager } from './_stomp-transactions';
+import { StompSubscriptionRegistry } from './_stomp-subscriptions';
 
 /** STOMP ack modes (STOMP 1.2 §1.3.1). */
 
@@ -129,7 +130,7 @@ const SEND_FRAMING_HEADERS: Record<string, true> = {
 };
 
 /** A live subscription: one (session, sub-id) → destination binding. */
-import type { Subscription, StoredMessage, SessionState, QueueReplay, TransactionOp } from './_stomp-broker-types';
+import type { Subscription, StoredMessage, QueueReplay, TransactionOp } from './_stomp-broker-types';
 
 /** STOMP ack modes (STOMP 1.2 §1.3.1). */
 /**
@@ -358,8 +359,6 @@ export class StompBroker {
     readonly #nextMessageId: () => string;
     readonly #resolveUser: NonNullable<StompBrokerOptions['resolveUser']>;
     readonly #maxUnacked: number;
-    readonly #maxUnackedBytes: number;
-    readonly #maxUnackedSessionBytes: number;
     readonly #verifyCredentials: NonNullable<StompBrokerOptions['verifyCredentials']> | null;
     readonly #authorize: NonNullable<StompBrokerOptions['authorize']> | null;
     readonly #queueBacklog: number;
@@ -368,20 +367,12 @@ export class StompBroker {
     readonly #retention: { ttlMs?: number; maxMessages?: number } | null;
     /** `/queue` persistence layer — the durable-queue seam. */
     readonly #queueStore: QueueMessageStore | null;
-    /** Per-session subscription map: session → subId → subscription. */
-    readonly #subscriptions = new Map<SocketSession, Map<string, Subscription>>();
-    /** Fan-out index: destination → subscriptions (user scopes excluded). */
-    readonly #byDestination = new Map<string, Subscription[]>();
-    /** User scopes (D10): user → destination-suffix → subscriptions. */
-    readonly #byUser = new Map<string, Map<string, Subscription[]>>();
+    /** Subscription placement and delivery accounting. */
+    readonly #registry: StompSubscriptionRegistry;
     /** Per-session transaction buffers (D7). */
     readonly #transactions: StompTransactionManager;
     /** Every session under protocol control (for `closeAll`). */
     readonly #sessions = new Set<SocketSession>();
-    /** Per-session delivery accounting: ack index + the byte budgets. */
-    readonly #sessionState = new Map<SocketSession, SessionState>();
-    /** Monotonic delivery tag — makes the oldest tracked delivery knowable. */
-    #deliverySeq = 0;
     readonly #fanout: StompFanout;
     readonly #limits: StompLimits;
     #closed = false;
@@ -406,14 +397,17 @@ export class StompBroker {
                 return typeof user === 'string' ? user : null;
             });
         this.#maxUnacked = options.maxUnacked ?? DEFAULT_MAX_UNACKED;
-        this.#maxUnackedBytes = options.maxUnackedBytes ?? DEFAULT_MAX_UNACKED_BYTES;
-        this.#maxUnackedSessionBytes = options.maxUnackedSessionBytes ?? DEFAULT_MAX_UNACKED_SESSION_BYTES;
+        this.#registry = new StompSubscriptionRegistry({
+            maxUnacked: this.#maxUnacked,
+            maxUnackedBytes: options.maxUnackedBytes ?? DEFAULT_MAX_UNACKED_BYTES,
+            maxUnackedSessionBytes: options.maxUnackedSessionBytes ?? DEFAULT_MAX_UNACKED_SESSION_BYTES,
+        });
         this.#limits = new StompLimits({
             maxIdentifierLength: options.maxIdentifierLength ?? DEFAULT_MAX_IDENTIFIER_LENGTH,
             maxHeaderBytes: options.maxHeaderBytes ?? DEFAULT_MAX_HEADER_BYTES,
             maxReplayBytesPerSession: options.maxReplayBytesPerSession ?? DEFAULT_MAX_REPLAY_BYTES_PER_SESSION,
             fail: (session, frame, message, code) => this.#fail(session, frame, message, code),
-            stateFor: (session) => this.#stateFor(session),
+            stateFor: (session) => this.#registry.stateFor(session),
         });
         this.#verifyCredentials = options.verifyCredentials ?? null;
         this.#authorize = options.authorize ?? null;
@@ -498,11 +492,7 @@ export class StompBroker {
 
     /** Total subscription count across all sessions (observability). */
     get subscriptions(): number {
-        let count = 0;
-        for (const bySubId of this.#subscriptions.values()) {
-            count += bySubId.size;
-        }
-        return count;
+        return this.#registry.count;
     }
 
     /**
@@ -511,13 +501,7 @@ export class StompBroker {
      * gauge.
      */
     get unackedMessages(): number {
-        let total = 0;
-        for (const bySubId of this.#subscriptions.values()) {
-            for (const subscription of bySubId.values()) {
-                total += subscription.unacked.length;
-            }
-        }
-        return total;
+        return this.#registry.unackedMessages;
     }
 
     /**
@@ -581,16 +565,6 @@ export class StompBroker {
         } catch {
             return { ok: false };
         }
-    }
-
-    /** Per-session delivery accounting, created on first use. */
-    #stateFor(session: SocketSession): SessionState {
-        let state = this.#sessionState.get(session);
-        if (state === undefined) {
-            state = { messageIds: new Map(), unackedBytes: 0, replayBytes: 0 };
-            this.#sessionState.set(session, state);
-        }
-        return state;
     }
 
     /**
@@ -690,7 +664,7 @@ export class StompBroker {
         // peer/programmatic envelope that cannot be framed fails loudly
         // (throws to the caller) instead of being dropped per subscriber.
         this.#limits.assertDeliverable(destination, headers);
-        const subscribers = this.#byDestination.get(destination);
+        const subscribers = this.#registry.byDestination(destination);
         if (subscribers) {
             for (const subscription of Array.from(subscribers)) {
                 if (!subscription.session.isClosed) {
@@ -717,7 +691,7 @@ export class StompBroker {
         // REV-006: surface an unframeable envelope here rather than letting
         // `#deliverNow` swallow the serialization fault per subscriber.
         this.#limits.assertDeliverable(`/user/${suffix}`, headers);
-        const scope = this.#byUser.get(user)?.get(suffix);
+        const scope = this.#registry.byUser(user, suffix);
         if (!scope) {
             return;
         }
@@ -910,15 +884,10 @@ export class StompBroker {
         if (!(await this.#authorizeDestination(session, frame, destination, 'subscribe'))) {
             return false;
         }
-        let bySubId = this.#subscriptions.get(session);
-        if (bySubId === undefined) {
-            bySubId = new Map();
-            this.#subscriptions.set(session, bySubId);
-        }
-        if (bySubId.has(subId)) {
+        if (this.#registry.has(session, subId)) {
             return this.#fail(session, frame, `subscription id already in use: ${subId}`);
         }
-        if (bySubId.size >= this.#maxSubscriptionsPerSession) {
+        if (this.#registry.countForSession(session) >= this.#maxSubscriptionsPerSession) {
             return this.#fail(session, frame, `subscription limit reached (max ${this.#maxSubscriptionsPerSession})`);
         }
 
@@ -941,19 +910,7 @@ export class StompBroker {
                 replaying: false,
                 buffered: [],
             };
-            bySubId.set(subId, subscription);
-            const suffix = destination.slice('/user/'.length);
-            let scope = this.#byUser.get(user);
-            if (scope === undefined) {
-                scope = new Map();
-                this.#byUser.set(user, scope);
-            }
-            let listeners = scope.get(suffix);
-            if (listeners === undefined) {
-                listeners = [];
-                scope.set(suffix, listeners);
-            }
-            listeners.push(subscription);
+            this.#registry.add(subscription);
             return this.#receipt(session, frame);
         }
 
@@ -968,13 +925,7 @@ export class StompBroker {
             replaying: false,
             buffered: [],
         };
-        bySubId.set(subId, subscription);
-        const subscribers = this.#byDestination.get(destination);
-        if (subscribers === undefined) {
-            this.#byDestination.set(destination, [subscription]);
-        } else {
-            subscribers.push(subscription);
-        }
+        this.#registry.add(subscription);
         // `/queue` backward replay (D11 + history + COR-2): the
         // subscription is live in the fan-out index before the replay
         // starts, so nothing published meanwhile is lost — those frames
@@ -1062,12 +1013,11 @@ export class StompBroker {
         if (subId === undefined) {
             return this.#fail(session, frame, 'UNSUBSCRIBE requires an id header');
         }
-        const bySubId = this.#subscriptions.get(session);
-        const subscription = bySubId?.get(subId);
+        const subscription = this.#registry.get(session, subId);
         if (subscription === undefined) {
             return this.#fail(session, frame, `unknown subscription id: ${subId}`);
         }
-        this.#removeSubscription(session, bySubId as Map<string, Subscription>, subscription);
+        this.#registry.remove(session, subscription);
         return this.#receipt(session, frame);
     }
 
@@ -1198,7 +1148,7 @@ export class StompBroker {
             return this.#fail(session, frame, 'SEND to /user requires a resolved user', 1008);
         }
         const suffix = destination.slice('/user/'.length);
-        const scope = this.#byUser.get(user)?.get(suffix);
+        const scope = this.#registry.byUser(user, suffix);
         if (scope !== undefined) {
             const messageId = this.#nextMessageId();
             // Snapshot: a delivery may synchronously close one of the
@@ -1278,7 +1228,7 @@ export class StompBroker {
         const subId = frame.headers['subscription'];
         let owners: Subscription[];
         if (subId === undefined) {
-            const tracked = this.#sessionState.get(session)?.messageIds.get(messageId);
+            const tracked = this.#registry.ownersOf(session, messageId);
             if (tracked === undefined) {
                 if (this.#maxUnacked <= 0) {
                     // Tracking disabled: nothing is ever outstanding, so
@@ -1292,7 +1242,7 @@ export class StompBroker {
             // mutates the owner list.
             owners = [...tracked];
         } else {
-            const subscription = this.#subscriptions.get(session)?.get(subId);
+            const subscription = this.#registry.get(session, subId);
             if (subscription === undefined) {
                 return this.#fail(session, frame, `unknown subscription: ${subId}`);
             }
@@ -1369,7 +1319,7 @@ export class StompBroker {
         // Delivery tags are issued monotonically, so the named entry's tag
         // is the exact cumulative boundary for `client`.
         const boundary = named.deliverySeq;
-        const removed = this.#extractUnacked(subscription, (entry) =>
+        const removed = this.#registry.extractUnacked(subscription, (entry) =>
             ack === 'client' ? entry.deliverySeq <= boundary : entry.messageId === messageId
         );
         if (!nack) {
@@ -1429,7 +1379,7 @@ export class StompBroker {
      * @param op - The buffered ACK/NACK.
      */
     #applyBufferedAck(session: SocketSession, op: Extract<TransactionOp, { kind: 'ack' }>): void {
-        const subscription = this.#subscriptions.get(session)?.get(op.subId);
+        const subscription = this.#registry.get(session, op.subId);
         if (subscription !== undefined) {
             this.#resolveAck(subscription, op.messageId, op.nack);
         }
@@ -1520,193 +1470,7 @@ export class StompBroker {
             // obligation.
             return;
         }
-        this.#track(subscription, messageId, destination, body, headers);
-    }
-
-    /**
-     * Track a delivered message for `client`/`client-individual` (D9),
-     * enforcing every bound oldest-first: the count (`maxUnacked`), the
-     * per-subscription byte bound (`maxUnackedBytes`) and the per-session
-     * byte bound (`maxUnackedSessionBytes`, whose victim is the session's
-     * globally oldest delivery via the monotonic tags).
-     *
-     * @param subscription - The subscription the MESSAGE went to.
-     * @param messageId - The delivered message id (the ack index key).
-     * @param destination - The delivered destination.
-     * @param body - The delivered body.
-     * @param headers - The delivered pass-through headers.
-     */
-    #track(
-        subscription: Subscription,
-        messageId: string,
-        destination: string,
-        body: StompBody,
-        headers: Record<string, string>
-    ): void {
-        if (subscription.ack === 'auto' || this.#maxUnacked <= 0) {
-            return;
-        }
-        const bytes = materialOctets(body);
-        this.#deliverySeq += 1;
-        const stored: StoredMessage = {
-            messageId,
-            destination,
-            body,
-            headers: { ...headers },
-            bytes,
-            deliverySeq: this.#deliverySeq,
-        };
-        subscription.unacked.put(stored);
-        subscription.unackedBytes += bytes;
-        const state = this.#stateFor(subscription.session);
-        // REV-004: one logical message can be outstanding under several of
-        // the session's subscriptions (the same id fans out to each) — keep
-        // every owner so an id-only ACK/NACK settles them all.
-        const owners = state.messageIds.get(messageId);
-        if (owners === undefined) {
-            state.messageIds.set(messageId, [subscription]);
-        } else if (!owners.includes(subscription)) {
-            owners.push(subscription);
-        }
-        state.unackedBytes += bytes;
-
-        while (subscription.unacked.length > this.#maxUnacked) {
-            this.#evictOldest(subscription);
-        }
-        while (this.#maxUnackedBytes > 0 && subscription.unackedBytes > this.#maxUnackedBytes) {
-            this.#evictOldest(subscription);
-        }
-        while (this.#maxUnackedSessionBytes > 0 && state.unackedBytes > this.#maxUnackedSessionBytes) {
-            if (!this.#evictSessionOldest(subscription.session)) {
-                break;
-            }
-        }
-    }
-
-    /**
-     * Drop a subscription's oldest tracked delivery (the ring's head).
-     *
-     * @param subscription - The subscription to evict from.
-     */
-    #evictOldest(subscription: Subscription): void {
-        const entry = subscription.unacked.get();
-        if (entry !== undefined) {
-            this.#untrack(subscription, entry);
-        }
-    }
-
-    /**
-     * Drop the session's oldest tracked delivery across all its
-     * subscriptions — the per-session byte bound's victim (SEC-5).
-     *
-     * @param session - The owning session.
-     * @returns `false` when the session tracks nothing (bound unreachable).
-     */
-    #evictSessionOldest(session: SocketSession): boolean {
-        const bySubId = this.#subscriptions.get(session);
-        if (bySubId === undefined) {
-            return false;
-        }
-        let victim: { subscription: Subscription; deliverySeq: number } | undefined;
-        for (const subscription of bySubId.values()) {
-            for (const entry of subscription.unacked) {
-                if (victim === undefined || entry.deliverySeq < victim.deliverySeq) {
-                    victim = { subscription, deliverySeq: entry.deliverySeq };
-                }
-            }
-        }
-        if (victim === undefined) {
-            return false;
-        }
-        const oldestSeq = victim.deliverySeq;
-        this.#extractUnacked(victim.subscription, (entry) => entry.deliverySeq === oldestSeq);
-        return true;
-    }
-
-    /**
-     * Remove tracked entries from a subscription, keeping the rest in
-     * order: the ring is drained, matching entries are untracked (bytes,
-     * session total, ack index) and the others re-queued.
-     *
-     * @param subscription - The subscription to edit.
-     * @param remove - Predicate selecting the entries to drop.
-     * @returns The removed entries, in ring (oldest-first) order.
-     */
-    #extractUnacked(subscription: Subscription, remove: (entry: StoredMessage) => boolean): StoredMessage[] {
-        const { unacked } = subscription;
-        const kept: StoredMessage[] = [];
-        const removed: StoredMessage[] = [];
-        while (unacked.length > 0) {
-            const entry = unacked.get() as StoredMessage;
-            if (remove(entry)) {
-                removed.push(entry);
-                this.#untrack(subscription, entry);
-            } else {
-                kept.push(entry);
-            }
-        }
-        for (const entry of kept) {
-            unacked.put(entry);
-        }
-        return removed;
-    }
-
-    /**
-     * Release one entry's accounting: byte totals, and the session's ack
-     * index entry for its id (the ring removal itself is the caller's).
-     *
-     * @param subscription - The subscription that tracked the entry.
-     * @param entry - The entry leaving the tracking set.
-     */
-    #untrack(subscription: Subscription, entry: StoredMessage): void {
-        subscription.unackedBytes = Math.max(0, subscription.unackedBytes - entry.bytes);
-        const state = this.#sessionState.get(subscription.session);
-        if (state === undefined) {
-            return;
-        }
-        state.unackedBytes = Math.max(0, state.unackedBytes - entry.bytes);
-        const owners = state.messageIds.get(entry.messageId);
-        if (owners !== undefined) {
-            const index = owners.indexOf(subscription);
-            if (index >= 0) {
-                owners.splice(index, 1);
-            }
-            if (owners.length === 0) {
-                state.messageIds.delete(entry.messageId);
-            }
-        }
-    }
-
-    /**
-     * Release every tracked delivery of a subscription (UNSUBSCRIBE and
-     * session teardown): the ack index must not resolve ids to a
-     * subscription that no longer exists — a NACK through it would deliver
-     * a MESSAGE for an unsubscribed id.
-     *
-     * @param subscription - The departing subscription.
-     */
-    #untrackAll(subscription: Subscription): void {
-        this.#extractUnacked(subscription, () => true);
-    }
-
-    /**
-     * Drop a user's now-empty scope (and empty user entry) from the
-     * principal index.
-     *
-     * @param user - The principal.
-     * @param suffix - The `/user/` destination suffix.
-     */
-    #pruneUserScope(user: string, suffix: string): void {
-        const scopes = this.#byUser.get(user);
-        if (scopes === undefined) {
-            return;
-        }
-        if (scopes.get(suffix)?.length === 0) {
-            scopes.delete(suffix);
-        }
-        if (scopes.size === 0) {
-            this.#byUser.delete(user);
-        }
+        this.#registry.track(subscription, messageId, destination, body, headers);
     }
 
     /**
@@ -1798,70 +1562,13 @@ export class StompBroker {
     }
 
     /**
-     * Remove a subscription from its indexes (destination fan-out or user
-     * scope), the session's map, and the session's delivery accounting
-     * (its tracked entries must not stay resolvable by a later id-only
-     * ACK/NACK — `#untrackAll`).
-     *
-     * @param session - The owning session.
-     * @param bySubId - The session's subscription map (mutated).
-     * @param subscription - The subscription to remove.
-     */
-    #removeSubscription(session: SocketSession, bySubId: Map<string, Subscription>, subscription: Subscription): void {
-        bySubId.delete(subscription.subId);
-        subscription.buffered = [];
-        this.#untrackAll(subscription);
-        if (subscription.destination.startsWith('/user/')) {
-            // REV-005: use the principal bound at SUBSCRIBE time — a
-            // re-resolve here could return a different (or `null`)
-            // principal and strand the subscription in the old scope
-            // (delivering after unsubscribe).
-            const user = subscription.user;
-            if (user !== null) {
-                const suffix = subscription.destination.slice('/user/'.length);
-                const scope = this.#byUser.get(user)?.get(suffix);
-                if (scope !== undefined) {
-                    const index = scope.indexOf(subscription);
-                    if (index >= 0) {
-                        scope.splice(index, 1);
-                    }
-                }
-                this.#pruneUserScope(user, suffix);
-            }
-        } else {
-            const subscribers = this.#byDestination.get(subscription.destination);
-            if (subscribers !== undefined) {
-                const index = subscribers.indexOf(subscription);
-                if (index >= 0) {
-                    subscribers.splice(index, 1);
-                }
-                if (subscribers.length === 0) {
-                    this.#byDestination.delete(subscription.destination);
-                }
-            }
-        }
-        if (bySubId.size === 0 && session.isClosed) {
-            this.#subscriptions.delete(session);
-        }
-    }
-
-    /**
      * Remove every subscription, transaction buffer, delivery-tracking
      * state and the session itself on stream end.
      *
      * @param session - The ended session.
      */
     #dropSession(session: SocketSession): void {
-        const bySubId = this.#subscriptions.get(session);
-        if (bySubId !== undefined) {
-            // Snapshot: #removeSubscription mutates the map it walks.
-            // oxlint-disable-next-line unicorn/no-useless-spread -- the spread is the snapshot; a live iterator would be invalidated by the removals.
-            for (const subscription of [...bySubId.values()]) {
-                this.#removeSubscription(session, bySubId, subscription);
-            }
-            this.#subscriptions.delete(session);
-        }
-        this.#sessionState.delete(session);
+        this.#registry.dropSession(session);
         this.#transactions.closeSession(session);
         this.#sessions.delete(session);
     }

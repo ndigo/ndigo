@@ -640,19 +640,19 @@ type UserUpdate = Partial<UserDTO>;
 **4. Library Integration Layer (Ndigo Pattern):**
 
 ```typescript
-// @ndigo/dom - the integration layer for its encapsulated DOM library.
-// The import lives inside @ndigo/dom (src/linkedom-dom-provider.ts) and is
+// @ndigo/ai-sdk - the integration layer for the Vercel AI SDK.
+// The import lives inside @ndigo/ai-sdk (src/model.ts) and is
 // re-exported through the package's stable surface:
-import { parseHTML } from 'linkedom';
+import { generateText } from 'ai';
 
-export function createDOMProvider(html: string): DOMProvider {
-    return new LinkedomDOMProvider(parseHTML(html));
+export function aiSdkModel(model: unknown): AIModel {
+    return new AISDKModel(model);
 }
 
-// Application code imports from @ndigo/dom, not from linkedom directly
-import { createDOMProvider } from '@ndigo/dom';
+// Application code imports from @ndigo/ai-sdk, not from ai directly
+import { aiSdkModel } from '@ndigo/ai-sdk';
 
-createDOMProvider('<p>Hello</p>');
+const model = aiSdkModel(provider('gpt-4o'));
 ```
 
 `@ndigo/util` is the framework's zero-dependency leaf toolkit (type guards,
@@ -810,7 +810,7 @@ The framework is organized into 8 architectural layers with clear dependency dir
 | **3: Application Context** | `@ndigo/context`                                                                                                                                                                                                                                                                      | Application context, environment, events, configuration metadata                                                                                                                                                                  | DI container + application context    |
 | **2: Infrastructure**      | `@ndigo/factory`, `@ndigo/content`, `@ndigo/content-i18next`, `@ndigo/cache`, `@ndigo/orm`, `@ndigo/orm-drizzle`, `@ndigo/advice`, `@ndigo/resilience`, `@ndigo/flags`, `@ndigo/flags-openfeature`, `@ndigo/rate-limit`                                                               | IoC container internals, i18n/theming, caching, persistence abstractions + Drizzle adapter, method advice + resilience, feature flags, rate limiting                                                                              | IoC container internals + theme/i18n  |
 | **1: Foundation**          | `@ndigo/core`, `@ndigo/signals`, `@ndigo/log`                                                                                                                                                                                                                                         | Core primitives, collection types, path matching, reactive state, logging core                                                                                                                                                    | Core primitives + reactive state      |
-| **0: Integration Layer**   | `@ndigo/util`, `@ndigo/dom` (+ tooling: `@ndigo/oxlint-plugin`)                                                                                                                                                                                                                       | Zero-dependency leaf toolkit + encapsulated third-party libraries via stable Ndigo wrappers                                                                                                                                       | Third-party facade + utility layer    |
+| **0: Integration Layer**   | `@ndigo/util` (+ tooling: `@ndigo/oxlint-plugin`; integration packages such as `@ndigo/ai-sdk` live in their own layers)                                                                                                                                                              | Zero-dependency leaf toolkit + encapsulated third-party libraries via stable Ndigo wrappers                                                                                                                                       | Third-party facade + utility layer    |
 
 > **Package Map:** the canonical per-package reference (purpose · platform ·
 > runtime deps) — see [§ Package Map](#package-map) below.
@@ -897,7 +897,6 @@ graph TD
 
     subgraph L0["Layer 0: Integration Layer"]
         Util[@ndigo/util]
-        Dom[@ndigo/dom]
     end
 
     Boot --> Core
@@ -1082,7 +1081,7 @@ graph TD
 > Edges mirror runtime (`src/`) imports. `scripts/check-manifests.mjs` (CI)
 > enforces import ↔ manifest consistency in both directions; keep this
 > diagram and the Package Map in step with the manifests when they change.
-> `@ndigo/cache`, `@ndigo/signals`, `@ndigo/dom`, `@ndigo/auth-core`,
+> `@ndigo/cache`, `@ndigo/signals`, `@ndigo/auth-core`,
 > `@ndigo/util`, and `@ndigo/log` depend on no Ndigo package.
 
 **Key Principle:** Higher layers depend on lower layers, never the reverse. Some cross-layer dependencies inside adjacent architectural tiers are intentional for integration and orchestration. The stack is acyclic — `pnpm build` fails on any cycle in the Nx task graph.
@@ -1094,7 +1093,6 @@ Canonical reference for every publishable package: purpose · layer · platform 
 | Package                    | Layer    | Platform | Purpose                                                                                                                                                            | Runtime deps                                                                                                 |
 | :------------------------- | :------- | :------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------- |
 | `@ndigo/util`              | 0        | iso      | Zero-dependency leaf toolkit: type guards, strings, environment, crypto                                                                                            | —                                                                                                            |
-| `@ndigo/dom`               | 0        | iso      | Isomorphic DOM parsing/creation (`linkedom`)                                                                                                                       | —                                                                                                            |
 | `@ndigo/core`              | 1        | iso      | Primitives, collections, radix tree, metadata, events (`semver`, `zod`)                                                                                            | `util`                                                                                                       |
 | `@ndigo/signals`           | 1        | iso      | Reactive state: signals, computed, effects (`@preact/signals-core`)                                                                                                | `log`                                                                                                        |
 | `@ndigo/log`               | 1        | iso      | Logging core: logger abstraction, severity mappings, threshold filtering (`@opentelemetry/api`)                                                                    | —                                                                                                            |
@@ -1190,10 +1188,9 @@ one-shot probes in `scripts/`.
 
 **Current Integration Layers:**
 
-| Integration Layer | Encapsulated Libraries | Purpose                                     |
-| :---------------- | :--------------------- | :------------------------------------------ |
-| `@ndigo/dom`      | `linkedom`             | Isomorphic DOM parsing and element creation |
-| `@ndigo/ai-sdk`   | `ai`                   | Provider-neutral model adapter              |
+| Integration Layer | Encapsulated Libraries | Purpose                        |
+| :---------------- | :--------------------- | :----------------------------- |
+| `@ndigo/ai-sdk`   | `ai`                   | Provider-neutral model adapter |
 
 The encapsulated-library set is the set enforced by the
 `internal/no-direct-integration-imports` oxlint rule (`INTEGRATION_LAYER_MAP` in
@@ -1237,14 +1234,14 @@ the missing resolver is a manifest bug — not the consumer's job. There is no
 
 ```typescript
 // In @ndigo/core or any non-integration package
-import { createDOMProvider } from '@ndigo/dom'; // ✅ Import from integration layer
+import { aiSdkModel } from '@ndigo/ai-sdk'; // ✅ Import from integration layer
 ```
 
 **❌ Incorrect:**
 
 ```typescript
 // In @ndigo/core or any non-integration package
-import { parseHTML } from 'linkedom'; // ❌ Direct import bypasses integration layer
+import { generateText } from 'ai'; // ❌ Direct import bypasses integration layer
 ```
 
 **✅ Allowed Exception (Tests):**

@@ -15,15 +15,15 @@ const ruleTester = new RuleTester({
 ruleTester.run('no-direct-integration-imports', noDirectIntegrationImports, {
     valid: [
         {
-            code: "import { createDOMProvider } from '@ndigo/dom';",
+            code: "import { aiSdkModel } from '@ndigo/ai-sdk';",
             filename: '/packages/ndigo-core/src/container.ts',
         },
         {
-            code: "import { parseHTML } from 'linkedom';",
-            filename: '/packages/ndigo-dom/src/linkedom-dom-provider.ts',
+            code: "import { generateText } from 'ai';",
+            filename: '/packages/ndigo-ai-sdk/src/model.ts',
         },
         {
-            code: "import { parseHTML } from 'linkedom';",
+            code: "import { generateText } from 'ai';",
             filename: '/packages/ndigo-core/test/something.spec.ts',
         },
         {
@@ -33,27 +33,27 @@ ruleTester.run('no-direct-integration-imports', noDirectIntegrationImports, {
     ],
     invalid: [
         {
-            code: "import { parseHTML } from 'linkedom';",
+            code: "import { generateText } from 'ai';",
             filename: '/packages/ndigo-core/src/container.ts',
             errors: [
                 {
                     messageId: 'directImport',
                     data: {
-                        library: 'linkedom',
-                        integrationLayer: '@ndigo/dom',
+                        library: 'ai',
+                        integrationLayer: '@ndigo/ai-sdk',
                     },
                 },
             ],
         },
         {
-            code: "import { parseHTML } from 'linkedom/worker';",
+            code: "import { generateText } from 'ai/rsc';",
             filename: '/packages/ndigo-view/src/renderer.ts',
             errors: [
                 {
                     messageId: 'directImport',
                     data: {
-                        library: 'linkedom',
-                        integrationLayer: '@ndigo/dom',
+                        library: 'ai',
+                        integrationLayer: '@ndigo/ai-sdk',
                     },
                 },
             ],

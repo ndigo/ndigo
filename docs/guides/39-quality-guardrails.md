@@ -93,7 +93,7 @@ Every rule carries `meta.docs.url` and ends each diagnostic with
 The internal plugin runs from TypeScript with no build step and is loaded by the
 root `.oxlintrc.json`. It enforces:
 
-- `internal/no-direct-integration-imports` — no linkedom outside `@ndigo/dom`.
+- `internal/no-direct-integration-imports` — no encapsulated library (e.g. `ai`) outside its integration layer.
 - `internal/no-internal-file-imports` / `-exports` — `_*.ts` stays private.
 - `internal/no-uppercase-regexp-constants` — regex constants use the agreed form.
 - `internal/no-abstract-class-without-prefix` — `Abstract*` naming.

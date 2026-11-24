@@ -165,16 +165,16 @@ walk each preset end to end.
 The 47 packages group into layers. You do not need all of them; the ones you
 install are the ones your app imports.
 
-| Layer         | Packages                                                                                                                                                | What it gives you                                     |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
-| Foundation    | `@ndigo/core`, `@ndigo/util`, `@ndigo/factory`, `@ndigo/context`, `@ndigo/boot`                                                                         | primitives, DI, configuration, lifecycle, presets     |
-| Web           | `@ndigo/router`, `@ndigo/dispatcher`, `@ndigo/view`, `@ndigo/view-ejs`, `@ndigo/view-webcomponent`, `@ndigo/view-toon`, `@ndigo/http`, `@ndigo/openapi` | routes, binding, views, client, API docs              |
-| Platforms     | `@ndigo/platform-node`, `@ndigo/platform-web`                                                                                                           | runtime adapters                                      |
-| Data          | `@ndigo/orm`, `@ndigo/orm-drizzle`, `@ndigo/cache`, `@ndigo/redis`                                                                                      | persistence, caching, shared stores                   |
-| Security      | `@ndigo/auth-core`, `@ndigo/auth-server`, `@ndigo/auth-client`, `@ndigo/rate-limit`                                                                     | credentials, sessions, JWT, OIDC, limits              |
-| Async         | `@ndigo/scheduler`, `@ndigo/jobs`, `@ndigo/locks`, `@ndigo/cluster`, `@ndigo/socket`                                                                    | scheduled/background work, coordination, realtime     |
-| Cross-cutting | `@ndigo/log`, `@ndigo/telemetry*`, `@ndigo/management`, `@ndigo/advice`, `@ndigo/resilience`, `@ndigo/flags`, `@ndigo/content`                          | observability, advice, flags, i18n                    |
-| Browser       | `@ndigo/signals`, `@ndigo/host`, `@ndigo/dom`                                                                                                           | reactive state, micro-frontend shell, DOM integration |
+| Layer         | Packages                                                                                                                                                | What it gives you                                 |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| Foundation    | `@ndigo/core`, `@ndigo/util`, `@ndigo/factory`, `@ndigo/context`, `@ndigo/boot`                                                                         | primitives, DI, configuration, lifecycle, presets |
+| Web           | `@ndigo/router`, `@ndigo/dispatcher`, `@ndigo/view`, `@ndigo/view-ejs`, `@ndigo/view-webcomponent`, `@ndigo/view-toon`, `@ndigo/http`, `@ndigo/openapi` | routes, binding, views, client, API docs          |
+| Platforms     | `@ndigo/platform-node`, `@ndigo/platform-web`                                                                                                           | runtime adapters                                  |
+| Data          | `@ndigo/orm`, `@ndigo/orm-drizzle`, `@ndigo/cache`, `@ndigo/redis`                                                                                      | persistence, caching, shared stores               |
+| Security      | `@ndigo/auth-core`, `@ndigo/auth-server`, `@ndigo/auth-client`, `@ndigo/rate-limit`                                                                     | credentials, sessions, JWT, OIDC, limits          |
+| Async         | `@ndigo/scheduler`, `@ndigo/jobs`, `@ndigo/locks`, `@ndigo/cluster`, `@ndigo/socket`                                                                    | scheduled/background work, coordination, realtime |
+| Cross-cutting | `@ndigo/log`, `@ndigo/telemetry*`, `@ndigo/management`, `@ndigo/advice`, `@ndigo/resilience`, `@ndigo/flags`, `@ndigo/content`                          | observability, advice, flags, i18n                |
+| Browser       | `@ndigo/signals`, `@ndigo/host`                                                                                                                         | reactive state, micro-frontend shell              |
 
 The package READMEs are the per-package reference; the guides are the
 task-shaped paths through them.

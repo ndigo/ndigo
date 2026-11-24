@@ -180,7 +180,6 @@ pnpm --filter @ndigo/view-webcomponent test
 ## See Also
 
 - [@ndigo/view](../ndigo-view/README.md) — view contracts and targets
-- [@ndigo/dom](../ndigo-dom/README.md) — reserved integration layer for `linkedom` (server-side DOM); not yet consumed by this package (island hydration uses the browser `document`)
 - [apps/07-ndigo-island](../../apps/07-ndigo-island/README.md) — server-side island hydration
 
 ## Contributing

@@ -142,7 +142,6 @@
     {
       "files": [
         "packages/ndigo-boot/src/**/*.ts",
-        "packages/ndigo-dom/src/**/*.ts",
         "packages/ndigo-platform-web/src/**/*.ts",
         "packages/ndigo-view-webcomponent/src/**/*.ts"
       ],

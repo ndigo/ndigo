@@ -42,7 +42,6 @@ export const ndigoAliases: { find: RegExp; replacement: string }[] = [
 
     { find: /^@ndigo\/advice$/, replacement: resolve(repoRoot, 'packages/ndigo-advice/src') },
     { find: /^@ndigo\/core$/, replacement: resolve(repoRoot, 'packages/ndigo-core/src') },
-    { find: /^@ndigo\/dom$/, replacement: resolve(repoRoot, 'packages/ndigo-dom/src') },
     { find: /^@ndigo\/util$/, replacement: resolve(repoRoot, 'packages/ndigo-util/src') },
     { find: /^@ndigo\/ui$/, replacement: resolve(repoRoot, 'packages/ndigo-ui/src') },
     { find: /^@ndigo\/ui-web$/, replacement: resolve(repoRoot, 'packages/ndigo-ui-web/src') },

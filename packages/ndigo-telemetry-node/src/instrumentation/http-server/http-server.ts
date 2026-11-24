@@ -1,7 +1,15 @@
 /**
  * OpenTelemetry instrumentation for `HTTPServer` lifecycle + inbound requests.
  */
-import { context as otelContext, propagation, ROOT_CONTEXT, SpanKind, SpanStatusCode, trace } from '@opentelemetry/api';
+import {
+    context as otelContext,
+    propagation,
+    ROOT_CONTEXT,
+    SpanKind,
+    SpanStatusCode,
+    trace,
+    type Span,
+} from '@opentelemetry/api';
 import { HTTPServer, NodeHTTPServerAdapter } from '@ndigo/platform-node';
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import { performance } from 'node:perf_hooks';
@@ -63,34 +71,37 @@ export class HTTPServerInstrumentation extends AbstractBaseInstrumentation {
      * Patches `HTTPServer#start` and `#close` to record server lifecycle spans.
      */
     enable(): void {
+        this.patchLifecycle();
+        this.patchRequestHandling();
+    }
+
+    // `enable()` runs from the base constructor before the subclass's private
+    // brand exists, so these helpers cannot use `#` names; TypeScript
+    // `private` is compile-time-only and works during construction.
+    /** Wraps the server lifecycle methods with INTERNAL spans. */
+    private patchLifecycle(): void {
+        const attributes = (instance: unknown): { 'server.port': number } => {
+            // The patched `start`/`close` target is always the server.
+            const server = instance as HTTPServer;
+            return { 'server.port': server.port };
+        };
         this._wrap(
             HTTPServer.prototype,
             'start',
-            this._patch({
-                name: 'HTTPServer.start',
-                kind: SpanKind.INTERNAL,
-                attributes: (instance: unknown) => {
-                    // The patched `start`/`close` target is always the server.
-                    const server = instance as HTTPServer;
-                    return { 'server.port': server.port };
-                },
-            })
+            this._patch({ name: 'HTTPServer.start', kind: SpanKind.INTERNAL, attributes })
         );
-
         this._wrap(
             HTTPServer.prototype,
             'close',
-            this._patch({
-                name: 'HTTPServer.close',
-                kind: SpanKind.INTERNAL,
-                attributes: (instance: unknown) => {
-                    // The patched `start`/`close` target is always the server.
-                    const server = instance as HTTPServer;
-                    return { 'server.port': server.port };
-                },
-            })
+            this._patch({ name: 'HTTPServer.close', kind: SpanKind.INTERNAL, attributes })
         );
+    }
 
+    /**
+     * Wraps `handleRequest` with a SERVER span that continues a propagated
+     * W3C traceparent and records the semconv request-duration histogram.
+     */
+    private patchRequestHandling(): void {
         // Per-request root span: every inbound HTTP request gets a SERVER span
         // that the dispatch + view-target spans nest under. When the client
         // propagated a W3C traceparent (the browser→server journey pattern),
@@ -122,46 +133,9 @@ export class HTTPServerInstrumentation extends AbstractBaseInstrumentation {
                         (span) =>
                             original
                                 .apply(this, [req, res])
-                                .then(() => {
-                                    // OP-5: the adapter converts dispatch errors
-                                    // into problem responses (5xx) before
-                                    // resolving, so `res.statusCode` — not the
-                                    // settle state — carries the outcome. 4xx
-                                    // stays OK (client error, OTel HTTP semconv).
-                                    span.setAttribute('http.response.status_code', res.statusCode);
-                                    span.setStatus(resultStatus({ ok: res.statusCode < 500 }));
-                                    span.end();
-                                    // The semconv duration histogram
-                                    // (seconds), aggregated server-side by
-                                    // method + status code (low cardinality —
-                                    // the raw path is deliberately not an
-                                    // attribute; the span already carries it).
-                                    recordRequestDuration(
-                                        REQUEST_DURATION,
-                                        {
-                                            'http.request.method': req.method ?? 'GET',
-                                            'http.response.status_code': res.statusCode,
-                                        },
-                                        (performance.now() - startedAt) / 1000
-                                    );
-                                })
+                                .then(() => recordRequestSuccess({ span, req, res, startedAt }))
                                 .catch((error: unknown) => {
-                                    span.recordException(error as Error);
-                                    span.setStatus(resultStatus({ ok: false }));
-                                    span.end();
-                                    // The adapter writes a 5xx problem response
-                                    // for dispatch errors, so the catch path is
-                                    // the exceptional fall-through: record the
-                                    // duration with the code the adapter would
-                                    // have written.
-                                    recordRequestDuration(
-                                        REQUEST_DURATION,
-                                        {
-                                            'http.request.method': req.method ?? 'GET',
-                                            'http.response.status_code': 500,
-                                        },
-                                        (performance.now() - startedAt) / 1000
-                                    );
+                                    recordRequestFailure({ span, req, error, startedAt });
                                     throw error;
                                 })
                     )
@@ -178,6 +152,59 @@ export class HTTPServerInstrumentation extends AbstractBaseInstrumentation {
         this._unwrap(HTTPServer.prototype, 'close');
         this._unwrap(NodeHTTPServerAdapter.prototype, 'handleRequest');
     }
+}
+
+/** The span + request context shared by the success/failure recorders. */
+interface RequestSpanOutcome {
+    readonly span: Span;
+    readonly req: IncomingMessage;
+    readonly startedAt: number;
+}
+
+/**
+ * Records a successful request: status attribute, span status, span end, and
+ * the semconv request-duration histogram.
+ */
+function recordRequestSuccess(outcome: RequestSpanOutcome & { res: ServerResponse<IncomingMessage> }): void {
+    const { span, req, res, startedAt } = outcome;
+    // OP-5: the adapter converts dispatch errors into problem responses (5xx)
+    // before resolving, so `res.statusCode` — not the settle state — carries
+    // the outcome. 4xx stays OK (client error, OTel HTTP semconv).
+    span.setAttribute('http.response.status_code', res.statusCode);
+    span.setStatus(resultStatus({ ok: res.statusCode < 500 }));
+    span.end();
+    // The semconv duration histogram (seconds), aggregated server-side by
+    // method + status code (low cardinality — the raw path is deliberately
+    // not an attribute; the span already carries it).
+    recordRequestDuration(
+        REQUEST_DURATION,
+        {
+            'http.request.method': req.method ?? 'GET',
+            'http.response.status_code': res.statusCode,
+        },
+        (performance.now() - startedAt) / 1000
+    );
+}
+
+/**
+ * Records a failed request with the status the adapter would have written.
+ */
+function recordRequestFailure(outcome: RequestSpanOutcome & { error: unknown }): void {
+    const { span, req, error, startedAt } = outcome;
+    span.recordException(error as Error);
+    span.setStatus(resultStatus({ ok: false }));
+    span.end();
+    // The adapter writes a 5xx problem response for dispatch errors, so the
+    // catch path is the exceptional fall-through: record the duration with
+    // the code the adapter would have written.
+    recordRequestDuration(
+        REQUEST_DURATION,
+        {
+            'http.request.method': req.method ?? 'GET',
+            'http.response.status_code': 500,
+        },
+        (performance.now() - startedAt) / 1000
+    );
 }
 
 function resultStatus(outcome: { ok: boolean }): { code: SpanStatusCode } {

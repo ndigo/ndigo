@@ -1,103 +1,98 @@
 # Security
 
-What Ndigo defends, where the trust boundaries sit, and the defense layers that
-protect an application. The mechanisms are summarized inline; the linked guides
-show each one in use.
+Ndigo assumes the network is hostile and the browser is untrusted. Security is
+therefore structural rather than additive: each layer enforces one part of the
+boundary, the safe configuration is the default, and misconfiguration fails
+loudly instead of degrading quietly. This page states the posture and the
+reasoning; the guides show each mechanism in use.
 
 ## Design Principles
 
-1. **Fail closed, fail loud.** Auth denies by default (`@authenticated`
-   without a principal is a denial, not a pass), backend faults reject
-   rather than degrade to memory or empty results, and misconfiguration
-   (malformed trusted-proxy sets, bad cipher markers) fails at startup or
+1. **Fail closed, fail loud.** Access is denied unless a principal is
+   established. Backend faults reject rather than fall back to memory or empty
+   results, and a malformed trust list or cipher marker fails at startup or
    first use — never silently.
-2. **Minimal external trust.** The browser is untrusted; every proxy must
-   be _listed_ to influence client identity; secrets never ship in
-   defaults; backends connect only to explicit URLs.
-3. **No encryption/auth in the app layer.** Cryptography is framework-owned
-   (`jose`, `node:crypto`, scrypt) behind small contracts; the app
-   assembles, never reinvents.
-4. **Defense in depth, not single gates.** Headers + rate limiting + CSRF
-    - auth + validation + the error contract each cover a different layer;
-      no one mechanism is the boundary.
+2. **Minimal external trust.** The browser is untrusted; a proxy must be
+   explicitly listed before it can influence client identity; secrets never
+   ship in defaults; backends connect only to explicit addresses. The default
+   proxy allowlist is empty — trust nobody.
+3. **Cryptography is framework-owned.** Password hashing, token signing, and
+   encryption live behind small contracts the framework maintains.
+   Applications assemble and configure those contracts; they never reinvent
+   them in application code.
+4. **Defense in depth, not single gates.** Transport hardening, throttling,
+   request-forgery protection, session safety, authentication, authorization,
+   input validation, and the error contract each cover a different layer. No
+   single mechanism is the boundary.
 
 ## Trust Boundaries
 
 ```
 Browser (untrusted) ──HTTPS──▶ TLS-terminating proxy ──▶ Node server
                                                           │  headers
-                                                          │  rate limit
+                                                          │  rate limiting
                                                           │  CSRF/CORS
-                                                          │  trusted-proxy resolution
-                                                          ├─▶ dispatcher ──▶ validation (RFC 9457)
-                                                          └─▶ auth ──▶ session store ──▶ LibSQL/Redis
+                                                          │  client identity
+                                                          ├─▶ routing ──▶ validation
+                                                          └─▶ auth ──▶ session store ──▶ database / cache
 ```
 
-- **Browser → proxy**: nothing is trusted from this side. `X-Forwarded-For`
-  only becomes client identity after a peer-gated rightmost-first walk over
-  the `TrustedProxySet` allowlist (`trusted-proxy.ts`); the default
-  allowlist is empty — trust nobody.
-- **Proxy → Node**: plain-HTTP peers see no HSTS (browsers ignore it over
-  insecure connections by spec); `X-Forwarded-Proto` awareness stays
-  deferred — documented, not assumed.
-- **Node server**: every response carries the security-header set by
-  default (CSP with `connect-src 'self'`, HSTS, frame/referrer/sniffing
-  controls — `security-headers-interceptor.ts`). The `'self'` default covers
-  same-origin WebSocket streams under CSP3; a socket server on a different
-  host widens `connect-src` to `wss://<host>` explicitly — never bare
-  `ws:`/`wss:`, which admit connections to any origin.
-- **Backends** ([LibSQL](https://turso.tech/libsql) files,
-  [Redis](https://redis.io/)): trusted-network + ACL/TLS protected; Redis
-  namespaces are isolation, never authorization.
+- **Browser → proxy.** Nothing from this side is trusted. A forwarded client
+  address only becomes identity after the peer is recognised as an allowlisted
+  proxy, and the walk is right-to-left so a client cannot prepend a claim.
+- **Proxy → server.** Security headers that browsers only honour over secure
+  connections — HSTS above all — are not assumed on plain-HTTP peers. Edge
+  protocol awareness is documented rather than guessed.
+- **Server.** Every response carries the security-header set by default: a
+  content security policy, HSTS, and frame, referrer, and sniffing controls.
+  The policy admits the application's own origin; a socket server on another
+  host widens it explicitly to that host, never to a wildcard.
+- **Backends.** Databases and caches sit on trusted networks behind ACL and
+  TLS. Namespaces isolate tenants; they are never treated as authorization.
 
 ## Defense Layers
 
-| Layer               | Mechanism                                                                                                                                                              | Where                                                                          |
-| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| Transport hardening | Security headers default-on; `X-Powered-By` removed                                                                                                                    | `security-headers-interceptor.ts`, `NodeAutoConfiguration`                     |
-| Client identity     | `TrustedProxySet` CIDR allowlist; rightmost-first XFF walk; `NodeRequest.remoteAddress`                                                                                | `trusted-proxy.ts`, `node-request.ts`                                          |
-| Abuse throttling    | Fixed-window `@rateLimit`, 429 + `Retry-After`, keyed on real client IP; in-process default, Redis shared-store driver opt-in (`@ndigo/redis/rate-limit`)              | `rate-limit-interceptor.ts`                                                    |
-| Request forgery     | Opt-in CSRF double-submit interceptor (**unwired by default**); JSON-only `POST /auth/login` (415 on any non-JSON body) closes the login-CSRF vector; CORS interceptor | `csrf-interceptor.ts`, `auth-controller.ts`, `cors-interceptor.ts`             |
-| Session theft       | HttpOnly `__Host-ndigo-session` cookie (`__Host-` prefix mandates `Secure`), fixation rotation (atomic, expiry-preserving), live-session cap, durable LibSQL store     | `session-cookie.ts`, `session-store.ts`, `libsql-session-store.ts`             |
-| Authentication      | Credentials (scrypt, constant-ish time) + OIDC authorization-code + PKCE + nonce, fail-closed `validateAny`                                                            | `credentials-auth-adapter.ts`, `oidc-adapter.ts`, `scrypt-password-encoder.ts` |
-| Authorization       | `@authenticated`/`@authorized`, `AuthRouteGuard` 401/403, socket-auth 1008 close                                                                                       | `route-guard`, `node-http-server-adapter.ts`                                   |
-| Token service       | JWT with explicit scheme selection                                                                                                                                     | `jwt-adapter.ts`                                                               |
-| Input validation    | Zod schemas (route params, bodies, entity-derived `insertSchemaForEntity`); malformed never persists                                                                   | `zod-validated-by.ts`, `entity-schema.ts`                                      |
-| Error disclosure    | RFC 9457 `application/problem+json`, `urn:ndigo:*` placeholders, no HTML/reflection on 404/405                                                                         | `problem-details.ts`, `last-resort-error-resolver.ts`                          |
-| Secrets             | At-rest `{cipher:...}` AES-256-GCM with key-path AAD, `NDIGO_SECRET_KEY`, capability-gated wiring                                                                      | `aes-gcm-cipher.ts`                                                            |
+| Layer            | What it protects                        | Default posture                                                                                          |
+| :--------------- | :-------------------------------------- | :------------------------------------------------------------------------------------------------------- |
+| Transport        | Session hijacking, downgrade attacks    | Security headers on every response; HSTS only where it is honoured; server-identifying headers removed   |
+| Client identity  | Spoofed forwarding headers              | Allowlist-only proxy trust; empty by default; an unlisted peer cannot name a client                      |
+| Abuse            | Brute force, scraping, runaway clients  | Fixed-window throttling keyed on the resolved client address, 429 with `Retry-After`; in-process default |
+| Request forgery  | Cross-site mutations                    | Login accepts JSON only; double-submit CSRF protection is available and explicit; CORS is configured     |
+| Sessions         | Theft, fixation, unbounded accumulation | Host-scoped HttpOnly cookie, rotation on authentication, a live-session cap, durable store               |
+| Authentication   | Impersonation                           | Memory-hard credential hashing; OIDC authorization code with PKCE and nonce; fail-closed validation      |
+| Authorization    | Privilege escalation                    | Route guards deny by default; rejected socket authentication closes the connection                       |
+| Input            | Injection, malformed or partial data    | Schema validation at the boundary before anything persists; unknown input never reaches the domain       |
+| Error disclosure | Information leaks through failure paths | RFC 9457 problem documents with controlled type URIs; no HTML or reflection on 404/405                   |
+| Secrets          | Exposure at rest                        | Authenticated encryption bound to the secret's path; capability-gated wiring                             |
 
 ## Key Tensions and Resolutions
 
-- **Default-on vs. app surprise.** Headers and rate limiting are
-  default-on because both are safe to enable (the original permissive CSP
-  `connect-src` default was hardened to `'self'`; a cross-host socket server
-  widens it explicitly to `wss://<host>`, and `unsafe-inline` is never the
-  default).
-- **CSRF interceptor is opt-in vs. login forgery.** The double-submit
-  interceptor is not wired by default, so a cookie-session app must wire
-  it — or keep every mutating route JSON-only. `POST /auth/login` enforces
-  `Content-Type: application/json` (415 problem+json otherwise); a
-  cross-site HTML form cannot send that media type, so login is **not**
-  cross-site-postable even with the interceptor unwired. Logout and any
-  other cookie-authenticated mutation still need the interceptor.
-- **Trusted proxies vs. spoofing.** Client-IP trust is all-or-nothing per
-  peer: either the peer is allowlisted (its XFF can name a client) or it
-  is not (its XFF is ignored). No middle ground, no heuristics.
-- **CSP strictness vs. framework WebSockets.** `connect-src` defaults to
-  `'self'`: same-origin socket upgrades are covered; a cross-host socket
-  server widens explicitly to `wss://<host>` — bare `ws:`/`wss:` are never
-  admissions.
-- **Problem-type URIs.** `urn:ndigo:*` is a self-contained placeholder;
-  real HTTPS URIs land before the first public release.
+- **Safe defaults vs application surprise.** Headers and throttling are on by
+  default because both are safe to enable. The content security policy was
+  tightened to the application's own origin; a cross-host socket server widens
+  it explicitly, and inline script is never the default.
+- **CSRF protection is explicit vs login forgery.** Double-submit protection
+  is not wired automatically, so a cookie-session application must either add
+  it or keep every mutating route JSON-only. Login already accepts JSON alone,
+  which a cross-site HTML form cannot send, so login is not cross-site
+  postable even before the interceptor is added. Logout and other
+  cookie-authenticated mutations still need the protection.
+- **Trusted proxies vs spoofing.** Client-address trust is all-or-nothing per
+  peer: either the peer is allowlisted and its forwarded address counts, or it
+  is not and the header is ignored. There is no heuristic middle ground.
+- **Strict policy vs framework sockets.** Same-origin sockets are covered by
+  the default policy. A socket server on another host is an explicit addition
+  to the allowlist; a bare scheme wildcard is never an admission.
+- **Problem-type identity.** The framework uses a self-contained placeholder
+  scheme for problem types today; real HTTPS identifiers replace it before the
+  first public release.
 
 ## See Also
 
 - How-to: [Guide 03 — Environment & Configuration](../guides/03-environment-configuration.md)
-  (secrets and config), [Guide 26 — Authentication & Sessions](../guides/26-authentication-and-sessions.md),
+  (secrets and configuration), [Guide 26 — Authentication & Sessions](../guides/26-authentication-and-sessions.md),
   [Guide 35 — Method Advice & Resilience](../guides/35-method-interception-and-resilience.md)
-- Packages: `@ndigo/auth-core`, `@ndigo/auth-server`, `@ndigo/auth-client`,
-  `@ndigo/platform-node`, `@ndigo/rate-limit` — see the
-  [package index](https://ndigo.dev/reference/packages/).
+- Package reference: [ndigo.dev/reference/packages](https://ndigo.dev/reference/packages/)
 - Standards: [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457.html) (problem
   details), [OIDC](https://openid.net/connect/),
   [PKCE](https://www.rfc-editor.org/rfc/rfc7636),

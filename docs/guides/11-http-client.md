@@ -1,14 +1,12 @@
 # Guide 11 — The HTTP Client
 
-`@ndigo/http` is the Fetch-based HTTP client: an `HTTP` instance with a base URL
-and default settings, an interceptor chain with explicit lifecycle hooks, body
-transform pipelines, and WHATWG-aligned query/matrix parsers. Server handlers
-and browser code use the same class, so request behavior is identical on both
-sides.
+Your app will call another service — an API, a webhook, a file host. The HTTP client gives Node and browser code one Fetch-based API with a base URL, defaults, interceptors, and typed query/matrix parsing, so request behavior stays consistent across runtimes.
 
-For the server side of an HTTP interaction (routing, binding, views), see
-[Guide 01](./01-building-a-node-api.md); for exercising a client in tests, see
-[Guide 36](./36-testing.md).
+**Use for:** outbound HTTP calls from server handlers or browser code.
+
+**Not for:** inbound requests; use route handlers for those. Use a typed service client (Guide 16) when the call shape should be declared once.
+
+`@ndigo/http` provides the `HTTP` class and the interceptor chain.
 
 **Audience:** Node and browser application developers · **Prerequisites:** Workspace bootstrapped; no prior guide required · **Reference app:** [apps/08-ndigo-views](https://github.com/ndigo/ndigo/tree/main/apps/08-ndigo-views), [apps/19-ndigo-hn](https://github.com/ndigo/ndigo/tree/main/apps/19-ndigo-hn)
 

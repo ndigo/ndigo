@@ -1,11 +1,12 @@
 # Guide 23 — Scheduling
 
-How scheduled tasks work in Ndigo: the `@scheduled` decorator, zero-wiring
-discovery, execution semantics, and guardrails. Scheduling is **Node-only**.
+Some work should run on a clock: nightly cleanup, hourly syncs, periodic health checks. Ndigo discovers scheduled tasks automatically and runs them with configurable cron, fixed-rate, or fixed-delay specs.
 
-The design: the reference framework's declarative decorator shape with Nest/AdonisJS runtime
-semantics — async single-flight runs, error isolation, drain-on-close, and
-no catch-up after restarts.
+**Use for:** recurring tasks that run on a schedule — cleanup, syncs, reports, health checks.
+
+**Not for:** one-off background work; use jobs (Guide 22) for that. For time-based tasks that must run on exactly one node, combine with distributed locks (Guide 24).
+
+Ndigo uses the `@scheduled` decorator for declaration; tasks are discovered from registered entries with no manual wiring. Scheduling is Node-only.
 
 **Audience:** Node application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api), [apps/17-ndigo-telemetry-lab](https://github.com/ndigo/ndigo/tree/main/apps/17-ndigo-telemetry-lab)
 

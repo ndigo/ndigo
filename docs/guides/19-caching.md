@@ -1,15 +1,12 @@
 # Guide 19 — Caching
 
-Caching in Ndigo has two halves sharing one store: server-side method
-caching with the `@cached` decorator, and client-side (browser or Node)
-function memoization with `memoize`. Both run on the same package —
-`@ndigo/cache` — an isomorphic, dependency-free TTL store with LRU/FIFO
-eviction.
+Some work is expensive and repeatable: a database query, a remote API call, a derived render. Caching keeps the result close and reuses it until it expires. Ndigo gives you server-side method caching and client-side memoization over one TTL store, with LRU/FIFO eviction.
 
-The HTTP client's `CacheInterceptor`/`IfModifiedInterceptor` are the third
-piece (client-side **HTTP** caching) — see the `ndigo-views` client demo and
-the `@ndigo/http` package README; they are separate machinery with
-response-specific semantics.
+**Use for:** read-heavy, tolerant-of-staleness data — computed values, query results, memoized functions.
+
+**Not for:** source of truth or security-sensitive data; don't cache what must always be fresh.
+
+`@ndigo/cache` provides the store, the `@cached` decorator, and `memoize`.
 
 **Audience:** Node and browser application developers · **Prerequisites:** Workspace bootstrapped; [Guide 21](21-persistence-and-shared-stores.md) for shared Redis · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api), [apps/08-ndigo-views](https://github.com/ndigo/ndigo/tree/main/apps/08-ndigo-views)
 

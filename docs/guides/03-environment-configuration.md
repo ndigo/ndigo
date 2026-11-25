@@ -1,14 +1,12 @@
 # Guide 03 — Environment & Configuration
 
-How configuration reaches your Ndigo application and becomes typed, validated
-objects: property sources, precedence, profiles, and `@configurationProperties`
-binding.
+The same app runs in development, CI, and production with different databases, credentials, and feature switches. You want one typed configuration object, validated at startup, not `process.env` reads scattered through the code.
 
-The environment is a pipeline: **sources** provide raw values →
-**resolution** (lookup + profiles + placeholders) → **binding**
-(`@configurationProperties` → typed instances) → **validation**
-(`@environment` zod schemas). It is the reference framework's environment model, ported to
-JavaScript-native structures with fail-loud semantics throughout.
+**Use for:** values that vary by environment — database URLs, credentials, feature toggles.
+
+**Not for:** secrets that must stay encrypted at rest (use Guide 43) or runtime toggles (use Guide 34).
+
+Ndigo resolves configuration from property sources, applies profiles and placeholders, binds to typed `@configurationProperties` classes, and validates at boot — failing loudly when something is missing.
 
 **Audience:** Node and browser application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) (Node) or [Guide 02](02-building-a-browser-app.md) (browser) · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)
 

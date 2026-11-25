@@ -1,16 +1,12 @@
 # Guide 15 — WebSockets
 
-How realtime endpoints work in Ndigo: `@socketMapping`, the
-`SocketSession` contract, the session registry (rooms + broadcast), and the
-heartbeat. WebSockets are served from the same dispatcher as HTTP routes —
-same radix mapping, same `@parameters` binding, same Zod validation — with
-a **connection** contract instead of a request/response pair.
+When the server needs to push updates to a browser — live notifications, chat messages, progress — WebSockets give you a persistent connection. Ndigo serves WebSocket endpoints from the same dispatcher as HTTP routes, with the same binding and validation, but a connection contract instead of request/response.
 
-The design: per-kind sessions with no generic base class. The dispatcher
-owns the types handlers sign against; the Node platform implements the
-machinery; the application context composes it — a Node app can run socket
-sessions and HTTP sessions side by side as separate entries bound through
-separate extractors (`socketSessionValue` / `requestSessionValue`).
+**Use for:** bidirectional realtime communication — chat, live updates, collaborative editing.
+
+**Not for:** one-way server push; use SSE (Guide 16) for that. Use HTTP polling for infrequent updates.
+
+`@socketMapping` declares handlers, `SocketSession` defines the contract, and the session registry manages rooms and broadcast.
 
 **Audience:** Node and browser application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api), [apps/13-ndigo-chat](https://github.com/ndigo/ndigo/tree/main/apps/13-ndigo-chat)
 

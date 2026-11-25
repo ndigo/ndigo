@@ -1,10 +1,12 @@
 # Guide 16 — Typed Service Clients & SSE
 
-`@ndigo/service` turns a decorated class into a typed remote-service client:
-method metadata declares the HTTP call, a Zod schema validates the response, and
-`{ stream: true }` switches the same method to Server-Sent Events. The HTTP
-transport and its interceptors still come from `@ndigo/http` (Guide 11); this
-package is the domain façade over it.
+Calling another service shouldn't mean hand-writing URLs and parsing responses. A typed service client declares the HTTP call once as method metadata, validates the response with a Zod schema, and the same method can switch to Server-Sent Events with `{ stream: true }`.
+
+**Use for:** typed remote-service clients with validated responses, including SSE streams.
+
+**Not for:** one-off HTTP calls; use the HTTP client (Guide 11) directly. Use WebSockets (Guide 15) for bidirectional realtime.
+
+`@ndigo/service` is the domain façade over `@ndigo/http`; the transport and interceptors still come from there.
 
 **Audience:** Node and browser application developers · **Prerequisites:** Guides [11](11-http-client.md) and [15](15-websockets.md) · **Reference app:** [apps/07-ndigo-island](https://github.com/ndigo/ndigo/tree/main/apps/07-ndigo-island)
 

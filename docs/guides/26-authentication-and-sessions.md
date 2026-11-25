@@ -1,12 +1,12 @@
 # Guide 26 — Authentication & Sessions
 
-How authentication works in Ndigo: password hashing, first-party
-credential login, opaque cookie sessions, rate limiting and CSRF on
-auth mutations, and JWT issuance/refresh/revocation. The machinery spans
-`@ndigo/auth-core` (contracts), `@ndigo/auth-server` (credentials adapter,
-session/user stores, JWT adapter) and `@ndigo/platform-node` (cookies,
-session interceptor, rate limiting). Design decisions: ;
-landed via the auth completion plan.
+Users need to sign in, stay signed in, and be protected from common attacks. Ndigo gives you password hashing, credential login, opaque cookie sessions, and JWT issuance in one package, with rate limiting and CSRF built in.
+
+**Use for:** first-party login, session management, and token-based auth for APIs.
+
+**Not for:** social login or SSO; use OIDC (Guide 27) for identity providers. Don't use JWTs for browser sessions unless you have a specific reason.
+
+The machinery spans `@ndigo/auth-core` (contracts), `@ndigo/auth-server` (stores and adapters), and `@ndigo/platform-node` (cookies, interceptors).
 
 **Audience:** Node application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) · **Reference app:** [apps/18-ndigo-auth-playground](https://github.com/ndigo/ndigo/tree/main/apps/18-ndigo-auth-playground), [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)
 

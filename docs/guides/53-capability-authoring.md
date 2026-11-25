@@ -1,9 +1,12 @@
 # Guide 53 — Capability Authoring
 
-How to author a capability — the declared, installable unit between a package
-and a workflow ([Guide 51](51-capabilities-for-authoring-agents.md)). A
-capability is data: the CLI executes it, skills only coordinate it, and
-`ndigo verify` proves the outcome against a live application.
+Packages give you code; capabilities give an agent a repeatable way to install and verify a feature. A capability is data — the CLI executes it, skills coordinate it, and `ndigo verify` proves the outcome against a live application.
+
+**Use for:** authoring new capabilities for the catalog.
+
+**Not for:** installing capabilities; use `ndigo add` (Guide 51) for that.
+
+This guide covers the entry schema, directory layout, templates, checks, and the gates a capability must pass before shipping.
 
 **Audience:** framework authors adding capabilities to the catalog ·
 **Prerequisites:** [Guide 51](51-capabilities-for-authoring-agents.md) ·

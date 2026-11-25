@@ -1,11 +1,12 @@
 # Guide 10 — Static Files
 
-`@ndigo/platform-node` serves filesystem resources with the HTTP semantics a
-browser cache or CDN expects: ETag conditional GET, single-range requests,
-cache headers, precompressed variants, SPA history fallback, and directory
-control . One class owns the whole decision flow — `StaticResourceHandler`
-— and two thin entry points mount it: the ready-made `/static/{*file}`
-controller, or a `StaticFileView` on any route you choose.
+Most apps serve something from disk: images, downloads, a built SPA, or generated reports. Ndigo gives you the HTTP behavior a browser cache or CDN expects — ETags, conditional GET, range requests, cache headers, precompressed variants, and SPA history fallback — without a separate web server.
+
+**Use for:** files that exist at build or deploy time — assets, downloads, prebuilt frontends.
+
+**Not for:** user uploads or per-request generated content; use a route handler or object storage for those.
+
+`@ndigo/platform-node` exposes this through `StaticResourceHandler`, with two entry points: the ready-made `/static/{*file}` controller, or a `StaticFileView` on any route you choose.
 
 **Audience:** Node application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api), [apps/12-ndigo-petclinic](https://github.com/ndigo/ndigo/tree/main/apps/12-ndigo-petclinic)
 

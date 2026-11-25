@@ -1,16 +1,12 @@
 # Guide 29 — Signals & Islands
 
-`@ndigo/signals` is the local reactive-state layer: `signal`, `computed`, and
-`effect` re-exported from `@preact/signals-core`, a decorator API for classes
-and web components, and bridges that turn async streams and emitter events
-into signals. Islands use it for the reactive half of partial hydration — the
-server renders a web component with a serialized model, the client hydrates
-it, and server push (SSE) flows through `streamToSignal` into signals that
-re-render the element.
+When one part of the UI changes, other parts need to update without a full re-render. Signals give you local reactive state — `signal`, `computed`, and `effect` — that web components and islands can subscribe to. Server push (SSE) flows into signals through `streamToSignal`, so a hydrated component re-renders when the server sends new data.
 
-The architecture map for the island model itself lives in
-[Micro Frontends](../architecture/micro-frontends.md); this guide is the
-how-to.
+**Use for:** local synchronous state within a component or service, derived values, and live-updating islands.
+
+**Not for:** cross-component async notifications; use the context event emitter. For server→client push, use SSE (Guide 16).
+
+`@ndigo/signals` re-exports `@preact/signals-core` with a decorator API and stream bridges.
 
 **Audience:** Browser application developers · **Prerequisites:** [Guide 02](02-building-a-browser-app.md) · **Reference app:** [apps/07-ndigo-island](https://github.com/ndigo/ndigo/tree/main/apps/07-ndigo-island), [apps/08-ndigo-views](https://github.com/ndigo/ndigo/tree/main/apps/08-ndigo-views)
 

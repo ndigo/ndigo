@@ -108,7 +108,7 @@ export class InvalidCredentialsError extends ApplicationError {
  *
  * The rehash-on-login migration hook (`needsRehash`) is consumed at the
  * application layer (the `UserStore` contract has no password write in
- * v1 — see the auth completion plan, Wave 5 hardening).
+ * v1 — hardening).
  *
  * @example
  * ```ts

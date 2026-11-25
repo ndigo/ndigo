@@ -173,7 +173,7 @@ export interface InMemoryQueueStoreStats {
     readonly retainedBytes: number;
     /**
      * Per-destination sequence counters held. Bounded by `destinations`:
-     * the counter of a dropped destination is dropped with it (SEC-1).
+     * the counter of a dropped destination is dropped with it.
      */
     readonly seqEntries: number;
 }
@@ -186,7 +186,7 @@ export interface InMemoryQueueStoreStats {
  * Every bound is a drop-oldest watermark (matches the broker's fail-closed
  * posture): exceeding a bound never throws — it evicts. Eviction is
  * non-destructive to an in-flight `append`: a ring emptied by the count
- * guard stays attached so the pending write lands in it (COR-9), and a
+ * guard stays attached so the pending write lands in it, and a
  * ring that a budget drops whole takes its sequence counter with it, so
- * `#seqs` can never outgrow the destination cap (SEC-1).
+ * `#seqs` can never outgrow the destination cap.
  */

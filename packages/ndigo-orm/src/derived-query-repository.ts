@@ -1,6 +1,5 @@
 /**
- * Convention-derived query method-name parsing (ORM completion plan,
- * Wave 4).
+ * Convention-derived query method-name parsing.
  *
  * Supported method-name patterns:
  * - `findBy<Property>(value)` — equality on a declared `@column`/`@primaryColumn`

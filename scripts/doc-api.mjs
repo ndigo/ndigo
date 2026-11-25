@@ -46,6 +46,15 @@ import { spawn } from 'node:child_process';
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const PACKAGES = join(ROOT, 'packages');
 
+/** Yield every generated Markdown file under a package API tree. */
+function* markdownFiles(dir) {
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+        const full = join(dir, entry.name);
+        if (entry.isDirectory()) yield* markdownFiles(full);
+        else if (entry.name.endsWith('.md')) yield full;
+    }
+}
+
 const WATCH = process.argv.includes('--watch');
 
 /**
@@ -382,4 +391,28 @@ for (const dir of packages) {
 indexLines.push('', 'Tooling notes:', '', '- `pnpm doc:api` regenerates everything (TypeDoc, zero-warning standard).');
 writeFileSync(join(ROOT, 'API.md'), indexLines.join('\n') + '\n');
 console.log('✓ API.md');
+
+// --- internal-marker guard ------------------------------------------------
+// Published API pages must not expose internal audit, review, or project
+// bookkeeping identifiers. Keep the source JSDoc free of them, or the
+// generated page fails this guard.
+const internalMarker =
+    /\b(?:SEC-[A-Z0-9-]+|COR-\d+|audit M\d+|Wave \d+|DSG-\d+|CF-\d+|PLN-[A-Z0-9-]+|KRN-[A-Z0-9-]+|DSV-SEC-\d+|ARC-\d+)\b/g;
+const leaks = [];
+for (const dir of packages) {
+    const apiDir = join(PACKAGES, dir, 'api');
+    if (!existsSync(apiDir)) continue;
+    for (const file of markdownFiles(apiDir)) {
+        for (const match of readFileSync(file, 'utf8').matchAll(internalMarker)) {
+            leaks.push(`${file}: ${match[0]}`);
+        }
+    }
+}
+if (leaks.length) {
+    console.error(`✗ ${leaks.length} internal marker(s) in generated API docs:`);
+    for (const leak of leaks.slice(0, 20)) console.error(`  ${leak}`);
+    process.exit(1);
+}
+console.log('✓ API docs free of internal markers');
+
 if (failures || coverageFailures) process.exit(1);

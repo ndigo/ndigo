@@ -350,7 +350,7 @@ function normalizeResult(result: unknown): unknown {
 /**
  * Replaces the tool's declared secret result paths with the shared
  * `<redacted>` sentinel — the same value `@ndigo/context` substitutes for a
- * resolved secret in diagnostics (SEC-11).
+ * resolved secret in diagnostics.
  *
  * @param result - The normalized tool result.
  * @param tool - The registered tool carrying `secretFields`.

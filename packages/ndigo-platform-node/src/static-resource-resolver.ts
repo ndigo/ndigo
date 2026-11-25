@@ -42,7 +42,7 @@ export interface StaticResourceResult {
     /**
      * Absolute path of the payload file to open (only for `ok` file-backed
      * results). Callers stream from here — resolution never reads payload
-     * bytes (SEC-8).
+     * bytes.
      */
     readonly path?: string;
     /**
@@ -71,7 +71,7 @@ export interface StaticResourceResult {
 
 /**
  * MIME allowlist — extensions outside this map are not served. Values are
- * `@ndigo/core` {@link MediaType} instances (Wave 6, 2026-09-27): text-ish
+ * `@ndigo/core` {@link MediaType} instances: text-ish
  * entries carry an explicit `utf-8` charset via `withCharset`, serialized
  * canonically (parameter lists without the RFC-permitted optional space —
  * `text/html;charset=utf-8`).
@@ -147,7 +147,7 @@ export interface StaticResolveOptions {
      * Default `false`: dotfile requests resolve `forbidden` (→ 403).
      * The standard `.well-known` namespace is the built-in opt-in exception —
      * it is served either way, so well-known URIs keep working without
-     * exposing every hidden file (PLN-F9).
+     * exposing every hidden file.
      */
     serveDotfiles?: boolean;
 }
@@ -202,7 +202,7 @@ function buildEtag(size: number, mtimeMs: number, encoding?: StaticEncoding): st
 }
 
 /**
- * True when a request-relative path addresses a dotfile (PLN-F9): any path
+ * True when a request-relative path addresses a dotfile: any path
  * segment that begins with `.`. The standard `.well-known` namespace is the
  * built-in opt-in exception (a leading `.well-known` segment is not a
  * dotfile), and the `.`/`..` navigation segments are left to path resolution.
@@ -407,7 +407,7 @@ export class StaticResourceResolver {
      * base root — null when absent or not a file (serve the original) — and
      * `'forbidden'` when its real path escapes the root through a symlink. The
      * same realpath + `base + sep` containment the main path enforces is
-     * applied here; an escaping variant must never be served (PLN-F1).
+     * applied here; an escaping variant must never be served.
      */
     private async _statVariant(
         base: string,

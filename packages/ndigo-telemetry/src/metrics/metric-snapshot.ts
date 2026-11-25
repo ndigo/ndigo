@@ -142,7 +142,7 @@ export function unregisterMetricSnapshotProvider(): void {
 }
 
 /**
- * Sets or clears the fallback metric snapshot source (REV-003): the
+ * Sets or clears the fallback metric snapshot source: the
  * aggregator-backed provider `ManagementAutoConfiguration` installs as the
  * no-telemetry default. `undefined` clears.
  *

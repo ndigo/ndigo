@@ -90,10 +90,10 @@ export const THEME_COOKIE_NAME = 'theme';
  */
 const STOMP_SUBPROTOCOLS: readonly string[] = ['v12.stomp', 'v11.stomp', 'v10.stomp'];
 
-/** Default concurrent-connection cap (SEC-9). */
+/** Default concurrent-connection cap. */
 const DEFAULT_MAX_CONNECTIONS = 10_000;
 
-/** Default upgrade-authentication budget in milliseconds (SEC-9). */
+/** Default upgrade-authentication budget in milliseconds. */
 const DEFAULT_AUTHENTICATE_TIMEOUT_MS = 10_000;
 
 /**
@@ -342,7 +342,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
     readonly #authenticate: NodeHTTPServerAdapterOptions['authenticate'];
     /**
      * Admitted upgrades, from the `connection` event until the socket
-     * closes — the `maxConnections` ledger (SEC-9). Includes sockets still
+     * closes — the `maxConnections` ledger. Includes sockets still
      * resolving parameters or awaiting authentication, which the registry
      * does not yet track.
      */

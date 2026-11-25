@@ -16,7 +16,7 @@ const logger = getLogger('ndigo-context:property-resolver');
 type PrimitiveLike = 'string' | 'number' | 'boolean';
 
 /**
- * One-time fail-open sentinel (SEC-10): a resolved value carried a secret
+ * One-time fail-open sentinel: a resolved value carried a secret
  * marker (`{scheme:...}`) while NO decryptor was configured, so the marker
  * bound as plaintext. Warned once per process — repeat lookups must not
  * spam the console; a later decryptor rewrite (new environment) is the fix.
@@ -241,8 +241,8 @@ export class PrototypalPropertyResolver implements PropertyResolver {
      * resolution and before conversion: `{cipher:...}` markers decrypt via the
      * configured decryptor (key-path AAD binding); all other values pass
      * through untouched. No decryptor configured → identity — but a value
-     * carrying a secret marker then binds as literal plaintext (SEC-10's
-     * fail-open): warned once, values still pass through.
+     * carrying a secret marker then binds as literal plaintext (fail-open):
+     * warned once, values still pass through.
      */
     #decrypt(key: string, value: JSONValue | undefined): JSONValue | undefined {
         if (typeof value !== 'string') return value;
@@ -270,7 +270,7 @@ export class PrototypalPropertyResolver implements PropertyResolver {
     /**
      * Formats a resolved value for an error message, redacting it when a
      * decryptor is configured: the value reached this point post-decryption,
-     * so echoing it could leak plaintext (SEC-11). Non-strings are bound
+     * so echoing it could leak plaintext. Non-strings are bound
      * values, not secrets — only string echoes are a concern, but a configured
      * decryptor redacts uniformly for a single, predictable diagnostic shape.
      */

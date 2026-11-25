@@ -1,6 +1,6 @@
 /**
- * Pagination and sorting contracts for repositories (ORM completion plan,
- * Wave 2): 1-based page requests, multi-key sort orders, and stable page
+ * Pagination and sorting contracts for repositories: 1-based page requests,
+ * multi-key sort orders, and stable page
  * math shared by every backend.
  */
 import { chainComparisons, compareBy, type comparison, invertComparison } from '@ndigo/core';

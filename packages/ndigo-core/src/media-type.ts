@@ -100,7 +100,7 @@ const requiresQuoting = /[\s;"=(),]/;
 /**
  * Splits a header section on `delimiter`, honoring quoted strings
  * (RFC 2045 §5.1): a delimiter inside `"…"` is data, not a separator —
- * splitting naively corrupts quoted values (COR-5, KRN-REV-MEDIA-18).
+ * splitting naively corrupts quoted values.
  */
 const splitQuoted = (section: string, delimiter: string): string[] => {
     const parts: string[] = [];
@@ -126,7 +126,7 @@ const splitQuoted = (section: string, delimiter: string): string[] => {
 
 /**
  * Removes surrounding quotes from a parameter value, unescaping `\"` and
- * `\\` (RFC 2045 §5.1, COR-5). The quote-escape is undone before the
+ * `\\` (RFC 2045 §5.1). The quote-escape is undone before the
  * backslash-escape so any literal `\"` in the original value round-trips.
  */
 const unquote = (value: string): string => {
@@ -142,7 +142,7 @@ const unquote = (value: string): string => {
 /**
  * Returns a copy of `value` with entries ordered by parameter name, so two
  * media types carrying the same parameters serialize, key, and compare
- * identically regardless of the order the parameters were provided (DSG-1).
+ * identically regardless of the order the parameters were provided.
  */
 const sortParameters = (value: MediaTypeParameters): MediaTypeParameters => {
     const sorted: MediaTypeParameters = {};
@@ -154,7 +154,7 @@ const sortParameters = (value: MediaTypeParameters): MediaTypeParameters => {
 
 /**
  * Removes `key` from a FIFO eviction order, if present — used when a
- * bounded-cache entry is promoted to the permanent registry (SEC-7).
+ * bounded-cache entry is promoted to the permanent registry.
  */
 const removeFromOrder = (order: Deque<string>, key: string): void => {
     order.remove(key);
@@ -164,7 +164,7 @@ const removeFromOrder = (order: Deque<string>, key: string): void => {
  * Returns the interned instance for `key`, constructing it via `factory`
  * on a miss. Parse-originated expressions — parameterless and parameterized
  * alike — go through bounded FIFO caches so attacker-controlled header
- * values cannot grow the registry unboundedly (DSG-1, SEC-7). Entries
+ * values cannot grow the registry unboundedly. Entries
  * interned via the `registered()` path (`permanent`) live process-lifetime
  * in `typeRegistry`, so the `MediaTypes.*` constants always resolve.
  */
@@ -217,7 +217,7 @@ const intern = (key: string, factory: () => MediaType, parameterized: boolean, p
  * for a media type header. Parameters are joined with semicolons in
  * canonical (name-sorted) order, e.g. ";charset=utf-8;level=1". Values
  * containing header separators are quoted with `"` and `\` escaped per
- * RFC 2045 §5.1 so parsing is round-trip safe (Wave 6, 2026-09-27; COR-5).
+ * RFC 2045 §5.1 so parsing is round-trip safe.
  * @param value - The `MediaTypeParameters` object to stringify.
  * @returns A string representation of the parameters, or an empty string if no parameters are present.
  */
@@ -314,10 +314,9 @@ const qualityFactorComparator: Comparator<MediaType> = {
  * type and subtype to lower case (RFC 6838 §4.2 — both are case-insensitive
  * in HTTP 1.x), folds parameter NAMES to lower case (RFC 2045 §5.1), and
  * unquotes quoted parameter values (`;` inside quotes is data, not a
- * delimiter; `\"` and `\\` are unescaped — COR-5). Parameter VALUES keep
+ * delimiter; `\"` and `\\` are unescaped). Parameter VALUES keep
  * their case. The result is the canonical key that interning uses, so
- * header-case variants converge on one {@link MediaType} instance (Wave 6,
- * 2026-09-27).
+ * header-case variants converge on one {@link MediaType} instance.
  *
  * @param expression - A full `type/subtype;param=value;…` expression.
  * @returns The canonical key plus the normalized parse pieces, or `null`
@@ -367,7 +366,7 @@ function normalizeMediaTypeExpression(
  * Interns `typeOrExpression` with the same normalization `for` performs,
  * shared by both public entry points: parse/`for` intern into the bounded
  * FIFO caches, while `registered()` (`permanent`) interns into
- * `typeRegistry` so `MediaTypes.*` constants stay process-lifetime (SEC-7).
+ * `typeRegistry` so `MediaTypes.*` constants stay process-lifetime.
  *
  * @param typeOrExpression - Type/subtype components or a full expression.
  * @param subtype - The subtype (component form) or wildcard default.
@@ -513,7 +512,7 @@ export class MediaType
      * or any `+json`-suffixed type (e.g. `application/problem+json`).
      * The single source for JSON-sniffing decisions previously
      * re-implemented in `http-request-limits` and the transform
-     * interceptor (Wave 6, 2026-09-27).
+     * interceptor.
      */
     get isJSON(): boolean {
         return this.suffix === 'json' || this.baseType === 'application/json' || this.baseType === 'text/json';
@@ -582,7 +581,7 @@ export class MediaType
      * Number of instances currently held by the process-wide intern
      * registry: the permanent registered entries plus the bounded
      * parameterless and parameterized caches. Exposed so the registry's
-     * boundedness is observable in tests (DSG-1, SEC-7).
+     * boundedness is observable in tests.
      */
     static get registrySize(): number {
         return typeRegistry.size + parameterlessRegistry.size + parameterizedRegistry.size;
@@ -600,7 +599,7 @@ export class MediaType
      * (`MediaTypes.*` constants) where a missing entry is a programming
      * error, not a parse outcome. Registered entries are interned
      * process-lifetime — they are exempt from the bounded FIFO caches that
-     * cap parse-originated entries (SEC-7). Use {@link MediaType.for} for
+     * cap parse-originated entries. Use {@link MediaType.for} for
      * parsing user/header values — those can legitimately return `null`.
      *
      * @param type - The top-level type (e.g. `'application'`).

@@ -275,7 +275,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
      * Returns the value registered under `name`. Constructor-registered
      * values are constructed (and configured) through the internal
      * `_create` path; non-constructor values (instances, primitives) are
-     * returned as-is, preserving identity (CF-12). An unregistered name
+     * returned as-is, preserving identity. An unregistered name
      * resolves to `undefined`.
      * @param name - The name of the value.
      * @param argumentsList - (constructor arguments) Optional arguments to pass to the constructor if the value is a constructor.
@@ -566,7 +566,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
      * Whether the constructor registered under `name` can be eagerly
      * instantiated by a boot-time "finish sweep" without side effects.
      *
-     * A sweep must skip non-caching scopes (KRN-REV-FACTORY-12): `prototype`
+     * A sweep must skip non-caching scopes: `prototype`
      * would build an instance that is discarded immediately, and `hash`/
      * `route` have no active scope key at boot, so `HashScope.getValue` throws
      * `IllegalStateError` and aborts the sweep. Caching scopes (`singleton`,

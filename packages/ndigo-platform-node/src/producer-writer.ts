@@ -6,8 +6,8 @@ import { once } from 'node:events';
 import { RenderResult } from '@ndigo/view';
 
 /**
- * Waits for a saturated response to become writable again, or to close
- * (PLN-F3). A backpressured client that aborts emits `close` — never `drain`
+ * Waits for a saturated response to become writable again, or to close.
+ * A backpressured client that aborts emits `close` — never `drain`
  * — so awaiting `drain` alone would park the writer forever and leak the
  * suspended producer.
  *

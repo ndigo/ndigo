@@ -19,7 +19,7 @@ export const HTTP_SERVER = new ContextToken<HTTPServer>('httpServer');
 export const SOCKET_SESSION_REGISTRY = new ContextToken<NodeSocketSessionRegistry>('socketSessionRegistry');
 
 /**
- * Token for the socket upgrade authenticator entry (SEC-3).
+ * Token for the socket upgrade authenticator entry.
  */
 export const SOCKET_REQUEST_AUTHENTICATOR = new ContextToken<SocketRequestAuthenticator>('socketRequestAuthenticator');
 

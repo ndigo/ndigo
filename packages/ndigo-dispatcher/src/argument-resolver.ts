@@ -107,7 +107,7 @@ export abstract class AbstractNamedValueMethodArgumentResolver implements Handle
      * (`AbstractPlatformArgumentResolver.#convertFn`): ConversionService-backed
      * with an identity default when no `convertType` is set. That keeps the
      * dispatcher resolvers — matrix, query, path, attribute, route — honoring
-     * conversions exactly like every platform (COR-11).
+     * conversions exactly like every platform.
      *
      * @param parameter - The method parameter being resolved.
      * @param value - The resolved (defaulted) value.

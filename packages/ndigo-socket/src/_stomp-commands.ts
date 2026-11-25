@@ -14,7 +14,7 @@ import type { STOMPSubscriptionRegistry } from './_stomp-subscriptions';
 import type { STOMPTransactionManager } from './_stomp-transactions';
 import { fail, receipt } from './_stomp-replies';
 
-/** SEND headers that are framing rather than user payload (COR-7, STOMP 1.2 §2.1). */
+/** SEND headers that are framing rather than user payload (STOMP 1.2 §2.1). */
 const SEND_FRAMING_HEADERS: Record<string, true> = {
     destination: true,
     transaction: true,
@@ -190,7 +190,7 @@ export class STOMPCommands {
     }
 
     /**
-     * Consult the `authorize` policy seam (SEC-4) and fail closed on a
+     * Consult the `authorize` policy seam and fail closed on a
      * denial — before any replay, registration, buffering or fan-out.
      *
      * @param session - The session requesting the action.
@@ -308,7 +308,7 @@ export class STOMPCommands {
      * durable destinations). A store failure fails closed: the receipt is
      * withheld (nothing was persisted), an ERROR frame reports it, and the
      * connection closes `1011` — STOMP 1.2 §1.5 requires the server to
-     * close just after sending an ERROR frame (COR-8).
+     * close just after sending an ERROR frame.
      *
      * @param session - The sending session.
      * @param frame - The SEND frame.
@@ -337,7 +337,7 @@ export class STOMPCommands {
 
     /**
      * The user-defined headers carried from a SEND into MESSAGE frames and
-     * into the `onMessage` seam (COR-7) — STOMP 1.2 §2.1: "The user defined
+     * into the `onMessage` seam — STOMP 1.2 §2.1: "The user defined
      * headers MUST be passed through in the MESSAGE frame". Only the
      * framing headers stay behind: `destination` (supplied per
      * subscriber), `transaction`/`receipt` (consumed by the broker) and

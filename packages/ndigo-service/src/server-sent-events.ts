@@ -71,7 +71,7 @@ export class ServerSentEventParser {
      *
      * Lines end with `CRLF`, `LF` or a lone `CR` (WHATWG event-stream
      * parsing), and one leading `U+FEFF` byte order mark is stripped from
-     * the very start of the stream (REV-007).
+     * the very start of the stream.
      *
      * @param chunk - A decoded chunk of the event stream.
      * @returns The events completed by this chunk.

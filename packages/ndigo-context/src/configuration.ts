@@ -575,7 +575,7 @@ export class MetadataConfigApplicationContext extends GenericApplicationContext 
      * `ConfigurationParser` is created per registration. Callers may replace
      * the environment between registrations (`setEnvironment`), so a memoized
      * parser would evaluate `@whenProfile` gates, `@propertySource` and
-     * `@property` binding against a stale environment (CF-9).
+     * `@property` binding against a stale environment.
      *
      * @param configClass - The configuration class to parse.
      */

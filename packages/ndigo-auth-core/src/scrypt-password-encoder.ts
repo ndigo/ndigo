@@ -56,7 +56,7 @@ const phcForm = /^\$ln=(\d+),r=(\d+),p=(\d+)\$([A-Za-z0-9_-]+)\$([A-Za-z0-9_-]+)
  * also makes them attacker-influenceable wherever a stored hash can be
  * poisoned. scrypt cost is exponential in `ln` and memory scales with
  * `r * 2**ln`; without caps an inflated `$ln=30,…` string OOMs the server
- * on the next verification (SEC-1, 2026-09-27 review).
+ * on the next verification.
  */
 const MAX_LN = 18;
 const MAX_R = 16;

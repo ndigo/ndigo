@@ -8,8 +8,8 @@ import { parseDerivedQuery } from './derived-query-repository';
 import { Page, PageRequest, pageFromAll, sortComparator } from './page';
 
 /**
- * Options controlling relation loading for find operations
- * (ORM completion plan, Wave 3). Names must match declared relation fields.
+ * Options controlling relation loading for find operations.
+ * Names must match declared relation fields.
  *
  * @example
  * ```ts

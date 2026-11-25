@@ -21,8 +21,8 @@ const ISLAND_VIEW_CONSTRUCTOR = 'IslandView';
  * the string form is a literal subject to the path contract. `EJSView` is
  * intentionally absent: its first argument is a template *path* resolved through
  * a `ResourceLoader`, where separators and extensions (`pages/home.html`) are
- * the documented, expected spelling — not a view name subject to the DSV-SEC-1
- * contract.
+ * the documented, expected spelling — not a view name subject to the
+ * safety contract.
  */
 const MODEL_AND_VIEW_CONSTRUCTOR = 'ModelAndView';
 
@@ -65,7 +65,7 @@ function isStringLiteral(node: ESTree.Argument | null | undefined): node is ESTr
 }
 
 /**
- * Returns whether a literal view name violates the DSV-SEC-1 safety contract.
+ * Returns whether a literal view name violates the safety contract.
  *
  * Mirrors `isSafeViewName` (ndigo-view): a name must be relative to the resolver
  * prefix. Rejected forms:
@@ -121,7 +121,7 @@ function isInvalidCustomElementName(name: string): boolean {
  * template) is not provably a literal and is left to the runtime guard. The
  * check branches on the callee: `IslandView` is validated against the
  * custom-element grammar, while `ModelAndView` and `resolveViewName` keep the
- * relative-path (DSV-SEC-1) contract.
+ * relative-path contract.
  *
  * @example
  * ```ts

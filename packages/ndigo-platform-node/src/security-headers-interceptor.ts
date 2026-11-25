@@ -44,7 +44,7 @@ export interface SecurityHeadersInterceptorOptions {
  * The framework's default CSP `connect-src`: Helmet's defaults admit
  * `'self'` only. Per CSP3, `'self'` also covers WebSocket (`ws:`/`wss:`)
  * streams to the same host-origin, so a co-located WebSocket server needs
- * no widening (SEC-4).
+ * no widening.
  */
 // NOTE (D1): `'self'` covers same-host WebSockets under CSP3. A socket server
 // on a *different* host opts in by widening `connect-src` explicitly — e.g.
@@ -62,7 +62,7 @@ const DEFAULT_CONNECT_SRC = ["'self'"];
  * instance, so every Node app gets the set without wiring) — the CORS
  * short-circuit and CSRF denial run after it, and the fallback chain covers
  * unmatched routes (404s and errors included).
- * - **CSP `connect-src` defaults to `'self'`** (SEC-4/D1), which covers
+ * - **CSP `connect-src` defaults to `'self'`**, which covers
  *   same-origin WebSocket streams under CSP3. A socket server on a different
  *   host opts in by widening `directives['connect-src']` to
  *   `wss://<ws-host>` via the Helmet `contentSecurityPolicy` option —

@@ -5,10 +5,10 @@
  *
  * Payloads are streamed from disk (`createReadStream`) with stat-derived
  * `Content-Length`s: nothing whole-file-buffers, and conditional GETs / HEAD
- * are answered from stat metadata alone without opening the file (SEC-8).
+ * are answered from stat metadata alone without opening the file.
  * Header names come from the `@ndigo/http` `HTTPHeader` constants (RUS-2,
  * REUSE-1), except `X-Content-Type-Options: nosniff`, reused verbatim from the
- * resolver (SEC-2); request-header reads go through the constants' `get()`,
+ * resolver; request-header reads go through the constants' `get`,
  * which case-folds over Node's lower-cased `IncomingMessage` records.
  */
 import type { ServerResponse } from 'node:http';
@@ -61,7 +61,7 @@ export interface StaticHandlerOptions {
     /**
      * Serve dotfiles (any path segment beginning with `.`). Default `false`:
      * dotfile requests answer 403. The standard `.well-known` namespace is
-     * always served as the built-in opt-in exception (PLN-F9).
+     * always served as the built-in opt-in exception.
      */
     serveDotfiles?: boolean;
 }
@@ -77,8 +77,8 @@ function toHttpDate(ms: number): string {
 }
 
 /**
- * Waits for a saturated response to become writable again, or to close
- * (PLN-F2). A backpressured client that aborts emits `close` — never `drain`
+ * Waits for a saturated response to become writable again, or to close.
+ * A backpressured client that aborts emits `close` — never `drain`
  * — so awaiting `drain` alone would wedge the handler and leak the read
  * stream's fd.
  *
@@ -194,7 +194,7 @@ function parseSingleRange(rangeHeader: string, length: number): ByteRange | 'uns
 }
 
 /**
- * RFC 7233 §3.2 validator check for `If-Range` (COR-20). A range request is
+ * RFC 7233 §3.2 validator check for `If-Range`. A range request is
  * honored only when the client's validator still matches the current
  * representation; a stale validator means the client holds an out-of-date
  * partial copy, so the server MUST send the full 200 instead of a misaligned
@@ -466,7 +466,7 @@ export class StaticResourceHandler {
 
     /**
      * Streams a resolved file with a stat-derived `Content-Length`, or a
-     * seeked byte range (SEC-8). HEAD never opens the file — same headers,
+     * seeked byte range. HEAD never opens the file — same headers,
      * no body. Backpressure is honored; a stream failure after the headers
      * were sent (file vanished/chmod'ed between stat and open) aborts the
      * response.

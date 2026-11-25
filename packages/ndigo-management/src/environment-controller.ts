@@ -17,7 +17,7 @@ import { isEndpointExposed, readManagementSettings } from './management-properti
 /**
  * The property sources are plain JSON documents (the config-file
  * convention); values are the raw stored text — never resolved, never
- * decrypted (a `{cipher:…}` marker is shown as the marker, SEC-A holds).
+ * decrypted (a `{cipher:…}` marker is shown as the marker).
  */
 const isPlainRecord = (value: unknown): value is Record<string, unknown> =>
     typeof value === 'object' && value !== null && !Array.isArray(value);

@@ -33,7 +33,7 @@ export type HeaderRecord = Record<string, string | string[] | undefined>;
 
 /**
  * Folds a header name to the lower-cased spelling used by Node server
- * header records (DSG-5).
+ * header records.
  *
  * This is the package's single folding rule: `Headers` folds
  * case-insensitively itself, while plain records are written lower-cased by

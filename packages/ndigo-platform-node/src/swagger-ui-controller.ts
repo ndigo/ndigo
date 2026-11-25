@@ -6,7 +6,7 @@
  * straight from the installed package — ETag/conditional GET, cache headers
  * and Range included (the static-resource handler), no CDN, offline-friendly. The
  * spec-wiring bootstrap (`swagger-ui-init.js`) is rendered server-side and
- * served by this controller (SEC-2): external, so the default-on CSP
+ * served by this controller: external, so the default-on CSP
  * (`script-src 'self'`) needs no `'unsafe-inline'`.
  */
 import { createRequire } from 'node:module';
@@ -22,7 +22,7 @@ import { type ResolvedOpenAPIDocsOptions } from './openapi-docs-auto-configurati
 
 /**
  * Asset file names served by the UI — `swagger-ui-dist` files plus the
- * framework-rendered bootstrap (`swagger-ui-init.js`, SEC-2): the init
+ * framework-rendered bootstrap (`swagger-ui-init.js`): the init
  * script is generated (not a dist file) and carries the instance spec URL.
  */
 const ASSET_NAMES = [
@@ -59,7 +59,7 @@ export function relativeSpecUrl(uiPath: string, path: string): string {
 /**
  * Renders the Swagger UI page for the given title.
  *
- * No inline script (SEC-2): the default-on CSP (`script-src 'self'`, see
+ * No inline script: the default-on CSP (`script-src 'self'`, see
  * {@link "security-headers-interceptor".SecurityHeadersInterceptor | SecurityHeadersInterceptor}) blocks inline `<script>` blocks, so
  * the spec-wiring bootstrap is served as the `swagger-ui-init.js` asset
  * next to the `swagger-ui-dist` bundle — all same-origin, all CSP-clean.
@@ -95,7 +95,7 @@ export function renderSwaggerUiPage(title: string): string {
 }
 
 /**
- * Renders the Swagger UI bootstrap as a served asset (SEC-2).
+ * Renders the Swagger UI bootstrap as a served asset.
  *
  * Loaded after the bundle + preset, so `SwaggerUIBundle` and
  * `SwaggerUIStandalonePreset` exist when it runs. It is server-rendered
@@ -129,7 +129,7 @@ export function renderSwaggerUiInitScript(specUrl: string): string {
  *
  * `swagger-ui-dist` is a peer dependency resolved lazily: a missing or
  * unresolvable peer fails only the docs endpoints (500 problem document),
- * never boot of the whole docs auto-configuration (SEC-3).
+ * never boot of the whole docs auto-configuration.
  *
  * @example
  * ```ts

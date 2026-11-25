@@ -647,7 +647,7 @@ export class Application extends Emitter {
 
     /**
      * Detaches the rebind listener and its fail-loud handler from the wired
-     * environment (ARC-6/CF-6): neither a closed application nor one whose
+     * environment: neither a closed application nor one whose
      * boot failed after the listeners were registered must stay reachable
      * through the environment — a later `refresh()` must not write into it.
      */

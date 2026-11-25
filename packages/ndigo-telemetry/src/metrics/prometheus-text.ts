@@ -58,7 +58,7 @@ function scalarLiteral(value: AttributeValue): string | undefined {
  * Renders the attribute set as `{k="v",...}` in sorted key order. Only
  * scalar values render; empty sets render as `{}`. Keys pass through
  * {@link sanitizePrometheusName} — an attribute key outside the exposition
- * grammar would otherwise produce a malformed document (REV-004) — and a
+ * grammar would otherwise produce a malformed document — and a
  * sanitized collision within one set keeps the first key.
  *
  * @param attributes - The point's attribute set.

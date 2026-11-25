@@ -248,7 +248,7 @@ export class MockHTTPRequestBuilder {
     }
 
     /**
-     * Set the client socket address (the rate limiter's key; SEC-6).
+     * Set the client socket address (the rate limiter's key).
      *
      * @param remoteAddress - The socket address to report.
      * @returns This builder.

@@ -1,5 +1,5 @@
 /**
- * Set-Cookie specific {@link HTTPHeader} category (Wave 5, 2026-09-27):
+ * Set-Cookie specific {@link HTTPHeader} category:
  * the write-side value formatter. The read side (`Cookie` parsing) lives
  * in `@ndigo/platform-node` (`parseCookies`); this module owns the
  * `Set-Cookie` value shape: `name=value` plus attributes, `; `-joined per

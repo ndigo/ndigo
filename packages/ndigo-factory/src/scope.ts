@@ -528,7 +528,7 @@ export class RefreshScope implements Scope {
      *
      * The instance map is cleared FIRST so a throwing destruction callback
      * can never leave a stale instance cached — `clear()` is the refresh
-     * teardown edge (ARC-1) and must always complete. Callbacks run in reverse
+     * teardown edge and must always complete. Callbacks run in reverse
      * registration (= creation) order: teardown mirrors construction. They
      * are best effort: each failure is reported via the logger and never
      * aborts the sweep.

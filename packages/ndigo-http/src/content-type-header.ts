@@ -1,8 +1,8 @@
 /**
- * Content-Type specific {@link HTTPHeader} category (Wave 5, 2026-09-27).
+ * Content-Type specific {@link HTTPHeader} category.
  *
- * The parsing is owned by `@ndigo/core`'s {@link MediaType} (Wave 6,
- * 2026-09-27): `for()` folds type/subtype and parameter-name case,
+ * The parsing is owned by `@ndigo/core`'s {@link MediaType}: `for()` folds
+ * type/subtype and parameter-name case,
  * unquotes quoted parameter values, and interns — so raw header values
  * parse safely and case variants converge on one instance. The module
  * keeps the functional surface the request pipeline and the mock harness

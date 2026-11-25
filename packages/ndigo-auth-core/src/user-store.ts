@@ -40,8 +40,8 @@ export interface UserRecord {
 }
 
 /**
- * Lookup contract for first-party user accounts (Wave 1 of the auth
- * completion plan; consumed by the credentials adapter in Wave 2).
+ * Lookup contract for first-party user accounts, consumed by the
+ * credentials adapter.
  *
  * @example
  * ```ts
@@ -67,7 +67,7 @@ export interface UserStore {
     incrementTokenVersion(id: string): Promise<number>;
 
     /**
-     * Compare-and-swap advancement of `tokenVersion` (SEC-6):
+     * Compare-and-swap advancement of `tokenVersion`:
      * bumps the version to `expected + 1` only when the current version is
      * still `expected`, returning the new value; returns `null` when the
      * current version no longer matches (someone else advanced it). This is

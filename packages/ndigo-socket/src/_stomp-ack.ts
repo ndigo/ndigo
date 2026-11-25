@@ -41,7 +41,7 @@ export class STOMPAckHandler {
      * one. NACK removes the same way **and redelivers only the named
      * message** with `redelivered: true`.
      *
-     * The `id` header is required and sufficient (COR-4): without a
+     * The `id` header is required and sufficient: without a
      * `subscription` header the per-session delivery index resolves the
      * owning subscription. When the `subscription` header *is* present it
      * must name one of the sender's own subscriptions, and an id the
@@ -49,7 +49,7 @@ export class STOMPAckHandler {
      * bounds) is a tolerated no-op.
      *
      * An id-only ACK/NACK settles **every** subscription the id is
-     * outstanding under (REV-004): one logical message fans out to each
+     * outstanding under: one logical message fans out to each
      * subscription of the destination, so two subscriptions of one session
      * can share the id — the second must not fail closed.
      *

@@ -158,7 +158,7 @@ const MIN_HMAC_SECRET_BYTES = 32;
  * overwritten on re-access — without a bound, a long-running server accrues
  * one stale entry per distinct account ever seen. Crossing the cap sweeps
  * expired entries first, then FIFO-evicts the oldest (Map iteration order is
- * insertion order), same discipline as `FixedWindowRateLimiter` (SEC-2). The
+ * insertion order), same discipline as `FixedWindowRateLimiter`. The
  * cache is a throughput optimization only: evicting a live entry costs one
  * `UserStore.findById`, never a wrong auth decision.
  */

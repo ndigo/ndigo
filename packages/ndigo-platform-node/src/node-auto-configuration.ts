@@ -119,8 +119,8 @@ export class NodeAutoConfiguration extends AsApplicationContextAware(Null) {
      * Provides the default handler mapping for Node.js request dispatch.
      *
      * Security headers and the (metadata-gated) rate-limit interceptor are
-     * default-on; routes declare opt-in budgets with `@rateLimit` (SEC-6,
-     * Wave 3) — routes without metadata are untouched.
+     * default-on; routes declare opt-in budgets with `@rateLimit` — routes
+     * without metadata are untouched.
      *
      * @returns The default metadata-driven handler mapping.
      */
@@ -177,7 +177,7 @@ export class NodeAutoConfiguration extends AsApplicationContextAware(Null) {
     }
 
     /**
-     * The shared in-memory rate limiter (SEC-6). Apps needing a
+     * The shared in-memory rate limiter. Apps needing a
      * distributed backend provide their own {@link RateLimiter}
      * implementation (the `@ndigo/redis/rate-limit` driver is the
      * shared-store option); the entry is the default.

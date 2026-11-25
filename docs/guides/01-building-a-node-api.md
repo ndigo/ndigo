@@ -8,6 +8,10 @@ The finished shape of every pattern here lives in [apps/05-ndigo-api](https://gi
 the canonical reference. Concepts link to the relevant decision record where the rationale
 is worth reading.
 
+**Use for:** your first Ndigo server app — bootstrap, DI, controllers, binding, validation, errors, and shutdown.
+
+**Not for:** browser apps (Guide 02) or deep dives into individual subsystems (Guides 04–08).
+
 **Audience:** Node application developers · **Prerequisites:** Workspace bootstrapped (`pnpm install`) and the Node platform packages built (`pnpm --filter @ndigo/platform-node build:lib`) · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api) (minimal companion: [apps/02-ndigo-hello-node](https://github.com/ndigo/ndigo/tree/main/apps/02-ndigo-hello-node))
 
 ## What you'll learn

@@ -2,13 +2,17 @@
 
 Browser apps need three things a server session already has: a current
 principal, a guard that redirects unauthenticated navigation, and a safe way to
-obtain tokens from an identity provider. `@ndigo/auth-client` supplies all
-three, with a fail-closed OIDC adapter and no claim-only shortcut.
+obtain tokens from an identity provider. The auth client supplies all three,
+with a fail-closed OIDC adapter and no claim-only shortcut.
 
 This guide is the browser counterpart to [Guide 26](26-authentication-and-sessions.md) (server credentials, sessions,
 and JWT). It shows the client state, the route guard, the authorization-code +
 PKCE flow, refresh handling, and the server callback bridge used by the
 playground app.
+
+**Use for:** browser apps that authenticate against an OIDC provider.
+
+**Not for:** first-party credential login (Guide 26) or non-browser clients.
 
 **Audience:** Browser application developers · **Prerequisites:** [Guide 02](02-building-a-browser-app.md) and [Guide 26](26-authentication-and-sessions.md) · **Reference app:** [apps/18-ndigo-auth-playground](https://github.com/ndigo/ndigo/tree/main/apps/18-ndigo-auth-playground)
 

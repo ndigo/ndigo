@@ -6,6 +6,10 @@ file's role obvious before it is opened. They apply to new apps and to files
 touched while changing an existing app; the [migration backlog](#migration-backlog)
 lists the older shapes that are deliberately left for follow-up work.
 
+**Use for:** naming and laying out demo applications in the `apps/` directory.
+
+**Not for:** production application structure; these are conventions for the framework's own demos.
+
 **Audience:** Framework contributors · **Prerequisites:** Workspace bootstrapped; [Guide 37](37-ndigo-cli.md) · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)
 
 ## What you'll learn

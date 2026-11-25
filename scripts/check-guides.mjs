@@ -192,19 +192,19 @@ for (const file of files) {
     );
     if (firstPara) {
         if (/@ndigo\//.test(firstPara) || /`@[^`]+`/.test(firstPara)) {
-            warnings.push(`${file}: opening paragraph contains a package or decorator name`);
+            failures.push(`${file}: opening paragraph contains a package or decorator name`);
         }
         if (/^How .* in Ndigo/i.test(firstPara)) {
-            warnings.push(`${file}: opening paragraph starts with "How ... in Ndigo"`);
+            failures.push(`${file}: opening paragraph starts with "How ... in Ndigo"`);
         }
     }
 
     // Use for / Not for lines (warning until all guides are migrated).
     if (!/\*\*Use for:\*\*/.test(text)) {
-        warnings.push(`${file}: missing **Use for:** line`);
+        failures.push(`${file}: missing **Use for:** line`);
     }
     if (!/\*\*Not for:\*\*/.test(text)) {
-        warnings.push(`${file}: missing **Not for:** line`);
+        failures.push(`${file}: missing **Not for:** line`);
     }
 
     if (!/^## What you'll learn$/m.test(text)) failures.push(`${file}: missing "## What you'll learn"`);

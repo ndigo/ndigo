@@ -8,6 +8,10 @@ the two placement models, the ordered targeter chain, the built-in targeters
 and their safety rules, how targets are cached and destroyed, and how Node and
 the browser differ.
 
+**Use for:** choosing where output lands — DOM element, HTTP response, capture buffer.
+
+**Not for:** the view contract or content negotiation (Guide 09).
+
 **Audience:** Browser and Node application developers · **Prerequisites:** [Guide 09 — Views & Content Negotiation](09-views-and-content-negotiation.md) (view targets and the render pipeline) · **Reference app:** [apps/08-ndigo-views](https://github.com/ndigo/ndigo/tree/main/apps/08-ndigo-views) (centralized placement), [apps/01-ndigo-hello](https://github.com/ndigo/ndigo/tree/main/apps/01-ndigo-hello) (decentralized placement)
 
 ## What you'll learn

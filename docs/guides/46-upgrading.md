@@ -10,6 +10,10 @@ additive unless a major says otherwise.
 This guide covers both sides: upgrading an application, and writing the
 migration guide when the framework changes.
 
+**Use for:** upgrading Ndigo versions and writing migration guides.
+
+**Not for:** routine development; only consult when upgrading.
+
 **Audience:** Application developers and framework contributors · **Prerequisites:** Guides [25](25-clustering.md), [37](37-ndigo-cli.md), and [90](90-package-documentation.md) · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)
 
 ## What you'll learn

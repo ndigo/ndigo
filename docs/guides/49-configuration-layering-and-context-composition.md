@@ -16,6 +16,10 @@ composition patterns that work today, and calls out the boundary that is _not_
 automatic — a child context inherits entry lookups, but not its parent's
 environment.
 
+**Use for:** composing multiple contexts with profiles, property sources, and parent/child boundaries.
+
+**Not for:** single-context apps; start with one context and split when needed.
+
 **Audience:** application and platform architects, and developers composing
 more than one context · **Prerequisites:** [Guide 03](03-environment-configuration.md),
 [Guide 04](04-dependency-injection-and-lifecycle.md),

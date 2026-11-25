@@ -5,6 +5,10 @@ meet, and the tooling that keeps it true. Applies to all
 `packages/*`; the reference implementation of the standard is the
 [`ndigo-generators`](../../tools/generators/README.md) scaffolding.
 
+**Use for:** package documentation standards and the tooling that enforces them.
+
+**Not for:** application documentation; use the guides for app-level patterns.
+
 **Audience:** Framework contributors · **Prerequisites:** Workspace bootstrapped; `CONTRIBUTING.md` · **Reference package:** `packages/ndigo-core`
 
 ## What you'll learn

@@ -4,6 +4,10 @@ One vocabulary for the four ways an agent meets an application — MCP tools,
 WebMCP browser tools, A2UI surfaces, and the in-page bridge — so a declaration,
 a safety hint, and a denial mean the same thing wherever the agent enters.
 
+**Use for:** understanding the shared vocabulary across MCP, WebMCP, A2UI, and the in-page bridge.
+
+**Not for:** implementing any one surface; see Guides 47 and 48 for that.
+
 **Audience:** Node · browser · agent tooling · **Prerequisites:** Guides [12](12-openapi-and-api-docs.md), [30](30-component-integration.md), [47](47-ai-agents.md), [48](48-agent-facing-surfaces.md) · **Reference package:** `packages/ndigo-core`, `packages/ndigo-mcp`, `packages/ndigo-view-webcomponent`
 
 ## What you'll learn

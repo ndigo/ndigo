@@ -1,15 +1,18 @@
 # Guide 02 — Building a Browser App
 
-Browser apps run the same DI container as server apps — the same
-`@configuration` classes, `@entry` entries, `@routeMapping` controllers,
-`@parameters` binding, and view resolution — with a browser runtime in
-place of the HTTP server: hash routing, in-page dispatch, and
-web-component rendering. The `createWebApplication` preset
-(`@ndigo/platform-web`) wires that runtime in one call.
+Browser apps run the same dependency container as server apps — the same
+configuration classes, entries, controllers, parameter binding, and view
+resolution — with a browser runtime in place of the HTTP server: hash routing,
+in-page dispatch, and web-component rendering. The createWebApplication preset
+wires that runtime in one call.
 
 Reference applications: [apps/08-ndigo-views](https://github.com/ndigo/ndigo/tree/main/apps/08-ndigo-views)
 (views and resolver chains) and [apps/19-ndigo-hn](https://github.com/ndigo/ndigo/tree/main/apps/19-ndigo-hn)
 (routing, services, offline cache, deep links).
+
+**Use for:** your first Ndigo browser app — hash routing, in-page dispatch, web-component views.
+
+**Not for:** server apps (Guide 01). For islands or micro frontends, see Guides 29 and 31.
 
 **Audience:** Browser application developers · **Prerequisites:** Workspace bootstrapped; [Guide 01](01-building-a-node-api.md) concepts recommended · **Reference app:** [apps/08-ndigo-views](https://github.com/ndigo/ndigo/tree/main/apps/08-ndigo-views), [apps/19-ndigo-hn](https://github.com/ndigo/ndigo/tree/main/apps/19-ndigo-hn)
 

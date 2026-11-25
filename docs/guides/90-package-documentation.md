@@ -89,7 +89,7 @@ Rules:
 | `license`                                         | `"ISC"`                                                                                                                                                                                                          | always                                |
 | `files`                                           | `["api", "lib"]` for every package, plus `"docs"` (the generated export index, every package) and `"skills"` where a vendored skill declares the package (`scripts/check-manifests.mjs` + `agent-content:check`) | npm tarball ships only these + README |
 | `repository` / `homepage` / `bugs`                | set at publish time, when a public remote exists                                                                                                                                                                 | npm links                             |
-| `exports` / `sideEffects` / `type` / dep sections | enforced by `scripts/check-manifests.mjs` — see ARCHITECTURE.md "Manifest Dependency Sections"                                                                                                                   | install closure                       |
+| `exports` / `sideEffects` / `type` / dep sections | enforced by `scripts/check-manifests.mjs` — see CONTRIBUTING.md "Manifest dependency sections"                                                                                                                   | install closure                       |
 
 ## Generated API docs
 

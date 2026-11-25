@@ -4116,7 +4116,7 @@ import { utility } from './_util'; // CIRCULAR!
 // ✅ Correct: Extract shared code to third file or inline in one
 ```
 
-**See also:** [Dependency Management Strategy](./ARCHITECTURE.md#dependency-management-strategy) for guidance on when to promote utilities to `@ndigo/util`.
+**See also:** [Dependency Management](./CONTRIBUTING.md#dependency-management) for guidance on when to promote utilities to `@ndigo/util`.
 
 ### 4.5. File Size and Module Breakdown
 
@@ -4884,7 +4884,7 @@ Rules of engagement:
 - A class that structurally matches a contract names the contract in its
   `implements` clause — the compiler then enforces future changes.
 - Closed-resource guards throw `IllegalStateError`; domain errors extend
-  `FrameworkError`/`ApplicationError` (see [Contract-First Patterns](./ARCHITECTURE.md#contract-first-patterns)).
+  `FrameworkError`/`ApplicationError` (see [Contract-First Patterns](./docs/architecture/design-principles.md#contract-first-patterns)).
 - Exclusions are documented at the exclusion site (e.g. `HTTPServer` closes
   through `ManagedLifecycle.stop()`; `SocketSession.close(code, reason)` takes
   per-session parameters).

@@ -32,7 +32,7 @@ labels. Neither audience is the maintainer-only `development-agents/` store or
 the gitignored `agent-local/` tree.
 
 Three categories describe the code those audiences touch
-([ARCHITECTURE.md](../../ARCHITECTURE.md#package-categories)):
+([CONTRIBUTING.md](../../CONTRIBUTING.md#package-categories)):
 
 - **Tooling** — dev-time only; never runs inside an application.
   `TOOLING_PACKAGES`, `tools/`, `scripts/`, and the agent-content store.

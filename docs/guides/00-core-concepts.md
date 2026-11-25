@@ -242,4 +242,4 @@ Application Context Lifecycle.
 - [Guide 02 — Building a Browser App](02-building-a-browser-app.md) — the browser tutorial
 - [Guide 04 — Injection & Lifecycle](04-dependency-injection-and-lifecycle.md) — the container in depth
 - [Annotation, Advice & Transformer](../architecture/annotation-and-transformer-model.md) — what decorators declare, what runs around a call, and what replaces a member
-- [ARCHITECTURE.md](../../ARCHITECTURE.md) — layers, principles, and package map
+- [ARCHITECTURE.md](../../ARCHITECTURE.md) — layers, core building blocks, and the request lifecycle

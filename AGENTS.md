@@ -93,24 +93,23 @@ The project maintains two complementary documentation files for different purpos
 - **Focus:** High-level design decisions, patterns, principles, and rationale
 - **Audience:** Architects and senior developers understanding system design
 - **Content:**
-    - Core philosophy and design principles
-    - Layered architecture organization
-    - Design patterns (Strategy, Factory, Observer, Decorator, etc.)
-    - Dependency management strategy (Library Integration Layer)
-    - Module visibility concepts and API design
-    - Roadmap and development phases
+    - Core philosophy and the eight-layer model
+    - Platform portability and deployment topologies
+    - Core building blocks: IoC, decorators, and contracts
+    - Application and request lifecycle
+    - Pointers to the deep dives (design principles, decorators, package map)
 
 **Think:** "Why is the system designed this way?" and "What are the architectural patterns?"
 
 **The Dividing Line:**
 
-| Concern               | ARCHITECTURE.md                                           | STYLE_GUIDE.md                                            |
-| :-------------------- | :-------------------------------------------------------- | :-------------------------------------------------------- |
-| Dependency Management | "Use Library Integration Layer pattern"                   | "Import from @ndigo/ai-sdk, not from ai"                  |
-| Code Organization     | "Use Strategy Pattern for parsers"                        | "Name parser files: kebab-case.ts in src/"                |
-| Module Visibility     | "Internal modules are implementation details"             | "Prefix internal files with underscore: \_util.ts"        |
-| Naming Philosophy     | "Use `is` prefix for type checks, `like` for duck-typing" | "isString checks with typeof, returns boolean"            |
-| Decorators            | "Decorators enable separation of concerns"                | "@routeMapping uses camelCase, stores in Symbol.metadata" |
+| Concern               | ARCHITECTURE.md / CONTRIBUTING.md                                   | STYLE_GUIDE.md                                            |
+| :-------------------- | :----------------------------------------------------------------- | :-------------------------------------------------------- |
+| Dependency Management | `CONTRIBUTING.md` — "Use Library Integration Layer pattern"         | "Import from @ndigo/ai-sdk, not from ai"                  |
+| Code Organization     | "Use Strategy Pattern for parsers"                                 | "Name parser files: kebab-case.ts in src/"                |
+| Module Visibility     | `CONTRIBUTING.md` — "Internal modules are implementation details"   | "Prefix internal files with underscore: \_util.ts"        |
+| Naming Philosophy     | "Use `is` prefix for type checks, `like` for duck-typing"           | "isString checks with typeof, returns boolean"            |
+| Decorators            | "Decorators enable separation of concerns"                          | "@routeMapping uses camelCase, stores in Symbol.metadata" |
 
 **Maintenance Note:** The root README links [`STYLE_GUIDE.md`](STYLE_GUIDE.md)
 and [`ARCHITECTURE.md`](ARCHITECTURE.md) instead of restating this split — keep
@@ -138,7 +137,7 @@ reintroduce them.
 
 ### Design Principles (SOLID & DRY)
 
-ARCHITECTURE.md now includes comprehensive guidance on SOLID and DRY principles adapted for JavaScript/TypeScript. When writing or refactoring code, refer to these principles:
+docs/architecture/design-principles.md now carries the comprehensive guidance on SOLID and DRY principles adapted for JavaScript/TypeScript. When writing or refactoring code, refer to these principles:
 
 **SOLID Principles:**
 
@@ -163,7 +162,7 @@ ARCHITECTURE.md now includes comprehensive guidance on SOLID and DRY principles 
 - Extract functions/classes when you have actual duplication, not hypothetical
 - Keep abstractions simple and focused
 
-**See:** ARCHITECTURE.md Section 2 "Foundational Principles" for detailed examples, anti-patterns, and practical guidelines.
+**See:** [Design Principles](docs/architecture/design-principles.md) for detailed examples, anti-patterns, and practical guidelines.
 
 ## 3. Core Commands
 
@@ -259,7 +258,7 @@ pnpm format
 - **Standard:** Ndigo uses modern **TC39 Stage 3 decorators**.
 - **Polyfill:** The `@tsmetadata/polyfill` is used to support `Symbol.metadata`.
 - **Legacy:** `reflect-metadata` and the old `experimentalDecorators` flag are **no longer used**.
-- **Further Reading:** For a deep dive into the architecture, see the "Decorators & Separation of Concerns" section in `ARCHITECTURE.md`.
+- **Further Reading:** For a deep dive into the architecture, see [Decorators](docs/architecture/decorators.md).
 
 ### Library Integration Layer Pattern
 
@@ -327,7 +326,7 @@ When adding new integration layers or encapsulated libraries:
 
 1. Choose the kind (adapter, boundary, facade) and add the mapping to `INTEGRATION_LAYER_MAP` + `INTEGRATION_LAYER_KINDS` in `src/oxlint/_constants.ts`
 2. Update this section with the same mapping
-3. Update `ARCHITECTURE.md` "Dependency Management Strategy" section
+3. Update the "Dependency management" section in `CONTRIBUTING.md`
 
 ### Decorator Naming and Conventions
 

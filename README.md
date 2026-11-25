@@ -193,8 +193,9 @@ package, and file-naming convention is
 
 > The authoritative **package map** — every package's purpose, layer, platform,
 > and runtime dependencies — lives in
-> [ARCHITECTURE.md § Package Map](ARCHITECTURE.md#package-map). This list is a
-> quick index with one-line purposes.
+> [docs/architecture/package-map.md](docs/architecture/package-map.md). The
+> public inventory is the generated [Reference → Packages](https://ndigo.dev/reference/packages/)
+> page. This list is a quick index with one-line purposes.
 
 Core & infrastructure:
 
@@ -292,7 +293,7 @@ Micro frontends:
 
 | Document                           | Answers                                                                                                                                                                                                              |
 | :--------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [ARCHITECTURE.md](ARCHITECTURE.md) | _Why is the system built this way?_ — philosophy, layers, design patterns, dependency strategy, the package map, roadmap                                                                                             |
+| [ARCHITECTURE.md](ARCHITECTURE.md) | _Why is the system built this way?_ — philosophy, the eight layers, core building blocks, and the application/request lifecycle                                                                                      |
 | [STYLE_GUIDE.md](STYLE_GUIDE.md)   | _How do I write code here?_ — naming, formatting, file/module conventions, with per-section enforcement markers                                                                                                      |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | _How do I contribute?_ — setup, work tracking (issue → branch → PR), quality gates                                                                                                                                   |
 | [docs/](docs/README.md)            | The documentation set: [guides](docs/guides/README.md) (numbered how-tos), [architecture topics](docs/architecture/README.md), [decisions (ADRs)](docs/decisions/README.md), [migrations](docs/migrations/README.md) |

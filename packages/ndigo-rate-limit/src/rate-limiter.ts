@@ -15,7 +15,7 @@ import { Aware, AsAware, likeAwareAnd } from '@ndigo/factory';
 
 /**
  * A route's rate-limit policy: at most `limit` requests per `windowMs`
- * per client key (SEC-6).
+ * per client key.
  *
  * @example
  * ```ts

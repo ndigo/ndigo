@@ -280,7 +280,7 @@ export class FeatureMetricAggregator {
 }
 
 /**
- * The aggregator as a {@link MetricSnapshotProvider} (REV-003): projects the
+ * The aggregator as a {@link MetricSnapshotProvider}: projects the
  * tracked features into the snapshot model the `/metrics` endpoint serves.
  * Installed by `ManagementAutoConfiguration` as the *fallback* snapshot
  * source, so feature counters are served even when no telemetry pipeline

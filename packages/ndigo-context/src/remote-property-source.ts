@@ -291,8 +291,8 @@ export class RemotePropertySource {
     /**
      * One poll cycle: fetch, gate on change, merge + refresh on change. An
      * in-flight guard skips a tick whose previous fetch has not resolved yet
-     * (ARC-4 — out-of-order applies could regress rotated/revoked secrets).
-     * Transport/parse failures are caught here (SEC-2): warn, keep last-good,
+     * (out-of-order applies could regress rotated/revoked secrets).
+     * Transport/parse failures are caught here: warn, keep last-good,
      * retry next tick — no unhandled promise rejection.
      */
     async #poll(): Promise<void> {
@@ -315,7 +315,7 @@ export class RemotePropertySource {
      * Fetches and, when the document changed (ETag/body-text gate), merges it
      * into the environment and refreshes. The body gate is always active
      * (identical to the previous body → skip). One failure policy for all
-     * failure classes (SEC-3): HTTP errors, transport rejections, timeouts,
+     * failure classes: HTTP errors, transport rejections, timeouts,
      * oversized documents and body/JSON-parse failures all route through
      * `optional`/last-good — after the first successful apply,
      * `optional: false` keeps last-good too.
@@ -511,7 +511,7 @@ export class RemotePropertySource {
     }
 
     /**
-     * Logs a keep-last-good warning (SEC-12) and returns `null`. The existing
+     * Logs a keep-last-good warning and returns `null`. The existing
      * document/ETag stay applied and consistent; the next tick retries.
      *
      * @param cause - The failure cause, when one was thrown.

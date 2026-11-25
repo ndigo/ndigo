@@ -1,6 +1,6 @@
 /**
  * The default {@link RateLimiter}: in-process and single-node, moved to
- * `@ndigo/rate-limit` in Wave 3.
+ * `@ndigo/rate-limit`.
  *
  * Semantics deliberately mirror a one-node deployment: one counter per
  * (key, window) pair, sliding to a fresh window once `windowMs` elapses.
@@ -12,7 +12,7 @@
  * Memory is bounded: expired buckets are swept once the map passes
  * `maxEntries` (default 10 000); at the cap with no expired buckets the
  * oldest bucket is evicted, so `size` never exceeds `maxEntries` and new
- * keys stay ~O(1) to insert (SEC-2). Redis-backed TTL windows need no
+ * keys stay ~O(1) to insert. Redis-backed TTL windows need no
  * such machinery — the server expires keys itself.
  */
 import { type RateLimitPolicy, type RateLimitResult, type RateLimiter, validateRateLimitPolicy } from './rate-limiter';

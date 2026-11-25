@@ -64,7 +64,7 @@ export class STOMPLimits {
     }
 
     /**
-     * Enforce `maxIdentifierLength` (SEC-2) on every identifier-valued header.
+     * Enforce `maxIdentifierLength` on every identifier-valued header.
      *
      * @param session - The sending session.
      * @param frame - The frame to check.
@@ -85,7 +85,7 @@ export class STOMPLimits {
     }
 
     /**
-     * Enforce `maxHeaderBytes` (REV-002) on a frame's serialized header block.
+     * Enforce `maxHeaderBytes` on a frame's serialized header block.
      *
      * @param session - The sending session.
      * @param frame - The frame to check.
@@ -125,7 +125,7 @@ export class STOMPLimits {
     }
 
     /**
-     * Charge one session's replay budget (SEC-6).
+     * Charge one session's replay budget.
      *
      * @param session - The session consuming the budget.
      * @param octets - The body octets to charge.

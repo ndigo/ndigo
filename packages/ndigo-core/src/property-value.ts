@@ -177,7 +177,7 @@ export class MutablePropertyValues
      * Adds one or more property values, growing the backing buffer instead of
      * silently evicting the oldest entries. Unlike `RingBuffer`, a
      * `MutablePropertyValues` is an unbounded collection — a form can legitimately
-     * carry far more than the ring's 32-slot default (KRN-REV-CORE-02).
+     * carry far more than the ring's 32-slot default.
      *
      * @param items - The property values to add.
      * @returns The new length of the collection.

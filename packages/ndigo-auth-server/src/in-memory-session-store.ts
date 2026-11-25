@@ -41,7 +41,7 @@ const DEFAULT_MAX_SESSIONS = 512;
  * contract with their own identifier. Memory hygiene: expired entries are
  * swept opportunistically at the capacity (`maxSessions`, default 512);
  * a create that still finds the store full after the sweep throws — the
- * cap bounds the live-session map (SEC-4, 2026-09-27 review).
+ * cap bounds the live-session map.
  *
  * @example
  * ```ts

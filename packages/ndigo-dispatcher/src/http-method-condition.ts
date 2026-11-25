@@ -105,7 +105,7 @@ export class HTTPMethodCondition extends AbstractRouteCondition<HTTPMethodCondit
      * For a `HEAD` request, an explicit `HEAD` mapping is more specific than
      * a `GET` mapping reached only through the HEAD→GET fallback — RFC 9110
      * §9.3.2 requires the explicit mapping to win regardless of registration
-     * order (COR-10). The fallback still serves HEAD when no HEAD mapping
+     * order. The fallback still serves HEAD when no HEAD mapping
      * exists: without a `route` (or for non-HEAD requests) the two concrete
      * conditions remain equally specific.
      *

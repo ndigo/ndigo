@@ -92,7 +92,7 @@ const requestedNames = new Set<string>();
 /**
  * Bumped whenever {@link settings} change. A handle re-resolves its delegate
  * when the revision it last saw differs, so switches made after a logger was
- * created at module load still reach it (KRN-REV-LOG-11).
+ * created at module load still reach it.
  */
 let revision = 0;
 
@@ -119,8 +119,7 @@ function buildLogger(name: string): Logger {
  * logger captured at module load (the common
  * `const logger = getLogger('…')` pattern) still follows a later `setType`/
  * `setThreshold`/`setContextAware` — e.g. `configureTelemetry` routing output
- * through OpenTelemetry after the framework modules were imported
- * (KRN-REV-LOG-11).
+ * through OpenTelemetry after the framework modules were imported.
  */
 class ConfigurableLogger implements Logger {
     /**

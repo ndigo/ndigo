@@ -56,7 +56,7 @@ export interface TLSServerOptions {
     /**
      * Optional CA bundle (inline PEM or path) that presented client
      * certificates verify against when {@link TLSServerOptions.clientAuth}
-     * is set (REV-101); without `clientAuth` this entry has no effect —
+     * is set; without `clientAuth` this entry has no effect —
      * Node never requests a client certificate on `ca` alone.
      */
     ca?: string;
@@ -112,7 +112,7 @@ export interface HTTPServerOptions {
      * silently serving plaintext) and optional `NDIGO_TLS_CA`. Blank env
      * values count as unset, and the env is consulted for the default
      * adapter only — a custom {@link HTTPServerOptions.adapter} is never
-     * TLS-configured through it (REV-102).
+     * TLS-configured through it.
      */
     tls?: TLSServerOptions;
     /**
@@ -418,7 +418,7 @@ export class HTTPServer implements ManagedLifecycle, ApplicationContextAware {
      * Resolves the upgrade authentication hook for the default adapter: the
      * explicit `authenticate` option wins; otherwise the
      * `socketRequestAuthenticator` application-context entry supplies
-     * identity (SEC-3). The entry's method is invoked on its own receiver, so
+     * identity. The entry's method is invoked on its own receiver, so
      * a class-based authenticator keeps `this`.
      *
      * @returns The hook to hand the adapter, or `undefined` (public sockets).
@@ -440,7 +440,7 @@ export class HTTPServer implements ManagedLifecycle, ApplicationContextAware {
  * `NDIGO_TLS_KEY` + `NDIGO_TLS_CERT` (both required together) and optional
  * `NDIGO_TLS_CA`. Absent both required keys → `undefined` (plaintext
  * origin, the edge-terminated topology). Blank/whitespace-only
- * values count as unset (REV-103) — an empty `NDIGO_TLS_KEY=` export is a
+ * values count as unset — an empty `NDIGO_TLS_KEY=` export is a
  * shell default, not a broken credential. One key without the other →
  * `RangeError`: a half-configured TLS listener must fail loud rather
  * than silently serve plaintext.

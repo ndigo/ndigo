@@ -18,7 +18,7 @@
  * owns liveness); receipts auto-generated per `send()` (a caller-supplied
  * `receipt` header is honored); a transport drop settles every `send()`
  * whose frame already left the wire (its receipt can never arrive on the
- * new session, COR-12) while frames still buffered go out on the new one;
+ * new session) while frames still buffered go out on the new one;
  * a server ERROR is **terminal** per STOMP 1.2 §1.5 (the server closes the
  * connection just after the frame), so it rejects all outstanding sends,
  * completes every subscription stream and surfaces through the `onError`
@@ -160,7 +160,7 @@ interface PendingReceipt {
     /**
      * Whether the SEND frame reached the transport. Only a frame that left
      * the wire can be stranded by a drop — its receipt can never arrive on
-     * the new session (COR-12); a still-buffered frame keeps its promise.
+     * the new session; a still-buffered frame keeps its promise.
      */
     sent: boolean;
 }
@@ -171,7 +171,7 @@ type HandshakeOutcome = 'connected' | 'aborted' | 'timeout';
 /**
  * One CONNECT handshake: a deferred settled by the CONNECTED frame, by the
  * ERROR/abort paths, or by a single timeout timer. `#onOpen` awaits this
- * instead of polling the signals (RT-1).
+ * instead of polling the signals.
  */
 interface Handshake {
     /** The session epoch this handshake belongs to (superseded → ignored). */
@@ -249,7 +249,7 @@ export class STOMPClient {
      * failing a newer, healthy session.
      */
     #epoch = 0;
-    /** The CONNECT handshake in flight, if any (RT-1). */
+    /** The CONNECT handshake in flight, if any. */
     #handshake: Handshake | null = null;
 
     /**
@@ -429,7 +429,7 @@ export class STOMPClient {
      * (a fresh `receipt` header is attached), or rejects on a server
      * ERROR / session end. Resolving on the wire, not just on send. A
      * transport drop settles it too when the frame already left the wire —
-     * the new STOMP session cannot receipt the old id (COR-12); a frame
+     * the new STOMP session cannot receipt the old id; a frame
      * buffered for the new session resolves there.
      *
      * @param destination - The destination (e.g. `/topic/chat`).
@@ -578,7 +578,7 @@ export class STOMPClient {
      * Start a CONNECT handshake: one deferred plus one timeout timer. The
      * deferred is settled by the CONNECTED frame, by an ERROR/`#fail`, by a
      * transport drop or close (the status watcher), or by the timer — the
-     * awaiting `#onOpen` never polls the signals (RT-1). Every exit path
+     * awaiting `#onOpen` never polls the signals. Every exit path
      * clears the timer so a settled handshake leaves nothing scheduled.
      *
      * @returns The handshake `#onOpen` awaits.
@@ -819,7 +819,7 @@ export class STOMPClient {
 
     /**
      * Reject the receipts of sends whose SEND frame already left the
-     * transport (COR-12): the dropped STOMP session can never receipt them
+     * transport: the dropped STOMP session can never receipt them
      * and the new one never sees the old ids. Frames still buffered for the
      * new session are left alone — their promises settle there.
      */

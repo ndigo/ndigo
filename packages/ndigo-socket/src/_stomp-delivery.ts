@@ -45,9 +45,9 @@ export class STOMPDelivery {
 
     /**
      * Deliver one MESSAGE to a subscription: per-subscription framing
-     * (including the `ack` header on non-`auto` subscriptions — COR-4),
+     * (including the `ack` header on non-`auto` subscriptions),
      * ack tracking (D9), redelivery flag. While a `/queue` replay is in
-     * flight the delivery is buffered instead of sent (COR-2).
+     * flight the delivery is buffered instead of sent.
      *
      * @param subscription - The target subscription.
      * @param messageId - The message id (shared per logical message).

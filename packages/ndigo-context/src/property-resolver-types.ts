@@ -148,7 +148,7 @@ export interface ResolverOptions {
      * The lookup index to use. Defaults to the prototype chain (the
      * framework's historical behavior).
      *
-     * Divergence note (ARC-7): `prototype` (PrototypeChainIndex) keeps a live
+     * Divergence note: `prototype` (PrototypeChainIndex) keeps a live
      * chain — in-place edits to a captured source map are visible without a
      * rebuild; `flat` (FlatMergedIndex) snapshots — in-place edits stay
      * invisible until the next rebuild. You must use the source-registry

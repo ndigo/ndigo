@@ -54,7 +54,7 @@ export class UnknownPasswordSchemeError extends Error {
  *
  * Note: encoding/verification is CPU-bound synchronous work (scrypt,
  * ~100ms at default cost). Frame it behind rate limiting on credential
- * endpoints (see the auth completion plan, Wave 3).
+ * endpoints.
  *
  * @example
  * ```ts

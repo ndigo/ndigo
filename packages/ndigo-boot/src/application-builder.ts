@@ -402,7 +402,7 @@ export class ApplicationBuilder {
      * Enables at-rest secret decryption for this application.
      *
      * Registers a cipher backend so `{cipher:...}` values in any source
-     * (config files, env, CLI, and — in Wave 3 — the config server) resolve
+     * (config files, env, CLI, and the config server) resolve
      * to plaintext at lookup and binding time. The cipher's capability gate
      * runs here: a backend that cannot supply key-path AAD binding is refused
      * loudly (pluggability never downgrades the threat model).

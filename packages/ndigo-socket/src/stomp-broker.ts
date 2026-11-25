@@ -27,7 +27,7 @@
  *   message); `client-individual` removes exactly the named message and
  *   keeps the earlier obligations outstanding. NACK redelivers only the
  *   named message with `redelivered: true`.
- * - **MESSAGE `ack` header (COR-4)**: non-`auto` subscriptions carry
+ * - **MESSAGE `ack` header **: non-`auto` subscriptions carry
  *   `ack: <message-id>`, and ACK/NACK may name the message with the `id`
  *   header alone — the per-session delivery index resolves the owning
  *   subscription(s) (one id can be outstanding under several). A
@@ -53,7 +53,7 @@
  *   budget), `1013` when the replay budget is exhausted, and `1011` when
  *   the `/queue` store faults on a SEND or a subscribe replay (STOMP 1.2
  *   §1.5: the server MUST close right after an ERROR frame).
- * - **Policy seams (SEC-4/SEC-7)**: `authorize` gates SUBSCRIBE and SEND
+ * - **Policy seams **: `authorize` gates SUBSCRIBE and SEND
  *   (fail-closed `1008`), `verifyCredentials` validates CONNECT
  *   `login`/`passcode` (fail-closed `1008`, and CONNECT credentials are
  *   rejected outright while no verifier is configured), and
@@ -89,20 +89,20 @@ const DEFAULT_MAX_TRANSACTION_BYTES = 16 * 1024 * 1024;
 const DEFAULT_MAX_BACKLOG_DESTINATIONS = 1000;
 /** Default global bound on stored backlog bytes across all `/queue/*` destinations. */
 const DEFAULT_MAX_BACKLOG_BYTES = 64 * 1024 * 1024;
-/** Default cap on a protocol identifier's length in characters (SEC-2). */
+/** Default cap on a protocol identifier's length in characters. */
 const DEFAULT_MAX_IDENTIFIER_LENGTH = 1024;
 /**
- * Default cap on a frame's serialized header octets (REV-002) — the header
+ * Default cap on a frame's serialized header octets — the header
  * counterpart of the body byte budgets. The transport payload cap is
  * megabytes, so without this a frame could carry ~1 MiB of headers per
  * body octet. Default `16384` (16 KiB); `0` disables.
  */
 const DEFAULT_MAX_HEADER_BYTES = 16 * 1024;
-/** Default per-subscription bound on tracked unacked body octets (SEC-5). */
+/** Default per-subscription bound on tracked unacked body octets. */
 const DEFAULT_MAX_UNACKED_BYTES = 1024 * 1024;
-/** Default per-session bound on tracked unacked body octets (SEC-5). */
+/** Default per-session bound on tracked unacked body octets. */
 const DEFAULT_MAX_UNACKED_SESSION_BYTES = 16 * 1024 * 1024;
-/** Default per-session budget for backlog replay + replay-time live buffering (SEC-6). */
+/** Default per-session budget for backlog replay + replay-time live buffering. */
 const DEFAULT_MAX_REPLAY_BYTES_PER_SESSION = 16 * 1024 * 1024;
 
 /** STOMP ack modes (STOMP 1.2 §1.3.1). */
@@ -150,7 +150,7 @@ export interface STOMPBrokerOptions {
      */
     maxUnacked?: number;
     /**
-     * Per-subscription bound on tracked unacked **body octets** (SEC-5) —
+     * Per-subscription bound on tracked unacked **body octets** —
      * the byte counterpart of `maxUnacked`, so a slow reader cannot pin
      * `maxUnacked` × body-size memory on one binding. Oldest-first
      * eviction past the bound. Default `1048576` (1 MiB); `0` disables.
@@ -158,7 +158,7 @@ export interface STOMPBrokerOptions {
     maxUnackedBytes?: number;
     /**
      * Per-session bound on tracked unacked body octets across every
-     * subscription of one connection (SEC-5) — `maxSubscriptionsPerSession`
+     * subscription of one connection — `maxSubscriptionsPerSession`
      * × `maxUnackedBytes` would otherwise be retainable from a single
      * peer. Exceeding it evicts the session's globally oldest tracked
      * delivery (monotonic delivery tags make the oldest knowable), exactly
@@ -167,7 +167,7 @@ export interface STOMPBrokerOptions {
     maxUnackedSessionBytes?: number;
     /**
      * Per-session budget for `/queue` backlog replay **and** the live
-     * deliveries buffered while a replay is in flight (COR-2/SEC-6). The
+     * deliveries buffered while a replay is in flight. The
      * budget is cumulative per connection: re-subscribing re-materializes
      * the retained window, so without it one peer can force unbounded
      * replay work from its own traffic. Charged in body octets; exhausting
@@ -178,14 +178,14 @@ export interface STOMPBrokerOptions {
     /**
      * Cap on the length of identifier-valued headers (`destination`, `id`,
      * `subscription`, `transaction`, `receipt`) on every non-ping frame
-     * (SEC-2) — the transport payload cap is megabytes, far beyond any
+     * — the transport payload cap is megabytes, far beyond any
      * legitimate identifier, and these values are retained as map keys.
      * A longer value fails closed (ERROR + close `1002`).
      * Default `1024` characters; `0` disables.
      */
     maxIdentifierLength?: number;
     /**
-     * Cap on a frame's serialized header octets (REV-002) — names, values
+     * Cap on a frame's serialized header octets — names, values
      * and their separators/EOLs, on every non-ping inbound frame and on
      * programmatic `publish`/`sendToUser` headers. The header counterpart
      * of the body byte budgets: without it a peer could attach up to the
@@ -195,7 +195,7 @@ export interface STOMPBrokerOptions {
      */
     maxHeaderBytes?: number;
     /**
-     * Credential verifier for CONNECT `login`/`passcode` (SEC-7). Invoked
+     * Credential verifier for CONNECT `login`/`passcode`. Invoked
      * with the two header values (empty string when absent) and the
      * connecting session; a falsy result (or a rejected promise) fails the
      * handshake closed — ERROR + close `1008`. While no verifier is
@@ -204,7 +204,7 @@ export interface STOMPBrokerOptions {
      */
     verifyCredentials?: (login: string, passcode: string, session: SocketSession) => unknown;
     /**
-     * Destination policy seam (SEC-4) — the fail-closed counterpart of the
+     * Destination policy seam — the fail-closed counterpart of the
      * `onMessage` routing seam. Consulted on SUBSCRIBE before any replay or
      * registration and on SEND before `onMessage`, for the live and the
      * transactional form alike (a transactional SEND is checked when it is

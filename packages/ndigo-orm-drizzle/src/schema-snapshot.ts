@@ -104,7 +104,7 @@ export interface ProjectionDelta {
     /**
      * The drop statements among {@link ProjectionDelta.statements} (also
      * listed there) — the destructive subset a generator may want to gate
-     * behind explicit operator acknowledgment before emitting (REV-006).
+     * behind explicit operator acknowledgment before emitting.
      * Empty when the delta contains no drops.
      */
     drops: string[];

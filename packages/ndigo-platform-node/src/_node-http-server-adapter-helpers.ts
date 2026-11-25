@@ -93,7 +93,7 @@ export function buildUrl(req: IncomingMessage): URL {
  * Parses the request's `Cookie` header under the parser's bounds,
  * re-classifying a bound violation (`RangeError` past 50 entries or
  * 4 KiB values) as the same `431` {@link RequestLimitError} the
- * header-size check produces — never a generic 500 (SEC-3).
+ * header-size check produces — never a generic 500.
  */
 export function parseRequestCookies(req: IncomingMessage): Record<string, string> {
     try {

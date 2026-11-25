@@ -536,7 +536,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
      * tracked).
      *
      * A fail-loud `'error'` handler is registered alongside the refresh
-     * listener (ARC-1): the emitter re-dispatches listener exceptions as
+     * listener: the emitter re-dispatches listener exceptions as
      * `'error'` events, and with no handler those would vanish — a throwing
      * `@destroyable` teardown or rebind failure must reach the console, not
      * silently half-apply a refresh.
@@ -560,7 +560,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
 
     /**
      * Detaches the refresh listener and its fail-loud handler from the wired
-     * environment (ARC-6): a closed context must not stay reachable through
+     * environment: a closed context must not stay reachable through
      * the environment, and a later `refresh()` must not write into it.
      */
     unsubscribeRefresh(): void {

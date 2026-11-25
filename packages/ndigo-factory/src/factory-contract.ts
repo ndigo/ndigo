@@ -21,7 +21,7 @@ export interface Factory {
     /**
      * Returns the value registered under `name`: constructor-registered
      * values are instantiated, while values registered as instances (or
-     * primitives) are returned as-is, preserving identity (CF-12).
+     * primitives) are returned as-is, preserving identity.
      * @param name - The name of the value.
      * @returns The instance (or registered value) specified by the `name`.
      *

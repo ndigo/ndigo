@@ -51,7 +51,7 @@ export function materialOctets(body: STOMPBody): number {
 /**
  * Serialized header size as transmitted: for every entry, the UTF-8 octets
  * of its name and value plus the `:` separator and the line's EOL. Shared by
- * the broker's header cap (REV-002) and any budget that opts to charge
+ * the broker's header cap and any budget that opts to charge
  * headers alongside the body.
  *
  * @param headers - The frame's headers.
@@ -298,7 +298,7 @@ export class InMemoryQueueMessageStore implements QueueMessageStore {
     /**
      * Forget a destination whole: drain the ring, then drop the destination
      * and its sequence counter together, so `#seqs` cannot outgrow the
-     * destination cap (SEC-1).
+     * destination cap.
      */
     #release(destination: string, queue: RingBuffer<StoredQueueMessage>): void {
         while (queue.length > 0) {

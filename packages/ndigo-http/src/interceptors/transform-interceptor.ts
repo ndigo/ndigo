@@ -226,7 +226,7 @@ export class TransformInterceptor implements RequestAwareHTTPInterceptor, Respon
 /**
  * The parsed media type of a Content-Type header value, or `null` when
  * blank/unparseable — the single MediaType gate for the body-sniffing
- * decisions (Wave 6): case folded by the registry, parameters tolerated.
+ * decisions: case folded by the registry, parameters tolerated.
  */
 function mediaTypeOf(contentType: string): MediaType | null {
     return contentType === '' ? null : MediaType.for(contentType);

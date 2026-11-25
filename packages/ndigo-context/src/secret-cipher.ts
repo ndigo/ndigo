@@ -123,8 +123,8 @@ export function parseSecretMarker(value: string): SecretMarker | null {
  * "does this string look like a `{scheme:...}` marker?" — including malformed
  * markers whose version segment is invalid. It exists so the fail-open path
  * (no decryptor configured) can warn about a marker-shaped value without a
- * malformed marker turning an ordinary read into a failure (SEC-10 fail-open
- * contract, CTX-04).
+ * malformed marker turning an ordinary read into a failure (fail-open
+ * contract).
  *
  * @param value - The candidate string.
  * @returns `true` when the value has the reserved `{scheme:...}` shape.

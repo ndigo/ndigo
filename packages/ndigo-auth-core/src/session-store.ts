@@ -34,7 +34,7 @@ export interface SessionRecord {
 }
 
 /**
- * Backing store contract for opaque server sessions (audit M4).
+ * Backing store contract for opaque server sessions.
  *
  * The `kind` identifier mirrors `QueueMessageStore` (socket package):
  * `'in-memory'` first, persistent backends (Redis/LibSQL) later — the
@@ -42,8 +42,7 @@ export interface SessionRecord {
  * Implementations MUST enforce TTL expiry on read and MUST NOT resurrect
  * expired or deleted sessions. Implementations SHOULD bound concurrent
  * storage (an unbounded live-session map is a memory DoS) — the reference
- * implementation rejects creates at its capacity (SEC-4, 2026-09-27
- * review).
+ * implementation rejects creates at its capacity.
  *
  * @example
  * ```ts
@@ -82,7 +81,7 @@ export interface SessionStore {
      * Throws when `sessionId` is unknown (fail closed).
      *
      * Returns the new session's id together with its **effective absolute
-     * expiry** (COR-13): the caller must report this exact timestamp rather
+     * expiry**: the caller must report this exact timestamp rather
      * than derive one from `issuedAt` + TTL — TTL semantics are
      * implementation-documented (the reference `InMemorySessionStore`
      * preserves the **remaining** TTL, so a refresh near expiry yields a

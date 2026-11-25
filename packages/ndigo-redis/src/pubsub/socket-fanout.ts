@@ -32,7 +32,7 @@ export interface RedisSocketFanoutOptions {
 }
 
 /**
- * Decode and validate a wire envelope (REV-006). Rejects anything the
+ * Decode and validate a wire envelope. Rejects anything the
  * receiving broker could not frame into a MESSAGE: a header name
  * containing `:`, CR, LF or NUL, a NUL in a header value or the key. The
  * same validation runs on outgoing `publish` and inbound `subscribe`, so a

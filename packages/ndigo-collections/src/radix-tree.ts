@@ -304,7 +304,7 @@ export class RadixTree<V> implements Serializable {
      * Returns the greedy child to record as a backtracking fallback: the first
      * registered with a live value, else the first registered. Preferring a
      * live value keeps a deleted greedy registration (`**` vs `{*name}`) from
-     * masking a surviving sibling on a deeper dead-end (KRN-REV-RADIX-01).
+     * masking a surviving sibling on a deeper dead-end.
      */
     private _firstGreedy(node: RadixNode<V>): RadixNode<V> | null {
         let fallback: RadixNode<V> | null = null;
@@ -343,7 +343,7 @@ export class RadixTree<V> implements Serializable {
      * branch falls through to the next. `greedy` is the deepest greedy child
      * passed on the way down, used as a backtracking fallback once every
      * specific branch dead-ends — its params are a snapshot, so captures made
-     * deeper in the tree never leak into the fallback match (COR-3).
+     * deeper in the tree never leak into the fallback match.
      */
     private _match(
         node: RadixNode<V>,

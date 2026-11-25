@@ -16,7 +16,7 @@ export type HealthState = 'UP' | 'DOWN' | 'UNKNOWN';
 
 /**
  * The marker `/health` reports when an indicator throws and error details
- * are redacted (SEC-5): the status stays `DOWN` and the component name
+ * are redacted: the status stays `DOWN` and the component name
  * is preserved, but the exception text never reaches the wire.
  *
  * @example

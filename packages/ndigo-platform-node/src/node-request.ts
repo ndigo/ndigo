@@ -43,7 +43,7 @@ export interface NodeRequest {
      * adapter's `trustedProxies` allowlist, `X-Forwarded-For` is
      * walked from the rightmost entry and the first non-trusted valid IP
      * wins — the header is attacker input from any other peer and is
-     * never consulted. The rate limiter keys on this (SEC-6, Wave 3).
+     * never consulted. The rate limiter keys on this.
      */
     remoteAddress?: string;
     /**

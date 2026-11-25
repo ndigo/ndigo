@@ -1,5 +1,5 @@
 /**
- * Drizzle-backed derived-query repository (ORM completion plan, Wave 4):
+ * Drizzle-backed derived-query repository:
  * Derived-query method names evaluated to SQL.
  */
 import { IllegalStateError } from '@ndigo/core';

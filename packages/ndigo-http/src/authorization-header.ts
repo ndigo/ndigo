@@ -1,5 +1,5 @@
 /**
- * Authorization specific {@link HTTPHeader} category (Wave 5, 2026-09-27):
+ * Authorization specific {@link HTTPHeader} category:
  * credential-scheme extraction. Apps gate handlers by reading the
  * `Authorization` value (via `headerValue('authorization')` or a record)
  * and stripping the scheme; the constant owns that parsing once.

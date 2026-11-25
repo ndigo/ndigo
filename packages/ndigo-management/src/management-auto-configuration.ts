@@ -4,7 +4,7 @@
  * Registers:
  * - a shared {@link FeatureMetricAggregator} entry (consumed by any feature
  *   using `counted` / `FeatureMetricAggregator`); the same aggregator also
- *   becomes the **fallback** metric snapshot source (REV-003), so `/metrics`
+ * becomes the **fallback** metric snapshot source, so `/metrics`
  *   serves feature metrics even without a telemetry pull reader — a
  *   registered reader (prometheus exporter) always wins over the fallback
  * - a {@link HealthRegistry} with the {@link TelemetryHealthIndicator} wired

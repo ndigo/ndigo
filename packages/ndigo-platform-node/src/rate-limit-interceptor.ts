@@ -27,7 +27,7 @@ export const RATE_LIMIT_KEY = 'rate:limit';
 /**
  * Declares a rate-limit policy for a class or method (passive metadata —
  * enforcement is {@link RateLimitInterceptor}, default-on in the node
- * platform mapping since Wave 3 / SEC-6).
+ * platform mapping).
  *
  * ```ts
  * @postMapping('/login')
@@ -57,7 +57,7 @@ export function rateLimit(options: RateLimitPolicy) {
 }
 
 /**
- * Enforces `@rateLimit` policies (SEC-6): a fixed-window budget per client
+ * Enforces `@rateLimit` policies: a fixed-window budget per client
  * key, denied as **429 + `Retry-After`** problem documents.
  *
  * - **Key**: `NodeRequest.remoteAddress` — the socket peer unless the

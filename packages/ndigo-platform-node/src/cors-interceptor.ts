@@ -217,7 +217,7 @@ function normalizeOrigin(origin: string): string {
 
 /**
  * Appends a `Vary` token to any value already on the response, preserving
- * existing tokens (PLN-F8). Token comparison is case-insensitive and the
+ * existing tokens. Token comparison is case-insensitive and the
  * result is deduplicated, so repeated `preHandle`/`postHandle` passes over the
  * same response never grow the header.
  *

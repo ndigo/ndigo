@@ -115,7 +115,7 @@ export function generatedColumn() {
 /**
  * Options for relation decorators. The join column must name an existing
  * `@column` field — the FK lives in a declared column so it persists and
- * reads through the normal column pipeline (ORM completion plan, Wave 3).
+ * reads through the normal column pipeline.
  *
  * @example
  * ```ts

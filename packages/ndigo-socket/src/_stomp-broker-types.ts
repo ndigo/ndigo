@@ -13,7 +13,7 @@ export interface Subscription {
     destination: string;
     /**
      * The principal resolved at SUBSCRIBE time for a `/user/*` binding
-     * (REV-005) — the resolved identity is recorded on the subscription so
+     * — the resolved identity is recorded on the subscription so
      * removal cannot re-resolve to a different (or `null`) principal and
      * leak the scope. `null` for non-`/user/` destinations.
      */
@@ -26,9 +26,9 @@ export interface Subscription {
      * must run through `#untrack` to keep the byte totals and the ack
      * index honest. */
     unacked: RingBuffer<StoredMessage>;
-    /** Body octets currently tracked in `unacked` (SEC-5 per-subscription bound). */
+    /** Body octets currently tracked in `unacked`. */
     unackedBytes: number;
-    /** `true` while a `/queue` backlog replay is in flight (COR-2): live
+    /** `true` while a `/queue` backlog replay is in flight: live
      * deliveries buffer instead of going out. */
     replaying: boolean;
     /** Live deliveries held during that replay — flushed (deduped against
@@ -36,7 +36,7 @@ export interface Subscription {
     buffered: BufferedDelivery[];
 }
 
-/** A live delivery held back while a `/queue` replay is in flight (COR-2). */
+/** A live delivery held back while a `/queue` replay is in flight. */
 export interface BufferedDelivery {
     messageId: string;
     destination: string;
@@ -52,30 +52,30 @@ export interface StoredMessage {
     body: STOMPBody;
     /** Extra headers (e.g. `content-type`); `subscription` added per send. */
     headers: Record<string, string>;
-    /** Body octets, cached for the byte budgets (SEC-5). */
+    /** Body octets, cached for the byte budgets. */
     bytes: number;
-    /** Broker-issued monotonic tag — the oldest delivery is knowable (SEC-6). */
+    /** Broker-issued monotonic tag — the oldest delivery is knowable. */
     deliverySeq: number;
 }
 
 /** Per-session delivery accounting: the ack index + the byte budgets. */
 export interface SessionState {
     /**
-     * Delivery `message-id` → owning subscriptions (COR-4 id-only acks).
+     * Delivery `message-id` → owning subscriptions (id-only acks).
      * A list because one logical message fans out to every subscription of
      * the destination — including two subscriptions of the same session —
      * so the same id can be outstanding under more than one subscription
-     * (REV-004); an id-only ACK/NACK settles them all.
+     *; an id-only ACK/NACK settles them all.
      */
     messageIds: Map<string, Subscription[]>;
-    /** Tracked unacked body octets across the session's subscriptions (SEC-5). */
+    /** Tracked unacked body octets across the session's subscriptions. */
     unackedBytes: number;
-    /** Replay + replay-buffer octets consumed by this session (SEC-6). */
+    /** Replay + replay-buffer octets consumed by this session. */
     replayBytes: number;
 }
 
 /** Outcome of a store-backed `/queue` replay: a store fault is
- * distinguishable from an empty window (COR-8/RT-3). */
+ * distinguishable from an empty window. */
 export type QueueReplay = { ok: true; messages: StoredQueueMessage[] } | { ok: false };
 
 /** A buffered transactional operation (D7). */

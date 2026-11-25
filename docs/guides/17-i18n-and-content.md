@@ -1,18 +1,12 @@
 # Guide 17 — Internationalization & Content
 
-How content and internationalization work in Ndigo: content keys, message
-formatting, locale resolution (server and client), and the formatting rule
-that keeps server-rendered pages faithful on the client.
+If your app serves more than one language or locale, you need content keys, message formatting, and locale resolution that works on both server and client. Ndigo keeps server-rendered pages faithful when they hydrate on the client.
 
-The design follows one rule: **Ndigo owns the contract, wraps the
-ecosystem standard, and uses platform standard APIs directly** —
+**Use for:** multi-language apps, localized date/number formatting, and content that varies by locale.
 
-| Layer                       | What it is                                                           | Who owns it                                            |
-| --------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------ |
-| `MessageSource` contract    | `getMessage(key, params?, language?)` over `ContentSource`           | `@ndigo/content` (framework)                           |
-| Message translation         | resources, interpolation, plurals, contexts, fallbacks, lazy loading | **i18next** (via `@ndigo/content-i18next`)             |
-| Date/number/list formatting | `Intl.*` formatters, cached, explicit locale/time zone               | `@ndigo/core` wrappers (framework facade, Intl engine) |
-| Locale resolution           | per-request language: header/cookie/navigator/fixed                  | `@ndigo/dispatcher` + platform packages                |
+**Not for:** single-language apps; the overhead is unnecessary. Use plain strings instead.
+
+Ndigo owns the contract (`MessageSource`), wraps i18next for message translation, and uses `Intl` for date/number formatting.
 
 **Audience:** Node and browser application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) or [Guide 02](02-building-a-browser-app.md) · **Reference app:** [apps/12-ndigo-petclinic](https://github.com/ndigo/ndigo/tree/main/apps/12-ndigo-petclinic), [apps/07-ndigo-island](https://github.com/ndigo/ndigo/tree/main/apps/07-ndigo-island)
 

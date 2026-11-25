@@ -1,9 +1,12 @@
 # Guide 32 — Telemetry
 
-How telemetry works in Ndigo: OpenTelemetry traces, metrics, and logs for
-Node and browser, the `configureTelemetry` knobs (sampling, exporters), and
-log↔trace correlation tooling. Node config lives in `@ndigo/telemetry-node`
-(OTel `NodeSDK` wrapper); browser config in `@ndigo/telemetry-web`.
+When a request is slow or failing in production, you need to see where it went and what it touched. Telemetry records traces, metrics, and logs across Node and the browser, with log/trace correlation so you can follow a request end to end.
+
+**Use for:** diagnosing behavior, measuring latency, and correlating logs with traces.
+
+**Not for:** business analytics pipelines; use a dedicated analytics tool for that.
+
+`@ndigo/telemetry-node` wraps the OTel `NodeSDK`; `@ndigo/telemetry-web` configures the browser pipeline.
 
 **Audience:** Node and browser application developers and operators · **Prerequisites:** [Guide 01](01-building-a-node-api.md) or [Guide 02](02-building-a-browser-app.md) · **Reference app:** [apps/17-ndigo-telemetry-lab](https://github.com/ndigo/ndigo/tree/main/apps/17-ndigo-telemetry-lab)
 

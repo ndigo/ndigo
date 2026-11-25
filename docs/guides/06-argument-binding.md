@@ -1,11 +1,12 @@
 # Guide 06 — Argument Binding
 
-How handler arguments bind in Ndigo: the full source vocabulary, whole-source
-**data binding** (`dataBinderValue` — the form/model-binding story), and
-multipart **JSON parts** (`requestPart`). The engine mirrors the reference MVC layer's
-resolver architecture — each parameter source is one resolver, first match
-wins — and the binding machinery reuses `DataBinder` (keypath-aware,
-core/isomorphic), `ConversionService`, and the Zod `convert` hook (Guide 07).
+A handler shouldn't parse the request by hand. Argument binding turns path parameters, query strings, headers, cookies, and bodies into typed method arguments, with validation and conversion applied automatically.
+
+**Use for:** extracting request data into typed handler parameters.
+
+**Not for:** business logic or validation rules; binding only handles extraction and conversion (see Guide 07 for validation).
+
+Ndigo provides a resolver for each parameter source, plus whole-source data binding for forms and JSON parts for multipart uploads.
 
 **Audience:** Node and browser application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) (Node) or [Guide 02](02-building-a-browser-app.md) (browser); [Guide 07](07-request-validation.md) for validation · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)
 

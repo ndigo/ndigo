@@ -1,14 +1,12 @@
 # Guide 07 — Request Validation
 
-How request validation fits the Ndigo pipeline: coercive binding via
-`@parameters` extractors, schema validation with Zod, and schemas that are
-derived directly from `@ndigo/orm` entity metadata.
+Never trust the request. Validation runs after binding, checking that the data meets your rules before the handler executes. Ndigo combines coercive binding with Zod schemas, and can derive schemas directly from ORM entity metadata.
 
-The validation mechanism is a single pipeline: an extractor resolves
+**Use for:** ensuring request data meets your rules before the handler runs.
 
-- converts a value, then a Zod schema runs over it. Failures are reported as
-  `ParameterConversionError` and surface as a **422 problem document** with the
-  structured issues.
+**Not for:** business-rule validation that depends on database state; that belongs in the handler or service layer.
+
+The validation pipeline: an extractor resolves and converts a value, then a Zod schema runs over it. Failures surface as a 422 problem document with structured issues.
 
 **Audience:** Node and browser application developers · **Prerequisites:** [Guide 06](06-argument-binding.md) · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api), [apps/12-ndigo-petclinic](https://github.com/ndigo/ndigo/tree/main/apps/12-ndigo-petclinic)
 

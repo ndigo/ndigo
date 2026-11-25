@@ -1,12 +1,12 @@
 # Guide 51 — Capabilities for Authoring Agents
 
-How an agent assembles a Ndigo application: the CLI plans and applies
-capabilities, skills sequence the work, and one declared catalog keeps facts
-from drifting.
+A coding agent can generate code, but it needs a repeatable way to add a feature, know what changed, and prove it works. Ndigo's capability catalog packages the packages, wiring, files, and checks for one user-facing outcome — the CLI plans and applies them, skills sequence the work, and `ndigo verify` proves the result.
 
-This guide states the **contract** for that layer. Section 6 separates what has
-shipped from what is still planned; sections 3, 5, and 7 describe the rule the
-implementation must meet.
+**Use for:** agent-driven feature installation with plan/apply and verification.
+
+**Not for:** manual wiring; the capability catalog exists so agents don't improvise.
+
+This guide states the contract for the layer: what a capability is, what the CLI owns, and what a skill owns.
 
 **Audience:** Agent authors · tooling maintainers · **Prerequisites:** Guides [37](37-ndigo-cli.md), [47](47-ai-agents.md), [48](48-agent-facing-surfaces.md) · **Reference package:** `packages/ndigo-cli`
 

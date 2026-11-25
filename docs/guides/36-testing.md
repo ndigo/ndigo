@@ -1,15 +1,12 @@
 # Guide 36 — Integration Testing
 
-`@ndigo/test` is the in-process integration harness: `bootNodeApp` boots a
-real application context and dispatcher, and `MockHTTP` sends socket-free
-requests through the whole pipeline — interceptors, argument resolvers,
-validation, handler, view resolution, and the response contract. No port, no
-process, no hand-wired `ServerResponse`. Tests assert on a shaped in-memory
-response with Vitest's `expect`.
+Unit tests prove a function works; integration tests prove the request pipeline works. The test harness boots a real application context and dispatcher, then sends requests without opening a port — interceptors, binding, validation, handlers, and view resolution all run. Tests assert on a shaped in-memory response.
 
-This is the layer between unit-testing a controller and driving a real browser
-with Playwright. It mirrors the `NodeHTTPServerAdapter` passing a real request
-into `NodeDispatcher`, but swaps the network for an in-memory `ResponseSink`.
+**Use for:** route-level behavior, interceptor chains, and error contracts.
+
+**Not for:** isolated logic (use plain unit tests) or end-to-end browser flows (use Playwright).
+
+`@ndigo/test` provides `bootNodeApp`, `MockHTTP`, and the timing helpers.
 
 **Audience:** All application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) or [Guide 02](02-building-a-browser-app.md) · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api), [apps/08-ndigo-views](https://github.com/ndigo/ndigo/tree/main/apps/08-ndigo-views)
 

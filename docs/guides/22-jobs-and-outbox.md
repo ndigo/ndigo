@@ -1,13 +1,12 @@
 # Guide 22 — Background Jobs
 
-How background work is delivered in Ndigo: `@ndigo/jobs` — the `JobDriver`
-contract, worker execution, and the transactional outbox that ties side
-effects to database commits. Jobs are **Node-only**.
+Some work does not need to finish before the response: sending a receipt, generating a thumbnail, syncing a CRM record, or retrying a webhook. Background jobs run that work after the request, retry it on failure, and keep it durable across restarts. Ndigo records the job in the same transaction as the data change, so a rollback does not leave a side effect behind.
 
-The design: one framework-owned driver SPI with at-least-once, lease-based
-claims; the in-process reference driver for development, a durable libSQL
-store, and a Redis driver for multi-node deployments. The outbox closes the
-last gap — "send the email only if the order actually committed."
+**Use for:** side effects that can finish after the response — email, thumbnails, webhooks, third-party sync.
+
+**Not for:** work the response depends on; keep it inline. Use [scheduling](/guides/23-scheduling/) for time-based runs and [distributed locks](/guides/24-distributed-locks/) when only one node should execute.
+
+`@ndigo/jobs` provides the `JobDriver` contract, worker execution, and the transactional outbox. Jobs are Node-only.
 
 **Audience:** Node application developers · **Prerequisites:** Guides [20](20-orm-and-migrations.md) and [21](21-persistence-and-shared-stores.md) · **Reference package:** `packages/ndigo-jobs`
 

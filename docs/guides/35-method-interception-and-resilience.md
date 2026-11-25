@@ -1,13 +1,12 @@
 # Guide 35 — Resilience & Retries
 
-How `@ndigo/advice` and `@ndigo/resilience` work together: annotations that
-declare policy, rules that select the methods they apply to, and the retry and
-circuit-breaker advice on top.
+Remote calls fail, and retries are the easy part. The hard part is applying them consistently to the methods that need them, without wrapping every call site by hand. Ndigo lets you declare policy as annotations, select which methods they apply to with rules, and compose retry and circuit-breaker advice into one chain.
 
-The design: an annotation writes metadata and stops. A rule pairs a matcher
-with an interceptor, and the runtime compiles the rules into one advice chain
-per method. Nothing here is an AOP language — a matcher is a predicate, an
-interceptor is a plain object with an `invoke` method.
+**Use for:** retries, backoff, circuit breaking, and cross-cutting method behavior.
+
+**Not for:** business logic or request handling; keep policy separate from behavior.
+
+`@ndigo/advice` provides the annotation and rule engine; `@ndigo/resilience` adds retry and circuit-breaker advice.
 
 **Audience:** Node application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) · **Reference app:** [apps/15-ndigo-resilience-lab](https://github.com/ndigo/ndigo/tree/main/apps/15-ndigo-resilience-lab), [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)
 

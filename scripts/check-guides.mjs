@@ -239,6 +239,24 @@ for (const file of files) {
         }
     }
 
+    // Plain "Guide NN" citations must be Markdown links. Skip the H1, code
+    // fences, inline code, and link text (already linked).
+    let inFence = false;
+    text.split('\n').forEach((line, index) => {
+        if (line.trimStart().startsWith('```')) {
+            inFence = !inFence;
+            return;
+        }
+        if (inFence || /^#\s+/.test(line)) return;
+        const plain = line
+            .replace(/\[[^\]]*\]\([^)]*\)/g, '')
+            .replace(/\[[^\]]*\]\[[^\]]*\]/g, '')
+            .replace(/`[^`]*`/g, '');
+        for (const match of plain.matchAll(/Guides? \d{2}/g)) {
+            failures.push(`${file}:${index + 1}: plain guide citation "${match[0]}" — link it`);
+        }
+    });
+
     const lines = text.split('\n').length;
     if (lines > 400) warnings.push(`${file}: ${lines} lines (contract target is ~300, hard review at 400)`);
 }

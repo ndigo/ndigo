@@ -4,7 +4,7 @@ The same app runs in development, CI, and production with different databases, c
 
 **Use for:** values that vary by environment — database URLs, credentials, feature toggles.
 
-**Not for:** secrets that must stay encrypted at rest (use Guide 43) or runtime toggles (use Guide 34).
+**Not for:** secrets that must stay encrypted at rest (use [Guide 43](43-live-configuration-and-secrets.md)) or runtime toggles (use [Guide 34](34-feature-flags.md)).
 
 Ndigo resolves configuration from property sources, applies profiles and placeholders, binds to typed `@configurationProperties` classes, and validates at boot — failing loudly when something is missing.
 

@@ -16,7 +16,7 @@ only the bridge to the component ecosystem, never the components themselves.
 
 **Use for:** choosing and integrating a UI library with Ndigo's Web Component bridge.
 
-**Not for:** building custom view engines (Guide 41) or styling tokens (the UI catalogue).
+**Not for:** building custom view engines ([Guide 41](41-custom-view-engines.md)) or styling tokens (the UI catalogue).
 
 **Audience:** Browser application developers · **Prerequisites:** [Guide 02](02-building-a-browser-app.md) · **Reference app:** [apps/20-ndigo-ui-lab](https://github.com/ndigo/ndigo/tree/main/apps/20-ndigo-ui-lab)
 
@@ -30,12 +30,12 @@ only the bridge to the component ecosystem, never the components themselves.
 
 ## 1. Choose a strategy
 
-| Strategy                              | Use when                                                            | Cost                                                                      |
-| ------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| **ndigo-ui** (first-party, optional)  | You want the Ndigo design language and a copy-in registry           | You own the installed source; components arrive via `ndigo ui add`        |
-| **Third-party Web Component library** | You already have a design system (Web Awesome, Shoelace, Lit-based) | You own the adoption/fallback/i18n work; the framework stays library-free |
-| **View-engine UI** (React/Vue/Svelte) | The UI is a full framework app or a React design system             | You implement or adopt a view engine (Guide 41)                           |
-| **Hand-rolled / native**              | Small surfaces, maximum control                                     | You build accessibility, forms, and theming yourself                      |
+| Strategy                              | Use when                                                            | Cost                                                                         |
+| ------------------------------------- | ------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| **ndigo-ui** (first-party, optional)  | You want the Ndigo design language and a copy-in registry           | You own the installed source; components arrive via `ndigo ui add`           |
+| **Third-party Web Component library** | You already have a design system (Web Awesome, Shoelace, Lit-based) | You own the adoption/fallback/i18n work; the framework stays library-free    |
+| **View-engine UI** (React/Vue/Svelte) | The UI is a full framework app or a React design system             | You implement or adopt a view engine ([Guide 41](41-custom-view-engines.md)) |
+| **Hand-rolled / native**              | Small surfaces, maximum control                                     | You build accessibility, forms, and theming yourself                         |
 
 The framework packages never import a UI library. Each application selects
 independently, and two apps in one monorepo may choose differently.
@@ -321,7 +321,7 @@ submit ordinary name/value pairs:
 - **Third-party** — theme through the library's CSS custom properties; map
   your brand tokens onto its variables at the app boundary.
 - **i18n** — component chrome strings must be localizable. Pass the negotiated
-  locale (Guide 17) into the component's label/aria attributes; do not rely on hard-coded English defaults.
+  locale ([Guide 17](17-i18n-and-content.md)) into the component's label/aria attributes; do not rely on hard-coded English defaults.
 - **RTL** — require logical properties; test one component per library.
 
 ### Theme selection
@@ -365,7 +365,7 @@ system-preference glue lives in the opt-in `@ndigo/ui-web` adapter.
 
 If the library injects inline styles/scripts, extend the CSP explicitly
 (`style-src`/`script-src` with a nonce or hash) rather than disabling CSP
-(Guide 28). Budget per component: import only what the page uses, measure the
+([Guide 28](28-security-hardening.md)). Budget per component: import only what the page uses, measure the
 gzip delta, and record it in the ADR. ndigo-ui items ship with a recorded
 budget; a third-party library's claim is not a measurement.
 

@@ -115,7 +115,7 @@ language tooling.
 - **Profile groups** expand one level. A group can contain profile names, but a
   group name inside another group is not expanded further.
 - **Provenance** — which source supplied a value — is optional and reported at
-  top-level granularity; Guide 03 documents the opt-in index.
+  top-level granularity; [Guide 03](../guides/03-environment-configuration.md) documents the opt-in index.
 - **Multi-context** layering is outside this chain; see
   [Guide 49](../guides/49-configuration-layering-and-context-composition.md).
 

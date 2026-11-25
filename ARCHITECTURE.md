@@ -311,8 +311,8 @@ serialization without opening a socket. See
 
 ## Where to Go Next
 
-- [Guides](./docs/guides/README.md) — start with Guide 00 for the mental model,
-  then Guide 01 (Node) or Guide 02 (browser).
+- [Guides](./docs/guides/README.md) — start with [Guide 00](docs/guides/00-core-concepts.md) for the mental model,
+  then [Guide 01](docs/guides/01-building-a-node-api.md) (Node) or [Guide 02](docs/guides/02-building-a-browser-app.md) (browser).
 - [Reference → Packages](https://ndigo.dev/reference/packages/) — the generated
   package inventory.
 - [Design Principles](./docs/architecture/design-principles.md) — SOLID, DRY,

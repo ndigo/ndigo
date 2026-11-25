@@ -7,7 +7,7 @@ registers; feature gates decide at request time whether a route is reachable
 
 **Use for:** runtime feature toggles, staged rollouts, and vendor flag bridging.
 
-**Not for:** boot-time conditional registration (Guide 03); use that for environment-gated config.
+**Not for:** boot-time conditional registration ([Guide 03](03-environment-configuration.md)); use that for environment-gated config.
 
 **Audience:** Node and browser application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) or [Guide 02](02-building-a-browser-app.md) · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)
 

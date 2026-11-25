@@ -11,7 +11,7 @@ browser/API forms (Conduit), plus the upload and CSRF edges.
 
 **Use for:** server-rendered and browser forms — binding, validation, re-render, and CSRF.
 
-**Not for:** file uploads (Guide 14) or API-only payloads (Guide 06).
+**Not for:** file uploads ([Guide 14](14-multipart-and-file-upload.md)) or API-only payloads ([Guide 06](06-argument-binding.md)).
 
 **Audience:** Node and browser application developers · **Prerequisites:** Guides [06](06-argument-binding.md), [07](07-request-validation.md), and [09](09-views-and-content-negotiation.md) · **Reference app:** [apps/12-ndigo-petclinic](https://github.com/ndigo/ndigo/tree/main/apps/12-ndigo-petclinic), [apps/10-ndigo-conduit-web](https://github.com/ndigo/ndigo/tree/main/apps/10-ndigo-conduit-web)
 
@@ -77,7 +77,7 @@ blank `errors` object means a fresh form. The same model serves create and edit
 ## 3. Validation semantics
 
 - **Use the schema as the single source.** The same `ownerFormSchema` validates
-  the form, documents the fields, and can derive DTOs (Guide 13).
+  the form, documents the fields, and can derive DTOs ([Guide 13](13-dto-conversion.md)).
 - **Messages are keys, not prose.** Store `error.owner.firstName.required` in
   the schema and resolve it in the template; the API and the form then share
   one vocabulary.
@@ -87,7 +87,7 @@ blank `errors` object means a fresh form. The same model serves create and edit
 - **Empty-but-present is not missing.** A form always sends its fields; treat
   empty strings as values and let the schema decide requiredness.
 - **Do not throw for user input.** A validation failure is a re-render, not a
-  500; only infrastructure failures use the error chain (Guide 08).
+  500; only infrastructure failures use the error chain ([Guide 08](08-errors-and-problem-details.md)).
 
 ## 4. The browser flow
 
@@ -111,7 +111,7 @@ try {
   the form with the same values and the envelope's messages.
 - **Map the envelope at the service boundary**, not in every view: the Conduit
   client turns `{ errors: { field: [...] } }` into a typed error with an
-  `errors` record (Guide 16).
+  `errors` record ([Guide 16](16-typed-service-clients-and-sse.md)).
 - **Optimistic updates need rollback.** Update the UI, keep the previous value,
   and restore it when the request fails (the Conduit favorite/follow pattern).
 - **Disable double submits** while the request is in flight; a second POST is
@@ -120,14 +120,14 @@ try {
 ## 5. CSRF, uploads, and FACE
 
 - **CSRF** — cookie-authenticated form posts need the double-submit token
-  (Guide 28). The `X-CSRF-Token` header or `csrf_token` field must match the
+  ([Guide 28](28-security-hardening.md)). The `X-CSRF-Token` header or `csrf_token` field must match the
   `__Host-ndigo-csrf` cookie; safe GETs mint it.
-- **Uploads** — `multipart/form-data` binds through `fileValue` (Guide 14);
+- **Uploads** — `multipart/form-data` binds through `fileValue` ([Guide 14](14-multipart-and-file-upload.md));
   text fields and files can share one form. Enforce the size limit before
   reading the whole file.
 - **FACE controls** — a form-associated custom element participates in the
   normal `<form>` submission; the server sees ordinary name/value pairs. Do not
-  add a second binding path for the component (Guide 30).
+  add a second binding path for the component ([Guide 30](30-component-integration.md)).
 - **JSON-only mutations** — a cross-site HTML form cannot send
   `application/json`; a 415 gate is a valid CSRF defense for login, but not a
   substitute for the interceptor on form posts.

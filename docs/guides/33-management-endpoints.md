@@ -1,6 +1,6 @@
 # Guide 33 — Management Endpoints
 
-When an app is running in production, operators need to answer: is it healthy? what are the metrics? can I change a log level without restarting? Ndigo serves health, metrics, logger, and environment endpoints behind one access-guard model, so the security posture from Guide 26 applies to all of them.
+When an app is running in production, operators need to answer: is it healthy? what are the metrics? can I change a log level without restarting? Ndigo serves health, metrics, logger, and environment endpoints behind one access-guard model, so the security posture from [Guide 26](26-authentication-and-sessions.md) applies to all of them.
 
 **Use for:** exposing health, metrics, and operational endpoints for monitoring.
 
@@ -66,7 +66,7 @@ A disabled endpoint answers `404`; it is never half-armed. When an
 `/metrics` is the **pull view over the OpenTelemetry meter provider**: one
 snapshot, two wire forms. Registering
 [`ManagementAutoConfiguration`](../../packages/ndigo-management/README.md)
-serves it; configuring `metricExporter: 'prometheus'` (Guide 32 §3)
+serves it; configuring `metricExporter: 'prometheus'` ([Guide 32](32-telemetry.md) §3)
 registers the reader that backs it — neither needs the other to boot.
 
 - **Prometheus text by default.** `GET /metrics` returns the exposition

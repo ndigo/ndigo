@@ -12,7 +12,7 @@ playground app.
 
 **Use for:** browser apps that authenticate against an OIDC provider.
 
-**Not for:** first-party credential login (Guide 26) or non-browser clients.
+**Not for:** first-party credential login ([Guide 26](26-authentication-and-sessions.md)) or non-browser clients.
 
 **Audience:** Browser application developers · **Prerequisites:** [Guide 02](02-building-a-browser-app.md) and [Guide 26](26-authentication-and-sessions.md) · **Reference app:** [apps/18-ndigo-auth-playground](https://github.com/ndigo/ndigo/tree/main/apps/18-ndigo-auth-playground)
 

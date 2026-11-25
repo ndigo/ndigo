@@ -157,7 +157,7 @@ class OrderService {
 The `@transactional()` instance has to be advised for the boundary to exist —
 register a rule pairing `hasAnnotation(transactionalMethod)` with
 `TransactionalInterceptor` on the builder, or use `interceptMethods` for a
-hand-built service (Guide 35, §7). A nested `@transactional` call joins the open
+hand-built service ([Guide 35](35-method-interception-and-resilience.md), §7). A nested `@transactional` call joins the open
 boundary rather than opening a second one.
 
 **Construction is the wiring.** `LibSQLOutboxStore` joins the caller's

@@ -12,7 +12,7 @@ technologies.
 
 **Use for:** turning handler results into bytes, content negotiation, and view resolver chains.
 
-**Not for:** where output lands (Guide 50) or view-engine internals (Guide 41).
+**Not for:** where output lands ([Guide 50](50-view-targeting.md)) or view-engine internals ([Guide 41](41-custom-view-engines.md)).
 
 **Audience:** Node and browser application developers · **Prerequisites:** Guides [01](01-building-a-node-api.md) and [02](02-building-a-browser-app.md) · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api), [apps/08-ndigo-views](https://github.com/ndigo/ndigo/tree/main/apps/08-ndigo-views), [apps/12-ndigo-petclinic](https://github.com/ndigo/ndigo/tree/main/apps/12-ndigo-petclinic)
 
@@ -72,7 +72,7 @@ return new ModelAndView('report', { rows });
 ```
 
 A `ResponseEntity` adds an explicit status and headers; the platform rewrites a
-`>= 400` entity into problem+json (Guide 08).
+`>= 400` entity into problem+json ([Guide 08](08-errors-and-problem-details.md)).
 
 ## 3. The serializing views
 
@@ -91,7 +91,7 @@ A `ResponseEntity` adds an explicit status and headers; the platform rewrites a
 All serializing views expose their `mediaType`, which is what negotiation
 matches against. A view without a media type is a fallback, not a negotiation
 candidate. `ProducerView` is the streaming representation — its body is not
-buffered, so it backs SSE endpoints; see Guides 15 and 16.
+buffered, so it backs SSE endpoints; see [Guide 15](15-websockets.md) and [Guide 16](16-typed-service-clients-and-sse.md).
 
 `CSVView` takes its records from a named model field rather than the whole
 body: `new ModelAndView('report', { rows: data }, { records: 'rows' })`.
@@ -197,9 +197,9 @@ Component's `customElements.define` remains the module's own side effect.
 The view **technology** is separate from the resolver:
 
 - `@ndigo/view-ejs` — server-side EJS templates; `t` and formatters come from
-  `@ndigo/content`, and the locale rides on the route (Guide 17).
+  `@ndigo/content`, and the locale rides on the route ([Guide 17](17-i18n-and-content.md)).
 - `@ndigo/view-webcomponent` — server-rendered Web Components; the browser
-  hydrates them with `@ndigo/signals` (Guide 29).
+  hydrates them with `@ndigo/signals` ([Guide 29](29-signals-and-islands.md)).
 - `@ndigo/view-toon` — the `text/toon` representation and prompt encoder
   ; opt-in per route, never a default.
 - `IslandView` — server-rendered markup plus a serialized model, hydrated on
@@ -376,7 +376,7 @@ covers browser vs server precedence, `themeAttributes`, and
 - **Do not register components in a resolver.** `customElements.define` belongs
   to the component module.
 - **A 4xx `ResponseEntity` is rewritten to problem+json.** For a custom error
-  envelope, use a `ProducerView` (Guide 08).
+  envelope, use a `ProducerView` ([Guide 08](08-errors-and-problem-details.md)).
 - **A targeter changes the destination, not the representation.** If a route
   renders the wrong format, fix the resolver chain, not the targeter.
 - **A redirecting chain leaves the default target empty.** That is correct — the

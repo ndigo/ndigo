@@ -11,7 +11,7 @@ configuration and wiring.
 
 **Use for:** configuring headers, CORS, CSRF, rate limiting, and cookies for production.
 
-**Not for:** authentication logic (Guide 26) or TLS termination (Guide 38).
+**Not for:** authentication logic ([Guide 26](26-authentication-and-sessions.md)) or TLS termination ([Guide 38](38-deployment-and-production-readiness.md)).
 
 **Audience:** Node application developers and operators · **Prerequisites:** Guides [01](01-building-a-node-api.md) and [26](26-authentication-and-sessions.md) · **Reference app:** [apps/09-ndigo-httpbin](https://github.com/ndigo/ndigo/tree/main/apps/09-ndigo-httpbin), [apps/18-ndigo-auth-playground](https://github.com/ndigo/ndigo/tree/main/apps/18-ndigo-auth-playground)
 
@@ -35,9 +35,9 @@ configuration and wiring.
 - **CSRF** — **not** wired by default; opt in for cookie-authenticated
   mutations (§4).
 
-Other layers are explicit: sessions/auth (Guide 26), static containment
-(Guide 10), management exposure (Guide 33), WebSocket origins (Guide 15), and
-at-rest secrets (Guide 03).
+Other layers are explicit: sessions/auth ([Guide 26](26-authentication-and-sessions.md)), static containment
+([Guide 10](10-static-files.md)), management exposure ([Guide 33](33-management-endpoints.md)), WebSocket origins ([Guide 15](15-websockets.md)), and
+at-rest secrets ([Guide 03](03-environment-configuration.md)).
 
 ## 2. Security headers and CSP
 
@@ -170,13 +170,13 @@ you trust too broadly. Trust only the exact proxy networks.
 - **JWT** — short access TTLs, rotating refresh tokens, `tokenVersion`
   revocation; see [Guide 26](26-authentication-and-sessions.md).
 - **Management endpoints** — opt-in exposure; protect them with the same guard
-  as any privileged route (Guide 33).
-- **WebSockets** — validate `Origin` on upgrade (Guide 15); a socket inherits
+  as any privileged route ([Guide 33](33-management-endpoints.md)).
+- **WebSockets** — validate `Origin` on upgrade ([Guide 15](15-websockets.md)); a socket inherits
   the same auth and rate-limit decisions as HTTP.
 - **Static files** — containment and method safety are on by default; do not
-  serve user-controlled roots (Guide 10).
+  serve user-controlled roots ([Guide 10](10-static-files.md)).
 - **Secrets** — use `{cipher:...}` values and keep `NDIGO_SECRET_KEY` out of
-  the repository and backups (Guide 03).
+  the repository and backups ([Guide 03](03-environment-configuration.md)).
 
 ## 8. Production checklist
 

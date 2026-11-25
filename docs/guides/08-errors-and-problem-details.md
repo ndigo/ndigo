@@ -9,7 +9,7 @@ default envelope.
 
 **Use for:** producing and handling RFC 9457 problem documents for HTTP failures.
 
-**Not for:** validation schemas (Guide 07) or auth logic (Guide 26).
+**Not for:** validation schemas ([Guide 07](07-request-validation.md)) or auth logic ([Guide 26](26-authentication-and-sessions.md)).
 
 **Audience:** Node and browser application developers · **Prerequisites:** Guides [01](01-building-a-node-api.md) and [07](07-request-validation.md) · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api), [apps/11-ndigo-conduit-api](https://github.com/ndigo/ndigo/tree/main/apps/11-ndigo-conduit-api)
 

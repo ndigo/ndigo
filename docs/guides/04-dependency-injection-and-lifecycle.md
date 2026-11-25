@@ -218,7 +218,7 @@ dependencies they resolved. Teardown is idempotent: `destroy` may run more
 than once, so guard the body. Async teardown is not awaited by the synchronous
 `context.close` — the drain continues in the background; when shutdown must
 wait for it, `await` the resource's `destroy()` before closing the context (or
-list it in `gracefulShutdown`'s resources, Guide 01).
+list it in `gracefulShutdown`'s resources, [Guide 01](01-building-a-node-api.md)).
 
 ### Annotation form
 
@@ -300,8 +300,8 @@ Events are addressed explicitly:
 - `ContextEventGateway` — an allowlisted relay with managed teardown.
 
 Use application events for cross-context notification (a feature mounted, a
-configuration refreshed), not for durable work — that is jobs (Guide 22) — and
-not for local derived state — that is signals (Guide 29).
+configuration refreshed), not for durable work — that is jobs ([Guide 22](22-jobs-and-outbox.md)) — and
+not for local derived state — that is signals ([Guide 29](29-signals-and-islands.md)).
 [Guide 31](31-micro-frontends.md) covers the micro-frontend relay wiring, and
 [Guide 49](49-configuration-layering-and-context-composition.md) covers the
 composition and event model end to end.

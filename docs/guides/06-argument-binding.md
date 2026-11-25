@@ -4,7 +4,7 @@ A handler shouldn't parse the request by hand. Argument binding turns path param
 
 **Use for:** extracting request data into typed handler parameters.
 
-**Not for:** business logic or validation rules; binding only handles extraction and conversion (see Guide 07 for validation).
+**Not for:** business logic or validation rules; binding only handles extraction and conversion (see [Guide 07](07-request-validation.md) for validation).
 
 Ndigo provides a resolver for each parameter source, plus whole-source data binding for forms and JSON parts for multipart uploads.
 

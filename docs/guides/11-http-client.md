@@ -4,7 +4,7 @@ Your app will call another service — an API, a webhook, a file host. The HTTP 
 
 **Use for:** outbound HTTP calls from server handlers or browser code.
 
-**Not for:** inbound requests; use route handlers for those. Use a typed service client (Guide 16) when the call shape should be declared once.
+**Not for:** inbound requests; use route handlers for those. Use a typed service client ([Guide 16](16-typed-service-clients-and-sse.md)) when the call shape should be declared once.
 
 `@ndigo/http` provides the `HTTP` class and the interceptor chain.
 

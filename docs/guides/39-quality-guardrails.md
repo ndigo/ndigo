@@ -5,6 +5,10 @@ usage, an inspection manifest that answers “what does this app expose?”, and
 validation lanes that keep the repository itself honest. This guide is the map
 to those checks and how to wire them into an app.
 
+**Use for:** enabling lint rules, the inspection manifest, and validation lanes in your app.
+
+**Not for:** CI/CD pipeline design; use your platform's tooling for that.
+
 **Audience:** Application developers and framework contributors · **Prerequisites:** Workspace bootstrapped; [Guide 01](01-building-a-node-api.md) or 02 · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)
 
 ## What you'll learn

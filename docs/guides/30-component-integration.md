@@ -3,9 +3,8 @@
 Ndigo ships **no mandatory UI library**. The framework owns the bridge to the
 Web Component ecosystem — declarative shadow DOM first paint, form association,
 hydration, view resolution — and an application chooses its components. The
-first-party design system, [`@ndigo/ui`](https://github.com/ndigo/ndigo/tree/main/packages/ndigo-ui),
-is the recommended default, but it is optional and the framework does not depend
-on it.
+first-party design system is the recommended default, but it is optional and
+the framework does not depend on it.
 
 This guide covers both paths: using ndigo-ui, and adopting any other Web
 Component library (Web Awesome is the worked example). The runnable ndigo-ui
@@ -14,6 +13,10 @@ reference is [apps/20-ndigo-ui-lab](https://github.com/ndigo/ndigo/tree/main/app
 island app. ndigo-ui is the owned design system: optional, but the recommended
 default. The earlier library-selection path is retired; the framework still owns
 only the bridge to the component ecosystem, never the components themselves.
+
+**Use for:** choosing and integrating a UI library with Ndigo's Web Component bridge.
+
+**Not for:** building custom view engines (Guide 41) or styling tokens (the UI catalogue).
 
 **Audience:** Browser application developers · **Prerequisites:** [Guide 02](02-building-a-browser-app.md) · **Reference app:** [apps/20-ndigo-ui-lab](https://github.com/ndigo/ndigo/tree/main/apps/20-ndigo-ui-lab)
 

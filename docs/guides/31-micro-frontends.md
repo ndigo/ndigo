@@ -10,6 +10,10 @@ tree, the shared singletons, and the route partitions.
 shape: presentation units hydrated inside a page rather than full application
 contexts. This guide is the host/feature path.
 
+**Use for:** composing independently built application slices under a shell.
+
+**Not for:** in-page islands (Guide 29); use islands for presentation units, not full contexts.
+
 **Audience:** Browser application developers · **Prerequisites:** Guides [02](02-building-a-browser-app.md), [05](05-routing-and-route-conditions.md), and [29](29-signals-and-islands.md) · **Reference app:** [apps/06-ndigo-host-demo](https://github.com/ndigo/ndigo/tree/main/apps/06-ndigo-host-demo), [apps/03-ndigo-todo-web](https://github.com/ndigo/ndigo/tree/main/apps/03-ndigo-todo-web)
 
 ## What you'll learn

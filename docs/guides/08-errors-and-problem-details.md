@@ -7,6 +7,10 @@ turns a thrown error into that document. This guide covers the contract, the
 extension points, and the places where a domain app deliberately overrides the
 default envelope.
 
+**Use for:** producing and handling RFC 9457 problem documents for HTTP failures.
+
+**Not for:** validation schemas (Guide 07) or auth logic (Guide 26).
+
 **Audience:** Node and browser application developers · **Prerequisites:** Guides [01](01-building-a-node-api.md) and [07](07-request-validation.md) · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api), [apps/11-ndigo-conduit-api](https://github.com/ndigo/ndigo/tree/main/apps/11-ndigo-conduit-api)
 
 ## What you'll learn

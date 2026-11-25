@@ -9,6 +9,10 @@ This guide covers the path grammar, the mapping decorators, the condition
 builders, precedence and 404/405 behavior, and the router primitives used by
 browser shells.
 
+**Use for:** mapping URLs to handlers, gating on query, matrix, method, and access conditions.
+
+**Not for:** argument extraction (Guide 06) or validation (Guide 07).
+
 **Audience:** Node and browser application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) (Node) or [Guide 02](02-building-a-browser-app.md) (browser) · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api), [apps/09-ndigo-httpbin](https://github.com/ndigo/ndigo/tree/main/apps/09-ndigo-httpbin)
 
 ## What you'll learn

@@ -10,6 +10,10 @@ This guide covers the view contract, the built-in view family, view targets,
 content negotiation, the resolver chain, and the EJS/Web Component
 technologies.
 
+**Use for:** turning handler results into bytes, content negotiation, and view resolver chains.
+
+**Not for:** where output lands (Guide 50) or view-engine internals (Guide 41).
+
 **Audience:** Node and browser application developers · **Prerequisites:** Guides [01](01-building-a-node-api.md) and [02](02-building-a-browser-app.md) · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api), [apps/08-ndigo-views](https://github.com/ndigo/ndigo/tree/main/apps/08-ndigo-views), [apps/12-ndigo-petclinic](https://github.com/ndigo/ndigo/tree/main/apps/12-ndigo-petclinic)
 
 ## What you'll learn

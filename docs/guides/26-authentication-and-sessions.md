@@ -107,7 +107,7 @@ users (dummy-hash verify), so error responses should be one generic
 message (`InvalidCredentialsError`); disabled accounts and accounts
 without a hash never authenticate.
 
-## 4. Server sessions (audit M4)
+## 4. Server sessions
 
 `SessionStore` (`kind`, `create`, `get`, `rotate`, `delete`,
 `deleteForUser`) with TTL enforced on read. Opaque 32-byte tokens — not JWTs: trivially revocable,

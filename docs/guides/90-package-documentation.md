@@ -18,6 +18,7 @@ meet, and the tooling that keeps it true. Applies to all
 - Generate and commit the API tree.
 - Pass the freshness and manifest gates.
 - Scaffold a new package with the generators.
+- Write a migration guide for a framework change.
 
 ## Why this shape
 
@@ -186,6 +187,56 @@ pnpm doc:api
 The generators emit the README template and manifest skeleton above; fill
 in real content, then let `pnpm manifest:check` + `pnpm doc:api` validate.
 
+## Migration guides
+
+When a framework change needs an upgrade path, add
+`docs/migrations/YYYY-MM-DD_DESCRIPTION.md` (date = completion) and link it in
+the [migration index](../migrations/README.md). The template:
+
+```markdown
+# <Package> <old> → <new>
+
+**Date:** YYYY-MM-DD
+**Affected packages:** `@ndigo/...`
+**Change type:** breaking / additive / tooling
+
+## Why
+
+The decision record and the user-visible reason.
+
+## What changed
+
+The old shape and the new shape, with the smallest before/after example.
+
+## Migration steps
+
+1. Bump the package set.
+2. Replace X with Y (codemod/manual).
+3. Update config keys / imports / tests.
+
+## Verification
+
+The commands and the app surface to exercise.
+
+## Rollback
+
+What to restore; call out irreversible database/config changes.
+
+## References
+
+ADR, PR, issue.
+```
+
+Also:
+
+- Add the CHANGELOG entry under `[Unreleased]` in the matching category; keep
+  it user-facing and link the ADR.
+- Add or update the ADR when the change is architectural; the migration guide
+  is the _how_, the ADR is the _why_.
+- Update the affected guide and package README in the same change.
+- Pre-1.0: state explicitly that there is no alias, or the ADR's alias expiry
+  and removal version; post-1.0: state the major or the flag gate.
+
 ## What is deliberately gone
 
 - **No HTML docs** — `doc-html/`, `typedoc.html.json`, and `pnpm doc:html`
@@ -198,6 +249,6 @@ in real content, then let `pnpm manifest:check` + `pnpm doc:api` validate.
 
 ## See also
 
-- [Guide 46 — Upgrading Ndigo](46-upgrading.md) — migration-guide authoring
+- [Guide 46 — Upgrading Ndigo](46-upgrading.md) — the application upgrade workflow
 - [CONTRIBUTING.md](../../CONTRIBUTING.md) — the repository workflow
 - [Generators](../../tools/generators/README.md) — package and README scaffolding

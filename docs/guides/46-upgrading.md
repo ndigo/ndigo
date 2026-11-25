@@ -7,14 +7,14 @@ cuts, there is no compatibility alias layer, and the repository is the
 distribution. After 1.0 the exported surface freezes and changes become
 additive unless a major says otherwise.
 
-This guide covers both sides: upgrading an application, and writing the
-migration guide when the framework changes.
+This guide covers the application upgrade path: what changed, how to apply it,
+and how to roll it back.
 
-**Use for:** upgrading Ndigo versions and writing migration guides.
+**Use for:** upgrading Ndigo versions.
 
 **Not for:** routine development; only consult when upgrading.
 
-**Audience:** Application developers and framework contributors · **Prerequisites:** Guides [25](25-clustering.md), [37](37-ndigo-cli.md), and [90](90-package-documentation.md) · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)
+**Audience:** Application developers · **Prerequisites:** Guides [25](25-clustering.md), [37](37-ndigo-cli.md), and [90](90-package-documentation.md) · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)
 
 ## What you'll learn
 
@@ -22,7 +22,6 @@ migration guide when the framework changes.
 - Check and apply `@ndigo/*` version bumps with the CLI manifest.
 - Run the upgrade and rollback workflow safely.
 - Find and read the CHANGELOG and migration guides.
-- Write a migration guide for a framework change.
 
 ## 1. The versioning contract
 
@@ -123,55 +122,15 @@ Keep the rollback path before you start:
 If the upgrade is half-applied, stop and restore both code and lockfile before
 debugging forward.
 
-## 6. Writing a migration guide
+## 6. Reading the migration guide
 
-When a framework change needs an upgrade path, add
-`docs/migrations/YYYY-MM-DD_DESCRIPTION.md` (date = completion) and link it in
-the [migration index](../migrations/README.md). The template:
+Every framework change ships with a migration guide in the
+[migration index](../migrations/README.md). Each guide lists the old and new
+shape, the migration steps, verification, and rollback; read it before running
+the app's gates.
 
-```markdown
-# <Package> <old> → <new>
-
-**Date:** YYYY-MM-DD
-**Affected packages:** `@ndigo/...`
-**Change type:** breaking / additive / tooling
-
-## Why
-
-The decision record and the user-visible reason.
-
-## What changed
-
-The old shape and the new shape, with the smallest before/after example.
-
-## Migration steps
-
-1. Bump the package set.
-2. Replace X with Y (codemod/manual).
-3. Update config keys / imports / tests.
-
-## Verification
-
-The commands and the app surface to exercise.
-
-## Rollback
-
-What to restore; call out irreversible database/config changes.
-
-## References
-
-ADR, PR, issue.
-```
-
-Also:
-
-- Add the CHANGELOG entry under `[Unreleased]` in the matching category; keep
-  it user-facing and link the ADR.
-- Add or update the ADR when the change is architectural; the migration guide
-  is the _how_, the ADR is the _why_.
-- Update the affected guide and package README in the same change.
-- Pre-1.0: state explicitly that there is no alias, or the ADR's alias expiry
-  and removal version; post-1.0: state the major or the flag gate.
+If you maintain a package or need to write the guide, see
+[Guide 90 — Package Documentation](90-package-documentation.md#migration-guides).
 
 ## 7. Pitfalls
 
@@ -198,4 +157,4 @@ Also:
 - [Guide 25 — Clustering](25-clustering.md) — the CLI lifecycle used by the upgrade commands
 - [Guide 37 — The Ndigo CLI](37-ndigo-cli.md) — `update`, `db`, and `serve`
 - [Guide 38 — Deployment & Production](38-deployment-and-production-readiness.md) — release/rollback posture
-- [Guide 90 — Package Documentation](90-package-documentation.md) — the package/API standard
+- [Guide 90 — Package Documentation](90-package-documentation.md) — the package/API standard and the migration-guide template

@@ -5,7 +5,8 @@ complement the API reference; they explain the _how_ with runnable patterns
 grounded in the demo apps.
 
 The numbering is stable: **00–53** are application guides, **90–91** are
-contributor guides. Numbers are reading order within a section.
+contributor guides. Numbers are stable identifiers; the sections below are the
+reading order.
 
 > **Renumbered 2026-11-08.** Historical records (ADRs, plans, audits) still use
 > the old numbers. See the renumbering map;
@@ -223,8 +224,8 @@ contributor guides. Numbers are reading order within a section.
   → fix for routing, binding, validation, CORS/CSRF, DI, views, and
   migrations.
 - [46 — Upgrading Ndigo](46-upgrading.md) — the freeze/additive policy,
-  `ndigo update`, CHANGELOG/migration workflow, rollback, and writing a
-  migration guide.
+  `ndigo update`, CHANGELOG/migration workflow, rollback, and reading migration
+  guides.
 
 ## Reference
 
@@ -236,7 +237,8 @@ contributor guides. Numbers are reading order within a section.
 
 - [90 — Package Documentation](90-package-documentation.md) — the documentation
   standard every package must meet: README template, metadata fields, generated
-  API references (`pnpm doc:api`), and CI freshness enforcement.
+  API references (`pnpm doc:api`), CI freshness enforcement, and the
+  migration-guide template.
 - [91 — Application Conventions](91-application-conventions.md) — the
   `apps/NN-ndigo-<slug>` ladder, `-web`/`-api` pairing, role-based file suffixes
   (`*-controller`, `*-service`, `*-configuration`, `*.entity.ts`, `*.dto.ts`),

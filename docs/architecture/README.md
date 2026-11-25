@@ -6,6 +6,7 @@ Design rationale and subsystem maps for Ndigo — the "why" behind the code. Gui
 
 - [design-principles.md](./design-principles.md) — SOLID and DRY/AHA adapted for TypeScript, the design-pattern vocabulary, and the shared contract rules.
 - [decorators.md](./decorators.md) — the decorator catalog, metadata, performance, and custom-decorator guidance.
+- [environment-design-notes.md](./environment-design-notes.md) — internal design notes for the configuration model (repo-only; the public page is [environment.md](./environment.md)).
 - [package-map.md](./package-map.md) — the hand-maintained package table with layer, platform, and runtime dependencies (repo-only; the public inventory is generated on the site).
 - [security.md](./security.md) — the security posture: trust boundaries (browser → proxy → node → backends), the defense-in-depth layer map, the resolved tensions, and the standards behind them.
 - [agent-first.md](./agent-first.md) — the agent-first architecture: authoring vs runtime agents, one declaration projected to every audience, deterministic operations instead of prose, capabilities as the installable unit, and verification as an executable contract.

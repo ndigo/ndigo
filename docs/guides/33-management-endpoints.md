@@ -1,14 +1,12 @@
 # Guide 33 — Management Endpoints
 
-The management surface serves the operations endpoints every peer framework
-ships: `/health` + `/metrics` from day one , and — since — the
-actuator-parity set `/loggers`, `/env`, `/configprops` and composed health
-groups. Everything lives behind the one `ManagementAutoConfiguration` entry
-point and the single access-guard model; the endpoints are **open by
-default**, so the security posture from [Guide 26](26-authentication-and-sessions.md) (guard + boundary firewall)
-applies to everything below.
+When an app is running in production, operators need to answer: is it healthy? what are the metrics? can I change a log level without restarting? Ndigo serves health, metrics, logger, and environment endpoints behind one access-guard model, so the security posture from Guide 26 applies to all of them.
 
-Reference application: [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api) (the demo exposes the full surface).
+**Use for:** exposing health, metrics, and operational endpoints for monitoring.
+
+**Not for:** business APIs; management endpoints are for operators, not users. Guard them on untrusted networks.
+
+Everything lives behind `ManagementAutoConfiguration`; the endpoints are open by default.
 
 **Audience:** Node application developers and operators · **Prerequisites:** [Guide 01](01-building-a-node-api.md) · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)
 

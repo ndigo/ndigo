@@ -1,15 +1,12 @@
 # Guide 14 — Multipart & File Upload
 
-Multipart in Ndigo is **server-side acceptance** of `multipart/form-data` uploads: the
-adapter streams an incoming upload straight through [busboy](https://github.com/mscdex/busboy),
-and a handler binds each file part to a `MultipartFile`. The client half — building a
-`multipart/form-data` body with `ndigo-http`'s `FormData` — already exists and is untouched;
-this guide covers the receiving side.
+Users upload files; the server needs to accept them without buffering the whole payload into memory. Ndigo streams an incoming upload straight through the parser, and a handler binds each file part to a `MultipartFile`. This guide covers the receiving side.
 
-The design mirrors the reference MVC layer's `MultipartFile` + early resolver split, adapted to
-Ndigo's resolver/interceptor model: parsing happens **before** argument binding, so resolvers
-see parts directly rather than a buffered body. The one new runtime dependency is busboy —
-the canonical zero-dependency streaming parser; Ndigo owns the contract and wraps it.
+**Use for:** accepting file uploads with streaming, binding files to handler parameters.
+
+**Not for:** building multipart request bodies (use the HTTP client for that). Use object storage for large or long-lived files.
+
+The client half — building a `multipart/form-data` body — already exists in `@ndigo/http`. This guide covers server-side acceptance.
 
 **Audience:** Node application developers · **Prerequisites:** Guides [01](01-building-a-node-api.md) and [06](06-argument-binding.md) · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)
 

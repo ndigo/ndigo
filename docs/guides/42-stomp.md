@@ -1,10 +1,12 @@
 # Guide 42 — STOMP & Cross-Node Fan-Out
 
-STOMP 1.2 is the interoperable broker protocol layered over Ndigo's socket
-contracts: destinations, subscriptions, transactions, receipts, `/user` and
-`/queue` semantics, and the optional Redis fan-out for multi-node deployments.
-The socket guide covers the transport, sessions, rooms, and the client; this
-guide covers the protocol and the cross-node path.
+If you need a standard messaging protocol over WebSockets, or multiple nodes to share subscriptions, STOMP 1.2 gives you destinations, receipts, transactions, and user-scoped queues. Ndigo layers it over its socket contracts, with optional Redis fan-out for multi-node deployments.
+
+**Use for:** standard broker-protocol messaging, cross-node subscription fan-out.
+
+**Not for:** simple point-to-point WebSocket messages; use the socket guide for that. Use HTTP for request/response.
+
+The socket guide covers transport, sessions, rooms, and the client; this guide covers the protocol and cross-node path.
 
 **Audience:** Node and browser application developers · **Prerequisites:** Guides [15](15-websockets.md) and [21](21-persistence-and-shared-stores.md) · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api), [apps/16-ndigo-redis-fanout](https://github.com/ndigo/ndigo/tree/main/apps/16-ndigo-redis-fanout)
 

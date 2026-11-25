@@ -1,8 +1,12 @@
 # Guide 13 — DTO & Conversion
 
-How to project models into API shapes with `ConversionService`:
-one service converts both leaf values and whole objects — schema targets are
-contract-enforced projection, fail-fast. Reference application: [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api).
+Your domain model and your API response should not be the same object. A DTO is the shape you send over the wire, and conversion is how you get from one to the other without losing type safety. Ndigo converts both leaf values and whole objects through one service, with schema-enforced projection.
+
+**Use for:** projecting models into API shapes, converting request payloads into entities.
+
+**Not for:** business logic or validation; conversion only handles shape translation.
+
+`ConversionService` converts any value to a target constructor (leaf, registry-backed) or a target Zod schema (shape projection).
 
 **Audience:** Node API developers · **Prerequisites:** Guides [01](01-building-a-node-api.md) and [07](07-request-validation.md) · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)
 

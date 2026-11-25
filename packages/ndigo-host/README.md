@@ -15,15 +15,17 @@ Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥12.
 ## Getting Started
 
 ```ts
+import { GenericApplicationContext } from '@ndigo/context';
 import { HostManager } from '@ndigo/host';
-import { ApplicationContext } from '@ndigo/context';
 
-const host = new HostManager();
+const shell = new GenericApplicationContext('site-shell');
+const host = new HostManager(shell, { activationPolicy: 'exclusive' });
 
-// Register a feature with its dependencies.
-host.registerFeature('catalog', {
-    create: () => new ApplicationContext('catalog'),
-    dependencies: ['@ndigo/view'],
+// Register a feature under a route prefix.
+host.registerFeature({
+    name: 'catalog',
+    prefix: '/catalog',
+    createContext: () => new GenericApplicationContext('catalog'),
 });
 
 // Mount and unmount as navigation demands.
@@ -35,7 +37,20 @@ host.unmount('catalog');
 
 ### Lazy feature chunks
 
-For lazy feature chunks loaded with dynamic `import()`, use the `mountLazy` support used by the ndigo-host-demo app.
+For lazy feature chunks loaded with dynamic `import()`, register a `loader`
+that resolves to a module exporting `createContext(parent)` and mount it with
+`mountLazy` — the pattern `apps/06-ndigo-host-demo` uses.
+
+```ts
+host.registerFeature({
+    name: 'checkout',
+    prefix: '/checkout',
+    loader: () => import('./features/checkout'),
+    dependencies: { requires: { cart: '^1.0.0' } },
+});
+
+await host.mountLazy('checkout');
+```
 
 ## API
 

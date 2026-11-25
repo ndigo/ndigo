@@ -221,8 +221,6 @@ signal, so the island renders only well-formed models.
 ## See also
 
 - [Guide 16 — Typed Service Clients & SSE](16-typed-service-clients-and-sse.md) — the stream the signal consumes
-  push),
-  (view resolution).
 - Architecture: [Micro Frontends](../architecture/micro-frontends.md) — the
   host/island map, shared dependencies, event isolation.
 - [Guide 31 — Micro Frontends](31-micro-frontends.md) — the

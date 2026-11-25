@@ -15,3 +15,4 @@ Design rationale and subsystem maps for Ndigo — the "why" behind the code. Gui
 - [lifecycle-and-ownership-design-notes.md](./lifecycle-and-ownership-design-notes.md) — internal design notes for resource teardown (repo-only; the public page is [lifecycle-and-ownership.md](./lifecycle-and-ownership.md)).
 - [environment.md](./environment.md) — the environment and configuration architecture: design principles, the precedence chain, security posture, and scope and limits.
 - [micro-frontends.md](./micro-frontends.md) — the micro frontend map: hosted feature applications and islands, the host lifecycle, shared dependencies, event isolation, and how the model compares with single-SPA.
+- [micro-frontends-design-notes.md](./micro-frontends-design-notes.md) — internal notes for the deferred micro frontend gaps (repo-only; the public page is [micro-frontends.md](./micro-frontends.md)).

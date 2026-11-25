@@ -25,7 +25,7 @@ service — a value that other code reads and reacts to immediately. They are
 not an event bus: cross-component asynchronous notifications stay on the
 `@ndigo/context` event emitter, and server→client pushes stay on SSE. The full
 paradigm table lives in
-[ARCHITECTURE.md § Paradigm Selection Rules](../../ARCHITECTURE.md#paradigm-selection-rules).
+[Architecture Overview § Paradigm Selection Rules](../../ARCHITECTURE.md#paradigm-selection-rules).
 
 ## 2. Core primitives
 

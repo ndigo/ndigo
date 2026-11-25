@@ -184,7 +184,7 @@ The package READMEs are the per-package reference; the guides are the
 task-shaped paths through them.
 
 Decorators are classified on two independent axes: by **role** for naming
-([STYLE_GUIDE §3.17](../../STYLE_GUIDE.md#317-decorator-categories--naming)),
+([Style Guide §3.17](../../STYLE_GUIDE.md#317-decorator-categories--naming)),
 and by **mechanism** for runtime behaviour — annotation, advice, or member
 transformer ([Annotation, Advice & Transformer](../architecture/annotation-and-transformer-model.md)).
 
@@ -234,7 +234,7 @@ Application Context Lifecycle.
 - **Build a Node API:** [Guide 01](01-building-a-node-api.md), then [03](03-environment-configuration.md) → [05](05-routing-and-route-conditions.md) → [06](06-argument-binding.md) → [07](07-request-validation.md) → [08](08-errors-and-problem-details.md) → [09](09-views-and-content-negotiation.md).
 - **Build a browser app:** [Guide 02](02-building-a-browser-app.md), then [29](29-signals-and-islands.md) → [30](30-component-integration.md) → [31](31-micro-frontends.md).
 - **Learn the container:** [Guide 04](04-dependency-injection-and-lifecycle.md).
-- **See the full map:** [ARCHITECTURE.md](../../ARCHITECTURE.md).
+- **See the full map:** [Architecture Overview](../../ARCHITECTURE.md).
 
 ## See also
 
@@ -242,4 +242,4 @@ Application Context Lifecycle.
 - [Guide 02 — Building a Browser App](02-building-a-browser-app.md) — the browser tutorial
 - [Guide 04 — Injection & Lifecycle](04-dependency-injection-and-lifecycle.md) — the container in depth
 - [Annotation, Advice & Transformer](../architecture/annotation-and-transformer-model.md) — what decorators declare, what runs around a call, and what replaces a member
-- [ARCHITECTURE.md](../../ARCHITECTURE.md) — layers, core building blocks, and the request lifecycle
+- [Architecture Overview](../../ARCHITECTURE.md) — layers, core building blocks, and the request lifecycle

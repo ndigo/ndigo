@@ -124,6 +124,16 @@ function fenceFailures(text) {
 const files = readdirSync(GUIDES)
     .filter((file) => /^\d{2}-[a-z0-9-]+\.md$/.test(file))
     .sort();
+
+// Collect guide titles for cross-reference label checks.
+const titleMap = {};
+for (const file of files) {
+    const t = readFileSync(join(GUIDES, file), 'utf8');
+    if (t.startsWith('<!-- guide-redirect -->')) continue;
+    const h = /^# Guide (\d{2}) — (.+)$/m.exec(t);
+    if (h) titleMap[h[1]] = h[2].trim().replace(/`/g, '');
+}
+
 const guideFiles = [];
 const seenNumbers = new Map();
 
@@ -146,6 +156,19 @@ for (const file of files) {
         failures.push(`${file}: H1 number ${heading[1]} does not match filename number ${number}`);
     }
 
+    // Title rules: no module names, no backticks, max 30 chars.
+    if (heading) {
+        const titleText = heading[2].trim().replace(/`/g, '');
+        if (/@ndigo\//.test(titleText)) failures.push(`${file}: title contains a module name`);
+        if (/`/.test(heading[2])) failures.push(`${file}: title contains backticks`);
+        if (titleText.length > 30 && file !== '51-capabilities-for-authoring-agents.md') {
+            failures.push(`${file}: title is ${titleText.length} chars (max 30)`);
+        }
+        if (titleText.length > 30 && file === '51-capabilities-for-authoring-agents.md') {
+            warnings.push(`${file}: title is ${titleText.length} chars (temporary exception; rename to shorten)`);
+        }
+    }
+
     for (const label of ['Audience', 'Prerequisites']) {
         if (!new RegExp(`\\*\\*${label}:\\*\\*`).test(text)) {
             failures.push(`${file}: missing **${label}:** block`);
@@ -153,6 +176,35 @@ for (const file of files) {
     }
     if (!/\*\*Reference (app|package):\*\*/.test(text)) {
         failures.push(`${file}: missing **Reference app:** (or **Reference package:**) block`);
+    }
+
+    // Opening paragraph must not contain package or decorator names.
+    const audienceMatch = text.match(/\*\*Audience:\*\*/);
+    const beforeAudience = audienceMatch ? text.slice(0, audienceMatch.index) : text;
+    const h1End = heading ? heading.index + heading[0].length : 0;
+    const introSection = beforeAudience.slice(h1End);
+    const introParas = introSection
+        .split(/\n\s*\n/)
+        .map((p) => p.trim())
+        .filter(Boolean);
+    const firstPara = introParas.find(
+        (p) => !p.startsWith('<') && !p.startsWith('**Use for') && !p.startsWith('**Not for')
+    );
+    if (firstPara) {
+        if (/@ndigo\//.test(firstPara) || /`@[^`]+`/.test(firstPara)) {
+            warnings.push(`${file}: opening paragraph contains a package or decorator name`);
+        }
+        if (/^How .* in Ndigo/i.test(firstPara)) {
+            warnings.push(`${file}: opening paragraph starts with "How ... in Ndigo"`);
+        }
+    }
+
+    // Use for / Not for lines (warning until all guides are migrated).
+    if (!/\*\*Use for:\*\*/.test(text)) {
+        warnings.push(`${file}: missing **Use for:** line`);
+    }
+    if (!/\*\*Not for:\*\*/.test(text)) {
+        warnings.push(`${file}: missing **Not for:** line`);
     }
 
     if (!/^## What you'll learn$/m.test(text)) failures.push(`${file}: missing "## What you'll learn"`);
@@ -172,11 +224,18 @@ for (const file of files) {
     }
 
     // Cross-guide links must not keep a stale number in the label.
-    for (const match of text.matchAll(/\[(?:Guide )?(\d{2}) — [^\]]+\]\(([^)]+)\)/g)) {
-        const target = match[2].split('#')[0].split('/').pop() ?? '';
+    for (const match of text.matchAll(/\[(?:Guide )?(\d{2}) — ([^\]]+)\]\(([^)]+)\)/g)) {
+        const target = match[3].split('#')[0].split('/').pop() ?? '';
         const targetNumber = /^(\d{2})-/.exec(target)?.[1];
         if (targetNumber && targetNumber !== match[1]) {
-            failures.push(`${file}: link label ${match[1]} points at ${targetNumber} (${match[2]})`);
+            failures.push(`${file}: link label ${match[1]} points at ${targetNumber} (${match[3]})`);
+        }
+        if (targetNumber && titleMap[targetNumber]) {
+            const label = match[2].trim().replace(/`/g, '');
+            const expected = titleMap[targetNumber];
+            if (label !== expected) {
+                warnings.push(`${file}: link label "${label}" does not match target title "${expected}"`);
+            }
         }
     }
 
@@ -193,6 +252,15 @@ for (const file of guideFiles) {
 }
 for (const file of indexed) {
     if (!guideFiles.includes(file)) failures.push(`docs/guides/README.md: links non-guide file ${file}`);
+}
+
+// README index labels must match the guide H1 titles.
+for (const match of index.matchAll(/\[(\d{2}) — ([^\]]+)\]\((\d{2}-[a-z0-9-]+\.md)\)/g)) {
+    const num = match[1];
+    const label = match[2].trim().replace(/`/g, '');
+    if (titleMap[num] && label !== titleMap[num]) {
+        failures.push(`docs/guides/README.md: index label "${label}" does not match guide title "${titleMap[num]}"`);
+    }
 }
 
 for (const warning of warnings) console.warn(`warning: ${warning}`);

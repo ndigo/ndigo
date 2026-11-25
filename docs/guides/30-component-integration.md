@@ -1,4 +1,4 @@
-# Guide 30 — UI Libraries & Component Integration
+# Guide 30 — UI Components & Integration
 
 Ndigo ships **no mandatory UI library**. The framework owns the bridge to the
 Web Component ecosystem — declarative shadow DOM first paint, form association,
@@ -385,7 +385,7 @@ Web Awesome stays in this guide as the vetting/fallback example, not as a curren
 
 - [UI catalogue](https://ndigo.dev/ui) — browse and install registry items
 - [Guide 02 — Building a Browser App](02-building-a-browser-app.md) — the browser preset
-- [Guide 09 — Views, Targets & Content Negotiation](09-views-and-content-negotiation.md) — view contracts
+- [Guide 09 — Views & Content Negotiation](09-views-and-content-negotiation.md) — view contracts
 - [Guide 44 — Accessibility](44-accessibility.md) — the a11y gate and testing
 - [Guide 18 — Forms End-to-End](18-forms-end-to-end.md) — binding and validation
 - [Guide 28 — Security Hardening](28-security-hardening.md) — CSP

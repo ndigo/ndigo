@@ -153,7 +153,7 @@ directories for the reference implementations of every rule above.
 
 - [Guide 51 — Capabilities for Authoring Agents](51-capabilities-for-authoring-agents.md):
   the layer, the verbs, and the verification model.
-- [Guide 37 — the CLI](37-ndigo-cli.md): every verb the capability machinery
+- [Guide 37 — The Ndigo CLI](37-ndigo-cli.md): every verb the capability machinery
   sits behind.
 - [Agent-First](../architecture/agent-first.md): the concept this authoring
   loop serves.

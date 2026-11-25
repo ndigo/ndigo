@@ -58,7 +58,7 @@ path, so nothing half-built is left connected.
 
 The application-context lifecycle — refresh, close, destroy versus close, and
 child-context propagation — is specified in
-[Guide 04 — Dependency Injection, Scopes & Lifecycle](../guides/04-dependency-injection-and-lifecycle.md).
+[Guide 04 — Injection & Lifecycle](../guides/04-dependency-injection-and-lifecycle.md).
 This page covers the resource-ownership half; the two meet where external
 disposal is bridged into container destruction, and at the drain-before-close
 rule.
@@ -75,7 +75,7 @@ rule.
 
 ## See Also
 
-- How-to: [Guide 04 — Dependency Injection, Scopes & Lifecycle](../guides/04-dependency-injection-and-lifecycle.md),
+- How-to: [Guide 04 — Injection & Lifecycle](../guides/04-dependency-injection-and-lifecycle.md),
   [Guide 15 — WebSockets](../guides/15-websockets.md),
   [Guide 21 — Persistence & Shared Stores](../guides/21-persistence-and-shared-stores.md)
 - Package reference: [ndigo.dev/reference/packages](https://ndigo.dev/reference/packages/)

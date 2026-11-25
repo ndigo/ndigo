@@ -245,10 +245,10 @@ and a static document; add streaming when the page is large enough to measure.
 
 ## See also
 
-- [Guide 09 — Views, Targets & Content Negotiation](09-views-and-content-negotiation.md) — the view contracts
-- [Guide 30 — UI Libraries & Component Integration](30-component-integration.md) — choosing a UI strategy
+- [Guide 09 — Views & Content Negotiation](09-views-and-content-negotiation.md) — the view contracts
+- [Guide 30 — UI Components & Integration](30-component-integration.md) — choosing a UI strategy
 - [Guide 17 — Internationalization & Content](17-i18n-and-content.md) — locale propagation
-- [Guide 36 — Testing with `@ndigo/test`](36-testing.md) — the request harness
+- [Guide 36 — Integration Testing](36-testing.md) — the request harness
 - [`@ndigo/view`](../../packages/ndigo-view/README.md) — `View`, `ProducerView`, resolvers
 - [`@ndigo/view-ejs`](../../packages/ndigo-view-ejs/README.md) — a server-rendering engine
 - [`@ndigo/view-toon`](../../packages/ndigo-view-toon/README.md) — a `text/toon` representation engine

@@ -1,4 +1,4 @@
-# Guide 35 — Method Advice & Resilience
+# Guide 35 — Resilience & Retries
 
 How `@ndigo/advice` and `@ndigo/resilience` work together: annotations that
 declare policy, rules that select the methods they apply to, and the retry and

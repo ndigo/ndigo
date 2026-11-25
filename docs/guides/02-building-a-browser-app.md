@@ -191,9 +191,9 @@ the app's `test` script (`vite build && vitest run`).
   client auth and the OIDC flow.
 - [29 — Signals & Islands](29-signals-and-islands.md) — reactive state and
   island hydration.
-- [30 — UI Libraries & Component Integration](30-component-integration.md) —
+- [30 — UI Components & Integration](30-component-integration.md) —
   theming, theme selection, and component libraries.
-- [31 — Micro Frontends with `@ndigo/host`](31-micro-frontends.md) — composing
+- [31 — Micro Frontends](31-micro-frontends.md) — composing
   feature contexts.
 - [91 — Application Conventions](91-application-conventions.md) — file layout
   and naming for the `apps/NN-ndigo-<slug>` ladder.

@@ -1,4 +1,4 @@
-# Guide 09 — Views, Targets & Content Negotiation
+# Guide 09 — Views & Content Negotiation
 
 A controller returns a result; a **view** turns that result into bytes. Ndigo
 keeps the two separate: handlers name a logical view or return a view instance,
@@ -386,7 +386,7 @@ covers browser vs server precedence, `themeAttributes`, and
 - [Guide 08 — Errors & Problem Details](08-errors-and-problem-details.md) — 406 and error views
 - [Guide 17 — Internationalization & Content](17-i18n-and-content.md) — locale in templates
 - [Guide 29 — Signals & Islands](29-signals-and-islands.md) — island hydration
-- [Guide 30 — UI Libraries & Component Integration](30-component-integration.md) — theme selection and visual application
+- [Guide 30 — UI Components & Integration](30-component-integration.md) — theme selection and visual application
 - [Guide 41 — Custom View Engines](41-custom-view-engines.md) — adding React/Vue or a bespoke renderer
 - [Guide 50 — View Targeting](50-view-targeting.md) — the targeting strategy in depth: placement models, chains, ownership
 - [`@ndigo/view`](../../packages/ndigo-view/README.md) — the view, targeter, and negotiation surface

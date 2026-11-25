@@ -1,4 +1,4 @@
-# Guide 04 — Dependency Injection, Scopes & Lifecycle
+# Guide 04 — Injection & Lifecycle
 
 The application context is Ndigo's dependency container. It owns every entry,
 decides how long each one lives, injects the collaborators an entry asks for, and

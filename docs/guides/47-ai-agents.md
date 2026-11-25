@@ -1,4 +1,4 @@
-# Guide 47 — AI Agents, Model Loops & Streaming
+# Guide 47 — AI Agents & Streaming
 
 Add a provider-neutral tool-calling loop to an application: define tools once,
 serve them over HTTP and MCP, run them against a local or hosted model, and
@@ -214,6 +214,6 @@ Configuration lives under `ai.*`: `baseURL`, `model`, `apiKey`, `maxSteps`, and
 - [Guide 16 — Typed Service Clients & SSE](16-typed-service-clients-and-sse.md) — SSE transport
 - [Guide 32 — Telemetry](32-telemetry.md) — observability and metrics
 - [Guide 34 — Feature Flags](34-feature-flags.md) — runtime switches and rollout
-- [Guide 35 — Method Advice & Resilience](35-method-interception-and-resilience.md) — advice and resilience
-- [Guide 37 — The `ndigo` CLI](37-ndigo-cli.md) — scaffolding and inspection
+- [Guide 35 — Resilience & Retries](35-method-interception-and-resilience.md) — advice and resilience
+- [Guide 37 — The Ndigo CLI](37-ndigo-cli.md) — scaffolding and inspection
 - [apps/21-ndigo-agent-lab](https://github.com/ndigo/ndigo/tree/main/apps/21-ndigo-agent-lab)

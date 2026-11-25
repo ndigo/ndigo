@@ -1809,7 +1809,7 @@ The context drives two lifecycle passes:
   then `destroy()` on `Destroyable` values (including plain `@entry`/`setValue`
   instances). `HTTPServer` is a managed entry created by
   `NodeAutoConfiguration` (not manually); see
-  [Guide 04 — Dependency Injection, Scopes & Lifecycle](./docs/guides/04-dependency-injection-and-lifecycle.md) for the full sequence.
+  [Guide 04 — Injection & Lifecycle](./docs/guides/04-dependency-injection-and-lifecycle.md) for the full sequence.
 
 ### Request Pipeline
 

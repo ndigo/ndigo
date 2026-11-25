@@ -91,7 +91,7 @@ Browser (untrusted) ──HTTPS──▶ TLS-terminating proxy ──▶ Node se
 
 - How-to: [Guide 03 — Environment & Configuration](../guides/03-environment-configuration.md)
   (secrets and configuration), [Guide 26 — Authentication & Sessions](../guides/26-authentication-and-sessions.md),
-  [Guide 35 — Method Advice & Resilience](../guides/35-method-interception-and-resilience.md)
+  [Guide 35 — Resilience & Retries](../guides/35-method-interception-and-resilience.md)
 - Package reference: [ndigo.dev/reference/packages](https://ndigo.dev/reference/packages/)
 - Standards: [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457.html) (problem
   details), [OIDC](https://openid.net/connect/),

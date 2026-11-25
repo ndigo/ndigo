@@ -122,7 +122,7 @@ pnpm --filter @ndigo/resilience test
 
 ## See Also
 
-- [Guide 35 — Method Advice & Resilience](../../docs/guides/35-method-interception-and-resilience.md)
+- [Guide 35 — Resilience & Retries](../../docs/guides/35-method-interception-and-resilience.md)
 - [@ndigo/advice](../ndigo-advice/README.md) — the rule, plan, and weaving contract these policies run on
 
 ## Contributing

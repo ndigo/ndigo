@@ -1,4 +1,4 @@
-# Guide 36 — Testing with `@ndigo/test`
+# Guide 36 — Integration Testing
 
 `@ndigo/test` is the in-process integration harness: `bootNodeApp` boots a
 real application context and dispatcher, and `MockHTTP` sends socket-free

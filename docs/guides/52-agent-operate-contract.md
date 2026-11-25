@@ -128,9 +128,9 @@ the boundary with the number.
 
 ## See also
 
-- [Guide 47 — AI Agents, Model Loops & Streaming](47-ai-agents.md)
+- [Guide 47 — AI Agents & Streaming](47-ai-agents.md)
 - [Guide 48 — Agent-Facing Surfaces](48-agent-facing-surfaces.md)
 - [Guide 51 — Capabilities for Authoring Agents](51-capabilities-for-authoring-agents.md)
-- [Guide 30 — Component Integration](30-component-integration.md)
+- [Guide 30 — UI Components & Integration](30-component-integration.md)
 - [`@ndigo/core` — the bridge contract](../../packages/ndigo-core/README.md)
 - [`@ndigo/mcp` — registry policy](../../packages/ndigo-mcp/README.md)

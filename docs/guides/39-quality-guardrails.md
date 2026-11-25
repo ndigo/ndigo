@@ -188,7 +188,7 @@ metadata. `pnpm doc:coverage` is the zero-tolerance member-docs gate.
 
 ## See also
 
-- [Guide 37 — The `ndigo` CLI](37-ndigo-cli.md) — command surface
+- [Guide 37 — The Ndigo CLI](37-ndigo-cli.md) — command surface
 - [Guide 90 — Package Documentation](90-package-documentation.md) — README/API standard
 - [`@ndigo/oxlint-plugin`](../../packages/ndigo-oxlint-plugin/README.md) — the consumer rules
 - [`@ndigo/inspect`](../../packages/ndigo-inspect/README.md) — the manifest

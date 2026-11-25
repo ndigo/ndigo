@@ -206,6 +206,6 @@ app-level load test for the path you actually ship.
 - [Guide 21 — Persistence & Shared Stores](21-persistence-and-shared-stores.md) — Redis and ownership
 - [Guide 25 — Clustering](25-clustering.md) — slots and per-process state
 - [Guide 32 — Telemetry](32-telemetry.md) — sampling, exporters, cardinality
-- [Guide 38 — Deployment & Production Readiness](38-deployment-and-production-readiness.md) — the production checklist
+- [Guide 38 — Deployment & Production](38-deployment-and-production-readiness.md) — the production checklist
 - [`@ndigo/dispatcher`](../../packages/ndigo-dispatcher/README.md) — the radix mapping
 - [`@ndigo/cache`](../../packages/ndigo-cache/README.md) — the cache contracts

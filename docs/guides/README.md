@@ -34,13 +34,13 @@ contributor guides. Numbers are reading order within a section.
   `@environment` validation, live rebind (`@refreshScope`), at-rest secrets
   (`{cipher:...}` + `NDIGO_SECRET_KEY`), and the remote config source
   (`configServer`, poll → refresh → rebind).
-- [43 — Live Configuration, Secrets & Remote Config](43-live-configuration-and-secrets.md)
+- [43 — Live Configuration & Secrets](43-live-configuration-and-secrets.md)
   — `@refreshScope`, `{cipher:...}` values with `NDIGO_SECRET_KEY`, and the
   remote config server poll loop.
-- [04 — Dependency Injection, Scopes & Lifecycle](04-dependency-injection-and-lifecycle.md)
+- [04 — Injection & Lifecycle](04-dependency-injection-and-lifecycle.md)
   — factory scopes, aware interfaces, init/destroy/close, smart lifecycle,
   parent/child contexts, and application events.
-- [49 — Configuration Layering & Context Composition](49-configuration-layering-and-context-composition.md)
+- [49 — Config Layering & Contexts](49-configuration-layering-and-context-composition.md)
   — profiles vs config layers vs context boundaries: platform config packages,
   static `merge()` layering, parent/child contexts, multiple apps in one process,
   and explicit cross-context events.
@@ -59,7 +59,7 @@ contributor guides. Numbers are reading order within a section.
 - [08 — Errors & Problem Details](08-errors-and-problem-details.md) — RFC 9457,
   error lineage, `@errorMapping`, resolver chains, validation/binding failures,
   and denials.
-- [09 — Views, Targets & Content Negotiation](09-views-and-content-negotiation.md)
+- [09 — Views & Content Negotiation](09-views-and-content-negotiation.md)
   — view contracts, serializing views, HTTP/DOM targets, the placement
   precedence, negotiation, resolvers, EJS and Web Component views, and themes.
 - [50 — View Targeting](50-view-targeting.md) — the strategy behind the
@@ -115,7 +115,7 @@ contributor guides. Numbers are reading order within a section.
 - [21 — Persistence & Shared Stores](21-persistence-and-shared-stores.md) — the
   memory-first doctrine, durable LibSQL sessions, the shared Redis cache, and
   the ownership/lifecycle rules behind external backends.
-- [22 — Jobs & the Transactional Outbox](22-jobs-and-outbox.md) —
+- [22 — Background Jobs](22-jobs-and-outbox.md) —
   `@ndigo/jobs`: the `JobDriver` SPI (at-least-once lease-based delivery),
   `@jobHandler` discovery, retries/timeouts/spans, the durable libSQL and Redis
   drivers, and the outbox that commits side effects with the data.
@@ -148,14 +148,14 @@ contributor guides. Numbers are reading order within a section.
   `@ndigo/signals` (`signal`/`computed`/`effect`, the `@reactive` decorators,
   stream and event bridges) and the island lifecycle: `IslandView` marker →
   `hydrateIslands` → SSE-driven re-render.
-- [30 — UI Libraries & Component Integration](30-component-integration.md) —
+- [30 — UI Components & Integration](30-component-integration.md) —
   ndigo-ui (tokens, the `ndigo ui`/shadcn registry, the `/ui` catalogue, MCP
   discovery, copy-in ownership) as the optional default, plus third-party Web
   Component libraries (Web Awesome): the vetting checklist, per-component
   imports without wrappers, first-paint fallback, form participation, theming,
   i18n, and CSP. The framework depends on none of them. Reference application:
   `apps/20-ndigo-ui-lab`; `apps/07-ndigo-island` is the migrated island example.
-- [31 — Micro Frontends with `@ndigo/host`](31-micro-frontends.md) —
+- [31 — Micro Frontends](31-micro-frontends.md) —
   `HostManager`, feature contexts, lazy chunks, shared-dependency validation,
   event relay, and feature routing.
 
@@ -176,7 +176,7 @@ contributor guides. Numbers are reading order within a section.
   inspection + live changes, `/env` with source origins and redaction,
   `/configprops` (declared keys, never values), and the opt-in exposure model.
   Reference application: `apps/05-ndigo-api`.
-- [47 — AI Agents, Model Loops & Streaming](47-ai-agents.md) — `@ndigo/ai` + `@ndigo/ai-sdk`: a provider-neutral tool loop over the MCP registry, structured output and the adapter contract, SSE streaming, GenAI spans, rate limits, rollout flags, and secrets.
+- [47 — AI Agents & Streaming](47-ai-agents.md) — `@ndigo/ai` + `@ndigo/ai-sdk`: a provider-neutral tool loop over the MCP registry, structured output and the adapter contract, SSE streaming, GenAI spans, rate limits, rollout flags, and secrets.
 - [48 — Agent-Facing Surfaces](48-agent-facing-surfaces.md) — the app→agent
   direction: `@toolMapping`, MCP over stdio and Streamable HTTP, MCP Apps
   `ui://` resources, A2UI through content negotiation, WebMCP browser tools,
@@ -198,21 +198,21 @@ contributor guides. Numbers are reading order within a section.
   (`feature.*`, live refresh), `@whenFeature` route gates (404 when off), the
   OpenFeature bridge for vendor flagging, and the targeting-context resolver.
   Reference application: `apps/05-ndigo-api` (`/gated-report`).
-- [35 — Method Advice & Resilience](35-method-interception-and-resilience.md)
+- [35 — Resilience & Retries](35-method-interception-and-resilience.md)
   — metadata annotations, the rule and advice chain (`@ndigo/advice`), registration
   paths, weaving strategies, and retry + circuit breaking (`@ndigo/resilience`).
-- [36 — Testing with `@ndigo/test`](36-testing.md) — the in-process harness
+- [36 — Integration Testing](36-testing.md) — the in-process harness
   : `bootNodeApp`/`cachedBootNodeApp`, the `MockHTTP` request builder and
   `MockResult`, browser apps via `MockWebClient` + `MemoryViewTarget`, and
   what the harness deliberately is not.
-- [37 — The `ndigo` CLI](37-ndigo-cli.md) — `@ndigo/cli`: the app lifecycle
+- [37 — The Ndigo CLI](37-ndigo-cli.md) — `@ndigo/cli`: the app lifecycle
   (`serve`/`dev` — serve replicates across worker slots), scaffolding
   (`new`/`generate`/`add`), db migrations, release-qc fronts, and the
   maintenance/DX tools — how scripts run shell-free so signals reach the app.
 
 ## Operations and quality
 
-- [38 — Deployment & Production Readiness](38-deployment-and-production-readiness.md)
+- [38 — Deployment & Production](38-deployment-and-production-readiness.md)
   — build artifacts, environment/secrets, process model, graceful shutdown,
   health probes, TLS/HTTP2-3, static assets, containers, and the production
   checklist.
@@ -262,7 +262,11 @@ contract in CI; redirect stubs (`<!-- guide-redirect -->`) are excluded.
 ```markdown
 # Guide NN — Title
 
-One paragraph: the problem, the outcome, and the reference implementation.
+One paragraph: the problem, the outcome, and when to use it. Package names and
+contracts belong in the next paragraph.
+
+**Use for:** concrete tasks this guide helps with.
+**Not for:** the cases it does not cover, with links to the alternative.
 
 **Audience:** Node / browser / both · **Prerequisites:** guide or setup · **Reference app:** `apps/NN-ndigo-slug`
 
@@ -280,6 +284,14 @@ One paragraph: the problem, the outcome, and the reference implementation.
 Rules:
 
 - The H1 number matches the filename number.
+- The title is at most 30 characters, contains no module name (`@ndigo/...`),
+  and no backticks. Use the user-facing capability, not the implementation.
+- The opening paragraph starts with the problem or outcome in user language —
+  no package, decorator, or "How X works in Ndigo" opener.
+- Every guide has a `**Use for:**` and a `**Not for:**` line before
+  `**Audience:**`.
+- `**Audience:**`, `**Prerequisites:**`, and `**Reference app:**` (or
+  `**Reference package:**`) are required.
 - Use `**Reference app:**` or `**Reference package:**`; every backticked
   `apps/…` / `packages/…` path must exist.
 - TypeScript fences must parse. Fragments are wrapped in a class/function for

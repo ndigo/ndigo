@@ -1,4 +1,4 @@
-# Guide 43 — Live Configuration, Secrets & Remote Config
+# Guide 43 — Live Configuration & Secrets
 
 Configuration is more than the boot-time source chain: entries can rebind on
 `config:refresh`, secret values can stay encrypted at rest, and a remote config
@@ -141,5 +141,5 @@ builder.configServer({
 ## See also
 
 - [Guide 03 — Environment & Configuration](03-environment-configuration.md) — the boot-time pipeline
-- [Guide 04 — Dependency Injection, Scopes & Lifecycle](04-dependency-injection-and-lifecycle.md) — the refresh scope
+- [Guide 04 — Injection & Lifecycle](04-dependency-injection-and-lifecycle.md) — the refresh scope
 - [Guide 28 — Security Hardening](28-security-hardening.md) — secret delivery and production posture

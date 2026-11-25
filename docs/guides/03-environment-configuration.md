@@ -385,5 +385,5 @@ itself:
 
 ## See also
 
-- [Guide 43 — Live Configuration, Secrets & Remote Config](43-live-configuration-and-secrets.md) — refresh, secrets, and the config server
+- [Guide 43 — Live Configuration & Secrets](43-live-configuration-and-secrets.md) — refresh, secrets, and the config server
 - [Guide 01 — Building a Node API](01-building-a-node-api.md) for the surrounding bootstrap

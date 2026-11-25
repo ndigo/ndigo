@@ -37,67 +37,83 @@ Browser (untrusted) ──HTTPS──▶ TLS-terminating proxy ──▶ Node se
                                                           └─▶ auth ──▶ session store ──▶ database / cache
 ```
 
-- **Browser → proxy.** Nothing from this side is trusted. A forwarded client
-  address only becomes identity after the peer is recognised as an allowlisted
-  proxy, and the walk is right-to-left so a client cannot prepend a claim.
-- **Proxy → server.** Security headers that browsers only honour over secure
-  connections — HSTS above all — are not assumed on plain-HTTP peers. Edge
-  protocol awareness is documented rather than guessed.
+- **Browser → proxy.** Nothing from this side is trusted. Only an allowlisted
+  proxy can set the forwarded client identity; an unlisted peer's header is
+  ignored.
+- **Proxy → server.** Security headers that browsers honour only over secure
+  connections — [HSTS][hsts] above all — are sent regardless; browsers apply
+  them only on HTTPS.
 - **Server.** Every response carries the security-header set by default: a
-  content security policy, HSTS, and frame, referrer, and sniffing controls.
-  The policy admits the application's own origin; a socket server on another
-  host widens it explicitly to that host, never to a wildcard.
+  [content security policy][csp], HSTS, and frame, referrer, and sniffing
+  controls. The policy admits the application's own origin; a socket server on
+  another host widens it explicitly to that host, never to a wildcard.
 - **Backends.** Databases and caches sit on trusted networks behind ACL and
   TLS. Namespaces isolate tenants; they are never treated as authorization.
 
 ## Defense Layers
 
-| Layer            | What it protects                        | Default posture                                                                                          |
-| :--------------- | :-------------------------------------- | :------------------------------------------------------------------------------------------------------- |
-| Transport        | Session hijacking, downgrade attacks    | Security headers on every response; HSTS only where it is honoured; server-identifying headers removed   |
-| Client identity  | Spoofed forwarding headers              | Allowlist-only proxy trust; empty by default; an unlisted peer cannot name a client                      |
-| Abuse            | Brute force, scraping, runaway clients  | Fixed-window throttling keyed on the resolved client address, 429 with `Retry-After`; in-process default |
-| Request forgery  | Cross-site mutations                    | Login accepts JSON only; double-submit CSRF protection is available and explicit; CORS is configured     |
-| Sessions         | Theft, fixation, unbounded accumulation | Host-scoped HttpOnly cookie, rotation on authentication, a live-session cap, durable store               |
-| Authentication   | Impersonation                           | Memory-hard credential hashing; OIDC authorization code with PKCE and nonce; fail-closed validation      |
-| Authorization    | Privilege escalation                    | Route guards deny by default; rejected socket authentication closes the connection                       |
-| Input            | Injection, malformed or partial data    | Schema validation at the boundary before anything persists; unknown input never reaches the domain       |
-| Error disclosure | Information leaks through failure paths | RFC 9457 problem documents with controlled type URIs; no HTML or reflection on 404/405                   |
-| Secrets          | Exposure at rest                        | Authenticated encryption bound to the secret's path; capability-gated wiring                             |
+| Layer            | What it protects                        | Default posture                                                                                                      |
+| :--------------- | :-------------------------------------- | :------------------------------------------------------------------------------------------------------------------- |
+| Transport        | Session hijacking, downgrade attacks    | Security headers on every response; HSTS only where it is honoured; server-identifying headers removed               |
+| Client identity  | Spoofed forwarding headers              | Allowlist-only proxy trust; empty by default; an unlisted peer cannot name a client                                  |
+| Abuse            | Brute force, scraping, runaway clients  | Fixed-window throttling keyed on the resolved client address, 429 with `Retry-After`; in-process default             |
+| Request forgery  | Cross-site mutations                    | Login accepts JSON only; double-submit [CSRF][csrf] protection is available and explicit; [CORS][cors] is configured |
+| Sessions         | Theft, fixation, unbounded accumulation | Host-scoped [HttpOnly cookie][cookies], rotation on authentication, a live-session cap, durable store                |
+| Authentication   | Impersonation                           | Memory-hard credential hashing; [OIDC authorization code][oidc] with [PKCE][pkce] and nonce; fail-closed validation  |
+| Authorization    | Privilege escalation                    | Route guards deny by default; rejected socket authentication closes the connection                                   |
+| Input            | Injection, malformed or partial data    | Schema validation at the boundary before anything persists; unknown input never reaches the domain                   |
+| Error disclosure | Information leaks through failure paths | [RFC 9457][rfc9457] problem documents with controlled type URIs; no HTML or reflection on 404/405                    |
+| Secrets          | Exposure at rest                        | Authenticated encryption bound to the secret's path; explicit `app.secrets(...)` wiring (Guide 43)                   |
 
-## Key Tensions and Resolutions
+## Security in Practice
 
-- **Safe defaults vs application surprise.** Headers and throttling are on by
-  default because both are safe to enable. The content security policy was
-  tightened to the application's own origin; a cross-host socket server widens
-  it explicitly, and inline script is never the default.
-- **CSRF protection is explicit vs login forgery.** Double-submit protection
-  is not wired automatically, so a cookie-session application must either add
-  it or keep every mutating route JSON-only. Login already accepts JSON alone,
-  which a cross-site HTML form cannot send, so login is not cross-site
-  postable even before the interceptor is added. Logout and other
-  cookie-authenticated mutations still need the protection.
-- **Trusted proxies vs spoofing.** Client-address trust is all-or-nothing per
-  peer: either the peer is allowlisted and its forwarded address counts, or it
-  is not and the header is ignored. There is no heuristic middle ground.
-- **Strict policy vs framework sockets.** Same-origin sockets are covered by
-  the default policy. A socket server on another host is an explicit addition
-  to the allowlist; a bare scheme wildcard is never an admission.
-- **Problem-type identity.** The framework uses a self-contained placeholder
-  scheme for problem types today; real HTTPS identifiers replace it before the
-  first public release.
+Security is declared at the boundary, not re-checked in every handler. The
+decorators carry the requirement; the guard is the enforcement point — without
+a wired guard that reads it, `@authenticated` is inert metadata.
+
+```ts
+import { authenticated, authorized } from '@ndigo/auth-core';
+import { AuthRouteGuard } from '@ndigo/auth-server';
+import { getMapping, requestMapping } from '@ndigo/dispatcher';
+import { SESSION_COOKIE, getNodeRequest } from '@ndigo/platform-node';
+
+@authenticated
+@requestMapping('/reports')
+class ReportController {
+    @getMapping('/:id')
+    @authorized('analyst')
+    report(): void {}
+}
+
+mapping.interceptors.push(
+    new AuthRouteGuard(authServer, (route) => getNodeRequest(route)?.cookies[SESSION_COOKIE] ?? null, 'credentials')
+);
+```
+
+The token extractor is the credential-specific seam: this example reads the
+session cookie; a JWT API reads the `Authorization` header instead. Security
+headers are on by default, and `trustedProxies` on the server is the only way a
+forwarded client address becomes identity.
 
 ## See Also
 
-- How-to: [Guide 03 — Environment & Configuration](../guides/03-environment-configuration.md)
-  (secrets and configuration), [Guide 26 — Authentication & Sessions](../guides/26-authentication-and-sessions.md),
-  [Guide 35 — Resilience & Retries](../guides/35-method-interception-and-resilience.md)
+- How-to: [Guide 26 — Authentication & Sessions](../guides/26-authentication-and-sessions.md),
+  [Guide 27 — Browser Authentication & OIDC](../guides/27-browser-authentication-and-oidc.md),
+  [Guide 28 — Security Hardening](../guides/28-security-hardening.md)
+- Configuration: [Guide 03 — Environment & Configuration](../guides/03-environment-configuration.md)
+  (secrets and configuration), [Guide 43 — Live Configuration & Secrets](../guides/43-live-configuration-and-secrets.md)
+  (encrypted secrets)
+- Operations: [Guide 35 — Resilience & Retries](../guides/35-method-interception-and-resilience.md)
 - Package reference: [ndigo.dev/reference/packages](https://ndigo.dev/reference/packages/)
-- Standards: [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457.html) (problem
-  details), [OIDC](https://openid.net/connect/),
-  [PKCE](https://www.rfc-editor.org/rfc/rfc7636),
-  [JWT](https://www.rfc-editor.org/rfc/rfc7519),
-  [CSRF](https://owasp.org/www-community/attacks/csrf),
-  [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS),
-  [CSP](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP),
-  [HSTS](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security)
+- Standards: [RFC 9457][rfc9457] (problem details), [OpenID Connect Core][oidc],
+  [PKCE][pkce], [JWT](https://www.rfc-editor.org/rfc/rfc7519),
+  [CSRF][csrf], [CORS][cors], [CSP][csp], [HSTS][hsts], [HTTP cookies][cookies]
+
+[cookies]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Cookies
+[cors]: https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
+[csrf]: https://developer.mozilla.org/en-US/docs/Web/Security/Attacks/CSRF
+[csp]: https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP
+[hsts]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security
+[oidc]: https://openid.net/specs/openid-connect-core-1_0.html
+[pkce]: https://www.rfc-editor.org/rfc/rfc7636
+[rfc9457]: https://www.rfc-editor.org/rfc/rfc9457.html

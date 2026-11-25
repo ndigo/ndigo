@@ -10,7 +10,7 @@ is worth reading.
 
 **Use for:** your first Ndigo server app — bootstrap, DI, controllers, binding, validation, errors, and shutdown.
 
-**Not for:** browser apps (Guide 02) or deep dives into individual subsystems (Guides 04–08).
+**Not for:** browser apps ([Guide 02](02-building-a-browser-app.md)) or deep dives into individual subsystems ([Guides 04–08](04-dependency-injection-and-lifecycle.md)).
 
 **Audience:** Node application developers · **Prerequisites:** Workspace bootstrapped (`pnpm install`) and the Node platform packages built (`pnpm --filter @ndigo/platform-node build:lib`) · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api) (minimal companion: [apps/02-ndigo-hello-node](https://github.com/ndigo/ndigo/tree/main/apps/02-ndigo-hello-node))
 
@@ -320,7 +320,7 @@ inject it via `applicationContext.getLogger(name)`, or call
 `applicationContext.getLogger('my-component')` directly. Both paths share the
 same `LoggerFactory`, so appender/threshold settings apply uniformly, and both
 stamp the active span's `traceId`/`spanId` — records from either API
-correlate to the same trace tree. See Guide 32 for the full logging guidance.
+correlate to the same trace tree. See [Guide 32](32-telemetry.md) for the full logging guidance.
 depends on it .
 
 ## 8. Deployment topology

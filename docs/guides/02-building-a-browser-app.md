@@ -12,7 +12,7 @@ Reference applications: [apps/08-ndigo-views](https://github.com/ndigo/ndigo/tre
 
 **Use for:** your first Ndigo browser app — hash routing, in-page dispatch, web-component views.
 
-**Not for:** server apps (Guide 01). For islands or micro frontends, see Guides 29 and 31.
+**Not for:** server apps ([Guide 01](01-building-a-node-api.md)). For islands or micro frontends, see [Guide 29](29-signals-and-islands.md) and [Guide 31](31-micro-frontends.md).
 
 **Audience:** Browser application developers · **Prerequisites:** Workspace bootstrapped; [Guide 01](01-building-a-node-api.md) concepts recommended · **Reference app:** [apps/08-ndigo-views](https://github.com/ndigo/ndigo/tree/main/apps/08-ndigo-views), [apps/19-ndigo-hn](https://github.com/ndigo/ndigo/tree/main/apps/19-ndigo-hn)
 
@@ -100,7 +100,7 @@ route attribute, and decline to the root when nothing matches. See
 ## 2. Configuration and routes
 
 Browser `@configuration` classes and `@routeMapping` controllers are the
-same as on Node (Guide 01); the handler mapping, argument resolvers, and
+same as on Node ([Guide 01](01-building-a-node-api.md)); the handler mapping, argument resolvers, and
 view-resolver chain come from `WebAutoConfiguration`.
 
 ```ts
@@ -162,7 +162,7 @@ themeSelect.addEventListener('change', () => theme.setTheme(themeSelect.value));
 ```
 
 A full-stack app resolves the same cookie per request and renders `data-theme`,
-so applying it again on boot is idempotent. Guide 30 covers precedence, custom
+so applying it again on boot is idempotent. [Guide 30](30-component-integration.md) covers precedence, custom
 themes, and Tailwind interop.
 
 ## 5. Testing

@@ -4,7 +4,7 @@ When one part of the UI changes, other parts need to update without a full re-re
 
 **Use for:** local synchronous state within a component or service, derived values, and live-updating islands.
 
-**Not for:** cross-component async notifications; use the context event emitter. For server→client push, use SSE (Guide 16).
+**Not for:** cross-component async notifications; use the context event emitter. For server→client push, use SSE ([Guide 16](16-typed-service-clients-and-sse.md)).
 
 `@ndigo/signals` re-exports `@preact/signals-core` with a decorator API and stream bridges.
 

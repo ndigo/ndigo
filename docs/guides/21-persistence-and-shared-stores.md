@@ -13,7 +13,7 @@ pnpm add @ndigo/redis @ndigo/orm-drizzle @ndigo/cache @ndigo/socket
 
 **Use for:** durable sessions, shared caches, and cross-node fan-out with external backends.
 
-**Not for:** in-memory defaults (they work out of the box) or database schema design (Guide 20).
+**Not for:** in-memory defaults (they work out of the box) or database schema design ([Guide 20](20-orm-and-migrations.md)).
 
 **Audience:** Node application developers and operators · **Prerequisites:** Guides [19](19-caching.md) and [26](26-authentication-and-sessions.md) · **Reference app:** [apps/16-ndigo-redis-fanout](https://github.com/ndigo/ndigo/tree/main/apps/16-ndigo-redis-fanout), [apps/18-ndigo-auth-playground](https://github.com/ndigo/ndigo/tree/main/apps/18-ndigo-auth-playground)
 
@@ -191,7 +191,7 @@ recognizes `Destroyable`; a dispose-only object is not proof of cleanup.
 Not built, with an explicit decision and revisit triggers:
 
 - **Distributed scheduling** — no leader election, no durable job queue; the
-  in-process `TaskScheduler` remains (Guide 23). Revisit only when a real
+  in-process `TaskScheduler` remains ([Guide 23](23-scheduling.md)). Revisit only when a real
   consumer needs at-most-once-per-schedule across workers, restart-surviving
   queued jobs, deployable schedule definitions, or cross-process task
   observation — then the precedent is 's hook seam plus the

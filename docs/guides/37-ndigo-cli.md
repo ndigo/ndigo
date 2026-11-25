@@ -199,7 +199,7 @@ The CLI resolves `package.json` scripts and runs them **shell-free**
 (single commands; `tsx src/index.ts`, `vite`, `node app.mjs`):
 
 - SIGTERM/SIGINT relayed by `serve` reach the **actual application
-  process**, which runs its own `gracefulShutdown` (Guide 01). This is
+  process**, which runs its own `gracefulShutdown` ([Guide 01](01-building-a-node-api.md)). This is
   deliberate: both package-manager `run` wrappers (which kill children
   without granting a drain) and dash-style `/bin/sh` (which forks instead
   of execs) were verified to swallow the signal (2026-10-07).

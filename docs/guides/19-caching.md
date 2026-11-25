@@ -133,7 +133,7 @@ Semantics:
 - **Self-invocation is cached** — the advice is installed on the instance, so
   `this.method` calls inside the class hit the cache too. Two cases do not:
   a frozen or sealed instance, and a function-shaped target, both of which are
-  advised through the proxy fallback (Guide 35, §3).
+  advised through the proxy fallback ([Guide 35](35-method-interception-and-resilience.md), §3).
 - **Invalidation** — TTL expiry plus manual eviction:
   `await this.cacheManager.getCache('catalog').delete('…')` or
   `await this.cacheManager.getCache('catalog').clear`.

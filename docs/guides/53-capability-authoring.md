@@ -4,7 +4,7 @@ Packages give you code; capabilities give an agent a repeatable way to install a
 
 **Use for:** authoring new capabilities for the catalog.
 
-**Not for:** installing capabilities; use `ndigo add` (Guide 51) for that.
+**Not for:** installing capabilities; use `ndigo add` ([Guide 51](51-capabilities-for-authoring-agents.md)) for that.
 
 This guide covers the entry schema, directory layout, templates, checks, and the gates a capability must pass before shipping.
 
@@ -143,12 +143,12 @@ The fixture is the freshness contract: it boots what the capability writes.
 
 ## 7. Worked example: `shared-cache`
 
-`shared-cache` composes `@ndigo/redis`, links Guide 21, declares one variable
+`shared-cache` composes `@ndigo/redis`, links [Guide 21](21-persistence-and-shared-stores.md), declares one variable
 (`namespace`, default `app`), and runs two ops: add the dependency, write
 `src/cache.ts` — a `CacheConfiguration` whose `@entry(CACHE_MANAGER)` replaces
 the framework's memory default with the Redis-backed manager. The fixture boots
 the applied configuration, so `app-boot` exercises the constructor and the
-namespace validation. `background-jobs` (Guide 22) follows the same shape with a
+namespace validation. `background-jobs` ([Guide 22](22-jobs-and-outbox.md)) follows the same shape with a
 sample `@jobHandler` worker and an explicit `startJobs` helper — see both
 directories for the reference implementations of every rule above.
 

@@ -4,7 +4,7 @@ When the server needs to push updates to a browser — live notifications, chat 
 
 **Use for:** bidirectional realtime communication — chat, live updates, collaborative editing.
 
-**Not for:** one-way server push; use SSE (Guide 16) for that. Use HTTP polling for infrequent updates.
+**Not for:** one-way server push; use SSE ([Guide 16](16-typed-service-clients-and-sse.md)) for that. Use HTTP polling for infrequent updates.
 
 `@socketMapping` declares handlers, `SocketSession` defines the contract, and the session registry manages rooms and broadcast.
 

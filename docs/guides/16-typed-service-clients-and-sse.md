@@ -4,7 +4,7 @@ Calling another service shouldn't mean hand-writing URLs and parsing responses. 
 
 **Use for:** typed remote-service clients with validated responses, including SSE streams.
 
-**Not for:** one-off HTTP calls; use the HTTP client (Guide 11) directly. Use WebSockets (Guide 15) for bidirectional realtime.
+**Not for:** one-off HTTP calls; use the HTTP client ([Guide 11](11-http-client.md)) directly. Use WebSockets ([Guide 15](15-websockets.md)) for bidirectional realtime.
 
 `@ndigo/service` is the domain façade over `@ndigo/http`; the transport and interceptors still come from there.
 
@@ -109,7 +109,7 @@ ticks(): AsyncIterable<z.infer<typeof Tick>> {
 
 The stream ends when the server closes it; a network failure rejects the
 iteration. There is no automatic reconnect or replay — implement resume logic in
-the consumer or use the socket client (Guide 15) when you need it.
+the consumer or use the socket client ([Guide 15](15-websockets.md)) when you need it.
 
 ## 4. Parsing an event stream directly
 
@@ -149,7 +149,7 @@ code that builds the client. The service client itself stays transport-only.
 ## 6. Interceptors
 
 The client uses the `HTTP` instance you pass in, so the HTTP interceptor
-lifecycle applies unchanged (Guide 11): auth headers, retries, tracing, and
+lifecycle applies unchanged ([Guide 11](11-http-client.md)): auth headers, retries, tracing, and
 caching compose around the service call. `ServiceExecutionChain` and the
 `ServiceInterceptor` contracts exist for the stateful `Service` class; a
 `serviceClient` is the simpler default.

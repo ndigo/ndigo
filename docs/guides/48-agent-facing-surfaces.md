@@ -4,7 +4,7 @@ You shouldn't have to describe the same endpoint twice — once for REST, once f
 
 **Use for:** exposing the same handler as REST, OpenAPI, MCP, A2UI, and browser tools.
 
-**Not for:** handlers that should stay internal; use `@toolMapping` only where you want agent access. For the CLI and verification workflow, see Guide 51.
+**Not for:** handlers that should stay internal; use `@toolMapping` only where you want agent access. For the CLI and verification workflow, see [Guide 51](51-capabilities-for-authoring-agents.md).
 
 One schema, many surfaces: `@parameters` and `validatedBy` are the only declarations you write.
 

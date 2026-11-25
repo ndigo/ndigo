@@ -9,7 +9,7 @@ to those checks and how to wire them into an app.
 
 **Not for:** CI/CD pipeline design; use your platform's tooling for that.
 
-**Audience:** Application developers and framework contributors · **Prerequisites:** Workspace bootstrapped; [Guide 01](01-building-a-node-api.md) or 02 · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)
+**Audience:** Application developers and framework contributors · **Prerequisites:** Workspace bootstrapped; [Guide 01](01-building-a-node-api.md) or [Guide 02](02-building-a-browser-app.md) · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)
 
 ## What you'll learn
 

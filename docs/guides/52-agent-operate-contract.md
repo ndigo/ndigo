@@ -6,7 +6,7 @@ a safety hint, and a denial mean the same thing wherever the agent enters.
 
 **Use for:** understanding the shared vocabulary across MCP, WebMCP, A2UI, and the in-page bridge.
 
-**Not for:** implementing any one surface; see Guides 47 and 48 for that.
+**Not for:** implementing any one surface; see [Guide 47](47-ai-agents.md) and [Guide 48](48-agent-facing-surfaces.md) for that.
 
 **Audience:** Node · browser · agent tooling · **Prerequisites:** Guides [12](12-openapi-and-api-docs.md), [30](30-component-integration.md), [47](47-ai-agents.md), [48](48-agent-facing-surfaces.md) · **Reference package:** `packages/ndigo-core`, `packages/ndigo-mcp`, `packages/ndigo-view-webcomponent`
 
@@ -46,7 +46,7 @@ an adapter never re-describes it. And a **denial is data**, not an exception
 | Agent bridge | `AgentBridge` in the page                   | page ↔ agent         | adapter + host                            |
 
 MCP, A2UI, and the WebMCP projection share one handler declaration through
-`@parameters` + `validatedBy`; Guide 48 covers the projection. This guide covers
+`@parameters` + `validatedBy`; [Guide 48](48-agent-facing-surfaces.md) covers the projection. This guide covers
 what happens to policy once the projection exists.
 
 ## 3. One declaration, mapped hints

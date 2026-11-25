@@ -4,7 +4,7 @@ Some settings must change while the app is running, and some values must never s
 
 **Use for:** runtime configuration changes, encrypted secrets, and remote config updates.
 
-**Not for:** boot-time configuration (Guide 03) or feature toggles (Guide 34). Secrets in source control; use a secret manager instead.
+**Not for:** boot-time configuration ([Guide 03](03-environment-configuration.md)) or feature toggles ([Guide 34](34-feature-flags.md)). Secrets in source control; use a secret manager instead.
 
 This guide covers three surfaces: `@refreshScope`, `{cipher:...}` secrets, and remote JSON config with ETag polling.
 

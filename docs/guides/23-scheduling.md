@@ -4,7 +4,7 @@ Some work should run on a clock: nightly cleanup, hourly syncs, periodic health 
 
 **Use for:** recurring tasks that run on a schedule — cleanup, syncs, reports, health checks.
 
-**Not for:** one-off background work; use jobs (Guide 22) for that. For time-based tasks that must run on exactly one node, combine with distributed locks (Guide 24).
+**Not for:** one-off background work; use jobs ([Guide 22](22-jobs-and-outbox.md)) for that. For time-based tasks that must run on exactly one node, combine with distributed locks ([Guide 24](24-distributed-locks.md)).
 
 Ndigo uses the `@scheduled` decorator for declaration; tasks are discovered from registered entries with no manual wiring. Scheduling is Node-only.
 

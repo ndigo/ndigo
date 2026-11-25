@@ -4,7 +4,7 @@ You want an LLM to call your application's own functions — look up an order, c
 
 **Use for:** adding AI agent capabilities that call your application's handlers.
 
-**Not for:** simple chat without tool calls; use a direct provider SDK. For agent-facing surfaces (MCP, OpenAPI, A2UI), see Guide 48.
+**Not for:** simple chat without tool calls; use a direct provider SDK. For agent-facing surfaces (MCP, OpenAPI, A2UI), see [Guide 48](48-agent-facing-surfaces.md).
 
 The loop is provider-neutral: `@ndigo/ai` separates the agent from the adapter, and `@ndigo/ai-sdk` is the only package that imports the Vercel AI SDK.
 

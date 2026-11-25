@@ -13,7 +13,7 @@ unfamiliar.
 
 **Use for:** getting the mental model before building — the five nouns, the request path, and which package owns what.
 
-**Not for:** API lookup; use the reference. For a first app, start with Guide 01 or 02.
+**Not for:** API lookup; use the reference. For a first app, start with [Guide 01](01-building-a-node-api.md) or [Guide 02](02-building-a-browser-app.md).
 
 **Audience:** New Ndigo developers · **Prerequisites:** Workspace bootstrapped (`pnpm install`) · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api) (browser companion: [apps/08-ndigo-views](https://github.com/ndigo/ndigo/tree/main/apps/08-ndigo-views))
 

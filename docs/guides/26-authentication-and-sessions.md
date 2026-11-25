@@ -4,7 +4,7 @@ Users need to sign in, stay signed in, and be protected from common attacks. Ndi
 
 **Use for:** first-party login, session management, and token-based auth for APIs.
 
-**Not for:** social login or SSO; use OIDC (Guide 27) for identity providers. Don't use JWTs for browser sessions unless you have a specific reason.
+**Not for:** social login or SSO; use OIDC ([Guide 27](27-browser-authentication-and-oidc.md)) for identity providers. Don't use JWTs for browser sessions unless you have a specific reason.
 
 The machinery spans `@ndigo/auth-core` (contracts), `@ndigo/auth-server` (stores and adapters), and `@ndigo/platform-node` (cookies, interceptors).
 

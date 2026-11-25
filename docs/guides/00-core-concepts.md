@@ -186,7 +186,7 @@ task-shaped paths through them.
 Decorators are classified on two independent axes: by **role** for naming
 ([STYLE_GUIDE §3.17](../../STYLE_GUIDE.md#317-decorator-categories--naming)),
 and by **mechanism** for runtime behaviour — annotation, advice, or member
-transformer ([Annotation, Advice & Member Transformer](../architecture/annotation-and-transformer-model.md)).
+transformer ([Annotation, Advice & Transformer](../architecture/annotation-and-transformer-model.md)).
 
 ## 6. Choosing a communication primitive
 
@@ -241,5 +241,5 @@ Application Context Lifecycle.
 - [Guide 01 — Building a Node API](01-building-a-node-api.md) — the Node tutorial
 - [Guide 02 — Building a Browser App](02-building-a-browser-app.md) — the browser tutorial
 - [Guide 04 — Injection & Lifecycle](04-dependency-injection-and-lifecycle.md) — the container in depth
-- [Annotation, Advice & Member Transformer](../architecture/annotation-and-transformer-model.md) — what decorators declare, what runs around a call, and what replaces a member
+- [Annotation, Advice & Transformer](../architecture/annotation-and-transformer-model.md) — what decorators declare, what runs around a call, and what replaces a member
 - [ARCHITECTURE.md](../../ARCHITECTURE.md) — layers, principles, and package map

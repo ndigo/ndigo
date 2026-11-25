@@ -14,7 +14,7 @@ And `@ndigo/proxy` was Proxy-only, which meant an advised entry was a different
 object from the one the factory built and `this.sibling()` bypassed advice.
 
 The full reasoning and the vocabulary live in
-[Annotation, Advice & Member Transformer](../architecture/annotation-and-transformer-model.md).
+[Annotation, Advice & Transformer](../architecture/annotation-and-transformer-model.md).
 
 **There is no alias layer and no deprecation window.** Pre-1.0 renames are hard
 cuts here; `@ndigo/proxy` is deleted.

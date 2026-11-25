@@ -1,97 +1,136 @@
 # Environment & Configuration
 
-The environment is a JavaScript-native configuration model — property sources,
-profiles, typed configuration properties, and post-processing — with fail-loud
-semantics throughout. This page covers the design principles, the precedence
-rules, and the tensions they resolve.
+Ndigo resolves one typed, validated configuration for an application from
+ordered property sources. The model is fail-loud: a missing key or a bad value
+stops startup instead of surfacing later as a runtime surprise. Four building
+blocks carry the model — property sources, profiles, typed configuration, and
+validation — and the same rules apply on Node.js and in the browser.
 
-## Design Principles
+> **One environment at a time.** The precedence chain below governs a single
+> application context. Platform layers, multiple contexts, and several apps in
+> one process compose through
+> [Guide 49 — Configuration Layering & Context Composition](../guides/49-configuration-layering-and-context-composition.md).
 
-1. **Benchmarks drive defaults.** The default implementation and code paths are
-   chosen by measurement on representative workloads, not by taste. When two
-   strategies measure within noise of each other, the one with better sustained
-   behaviour wins; the alternative stays available as an opt-in.
-2. **Fail loud everywhere.** Configuration problems surface immediately instead
-   of being swallowed, so a typo fails in CI rather than degrading silently in
-   production. Missing values, bad profile expressions, conversion failures,
-   and invalid environments raise instead of falling back.
-3. **Replace, never mutate.** Sources are captured and replaced or reordered as
-   whole units. In-place edits that would shadow another source are
-   unsupported, and the process environment is snapshotted so later changes
-   cannot quietly alter a running configuration.
-4. **One conversion path.** Defaults, placeholders, and real values all flow
-   through the same conversion logic, so there is no second set of rules that
-   could disagree about what a value means.
-5. **One source of truth per contract.** What is active is owned in one place;
-   the documented precedence chain is stated in one place; environment schemas
-   are the configuration contract.
-6. **Secure parsing, not evaluation.** Profile expressions and keys are parsed
-   rather than executed as code, which keeps the stack safe under strict
-   content security policies and clean for static scanners.
-7. **Declared in the language.** Configuration and environment use standard
-   JavaScript decorators, so the model stays familiar to anyone who knows the
-   language and legible to tooling.
+## Core Building Blocks
+
+**Property sources.** Configuration is a named, ordered list of sources, and
+higher sources win. Sources are captured when the environment is built, so a
+later mutation cannot change a running configuration.
+
+**Profiles.** Profiles select which sources and components are active. They
+accept expressions such as `dev | (test & !ci)`, activate from the command
+line, environment, or builder, and apply defaults only when nothing explicit
+selects one. `application-{profile}.json` belongs to the same `application`
+source as `application.json`.
+
+**Typed configuration.** `@configurationProperties` binds a prefix to a class;
+`@property(path, Type)` declares the runtime conversion target because
+TypeScript types are
+[erased at runtime](https://www.typescriptlang.org/docs/handbook/2/basic-types.html).
+`@defaultValue` and `@nestedConfig` cover defaults and nested groups. Exact key
+paths are the default; relaxed kebab/camel matching is opt-in per class.
+
+**Validation.** `@environment` declares a Zod schema for the resolved values.
+Independent shape violations aggregate into one boot-time report; a value that
+cannot bind fails immediately.
+
+```typescript
+import { configuration, defaultValue, environment, property } from '@ndigo/context';
+import { configurationProperties } from '@ndigo/boot';
+import { z } from 'zod';
+
+@configurationProperties('server')
+class ServerConfig {
+    @property('port', Number) @defaultValue('8080') port!: number;
+}
+
+@environment(z.object({ server: z.object({ port: z.coerce.number().min(1) }) }))
+@configuration
+class AppConfig {}
+```
 
 ## Precedence Chain
 
+Sources are ordered, and higher wins:
+
+```text
+CLI → boot properties → process environment → config server → .env*
+     → application-{profile}.json → application.json → defaults
 ```
-CLI → boot properties → process environment → .env → application-{profile}.json
-     → application.json → defaults
-```
+
+`*` `.env` is a reserved slot: Ndigo does not read `.env` files by default. A
+custom source can fill the slot when an application needs one.
 
 The doctrine is deployer-over-developer: an operator's runtime choice beats a
-value baked into the artefact. Among operator channels, the command line is
-most specific. The chain is stated once, and both the implementation and its
-integration test read from that statement, so the documented order cannot
-drift from the executed one.
+value baked into the artefact, and the command line is the most specific
+operator channel. This follows the [Twelve-Factor][12factor] rule that
+environment variables outrank checked-in configuration.
 
-## Key Tensions and Resolutions
+**Config files merge; they do not stack.** The base `application.json` and every
+active `application-{profile}.json` deep-merge into one `application` source:
+objects merge, scalars override, arrays replace, and later profile files
+override earlier ones. The config server sits in its own slot above files and
+below the process environment.
 
-| Tension                                         | Resolution                                                                                                                           |
-| :---------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------- |
-| Origin tracking versus a flat model             | Provenance is optional and per-property; a structural default records no winner. Finer granularity is additive.                      |
-| How much a refresh redoes                       | Rebuild and clear caches only. Customizers do not re-run, so a refresh cannot double-apply; platform snapshots keep their own chain. |
-| Relaxed binding versus silent key drift         | Exact key paths are the default. Relaxed kebab/camel matching is opt-in per class, so a typo'd environment key still fails loudly.   |
-| Profile defaults stated but not applied         | The environment owns the effective profile set; defaults apply only when nothing explicit selects one.                               |
-| Profile files as separate sources versus merged | A first-wins chain per file would shadow nested overrides, so all profile files deep-merge into one source.                          |
-| Fail fast versus aggregate                      | Dependent failures — a value that cannot bind — stop immediately. Independent shape violations aggregate into one report at boot.    |
-| Deriving a nested group's prefix                | A field decorator cannot read a TypeScript type, so the field name supplies the sub-prefix and the author supplies the initializer.  |
-| Conversion targets                              | TypeScript types vanish at runtime, so the target is declared explicitly rather than inferred.                                       |
+## Design Principles
+
+1. **Fail loud everywhere.** Missing values, malformed profile expressions,
+   conversion failures, and invalid environments raise. A typo fails at boot or
+   in CI, not in production.
+2. **Replace, never mutate.** Sources are captured and replaced or reordered as
+   whole units. In-place edits that would shadow another source are unsupported,
+   and the process environment is snapshotted.
+3. **One conversion path.** Defaults, placeholders, and real values flow through
+   the same conversion logic. One precedence chain and one schema per
+   environment keep the contract unambiguous.
+4. **Secure parsing, not evaluation.** Profile expressions and keys are parsed,
+   never executed, so the stack is safe under a strict
+   [Content Security Policy][csp] and clean for static scanners.
+
+Default implementations are chosen by measurement rather than taste: when two
+strategies are within noise, the one with better sustained behaviour wins and
+the alternative stays available as an opt-in. Configuration and environment are
+declared with standard JavaScript decorators, so the model stays legible to
+language tooling.
 
 ## Security Posture
 
-- **No code evaluation.** Profile expressions and keys are parsed, not
-  executed, so the stack remains safe under strict content security policies.
-- **Tamper-resistant captures.** Sources are copied into prototype-free
-  snapshots and the process environment is captured, so later changes cannot
-  mutate a running configuration.
-- **Explicit browser boundary.** Only values explicitly meant for the browser
-  are exposed to browser code. Anything in a client-visible source is public
-  by definition.
-- **Twelve-factor precedence.** Environment files never override variables
-  already present in the environment.
-- **Fail-loud validation.** Invalid configuration is caught at boot, in CI,
-  rather than in production.
+- **No code evaluation.** Profile expressions and keys are parsed; nothing in
+  configuration is evaluated as code.
+- **Captured, not linked.** Sources are captured when the environment is built,
+  and the process environment is snapshotted, so later changes cannot alter a
+  running application.
+- **Explicit browser boundary.** Only values explicitly intended for the browser
+  are exposed to browser code; anything in a client-visible source is public by
+  definition.
+- **Twelve-factor precedence.** Environment variables never lose to values in
+  config files.
 
-## What the Model Covers
+## How It Behaves
 
-The environment stack is complete and production-ready. It provides:
+- **Refresh** rebuilds resolved values and clears caches without re-running
+  customizers, so a refresh cannot double-apply.
+  [Guide 43](../guides/43-live-configuration-and-secrets.md) covers live
+  rebinding and encrypted secrets.
+- **Profile groups** expand one level. A group can contain profile names, but a
+  group name inside another group is not expanded further.
+- **Provenance** — which source supplied a value — is optional and reported at
+  top-level granularity; Guide 03 documents the opt-in index.
+- **Multi-context** layering is outside this chain; see
+  [Guide 49](../guides/49-configuration-layering-and-context-composition.md).
 
-- Named, ordered sources with pluggable lookup strategies
-- Placeholders with defaults, cycle guards, typed reads, and command-line
-  arguments
-- A documented precedence chain and standard sources
-- Profiles with expressions, defaults, environment and command-line activation,
-  and groups
-- Typed binding with defaults, nesting, and relaxed matching
-- Origin tracking, post-processing, and a formal refresh operation
-- Schema validation that aggregates and reports every violation at boot
+## Where to Go Next
 
-Remaining work is additive: finer-grained origin tracking, validation during
-binding, transformative validation, and profile groups that reference other
-groups.
+- [Guide 03 — Environment & Configuration](../guides/03-environment-configuration.md)
+  — the practical walkthrough: sources, profiles, placeholders, binding, and
+  validation.
+- [Guide 43 — Live Configuration, Secrets & Remote Config](../guides/43-live-configuration-and-secrets.md)
+  — refresh, encrypted values, and the remote source.
+- [Guide 49 — Configuration Layering & Context Composition](../guides/49-configuration-layering-and-context-composition.md)
+  — platform/application layers and multi-context setups.
+- [Architecture Overview](../../ARCHITECTURE.md) — where configuration sits in
+  the application lifecycle.
+- [Security](./security.md) — the wider trust model.
 
-## Reading Order
-
-1. [Guide 03 — Environment & Configuration](../guides/03-environment-configuration.md) (usage)
-2. This page (the architecture)
+[12factor]: https://12factor.net/config
+[csp]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP

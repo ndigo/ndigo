@@ -19,8 +19,9 @@ import { SESSION_COOKIE } from './session-cookie';
  * `@authenticated`/`@authorized` and fails closed with 401/403):
  *
  * ```ts
+ * const sessionToken = (route: Route) => getNodeRequest(route)?.cookies[SESSION_COOKIE] ?? null;
  * mapping.interceptors.push(new NodeSessionInterceptor(sessionStore));
- * mapping.interceptors.push(new AuthRouteGuard(authServer, cookieTokenExtractor, 'credentials'));
+ * mapping.interceptors.push(new AuthRouteGuard(authServer, sessionToken, 'credentials'));
  * ```
  *
  * Security contract:

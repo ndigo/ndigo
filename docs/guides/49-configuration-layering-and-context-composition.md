@@ -1,4 +1,4 @@
-# Guide 49 — Configuration Layering & Context Composition
+# Guide 49 — Config Layering & Contexts
 
 Most Ndigo applications start with one context. As a codebase grows, three
 different needs show up and are easy to confuse:
@@ -384,11 +384,11 @@ teardown genuinely differs.
 
 - [Guide 03 — Environment & Configuration](03-environment-configuration.md) — the
   precedence chain, profiles, binding, and validation for one environment.
-- [Guide 04 — Dependency Injection, Scopes & Lifecycle](04-dependency-injection-and-lifecycle.md)
+- [Guide 04 — Injection & Lifecycle](04-dependency-injection-and-lifecycle.md)
   — entry ownership, parent/child contexts, and close order.
-- [Guide 31 — Micro Frontends with `@ndigo/host`](31-micro-frontends.md) — shell
+- [Guide 31 — Micro Frontends](31-micro-frontends.md) — shell
   and feature composition, shared dependencies, and event relays.
-- [Guide 43 — Live Configuration, Secrets & Remote Config](43-live-configuration-and-secrets.md)
+- [Guide 43 — Live Configuration & Secrets](43-live-configuration-and-secrets.md)
   — refresh, at-rest secrets, and the remote config server.
-- [Guide 38 — Deployment & Production Readiness](38-deployment-and-production-readiness.md)
+- [Guide 38 — Deployment & Production](38-deployment-and-production-readiness.md)
   — environment promotion and operational concerns.

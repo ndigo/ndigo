@@ -1,4 +1,4 @@
-# Guide 38 — Deployment & Production Readiness
+# Guide 38 — Deployment & Production
 
 Deploying a Ndigo app is mostly assembly: build the packages and app, provide
 configuration and secrets, choose a process model, expose the health surface,
@@ -202,13 +202,13 @@ and `X-Forwarded-Proto`; keep the proxy's hop count minimal.
 ## See also
 
 - [Guide 03 — Environment & Configuration](03-environment-configuration.md) — the boot-time pipeline
-- [Guide 43 — Live Configuration, Secrets & Remote Config](43-live-configuration-and-secrets.md) — refresh, secrets, remote config
-- [Guide 04 — Dependency Injection, Scopes & Lifecycle](04-dependency-injection-and-lifecycle.md) — shutdown hooks
+- [Guide 43 — Live Configuration & Secrets](43-live-configuration-and-secrets.md) — refresh, secrets, remote config
+- [Guide 04 — Injection & Lifecycle](04-dependency-injection-and-lifecycle.md) — shutdown hooks
 - [Guide 24 — Distributed Locks](24-distributed-locks.md) — single-executor work across slots
 - [Guide 25 — Clustering](25-clustering.md) — the supervisor and worker slots
 - [Guide 32 — Telemetry](32-telemetry.md) — traces, metrics, logs
 - [Guide 46 — Upgrading Ndigo](46-upgrading.md) — release/rollback migration path
 - [Guide 45 — Performance & Scaling](45-performance-and-scaling.md) — budgets and load
 - [Guide 33 — Management Endpoints](33-management-endpoints.md) — health and metrics
-- [Guide 37 — The `ndigo` CLI](37-ndigo-cli.md) — `serve`, `build`, `dev`
+- [Guide 37 — The Ndigo CLI](37-ndigo-cli.md) — `serve`, `build`, `dev`
 - [Security Architecture](../architecture/security.md) — trust boundaries

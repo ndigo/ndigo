@@ -151,4 +151,4 @@ writes persistent state, so a rollback is a code revert plus `pnpm install`.
 ## References
 
 - [Annotation, advice, and member transformers](../architecture/annotation-and-transformer-model.md)
-- [Guide 35 — Method Advice & Resilience](../guides/35-method-interception-and-resilience.md)
+- [Guide 35 — Resilience & Retries](../guides/35-method-interception-and-resilience.md)

@@ -216,9 +216,9 @@ release.
 
 ## See also
 
-- [Guide 30 — UI Libraries & Component Integration](30-component-integration.md) — the vetting checklist
+- [Guide 30 — UI Components & Integration](30-component-integration.md) — the vetting checklist
 - [Guide 18 — Forms End-to-End](18-forms-end-to-end.md) — labels, errors, PRG
-- [Guide 09 — Views, Targets & Content Negotiation](09-views-and-content-negotiation.md) — first paint and view targets
+- [Guide 09 — Views & Content Negotiation](09-views-and-content-negotiation.md) — first paint and view targets
 - [Guide 29 — Signals & Islands](29-signals-and-islands.md) — hydration
 - [`@ndigo/ui`](../../packages/ndigo-ui/README.md) — tokens, app-shell, conformance tests
 - [`@ndigo/view-webcomponent`](../../packages/ndigo-view-webcomponent/README.md) — FACE and hydration

@@ -104,7 +104,7 @@ of call sites. Both demo hosts exercise this discipline.
 - [Guide 29 — Signals & Islands](../guides/29-signals-and-islands.md) — the
   reactive half in detail: streaming, event bridges, hydration, and
   server-sent updates.
-- [Guide 31 — Micro Frontends with `@ndigo/host`](../guides/31-micro-frontends.md)
+- [Guide 31 — Micro Frontends](../guides/31-micro-frontends.md)
   — the host and feature tutorial.
 - [Package index](https://ndigo.dev/reference/packages/) — the host, context,
   router, view, and web-component packages.

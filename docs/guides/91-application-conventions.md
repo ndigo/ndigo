@@ -187,6 +187,6 @@ repo-wide rename. When a row is complete, delete it from this table.
 
 - [apps/README.md](../../apps/README.md) — the numbered ladder, ports, and per-app index
 - [STYLE_GUIDE.md](../../STYLE_GUIDE.md) — file, symbol, and role-suffix rules in the framework packages
-- [Guide 37 — The `ndigo` CLI](37-ndigo-cli.md) — `ndigo new` allocates the next app number and port
+- [Guide 37 — The Ndigo CLI](37-ndigo-cli.md) — `ndigo new` allocates the next app number and port
 
 [Back to guides](./README.md)

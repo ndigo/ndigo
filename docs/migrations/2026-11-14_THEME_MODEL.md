@@ -119,5 +119,5 @@ deprecation window, a rollback needs only the version pin.
 ## References
 
 - [The theme-model decision](../decisions/2026-11-14_AD106_THEME_MODEL.md)
-- [Guide 30 — UI Libraries & Component Integration](../guides/30-component-integration.md)
+- [Guide 30 — UI Components & Integration](../guides/30-component-integration.md)
 - Issue #482

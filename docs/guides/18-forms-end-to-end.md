@@ -147,7 +147,7 @@ try {
 
 - [Guide 06 — Argument Binding](06-argument-binding.md) — `dataBinderValue` and sources
 - [Guide 07 — Request Validation](07-request-validation.md) — schemas and 422
-- [Guide 09 — Views, Targets & Content Negotiation](09-views-and-content-negotiation.md) — the form view model
+- [Guide 09 — Views & Content Negotiation](09-views-and-content-negotiation.md) — the form view model
 - [Guide 14 — Multipart & File Upload](14-multipart-and-file-upload.md) — file fields
 - [Guide 44 — Accessibility](44-accessibility.md) — labels, errors, and focus
 - [Guide 28 — Security Hardening](28-security-hardening.md) — CSRF

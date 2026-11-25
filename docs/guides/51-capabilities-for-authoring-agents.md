@@ -206,9 +206,9 @@ that changes one surface without the other is not finished.
 
 ## See also
 
-- [Guide 37 — The `ndigo` CLI](37-ndigo-cli.md) — the command surface the
+- [Guide 37 — The Ndigo CLI](37-ndigo-cli.md) — the command surface the
   authoring agent drives
-- [Guide 47 — AI Agents, Model Loops & Streaming](47-ai-agents.md) — the runtime
+- [Guide 47 — AI Agents & Streaming](47-ai-agents.md) — the runtime
   agent side
 - [Guide 48 — Agent-Facing Surfaces](48-agent-facing-surfaces.md) — one handler,
   many surfaces

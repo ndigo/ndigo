@@ -1,4 +1,4 @@
-# Guide 31 — Micro Frontends with `@ndigo/host`
+# Guide 31 — Micro Frontends
 
 A Ndigo shell can compose independently built application slices without
 sharing source code. Each slice is a child application context, mounted under a
@@ -188,7 +188,7 @@ layering options and the boundary.
 
 ## See also
 
-- [Guide 49 — Configuration Layering & Context Composition](49-configuration-layering-and-context-composition.md)
+- [Guide 49 — Config Layering & Contexts](49-configuration-layering-and-context-composition.md)
   — profiles vs config layers vs context boundaries, and the shell/feature event model.
 - [Guide 02 — Building a Browser App](02-building-a-browser-app.md) — the browser preset and router
 - [Guide 05 — Routing & Route Conditions](05-routing-and-route-conditions.md) — partitions and feature routing

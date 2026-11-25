@@ -106,7 +106,7 @@ and [apps/12-ndigo-petclinic](apps/12-ndigo-petclinic/README.md); the model is
 2. [`@ndigo/ai`](packages/ndigo-ai/README.md) — provider-neutral agent loop, streaming, and structured output
 3. [`@ndigo/ai-sdk`](packages/ndigo-ai-sdk/README.md) — the Vercel AI SDK adapter (the only package that imports it)
 
-Then follow [guide 47 — AI Agents, Model Loops & Streaming](docs/guides/47-ai-agents.md)
+Then follow [guide 47 — AI Agents & Streaming](docs/guides/47-ai-agents.md)
 and [guide 48 — Agent-Facing Surfaces](docs/guides/48-agent-facing-surfaces.md);
 the reference app is [apps/21-ndigo-agent-lab](apps/21-ndigo-agent-lab/README.md).
 

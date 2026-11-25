@@ -1,4 +1,4 @@
-# Guide 22 — Jobs & the Transactional Outbox
+# Guide 22 — Background Jobs
 
 How background work is delivered in Ndigo: `@ndigo/jobs` — the `JobDriver`
 contract, worker execution, and the transactional outbox that ties side

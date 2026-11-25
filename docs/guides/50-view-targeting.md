@@ -8,7 +8,7 @@ the two placement models, the ordered targeter chain, the built-in targeters
 and their safety rules, how targets are cached and destroyed, and how Node and
 the browser differ.
 
-**Audience:** Browser and Node application developers · **Prerequisites:** [Guide 09 — Views, Targets & Content Negotiation](09-views-and-content-negotiation.md) (view targets and the render pipeline) · **Reference app:** [apps/08-ndigo-views](https://github.com/ndigo/ndigo/tree/main/apps/08-ndigo-views) (centralized placement), [apps/01-ndigo-hello](https://github.com/ndigo/ndigo/tree/main/apps/01-ndigo-hello) (decentralized placement)
+**Audience:** Browser and Node application developers · **Prerequisites:** [Guide 09 — Views & Content Negotiation](09-views-and-content-negotiation.md) (view targets and the render pipeline) · **Reference app:** [apps/08-ndigo-views](https://github.com/ndigo/ndigo/tree/main/apps/08-ndigo-views) (centralized placement), [apps/01-ndigo-hello](https://github.com/ndigo/ndigo/tree/main/apps/01-ndigo-hello) (decentralized placement)
 
 ## What you'll learn
 
@@ -288,7 +288,7 @@ pipeline runs. That keeps the platform branches free of targeting overhead.
 
 ## See also
 
-- [Guide 09 — Views, Targets & Content Negotiation](09-views-and-content-negotiation.md) — targets, negotiation, resolvers
+- [Guide 09 — Views & Content Negotiation](09-views-and-content-negotiation.md) — targets, negotiation, resolvers
 - [Guide 02 — Building a Browser App](02-building-a-browser-app.md) — app wiring and DOM targets
 - [Guide 41 — Custom View Engines](41-custom-view-engines.md) — adding React/Vue or a bespoke renderer
 - [`@ndigo/view`](../../packages/ndigo-view/README.md) — the targeter contract and composite

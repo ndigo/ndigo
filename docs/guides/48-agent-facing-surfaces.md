@@ -324,10 +324,10 @@ installed-component rendering and unknown-component rejection.
 - Package references: [`@ndigo/mcp`](../../packages/ndigo-mcp/README.md),
   [`@ndigo/view`](../../packages/ndigo-view/README.md),
   [`@ndigo/view-webcomponent`](../../packages/ndigo-view-webcomponent/README.md)
-- [Guide 09 — Views, Targets & Content Negotiation](09-views-and-content-negotiation.md)
-- [Guide 30 — Component Integration](30-component-integration.md)
-- [Guide 37 — The `ndigo` CLI](37-ndigo-cli.md)
-- [Guide 47 — AI Agents, MCP Tools & Streaming](47-ai-agents.md)
+- [Guide 09 — Views & Content Negotiation](09-views-and-content-negotiation.md)
+- [Guide 30 — UI Components & Integration](30-component-integration.md)
+- [Guide 37 — The Ndigo CLI](37-ndigo-cli.md)
+- [Guide 47 — AI Agents & Streaming](47-ai-agents.md)
 - [Guide 51 — Capabilities for Authoring Agents](51-capabilities-for-authoring-agents.md)
 - [Guide 52 — The Agent Operate Contract](52-agent-operate-contract.md)
 - Reference apps: [apps/21-ndigo-agent-lab](https://github.com/ndigo/ndigo/tree/main/apps/21-ndigo-agent-lab), [apps/20-ndigo-ui-lab](https://github.com/ndigo/ndigo/tree/main/apps/20-ndigo-ui-lab)

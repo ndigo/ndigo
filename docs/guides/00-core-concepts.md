@@ -236,6 +236,6 @@ Application Context Lifecycle.
 
 - [Guide 01 — Building a Node API](01-building-a-node-api.md) — the Node tutorial
 - [Guide 02 — Building a Browser App](02-building-a-browser-app.md) — the browser tutorial
-- [Guide 04 — Dependency Injection, Scopes & Lifecycle](04-dependency-injection-and-lifecycle.md) — the container in depth
+- [Guide 04 — Injection & Lifecycle](04-dependency-injection-and-lifecycle.md) — the container in depth
 - [Annotation, Advice & Member Transformer](../architecture/annotation-and-transformer-model.md) — what decorators declare, what runs around a call, and what replaces a member
 - [ARCHITECTURE.md](../../ARCHITECTURE.md) — layers, principles, and package map

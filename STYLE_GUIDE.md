@@ -49,7 +49,7 @@ function example() {
 ```json
 {
     "name": "@ndigo/core",
-    "version": "3.0.0-alpha.0"
+    "version": "0.0.1"
 }
 ```
 
@@ -1288,7 +1288,7 @@ export class MetadataManager {}
 
 **Combining with Description-First Pattern:**
 
-Role-based suffixes work seamlessly with the description-first pattern from Section 3.11:
+Role-based suffixes work seamlessly with the description-first pattern from Section 3.10:
 
 ```typescript
 // ✅ Correct: [Description][Role] with semantic suffix
@@ -2042,11 +2042,11 @@ class EventLogger {
 // From @ndigo/view/content-negotiation-view-resolver.ts
 class ContentNegotiationViewResolver {
     // ✅ Correct: get* for collecting from multiple sources
-    getAllFileExtenstions(): string[] {
+    getAllFileExtensions(): string[] {
         // Aggregates extensions from all resolvers
     }
 
-    getMediaTypes(request: any): MediaType[] {
+    getMediaTypes(request: unknown): MediaType[] {
         // Extracts media types from request
     }
 }
@@ -2352,13 +2352,13 @@ class MediaType {
 
 **Methods that create new instances:**
 
-| Prefix    | Meaning                    | Returns            | Parameters    | Examples                                     |
-| :-------- | :------------------------- | :----------------- | :------------ | :------------------------------------------- |
-| `create*` | Creates new instance       | New object         | Configuration | `create()`, `createBlob()`, `createLogger()` |
-| `from*`   | Parses/converts from input | New object or null | Source data   | `fromExtension()`, `fromRequest()`, `from()` |
-| `parse*`  | Parses string to object    | Object or throws   | String input  | `parse()`, `parseInt()`, `parseFloat()`      |
-| `of*`     | Factory with varargs       | New object         | Variable args | `of()`, `Array.of()`, `Promise.of()`         |
-| `make*`   | Alternative to create      | New object         | Configuration | `make()`, `makeHandler()`                    |
+| Prefix    | Meaning                      | Returns                        | Parameters    | Examples                                           |
+| :-------- | :--------------------------- | :----------------------------- | :------------ | :------------------------------------------------- |
+| `create*` | Creates new instance         | New object                     | Configuration | `create()`, `createBlob()`, `createLogger()`       |
+| `from*`   | Parses/converts from input   | New object or null             | Source data   | `fromExtension()`, `fromRequest()`, `from()`       |
+| `parse*`  | Parses string to typed value | Typed value, `null`, or throws | String input  | `parseUrlGlob()`, `parseMediaType()`, `parseInt()` |
+| `of*`     | Factory with varargs         | New object                     | Variable args | `of()`, `Array.of()`, `Promise.of()`               |
+| `make*`   | Alternative to create        | New object                     | Configuration | `make()`, `makeHandler()`                          |
 
 **Examples:**
 
@@ -2459,14 +2459,14 @@ const promise = Promise.resolve(42);
 
 **Methods that convert between formats:**
 
-| Prefix       | Meaning                                                                                  | Returns               | Parameters         | Examples                                            |
-| :----------- | :--------------------------------------------------------------------------------------- | :-------------------- | :----------------- | :-------------------------------------------------- |
-| `to*`        | Converts to format                                                                       | String or object      | Often accepts opts | `toString()`, `toJSON()`, `toContentType()`         |
-| `format*`    | Formats to string                                                                        | String                | May accept format  | `format()`, `formatDate()`                          |
-| `convert*`   | Bidirectional conversion                                                                 | Converted value       | None               | `convert()`, `convertToUTC()`                       |
-| `with*`      | Creates copy with change                                                                 | New instance (immut)  | New value          | `withCharset()`, `withParameter()`                  |
-| `parse*`     | Deserializes a string into a structured value; returns `null` or throws on invalid input | Typed value or `null` | String input       | `parseKeypath()`, `parseWildcard()`, `JSON.parse()` |
-| `stringify*` | Serializes a value to its string representation                                          | String                | Value to serialize | `JSON.stringify()`, `stringifyParameters()`         |
+| Prefix       | Meaning                                                                                                                   | Returns               | Parameters         | Examples                                             |
+| :----------- | :------------------------------------------------------------------------------------------------------------------------ | :-------------------- | :----------------- | :--------------------------------------------------- |
+| `to*`        | Converts to format                                                                                                        | String or object      | Often accepts opts | `toString()`, `toJSON()`, `toContentType()`          |
+| `format*`    | Formats to string                                                                                                         | String                | May accept format  | `format()`, `formatDate()`                           |
+| `convert*`   | Bidirectional conversion                                                                                                  | Converted value       | None               | `convert()`, `convertToUTC()`                        |
+| `with*`      | Creates copy with change                                                                                                  | New instance (immut)  | New value          | `withCharset()`, `withParameter()`                   |
+| `parse*`     | Parses a string into a typed value; returns `null` for expected invalid input, throws when invalid input is unrecoverable | Typed value or `null` | String input       | `parseUrlGlob()`, `parseMediaType()`, `JSON.parse()` |
+| `stringify*` | Serializes a value to its string representation                                                                           | String                | Value to serialize | `JSON.stringify()`, `stringifyParameters()`          |
 
 **Examples:**
 
@@ -2537,26 +2537,24 @@ class PropertyValue {
     }
 }
 
-// From @ndigo/core — parse* for string deserialization
-// parse* functions return the result directly or null on failure (never a discriminated union)
-function parseWildcard(pattern: string): string {
-    // Always succeeds — any string is a valid wildcard
-    return `^${pattern.replace(/\*/g, '.*?')}$`;
-}
-
-function parseKeypath(input: string): KeypathToken[] | null {
-    // Returns null for invalid input rather than throwing
-    // (callers treat an unparseable keypath as "no match" rather than an error)
+// From @ndigo/core/url-glob.ts — parse* for string deserialization
+// parse* returns the parsed value directly: null when invalid input is an expected
+// outcome, or throws when it is an unrecoverable error. Never a discriminated union.
+function parseUrlGlob(pattern: string): string | null {
+    // Returns null for an invalid glob rather than throwing
+    // (callers treat an unparseable pattern as "no match" rather than an error)
     // ...
 }
 
-// ❌ Wrong: parse* that returns a discriminated union (use T | null instead)
-// function parseKeypath(input: string): { isError: false; result: KeypathToken[] } | { isError: true; error: string }
-// Unnecessarily complex — callers check `if (keypath)` not `if (!result.isError)`
+// From @ndigo/core/media-type.ts — throw when invalid input is unrecoverable
+function parseMediaType(value: string): MediaType {
+    // Throws IllegalStateError when the value cannot be parsed
+    // ...
+}
 
-// ✅ parse* functions align with the Converter<string, T> type alias from @ndigo/core
-import type { Converter } from '@ndigo/core';
-const parseWildcard: Converter<string, string> = (pattern) => `^${pattern.replace(/\*/g, '.*?')}$`;
+// ❌ Wrong: parse* that returns a discriminated union (use T | null for expected failures)
+// function parseUrlGlob(pattern: string): { isError: false; result: string } | { isError: true; error: string }
+// Unnecessarily complex — callers check `if (glob)` not `if (!result.isError)`
 
 // Real JavaScript examples
 const arr = [1, 2, 3];
@@ -2781,25 +2779,25 @@ class GoodMediaType {
 
 #### Complete Reference Table
 
-| Prefix    | Use Case               | Returns              | Side Effects | May Fail | Example              |
-| :-------- | :--------------------- | :------------------- | :----------- | :------- | :------------------- |
-| `get*`    | Retrieve from external | Value or null        | None         | Yes      | `getHandler(route)`  |
-| `is*`     | Type/state check       | boolean              | None         | No       | `isWildcardType()`   |
-| `has*`    | Presence check         | boolean              | None         | No       | `hasProperty(key)`   |
-| `like*`   | Duck-typing check      | boolean (type guard) | None         | No       | `likeArray(value)`   |
-| `set*`    | Mutate value           | void or this         | Mutates      | No       | `setProperty(k, v)`  |
-| `add*`    | Add to collection      | void or this         | Mutates      | No       | `addProcessor(p)`    |
-| `remove*` | Remove from collection | boolean or this      | Mutates      | No       | `removeListener(fn)` |
-| `clear*`  | Empty collection       | void                 | Mutates      | No       | `clearCache()`       |
-| `update*` | Modify existing        | void or this         | Mutates      | No       | `updateStatus(s)`    |
-| `delete*` | Remove/destroy         | boolean              | Mutates      | No       | `deleteEntry(k)`     |
-| `create*` | Create instance        | New object           | None         | No       | `createBlob(data)`   |
-| `from*`   | Parse/convert from     | Object or null       | None         | Yes      | `fromExtension(ext)` |
-| `parse*`  | Parse string           | Object or throws     | None         | Yes      | `parse(str)`         |
-| `of*`     | Varargs factory        | New object           | None         | No       | `of(...args)`        |
-| `to*`     | Transform to format    | String/object        | None         | No       | `toString()`         |
-| `format*` | Format to string       | String               | None         | No       | `formatDate(d)`      |
-| `with*`   | Immutable update       | New instance         | None         | No       | `withCharset(cs)`    |
+| Prefix    | Use Case               | Returns                  | Side Effects | May Fail | Example              |
+| :-------- | :--------------------- | :----------------------- | :----------- | :------- | :------------------- |
+| `get*`    | Retrieve from external | Value or null            | None         | Yes      | `getHandler(route)`  |
+| `is*`     | Type/state check       | boolean                  | None         | No       | `isWildcardType()`   |
+| `has*`    | Presence check         | boolean                  | None         | No       | `hasProperty(key)`   |
+| `like*`   | Duck-typing check      | boolean (type guard)     | None         | No       | `likeArray(value)`   |
+| `set*`    | Mutate value           | void or this             | Mutates      | No       | `setProperty(k, v)`  |
+| `add*`    | Add to collection      | void or this             | Mutates      | No       | `addProcessor(p)`    |
+| `remove*` | Remove from collection | boolean or this          | Mutates      | No       | `removeListener(fn)` |
+| `clear*`  | Empty collection       | void                     | Mutates      | No       | `clearCache()`       |
+| `update*` | Modify existing        | void or this             | Mutates      | No       | `updateStatus(s)`    |
+| `delete*` | Remove/destroy         | boolean                  | Mutates      | No       | `deleteEntry(k)`     |
+| `create*` | Create instance        | New object               | None         | No       | `createBlob(data)`   |
+| `from*`   | Parse/convert from     | Object or null           | None         | Yes      | `fromExtension(ext)` |
+| `parse*`  | Parse string           | Value, `null`, or throws | None         | Yes      | `parse(str)`         |
+| `of*`     | Varargs factory        | New object               | None         | No       | `of(...args)`        |
+| `to*`     | Transform to format    | String/object            | None         | No       | `toString()`         |
+| `format*` | Format to string       | String                   | None         | No       | `formatDate(d)`      |
+| `with*`   | Immutable update       | New instance             | None         | No       | `withCharset(cs)`    |
 
 #### Rationale
 

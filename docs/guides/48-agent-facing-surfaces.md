@@ -1,9 +1,12 @@
 # Guide 48 — Agent-Facing Surfaces
 
-Make one handler a REST route, an OpenAPI operation, an MCP tool, an MCP App,
-an A2UI surface, and a browser tool — from one schema and without duplicating a
-single description. Reference applications: [apps/21-ndigo-agent-lab](https://github.com/ndigo/ndigo/tree/main/apps/21-ndigo-agent-lab) for the
-Node surfaces and [apps/20-ndigo-ui-lab](https://github.com/ndigo/ndigo/tree/main/apps/20-ndigo-ui-lab) for the browser surfaces.
+You shouldn't have to describe the same endpoint twice — once for REST, once for OpenAPI, once for an MCP tool. Ndigo projects one handler's schema into all of them: REST route, OpenAPI operation, MCP tool, MCP App, A2UI surface, and browser tool.
+
+**Use for:** exposing the same handler as REST, OpenAPI, MCP, A2UI, and browser tools.
+
+**Not for:** handlers that should stay internal; use `@toolMapping` only where you want agent access. For the CLI and verification workflow, see Guide 51.
+
+One schema, many surfaces: `@parameters` and `validatedBy` are the only declarations you write.
 
 **Audience:** Node · browser · **Prerequisites:** Guides [05](05-routing-and-route-conditions.md), [06](06-argument-binding.md), [07](07-request-validation.md), [12](12-openapi-and-api-docs.md), [30](30-component-integration.md), [37](37-ndigo-cli.md) · **Reference app:** [apps/21-ndigo-agent-lab](https://github.com/ndigo/ndigo/tree/main/apps/21-ndigo-agent-lab) (Node), [apps/20-ndigo-ui-lab](https://github.com/ndigo/ndigo/tree/main/apps/20-ndigo-ui-lab) (browser)
 

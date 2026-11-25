@@ -1,9 +1,12 @@
 # Guide 20 — ORM & Migrations
 
-The journaled migration lifecycle: decorator entities are the
-single schema source, `ndigo db generate` renders versioned migrations from
-them, `ndigo db migrate` applies them through the journaled runner, and
-`ndigo db status` reports the journal. Reference application: [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api).
+Your database schema changes over time, and each change needs to be versioned, reviewed, and applied safely. Ndigo uses decorator entities as the single schema source, generates versioned migrations from them, and applies them through a journaled runner that tracks what has run.
+
+**Use for:** evolving a database schema with versioned, reviewable migrations.
+
+**Not for:** ad-hoc schema changes in production; always generate and commit migrations. For runtime data changes, use the ORM directly.
+
+Decorator entities are the single schema source; `ndigo db generate` renders migrations, `ndigo db migrate` applies them, and `ndigo db status` reports the journal.
 
 **Audience:** Node application developers · **Prerequisites:** [Guide 01](01-building-a-node-api.md) · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)
 

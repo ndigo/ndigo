@@ -1,10 +1,12 @@
 # Guide 12 — OpenAPI & API Docs
 
-The framework generates an [OpenAPI 3.0.3](https://spec.openapis.org/oas/v3.0.3)
-document **from the dispatch metadata itself** — the same route table
-and parameter maps that serve requests, so the spec cannot drift from
-behavior — and serves it with Swagger UI out of the box. No comments to
-write, no second source of truth.
+Your API documentation shouldn't drift from your code. Ndigo generates the OpenAPI spec from the same dispatch metadata that serves requests, so the spec and the behavior can never disagree. Swagger UI is served out of the box.
+
+**Use for:** serving a generated OpenAPI spec with Swagger UI, documenting operations and responses.
+
+**Not for:** hand-maintained API docs; the spec is generated, not authored.
+
+The framework generates an OpenAPI 3.0.3 document from the dispatch metadata itself — the same route table and parameter maps that serve requests.
 
 **Audience:** Node API developers · **Prerequisites:** Guides [01](01-building-a-node-api.md), [07](07-request-validation.md), and [13](13-dto-conversion.md) · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)
 

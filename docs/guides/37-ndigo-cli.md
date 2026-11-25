@@ -1,13 +1,12 @@
 # Guide 37 — The Ndigo CLI
 
-One `ndigo` entry replaces the bespoke per-app start scripts and covers the
-whole command surface: app lifecycle (serve/dev — serve replicates across
-worker slots), release-qc fronts (build/test/lint/format/typecheck),
-scaffolding (new/generate/add), db migrations, the UI registry (`ui`), and the
-maintenance/DX tools (inspect/doctor/info/clean/config/env/logs/openapi/update/
-completion).
-Built on `@stricli/core` as an embedded library — commands, typed flags,
-`--help`, exit codes. Full tables below and in the package README.
+Every app needs the same lifecycle commands: serve, build, test, lint, scaffold, migrate. Ndigo ships one CLI that covers them all, with typed flags and JSON output, so agents and humans use the same surface.
+
+**Use for:** running, building, testing, scaffolding, and migrating Ndigo applications.
+
+**Not for:** replacing your package manager or build tool; the CLI fronts application concerns, not package-level tooling.
+
+Built on `@stricli/core` as an embedded library — commands, typed flags, `--help`, exit codes.
 
 **Audience:** All application developers · **Prerequisites:** Workspace bootstrapped · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)
 

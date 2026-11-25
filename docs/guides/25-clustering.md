@@ -1,9 +1,12 @@
 # Guide 25 — Clustering
 
-Replicate a Node application across N worker processes with one supervisor:
-every slot runs the same application, the existing contracts arbitrate
-single-executor work, and a signal drains every slot through its own
-graceful shutdown .
+When one Node process can't use all your CPU, you scale out. Clustering runs N copies of the same application under one supervisor, with each slot handling its own graceful shutdown. Single-executor work — scheduled tasks, locks, jobs — is arbitrated by the existing contracts, so no extra coordination is needed.
+
+**Use for:** running multiple worker processes behind one supervisor.
+
+**Not for:** horizontal scaling across machines; clustering is single-machine multi-process. For cross-node work, use distributed locks and shared stores.
+
+`@ndigo/cluster` is a supervisor, not a coordinator: no leader, no discovery, no state sync.
 
 **Audience:** Node application developers and operators · **Prerequisites:** [Guide 01](01-building-a-node-api.md) · **Reference package:** `packages/ndigo-cluster`
 

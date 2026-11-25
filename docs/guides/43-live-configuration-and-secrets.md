@@ -1,10 +1,12 @@
 # Guide 43 — Live Configuration & Secrets
 
-Configuration is more than the boot-time source chain: entries can rebind on
-`config:refresh`, secret values can stay encrypted at rest, and a remote config
-server can update a running app. This guide covers those three surfaces; the
-source precedence, profiles, binding, and validation pipeline lives in
-[Guide 03](03-environment-configuration.md).
+Some settings must change while the app is running, and some values must never sit in plain text. Ndigo supports live rebinding, encrypted secrets at rest, and remote config polling — without restarting the process.
+
+**Use for:** runtime configuration changes, encrypted secrets, and remote config updates.
+
+**Not for:** boot-time configuration (Guide 03) or feature toggles (Guide 34). Secrets in source control; use a secret manager instead.
+
+This guide covers three surfaces: `@refreshScope`, `{cipher:...}` secrets, and remote JSON config with ETag polling.
 
 **Audience:** Node application developers and operators · **Prerequisites:** [Guide 03](03-environment-configuration.md) · **Reference app:** [apps/05-ndigo-api](https://github.com/ndigo/ndigo/tree/main/apps/05-ndigo-api)
 

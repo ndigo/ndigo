@@ -1,9 +1,12 @@
 # Guide 24 — Distributed Locks
 
-Fencing-token locks make a `@scheduled` task a **single-executor** across
-nodes: exactly one node runs the fire, others skip. They are the shared
-primitive behind multi-node scheduling (this guide) and the future
-cluster spine (GAP-2).
+When several nodes run the same scheduled job, you usually want only one to execute it. Distributed locks make a scheduled task a single-executor across nodes: exactly one node runs, others skip. A fencing token prevents stale holders from corrupting state after a lease expires.
+
+**Use for:** ensuring exactly one node executes a task across a cluster.
+
+**Not for:** mutual exclusion within a single process; use language-level locks. For work that must run on every node, don't lock.
+
+Locks are the shared primitive behind multi-node scheduling and the cluster spine.
 
 **Audience:** Node application developers and operators · **Prerequisites:** [Guide 23](23-scheduling.md) · **Reference package:** `packages/ndigo-locks`
 

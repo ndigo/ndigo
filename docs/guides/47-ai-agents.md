@@ -1,8 +1,12 @@
 # Guide 47 — AI Agents & Streaming
 
-Add a provider-neutral tool-calling loop to an application: define tools once,
-serve them over HTTP and MCP, run them against a local or hosted model, and
-stream the result over SSE with one GenAI trace.
+You want an LLM to call your application's own functions — look up an order, create a ticket, query a database. Ndigo gives you a provider-neutral tool-calling loop: define tools once, serve them over HTTP and MCP, run them against a local or hosted model, and stream the result over SSE.
+
+**Use for:** adding AI agent capabilities that call your application's handlers.
+
+**Not for:** simple chat without tool calls; use a direct provider SDK. For agent-facing surfaces (MCP, OpenAPI, A2UI), see Guide 48.
+
+The loop is provider-neutral: `@ndigo/ai` separates the agent from the adapter, and `@ndigo/ai-sdk` is the only package that imports the Vercel AI SDK.
 
 **Audience:** Node · **Prerequisites:** Guides [01](01-building-a-node-api.md), [16](16-typed-service-clients-and-sse.md), [32](32-telemetry.md), [37](37-ndigo-cli.md) · **Reference app:** [apps/21-ndigo-agent-lab](https://github.com/ndigo/ndigo/tree/main/apps/21-ndigo-agent-lab)
 

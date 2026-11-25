@@ -1,21 +1,36 @@
-# Annotation, Advice & Member Transformer
+# Annotation, Advice & Transformer
 
-Three mechanisms add behaviour to a class member, and Ndigo keeps them
-separate on purpose:
+A **decorator** is standard JavaScript syntax for attaching a function to a
+class, method, accessor, or field. The function receives the decorated target
+and a context object, and it may replace the target. For the language details,
+see the [TC39 decorators proposal](https://github.com/tc39/proposal-decorators).
 
-| Mechanism              | Answers                                       | Installed at    | Owned by             |
-| :--------------------- | :-------------------------------------------- | :-------------- | :------------------- |
-| **Annotation**         | _What does this member declare about itself?_ | Definition time | The declaring class  |
-| **Advice**             | _What runs around the call, and who decides?_ | Weave time      | The application      |
-| **Member transformer** | _What replaces the member?_                   | Definition time | The decorator itself |
+Ndigo decorators do three different jobs, and the framework keeps them
+separate:
 
-A **decorator** is syntax. It may produce an annotation, a member transformer,
-or both — but it is never a synonym for either. This page fixes that
-vocabulary, states the contract for each mechanism, and records which existing
-decorator uses which one.
+- An **annotation** records a fact about the member and returns it unchanged.
+  It runs nothing by itself. That is the main difference from a typical
+  decorator, which wraps or replaces the member it decorates: an annotation is
+  inert until another part of the framework reads the declaration.
+- **Advice** is code that runs around a call — before, after, or instead of the
+  original method. A rule selects which advice applies, and the application
+  context composes the chain.
+- A **member transformer** replaces the member at definition time. It is the
+  closest to a conventional decorator: code that uses the class sees the
+  replacement from the start.
 
-The model is deliberately **Option C**: annotations declare on the class, and
-the application context — not the decorator — composes the executors. The
+| Mechanism              | What it does                                  | When it takes effect                  |
+| :--------------------- | :-------------------------------------------- | :------------------------------------ |
+| **Annotation**         | Records a fact about the member; runs nothing | When a consumer reads the declaration |
+| **Advice**             | Runs code around the call                     | On each call, when a rule matches     |
+| **Member transformer** | Replaces the member                           | When the class is defined             |
+
+The rest of this page states the contract for each mechanism, explains how a
+declaration reaches its consumer, and records which decorators use which
+mechanism.
+
+The model is deliberately declaration-first: annotations declare on the class,
+and the application context — not the decorator — composes the executors. The
 programmatic path is a first-class primitive, not a compatibility shim: every
 capability reachable through a container is reachable by hand.
 

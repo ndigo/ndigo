@@ -1,35 +1,14 @@
 # Lifecycle & Ownership
 
-The async and resource discipline of Ndigo: how the framework manages
-initialization and teardown, who owns what, and why the ordering rules are
-uniform across every backend. This page states the rules once; the linked
-guides cover each surface in detail.
+Every resource in an Ndigo application has one owner. **If you create it, you
+destroy it; if it is injected, you borrow it.** That single rule decides who
+closes a connection, when it closes, and why destroying one component cannot
+break another that shares the same client.
 
-## Design Principles
+It is deterministic cleanup — the boundary [RAII][raii] draws in systems
+languages, expressed through an object graph instead of lexical scope.
 
-1. **Async by default.** Every operation that can perform I/O is awaitable,
-   including in-memory implementations. There is no hidden synchronous fast
-   path with different semantics — one contract per capability.
-2. **Memory is the default; backends are explicit.** Installing a backend
-   package never connects, never auto-registers entries, and never changes
-   auto-configuration. The application opts in.
-3. **Ownership is explicit, never ambiguous.** A resource you _created_ is
-   **owned** — you close it. An **injected** resource is **borrowed** —
-   closing an adapter never closes the injected client unless ownership is
-   transferred explicitly. Disposal is idempotent, so disposing one adapter
-   never breaks another user of the same client.
-4. **Initialization is explicit and fail-loud.** Construction performs no I/O;
-   a backend is initialized before use. A failed initialization keeps failing
-   on later use rather than falling back to memory or an empty result.
-5. **Stop, drain, then close — in `finally`.** Producers and serving stop
-   first, consumers unsubscribe, transports close, and the container closes
-   last. Cleanup is written so a failure cannot skip the remaining steps.
-6. **Teardown is a contract, not a convention.** Container teardown releases
-   every managed value through one contract; external adapters bridge their
-   own disposal into it explicitly. An object that merely exposes a dispose
-   method is not proof that the container will release it.
-
-## Ownership Rules
+## Owned vs Borrowed
 
 | Resource            | Created (owned)                        | Injected (borrowed)                                       | Transfer                                                         |
 | :------------------ | :------------------------------------- | :-------------------------------------------------------- | :--------------------------------------------------------------- |
@@ -37,9 +16,68 @@ guides cover each surface in detail.
 | Database clients    | Created from configuration → owned     | Supplied ready-made → borrowed                            | On request; disposal leaves the client usable by other consumers |
 | Cache managers      | Created from a URL → drains and closes | Built on a ready-made client → borrowed                   | Documented per package                                           |
 
-The rule is uniform: creation carries the obligation to release, injection
-carries the obligation to leave the resource usable. Anything else is stated
-and tested as an exception.
+The default is ownership: a resource built from configuration belongs to its
+creator. Passing a ready-made client transfers nothing unless the receiver is
+explicitly told to take it. Disposal is idempotent, so a double destroy cannot
+take down a client someone else is still using.
+
+```typescript
+import { LibSQLSessionStore } from '@ndigo/orm-drizzle';
+
+// Owned: the store creates the client from the URL and destroys it.
+const owned = new LibSQLSessionStore({ url: 'file:./data.db' });
+
+// Borrowed: destroy() leaves the application's client open.
+const borrowed = new LibSQLSessionStore({ client, ownsClient: false });
+```
+
+## Lifecycle Contracts
+
+The container drives four contracts, and the platform adds one of its own:
+
+| Contract            | Method               | Runs                                         | Awaitable    |
+| :------------------ | :------------------- | :------------------------------------------- | :----------- |
+| `Initializable`     | `init()`             | once, after construction and aware injection | no           |
+| `Destroyable`       | `destroy()`          | on entry destroy or context close            | no           |
+| `AsyncDestroyable`  | `destroy(): Promise` | called by the container, but not awaited     | caller waits |
+| `ManagedLifecycle`  | `start()` / `stop()` | on refresh / close, in phase order           | no           |
+| Platform `Closable` | `close(): Promise`   | during the graceful drain, before close      | yes          |
+
+`Initializable` is one-shot setup; `ManagedLifecycle` is the reversible
+start/stop phase, and stopping is not destruction. `@preInit`, `@postInit`, and
+`@preDestroy` declare the same hook positions on a method.
+
+Two layers behave differently, and it matters at shutdown:
+
+- **Container teardown is synchronous.** `context.close(): void` closes child
+  contexts first, stops running `ManagedLifecycle` targets in descending phase
+  order, then destroys values in reverse creation order. `AsyncDestroyable` is
+  called, but its promise is not awaited — await it yourself before closing, or
+  register the resource with the platform drain.
+- **Platform drain is awaitable.** `HTTPServer.close()` and the resources
+  passed to `gracefulShutdown` return promises and are awaited, in order, before
+  the context is closed.
+
+## Design Principles
+
+1. **Explicit ownership.** Creation carries the obligation to release;
+   injection carries the obligation to leave the resource usable. Anything else
+   is stated and tested as an exception.
+2. **Construction is not I/O, and initialization fails loudly.** A constructor
+   wires dependencies; opening connections is an explicit step. A backend that
+   cannot start keeps failing on later use instead of falling back to memory or
+   an empty result.
+3. **Stop, drain, then destroy.** Stop accepting work first, drain what is in
+   flight, close transports, and destroy the container last. A startup failure
+   runs the same cleanup path, so nothing half-built stays connected.
+4. **One release contract.** Every managed value is released through
+   `Destroyable.destroy()`. Destruction hooks run first, then the value itself.
+   Exposing some other dispose method is not proof that the container will
+   release it.
+
+Backends follow the same doctrine: installing a backend package never connects,
+never auto-registers entries, and never changes auto-configuration. The
+application opts in, and memory remains the default.
 
 ## Shutdown Ordering
 
@@ -47,44 +85,48 @@ and tested as an exception.
 2. Unsubscribe consumers and stop background heartbeats; drop sessions.
 3. Close the transport fan-out.
 4. Close publishers, each by its owner.
-5. Close the container synchronously; it releases every managed value in a
-   predictable order — destruction processors first, then the values
-   themselves.
+5. Close the container; it stops managed components and destroys values in
+   reverse creation order.
 
-Every step is awaited where awaitable. A startup failure runs the same cleanup
-path, so nothing half-built is left connected.
+The platform presets run this sequence for you.
 
-## Lifecycle Sequences
+Node — `close()` awaits the server and any extra resources, then closes the
+context. `SIGINT` and `SIGTERM` are wired by default:
 
-The application-context lifecycle — refresh, close, destroy versus close, and
-child-context propagation — is specified in
-[Guide 04 — Injection & Lifecycle](../guides/04-dependency-injection-and-lifecycle.md).
-This page covers the resource-ownership half; the two meet where external
-disposal is bridged into container destruction, and at the drain-before-close
-rule.
+```typescript
+import { createNodeApplication } from '@ndigo/platform-node';
 
-## Verification
+const app = await createNodeApplication([AppConfiguration], { port: 3000 });
+await app.close();
+```
 
-- The regression suite proves shared-client disposal independence, transfer
-  and close-exactly-once, borrowed-client usability after adapter disposal,
-  real-file close/reopen durability, and observed SQL failures.
-- The cross-node fan-out smoke test proves that a closed publisher is
-  rejected, that an inbound fault propagates instead of falling back to local
-  delivery, and that closure is idempotent — the rules exercised end to end,
-  not just documented.
+Pass `shutdown: false` when a host owns signal handling, or `resources` to
+close additional transports between the server and the context.
 
-## See Also
+Browser — `destroy()` releases the router, the view target, and the context:
 
-- How-to: [Guide 04 — Injection & Lifecycle](../guides/04-dependency-injection-and-lifecycle.md),
-  [Guide 15 — WebSockets](../guides/15-websockets.md),
+```typescript
+import { createWebApplication } from '@ndigo/platform-web';
+
+const app = await createWebApplication([AppConfiguration]);
+app.destroy();
+```
+
+## Where to Go Next
+
+- [Guide 04 — Injection & Lifecycle](../guides/04-dependency-injection-and-lifecycle.md)
+  — the container, scopes, and every lifecycle hook.
+- [Guide 15 — WebSockets](../guides/15-websockets.md) and
   [Guide 21 — Persistence & Shared Stores](../guides/21-persistence-and-shared-stores.md)
-- Package reference: [ndigo.dev/reference/packages](https://ndigo.dev/reference/packages/)
-  for each package's README and its per-surface ownership statement
+  — ownership across sockets, caches, and databases.
+- [Guide 42 — STOMP & Cross-Node Fan-Out](../guides/42-stomp.md) — stop and
+  drain ordering across nodes.
+- [Reference → Packages](https://ndigo.dev/reference/packages/) — each
+  package's per-surface ownership statement.
+- [Kubernetes pod termination][k8s-termination] and Node.js
+  [`server.close()`][node-close] — the standard graceful-shutdown shapes Ndigo
+  follows.
 
-## When to Revisit
-
-- A backend that cannot fail loudly on initialization — a streaming store or
-  an external broker — needs an explicit fault contract before adoption.
-- If container teardown grows async lifecycle hooks, the synchronous-close
-  rule (principle 6) is the seam to reopen. Until then, bridged disposal and
-  drain ordering remain the contract.
+[raii]: https://en.wikipedia.org/wiki/Resource_acquisition_is_initialization
+[k8s-termination]: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-termination
+[node-close]: https://nodejs.org/api/http.html#serverclosecallback

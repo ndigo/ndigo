@@ -256,8 +256,8 @@ per-request child context instead of route attributes.
   `packages/ndigo-ui/tokens/ndigo-tokens.css`
 - Browser bridge: `packages/ndigo-ui-web/src/set-visual-theme.ts`,
   `packages/ndigo-ui-web/src/connect-browser-theme.ts`
-- Guides: [30 — Component integration](../guides/30-component-integration.md)
-  (themes today), [09 — Views and content negotiation](../guides/09-views-and-content-negotiation.md)
+- Guides: [30 — Component integration](../guides/component-integration.md)
+  (themes today), [09 — Views and content negotiation](../guides/views-and-content-negotiation.md)
 - Related: [AD-95](2026-11-08_AD95_NDIGO_UI.md),
   [AD-105](2026-11-13_AD105_VIEW_TARGETING_STRATEGY.md),
   [AD-19](2026-09-13_AD19_CONTENT_I18N.md)

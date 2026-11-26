@@ -299,7 +299,7 @@ jobs:
       - name: TSDoc examples (syntax)
         # Every fenced @example block in package source must parse as
         # TypeScript; the checker fails on any diagnostic. Docs standard:
-        # docs/guides/90-package-documentation.md
+        # docs/guides/package-documentation.md
         run: pnpm doc:examples
 
       - name: Install graft

@@ -50,18 +50,18 @@ publishable package — is in [Reference → Packages](https://ndigo.dev/referen
 The layers are the dependency view; capabilities are the developer view. An
 application installs only what it needs:
 
-| Capability           | What it gives an application                                                    | Start with                                                  |
-| :------------------- | :------------------------------------------------------------------------------ | :---------------------------------------------------------- |
-| HTTP APIs            | Dispatch, binding, validation, Problem Details, OpenAPI, health and metrics     | [Guide 01](./docs/guides/01-building-a-node-api.md)         |
-| Browser applications | History routing, DOM view targets, web components, forms, accessibility         | [Guide 02](./docs/guides/02-building-a-browser-app.md)      |
-| Reactive state       | Signals, computed values, effects, and the island/SSE bridge                    | [Guide 29](./docs/guides/29-signals-and-islands.md)         |
-| Data and persistence | Repository/data-mapper abstractions, Drizzle adapter, migrations, shared stores | [Guide 20](./docs/guides/20-orm-and-migrations.md)          |
-| Authentication       | Principals, sessions, password encoders, JWT, OIDC, route guards                | [Guide 26](./docs/guides/26-authentication-and-sessions.md) |
-| Observability        | OpenTelemetry logs, metrics, traces, and management endpoints                   | [Guide 32](./docs/guides/32-telemetry.md)                   |
-| Background work      | Cron scheduling, durable jobs, the transactional outbox, distributed locks      | [Guide 22](./docs/guides/22-jobs-and-outbox.md)             |
-| Feature flags        | Typed evaluation SPI, property-backed provider, `@whenFeature` route gates      | [Guide 34](./docs/guides/34-feature-flags.md)               |
-| Agent surfaces       | MCP tools projected from dispatch metadata, MCP Apps, WebMCP, the agent loop    | [Guide 48](./docs/guides/48-agent-facing-surfaces.md)       |
-| Micro-frontends      | Hosted feature contexts, islands, shared dependencies, isolated events          | [Micro Frontends](./docs/architecture/micro-frontends.md)   |
+| Capability           | What it gives an application                                                    | Start with                                                                |
+| :------------------- | :------------------------------------------------------------------------------ | :------------------------------------------------------------------------ |
+| HTTP APIs            | Dispatch, binding, validation, Problem Details, OpenAPI, health and metrics     | [Building a Node API](./docs/guides/building-a-node-api.md)               |
+| Browser applications | History routing, DOM view targets, web components, forms, accessibility         | [Building a Browser App](./docs/guides/building-a-browser-app.md)         |
+| Reactive state       | Signals, computed values, effects, and the island/SSE bridge                    | [Signals & Islands](./docs/guides/signals-and-islands.md)                 |
+| Data and persistence | Repository/data-mapper abstractions, Drizzle adapter, migrations, shared stores | [ORM & Migrations](./docs/guides/orm-and-migrations.md)                   |
+| Authentication       | Principals, sessions, password encoders, JWT, OIDC, route guards                | [Authentication & Sessions](./docs/guides/authentication-and-sessions.md) |
+| Observability        | OpenTelemetry logs, metrics, traces, and management endpoints                   | [Telemetry](./docs/guides/telemetry.md)                                   |
+| Background work      | Cron scheduling, durable jobs, the transactional outbox, distributed locks      | [Background Jobs](./docs/guides/jobs-and-outbox.md)                       |
+| Feature flags        | Typed evaluation SPI, property-backed provider, `@whenFeature` route gates      | [Feature Flags](./docs/guides/feature-flags.md)                           |
+| Agent surfaces       | MCP tools projected from dispatch metadata, MCP Apps, WebMCP, the agent loop    | [Agent-Facing Surfaces](./docs/guides/agent-facing-surfaces.md)           |
+| Micro-frontends      | Hosted feature contexts, islands, shared dependencies, isolated events          | [Micro Frontends](./docs/architecture/micro-frontends.md)                 |
 
 ### Platform Portability
 
@@ -126,7 +126,7 @@ custom `@scope`. The context drives two lifecycle passes:
 - **Close** — running entries stop in reverse phase order, then every managed
   value is destroyed in reverse creation order.
 
-See [Guide 04 — Injection & Lifecycle](./docs/guides/04-dependency-injection-and-lifecycle.md)
+See [Injection & Lifecycle](./docs/guides/dependency-injection-and-lifecycle.md)
 and [Lifecycle & Ownership](./docs/architecture/lifecycle-and-ownership.md).
 
 ### Declarative Decorators
@@ -184,7 +184,7 @@ and others should react to is an event.
 `z.infer`). Schemas validate DTOs, route params, domain value objects, and
 signal state; `drizzle-zod` derives entity schemas from `@ndigo/orm` metadata so
 persistence, validation, and typing share one definition. See
-[Guide 07 — Request Validation](./docs/guides/07-request-validation.md).
+[Request Validation](./docs/guides/request-validation.md).
 
 ### A Minimal Application
 
@@ -272,7 +272,7 @@ Platform adapter → Dispatcher → handler mapping → interceptors
 
 Platform adapters plug in at both ends: the adapter package owns transport and
 argument extraction, while the isomorphic dispatcher owns mapping,
-interception, and resolution. [Guide 00 — Core Concepts](./docs/guides/00-core-concepts.md)
+interception, and resolution. [Core Concepts](./docs/guides/core-concepts.md)
 walks the full sequence.
 
 ### HTTP Error Contract
@@ -282,7 +282,7 @@ Every 4xx/5xx response is an [`application/problem+json`][rfc9457] document:
 validation issues. Status conventions are canonical — 400 binding,
 401 with `WWW-Authenticate`, 403, 404, 405 with `Allow`, 415, 422 validation,
 429, and 503, with 500 as the last resort. See
-[Guide 08 — Errors & Problem Details](./docs/guides/08-errors-and-problem-details.md).
+[Errors & Problem Details](./docs/guides/errors-and-problem-details.md).
 
 ## Cross-Cutting Concerns
 
@@ -290,29 +290,29 @@ validation issues. Status conventions are canonical — 400 binding,
 precedence order, profiles select environment-specific layers, and
 `@configurationProperties` binds typed objects; validation fails loudly at
 startup. See [Environment & Configuration](./docs/architecture/environment.md)
-and [Guide 03](./docs/guides/03-environment-configuration.md).
+and [Environment & Configuration](./docs/guides/environment-configuration.md).
 
 **Security.** Trust boundaries are explicit: the platform adapter establishes
 request identity, guards enforce authentication and authorization, and the
 problem contract never leaks internals. See
 [Security](./docs/architecture/security.md) and
-[Guide 28](./docs/guides/28-security-hardening.md).
+[Security Hardening](./docs/guides/security-hardening.md).
 
 **Observability.** Logging, metrics, and tracing share one
 [OpenTelemetry][otel] surface; Node and browser wiring live in separate adapter
 packages, and `@ndigo/mcp` projects agent tools from the same dispatch
 metadata ([Model Context Protocol][mcp]). See
-[Guide 32](./docs/guides/32-telemetry.md).
+[Telemetry](./docs/guides/telemetry.md).
 
 **Testing.** `@ndigo/test` drives the real dispatcher in-process (MockMVC
 style), so integration tests exercise routing, binding, validation, and
 serialization without opening a socket. See
-[Guide 36](./docs/guides/36-testing.md).
+[Integration Testing](./docs/guides/testing.md).
 
 ## Where to Go Next
 
-- [Guides](./docs/guides/README.md) — start with [Guide 00](docs/guides/00-core-concepts.md) for the mental model,
-  then [Guide 01](docs/guides/01-building-a-node-api.md) (Node) or [Guide 02](docs/guides/02-building-a-browser-app.md) (browser).
+- [Guides](./docs/guides/README.md) — start with [Core Concepts & Mental Model](docs/guides/core-concepts.md) for the mental model,
+  then [Building a Node API](docs/guides/building-a-node-api.md) (Node) or [Building a Browser App](docs/guides/building-a-browser-app.md) (browser).
 - [Reference → Packages](https://ndigo.dev/reference/packages/) — the generated
   package inventory.
 - [Design Principles](./docs/architecture/design-principles.md) — SOLID, DRY,

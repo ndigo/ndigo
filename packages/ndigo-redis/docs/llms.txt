@@ -17,7 +17,7 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 
 ## Capabilities
 
-- `shared-cache` — Share the cache across processes: a Redis-backed CacheManager replaces the per-process memory default. Packages: `@ndigo/redis`. Guide: `21-persistence-and-shared-stores`.
+- `shared-cache` — Share the cache across processes: a Redis-backed CacheManager replaces the per-process memory default. Packages: `@ndigo/redis`. Guide: `persistence-and-shared-stores`.
 
 ## Public exports
 

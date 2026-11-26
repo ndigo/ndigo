@@ -134,7 +134,7 @@ facade, no re-export shim.
 - Consumer: [`apps/07-ndigo-island`](../../../apps/07-ndigo-island/README.md) — add-item
   form (Web Awesome input/button) → `POST /items` (`dataBinderValue` + Zod) →
   SSE model push; guide
-  [21 — Component Integration](../../guides/21-component-integration.md).
+  [21 — Component Integration](../../guides/component-integration.md).
 - Vetting: npm registry (`npm view`, 2026-10-07) for all candidates; installed
   packages inspected for `formAssociated`/`attachInternals`/`setFormValue`;
   [Web Awesome form controls](https://webawesome.com/docs/form-controls),

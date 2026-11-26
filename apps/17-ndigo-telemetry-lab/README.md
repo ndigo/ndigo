@@ -263,14 +263,14 @@ pnpm --filter @ndigo/telemetry-lab test        # vitest, 4 files, 21 tests
 
 ## See Also
 
-- [Guide 32 — Telemetry](../../docs/guides/32-telemetry.md): the sampler, exporter
+- [Telemetry](../../docs/guides/telemetry.md): the sampler, exporter
   and flush semantics this app configures.
-- [Guide 21 — Persistence and distributed backends](../../docs/guides/21-persistence-and-shared-stores.md):
+- [Persistence and distributed backends](../../docs/guides/persistence-and-shared-stores.md):
   where the telemetry backends sit in a Ndigo deployment.
-- [Guide 23 — Scheduling](../../docs/guides/23-scheduling.md),
-  [Guide 15 — WebSockets](../../docs/guides/15-websockets.md),
-  [Guide 36 — Testing](../../docs/guides/36-testing.md),
-  [Guide 11 — The HTTP client](../../docs/guides/11-http-client.md).
+- [Scheduling](../../docs/guides/scheduling.md),
+  [WebSockets](../../docs/guides/websockets.md),
+  [Testing](../../docs/guides/testing.md),
+  [The HTTP client](../../docs/guides/http-client.md).
 - [`apps/05-ndigo-api`](../05-ndigo-api/README.md) — the same collector wiring in a
   larger app; `apps/08-ndigo-views`' client demo for the browser-side
   `TraceHeaderInterceptor` pattern.

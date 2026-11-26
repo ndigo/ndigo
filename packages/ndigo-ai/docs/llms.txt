@@ -9,7 +9,7 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 
 ## Capabilities
 
-- `agent-model` — Add a bounded, provider-neutral tool-calling loop with streaming, structured output, and telemetry. Packages: `@ndigo/ai`, `@ndigo/ai-sdk`. Guide: `47-ai-agents`.
+- `agent-model` — Add a bounded, provider-neutral tool-calling loop with streaming, structured output, and telemetry. Packages: `@ndigo/ai`, `@ndigo/ai-sdk`. Guide: `ai-agents`.
 
 ## Public exports
 

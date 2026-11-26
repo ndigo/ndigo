@@ -79,7 +79,7 @@ pnpm --filter @ndigo/boot test
 
 ## See Also
 
-- [Guide 49 — Config Layering & Contexts](../../docs/guides/49-configuration-layering-and-context-composition.md)
+- [Config Layering & Contexts](../../docs/guides/configuration-layering-and-context-composition.md)
   — profiles vs config layers vs context boundaries, and platform config composition
 - [@ndigo/context](../ndigo-context/README.md) — the context underneath
 - [@ndigo/platform-node](../ndigo-platform-node/README.md) — the Node auto-configuration provisions this on Node

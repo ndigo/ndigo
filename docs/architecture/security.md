@@ -52,18 +52,18 @@ Browser (untrusted) ──HTTPS──▶ TLS-terminating proxy ──▶ Node se
 
 ## Defense Layers
 
-| Layer            | What it protects                        | Default posture                                                                                                                                      |
-| :--------------- | :-------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Transport        | Session hijacking, downgrade attacks    | Security headers on every response; HSTS only where it is honoured; server-identifying headers removed                                               |
-| Client identity  | Spoofed forwarding headers              | Allowlist-only proxy trust; empty by default; an unlisted peer cannot name a client                                                                  |
-| Abuse            | Brute force, scraping, runaway clients  | Fixed-window throttling keyed on the resolved client address, 429 with `Retry-After`; in-process default                                             |
-| Request forgery  | Cross-site mutations                    | Login accepts JSON only; double-submit [CSRF][csrf] protection is available and explicit; [CORS][cors] is configured                                 |
-| Sessions         | Theft, fixation, unbounded accumulation | Host-scoped [HttpOnly cookie][cookies], rotation on authentication, a live-session cap, durable store                                                |
-| Authentication   | Impersonation                           | Memory-hard credential hashing; [OIDC authorization code][oidc] with [PKCE][pkce] and nonce; fail-closed validation                                  |
-| Authorization    | Privilege escalation                    | Route guards deny by default; rejected socket authentication closes the connection                                                                   |
-| Input            | Injection, malformed or partial data    | Schema validation at the boundary before anything persists; unknown input never reaches the domain                                                   |
-| Error disclosure | Information leaks through failure paths | [RFC 9457][rfc9457] problem documents with controlled type URIs; no HTML or reflection on 404/405                                                    |
-| Secrets          | Exposure at rest                        | Authenticated encryption bound to the secret's path; explicit `app.secrets(...)` wiring ([Guide 43](../guides/43-live-configuration-and-secrets.md)) |
+| Layer            | What it protects                        | Default posture                                                                                                                                                       |
+| :--------------- | :-------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Transport        | Session hijacking, downgrade attacks    | Security headers on every response; HSTS only where it is honoured; server-identifying headers removed                                                                |
+| Client identity  | Spoofed forwarding headers              | Allowlist-only proxy trust; empty by default; an unlisted peer cannot name a client                                                                                   |
+| Abuse            | Brute force, scraping, runaway clients  | Fixed-window throttling keyed on the resolved client address, 429 with `Retry-After`; in-process default                                                              |
+| Request forgery  | Cross-site mutations                    | Login accepts JSON only; double-submit [CSRF][csrf] protection is available and explicit; [CORS][cors] is configured                                                  |
+| Sessions         | Theft, fixation, unbounded accumulation | Host-scoped [HttpOnly cookie][cookies], rotation on authentication, a live-session cap, durable store                                                                 |
+| Authentication   | Impersonation                           | Memory-hard credential hashing; [OIDC authorization code][oidc] with [PKCE][pkce] and nonce; fail-closed validation                                                   |
+| Authorization    | Privilege escalation                    | Route guards deny by default; rejected socket authentication closes the connection                                                                                    |
+| Input            | Injection, malformed or partial data    | Schema validation at the boundary before anything persists; unknown input never reaches the domain                                                                    |
+| Error disclosure | Information leaks through failure paths | [RFC 9457][rfc9457] problem documents with controlled type URIs; no HTML or reflection on 404/405                                                                     |
+| Secrets          | Exposure at rest                        | Authenticated encryption bound to the secret's path; explicit `app.secrets(...)` wiring ([Live Configuration & Secrets](../guides/live-configuration-and-secrets.md)) |
 
 ## Security in Practice
 
@@ -97,13 +97,13 @@ forwarded client address becomes identity.
 
 ## See Also
 
-- How-to: [Guide 26 — Authentication & Sessions](../guides/26-authentication-and-sessions.md),
-  [Guide 27 — Browser Authentication & OIDC](../guides/27-browser-authentication-and-oidc.md),
-  [Guide 28 — Security Hardening](../guides/28-security-hardening.md)
-- Configuration: [Guide 03 — Environment & Configuration](../guides/03-environment-configuration.md)
-  (secrets and configuration), [Guide 43 — Live Configuration & Secrets](../guides/43-live-configuration-and-secrets.md)
+- How-to: [Authentication & Sessions](../guides/authentication-and-sessions.md),
+  [Browser Authentication & OIDC](../guides/browser-authentication-and-oidc.md),
+  [Security Hardening](../guides/security-hardening.md)
+- Configuration: [Environment & Configuration](../guides/environment-configuration.md)
+  (secrets and configuration), [Live Configuration & Secrets](../guides/live-configuration-and-secrets.md)
   (encrypted secrets)
-- Operations: [Guide 35 — Resilience & Retries](../guides/35-method-interception-and-resilience.md)
+- Operations: [Resilience & Retries](../guides/method-interception-and-resilience.md)
 - Package reference: [ndigo.dev/reference/packages](https://ndigo.dev/reference/packages/)
 - Standards: [RFC 9457][rfc9457] (problem details), [OpenID Connect Core][oidc],
   [PKCE][pkce], [JWT](https://www.rfc-editor.org/rfc/rfc7519),

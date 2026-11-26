@@ -101,7 +101,7 @@ providers. The `ndigo` CLI runs the deterministic front: `ndigo capabilities`,
 `ndigo add`, and `ndigo verify`.
 
 The same handler also feeds an MCP App resource, an A2UI representation, and a
-browser tool; [Guide 48](../guides/48-agent-facing-surfaces.md) lists every
+browser tool; [Agent-Facing Surfaces](../guides/agent-facing-surfaces.md) lists every
 surface.
 
 ## Working Agent-First Day to Day
@@ -129,17 +129,17 @@ agent-only surface.
 
 ## Where to Go Next
 
-- [Guide 37 — The CLI](../guides/37-ndigo-cli.md) — the deterministic front in
+- [The CLI](../guides/ndigo-cli.md) — the deterministic front in
   full.
-- [Guide 47 — AI Agents & Streaming](../guides/47-ai-agents.md) — the
+- [AI Agents & Streaming](../guides/ai-agents.md) — the
   provider-neutral tool-calling loop.
-- [Guide 48 — Agent-Facing Surfaces](../guides/48-agent-facing-surfaces.md) —
+- [Agent-Facing Surfaces](../guides/agent-facing-surfaces.md) —
   MCP, MCP Apps, A2UI, and WebMCP.
-- [Guide 51 — Capabilities for Authoring Agents](../guides/51-capabilities-for-authoring-agents.md)
+- [Capabilities for Authoring Agents](../guides/capabilities-for-authoring-agents.md)
   — the capability catalog and the plan/apply contract.
-- [Guide 52 — The Agent Operate Contract](../guides/52-agent-operate-contract.md)
+- [The Agent Operate Contract](../guides/agent-operate-contract.md)
   — what a runtime agent may do.
-- [Guide 53 — Capability Authoring](../guides/53-capability-authoring.md) —
+- [Capability Authoring](../guides/capability-authoring.md) —
   writing a capability.
 - [Architecture Overview](../../ARCHITECTURE.md) — the full system design.
 - [Reference → Packages](https://ndigo.dev/reference/packages/) — the package

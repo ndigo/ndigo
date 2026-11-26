@@ -9,7 +9,7 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 
 ## Capabilities
 
-- `agent-surface` — Expose an application's dispatch handlers as MCP tools over a stdio server. Packages: `@ndigo/mcp`. Guide: `48-agent-facing-surfaces`.
+- `agent-surface` — Expose an application's dispatch handlers as MCP tools over a stdio server. Packages: `@ndigo/mcp`. Guide: `agent-facing-surfaces`.
 
 ## Public exports
 

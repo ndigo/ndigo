@@ -69,7 +69,7 @@ outbound, mirroring the SSE view). The model keeps the AD-09 principle —
 reactive push is a stream alongside REST — extended to full-duplex:
 sockets and SSE coexist; `GET` to a socket path is 404 (socket-only
 endpoints do not serve plain HTTP). See
-`docs/guides/01-building-a-node-api.md` §6b.
+`docs/guides/building-a-node-api.md` §6b.
 
 Revisit WebSocket when a **bidirectional** consumer (chat, collaborative presence) appears; revisit uWebSockets.js only if throughput profiling demands it (native addon cost accepted).
 

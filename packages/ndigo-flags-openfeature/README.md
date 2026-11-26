@@ -137,7 +137,7 @@ pnpm --filter @ndigo/flags-openfeature test
 
 ## See Also
 
-- [Guide 34 — Feature Flags](../../docs/guides/34-feature-flags.md) — the
+- [Feature Flags](../../docs/guides/feature-flags.md) — the
   vendor recipe in context
 - [@ndigo/flags](../ndigo-flags/README.md) — the SPI this bridge implements
 - [openfeature.dev](https://openfeature.dev) — the standard and its

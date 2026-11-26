@@ -193,7 +193,7 @@ demo + lint rule + docs.
   auto-started on refresh, destroyed on close); `NodeAutoConfiguration`
   provisions `taskScheduler` + `scheduleRegistry`; per-run OTel spans.
 - Phase 4: `no-scheduled-in-browser` lint rule (enabled), `ndigo-api`
-  heartbeat demo (8 bootstrap tests), `docs/guides/05-scheduling.md`;
+  heartbeat demo (8 bootstrap tests), `docs/guides/scheduling.md`;
   plan moved to Completed.
 
 56 scheduler + 5 rule + 8 demo tests; build 31/31, tests 36/36, lint +

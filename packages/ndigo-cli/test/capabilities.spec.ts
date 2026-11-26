@@ -70,7 +70,7 @@ const AGENT_SURFACE = {
     kind: 'capability' as const,
     summary: 'Fixture capability.',
     packages: ['@ndigo/mcp'],
-    guide: '48-agent-facing-surfaces',
+    guide: 'agent-facing-surfaces',
     ops: [{ op: 'addDependency' as const, packages: ['@ndigo/mcp'] }],
     checks: ['mcp-stdio:tools/list'],
 };
@@ -226,7 +226,7 @@ describe('ndigo capabilities', () => {
             id: 'agent-model',
             kind: 'capability',
             packages: ['@ndigo/ai', '@ndigo/ai-sdk'],
-            guide: '47-ai-agents',
+            guide: 'ai-agents',
             ops: [{ op: 'addDependency', packages: ['@ndigo/ai', '@ndigo/ai-sdk'] }, { op: 'writeFile' }],
         });
     });

@@ -125,7 +125,7 @@ pnpm --filter @ndigo/openapi test
 
 ## See Also
 
-- [Guide 12 — OpenAPI & API Docs](../../docs/guides/12-openapi-and-api-docs.md)
+- [OpenAPI & API Docs](../../docs/guides/openapi-and-api-docs.md)
 - [@ndigo/platform-node](../ndigo-platform-node/README.md) — hosts `OpenAPIDocsAutoConfiguration` (serving; the platform owns bytes + headers)
 
 ## Contributing

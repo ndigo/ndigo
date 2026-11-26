@@ -3,7 +3,7 @@
   "kind": "capability",
   "summary": "Share the cache across processes: a Redis-backed CacheManager replaces the per-process memory default.",
   "packages": ["@ndigo/redis"],
-  "guide": "21-persistence-and-shared-stores",
+  "guide": "persistence-and-shared-stores",
   "variables": [
     {
       "name": "namespace",

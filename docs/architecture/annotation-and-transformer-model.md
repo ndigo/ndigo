@@ -211,11 +211,11 @@ interception, and compile-time weaving.
 
 - [Decorators](./decorators.md) — the catalog by concern, the metadata model,
   and custom decorators.
-- [Guide 35 — Resilience & Retries](../guides/35-method-interception-and-resilience.md)
+- [Resilience & Retries](../guides/method-interception-and-resilience.md)
   — advice in practice: retry, circuit breaking, and ordering.
-- [Guide 32 — Telemetry](../guides/32-telemetry.md) — tracing and metrics as
+- [Telemetry](../guides/telemetry.md) — tracing and metrics as
   advice.
-- [Guide 20 — ORM & Migrations](../guides/20-orm-and-migrations.md) —
+- [ORM & Migrations](../guides/orm-and-migrations.md) —
   `@transactional` and entity declarations.
 
 [aop]: https://en.wikipedia.org/wiki/Aspect-oriented_programming

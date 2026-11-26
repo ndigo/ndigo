@@ -354,9 +354,19 @@ export function loadGuideSlugs(): string[] {
     const file = join(AGENT_ASSETS_DIR, 'docs-index.md');
     if (!existsSync(file)) return [];
     const slugs: string[] = [];
+    let inGuides = false;
     for (const line of readFileSync(file, 'utf8').split('\n')) {
-        // Guide slugs carry a numeric prefix; capability and package lines do not.
-        const match = /^- `(\d[^`]*)` — /u.exec(line);
+        if (line.startsWith('## Guides')) {
+            inGuides = true;
+            continue;
+        }
+        if (inGuides && line.startsWith('## ')) {
+            inGuides = false;
+            continue;
+        }
+        if (!inGuides) continue;
+        // Guide slugs are the backticked identifiers on guide lines.
+        const match = /^- `([^`]+)` — /u.exec(line);
         if (match?.[1] !== undefined) slugs.push(match[1]);
     }
     return slugs;

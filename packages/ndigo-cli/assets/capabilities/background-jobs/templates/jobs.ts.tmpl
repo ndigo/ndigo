@@ -47,7 +47,7 @@ export class JobsConfiguration {
  * Arms the worker engine. The runner starts explicitly — a pending poll
  * timer keeps the process alive, the same reason `HTTPServer` does not
  * self-start — so worker processes call this in their entry point and
- * API-only processes leave it stopped (Guide 22). Pass
+ * API-only processes leave it stopped (Background Jobs). Pass
  * `new JobRunner({ autoStart: true })` under `JOB_RUNNER` instead when the
  * process should always run workers.
  *

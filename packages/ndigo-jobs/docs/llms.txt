@@ -9,7 +9,7 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 
 ## Capabilities
 
-- `background-jobs` — Deliver background work: a sample worker plus the queue and runner — swap drivers from in-process to durable without touching handlers. Packages: `@ndigo/jobs`. Guide: `22-jobs-and-outbox`.
+- `background-jobs` — Deliver background work: a sample worker plus the queue and runner — swap drivers from in-process to durable without touching handlers. Packages: `@ndigo/jobs`. Guide: `jobs-and-outbox`.
 
 ## Public exports
 

@@ -150,5 +150,5 @@ h3 belongs to the edge/CDN by construction.
   identity-across-the-edge seam this posture relies on.
 - Node.js docs: `node:http2` `createSecureServer` + `allowHTTP1` ALPN
   behavior; `ws` upgrade support is h1.1-only (no RFC 8441).
-- Applied at: `docs/guides/01-building-a-node-api.md` §8,
+- Applied at: `docs/guides/building-a-node-api.md` §8,
   `packages/ndigo-platform-node/src/http-server.ts` module TSDoc.

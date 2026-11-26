@@ -160,5 +160,5 @@ the generators.
 - [AD-70](2026-10-06_AD70_EDITOR_TOOLING_INTROSPECTION_FIRST.md) and
   [AD-75](2026-10-07_AD75_FRAMEWORK_CLI.md) — introspection first, CLI as a
   thin front.
-- [Guide 51](../guides/51-capabilities-for-authoring-agents.md) — the
+- [Guide 51](../guides/capabilities-for-authoring-agents.md) — the
   vocabulary and the authoring workflow.

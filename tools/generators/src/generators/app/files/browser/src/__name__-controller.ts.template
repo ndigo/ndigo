@@ -10,7 +10,7 @@ class <%= className %>Controller {
         // The minimal example returns a realized view; placement stays on the
         // preset's `#app` target and no chains run. Return a view NAME to let
         // the resolver chain pick the view; configure `viewTargeters` for
-        // named regions and layouts (docs/guides/50-view-targeting.md).
+        // named regions and layouts (docs/guides/view-targeting.md).
         return new ModelAndView(new WebComponentView('<%= name %>-app'), { message: 'Hello, World!' });
     }
 }

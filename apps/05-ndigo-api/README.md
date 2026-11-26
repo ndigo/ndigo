@@ -68,11 +68,11 @@ GET  /swagger-ui/              Swagger UI (Bearer-gated, SEC-4)
 - Opaque session-token auth (`@ndigo/auth-server`) and profile-gated dev entries (`@whenProfile('dev')`)
 - In-memory and Drizzle ORM entity managers
 - RFC 9457 problem+json error envelope
-- Scheduled heartbeat task (`@scheduled`, auto-discovered and auto-started; see the [scheduling guide](../../docs/guides/23-scheduling.md))
+- Scheduled heartbeat task (`@scheduled`, auto-discovered and auto-started; see the [scheduling guide](../../docs/guides/scheduling.md))
 - Method advice through a single builder registration: the `audited` annotation
   feeds `AuditInterceptor` and `@cached` feeds `CachedInterceptor`, both selected
   by `@ndigo/advice` rules (`src/index.ts`). See the
-  [advice guide](../../docs/guides/35-method-interception-and-resilience.md).
+  [advice guide](../../docs/guides/method-interception-and-resilience.md).
 
 ## View targeting
 
@@ -94,7 +94,7 @@ viewTargeters() {
 }
 ```
 
-See [guide 50 — View Targeting](../../docs/guides/50-view-targeting.md) for
+See [guide 50 — View Targeting](../../docs/guides/view-targeting.md) for
 the centralized-vs-decentralized trade-offs.
 
 ## Socket authentication

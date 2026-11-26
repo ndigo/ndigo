@@ -186,9 +186,9 @@ cd apps/14-ndigo-kanban && pnpm test
   presence, and a reconnecting Web Component client
 - [05-ndigo-api](../05-ndigo-api/README.md) — controllers, `@ndigo/orm`, and the
   problem+json error contract in depth
-- [Guide 15 — WebSockets](../../docs/guides/15-websockets.md)
-- [Guide 29 — Signals & Islands](../../docs/guides/29-signals-and-islands.md)
-- [Guide 36 — Integration Testing](../../docs/guides/36-testing.md)
+- [WebSockets](../../docs/guides/websockets.md)
+- [Signals & Islands](../../docs/guides/signals-and-islands.md)
+- [Integration Testing](../../docs/guides/testing.md)
 
 ## Contributing
 

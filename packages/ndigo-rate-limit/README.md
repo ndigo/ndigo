@@ -42,7 +42,7 @@ a shared backend resolves over its network hop. All implementations share
 one contract — the interceptor awaits it.
 
 Multi node: register a `RedisRateLimiter` entry (see
-[guide 21](../../docs/guides/21-persistence-and-shared-stores.md));
+[guide 21](../../docs/guides/persistence-and-shared-stores.md));
 every process counts against the **same** budgets.
 
 ## Usage

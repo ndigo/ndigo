@@ -14,7 +14,7 @@ import { RedisCacheManager } from '@ndigo/redis/cache';
  * application's assembly and it replaces `NodeAutoConfiguration`'s
  * `MemoryCacheManager` default. Construction connects nothing — the first
  * cache operation opens the connection, per the memory-first doctrine
- * (Guide 21). Move the URL through a `@configurationProperties` schema when
+ * (Persistence & Shared Stores). Move the URL through a `@configurationProperties` schema when
  * the deployment needs `{cipher:…}` values.
  */
 @configuration

@@ -1,0 +1,282 @@
+{
+  "groups": [
+    {
+      "label": "Foundations",
+      "description": "The mental model, the two runtimes, and how configuration fits together.",
+      "guides": [
+        {
+          "slug": "core-concepts",
+          "title": "Core Concepts & Mental Model"
+        },
+        {
+          "slug": "building-a-node-api",
+          "title": "Building a Node API"
+        },
+        {
+          "slug": "building-a-browser-app",
+          "title": "Building a Browser App"
+        },
+        {
+          "slug": "environment-configuration",
+          "title": "Environment & Configuration"
+        },
+        {
+          "slug": "live-configuration-and-secrets",
+          "title": "Live Configuration & Secrets"
+        },
+        {
+          "slug": "configuration-layering-and-context-composition",
+          "title": "Config Layering & Contexts"
+        }
+      ]
+    },
+    {
+      "label": "Core application model",
+      "description": "Dependency injection, routing, request handling, views, and targeting.",
+      "guides": [
+        {
+          "slug": "dependency-injection-and-lifecycle",
+          "title": "Injection & Lifecycle"
+        },
+        {
+          "slug": "routing-and-route-conditions",
+          "title": "Routing & Route Conditions"
+        },
+        {
+          "slug": "argument-binding",
+          "title": "Argument Binding"
+        },
+        {
+          "slug": "request-validation",
+          "title": "Request Validation"
+        },
+        {
+          "slug": "errors-and-problem-details",
+          "title": "Errors & Problem Details"
+        },
+        {
+          "slug": "views-and-content-negotiation",
+          "title": "Views & Content Negotiation"
+        },
+        {
+          "slug": "view-targeting",
+          "title": "View Targeting"
+        },
+        {
+          "slug": "custom-view-engines",
+          "title": "Custom View Engines"
+        }
+      ]
+    },
+    {
+      "label": "HTTP & integration",
+      "description": "Files, clients, API docs, DTOs, uploads, real-time, i18n, and forms.",
+      "guides": [
+        {
+          "slug": "static-files",
+          "title": "Static Files"
+        },
+        {
+          "slug": "http-client",
+          "title": "The HTTP Client"
+        },
+        {
+          "slug": "openapi-and-api-docs",
+          "title": "OpenAPI & API Docs"
+        },
+        {
+          "slug": "dto-conversion",
+          "title": "DTO & Conversion"
+        },
+        {
+          "slug": "multipart-and-file-upload",
+          "title": "Multipart & File Upload"
+        },
+        {
+          "slug": "websockets",
+          "title": "WebSockets"
+        },
+        {
+          "slug": "stomp",
+          "title": "STOMP & Cross-Node Fan-Out"
+        },
+        {
+          "slug": "typed-service-clients-and-sse",
+          "title": "Typed Service Clients & SSE"
+        },
+        {
+          "slug": "i18n-and-content",
+          "title": "Internationalization & Content"
+        },
+        {
+          "slug": "forms-end-to-end",
+          "title": "Forms End-to-End"
+        }
+      ]
+    },
+    {
+      "label": "Data, jobs & runtime",
+      "description": "Caching, persistence, background work, scheduling, locks, and clustering.",
+      "guides": [
+        {
+          "slug": "caching",
+          "title": "Caching"
+        },
+        {
+          "slug": "orm-and-migrations",
+          "title": "ORM & Migrations"
+        },
+        {
+          "slug": "persistence-and-shared-stores",
+          "title": "Persistence & Shared Stores"
+        },
+        {
+          "slug": "jobs-and-outbox",
+          "title": "Background Jobs"
+        },
+        {
+          "slug": "scheduling",
+          "title": "Scheduling"
+        },
+        {
+          "slug": "distributed-locks",
+          "title": "Distributed Locks"
+        },
+        {
+          "slug": "clustering",
+          "title": "Clustering"
+        }
+      ]
+    },
+    {
+      "label": "Security",
+      "description": "Sessions, browser authentication, and hardening.",
+      "guides": [
+        {
+          "slug": "authentication-and-sessions",
+          "title": "Authentication & Sessions"
+        },
+        {
+          "slug": "browser-authentication-and-oidc",
+          "title": "Browser Authentication & OIDC"
+        },
+        {
+          "slug": "security-hardening",
+          "title": "Security Hardening"
+        }
+      ]
+    },
+    {
+      "label": "Browser & UI",
+      "description": "Signals, islands, component libraries, micro frontends, and accessibility.",
+      "guides": [
+        {
+          "slug": "signals-and-islands",
+          "title": "Signals & Islands"
+        },
+        {
+          "slug": "component-integration",
+          "title": "UI Components & Integration"
+        },
+        {
+          "slug": "micro-frontends",
+          "title": "Micro Frontends"
+        },
+        {
+          "slug": "accessibility",
+          "title": "Accessibility"
+        }
+      ]
+    },
+    {
+      "label": "Operate & ship",
+      "description": "Telemetry, endpoints, flags, resilience, testing, CLI, deployment, and upgrades.",
+      "guides": [
+        {
+          "slug": "telemetry",
+          "title": "Telemetry"
+        },
+        {
+          "slug": "management-endpoints",
+          "title": "Management Endpoints"
+        },
+        {
+          "slug": "feature-flags",
+          "title": "Feature Flags"
+        },
+        {
+          "slug": "method-interception-and-resilience",
+          "title": "Resilience & Retries"
+        },
+        {
+          "slug": "testing",
+          "title": "Integration Testing"
+        },
+        {
+          "slug": "ndigo-cli",
+          "title": "The Ndigo CLI"
+        },
+        {
+          "slug": "deployment-and-production-readiness",
+          "title": "Deployment & Production"
+        },
+        {
+          "slug": "quality-guardrails",
+          "title": "Quality Guardrails"
+        },
+        {
+          "slug": "troubleshooting-and-faq",
+          "title": "Troubleshooting & FAQ"
+        },
+        {
+          "slug": "performance-and-scaling",
+          "title": "Performance & Scaling"
+        },
+        {
+          "slug": "upgrading",
+          "title": "Upgrading Ndigo"
+        }
+      ]
+    },
+    {
+      "label": "Agents & capabilities",
+      "description": "Model loops, agent-facing surfaces, capabilities, and the operate contract.",
+      "guides": [
+        {
+          "slug": "ai-agents",
+          "title": "AI Agents & Streaming"
+        },
+        {
+          "slug": "agent-facing-surfaces",
+          "title": "Agent-Facing Surfaces"
+        },
+        {
+          "slug": "capabilities-for-authoring-agents",
+          "title": "Capabilities for Authoring Agents"
+        },
+        {
+          "slug": "agent-operate-contract",
+          "title": "The Agent Operate Contract"
+        },
+        {
+          "slug": "capability-authoring",
+          "title": "Capability Authoring"
+        }
+      ]
+    },
+    {
+      "label": "Appendices",
+      "description": "Framework contributor guides: package documentation and application conventions.",
+      "guides": [
+        {
+          "slug": "package-documentation",
+          "title": "Package Documentation"
+        },
+        {
+          "slug": "application-conventions",
+          "title": "Application Conventions"
+        }
+      ]
+    }
+  ]
+}

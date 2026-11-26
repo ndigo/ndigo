@@ -114,12 +114,12 @@ app.destroy();
 
 ## Where to Go Next
 
-- [Guide 04 — Injection & Lifecycle](../guides/04-dependency-injection-and-lifecycle.md)
+- [Injection & Lifecycle](../guides/dependency-injection-and-lifecycle.md)
   — the container, scopes, and every lifecycle hook.
-- [Guide 15 — WebSockets](../guides/15-websockets.md) and
-  [Guide 21 — Persistence & Shared Stores](../guides/21-persistence-and-shared-stores.md)
+- [WebSockets](../guides/websockets.md) and
+  [Persistence & Shared Stores](../guides/persistence-and-shared-stores.md)
   — ownership across sockets, caches, and databases.
-- [Guide 42 — STOMP & Cross-Node Fan-Out](../guides/42-stomp.md) — stop and
+- [STOMP & Cross-Node Fan-Out](../guides/stomp.md) — stop and
   drain ordering across nodes.
 - [Reference → Packages](https://ndigo.dev/reference/packages/) — each
   package's per-surface ownership statement.

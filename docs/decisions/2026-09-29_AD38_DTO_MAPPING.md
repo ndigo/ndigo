@@ -154,4 +154,4 @@ RFC 9457 `default` response entry in the spec (separate AD-35 follow-up).
 - AD-35 (OpenAPI, response-schema follow-up): [`2026-09-28_AD35_OPENAPI_DOCS.md`](2026-09-28_AD35_OPENAPI_DOCS.md)
 - AD-34 (TypeScript-native layer): [`2026-09-27_AD34_TYPESCRIPT_NATIVE_LAYER.md`](2026-09-27_AD34_TYPESCRIPT_NATIVE_LAYER.md)
 - AD-07 (Zod validation): [`2026-09-05_AD07_ZOD_VALIDATION.md`](2026-09-05_AD07_ZOD_VALIDATION.md)
-- Guide: [`docs/guides/14-dto-conversion.md`](../guides/14-dto-conversion.md)
+- Guide: [`docs/guides/dto-conversion.md`](../guides/dto-conversion.md)

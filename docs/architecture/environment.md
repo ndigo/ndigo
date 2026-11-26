@@ -9,7 +9,7 @@ validation — and the same rules apply on Node.js and in the browser.
 > **One environment at a time.** The precedence chain below governs a single
 > application context. Platform layers, multiple contexts, and several apps in
 > one process compose through
-> [Guide 49 — Configuration Layering & Context Composition](../guides/49-configuration-layering-and-context-composition.md).
+> [Configuration Layering & Context Composition](../guides/configuration-layering-and-context-composition.md).
 
 ## Core Building Blocks
 
@@ -110,23 +110,23 @@ language tooling.
 
 - **Refresh** rebuilds resolved values and clears caches without re-running
   customizers, so a refresh cannot double-apply.
-  [Guide 43](../guides/43-live-configuration-and-secrets.md) covers live
+  [Live Configuration & Secrets](../guides/live-configuration-and-secrets.md) covers live
   rebinding and encrypted secrets.
 - **Profile groups** expand one level. A group can contain profile names, but a
   group name inside another group is not expanded further.
 - **Provenance** — which source supplied a value — is optional and reported at
-  top-level granularity; [Guide 03](../guides/03-environment-configuration.md) documents the opt-in index.
+  top-level granularity; [Environment & Configuration](../guides/environment-configuration.md) documents the opt-in index.
 - **Multi-context** layering is outside this chain; see
-  [Guide 49](../guides/49-configuration-layering-and-context-composition.md).
+  [Config Layering & Contexts](../guides/configuration-layering-and-context-composition.md).
 
 ## Where to Go Next
 
-- [Guide 03 — Environment & Configuration](../guides/03-environment-configuration.md)
+- [Environment & Configuration](../guides/environment-configuration.md)
   — the practical walkthrough: sources, profiles, placeholders, binding, and
   validation.
-- [Guide 43 — Live Configuration, Secrets & Remote Config](../guides/43-live-configuration-and-secrets.md)
+- [Live Configuration, Secrets & Remote Config](../guides/live-configuration-and-secrets.md)
   — refresh, encrypted values, and the remote source.
-- [Guide 49 — Configuration Layering & Context Composition](../guides/49-configuration-layering-and-context-composition.md)
+- [Configuration Layering & Context Composition](../guides/configuration-layering-and-context-composition.md)
   — platform/application layers and multi-context setups.
 - [Architecture Overview](../../ARCHITECTURE.md) — where configuration sits in
   the application lifecycle.

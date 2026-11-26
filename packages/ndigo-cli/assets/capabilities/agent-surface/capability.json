@@ -3,7 +3,7 @@
   "kind": "capability",
   "summary": "Expose an application's dispatch handlers as MCP tools over a stdio server.",
   "packages": ["@ndigo/mcp"],
-  "guide": "48-agent-facing-surfaces",
+  "guide": "agent-facing-surfaces",
   "variables": [
     {
       "name": "configuration",

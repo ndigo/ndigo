@@ -60,7 +60,7 @@ Applications are pnpm workspaces over `@ndigo/*` packages; the
 [`ndigo` CLI](packages/ndigo-cli/README.md) fronts the application
 lifecycle (`ndigo serve`/`ndigo dev`, `ndigo new`/`ndigo generate`,
 `ndigo db`) plus the build/test/lint/format/typecheck fronts and the
-maintenance/DX tools ([guide 37](docs/guides/37-ndigo-cli.md)). Pick a
+maintenance/DX tools ([guide 37](docs/guides/ndigo-cli.md)). Pick a
 path below: each lists the packages to start with, then the demo apps to follow.
 
 > **Pre-1.0:** the packages are not published yet — build from this repository
@@ -92,13 +92,13 @@ Then follow the ladder: [apps/02-ndigo-hello-node](apps/02-ndigo-hello-node/READ
 (minimal server) → [apps/05-ndigo-api](apps/05-ndigo-api/README.md) (the reference
 Node app) → [apps/11-ndigo-conduit-api](apps/11-ndigo-conduit-api/README.md)
 (RealWorld API). The end-to-end tutorial is [guide 01 — Building a Node
-API](docs/guides/01-building-a-node-api.md).
+API](docs/guides/building-a-node-api.md).
 
 #### Server-rendered with islands (both)
 
 EJS shell + hydration + live updates: [apps/07-ndigo-island](apps/07-ndigo-island/README.md)
 and [apps/12-ndigo-petclinic](apps/12-ndigo-petclinic/README.md); the model is
-[guide 29 — Signals & Islands](docs/guides/29-signals-and-islands.md).
+[guide 29 — Signals & Islands](docs/guides/signals-and-islands.md).
 
 #### If you want your app to expose agent surfaces
 
@@ -106,8 +106,8 @@ and [apps/12-ndigo-petclinic](apps/12-ndigo-petclinic/README.md); the model is
 2. [`@ndigo/ai`](packages/ndigo-ai/README.md) — provider-neutral agent loop, streaming, and structured output
 3. [`@ndigo/ai-sdk`](packages/ndigo-ai-sdk/README.md) — the Vercel AI SDK adapter (the only package that imports it)
 
-Then follow [guide 47 — AI Agents & Streaming](docs/guides/47-ai-agents.md)
-and [guide 48 — Agent-Facing Surfaces](docs/guides/48-agent-facing-surfaces.md);
+Then follow [guide 47 — AI Agents & Streaming](docs/guides/ai-agents.md)
+and [guide 48 — Agent-Facing Surfaces](docs/guides/agent-facing-surfaces.md);
 the reference app is [apps/21-ndigo-agent-lab](apps/21-ndigo-agent-lab/README.md).
 
 #### Use your AI coding agent
@@ -119,7 +119,7 @@ context is stale; `ndigo ai:update` refreshes it after a framework upgrade.
 Scaffolded apps already point their `AGENTS.md` at `ndigo ai:init`, and every
 `@ndigo/*` package ships a version-matched export index at
 `node_modules/@ndigo/<pkg>/docs/llms.txt`. See [guide 37 — The ndigo
-CLI](docs/guides/37-ndigo-cli.md#agent-context).
+CLI](docs/guides/ndigo-cli.md#agent-context).
 
 ### Scaffold a new app
 
@@ -140,7 +140,7 @@ npm create ndigo-app@latest <name> -- --kind browser
 
 Both paths use the lifecycle presets (`createNodeApplication` /
 `createWebApplication`) and follow the conventions in
-[guide 91](docs/guides/91-application-conventions.md).
+[guide 91](docs/guides/application-conventions.md).
 
 #### Run the demos
 
@@ -187,7 +187,7 @@ the number is reading order only — package names stay unnumbered and stable.
 Paired front ends and back ends share a domain and take the `-web` / `-api` role
 suffixes (`03-ndigo-todo-web` + `04-ndigo-todo-api`); the full directory,
 package, and file-naming convention is
-[guide 91 — Application Conventions](docs/guides/91-application-conventions.md).
+[guide 91 — Application Conventions](docs/guides/application-conventions.md).
 
 ## Packages
 

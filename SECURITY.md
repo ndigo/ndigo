@@ -166,9 +166,9 @@ Credit is given in the advisory unless anonymity is requested.
 
 ## See also
 
-- [Guide 28 — Security Hardening](docs/guides/28-security-hardening.md)
-- [Guide 43 — Live Configuration & Secrets](docs/guides/43-live-configuration-and-secrets.md)
-- [Guide 33 — Management Endpoints](docs/guides/33-management-endpoints.md)
-- [Guide 47 — AI Agents & Streaming](docs/guides/47-ai-agents.md)
-- [Guide 48 — Agent-Facing Surfaces](docs/guides/48-agent-facing-surfaces.md)
+- [Security Hardening](docs/guides/security-hardening.md)
+- [Live Configuration & Secrets](docs/guides/live-configuration-and-secrets.md)
+- [Management Endpoints](docs/guides/management-endpoints.md)
+- [AI Agents & Streaming](docs/guides/ai-agents.md)
+- [Agent-Facing Surfaces](docs/guides/agent-facing-surfaces.md)
 - Management redaction and agent integration hardening

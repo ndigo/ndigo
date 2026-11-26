@@ -138,7 +138,7 @@ Self-invocation through `this.method()` **is** cached, because the advice is
 installed on the instance rather than around it. A frozen or sealed instance,
 and a function-shaped target, are advised through the `Proxy` fallback instead —
 those do not cover self-invocation (see
-[Guide 35](../../docs/guides/35-method-interception-and-resilience.md), §3).
+[Resilience & Retries](../../docs/guides/method-interception-and-resilience.md), §3).
 
 The normalized spec is recorded under `cache:cached:<method>` metadata and can
 be read with `getCachedSpec(target, methodName)`.
@@ -165,7 +165,7 @@ pnpm --filter @ndigo/cache test
 
 ## See Also
 
-- [Guide 19 — Caching](../../docs/guides/19-caching.md) — the server decorator, client memoization, invalidation, and pitfalls
+- [Caching](../../docs/guides/caching.md) — the server decorator, client memoization, invalidation, and pitfalls
 
 ## Contributing
 

@@ -94,7 +94,7 @@ token-contrast contract, RTL fixture, and lock-drift guard.
 - [apps/README](../README.md) — the applications ladder
 - [@ndigo/ui](../../packages/ndigo-ui/README.md) — tokens and the registry
 - [ndigo ui](../../packages/ndigo-cli/README.md) — the install command family
-- [Guide 30](../../docs/guides/30-component-integration.md) — UI libraries and component integration
+- [UI Components & Integration](../../docs/guides/component-integration.md) — UI libraries and component integration
 - [UI catalogue](https://ndigo.dev/ui) — the public browse surface
 
 ## Contributing

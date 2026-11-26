@@ -97,5 +97,5 @@ layer a name that says what it does: **`@ndigo/advice`** replaces
 
 - `docs/architecture/annotation-and-transformer-model.md`
 - `docs/decisions/2026-11-19_AD109_ANNOTATION_ADVICE_MODEL.md`
-- `docs/guides/35-method-interception-and-resilience.md`
+- `docs/guides/method-interception-and-resilience.md`
 - `packages/ndigo-advice/src/{plan,shadow,proxy,weave,processor}.ts`

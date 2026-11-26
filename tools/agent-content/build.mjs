@@ -106,7 +106,10 @@ function firstParagraph(text) {
 function guidesIndex() {
     const guides = join(ROOT, 'docs', 'guides');
     const manifest = JSON.parse(readFileSync(join(guides, 'guides.json'), 'utf8'));
-    const slugs = manifest.groups.flatMap((group) => group.guides.map((guide) => guide.slug));
+    const slugs = [
+        ...manifest.groups.flatMap((group) => group.guides.map((guide) => guide.slug)),
+        ...(manifest.contributing ?? []).map((guide) => guide.slug),
+    ];
     return slugs.map((slug) => {
         const { title, summary } = firstParagraph(readFileSync(join(guides, `${slug}.md`), 'utf8'));
         return `- \`${slug}\` — ${title}${summary === '' ? '' : `: ${summary}`}`;

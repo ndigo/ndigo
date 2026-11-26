@@ -263,20 +263,16 @@
           "title": "Capability Authoring"
         }
       ]
+    }
+  ],
+  "contributing": [
+    {
+      "slug": "package-documentation",
+      "title": "Package Documentation"
     },
     {
-      "label": "Appendices",
-      "description": "Framework contributor guides: package documentation and application conventions.",
-      "guides": [
-        {
-          "slug": "package-documentation",
-          "title": "Package Documentation"
-        },
-        {
-          "slug": "application-conventions",
-          "title": "Application Conventions"
-        }
-      ]
+      "slug": "application-conventions",
+      "title": "Application Conventions"
     }
   ]
 }

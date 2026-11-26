@@ -3089,7 +3089,7 @@ static fromSeverity(severity: SeverityNumber): Level { /* ... */ }
 static fromOrdinal(ordinal: number): EnumType { /* ... */ }
 ```
 
-**Rationale:** Follows established convention from STYLE_GUIDE.md Section 3.13 (Method Naming).
+**Rationale:** Follows established convention from Section 3.13 (Method Naming).
 
 #### Factory Function Naming
 
@@ -4458,7 +4458,7 @@ git commit -m "refactor(validate): split large constraints file
 - Move shared helpers to _util.ts (80 lines)
 - Update tests and maintain 100% coverage
 
-Ref: STYLE_GUIDE.md Section 4.5"
+Ref: Section 4.5"
 ```
 
 **Best Practices:**

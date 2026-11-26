@@ -84,10 +84,7 @@ function firstParagraph(text) {
     const lines = text.split('\n');
     let index = lines.findIndex((line) => line.startsWith('# '));
     if (index === -1) return { title: '', summary: '' };
-    const title = lines[index]
-        .slice(2)
-        .trim()
-        .replace(/^Guide\s+\d+\s+—\s+/u, '');
+    const title = lines[index].slice(2).trim();
     index += 1;
     while (index < lines.length) {
         const line = lines[index].trim();
@@ -108,17 +105,12 @@ function firstParagraph(text) {
 
 function guidesIndex() {
     const guides = join(ROOT, 'docs', 'guides');
-    return readdirSync(guides)
-        .filter((entry) => entry.endsWith('.md') && entry !== 'README.md')
-        .sort()
-        .map((entry) => {
-            const { title, summary } = firstParagraph(readFileSync(join(guides, entry), 'utf8'));
-            // Renumbering redirects point at another guide; index the target only.
-            if (summary.startsWith('This guide is now ')) return null;
-            const slug = entry.slice(0, -'.md'.length);
-            return `- \`${slug}\` — ${title}${summary === '' ? '' : `: ${summary}`}`;
-        })
-        .filter((line) => line !== null);
+    const manifest = JSON.parse(readFileSync(join(guides, 'guides.json'), 'utf8'));
+    const slugs = manifest.groups.flatMap((group) => group.guides.map((guide) => guide.slug));
+    return slugs.map((slug) => {
+        const { title, summary } = firstParagraph(readFileSync(join(guides, `${slug}.md`), 'utf8'));
+        return `- \`${slug}\` — ${title}${summary === '' ? '' : `: ${summary}`}`;
+    });
 }
 
 function packagesIndex() {

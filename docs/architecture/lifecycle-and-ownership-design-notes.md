@@ -63,4 +63,4 @@ cannot be awaited by `context.close()` without reopening the question above.
   rule is the seam to reopen. Until then, bridged disposal and drain ordering
   remain the contract.
 - If issue #783 lands an implicit `Symbol.dispose` fallback, update the
-  published page, Guide 04, and the release-path tests together.
+  published page, Injection & Lifecycle, and the release-path tests together.

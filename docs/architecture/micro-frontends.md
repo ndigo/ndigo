@@ -47,7 +47,7 @@ should happen when it is deactivated.
 import { createShellContext } from '@ndigo/context';
 import { HostManager } from '@ndigo/host';
 
-// Shell setup, including the shared registry, is in Guide 31 §2.
+// Shell setup, including the shared registry, is in Micro Frontends §2.
 const shell = createShellContext({ name: 'site-shell' });
 const host = new HostManager(shell, { activationPolicy: 'exclusive' });
 
@@ -131,10 +131,10 @@ the [Examples](https://ndigo.dev/examples/) page lists them.
 
 ## Where to Go Next
 
-- [Guide 29 — Signals & Islands](../guides/29-signals-and-islands.md) — the
+- [Signals & Islands](../guides/signals-and-islands.md) — the
   reactive half in detail: streaming, event bridges, hydration, and
   server-sent updates.
-- [Guide 31 — Micro Frontends](../guides/31-micro-frontends.md) — the host and
+- [Micro Frontends](../guides/micro-frontends.md) — the host and
   feature tutorial.
 - [Reference → Packages](https://ndigo.dev/reference/packages/) — the host,
   context, router, view, and web-component packages.

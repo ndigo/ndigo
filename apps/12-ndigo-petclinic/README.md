@@ -228,15 +228,15 @@ Deliberately simplified or replaced:
 - [apps/README](../README.md) — the numbered application ladder and port registry
 - [07 — ndigo-island](../07-ndigo-island/README.md) — EJS view resolution,
   static asset serving and i18n in a Node app
-- [07 — Request Validation](../../docs/guides/07-request-validation.md) — Zod
+- [Request Validation](../../docs/guides/request-validation.md) — Zod
   contracts, `validatedQuery`/`validatedBody`, the 422 document
-- [06 — Argument Binding](../../docs/guides/06-argument-binding.md) —
+- [Argument Binding](../../docs/guides/argument-binding.md) —
   `dataBinderValue` and the whole-source form path
-- [17 — Internationalization & Content](../../docs/guides/17-i18n-and-content.md) — message
+- [Internationalization & Content](../../docs/guides/i18n-and-content.md) — message
   sources, template helpers, locale negotiation
-- [10 — Static Files](../../docs/guides/10-static-files.md) — `StaticController`
+- [Static Files](../../docs/guides/static-files.md) — `StaticController`
   semantics
-- [36 — Testing](../../docs/guides/36-testing.md) — `bootNodeApp` + `MockHTTP`
+- [Testing](../../docs/guides/testing.md) — `bootNodeApp` + `MockHTTP`
 - [@ndigo/orm](../../packages/ndigo-orm/README.md) — entities, relations, paging
 - [@ndigo/view-ejs](../../packages/ndigo-view-ejs/README.md) — the EJS view
   technology

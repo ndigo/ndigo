@@ -2,7 +2,7 @@
  * `capability` generator — scaffolds a catalog capability entry: a
  * schema-conformant `capability.json` with the dependency operation and the
  * default checks, ready for the author to add templates and checks
- * (docs/guides/53-capability-authoring.md).
+ * (docs/guides/capability-authoring.md).
  */
 import { formatFiles, type Tree } from '@nx/devkit';
 import { join } from 'node:path';

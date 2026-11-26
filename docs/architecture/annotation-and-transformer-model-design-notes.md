@@ -53,7 +53,7 @@ reaches the woven method through the registry's own closure
 The framework-inherited names were deliberately renamed: `ManagedLifecycle`
 (was `SmartLifecycle`) and `LifecycleCoordinator` (was `LifecycleProcessor`).
 `@ndigo-orm`'s entity persistence hooks (`prePersist`, `postLoad`, …) live in
-`entity-hooks.ts` with `EntityHook*` names; Guide 20's "The lifecycle" is the
+`entity-hooks.ts` with `EntityHook*` names; ORM & Migrations's "The lifecycle" is the
 migration pipeline. The published page's **Lifecycle** row describes only the
 container's.
 

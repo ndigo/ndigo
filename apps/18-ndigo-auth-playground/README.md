@@ -353,9 +353,9 @@ a process restart — while an unknown id is refused in both worlds.
 ## See Also
 
 - [apps/README](../README.md) — the application progression and the port registry
-- [Guide 26 — Authentication & Sessions](../../docs/guides/26-authentication-and-sessions.md)
-- [Guide 21 — Persistence & Shared Stores](../../docs/guides/21-persistence-and-shared-stores.md)
-- [Guide 36 — Integration Testing](../../docs/guides/36-testing.md) · [Guide 11 — HTTP Client](../../docs/guides/11-http-client.md)
+- [Authentication & Sessions](../../docs/guides/authentication-and-sessions.md)
+- [Persistence & Shared Stores](../../docs/guides/persistence-and-shared-stores.md)
+- [Integration Testing](../../docs/guides/testing.md) · [HTTP Client](../../docs/guides/http-client.md)
 - [05-ndigo-api](../05-ndigo-api/README.md) — the canonical Node auth wiring this app mirrors
 - [07-ndigo-island](../07-ndigo-island/README.md) — the server + built-client layout (shell, `/static/`, dev client)
 - [@ndigo/auth-core](../../packages/ndigo-auth-core/README.md) · [@ndigo/auth-server](../../packages/ndigo-auth-server/README.md) · [@ndigo/auth-client](../../packages/ndigo-auth-client/README.md) · [@ndigo/orm-drizzle](../../packages/ndigo-orm-drizzle/README.md)

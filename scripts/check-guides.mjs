@@ -16,6 +16,10 @@ import { join } from 'node:path';
 
 const ROOT = new URL('..', import.meta.url).pathname.replace(/\/$/, '');
 const GUIDES = join(ROOT, 'docs/guides');
+const manifest = JSON.parse(readFileSync(join(GUIDES, 'guides.json'), 'utf8'));
+const manifestGuides = manifest.groups.flatMap((group) => group.guides);
+const manifestSlugs = new Set(manifestGuides.map((guide) => guide.slug));
+const manifestTitles = new Map(manifestGuides.map((guide) => [guide.slug, guide.title]));
 const INDEX = join(GUIDES, 'README.md');
 const require = createRequire(join(ROOT, 'package.json'));
 const ts = require('typescript-6');
@@ -122,49 +126,49 @@ function fenceFailures(text) {
 }
 
 const files = readdirSync(GUIDES)
-    .filter((file) => /^\d{2}-[a-z0-9-]+\.md$/.test(file))
+    .filter((file) => file.endsWith('.md') && file !== 'README.md' && file !== 'coverage.md')
     .sort();
 
 // Collect guide titles for cross-reference label checks.
 const titleMap = {};
-for (const file of files) {
-    const t = readFileSync(join(GUIDES, file), 'utf8');
-    if (t.startsWith('<!-- guide-redirect -->')) continue;
-    const h = /^# Guide (\d{2}) — (.+)$/m.exec(t);
-    if (h) titleMap[h[1]] = h[2].trim().replace(/`/g, '');
+for (const guide of manifestGuides) {
+    titleMap[guide.slug] = guide.title.replace(/`/g, '');
 }
 
 const guideFiles = [];
-const seenNumbers = new Map();
 
 for (const file of files) {
     const path = join(GUIDES, file);
     const text = readFileSync(path, 'utf8');
-    if (text.startsWith('<!-- guide-redirect -->')) continue;
 
-    guideFiles.push(file);
-    const number = file.slice(0, 2);
-    if (seenNumbers.has(number)) {
-        failures.push(`${file}: duplicate guide number ${number} (also ${seenNumbers.get(number)})`);
+    if (!manifestSlugs.has(file.replace(/\.md$/, ''))) {
+        failures.push(`${file}: not listed in docs/guides/guides.json`);
     }
-    seenNumbers.set(number, file);
+    guideFiles.push(file);
 
-    const heading = /^# Guide (\d{2}) — (.+)$/m.exec(text);
+    const heading = /^# (.+)$/m.exec(text);
     if (!heading) {
-        failures.push(`${file}: H1 must match "# Guide NN — Title"`);
-    } else if (heading[1] !== number) {
-        failures.push(`${file}: H1 number ${heading[1]} does not match filename number ${number}`);
+        failures.push(`${file}: missing H1`);
+    }
+
+    const slug = file.replace(/\.md$/, '');
+    const expectedTitle = manifestTitles.get(slug);
+    if (heading && expectedTitle) {
+        const titleText = heading[1].trim().replace(/`/g, '');
+        if (titleText !== expectedTitle.replace(/`/g, '')) {
+            failures.push(`${file}: H1 "${titleText}" does not match manifest title "${expectedTitle}"`);
+        }
     }
 
     // Title rules: no module names, no backticks, max 30 chars.
     if (heading) {
-        const titleText = heading[2].trim().replace(/`/g, '');
+        const titleText = heading[1].trim().replace(/`/g, '');
         if (/@ndigo\//.test(titleText)) failures.push(`${file}: title contains a module name`);
-        if (/`/.test(heading[2])) failures.push(`${file}: title contains backticks`);
-        if (titleText.length > 30 && file !== '51-capabilities-for-authoring-agents.md') {
+        if (/`/.test(heading[1])) failures.push(`${file}: title contains backticks`);
+        if (titleText.length > 30 && file !== 'capabilities-for-authoring-agents.md') {
             failures.push(`${file}: title is ${titleText.length} chars (max 30)`);
         }
-        if (titleText.length > 30 && file === '51-capabilities-for-authoring-agents.md') {
+        if (titleText.length > 30 && file === 'capabilities-for-authoring-agents.md') {
             warnings.push(`${file}: title is ${titleText.length} chars (temporary exception; rename to shorten)`);
         }
     }
@@ -223,18 +227,16 @@ for (const file of files) {
         failures.push(`${file}:${line}: TypeScript fence does not parse`);
     }
 
-    // Cross-guide links must not keep a stale number in the label.
-    for (const match of text.matchAll(/\[(?:Guide )?(\d{2}) — ([^\]]+)\]\(([^)]+)\)/g)) {
-        const target = match[3].split('#')[0].split('/').pop() ?? '';
-        const targetNumber = /^(\d{2})-/.exec(target)?.[1];
-        if (targetNumber && targetNumber !== match[1]) {
-            failures.push(`${file}: link label ${match[1]} points at ${targetNumber} (${match[3]})`);
-        }
-        if (targetNumber && titleMap[targetNumber]) {
-            const label = match[2].trim().replace(/`/g, '');
-            const expected = titleMap[targetNumber];
-            if (label !== expected) {
-                warnings.push(`${file}: link label "${label}" does not match target title "${expected}"`);
+    // Cross-guide links should use the target guide's title as the label.
+    for (const match of text.matchAll(/\[([^`\]]+)\]\(([^)]+)\)/g)) {
+        const label = match[1].trim().replace(/`/g, '');
+        const target = match[2].split('#')[0].split('/').pop() ?? '';
+        const targetSlug = target.replace(/\.md$/, '');
+        if (titleMap[targetSlug] && (/Guide/i.test(label) || /\d/.test(label))) {
+            const expected = titleMap[targetSlug];
+            const normalized = label.replace(/\s*§\s*\d+.*$/, '').trim();
+            if (normalized !== expected && label !== expected) {
+                warnings.push(`${file}: link label "${label}" does not match target title "${expected}" (${match[2]})`);
             }
         }
     }
@@ -252,7 +254,7 @@ for (const file of files) {
             .replace(/\[[^\]]*\]\([^)]*\)/g, '')
             .replace(/\[[^\]]*\]\[[^\]]*\]/g, '')
             .replace(/`[^`]*`/g, '');
-        for (const match of plain.matchAll(/Guides? \d{2}/g)) {
+        for (const match of plain.matchAll(/Guides? \d/g)) {
             failures.push(`${file}:${index + 1}: plain guide citation "${match[0]}" — link it`);
         }
     });
@@ -261,23 +263,30 @@ for (const file of files) {
     if (lines > 400) warnings.push(`${file}: ${lines} lines (contract target is ~300, hard review at 400)`);
 }
 
+for (const guide of manifestGuides) {
+    if (!existsSync(join(GUIDES, `${guide.slug}.md`))) {
+        failures.push(`docs/guides/guides.json: missing guide file ${guide.slug}.md`);
+    }
+}
+
 const index = readFileSync(INDEX, 'utf8');
 const indexed = new Set();
-for (const match of index.matchAll(/\]\((\d{2}-[a-z0-9-]+\.md)\)/g)) indexed.add(match[1]);
+for (const match of index.matchAll(/\]\(([a-z0-9-]+)\.md\)/g)) indexed.add(`${match[1]}.md`);
 
 for (const file of guideFiles) {
     if (!indexed.has(file)) failures.push(`${file}: not linked from docs/guides/README.md`);
 }
 for (const file of indexed) {
+    if (file === 'README.md' || file === 'coverage.md') continue;
     if (!guideFiles.includes(file)) failures.push(`docs/guides/README.md: links non-guide file ${file}`);
 }
 
-// README index labels must match the guide H1 titles.
-for (const match of index.matchAll(/\[(\d{2}) — ([^\]]+)\]\((\d{2}-[a-z0-9-]+\.md)\)/g)) {
-    const num = match[1];
-    const label = match[2].trim().replace(/`/g, '');
-    if (titleMap[num] && label !== titleMap[num]) {
-        failures.push(`docs/guides/README.md: index label "${label}" does not match guide title "${titleMap[num]}"`);
+// README index labels must match the guide titles.
+for (const match of index.matchAll(/\[([^\]]+)\]\(([a-z0-9-]+)\.md\)/g)) {
+    const label = match[1].trim().replace(/`/g, '');
+    const slug = match[2];
+    if (titleMap[slug] && label !== titleMap[slug] && /Guide|\d/.test(label)) {
+        failures.push(`docs/guides/README.md: index label "${label}" does not match guide title "${titleMap[slug]}"`);
     }
 }
 
@@ -288,9 +297,9 @@ const coveragePath = join(GUIDES, 'coverage.md');
 if (existsSync(coveragePath)) {
     const coverage = readFileSync(coveragePath, 'utf8');
     for (const entry of readdirSync(join(ROOT, 'packages'))) {
-        const manifest = join(ROOT, 'packages', entry, 'package.json');
-        if (!existsSync(manifest)) continue;
-        const { name } = JSON.parse(readFileSync(manifest, 'utf8'));
+        const pkgManifest = join(ROOT, 'packages', entry, 'package.json');
+        if (!existsSync(pkgManifest)) continue;
+        const { name } = JSON.parse(readFileSync(pkgManifest, 'utf8'));
         if (!coverage.includes(`\`${name}\``)) {
             failures.push(`docs/guides/coverage.md: missing package ${name}`);
         }

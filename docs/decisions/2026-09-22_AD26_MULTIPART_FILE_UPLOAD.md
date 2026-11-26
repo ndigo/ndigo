@@ -151,7 +151,7 @@ resolver (Wave 3), demo gates + docs (Wave 4). All waves landed — see below.
   `argumentResolvers()` `@entry` entry on `NodeAutoConfiguration`.
 - **Wave 4** — `apps/ndigo-api` `POST /api/upload` demo gate (`UploadController`, persists
   to a temp dir under a random filename, returns `{ size, name }`); `upload.spec.ts`
-  round-trip + empty-file-400 spec; guide [`docs/guides/08-multipart-and-file-upload.md`](../guides/08-multipart-and-file-upload.md);
+  round-trip + empty-file-400 spec; guide [`docs/guides/multipart-and-file-upload.md`](../guides/multipart-and-file-upload.md);
   gap-analysis §2.1 multipart row → IMPLEMENTED; plan ratified here.
 
 Repo gates (`pnpm lint`, `pnpm format:check`, changed-package `vitest run` + `tsc -b`,

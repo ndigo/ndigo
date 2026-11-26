@@ -27,7 +27,7 @@ export const REPORTS = new ContextToken<Cache<{ invocations: number; value: stri
  *   weaving installs the advice on the instance, so `report()`'s call to
  *   `this.reportValue()` is cached too.
  *
- * @see docs/guides/19-caching.md
+ * @see docs/guides/caching.md
  */
 @requestMapping('/api')
 export class CachedReportController extends AsApplicationContextAware(Object) {

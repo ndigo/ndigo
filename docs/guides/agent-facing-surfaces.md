@@ -1,0 +1,336 @@
+# Agent-Facing Surfaces
+
+You shouldn't have to describe the same endpoint twice — once for REST, once for OpenAPI, once for an MCP tool. Ndigo projects one handler's schema into all of them: REST route, OpenAPI operation, MCP tool, MCP App, A2UI surface, and browser tool.
+
+**Use for:** exposing the same handler as REST, OpenAPI, MCP, A2UI, and browser tools.
+
+**Not for:** handlers that should stay internal; use `@toolMapping` only where you want agent access. For the CLI and verification workflow, see [Capabilities for Authoring Agents](capabilities-for-authoring-agents.md).
+
+One schema, many surfaces: `@parameters` and `validatedBy` are the only declarations you write.
+
+**Audience:** Node · browser · **Prerequisites:** Guides [Routing & Route Conditions](routing-and-route-conditions.md), [Argument Binding](argument-binding.md), [Request Validation](request-validation.md), [OpenAPI & API Docs](openapi-and-api-docs.md), [UI Components & Integration](component-integration.md), [The Ndigo CLI](ndigo-cli.md) · **Reference app:** [apps/21-ndigo-agent-lab](https://github.com/ndigo/ndigo/tree/main/apps/21-ndigo-agent-lab) (Node), [apps/20-ndigo-ui-lab](https://github.com/ndigo/ndigo/tree/main/apps/20-ndigo-ui-lab) (browser)
+
+## What you'll learn
+
+- Why `@parameters` and `validatedBy` are the only schema you write.
+- How to project a handler into MCP over stdio and Streamable HTTP.
+- How to link a tool to an MCP App `ui://` resource.
+- How to serve A2UI through content negotiation and render it with the installed catalog.
+- How to expose a browser handler as a WebMCP tool.
+- How to test the OpenAPI ↔ `tools/list` parity.
+
+## 1. One handler, many surfaces
+
+| Surface    | Declaration                                 | Consumer                |
+| :--------- | :------------------------------------------ | :---------------------- |
+| REST route | `@getMapping` / `@postMapping`              | HTTP clients            |
+| OpenAPI    | the same route metadata                     | generated document      |
+| MCP tool   | `@toolMapping`                              | stdio, Streamable HTTP  |
+| MCP App    | `ui` on `@toolMapping` + `createUiResource` | MCP host iframe         |
+| A2UI       | `ModelAndView` + `a2uiViewResolver`         | `application/a2ui+json` |
+| WebMCP     | `@parameters` + `webMcpToolForHandler`      | browser agent           |
+
+The invariant is the metadata: `@parameters` declares the extractors and
+`validatedBy` declares the Zod schema. Every surface above reads that one
+description, so a renamed argument or a tightened schema cannot drift between
+the route, the OpenAPI document, and `tools/list`.
+
+## 2. Declare the tool
+
+`@toolMapping` opts a handler into the agent surface. It carries only
+agent-specific metadata — never a second argument schema.
+
+```ts
+@requestMapping('/')
+export class OrderTools {
+    @getMapping('/tools/orders')
+    @toolMapping({ name: 'list_orders', readOnly: true, description: 'List every order.', ui: 'ui://orders' })
+    listOrders(): readonly Order[] {
+        return ORDERS;
+    }
+
+    @getMapping('/tools/orders/:id')
+    @parameters({ id: pathVariable('id') })
+    @toolMapping({ name: 'lookup_order', readOnly: true, description: 'Read one order by id.' })
+    lookupOrder(id: string): Order | { error: string } {
+        return ORDERS.find((order) => order.id === id) ?? { error: `order '${id}' not found` };
+    }
+}
+```
+
+- The name must be snake_case starting with a letter; the method name is the
+  default.
+- `readOnly: true` marks the tool as non-mutating. A read-only registry omits
+  mutating tools from `tools/list` **and** rejects them on call.
+- `description` defaults to the route summary.
+- `ui` is an MCP Apps resource URI (`ui://…`); it is projected as
+  `_meta.ui.resourceUri`.
+- `@whenFeature('flag')` removes a gated tool from `tools/list` entirely — fail
+  closed when the evaluator is absent.
+
+## 3. Serve it over stdio and HTTP
+
+Build one registry from the dispatcher, then attach a transport:
+
+```ts
+const registry = MCPToolRegistry.from(context.getValue(DISPATCHER), {
+    readOnly: true,
+    argumentResolvers: context.getValue(ARGUMENT_RESOLVERS),
+});
+await startStdioServer(registry, { name: 'ndigo-agent-lab', uiResources: [ordersUi] });
+```
+
+Streamable HTTP mounts the same registry on an ordinary route, so the normal
+interceptor chain (auth, rate limits, CSRF, feature gates) runs before the
+transport sees the request:
+
+```ts
+@requestMapping('/')
+export class MCPHTTPController {
+    readonly #endpoint = new MCPHTTPEndpoint(registry, { uiResources: [ordersUi] });
+
+    @requestMapping('/mcp')
+    @parameters({ route: routeValue() })
+    async mcp(route: Route): Promise<void> {
+        await this.#endpoint.handle(route);
+    }
+}
+```
+
+Notes:
+
+- `@requestMapping('/mcp')` with no HTTP method handles any method.
+- `routeValue` with no name binds the whole `Route`; without it the handler
+  receives no arguments.
+- Build the endpoint lazily in the real app: the registry projects the
+  dispatcher's mappings, so it must run after every controller is registered
+  (see `#resolveEndpoint` in the demo).
+- `ndigo add agent-surface` plans the wiring — a stdio entry, a `scripts.mcp`
+  entry, and the `@ndigo/mcp` dependency; `--apply` writes it. The entry boots
+  the application's configuration, so pass `--var configuration=<Class>` and
+  `--var configurationFile=<module>` when the class is not at a known path.
+
+## 4. Policy, auth, and telemetry
+
+- **Read-only by default.** Pass `readOnly: true` unless the application
+  deliberately exposes mutations; the policy applies to both list and call.
+- **Per-call policy.** `authorize(call)` decides each call — returning `false`
+  refuses it as an `isError` tool result, never a protocol failure — and
+  `confirm(call)` returns the sentence a person must confirm. MCP has no
+  confirmation round-trip, so a confirmed call is refused with
+  `Needs a person: …` unless an `authorize` policy accepts it. Both run after
+  the visibility policy and before argument binding.
+- **Consequential tools.** `@toolMapping({ consequential: true })` projects
+  `destructiveHint` and pairs with `confirm`; `readOnly` and `consequential`
+  together are rejected. The full hint mapping across hosts is in
+  [The Agent Operate Contract](agent-operate-contract.md#3-one-declaration-mapped-hints).
+- **Secret results.** `@toolMapping({ secret: ['field.path'] })` replaces the
+  declared result fields with the shared `<redacted>` sentinel before the
+  result leaves the registry.
+- **OAuth 2.1.** Serve `protectedResourceMetadata(...)` beside the endpoint and
+  let `AuthRouteGuard` validate the bearer token, `@authorized` roles, and
+  `@authorizedScopes` scopes. The guard denies before the transport runs.
+- **Limits.** Apply per-tool or per-principal budgets through
+  `@ndigo/rate-limit`; wrap downstream calls in `@circuitBreaker` / `@retry`.
+- **Telemetry.** Every call emits one `execute_tool <name>` span with
+  `gen_ai.tool.name`, `gen_ai.tool.call.id`, and `gen_ai.tool.call.source` (the
+  invoking surface: `stdio`, `http`, or `agent` from the `@ndigo/ai` loop);
+  outbound HTTP spans nest under it. A policy
+  refusal is marked with `gen_ai.tool.call.denied` — an expected outcome, so
+  the span does not become an error.
+- **Audit.** Log the tool name and principal in an interceptor; never log
+  arguments that may carry secrets.
+
+```ts
+export const metadata = protectedResourceMetadata({
+    resource: 'https://api.example.test/mcp',
+    authorizationServers: ['https://auth.example.test'],
+    scopesSupported: ['tools.read'],
+});
+```
+
+`scopesSupported` is advertised RFC 9728 metadata and is enforced with
+`@authorizedScopes(...)` on the handler. The guard reads the `scope` (OAuth
+2.0 string), `scp` (Azure AD array/string), or `scopes` (custom array) claim
+into the principal and denies with 403 when a required scope is missing. A
+scope requirement also implies authentication.
+
+```ts
+@getMapping('/tools/orders')
+@authorizedScopes('tools.read')
+@toolMapping({ name: 'list_orders', readOnly: true })
+listOrders(): readonly Order[] {
+    return ORDERS;
+}
+```
+
+## 5. MCP Apps
+
+An MCP App is a tool plus a `ui://` document the host renders in a sandboxed
+iframe. Link the tool with `ui`, then build the document:
+
+```ts
+export const ordersUi = createUiResource({
+    uri: 'ui://orders',
+    name: 'Orders',
+    description: 'The order catalogue rendered by an MCP Apps host.',
+    trustedMarkup: true,
+    body: '<main><h1>Orders</h1><table>…</table></main>',
+    css: 'table { border-collapse: collapse; }',
+    csp: { connectDomains: ['https://api.example.test'] },
+});
+```
+
+- `createUiResource` inlines CSS and one script into a self-contained document
+  and rejects `</style>` / `</script>` breakouts.
+- `body` is HTML-escaped by default; set `trustedMarkup: true` only for markup
+  the application authored.
+- The server advertises `io.modelcontextprotocol/ui`, serves the document as
+  `text/html;profile=mcp-app`, and carries `_meta.ui` (CSP domains,
+  permissions, border, domain).
+- Declare every external origin in `csp`; never use `*`.
+- Pass the resource to both transports: `startStdioServer(registry, {
+   uiResources })` and `new MCPHTTPEndpoint(registry, { uiResources })`.
+
+## 6. A2UI
+
+A2UI is a representation, not a runtime dependency: the handler returns an
+array of A2UI 1.0 messages and content negotiation picks it.
+
+```ts
+export function orderSurfaceMessages(): readonly unknown[] {
+    return [
+        { version: '1.0', createSurface: { surfaceId: 'orders', catalogId: 'ndigo-ui' } },
+        {
+            version: '1.0',
+            updateComponents: {
+                surfaceId: 'orders',
+                components: [{ id: 'root', component: 'Switch', checked: true }],
+            },
+        },
+    ];
+}
+
+@requestMapping('/reports')
+export class ReportController {
+    @getMapping('/orders')
+    orders(): ModelAndView {
+        return new ModelAndView('orders', orderSurfaceMessages());
+    }
+}
+```
+
+Register the resolver so `orders` has two representations. JSON stays first, so
+an unopinionated `Accept: */*` keeps the JSON default:
+
+```ts
+@configuration
+export class AgentLabConfiguration {
+    @entry()
+    viewResolver(): ContentNegotiationViewResolver {
+        const manager = new ContentNegotiationManager([
+            new PathExtensionContentNegotiationStrategy(
+                new Map([
+                    ['json', MediaTypes.APPLICATION_JSON],
+                    ['a2ui', MediaTypes.APPLICATION_A2UI_JSON],
+                ])
+            ),
+        ]);
+        const resolver = new ContentNegotiationViewResolver(manager);
+        const jsonOrders: ViewResolver = {
+            resolveViewName: async (name: string) => (name === 'orders' ? new JSONView() : null),
+        };
+        resolver.viewResolvers = [jsonOrders, a2uiViewResolver('orders')];
+        return resolver;
+    }
+}
+```
+
+```bash
+curl -s localhost:3210/reports/orders -H 'accept: application/a2ui+json'
+```
+
+The client renders the messages with `<nd-a2ui-surface>` from the `@ndigo/ui`
+registry:
+
+```ts
+const surface = document.querySelector<NdA2UISurface>('#a2ui-demo');
+surface.messages = orderSurfaceMessages();
+```
+
+The catalog is the security model: the surface renders only components the
+application installed (`ndigo.ui.json` + `ui.lock.json`). An unknown component
+sets `data-error` and emits `nd-a2ui-error` instead of rendering. Tell the
+agent what it may use with `ndigo ui catalog --json` or the `get_catalog` MCP
+tool on `ndigo ui mcp`.
+
+## 7. WebMCP
+
+A browser view exposes a handler as a WebMCP tool with the same metadata an
+HTTP route binds:
+
+```ts
+export class WebMCPDemo extends AsWebMCPElement(NdElement) {
+    @parameters({ query: validatedBy(z.string().min(2), queryValue('query', { required: true })) })
+    search(query: string): readonly CatalogueItem[] {
+        return CATALOGUE.filter((item) => item.name.toLowerCase().includes(query.toLowerCase()));
+    }
+
+    override webMcpTools(): readonly WebMCPTool[] {
+        return [
+            webMcpToolForHandler({
+                handler: this,
+                method: 'search',
+                name: 'search_catalogue',
+                description: 'Search the tea catalogue by name.',
+                readOnly: true,
+            }),
+        ];
+    }
+}
+```
+
+- `AsWebMCPElement` registers the tools on connect and aborts the registration
+  on disconnect; a reconnect registers again.
+- The input schema comes from the same `@parameters` + `validatedBy` metadata.
+- Browsers without `document.modelContext` get a no-op registration
+  (`supported: false`), so the element ships everywhere.
+- `exposedTo` lists secure origins allowed to call a cross-origin tool.
+- Non-element code uses `provideWebMcpTools` or `declareWebMcpTool`.
+- The tool shape and safety hints (`readOnlyHint`, `untrustedContentHint`,
+  `consequentialHint`, `debugging`) are the neutral `AgentTool` /
+  `AgentToolAnnotations` contract from `@ndigo/core`, and `webMcpAgentHost`
+  exposes the same registration as an `AgentToolHost`. Code written against
+  the contract is host-agnostic — the planned UI SDK adapter implements the
+  same types, so only the adapter changes.
+
+## 8. Prove the parity
+
+The parity test is mechanical: generate the OpenAPI document from the same
+dispatcher tables and compare each operation's parameters and body with the
+tool's `inputSchema`.
+
+```ts
+const tables = dispatcher.handlerMappings.filter((mapping) => 'getHandlerMethods' in mapping);
+const document = new OpenAPISpecGenerator().generate(tables as RouteMappingTable[]);
+const tools = await registry.listTools();
+```
+
+`packages/ndigo-mcp/test/parity.spec.ts` proves the projection itself;
+[apps/21-ndigo-agent-lab/test/parity.spec.ts](https://github.com/ndigo/ndigo/blob/main/apps/21-ndigo-agent-lab/test/parity.spec.ts) proves the demo wiring (tool list,
+`_meta.ui`, the `lookup_order`schema against the generated operation, and A2UI
+serialization).[apps/20-ndigo-ui-lab/test/a2ui-surface.spec.ts](https://github.com/ndigo/ndigo/blob/main/apps/20-ndigo-ui-lab/test/a2ui-surface.spec.ts) covers
+installed-component rendering and unknown-component rejection.
+
+## See also
+
+- Package references: [`@ndigo/mcp`](../../packages/ndigo-mcp/README.md),
+  [`@ndigo/view`](../../packages/ndigo-view/README.md),
+  [`@ndigo/view-webcomponent`](../../packages/ndigo-view-webcomponent/README.md)
+- [Views & Content Negotiation](views-and-content-negotiation.md)
+- [UI Components & Integration](component-integration.md)
+- [The Ndigo CLI](ndigo-cli.md)
+- [AI Agents & Streaming](ai-agents.md)
+- [Capabilities for Authoring Agents](capabilities-for-authoring-agents.md)
+- [The Agent Operate Contract](agent-operate-contract.md)
+- Reference apps: [apps/21-ndigo-agent-lab](https://github.com/ndigo/ndigo/tree/main/apps/21-ndigo-agent-lab), [apps/20-ndigo-ui-lab](https://github.com/ndigo/ndigo/tree/main/apps/20-ndigo-ui-lab)

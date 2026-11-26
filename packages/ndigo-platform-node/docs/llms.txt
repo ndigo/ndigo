@@ -31,7 +31,7 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `AESGCMCipher` — AES-256-GCM SecretCipher implementation ( rung 1).
 - `HTTP_SERVER` — Token for the managed HTTPServer entry.
 - `SOCKET_SESSION_REGISTRY` — Token for the shared WebSocket session registry entry.
-- `SOCKET_REQUEST_AUTHENTICATOR` — Token for the socket upgrade authenticator entry (SEC-3).
+- `SOCKET_REQUEST_AUTHENTICATOR` — Token for the socket upgrade authenticator entry.
 - `FLAG_CONTEXT_RESOLVER` — Token for the flag targeting-context resolver entry: the default resolves the session-bag principal, then the client address.
 - `CONVERSION_SERVICE` — Token for the shared conversion service entry (schema targets included) — leaf conversions and schema-driven DTO projection in one entry.
 - `NodeEnvironment` — Node.js environment implementation that includes `process.env` as a property source registered under the name `systemEnvironment`.
@@ -144,8 +144,8 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `ClientAddressFlagContextResolver` — The client-address resolver: targeting key = the `NodeRequest`'s `remoteAddress` — the trusted-proxy-resolved client IP, the same key the rate limiter uses. An…
 - `SessionPrincipalFlagContextResolver` — The platform default (`FLAG_CONTEXT_RESOLVER`): the **session principal** when one is present, otherwise ClientAddressFlagContextResolver.
 - `RATE_LIMIT_KEY` — Metadata key for `@rateLimit` — class-level under `RATE_LIMIT_KEY`, method-level under `${RATE_LIMIT_KEY}:<methodName>` (method wins).
-- `rateLimit` — Declares a rate-limit policy for a class or method (passive metadata — enforcement is RateLimitInterceptor, default-on in the node platform mapping since Wave…
-- `RateLimitInterceptor` — Enforces `@rateLimit` policies (SEC-6): a fixed-window budget per client key, denied as **429 + `Retry-After`** problem documents.
+- `rateLimit` — Declares a rate-limit policy for a class or method (passive metadata — enforcement is RateLimitInterceptor, default-on in the node platform mapping).
+- `RateLimitInterceptor` — Enforces `@rateLimit` policies: a fixed-window budget per client key, denied as **429 + `Retry-After`** problem documents.
 - `TrustedProxySet` — A validated trusted-proxy allowlist: IP literals and CIDR prefixes (IPv4/IPv6), with a membership predicate. Implements `Matchable<string>` from `@ndigo/core`…
 - `resolveClientAddress` — Resolves the client address of a request, honoring `X-Forwarded-For` only from trusted proxies.
 - `CORSInterceptorOptions` *(type)* — Configuration for the server-side CORS interceptor.
@@ -160,5 +160,5 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `OpenAPIDocsController` — The spec controller: self-documenting, cache-free, JSON.
 - `relativeSpecUrl` — Relative URL from the UI page's directory to the spec endpoint.
 - `renderSwaggerUiPage` — Renders the Swagger UI page for the given title.
-- `renderSwaggerUiInitScript` — Renders the Swagger UI bootstrap as a served asset (SEC-2).
+- `renderSwaggerUiInitScript` — Renders the Swagger UI bootstrap as a served asset.
 - `SwaggerUIController` — The UI controller. Registered without decorator metadata by "openapi-docs-auto-configuration".OpenAPIDocsAutoConfiguration (per-instance paths).

@@ -362,7 +362,7 @@ No test sleeps: the breaker's reset window is crossed with
 
 - [apps/README](../README.md) — the applications progression and the port registry
 - [05-ndigo-api](../05-ndigo-api/README.md) — the canonical Node app reference (management wiring)
-- [Guide 35 — Resilience & Retries](../../docs/guides/35-method-interception-and-resilience.md)
+- [Resilience & Retries](../../docs/guides/method-interception-and-resilience.md)
 - [@ndigo/resilience](../../packages/ndigo-resilience/README.md) · [@ndigo/advice](../../packages/ndigo-advice/README.md) · [@ndigo/service](../../packages/ndigo-service/README.md) · [@ndigo/management](../../packages/ndigo-management/README.md)
 
 ## Contributing

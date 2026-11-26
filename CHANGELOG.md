@@ -199,7 +199,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   semconv attributes (`feature_flag.key`, `feature_flag.provider.name`,
   `feature_flag.result.reason`, `feature_flag.result.variant`, `error.type`
   on abnormal outcomes), usable on both SDKs and inert until telemetry
-  providers are wired. Guide 28 gains the browser recipe and provider
+  providers are wired. Security Hardening gains the browser recipe and provider
   notes (flagd/OFREP).
 - `@ndigo/platform-node`: the flag targeting-context
   seam — the **`FLAG_CONTEXT_RESOLVER`** entry
@@ -277,7 +277,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `db/schema.json`, `migrations.{runOnBoot,dir}` configuration with
   `migrateOnBoot` in the start path, and config-file loading
   (`config/application.json`) as the dotted-key carrier.
-- Guide 27 — ORM & Migrations (the journaled lifecycle, the snapshot
+- Browser Authentication & OIDC — ORM & Migrations (the journaled lifecycle, the snapshot
   freshness gate, and the fidelity ceiling).
 - `@ndigo/rate-limit`: the `RateLimiter` SPI as a leaf package —
   async `consume`, `RateLimitPolicy`/`RateLimitResult`,
@@ -636,7 +636,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Docs lane: `scripts/check-doc-links.mjs` no longer resolves root-relative
   documentation-site routes (`/reference/…`, `/guides/…`, `/concepts/…`,
   `/ui/…`) as repository paths; it counts and skips them, since the site's
-  route table is not in this repository. Guide 30 now links the vendored
+  route table is not in this repository. UI Components & Integration now links the vendored
   ndigo-ui skill instead of the maintainer-only `agent-local/` copy, so
   `pnpm docs:links` passes on a clean checkout (issue #505).
 - `ndigo doctor` (2026-11-02 review follow-up): the Node floor was pinned at
@@ -748,7 +748,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Lua script). `NodeAutoConfiguration` provides `jobDriver`, `jobQueue`,
   `jobHandlerRegistry`, and `jobRunner`; the runner starts explicitly — an
   unstarted runner arms no timer (worker processes call `start()`; see
-  [guide 22](docs/guides/22-jobs-and-outbox.md)).
+  [guide 22](docs/guides/jobs-and-outbox.md)).
 - `@ndigo/inspect` — programmatic inspection manifest (`inspectApplication`):
   a versioned, deterministic JSON view of routes, dispatcher mappings
   (pattern, HTTP methods/socket, handler class + method, parameters) and
@@ -780,7 +780,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   form-associated controls end-to-end: native `FormData` →
   `application/x-www-form-urlencoded` → `POST /items` → `dataBinderValue` +
   Zod → SSE push. Theming is the library's token stylesheet plus `--wa-*`
-  overrides; first paint stays the DSD fallback pattern. Guide 21 documents
+  overrides; first paint stays the DSD fallback pattern. Persistence & Shared Stores documents
   the workflow, and the vetting checklist carries recorded results
   (Spectrum and Material Web ship no form-associated controls; FAST has no
   maintained component set).
@@ -1151,7 +1151,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   HG-12, SE-9). Every package README now meets the enforced section standard
   (docs gate widened with it).
 - Docs: plans/migrations indexes completed; CSP docs aligned with SEC-4;
-  root README inventories refreshed; new Guide 17 (static files) and Guide 18
+  root README inventories refreshed; new Internationalization & Content (static files) and Forms End-to-End
   (signals & islands); removed-tooling references swept (DO-3..DO-9).
 - Demos: app READMEs corrected; unused app deps pruned; dead auth helpers
   removed; ndigo-api route list + matrix tests (AP-5..AP-9).

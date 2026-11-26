@@ -175,8 +175,8 @@ pnpm --filter @ndigo/orm-drizzle test
 ## See Also
 
 - [@ndigo/orm](../ndigo-orm/README.md) — the entity metadata and repository contracts this adapter implements
-- [Guide 26 — Authentication & Sessions](../../docs/guides/26-authentication-and-sessions.md) — wiring `LibSQLSessionStore` into credentials auth and cookie sessions
-- [Guide 21 — Persistence & Shared Stores](../../docs/guides/21-persistence-and-shared-stores.md) — the memory-first persistence baseline and durable-session posture
+- [Authentication & Sessions](../../docs/guides/authentication-and-sessions.md) — wiring `LibSQLSessionStore` into credentials auth and cookie sessions
+- [Persistence & Shared Stores](../../docs/guides/persistence-and-shared-stores.md) — the memory-first persistence baseline and durable-session posture
 
 ## Contributing
 

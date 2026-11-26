@@ -204,9 +204,9 @@ framework itself is unmodified; this is a documented alternative rendering path.
 ## See Also
 
 - [apps/README](../README.md) — the numbered application ladder and port registry
-- [07 — Request Validation](../../docs/guides/07-request-validation.md) — the
+- [Request Validation](../../docs/guides/request-validation.md) — the
   `validatedBody`/`validatedQuery` surface and the framework's 422 document
-- [01 — Building a Node API](../../docs/guides/01-building-a-node-api.md) —
+- [Building a Node API](../../docs/guides/building-a-node-api.md) —
   bootstrap, controllers, binding, the RFC 9457 error contract
 - [@ndigo/platform-node](../../packages/ndigo-platform-node/README.md) — the Node
   platform foundation

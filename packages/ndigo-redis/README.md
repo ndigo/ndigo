@@ -270,7 +270,7 @@ not launch, flush or own the server configured by the environment.
 
 ## See Also
 
-- [Guide 21 — Persistence & Shared Stores](../../docs/guides/21-persistence-and-shared-stores.md)
+- [Persistence & Shared Stores](../../docs/guides/persistence-and-shared-stores.md)
 - [@ndigo/cache](../ndigo-cache/README.md) — the cache contracts (`Cache`, `CacheMiss`, `CacheManager`) these adapters implement
 - [@ndigo/socket](../ndigo-socket/README.md) — the `SocketFanout` contract and the STOMP broker/registry the fan-out plugs into
 

@@ -13,7 +13,7 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `likeRateLimiterAware` — Tests whether a value looks like rate-limiter-aware state.
 - `AsRateLimiterAware` — Mixes rate-limiter awareness into a base class.
 - `validateRateLimitPolicy` — Validates a RateLimitPolicy — shared by the `@rateLimit` decorator (decoration-time) and every limiter (call-time).
-- `RateLimitPolicy` *(type)* — A route's rate-limit policy: at most `limit` requests per `windowMs` per client key (SEC-6).
+- `RateLimitPolicy` *(type)* — A route's rate-limit policy: at most `limit` requests per `windowMs` per client key.
 - `RateLimitResult` *(type)* — The outcome of RateLimiter.consume.
 - `RateLimiter` *(type)* — Rate-limit backend contract. Implementations count request keys over fixed windows; the in-memory reference (single process) and the Redis driver (shared store…
 - `RateLimiterAware` *(type)* — Marks an object that can receive a RateLimiter.

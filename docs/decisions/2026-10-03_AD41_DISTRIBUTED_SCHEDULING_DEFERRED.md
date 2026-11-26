@@ -38,4 +38,4 @@ If triggered, the precedent is the AD-20 hook seam plus the `@ndigo/redis` conne
 
 - Roadmap Phase 4: `docs/plans/2026-10-01_SHARED_PERSISTENCE_ROADMAP.md`
 - Scheduler design: [AD-20](2026-09-13_AD20_SCHEDULING.md) (D1–D8, revisit triggers)
-- Scheduling guide: `docs/guides/05-scheduling.md`
+- Scheduling guide: `docs/guides/scheduling.md`

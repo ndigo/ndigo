@@ -1,7 +1,0 @@
-<!-- guide-redirect -->
-
-# [Guide 11](11-http-client.md) — Authentication and Sessions (moved)
-
-This guide is now [Guide 26 — Authentication & Sessions](26-authentication-and-sessions.md). The old path is kept so
-links from historical records (ADRs, plans, audits) continue to resolve. See the
-guide renumbering map.

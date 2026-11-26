@@ -130,7 +130,7 @@ Every package must meet the documentation standard:
 - **Cross-package JSDoc links** — add an entry to
   `scripts/external-symbol-links.json`; never sprinkle links into package code.
 - **Enforcement** — `pnpm manifest:check` (README/metadata/files), CI
-  generation (zero warnings). Full rules: `docs/guides/90-package-documentation.md`.
+  generation (zero warnings). Full rules: `docs/guides/package-documentation.md`.
 
 **No HTML docs:** `doc-html/` and `typedoc.html.json` are gone; do not
 reintroduce them.
@@ -443,7 +443,7 @@ When organizing helper functions and utilities, follow the extraction hierarchy:
             - `@ndigo/util` - Common utilities (type guards, string utils, environment, crypto) - **Check first!**
             - `@ndigo/validate` - (retired 2026-09-05; use `zod` via `@ndigo/orm` entity schemas / `@ndigo/dispatcher` `validatedBy`)
             - `@ndigo/core` - Core primitives, containers, patterns - Use for application context, DI, base types
-    - **Step 2b - Prefer capabilities over hand-wiring:** Before wiring packages into an app by hand, check the capability catalog — `ndigo capabilities --json` lists what an app can gain, `ndigo add <capability>` plans the wiring without writing, and `ndigo verify --capability <id>` proves the outcome (see [Guide 51](docs/guides/51-capabilities-for-authoring-agents.md)).
+    - **Step 2b - Prefer capabilities over hand-wiring:** Before wiring packages into an app by hand, check the capability catalog — `ndigo capabilities --json` lists what an app can gain, `ndigo add <capability>` plans the wiring without writing, and `ndigo verify --capability <id>` proves the outcome (see [Capabilities for Authoring Agents](docs/guides/capabilities-for-authoring-agents.md)).
     - **After big changes:** refresh the graph with `graft build`.
 3.  **Plan:** Check `docs/migrations/` or `ARCHITECTURE.md` for recent architectural shifts.
 4.  **Design Decisions:** Consider API design patterns:

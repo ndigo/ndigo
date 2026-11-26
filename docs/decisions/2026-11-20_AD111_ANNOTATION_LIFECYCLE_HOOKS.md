@@ -210,7 +210,7 @@ documentation gap is its own item.
   [AD-110](2026-11-20_AD110_ANNOTATION_EXECUTION_RUNTIME.md)
 - `docs/architecture/annotation-and-transformer-model.md` — "Choosing a
   consumption seam"
-- `docs/guides/04-dependency-injection-and-lifecycle.md` §5
+- `docs/guides/dependency-injection-and-lifecycle.md` §5
 - `packages/ndigo-factory/src/{lifecycle.ts,entry-processor.ts,abstract-factory.ts}`
 - `packages/ndigo-context/src/application-context-aware-processor.ts`,
   `generic-application-context.ts` (`_prepareFactory`)

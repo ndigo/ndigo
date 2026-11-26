@@ -150,7 +150,7 @@ identifier rename only — the hooks' behavior is untouched, and
 
 - #548 — this decision; #561 — the annotation consumer; #47/AD-111
 - `packages/ndigo-factory/src/{lifecycle.ts,entry-processor.ts,abstract-factory.ts,scope.ts}`
-- `docs/guides/04-dependency-injection-and-lifecycle.md`,
+- `docs/guides/dependency-injection-and-lifecycle.md`,
   `docs/architecture/{lifecycle-and-ownership,annotation-and-transformer-model}.md`
 - `packages/ndigo-orm/src/entity-hooks.ts`,
   `packages/ndigo-orm/src/metadata.ts`

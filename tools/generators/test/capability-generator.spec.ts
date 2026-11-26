@@ -13,7 +13,7 @@ const OPTIONS: CapabilityGeneratorSchema = {
     id: 'wave-test',
     summary: 'Deliver the wave test wiring.',
     packages: ['@ndigo/socket'],
-    guide: '15-websockets',
+    guide: 'websockets',
 };
 
 describe('capability generator', () => {
@@ -34,7 +34,7 @@ describe('capability generator', () => {
             kind: 'capability',
             summary: 'Deliver the wave test wiring.',
             packages: ['@ndigo/socket'],
-            guide: '15-websockets',
+            guide: 'websockets',
             ops: [{ op: 'addDependency', packages: ['@ndigo/socket'] }],
             checks: ['app-boot', 'typecheck'],
         });

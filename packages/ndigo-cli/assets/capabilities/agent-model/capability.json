@@ -3,7 +3,7 @@
   "kind": "capability",
   "summary": "Add a bounded, provider-neutral tool-calling loop with streaming, structured output, and telemetry.",
   "packages": ["@ndigo/ai", "@ndigo/ai-sdk"],
-  "guide": "47-ai-agents",
+  "guide": "ai-agents",
   "ops": [
     {
       "op": "addDependency",

@@ -45,7 +45,7 @@ cd apps/07-ndigo-island && pnpm test:e2e   # Playwright browser lane (starts the
 ## See Also
 
 - [apps/README](../README.md) — the applications progression
-- [Guide 30 — UI Components & Integration](../../docs/guides/30-component-integration.md) — the library adoption pattern this app demonstrates
+- [UI Components & Integration](../../docs/guides/component-integration.md) — the library adoption pattern this app demonstrates
 - [@ndigo/view-ejs](../../packages/ndigo-view-ejs/README.md) — the EJS technology
 
 ## Contributing

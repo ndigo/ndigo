@@ -30,9 +30,9 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `ScryptOptions` *(type)* — Configuration for ScryptPasswordEncoder.
 - `ScryptPasswordEncoder` — The reference PasswordEncoder implementation: scrypt via `node:crypto` — a platform-audited primitive, zero dependencies (the same reasoning that picked AES-GC…
 - `UserRecord` *(type)* — A framework-owned view of a first-party user account.
-- `UserStore` *(type)* — Lookup contract for first-party user accounts (Wave 1 of the auth completion plan; consumed by the credentials adapter in Wave 2).
+- `UserStore` *(type)* — Lookup contract for first-party user accounts, consumed by the credentials adapter.
 - `SessionRecord` *(type)* — A stored server-side session.
-- `SessionStore` *(type)* — Backing store contract for opaque server sessions (audit M4).
+- `SessionStore` *(type)* — Backing store contract for opaque server sessions.
 - `authenticated` — Marks a class or method as requiring authentication.
 - `authorized` — Marks a class or method as requiring a specific role.
 - `authorizedScopes` — Marks a class or method as requiring specific OAuth scopes.

@@ -42,7 +42,7 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `HTTPExecutionChain` — Ordered interceptor chain for one `HTTP` client: tracks which interceptor capabilities are registered (completion/error/initialization/request/response aware)…
 - `HTTP` — HTTP client with interceptor support and convenience verb helpers.
 - `HeaderRecord` *(type)* — HeaderRecord.
-- `foldHeaderName` — Folds a header name to the lower-cased spelling used by Node server header records (DSG-5).
+- `foldHeaderName` — Folds a header name to the lower-cased spelling used by Node server header records.
 - `HTTPHeader` — Represents a single HTTP header name with helpers for common header collections.
 - `AuthorizationHeader` — Authorization header category: credential-scheme parsing on the constant itself.
 - `MULTIPART_FORM_DATA` — The recognized multipart media type (canonical base-type string; single source is `@ndigo/core`'s `MediaTypes.MULTIPART_FORM_DATA`).

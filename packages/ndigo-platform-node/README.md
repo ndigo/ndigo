@@ -63,7 +63,7 @@ is a `400`, never silently reshaped. `listen()` rejects on bind errors, and
 ### TLS and HTTP/2 origin (opt-in)
 
 The origin listens on plaintext HTTP/1.1 by default — the edge-terminated
-posture (see [guide 38 §6](../../docs/guides/38-deployment-and-production-readiness.md#6-tls-and-the-edge)).
+posture (see [guide 38 §6](../../docs/guides/deployment-and-production-readiness.md#6-tls-and-the-edge)).
 Pass TLS material and the listener becomes an `http2.createSecureServer`
 in `allowHTTP1` mode: ALPN negotiates HTTP/2 with an HTTP/1.1 fallback on
 one port, and WebSockets keep riding h1.1 (neither `ws` nor browsers
@@ -114,7 +114,7 @@ subdomain is trusted. Dropping `Secure`/`Path=/` (or adding a `Domain`)
 while keeping the prefix makes browsers reject the cookie, so mutating
 requests fail closed. Pair the interceptor with
 `NodeSessionInterceptor` and `AuthRouteGuard` for cookie-authenticated
-routes; see the [authentication guide](../../docs/guides/26-authentication-and-sessions.md#6-csrf-on-auth-mutations).
+routes; see the [authentication guide](../../docs/guides/authentication-and-sessions.md#6-csrf-on-auth-mutations).
 
 ### Controller Example
 
@@ -168,7 +168,7 @@ streaming transports redirect selected renders without forking the dispatcher.
 `ResponseEntity`, producing views (`renderTo`), plain JSON returns, and a
 `ModelAndView` with neither a view nor a name are complete documents written
 before the shared pipeline — they never construct a target. See
-[guide 50 §7](../../docs/guides/50-view-targeting.md) for targeting on Node.
+[guide 50 §7](../../docs/guides/view-targeting.md) for targeting on Node.
 
 ### Custom Configuration
 
@@ -217,17 +217,17 @@ Auto-configuration for Node.js-based applications that provisions:
   (`@ndigo/jobs`): `@jobHandler` methods are discovered at refresh, and the
   runner starts explicitly (worker processes call `start()`; an unstarted
   runner arms no timer) — see
-  [guide 22](../../docs/guides/22-jobs-and-outbox.md)
+  [guide 22](../../docs/guides/jobs-and-outbox.md)
   :- A `lockDriver` entry (`@ndigo/locks`): the default in-process driver
   coordinates schedulers within one process; register a `RedisLockDriver`
   entry to make `@scheduled({ lock })` arbitrate across nodes — see
-  [guide 24](../../docs/guides/24-distributed-locks.md)
+  [guide 24](../../docs/guides/distributed-locks.md)
   :- A `flagEvaluator` + `flagContextResolver` pair (`@ndigo/flags`): the
   `@whenFeature` gate is default-on and evaluates through them — the default
   evaluator reads `feature.*` properties live, the default context resolver
   targets the session principal (else the client address); override either
   entry for vendor flagging and tenant/attribute targeting — see
-  [guide 34](../../docs/guides/34-feature-flags.md)
+  [guide 34](../../docs/guides/feature-flags.md)
   :- A managed `httpServer` entry (`HTTPServer`, a `SmartLifecycle` entry)
   :- A `socketSessionRegistry` entry (`SocketSessionRegistry`): rooms, path
   broadcast, heartbeat, and backpressure for `@socketMapping` endpoints —
@@ -239,7 +239,7 @@ Auto-configuration for Node.js-based applications that provisions:
 
 Applications that previously relied on no language negotiation now render
 with the header-negotiated locale (`en-US` default) — see the
-[content and i18n guide](../../docs/guides/17-i18n-and-content.md).
+[content and i18n guide](../../docs/guides/i18n-and-content.md).
 
 ### WebSockets (`@socketMapping`)
 
@@ -270,7 +270,7 @@ may take before the socket closes `1011`; default `10000`), `maxConnections`
 (concurrent connections, counted from the accepted upgrade until close;
 default `10000`, overflow closes `1013`, `Infinity` disables),
 `allowedWebSocketOrigins`, and `socketLimits`.
-See the [websockets guide](../../docs/guides/15-websockets.md) and
+See the [websockets guide](../../docs/guides/websockets.md) and
 [Socket authentication](#socket-authentication).
 
 #### Opt-in cross-node paths and rooms
@@ -316,7 +316,7 @@ runs with `finally` even on failure, including failed startup. The registry does
 not own/close the transport. `STOMPBroker({ fanout })` can share it for topics;
 await `broker.connect()` before serving and `broker.close()` before transport
 shutdown. Each transport permits one consumer per scope. See the
-[STOMP & fan-out guide](../../docs/guides/42-stomp.md#2-cross-node-live-fan-out-opt-in)
+[STOMP & fan-out guide](../../docs/guides/stomp.md#2-cross-node-live-fan-out-opt-in)
 for complete composition, failure semantics, Redis limits and deployment policy.
 
 ### Socket authentication
@@ -386,8 +386,8 @@ and `writeProblem` are exported for custom errors.
 
 ### Guides
 
-- [Building a Node API](../../docs/guides/01-building-a-node-api.md)
-- [Request Validation](../../docs/guides/07-request-validation.md)
+- [Building a Node API](../../docs/guides/building-a-node-api.md)
+- [Request Validation](../../docs/guides/request-validation.md)
 
 ## API
 

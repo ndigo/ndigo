@@ -14,7 +14,7 @@ Paired front-end/back-end apps use the `-web` / `-api` role suffixes and sit
 next to each other in the ladder (`03-ndigo-todo-web` + `04-ndigo-todo-api`,
 `10-ndigo-conduit-web` + `11-ndigo-conduit-api`). The full directory, package,
 and file-naming convention is in
-[guide 91 — Application Conventions](../docs/guides/91-application-conventions.md).
+[guide 91 — Application Conventions](../docs/guides/application-conventions.md).
 
 ## Progression
 
@@ -376,7 +376,7 @@ endpoints, and what the app demonstrates:
 - [14-ndigo-kanban](14-ndigo-kanban/README.md)
 - [15-ndigo-resilience-lab](15-ndigo-resilience-lab/README.md)
 - [16-ndigo-redis-fanout](16-ndigo-redis-fanout/README.md)
-- [17-ndigo-telemetry-lab](17-ndigo-telemetry-lab/README.md)
+- [Telemetry -ndigo-telemetry-lab](17-ndigo-telemetry-lab/README.md)
 - [18-ndigo-auth-playground](18-ndigo-auth-playground/README.md)
 - [19-ndigo-hn](19-ndigo-hn/README.md)
 - [20-ndigo-ui-lab](20-ndigo-ui-lab/README.md)
@@ -392,5 +392,5 @@ Applications in this directory:
 - Use bundlers (Vite, etc.) for browser apps, `tsx` for node apps
 
 See individual app directories for specific details, and
-[guide 91 — Application Conventions](../docs/guides/91-application-conventions.md)
+[guide 91 — Application Conventions](../docs/guides/application-conventions.md)
 for the shared layout and naming rules.

@@ -3,8 +3,8 @@
   "ignore": [
     "**/api/**",
     "**/lib/**",
-    ".opencode/**",
     "apps/05-ndigo-api/db/migrations/**",
+    "packages/ndigo-cli/test/fixtures/**",
     "scripts/vite-plugin-lower-decorators.d.mts",
     "vitest.bench.config.ts",
     "benchmarks/http/ndigo-app.ts"

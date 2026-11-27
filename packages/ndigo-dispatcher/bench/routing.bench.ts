@@ -20,7 +20,7 @@ import {
     configuration,
     entry,
 } from '../../ndigo-context/src';
-import { RadixTree } from '../../ndigo-core/src/radix-tree';
+import { RadixTree } from '@ndigo/collections';
 import Router from 'find-my-way';
 import { createRouter } from 'radix3';
 import { assertEquivalent, benchName, sink } from '../../../benchmarks/lib/verify';

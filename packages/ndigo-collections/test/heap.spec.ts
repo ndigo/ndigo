@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest';
 import { Heap, PriorityQueue } from '../src/heap';
-import { numberComparator } from '../src/comparable';
 
 describe('Heap', () => {
     it('min-heap pops ascending', () => {

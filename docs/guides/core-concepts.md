@@ -6,10 +6,13 @@ and the same view contracts. The difference is the platform preset that supplies
 the runtime — a socket and HTTP server on Node, hash routing and DOM targets in
 the browser.
 
-This guide is the map. It names the pieces, shows how a request and a render
-flow through them, and points at the guide that teaches each surface. Read it
-before [Building a Node API](building-a-node-api.md) (Node) or [Building a Browser App](building-a-browser-app.md) (browser) if the package names are still
-unfamiliar.
+This guide is the shortest path through the model. It names the pieces, shows
+how a request and a render flow through them, and points at the guide that
+teaches each surface. For the full philosophy and design rationale, see the
+[Concepts Map](/concepts/). Read it before
+[Building a Node API](building-a-node-api.md) (Node) or
+[Building a Browser App](building-a-browser-app.md) (browser) if the package
+names are still unfamiliar.
 
 **Use for:** getting the mental model before building — the five nouns, the request path, and which package owns what.
 

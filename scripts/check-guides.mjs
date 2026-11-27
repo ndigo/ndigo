@@ -17,7 +17,7 @@ import { join } from 'node:path';
 const ROOT = new URL('..', import.meta.url).pathname.replace(/\/$/, '');
 const GUIDES = join(ROOT, 'docs/guides');
 const manifest = JSON.parse(readFileSync(join(GUIDES, 'guides.json'), 'utf8'));
-const manifestGuides = manifest.groups.flatMap((group) => group.guides);
+const manifestGuides = [...manifest.groups.flatMap((group) => group.guides), ...(manifest.contributing ?? [])];
 const manifestSlugs = new Set(manifestGuides.map((guide) => guide.slug));
 const manifestTitles = new Map(manifestGuides.map((guide) => [guide.slug, guide.title]));
 const INDEX = join(GUIDES, 'README.md');

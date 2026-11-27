@@ -22,6 +22,33 @@ import { ViewTarget } from './view-target.js';
 
 const keypathConverter = new KeypathConverter();
 
+/** Keys that must never be read through a template expression. */
+const UNSAFE_TEMPLATE_KEYS = new Set(['__proto__', 'prototype', 'constructor']);
+
+/**
+ * Reads one path segment from a template model, own properties only.
+ *
+ * Template placeholders are data-driven: `{{constructor}}` or `{{__proto__}}`
+ * must not reach the prototype chain, and an array access must be a real
+ * integer index. `length` stays readable because arrays own it.
+ */
+function readTemplateProperty(value: unknown, key: string | number): unknown {
+    if (typeof key === 'string' && UNSAFE_TEMPLATE_KEYS.has(key)) {
+        return undefined;
+    }
+    if (Array.isArray(value)) {
+        if (key === 'length') {
+            return value.length;
+        }
+        const index = typeof key === 'number' ? key : Number(key);
+        return Number.isInteger(index) && index >= 0 && index < value.length ? value[index] : undefined;
+    }
+    if (typeof value === 'object' && value !== null) {
+        return Object.hasOwn(value, key) ? (value as Record<PropertyKey, unknown>)[key] : undefined;
+    }
+    return undefined;
+}
+
 /**
  * View for a web interaction. Implementations are responsible for rendering content, and exposing the model. A single view exposes multiple model attributes.
  *
@@ -403,7 +430,7 @@ export class StringTemplateView extends AbstractTemplateView {
     protected async _renderTemplate(templateModel: unknown, request: unknown, target?: ViewTarget): Promise<void> {
         if (!target) throw new IllegalStateError('View requires a ViewTarget.');
 
-        const html = this.renderTemplate(this.template, templateModel);
+        const html = this.#renderTemplate(this.template, templateModel);
         // The view target's commit slot expects the route; the request is what the view pipeline supplies.
         await target.commit(html, templateModel, request as Route);
     }
@@ -415,7 +442,7 @@ export class StringTemplateView extends AbstractTemplateView {
      *   - \{\{var\}\} for simple variables
      *   - \{\{array[key]\}\} for object/array access
      */
-    private renderTemplate(template: string, model: unknown): string {
+    #renderTemplate(template: string, model: unknown): string {
         return template.replace(/\{\{([^}]+)\}\}/g, (match, key) => {
             let value = model;
 
@@ -425,28 +452,15 @@ export class StringTemplateView extends AbstractTemplateView {
                 // Support nested property access, including bracket indices:
                 // {{a.b.c}}, {{items[0].title}}
                 for (const token of tokens) {
-                    if (typeof value !== 'object' || value === null) {
-                        value = undefined;
-                        break;
-                    }
-                    if (Array.isArray(value) && typeof token === 'number') {
-                        value = (value as unknown[])[token];
-                    } else {
-                        value = (value as Record<PropertyKey, unknown>)[token];
-                    }
+                    value = readTemplateProperty(value, token);
+                    if (value === undefined) break;
                 }
             } else {
                 // Fall back to dotted traversal for keys that are not valid
                 // keypaths.
-                const parts = trimmed.split('.');
-                for (const part of parts) {
-                    if (typeof value === 'object' && value !== null && typeof part !== 'number') {
-                        value = (value as Record<string, unknown>)[part];
-                    } else if (value instanceof Array && !isNaN(Number(part))) {
-                        value = (value as unknown[])[Number(part)];
-                    } else {
-                        break;
-                    }
+                for (const part of trimmed.split('.')) {
+                    value = readTemplateProperty(value, part);
+                    if (value === undefined) break;
                 }
             }
 

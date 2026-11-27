@@ -192,6 +192,28 @@ describe('StringTemplateView — integration (view.render pipeline)', () => {
         );
     });
 
+    it('does not resolve prototype properties through placeholders', async () => {
+        const view = new StringTemplateView('/test');
+        view.name = 'testView';
+        view.template = '<p>{{constructor}}</p><p>{{__proto__}}</p><p>{{toString}}</p>';
+
+        await view.render({ name: 'World' }, {}, target);
+
+        expect(target.commit).toHaveBeenCalledWith('<p></p><p></p><p></p>', { name: 'World' }, {});
+    });
+
+    it('reads own model properties only', async () => {
+        const model: Record<string, unknown> = Object.create({ inherited: 'nope' });
+        model.own = 'yes';
+        const view = new StringTemplateView('/test');
+        view.name = 'testView';
+        view.template = '<p>{{inherited}}|{{own}}</p>';
+
+        await view.render(model, {}, target);
+
+        expect(target.commit).toHaveBeenCalledWith('<p>|yes</p>', model, {});
+    });
+
     it('renders end-to-end with custom _createViewModel projection', async () => {
         class ProjectingView extends StringTemplateView {
             protected _createViewModel(model: unknown, request: unknown): unknown {

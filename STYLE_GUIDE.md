@@ -68,10 +68,12 @@ function example() {
 // ✅ Correct
 const value = 42;
 export default MyClass;
+```
 
+```text
 // ❌ Wrong
-const value = 42;
-export default MyClass;
+const value = 42
+export default MyClass
 ```
 
 ### 1.4. Quotes [AUTOMATED: oxfmt]
@@ -84,10 +86,12 @@ export default MyClass;
 // ✅ Correct
 const message = 'Hello, world!';
 import { foo } from '@ndigo/util';
+```
 
+```text
 // ❌ Wrong
-const message = 'Hello, world!';
-import { foo } from '@ndigo/util';
+const message = "Hello, world!";
+import { foo } from "@ndigo/util";
 ```
 
 ### 1.5. Trailing Commas [AUTOMATED: oxfmt]
@@ -131,9 +135,11 @@ function example(
 // ✅ Correct
 const fn = (x) => x * 2;
 const fn2 = (x, y) => x + y;
+```
 
+```text
 // ❌ Wrong
-const fn = (x) => x * 2;
+const fn = x => x * 2;
 ```
 
 ### 1.8. Bracket Spacing [AUTOMATED: oxfmt]
@@ -146,10 +152,12 @@ const fn = (x) => x * 2;
 // ✅ Correct
 const obj = { name: 'example', value: 42 }; // spaces around braces
 const arr = [1, 2, 3]; // no spaces in arrays
+```
 
+```text
 // ❌ Wrong
-const obj = { name: 'example', value: 42 }; // missing spaces
-const arr = [1, 2, 3]; // extra spaces
+const obj = {name: 'example', value: 42}; // missing spaces
+const arr = [ 1, 2, 3 ]; // extra spaces
 ```
 
 ### 1.9. Markdown Files [AUTOMATED: oxfmt]
@@ -235,15 +243,14 @@ import { helper } from '@ndigo/util/_util'; // NEVER DO THIS
 
 **Benchmark/Performance Tests:**
 
-- **Pattern:** `*.js` (JavaScript)
-- **Location:** `benchmark/` directory at package root
-- **Note:** Currently JavaScript; may migrate to `*.bench.ts` in future
+- **Pattern:** `*.bench.ts` (TypeScript, run through the benchmark harness)
+- **Location:** `bench/` directory at package root
 
 **Examples:**
 
 ```
-✅ benchmark/emitting.js
-✅ benchmark/logging.js
+✅ bench/emitting.bench.ts
+✅ bench/logging.bench.ts
 ```
 
 ### 2.4. Test Helper Files
@@ -360,7 +367,7 @@ Docs updated in place rather than frozen by date use a stable kebab-case slug wi
 ❌ docs/guides/2026-10-06-testing.md   // Wrong: living docs do not carry a date
 ```
 
-Guide files carry a zero-padded numeric ordering prefix (`NN-slug.md`); `docs/architecture/` and the root documents use a bare slug. See [Contributing](./CONTRIBUTING.md) for which directories are dated (history) and which are living (updated in place).
+Guide files use a bare kebab-case slug (`slug.md`); `docs/architecture/` and the root documents use the same convention. See [Contributing](./CONTRIBUTING.md) for which directories are dated (history) and which are living (updated in place).
 
 ---
 
@@ -424,7 +431,7 @@ const queryKey = regex(queryKeyPattern).map(replacePlusWithSpace).map(decode);
 // ❌ Wrong: RegExp patterns with UPPER_SNAKE_CASE (objects, not primitives)
 const ALPHA_REGEX = /^[a-zA-Z]+$/; // Should be: alphaRegex
 const QUERY_KEY_PATTERN = /^[A-Z]+$/; // Should be: queryKeyPattern
-const EMAIL_REGEX = /^[a-z@.]+$/; // Should be: emailRegex
+const emailRegex = /^[a-z@.]+$/; // Should be: emailRegex
 
 // ❌ Wrong: Inline patterns instead of named constants
 const queryKey = regex(/^[A-Za-z+:/?[\]0-9%]+/) // Bad: inline pattern
@@ -3370,24 +3377,24 @@ export class SyslogLevel extends Level {
 Always document enum constants with JSDoc:
 
 ```typescript
-export class HttpMethod implements Equatable, Serializable {
+export class HTTPMethod implements Equatable, Serializable {
     /**
      * HTTP GET method - retrieves resources without side effects.
      * Safe and idempotent.
      */
-    static GET = new HttpMethod('GET', true, true);
+    static GET = new HTTPMethod('GET', true, true);
 
     /**
      * HTTP POST method - creates new resources.
      * Not safe, not idempotent.
      */
-    static POST = new HttpMethod('POST', false, false);
+    static POST = new HTTPMethod('POST', false, false);
 
     /**
      * HTTP PUT method - updates existing resources.
      * Not safe, but idempotent.
      */
-    static PUT = new HttpMethod('PUT', false, true);
+    static PUT = new HTTPMethod('PUT', false, true);
 
     readonly name: string;
     readonly safe: boolean;
@@ -4018,7 +4025,7 @@ function parseMediaType(value: string): MediaType { ... }
 // ✅ Correct: File-specific constants
 const MAX_RETRIES = 3;
 const WILDCARD = '*';
-const EMAIL_REGEX = /^[\w.-]+@[\w.-]+\.\w+$/;
+const emailRegex = /^[\w.-]+@[\w.-]+\.\w+$/;
 const DEFAULT_DATE_FORMAT = 'MM/DD/YYYY';
 ```
 
@@ -4083,10 +4090,10 @@ const spaces = /\s+/g;
 
 // ✅ Correct: Extract to _util.ts or dedicated file
 // _util.ts
-export const SPACES_REGEX = /\s+/g;
+export const spacesRegex = /\s+/g;
 
 // to-camel.ts
-import { SPACES_REGEX } from './_util';
+import { spacesRegex } from './_util';
 ```
 
 **❌ Wrong Extraction Level:**
@@ -4205,7 +4212,7 @@ Complex setup required for every test suggests too many dependencies.
 export class UserService {
     private readonly USER_ROLES = { ADMIN: 'admin', USER: 'user', ... };
     private readonly USER_STATUSES = { ACTIVE: 'active', ... };
-    private readonly EMAIL_REGEX = /^[\w.-]+@/;
+    private readonly emailRegex = /^[\w.-]+@/;
     // ... 50 more constants
     // ... service methods
 }
@@ -4213,10 +4220,10 @@ export class UserService {
 // After: user-constants.ts (60 lines)
 export const USER_ROLES = { ADMIN: 'admin', USER: 'user', ... };
 export const USER_STATUSES = { ACTIVE: 'active', ... };
-export const EMAIL_REGEX = /^[\w.-]+@/;
+export const emailRegex = /^[\w.-]+@/;
 
 // After: user-service.ts (340 lines)
-import { USER_ROLES, USER_STATUSES, EMAIL_REGEX } from './user-constants';
+import { USER_ROLES, USER_STATUSES, emailRegex } from './user-constants';
 
 export class UserService {
     // ... service methods using imported constants
@@ -4830,9 +4837,9 @@ const metadata = (handler?.constructor as any)?.[Symbol.metadata];
 When a module has many similar assertions (e.g., a library whose types end at `any`), a single module-level comment suffices:
 
 ```typescript
-// NOTE: this third-party runtime resolves types dynamically, so the fluent
-// API returns `any`. A typed wrapper would require wrapping every call —
-// this is accepted for the integration layer.
+// The third-party runtime resolves types dynamically, so the fluent API
+// returns `any`. A typed wrapper would require wrapping every call — this
+// is accepted for the integration layer.
 ```
 
 ### 8.5. `// NOTE:` Comments Are Technical Debt

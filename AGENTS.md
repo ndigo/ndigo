@@ -491,7 +491,7 @@ All project documentation (except root-level guides) should be organized under `
 docs/
 ├── migrations/     # Breaking changes and upgrade guides
 ├── decisions/      # Architecture decision records (ADRs)
-├── guides/         # Numbered how-to guides
+├── guides/         # How-to guides (bare kebab-case slug)
 ├── architecture/   # Living architecture topics
 └── (root guides)   # ARCHITECTURE.md, STYLE_GUIDE.md, etc.
 ```

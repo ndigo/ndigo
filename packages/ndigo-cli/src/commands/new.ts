@@ -9,14 +9,6 @@ import { buildCommand, numberParser } from '@stricli/core';
 import { runWorkspaceOnce } from '../helpers/app-scripts.js';
 
 /** The flags `ndigo new` forwards to the `app` generator's schema. */
-/**
- * NewAppFlags.
- *
- * @example
- * ```ts
- * const value = {} as NewAppFlags;
- * ```
- */
 export interface NewAppFlags {
     /** The application kind (browser or node). */
     kind?: 'browser' | 'node';

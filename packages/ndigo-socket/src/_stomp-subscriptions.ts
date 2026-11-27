@@ -34,7 +34,7 @@ export class STOMPSubscriptionRegistry {
     readonly #subscriptions = new Map<SocketSession, Map<string, Subscription>>();
     /** Fan-out index: destination → subscriptions (user scopes excluded). */
     readonly #byDestination = new Map<string, Subscription[]>();
-    /** User scopes (D10): user → destination-suffix → subscriptions. */
+    /** User scopes: user → destination-suffix → subscriptions. */
     readonly #byUser = new Map<string, Map<string, Subscription[]>>();
     /** Per-session delivery accounting: ack index + the byte budgets. */
     readonly #sessionState = new Map<SocketSession, SessionState>();

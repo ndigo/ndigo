@@ -33,14 +33,6 @@ export interface AuthScheme {
 }
 
 /** Options for {@link AuthMatrixGuard}. */
-/**
- * AuthMatrixGuardOptions.
- *
- * @example
- * ```ts
- * const value = {} as AuthMatrixGuardOptions;
- * ```
- */
 export interface AuthMatrixGuardOptions {
     /** The schemes to try, in fallback order — explicit adapter ids only. */
     readonly schemes: readonly AuthScheme[];

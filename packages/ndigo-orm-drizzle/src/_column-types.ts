@@ -13,7 +13,7 @@ export type SQLiteStorageType = 'INTEGER' | 'REAL' | 'NUMERIC' | 'BLOB' | 'TEXT'
  * integer family → `INTEGER`, `real`/`float`/`double` → `REAL`, `blob` →
  * `BLOB`, and everything else (`char`/`text`/`string`/`varchar`, plus boolean,
  * json and untyped columns) → `TEXT`. Classification uses whole-word matching
- * (DAT-N1), so an unrelated type like `point` is not read as `int`.
+ *, so an unrelated type like `point` is not read as `int`.
  *
  * @param type - The declared column type; `undefined` for untyped columns.
  * @returns The SQLite storage type for the column.

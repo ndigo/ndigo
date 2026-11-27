@@ -10,7 +10,7 @@ import { parseSchemaConfig } from '@ndigo/context';
 import { isSecretMarkerLike, REDACTED_VALUE } from '@ndigo/context';
 import type { ApplicationContext } from '@ndigo/context';
 // Config metadata lives in `@ndigo/context` (`configuration-metadata.ts`) so
-// tooling (`@ndigo/inspect`) can consume it without the boot layer (REU-9);
+// tooling (`@ndigo/inspect`) can consume it without the boot layer;
 // the public functions are re-exported below unchanged.
 import {
     CONFIG_PROPS_PREFIX,
@@ -51,11 +51,11 @@ export interface ConfigurationPropertiesOptions {
      * `@defaultValue`; no `@property` decorators needed). A missing required
      * key or a failed coercion throws at boot, naming the class. Schema mode
      * `@property`/`@defaultValue`/`@nestedConfig` decorators on the
-     * class — the schema is the single source of truth (D3).
+     * class — the schema is the single source of truth.
      *
      * Schema keys are resolved **exactly** as `${prefix}.${key}`: schema mode
      * never probes the relaxed kebab/snake spellings, even when `relaxed` is
-     * also set (D-3). Relaxed binding is a field-decorator-mode contract.
+     * also set. Relaxed binding is a field-decorator-mode contract.
      */
     schema?: z.ZodObject;
 }
@@ -71,7 +71,7 @@ export interface ConfigurationPropertiesOptions {
  * instance is auto-registered as an entry keyed by the camelCase-derived
  * class name (`ServerConfig` → `serverConfig`).
  *
- * **Conversion target (CTX-11).** A field's target type is, in order: the
+ * **Conversion target.** A field's target type is, in order: the
  * explicit type passed to `@property(path, Type)`; else the type inferred
  * from the field's initializer (`port = 0` → `number`, `flag = false` →
  * `boolean`, `at = new Date()` → `date`); else `String`. An untyped field
@@ -93,6 +93,8 @@ export interface ConfigurationPropertiesOptions {
  *
  * @configurationProperties('server')
  * class ServerConfig {
+ *     @property('port', Number) @defaultValue('8080') port!: number;
+ *     @property('host', String) @defaultValue('localhost') host!: string;
  * }
  *
  * const ctx = app.run();
@@ -150,7 +152,7 @@ export function getConfigurationPropertiesPrefix(target: unknown): string | unde
 
 export { property, defaultValue, nestedConfig };
 
-// The declaration-probing seam moved to `@ndigo/context` (REU-9); it is
+// The declaration-probing seam moved to `@ndigo/context`; it is
 // re-exported here unchanged so existing consumers (`@ndigo/inspect`, the
 // boot test suite) keep resolving through `@ndigo/boot`'s barrel.
 export { declaredConfigurationProperties, relaxedKeyCandidates } from '@ndigo/context';
@@ -183,7 +185,7 @@ const { defineProperty } = Reflect;
 /**
  * A field's resolved environment key plus its value. Relaxed binding can
  * match a spelled variant, so the typed re-read MUST use the winning key —
- * not the exact path the decorator declared (CTX-01).
+ * not the exact path the decorator declared.
  */
 interface ResolvedProperty {
     /** The resolver key that matched, or the exact declared key when absent. */
@@ -198,7 +200,7 @@ interface ResolvedProperty {
  * Exact keypath first (the default contract). With `{ relaxed: true }`, the
  * key's camelCase, kebab-case, and snake_case spellings are also tried so a
  * camelCase field finds a kebab/snake env key AND a kebab/snake field finds a
- * camelCase env key — symmetric normalization (CTX-01). The returned `key` is
+ * camelCase env key — symmetric normalization. The returned `key` is
  * the spelling that actually matched, so typed reads convert the right value.
  */
 function valueAt(
@@ -320,11 +322,11 @@ export function resolveConfigurationProperties<T>(
         let typed: JSONValue;
         try {
             // Read through the WINNING key so a relaxed hit converts the same
-            // spelling that resolved (CTX-01).
+            // spelling that resolved.
             typed = getValueAs(environment, resolved.key, targetType, true) as JSONValue;
         } catch (error) {
             // The key path identifies the binding; the value is deliberately
-            // NOT interpolated — it may be a decrypted secret (SEC-11/CF-2),
+            // NOT interpolated — it may be a decrypted secret,
             // and the underlying resolver error already names the attempted
             // value (redacted when a decryptor is wired).
             throw new IllegalStateError(
@@ -355,7 +357,7 @@ export function resolveConfigurationProperties<T>(
  *
  * Schema keys are probed **exactly** as `${prefix}.${key}` — the relaxed
  * kebab/snake candidate set is a field-decorator-mode contract and is never
- * consulted here, even when the class also sets `{ relaxed: true }` (D-3).
+ * consulted here, even when the class also sets `{ relaxed: true }`.
  */
 function resolveFromSchema<T>(
     ctor: new () => T,
@@ -555,7 +557,7 @@ function resolveNested<T>(
         if (resolved.value === undefined) {
             const rawDefault = nestedMeta[`${DEFAULT_KEY}${key}`] as string | undefined;
             if (rawDefault !== undefined) {
-                // CF-4: the nested default goes through `convertRaw` — the
+                // The nested default goes through `convertRaw` — the
                 // same conversion path as top-level defaults (and real
                 // values) — so `@defaultValue('5432')` binds a number, not
                 // the raw string.
@@ -576,7 +578,7 @@ function resolveNested<T>(
             }
             throw new IllegalStateError(`Missing required property "${fullPath}" for ${root.name}.${fieldName}.${key}`);
         }
-        // Winning-key read for nested relaxed hits too (CTX-01).
+        // Winning-key read for nested relaxed hits too.
         const typed = getValueAs(
             environment,
             resolved.key,

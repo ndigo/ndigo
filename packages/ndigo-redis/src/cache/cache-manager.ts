@@ -9,14 +9,6 @@ import { RedisConnection, type RedisConnectionOptions } from '../connection';
 import { RedisCache } from './cache';
 
 /** Explicit connection plus application/environment namespace and TTL defaults. */
-/**
- * RedisCacheManagerOptions.
- *
- * @example
- * ```ts
- * type _Alias = RedisCacheManagerOptions;
- * ```
- */
 export type RedisCacheManagerOptions = RedisConnectionOptions & {
     namespace: string;
     defaults?: { defaultTtl?: number };

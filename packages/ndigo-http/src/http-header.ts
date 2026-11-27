@@ -21,14 +21,6 @@ const { defineProperty, deleteProperty, get, set } = Reflect,
 type HeaderEntries = Array<[string, string]>;
 
 /** Node `IncomingMessage`-style header record (lower-cased name → value or lines). */
-/**
- * HeaderRecord.
- *
- * @example
- * ```ts
- * type _Alias = HeaderRecord;
- * ```
- */
 export type HeaderRecord = Record<string, string | string[] | undefined>;
 
 /**
@@ -38,7 +30,7 @@ export type HeaderRecord = Record<string, string | string[] | undefined>;
  * This is the package's single folding rule: `Headers` folds
  * case-insensitively itself, while plain records are written lower-cased by
  * the Node server — so every exact-match read retries with this folded
- * spelling. Shared with `@ndigo/test`'s response mock (HG-10) so the captured
+ * spelling. Shared with `@ndigo/test`'s response mock so the captured
  * map and the readers can never drift.
  *
  * @param name - The header name to fold.

@@ -1,5 +1,5 @@
 /**
- * Environment integer parsing shared by the platform-node resolvers (HG-9).
+ * Environment integer parsing shared by the platform-node resolvers.
  *
  * The socket limits, socket registry, and managed-server resolvers read
  * integer bounds from env vars with one fail-fast contract: absent or empty

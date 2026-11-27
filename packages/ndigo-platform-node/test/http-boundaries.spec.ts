@@ -370,7 +370,7 @@ describe('HTTPServer lifecycle', () => {
     });
 });
 
-// COR-14: the graceful-shutdown drain deadline must bound `close()`, not just
+// The graceful-shutdown drain deadline must bound `close()`, not just
 // run after it — an open SSE/streaming connection cannot hang close() forever.
 describe('adapter close drains within shutdownTimeoutMs', () => {
     test('close() resolves within the deadline even with an open SSE stream (COR-14)', async () => {

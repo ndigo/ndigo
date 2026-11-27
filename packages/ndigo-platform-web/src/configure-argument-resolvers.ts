@@ -12,7 +12,7 @@ import { BrowserStorageValueMethodArgumentResolver } from './browser-storage-arg
  * Builds the browser argument-resolver list in registration order (first
  * match wins). Single source of truth shared by
  * {@link configureBrowserArgumentResolvers} and the auto-configuration entry,
- * so the two lists can never drift (HG-7).
+ * so the two lists can never drift.
  *
  * @returns The browser argument resolvers, in registration order.
  *

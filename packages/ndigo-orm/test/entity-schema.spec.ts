@@ -39,7 +39,7 @@ describe('baseSchemaForType', () => {
         expect(baseSchemaForType('boolean').safeParse(true).success).toBe(true);
     });
 
-    // DAT-N1: token matching, not substring matching — 'point'/'interval'
+    // Token matching, not substring matching — 'point'/'interval'
     // contain 'int' but are not integer types.
     test('does not read unrelated types as int', () => {
         expect(baseSchemaForType('point').safeParse('x').success).toBe(true);

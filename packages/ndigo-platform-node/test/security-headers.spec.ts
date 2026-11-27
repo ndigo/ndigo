@@ -64,7 +64,7 @@ describe('SecurityHeadersInterceptor (default-on)', () => {
             expect(res.status).toBe(200);
             const headers = res.headers;
             expect(headers.get('content-security-policy')).toContain("default-src 'self'");
-            // SEC-4: the default connect-src is 'self' only — bare ws:/wss: are
+            // The default connect-src is 'self' only — bare ws:/wss: are
             // gone unless the app explicitly opts in.
             expect(headers.get('content-security-policy')).toContain("connect-src 'self'");
             expect(headers.get('content-security-policy')).not.toContain('ws:');

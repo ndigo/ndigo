@@ -334,7 +334,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
             const value = scope.getValue<T>(name, () => {
                 const instance = this._create<T>(name, argumentsList);
 
-                // CF-3: the scope's value factory runs only when a
+                // The scope's value factory runs only when a
                 // new instance is created, so lifecycle teardown is registered
                 // exactly once per instance (never on cache hits).
                 this._markCreated(name);

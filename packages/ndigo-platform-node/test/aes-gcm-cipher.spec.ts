@@ -1,5 +1,5 @@
 /**
- * AESGCMCipher behavioral + known-answer tests (D-4).
+ * AESGCMCipher behavioral + known-answer tests.
  *
  * The NIST/Wycheproof vectors below are AES-256-GCM known-answer tests:
  * fixed key/IV/AAD → exact ciphertext + tag. They cross-check the cipher's

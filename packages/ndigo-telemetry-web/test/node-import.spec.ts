@@ -1,5 +1,5 @@
 /**
- * PWB-REV-001: `@ndigo/telemetry-web` statically imports `@ndigo/platform-web`
+ * `@ndigo/telemetry-web` statically imports `@ndigo/platform-web`
  * (via `RouterInstrumentation`), so it inherited the barrel's import-time
  * `document.cookie` failure. This spec imports the whole barrel outside a DOM
  * to guard the chain.

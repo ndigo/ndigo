@@ -2,7 +2,7 @@
  * The single entity-hook runner shared by `InMemoryEntityManager` and the
  * Drizzle-backed `DrizzleEntityManager`, so every persistence backend fires
  * `@prePersist` / `@postLoad` / `@preUpdate` / `@postRemove` at the same
- * points (DAT-F1).
+ * points.
  */
 import { Constructable } from '@ndigo/core';
 import { getEntityMetadata } from './metadata';

@@ -33,7 +33,7 @@ class SecondRefreshableConfig {
     @property('port', Number) port!: number;
 }
 
-/** Refresh-scoped config that records its own teardown across rebinds (CTX-13). */
+/** Refresh-scoped config that records its own teardown across rebinds. */
 @configurationProperties('counting')
 @refreshScope
 class DestroyCountingConfig {
@@ -167,7 +167,7 @@ describe('@refreshScope live rebind', () => {
         const environment = context.environment as ConfigurableEnvironment;
 
         const before = context.getValue<RefreshableServerConfig>('refreshableServerConfig'); // bind once
-        // ARC-6/CTX-05: BOTH refresh subscriptions detach on CONTEXT close — the
+        // ARC-6/BOTH refresh subscriptions detach on CONTEXT close — the
         // context's scope-clear listener (context.close) and the app's rebind
         // listener (hooked to the context's own context:close event). No
         // Application.close() call is needed any more.

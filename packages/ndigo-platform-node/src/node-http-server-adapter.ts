@@ -594,7 +594,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
             });
             websocket.on('error', () => undefined);
             websocket.shouldHandle = (req: IncomingMessage): boolean => {
-                // SEC-10/SEC-3: the upgrade path runs the same header/cookie
+                // The upgrade path runs the same header/cookie
                 // bounds as `handleRequest` (Node's 16 KiB `maxHeaderSize`
                 // is the only other bound). A `false` return aborts the
                 // handshake with `400` — an oversized handshake is never
@@ -608,7 +608,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
                     return false;
                 }
                 const [path, queryString] = (req.url ?? '').split('?', 2);
-                // SEC-8: null-prototype map. `?__proto__=a&__proto__=b` on a
+                // Null-prototype map. `?__proto__=a&__proto__=b` on a
                 // plain `{}` takes the inherited `__proto__` accessor path
                 // (the `in` test is true for the inherited accessor), so the
                 // assignment replaces the map's prototype instead of
@@ -837,7 +837,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
         // surface is all we touch, so a boundary cast to the library type is
         // deliberate (the upgrade path is the only wire into this hook).
         const ws = rawWs as WebSocket;
-        // SEC-9: the connection cap is counted from the accepted upgrade
+        // The connection cap is counted from the accepted upgrade
         // until the socket closes — sockets still resolving parameters or
         // awaiting authentication hold a slot, which the registry (registered
         // later) does not yet account for.
@@ -893,7 +893,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
         // before the handler runs (REST gets this via the interceptor chain;
         // sockets are dispatched directly, so this is the auth seam). A null
         // result rejects with 1008; an async hook is awaited under
-        // `authenticateTimeoutMs` (SEC-9). A hook that throws must not become
+        // `authenticateTimeoutMs`. A hook that throws must not become
         // an unhandled rejection (this dispatch is fire-and-forget from the
         // connection event — Node ≥15 terminates on unhandled rejections) —
         // close 1011 instead, as does a hook that never settles. Rejected
@@ -1048,7 +1048,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
         // path/room subscriptions. `close()` is idempotent (cached promise)
         // and also stops the heartbeat, replacing the old `stop()` call.
         await this.#socketRegistry.destroy();
-        // COR-14: `server.close()` resolves only once every connection ends —
+        // `server.close()` resolves only once every connection ends —
         // an open SSE stream, slow download, or stalled request would hang
         // `close()` forever. Arm the drain deadline *before* the wait and race
         // it: when the deadline wins, destroy the remaining connections and
@@ -1119,7 +1119,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
             if (multipart) {
                 nodeRequest.multipart = multipart;
             }
-            // SEC-8: null-prototype map — see the upgrade path. `?__proto__=a`
+            // Null-prototype map — see the upgrade path. `?__proto__=a`
             // must stay an ordinary parameter, not swap the map's prototype.
             const data: Record<string, string | string[]> = Object.create(null);
 
@@ -1246,7 +1246,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
         } catch (error: unknown) {
             writeErrorResponse(res, error);
         } finally {
-            // SEC-6: every parsed multipart context is disposed once the
+            // Every parsed multipart context is disposed once the
             // request has finished dispatching — success, early return
             // (404/405/denial), or error — so spilled temp parts never leak.
             // cleanup() is idempotent and never throws; handlers have already

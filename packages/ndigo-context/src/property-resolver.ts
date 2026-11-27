@@ -247,7 +247,7 @@ export class PrototypalPropertyResolver implements PropertyResolver {
     #decrypt(key: string, value: JSONValue | undefined): JSONValue | undefined {
         if (typeof value !== 'string') return value;
         const decryptor = this.#options.secretDecryptor;
-        // SEC-10 fail-open (CTX-04): with NO decryptor wired, the read path
+        // SEC-10 fail-open: with NO decryptor wired, the read path
         // must never throw — a marker-shaped value (even a malformed one)
         // passes through as literal plaintext, warned once per process.
         // Parsing (and its fail-loud malformed-version error) only runs when
@@ -297,7 +297,7 @@ export class PrototypalPropertyResolver implements PropertyResolver {
         ) {
             return value as T;
         }
-        // String target pass-through (CTX-10): the registry's only
+        // String target pass-through: the registry's only
         // (String, String) converter is the UUID converter, which is wrong
         // for a plain string target — a non-string source would crash on
         // `.trim is not a function`. `String(value)` is the documented
@@ -309,7 +309,7 @@ export class PrototypalPropertyResolver implements PropertyResolver {
         try {
             converted = conversion.convert(value, targetType);
         } catch (error) {
-            // Never let a converter echo the raw input (CTX-03): with a
+            // Never let a converter echo the raw input: with a
             // decryptor configured that input may be decrypted plaintext, and
             // the converter's own message embeds it. The wrapped message
             // redacts uniformly; the raw cause is dropped in secret context so

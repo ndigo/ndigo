@@ -125,7 +125,7 @@ describe('DrizzleEntityManager CRUD', () => {
     });
 });
 
-// COR-12: persist must not mask non-conflict INSERT failures. A UNIQUE index on
+// Persist must not mask non-conflict INSERT failures. A UNIQUE index on
 // a column other than the PK makes a conflicting insert mislead the upsert
 // fallback into matching zero rows.
 describe('DrizzleEntityManager persist conflict handling (COR-12)', () => {
@@ -166,7 +166,7 @@ describe('DrizzleEntityManager persist conflict handling (COR-12)', () => {
     });
 });
 
-// DAT-F8: the previous fallback treated ANY INSERT failure as a possible
+// The previous fallback treated ANY INSERT failure as a possible
 // PK-conflict upsert. Here a genuine NOT NULL violation on a column omitted by
 // persist would be swallowed because the fallback UPDATE matched the existing
 // row — the real error (and the missing write) was silently masked.

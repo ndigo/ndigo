@@ -238,7 +238,7 @@ export interface OpenAPIGeneratorOptions {
     /** Static `servers` URLs; omitted when empty. */
     servers?: string[];
     /**
-     * Named security schemes for `components.securitySchemes` (DAT-F12).
+     * Named security schemes for `components.securitySchemes`.
      * Referenced by name from the document-level {@link security} default
      * and per-operation `@apiDocs({ security })` requirements.
      */
@@ -604,7 +604,7 @@ export class OpenAPISpecGenerator {
         const operationId = operation.operationId;
         if (docs?.responses !== undefined && Object.keys(docs.responses).length > 0) {
             // Declared responses REPLACE the implicit `200 OK` — the handler's
-            // own set is authoritative (DAT-F11).
+            // own set is authoritative.
             for (const [status, entry] of Object.entries(docs.responses)) {
                 const { description, schema } = responseDocsOf(entry);
                 const response: OpenAPIResponse = { description };

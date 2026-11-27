@@ -230,7 +230,7 @@ export class JWTAdapter implements AuthAdapter {
                     `JWTAdapter: HMAC algorithm "${config.algorithm}" requires "secret" — validation and issuance fail without it`
                 );
             }
-            // SEC-2: HMAC security is bounded by the key's entropy; a short
+            // HMAC security is bounded by the key's entropy; a short
             // secret is brute-forceable offline from a single signed token.
             const secretBytes = new TextEncoder().encode(config.secret).length;
             if (secretBytes < MIN_HMAC_SECRET_BYTES) {
@@ -282,7 +282,7 @@ export class JWTAdapter implements AuthAdapter {
      * With a `userStore` wired, framework-issued tokens (`ver` claim) are
      * additionally checked against the live account: a bumped
      * `tokenVersion` or a disabled/deleted account rejects the token
-     * (SE-7). External IdP tokens without `ver` skip the store check.
+     * External IdP tokens without `ver` skip the store check.
      *
      * Framework-issued **refresh** tokens (`token_use: 'refresh'`) are
      * never accepted here — only access tokens authenticate requests
@@ -448,7 +448,7 @@ export class JWTAdapter implements AuthAdapter {
         if (!user || user.disabled === true) {
             throw new JWTTokenError('Account unknown or disabled');
         }
-        // SEC-6: a compare-and-swap closes the check-then-bump TOCTOU. The
+        // A compare-and-swap closes the check-then-bump TOCTOU. The
         // version advances only if it is still `payload.ver`; a concurrent
         // rotation that bumps it in between makes this refresh lose the race
         // (CAS returns null) instead of both refreshes succeeding.
@@ -555,7 +555,7 @@ export class JWTAdapter implements AuthAdapter {
     /**
      * Reads the account's current `tokenVersion` for the `ver` check,
      * honoring the short-TTL cache when configured. Returns `null` for an
-     * unknown or disabled/deleted account (SE-7), failing validation closed;
+     * unknown or disabled/deleted account, failing validation closed;
      * a cache hit answers within `revocationCacheTtlMs`, so a disable takes
      * effect with the same bounded staleness as a version bump.
      */

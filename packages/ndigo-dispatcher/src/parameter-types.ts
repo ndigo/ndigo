@@ -40,7 +40,7 @@ export type ParameterExtractor = {
     partName?: string;
     /** Optional target constructor for whole-source binding: when set, the
      *  bound result is a real instance of the target (not a plain object).
-     *  `dataBinderValue(source, Target)` sets this (D-3). */
+     *  `dataBinderValue(source, Target)` sets this. */
     target?: new () => object;
 };
 
@@ -370,7 +370,7 @@ export class MethodParameter implements Serializable {
 
 /**
  * The data sources whole-source binding (`dataBinderValue`) can read from,
- * per platform (D-3):
+ * per platform:
  *
  * - browser: `query`, `cookie`, `session-storage`, `local-storage`
  * - node: `body`, `cookie`

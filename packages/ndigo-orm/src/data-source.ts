@@ -8,7 +8,7 @@ import { like } from '@ndigo/util/types';
 
 /**
  * Well-known symbol an entity class implements to control how it is cloned for
- * {@link InMemoryDataSource.snapshot} / `restore` (DAT-F7).
+ * {@link InMemoryDataSource.snapshot} / `restore`.
  *
  * `snapshot()` clones own enumerable properties, so ECMAScript private fields
  * (`#field`) are not carried over — a restored instance lacks its private
@@ -182,7 +182,7 @@ export class InMemoryDataSource implements DataSource {
      *
      * Own enumerable state is copied, so entities with ECMAScript private
      * fields should implement the {@link ENTITY_CLONE} hook to carry that
-     * state across a snapshot/restore (DAT-F7).
+     * state across a snapshot/restore.
      *
      * @returns An opaque snapshot handle to pass to {@link restore}.
      */
@@ -248,7 +248,7 @@ function cloneStoredValue<T>(value: T, seen: Map<object, unknown>): T {
         return cloned as T;
     }
 
-    // Entities with private state opt into a custom clone (DAT-F7); they own
+    // Entities with private state opt into a custom clone; they own
     // the whole copy, so no prototype/own-property walk runs for them.
     const cloneHook = (value as Partial<EntityCloneHook>)[ENTITY_CLONE];
     if (typeof cloneHook === 'function') {

@@ -148,7 +148,7 @@ export class InMemoryQueueMessageStore implements QueueMessageStore {
         // Per-destination count bound (drop-oldest, O(1)). The ring stays
         // attached even when this empties it: the pending `put` below is a
         // write to THIS ring, so detaching it would silently drop the
-        // message (COR-9).
+        // message.
         if (this.#maxMessagesPerDestination !== null && queue.length >= this.#maxMessagesPerDestination) {
             this.#dropOldest(queue);
         }

@@ -7,25 +7,9 @@ import type { RouteMappingTable } from './spec.js';
 import type { OpenAPIGeneratorOptions } from './spec.js';
 
 /** Output serialization format. */
-/**
- * OpenAPIFormat.
- *
- * @example
- * ```ts
- * type _Alias = OpenAPIFormat;
- * ```
- */
 export type OpenAPIFormat = 'json' | 'yaml';
 
 /** Options for {@link writeOpenAPISpec}. */
-/**
- * WriteOpenAPISpecOptions.
- *
- * @example
- * ```ts
- * const value = {} as WriteOpenAPISpecOptions;
- * ```
- */
 export interface WriteOpenAPISpecOptions {
     /** Route tables to merge into the document. */
     mappings: readonly RouteMappingTable[];

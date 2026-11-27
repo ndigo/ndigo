@@ -20,7 +20,7 @@ import { NodeRequestSessionValueMethodArgumentResolver } from './request-session
  * Builds the Node.js argument-resolver list in registration order (first
  * match wins). Single source of truth shared by
  * {@link configureNodeArgumentResolvers} and the auto-configuration entry, so
- * the two lists can never drift (HG-7).
+ * the two lists can never drift.
  *
  * @returns The Node argument resolvers, in registration order.
  *

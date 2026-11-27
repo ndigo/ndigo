@@ -12,7 +12,7 @@ import { StaticResourceResolver, statusForKind, negotiateEncoding } from '../src
  * traversal, sibling-prefix, encoded traversal, absolute paths, escaping
  * symlinks, unknown extensions, and byte-for-byte binary round-trip.
  * Wave 2 additions: strong ETag metadata, precompressed variant negotiation
- * (D-3), and directory index/listing modes (D-7).
+ *, and directory index/listing modes.
  */
 
 let root: string;
@@ -36,7 +36,7 @@ beforeAll(async () => {
     await symlink(join(secretDir, 'secret.txt'), join(root, 'assets', 'escape.lnk'));
     // A benign symlink that stays inside the base (must still resolve).
     await symlink(join(root, 'assets', 'index.html'), join(root, 'assets', 'alias.html'));
-    // Precompressed variant twins (D-3) — real gzip/br magic so encodings are
+    // Precompressed variant twins — real gzip/br magic so encodings are
     // distinguishable, bodies arbitrary (the resolver never decompresses).
     await writeFile(join(root, 'app.js'), JS_BODY);
     await writeFile(join(root, 'app.js.gz'), JS_GZ);
@@ -49,7 +49,7 @@ beforeAll(async () => {
     await writeFile(join(secretDir, 'variant-secret.txt'), 'VARIANT SECRET');
     await symlink(join(secretDir, 'variant-secret.txt'), join(root, 'data.txt.br'));
     await symlink(join(secretDir, 'variant-secret.txt'), join(root, 'data.txt.gz'));
-    // Directory fixtures for index/listing (D-7).
+    // Directory fixtures for index/listing.
     await mkdir(join(root, 'docs'));
     await writeFile(join(root, 'docs', 'a.txt'), 'alpha');
     await writeFile(join(root, 'docs', '<b>&"quote".txt'), 'escaped');
@@ -279,7 +279,7 @@ describe('StaticResourceResolver directory modes (D-7)', () => {
 
     test('maxFileSizeBytes rejects oversized files at stat time; 0 = unlimited', async () => {
         // The cap applies to originals and precompressed variants alike and
-        // is enforced without reading payload bytes (SEC-8).
+        // is enforced without reading payload bytes.
         expect((await makeResolver().resolve('/app.js', { maxFileSizeBytes: 3 })).kind).toBe('forbidden');
         expect((await makeResolver().resolve('/app.js', { acceptEncoding: 'gzip', maxFileSizeBytes: 3 })).kind).toBe(
             'forbidden'

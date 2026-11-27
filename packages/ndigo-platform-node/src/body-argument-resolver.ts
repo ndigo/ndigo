@@ -44,7 +44,7 @@ export class NodeBodyValueMethodArgumentResolver extends AbstractPlatformArgumen
         if (!request) {
             return undefined;
         }
-        // Nested-capable (D-2): `bodyValue('address.city')` walks the JSON
+        // Nested-capable: `bodyValue('address.city')` walks the JSON
         // body; `bodyValue()` (no name) binds the whole parsed body.
         return name === '' ? request.body : readDottedValue(request.body, name);
     }

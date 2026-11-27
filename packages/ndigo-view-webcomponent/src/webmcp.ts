@@ -30,14 +30,6 @@ import { z } from 'zod';
 export type WebMCPToolAnnotations = AgentToolAnnotations;
 
 /** A tool registered with the browser's model context — the neutral {@link AgentTool} shape. */
-/**
- * WebMCPTool.
- *
- * @example
- * ```ts
- * type _Alias = WebMCPTool;
- * ```
- */
 export type WebMCPTool = AgentTool;
 
 /**
@@ -52,14 +44,6 @@ export type WebMCPTool = AgentTool;
 export type WebMCPRegistration = AgentToolRegistration;
 
 /** Options for {@link provideWebMcpTools}. */
-/**
- * WebMCPOptions.
- *
- * @example
- * ```ts
- * type _Alias = WebMCPOptions;
- * ```
- */
 export type WebMCPOptions = AgentToolHostOptions;
 
 interface ModelContextTool {
@@ -154,14 +138,6 @@ export const webMcpAgentHost: AgentToolHost = {
 };
 
 /** Options for {@link webMcpToolForHandler}. */
-/**
- * WebMCPHandlerToolOptions.
- *
- * @example
- * ```ts
- * const value = {} as WebMCPHandlerToolOptions;
- * ```
- */
 export interface WebMCPHandlerToolOptions {
     /** The handler instance (or class instance) carrying `@parameters`. */
     readonly handler: object;
@@ -305,14 +281,6 @@ export function AsWebMCPElement<T extends Constructable<WebMCPElementBase>>(
 }
 
 /** The element contract added by {@link AsWebMCPElement}. */
-/**
- * WebMCPElement.
- *
- * @example
- * ```ts
- * const value = {} as WebMCPElement;
- * ```
- */
 export interface WebMCPElement {
     /** The tools this element exposes while connected. */
     webMcpTools(): readonly WebMCPTool[];

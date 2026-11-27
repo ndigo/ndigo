@@ -15,14 +15,6 @@ const INSPECT_HINT =
     'add an "inspect" script that builds and prints the manifest, e.g. "inspect": "tsx src/inspect.ts"';
 
 /** A manifest route, projected from `@ndigo/inspect` v1. */
-/**
- * AppRoute.
- *
- * @example
- * ```ts
- * const value = {} as AppRoute;
- * ```
- */
 export interface AppRoute {
     /** The route's stable key. */
     readonly name: string;
@@ -31,14 +23,6 @@ export interface AppRoute {
 }
 
 /** A manifest configuration key, projected from `@ndigo/inspect` v1. */
-/**
- * AppConfigEntry.
- *
- * @example
- * ```ts
- * const value = {} as AppConfigEntry;
- * ```
- */
 export interface AppConfigEntry {
     /** The full environment keypath (e.g. `server.port`). */
     readonly key: string;
@@ -51,14 +35,6 @@ export interface AppConfigEntry {
 }
 
 /** The parts of the `@ndigo/inspect` v1 manifest the CLI consumes. */
-/**
- * AppManifest.
- *
- * @example
- * ```ts
- * const value = {} as AppManifest;
- * ```
- */
 export interface AppManifest {
     /** The manifest schema version. */
     readonly version: number;
@@ -71,14 +47,6 @@ export interface AppManifest {
 }
 
 /** Per-server application context; the manifest is built once and cached. */
-/**
- * AppToolContext.
- *
- * @example
- * ```ts
- * const value = {} as AppToolContext;
- * ```
- */
 export interface AppToolContext {
     /** The application directory (absolute). */
     readonly dir: string;
@@ -188,14 +156,6 @@ export async function getConfigKeys(context: AppToolContext): Promise<{ keys: re
 }
 
 /** One section of a best-practice document. */
-/**
- * PracticeSection.
- *
- * @example
- * ```ts
- * const value = {} as PracticeSection;
- * ```
- */
 export interface PracticeSection {
     /** The `##` heading text. */
     readonly title: string;
@@ -204,14 +164,6 @@ export interface PracticeSection {
 }
 
 /** Request for {@link getBestPractices}. */
-/**
- * PracticeRequest.
- *
- * @example
- * ```ts
- * const value = {} as PracticeRequest;
- * ```
- */
 export interface PracticeRequest {
     /** Case-insensitive heading filter. Omit for the section index. */
     readonly topic?: string;
@@ -318,14 +270,6 @@ export async function getDiagnostics(context: AppToolContext) {
 }
 
 /** Request for {@link getLogs}. */
-/**
- * LogRequest.
- *
- * @example
- * ```ts
- * const value = {} as LogRequest;
- * ```
- */
 export interface LogRequest {
     /** Log path override (defaults to `<dir>/logs/app.log`). */
     readonly file?: string;
@@ -355,14 +299,6 @@ export async function getLogs(context: AppToolContext, request: LogRequest = {})
 }
 
 /** The app scripts `run_target` can front. */
-/**
- * AppTarget.
- *
- * @example
- * ```ts
- * type _Alias = AppTarget;
- * ```
- */
 export type AppTarget = 'build' | 'test' | 'lint';
 
 const TARGET_HINTS: Record<AppTarget, string> = {
@@ -390,14 +326,6 @@ export async function runTarget(context: AppToolContext, request: { readonly tar
 }
 
 /** Request for {@link recordRule}. */
-/**
- * RuleRequest.
- *
- * @example
- * ```ts
- * const value = {} as RuleRequest;
- * ```
- */
 export interface RuleRequest {
     /** Human-readable rule name; also the source of the file slug. */
     readonly name: string;

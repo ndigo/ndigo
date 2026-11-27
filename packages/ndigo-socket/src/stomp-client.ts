@@ -42,7 +42,7 @@ const DEFAULT_CONNECT_TIMEOUT_MS = 10_000;
 
 /**
  * A MESSAGE frame delivered to a subscription. The body is the wire
- * payload verbatim — a string for text frames, bytes for binary (D8); `json()` parses either (bytes decoded as UTF-8) on demand.
+ * payload verbatim — a string for text frames, bytes for binary; `json()` parses either (bytes decoded as UTF-8) on demand.
  *
  * @example
  * ```ts
@@ -311,7 +311,7 @@ export class STOMPClient {
                 this.#epoch += 1;
                 this.#abortHandshake();
                 this.connected.value = false;
-                // COR-12: a SEND frame that left the dropped transport can
+                // A SEND frame that left the dropped transport can
                 // never be receipted by the new STOMP session, so every
                 // in-flight receipt settles here — for **both** reconnect
                 // policies (`reconnect: true` used to strand them and hang
@@ -422,7 +422,7 @@ export class STOMPClient {
 
     /**
      * Send a message to a destination. Strings are sent as-is;
-     * `Uint8Array`/`ArrayBuffer` bodies go as binary (D8); any other
+     * `Uint8Array`/`ArrayBuffer` bodies go as binary; any other
      * value is JSON-encoded — parity with `SocketClient.send`.
      *
      * The returned promise resolves when the broker RECEIPTs the frame

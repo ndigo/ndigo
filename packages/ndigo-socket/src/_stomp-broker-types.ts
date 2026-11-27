@@ -78,7 +78,7 @@ export interface SessionState {
  * distinguishable from an empty window. */
 export type QueueReplay = { ok: true; messages: StoredQueueMessage[] } | { ok: false };
 
-/** A buffered transactional operation (D7). */
+/** A buffered transactional operation. */
 export type TransactionOp =
     | { kind: 'send'; destination: string; body: STOMPBody; headers: Record<string, string>; receipt: string | null }
     | { kind: 'ack'; nack: boolean; messageId: string; subId: string; receipt: string | null };

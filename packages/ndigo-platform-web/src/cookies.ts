@@ -9,14 +9,6 @@ import { getLogger } from '@ndigo/log';
 const logger = getLogger('ndigo-platform-web:cookies');
 
 /** Parsed cookie structure returned by cookie parsing helpers. */
-/**
- * Cookie.
- *
- * @example
- * ```ts
- * const value = {} as Cookie;
- * ```
- */
 export interface Cookie {
     /** Cookie name. */
     name: string;
@@ -37,14 +29,6 @@ export interface Cookie {
 }
 
 /** Minimal cookie-jar API exposed by the platform-web package. */
-/**
- * CookieJar.
- *
- * @example
- * ```ts
- * const value = {} as CookieJar;
- * ```
- */
 export interface CookieJar {
     /** Reads a cookie value. @param key - The cookie name. */
     get(key: string): JSONValue | undefined;
@@ -143,7 +127,7 @@ function init(converter: CookieConverter = {}): CookieJar {
             if (!finalAttributes[attributeName]) {
                 continue;
             }
-            // SE-11: attribute names are inserted verbatim, so a name carrying
+            // Attribute names are inserted verbatim, so a name carrying
             // `;`/CR/LF would inject further attributes. Names are code-owned
             // (`path`, `domain`, …) — reject loudly instead of sanitizing.
             if (/[;\r\n]/.test(attributeName)) {
@@ -161,7 +145,7 @@ function init(converter: CookieConverter = {}): CookieJar {
             // Consume the characters of the unparsed-attributes up to,
             // not including, the first %x3B (";") character.
             // ...
-            // SE-11: split on the first ";" — `.split(' ;')` only stripped
+            // Split on the first ";" — `.split(' ;')` only stripped
             // space-preceded injections (`;evil=1` passed through untouched).
             stringifiedAttributes += '=' + String(finalAttributes[attributeName]).split(';')[0];
         }

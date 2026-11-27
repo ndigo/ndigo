@@ -23,14 +23,6 @@ import {
 } from './tools.js';
 
 /** Options for {@link createAppServer}. */
-/**
- * AppServerOptions.
- *
- * @example
- * ```ts
- * const value = {} as AppServerOptions;
- * ```
- */
 export interface AppServerOptions {
     /** The application directory (absolute). */
     readonly dir: string;

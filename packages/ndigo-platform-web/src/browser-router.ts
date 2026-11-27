@@ -99,7 +99,7 @@ export class BrowserRouter extends AbstractRouter {
     /**
      * Serializes navigations so concurrent `setRoute` calls (and external
      * `popstate` dispatches) cannot interleave across their interceptor
-     * awaits and drop an earlier navigation (PWB-REV-005).
+     * awaits and drop an earlier navigation.
      */
     #navigation: Promise<unknown>;
 

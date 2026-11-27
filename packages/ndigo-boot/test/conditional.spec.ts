@@ -129,7 +129,7 @@ describe('Application integration — conditional gate coverage (CF-1)', () => {
     test('skips binding for an inactive @whenBrowser @configurationProperties source on Node', async () => {
         vi.stubGlobal('window', undefined);
 
-        // Probe (CF-1): before the fix the ungated auto-registration loop
+        // Probe: before the fix the ungated auto-registration loop
         // bound this class and boot threw `Missing required property
         // "browseronly.token"`.
         @whenBrowser

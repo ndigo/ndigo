@@ -6,14 +6,6 @@ import { RedisConnection } from '../connection';
 import { encode, decode } from './_codec';
 
 /** Redis-only policy: TTL, not memory's per-store LRU/FIFO or maxSize. */
-/**
- * RedisCacheOptions.
- *
- * @example
- * ```ts
- * const value = {} as RedisCacheOptions;
- * ```
- */
 export interface RedisCacheOptions {
     /** Application/environment namespace; required and encoded independently of cacheName. */
     namespace: string;

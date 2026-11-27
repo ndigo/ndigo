@@ -97,7 +97,7 @@ export class DrizzleRepository<T extends object, ID> implements AsyncRepository<
      */
     async findAll(options: RelationFetchOptions = {}): Promise<T[]> {
         const all = await this.#entityManager.findAll(this.#entityClass);
-        // One batched query per relation for the whole result set (DAT-F5)
+        // One batched query per relation for the whole result set
         // instead of one query per entity.
         await this.#entityManager.fetchRelations(all, options.relations ?? []);
         return all;

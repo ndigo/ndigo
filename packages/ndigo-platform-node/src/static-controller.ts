@@ -48,7 +48,7 @@ export class StaticController {
      * Creates the static controller.
      *
      * @param baseDir - Static root. Defaults to `STATIC_DIR` env or `./public`.
-     * @param options - Static handler options (D-6).
+     * @param options - Static handler options.
      */
     constructor(baseDir?: string, options: StaticHandlerOptions = {}) {
         const base = baseDir ?? getEnv('STATIC_DIR') ?? `${process.cwd()}/public`;

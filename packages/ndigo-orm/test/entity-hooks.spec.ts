@@ -14,7 +14,7 @@ import {
 } from '../src/decorators';
 import { runEntityHooks } from '../src/entity-hooks';
 
-// DAT-F1: one runner backs both InMemoryEntityManager and DrizzleEntityManager.
+// One runner backs both InMemoryEntityManager and DrizzleEntityManager.
 @entity()
 class HookedNote {
     @generatedColumn()

@@ -90,7 +90,7 @@ describe('OpenAPIDocsAutoConfiguration', () => {
         expect(res.headers.get('content-type')).toContain('text/html');
         const page = await res.text();
         expect(page).toContain('swagger-ui-bundle.js');
-        // SEC-2: the bootstrap is external — the default-on CSP
+        // The bootstrap is external — the default-on CSP
         // (`script-src 'self'`) admits no inline script, so the page only
         // references the generated init asset.
         expect(page).toContain('swagger-ui-init.js');

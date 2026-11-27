@@ -88,7 +88,7 @@ export class FixedWindowRateLimiter implements RateLimiter {
         if (!bucket || bucket.windowStart + bucket.windowMs <= now) {
             if (this.#buckets.size >= this.#maxEntries) {
                 this.#sweep(now);
-                // SEC-2: the sweep reclaims only *expired* buckets; a flood of
+                // The sweep reclaims only *expired* buckets; a flood of
                 // live distinct keys would otherwise grow the map without
                 // bound and turn every new key into an O(n) no-op sweep —
                 // the limiter itself becoming a DoS amplifier. Rate-limit

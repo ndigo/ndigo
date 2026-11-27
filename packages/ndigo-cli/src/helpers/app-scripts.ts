@@ -263,14 +263,6 @@ export async function runAppOnce(
 }
 
 /** The captured outcome of a one-shot app script. */
-/**
- * CapturedRun.
- *
- * @example
- * ```ts
- * const value = {} as CapturedRun;
- * ```
- */
 export interface CapturedRun {
     /** The child's exit code (`128 + signal` when killed, `127` when missing). */
     readonly exitCode: number;

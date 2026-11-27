@@ -32,7 +32,7 @@ const response = (status: number, body: string, etag: string | null = null) => (
     text: async () => body,
 });
 
-/** A response stub with an explicit `Content-Length` header (SE-10). */
+/** A response stub with an explicit `Content-Length` header. */
 const sizedResponse = (status: number, body: string, contentLength: number) => ({
     ...response(status, body),
     headers: {
@@ -40,7 +40,7 @@ const sizedResponse = (status: number, body: string, contentLength: number) => (
     },
 });
 
-/** A streaming response stub without a `Content-Length` (SE-10). */
+/** A streaming response stub without a `Content-Length`. */
 const streamedResponse = (status: number, chunks: readonly Uint8Array[]) => ({
     ok: status >= 200 && status < 300,
     status,

@@ -6,7 +6,7 @@ import { Route } from '@ndigo/router';
 import { getNodeRequest } from './node-request';
 
 /**
- * The explicit Node bindable-source allow-list (D-3): `data-body:value` is
+ * The explicit Node bindable-source allow-list: `data-body:value` is
  * the `@ModelAttribute` equivalent (urlencoded/JSON body → DTO); the form
  * gap needs only `body` — whole-`query`/`header` binding is deferred until a
  * use case shows up. Kind validation in `SOURCES_BY_KIND` is the outer

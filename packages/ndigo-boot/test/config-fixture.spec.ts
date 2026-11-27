@@ -1,5 +1,5 @@
 /**
- * BOOT-5 / BOOT-CFG-07: a REAL `config/application.json` +
+ * BOOT-5 / BOOT-a REAL `config/application.json` +
  * `application-{profile}.json` pair, loaded through
  * {@link StandardConfigFileLoader} and validated against the shipped editor
  * schema — the convention the `.vscode` `fileMatch`, the guide and the schema

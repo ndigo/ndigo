@@ -117,7 +117,7 @@ export class DrizzleDataSource {
  * (auto-increment) and an undeclared caller-assigned key is `NUMERIC`, so
  * both string and numeric keys round-trip. `AUTOINCREMENT` is only emitted
  * for generated `INTEGER` keys. Non-PK `@generatedColumn` columns are emitted
- * nullable, because `persist()` skips them while undefined (DAT-F3).
+ * nullable, because `persist()` skips them while undefined.
  *
  * @param entities - The entity classes declared with `@ndigo/orm` decorators.
  * @returns One statement per entity with declared columns; entities with no
@@ -159,7 +159,7 @@ export function createTableStatements(entities: Constructable[]): string[] {
             if (col.nullable === true || (!isPk && isGenerated)) {
                 // Non-PK `@generatedColumn` columns are nullable: `persist()` skips
                 // them while undefined, so NOT NULL would reject the insert
-                // (DAT-F3).
+                //
                 parts.push('NULL');
             } else if (!isPk) {
                 parts.push('NOT NULL');

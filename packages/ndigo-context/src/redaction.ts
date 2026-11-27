@@ -1,7 +1,7 @@
 /**
  * Secret-safe diagnostic redaction: a single helper every
  * error wrap that can echo a resolved property value uses, so a new wrap
- * point cannot silently reintroduce a plaintext leak (CTX-02/CTX-03).
+ * point cannot silently reintroduce a plaintext leak.
  */
 
 /**

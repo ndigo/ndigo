@@ -167,7 +167,7 @@ describe('FeatureRoutingRegistry', () => {
         registry.navigate('/todo');
 
         // `account` was registered but never activated, so it must not be
-        // deactivated (PWB-REV-011).
+        // deactivated.
         expect(accountDeactivate).not.toHaveBeenCalled();
 
         registry.navigate('/account');

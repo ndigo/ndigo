@@ -28,7 +28,7 @@ export type RouterCallback = (route: Route) => void;
 /**
  * Invoked when a navigation's interceptor pipeline throws or an
  * `afterCompletion` hook rejects. Lets routers surface failures instead of
- * swallowing them (PWB-REV-015).
+ * swallowing them.
  *
  * @param error - The error raised by the pipeline.
  * @param route - The route whose navigation failed.

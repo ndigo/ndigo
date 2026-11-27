@@ -67,13 +67,6 @@ function configuredPort(value: unknown): number | undefined {
  *
  * Register this configuration class with your `ApplicationContext` alongside
  * NodeEnvironment to enable full server-side request handling.
-/**
- * NodeAutoConfiguration.
- *
- * @example
- * ```ts
- * const instance = new NodeAutoConfiguration();
- * ```
  */
 @whenNode
 @configuration

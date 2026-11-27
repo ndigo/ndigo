@@ -157,13 +157,6 @@ import type { Route } from '@ndigo/router';
  * paths — decorators cannot carry instance options), carrying a private
  * access condition so the spec never self-references (dispatch never reads
  * the access condition).
-/**
- * OpenAPIDocsAutoConfiguration.
- *
- * @example
- * ```ts
- * const instance = new OpenAPIDocsAutoConfiguration();
- * ```
  */
 @configuration
 export class OpenAPIDocsAutoConfiguration {
@@ -227,7 +220,7 @@ export class OpenAPIDocsAutoConfiguration {
     handlerMappings(): RadixMetadataHandlerMapping[] {
         if (!this.#options.enabled) return [];
         const mapping = new RadixMetadataHandlerMapping();
-        // SEC-2: the default-on security-header set for every Node response
+        // The default-on security-header set for every Node response
         // (same instance shape as the main mapping in NodeAutoConfiguration) —
         // /v3/api-docs, the UI page and its assets otherwise bypass the
         // interceptor attached to the *platform* mapping.

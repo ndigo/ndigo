@@ -1,5 +1,5 @@
 /**
- * PWB-REV-001: the `@ndigo/platform-web` barrel must be importable outside a
+ * The `@ndigo/platform-web` barrel must be importable outside a
  * DOM. It previously threw at import time because `locale.ts` eagerly read
  * `document.cookie`; this spec exercises the whole barrel in a Node
  * environment, where `document`/`window`/`navigator` are absent.

@@ -1,5 +1,5 @@
 /**
- * `IndexedDBResourceLoader` lifecycle specs (PWB-REV-008/009): a failed open
+ * `IndexedDBResourceLoader` lifecycle specs: a failed open
  * must not brick the loader, and the connection must respond to
  * `versionchange`/`close`.
  *

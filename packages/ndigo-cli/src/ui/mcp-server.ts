@@ -10,14 +10,6 @@ import { getCatalog, getItem, installItems, listItems, searchItems, validateRegi
 import type { RegistryToolContext } from './mcp-tools.js';
 
 /** Options for {@link createRegistryServer}. */
-/**
- * RegistryServerOptions.
- *
- * @example
- * ```ts
- * const value = {} as RegistryServerOptions;
- * ```
- */
 export interface RegistryServerOptions extends RegistryToolContext {
     /** Expose discovery tools only; omit `install_items`. */
     readonly readOnly?: boolean;

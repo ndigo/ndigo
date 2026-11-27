@@ -86,7 +86,7 @@ export class STOMPTransactionManager {
     }
 
     /**
-     * BEGIN — open a named transaction buffer (D7).
+     * BEGIN — open a named transaction buffer.
      *
      * @param session - The session.
      * @param frame - The BEGIN frame.
@@ -117,7 +117,7 @@ export class STOMPTransactionManager {
     }
 
     /**
-     * COMMIT — apply the buffered operations in order (D7).
+     * COMMIT — apply the buffered operations in order.
      *
      * @param session - The session.
      * @param frame - The COMMIT frame.

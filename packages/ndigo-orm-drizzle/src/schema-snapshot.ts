@@ -20,14 +20,6 @@ import { primaryKeyStorageType, sqliteTypeForColumnType } from './_column-types'
 export const SNAPSHOT_PREDICATE = 1;
 
 /** SQLite storage classes the metadata → SQL mapping can emit. */
-/**
- * SQLiteStorageType.
- *
- * @example
- * ```ts
- * type _Alias = SQLiteStorageType;
- * ```
- */
 export type SQLiteStorageType = 'INTEGER' | 'REAL' | 'NUMERIC' | 'BLOB' | 'TEXT';
 
 /**
@@ -54,14 +46,6 @@ export interface ColumnProjection {
 }
 
 /** One table's projection. */
-/**
- * TableProjection.
- *
- * @example
- * ```ts
- * const value = {} as TableProjection;
- * ```
- */
 export interface TableProjection {
     /** The table name. */
     name: string;
@@ -70,14 +54,6 @@ export interface TableProjection {
 }
 
 /** The committed, normalized metadata projection (`db/schema.json`). */
-/**
- * SchemaSnapshot.
- *
- * @example
- * ```ts
- * const value = {} as SchemaSnapshot;
- * ```
- */
 export interface SchemaSnapshot {
     /** The snapshot predicate version and capabilities. */
     predicate: typeof SNAPSHOT_PREDICATE;
@@ -86,14 +62,6 @@ export interface SchemaSnapshot {
 }
 
 /** The delta between two projections, as rendered for a migration. */
-/**
- * ProjectionDelta.
- *
- * @example
- * ```ts
- * const value = {} as ProjectionDelta;
- * ```
- */
 export interface ProjectionDelta {
     /** SQL statements for the migration body (table creates first, then column changes, then drops). */
     statements: string[];

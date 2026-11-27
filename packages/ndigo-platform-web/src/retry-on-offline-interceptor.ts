@@ -148,7 +148,7 @@ export class RetryOnOfflineInterceptor
     /**
      * The same clones keyed by `method + url`. A later interceptor may replace
      * the `Request` object, so the identity map misses and `postResponse` must
-     * still find the undisturbed body (PWB-REV-006). Cleared in `postComplete`
+     * still find the undisturbed body. Cleared in `postComplete`
      * so the map holds only in-flight requests.
      */
     readonly #pristineByKey = new Map<string, Request>();
@@ -186,7 +186,7 @@ export class RetryOnOfflineInterceptor
 
         // Queue the request for later retry (bounded by the queue cap). The
         // owning client is retained so the drain replays through the full
-        // interceptor pipeline rather than a bare fetch (PWB-REV-007).
+        // interceptor pipeline rather than a bare fetch.
         return new Promise<Response>((resolve, reject) => {
             try {
                 this.#enqueue({ request, http, resolve, reject, retries: 0, nextRetryAt: 0 });
@@ -227,14 +227,14 @@ export class RetryOnOfflineInterceptor
             // a request from the response headers would drop the original
             // method, headers, and body. The identity map is consulted first,
             // then the method+url map — a later interceptor may have replaced
-            // the Request object (PWB-REV-006).
+            // the Request object.
             const candidate =
                 this.#pristineClones.get(request) ?? this.#pristineByKey.get(requestKey(request)) ?? request;
 
             if (candidate.bodyUsed) {
                 // No undisturbed clone: replaying a consumed body would throw a
                 // disturbed-body TypeError on the drain. Fail the queue entry
-                // instead (PWB-REV-006).
+                // instead.
                 return Promise.reject(
                     new FrameworkError(
                         `[RetryOnOffline] cannot queue ${candidate.method} ${candidate.url} for replay: the request body was already consumed and no undisturbed clone is available`
@@ -337,7 +337,7 @@ export class RetryOnOfflineInterceptor
      *
      * When the entry carries its owning client (the offline-at-`preRequest`
      * path), the replay runs through `HTTP.request` so the full interceptor
-     * pipeline applies (PWB-REV-007). Otherwise — a `postResponse` queue entry
+     * pipeline applies. Otherwise — a `postResponse` queue entry
      * has no client — it falls back to `fetch`.
      *
      * A fresh clone is taken per attempt: fetch consumes the body stream, so

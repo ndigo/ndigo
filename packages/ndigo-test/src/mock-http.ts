@@ -175,7 +175,7 @@ export class MockHTTPRequestBuilder {
      */
     query(query: Record<string, string | string[]>): this {
         // Null prototype: a `__proto__` key must stay an ordinary entry here
-        // too (SEC-8), never swap the accumulator's prototype.
+        // too, never swap the accumulator's prototype.
         const merged: Record<string, string | string[]> = Object.create(null);
         for (const [key, value] of Object.entries(this.#request.query ?? {})) {
             merged[key] = value;
@@ -513,7 +513,7 @@ export class MockHTTP {
                 }
             }
         } finally {
-            // SEC-6: mirror the live adapter — parsed multipart temp parts are
+            // Mirror the live adapter — parsed multipart temp parts are
             // disposed once dispatch has finished (success or error).
             if (multipart) {
                 await multipart.cleanup();

@@ -179,14 +179,6 @@ export interface AuthorizationRequest {
 }
 
 /** Validated subset of an OIDC discovery document. */
-/**
- * DiscoveryDocument.
- *
- * @example
- * ```ts
- * const value = {} as DiscoveryDocument;
- * ```
- */
 export interface DiscoveryDocument {
     /** The issuer identifier. */
     issuer: string;
@@ -201,14 +193,6 @@ export interface DiscoveryDocument {
 }
 
 /** Validated token-endpoint response. */
-/**
- * TokenResponse.
- *
- * @example
- * ```ts
- * const value = {} as TokenResponse;
- * ```
- */
 export interface TokenResponse {
     /** The ID token. */
     idToken: string;

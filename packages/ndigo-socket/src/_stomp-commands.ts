@@ -86,7 +86,7 @@ export class STOMPCommands {
         if (ack !== 'auto' && ack !== 'client' && ack !== 'client-individual') {
             return fail(session, frame, `invalid ack mode: ${ack}`);
         }
-        // SEC-4: policy first — no registration, no replay for a denied
+        // Policy first — no registration, no replay for a denied
         // destination (the replay would otherwise disclose the backlog).
         if (!(await this.#authorizeDestination(session, frame, destination, 'subscribe'))) {
             return false;
@@ -100,7 +100,7 @@ export class STOMPCommands {
 
         const userScoped = destination.startsWith('/user/');
         if (userScoped) {
-            // Principal-scoped routing (D10): the subscribe attaches to the
+            // Principal-scoped routing: the subscribe attaches to the
             // session's resolved identity — no anonymous `/user` binds.
             const user = this.#host.resolveUser(session);
             if (user === null) {
@@ -147,14 +147,14 @@ export class STOMPCommands {
                 return false; // closed under us (transport or budget) — nothing to send
             }
             if (!replay.ok) {
-                // COR-8: a store that cannot hand over its history must not
+                // A store that cannot hand over its history must not
                 // read as "empty queue" — ERROR + close, same posture as the
                 // failing SEND append.
                 return fail(session, frame, 'queue store unavailable', 1011);
             }
             const replayOctets = replay.messages.reduce((total, stored) => total + materialOctets(stored.body), 0);
             if (!this.#host.limits.chargeReplay(session, replayOctets)) {
-                // SEC-6: re-subscribing re-materializes the window; the
+                // Re-subscribing re-materializes the window; the
                 // per-session budget bounds how often a peer can force it.
                 return fail(session, frame, 'replay budget exhausted', 1013);
             }
@@ -237,7 +237,7 @@ export class STOMPCommands {
 
     /**
      * A SEND: fan out to the destination's subscribers (unless the
-     * `onMessage` seam suppresses it). Transactions (D7): a SEND carrying
+     * `onMessage` seam suppresses it). Transactions: a SEND carrying
      * `transaction:` is buffered and applied at COMMIT.
      *
      * Both seams run in one order in both forms — `authorize` first (so a
@@ -286,12 +286,12 @@ export class STOMPCommands {
         // The routing seam sees every SEND — the same order the transactional
         // path applies at COMMIT (authorize → onMessage → route), so an
         // application's interception no longer depends on how the client
-        // framed the send (SEC-4/COR-7).
+        // framed the send.
         const suppress = this.#host.onMessage?.(destination, frame.body, headers, session);
         if (suppress === false) {
             return receipt(session, frame);
         }
-        // User-scoped SEND (D10): only the sender's own principal scope —
+        // User-scoped SEND: only the sender's own principal scope —
         // shares routing with transaction COMMIT (#applyOp).
         if (destination.startsWith('/user/')) {
             if (!this.#host.delivery.sendToUserScope(session, frame, destination, frame.body, headers)) {

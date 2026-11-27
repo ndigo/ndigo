@@ -363,7 +363,7 @@ export function fileValue(partName?: string, options: ParameterExtractorOptions 
 }
 
 /**
- * Factory function: Create a multipart JSON/text-part extractor (D-6).
+ * Factory function: Create a multipart JSON/text-part extractor.
  *
  * Reads a named `multipart/form-data` part and binds it like `@RequestBody`:
  * JSON parts parse to an object (raw-text fallback), optionally into a real

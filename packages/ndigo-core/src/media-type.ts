@@ -176,7 +176,7 @@ const intern = (key: string, factory: () => MediaType, parameterized: boolean, p
 
     if (permanent) {
         // Promote a bounded-cache instance parsed earlier so the constant
-        // becomes process-lifetime; otherwise intern it permanently (SEC-7).
+        // becomes process-lifetime; otherwise intern it permanently.
         const bounded = parameterizedRegistry.get(key) ?? parameterlessRegistry.get(key);
         if (bounded !== undefined) {
             removeFromOrder(parameterlessOrder, key);
@@ -497,7 +497,7 @@ export class MediaType
         if (isString(value)) {
             // Malformed weights (e.g. `q=abc`) fall back to the default of 1
             // (RFC 7231 §5.3.1) — a parse artifact must never silently mean
-            // "never" in negotiation (COR-7).
+            // "never" in negotiation.
             const quality = parseFloat(value) as number;
             return Number.isFinite(quality) ? quality : 1;
         }

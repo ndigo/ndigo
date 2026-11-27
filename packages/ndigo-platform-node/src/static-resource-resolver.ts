@@ -6,36 +6,12 @@ import { sep, resolve, isAbsolute } from 'node:path';
 import { MediaType, MediaTypes, stringComparator } from '@ndigo/core';
 
 /** Outcome kinds for a static-resource lookup. */
-/**
- * StaticResourceKind.
- *
- * @example
- * ```ts
- * type _Alias = StaticResourceKind;
- * ```
- */
 export type StaticResourceKind = 'forbidden' | 'not-found' | 'internal-error' | 'ok';
 
-/** Content-Encoding of a precompressed variant (D-3). */
-/**
- * StaticEncoding.
- *
- * @example
- * ```ts
- * type _Alias = StaticEncoding;
- * ```
- */
+/** Content-Encoding of a precompressed variant. */
 export type StaticEncoding = 'br' | 'gzip';
 
 /** The result of resolving a static resource. */
-/**
- * StaticResourceResult.
- *
- * @example
- * ```ts
- * const value = {} as StaticResourceResult;
- * ```
- */
 export interface StaticResourceResult {
     /** The resolution outcome. */
     readonly kind: StaticResourceKind;
@@ -57,13 +33,13 @@ export interface StaticResourceResult {
     /** Last-modified time (ms epoch) of the served payload (only for `ok`). */
     readonly mtimeMs?: number;
     /**
-     * Strong validator of the served payload (D-2): `"<hex size>-<hex mtime>"`
+     * Strong validator of the served payload: `"<hex size>-<hex mtime>"`
      * for originals, `"<hex size>-<hex mtime>-<encoding>"` for variants so the
-     * two never collide under one URL. Absent for generated listings (D-7),
+     * two never collide under one URL. Absent for generated listings,
      * which are not cacheable validators.
      */
     readonly etag?: string;
-    /** `Content-Encoding` of the served variant (D-3), when precompressed. */
+    /** `Content-Encoding` of the served variant, when precompressed. */
     readonly encoding?: StaticEncoding;
     /** True when the payload could have been served encoded (compressible MIME) — handlers add `Vary: Accept-Encoding`. */
     readonly variantAware?: boolean;
@@ -102,7 +78,7 @@ const MIME_BY_EXTENSION: Record<string, MediaType> = {
 };
 
 /**
- * Extensions eligible for precompressed variants (D-3). Only text-ish payloads
+ * Extensions eligible for precompressed variants. Only text-ish payloads
  * compress meaningfully; image/font/binary types are served as-is even when a
  * `.br`/`.gz` twin exists.
  */
@@ -122,20 +98,12 @@ const COMPRESSIBLE_EXTENSIONS: ReadonlySet<string> = new Set([
 export const NOSNIFF_HEADER = 'X-Content-Type-Options: nosniff';
 
 /** Options controlling resolution beyond the plain file (D-6/D-7). */
-/**
- * StaticResolveOptions.
- *
- * @example
- * ```ts
- * const value = {} as StaticResolveOptions;
- * ```
- */
 export interface StaticResolveOptions {
     /** Directory index files, tried in order for a directory path. */
     indexNames?: readonly string[];
     /** Generate an HTML listing for directories with no index match. */
     listDirectories?: boolean;
-    /** Client `Accept-Encoding` header — drives precompressed variant selection (D-3). */
+    /** Client `Accept-Encoding` header — drives precompressed variant selection. */
     acceptEncoding?: string;
     /**
      * Reject files larger than this many bytes, checked at stat time before
@@ -195,7 +163,7 @@ export function negotiateEncoding(header: string | undefined): StaticEncoding | 
     return best ?? (wildcardQ > 0 ? 'br' : null);
 }
 
-/** Builds the strong ETag for a payload (D-2); variant encoding disambiguates. */
+/** Builds the strong ETag for a payload; variant encoding disambiguates. */
 function buildEtag(size: number, mtimeMs: number, encoding?: StaticEncoding): string {
     const base = `${size.toString(16)}-${Math.round(mtimeMs).toString(16)}`;
     return `"${encoding ? `${base}-${encoding}` : base}"`;
@@ -360,7 +328,7 @@ export class StaticResourceResolver {
             return { kind: 'forbidden' };
         }
         const contentType = String(mediaType);
-        // Size cap enforced from stat alone, before any open or read (SEC-8).
+        // Size cap enforced from stat alone, before any open or read.
         const maxFileSizeBytes = options?.maxFileSizeBytes;
         if (maxFileSizeBytes !== undefined && maxFileSizeBytes > 0 && stats.size > maxFileSizeBytes) {
             return { kind: 'forbidden' };
@@ -434,7 +402,7 @@ export class StaticResourceResolver {
     }
 
     /**
-     * Resolves a directory request (D-7): `indexNames` first (each tried as a
+     * Resolves a directory request: `indexNames` first (each tried as a
      * plain file beneath the directory), then an opt-in generated listing, then
      * not-found. File containment is re-verified per index by recursion.
      */
@@ -465,7 +433,7 @@ export class StaticResourceResolver {
         return { kind: 'not-found' };
     }
 
-    /** Generates an HTML directory listing (D-7) — names escaped, hrefs relative. */
+    /** Generates an HTML directory listing — names escaped, hrefs relative. */
     private async _listing(real: string, relative: string): Promise<StaticResourceResult> {
         let names: string[];
         try {

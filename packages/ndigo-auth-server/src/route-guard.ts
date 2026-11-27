@@ -14,14 +14,6 @@ import { AUTH_REQUIRED_KEY, AUTH_ROLES_KEY, AUTH_SCOPES_KEY } from '@ndigo/auth-
 import { type AuthServer } from './server';
 
 /** Denial behavior overrides for {@link AuthRouteGuard}. */
-/**
- * AuthGuardDenialOptions.
- *
- * @example
- * ```ts
- * const value = {} as AuthGuardDenialOptions;
- * ```
- */
 export interface AuthGuardDenialOptions {
     /** Status for missing/invalid credentials (default `401`). */
     unauthenticatedStatus?: number;

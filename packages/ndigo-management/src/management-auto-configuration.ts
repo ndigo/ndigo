@@ -193,7 +193,7 @@ export class ManagementAutoConfiguration extends AsApplicationContextAware(Null)
      * resolution the strategy checks first), so it is immune to
      * registration-order clobbering by `NodeAutoConfiguration.handlerMapping`.
      *
-     * Exposure is enforced **per request** inside the controllers (D-2): a disabled endpoint answers 404, and its path is covered by the
+     * Exposure is enforced **per request** inside the controllers: a disabled endpoint answers 404, and its path is covered by the
      * guard like every other management route — same wire behavior as not
      * registering it.
      *

@@ -66,7 +66,7 @@ export function drizzleTableForEntity<E extends object>(entityClass: Constructab
         } else if (col.nullable === true || generated) {
             // Non-PK `@generatedColumn` columns are emitted without NOT NULL: persist
             // skips them while undefined, so a NOT NULL constraint would reject
-            // the insert (DAT-F3). Nullable columns stay as declared.
+            // the insert. Nullable columns stay as declared.
             columns[col.fieldName] = builder;
         } else {
             columns[col.fieldName] = builder.notNull();

@@ -17,7 +17,7 @@ import type { RouterErrorHandler } from '@ndigo/router';
  *
  * Failures are surfaced through the optional `onError` hook and turned into a
  * `false` result: a throwing `postHandle` or `afterCompletion` must not escape
- * the boolean contract or become an unhandled rejection (PWB-REV-015).
+ * the boolean contract or become an unhandled rejection.
  *
  * @param route - The candidate route.
  * @param chain - The execution chain resolved for the candidate route.

@@ -1,5 +1,5 @@
 /**
- * Boot-level secrets integration (D-5): `builder.secrets(...)`
+ * Boot-level secrets integration: `builder.secrets(...)`
  * wires a cipher so `{cipher:...}` markers in properties resolve to
  * plaintext in `@configurationProperties` binding.
  */

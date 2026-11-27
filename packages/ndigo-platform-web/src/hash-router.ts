@@ -133,7 +133,7 @@ export class HashRouter extends AbstractRouter {
      * Serializes navigations. Concurrent `setRoute` calls (and external
      * `hashchange` dispatches) otherwise interleave across their interceptor
      * awaits: an earlier navigation is dropped and the winner's callback can
-     * fire twice (PWB-REV-005).
+     * fire twice.
      */
     #navigation: Promise<unknown>;
 
@@ -352,7 +352,7 @@ export class HashRouter extends AbstractRouter {
      * Restores the browser hash to the given route when a navigation is rejected or fails.
      * Only acts when syncHash is enabled and the hash no longer represents the given route.
      * The rollback write is recorded as an echo so the `hashchange` it emits does not
-     * re-dispatch the restored route (PWB-REV-003).
+     * re-dispatch the restored route.
      */
     private _restoreHash(oldRoute: string, syncHash: boolean): void {
         if (!syncHash || typeof location === 'undefined') {

@@ -23,7 +23,7 @@ import { DrizzleDataSource } from './drizzle-data-source';
  * concurrent writer from failing the upgrade mid-transaction.
  *
  * Nested calls throw: `@transactional` already serializes the boundary
- * (DAT-F9), and a transaction owns one connection for its lifetime.
+ *, and a transaction owns one connection for its lifetime.
  *
  * @example
  * ```ts
@@ -81,7 +81,7 @@ export class DrizzleTransactionManager implements TransactionManager {
 
         // Claim the boundary synchronously (no await in between) so a
         // concurrent run() cannot slip another transaction past the latch
-        // while this one is acquiring its connection (DAT-F9).
+        // while this one is acquiring its connection.
         this.#active = true;
         try {
             const transaction = await this.#dataSource.client.transaction('write');

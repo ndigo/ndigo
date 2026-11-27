@@ -1,5 +1,5 @@
 /**
- * PWB-REV-012: the README's getting-started snippet must reference exports the
+ * The README's getting-started snippet must reference exports the
  * `@ndigo/platform-web` barrel actually provides. It documents
  * `import { Cookies } from '@ndigo/platform-web'`, which the barrel previously
  * did not export.

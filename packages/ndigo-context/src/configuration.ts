@@ -136,7 +136,16 @@ export function configuration<T extends Constructable<unknown>>(target: T, conte
  */
 export function property(
     path: string,
-    propertyType?: Constructable<number> | Constructable<boolean> | Constructable<Date> | Constructable<string> | string
+    propertyType?:
+        | Constructable<number>
+        | Constructable<boolean>
+        | Constructable<Date>
+        | Constructable<string>
+        | NumberConstructor
+        | BooleanConstructor
+        | StringConstructor
+        | DateConstructor
+        | string
 ) {
     return function (value: undefined, context: ClassFieldDecoratorContext) {
         if (context.kind !== 'field') {

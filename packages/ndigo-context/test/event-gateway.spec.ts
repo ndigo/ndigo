@@ -1,6 +1,7 @@
 /**
  */
 import { describe, expect, test, vi } from 'vitest';
+import { IllegalStateError } from '@ndigo/core';
 import { GenericApplicationContext } from '../src/context';
 import {
     ContextEventGateway,
@@ -196,6 +197,24 @@ describe('ContextEventGateway', () => {
         expect(gateway.relayedEventCount).toBe(0);
 
         gateway.destroy();
+        source.destroy();
+        target.destroy();
+    });
+
+    test('it should reject relays and expose a snapshot after destroy', () => {
+        const source = new GenericApplicationContext('source');
+        const target = new GenericApplicationContext('target');
+        const gateway = new ContextEventGateway(source, target, [{ from: 'a', to: 'b' }]);
+
+        expect(gateway.relays).toEqual([{ from: 'a', to: 'b' }]);
+        const snapshot = [...gateway.relays];
+        snapshot.push({ from: 'x', to: 'y' });
+        expect(gateway.activeRelayCount).toBe(1);
+
+        gateway.destroy();
+        expect(gateway.destroyed).toBe(true);
+        expect(() => gateway.addRelay('c')).toThrow(IllegalStateError);
+
         source.destroy();
         target.destroy();
     });

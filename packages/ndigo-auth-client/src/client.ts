@@ -3,6 +3,7 @@
  */
 import { type Principal } from '@ndigo/auth-core';
 import { type AuthenticationState, type AuthResult } from '@ndigo/auth-core';
+import { type AuthAdapter } from '@ndigo/auth-core';
 import { AuthRegistry } from '@ndigo/auth-core';
 
 /**
@@ -31,6 +32,28 @@ export class AuthClient {
      */
     get [Symbol.toStringTag](): string {
         return 'AuthClient';
+    }
+
+    /** Adapters registered on this client, shadowing the global registry. */
+    readonly #adapters = new Map<string, AuthAdapter>();
+
+    /**
+     * Registers an adapter scoped to this client instance.
+     *
+     * Instance-scoped registrations shadow the process-wide
+     * {@link AuthRegistry} for the same id without mutating it.
+     *
+     * @param adapter - The adapter to register.
+     * @returns This client.
+     */
+    register(adapter: AuthAdapter): this {
+        this.#adapters.set(adapter.id, adapter);
+        return this;
+    }
+
+    /** Resolves an adapter, preferring the instance-scoped registration. */
+    #getAdapter(id: string): AuthAdapter | undefined {
+        return this.#adapters.get(id) ?? AuthRegistry.getAdapter(id);
     }
 
     #state: AuthenticationState = {
@@ -69,7 +92,7 @@ export class AuthClient {
      * @returns The {@link AuthResult} containing the principal and token.
      */
     async authenticate(adapterId: string, credentials: unknown): Promise<AuthResult> {
-        const adapter = AuthRegistry.getAdapter(adapterId);
+        const adapter = this.#getAdapter(adapterId);
         if (!adapter) {
             throw new Error(`Authentication adapter '${adapterId}' not found`);
         }
@@ -90,7 +113,7 @@ export class AuthClient {
             return null;
         }
 
-        const adapter = AuthRegistry.getAdapter(adapterId);
+        const adapter = this.#getAdapter(adapterId);
         if (!adapter) {
             throw new Error(`Authentication adapter '${adapterId}' not found`);
         }
@@ -126,7 +149,7 @@ export class AuthClient {
             throw new Error('No token to refresh');
         }
 
-        const adapter = AuthRegistry.getAdapter(adapterId);
+        const adapter = this.#getAdapter(adapterId);
         if (!adapter) {
             throw new Error(`Authentication adapter '${adapterId}' not found`);
         }
@@ -151,7 +174,7 @@ export class AuthClient {
      */
     async logout(adapterId: string): Promise<void> {
         if (this.#state.token) {
-            const adapter = AuthRegistry.getAdapter(adapterId);
+            const adapter = this.#getAdapter(adapterId);
             if (adapter) {
                 await adapter.logout(this.#state.token);
             }

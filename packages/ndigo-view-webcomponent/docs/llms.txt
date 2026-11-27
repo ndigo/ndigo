@@ -41,14 +41,14 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `AttributeViewTargeter` — Targets the element named by a route attribute.
 - `hydrateIslands` — Hydrates all islands in a root element: finds every `[data-ndigo-island]` marker, connects it to its serialized `data-ndigo-model`, and drives the element's fi…
 - `WebMCPToolAnnotations` *(type)* — Safety hints understood by WebMCP hosts — the neutral AgentToolAnnotations vocabulary.
-- `WebMCPTool` *(type)* — WebMCPTool.
+- `WebMCPTool` *(type)* — A tool registered with the browser's model context — the neutral AgentTool shape.
 - `WebMCPRegistration` *(type)* — Registration outcome — the neutral AgentToolRegistration handle. `supported` is false when the browser lacks WebMCP.
-- `WebMCPOptions` *(type)* — WebMCPOptions.
+- `WebMCPOptions` *(type)* — Options for provideWebMcpTools.
 - `declareWebMcpTool` — Registers one WebMCP tool. Unsupported browsers return a no-op registration.
 - `provideWebMcpTools` — Registers a set of WebMCP tools under one AbortController.
 - `webMcpAgentHost` — The WebMCP adapter over the neutral AgentToolHost contract — the first host adapter. Code that registers tools through this binding is host-agnostic: the plann…
-- `WebMCPHandlerToolOptions` *(type)* — WebMCPHandlerToolOptions.
+- `WebMCPHandlerToolOptions` *(type)* — Options for webMcpToolForHandler.
 - `webMcpToolForHandler` — Projects a handler method and its `@parameters`/`validatedBy` metadata into a WebMCP tool. Arguments are validated with the same extractor converters the HTTP…
 - `WebMCPElementBase` *(type)* — The element base contract the WebMCP mixin requires: a host element with the optional custom-element lifecycle callbacks the mixin chains into.
 - `AsWebMCPElement` — Mixin that registers an element's WebMCP tools on connect and aborts them on disconnect. Subclasses implement WebMCPElement.webMcpTools; they can read dependen…
-- `WebMCPElement` *(type)* — WebMCPElement.
+- `WebMCPElement` *(type)* — The element contract added by AsWebMCPElement.

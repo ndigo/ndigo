@@ -33,6 +33,9 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `UserStore` *(type)* — Lookup contract for first-party user accounts, consumed by the credentials adapter.
 - `SessionRecord` *(type)* — A stored server-side session.
 - `SessionStore` *(type)* — Backing store contract for opaque server sessions.
+- `JWTClaims` *(type)* — A verified JWT payload read structurally, so this package stays free of a `jose` dependency.
+- `readRoles` — Reads the `roles` claim: an array of strings, with non-string entries dropped.
+- `readScopes` — Reads the OAuth scope claims: - `scope`: space-delimited (RFC 6749) - `scp`: array or space-delimited (Azure AD) - `scopes`: array (custom IdPs)
 - `authenticated` — Marks a class or method as requiring authentication.
 - `authorized` — Marks a class or method as requiring a specific role.
 - `authorizedScopes` — Marks a class or method as requiring specific OAuth scopes.

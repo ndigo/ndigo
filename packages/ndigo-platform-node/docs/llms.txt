@@ -43,11 +43,11 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `getNodeResponse` — Reads the Node `ServerResponse` the HTTP server adapter stored on the route.
 - `MultipartFile` *(type)* — A single part of a `multipart/form-data` request — an uploaded file.
 - `MultipartContext` *(type)* — A parsed `multipart/form-data` request, stored on node-request.NodeRequest#multipart. Populated by the adapter before dispatch so argument resolvers can read i…
-- `Backing` *(type)* — Backing.
+- `Backing` *(type)* — Backing store for a parsed file part: in-memory buffer or temp-file handle.
 - `NodeMultipartFile`
 - `NodeMultipartContext`
 - `MultipartLimits` *(type)* — Per-upload bounds. Every field is optional; DEFAULT_MPART_LIMITS fills the rest. `0` is a valid bound; negative or non-finite values throw a `RangeError` (fail…
-- `MultipartParseOptions` *(type)* — MultipartParseOptions.
+- `MultipartParseOptions` *(type)* — Options accepted by parseMultipart.
 - `parseMultipart` — Parse a `multipart/form-data` request body into fields + file parts.
 - `NodeHeaderValueMethodArgumentResolver` — Node.js request header argument resolver.
 - `NodeBodyValueMethodArgumentResolver` — Node.js request body argument resolver.
@@ -70,7 +70,7 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `DenialResponseWriter` *(type)* — Minimal response writer accepted by finalizeInterceptorDenial — compatible with Node's `ServerResponse` and the in-memory MockHTTP sink. `writableEnded`/`destr…
 - `finalizeInterceptorDenial` — Finalizes an interceptor denial. A `401` denial carries `WWW-Authenticate: Bearer` (RFC 9110 §15.5.2); `401`/`403` are problem documents with registered types;…
 - `SocketLimits` *(type)* — Tunable bounds for the WebSocket transport (frames + inbound buffering).
-- `ResolvedSocketLimits` *(type)* — ResolvedSocketLimits.
+- `ResolvedSocketLimits` *(type)* — Resolved, read-only socket limits with defaults applied.
 - `DEFAULT_SOCKET_LIMITS` — Conservative defaults: 1 MiB frames, 1024 queued messages, 4 MiB queued bytes, 1 MiB outbound watermark, fail-closed close on overflow.
 - `resolveSocketLimits` — Validates and resolves socket limits from user options and the environment, filling defaults (mirrors `resolveHTTPRequestLimits`).
 - `assertCloseFrame` — RFC 6455 close-status validation (mirrors the `ws` client's valid range): 1000–1014 excluding the reserved 1004/1005/1006, or 3000–4999 (application-defined).…
@@ -98,7 +98,7 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `createNodeApplication` — Runs a Node application: builds the context (`NodeAutoConfiguration` and `NodeEnvironment` by default), loads config files, starts the managed `HTTP_SERVER`, a…
 - `nodeConfigFileReader` — The Node default for the `ConfigFileReader` seam: reads UTF-8 and maps a missing file to `null` (which `StandardConfigFileLoader` treats as "probe the next loc…
 - `HTTPRequestLimits` *(type)* — Tunable bounds for the Node HTTP request pipeline.
-- `ResolvedHTTPRequestLimits` *(type)* — ResolvedHTTPRequestLimits.
+- `ResolvedHTTPRequestLimits` *(type)* — Resolved, read-only limits with defaults applied.
 - `DEFAULT_HTTP_REQUEST_LIMITS` — Conservative defaults: 1 MiB bodies, 30s total request window, 10s drain.
 - `resolveHTTPRequestLimits` — Validates and resolves user-provided limits, filling defaults. Throws a `RangeError` for non-positive or non-finite values.
 - `RequestLimitError` — Transport-level request failure with a deterministic status mapping (`413` oversized body, `408` timeout, `400` malformed input, …). Thrown by the request pipe…
@@ -112,13 +112,13 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `isResponseEntity` — Type guard that checks whether a value is a `ResponseEntity`.
 - `ResponseEntityView` — A view that produces a `ResponseEntity` (status, headers, body) as a complete response document.
 - `StaticFileView` — Serve a static file from a base directory for a matching request path.
-- `StaticHandlerOptions` *(type)* — StaticHandlerOptions.
-- `StaticResourceHandler` — The HTTP half of static serving: one `handle(route, requestPath)` call turns a path into a complete response (D-5).
-- `StaticResourceKind` *(type)* — StaticResourceKind.
-- `StaticEncoding` *(type)* — StaticEncoding.
-- `StaticResourceResult` *(type)* — StaticResourceResult.
+- `StaticHandlerOptions` *(type)* — Handler options — defaults preserve today's plain-file behavior.
+- `StaticResourceHandler` — The HTTP half of static serving: one `handle(route, requestPath)` call turns a path into a complete response.
+- `StaticResourceKind` *(type)* — Outcome kinds for a static-resource lookup.
+- `StaticEncoding` *(type)* — Content-Encoding of a precompressed variant.
+- `StaticResourceResult` *(type)* — The result of resolving a static resource.
 - `NOSNIFF_HEADER` — Response header that forbids MIME sniffing.
-- `StaticResolveOptions` *(type)* — StaticResolveOptions.
+- `StaticResolveOptions` *(type)* — Options controlling resolution beyond the plain file (D-6/D-7).
 - `negotiateEncoding` — Parses an `Accept-Encoding` header into the preferred supported encoding.
 - `StaticResourceResolver` — Resolves static files strictly inside a canonical base directory.
 - `statusForKind` — Maps a resolution kind to an HTTP status.

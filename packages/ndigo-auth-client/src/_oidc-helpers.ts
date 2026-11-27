@@ -5,7 +5,7 @@
  */
 import { createHash } from 'node:crypto';
 import { type JWTPayload, base64url } from 'jose';
-import { type Principal } from '@ndigo/auth-core';
+import { type Principal, DefaultPrincipal, readRoles, readScopes } from '@ndigo/auth-core';
 import { OIDCError } from './oidc-types';
 
 /**
@@ -50,38 +50,6 @@ export async function pkceCodeChallenge(verifier: string): Promise<string> {
 }
 
 /**
- * Reads the `roles` claim from a JWT payload.
- *
- * @param payload - The decoded JWT payload.
- * @returns The list of role strings.
- */
-export function readRoles(payload: JWTPayload): string[] {
-    const raw = payload.roles;
-    if (!Array.isArray(raw)) return [];
-    return raw.filter((role): role is string => typeof role === 'string');
-}
-
-/**
- * Reads the `scope`/`scp`/`scopes` claims from a JWT payload.
- *
- * @param payload - The decoded JWT payload.
- * @returns The deduplicated list of scope strings.
- */
-export function readScopes(payload: JWTPayload): string[] {
-    // OAuth 2.0 `scope` is space-delimited; Azure AD's `scp` may be an array
-    // or a space-delimited string; `scopes` is the custom-IdP array.
-    const scopeClaim = payload.scope;
-    const scpClaim = payload.scp;
-    const scopesClaim = payload.scopes;
-    const parts = [
-        ...(typeof scopeClaim === 'string' ? scopeClaim.split(/\s+/u) : []),
-        ...(Array.isArray(scpClaim) ? scpClaim : typeof scpClaim === 'string' ? scpClaim.split(/\s+/u) : []),
-        ...(Array.isArray(scopesClaim) ? scopesClaim : []),
-    ];
-    return [...new Set(parts.filter((scope): scope is string => typeof scope === 'string' && scope.length > 0))];
-}
-
-/**
  * Builds a {@link Principal} from a verified JWT payload.
  *
  * @param payload - The verified JWT payload.
@@ -97,21 +65,11 @@ export function principalFromPayload(payload: JWTPayload): Principal {
     }
     const roles = readRoles(payload);
     const scopes = readScopes(payload);
-    const roleSet = new Set(roles);
-    const scopeSet = new Set(scopes);
-    return {
-        id: sub,
-        name:
-            (typeof payload.name === 'string' && payload.name) ||
-            (typeof payload.preferred_username === 'string' && payload.preferred_username) ||
-            'Unknown',
-        roles,
-        scopes,
-        hasRole: (role: string) => roleSet.has(role),
-        hasAnyRole: (...wanted: string[]) => wanted.some((role) => roleSet.has(role)),
-        hasScope: (scope: string) => scopeSet.has(scope),
-        hasAnyScope: (...wanted: string[]) => wanted.some((scope) => scopeSet.has(scope)),
-    };
+    const name =
+        (typeof payload.name === 'string' && payload.name) ||
+        (typeof payload.preferred_username === 'string' && payload.preferred_username) ||
+        'Unknown';
+    return new DefaultPrincipal(sub, name, roles, scopes);
 }
 
 /**

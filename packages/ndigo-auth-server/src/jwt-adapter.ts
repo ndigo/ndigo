@@ -12,7 +12,15 @@ import {
     type JWTVerifyGetKey,
     type JWTVerifyOptions,
 } from 'jose';
-import { type AuthAdapter, type AuthResult, type Principal, type UserStore, DefaultPrincipal } from '@ndigo/auth-core';
+import {
+    type AuthAdapter,
+    type AuthResult,
+    type Principal,
+    type UserStore,
+    DefaultPrincipal,
+    readRoles,
+    readScopes,
+} from '@ndigo/auth-core';
 
 /**
  * Configuration for the JWT adapter.
@@ -50,9 +58,11 @@ export interface JWTAdapterConfig {
      * `validate` checks the `ver` claim of framework-issued tokens against
      * the account's `tokenVersion`, `issueTokens` snapshots the current
      * version, and `refresh`/`logout` advance it (rotating the family and
-     * invalidating every older token). Tokens WITHOUT a `ver` claim (e.g.
-     * external IdP tokens) skip the check — revocation never rejects
-     * tokens this adapter did not version.
+     * invalidating every older token). When the adapter validates its own
+     * HMAC issuance, a token without `ver` fails closed. Asymmetric
+     * configurations validate external IdP tokens, which carry no `ver` and
+     * therefore skip the version check — revocation never rejects tokens
+     * this adapter did not version.
      */
     userStore?: UserStore;
     /**
@@ -300,12 +310,18 @@ export class JWTAdapter implements AuthAdapter {
 
             // Framework-issued tokens carry `ver`; when a store is
             // wired, the claim must equal the account's current version.
-            // Tokens without `ver` (external IdP) skip the check entirely.
-            // SE-7: `#currentVersion` returns null for disabled/deleted
+            // An HS* adapter issues its own tokens, so a missing `ver` is a
+            // malformed token and fails closed; external IdP tokens
+            // (asymmetric validation) legitimately carry no `ver` and skip
+            // the check. `#currentVersion` returns null for disabled/deleted
             // accounts too, so the same gate revokes their live tokens.
-            if (this.#userStore && typeof payload.ver === 'number' && typeof payload.sub === 'string') {
-                const current = await this.#currentVersion(payload.sub);
-                if (current === null || current !== payload.ver) return null;
+            if (this.#userStore && typeof payload.sub === 'string') {
+                if (typeof payload.ver === 'number') {
+                    const current = await this.#currentVersion(payload.sub);
+                    if (current === null || current !== payload.ver) return null;
+                } else if (this.#config.algorithm.startsWith('HS')) {
+                    return null;
+                }
             }
 
             return principalFromPayload(payload);
@@ -374,7 +390,7 @@ export class JWTAdapter implements AuthAdapter {
     ): Promise<{ accessToken: string; refreshToken: string; expiresAt: number }> {
         const secret = this.#signingSecret();
         const identity = this.#userStore
-            ? await this.#storeIdentity(subject.id)
+            ? await this.#storeIdentity(subject.id, subject.scopes)
             : {
                   id: subject.id,
                   name: subject.name ?? subject.id,
@@ -467,10 +483,16 @@ export class JWTAdapter implements AuthAdapter {
         } catch {
             throw new JWTTokenError('Invalid token');
         }
-        if (typeof payload.sub !== 'string') {
+        if (typeof payload.sub !== 'string' || typeof payload.ver !== 'number') {
             throw new JWTTokenError('Malformed token');
         }
-        const nextVer = await store.incrementTokenVersion(payload.sub);
+        // Compare-and-swap, not an unconditional bump: replaying a token that
+        // was already rotated out must not advance the version again, or an
+        // attacker holding an old token could revoke the live session.
+        const nextVer = await store.incrementTokenVersionIfCurrent(payload.sub, payload.ver);
+        if (nextVer === null) {
+            throw new JWTTokenError('Token superseded or revoked');
+        }
         this.#cacheVersion(payload.sub, nextVer);
     }
 
@@ -484,7 +506,10 @@ export class JWTAdapter implements AuthAdapter {
         return new TextEncoder().encode(this.#config.secret);
     }
 
-    async #storeIdentity(id: string): Promise<{
+    async #storeIdentity(
+        id: string,
+        scopes: readonly string[] = []
+    ): Promise<{
         id: string;
         name: string;
         roles: readonly string[];
@@ -503,7 +528,9 @@ export class JWTAdapter implements AuthAdapter {
             id: user.id,
             name: user.username,
             roles: user.roles ?? [],
-            scopes: [],
+            // `UserRecord` has no scopes; keep the caller's grants instead of
+            // silently minting an unscoped token.
+            scopes,
             tokenVersion: user.tokenVersion ?? 0,
         };
     }
@@ -588,37 +615,13 @@ function principalFromPayload(payload: JWTPayload): Principal | null {
     if (typeof sub !== 'string' || sub.length === 0) {
         return null;
     }
-    // SEC-AUD2-SEC-4/6: normalize the raw claim to strings ONCE and share the
-    // result between the `roles` field and the predicates. Previously the field
-    // stringified every element (`[["admin"]]` → `['admin']`) while the
-    // predicates matched the raw elements, so a nested/non-string claim gave a
-    // principal whose declared roles disagreed with `hasRole`/`hasAnyRole` —
-    // a guard-vs-principal authorization mismatch. Filter (drop non-strings),
-    // matching `ndigo-auth-client/oidc-adapter.ts`'s `readRoles`.
-    const rawRoles = Array.isArray(payload.roles) ? (payload.roles as unknown[]) : [];
-    const roles = rawRoles.filter((role): role is string => typeof role === 'string');
-    const roleSet = new Set(roles);
-    // array (or a space-delimited string); `scopes` is the custom-IdP array.
-    const scopeClaim = payload.scope;
-    const scpClaim = payload.scp;
-    const scopesClaim = payload.scopes;
-    const scopeParts = [
-        ...(typeof scopeClaim === 'string' ? scopeClaim.split(/\s+/u) : []),
-        ...(Array.isArray(scpClaim) ? scpClaim : typeof scpClaim === 'string' ? scpClaim.split(/\s+/u) : []),
-        ...(Array.isArray(scopesClaim) ? scopesClaim : []),
-    ];
-    const scopes = [
-        ...new Set(scopeParts.filter((scope): scope is string => typeof scope === 'string' && scope.length > 0)),
-    ];
-    const scopeSet = new Set(scopes);
-    return {
-        id: sub,
-        name: String(payload.name ?? payload.email ?? 'Unknown'),
-        roles,
-        scopes,
-        hasRole: (role: string) => roleSet.has(role),
-        hasAnyRole: (...asked: string[]) => asked.some((r) => roleSet.has(r)),
-        hasScope: (scope: string) => scopeSet.has(scope),
-        hasAnyScope: (...asked: string[]) => asked.some((s) => scopeSet.has(s)),
-    };
+    const roles = readRoles(payload);
+    const scopes = readScopes(payload);
+    // Non-string names (objects, numbers) must not leak `"[object Object]"`
+    // into logs and UI; prefer the email claim, then a neutral label.
+    const name =
+        (typeof payload.name === 'string' && payload.name) ||
+        (typeof payload.email === 'string' && payload.email) ||
+        'Unknown';
+    return new DefaultPrincipal(sub, name, roles, scopes);
 }

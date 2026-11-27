@@ -4,6 +4,7 @@
 // Helper to create a minimal JWT token string with a real HMAC signature
 import { describe, test, expect, beforeEach } from 'vitest';
 import { JWTAdapter, JWTTokenError } from '../src/jwt-adapter';
+import { InMemoryUserStore } from '../src/in-memory-user-store';
 import { Principal } from '@ndigo/auth-core';
 import { generateKeyPair, exportSPKI, SignJWT, type JWTPayload } from 'jose';
 import { createHmac } from 'node:crypto';
@@ -313,6 +314,32 @@ describe('JWTAdapter asymmetric algorithms (jose)', () => {
         expect(principal?.id).toBe('43');
         expect(principal?.name).toBe('RSA User');
         expect(principal?.hasRole('user')).toBe(true);
+    });
+
+    test('RS256 accepts external tokens without a ver claim even with a user store', async () => {
+        const { publicKey, privateKey } = await generateKeyPair('RS256', { extractable: true });
+        const spki = await exportSPKI(publicKey);
+        const userStore = new InMemoryUserStore([
+            { id: 'ext-1', username: 'external', passwordHash: null, roles: ['user'] },
+        ]);
+        const adapter = new JWTAdapter({
+            issuer: 'https://auth.example.com',
+            audience: 'my-app',
+            publicKey: spki,
+            algorithm: 'RS256',
+            userStore,
+        });
+
+        // Asymmetric adapters validate an external IdP's tokens, which this
+        // adapter never versioned; the absence of `ver` must not reject them.
+        const token = await new SignJWT({ sub: 'ext-1', name: 'External' })
+            .setProtectedHeader({ alg: 'RS256' })
+            .setIssuer('https://auth.example.com')
+            .setAudience('my-app')
+            .setExpirationTime('1h')
+            .sign(privateKey);
+
+        await expect(adapter.validate(token)).resolves.toMatchObject({ id: 'ext-1' });
     });
 
     test('RS256 rejects a token signed with a different private key', async () => {

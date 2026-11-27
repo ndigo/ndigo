@@ -112,27 +112,27 @@ http.server.request.duration_sum{http.request.method="GET",http.response.status_
   shape and status rules as the root document; a group with no registered
   members answers `404`. Example:
 
-````json
+```json
    "management": { "health": { "groups": { "core": { "include": ["telemetry"] } } } }
-   ```
+```
 
 - **Components** — `/health/<name>` serves one registered component as a
-one-component aggregate (`{ status, components, timestamp }`); unknown
-names answer `404`. A configured group shadows a same-named component.
+  one-component aggregate (`{ status, components, timestamp }`); unknown
+  names answer `404`. A configured group shadows a same-named component.
 
 ## 4. `/loggers` — level inspection and live changes
 
 Payloads follow the actuator endpoint:
 
 - `GET /loggers` → `{ levels, loggers }` where `levels` is the canonical
-vocabulary (`trace`, `debug`, `info`, `warn`, `error`, `fatal`, `off`) and
-each known logger is `{ configuredLevel?, effectiveLevel }`.
+  vocabulary (`trace`, `debug`, `info`, `warn`, `error`, `fatal`, `off`) and
+  each known logger is `{ configuredLevel?, effectiveLevel }`.
 - `GET /loggers/<name>` → the same document for one logger; `404` for names
-the framework has never used.
+  the framework has never used.
 - `POST /loggers/<name>` with `{"configuredLevel": "warn"}` sets a per-name
-threshold; `{}` clears it back to the global settings floor. Unknown level
-names are rejected by the body schema (`422` — the dispatcher's
-validation status, not the reference framework's `400`, which the engine reserves for unreadable JSON).
+  threshold; `{}` clears it back to the global settings floor. Unknown level
+  names are rejected by the body schema (`422` — the dispatcher's
+  validation status, not the reference framework's `400`, which the engine reserves for unreadable JSON).
 
 Levels are **runtime, process-local state**: they apply to every handle for
 the name (including ones handed out before the change), survive global
@@ -145,14 +145,14 @@ order with their flattened dotted keys:
 
 ```json
 {
-   "propertySources": [
-       {
-           "name": "application",
-           "properties": { "server.port": { "value": "<redacted>", "origin": "application" } }
-       }
-   ]
+    "propertySources": [
+        {
+            "name": "application",
+            "properties": { "server.port": { "value": "<redacted>", "origin": "application" } }
+        }
+    ]
 }
-````
+```
 
 - **Values are redacted by default** (`"<redacted>"`). Set
   `management.endpoints.env.showValues: true` to emit the **raw stored

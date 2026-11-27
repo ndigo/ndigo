@@ -125,6 +125,41 @@ function fenceFailures(text) {
     return found;
 }
 
+function fenceStructureFailures(text) {
+    const lines = text.split('\n');
+    const found = [];
+    const stack = [];
+    for (let i = 0; i < lines.length; i++) {
+        const m = lines[i].match(/^(\s*)(`{3,})(.*)$/);
+        if (!m) continue;
+        const ticks = m[2];
+        const info = m[3].trim();
+        if (stack.length > 0) {
+            const opener = stack[stack.length - 1];
+            // A closing fence has no info string and at least as many backticks.
+            if (info === '' && ticks.length >= opener.ticks) {
+                if (ticks.length !== opener.ticks) {
+                    found.push(
+                        `${opener.line}: opening fence has ${opener.ticks} backticks but closing fence has ${ticks.length}`
+                    );
+                }
+                stack.pop();
+                continue;
+            }
+        }
+        // An opening fence: indented, or carries an info string, or deeper than
+        // the current opener. Treat any line that looks like a fence as an opener
+        // when no closer matches.
+        if (info !== '' || stack.length === 0 || ticks.length > stack[stack.length - 1].ticks) {
+            stack.push({ line: i + 1, ticks: ticks.length });
+        }
+    }
+    for (const opener of stack) {
+        found.push(`${opener.line}: unclosed code fence (${opener.ticks} backticks)`);
+    }
+    return found;
+}
+
 const files = readdirSync(GUIDES)
     .filter((file) => file.endsWith('.md') && file !== 'README.md' && file !== 'coverage.md')
     .sort();
@@ -225,6 +260,10 @@ for (const file of files) {
 
     for (const line of fenceFailures(text)) {
         failures.push(`${file}:${line}: TypeScript fence does not parse`);
+    }
+
+    for (const failure of fenceStructureFailures(text)) {
+        failures.push(`${file}: ${failure}`);
     }
 
     // Cross-guide links should use the target guide's title as the label.

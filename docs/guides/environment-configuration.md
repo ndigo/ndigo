@@ -196,76 +196,166 @@ validation, typed binding — behaves identically. `@toon-format/toon` is an
 **optional** dependency, loaded lazily only when a `.toon` file is found;
 install it (`npm i @toon-format/toon@4.4.0`) to use TOON files. The
 `text/toon` media type is provisional (not IANA-registered) — this opt-in
-is a pre-1.0 authoring option, not a framework default. ### TOON from a URL (`ApplicationBuilder.fromConfig`) `fromConfig(url)` follows the **address**: a `.toon` path suffix decodes the
-document as TOON, everything else as JSON — JSON stays the default. `ts
+is a pre-1.0 authoring option, not a framework default.
+
+### TOON from a URL (`ApplicationBuilder.fromConfig`)
+
+`fromConfig(url)` follows the **address**: a `.toon` path suffix decodes the
+document as TOON, everything else as JSON — JSON stays the default.
+
+```ts
 // .toon suffix → decoded as TOON (the address is the statement, not a default)
 const app = await ApplicationBuilder.fromConfig('https://cdn.example/app/config.toon');
-` An explicit `format: 'json' | 'toon'` option overrides the address, with one
+```
+
+An explicit `format: 'json' | 'toon'` option overrides the address, with one
 refused contradiction: `format: 'toon'` always decodes as TOON, while
 `format: 'json'` over a `.toon` address errors instead of silently
 re-parsing. A query string or fragment is stripped before detection, so a
 cache-busting suffix cannot change the format and a `?x=.toon` query cannot
 select it. `fromConfig` only fetches `http(s)` URLs, and the decode contract —
 strict mode, JSON-shaped rename hint, object shape guard — is identical to
-`.toon` config files, including the lazily loaded optional peer. `sources` is a list of static source ids; `sourceCatalog` resolves them, so
+`.toon` config files, including the lazily loaded optional peer.
+
+`sources` is a list of static source ids; `sourceCatalog` resolves them, so
 the same catalog keys can be reused across environments without exposing the
 `import` seam to untrusted content. A source id absent from the catalog is
-an `IllegalStateError` at boot, never a silent skip. ## 3. Bind configuration to typed classes `@configurationProperties` auto-registers a bound, converted singleton: `ts
+an `IllegalStateError` at boot, never a silent skip.
+
+## 3. Bind configuration to typed classes
+
+`@configurationProperties` auto-registers a bound, converted singleton:
+
+```ts
 import { configuration, property, defaultValue, nestedConfig } from '@ndigo/context';
-import { configurationProperties } from '@ndigo/boot'; @configurationProperties('server')
-class ServerConfig { @property('port', Number) @defaultValue('8080') port!: number; @property('host', String) @defaultValue('localhost') host!: string; @nestedConfig db: DBConfig = new DBConfig();
-} class DBConfig { @property('url', String) @defaultValue('postgres://localhost') url!: string;
-} @configuration
+import { configurationProperties } from '@ndigo/boot';
+
+@configurationProperties('server')
+class ServerConfig {
+    @property('port', Number) @defaultValue('8080') port!: number;
+    @property('host', String) @defaultValue('localhost') host!: string;
+    @nestedConfig db: DBConfig = new DBConfig();
+}
+
+class DBConfig {
+    @property('url', String) @defaultValue('postgres://localhost') url!: string;
+}
+
+@configuration
 class AppConfig {} // register the app; ServerConfig is bound too
 // ...
 const serverConfig = await app.run(); // auto-registered
 const port = serverConfig.getValue('serverConfig').port; // number, fail-loud
-` - `@property(path, Type)` declares the conversion target (Number/Boolean/Date/String).
+```
 
+- `@property(path, Type)` declares the conversion target (Number/Boolean/Date/String).
 - `@defaultValue('...')` is string-then-converted, same path as real values.
 - `@nestedConfig` binds a sub-object under the field name (`db` → `server.db.url`).
-- Missing-required or conversion failure **fails refresh** naming class.field. ### 3.1 Schema mode Declare the shape once as a zod schema and the class binds from it — keys,
-  coercion, requiredness and defaults all come from the schema: `ts
-  import { z } from 'zod';
-  import { configurationProperties } from '@ndigo/boot'; const serverSchema = z.object({ name: z.string().default('ndigo-api'), port: z.coerce.number().default(3000),
-  }); @configurationProperties('server', { schema: serverSchema })
-  class ServerConfig { name!: string; // no @property / @defaultValue needed port!: number;
-  }
-  ` - Each schema key resolves `${prefix}.${key}`; `z.coerce` converts the stringly env values, `z.default` fills missing keys, required keys fail boot naming the class (fail-loud, same as field mode).
-- `@property`/`@defaultValue`/`@nestedConfig` are ignored in schema mode — the schema is the single source of truth.
-- The relaxed (kebab/snake) fallback applies to kebab/snake _field paths_ in field-decorator mode; schema keys are camelCase shape keys resolved exactly as `${prefix}.${key}` — schema mode does not probe kebab spellings (D-3). ### 3.2 Typed reads — `typedConfig` and `propertyKeys` Programmatic reads get the same schema semantics on the context or
-  environment: `ts
-  context.typedConfig('server', serverSchema); // z.infer → { name, port } | undefined
-  context.environment.typedConfig('server.port', z.coerce.number()); // leaf mode → number
-  ` `propertyKeys(shape)` types `@property` paths as template literals, so a
-  typo fails at compile time: `ts
-  import { propertyKeys } from '@ndigo/context';
-  const keys = propertyKeys({ server: { name: '', port: 0 } });
-  @property(keys.server.port, Number) port!: number; // 'server.port'
-  ` ## 4. Placeholders & typed reads `ts
-  environment.getProperty('endpoint'); // 'https://${HOST:local.dev}/api'
-  environment.getPropertyAs('port', Number); // 8080 (string → number)
-  environment.getRequiredPropertyAs('port', Number); // throws if missing/unconvertible
-  ` Placeholders support `${key}`, `${key:default}`, nesting, and cycle detection;
-  unresolvable ones pass through literally (no escape syntax — a literal
-  `${x}` is self-escaped when `x` is not a property). ## 5. Validate the environment ```ts
-  import { z } from 'zod';
-  import { environment } from '@ndigo/context'; @environment( z.object({ server: z.object({ port: z.coerce.number().min(1) }), mode: z.string().optional(), })
-  )
-  class AppConfig {}
+- Missing-required or conversion failure **fails refresh** naming class.field.
 
-````Boot now **fails loudly with every violation listed** (path, expected,
-actual) — aggregate, not first-error. Ad-hoc: ```ts
+### 3.1 Schema mode
+
+Declare the shape once as a zod schema and the class binds from it — keys,
+coercion, requiredness and defaults all come from the schema:
+
+```ts
+import { z } from 'zod';
+import { configurationProperties } from '@ndigo/boot';
+
+const serverSchema = z.object({
+    name: z.string().default('ndigo-api'),
+    port: z.coerce.number().default(3000),
+});
+
+@configurationProperties('server', { schema: serverSchema })
+class ServerConfig {
+    name!: string; // no @property / @defaultValue needed
+    port!: number;
+}
+```
+
+- Each schema key resolves `${prefix}.${key}`; `z.coerce` converts the
+  stringly env values, `z.default` fills missing keys, required keys fail
+  boot naming the class (fail-loud, same as field mode).
+- `@property`/`@defaultValue`/`@nestedConfig` are ignored in schema mode — the
+  schema is the single source of truth.
+- The relaxed (kebab/snake) fallback applies to kebab/snake _field paths_ in field-decorator mode; schema keys are camelCase shape keys resolved exactly as `${prefix}.${key}` — schema mode does not probe kebab spellings (D-3).
+
+### 3.2 Typed reads — `typedConfig` and `propertyKeys`
+
+Programmatic reads get the same schema semantics on the context or
+environment:
+
+```ts
+context.typedConfig('server', serverSchema); // z.infer → { name, port } | undefined
+context.environment.typedConfig('server.port', z.coerce.number()); // leaf mode → number
+```
+
+`propertyKeys(shape)` types `@property` paths as template literals, so a
+typo fails at compile time:
+
+```ts
+import { propertyKeys } from '@ndigo/context';
+const keys = propertyKeys({ server: { name: '', port: 0 } });
+@property(keys.server.port, Number) port!: number; // 'server.port'
+```
+
+## 4. Placeholders & typed reads
+
+```ts
+environment.getProperty('endpoint'); // 'https://${HOST:local.dev}/api'
+environment.getPropertyAs('port', Number); // 8080 (string → number)
+environment.getRequiredPropertyAs('port', Number); // throws if missing/unconvertible
+```
+
+Placeholders support `${key}`, `${key:default}`, nesting, and cycle detection;
+unresolvable ones pass through literally (no escape syntax — a literal
+`${x}` is self-escaped when `x` is not a property).
+
+## 5. Validate the environment
+
+```ts
+import { z } from 'zod';
+import { environment } from '@ndigo/context';
+
+@environment(
+    z.object({
+        server: z.object({ port: z.coerce.number().min(1) }),
+        mode: z.string().optional(),
+    })
+)
+class AppConfig {}
+```
+
+Boot now **fails loudly with every violation listed** (path, expected,
+actual) — aggregate, not first-error. Ad-hoc:
+
+```ts
 import { validateEnvironment } from '@ndigo/context';
 const { valid, issues } = validateEnvironment(environment, schema);
-``` ## 6. Extending the environment Customizers adjust the prepared environment before the context reads it —
-reorder sources, inject test doubles: ```ts
-builder.customizers({ customize(environment) { environment.getPropertySources().addFirst('stub', { server: { port: 1 } }); },
+```
+
+## 6. Extending the environment
+
+Customizers adjust the prepared environment before the context reads it —
+reorder sources, inject test doubles:
+
+```ts
+builder.customizers({
+    customize(environment) {
+        environment.getPropertySources().addFirst('stub', { server: { port: 1 } });
+    },
 });
-``` `environment.refresh` recomputes from current sources (clears caches +
+```
+
+`environment.refresh` recomputes from current sources (clears caches +
 rebuilds); `NodeEnvironment.refresh` also re-snapshots `process.env`. An
 environment refresh **emits `config:refresh`** — the trigger behind the live
-rebind (next section). ## 7. Live configuration, secrets, and remote config Live rebinding, at-rest `{cipher:...}` secrets, and the remote config server are
+rebind (next section).
+
+## 7. Live configuration, secrets, and remote config
+
+Live rebinding, at-rest `{cipher:...}` secrets, and the remote config server are
 covered in [Live Configuration & Secrets](live-configuration-and-secrets.md). Everything above is
 the boot-time source/binding pipeline; everything in 43 is the running-app
 surface.
@@ -282,7 +372,7 @@ completion and validation for the framework keys with no language server:
     "profiles": { "active": ["prod"] },
     "api": { "secretToken": "{cipher:v1:…}" }
 }
-````
+```
 
 The `$schema` path is relative to the file that contains it. The schema is
 permissive by design (application keys are unconstrained) and documents the

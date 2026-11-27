@@ -15,6 +15,8 @@ export class NdToast extends NdElement {
 
     #timer: ReturnType<typeof setTimeout> | undefined;
     #listeners: AbortController | undefined;
+    #pointerInside = false;
+    #focusInside = false;
 
     protected onConnect(): void {
         this.#applyLiveRegion();
@@ -26,10 +28,49 @@ export class NdToast extends NdElement {
         this.querySelector('[data-part="close-trigger"]')?.addEventListener('click', () => this.hide(), {
             signal: this.#listeners.signal,
         });
+
+        // WCAG 2.2 SC 2.2.1 / SC 1.4.13: a timed notification must not
+        // disappear while the reader is hovering or focused inside it.
+        this.addEventListener(
+            'pointerenter',
+            () => {
+                this.#pointerInside = true;
+                this.#clearTimer();
+            },
+            { signal: this.#listeners.signal }
+        );
+        this.addEventListener(
+            'pointerleave',
+            () => {
+                this.#pointerInside = false;
+                this.#resume();
+            },
+            { signal: this.#listeners.signal }
+        );
+        this.addEventListener(
+            'focusin',
+            () => {
+                this.#focusInside = true;
+                this.#clearTimer();
+            },
+            { signal: this.#listeners.signal }
+        );
+        this.addEventListener(
+            'focusout',
+            (event) => {
+                const next = event.relatedTarget instanceof Node ? event.relatedTarget : null;
+                if (next && this.contains(next)) return;
+                this.#focusInside = false;
+                this.#resume();
+            },
+            { signal: this.#listeners.signal }
+        );
     }
 
     protected onDisconnect(): void {
         this.#clearTimer();
+        this.#pointerInside = false;
+        this.#focusInside = false;
         this.#listeners?.abort();
         this.#listeners = undefined;
     }
@@ -41,7 +82,7 @@ export class NdToast extends NdElement {
             return;
         }
         if (name === 'duration') {
-            if (this.hasAttribute('open')) this.#schedule();
+            if (this.hasAttribute('open')) this.#resume();
             return;
         }
         if (value === null) this.#close(true);
@@ -75,7 +116,7 @@ export class NdToast extends NdElement {
     #open(): void {
         this.hidden = false;
         this.dataset.state = 'open';
-        this.#schedule();
+        this.#resume();
         this.emit('open-change', { open: true });
     }
 
@@ -92,6 +133,12 @@ export class NdToast extends NdElement {
         const duration = raw === null ? DEFAULT_DURATION : Number(raw);
         if (!Number.isFinite(duration) || duration <= 0) return;
         this.#timer = setTimeout(() => this.hide(), duration);
+    }
+
+    /** Restarts the timer unless the user is hovering or focused inside. */
+    #resume(): void {
+        if (!this.hasAttribute('open') || this.#pointerInside || this.#focusInside) return;
+        this.#schedule();
     }
 
     #clearTimer(): void {

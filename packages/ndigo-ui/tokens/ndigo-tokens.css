@@ -94,6 +94,9 @@
     --nd-color-text: #e8e8f4;
     --nd-color-text-muted: #9a9ab8;
     --nd-color-border: #2c2c52;
+    /* Interactive control boundaries need 3:1 against every surface
+       (WCAG 2.2 SC 1.4.11); the decorative border token does not. */
+    --nd-color-control-border: #7070a0;
     --nd-color-code-bg: #0e0e1c;
     --nd-color-accent: #3b5bdb;
     /* AA on the dark surfaces (≥5.6:1); the brand gradient keeps violet-bright. */
@@ -116,6 +119,9 @@
     --nd-color-text: #1a1a2e;
     --nd-color-text-muted: #5a5a7a;
     --nd-color-border: #e0e0f0;
+    /* Interactive control boundaries need 3:1 against every surface
+       (WCAG 2.2 SC 1.4.11); the decorative border token does not. */
+    --nd-color-control-border: #7676a0;
     --nd-color-code-bg: #f0f0f8;
     --nd-color-accent: #3b5bdb;
     --nd-color-accent-strong: #2f4fb3;
@@ -138,6 +144,9 @@
         --nd-color-text: #1a1a2e;
         --nd-color-text-muted: #5a5a7a;
         --nd-color-border: #e0e0f0;
+        /* Interactive control boundaries need 3:1 against every surface
+       (WCAG 2.2 SC 1.4.11); the decorative border token does not. */
+        --nd-color-control-border: #7676a0;
         --nd-color-code-bg: #f0f0f8;
         --nd-color-accent: #3b5bdb;
         --nd-color-accent-strong: #2f4fb3;
@@ -171,6 +180,9 @@
     --nd-color-text: #93a1a1;
     --nd-color-text-muted: #839496;
     --nd-color-border: #1a4a5a;
+    /* Interactive control boundaries need 3:1 against every surface
+       (WCAG 2.2 SC 1.4.11); the decorative border token does not. */
+    --nd-color-control-border: #3d8699;
     --nd-color-code-bg: #002028;
     --nd-color-accent: #268bd2;
     --nd-color-accent-strong: #4aa3df;
@@ -196,6 +208,9 @@
     --nd-color-text: #4a5f66;
     --nd-color-text-muted: #52656d;
     --nd-color-border: #d3cdb7;
+    /* Interactive control boundaries need 3:1 against every surface
+       (WCAG 2.2 SC 1.4.11); the decorative border token does not. */
+    --nd-color-control-border: #887e62;
     --nd-color-code-bg: #f5efdc;
     --nd-color-accent: #1f6fa8;
     --nd-color-accent-strong: #1a5f94;
@@ -221,6 +236,8 @@
     --nd-color-text: #ffffff;
     --nd-color-text-muted: #c0c0c0;
     --nd-color-border: #808080;
+    /* Control boundaries keep the 3:1 non-text threshold in this theme. */
+    --nd-color-control-border: #808080;
     --nd-color-code-bg: #0a0a0a;
     --nd-color-accent: #60cdff;
     --nd-color-accent-strong: #60cdff;
@@ -246,6 +263,8 @@
     --nd-color-text: #000000;
     --nd-color-text-muted: #333333;
     --nd-color-border: #808080;
+    /* Control boundaries keep the 3:1 non-text threshold in this theme. */
+    --nd-color-control-border: #808080;
     --nd-color-code-bg: #f3f3f3;
     --nd-color-accent: #0067c0;
     --nd-color-accent-strong: #0067c0;

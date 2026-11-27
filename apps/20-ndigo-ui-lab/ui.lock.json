@@ -60,7 +60,7 @@
         },
         {
           "target": "styles/ndigo-tokens.css",
-          "sha256": "34745f444b389e2878b9c5a40154d0fd998b19c768a2598951f2d456433c903c"
+          "sha256": "a2faf38d8c5632e6b704cb6be9d17988f398dcfb70c3c3d0b6718a38150af681"
         }
       ],
       "installedAt": "2026-11-15T04:07:38.553Z"
@@ -97,7 +97,7 @@
       "files": [
         {
           "target": "src/ui/nd-input/nd-input.css",
-          "sha256": "cfdf86e127a95b1d60ff0bae19e6423333bbae7bdfca3dc5c547ed2d47ab6a03"
+          "sha256": "b49886938ba1dbab86cb3e2b441de47a212733946b6bc30d3ac7c935d3a1db02"
         }
       ],
       "installedAt": "2026-11-09T21:04:37.663Z"
@@ -119,7 +119,7 @@
       "files": [
         {
           "target": "src/ui/nd-checkbox/nd-checkbox.css",
-          "sha256": "479888036532877dcbe0042d7b7f9138ff9f094da3c131e91996a233951c0526"
+          "sha256": "71907535eb2f363fe4649c20d07a1d31b2ceabdd95715250c227c9fa58ae055b"
         }
       ],
       "installedAt": "2026-11-09T21:04:37.663Z"
@@ -190,7 +190,7 @@
       "files": [
         {
           "target": "src/ui/nd-switch/nd-switch.css",
-          "sha256": "0bea455f158b48676f9aada60bcbb272e1414ab086273c37b3d4b57058d8813b"
+          "sha256": "a249fba9ea393d2f616af8c400a8dc3c977441850ed67f2c7f5aa6f4e64268ec"
         },
         {
           "target": "src/ui/nd-switch/nd-switch.ts",
@@ -205,7 +205,7 @@
       "files": [
         {
           "target": "src/ui/nd-slider/nd-slider.css",
-          "sha256": "0e59d72affda3ca32c32f63724aa98e8d80f034d876f0cdbab07296ebe345b5e"
+          "sha256": "d460522b7d6044429978464587d1a98f12028822b7243c5335fca009558d2fe7"
         },
         {
           "target": "src/ui/nd-slider/nd-slider.ts",
@@ -224,7 +224,7 @@
         },
         {
           "target": "src/ui/nd-toast/nd-toast.ts",
-          "sha256": "d55288c6f241aed75dbe4392f7cd0cf414008dcd205db0540965b6a082501f0e"
+          "sha256": "1dda57d191380b43473a0e69a9431c66cbbcceba802b8e40f302cc8d4f16d1cc"
         }
       ],
       "installedAt": "2026-11-09T21:04:37.663Z"
@@ -235,7 +235,7 @@
       "files": [
         {
           "target": "src/ui/nd-select/nd-select.css",
-          "sha256": "d391b896ff44644fc1609b2751eb44a0f64b8ff0a78c3f259d2ec807d2097d68"
+          "sha256": "769deafd1886ae684b1021e30f06a44317c7b917fb66ca0814a2ffc23ba626c6"
         },
         {
           "target": "src/ui/nd-select/nd-select.ts",
@@ -250,7 +250,7 @@
       "files": [
         {
           "target": "src/ui/nd-combobox/nd-combobox.css",
-          "sha256": "b90dbbf4da9b8ddef6b2c22f344f3fa20feb8c42df7be0f1f4d865bbb81a28f8"
+          "sha256": "a615da11bcc5679b5e927a3f5ce07d4fa5bcd001722e8951774ecdb8a0f6cd26"
         },
         {
           "target": "src/ui/nd-combobox/nd-combobox.ts",
@@ -299,7 +299,7 @@
       "files": [
         {
           "target": "src/ui/nd-date-picker/nd-date-picker.css",
-          "sha256": "1c1e97c67d31da55925dc9dd0ec646c72829ea01d2fc7ad7f274a24455025a1e"
+          "sha256": "cea7163fa2c0c76680b15bde1eeea11eaa0167660d3238fe25f971c696fce9ac"
         },
         {
           "target": "src/ui/nd-date-picker/nd-date-picker.ts",
@@ -355,11 +355,11 @@
       "files": [
         {
           "target": "src/ui/nd-tags-input/nd-tags-input.css",
-          "sha256": "bb6857b324b6309d6bfae1daa36460fd81c97e0c19a1890c7ffe538e6c5a8f19"
+          "sha256": "a1eab892edfc24cf06a9ada13d5c5c34f78b8993b3604776f5015889c31f53eb"
         },
         {
           "target": "src/ui/nd-tags-input/nd-tags-input.ts",
-          "sha256": "3f6794db7f449d0056015001fd433133cc1f20d17c89b1d9fc06a7996a28865b"
+          "sha256": "92bfdaa5f07da4cd52ecf652a941265455320b5ef97d304304d4beabc4407bb5"
         }
       ],
       "installedAt": "2026-11-09T21:04:37.663Z"

@@ -83,6 +83,19 @@ describe('<nd-tags-input>', () => {
         expect(getPart<HTMLInputElement>(input, '[data-part="hidden-input"]').value).toBe('beta');
     });
 
+    it('keeps chip order when a value is replaced in place', async () => {
+        const input = mountElement<NdTagsInput>('nd-tags-input', MARKUP, { value: 'alpha,beta,gamma' });
+        await flush();
+
+        // Replacing the leading value re-creates its chip while the later
+        // chips persist; without the reorder pass the new chip lands last.
+        input.setAttribute('value', 'delta,beta,gamma');
+        await flush();
+
+        expect(previews(input)).toEqual(['delta', 'beta', 'gamma']);
+        expect(input.dataset.value).toBe('delta, beta, gamma');
+    });
+
     it('enforces the max tag count', async () => {
         const input = mountElement<NdTagsInput>('nd-tags-input', MARKUP, { value: 'alpha,beta', max: '2' });
         await flush();

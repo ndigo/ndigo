@@ -80,6 +80,38 @@ describe('<nd-toast>', () => {
         expect(toast.hidden).toBe(true);
     });
 
+    it('pauses auto-dismiss while hovered', async () => {
+        vi.useFakeTimers();
+        const toast = mountElement<NdToast>('nd-toast', MARKUP, { duration: '1000' });
+        await Promise.resolve();
+
+        toast.show();
+        vi.advanceTimersByTime(500);
+        toast.dispatchEvent(new Event('pointerenter'));
+        vi.advanceTimersByTime(5000);
+        expect(toast.hidden).toBe(false);
+
+        toast.dispatchEvent(new Event('pointerleave'));
+        vi.advanceTimersByTime(1000);
+        expect(toast.hidden).toBe(true);
+    });
+
+    it('pauses auto-dismiss while focus is inside', async () => {
+        vi.useFakeTimers();
+        const toast = mountElement<NdToast>('nd-toast', MARKUP, { duration: '1000' });
+        await Promise.resolve();
+
+        toast.show();
+        const close = getPart<HTMLElement>(toast, '[data-part="close-trigger"]');
+        close.focus();
+        vi.advanceTimersByTime(5000);
+        expect(toast.hidden).toBe(false);
+
+        close.blur();
+        vi.advanceTimersByTime(1000);
+        expect(toast.hidden).toBe(true);
+    });
+
     it('uses alert semantics for errors', async () => {
         mountElement<NdToast>('nd-toast', MARKUP, { type: 'error', duration: '0' });
         await Promise.resolve();

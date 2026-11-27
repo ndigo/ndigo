@@ -34,6 +34,11 @@ export const TOKENS = [
     { name: '--nd-color-text', group: 'color', description: 'Primary text.' },
     { name: '--nd-color-text-muted', group: 'color', description: 'Secondary and supporting text.' },
     { name: '--nd-color-border', group: 'color', description: 'Hairline borders and dividers.' },
+    {
+        name: '--nd-color-control-border',
+        group: 'color',
+        description: 'Interactive control boundaries; meets the 3:1 WCAG non-text contrast threshold.',
+    },
     { name: '--nd-color-code-bg', group: 'color', description: 'Background for inline and block code.' },
     { name: '--nd-color-accent', group: 'color', description: 'Brand accent for interactive surfaces.' },
     { name: '--nd-color-accent-strong', group: 'color', description: 'High-contrast accent for text and icons.' },

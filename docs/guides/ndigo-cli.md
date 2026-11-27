@@ -121,8 +121,8 @@ file; `--dry-run` prints the plan. The content ships with the CLI, so it matches
 the installed framework version, not the website.
 
 Claude Code reads `.claude/skills/` only; symlink each generated skill
-(`ln -s ../../.agents/skills/<id> .claude/skills/<id>`) or install the published
-mirror with `npx skills add ndigo/skills`.
+(`ln -s ../../.agents/skills/<id> .claude/skills/<id>`) or install the standalone
+skills repository with `npx skills add ndigo/ndigo-skills`.
 
 An agent working inside an installed application reads the same content from
 `node_modules/@ndigo/cli/assets/agent/` — `instructions.md`, `docs-index.md`,

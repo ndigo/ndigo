@@ -60,13 +60,19 @@ function withoutCodeFences(text) {
 /** Generated/installed trees that never contain maintained markdown. */
 const SKIP_DIRS = new Set(['node_modules', 'dist', 'lib', 'coverage', 'api', 'test-results', 'playwright-report']);
 
+/**
+ * Local-only, gitignored trees: plans, audits, and references are working
+ * notes, not maintained prose, so a stale link there must not fail the gate.
+ */
+const LOCAL_ONLY_DIRS = new Set(['plans', 'audits', 'reference'].map((name) => join(root, 'docs', name)));
+
 function collectMarkdownFiles() {
     const files = [];
     const walk = (dir, keep) => {
         for (const entry of readdirSync(dir)) {
             const full = join(dir, entry);
             if (statSync(full).isDirectory()) {
-                if (!SKIP_DIRS.has(entry)) walk(full, keep);
+                if (!SKIP_DIRS.has(entry) && !LOCAL_ONLY_DIRS.has(full)) walk(full, keep);
             } else if (keep(entry)) {
                 files.push(full);
             }

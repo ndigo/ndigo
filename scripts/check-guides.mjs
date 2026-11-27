@@ -200,11 +200,8 @@ for (const file of files) {
         const titleText = heading[1].trim().replace(/`/g, '');
         if (/@ndigo\//.test(titleText)) failures.push(`${file}: title contains a module name`);
         if (/`/.test(heading[1])) failures.push(`${file}: title contains backticks`);
-        if (titleText.length > 30 && file !== 'capabilities-for-authoring-agents.md') {
+        if (titleText.length > 30) {
             failures.push(`${file}: title is ${titleText.length} chars (max 30)`);
-        }
-        if (titleText.length > 30 && file === 'capabilities-for-authoring-agents.md') {
-            warnings.push(`${file}: title is ${titleText.length} chars (temporary exception; rename to shorten)`);
         }
     }
 

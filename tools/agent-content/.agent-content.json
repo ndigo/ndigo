@@ -9,7 +9,7 @@
     "packages/ndigo-auth-server/docs/llms.txt": "915145a0656837dbfea5ae16342ff7623db803da5d6b9b0f60fbfb4920327853",
     "packages/ndigo-boot/docs/llms.txt": "7346ca19a48c362787800524600e038d4960994fd6bfb9589073cf8f5614384d",
     "packages/ndigo-cache/docs/llms.txt": "fb8d1276be014940a13eee8cde946b91238da6e8365dba21a7fce9a1a19e718d",
-    "packages/ndigo-cli/assets/agent/docs-index.md": "a6c9c6756303293672e562891ed36e891e4a925b13699e6cf897f15832a0374e",
+    "packages/ndigo-cli/assets/agent/docs-index.md": "b8d6052a6f00163d029dfb0b8ad82fd31c708848b30d3c35ccf71870a8d51d1b",
     "packages/ndigo-cli/assets/agent/instructions.md": "e77a25f81e7f41b9c01aea80a04e8e2359e98d82401a393b07c550e966535fb9",
     "packages/ndigo-cli/assets/agent/skills/ndigo-agent/SKILL.md": "03998a51e34c74761b43b3f95eff3f9f1c24f14e65cb70eb923c36d8333a05b8",
     "packages/ndigo-cli/assets/agent/skills/ndigo-app/SKILL.md": "4098bbcf582dbd739dda7d86620df56179141c5ccff59aeba2c691141846de08",
@@ -74,6 +74,6 @@
     "packages/ndigo-view-webcomponent/docs/llms.txt": "ce97f59965336144150637cfae5cc7f6cc7c1816bc79b8fdd124b6340ec44f6d",
     "packages/ndigo-view/docs/llms.txt": "602a484c99fa7e3d349a79f8602d59bd69c8fd11ba1fea7bb85d61244380e0af",
     "packages/ndigo-view/skills/ndigo-views/SKILL.md": "f26136bb54ed176c4b01e90ea9cbfeeac97eabaf4a6c33c7131589c7e1f02d1e",
-    "tools/agent-content/docs-index.md": "a6c9c6756303293672e562891ed36e891e4a925b13699e6cf897f15832a0374e"
+    "tools/agent-content/docs-index.md": "b8d6052a6f00163d029dfb0b8ad82fd31c708848b30d3c35ccf71870a8d51d1b"
   }
 }

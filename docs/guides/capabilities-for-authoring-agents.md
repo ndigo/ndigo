@@ -1,4 +1,4 @@
-# Capabilities for Authoring Agents
+# Capability-Driven Authoring
 
 A coding agent can generate code, but it needs a repeatable way to add a feature, know what changed, and prove it works. Ndigo's capability catalog packages the packages, wiring, files, and checks for one user-facing outcome — the CLI plans and applies them, skills sequence the work, and `ndigo verify` proves the result.
 

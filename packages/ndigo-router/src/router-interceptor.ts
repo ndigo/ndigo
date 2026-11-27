@@ -102,8 +102,6 @@ export class MappedRouterInterceptor extends AsPathMatcherFilter(Null) implement
         return 'MappedRouterInterceptor';
     }
 
-    #excludePatterns: string[];
-    #includePatterns: string[];
     #interceptor: RouterInterceptor;
 
     /** The path matcher used for include/exclude filtering. */
@@ -118,23 +116,6 @@ export class MappedRouterInterceptor extends AsPathMatcherFilter(Null) implement
     }
 
     /**
-     * Gets the array of patterns that, if matched, will prevent the interceptor from being applied.
-     * @returns An array of exclusion patterns.
-     */
-    get excludePatterns(): string[] {
-        return this.#excludePatterns;
-    }
-
-    /**
-     * Gets the array of patterns that, if matched, will allow the interceptor to be applied.
-     * If no include patterns are specified, the interceptor applies to all routes (unless excluded).
-     * @returns An array of inclusion patterns.
-     */
-    get includePatterns(): string[] {
-        return this.#includePatterns;
-    }
-
-    /**
      * Creates an instance of `MappedRouterInterceptor`.
      * @param interceptor - The `RouterInterceptor` to wrap and conditionally apply.
      * @param includePatterns - An array of patterns that define when the interceptor should be active.
@@ -143,11 +124,9 @@ export class MappedRouterInterceptor extends AsPathMatcherFilter(Null) implement
     constructor(interceptor: RouterInterceptor, includePatterns: string[], excludePatterns?: string[]) {
         super();
         this.#interceptor = interceptor;
-        this.#includePatterns = includePatterns ?? [];
-        this.#excludePatterns = excludePatterns ?? [];
         this.pathMatcher = new URLGlobPathMatcher();
-        this.setIncludePatterns(this.#includePatterns);
-        this.setExcludePatterns(this.#excludePatterns);
+        this.setIncludePatterns(includePatterns ?? []);
+        this.setExcludePatterns(excludePatterns ?? []);
     }
 
     /**
@@ -159,17 +138,17 @@ export class MappedRouterInterceptor extends AsPathMatcherFilter(Null) implement
     matchesRoute(route: Route): boolean {
         const routePath = route.path.startsWith('/') ? route.path : `/${route.path}`;
 
-        for (const pattern of this.#excludePatterns) {
+        for (const pattern of this.excludePatterns) {
             if (this._matchesPattern(route, routePath, pattern)) {
                 return false;
             }
         }
 
-        if (!this.#includePatterns.length) {
+        if (!this.includePatterns.length) {
             return true;
         }
 
-        for (const pattern of this.#includePatterns) {
+        for (const pattern of this.includePatterns) {
             if (this._matchesPattern(route, routePath, pattern)) {
                 return true;
             }
@@ -185,7 +164,7 @@ export class MappedRouterInterceptor extends AsPathMatcherFilter(Null) implement
      * @returns An object containing resolved parameters, or `null` if no parameters are resolved or no matching named pattern is found.
      */
     resolveRouteParams(route: Route): Record<string, string> | null {
-        for (const pattern of this.#includePatterns) {
+        for (const pattern of this.includePatterns) {
             // Route.resolveParams and Route.matches are duck-type methods that
             // concrete route implementations MAY provide. The Route interface
             // doesn't declare them — they're checked at runtime with a type

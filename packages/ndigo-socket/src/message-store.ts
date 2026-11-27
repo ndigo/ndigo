@@ -31,6 +31,13 @@
  */
 import { RingBuffer } from '@ndigo/core';
 import type { STOMPBody } from './stomp-frame';
+import type {
+    StoredQueueMessage,
+    QueueStoreRetention,
+    QueueMessageStore,
+    InMemoryQueueStoreOptions,
+    InMemoryQueueStoreStats,
+} from './message-store-types';
 
 /**
  * Body size as transmitted: UTF-8 octets for text, raw length for bytes.
@@ -69,14 +76,6 @@ export function headerOctets(headers: Readonly<Record<string, string>>): number 
     }
     return total;
 }
-
-import type {
-    StoredQueueMessage,
-    QueueStoreRetention,
-    QueueMessageStore,
-    InMemoryQueueStoreOptions,
-    InMemoryQueueStoreStats,
-} from './message-store-types';
 
 // Re-export moved contracts for backward compat.
 export * from './message-store-types';

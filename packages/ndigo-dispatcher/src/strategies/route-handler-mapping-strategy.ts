@@ -109,7 +109,7 @@ export const AsRouteHandlerMappingStrategy = <T extends Constructable<StrategyIn
             // unhandled routes.
             const fallback = new RouteHandlerExecutionChain({});
             for (let index = 0; index < length; index++) {
-                // NOTE: bridging to { — the source type is wider than this consumer's contract.
+                // The source type is wider than this consumer's contract; the assertion is confined to this boundary.
                 const mapping = handlerMappings[index] as unknown as {
                     interceptors?: RouteHandlerInterceptor[];
                     pathMatcher?: PathMatcher;

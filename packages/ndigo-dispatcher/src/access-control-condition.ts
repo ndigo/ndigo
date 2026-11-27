@@ -35,8 +35,8 @@ export type AccessLevel = 'public' | 'private';
  * level.  Private routes require an authenticated principal on the route;
  * public routes match regardless.
  *
- * This replaces the previous TODO comment in `route-mapping-info.ts`:
- * TODO Create a condition for public vs. private routes
+ * This replaces the earlier placeholder in `route-mapping-info.ts` that
+ * deferred the public/private condition.
  *
  * @example
  * ```ts

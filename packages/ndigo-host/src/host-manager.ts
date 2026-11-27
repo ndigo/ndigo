@@ -3,6 +3,7 @@
  */
 import type { FeatureMetricRecorder } from '@ndigo/core';
 import { ContextToken, FeatureContextMountManager } from '@ndigo/context';
+import type { Destroyable } from '@ndigo/factory';
 import type {
     ApplicationContext,
     FeatureContextComposition,
@@ -113,7 +114,7 @@ export const HOST_MANAGER_TOKEN = new ContextToken<HostManager>('ndigo:hostManag
  * });
  * ```
  */
-export class HostManager {
+export class HostManager implements Destroyable {
     /**
      * The `Symbol.toStringTag` value for this instance.
      *

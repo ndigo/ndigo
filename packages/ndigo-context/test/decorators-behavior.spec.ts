@@ -372,7 +372,7 @@ describe('@entry Decorator', () => {
         // TC39 method decorators don't automatically make methods enumerable
         // This test needs to be adjusted or the decorator needs to be updated
         const descriptor = Object.getOwnPropertyDescriptor(TestConfig.prototype, 'myMethod');
-        // NOTE: TC39 decorators don't modify enumerability by default
+        // TC39 decorators don't modify enumerability by default
         // If this behavior is required, we need to update the decorator
         expect(descriptor).toBeDefined();
     });

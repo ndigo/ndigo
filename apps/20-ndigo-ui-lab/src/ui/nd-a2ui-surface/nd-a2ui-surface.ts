@@ -156,7 +156,7 @@ export class NdA2UISurface extends NdElement {
                 },
             },
             SpecVersion.V1_0
-            // NOTE: bridging to CatalogType<ComponentApi — the source type is wider than this consumer's contract.
+            // The source type is wider than this consumer's contract; the assertion is confined to this boundary.
         ) as unknown as CatalogType<ComponentApi, FunctionImplementation>;
     }
 

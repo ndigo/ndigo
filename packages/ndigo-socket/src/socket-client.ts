@@ -212,7 +212,7 @@ const TEXT_ENCODER = new TextEncoder();
  * subset the client touches (browser and Node ≥24 both implement it).
  */
 function defaultTransportFactory(url: string): SocketTransport {
-    // NOTE: bridging to SocketTransport — the source type is wider than this consumer's contract.
+    // The source type is wider than this consumer's contract; the assertion is confined to this boundary.
     return new WebSocket(url) as unknown as SocketTransport;
 }
 

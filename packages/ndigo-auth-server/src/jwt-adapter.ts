@@ -21,6 +21,7 @@ import {
     readRoles,
     readScopes,
 } from '@ndigo/auth-core';
+import { FrameworkError } from '@ndigo/core';
 
 /**
  * Configuration for the JWT adapter.
@@ -84,7 +85,6 @@ export interface JWTAdapterConfig {
     clockToleranceSeconds?: number;
 }
 
-import { FrameworkError } from '@ndigo/core';
 /**
  * Error for refresh/issue/revocation failures: invalid, superseded or
  * revoked tokens, unknown/disabled accounts, and configuration that

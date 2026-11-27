@@ -36,6 +36,7 @@ import {
     type RouteHandlerInterceptor,
 } from '@ndigo/dispatcher';
 import { type OpenAPIGeneratorOptions } from '@ndigo/openapi';
+import type { Route } from '@ndigo/router';
 import { OpenAPIDocsController } from './openapi-docs-controller';
 import { SwaggerUIController } from './swagger-ui-controller';
 import { SecurityHeadersInterceptor } from './security-headers-interceptor';
@@ -147,8 +148,6 @@ function scopedToDocsPaths(
         },
     };
 }
-
-import type { Route } from '@ndigo/router';
 
 /**
  * Auto-configuration serving the generated OpenAPI spec + Swagger UI.

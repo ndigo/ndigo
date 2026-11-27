@@ -88,11 +88,11 @@ export class TracedInterceptor implements MethodInterceptor {
             try {
                 const result = next();
 
-                // NOTE: bridging to PromiseLike<unknown> — the source type is
-                // wider than this consumer's contract.
+                // The source type is wider than this consumer's contract; the
+                // assertion is confined to this boundary.
                 if (result && typeof (result as unknown as PromiseLike<unknown>).then === 'function') {
-                    // NOTE: bridging to Promise<unknown> — the source type is
-                    // wider than this consumer's contract.
+                    // The source type is wider than this consumer's contract;
+                    // the assertion is confined to this boundary.
                     return (result as unknown as Promise<unknown>)
                         .then((value) => {
                             span.setStatus({ code: SpanStatusCode.OK });

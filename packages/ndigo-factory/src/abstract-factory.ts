@@ -358,7 +358,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
 
         // Resolve from parent chain if not found locally
         if (this.#parent) {
-            // NOTE: bridging to AbstractFactory — the source type is wider than this consumer's contract.
+            // The source type is wider than this consumer's contract; the assertion is confined to this boundary.
             const value = (this.#parent as unknown as AbstractFactory).getValue<T>(name, argumentsList);
             this._checkVersion(nameOrToken, value);
             return value;
@@ -558,7 +558,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
         if (parent === null) {
             return false;
         }
-        // NOTE: bridging to AbstractFactory — the source type is wider than this consumer's contract.
+        // The source type is wider than this consumer's contract; the assertion is confined to this boundary.
         return (parent as unknown as AbstractFactory).hasValue(name);
     }
 

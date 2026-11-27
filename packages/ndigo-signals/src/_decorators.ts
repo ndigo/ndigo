@@ -335,7 +335,7 @@ export function reactive<T extends new (...args: unknown[]) => object>(
         constructor(...args: unknown[]) {
             super(...args);
 
-            // NOTE: bridging to Record<string | symbol — the source type is wider than this consumer's contract.
+            // The source type is wider than this consumer's contract; the assertion is confined to this boundary.
             const instance = this as unknown as Record<string | symbol, unknown>;
 
             const pending = readPending(instance);
@@ -412,6 +412,6 @@ export function reactive<T extends new (...args: unknown[]) => object>(
             installLifecycleMethod(instance, 'destroy');
             installLifecycleMethod(instance, 'dispose');
         }
-        // NOTE: bridging to T — the source type is wider than this consumer's contract.
+        // The source type is wider than this consumer's contract; the assertion is confined to this boundary.
     } as unknown as T;
 }

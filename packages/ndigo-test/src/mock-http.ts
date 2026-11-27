@@ -71,10 +71,10 @@ function decodeBody(body: unknown): string {
  */
 function asIncoming(body: string | Buffer, headers: Record<string, string | string[] | undefined>): IncomingMessage {
     const stream = new PassThrough();
-    // NOTE: type assertion required at this boundary.
+    // The compiler cannot model this runtime-guaranteed shape; the assertion is confined here.
     (stream as unknown as { headers: Record<string, string | string[] | undefined> }).headers = headers;
     stream.end(typeof body === 'string' ? Buffer.from(body, 'utf-8') : body);
-    // NOTE: bridging to IncomingMessage — the source type is wider than this consumer's contract.
+    // The source type is wider than this consumer's contract; the assertion is confined to this boundary.
     return stream as unknown as IncomingMessage;
 }
 

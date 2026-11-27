@@ -175,7 +175,7 @@ export class LibSQLQueueMessageStore implements QueueMessageStore {
         if (row === undefined) {
             throw new IllegalStateError('libsql queue append conflicted but no row found');
         }
-        // NOTE: bridging to Row — the source type is wider than this consumer's contract.
+        // The source type is wider than this consumer's contract; the assertion is confined to this boundary.
         return decodeRow(row as unknown as Row);
     }
 
@@ -211,7 +211,7 @@ export class LibSQLQueueMessageStore implements QueueMessageStore {
                   ) ORDER BY id ASC`,
             args: [name, afterSeq, limit],
         });
-        // NOTE: bridging to Row — the source type is wider than this consumer's contract.
+        // The source type is wider than this consumer's contract; the assertion is confined to this boundary.
         return result.rows.map((row) => decodeRow(row as unknown as Row));
     }
 

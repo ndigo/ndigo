@@ -143,7 +143,7 @@ function createAnnotationKey<T, K extends AnnotationKey<T>>(
     return Object.defineProperties(decorate, {
         key: { value: key, enumerable: true },
         name: { value: name, enumerable: true },
-        // NOTE: bridging the factory to the handle — the caller supplies the
+        // Bridging the factory to the handle — the caller supplies the
         // precise result type, which the factory cannot express on its own.
     }) as unknown as K;
 }

@@ -1,4 +1,5 @@
 /**
+ * Tests for the enhanced URI component decoder.
  */
 import { describe, test, expect } from 'vitest';
 
@@ -36,6 +37,15 @@ const fixtures = {
     '%C2%B5': 'µ',
     '%C2%B5%': 'µ%',
     '%%C2%B5%': '%µ%',
+    // Regression: replacement strings must never be interpreted as `$&`,
+    // `` $` ``, `$'`, or `$$` patterns.
+    'hello_%24%26_%GG': 'hello_$&_%GG',
+    '%24%60': '$`',
+    // Regression: decoded output must not be decoded a second time.
+    '%2541_%41_%GG': '%41_A_%GG',
+    '%41%2542': 'A%42',
+    // Invalid UTF-8 escapes stay literal.
+    '%C0%C0': '%C0%C0',
 };
 
 describe('decodeURIComponent', function () {
@@ -50,4 +60,11 @@ describe('decodeURIComponent', function () {
             expect(decode(key)).toBe((fixtures as Record<string, string>)[key]);
         }
     });
+
+    // A quadratic or recursive fallback would not finish this within the test
+    // timeout (the previous implementation hung for over 20 seconds).
+    test('it decodes long invalid runs in linear time', function () {
+        const input = '%C0'.repeat(10_000);
+        expect(decode(input)).toBe(input);
+    }, 1_000);
 });

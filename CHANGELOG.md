@@ -669,6 +669,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `ApplicationBuilder` / `Application` works in browsers and workers where
   `process` is absent instead of failing startup with `process is not
   defined`; profile precedence is unchanged.
+- Docs: the CLI guide pointed readers at a mirror that never existed
+  (`npx skills add ndigo/skills`) and used the deprecated `add-skill` CLI.
+  It now installs the standalone skills repository with
+  `npx skills add ndigo/ndigo-skills`.
 
 ### Fixed
 

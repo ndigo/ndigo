@@ -86,9 +86,9 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `TLSServerOptions` *(type)* — TLS material for the secure origin listener.
 - `HTTPServerOptions` *(type)* — Options for creating an `HTTPServer`.
 - `HTTPServer` — A managed HTTP server that delegates incoming requests to a NodeDispatcher.
-- `THEME_COOKIE_NAME` — Cookie carrying the user's persisted theme choice.
+- `THEME_COOKIE_NAME`
+- `NodeHTTPServerAdapterOptions` *(type)* — Options for `NodeHTTPServerAdapter`.
 - `SocketRequestAuthenticator` *(type)* — Upgrade-time identity provider for socket endpoints.
-- `NodeHTTPServerAdapterOptions` *(type)* — Options for NodeHTTPServerAdapter.
 - `NodeHTTPServerAdapter` — Default HTTP server adapter using raw `node:http`.
 - `Closable` *(type)* — A resource with a closeable lifecycle, e.g. an "http-server".HTTPServer.
 - `GracefulShutdownOptions` *(type)* — Options for gracefulShutdown.

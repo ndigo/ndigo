@@ -137,3 +137,78 @@ export function assertHeaderLimits(req: IncomingMessage, limits: ResolvedHTTPReq
  * `413` response to the client (verified), and the socket is simply
  * discarded once the response is flushed, so no further garbage is read.
  */
+
+export async function readRequestBody(req: IncomingMessage, limits: ResolvedHTTPRequestLimits): Promise<Buffer> {
+    return new Promise<Buffer>((resolve, reject) => {
+        const chunks: Buffer[] = [];
+        let received = 0;
+        let settled = false;
+
+        const settleError = (error: unknown): void => {
+            if (settled) return;
+            settled = true;
+            clearTimeout(timer);
+            reject(error);
+        };
+
+        const timer = setTimeout(() => {
+            if (settled) return;
+            settled = true;
+            req.destroy();
+            reject(
+                new RequestLimitError(
+                    ResponseStatuses.REQUEST_TIMEOUT,
+                    ProblemTypes.requestTimeout,
+                    'Request body timed out'
+                )
+            );
+        }, limits.requestTimeoutMs);
+        timer.unref?.();
+
+        const onAbort = (): void =>
+            settleError(
+                new RequestLimitError(
+                    ResponseStatuses.BAD_REQUEST,
+                    ProblemTypes.requestAborted,
+                    'Request aborted before completion'
+                )
+            );
+        req.once('aborted', onAbort);
+
+        void (async () => {
+            try {
+                for await (const chunk of req) {
+                    const bytes = (chunk as Buffer).byteLength;
+                    if (received + bytes > limits.maxBodyBytes) {
+                        // Over the cap: stop reading now, respond 413,
+                        // and let the response flush on the still-alive
+                        // socket. Remaining body bytes are discarded by
+                        // the server when the response completes without
+                        // ever being buffered here.
+                        settleError(
+                            new RequestLimitError(
+                                ResponseStatuses.PAYLOAD_TOO_LARGE,
+                                ProblemTypes.payloadTooLarge,
+                                'Request body exceeds the configured limit'
+                            )
+                        );
+                        return;
+                    }
+                    received += bytes;
+                    chunks.push(chunk as Buffer);
+                }
+                if (!settled) {
+                    settled = true;
+                    clearTimeout(timer);
+                    resolve(Buffer.concat(chunks));
+                }
+            } catch (error) {
+                settleError(error);
+            }
+        })();
+
+        req.once('close', () => {
+            if (!settled && req.errored) onAbort();
+        });
+    });
+}

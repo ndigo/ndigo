@@ -8,6 +8,7 @@ import {
     type Signal,
     type ReadonlySignal,
 } from '@preact/signals-core';
+import { IllegalStateError } from '@ndigo/core';
 
 // ── Runtime registries ───────────────────────────────────────────────────────
 //
@@ -179,7 +180,7 @@ export function getSignal<T>(instance: object, field: string): Signal<T> | undef
     const pendingSignals = pending?.signals;
     if (pendingSignals !== undefined && pendingSignals.size > 0) {
         const names = [...pendingSignals.keys()].join(', ');
-        throw new Error(
+        throw new IllegalStateError(
             pendingSignals.has(field)
                 ? `@signal '${field}' is pending on an instance of ${ctorName} but was never activated — ${REACTIVATION_HINT}`
                 : `@signal/@effect fields (${names}) are pending on an instance of ${ctorName} but were never activated — ${REACTIVATION_HINT}`
@@ -187,7 +188,7 @@ export function getSignal<T>(instance: object, field: string): Signal<T> | undef
     }
     const effectsPending = pending?.effects;
     if (effectsPending !== undefined && effectsPending.length > 0) {
-        throw new Error(
+        throw new IllegalStateError(
             `@effect methods (${effectsPending.length}) are pending on an instance of ${ctorName} but were ` +
                 `never activated — ${REACTIVATION_HINT}`
         );

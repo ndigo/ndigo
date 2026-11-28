@@ -69,7 +69,7 @@ export class ContextAwareLogger implements Logger {
      * @param attributes - Optional attributes to associate with the log entry.
      */
     debug(message: string, attributes?: LogAttributes): void {
-        this.logger.debug(message, this.injectTraceContext(attributes));
+        this.logger.debug(message, this.#injectTraceContext(attributes));
     }
 
     /**
@@ -78,7 +78,7 @@ export class ContextAwareLogger implements Logger {
      * @param attributes - Optional attributes to associate with the log entry.
      */
     info(message: string, attributes?: LogAttributes): void {
-        this.logger.info(message, this.injectTraceContext(attributes));
+        this.logger.info(message, this.#injectTraceContext(attributes));
     }
 
     /**
@@ -87,7 +87,7 @@ export class ContextAwareLogger implements Logger {
      * @param attributes - Optional attributes to associate with the log entry.
      */
     warn(message: string, attributes?: LogAttributes): void {
-        this.logger.warn(message, this.injectTraceContext(attributes));
+        this.logger.warn(message, this.#injectTraceContext(attributes));
     }
 
     /**
@@ -97,10 +97,10 @@ export class ContextAwareLogger implements Logger {
      * @param attributes - Optional attributes to associate with the log entry.
      */
     error(message: string, error?: Exception, attributes?: LogAttributes): void {
-        this.logger.error(message, error, this.injectTraceContext(attributes));
+        this.logger.error(message, error, this.#injectTraceContext(attributes));
     }
 
-    private injectTraceContext(attributes?: LogAttributes): LogAttributes {
+    #injectTraceContext(attributes?: LogAttributes): LogAttributes {
         const activeSpan = trace.getSpan(context.active());
         if (!activeSpan) {
             return attributes ?? {};

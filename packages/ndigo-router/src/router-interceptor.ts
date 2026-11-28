@@ -139,7 +139,7 @@ export class MappedRouterInterceptor extends AsPathMatcherFilter(Null) implement
         const routePath = route.path.startsWith('/') ? route.path : `/${route.path}`;
 
         for (const pattern of this.excludePatterns) {
-            if (this._matchesPattern(route, routePath, pattern)) {
+            if (this.#matchesPattern(route, routePath, pattern)) {
                 return false;
             }
         }
@@ -149,7 +149,7 @@ export class MappedRouterInterceptor extends AsPathMatcherFilter(Null) implement
         }
 
         for (const pattern of this.includePatterns) {
-            if (this._matchesPattern(route, routePath, pattern)) {
+            if (this.#matchesPattern(route, routePath, pattern)) {
                 return true;
             }
         }
@@ -170,7 +170,7 @@ export class MappedRouterInterceptor extends AsPathMatcherFilter(Null) implement
             // doesn't declare them — they're checked at runtime with a type
             // guard rather than baked into every route contract.
             if (
-                this._isNamedRoutePattern(pattern) &&
+                this.#isNamedRoutePattern(pattern) &&
                 typeof (route as Route & { resolveParams?: (pattern: string) => Record<string, string> | null })
                     .resolveParams === 'function'
             ) {
@@ -221,7 +221,7 @@ export class MappedRouterInterceptor extends AsPathMatcherFilter(Null) implement
      * @param pattern - The pattern string to check.
      * @returns `true` if the pattern contains named parameters, `false` otherwise.
      */
-    private _isNamedRoutePattern(pattern: string): boolean {
+    #isNamedRoutePattern(pattern: string): boolean {
         return /(^|\/):[A-Za-z_][A-Za-z0-9_]*|\{[A-Za-z_][A-Za-z0-9_]*\}/.test(pattern);
     }
 
@@ -232,8 +232,8 @@ export class MappedRouterInterceptor extends AsPathMatcherFilter(Null) implement
      * @param pattern - The pattern string to match against.
      * @returns `true` if the route matches the pattern, `false` otherwise.
      */
-    private _matchesPattern(route: Route, routePath: string, pattern: string): boolean {
-        if (this._isNamedRoutePattern(pattern) && likeMatchable(route)) {
+    #matchesPattern(route: Route, routePath: string, pattern: string): boolean {
+        if (this.#isNamedRoutePattern(pattern) && likeMatchable(route)) {
             return route.matches(pattern);
         }
 

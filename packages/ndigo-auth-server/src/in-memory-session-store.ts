@@ -3,6 +3,7 @@
  */
 import { randomToken } from '@ndigo/util';
 import { type SessionRecord, type SessionStore } from '@ndigo/auth-core';
+import { IllegalStateError } from '@ndigo/core';
 
 /** Options for the in-memory session store. */
 export interface InMemorySessionStoreOptions {
@@ -113,7 +114,7 @@ export class InMemorySessionStore implements SessionStore {
     async rotate(sessionId: string, record: SessionRecord): Promise<{ id: string; expiresAt: number }> {
         const entry = this.#sessions.get(sessionId);
         if (!entry) {
-            throw new Error(`Session store: session "${sessionId}" not found`);
+            throw new IllegalStateError(`Session store: session "${sessionId}" not found`);
         }
         // Preserve the remaining TTL (absolute expiry kept) and report
         // the effective expiry back to the caller.
@@ -153,7 +154,7 @@ export class InMemorySessionStore implements SessionStore {
     #insert(record: SessionRecord, ttlMs: number): { id: string; expiresAt: number } {
         if (this.#sessions.size >= this.#maxSessions) this.#sweep();
         if (this.#sessions.size >= this.#maxSessions) {
-            throw new Error(`Session store at capacity (${this.#maxSessions} live sessions)`);
+            throw new IllegalStateError(`Session store at capacity (${this.#maxSessions} live sessions)`);
         }
         const id = randomToken(32);
         const expiresAt = Date.now() + ttlMs;

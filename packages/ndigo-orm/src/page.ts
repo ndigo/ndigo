@@ -3,7 +3,7 @@
  * multi-key sort orders, and stable page
  * math shared by every backend.
  */
-import { chainComparisons, compareBy, type comparison, invertComparison } from '@ndigo/core';
+import { FrameworkError, chainComparisons, compareBy, type comparison, invertComparison } from '@ndigo/core';
 
 /**
  * SortDirection.
@@ -77,18 +77,18 @@ export interface Page<T> {
  */
 export function validatePageRequest(request: PageRequest, allowedProperties: Set<string>): void {
     if (!Number.isInteger(request.page) || request.page < 1) {
-        throw new Error(`PageRequest: page must be a positive integer, got ${request.page}`);
+        throw new FrameworkError(`PageRequest: page must be a positive integer, got ${request.page}`);
     }
     if (!Number.isInteger(request.size) || request.size < 1) {
-        throw new Error(`PageRequest: size must be a positive integer, got ${request.size}`);
+        throw new FrameworkError(`PageRequest: size must be a positive integer, got ${request.size}`);
     }
     for (const sort of request.sort ?? []) {
         const direction = sort.direction ?? 'asc';
         if (direction !== 'asc' && direction !== 'desc') {
-            throw new Error(`PageRequest: sort direction must be 'asc' or 'desc', got ${direction}`);
+            throw new FrameworkError(`PageRequest: sort direction must be 'asc' or 'desc', got ${direction}`);
         }
         if (!allowedProperties.has(sort.property)) {
-            throw new Error(`PageRequest: unknown sort property "${sort.property}"`);
+            throw new FrameworkError(`PageRequest: unknown sort property "${sort.property}"`);
         }
     }
 }

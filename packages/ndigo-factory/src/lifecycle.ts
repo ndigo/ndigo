@@ -211,7 +211,7 @@ export class DefaultLifecycleCoordinator implements LifecycleCoordinator {
      * @param registry - The registry of lifecycle targets.
      */
     onClose(registry: Registry): void {
-        const stopTargets = this._resolveLifecycleTargets(registry)
+        const stopTargets = this.#resolveLifecycleTargets(registry)
             .filter(likeManagedLifecycle)
             .sort(invertComparison(compareBy((target) => target.phase, numberComparator.compare)));
 
@@ -230,7 +230,7 @@ export class DefaultLifecycleCoordinator implements LifecycleCoordinator {
      * @param registry - The registry of lifecycle targets.
      */
     onRefresh(registry: Registry): void {
-        const startTargets = this._resolveLifecycleTargets(registry)
+        const startTargets = this.#resolveLifecycleTargets(registry)
             .filter(likeManagedLifecycle)
             .filter((target) => target.isAutoStartup)
             .sort(compareBy((target) => target.phase, numberComparator.compare));
@@ -254,7 +254,7 @@ export class DefaultLifecycleCoordinator implements LifecycleCoordinator {
         this.isRunning = false;
     }
 
-    private _resolveLifecycleTargets(registry: Registry): Lifecycle[] {
+    #resolveLifecycleTargets(registry: Registry): Lifecycle[] {
         const values: Lifecycle[] = [];
 
         for (const key of Reflect.ownKeys(registry as object)) {

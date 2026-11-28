@@ -256,7 +256,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
         if (this.hasInstance(name)) {
             const value = this.#instances.get(name);
             if (value !== undefined && value !== registeredUndefined) {
-                this._releaseValue(name, value);
+                this.#releaseValue(name, value);
             }
             deleteProperty(this, name);
             this.#instances.delete(name);
@@ -337,8 +337,8 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
                 // The scope's value factory runs only when a
                 // new instance is created, so lifecycle teardown is registered
                 // exactly once per instance (never on cache hits).
-                this._markCreated(name);
-                this._registerScopeDestructionCallback(scope, name, instance);
+                this.#markCreated(name);
+                this.#registerScopeDestructionCallback(scope, name, instance);
                 return instance;
             });
 
@@ -376,7 +376,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
      * {@link destroyValue} and scope teardown — funnels through here, so
      * processors reach every managed value exactly once per release.
      */
-    private _releaseValue(name: string, value: unknown): void {
+    #releaseValue(name: string, value: unknown): void {
         this._applyProcessorsBeforeDestruction(name, value);
 
         if (likeDestroyable(value)) {
@@ -415,7 +415,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
      *
      * @param name - The created value's name.
      */
-    private _markCreated(name: string): void {
+    #markCreated(name: string): void {
         this.#creationOrdinals.set(name, ++this.#creationCounter);
     }
 
@@ -436,12 +436,12 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
      * twice. Prototype-scoped values are never cached, so nothing outlives
      * them.
      */
-    private _registerScopeDestructionCallback(scope: Scope, name: string, value: unknown): void {
+    #registerScopeDestructionCallback(scope: Scope, name: string, value: unknown): void {
         if (!(scope instanceof RefreshScope || scope instanceof HashScope)) {
             return;
         }
 
-        scope.registerDestructionCallback(name, () => this._releaseValue(name, value));
+        scope.registerDestructionCallback(name, () => this.#releaseValue(name, value));
     }
 
     /**
@@ -648,7 +648,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
             });
             this.#instances.set(name, value === undefined ? registeredUndefined : value);
             this.#instanceNames.add(name);
-            this._markCreated(name);
+            this.#markCreated(name);
             const stored = this[name];
 
             if (likeEnumerable(stored)) {
@@ -828,7 +828,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
         try {
             this._populate<T>(name, instance);
             if (likeAware(instance)) {
-                instance = this._invokeAware(name, instance) as T & Aware;
+                instance = this.#invokeAware(name, instance) as T & Aware;
             }
             instance = this._initialize<T>(name, instance);
         } catch (e) {
@@ -881,7 +881,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
         instance = this._applyProcessorsBeforeInitialization(name, instance);
 
         if (likeInitializable(instance)) {
-            this._invokeInit(name, instance);
+            this.#invokeInit(name, instance);
         }
 
         instance = this._applyProcessorsAfterInitialization(name, instance);
@@ -939,7 +939,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
      * @param instance - The instance to invoke callbacks on.
      * @returns The instance after aware callbacks have been invoked.
      */
-    private _invokeAware(name: string, instance: Aware): Aware {
+    #invokeAware(name: string, instance: Aware): Aware {
         if (likeNameAware(instance)) {
             instance.setName(name);
         }
@@ -955,7 +955,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
      * @param instance - The initializable instance.
      * @throws If initialization fails.
      */
-    private _invokeInit(name: string, instance: Initializable): void {
+    #invokeInit(name: string, instance: Initializable): void {
         try {
             instance.init();
         } catch (e) {

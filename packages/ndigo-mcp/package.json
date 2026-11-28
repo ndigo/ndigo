@@ -43,6 +43,7 @@
     "@ndigo/util": "~0.0.1",
     "@modelcontextprotocol/sdk": "^1.32.2",
     "@ndigo/context": "~0.0.1",
+    "@ndigo/core": "~0.0.1",
     "@ndigo/dispatcher": "~0.0.1",
     "@ndigo/flags": "~0.0.1",
     "@ndigo/inspect": "~0.0.1",

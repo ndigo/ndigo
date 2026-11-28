@@ -574,7 +574,7 @@ export class Application extends Emitter {
      * @returns The prepared environment.
      */
     protected async _prepareEnvironment(args: string[]): Promise<ConfigurableEnvironment> {
-        const env = this._getOrCreateEnvironment();
+        const env = this.#getOrCreateEnvironment();
         await this._configureEnvironment(env, args);
         // The `defaults` source is ALWAYS present (empty when unused) at the
         // LOWEST precedence: registered after every other source so
@@ -612,7 +612,7 @@ export class Application extends Emitter {
      *
      * @returns The existing or default environment.
      */
-    private _getOrCreateEnvironment(): ConfigurableEnvironment {
+    #getOrCreateEnvironment(): ConfigurableEnvironment {
         return this.#environment ? this.#environment : new StandardEnvironment();
     }
 

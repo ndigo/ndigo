@@ -11,7 +11,7 @@ import { QueryParamCondition } from './query-param-condition';
 import { MatrixParamCondition } from './matrix-param-condition';
 import { PatternsRouteCondition } from './patterns-route-condition';
 
-const separator = '';
+const SEPARATOR = '';
 
 /**
  * Holds the parsed conditions and metadata for a single route mapping.
@@ -134,7 +134,7 @@ export class RouteMappingInfo implements RouteCondition<RouteMappingInfo> {
      * @returns The merged mapping info.
      */
     merge(value: RouteMappingInfo): RouteMappingInfo {
-        const name = this._mergeNames(value),
+        const name = this.#mergeNames(value),
             params = this.queryCondition.merge(value.queryCondition),
             matrix = this.matrixCondition.merge(value.matrixCondition),
             patterns = this.patternsCondition.merge(value.patternsCondition),
@@ -249,9 +249,9 @@ export class RouteMappingInfo implements RouteCondition<RouteMappingInfo> {
      * @param value - The mapping info to merge names from.
      * @returns The merged name.
      */
-    private _mergeNames(value: RouteMappingInfo): string {
+    #mergeNames(value: RouteMappingInfo): string {
         if (this.name && value.name) {
-            return `${this.name}${separator}${value.name}`.replace(/\/\//g, '/');
+            return `${this.name}${SEPARATOR}${value.name}`.replace(/\/\//g, '/');
         } else if (this.name) {
             return this.name;
         } else {

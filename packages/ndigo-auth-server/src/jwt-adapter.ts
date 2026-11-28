@@ -263,7 +263,7 @@ export class JWTAdapter implements AuthAdapter {
         }
         const { publicKey } = this.#config;
         if (!publicKey) {
-            throw new Error('JWTAdapter: `publicKey` or `jwksUrl` is required for this algorithm');
+            throw new FrameworkError('JWTAdapter: `publicKey` or `jwksUrl` is required for this algorithm');
         }
         const cryptoKey = await importSPKI(publicKey, this.#config.algorithm);
         const jwk = await exportJWK(cryptoKey);
@@ -370,7 +370,7 @@ export class JWTAdapter implements AuthAdapter {
     async authenticate(_credentials: unknown): Promise<AuthResult> {
         // Credential validation is outside the scope of a JWT adapter.
         // Use an identity provider or database-backed auth flow.
-        throw new Error('JWTAdapter.authenticate() not implemented - use a proper auth flow');
+        throw new FrameworkError('JWTAdapter.authenticate() not implemented - use a proper auth flow');
     }
 
     /**

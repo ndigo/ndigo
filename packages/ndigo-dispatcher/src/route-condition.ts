@@ -482,7 +482,7 @@ export class CompositeRouteCondition extends AbstractRouteCondition<CompositeRou
 
     /** The unwrapped conditions. */
     get conditions(): RouteCondition[] {
-        return this._unwrap(...this.routeConditions);
+        return this.#unwrap(...this.routeConditions);
     }
 
     /** The content parts (empty when no conditions). */
@@ -503,7 +503,7 @@ export class CompositeRouteCondition extends AbstractRouteCondition<CompositeRou
         if (routeConditions.length) {
             if (likeRouteCondition(routeConditions[0])) {
                 defineProperty(this, 'routeConditions', {
-                    value: this._wrap(...routeConditions),
+                    value: this.#wrap(...routeConditions),
                     configurable: true,
                     enumerable: false,
                     writable: false,
@@ -593,11 +593,11 @@ export class CompositeRouteCondition extends AbstractRouteCondition<CompositeRou
         }
     }
 
-    private _wrap(...conditions: RouteCondition[]): RouteConditionHolder[] {
+    #wrap(...conditions: RouteCondition[]): RouteConditionHolder[] {
         return conditions.map((condition) => new RouteConditionHolder(condition));
     }
 
-    private _unwrap(...wrappedConditions: RouteConditionHolder[]): RouteCondition[] {
+    #unwrap(...wrappedConditions: RouteConditionHolder[]): RouteCondition[] {
         return wrappedConditions.map((wrappedCondition) => wrappedCondition.condition);
     }
 }

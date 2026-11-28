@@ -262,7 +262,7 @@ describe('RadixTree', () => {
         expect(result?.value).toBe('second');
     });
 
-    describe('_splitPath edge cases', () => {
+    describe('path splitting edge cases', () => {
         test('path without leading slash is treated same as with slash', () => {
             tree.insert('/users', 'handler');
             const result = tree.lookup('users'); // no leading slash
@@ -273,7 +273,7 @@ describe('RadixTree', () => {
         test('trailing slash is ignored (empty segment filtered)', () => {
             tree.insert('/users', 'handler');
             const result = tree.lookup('/users/'); // trailing slash
-            // The optimized _splitPath ignores empty trailing segments
+            // The optimized path splitter ignores empty trailing segments
             expect(result).not.toBeNull();
             expect(result?.value).toBe('handler');
         });

@@ -161,7 +161,7 @@ export class QueryParamCondition extends AbstractRouteCondition<QueryParamCondit
         defineProperty(this, 'expressions', {
             value:
                 typeof paramOrConditions === 'string'
-                    ? this._parseExpressions([paramOrConditions].concat(params))
+                    ? this.#parseExpressions([paramOrConditions].concat(params))
                     : new Set<QueryParamExpression>(paramOrConditions),
             configurable: true,
             enumerable: false,
@@ -218,7 +218,7 @@ export class QueryParamCondition extends AbstractRouteCondition<QueryParamCondit
         if (result !== 0) {
             return result;
         }
-        return this._getValueMatchCount(value.expressions) - this._getValueMatchCount(this.expressions);
+        return this.#getValueMatchCount(value.expressions) - this.#getValueMatchCount(this.expressions);
     }
 
     /**
@@ -227,7 +227,7 @@ export class QueryParamCondition extends AbstractRouteCondition<QueryParamCondit
      * @param expressions - The expressions to inspect.
      * @returns The number of concrete value matches.
      */
-    private _getValueMatchCount(expressions: Set<QueryParamExpression>): number {
+    #getValueMatchCount(expressions: Set<QueryParamExpression>): number {
         let count = 0;
         for (const expression of expressions) {
             if (expression.value !== void 0 && !expression.isNegated) {
@@ -243,7 +243,7 @@ export class QueryParamCondition extends AbstractRouteCondition<QueryParamCondit
      * @param params - The raw parameter expressions.
      * @returns The parsed expressions.
      */
-    private _parseExpressions(params: string[]): Set<QueryParamExpression> {
+    #parseExpressions(params: string[]): Set<QueryParamExpression> {
         const expressions = new Set<QueryParamExpression>();
         params.forEach((param) => expressions.add(new QueryParamExpression(param)));
         return expressions;

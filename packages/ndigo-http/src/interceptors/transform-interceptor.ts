@@ -33,10 +33,13 @@ export class TransformInterceptor implements RequestAwareHTTPInterceptor, Respon
         return 'TransformInterceptor';
     }
 
-    constructor(
-        private readonly requestTransforms: Transform[] = [],
-        private readonly responseTransforms: Transform[] = []
-    ) {}
+    readonly #requestTransforms: Transform[];
+    readonly #responseTransforms: Transform[];
+
+    constructor(requestTransforms: Transform[] = [], responseTransforms: Transform[] = []) {
+        this.#requestTransforms = requestTransforms;
+        this.#responseTransforms = responseTransforms;
+    }
 
     /**
      * Applies request body transformations.
@@ -45,7 +48,7 @@ export class TransformInterceptor implements RequestAwareHTTPInterceptor, Respon
      * @returns A replacement request when a transform changes the body.
      */
     async preRequest(request: Request): Promise<Request> {
-        if (this.requestTransforms.length === 0) {
+        if (this.#requestTransforms.length === 0) {
             return request;
         }
 
@@ -56,11 +59,11 @@ export class TransformInterceptor implements RequestAwareHTTPInterceptor, Respon
         }
 
         // Build context
-        const context = this.createContext(request, 'request');
+        const context = this.#createContext(request, 'request');
 
         // Apply transforms
-        for (const transform of this.requestTransforms) {
-            if (this.shouldApplyTransform(transform, body, context)) {
+        for (const transform of this.#requestTransforms) {
+            if (this.#shouldApplyTransform(transform, body, context)) {
                 // Transform order matters and each transform consumes the previous body.
                 // oxlint-disable-next-line no-await-in-loop
                 body = await this.applyTransform(transform, body, context);
@@ -76,7 +79,7 @@ export class TransformInterceptor implements RequestAwareHTTPInterceptor, Respon
         const replacedBody =
             request.method === 'GET' || request.method === 'HEAD'
                 ? null
-                : (this.serializeBody(body, HTTPHeaders.CONTENT_TYPE.get(request.headers) || '') ?? '');
+                : (this.#serializeBody(body, HTTPHeaders.CONTENT_TYPE.get(request.headers) || '') ?? '');
         return new Request(request, replacedBody === null ? {} : { body: replacedBody });
     }
 
@@ -87,7 +90,7 @@ export class TransformInterceptor implements RequestAwareHTTPInterceptor, Respon
      * @returns A replacement response when a transform changes the body.
      */
     async postResponse(response: Response): Promise<Response | void> {
-        if (this.responseTransforms.length === 0) {
+        if (this.#responseTransforms.length === 0) {
             return response;
         }
 
@@ -98,10 +101,10 @@ export class TransformInterceptor implements RequestAwareHTTPInterceptor, Respon
             return response;
         }
 
-        const context = this.createContext(response, 'response');
+        const context = this.#createContext(response, 'response');
 
-        for (const transform of this.responseTransforms) {
-            if (this.shouldApplyTransform(transform, body, context)) {
+        for (const transform of this.#responseTransforms) {
+            if (this.#shouldApplyTransform(transform, body, context)) {
                 // Transform order matters and each transform consumes the previous body.
                 // oxlint-disable-next-line no-await-in-loop
                 body = await this.applyTransform(transform, body, context);
@@ -109,7 +112,7 @@ export class TransformInterceptor implements RequestAwareHTTPInterceptor, Respon
         }
 
         const contentType = HTTPHeaders.CONTENT_TYPE.get(response.headers) || '';
-        const transformedBody = this.serializeBody(body, contentType);
+        const transformedBody = this.#serializeBody(body, contentType);
 
         return rebuildResponse(response, transformedBody);
     }
@@ -155,7 +158,7 @@ export class TransformInterceptor implements RequestAwareHTTPInterceptor, Respon
     /**
      * Creates TransformContext from Request or Response.
      */
-    private createContext(source: Request | Response, direction: 'request' | 'response'): TransformContext {
+    #createContext(source: Request | Response, direction: 'request' | 'response'): TransformContext {
         const url = source instanceof Request ? source.url : ''; // Response doesn't have URL
         const contentType = HTTPHeaders.CONTENT_TYPE.get(source.headers) || '';
 
@@ -171,7 +174,7 @@ export class TransformInterceptor implements RequestAwareHTTPInterceptor, Respon
     /**
      * Determines if transform should be applied.
      */
-    private shouldApplyTransform(transform: Transform, body: unknown, context: TransformContext): boolean {
+    #shouldApplyTransform(transform: Transform, body: unknown, context: TransformContext): boolean {
         // Function transform - always apply
         if (typeof transform === 'function') {
             return true;
@@ -191,7 +194,7 @@ export class TransformInterceptor implements RequestAwareHTTPInterceptor, Respon
         return await transform.transform(body, context);
     }
 
-    private serializeBody(body: unknown, contentType: string): BodyInit | null {
+    #serializeBody(body: unknown, contentType: string): BodyInit | null {
         if (body == null) {
             return null;
         }

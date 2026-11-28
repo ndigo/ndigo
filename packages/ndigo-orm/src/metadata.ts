@@ -4,13 +4,13 @@
 import type { z } from 'zod';
 import { Constructable, getSymbolMetadata } from '@ndigo/core';
 import {
-    columnsMetadataKey,
-    entityMetadataKey,
-    entityNameMetadataKey,
-    generatedColumnMetadataKey,
-    primaryMetadataKey,
-    relationsMetadataKey,
-    entityHooksMetadataKey,
+    COLUMNS_METADATA_KEY,
+    ENTITY_METADATA_KEY,
+    ENTITY_NAME_METADATA_KEY,
+    GENERATED_COLUMN_METADATA_KEY,
+    PRIMARY_METADATA_KEY,
+    RELATIONS_METADATA_KEY,
+    ENTITY_HOOKS_METADATA_KEY,
 } from './_constants';
 
 /**
@@ -159,7 +159,7 @@ export interface EntityMetadata {
  */
 export function isEntity(target: Constructable): boolean {
     const metadata = getSymbolMetadata(target);
-    return metadata[entityMetadataKey] === true;
+    return metadata[ENTITY_METADATA_KEY] === true;
 }
 
 /**
@@ -192,12 +192,12 @@ export function getEntityMetadata(target: Constructable): EntityMetadata {
 
     const metadata = getSymbolMetadata(target);
     const entityMetadata: EntityMetadata = {
-        entityName: (metadata[entityNameMetadataKey] as string) ?? target.name,
-        columns: (metadata[columnsMetadataKey] as ColumnDefinition[]) ?? [],
-        primaryColumn: (metadata[primaryMetadataKey] as string) ?? '',
-        generatedColumns: (metadata[generatedColumnMetadataKey] as string[]) ?? [],
-        relations: (metadata[relationsMetadataKey] as RelationDefinition[]) ?? [],
-        entityHooks: (metadata[entityHooksMetadataKey] as EntityHookDefinition[]) ?? [],
+        entityName: (metadata[ENTITY_NAME_METADATA_KEY] as string) ?? target.name,
+        columns: (metadata[COLUMNS_METADATA_KEY] as ColumnDefinition[]) ?? [],
+        primaryColumn: (metadata[PRIMARY_METADATA_KEY] as string) ?? '',
+        generatedColumns: (metadata[GENERATED_COLUMN_METADATA_KEY] as string[]) ?? [],
+        relations: (metadata[RELATIONS_METADATA_KEY] as RelationDefinition[]) ?? [],
+        entityHooks: (metadata[ENTITY_HOOKS_METADATA_KEY] as EntityHookDefinition[]) ?? [],
     };
     entityMetadataCache.set(target, entityMetadata);
     return entityMetadata;

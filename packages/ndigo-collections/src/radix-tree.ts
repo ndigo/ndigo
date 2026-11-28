@@ -163,7 +163,7 @@ export class RadixTree<V> implements Serializable {
      * @param starts - Optional collector receiving each segment's start offset.
      * @returns An array of path segments.
      */
-    private _splitPath(path: string, starts?: number[]): string[] {
+    #splitPath(path: string, starts?: number[]): string[] {
         const segments: string[] = [];
         let start = path.charCodeAt(0) === 47 /* '/' */ ? 1 : 0;
         const len = path.length;
@@ -186,7 +186,7 @@ export class RadixTree<V> implements Serializable {
      * @param value - The value associated with the pattern.
      */
     insert(pattern: string, value: V): void {
-        const segments = this._splitPath(pattern);
+        const segments = this.#splitPath(pattern);
         let node = this.#root;
 
         if (segments.length === 0) {
@@ -199,7 +199,7 @@ export class RadixTree<V> implements Serializable {
         const length = segments.length;
         for (let i = 0; i < length; i++) {
             const segment = segments[i];
-            const kind = this._classifySegment(segment);
+            const kind = this.#classifySegment(segment);
 
             switch (kind) {
                 case 'static': {
@@ -214,7 +214,7 @@ export class RadixTree<V> implements Serializable {
                     break;
                 }
                 case 'param': {
-                    const label = this._extractParamLabel(segment);
+                    const label = this.#extractParamLabel(segment);
                     let child = node.paramChildren.get(label);
                     if (child === undefined) {
                         child = new RadixNode<V>('param', label);
@@ -230,7 +230,7 @@ export class RadixTree<V> implements Serializable {
                     node = node.wildcardChild;
                     break;
                 case 'greedy': {
-                    const label = this._extractGreedyLabel(segment);
+                    const label = this.#extractGreedyLabel(segment);
                     let child = node.greedyChildren.get(label);
                     if (child === undefined) {
                         child = new RadixNode<V>('greedy', label);
@@ -258,7 +258,7 @@ export class RadixTree<V> implements Serializable {
      * @param segment - The segment to classify.
      * @returns The kind of node this segment represents.
      */
-    private _classifySegment(segment: string): NodeKind {
+    #classifySegment(segment: string): NodeKind {
         if (segment === '*' || segment === '**') {
             // `**` is the non-capturing greedy match (rest of the path);
             // `*` stays the single-segment wildcard.
@@ -282,7 +282,7 @@ export class RadixTree<V> implements Serializable {
      * @param segment - The greedy segment string.
      * @returns The captured parameter label, or `''` for a bare `**`.
      */
-    private _extractGreedyLabel(segment: string): string {
+    #extractGreedyLabel(segment: string): string {
         return segment === '**' ? '' : segment.slice(2, -1);
     }
 
@@ -292,7 +292,7 @@ export class RadixTree<V> implements Serializable {
      * @param segment - The param segment string.
      * @returns The extracted parameter label.
      */
-    private _extractParamLabel(segment: string): string {
+    #extractParamLabel(segment: string): string {
         if (segment.startsWith(':')) {
             return segment.slice(1);
         }
@@ -306,7 +306,7 @@ export class RadixTree<V> implements Serializable {
      * live value keeps a deleted greedy registration (`**` vs `{*name}`) from
      * masking a surviving sibling on a deeper dead-end.
      */
-    private _firstGreedy(node: RadixNode<V>): RadixNode<V> | null {
+    #firstGreedy(node: RadixNode<V>): RadixNode<V> | null {
         let fallback: RadixNode<V> | null = null;
         for (const child of node.greedyChildren.values()) {
             if (child.value !== null) {
@@ -331,8 +331,8 @@ export class RadixTree<V> implements Serializable {
      */
     lookup(path: string): RadixMatch<V> | null {
         const starts: number[] = [];
-        const segments = this._splitPath(path, starts);
-        return this._match(this.#root, path, segments, starts, 0, null, null);
+        const segments = this.#splitPath(path, starts);
+        return this.#match(this.#root, path, segments, starts, 0, null, null);
     }
 
     /**
@@ -345,7 +345,7 @@ export class RadixTree<V> implements Serializable {
      * specific branch dead-ends — its params are a snapshot, so captures made
      * deeper in the tree never leak into the fallback match.
      */
-    private _match(
+    #match(
         node: RadixNode<V>,
         path: string,
         segments: string[],
@@ -366,7 +366,7 @@ export class RadixTree<V> implements Serializable {
             let terminalGreedy = false;
             for (const greedyChild of node.greedyChildren.values()) {
                 terminalGreedy = true;
-                const match = this._takeGreedy(
+                const match = this.#takeGreedy(
                     { node: greedyChild, restStart: segmentStart, params: params === null ? null : { ...params } },
                     path
                 );
@@ -377,11 +377,11 @@ export class RadixTree<V> implements Serializable {
             if (terminalGreedy) {
                 return null;
             }
-            return greedy === null ? null : this._takeGreedy(greedy, path);
+            return greedy === null ? null : this.#takeGreedy(greedy, path);
         }
 
         const segment = segments[index];
-        const firstGreedyChild = this._firstGreedy(node);
+        const firstGreedyChild = this.#firstGreedy(node);
         const descendGreedy: GreedyCandidate<V> | null =
             firstGreedyChild === null
                 ? greedy
@@ -393,14 +393,14 @@ export class RadixTree<V> implements Serializable {
         // registration order until one yields a match.
         const staticChild = node.staticChildren.get(segment);
         if (staticChild !== undefined) {
-            return this._match(staticChild, path, segments, starts, index + 1, params, descendGreedy);
+            return this.#match(staticChild, path, segments, starts, index + 1, params, descendGreedy);
         }
 
         if (node.paramChildren.size > 0) {
             for (const paramChild of node.paramChildren.values()) {
                 const nextParams: Record<string, string> = params === null ? {} : { ...params };
                 nextParams[paramChild.label] = segment;
-                const match = this._match(paramChild, path, segments, starts, index + 1, nextParams, descendGreedy);
+                const match = this.#match(paramChild, path, segments, starts, index + 1, nextParams, descendGreedy);
                 if (match !== null) {
                     return match;
                 }
@@ -409,7 +409,7 @@ export class RadixTree<V> implements Serializable {
         }
 
         if (node.wildcardChild !== null) {
-            return this._match(node.wildcardChild, path, segments, starts, index + 1, params, descendGreedy);
+            return this.#match(node.wildcardChild, path, segments, starts, index + 1, params, descendGreedy);
         }
 
         // This node's own greedy children take precedence over the recorded
@@ -418,7 +418,7 @@ export class RadixTree<V> implements Serializable {
         let ownGreedy = false;
         for (const greedyChild of node.greedyChildren.values()) {
             ownGreedy = true;
-            const match = this._takeGreedy(
+            const match = this.#takeGreedy(
                 { node: greedyChild, restStart: segmentStart, params: params === null ? null : { ...params } },
                 path
             );
@@ -431,7 +431,7 @@ export class RadixTree<V> implements Serializable {
         }
 
         // No branch at this node — fall back to the deepest recorded greedy.
-        return greedy === null ? null : this._takeGreedy(greedy, path);
+        return greedy === null ? null : this.#takeGreedy(greedy, path);
     }
 
     /**
@@ -439,7 +439,7 @@ export class RadixTree<V> implements Serializable {
      * the path into the candidate's label (`''` — a bare `**` — captures
      * nothing).
      */
-    private _takeGreedy(candidate: GreedyCandidate<V>, path: string): RadixMatch<V> | null {
+    #takeGreedy(candidate: GreedyCandidate<V>, path: string): RadixMatch<V> | null {
         let captured = candidate.params;
         const rest = path.slice(candidate.restStart).replace(/\/+$/, '');
         if (candidate.node.label !== '') {
@@ -461,7 +461,7 @@ export class RadixTree<V> implements Serializable {
      * @returns True if the pattern was found and deleted, false otherwise.
      */
     delete(pattern: string): boolean {
-        const segments = this._splitPath(pattern);
+        const segments = this.#splitPath(pattern);
         let node = this.#root;
 
         if (segments.length === 0) {
@@ -478,7 +478,7 @@ export class RadixTree<V> implements Serializable {
         const length = segments.length;
         for (let i = 0; i < length; i++) {
             const segment = segments[i];
-            const kind = this._classifySegment(segment);
+            const kind = this.#classifySegment(segment);
             let child: RadixNode<V> | null;
 
             switch (kind) {
@@ -490,7 +490,7 @@ export class RadixTree<V> implements Serializable {
                     node = child;
                     break;
                 case 'param':
-                    child = node.paramChildren.get(this._extractParamLabel(segment)) ?? null;
+                    child = node.paramChildren.get(this.#extractParamLabel(segment)) ?? null;
                     if (!child) {
                         return false;
                     }
@@ -504,7 +504,7 @@ export class RadixTree<V> implements Serializable {
                     node = child;
                     break;
                 case 'greedy':
-                    child = node.greedyChildren.get(this._extractGreedyLabel(segment)) ?? null;
+                    child = node.greedyChildren.get(this.#extractGreedyLabel(segment)) ?? null;
                     if (!child) {
                         return false;
                     }

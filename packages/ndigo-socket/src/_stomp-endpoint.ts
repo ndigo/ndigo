@@ -7,6 +7,7 @@ import type { SocketSession } from './socket-session';
 import { STOMPAckHandler, type STOMPAckHost } from './_stomp-ack';
 import { STOMPCommands, type STOMPCommandHost } from './_stomp-commands';
 import { controlSend, fail } from './_stomp-replies';
+import { IllegalStateError } from '@ndigo/core';
 
 /** Version negotiation set — we speak 1.2 semantics, accept 1.0–1.2. */
 const SUPPORTED_VERSIONS: readonly string[] = ['1.2', '1.1', '1.0'];
@@ -64,7 +65,7 @@ export class STOMPEndpoint {
      */
     async handleSocket(session: SocketSession): Promise<void> {
         if (!this.#host.isReady()) {
-            throw new Error('STOMPBroker is not ready; await connect()');
+            throw new IllegalStateError('STOMPBroker is not ready; await connect()');
         }
         const state: STOMPConnectionState = {
             connected: false,

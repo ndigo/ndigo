@@ -11,6 +11,7 @@
  * fmt.format(new Date('2024-01-02T00:00:00Z'));
  * ```
  */
+import { stringComparator } from './comparable.js';
 import { IllegalStateError } from './error.js';
 
 /**
@@ -127,7 +128,7 @@ export interface ListFormatterOptions extends FormatOptions {
 }
 
 const stringifyOptions = (options: object): string => {
-    const entries = Object.entries(options).sort(([a], [b]) => a.localeCompare(b));
+    const entries = Object.entries(options).sort(([a], [b]) => stringComparator.compare(a, b));
     return JSON.stringify(entries);
 };
 

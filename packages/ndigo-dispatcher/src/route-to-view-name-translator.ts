@@ -22,7 +22,7 @@ export interface RouteToViewNameTranslator {
     getViewName(route: Route): string;
 }
 
-const slash = '/';
+const SLASH = '/';
 
 /**
  * Default translator that derives a view name from the route path.
@@ -68,7 +68,7 @@ export class DefaultRouteToViewNameTranslator implements RouteToViewNameTranslat
      */
     constructor() {
         this.prefix = '';
-        this.separator = slash;
+        this.separator = SLASH;
         this.suffix = '';
     }
 
@@ -81,8 +81,8 @@ export class DefaultRouteToViewNameTranslator implements RouteToViewNameTranslat
     getViewName(route: Route): string {
         let viewName: string = `${this.prefix}${route.path}${this.suffix}`;
 
-        if (this.separator !== slash) {
-            viewName = viewName.replace(slash, this.separator);
+        if (this.separator !== SLASH) {
+            viewName = viewName.replace(SLASH, this.separator);
         }
 
         return viewName;

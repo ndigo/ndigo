@@ -15,6 +15,7 @@ import { MethodInterceptorRegistry } from './registry';
 import { targetTypeOf } from './shadow';
 import { planFor, isWoven, markWovenBy, weavePlans, wovenBy } from './weave';
 import type { MethodInterceptorRule } from './interceptor';
+import { IllegalStateError } from '@ndigo/core';
 
 const logger = getLogger('ndigo-advice:processor');
 
@@ -83,7 +84,7 @@ export function interception(
                     );
                     return instance;
                 }
-                throw new Error(
+                throw new IllegalStateError(
                     `entry '${entryName}' is already advised — register exactly one interception(...) processor and combine all rules in it`
                 );
             }

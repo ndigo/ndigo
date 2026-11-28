@@ -13,6 +13,7 @@ import {
 import { getWhenFeature } from '@ndigo/flags';
 import { z } from 'zod';
 import { like } from '@ndigo/util';
+import { FrameworkError } from '@ndigo/core';
 
 /**
  * A JSON Schema object as carried by MCP `tools/list`.
@@ -187,7 +188,7 @@ export function projectTools(source: MappingSource): RegisteredTool[] {
             if (metadata === undefined) continue;
             const name = metadata.name ?? defaultToolName(entry.handlerMethod.method);
             if (names.has(name)) {
-                throw new Error(`duplicate MCP tool name '${name}' — every @toolMapping must be unique`);
+                throw new FrameworkError(`duplicate MCP tool name '${name}' — every @toolMapping must be unique`);
             }
             names.add(name);
             const readOnly = metadata.readOnly === true;

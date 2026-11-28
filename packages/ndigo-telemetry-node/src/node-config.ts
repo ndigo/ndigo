@@ -23,6 +23,7 @@ import { LoggerFactory, registerMetricSnapshotProvider } from '@ndigo/telemetry'
 import { SeverityFilterLogRecordProcessor } from './severity-filter-log-record-processor';
 import { PrometheusMetricReader } from './metrics/prometheus-metric-reader';
 import { getLogger } from '@ndigo/log';
+import { FrameworkError } from '@ndigo/core';
 
 const logger = getLogger('ndigo-telemetry-node:node-config');
 
@@ -132,7 +133,7 @@ export function resolveExporter(spec: ExporterSpec | undefined, signal: 'trace' 
     }
     if (spec === 'prometheus') {
         if (signal !== 'metric') {
-            throw new Error(
+            throw new FrameworkError(
                 `TelemetryConfig: 'prometheus' is only valid for the metric exporter (requested for ${signal})`
             );
         }
@@ -142,7 +143,7 @@ export function resolveExporter(spec: ExporterSpec | undefined, signal: 'trace' 
         try {
             new URL(spec.url);
         } catch {
-            throw new Error(`TelemetryConfig: ${signal} exporter url is invalid: ${JSON.stringify(spec.url)}`);
+            throw new FrameworkError(`TelemetryConfig: ${signal} exporter url is invalid: ${JSON.stringify(spec.url)}`);
         }
     }
     return { kind: 'otlp', url: spec.url, headers: spec.headers };
@@ -172,7 +173,9 @@ function resolveSampler(spec: SamplerSpec | undefined): Sampler {
     if (typeof spec === 'object' && 'ratio' in spec) {
         const { ratio } = spec as { ratio: number };
         if (typeof ratio !== 'number' || Number.isNaN(ratio) || ratio < 0 || ratio > 1) {
-            throw new Error(`TelemetryConfig: sampler ratio must be a number in [0, 1], got ${JSON.stringify(ratio)}`);
+            throw new FrameworkError(
+                `TelemetryConfig: sampler ratio must be a number in [0, 1], got ${JSON.stringify(ratio)}`
+            );
         }
         return new ParentBasedSampler({ root: new TraceIdRatioBasedSampler(ratio) });
     }

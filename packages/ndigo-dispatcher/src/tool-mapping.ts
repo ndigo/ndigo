@@ -6,7 +6,7 @@
  * decorator only opts it into an agent-facing tool surface.
  */
 import '@tsmetadata/polyfill';
-import { getSymbolMetadata } from '@ndigo/core';
+import { FrameworkError, getSymbolMetadata } from '@ndigo/core';
 
 /**
  * Metadata key for `@toolMapping`; the method name is appended as
@@ -125,7 +125,7 @@ export function defaultToolName(methodName: string): string {
         .toLowerCase();
     const candidate = /^[a-z]/u.test(name) ? name : `tool_${name}`;
     if (toolNamePattern.test(candidate) === false) {
-        throw new Error(
+        throw new FrameworkError(
             `generated MCP tool name '${candidate}' is not snake_case — declare a valid @toolMapping name` +
                 ` for '${methodName}'`
         );

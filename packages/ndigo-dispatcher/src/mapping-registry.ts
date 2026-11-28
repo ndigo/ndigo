@@ -135,11 +135,11 @@ class MappingRegistry<T = unknown> {
                 }
             }
 
-            this._removeMappingName(entry);
+            this.#removeMappingName(entry);
         }
     }
 
-    private _removeMappingName({ mappingName, handlerMethod }: MappingEntry): void {
+    #removeMappingName({ mappingName, handlerMethod }: MappingEntry): void {
         if (!mappingName) {
             return;
         }

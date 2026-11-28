@@ -23,6 +23,7 @@ import {
     type RegisteredTool,
     type ToolDescriptor,
 } from './project.js';
+import { IllegalStateError } from '@ndigo/core';
 
 /**
  * Per-call context carried from the transport.
@@ -192,14 +193,14 @@ export class MCPToolRegistry {
     async call(name: string, args: Record<string, unknown> = {}, context: ToolCallContext = {}): Promise<unknown> {
         const tool = (await this.#visibleTools()).find((candidate) => candidate.descriptor.name === name);
         if (tool === undefined) {
-            throw new Error(`unknown or unavailable MCP tool '${name}'`);
+            throw new IllegalStateError(`unknown or unavailable MCP tool '${name}'`);
         }
         if (
             tool.handlerMethod instanceof RouteHandlerMethod &&
             (tool.handlerMethod.parameters?.length ?? 0) > 0 &&
             tool.handlerMethod.argumentResolvers === undefined
         ) {
-            throw new Error(
+            throw new IllegalStateError(
                 `MCP tool '${name}' declares parameters but the registry has no argument resolvers — ` +
                     'pass `argumentResolvers` to MCPToolRegistry.from()'
             );
@@ -282,7 +283,7 @@ export class MCPToolRegistry {
 function toolRoute(tool: RegisteredTool, args: Record<string, unknown>): Route {
     const pattern = [...(tool.info.patternsCondition?.patterns ?? [])][0];
     if (pattern === undefined) {
-        throw new Error(`tool '${tool.descriptor.name}' has no route pattern`);
+        throw new IllegalStateError(`tool '${tool.descriptor.name}' has no route pattern`);
     }
     const params: Record<string, string> = {};
     const path = fillPath(pattern, args, params);
@@ -328,7 +329,7 @@ function fillPath(pattern: string, args: Record<string, unknown>, params: Record
     const substitute = (_match: string, name: string): string => {
         const value = args[name];
         if (value === undefined || value === null) {
-            throw new Error(`missing path argument '${name}'`);
+            throw new IllegalStateError(`missing path argument '${name}'`);
         }
         const text = String(value);
         params[name] = text;

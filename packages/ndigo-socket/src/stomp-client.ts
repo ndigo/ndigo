@@ -25,7 +25,7 @@
  * observer.
  */
 import { effect, signal, type Signal } from '@ndigo/signals';
-import { RingBuffer } from '@ndigo/core';
+import { IllegalStateError, RingBuffer } from '@ndigo/core';
 import { serializeStompFrame, STOMPProtocolError, parseStompFrame, type STOMPFrame } from './stomp-frame';
 import type { SocketClient } from './socket-client';
 import type { STOMPAckMode } from './stomp-broker';
@@ -370,7 +370,7 @@ export class STOMPClient {
             // A duplicate id would silently orphan the first subscription's
             // stream (the server routes by id, so the new entry steals its
             // frames) — reject loudly instead.
-            throw new Error(`duplicate subscription id: ${id}`);
+            throw new IllegalStateError(`duplicate subscription id: ${id}`);
         }
         // Bounded per-subscription queue: a stalled consumer must not pin
         // memory; while full, the newest frame is dropped (the transport

@@ -627,7 +627,7 @@ export class ContentNegotiationViewResolver implements ViewResolver {
 
         // 4. Resolve the request's accepted media types, already ordered by
         //    client priority (descending q-value, header order breaking ties).
-        const requested = this.resolveRequestedMediaTypes(request);
+        const requested = this.#resolveRequestedMediaTypes(request);
         if (requested.length === 0) {
             // A live request whose accepted set could not be determined:
             // degrade to the first candidate rather than refusing.
@@ -668,7 +668,7 @@ export class ContentNegotiationViewResolver implements ViewResolver {
      *
      * @param request - The per-call request to negotiate for.
      */
-    private resolveRequestedMediaTypes(request: unknown): MediaType[] {
+    #resolveRequestedMediaTypes(request: unknown): MediaType[] {
         try {
             return this.contentNegotiationManager.resolveMediaTypes(request) ?? [];
         } catch {

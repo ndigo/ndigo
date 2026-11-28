@@ -31,11 +31,10 @@ export class OpenTelemetryLogger implements Logger {
     }
 
     #threshold: SeverityNumber;
+    readonly #name: string;
 
-    constructor(
-        private readonly name: string,
-        threshold: SeverityNumber = SeverityNumber.DEBUG
-    ) {
+    constructor(name: string, threshold: SeverityNumber = SeverityNumber.DEBUG) {
+        this.#name = name;
         this.#threshold = threshold;
     }
 
@@ -63,7 +62,7 @@ export class OpenTelemetryLogger implements Logger {
         return severityNumber >= this.#threshold;
     }
 
-    private emit(
+    #emit(
         severityText: string,
         severityNumber: SeverityNumber,
         message: string,
@@ -77,7 +76,7 @@ export class OpenTelemetryLogger implements Logger {
         const activeContext = context.active();
         const errorAttributes = error ? { 'error.message': error.toString() } : {};
 
-        const openTelemetryLogger = logs.getLogger(this.name);
+        const openTelemetryLogger = logs.getLogger(this.#name);
         openTelemetryLogger.emit({
             severityText,
             severityNumber,
@@ -102,7 +101,7 @@ export class OpenTelemetryLogger implements Logger {
      * @param attributes - Optional structured attributes.
      */
     debug(message: string, attributes?: LogAttributes): void {
-        this.emit(
+        this.#emit(
             severityNumberToLevel(SeverityNumber.DEBUG, 'apache').toUpperCase(),
             SeverityNumber.DEBUG,
             message,
@@ -117,7 +116,7 @@ export class OpenTelemetryLogger implements Logger {
      * @param attributes - Optional structured attributes.
      */
     info(message: string, attributes?: LogAttributes): void {
-        this.emit(
+        this.#emit(
             severityNumberToLevel(SeverityNumber.INFO, 'apache').toUpperCase(),
             SeverityNumber.INFO,
             message,
@@ -132,7 +131,7 @@ export class OpenTelemetryLogger implements Logger {
      * @param attributes - Optional structured attributes.
      */
     warn(message: string, attributes?: LogAttributes): void {
-        this.emit(
+        this.#emit(
             severityNumberToLevel(SeverityNumber.WARN, 'apache').toUpperCase(),
             SeverityNumber.WARN,
             message,
@@ -148,7 +147,7 @@ export class OpenTelemetryLogger implements Logger {
      * @param attributes - Optional structured attributes.
      */
     error(message: string, error?: Exception, attributes?: LogAttributes): void {
-        this.emit(
+        this.#emit(
             severityNumberToLevel(SeverityNumber.ERROR, 'apache').toUpperCase(),
             SeverityNumber.ERROR,
             message,

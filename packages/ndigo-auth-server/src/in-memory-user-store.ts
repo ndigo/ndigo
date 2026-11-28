@@ -5,6 +5,7 @@
  * `UserStore` over `ndigo-orm`/Drizzle entities.
  */
 import { type UserRecord, type UserStore } from '@ndigo/auth-core';
+import { IllegalStateError } from '@ndigo/core';
 
 /**
  * In-memory `UserStore`: users live in two maps (by username and by id) and
@@ -75,7 +76,7 @@ export class InMemoryUserStore implements UserStore {
     async incrementTokenVersion(id: string): Promise<number> {
         const record = this.#byId.get(id);
         if (!record) {
-            throw new Error(`User "${id}" not found`);
+            throw new IllegalStateError(`User "${id}" not found`);
         }
         const next = (record.tokenVersion ?? 0) + 1;
         this.#writeVersion(record, next);
@@ -93,7 +94,7 @@ export class InMemoryUserStore implements UserStore {
     async incrementTokenVersionIfCurrent(id: string, expected: number): Promise<number | null> {
         const record = this.#byId.get(id);
         if (!record) {
-            throw new Error(`User "${id}" not found`);
+            throw new IllegalStateError(`User "${id}" not found`);
         }
         // Check and swap in one synchronous step: no `await` between the read
         // and the write, so a concurrent refresh cannot interleave here

@@ -231,7 +231,7 @@ export class AbstractDispatcher
         return 'AbstractDispatcher';
     }
 
-    private _isDestroyableView(view: View): view is View & { destroy(): void | Promise<void> } {
+    #isDestroyableView(view: View): view is View & { destroy(): void | Promise<void> } {
         // Not likeDestroyable(): views are not lifecycle entries — they carry no
         // `destroyed` flag, so the destroy-callable shape alone is the contract.
         return like({ destroy: Function })(view);
@@ -265,7 +265,7 @@ export class AbstractDispatcher
             const handlerAdapter: RouteHandlerAdapter = this.getHandlerAdapter(mappedHandler.handler);
 
             mv = await handlerAdapter.handle(route, mappedHandler.handler);
-            this._applyDefaultViewName(route, mv);
+            this.#applyDefaultViewName(route, mv);
             await mappedHandler.applyPostHandle(route, mv);
         } catch (error) {
             dispatchError = error as Error;
@@ -481,7 +481,7 @@ export class AbstractDispatcher
         if (
             previousView &&
             previousView !== view &&
-            this._isDestroyableView(previousView) &&
+            this.#isDestroyableView(previousView) &&
             !this.#resolvedViews.has(previousView)
         ) {
             try {
@@ -549,7 +549,7 @@ export class AbstractDispatcher
      * @param route - The current route.
      * @param mv - The {@link ModelAndView} to apply the default view name to.
      */
-    private _applyDefaultViewName(route: Route, mv: ModelAndView) {
+    #applyDefaultViewName(route: Route, mv: ModelAndView) {
         // Only real ModelAndView returns get a default view name — a plain object
         // return is a JSON API response and must not be mutated with view metadata.
         if (mv instanceof ModelAndView && !mv.hasView) {

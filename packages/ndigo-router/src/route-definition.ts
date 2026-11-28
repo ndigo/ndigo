@@ -6,7 +6,7 @@ import { PathRoute } from './path-route';
 import { type Registry } from '@ndigo/factory';
 import { ROUTER } from './context-tokens';
 import type { Router } from './router';
-import type { Matchable } from '@ndigo/core';
+import { IllegalStateError, type Matchable } from '@ndigo/core';
 
 // ── Type helpers ────────────────────────────────────────────────────────────
 
@@ -90,7 +90,7 @@ export class RouteDefinition<TPattern extends string = string> implements Matcha
     navigate(params: RouteParams<TPattern>): void {
         const router = this.#context.getValue<Router | undefined>(ROUTER) as Router | undefined;
         if (!router) {
-            throw new Error(
+            throw new IllegalStateError(
                 `RouteRegistry: Cannot navigate to "${this.pattern}" — no Router registered in the application context.`
             );
         }

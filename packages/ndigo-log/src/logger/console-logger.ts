@@ -30,11 +30,10 @@ export class ConsoleLogger implements Logger {
     }
 
     #threshold: SeverityNumber;
+    readonly #name: string;
 
-    constructor(
-        private readonly name: string,
-        threshold: SeverityNumber = SeverityNumber.DEBUG
-    ) {
+    constructor(name: string, threshold: SeverityNumber = SeverityNumber.DEBUG) {
+        this.#name = name;
         this.#threshold = threshold;
     }
 
@@ -73,7 +72,7 @@ export class ConsoleLogger implements Logger {
             return;
         }
 
-        console.debug(`[DEBUG] [${this.name}] ${message}`, attributes || '');
+        console.debug(`[DEBUG] [${this.#name}] ${message}`, attributes || '');
     }
 
     /**
@@ -87,7 +86,7 @@ export class ConsoleLogger implements Logger {
             return;
         }
 
-        console.info(`[INFO] [${this.name}] ${message}`, attributes || '');
+        console.info(`[INFO] [${this.#name}] ${message}`, attributes || '');
     }
 
     /**
@@ -101,7 +100,7 @@ export class ConsoleLogger implements Logger {
             return;
         }
 
-        console.warn(`[WARN] [${this.name}] ${message}`, attributes || '');
+        console.warn(`[WARN] [${this.#name}] ${message}`, attributes || '');
     }
 
     /**
@@ -116,6 +115,6 @@ export class ConsoleLogger implements Logger {
             return;
         }
 
-        console.error(`[ERROR] [${this.name}] ${message}`, attributes || '', error || '');
+        console.error(`[ERROR] [${this.#name}] ${message}`, attributes || '', error || '');
     }
 }

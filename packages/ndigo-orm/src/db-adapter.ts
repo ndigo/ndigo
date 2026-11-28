@@ -72,7 +72,8 @@ type DBAction = (typeof SUPPORTED_ACTIONS)[number];
 function extractDbFlag(argv: string[]): { db?: string; rest: string[] } {
     const rest: string[] = [];
     let db: string | undefined;
-    for (let i = 0; i < argv.length; i++) {
+    const length = argv.length;
+    for (let i = 0; i < length; i++) {
         const token = argv[i];
         if (token === '--db' || token === '--adapter') {
             db = argv[++i];

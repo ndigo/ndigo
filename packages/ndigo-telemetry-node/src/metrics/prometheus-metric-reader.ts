@@ -130,7 +130,8 @@ function projectHistogramPoints(metric: HistogramMetricData): MetricPoint[] {
         const buckets = point.value.buckets;
         const points: MetricHistogramBucket[] = [];
 
-        for (let i = 0; i < buckets.counts.length; i++) {
+        const length = buckets.counts.length;
+        for (let i = 0; i < length; i++) {
             points.push({
                 count: buckets.counts[i],
                 low: i === 0 ? Number.NEGATIVE_INFINITY : buckets.boundaries[i - 1],

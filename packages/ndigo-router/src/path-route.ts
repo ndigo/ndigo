@@ -7,7 +7,7 @@ import { isNotNil } from '@ndigo/util/types';
 import type { HTTPMethod } from '@ndigo/http';
 import { QueryString, MatrixString } from '@ndigo/http';
 
-const questionMark = '?',
+const QUESTION_MARK = '?',
     semicolon = ';',
     slash = '/',
     { defineProperty } = Reflect,
@@ -15,7 +15,7 @@ const questionMark = '?',
     joinOnSlash = (arr: string[]): string => arr.join(slash),
     leadingSlash = new RegExp(`^${slash}`),
     removeLeadingSlash = (s: string) => s.replace(leadingSlash, ''),
-    splitOnQuestionMark = (s: string) => s.split(questionMark),
+    splitOnQuestionMark = (s: string) => s.split(QUESTION_MARK),
     splitOnSlash = (s: string) => s.split(slash),
     startsWithColon = (value: string): boolean => value.startsWith(':'),
     startsWithBrace = (value: string): boolean => value.startsWith('{'),
@@ -344,7 +344,7 @@ export class PathRoute implements Route<Record<string, string>>, Serializable, M
 
         output = `${slash}${segments.join(slash)}`;
 
-        return queryString ? `${output}${questionMark}${queryString}` : output;
+        return queryString ? `${output}${QUESTION_MARK}${queryString}` : output;
     }
 
     /**

@@ -25,7 +25,8 @@ export type CountMinSketchJSON = {
 
 function hash32(input: string, seed: number): number {
     let h = seed >>> 0;
-    for (let i = 0; i < input.length; i++) {
+    const length = input.length;
+    for (let i = 0; i < length; i++) {
         h ^= input.charCodeAt(i);
         h = Math.imul(h, 0x5bd1e995);
         h ^= h >>> 15;

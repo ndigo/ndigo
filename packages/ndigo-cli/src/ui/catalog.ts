@@ -5,6 +5,7 @@
  */
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { compareBy, stringComparator } from '@ndigo/core';
 import { usageError } from '../helpers/app-scripts.js';
 import { UI_LOCK_FILE } from './config.js';
 import type { LoadedRegistry, LocatedRegistryItem } from './registry-types.js';
@@ -145,7 +146,7 @@ export function buildCatalog(registry: LoadedRegistry, installed: readonly strin
             (item): item is LocatedRegistryItem =>
                 item !== undefined && (item.type === 'registry:ui' || item.type === 'registry:block')
         )
-        .sort((left, right) => left.name.localeCompare(right.name));
+        .sort(compareBy((item) => item.name, stringComparator.compare));
     const components = Object.fromEntries(items.map((item) => [componentName(item.name), descriptor(item)]));
     const names = Object.keys(components);
     return {

@@ -18,7 +18,8 @@ export interface RedisCacheOptions {
 /** Convert JS UTF-16 units losslessly; lone surrogates must not alias replacement characters. */
 function component(value: string): string {
     let result = '';
-    for (let i = 0; i < value.length; i++) result += value.charCodeAt(i).toString(16).padStart(4, '0');
+    const length = value.length;
+    for (let i = 0; i < length; i++) result += value.charCodeAt(i).toString(16).padStart(4, '0');
     return result;
 }
 
@@ -159,7 +160,8 @@ export class RedisCache<V = unknown> implements Cache<V> {
     async clear(): Promise<void> {
         await this.#connection.run(async (client) => {
             for await (const keys of client.scanIterator({ MATCH: this.#prefix + '*', COUNT: 128 })) {
-                for (let start = 0; start < keys.length; start += 128) {
+                const length = keys.length;
+                for (let start = 0; start < length; start += 128) {
                     // eslint-disable-next-line no-await-in-loop -- serialize chunks to bound queued Redis commands
                     await client.del(keys.slice(start, start + 128));
                 }
@@ -182,7 +184,8 @@ export class RedisCache<V = unknown> implements Cache<V> {
                     seen.add(key);
                     return true;
                 });
-                for (let start = 0; start < fresh.length; start += 128) {
+                const length = fresh.length;
+                for (let start = 0; start < length; start += 128) {
                     // eslint-disable-next-line no-await-in-loop -- bound queued Redis commands and accumulate each chunk once
                     count += await client.exists(fresh.slice(start, start + 128));
                 }

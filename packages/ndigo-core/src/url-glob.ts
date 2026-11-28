@@ -362,7 +362,8 @@ function parseExtGlob(ctx: ParseContext): string {
  */
 function hasQuantifier(source: string): boolean {
     let inClass = false;
-    for (let index = 0; index < source.length; index++) {
+    const length = source.length;
+    for (let index = 0; index < length; index++) {
         const char = source[index];
         if (char === '\\') {
             index++;

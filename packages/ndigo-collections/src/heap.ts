@@ -179,7 +179,8 @@ export class Heap<T> implements Serializable, Equatable<Heap<T>> {
         if (value.size !== this.#items.length) return false;
         const a = this.toSorted();
         const b = value.toSorted();
-        for (let i = 0; i < a.length; i++) {
+        const length = a.length;
+        for (let i = 0; i < length; i++) {
             if (a[i] !== b[i]) return false;
         }
         return true;

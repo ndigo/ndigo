@@ -103,7 +103,8 @@ export class STOMPAckHandler {
             // it obeys the same op count and byte budget (its identifiers
             // are retained too, so they count toward the bytes).
             const receiptId = frame.headers['receipt'] ?? null;
-            for (let index = 0; index < owners.length; index += 1) {
+            const length = owners.length;
+            for (let index = 0; index < length; index += 1) {
                 const target = owners[index] as Subscription;
                 // One RECEIPT for the whole ACK/NACK: only the last buffered
                 // op carries the receipt id (a per-op receipt would emit

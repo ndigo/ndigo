@@ -10,6 +10,7 @@
 import { buildCommand } from '@stricli/core';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
+import { compareBy, stringComparator } from '@ndigo/core';
 import { readAppManifest, resolveAppDir } from '../../helpers/app-scripts.js';
 import { appDirPositional } from '../_script-fronts.js';
 import { jsonFlag, writeJson } from '../_output.js';
@@ -115,7 +116,7 @@ function withLintWiring(manifest: Record<string, unknown>): Record<string, unkno
     devDependencies['@ndigo/oxlint-plugin'] ??= PLUGIN_VERSION_RANGE;
     devDependencies.oxlint ??= OXLINT_VERSION_RANGE;
     const sortedDevDependencies = Object.fromEntries(
-        Object.entries(devDependencies).sort(([left], [right]) => left.localeCompare(right))
+        Object.entries(devDependencies).sort(compareBy(([key]) => key, stringComparator.compare))
     );
 
     // Rebuild in place so the written manifest keeps the author's key order

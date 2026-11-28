@@ -1997,6 +1997,9 @@ importers:
       '@ndigo/cluster':
         specifier: ~0.0.1
         version: link:../ndigo-cluster
+      '@ndigo/core':
+        specifier: ~0.0.1
+        version: link:../ndigo-core
       '@ndigo/util':
         specifier: ~0.0.1
         version: link:../ndigo-util

@@ -95,11 +95,11 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `PathMatcher` *(type)* — Defines a contract for matching and merging path patterns. This interface extends `PatternMatcher` for string patterns and paths.
 - `PathMatcherFilter` *(type)*
 - `likePathMatcher` — Type guard that checks if a given value is a PathMatcher. A value is considered a `PathMatcher` if it has `getPatternComparator`, `match`, and `merge` methods.
-- `EqualsPathMatcher` — Path matcher for literal comparison: `merge` joins two patterns and `match` accepts only an exact string match. The identity matcher for callers that need patt…
-- `URLGlobPathMatcher`
-- `GlobPatternInfo`
 - `matchesPathPatterns` — Applies include/exclude patterns to a value.
 - `AsPathMatcherFilter` — Mixin adding include/exclude pattern filtering to a class that owns a `pathMatcher`: `matches()` accepts a path when it satisfies every include pattern and no…
+- `GlobPatternInfo`
+- `EqualsPathMatcher` — Path matcher for literal comparison: `merge` joins two patterns and `match` accepts only an exact string match. The identity matcher for callers that need patt…
+- `URLGlobPathMatcher`
 - `Parser` *(type)* — Class-based interface for parsing a string into a structured value of type `T`.
 - `Stringifier` *(type)* — Class-based interface for serializing a value of type `T` into a string.
 - `Converter` *(type)* — A general-purpose type conversion from source `S` to target `T`.
@@ -114,23 +114,23 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `ConversionService` *(type)* — Central type-conversion service (modelled on the classic `ConversionService`, extended with schema targets).
 - `createConversionService` — Creates a new ConversionService instance with built-in converters registered.
 - `conversionService` — The default ConversionService singleton.
+- `FormattingService` *(type)* — A registry-style factory producing configured formatters.
+- `createFormattingService` — Creates a FormattingService with shared locale/time-zone defaults.
 - `FormatOptions` *(type)* — Shared formatting options. The locale is always explicit; the time zone is always explicit for date/time formatting so server-rendered output can be pinned and…
-- `DateTimeFormatterOptions` *(type)* — Options for DateTimeFormatter.
-- `NumberFormatterOptions` *(type)* — Options for NumberFormatter.
-- `RelativeTimeFormatterOptions` *(type)* — Options for RelativeTimeFormatter.
-- `ListFormatterOptions` *(type)* — Options for ListFormatter.
+- `DateTimeFormatterOptions` *(type)* — Options for `DateTimeFormatter`.
+- `NumberFormatterOptions` *(type)* — Options for `NumberFormatter`.
+- `RelativeTimeFormatterOptions` *(type)* — Options for `RelativeTimeFormatter`.
+- `ListFormatterOptions` *(type)* — Options for `ListFormatter`.
+- `FormattingServiceOptions` *(type)* — Options for `createFormattingService`.
+- `DefaultableFormatOptions` *(type)* — Formatter options with all shared fields optional — used by `FormattingService` where service-wide defaults fill the gaps.
+- `DateTimeFormatOptions` *(type)* — `DateTimeFormatter` options with optional shared fields (service-style).
+- `NumberFormatOptions` *(type)* — `NumberFormatter` options with optional shared fields (service-style).
+- `RelativeTimeFormatOptions` *(type)* — `RelativeTimeFormatter` options with optional shared fields (service-style).
+- `ListFormatOptions` *(type)* — `ListFormatter` options with optional shared fields (service-style).
 - `DateTimeFormatter` — Formats a Date for display in an explicit locale and time zone.
 - `NumberFormatter` — Formats numbers for display in an explicit locale.
 - `RelativeTimeFormatter` — Formats relative time (e.g. "3 days ago") in an explicit locale.
 - `ListFormatter` — Formats string lists (e.g. "a, b, and c") in an explicit locale.
-- `FormattingServiceOptions` *(type)* — Options for createFormattingService.
-- `DefaultableFormatOptions` *(type)* — Formatter options with all shared fields optional — used by FormattingService where service-wide defaults fill the gaps.
-- `DateTimeFormatOptions` *(type)* — DateTimeFormatter options with optional shared fields (service-style).
-- `NumberFormatOptions` *(type)* — NumberFormatter options with optional shared fields (service-style).
-- `RelativeTimeFormatOptions` *(type)* — RelativeTimeFormatter options with optional shared fields (service-style).
-- `ListFormatOptions` *(type)* — ListFormatter options with optional shared fields (service-style).
-- `FormattingService` *(type)* — A registry-style factory producing configured formatters.
-- `createFormattingService` — Creates a FormattingService with shared locale/time-zone defaults.
 - `primitive` *(type)* — A JavaScript primitive value.
 - `isPrimitive` — Tests whether a value is a primitive.
 - `isNotPrimitive` — Tests whether a value is not a primitive.

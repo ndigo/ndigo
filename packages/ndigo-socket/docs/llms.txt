@@ -35,7 +35,7 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `STOMPBrokerOptions` *(type)* — STOMPBrokerOptions.
 - `STOMPBroker` — STOMP 1.2 broker — transport-agnostic, one instance per destination namespace (app-scoped entry).
 - `STOMPMessage` *(type)* — A MESSAGE frame delivered to a subscription. The body is the wire payload verbatim — a string for text frames, bytes for binary; `json()` parses either (bytes…
-- `STOMPClientOptions` *(type)* — Options for STOMPClient.
+- `STOMPClientOptions` *(type)* — Options for `STOMPClient`.
 - `STOMPSubscription` *(type)* — A live subscription: an async iterable of MESSAGE frames. *
 - `STOMPClient` — STOMP 1.2 client over any SocketClient.
 - `materialOctets` — Body size as transmitted: UTF-8 octets for text, raw length for bytes. Shared by the store's byte budget and the broker's transaction budget.

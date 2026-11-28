@@ -13,7 +13,8 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `APIDocsMetadata` *(type)* — Documentation metadata for a single handler method.
 - `apiDocs` — Decorator: attach documentation metadata to a handler method.
 - `getApiDocs` — Read the `@apiDocs` metadata declared on a handler method.
-- `RouteMappingTable` *(type)* — What the generator needs from a handler mapping: the registered route table. `RadixMetadataHandlerMapping` (and any `AbstractHandlerMethodMapping`) satisfies i…
+- `OpenAPISpecGenerator` — Builds OpenAPI documents from the framework's route tables.
+- `RouteMappingTable` *(type)*
 - `OpenAPISchemaObject` *(type)* — A JSON Schema object (subset) — the OpenAPI `schema` field.
 - `OpenAPIParameter` *(type)* — An OpenAPI parameter object.
 - `OpenAPIRequestBody` *(type)* — An OpenAPI request body.
@@ -22,8 +23,7 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `OpenAPIOperation` *(type)* — An OpenAPI operation object. Framework-specific conditions are preserved under `x-ndigo-*` extensions rather than dropped.
 - `OpenAPIPathItem` *(type)* — An OpenAPI path item — operations keyed by lowercase HTTP method.
 - `OpenAPIDocument` *(type)* — The generated OpenAPI 3.0.3 document.
-- `OpenAPIGeneratorOptions` *(type)* — Options for OpenAPISpecGenerator.generate.
-- `OpenAPISpecGenerator` — Builds OpenAPI documents from the framework's route tables.
+- `OpenAPIGeneratorOptions` *(type)* — Options for `OpenAPISpecGenerator.generate`.
 - `OpenAPIFormat` *(type)* — Output serialization format.
 - `WriteOpenAPISpecOptions` *(type)* — Options for writeOpenAPISpec.
 - `writeOpenAPISpec` — Generates an OpenAPI document from route tables and writes it to disk.

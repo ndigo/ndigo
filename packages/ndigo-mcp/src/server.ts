@@ -17,6 +17,7 @@ import {
 import type { InspectManifest } from '@ndigo/inspect';
 import type { MCPToolRegistry, ToolCallContext } from './registry.js';
 import { MCP_APP_MIME_TYPE, type UIResource } from './ui-resource.js';
+import { IllegalStateError } from '@ndigo/core';
 
 /**
  * Options for {@link createMcpServer}.
@@ -120,11 +121,11 @@ export function createMcpServer(registry: MCPToolRegistry, options: MCPServerOpt
         }
         const manifest = options.inspect;
         if (manifest === undefined) {
-            throw new Error(`unknown MCP resource '${request.params.uri}'`);
+            throw new IllegalStateError(`unknown MCP resource '${request.params.uri}'`);
         }
         const body = resourceBody(manifest, request.params.uri);
         if (body === undefined) {
-            throw new Error(`unknown MCP resource '${request.params.uri}'`);
+            throw new IllegalStateError(`unknown MCP resource '${request.params.uri}'`);
         }
         return {
             contents: [{ uri: request.params.uri, mimeType: 'application/json', text: JSON.stringify(body, null, 2) }],

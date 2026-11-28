@@ -70,6 +70,7 @@ import { STOMPSubscriptionRegistry } from './_stomp-subscriptions';
 import { STOMPEndpoint } from './_stomp-endpoint';
 import { STOMPDelivery } from './_stomp-delivery';
 import { controlSend, fail, receipt } from './_stomp-replies';
+import { IllegalStateError } from '@ndigo/core';
 
 /** STOMP ack modes (STOMP 1.2 §1.3.1). */
 
@@ -571,7 +572,7 @@ export class STOMPBroker {
         body: STOMPBody,
         headers: Record<string, string> = {}
     ): Promise<StoredQueueMessage | undefined> {
-        if (this.#closed) throw new Error('STOMPBroker is closed');
+        if (this.#closed) throw new IllegalStateError('STOMPBroker is closed');
         this.#limits.assertDeliverable(destination, headers);
         await this.#fanout.publish(destination, body, headers);
         const messageId = this.#nextMessageId();
@@ -598,7 +599,7 @@ export class STOMPBroker {
                 }
             }
         }
-        if (this.#closed) throw new Error('STOMPBroker is closed');
+        if (this.#closed) throw new IllegalStateError('STOMPBroker is closed');
         this.#fanoutLocal(destination, body, headers, messageId);
         return stored;
     }

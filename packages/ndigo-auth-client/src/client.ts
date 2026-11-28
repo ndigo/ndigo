@@ -5,6 +5,7 @@ import { type Principal } from '@ndigo/auth-core';
 import { type AuthenticationState, type AuthResult } from '@ndigo/auth-core';
 import { type AuthAdapter } from '@ndigo/auth-core';
 import { AuthRegistry } from '@ndigo/auth-core';
+import { IllegalStateError } from '@ndigo/core';
 
 /**
  * Client-side authentication manager.
@@ -94,7 +95,7 @@ export class AuthClient {
     async authenticate(adapterId: string, credentials: unknown): Promise<AuthResult> {
         const adapter = this.#getAdapter(adapterId);
         if (!adapter) {
-            throw new Error(`Authentication adapter '${adapterId}' not found`);
+            throw new IllegalStateError(`Authentication adapter '${adapterId}' not found`);
         }
 
         const result = await adapter.authenticate(credentials);
@@ -115,7 +116,7 @@ export class AuthClient {
 
         const adapter = this.#getAdapter(adapterId);
         if (!adapter) {
-            throw new Error(`Authentication adapter '${adapterId}' not found`);
+            throw new IllegalStateError(`Authentication adapter '${adapterId}' not found`);
         }
 
         const principal = await adapter.validate(this.#state.token);
@@ -146,12 +147,12 @@ export class AuthClient {
 
         const token = this.#refreshToken ?? this.#state.token;
         if (!token) {
-            throw new Error('No token to refresh');
+            throw new IllegalStateError('No token to refresh');
         }
 
         const adapter = this.#getAdapter(adapterId);
         if (!adapter) {
-            throw new Error(`Authentication adapter '${adapterId}' not found`);
+            throw new IllegalStateError(`Authentication adapter '${adapterId}' not found`);
         }
 
         this.#refreshPromise = (async () => {

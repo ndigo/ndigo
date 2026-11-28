@@ -3,6 +3,7 @@
  */
 import { type AuthAdapter, type Principal } from '@ndigo/auth-core';
 import { AuthRegistry } from '@ndigo/auth-core';
+import { IllegalStateError } from '@ndigo/core';
 
 /**
  * Server-side authentication coordinator.
@@ -65,7 +66,7 @@ export class AuthServer {
     async validate(adapterId: string, token: string): Promise<Principal | null> {
         const adapter = this.#getAdapter(adapterId);
         if (!adapter) {
-            throw new Error(`Authentication adapter '${adapterId}' not found`);
+            throw new IllegalStateError(`Authentication adapter '${adapterId}' not found`);
         }
         return adapter.validate(token);
     }
@@ -91,7 +92,7 @@ export class AuthServer {
         for (const adapterId of adapterIds) {
             const adapter = this.#getAdapter(adapterId);
             if (!adapter) {
-                throw new Error(`Authentication adapter '${adapterId}' not found`);
+                throw new IllegalStateError(`Authentication adapter '${adapterId}' not found`);
             }
             try {
                 // oxlint-disable-next-line no-await-in-loop -- adapters form an ordered fallback chain; the first successful validation wins, so later adapters must not run early or in parallel.

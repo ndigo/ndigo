@@ -28,6 +28,7 @@
   "license": "ISC",
   "sideEffects": false,
   "dependencies": {
+    "@ndigo/core": "~0.0.1",
     "@ndigo/log": "~0.0.1",
     "@ndigo/platform-node": "~0.0.1",
     "@ndigo/router": "~0.0.1",

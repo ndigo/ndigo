@@ -11,7 +11,7 @@ import {
 } from '@ndigo/context';
 import type { EnvironmentCustomizer } from '@ndigo/context';
 import type { EntryProcessor } from '@ndigo/factory';
-import { JSONObject, IllegalStateError } from '@ndigo/core';
+import { FrameworkError, JSONObject, IllegalStateError } from '@ndigo/core';
 import { z } from 'zod';
 import { Application } from './application';
 import { ConfigFileFormat, StandardConfigFileLoader } from './config-file-loader';
@@ -215,7 +215,7 @@ export class ApplicationBuilder {
         assertAllowedConfigUrl(url);
         const response = await fetch(url);
         if (!response.ok) {
-            throw new Error(`Failed to load config from ${url}: ${response.status}`);
+            throw new FrameworkError(`Failed to load config from ${url}: ${response.status}`);
         }
         const address = fromConfigPath(url);
         const format = options.format ?? 'auto';

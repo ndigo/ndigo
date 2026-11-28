@@ -5,6 +5,7 @@
  */
 import type { SocketFanout } from './socket-fanout';
 import type { STOMPBody } from './stomp-frame';
+import { IllegalStateError } from '@ndigo/core';
 
 /**
  * Construction seams for {@link STOMPFanout}.
@@ -100,7 +101,7 @@ export class STOMPFanout {
             return;
         }
         if (!this.#ready) {
-            throw new Error('STOMPBroker is not ready; await connect()');
+            throw new IllegalStateError('STOMPBroker is not ready; await connect()');
         }
         await this.#fanout.publish('topic', { key: destination, body, headers });
     }

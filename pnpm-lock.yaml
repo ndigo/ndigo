@@ -2407,6 +2407,9 @@ importers:
       '@ndigo/context':
         specifier: ~0.0.1
         version: link:../ndigo-context
+      '@ndigo/core':
+        specifier: ~0.0.1
+        version: link:../ndigo-core
       '@ndigo/dispatcher':
         specifier: ~0.0.1
         version: link:../ndigo-dispatcher
@@ -2854,6 +2857,9 @@ importers:
 
   packages/ndigo-signals:
     dependencies:
+      '@ndigo/core':
+        specifier: ~0.0.1
+        version: link:../ndigo-core
       '@ndigo/log':
         specifier: ~0.0.1
         version: link:../ndigo-log
@@ -2938,6 +2944,9 @@ importers:
 
   packages/ndigo-telemetry-node:
     dependencies:
+      '@ndigo/core':
+        specifier: ~0.0.1
+        version: link:../ndigo-core
       '@ndigo/log':
         specifier: ~0.0.1
         version: link:../ndigo-log

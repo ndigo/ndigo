@@ -9,7 +9,7 @@
  */
 
 import { MetadataConfigApplicationContext, ApplicationContext } from '@ndigo/context';
-import { getSymbolMetadata } from '@ndigo/core';
+import { IllegalStateError, getSymbolMetadata } from '@ndigo/core';
 import { isFunction } from '@ndigo/util/types';
 import { HANDLER_MAPPING } from '@ndigo/dispatcher';
 import type { BrowserDispatcher as BrowserDispatcherType } from '@ndigo/platform-web/browser-dispatcher';
@@ -191,7 +191,7 @@ export class MockWebClient {
             const hint = targeters.length
                 ? ` The app installs ${targeters.length} view targeter(s): the render may have gone to a different view target — assert that destination, or render a result with an explicit viewTarget.`
                 : '';
-            throw new Error(
+            throw new IllegalStateError(
                 `No view was rendered for route '${path}'. Check the handler match and argument binding.${hint}`
             );
         }

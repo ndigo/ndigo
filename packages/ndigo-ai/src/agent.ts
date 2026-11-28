@@ -12,6 +12,7 @@ import { AIModelDisabledError, AIRateLimitError } from './errors';
 import type { AIFinishReason, AIMessage, AITokenUsage, AIToolCall, AIToolResult } from './messages';
 import type { AIModel, AIObjectRequest, AIObjectResult, AIStepRequest, AIStepResult } from './model';
 import type { AIToolDescriptor, AIToolSource } from './tools';
+import { IllegalStateError } from '@ndigo/core';
 
 /**
  * Per-run rate-limit policy. The limiter is the shared `@ndigo/rate-limit`
@@ -291,7 +292,7 @@ export class AIAgent {
                 }
 
                 if (step === undefined) {
-                    throw new Error('model stream ended without a settled step');
+                    throw new IllegalStateError('model stream ended without a settled step');
                 }
 
                 text = text.length === 0 ? step.text : `${text}\n${step.text}`;

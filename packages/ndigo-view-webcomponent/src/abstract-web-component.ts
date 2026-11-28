@@ -90,7 +90,7 @@ export abstract class AbstractWebComponent
      */
     get applicationContext(): ApplicationContext {
         if (!this.#applicationContext) {
-            throw new Error('ApplicationContext has not been set for this AbstractWebComponent.');
+            throw new IllegalStateError('ApplicationContext has not been set for this AbstractWebComponent.');
         }
         return this.#applicationContext;
     }

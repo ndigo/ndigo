@@ -11,7 +11,7 @@ import '@tsmetadata/polyfill';
 import { type ApplicationContext, AsApplicationContextAware } from '@ndigo/context';
 import { DISPATCHER, type AbstractDispatcher, parameters, routeValue } from '@ndigo/dispatcher';
 import { HTTPHeaders } from '@ndigo/http';
-import { Null } from '@ndigo/core';
+import { IllegalStateError, Null } from '@ndigo/core';
 import { OpenAPISpecGenerator, type OpenAPIDocument, type RouteMappingTable } from '@ndigo/openapi';
 import type { Route } from '@ndigo/router';
 import { getNodeResponse } from './node-request';
@@ -106,7 +106,7 @@ export class OpenAPIDocsController extends AsApplicationContextAware(Null) {
     #generate(): OpenAPIDocument {
         const dispatcher = this.applicationContext?.getValue<AbstractDispatcher>(DISPATCHER);
         if (dispatcher === undefined || dispatcher === null) {
-            throw new Error(
+            throw new IllegalStateError(
                 '[ndigo-openapi] no dispatcher wired — register OpenAPIDocsAutoConfiguration alongside NodeAutoConfiguration'
             );
         }

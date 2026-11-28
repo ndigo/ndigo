@@ -4,6 +4,7 @@
 import { readFile, realpath } from 'node:fs/promises';
 import { resolve, sep } from 'node:path';
 import { Resource, ResourceLoader, UnresolvedResource } from '@ndigo/context';
+import { FrameworkError } from '@ndigo/core';
 
 /**
  * File resource backed by the local filesystem.
@@ -116,12 +117,12 @@ export class FileSystemResourceLoader implements ResourceLoader {
         const candidate = resolve(base, location);
         // Containment by prefix-with-separator, not bare startsWith.
         if (candidate !== base && !candidate.startsWith(base + sep)) {
-            throw new Error(`Refusing to read outside the resource root: ${location}`);
+            throw new FrameworkError(`Refusing to read outside the resource root: ${location}`);
         }
 
         const real = await realpath(candidate);
         if (real !== base && !real.startsWith(base + sep)) {
-            throw new Error(`Refusing to read outside the resource root: ${location}`);
+            throw new FrameworkError(`Refusing to read outside the resource root: ${location}`);
         }
         return real;
     }

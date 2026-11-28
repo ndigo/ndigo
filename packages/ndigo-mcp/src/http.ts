@@ -12,6 +12,7 @@ import type { Route } from '@ndigo/router';
 import type { MCPToolRegistry } from './registry.js';
 import { createMcpServer } from './server.js';
 import type { UIResource } from './ui-resource.js';
+import { FrameworkError } from '@ndigo/core';
 
 /**
  * Options for {@link MCPHTTPEndpoint}.
@@ -88,7 +89,7 @@ export class MCPHTTPEndpoint {
         const req = route.attributes[NODE_INCOMING_ATTRIBUTE] as IncomingMessage | undefined;
         const res = route.attributes[NODE_RESPONSE_ATTRIBUTE] as ServerResponse | undefined;
         if (req === undefined || res === undefined) {
-            throw new Error('@ndigo/mcp HTTP transport requires the Node platform adapter');
+            throw new FrameworkError('@ndigo/mcp HTTP transport requires the Node platform adapter');
         }
         const server = createMcpServer(this.#registry, { source: 'http', ...this.#options });
         const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined });

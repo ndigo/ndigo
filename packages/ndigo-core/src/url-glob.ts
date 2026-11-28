@@ -1,6 +1,7 @@
 /**
  * URL glob parsing utilities.
  */
+import { FrameworkError } from './error.js';
 const DOT_LITERAL = '\\.',
     SLASH_LITERAL = '\\/',
     NOT_SLASH = '[^/]',
@@ -324,7 +325,7 @@ function parseExtGlob(ctx: ParseContext): string {
         // returns `null` — rather than compiling a hazardous regex
         // (KRN-REV-URLGLOB-04).
         if ((operator === '+' || operator === '*' || operator === '?') && hasQuantifier(innerPattern)) {
-            throw new Error(`Nested quantifier in extglob "${operator}(…)" is not supported`);
+            throw new FrameworkError(`Nested quantifier in extglob "${operator}(…)" is not supported`);
         }
 
         // Handle different extGlob operators

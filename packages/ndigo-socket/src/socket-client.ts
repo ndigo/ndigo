@@ -8,213 +8,19 @@
  * queue while disconnected.
  */
 import { signal, type Signal } from '@ndigo/signals';
-import { RingBuffer } from '@ndigo/core';
-import { AsyncReader } from './async-reader';
+import { AsyncReader } from './async-reader.js';
+import { DEFAULT_RECONNECT, defaultTransportFactory } from './_socket-client-transport.js';
+import { SocketOutboundQueue } from './_socket-client-outbound.js';
+import type {
+    ReconnectPolicy,
+    ReconnectTrigger,
+    SocketClient,
+    SocketStatus,
+    SocketTransport,
+    WebSocketClientOptions,
+} from './socket-client-types.js';
 
-/**
- * Connection lifecycle states.
- *
- * - `connecting` — initial connect or a reconnect attempt in flight.
- * - `open` — messages flow both ways.
- * - `reconnecting` — the peer dropped unexpectedly; a retry is scheduled.
- * - `closed` — deliberate close (or `reconnect: null` after a drop);
- * terminal, never reconnects.
- *
- * @example
- * ```ts
- * type _Alias = SocketStatus;
- * ```
- */
-export type SocketStatus = 'connecting' | 'open' | 'reconnecting' | 'closed';
-
-/**
- * The structural WHATWG `WebSocket` subset the client depends on.
- *
- * `WebSocketClient` never touches transports outside this surface, which is
- * exactly what browsers and Node ≥24 both implement — and what the unit
- * transport doubles implement.
- *
- * @example
- * ```ts
- * const transport: SocketTransport = new WebSocket('ws://localhost:8080/ws');
- * ```
- */
-export interface SocketTransport {
-    /** Binary frame delivery mode. Defaults to `'arraybuffer'` in the client. */
-    binaryType?: 'blob' | 'arraybuffer';
-    /** Called when the connection opens. */
-    onopen: ((event: unknown) => void) | null;
-    /** Called for each inbound frame. */
-    onmessage: ((event: { data: unknown }) => void) | null;
-    /** Called when the connection closes. */
-    onclose: ((event: { code: number; reason: string; wasClean: boolean }) => void) | null;
-    /** Called on transport errors. */
-    onerror: ((event: unknown) => void) | null;
-    /**
-     * Send a text (or binary) frame.
-     *
-     * @param data - The frame payload.
-     */
-    send(data: string | ArrayBuffer): void;
-    /**
-     * Initiate (or coerce) a close handshake.
-     *
-     * @param code - Close status code (default `1000` normal).
-     * @param reason - Human-readable close reason.
-     */
-    close(code?: number, reason?: string): void;
-}
-
-/**
- * Exponential backoff policy for unexpected-close reconnects.
- *
- * @example
- * ```ts
- * const policy: ReconnectPolicy = { initialDelay: 1000, maxDelay: 30000 };
- * ```
- */
-export interface ReconnectPolicy {
-    /** First delay in ms (default `1000`). */
-    baseMs: number;
-    /** Delay ceiling in ms (default `30_000`). */
-    maxMs: number;
-    /** Random jitter fraction, `0`–`1` (default `0.2` = ±20%). */
-    jitter: number;
-}
-
-/**
- * Environment wiring for an immediate retry (e.g. the browser `online`
- * event — `ndigo-platform-web` provides an implementation).
- *
- * @example
- * ```ts
- * const value = {} as ReconnectTrigger;
- * ```
- */
-export interface ReconnectTrigger {
-    /**
-     * Subscribe to connection-relevant changes (online events, …).
-     *
-     * @param listener - Invoked when the environment state changes; the
-     *   client reconnects immediately if it is currently reconnecting.
-     * @returns An unsubscribe function.
-     */
-    onChange(listener: () => void): () => void;
-}
-
-/**
- * Options for {@link WebSocketClient}.
- *
- * @example
- * ```ts
- * const options: WebSocketClientOptions = { url: 'ws://localhost:8080/ws' };
- * ```
- */
-export interface WebSocketClientOptions {
-    /**
-     * Reconnect policy. `null` disables auto-reconnect (an unexpected
-     * close ends in `closed`). Omit for the default policy.
-     */
-    reconnect?: ReconnectPolicy | null;
-    /**
-     * Opt-in bounded outbound queue for messages sent while not `open`
-     * (connecting/reconnecting). Overflow drops the **oldest** message.
-     * Default: no queue — messages sent while disconnected are dropped.
-     */
-    bufferWhileDisconnected?: { maxMessages: number };
-    /**
-     * Opt-in bound on the inbound `messages` stream. A consumer that stops
-     * draining (hidden tab, throttled render) otherwise lets the inbound
-     * queue grow without limit while the transport keeps delivering. On
-     * overflow the **newest** frame is dropped and the reader enters a
-     * drop-all state (mirrors the server's overflow posture) — the stream
-     * keeps draining what was queued. Default: unbounded.
-     */
-    maxInboundMessages?: number;
-    /** Immediate-retry wiring; `null` disables. */
-    reconnectTrigger?: ReconnectTrigger | null;
-    /**
-     * Status-transition observer: invoked on every state change
-     * (`connecting | open | reconnecting | closed`), never on construction
-     * and not twice for the same state — the telemetry seam for status and
-     * reconnect metrics (constructor-injected like `reconnectTrigger`).
-     */
-    onStatusChange?: (status: SocketStatus) => void;
-    /**
-     * Outbound-size observer: invoked with the UTF-8 byte length of every
-     * payload actually written to the transport (direct sends and buffered
-     * flushes alike, never for queued/dropped payloads) — the byte-counter
-     * seam for telemetry, which would otherwise re-serialize each payload.
-     * Constructor-injected like `onStatusChange`; a throw is isolated.
-     */
-    onSend?: (bytes: number) => void;
-    /**
-     * Transport factory for tests and non-standard environments. Defaults
-     * to the WHATWG `WebSocket` global (browser + Node ≥24).
-     * @internal
-     */
-    transportFactory?: (url: string) => SocketTransport;
-}
-
-/**
- * The client contract — what handlers, views, and services consume.
- *
- * @example
- * ```ts
- * const client: SocketClient = new SocketClient('ws://localhost:8080/ws');
- * await client.connect();
- * ```
- */
-export interface SocketClient {
-    /** The endpoint URL the client connects to. */
-    readonly url: string;
-    /** Reactive connection state (`@ndigo/signals` signal). */
-    readonly status: Signal<SocketStatus>;
-    /**
-     * Inbound messages as an async iterable. Text frames arrive as
-     * strings; binary frames as `ArrayBuffer`s. The stream completes only
-     * on a **deliberate** close — unexpected drops pause, then continue
-     * after reconnect.
-     */
-    readonly messages: AsyncIterable<unknown>;
-    /**
-     * Send: strings as text frames, anything else JSON-encoded. Sent while
-     * disconnected: queued (when `bufferWhileDisconnected` is set, overflow
-     * drops oldest) or dropped silently.
-     *
-     * @param data - The payload to send.
-     */
-    send(data: unknown): void;
-    /**
-     * Deliberate close — never triggers a reconnect.
-     *
-     * @param code - Close status code (default `1000` normal).
-     * @param reason - Human-readable close reason.
-     */
-    close(code?: number, reason?: string): void;
-    /**
-     * Whether the client reports exact wire sizes through the `onSend`
-     * observer (TEL-08). Telemetry reads this to skip its own payload
-     * estimation for wired clients — counting both would double the byte
-     * metric.
-     */
-    readonly onSendWired: boolean;
-}
-
-const DEFAULT_RECONNECT: ReconnectPolicy = Object.freeze({ baseMs: 1_000, maxMs: 30_000, jitter: 0.2 });
-
-/** Shared encoder for the outbound byte-size observer (module-level, reused). */
-const TEXT_ENCODER = new TextEncoder();
-
-/**
- * Default transport: the WHATWG global. The cast is deliberate — the
- * global's full surface is wider than the documented `SocketTransport`
- * subset the client touches (browser and Node ≥24 both implement it).
- */
-function defaultTransportFactory(url: string): SocketTransport {
-    // The source type is wider than this consumer's contract; the assertion is confined to this boundary.
-    return new WebSocket(url) as unknown as SocketTransport;
-}
+export * from './socket-client-types.js';
 
 /**
  * WHATWG-`WebSocket`-based client with reconnect.
@@ -253,27 +59,16 @@ export class WebSocketClient implements SocketClient {
     /** The live connection status. */
     readonly status: Signal<SocketStatus> = signal<SocketStatus>('connecting');
     readonly #reconnect: ReconnectPolicy | null;
-    readonly #bufferLimit: number | null;
     readonly #trigger: ReconnectTrigger | null;
     readonly #onStatusChange: ((status: SocketStatus) => void) | null;
-    readonly #onSend: ((bytes: number) => void) | null;
     readonly #transportFactory: (url: string) => SocketTransport;
     readonly #inbound: AsyncReader<unknown>;
     #transport: SocketTransport | null = null;
     #intentional = false;
     #attempt = 0;
     #timer: number | NodeJS.Timeout | null = null;
-    /**
-     * Outbound buffer while disconnected — a head-indexed ring (O(1)
-     * dequeue; the flush is a hot per-message path).
-     */
-    #outbound: RingBuffer<string | ArrayBuffer>;
-    /**
-     * The message whose send raced the wire to CLOSING: a ring cannot
-     * push-front, so the failed message parks here and is retried FIRST on
-     * the next open, preserving the buffer's order.
-     */
-    #retryPending: string | ArrayBuffer | null = null;
+    /** Outbound buffer while disconnected (bounded, order-preserving). */
+    readonly #outbound: SocketOutboundQueue;
     #unsubscribeTrigger: (() => void) | null = null;
 
     /**
@@ -286,14 +81,13 @@ export class WebSocketClient implements SocketClient {
         this.url = url;
         const configured = options.reconnect;
         this.#reconnect = configured === undefined ? DEFAULT_RECONNECT : configured;
-        this.#bufferLimit = options.bufferWhileDisconnected?.maxMessages ?? null;
         this.#trigger = options.reconnectTrigger ?? null;
         this.#onStatusChange = options.onStatusChange ?? null;
-        this.#onSend = options.onSend ?? null;
         this.#transportFactory = options.transportFactory ?? defaultTransportFactory;
-        // The ring's power-of-2 capacity rounds the bound up; the exact
-        // `maxMessages` is enforced by the length guard in send().
-        this.#outbound = new RingBuffer<string | ArrayBuffer>(options.bufferWhileDisconnected?.maxMessages ?? 16);
+        this.#outbound = new SocketOutboundQueue(
+            options.bufferWhileDisconnected?.maxMessages ?? null,
+            options.onSend ?? null
+        );
         // Inbound watermark (opt-in): while the queue is at the cap, the newest
         // frame is dropped and the reader reports one overflow episode; the
         // stream resumes once the consumer drains below the cap (mirrors
@@ -308,7 +102,7 @@ export class WebSocketClient implements SocketClient {
 
     /** Whether the client reports exact wire sizes through `onSend` (TEL-08). */
     get onSendWired(): boolean {
-        return this.#onSend !== null;
+        return this.#outbound.onSendWired;
     }
 
     /** Inbound messages as an async iterable. */
@@ -350,7 +144,7 @@ export class WebSocketClient implements SocketClient {
         if (transport !== null && this.status.value === 'open') {
             try {
                 transport.send(payload as string | ArrayBuffer);
-                this.#notifySend(payload as string | ArrayBuffer);
+                this.#outbound.notify(payload as string | ArrayBuffer);
                 return;
             } catch {
                 // The status signal lags the wire: between the peer starting
@@ -360,11 +154,8 @@ export class WebSocketClient implements SocketClient {
                 // per `bufferWhileDisconnected`.
             }
         }
-        if (this.#bufferLimit !== null && this.status.value !== 'closed') {
-            this.#outbound.put(payload as string | ArrayBuffer);
-            if (this.#outbound.length > this.#bufferLimit) {
-                this.#outbound.get(); // drop oldest
-            }
+        if (this.status.value !== 'closed') {
+            this.#outbound.push(payload as string | ArrayBuffer);
         }
     }
 
@@ -389,10 +180,7 @@ export class WebSocketClient implements SocketClient {
         // send later.
         this.#unsubscribeTrigger?.();
         this.#unsubscribeTrigger = null;
-        while (this.#outbound.length > 0) {
-            this.#outbound.get();
-        }
-        this.#retryPending = null;
+        this.#outbound.clear();
         this.#transport?.close(code, reason);
         this.#transition('closed');
         this.#inbound.complete();
@@ -408,7 +196,7 @@ export class WebSocketClient implements SocketClient {
             }
             this.#attempt = 0;
             this.#transition('open');
-            this.#flush();
+            this.#outbound.flush(transport, () => this.status.value === 'open');
         };
         transport.onmessage = (event) => {
             if (!this.#intentional) {
@@ -505,56 +293,6 @@ export class WebSocketClient implements SocketClient {
         } catch {
             // Observer/effect fault — status is already set; the state
             // machine continues regardless.
-        }
-    }
-
-    /**
-     * Report one written payload's byte size to the `onSend` observer
-     * (TEL-08). Isolated: an observer fault must never wedge the send path
-     * (nor be mistaken for a transport failure by the caller's try/catch).
-     *
-     * @param payload - The payload that just hit the wire.
-     */
-    #notifySend(payload: string | ArrayBuffer): void {
-        const observer = this.#onSend;
-        if (observer === null) {
-            return;
-        }
-        try {
-            observer(typeof payload === 'string' ? TEXT_ENCODER.encode(payload).length : payload.byteLength);
-        } catch {
-            // Observer fault — the frame is already on the wire.
-        }
-    }
-
-    #flush(): void {
-        const transport = this.#transport;
-        while (transport !== null && this.status.value === 'open') {
-            const retry = this.#retryPending;
-            if (retry !== null) {
-                try {
-                    transport.send(retry);
-                } catch {
-                    return; // still racing — parked for the next open
-                }
-                this.#notifySend(retry);
-                this.#retryPending = null;
-            }
-            if (this.#outbound.length === 0) {
-                return;
-            }
-            const message = this.#outbound.get() as string | ArrayBuffer;
-            try {
-                transport.send(message);
-            } catch {
-                // The wire raced to CLOSING between the status check and the
-                // send. Park the message (a ring cannot push-front) so it is
-                // retried FIRST on the next open — order preserved; onclose
-                // transitions, or terminal close clears the buffer.
-                this.#retryPending = message;
-                return;
-            }
-            this.#notifySend(message);
         }
     }
 }

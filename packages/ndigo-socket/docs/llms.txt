@@ -16,11 +16,11 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `AsSocketSessionRegistryAware` — Mixes socket-session-registry awareness into a base class.
 - `likeSocketSessionRegistryAware` — Tests whether a value looks like socket-session-registry-aware state.
 - `SOCKET_SESSION_REGISTRY` — Token for the application's shared SocketSessionRegistry entry. `NodeAutoConfiguration` registers the platform implementation under the matching `'socketSessio…
-- `SocketStatus` *(type)* — Connection lifecycle states.
+- `SocketStatus` *(type)*
 - `SocketTransport` *(type)* — The structural WHATWG `WebSocket` subset the client depends on.
 - `ReconnectPolicy` *(type)* — Exponential backoff policy for unexpected-close reconnects.
 - `ReconnectTrigger` *(type)* — Environment wiring for an immediate retry (e.g. the browser `online` event — `ndigo-platform-web` provides an implementation).
-- `WebSocketClientOptions` *(type)* — Options for WebSocketClient.
+- `WebSocketClientOptions` *(type)* — Options for `WebSocketClient`.
 - `SocketClient` *(type)* — The client contract — what handlers, views, and services consume.
 - `WebSocketClient` — WHATWG-`WebSocket`-based client with reconnect.
 - `STOMPBody` *(type)* — STOMP frame contracts.

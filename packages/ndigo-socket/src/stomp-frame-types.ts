@@ -26,5 +26,3 @@ export interface STOMPFrame {
 
 /** Byte-like inputs the codec accepts (binary WS frames, node Buffers). */
 export type STOMPWireInput = string | Uint8Array | ArrayBuffer;
-
-/** Raised on malformed frames (missing NUL, bad `content-length`, …). */

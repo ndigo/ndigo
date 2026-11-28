@@ -39,7 +39,7 @@ export class AuthServer {
      * Registers an adapter scoped to this server instance.
      *
      * Instance-scoped registrations shadow the process-wide
-     * {@link AuthRegistry} for the same id without mutating it, so two
+     * `AuthRegistry` for the same id without mutating it, so two
      * application contexts in one process cannot collide on `'jwt'` or
      * `'oidc'`.
      *

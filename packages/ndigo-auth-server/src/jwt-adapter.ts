@@ -1,178 +1,17 @@
 /**
  * JWT authentication adapter: issuance, validation, refresh, and revocation.
  */
-import {
-    jwtVerify,
-    SignJWT,
-    importSPKI,
-    exportJWK,
-    createLocalJWKSet,
-    createRemoteJWKSet,
-    type JWTPayload,
-    type JWTVerifyGetKey,
-    type JWTVerifyOptions,
-} from 'jose';
-import {
-    type AuthAdapter,
-    type AuthResult,
-    type Principal,
-    type UserStore,
-    DefaultPrincipal,
-    readRoles,
-    readScopes,
-} from '@ndigo/auth-core';
+import { jwtVerify, type JWTPayload } from 'jose';
+import { DefaultPrincipal, type AuthAdapter, type AuthResult, type Principal, type UserStore } from '@ndigo/auth-core';
 import { FrameworkError } from '@ndigo/core';
-
-/**
- * Configuration for the JWT adapter.
- *
- * @example
- * ```ts
- * const value = {} as JWTAdapterConfig;
- * ```
- */
-export interface JWTAdapterConfig {
-    /** The issuer (iss) claim to validate. */
-    issuer: string;
-    /** The audience (aud) claim to validate. */
-    audience: string;
-    /**
-     * HMAC shared secret (HS256/HS384/HS512). Required when `algorithm` is
-     * an HS* alg, and must be at least 32 bytes (256 bits) of UTF-8.
-     */
-    secret?: string;
-    /**
-     * PEM-encoded public key (RS256/ES256/etc.). Required when `algorithm` is
-     * an asymmetric alg and no `jwksUrl` is provided.
-     */
-    publicKey?: string;
-    /**
-     * JWKS endpoint URL (e.g. an OIDC provider's `jwks_uri`). When set, keys are
-     * fetched + cached from this endpoint and rotated automatically, taking
-     * precedence over `publicKey`.
-     */
-    jwksUrl?: string;
-    /** The algorithm used for signing (e.g., 'HS256', 'RS256'). */
-    algorithm: string;
-    /**
-     * User store backing `ver`-claim revocation. When present:
-     * `validate` checks the `ver` claim of framework-issued tokens against
-     * the account's `tokenVersion`, `issueTokens` snapshots the current
-     * version, and `refresh`/`logout` advance it (rotating the family and
-     * invalidating every older token). When the adapter validates its own
-     * HMAC issuance, a token without `ver` fails closed. Asymmetric
-     * configurations validate external IdP tokens, which carry no `ver` and
-     * therefore skip the version check — revocation never rejects tokens
-     * this adapter did not version.
-     */
-    userStore?: UserStore;
-    /**
-     * Short-TTL cache for `tokenVersion` reads during validation (ms).
-     * `0` (default) reads the store on every validation — revocation is
-     * visible immediately at the cost of one user-record read per request;
-     * a positive value trades revocation latency for throughput.
-     */
-    revocationCacheTtlMs?: number;
-    /** Lifetime of issued access tokens (default 15 minutes). */
-    accessTokenTtlMs?: number;
-    /** Lifetime of issued refresh tokens (default 7 days). */
-    refreshTokenTtlMs?: number;
-    /**
-     * Clock skew tolerance (seconds) applied to the `exp`/`nbf` claim checks
-     * (default 0). Raise it when token issuers and this verifier disagree on
-     * the current time.
-     */
-    clockToleranceSeconds?: number;
-}
-
-/**
- * Error for refresh/issue/revocation failures: invalid, superseded or
- * revoked tokens, unknown/disabled accounts, and configuration that
- * cannot issue tokens. Always a `401`-class outcome at the flow level.
- *
- * @example
- * ```ts
- * const instance = new JWTTokenError();
- * ```
- */
-export class JWTTokenError extends FrameworkError {
-    /**
-     * The `Symbol.toStringTag` value for this instance.
-     *
-     * `Object.prototype.toString()` reads this symbol to render the
-     * instance as `"[object <tag>]" ` (see MDN: Symbol.toStringTag).
-     *
-     * @returns The string "JWTTokenError".
-     *
-     * @example
-     * console.log(Object.prototype.toString.call(instance)); // "[object JWTTokenError]"
-     */
-    get [Symbol.toStringTag](): string {
-        return 'JWTTokenError';
-    }
-
-    constructor(message: string) {
-        super(message);
-        this.name = 'JWTTokenError';
-    }
-}
-
-/**
- * The result of {@link JWTAdapter.refresh}: the `AuthResult` contract
- * (`token` = the new access token) plus the rotated refresh token.
- *
- * @example
- * ```ts
- * const value = {} as JWTRefreshResult;
- * ```
- */
-export interface JWTRefreshResult extends AuthResult {
-    /** New access token. */
-    token: string;
-    /** New (rotated) refresh token — the old one is dead. */
-    refreshToken: string;
-}
-
-/**
- * The identity to issue tokens for (`JWTAdapter.issueTokens`). When a
- * user store is wired, the store's record wins (roles + current
- * `tokenVersion`); the subject fields are the store-less fallback.
- *
- * @example
- * ```ts
- * const value = {} as TokenSubject;
- * ```
- */
-export interface TokenSubject {
-    /** Account id (the `sub` claim). */
-    id: string;
-    /** Display name (store-less mode). */
-    name?: string;
-    /** Roles (store-less mode). */
-    roles?: readonly string[];
-    /** OAuth scopes (store-less mode; emitted as the `scope` claim). */
-    scopes?: readonly string[];
-    /** Token version (store-less mode; store mode reads the live value). */
-    tokenVersion?: number;
-}
+import { JWTKeyResolver } from './_jwt-keys.js';
+import { JWTRevocationTracker } from './_jwt-revocation.js';
+import { principalFromPayload, storeIdentity } from './_jwt-identity.js';
+import { JWTTokenError } from './jwt-adapter-types.js';
+import type { JWTAdapterConfig, JWTRefreshResult, TokenSubject } from './jwt-adapter-types.js';
 
 const DEFAULT_ACCESS_TTL_MS = 15 * 60 * 1000;
 const DEFAULT_REFRESH_TTL_MS = 7 * 24 * 60 * 60 * 1000;
-
-/** Minimum HMAC secret size in UTF-8 bytes (256 bits, matching SHA-256's block security). */
-const MIN_HMAC_SECRET_BYTES = 32;
-
-/**
- * Cap on the revocation `tokenVersion` cache (2026-11-02 review, L1). Entries
- * are keyed by account `sub` with a per-entry expiry that is only ever
- * overwritten on re-access — without a bound, a long-running server accrues
- * one stale entry per distinct account ever seen. Crossing the cap sweeps
- * expired entries first, then FIFO-evicts the oldest (Map iteration order is
- * insertion order), same discipline as `FixedWindowRateLimiter`. The
- * cache is a throughput optimization only: evicting a live entry costs one
- * `UserStore.findById`, never a wrong auth decision.
- */
-const MAX_REVOCATION_CACHE_ENTRIES = 10_000;
 
 /**
  * A reference implementation of {@link AuthAdapter} for JWT-based authentication.
@@ -214,61 +53,20 @@ export class JWTAdapter implements AuthAdapter {
 
     /** Adapter identifier (`'jwt'`). */
     readonly id = 'jwt';
-    #config: JWTAdapterConfig;
-    #localJwks: JWTVerifyGetKey | null = null;
-    #remoteJwks: JWTVerifyGetKey | null = null;
+    readonly #config: JWTAdapterConfig;
+    readonly #keys: JWTKeyResolver;
+    readonly #revocation: JWTRevocationTracker;
     readonly #userStore: UserStore | undefined;
-    readonly #revocationCacheTtlMs: number;
     readonly #accessTtlMs: number;
     readonly #refreshTtlMs: number;
-    readonly #versionCache = new Map<string, { version: number; expiresAt: number }>();
 
     constructor(config: JWTAdapterConfig) {
-        if (config.algorithm.startsWith('HS')) {
-            if (!config.secret) {
-                throw new JWTTokenError(
-                    `JWTAdapter: HMAC algorithm "${config.algorithm}" requires "secret" — validation and issuance fail without it`
-                );
-            }
-            // HMAC security is bounded by the key's entropy; a short
-            // secret is brute-forceable offline from a single signed token.
-            const secretBytes = new TextEncoder().encode(config.secret).length;
-            if (secretBytes < MIN_HMAC_SECRET_BYTES) {
-                throw new JWTTokenError(
-                    `JWTAdapter: HMAC algorithm "${config.algorithm}" requires a "secret" of at least ` +
-                        `${MIN_HMAC_SECRET_BYTES} bytes (256 bits); got ${secretBytes} bytes`
-                );
-            }
-        }
         this.#config = config;
+        this.#keys = new JWTKeyResolver(config);
+        this.#revocation = new JWTRevocationTracker(config.userStore, config.revocationCacheTtlMs ?? 0);
         this.#userStore = config.userStore;
-        this.#revocationCacheTtlMs = config.revocationCacheTtlMs ?? 0;
         this.#accessTtlMs = config.accessTokenTtlMs ?? DEFAULT_ACCESS_TTL_MS;
         this.#refreshTtlMs = config.refreshTokenTtlMs ?? DEFAULT_REFRESH_TTL_MS;
-        if (config.jwksUrl) {
-            this.#remoteJwks = createRemoteJWKSet(new URL(config.jwksUrl));
-        }
-    }
-
-    /**
-     * Lazily builds a local JWKS from the PEM public key.
-     *
-     * The PEM → CryptoKey → JWK → local JWKSet chain is the supported
-     * verified-flow; passing a bare KeyObject to `jwtVerify` is rejected by
-     * jose's `check_key_type` on Node 22.
-     */
-    async #getLocalJwks(): Promise<JWTVerifyGetKey> {
-        if (this.#localJwks) {
-            return this.#localJwks;
-        }
-        const { publicKey } = this.#config;
-        if (!publicKey) {
-            throw new FrameworkError('JWTAdapter: `publicKey` or `jwksUrl` is required for this algorithm');
-        }
-        const cryptoKey = await importSPKI(publicKey, this.#config.algorithm);
-        const jwk = await exportJWK(cryptoKey);
-        this.#localJwks = createLocalJWKSet({ keys: [jwk] });
-        return this.#localJwks;
     }
 
     /**
@@ -279,25 +77,16 @@ export class JWTAdapter implements AuthAdapter {
      * issuer, audience, `exp`, and `sub` claims. Trailing whitespace and
      * other spec allowances are handled by `jose`.
      *
-     * With a `userStore` wired, framework-issued tokens (`ver` claim) are
-     * additionally checked against the live account: a bumped
-     * `tokenVersion` or a disabled/deleted account rejects the token
-     * External IdP tokens without `ver` skip the store check.
-     *
-     * Framework-issued **refresh** tokens (`token_use: 'refresh'`) are
-     * never accepted here — only access tokens authenticate requests
-     * (`token_use: 'access'`, or absent for external IdP tokens).
-     *
      * @param token - The JWT to validate.
      * @returns The authenticated {@link Principal}, or `null` if validation fails.
      */
     async validate(token: string): Promise<Principal | null> {
         try {
-            const key = await this.#resolveKey();
+            const key = await this.#keys.resolve();
             // jose's jwtVerify overloads (a concrete key vs a JWKS getKey
             // function) resolve statically on the `Uint8Array | JWTVerifyGetKey`
             // union — a single call picks the union-aware overload.
-            const { payload } = await jwtVerify(token, key, this.#verifyOptions());
+            const { payload } = await jwtVerify(token, key, this.#keys.verifyOptions());
 
             // Only access tokens are credentials. Framework refresh tokens
             // carry `token_use: 'refresh'` (7-day TTL) and must never
@@ -313,11 +102,11 @@ export class JWTAdapter implements AuthAdapter {
             // An HS* adapter issues its own tokens, so a missing `ver` is a
             // malformed token and fails closed; external IdP tokens
             // (asymmetric validation) legitimately carry no `ver` and skip
-            // the check. `#currentVersion` returns null for disabled/deleted
+            // the check. `currentVersion` returns null for disabled/deleted
             // accounts too, so the same gate revokes their live tokens.
             if (this.#userStore && typeof payload.sub === 'string') {
                 if (typeof payload.ver === 'number') {
-                    const current = await this.#currentVersion(payload.sub);
+                    const current = await this.#revocation.currentVersion(payload.sub);
                     if (current === null || current !== payload.ver) return null;
                 } else if (this.#config.algorithm.startsWith('HS')) {
                     return null;
@@ -328,36 +117,6 @@ export class JWTAdapter implements AuthAdapter {
         } catch {
             return null;
         }
-    }
-
-    /**
-     * The claims, issuer, audience, and algorithm options enforced on every
-     * token. `requiredClaims` is what turns an absent `exp` (or `sub`) into
-     * a verification failure instead of an unvalidated token.
-     */
-    #verifyOptions(): JWTVerifyOptions {
-        return {
-            issuer: this.#config.issuer,
-            audience: this.#config.audience,
-            algorithms: [this.#config.algorithm],
-            requiredClaims: ['exp', 'sub'],
-            clockTolerance: this.#config.clockToleranceSeconds ?? 0,
-        };
-    }
-
-    /**
-     * Resolves the verification key: remote JWKS, then local JWKS (PEM), then
-     * the HMAC secret.
-     */
-    async #resolveKey(): Promise<Uint8Array | JWTVerifyGetKey> {
-        if (this.#remoteJwks) {
-            return this.#remoteJwks;
-        }
-        const algorithm = this.#config.algorithm;
-        if (algorithm.startsWith('HS')) {
-            return new TextEncoder().encode(this.#config.secret ?? '');
-        }
-        return this.#getLocalJwks();
     }
 
     /**
@@ -388,9 +147,8 @@ export class JWTAdapter implements AuthAdapter {
     async issueTokens(
         subject: TokenSubject
     ): Promise<{ accessToken: string; refreshToken: string; expiresAt: number }> {
-        const secret = this.#signingSecret();
         const identity = this.#userStore
-            ? await this.#storeIdentity(subject.id, subject.scopes)
+            ? await storeIdentity(this.#userStore, subject.id, subject.scopes)
             : {
                   id: subject.id,
                   name: subject.name ?? subject.id,
@@ -399,7 +157,7 @@ export class JWTAdapter implements AuthAdapter {
                   tokenVersion: subject.tokenVersion ?? 0,
               };
         const now = Date.now();
-        const accessToken = await this.#sign(
+        const accessToken = await this.#keys.sign(
             {
                 sub: identity.id,
                 name: identity.name,
@@ -408,12 +166,10 @@ export class JWTAdapter implements AuthAdapter {
                 ver: identity.tokenVersion,
                 token_use: 'access',
             },
-            secret,
             now + this.#accessTtlMs
         );
-        const refreshToken = await this.#sign(
+        const refreshToken = await this.#keys.sign(
             { sub: identity.id, ver: identity.tokenVersion, token_use: 'refresh' },
-            secret,
             now + this.#refreshTtlMs
         );
         return { accessToken, refreshToken, expiresAt: now + this.#accessTtlMs };
@@ -431,10 +187,10 @@ export class JWTAdapter implements AuthAdapter {
      * @throws `JWTTokenError` when the token is invalid or superseded.
      */
     async refresh(token: string): Promise<JWTRefreshResult> {
-        const store = this.#userStoreOrThrow('refresh');
+        const store = this.#revocation.requireStore('refresh');
         let payload: JWTPayload;
         try {
-            ({ payload } = await jwtVerify(token, await this.#resolveKey(), this.#verifyOptions()));
+            ({ payload } = await jwtVerify(token, await this.#keys.resolve(), this.#keys.verifyOptions()));
         } catch {
             throw new JWTTokenError('Invalid refresh token');
         }
@@ -456,7 +212,7 @@ export class JWTAdapter implements AuthAdapter {
         if (nextVer === null) {
             throw new JWTTokenError('Refresh token superseded or revoked');
         }
-        this.#cacheVersion(user.id, nextVer);
+        this.#revocation.cacheVersion(user.id, nextVer);
         const issued = await this.issueTokens({ id: user.id });
         return {
             principal: new DefaultPrincipal(user.id, user.username, user.roles ?? []),
@@ -476,10 +232,10 @@ export class JWTAdapter implements AuthAdapter {
      * @returns A promise that resolves once the account version advances.
      */
     async logout(token: string): Promise<void> {
-        const store = this.#userStoreOrThrow('logout');
+        const store = this.#revocation.requireStore('logout');
         let payload: JWTPayload;
         try {
-            ({ payload } = await jwtVerify(token, await this.#resolveKey(), this.#verifyOptions()));
+            ({ payload } = await jwtVerify(token, await this.#keys.resolve(), this.#keys.verifyOptions()));
         } catch {
             throw new JWTTokenError('Invalid token');
         }
@@ -493,135 +249,8 @@ export class JWTAdapter implements AuthAdapter {
         if (nextVer === null) {
             throw new JWTTokenError('Token superseded or revoked');
         }
-        this.#cacheVersion(payload.sub, nextVer);
-    }
-
-    #signingSecret(): Uint8Array {
-        const algorithm = this.#config.algorithm;
-        if (!algorithm.startsWith('HS') || !this.#config.secret) {
-            throw new JWTTokenError(
-                `Token issuance requires an HMAC secret (HS* algorithms); "${algorithm}" holds no signing key`
-            );
-        }
-        return new TextEncoder().encode(this.#config.secret);
-    }
-
-    async #storeIdentity(
-        id: string,
-        scopes: readonly string[] = []
-    ): Promise<{
-        id: string;
-        name: string;
-        roles: readonly string[];
-        scopes: readonly string[];
-        tokenVersion: number;
-    }> {
-        const store = this.#userStore;
-        if (store === undefined) {
-            throw new JWTTokenError('issueTokens requires a userStore — revocation is user-record token versioning');
-        }
-        const user = await store.findById(id);
-        if (!user || user.disabled === true) {
-            throw new JWTTokenError(`Cannot issue tokens for user "${id}": unknown or disabled`);
-        }
-        return {
-            id: user.id,
-            name: user.username,
-            roles: user.roles ?? [],
-            // `UserRecord` has no scopes; keep the caller's grants instead of
-            // silently minting an unscoped token.
-            scopes,
-            tokenVersion: user.tokenVersion ?? 0,
-        };
-    }
-
-    async #sign(payload: Record<string, unknown>, secret: Uint8Array, expiresAtMs: number): Promise<string> {
-        return new SignJWT(payload)
-            .setProtectedHeader({ alg: this.#config.algorithm })
-            .setIssuer(this.#config.issuer)
-            .setAudience(this.#config.audience)
-            .setIssuedAt(Math.floor(Date.now() / 1000))
-            .setExpirationTime(Math.floor(expiresAtMs / 1000))
-            .sign(secret);
-    }
-
-    #userStoreOrThrow(flow: string): UserStore {
-        if (!this.#userStore) {
-            throw new JWTTokenError(`${flow} requires a userStore — revocation is user-record token versioning`);
-        }
-        return this.#userStore;
-    }
-
-    /**
-     * Reads the account's current `tokenVersion` for the `ver` check,
-     * honoring the short-TTL cache when configured. Returns `null` for an
-     * unknown or disabled/deleted account, failing validation closed;
-     * a cache hit answers within `revocationCacheTtlMs`, so a disable takes
-     * effect with the same bounded staleness as a version bump.
-     */
-    async #currentVersion(sub: string): Promise<number | null> {
-        const ttl = this.#revocationCacheTtlMs;
-        if (ttl > 0) {
-            const hit = this.#versionCache.get(sub);
-            if (hit && hit.expiresAt > Date.now()) return hit.version;
-        }
-        const store = this.#userStore;
-        if (store === undefined) return null;
-        const user = await store.findById(sub);
-        const version = user === null || user.disabled === true ? null : (user.tokenVersion ?? 0);
-        if (ttl > 0 && version !== null) {
-            this.#pruneVersionCache();
-            this.#versionCache.set(sub, { version, expiresAt: Date.now() + ttl });
-        }
-        return version;
-    }
-
-    #cacheVersion(sub: string, version: number): void {
-        if (this.#revocationCacheTtlMs > 0) {
-            this.#pruneVersionCache();
-            this.#versionCache.set(sub, { version, expiresAt: Date.now() + this.#revocationCacheTtlMs });
-        }
-    }
-
-    /**
-     * Bounds {@link MAX_REVOCATION_CACHE_ENTRIES}: no-op below the cap; at the
-     * cap, delete-on-sight sweep of expired entries, then oldest-first eviction
-     * until the insert fits. Called before every cache write.
-     */
-    #pruneVersionCache(): void {
-        if (this.#versionCache.size < MAX_REVOCATION_CACHE_ENTRIES) return;
-        const now = Date.now();
-        for (const [key, entry] of this.#versionCache) {
-            if (entry.expiresAt <= now) {
-                this.#versionCache.delete(key);
-            }
-        }
-        while (this.#versionCache.size >= MAX_REVOCATION_CACHE_ENTRIES) {
-            const oldest = this.#versionCache.keys().next();
-            if (oldest.done) break;
-            this.#versionCache.delete(oldest.value);
-        }
+        this.#revocation.cacheVersion(payload.sub, nextVer);
     }
 }
 
-/**
- * Maps verified JWT claims to a {@link Principal}.
- *
- * @param payload - The verified JWT payload.
- * @returns The principal, or `null` when `sub` is absent or not a non-empty string.
- */
-function principalFromPayload(payload: JWTPayload): Principal | null {
-    const sub = payload.sub;
-    if (typeof sub !== 'string' || sub.length === 0) {
-        return null;
-    }
-    const roles = readRoles(payload);
-    const scopes = readScopes(payload);
-    // Non-string names (objects, numbers) must not leak `"[object Object]"`
-    // into logs and UI; prefer the email claim, then a neutral label.
-    const name =
-        (typeof payload.name === 'string' && payload.name) ||
-        (typeof payload.email === 'string' && payload.email) ||
-        'Unknown';
-    return new DefaultPrincipal(sub, name, roles, scopes);
-}
+export * from './jwt-adapter-types.js';

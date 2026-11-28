@@ -3,195 +3,20 @@
  */
 import { readdir, realpath, stat } from 'node:fs/promises';
 import { sep, resolve, isAbsolute } from 'node:path';
-import { MediaType, MediaTypes, stringComparator } from '@ndigo/core';
+import { MediaTypes, stringComparator } from '@ndigo/core';
+import {
+    COMPRESSIBLE_EXTENSIONS,
+    MIME_BY_EXTENSION,
+    buildEtag,
+    escapeHtml,
+    isDotfilePath,
+    utf8,
+} from './_static-resource-media.js';
+import { negotiateEncoding } from './static-resource-resolver-support.js';
+import type { StaticEncoding, StaticResourceResult, StaticResolveOptions } from './static-resource-resolver-types.js';
 
-/** Outcome kinds for a static-resource lookup. */
-export type StaticResourceKind = 'forbidden' | 'not-found' | 'internal-error' | 'ok';
-
-/** Content-Encoding of a precompressed variant. */
-export type StaticEncoding = 'br' | 'gzip';
-
-/** The result of resolving a static resource. */
-export interface StaticResourceResult {
-    /** The resolution outcome. */
-    readonly kind: StaticResourceKind;
-    /**
-     * Absolute path of the payload file to open (only for `ok` file-backed
-     * results). Callers stream from here — resolution never reads payload
-     * bytes.
-     */
-    readonly path?: string;
-    /**
-     * Generated payload bytes (directory listings only; `ok` file-backed
-     * results carry `path` instead).
-     */
-    readonly data?: Buffer;
-    /** MIME type from the allowlist (only for `ok`). */
-    readonly contentType?: string;
-    /** Byte size of the served payload (only for `ok`; the variant's when encoded). */
-    readonly size?: number;
-    /** Last-modified time (ms epoch) of the served payload (only for `ok`). */
-    readonly mtimeMs?: number;
-    /**
-     * Strong validator of the served payload: `"<hex size>-<hex mtime>"`
-     * for originals, `"<hex size>-<hex mtime>-<encoding>"` for variants so the
-     * two never collide under one URL. Absent for generated listings,
-     * which are not cacheable validators.
-     */
-    readonly etag?: string;
-    /** `Content-Encoding` of the served variant, when precompressed. */
-    readonly encoding?: StaticEncoding;
-    /** True when the payload could have been served encoded (compressible MIME) — handlers add `Vary: Accept-Encoding`. */
-    readonly variantAware?: boolean;
-}
-
-/**
- * MIME allowlist — extensions outside this map are not served. Values are
- * `@ndigo/core` {@link MediaType} instances: text-ish
- * entries carry an explicit `utf-8` charset via `withCharset`, serialized
- * canonically (parameter lists without the RFC-permitted optional space —
- * `text/html;charset=utf-8`).
- */
-const utf8 = (mediaType: MediaType): MediaType => mediaType.withCharset('utf-8');
-
-const MIME_BY_EXTENSION: Record<string, MediaType> = {
-    '.html': utf8(MediaTypes.TEXT_HTML),
-    '.htm': utf8(MediaTypes.TEXT_HTML),
-    '.css': utf8(MediaTypes.TEXT_CSS),
-    '.js': utf8(MediaTypes.TEXT_JAVASCRIPT),
-    '.mjs': utf8(MediaTypes.TEXT_JAVASCRIPT),
-    '.json': MediaTypes.APPLICATION_JSON,
-    '.png': MediaTypes.IMAGE_PNG,
-    '.jpg': MediaTypes.IMAGE_JPEG,
-    '.jpeg': MediaTypes.IMAGE_JPEG,
-    '.gif': MediaTypes.IMAGE_GIF,
-    '.svg': MediaTypes.IMAGE_SVG_XML,
-    '.ico': MediaTypes.IMAGE_X_ICON,
-    '.webp': MediaTypes.IMAGE_WEBP,
-    '.woff': MediaTypes.FONT_WOFF,
-    '.woff2': MediaTypes.FONT_WOFF2,
-    '.ttf': MediaTypes.FONT_TTF,
-    '.txt': utf8(MediaTypes.TEXT_PLAIN),
-    '.xml': MediaTypes.APPLICATION_XML,
-    '.pdf': MediaTypes.APPLICATION_PDF,
-    '.wasm': MediaTypes.APPLICATION_WASM,
-};
-
-/**
- * Extensions eligible for precompressed variants. Only text-ish payloads
- * compress meaningfully; image/font/binary types are served as-is even when a
- * `.br`/`.gz` twin exists.
- */
-const COMPRESSIBLE_EXTENSIONS: ReadonlySet<string> = new Set([
-    '.html',
-    '.htm',
-    '.css',
-    '.js',
-    '.mjs',
-    '.json',
-    '.svg',
-    '.xml',
-    '.txt',
-]);
-
-/** Response header that forbids MIME sniffing. */
-export const NOSNIFF_HEADER = 'X-Content-Type-Options: nosniff';
-
-/** Options controlling resolution beyond the plain file (D-6/D-7). */
-export interface StaticResolveOptions {
-    /** Directory index files, tried in order for a directory path. */
-    indexNames?: readonly string[];
-    /** Generate an HTML listing for directories with no index match. */
-    listDirectories?: boolean;
-    /** Client `Accept-Encoding` header — drives precompressed variant selection. */
-    acceptEncoding?: string;
-    /**
-     * Reject files larger than this many bytes, checked at stat time before
-     * anything is opened or read. `0` (default) = unlimited.
-     */
-    maxFileSizeBytes?: number;
-    /**
-     * Whether dotfiles (any path segment beginning with `.`) may be served.
-     * Default `false`: dotfile requests resolve `forbidden` (→ 403).
-     * The standard `.well-known` namespace is the built-in opt-in exception —
-     * it is served either way, so well-known URIs keep working without
-     * exposing every hidden file.
-     */
-    serveDotfiles?: boolean;
-}
-
-/**
- * Parses an `Accept-Encoding` header into the preferred supported encoding.
- *
- * q-values respected; ties prefer `br` (smaller payloads). `*` accepts any
- * encoding but only wins when it beats every explicit codec's q (explicit
- * beats wildcard on ties). `identity`, and q=0 exclusions fall through
- * correctly. Returns `null` when no supported encoding is acceptable (serve
- * the original).
- *
- * @param header - The `Accept-Encoding` header.
- * @returns The chosen encoding, or `null`.
- *
- * @example
- * ```ts
- * negotiateEncoding();
- * ```
- */
-export function negotiateEncoding(header: string | undefined): StaticEncoding | null {
-    if (!header) {
-        return null;
-    }
-    let best: StaticEncoding | null = null;
-    let bestQ = 0;
-    let wildcardQ = 0;
-    for (const part of header.split(',')) {
-        const [token, ...params] = part.trim().split(/;\s*/);
-        const q = params[0]?.trim().startsWith('q=') ? Number(params[0].trim().slice(2)) : 1;
-        if (!Number.isFinite(q) || q <= 0) {
-            continue;
-        }
-        if (token === 'br' || token === 'gzip') {
-            if (q > bestQ || (q === bestQ && token === 'br')) {
-                best = token as StaticEncoding;
-                bestQ = q;
-            }
-        } else if (token === '*') {
-            // Wildcard: acceptable, but never on a tie with an explicit codec.
-            wildcardQ = q;
-        }
-    }
-    return best ?? (wildcardQ > 0 ? 'br' : null);
-}
-
-/** Builds the strong ETag for a payload; variant encoding disambiguates. */
-function buildEtag(size: number, mtimeMs: number, encoding?: StaticEncoding): string {
-    const base = `${size.toString(16)}-${Math.round(mtimeMs).toString(16)}`;
-    return `"${encoding ? `${base}-${encoding}` : base}"`;
-}
-
-/**
- * True when a request-relative path addresses a dotfile: any path
- * segment that begins with `.`. The standard `.well-known` namespace is the
- * built-in opt-in exception (a leading `.well-known` segment is not a
- * dotfile), and the `.`/`..` navigation segments are left to path resolution.
- *
- * @param relative - The request path with any leading `/` stripped.
- * @returns `true` when the path must be refused unless `serveDotfiles` is set.
- */
-function isDotfilePath(relative: string): boolean {
-    if (relative === '') {
-        return false;
-    }
-    const segments = relative.split('/');
-    // The exemption is a leading, literal `.well-known` namespace. A `..`
-    // segment anywhere means the path is not a straight well-known URI (path
-    // algebra could otherwise launder `.well-known/../.env.json` back to a
-    // dotfile), so it falls through to the normal dotfile rules.
-    if (segments[0] === '.well-known' && !segments.includes('..')) {
-        return false;
-    }
-    return segments.some((segment) => segment.startsWith('.') && segment !== '.' && segment !== '..');
-}
+export * from './static-resource-resolver-types.js';
+export { negotiateEncoding, statusForKind } from './static-resource-resolver-support.js';
 
 /**
  * Resolves static files strictly inside a canonical base directory.
@@ -461,47 +286,5 @@ export class StaticResourceResolver {
             encoding: undefined,
             variantAware: false,
         };
-    }
-}
-
-/** HTML-escapes a directory entry name (D-7; listing must never trust names). */
-function escapeHtml(value: string): string {
-    return value.replace(/[&<>"']/g, (char) => {
-        switch (char) {
-            case '&':
-                return '&amp;';
-            case '<':
-                return '&lt;';
-            case '>':
-                return '&gt;';
-            case '"':
-                return '&quot;';
-            default:
-                return '&#39;';
-        }
-    });
-}
-
-/**
- * Maps a resolution kind to an HTTP status.
- *
- * @param kind - The resolution kind.
- * @returns The HTTP status code.
- *
- * @example
- * ```ts
- * statusForKind();
- * ```
- */
-export function statusForKind(kind: StaticResourceKind): number {
-    switch (kind) {
-        case 'ok':
-            return 200;
-        case 'not-found':
-            return 404;
-        case 'forbidden':
-            return 403;
-        default:
-            return 500;
     }
 }

@@ -2,6 +2,7 @@
  * `ndigo ui list` — print the items in a registry.
  */
 import { buildCommand } from '@stricli/core';
+import { compareBy, stringComparator } from '@ndigo/core';
 import { usageError } from '../../helpers/app-scripts.js';
 import { jsonFlag, pickFormat, writeJson } from '../_output.js';
 import { resolveRegistrySource } from '../../ui/config.js';
@@ -25,7 +26,7 @@ export const listUiCommand = buildCommand({
             writeJson(registry.items);
             return;
         }
-        for (const item of [...registry.items].sort((left, right) => left.name.localeCompare(right.name))) {
+        for (const item of [...registry.items].sort(compareBy((entry) => entry.name, stringComparator.compare))) {
             process.stdout.write(`${item.name}\t${item.type}\t${item.title ?? ''}\n`);
         }
     },

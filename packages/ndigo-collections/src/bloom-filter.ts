@@ -25,7 +25,8 @@ export type BloomFilterJSON = {
 
 function fnv1a32(input: string): number {
     let hash = 0x811c9dc5;
-    for (let i = 0; i < input.length; i++) {
+    const length = input.length;
+    for (let i = 0; i < length; i++) {
         hash ^= input.charCodeAt(i);
         hash = Math.imul(hash, 0x01000193);
     }
@@ -120,7 +121,8 @@ export class BloomFilter implements Serializable, Equatable<BloomFilter> {
     static fromJSON(json: { bits: number; hashes: number; buckets: ArrayLike<number>; count?: number }): BloomFilter {
         const filter = new BloomFilter(json.bits, json.hashes);
         const src = json.buckets;
-        for (let i = 0; i < filter.#buckets.length; i++) {
+        const length = filter.#buckets.length;
+        for (let i = 0; i < length; i++) {
             filter.#buckets[i] = src[i] >>> 0;
         }
         filter.#count = json.count ?? 0;

@@ -218,7 +218,8 @@ export const compareBy =
 export const chainComparisons =
     <T>(...comparisons: comparison<T>[]): comparison<T> =>
     (a: T, b: T): number => {
-        for (let index = 0; index < comparisons.length; index++) {
+        const length = comparisons.length;
+        for (let index = 0; index < length; index++) {
             const result = comparisons[index](a, b);
             if (result !== 0) {
                 return result;

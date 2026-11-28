@@ -25,7 +25,8 @@ const setNested = (target: JSONObject, key: string, value: JSONValue): void => {
         return;
     }
     let cursor: JSONObject = target;
-    for (let index = 0; index < tokens.length - 1; index++) {
+    const lastIndex = tokens.length - 1;
+    for (let index = 0; index < lastIndex; index++) {
         const token = tokens[index];
         const nextToken = tokens[index + 1];
         const existing = (cursor as Record<PropertyKey, unknown>)[token];

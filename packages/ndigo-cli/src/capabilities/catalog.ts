@@ -7,6 +7,7 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { z } from 'zod';
+import { chainComparisons, compareBy, stringComparator } from '@ndigo/core';
 
 /**
  * The catalog directory. Resolved from both layouts (`src/capabilities` and
@@ -289,7 +290,7 @@ export function loadPackageFacts(errors: string[] = []): PackageFact[] {
         errors.push(`packages.json: ${formatIssues(parsed.error)}`);
         return [];
     }
-    return [...parsed.data.packages].sort((left, right) => left.name.localeCompare(right.name));
+    return [...parsed.data.packages].sort(compareBy((pkg) => pkg.name, stringComparator.compare));
 }
 
 /**
@@ -417,7 +418,7 @@ function readCapabilities(errors: string[]): CapabilityEntry[] {
         }
         capabilities.push(parsed.data);
     }
-    return capabilities.sort((left, right) => left.id.localeCompare(right.id));
+    return capabilities.sort(compareBy((entry) => entry.id, stringComparator.compare));
 }
 
 function readItemsIndex(errors: string[]): CatalogItem[] {
@@ -438,7 +439,7 @@ function readItemsIndex(errors: string[]): CatalogItem[] {
         errors.push(`items.json: ${formatIssues(parsed.error)}`);
         return [];
     }
-    return [...parsed.data.items].sort((left, right) => left.id.localeCompare(right.id));
+    return [...parsed.data.items].sort(compareBy((entry) => entry.id, stringComparator.compare));
 }
 
 function buildList(catalog: CatalogLoad): CatalogListEntry[] {
@@ -468,7 +469,12 @@ function buildEntries(catalog: CatalogLoad): CatalogDetail[] {
             record: item,
         })),
     ];
-    return entries.sort((left, right) => left.id.localeCompare(right.id) || left.kind.localeCompare(right.kind));
+    return entries.sort(
+        chainComparisons(
+            compareBy((entry) => entry.id, stringComparator.compare),
+            compareBy((entry) => entry.kind, stringComparator.compare)
+        )
+    );
 }
 
 function formatIssues(error: z.ZodError): string {

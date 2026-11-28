@@ -4,6 +4,7 @@
  */
 import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
+import { chainComparisons, compareBy, stringComparator } from '@ndigo/core';
 import { resolveAppDir } from '../helpers/app-scripts.js';
 import { resolveAliases, resolveRegistrySource } from './config.js';
 import { applyInstall, planInstall } from './install.js';
@@ -87,7 +88,12 @@ export async function searchItems(context: RegistryToolContext, query: string, l
     const results = registry.items
         .map((item) => ({ item, score: scoreItem(item, needle) }))
         .filter(({ score }) => score > 0)
-        .sort((left, right) => right.score - left.score || left.item.name.localeCompare(right.item.name))
+        .sort(
+            chainComparisons(
+                (left, right) => right.score - left.score,
+                compareBy(({ item }) => item.name, stringComparator.compare)
+            )
+        )
         .slice(0, limit)
         .map(({ item, score }) => ({ ...compactItem(item), score }));
     return { source, query, count: results.length, results };
@@ -224,7 +230,7 @@ function filterItems(items: readonly LocatedRegistryItem[], filters: ItemFilters
             if (needle === undefined || needle.length === 0) return true;
             return haystack(item).includes(needle);
         })
-        .sort((left, right) => left.name.localeCompare(right.name));
+        .sort(compareBy((item) => item.name, stringComparator.compare));
 }
 
 function scoreItem(item: LocatedRegistryItem, needle: string): number {

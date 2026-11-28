@@ -158,7 +158,8 @@ function nestDottedKeys(source: JSONObject): JSONObject {
         // as `items[0].title` now nests into `{ items: [{ title }] }`
         // instead of staying a literal property.
         let cursor: unknown = out;
-        for (let index = 0; index < tokens.length - 1; index++) {
+        const lastIndex = tokens.length - 1;
+        for (let index = 0; index < lastIndex; index++) {
             const token = tokens[index];
             const nextToken = tokens[index + 1];
             const container = cursor as Record<PropertyKey, unknown>;

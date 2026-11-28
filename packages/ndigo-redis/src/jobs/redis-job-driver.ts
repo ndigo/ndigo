@@ -278,7 +278,8 @@ export class RedisJobDriver implements JobDriver {
             const dataRows = await client.hmGet(keys.records, ids);
             const errorRows = await client.hmGet(keys.errors, ids);
             const claimed: JobRecord[] = [];
-            for (let index = 0; index < pairs.length; index += 1) {
+            const length = pairs.length;
+            for (let index = 0; index < length; index += 1) {
                 const serialized = dataRows[index];
                 if (serialized === null || serialized === undefined) {
                     continue; // the record was completed while this claim was in flight
@@ -441,7 +442,8 @@ function toIdAttemptPairs(reply: unknown): Array<{ id: string; attempts: number 
         throw new FrameworkError('RedisJobDriver: claim script returned a non-array reply');
     }
     const pairs: Array<{ id: string; attempts: number }> = [];
-    for (let index = 0; index + 1 < reply.length; index += 2) {
+    const length = reply.length;
+    for (let index = 0; index + 1 < length; index += 2) {
         const id = String(reply[index]);
         const attempts = Number(reply[index + 1]);
         if (!Number.isSafeInteger(attempts) || attempts < 1) {

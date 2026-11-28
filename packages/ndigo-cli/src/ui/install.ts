@@ -5,6 +5,7 @@
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, isAbsolute, join, normalize, relative } from 'node:path';
+import { compareBy, stringComparator } from '@ndigo/core';
 import { usageError } from '../helpers/app-scripts.js';
 import { addPackages } from '../helpers/package-manager.js';
 import { UI_LOCK_FILE, resolveTargetPath } from './config.js';
@@ -189,8 +190,8 @@ export async function planInstall(
     return {
         source: registry.source,
         items: closure.map((item) => ({ name: item.name, type: item.type })),
-        files: [...files.values()].sort((left, right) => left.target.localeCompare(right.target)),
-        dependencies: [...dependencies].sort((left, right) => left.localeCompare(right)),
+        files: [...files.values()].sort(compareBy((file) => file.target, stringComparator.compare)),
+        dependencies: [...dependencies].sort(stringComparator.compare),
     };
 }
 

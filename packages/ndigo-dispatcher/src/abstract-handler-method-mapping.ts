@@ -267,7 +267,8 @@ export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo>
             const detectedKeys = new Set<string>();
             while (handlerPrototype !== null) {
                 const handlerKeys = keys(handlerPrototype);
-                for (let index = 0; index < handlerKeys.length; index++) {
+                const length = handlerKeys.length;
+                for (let index = 0; index < length; index++) {
                     const key = handlerKeys[index];
                     if (detectedKeys.has(key)) {
                         continue;

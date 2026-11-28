@@ -77,7 +77,8 @@ const FNV_PRIME = 16777619;
 export function stableBucket(flag: string, targetingKey: string): number {
     const input = `${flag}\u0000${targetingKey}`;
     let hash = FNV_OFFSET_BASIS;
-    for (let index = 0; index < input.length; index++) {
+    const length = input.length;
+    for (let index = 0; index < length; index++) {
         // JS bitwise ops coerce through SIGNED int32 — `hash ^ char` alone
         // would flip the 0x81… offset negative and poison every product.
         // `Math.imul` keeps the low 32 bits of the product; `>>> 0`

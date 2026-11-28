@@ -44,105 +44,13 @@
  * value must not silently downgrade it to plaintext HTTP.
  */
 import { IllegalStateError, JSONObject } from '@ndigo/core';
-import { ConfigurableEnvironment } from './environment';
-import { MutablePropertySources } from './property-sources';
-import { getLogger } from '@ndigo/log';
+import type { ConfigurableEnvironment } from './environment.js';
+import type { MutablePropertySources } from './property-sources.js';
+import { RemoteSourceFetcher } from './_remote-source-fetcher.js';
+import { CONFIG_SERVER_SOURCE_NAME } from './remote-property-source-types.js';
+import type { RemoteSourceOptions, RemoteSourceScheduler } from './remote-property-source-types.js';
 
-const logger = getLogger('ndigo-context:remote-property-source');
-
-/**
- * The default source name for the remote config source.
- */
-export const CONFIG_SERVER_SOURCE_NAME = 'configServer';
-
-/**
- * The poll scheduler seam (injectable for deterministic tests). Defaults to
- * `globalThis.setInterval`/`clearInterval`. The handle type is opaque to the
- * source (Node's `setInterval` returns a `Timeout`, an injected fake may use
- * a number) — the seam owns its handle.
- *
- * @example
- * ```ts
- * const scheduler: RemoteSourceScheduler = {
- *     setInterval: (cb, ms) => setInterval(cb, ms),
- *     clearInterval: (handle) => clearInterval(handle as NodeJS.Timeout),
- * };
- * ```
- */
-export interface RemoteSourceScheduler {
-    /**
-     * Schedules a repeated callback. Returns an opaque handle.
-     * @param callback - The callback.
-     * @param ms - The interval in ms.
-     * @returns An opaque handle.
-     */
-    setInterval(callback: () => void, ms: number): unknown;
-    /**
-     * Cancels a scheduled callback by its handle.
-     * @param handle - The handle.
-     */
-    clearInterval(handle: unknown): void;
-}
-
-/**
- * Options accepted by {@link RemotePropertySource}.
- *
- * @example
- * ```ts
- * const options: RemoteSourceOptions = { pollIntervalMs: 1000 };
- * ```
- */
-export interface RemoteSourceOptions {
-    /**
-     * The remote configuration URL. Required; when using the default fetch,
-     * the scheme is validated at construction and must be `https:`.
-     */
-    url: string;
-    /**
-     * Polling interval in milliseconds. `0`/absent = fetch once at load,
-     * no polling.
-     */
-    pollMs?: number;
-    /**
-     * Static headers sent on every request (e.g.
-     * `Authorization: Bearer …` sourced from env at the wiring site).
-     */
-    headers?: Record<string, string>;
-    /**
-     * `true` (default) — fetch failure warns and boot proceeds; `false` —
-     * first fetch failure throws (boot fails loudly naming the URL).
-     */
-    optional?: boolean;
-    /**
-     * The fetch implementation (injectable seam for specs / non-fetch
-     * runtimes). Defaults to `globalThis.fetch`. Injecting a fetch skips the
-     * `https:` scheme check — the seam owns the transport then.
-     */
-    fetch?: typeof globalThis.fetch;
-    /**
-     * The poll scheduler seam. Defaults to `globalThis.setInterval`/`clearInterval`.
-     */
-    scheduler?: RemoteSourceScheduler;
-    /**
-     * Timeout for one fetch exchange (request + body read) in milliseconds
-     * (default `10_000`). On expiry the request is aborted and the failure
-     * follows the standard `optional`/keep-last-good policy.
-     */
-    fetchTimeoutMs?: number;
-    /**
-     * Maximum accepted response size in bytes (default 1 MiB). Enforced
-     * against `Content-Length` when the server declares one, then by
-     * counting streamed bytes; an oversized document follows the standard
-     * `optional`/keep-last-good policy.
-     */
-    maxResponseBytes?: number;
-}
-
-/** Default fetch timeout for one remote config exchange (10 s; mirrors the OIDC adapter). */
-const DEFAULT_FETCH_TIMEOUT_MS = 10_000;
-
-/** Default maximum accepted remote config response size (1 MiB; mirrors the OIDC adapter). */
-const DEFAULT_MAX_RESPONSE_BYTES = 1_048_576;
+export * from './remote-property-source-types.js';
 
 /**
  * A named remote property source: fetches a JSON document, merges changes
@@ -151,7 +59,7 @@ const DEFAULT_MAX_RESPONSE_BYTES = 1_048_576;
  * @example
  * ```ts
  * const source = new RemotePropertySource(env, { url: 'https://config.example.com/app.json' });
- * await source.refresh();
+ * await source.load();
  * ```
  */
 export class RemotePropertySource {
@@ -172,21 +80,10 @@ export class RemotePropertySource {
 
     #environment: ConfigurableEnvironment;
     #name: string;
-    #options: {
-        url: string;
-        pollMs?: number;
-        headers?: Record<string, string>;
-        optional: boolean;
-        fetch?: typeof globalThis.fetch;
-        scheduler?: RemoteSourceScheduler;
-        fetchTimeoutMs?: number;
-        maxResponseBytes?: number;
-    };
-    #lastBody: string | null = null;
-    #etag: string | null = null;
+    #options: RemoteSourceOptions & { optional: boolean };
+    #fetcher: RemoteSourceFetcher;
     #timerHandle: unknown = null;
     #started: boolean = false;
-    #fetchInFlight: boolean = false;
 
     /**
      * The name this source is registered under.
@@ -230,6 +127,11 @@ export class RemotePropertySource {
             ...options,
             optional: options.optional ?? true,
         };
+        this.#fetcher = new RemoteSourceFetcher({
+            ...this.#options,
+            name: this.#name,
+            apply: (document) => this.#apply(document),
+        });
     }
 
     /**
@@ -254,8 +156,7 @@ export class RemotePropertySource {
      * or the response is not a JSON object.
      */
     async load(): Promise<boolean> {
-        const applied = await this.#fetchAndApply();
-        return applied !== null;
+        return this.#fetcher.fetchAndApply();
     }
 
     /**
@@ -271,7 +172,7 @@ export class RemotePropertySource {
             throw new IllegalStateError(`RemotePropertySource "${this.#name}" has no pollMs; nothing to poll`);
         }
         const { setInterval } = this.#scheduler();
-        this.#timerHandle = setInterval(() => void this.#poll(), pollMs);
+        this.#timerHandle = setInterval(() => void this.#fetcher.poll(), pollMs);
         this.#started = true;
     }
 
@@ -289,202 +190,12 @@ export class RemotePropertySource {
     }
 
     /**
-     * One poll cycle: fetch, gate on change, merge + refresh on change. An
-     * in-flight guard skips a tick whose previous fetch has not resolved yet
-     * (out-of-order applies could regress rotated/revoked secrets).
-     * Transport/parse failures are caught here: warn, keep last-good,
-     * retry next tick — no unhandled promise rejection.
-     */
-    async #poll(): Promise<void> {
-        if (this.#fetchInFlight) return; // previous tick still unresolved — skip
-        this.#fetchInFlight = true;
-        try {
-            await this.#fetchAndApply();
-        } catch (err) {
-            // `#fetchAndApply` already handled the keep-last-good/optional
-            // policy for HTTP errors; reaching this catch means the transport
-            // rejected or the body was unparseable, and nothing was applied.
-            // Keep last-good and warn; retry next tick.
-            this.#keepLastGood(err);
-        } finally {
-            this.#fetchInFlight = false;
-        }
-    }
-
-    /**
-     * Fetches and, when the document changed (ETag/body-text gate), merges it
-     * into the environment and refreshes. The body gate is always active
-     * (identical to the previous body → skip). One failure policy for all
-     * failure classes: HTTP errors, transport rejections, timeouts,
-     * oversized documents and body/JSON-parse failures all route through
-     * `optional`/last-good — after the first successful apply,
-     * `optional: false` keeps last-good too.
+     * Merges an applied document into the environment at the anchored
+     * precedence slot, then refreshes so `@refreshScope` entries rebind.
+     * A re-applied document `replace`s the source's own entry, preserving
+     * its position (and bumping the registry version).
      *
-     * @returns The applied document, or `null` when skipped/failed-optional.
-     * @throws When `optional: false` and no document has
-     * ever been applied (boot-time failure).
-     */
-    async #fetchAndApply(): Promise<JSONObject | null> {
-        const headers: Record<string, string> = { ...this.#options.headers };
-        // Header keys in `headers` follow the canonical-case convention (only
-        // exact matches are consulted; callers pass `If-None-Match`, not the
-        // lower-cased form — RUS-5b).
-        if (this.#etag && headers['If-None-Match'] === undefined) {
-            headers['If-None-Match'] = this.#etag;
-        }
-
-        const doFetch = this.#options.fetch ?? globalThis.fetch;
-        const timeoutMs = this.#options.fetchTimeoutMs ?? DEFAULT_FETCH_TIMEOUT_MS;
-        const maxBytes = this.#options.maxResponseBytes ?? DEFAULT_MAX_RESPONSE_BYTES;
-        // Bound the whole exchange (request + body read) so a stalled
-        // config server cannot pin a poll tick or boot; the abort rejects the
-        // fetch and routes through the standard failure policy below.
-        const controller = new AbortController();
-        const timer = setTimeout(
-            () => controller.abort(new IllegalStateError(`Remote config fetch timed out after ${timeoutMs}ms`)),
-            timeoutMs
-        );
-        let body: string;
-        let etag: string | null;
-        try {
-            let response: {
-                ok: boolean;
-                status: number;
-                headers: { get(name: string): string | null };
-                body?: ReadableStream<Uint8Array> | null;
-                text(): Promise<string>;
-            };
-            try {
-                response = await doFetch(this.#options.url, { headers, signal: controller.signal });
-            } catch (err) {
-                // Transport rejection (DNS/TLS/refused/timeout): same policy
-                // as an HTTP error — throw only while nothing was applied yet.
-                return this.#lastBody === null ? this.#handleBootFailure('<transport>', err) : this.#keepLastGood(err);
-            }
-            if (response.status === 304) {
-                return null; // unchanged — no re-merge, no event
-            }
-            if (!response.ok) {
-                // `optional: false` fails boot only on the FIRST (never-applied)
-                // fetch; later poll failures keep last-good.
-                const cause = new IllegalStateError(`HTTP ${response.status}`);
-                return this.#lastBody === null
-                    ? this.#handleBootFailure(String(response.status), cause)
-                    : this.#keepLastGood(cause);
-            }
-            // Content-Length pre-check: refuse an oversized document before
-            // reading a byte; a missing/unparseable length falls through to
-            // the streamed accounting in `#readBody`.
-            const contentLength = Number(response.headers.get('content-length'));
-            if (Number.isFinite(contentLength) && contentLength > maxBytes) {
-                const cause = this.#oversizedError(maxBytes);
-                return this.#lastBody === null ? this.#handleBootFailure('<size>', cause) : this.#keepLastGood(cause);
-            }
-            try {
-                body = await this.#readBody(response, maxBytes);
-            } catch (err) {
-                return this.#lastBody === null ? this.#handleBootFailure('<body>', err) : this.#keepLastGood(err);
-            }
-            // Intentional no-dep exception: `@ndigo/http`'s ETAG constant is not
-            // adopted to avoid adding a new base-package dependency for a single
-            // read. Fetch `Headers.get` is case-insensitive per spec, so the
-            // literal is spec-safe.
-            etag = response.headers.get('etag');
-        } finally {
-            clearTimeout(timer);
-        }
-        if (etag) {
-            this.#etag = etag;
-        }
-
-        if (body === this.#lastBody) {
-            return null; // unchanged body — no re-merge, no event
-        }
-
-        let document: unknown;
-        try {
-            document = JSON.parse(body);
-        } catch {
-            const cause = new IllegalStateError(
-                `Remote config from "${this.#options.url}" is not valid JSON (source "${this.#name}")`
-            );
-            return this.#lastBody === null ? this.#handleBootFailure('<json>', cause) : this.#keepLastGood(cause);
-        }
-        if (document === null || typeof document !== 'object' || Array.isArray(document)) {
-            const cause = new IllegalStateError(
-                `Remote config from "${this.#options.url}" must be a JSON object (source "${this.#name}")`
-            );
-            return this.#lastBody === null ? this.#handleBootFailure('<shape>', cause) : this.#keepLastGood(cause);
-        }
-
-        this.#lastBody = body;
-        this.#apply(document as JSONObject);
-        return document as JSONObject;
-    }
-
-    /**
-     * Reads a response body with `maxBytes` enforced while streaming.
-     * The caller's `Content-Length` pre-check is the fast path; counting
-     * actual bytes also bounds chunked responses and servers that lie about
-     * the length. Without a streaming body (spec stubs, legacy fetch),
-     * `text()` is the only read path and the encoded size is checked after
-     * the fact.
-     *
-     * @param response - The fetch response (streaming body optional).
-     * @param maxBytes - The byte cap; exceeding it cancels the stream and
-     * throws, so the caller can apply the `optional`/keep-last-good policy.
-     * @throws When the document exceeds `maxBytes`.
-     */
-    async #readBody(
-        response: { body?: ReadableStream<Uint8Array> | null; text(): Promise<string> },
-        maxBytes: number
-    ): Promise<string> {
-        const stream = response.body;
-        if (!stream) {
-            const text = await response.text();
-            if (new TextEncoder().encode(text).byteLength > maxBytes) {
-                throw this.#oversizedError(maxBytes);
-            }
-            return text;
-        }
-        const reader = stream.getReader();
-        const chunks: Uint8Array[] = [];
-        let received = 0;
-        for (;;) {
-            // oxlint-disable-next-line no-await-in-loop -- a ReadableStream must be consumed sequentially; chunks are validated and accumulated in order.
-            const { done, value } = await reader.read();
-            if (done) break;
-            received += value.byteLength;
-            if (received > maxBytes) {
-                void reader.cancel();
-                throw this.#oversizedError(maxBytes);
-            }
-            chunks.push(value);
-        }
-        const bytes = new Uint8Array(received);
-        let offset = 0;
-        for (const chunk of chunks) {
-            bytes.set(chunk, offset);
-            offset += chunk.byteLength;
-        }
-        return new TextDecoder().decode(bytes);
-    }
-
-    /** The single oversized-document failure shared by every size gate. */
-    #oversizedError(maxBytes: number): IllegalStateError {
-        return new IllegalStateError(
-            `Remote config from "${this.#options.url}" exceeds the ${maxBytes}-byte limit (source "${this.#name}")`
-        );
-    }
-
-    /**
-     * Registers/replaces the source entry at the documented precedence slot.
-     *
-     * Positioning (highest to lowest): commandLine, boot, systemEnvironment,
-     * configServer, dotenv, application(+-profile), defaults. Anchors:
-     * after `systemEnvironment` when present, else before `application` when
-     * present, else before `defaults` when present (boot always registers
-     * `defaults` last, so this preserves the documented order), else append.
+     * @param document - The fetched configuration document.
      */
     #apply(document: JSONObject): void {
         const sources = this.#environment.getPropertySources();
@@ -496,6 +207,15 @@ export class RemotePropertySource {
         this.#environment.refresh();
     }
 
+    /**
+     * Registers the source at the documented precedence slot: after
+     * `systemEnvironment` when present, else before `application` when
+     * present, else before `defaults` when present (boot always registers
+     * `defaults` last, so this preserves the documented order), else append.
+     *
+     * @param sources - The environment's mutable source registry.
+     * @param document - The fetched configuration document.
+     */
     #register(sources: MutablePropertySources, document: JSONObject): void {
         if (sources.contains('systemEnvironment')) {
             sources.addAfter('systemEnvironment', this.#name, document);
@@ -511,47 +231,11 @@ export class RemotePropertySource {
     }
 
     /**
-     * Logs a keep-last-good warning and returns `null`. The existing
-     * document/ETag stay applied and consistent; the next tick retries.
+     * Resolves the poll scheduler seam, defaulting to the global timer
+     * functions.
      *
-     * @param cause - The failure cause, when one was thrown.
+     * @returns The configured or default scheduler.
      */
-    #keepLastGood(cause: unknown): null {
-        const detail = cause instanceof Error ? `: ${cause.message}` : '';
-        logger.warn(
-            `[@ndigo/context] Remote config poll failed for source "${this.#name}" — keeping last-good values` + detail
-        );
-        return null;
-    }
-
-    /**
-     * Resolves a boot-time fetch failure (no document applied yet) per the
-     * `optional` contract.
-     *
-     * @param failure - Short failure classifier for the message (HTTP status,
-     * `'<transport>'`, …).
-     * @param cause - The underlying error, when one was thrown.
-     * @throws When `optional: false` on the first fetch.
-     */
-    #handleBootFailure(failure: string, cause?: unknown): null {
-        const reason = cause instanceof Error ? ` (${cause.message})` : '';
-        if (this.#options.optional) {
-            // warn-level skip (boot proceeds)
-            logger.warn(
-                `[@ndigo/context] Remote config fetch failed at boot (${failure}) for source "${this.#name}" — ` +
-                    `boot proceeds with env/files` +
-                    reason
-            );
-            return null;
-        }
-        throw new IllegalStateError(
-            `Remote config fetch failed (${failure}) for "${this.#options.url}" (source "${this.#name}"): ` +
-                `optional:false — boot aborts.` +
-                reason,
-            cause instanceof Error ? { cause } : undefined
-        );
-    }
-
     #scheduler(): RemoteSourceScheduler {
         return (
             this.#options.scheduler ?? {

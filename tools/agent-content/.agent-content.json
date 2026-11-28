@@ -6,7 +6,7 @@
     "packages/ndigo-ai/skills/ndigo-model/SKILL.md": "32cba74edbeff23f90e7e41ebbb361f4e97b58abad7318d1c7a4d0ae83e52dbd",
     "packages/ndigo-auth-client/docs/llms.txt": "c742cf85782154a2cf53161ea18ea61fba565d085f2d0562931666ffd256a28b",
     "packages/ndigo-auth-core/docs/llms.txt": "9c3f33e4f8e03bf19acd663c98ba4a6f67ac1536372272872c43e8808c24846d",
-    "packages/ndigo-auth-server/docs/llms.txt": "f2e5d1740c47cb3384e59d4eaf0f87ab71896c2c606bc9993062284eec3fbb07",
+    "packages/ndigo-auth-server/docs/llms.txt": "42b621f6d7622982c32e4332481b7a938562111e558b0e3850d72b50ab0859b2",
     "packages/ndigo-boot/docs/llms.txt": "7346ca19a48c362787800524600e038d4960994fd6bfb9589073cf8f5614384d",
     "packages/ndigo-cache/docs/llms.txt": "de82226130110608bf32b77b0df2bd37f4499b48bf9b41b5e3e152405cabee97",
     "packages/ndigo-cli/assets/agent/docs-index.md": "b8d6052a6f00163d029dfb0b8ad82fd31c708848b30d3c35ccf71870a8d51d1b",

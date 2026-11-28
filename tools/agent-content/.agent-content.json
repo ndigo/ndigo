@@ -45,7 +45,7 @@
     "packages/ndigo-management/docs/llms.txt": "7d0befd13edd36412df1fa03aaf7d184601a8b0aab72a007861f9f16814faca0",
     "packages/ndigo-mcp/docs/llms.txt": "2f1edabaabafa03ba8f7f3542c0ca45b48cf1b978d1e45c2e2042e631f5786b2",
     "packages/ndigo-mcp/skills/ndigo-agent/SKILL.md": "03998a51e34c74761b43b3f95eff3f9f1c24f14e65cb70eb923c36d8333a05b8",
-    "packages/ndigo-openapi/docs/llms.txt": "e9d4a42218090f26009d371bd27d4315dbc811bc73598af47f40225eadd05e5e",
+    "packages/ndigo-openapi/docs/llms.txt": "687cc29a7c678a46b9a2a21673c74ba23d77ccf78e28ce5bd6369ed3fd5af0f5",
     "packages/ndigo-orm-drizzle/docs/llms.txt": "71ff8d4b8b14d56b5d74243d5f6b7ad5dd0f20e17530c46450e3ca42387eb37b",
     "packages/ndigo-orm/docs/llms.txt": "afbe23c05f62955b0f46155e8ddd1298eed48b72874d4bc3aebfb93110dc0ee0",
     "packages/ndigo-orm/skills/ndigo-persistence/SKILL.md": "84c42ad6734350ed0276f66ff11a4d2568eeb28b67b5a11975b0d373ecc2b34a",

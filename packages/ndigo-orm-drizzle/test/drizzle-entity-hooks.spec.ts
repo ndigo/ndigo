@@ -19,7 +19,7 @@ import {
 import { DrizzleDataSource } from '../src/drizzle-data-source';
 import { DrizzleEntityManager } from '../src/drizzle-entity-manager';
 
-// DAT-F1: the Drizzle manager must fire the same entity hooks at the same
+// The Drizzle manager must fire the same entity hooks at the same
 // points as InMemoryEntityManager — prePersist on insert, preUpdate on update,
 // postLoad on every read, postRemove on remove.
 @entity('lifecycle_parity')

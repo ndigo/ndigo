@@ -72,4 +72,7 @@ export interface ProducerView {
  * ```
  */
 export const likeProducerView = (value: unknown): value is ProducerView & object =>
-    typeof value === 'object' && value !== null && 'renderTo' in value;
+    typeof value === 'object' &&
+    value !== null &&
+    'renderTo' in value &&
+    typeof (value as ProducerView).renderTo === 'function';

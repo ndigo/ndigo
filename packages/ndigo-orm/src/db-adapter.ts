@@ -8,14 +8,6 @@
  */
 
 /** Status of a single migration in the journal. */
-/**
- * MigrationStatus.
- *
- * @example
- * ```ts
- * type _Alias = MigrationStatus;
- * ```
- */
 export type MigrationStatus = {
     version: number;
     description: string;
@@ -24,14 +16,6 @@ export type MigrationStatus = {
 };
 
 /** Engine-agnostic database adapter used by `ndigo db *`. */
-/**
- * NdigoDatabaseAdapter.
- *
- * @example
- * ```ts
- * const value = {} as NdigoDatabaseAdapter;
- * ```
- */
 export interface NdigoDatabaseAdapter {
     /** Stable, unique name used for selection (`--db <name>`). */
     readonly name: string;

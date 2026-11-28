@@ -1,4 +1,5 @@
 /**
+ * Mapped router interceptor include/exclude behavior.
  */
 import { describe, test, expect, vi } from 'vitest';
 import { PathRoute } from '../src/path-route';
@@ -19,6 +20,22 @@ describe('MappedRouterInterceptor', () => {
 
         expect(mapped.matchesRoute(new PathRoute('/users/public/42'))).toBe(true);
         expect(mapped.matchesRoute(new PathRoute('/users/private/42'))).toBe(false);
+    });
+
+    test('it should apply pattern updates made through the setters', () => {
+        const interceptor: RouterInterceptor = { preHandle: () => true };
+        const mapped = new MappedRouterInterceptor(interceptor, ['/users/**']);
+
+        expect(mapped.matchesRoute(new PathRoute('/admin/settings'))).toBe(false);
+        mapped.setIncludePatterns(['/admin/**']);
+        expect(mapped.matchesRoute(new PathRoute('/admin/settings'))).toBe(true);
+        expect(mapped.matchesRoute(new PathRoute('/users/42'))).toBe(false);
+
+        mapped.setExcludePatterns(['/admin/private/**']);
+        expect(mapped.matchesRoute(new PathRoute('/admin/private/x'))).toBe(false);
+        expect(mapped.matchesRoute(new PathRoute('/admin/public'))).toBe(true);
+        expect(mapped.includePatterns).toEqual(['/admin/**']);
+        expect(mapped.excludePatterns).toEqual(['/admin/private/**']);
     });
 
     test('it should match named patterns', () => {

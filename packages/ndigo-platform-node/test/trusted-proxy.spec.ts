@@ -209,7 +209,7 @@ describe('resolveClientAddress', () => {
         expect(resolveClientAddress(peer, headers(['6.6.6.6', '10.0.0.3', '203.0.113.7']), trusted)).toBe(
             '203.0.113.7'
         );
-        // NOTE: fetch-client tuple collections (`[name, value][]`) are NOT an
+        // Fetch-client tuple collections (`[name, value][]`) are NOT an
         // input shape here — the server adapter only ever hands over the
         // node `IncomingMessage` record. The `@ndigo/http` HTTPHeader
         // methods read the first tuple pair, so multi-line tuples would

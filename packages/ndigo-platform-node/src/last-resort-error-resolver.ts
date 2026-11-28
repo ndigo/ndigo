@@ -56,7 +56,7 @@ export class NodeLastResortErrorResolver extends AbstractRouteErrorResolver {
                 detail: error.message,
                 instance: route.path,
             });
-            // NOTE: bridging to ModelAndView — the source type is wider than this consumer's contract.
+            // The source type is wider than this consumer's contract; the assertion is confined to this boundary.
             return entity as unknown as ModelAndView;
         }
 
@@ -66,7 +66,7 @@ export class NodeLastResortErrorResolver extends AbstractRouteErrorResolver {
             status: 500,
             instance: route.path,
         });
-        // NOTE: bridging to ModelAndView — the source type is wider than this consumer's contract.
+        // The source type is wider than this consumer's contract; the assertion is confined to this boundary.
         return entity as unknown as ModelAndView;
     }
 }

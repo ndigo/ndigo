@@ -1,5 +1,5 @@
 /**
- * Per-request HTTP semantics for static resources (D-5): conditional GET,
+ * Per-request HTTP semantics for static resources: conditional GET,
  * single-range, cache headers, precompressed variants, directory listing,
  * and SPA fallback — writing directly to the `ServerResponse`.
  *
@@ -38,15 +38,7 @@ import { NOSNIFF_HEADER, StaticResourceResolver, type StaticResourceResult } fro
 import { ProblemTypes } from '@ndigo/http';
 import { writeProblem } from './problem-details';
 
-/** Handler options (D-6) — defaults preserve today's plain-file behavior. */
-/**
- * StaticHandlerOptions.
- *
- * @example
- * ```ts
- * const value = {} as StaticHandlerOptions;
- * ```
- */
+/** Handler options — defaults preserve today's plain-file behavior. */
 export interface StaticHandlerOptions {
     /** `Cache-Control` value on success; `null` omits the header. Default `'public, max-age=3600'`. */
     cacheControl?: string | null;
@@ -66,9 +58,9 @@ export interface StaticHandlerOptions {
     serveDotfiles?: boolean;
 }
 
-/** Default `Cache-Control` for successful responses (D-6). */
+/** Default `Cache-Control` for successful responses. */
 const DEFAULT_CACHE_CONTROL = 'public, max-age=3600';
-/** Default directory index names (D-6). */
+/** Default directory index names. */
 const DEFAULT_INDEX_NAMES = ['index.html'] as const;
 
 /** Converts epoch-ms to the RFC 1123 date used by `Last-Modified`/`If-Modified-Since`. */
@@ -238,12 +230,12 @@ interface RepresentationContext {
 
 /**
  * The HTTP half of static serving: one `handle(route, requestPath)` call
- * turns a path into a complete response (D-5).
+ * turns a path into a complete response.
  *
- * Flow: resolve (with variant negotiation) → conditional GET (D-2) → single
- * range (D-4) → cache headers → body. Handles GET and HEAD; errors are
+ * Flow: resolve (with variant negotiation) → conditional GET → single
+ * range → cache headers → body. Handles GET and HEAD; errors are
  * problem+json documents; 404 file misses may fall back to the SPA index
- * (D-6). Writes directly, because status/header combinations like 206/304/416
+ * Writes directly, because status/header combinations like 206/304/416
  * cannot flow through `ResponseEntityView`.
  *
  * @example
@@ -274,7 +266,7 @@ export class StaticResourceHandler {
      * Creates a handler over a static root.
      *
      * @param basePath - The directory to serve files from.
-     * @param options - Handler options (D-6).
+     * @param options - Handler options.
      */
     constructor(basePath: string, options: StaticHandlerOptions = {}) {
         this.#resolver = new StaticResourceResolver(basePath);
@@ -330,7 +322,7 @@ export class StaticResourceHandler {
             serveDotfiles: this.#options.serveDotfiles,
         });
 
-        // COR-19: a shared cache must key an SPA fallback on `Accept` so it is
+        // A shared cache must key an SPA fallback on `Accept` so it is
         // never replayed to clients that did not accept HTML.
         let spaFallbackServed = false;
 
@@ -365,7 +357,7 @@ export class StaticResourceHandler {
         const successHeaders: Record<string, string> = {
             [CONTENT_TYPE.name]: result.contentType ?? String(MediaTypes.APPLICATION_OCTET_STREAM),
         };
-        // SEC-2: never let a browser MIME-sniff a static payload. The
+        // Never let a browser MIME-sniff a static payload. The
         // resolver's constant is the canonical `name: value` line; split it
         // once so the header key stays in lockstep with its value.
         const [nosniffName, nosniffValue] = NOSNIFF_HEADER.split(/:\s*/, 2) as [string, string];
@@ -406,14 +398,14 @@ export class StaticResourceHandler {
         const fileBacked = result.etag !== undefined;
 
         // Conditional GET — answered from stat metadata only, the file is
-        // never opened for a 304 (SEC-8).
+        // never opened for a 304.
         if (result.etag && isNotModified(headers, result)) {
             this.#send(res, 304, successHeaders, undefined);
             return;
         }
 
         const rangeHeader = RANGE.get(headers);
-        // COR-20: a stale If-Range validator cancels the range entirely (full
+        // A stale If-Range validator cancels the range entirely (full
         // 200), per RFC 7233 §3.2.
         if (fileBacked && rangeHeader !== null && ifRangeMatches(headers, result) !== false) {
             const range = parseSingleRange(rangeHeader, result.size ?? 0);
@@ -427,7 +419,7 @@ export class StaticResourceHandler {
                 return;
             }
             if (range !== null && result.path !== undefined) {
-                // Seeked stream over exactly the requested bytes (SEC-8).
+                // Seeked stream over exactly the requested bytes.
                 successHeaders[CONTENT_RANGE.name] = `bytes ${range.start}-${range.end}/${result.size ?? 0}`;
                 const length = range.end - range.start + 1;
                 await this.#sendFile(

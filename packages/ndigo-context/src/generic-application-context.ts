@@ -249,7 +249,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
      * from the parent, mark `destroyed`/`destroyedTimestamp`, emit
      * `context:destroy`, then remove every listener.
      *
-     * Exception-safe (CTX-06): a throwing listener or teardown hook is
+     * Exception-safe: a throwing listener or teardown hook is
      * reported and swallowed so the remaining steps still run — `destroyed`
      * is always set and children/entries are still torn down. Exceptions from
      * `context:close`/`context:destroy` listeners otherwise abort teardown
@@ -330,13 +330,13 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
 
     /**
      * Reports a teardown failure and swallows it so close() can continue
-     * (CTX-06). Teardown is best-effort by contract: every step must run.
+     * Teardown is best-effort by contract: every step must run.
      *
      * @param error - The error thrown by a teardown listener or hook.
      */
     #reportTeardownError(error: unknown): void {
         logger.error(
-            `[ndigo-context] error during teardown of "${this.#name ?? 'context'}"; teardown continues (CTX-06)`,
+            `[ndigo-context] error during teardown of "${this.#name ?? 'context'}"; teardown continues`,
             toError(error)
         );
     }
@@ -684,7 +684,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
 
         for (const name of this._destructionOrder(names)) {
             if (!name) continue;
-            // CTX-06: one entry's destroy failure must not strand the rest of
+            // One entry's destroy failure must not strand the rest of
             // the managed values — isolate and report each.
             try {
                 this.destroyValue(name);

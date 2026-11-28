@@ -5,7 +5,7 @@
  * Hosts the metadata-key and resolver-key machinery that binding
  * (`@ndigo/boot`'s `resolveConfigurationProperties`) and declaration probing
  * (`declaredConfigurationProperties`) both consume, so tooling does not have
- * to pull the whole boot layer (REU-9). The public functions are re-exported
+ * to pull the whole boot layer. The public functions are re-exported
  * from `@ndigo/boot` unchanged for API continuity.
  */
 import { compareBy, getSymbolMetadata, stringComparator } from '@ndigo/core';
@@ -289,7 +289,7 @@ function dedupeLookups(spellings: string[]): string[] {
  * hyphen (it is not an identifier character), so a hyphenated segment must be
  * expressed as a quoted bracket access (`server.host-name` →
  * `server["host-name"]`). Every other segment is passed through untouched, so
- * existing bracket syntax (`arr[1]`) is preserved (CTX-01).
+ * existing bracket syntax (`arr[1]`) is preserved.
  *
  * @param key - The dotted keypath.
  * @returns The equivalent keypath the environment can resolve.

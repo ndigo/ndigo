@@ -19,7 +19,7 @@ export type ColumnTypeFamily = 'integer' | 'real' | 'blob' | 'boolean' | 'json' 
 /**
  * Word tokens that identify each family. Matching is token-based (the declared
  * type is split on non-alphanumeric characters), never substring-based: a type
- * like `point`, `interval` or `print` must not be read as `int` (DAT-N1).
+ * like `point`, `interval` or `print` must not be read as `int`.
  * Size/precision suffixes (`varchar(255)`, `numeric(10, 2)`, `int unsigned`)
  * fall away with the split.
  */

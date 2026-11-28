@@ -31,6 +31,13 @@
  */
 import { RingBuffer } from '@ndigo/core';
 import type { STOMPBody } from './stomp-frame';
+import type {
+    StoredQueueMessage,
+    QueueStoreRetention,
+    QueueMessageStore,
+    InMemoryQueueStoreOptions,
+    InMemoryQueueStoreStats,
+} from './message-store-types';
 
 /**
  * Body size as transmitted: UTF-8 octets for text, raw length for bytes.
@@ -69,14 +76,6 @@ export function headerOctets(headers: Readonly<Record<string, string>>): number 
     }
     return total;
 }
-
-import type {
-    StoredQueueMessage,
-    QueueStoreRetention,
-    QueueMessageStore,
-    InMemoryQueueStoreOptions,
-    InMemoryQueueStoreStats,
-} from './message-store-types';
 
 // Re-export moved contracts for backward compat.
 export * from './message-store-types';
@@ -148,7 +147,7 @@ export class InMemoryQueueMessageStore implements QueueMessageStore {
         // Per-destination count bound (drop-oldest, O(1)). The ring stays
         // attached even when this empties it: the pending `put` below is a
         // write to THIS ring, so detaching it would silently drop the
-        // message (COR-9).
+        // message.
         if (this.#maxMessagesPerDestination !== null && queue.length >= this.#maxMessagesPerDestination) {
             this.#dropOldest(queue);
         }

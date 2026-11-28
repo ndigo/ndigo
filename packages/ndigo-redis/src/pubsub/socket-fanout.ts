@@ -109,14 +109,6 @@ export function decodeSocketFanoutEnvelope(
 }
 
 /** Redis Pub/Sub live fan-out: at-most-once, no replay, reconnect, or offline queue. */
-/**
- * RedisSocketFanout.
- *
- * @example
- * ```ts
- * const instance = new RedisSocketFanout();
- * ```
- */
 export class RedisSocketFanout implements SocketFanout, AsyncDestroyable {
     /**
      * The `Symbol.toStringTag` value for this instance.

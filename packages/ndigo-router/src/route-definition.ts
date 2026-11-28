@@ -111,7 +111,7 @@ export class RouteDefinition<TPattern extends string = string> implements Matcha
 
         // `resolveParams` performs the match and binds the extracted parameters
         // onto the route (`:id` and `{id}` syntaxes) — without it, a parsed
-        // route carried `params: null` (PWB-REV-016).
+        // route carried `params: null`.
         if (route.resolveParams(this.pattern) === null) {
             return null;
         }

@@ -64,7 +64,7 @@ function memorySink() {
                 }
             }
         },
-        // Streamed payloads (SEC-8) arrive via write(); returns true so the
+        // Streamed payloads arrive via write(); returns true so the
         // handler never waits for a drain that cannot come.
         write(chunk: string | Uint8Array): boolean {
             const piece = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk as string);
@@ -156,7 +156,7 @@ beforeAll(async () => {
     await writeFile(join(root, 'assets', 'logo.png'), Buffer.from([0x89, 0x50, 0x4e, 0x47]));
     await mkdir(join(root, 'files'));
     await writeFile(join(root, 'files', 'notes.txt'), 'notes');
-    // SEC-8: empty payloads must answer every Range with 416, never a 206.
+    // Empty payloads must answer every Range with 416, never a 206.
     await writeFile(join(root, 'empty.txt'), '');
     // PLN-F9: dotfile policy fixtures. `.env` has no allowlisted extension;
     // `.hidden.html` and the nested `assets/.hidden.css` do — before the
@@ -375,7 +375,7 @@ describe('StaticResourceHandler — directories, listing, SPA (D-6/D-7)', () => 
         const html = await fallback({ accept: 'text/html' });
         expect(html.status).toBe(200);
         expect((await fallback()).status).toBe(200); // no Accept → HTML assumed
-        // COR-19: a shared cache must key the fallback on Accept.
+        // A shared cache must key the fallback on Accept.
         expect(html.headers['vary']).toContain('Accept');
         const nonHtml = await fallback({ accept: 'application/json' });
         expect(nonHtml.status).toBe(404);

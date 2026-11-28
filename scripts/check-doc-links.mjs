@@ -60,13 +60,19 @@ function withoutCodeFences(text) {
 /** Generated/installed trees that never contain maintained markdown. */
 const SKIP_DIRS = new Set(['node_modules', 'dist', 'lib', 'coverage', 'api', 'test-results', 'playwright-report']);
 
+/**
+ * Local-only, gitignored trees: plans, audits, and references are working
+ * notes, not maintained prose, so a stale link there must not fail the gate.
+ */
+const LOCAL_ONLY_DIRS = new Set(['plans', 'audits', 'reference'].map((name) => join(root, 'docs', name)));
+
 function collectMarkdownFiles() {
     const files = [];
     const walk = (dir, keep) => {
         for (const entry of readdirSync(dir)) {
             const full = join(dir, entry);
             if (statSync(full).isDirectory()) {
-                if (!SKIP_DIRS.has(entry)) walk(full, keep);
+                if (!SKIP_DIRS.has(entry) && !LOCAL_ONLY_DIRS.has(full)) walk(full, keep);
             } else if (keep(entry)) {
                 files.push(full);
             }
@@ -127,6 +133,21 @@ function isInternalDoc(file) {
 }
 
 const PUBLISHED_DOC_VIOLATIONS = [{ pattern: /\bAD-\d+\b/, label: 'decision-record ID' }];
+
+/**
+ * Package source reaches readers through the generated API reference, so
+ * public TSDoc must not cite internal tracking IDs any more than it may cite
+ * decision records. IDs such as `(SE-7)`, `(CTX-01)`, or `(D-6)` are
+ * unresolvable for an external reader.
+ */
+const SOURCE_VIOLATIONS = [
+    ...PUBLISHED_DOC_VIOLATIONS,
+    {
+        pattern: /\((?:CTX|SE|SEC|COR|REU|REUSE|DAT|WC|PWB|TO|HG|AUD|CF)[A-Z0-9/-]*\d\)/,
+        label: 'internal tracking ID',
+    },
+    { pattern: /\(D-?\d+\)/, label: 'internal decision ID' },
+];
 
 const CONCEPT_VIOLATIONS = [
     ...PUBLISHED_DOC_VIOLATIONS,
@@ -254,8 +275,9 @@ const sourceFiles = collectPackageSourceFiles();
 for (const file of sourceFiles) {
     const lines = readFileSync(file, 'utf8').split('\n');
     for (const [index, line] of lines.entries()) {
-        if (/\bAD-\d+\b/.test(line)) {
-            internalRefs.push(`${file}:${index + 1} -> decision-record ID: ${line.trim()}`);
+        const hit = SOURCE_VIOLATIONS.find(({ pattern }) => pattern.test(line));
+        if (hit) {
+            internalRefs.push(`${file}:${index + 1} -> ${hit.label}: ${line.trim()}`);
         }
     }
 }

@@ -66,7 +66,7 @@ export function drizzleTableForEntity<E extends object>(entityClass: Constructab
         } else if (col.nullable === true || generated) {
             // Non-PK `@generatedColumn` columns are emitted without NOT NULL: persist
             // skips them while undefined, so a NOT NULL constraint would reject
-            // the insert (DAT-F3). Nullable columns stay as declared.
+            // the insert. Nullable columns stay as declared.
             columns[col.fieldName] = builder;
         } else {
             columns[col.fieldName] = builder.notNull();
@@ -89,7 +89,7 @@ export function drizzleTableForEntity<E extends object>(entityClass: Constructab
  * ```
  */
 export function insertSchemaForEntity<E extends object>(entityClass: Constructable<E>): z.ZodType {
-    // NOTE: bridging to Parameters<typeof createInsertSchema>[0] — the source type is wider than this consumer's contract.
+    // The source type is wider than this consumer's contract; the assertion is confined to this boundary.
     const table = drizzleTableForEntity(entityClass) as unknown as Parameters<typeof createInsertSchema>[0];
     return createInsertSchema(table) as z.ZodType;
 }

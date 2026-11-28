@@ -25,7 +25,7 @@ nd-switch [data-part='control'] {
     block-size: 1.25rem;
     padding: 2px;
     background: var(--nd-color-surface);
-    border: 1px solid var(--nd-color-border);
+    border: 1px solid var(--nd-color-control-border);
     border-radius: var(--nd-radius-full);
     transition: background-color var(--nd-duration-fast) var(--nd-ease-standard);
 }

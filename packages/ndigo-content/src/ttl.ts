@@ -70,7 +70,7 @@ export class TTLContentSource implements ContentSource {
      * stores it, and returns it.
      *
      * Expired entries are swept on every write so dynamic keys cannot retain
-     * memory indefinitely (PWB-REV-017).
+     * memory indefinitely.
      *
      * @param key - The content key to resolve.
      * @param language - The requested language code.

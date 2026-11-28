@@ -98,7 +98,7 @@ export class Application extends Emitter {
     #entryProcessors: EntryProcessor[] = [];
     #schema: z.ZodType | null = null;
     #sources: Set<Function>;
-    // CF-6: the context created by `_prepareContext` during `run()`; closed in
+    // The context created by `_prepareContext` during `run()`; closed in
     // `run()`'s catch when boot fails after creation, cleared once boot succeeds.
     #pendingContext: ConfigurableApplicationContext | null = null;
 
@@ -154,7 +154,7 @@ export class Application extends Emitter {
             this.#pendingContext = null;
             return context;
         } catch (error: unknown) {
-            // CF-6: a boot failure after context creation (binding, validation,
+            // A boot failure after context creation (binding, validation,
             // route scan) must not leak the context's listeners/entries — close
             // it first, then run the remaining cleanup.
             this.#pendingContext?.close();
@@ -363,7 +363,7 @@ export class Application extends Emitter {
      *
      * Precedence is the same as the active profile channels: env
      * first (deployment baseline), CLI last (most specific), so a CLI group
-     * mapping overrides an env one of the same name (CTX-12).
+     * mapping overrides an env one of the same name.
      *
      * @param cli - The parsed CLI arguments.
      * @returns The group name → member-profiles map.
@@ -426,7 +426,7 @@ export class Application extends Emitter {
      */
     protected _prepareContext(environment: ConfigurableEnvironment, args: string[]): ConfigurableApplicationContext {
         const context = new MetadataConfigApplicationContext(this.#name ?? 'ndigo-application');
-        // CF-6: track the context for `run()`'s failure path — a throw later in
+        // Track the context for `run()`'s failure path — a throw later in
         // this method (binding, validation, route scan) must close it.
         this.#pendingContext = context;
         context.setEnvironment(environment);
@@ -453,7 +453,7 @@ export class Application extends Emitter {
         // source's `@whenMissingEntry` may observe an earlier one) and is
         // reused below so inactive sources are also skipped by
         // config-properties binding, refresh rebinding, and schema collection
-        // (CF-1).
+        //
         const activeSources: Function[] = [];
         for (const source of this.#sources) {
             if (isActive(source, conditionContext)) {
@@ -511,7 +511,7 @@ export class Application extends Emitter {
                     // handler's message states it); the next refresh retries
                     // the full set.
                     const { instance } = resolveConfigurationProperties(source as new () => unknown, context);
-                    // CTX-13: the instance being replaced is torn down before
+                    // The instance being replaced is torn down before
                     // the new one is stored — a refresh must not leak the
                     // previous @refreshScope instance (and its resources).
                     const previous = context.hasValue(name) ? context.getValue(name) : undefined;
@@ -523,7 +523,7 @@ export class Application extends Emitter {
             };
             environment.on(CONFIG_REFRESH_EVENT, this.#refreshListener);
             environment.on('error', this.#refreshFailHandler);
-            // CTX-05/ARC-6: a closed context must not stay reachable through
+            // A closed context must not stay reachable through
             // the environment — detach the rebind listener when the CONTEXT
             // closes, not only when Application.close() is called.
             context.on('context:close', () => this.#detachRebindListeners());
@@ -545,7 +545,7 @@ export class Application extends Emitter {
             const result = validateEnvironment(env, schema);
             if (!result.valid) {
                 // A resolved value may be decrypted secret plaintext; with a
-                // decryptor configured, redact every reported actual (CTX-02).
+                // decryptor configured, redact every reported actual.
                 const secretContext = Boolean(this.#secretDecryptor);
                 const detail = result.issues
                     .map((issue) => {
@@ -558,7 +558,7 @@ export class Application extends Emitter {
         }
 
         // Build the RouteRegistry from @routeMapping decorator metadata.
-        // CTX-08: scan only ACTIVE sources — an inactive (condition-gated)
+        // Scan only ACTIVE sources — an inactive (condition-gated)
         // source must not populate routeRegistry, or its routes become
         // reachable despite the gate.
         const routes = new RouteRegistry();
@@ -622,7 +622,7 @@ export class Application extends Emitter {
      * Emits `'closed'`, detaches the config-refresh rebind listener (and its
      * fail-loud handler) from the wired environment, then destroys the
      * emitter. Detaching also happens automatically when the application
-     * context closes (CTX-05).
+     * context closes.
      */
     close(): void {
         this.emit('closed');
@@ -634,7 +634,7 @@ export class Application extends Emitter {
 
     /**
      * Tears down a `@refreshScope` instance being replaced by a rebind
-     * (CTX-13): a `Destroyable` is destroyed. Plain configuration bags with
+     * a `Destroyable` is destroyed. Plain configuration bags with
      * no release method are left untouched.
      *
      * @param value - The previous bound instance.

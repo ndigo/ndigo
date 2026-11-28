@@ -64,14 +64,6 @@ export interface MultipartContext {
 }
 
 /** Backing store for a parsed file part: in-memory buffer or temp-file handle. */
-/**
- * Backing.
- *
- * @example
- * ```ts
- * type _Alias = Backing;
- * ```
- */
 export type Backing =
     | { readonly kind: 'buffer'; readonly data: Buffer }
     | { readonly kind: 'temp'; readonly path: string; readonly size: number };
@@ -175,7 +167,7 @@ class NodeMultipartContext implements MultipartContext {
         return 'NodeMultipartContext';
     }
 
-    // SEC-1: null-prototype record + `Object.hasOwn` — a field named
+    // Null-prototype record + `Object.hasOwn` — a field named
     // `__proto__` must land as an ordinary own key (see also the urlencoded
     // codec in http-request-limits.ts), never through the inherited accessor.
     readonly fields: Record<string, string | string[]> = Object.create(null);

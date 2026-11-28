@@ -11,36 +11,36 @@ import type { ConfigurableEnvironment } from '@ndigo/context';
 @configurationProperties('server')
 @refreshScope
 class RefreshableServerConfig {
-    @property('port', Number as unknown as new (...args: never[]) => number) @defaultValue('8080') port!: number;
-    @property('host', String as unknown as new (...args: never[]) => string) @defaultValue('localhost') host!: string;
+    @property('port', Number) @defaultValue('8080') port!: number;
+    @property('host', String) @defaultValue('localhost') host!: string;
 }
 
 @configurationProperties('plain')
 class PlainServerConfig {
-    @property('port', Number as unknown as new (...args: never[]) => number) @defaultValue('7000') port!: number;
+    @property('port', Number) @defaultValue('7000') port!: number;
 }
 
 @configurationProperties('first')
 @refreshScope
 class FirstRefreshableConfig {
-    @property('port', Number as unknown as new (...args: never[]) => number) @defaultValue('1111') port!: number;
+    @property('port', Number) @defaultValue('1111') port!: number;
 }
 
 @configurationProperties('second')
 @refreshScope
 class SecondRefreshableConfig {
     // No default: a refresh that drops `second.port` makes the rebind throw.
-    @property('port', Number as unknown as new (...args: never[]) => number) port!: number;
+    @property('port', Number) port!: number;
 }
 
-/** Refresh-scoped config that records its own teardown across rebinds (CTX-13). */
+/** Refresh-scoped config that records its own teardown across rebinds. */
 @configurationProperties('counting')
 @refreshScope
 class DestroyCountingConfig {
     /** Test probe: how many previous instances were destroyed. */
     static destroyedInstances = 0;
 
-    @property('port', Number as unknown as new (...args: never[]) => number) @defaultValue('8080') port!: number;
+    @property('port', Number) @defaultValue('8080') port!: number;
     destroyed = false;
 
     destroy(): void {
@@ -167,7 +167,7 @@ describe('@refreshScope live rebind', () => {
         const environment = context.environment as ConfigurableEnvironment;
 
         const before = context.getValue<RefreshableServerConfig>('refreshableServerConfig'); // bind once
-        // ARC-6/CTX-05: BOTH refresh subscriptions detach on CONTEXT close — the
+        // ARC-6/BOTH refresh subscriptions detach on CONTEXT close — the
         // context's scope-clear listener (context.close) and the app's rebind
         // listener (hooked to the context's own context:close event). No
         // Application.close() call is needed any more.

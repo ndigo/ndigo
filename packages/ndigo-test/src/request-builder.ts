@@ -203,7 +203,7 @@ export function buildRoute(request: MockRequest, responseSink: ResponseSink): Pr
             [ACCEPT_LANGUAGE_ATTRIBUTE]: HTTPHeaders.ACCEPT_LANGUAGE.get(headers) ?? undefined,
             [REQUESTED_THEME_ATTRIBUTE]: nodeRequest.cookies[THEME_COOKIE_NAME],
         },
-        // NOTE: bridging to Route — the source type is wider than this consumer's contract.
+        // The source type is wider than this consumer's contract; the assertion is confined to this boundary.
     } as unknown as Route;
 
     // Per-segment matrix data so matrix-param conditions can match.

@@ -127,7 +127,7 @@ async function* streamCall(
         // yielded from inside a `finally`: a consumer that disposes the
         // generator early (`for await` break → `iterator.return()`) resumes it
         // at the pending yield and would otherwise park it forever, leaking the
-        // body reader and the open OTel span (COR-8).
+        // body reader and the open OTel span.
         const trailing: ServerSentEvent[] = [];
 
         try {

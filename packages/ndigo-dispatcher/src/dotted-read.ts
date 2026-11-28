@@ -1,5 +1,5 @@
 /**
- * Shared dotted-keypath read for the nested-capable value sources (D-2).
+ * Shared dotted-keypath read for the nested-capable value sources.
  *
  * A nested-capable source (`body:value`, `request-session:value`,
  * `history-state:value`, `attribute:value`) supports both flat keys and

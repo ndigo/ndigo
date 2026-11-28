@@ -261,7 +261,7 @@ describe('STOMPBroker SEND routing', () => {
         session.push('SEND', { destination: '/topic/chat', 'x-trace-id': 'trace-1' }, 'intercepted');
         await vi.waitFor(() => expect(onMessage).toHaveBeenCalled());
         // The seam sees the same pass-through header set a MESSAGE frame
-        // carries (COR-7): user-defined headers, never the framing ones —
+        // carries: user-defined headers, never the framing ones —
         // the destination is the first argument, not a header.
         expect(onMessage).toHaveBeenCalledWith('/topic/chat', 'intercepted', { 'x-trace-id': 'trace-1' }, session);
         // CONNECTED only — the fan-out was suppressed, no RECEIPT requested.

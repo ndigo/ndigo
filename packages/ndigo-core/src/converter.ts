@@ -553,7 +553,7 @@ export function createConversionService(options: ConversionServiceOptions = {}):
                 registry.hasConverter(sourceType, targetType) ||
                 // convert() falls back to String-source converters (the
                 // environment/config binding convention) — canConvert agrees
-                // so the two never disagree (COR-23).
+                // so the two never disagree.
                 registry.hasConverter(String, targetType)
             );
         },

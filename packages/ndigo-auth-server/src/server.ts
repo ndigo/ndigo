@@ -1,7 +1,7 @@
 /**
  * Server-side authentication coordinator.
  */
-import { type Principal } from '@ndigo/auth-core';
+import { type AuthAdapter, type Principal } from '@ndigo/auth-core';
 import { AuthRegistry } from '@ndigo/auth-core';
 
 /**
@@ -31,6 +31,30 @@ export class AuthServer {
         return 'AuthServer';
     }
 
+    /** Adapters registered on this server, shadowing the global registry. */
+    readonly #adapters = new Map<string, AuthAdapter>();
+
+    /**
+     * Registers an adapter scoped to this server instance.
+     *
+     * Instance-scoped registrations shadow the process-wide
+     * {@link AuthRegistry} for the same id without mutating it, so two
+     * application contexts in one process cannot collide on `'jwt'` or
+     * `'oidc'`.
+     *
+     * @param adapter - The adapter to register.
+     * @returns This server.
+     */
+    register(adapter: AuthAdapter): this {
+        this.#adapters.set(adapter.id, adapter);
+        return this;
+    }
+
+    /** Resolves an adapter, preferring the instance-scoped registration. */
+    #getAdapter(id: string): AuthAdapter | undefined {
+        return this.#adapters.get(id) ?? AuthRegistry.getAdapter(id);
+    }
+
     /**
      * Validates a token using the appropriate adapter.
      *
@@ -39,7 +63,7 @@ export class AuthServer {
      * @returns The authenticated {@link Principal}, or `null` if validation fails.
      */
     async validate(adapterId: string, token: string): Promise<Principal | null> {
-        const adapter = AuthRegistry.getAdapter(adapterId);
+        const adapter = this.#getAdapter(adapterId);
         if (!adapter) {
             throw new Error(`Authentication adapter '${adapterId}' not found`);
         }
@@ -65,7 +89,7 @@ export class AuthServer {
      */
     async validateAny(token: string, adapterIds: string[]): Promise<Principal | null> {
         for (const adapterId of adapterIds) {
-            const adapter = AuthRegistry.getAdapter(adapterId);
+            const adapter = this.#getAdapter(adapterId);
             if (!adapter) {
                 throw new Error(`Authentication adapter '${adapterId}' not found`);
             }

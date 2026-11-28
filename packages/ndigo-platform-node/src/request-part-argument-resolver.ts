@@ -13,7 +13,7 @@ import { getNodeRequest } from './node-request';
 /**
  * Parses one multipart text-field value as JSON, falling back to the raw
  * string. `MultipartContext.fields` keeps no per-part content-type, so JSON
- * detection is parse-with-raw-fallback (D-6): a JSON part binds as an
+ * detection is parse-with-raw-fallback: a JSON part binds as an
  * object, any other text part as its raw string.
  */
 function parseJsonPart(raw: string): unknown {

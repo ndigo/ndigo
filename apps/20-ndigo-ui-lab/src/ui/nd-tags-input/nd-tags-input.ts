@@ -186,6 +186,19 @@ export class NdTagsInput extends NdElement {
             if (remove) spreadProps(remove, api.getItemDeleteTriggerProps({ value, index }));
             if (editor) spreadProps(editor, api.getItemInputProps({ value, index }));
         }
+
+        // Keep chip order aligned with api.value. Editing a tag changes its
+        // map key, so the re-created chip would otherwise be appended after
+        // its siblings while the machine keeps it at its original index.
+        if (control) {
+            let anchor: Node | null = input;
+            for (let index = values.length - 1; index >= 0; index--) {
+                const item = this.#items.get(values[index]);
+                if (!item) continue;
+                control.insertBefore(item, anchor);
+                anchor = item;
+            }
+        }
     }
 
     #render(api: TagsInputApi): void {

@@ -129,13 +129,13 @@ describe('Application integration — conditional gate coverage (CF-1)', () => {
     test('skips binding for an inactive @whenBrowser @configurationProperties source on Node', async () => {
         vi.stubGlobal('window', undefined);
 
-        // Probe (CF-1): before the fix the ungated auto-registration loop
+        // Probe: before the fix the ungated auto-registration loop
         // bound this class and boot threw `Missing required property
         // "browseronly.token"`.
         @whenBrowser
         @configurationProperties('browseronly')
         class BrowserOnlyConfig {
-            @property('token', String as unknown as new (...args: never[]) => string) token!: string;
+            @property('token', String) token!: string;
         }
 
         @configuration
@@ -152,7 +152,7 @@ describe('Application integration — conditional gate coverage (CF-1)', () => {
         @whenNode
         @configurationProperties('nodeonly')
         class NodeOnlyConfig {
-            @property('token', String as unknown as new (...args: never[]) => string) token!: string;
+            @property('token', String) token!: string;
         }
 
         @configuration
@@ -189,7 +189,7 @@ describe('Application integration — conditional gate coverage (CF-1)', () => {
         @refreshScope
         @configurationProperties('browser-refresh')
         class BrowserRefreshConfig {
-            @property('token', String as unknown as new (...args: never[]) => string)
+            @property('token', String)
             @defaultValue('unset')
             token!: string;
         }
@@ -198,7 +198,7 @@ describe('Application integration — conditional gate coverage (CF-1)', () => {
         @refreshScope
         @configurationProperties('node-refresh')
         class NodeRefreshConfig {
-            @property('token', String as unknown as new (...args: never[]) => string)
+            @property('token', String)
             @defaultValue('node-default')
             token!: string;
         }

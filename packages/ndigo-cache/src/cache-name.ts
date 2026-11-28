@@ -5,7 +5,7 @@ import { ContextToken } from '@ndigo/factory';
 import type { Cache } from './cache';
 
 /**
- * Resolves a cache store name from a string or a typed store token (D7): a token-identified store uses the token's description as its name.
+ * Resolves a cache store name from a string or a typed store token: a token-identified store uses the token's description as its name.
  * The single validation shared by every name/token entry point.
  *
  * @param nameOrToken - The cache name or typed store token.

@@ -46,7 +46,7 @@ export class STOMPDelivery {
     /**
      * Deliver one MESSAGE to a subscription: per-subscription framing
      * (including the `ack` header on non-`auto` subscriptions),
-     * ack tracking (D9), redelivery flag. While a `/queue` replay is in
+     * ack tracking, redelivery flag. While a `/queue` replay is in
      * flight the delivery is buffered instead of sent.
      *
      * @param subscription - The target subscription.
@@ -54,7 +54,7 @@ export class STOMPDelivery {
      * @param destination - The destination header (e.g. `/topic/chat`).
      * @param body - The body.
      * @param headers - Pass-through headers (merged under the frame's own).
-     * @param redelivered - `true` for NACK redelivery (D9).
+     * @param redelivered - `true` for NACK redelivery.
      */
     deliver(
         subscription: Subscription,
@@ -66,7 +66,7 @@ export class STOMPDelivery {
     ): void {
         if (subscription.replaying) {
             if (!this.#host.limits.chargeReplay(subscription.session, materialOctets(body))) {
-                // The live buffer shares the replay budget (SEC-6): a peer
+                // The live buffer shares the replay budget: a peer
                 // that publishes at itself while its own replay runs cannot
                 // pin memory through the buffer.
                 fail(subscription.session, null, 'replay budget exhausted', 1013);
@@ -86,7 +86,7 @@ export class STOMPDelivery {
      * @param destination - The `destination` header.
      * @param body - The body.
      * @param headers - Pass-through headers.
-     * @param redelivered - `true` for NACK redelivery (D9).
+     * @param redelivered - `true` for NACK redelivery.
      */
     deliverNow(
         subscription: Subscription,
@@ -132,7 +132,7 @@ export class STOMPDelivery {
     }
 
     /**
-     * Apply an ack/nack to one subscription's tracking (D9).
+     * Apply an ack/nack to one subscription's tracking.
      *
      * `client` drops the delivered prefix through the named message;
      * `client-individual` removes only the named entry and re-queues the
@@ -178,7 +178,7 @@ export class STOMPDelivery {
     }
 
     /**
-     * Deliver a SEND to the sender's own principal scope (D10) — the
+     * Deliver a SEND to the sender's own principal scope — the
      * shared path for live SENDs and transaction COMMITs. No scope bound
      * to the suffix → nothing to deliver; an unresolvable principal fails
      * closed (ERROR + close 1008). Receipts are the caller's: the live
@@ -252,7 +252,7 @@ export class STOMPDelivery {
             return fail(session, frame, 'topic fanout unavailable', 1011);
         }
         if (storeManaged && stored === undefined) {
-            // Same posture as the live SEND path (COR-8): the append did not
+            // Same posture as the live SEND path: the append did not
             // persist, so the transaction cannot be reported committed.
             return fail(session, frame, 'queue store unavailable', 1011);
         }

@@ -22,7 +22,7 @@
  * timeout, oversized body, or unparseable body — keeps the last-good
  * document with a warning; the source retries on the next tick.
  *
- * Fetch hardening mirrors the OIDC adapter (SE-10): `fetchTimeoutMs`
+ * Fetch hardening mirrors the OIDC adapter: `fetchTimeoutMs`
  * (default 10s) bounds the whole exchange via `AbortController`, and
  * `maxResponseBytes` (default 1 MiB) is enforced against `Content-Length`
  * when present plus by counting streamed bytes; breaches route through the
@@ -126,14 +126,14 @@ export interface RemoteSourceOptions {
     /**
      * Timeout for one fetch exchange (request + body read) in milliseconds
      * (default `10_000`). On expiry the request is aborted and the failure
-     * follows the standard `optional`/keep-last-good policy (SE-10).
+     * follows the standard `optional`/keep-last-good policy.
      */
     fetchTimeoutMs?: number;
     /**
      * Maximum accepted response size in bytes (default 1 MiB). Enforced
      * against `Content-Length` when the server declares one, then by
      * counting streamed bytes; an oversized document follows the standard
-     * `optional`/keep-last-good policy (SE-10).
+     * `optional`/keep-last-good policy.
      */
     maxResponseBytes?: number;
 }
@@ -208,7 +208,7 @@ export class RemotePropertySource {
             throw new IllegalStateError('RemotePropertySource requires a url');
         }
         if (!options.fetch) {
-            // SEC-1: config in transit is a secret-bearing channel; never
+            // Config in transit is a secret-bearing channel; never
             // silently downgrade it to plaintext because an operator error or
             // influenced env value named an `http:` URL. The injected-fetch
             // seam owns the transport and skips the check.
@@ -304,7 +304,7 @@ export class RemotePropertySource {
             // `#fetchAndApply` already handled the keep-last-good/optional
             // policy for HTTP errors; reaching this catch means the transport
             // rejected or the body was unparseable, and nothing was applied.
-            // Keep last-good and warn; retry next tick (SEC-12).
+            // Keep last-good and warn; retry next tick.
             this.#keepLastGood(err);
         } finally {
             this.#fetchInFlight = false;
@@ -336,7 +336,7 @@ export class RemotePropertySource {
         const doFetch = this.#options.fetch ?? globalThis.fetch;
         const timeoutMs = this.#options.fetchTimeoutMs ?? DEFAULT_FETCH_TIMEOUT_MS;
         const maxBytes = this.#options.maxResponseBytes ?? DEFAULT_MAX_RESPONSE_BYTES;
-        // SE-10: bound the whole exchange (request + body read) so a stalled
+        // Bound the whole exchange (request + body read) so a stalled
         // config server cannot pin a poll tick or boot; the abort rejects the
         // fetch and routes through the standard failure policy below.
         const controller = new AbortController();
@@ -385,7 +385,7 @@ export class RemotePropertySource {
             } catch (err) {
                 return this.#lastBody === null ? this.#handleBootFailure('<body>', err) : this.#keepLastGood(err);
             }
-            // Intentional no-dep exception (REUSE-5): `@ndigo/http`'s ETAG constant is not
+            // Intentional no-dep exception: `@ndigo/http`'s ETAG constant is not
             // adopted to avoid adding a new base-package dependency for a single
             // read. Fetch `Headers.get` is case-insensitive per spec, so the
             // literal is spec-safe.
@@ -423,7 +423,7 @@ export class RemotePropertySource {
     }
 
     /**
-     * Reads a response body with `maxBytes` enforced while streaming (SE-10).
+     * Reads a response body with `maxBytes` enforced while streaming.
      * The caller's `Content-Length` pre-check is the fast path; counting
      * actual bytes also bounds chunked responses and servers that lie about
      * the length. Without a streaming body (spec stubs, legacy fetch),
@@ -470,7 +470,7 @@ export class RemotePropertySource {
         return new TextDecoder().decode(bytes);
     }
 
-    /** The single oversized-document failure shared by every size gate (SE-10). */
+    /** The single oversized-document failure shared by every size gate. */
     #oversizedError(maxBytes: number): IllegalStateError {
         return new IllegalStateError(
             `Remote config from "${this.#options.url}" exceeds the ${maxBytes}-byte limit (source "${this.#name}")`

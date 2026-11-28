@@ -55,14 +55,6 @@ export interface MultipartLimits {
 }
 
 /** Options accepted by {@link parseMultipart}. */
-/**
- * MultipartParseOptions.
- *
- * @example
- * ```ts
- * const value = {} as MultipartParseOptions;
- * ```
- */
 export interface MultipartParseOptions {
     /** Parsing limits. */
     limits?: MultipartLimits;
@@ -160,7 +152,7 @@ function extractBoundary(contentType: string | undefined): string | null {
  * untrusted. Any path separator (`/` or `\`) or a bare `.` / `..` segment turns
  * a name into a traversal payload (`../../etc/passwd`, an absolute path, a
  * Windows backslash). Such names are rejected outright — before any temp file is
- * created (D-6) — so the stored {@link MultipartFile.originalFilename} can never
+ * created — so the stored {@link MultipartFile.originalFilename} can never
  * resolve against the working directory. A plain basename passes through trimmed.
  */
 function sanitizeFilename(filename: string | undefined): string | null {
@@ -213,7 +205,7 @@ export async function parseMultipart(
     const tmpDir = options.tmpDir ?? tmpdir();
     const context = new NodeMultipartContext();
 
-    // SEC-5: when the client declares its size up front and it exceeds the
+    // When the client declares its size up front and it exceeds the
     // cap, reject before reading a byte — no body consumption, no
     // `100-continue` data transfer, no temp files.
     const declaredLength = contentLengthOf(req);
@@ -266,7 +258,7 @@ export async function parseMultipart(
         resolveParse(value);
     };
 
-    // SEC-5: a counting gate between the request stream and busboy. Without
+    // A counting gate between the request stream and busboy. Without
     // a `Content-Length` (chunked uploads) the declared size is unknown, so
     // the cap must stop the flow while streaming — crossing it destroys the
     // gate stream with the same `RequestLimitError` busboy's own error path
@@ -296,11 +288,11 @@ export async function parseMultipart(
         if (aborted) {
             return;
         }
-        // COR-15: the counting gate above already saw every body byte — field
+        // The counting gate above already saw every body byte — field
         // values must NOT be added again (that would double count and reject
         // uploads at ~half the configured cap). Only re-check the totals.
         if (info.valueTruncated) {
-            // SEC-9: busboy truncated this field at the field-size limit —
+            // Busboy truncated this field at the field-size limit —
             // bind nothing; the abort rejects with 413 field_too_large.
             flagAbort(ProblemTypes.fieldTooLarge, 'A text field exceeds the maximum allowed size');
             return;
@@ -317,7 +309,7 @@ export async function parseMultipart(
         if (safeName === null || aborted) {
             // Reject traversal / absolute / separator filenames before any
             // filesystem touch; still drain rejected or post-abort parts with
-            // a real consumer so busboy reaches 'close' promptly (SEC-7).
+            // a real consumer so busboy reaches 'close' promptly.
             stream
                 .on('data', () => undefined)
                 .on('end', () => undefined)
@@ -333,7 +325,7 @@ export async function parseMultipart(
                 { ...info, filename: safeName },
                 limits,
                 () => {
-                    // COR-15: the counting gate is the single byte counter;
+                    // The counting gate is the single byte counter;
                     // this only re-checks the accumulated total (adding here
                     // would double-count file chunks against the cap).
                     if (totalBytes > limits.maxRequestSize) {
@@ -389,14 +381,14 @@ export async function parseMultipart(
         }
         // Hand off readable parts to the caller. Temp files survive until the
         // request dispatch completes; the framework request lifecycle then
-        // calls cleanup() (SEC-6) — the parser's own abort path above is the
+        // calls cleanup() — the parser's own abort path above is the
         // only other release.
         settleOk(context);
     });
 
     req.pipe(gate).pipe(bb);
 
-    // COR-16: mirror #readBody's abort wiring. A client abort mid-upload must
+    // Mirror #readBody's abort wiring. A client abort mid-upload must
     // settle the parser and destroy the gate/busboy pipeline so busboy's
     // 'close' handler above runs the temp cleanup — otherwise `parseMultipart`
     // would hang forever with spilled `ndigo-upload-*` files and open fds
@@ -453,7 +445,7 @@ function collectFile(
             settled = true;
             resolve(new NodeMultipartFile(name, info.filename, info.mimeType, backing));
         };
-        // COR-16: a part stream destroyed mid-upload (client abort, parser
+        // A part stream destroyed mid-upload (client abort, parser
         // teardown, overflow) never emits 'end' — release the spill target's
         // file descriptor immediately so it cannot leak.
         const closeSpill = (): void => {
@@ -514,7 +506,7 @@ function collectFile(
             }
             // Destroyed before 'end' (abort/teardown): settle the part as an
             // abort so the pending bookkeeping clears; the parser-level
-            // cleanup unlinks the temp file (COR-16).
+            // cleanup unlinks the temp file.
             closeSpill();
             reject(
                 new RequestLimitError(

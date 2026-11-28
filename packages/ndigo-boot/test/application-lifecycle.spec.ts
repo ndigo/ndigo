@@ -123,7 +123,7 @@ describe('Application.run() boot-failure cleanup (CF-6)', () => {
         @configurationProperties('server')
         @refreshScope
         class RefreshableConfig {
-            @property('port', Number as unknown as new (...args: never[]) => number)
+            @property('port', Number)
             @defaultValue('8080')
             port!: number;
         }

@@ -19,7 +19,7 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `applyNegotiatedTheme` — Records the negotiated request theme on the route.
 - `ROUTER` — A `ContextToken` for retrieving the application's `Router` instance from the dependency injection context.
 - `RouterCallback` *(type)* — A callback function type that is invoked when a route changes.
-- `RouterErrorHandler` *(type)* — Invoked when a navigation's interceptor pipeline throws or an `afterCompletion` hook rejects. Lets routers surface failures instead of swallowing them (PWB-REV…
+- `RouterErrorHandler` *(type)* — Invoked when a navigation's interceptor pipeline throws or an `afterCompletion` hook rejects. Lets routers surface failures instead of swallowing them.
 - `RouterOptions` *(type)* — Options accepted by router implementations.
 - `Router` *(type)* — Defines the core interface for a router, providing access to the current route and a mechanism to refresh it.
 - `AbstractRouter` — An abstract base class that provides common functionality for router implementations. It includes mechanisms for managing route interceptors.

@@ -165,7 +165,7 @@ export class CredentialsAuthAdapter implements AuthAdapter {
         }
         const { username, password } = credentials;
         const user = await this.#userStore.findByUsername(username);
-        // SEC-B1: the dummy hash is a timing sink only — it must never
+        // The dummy hash is a timing sink only — it must never
         // authenticate. `stored` is the account's real hash when it is a
         // non-empty string, else `null` (null/undefined/empty hash all fail
         // closed). The verify still runs against the dummy constant on that
@@ -197,7 +197,7 @@ export class CredentialsAuthAdapter implements AuthAdapter {
         if (!record) {
             return null;
         }
-        // SE-7: sessions outlive account-state changes — consult the account
+        // Sessions outlive account-state changes — consult the account
         // record so disabling (or deleting) an account revokes its live
         // sessions instead of leaving them valid until TTL expiry.
         const user = await this.#userStore.findById(record.principal.id);
@@ -227,7 +227,7 @@ export class CredentialsAuthAdapter implements AuthAdapter {
             throw new InvalidCredentialsError();
         }
         const issuedAt = Date.now();
-        // COR-13: report the store's effective expiry (rotate preserves the
+        // Report the store's effective expiry (rotate preserves the
         // remaining TTL), never a fresh `issuedAt + ttlMs`.
         const next = await this.#sessionStore.rotate(token, { ...record, issuedAt });
         return { principal: record.principal, token: next.id, expiresAt: next.expiresAt };

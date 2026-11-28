@@ -2,6 +2,7 @@
  * Renders EJS template strings to HTML with bounded include resolution.
  */
 import ejs from 'ejs';
+import { resolve, sep } from 'node:path';
 import { FrameworkError } from '@ndigo/core';
 
 /**
@@ -81,6 +82,17 @@ const MAX_COMPILED = 64;
  * treated as a cycle and fails fast with {@link EJSIncludeCycleError}.
  */
 const MAX_INCLUDE_DEPTH = 32;
+
+/**
+ * Returns whether `candidate` is the root itself or lives beneath it. The
+ * comparison is lexical (after `resolve`), matching ejs's own resolution;
+ * symlinks inside the root stay trusted.
+ */
+function isContained(candidate: string, root: string): boolean {
+    const base = resolve(root);
+    const target = resolve(candidate);
+    return target === base || target.startsWith(base.endsWith(sep) ? base : `${base}${sep}`);
+}
 
 /**
  * Renders EJS template strings to HTML using the `ejs` package.
@@ -262,23 +274,48 @@ export class EJSTemplateEngine {
 
     /**
      * Resolves an include specifier to an absolute path, mirroring ejs's
-     * `getIncludePath` semantics: absolute (POSIX or Windows-drive) specifiers
-     * resolve against `root` (defaulting to the filesystem root); relative ones
-     * resolve next to the including template.
+     * `getIncludePath` semantics but confining the result to `options.root`:
+     * - absolute specifiers resolve against the configured roots (never the
+     *   filesystem root) and must stay inside one of them;
+     * - relative specifiers resolve next to the including template and, when a
+     *   root is configured, must stay inside one of the roots.
      *
      * @param spec - The include specifier.
      * @param parentFilename - The including template's filename, if any.
      * @returns The resolved absolute path.
+     * @throws When the include cannot be resolved or escapes the configured roots.
      */
     #resolveIncludePath(spec: string, parentFilename: string | undefined): string {
-        if (/^[A-Za-z]+:\\|^\//.test(spec)) {
-            const root = this.#options.root;
-            const base = Array.isArray(root) ? (root[0] ?? '/') : (root ?? '/');
-            return ejs.resolveInclude(spec.replace(/^\/*/, ''), base, true);
+        const rootOption = this.#options.root;
+        const roots = rootOption === undefined ? [] : Array.isArray(rootOption) ? rootOption : [rootOption];
+        const isAbsolute = /^[A-Za-z]+:\\|^\//.test(spec);
+
+        if (isAbsolute) {
+            if (roots.length === 0) {
+                throw new FrameworkError(
+                    `Absolute EJS include "${spec}" requires options.root — refusing to resolve against the filesystem root.`
+                );
+            }
+            const relative = spec.replace(/^\/*/, '');
+            for (const root of roots) {
+                const resolved = ejs.resolveInclude(relative, root, true);
+                if (isContained(resolved, root)) {
+                    return resolved;
+                }
+            }
+            throw new FrameworkError(`EJS include "${spec}" resolves outside the configured root.`);
         }
-        if (parentFilename) {
-            return ejs.resolveInclude(spec, parentFilename);
+
+        if (!parentFilename) {
+            throw new FrameworkError(
+                `Could not resolve EJS include "${spec}": no parent template filename was supplied.`
+            );
         }
-        throw new FrameworkError(`Could not resolve EJS include "${spec}": no parent template filename was supplied.`);
+
+        const resolved = ejs.resolveInclude(spec, parentFilename);
+        if (roots.length === 0 || roots.some((root) => isContained(resolved, root))) {
+            return resolved;
+        }
+        throw new FrameworkError(`EJS include "${spec}" resolves outside the configured root.`);
     }
 }

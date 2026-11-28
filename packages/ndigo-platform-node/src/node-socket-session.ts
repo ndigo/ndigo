@@ -53,14 +53,6 @@ export interface SocketLimits {
 }
 
 /** Resolved, read-only socket limits with defaults applied. */
-/**
- * ResolvedSocketLimits.
- *
- * @example
- * ```ts
- * const value = {} as ResolvedSocketLimits;
- * ```
- */
 export interface ResolvedSocketLimits {
     /** Maximum inbound frame size in bytes. */
     readonly maxPayloadBytes: number;

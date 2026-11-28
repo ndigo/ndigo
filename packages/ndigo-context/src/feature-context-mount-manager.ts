@@ -10,7 +10,7 @@ import type { FeatureMetricRecorder } from '@ndigo/core';
 export type { FeatureMetricRecorder } from '@ndigo/core';
 import { ApplicationContext } from './context';
 import type { SharedDependencyRegistry, DependencyValidationResult } from './shared-dependency-registry';
-import { ContextToken } from '@ndigo/factory';
+import { ContextToken, type Destroyable } from '@ndigo/factory';
 import { ContextEventGateway, ContextEventGatewayOptions, ContextEventRelay } from './event-gateway';
 import {
     createFeatureContext,
@@ -132,7 +132,7 @@ const createGateway = (
  * await manager.mountLazy('checkout');
  * ```
  */
-export class FeatureContextMountManager {
+export class FeatureContextMountManager implements Destroyable {
     /**
      * The `Symbol.toStringTag` value for this instance.
      *

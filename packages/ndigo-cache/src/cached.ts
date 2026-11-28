@@ -58,7 +58,7 @@ export interface CachedSpec {
      * Cache key: a static string (the method caches a single value), a
      * `(...args) => string` function, or omitted (defaults to JSON-serialized
      * arguments — JSON semantics: `undefined`/`null` collapse, object
-     * insertion order significant). No expression language (D-5).
+     * insertion order significant). No expression language.
      */
     key?: string | ((...args: unknown[]) => string);
     /**

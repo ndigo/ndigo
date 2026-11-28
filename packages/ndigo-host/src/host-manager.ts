@@ -3,6 +3,7 @@
  */
 import type { FeatureMetricRecorder } from '@ndigo/core';
 import { ContextToken, FeatureContextMountManager } from '@ndigo/context';
+import type { Destroyable } from '@ndigo/factory';
 import type {
     ApplicationContext,
     FeatureContextComposition,
@@ -113,7 +114,7 @@ export const HOST_MANAGER_TOKEN = new ContextToken<HostManager>('ndigo:hostManag
  * });
  * ```
  */
-export class HostManager {
+export class HostManager implements Destroyable {
     /**
      * The `Symbol.toStringTag` value for this instance.
      *
@@ -191,7 +192,7 @@ export class HostManager {
         const { onDeactivate, onRoute, prefix, ...featureOptions } = options;
 
         // Register routing first: a duplicate-prefix rejection must not leave
-        // an orphaned mount registration behind (PWB-REV-010).
+        // an orphaned mount registration behind.
         this.#routingRegistry.registerFeature({
             name: options.name,
             prefix,

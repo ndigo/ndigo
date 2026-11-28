@@ -20,19 +20,11 @@ export interface STOMPFrame {
     command: string;
     /** Decoded header map; names as sent, values unescaped. */
     headers: Record<string, string>;
-    /** Frame body — string for text frames, bytes for binary (D8). */
+    /** Frame body — string for text frames, bytes for binary. */
     body: STOMPBody;
 }
 
 /** Byte-like inputs the codec accepts (binary WS frames, node Buffers). */
-/**
- * STOMPWireInput.
- *
- * @example
- * ```ts
- * type _Alias = STOMPWireInput;
- * ```
- */
 export type STOMPWireInput = string | Uint8Array | ArrayBuffer;
 
 /** Raised on malformed frames (missing NUL, bad `content-length`, …). */

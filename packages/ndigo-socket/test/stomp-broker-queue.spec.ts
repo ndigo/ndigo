@@ -2,7 +2,7 @@
  * /queue caps, store seams, history/retention, and replay ordering.
  */
 import { describe, expect, test, vi } from 'vitest';
-import { InMemoryQueueMessageStore, STOMPBroker } from '../src/index';
+import { InMemoryQueueMessageStore, STOMPBroker, type QueueMessageStore, type StoredQueueMessage } from '../src/index';
 import { connect, FakeSession, FailingStore, ReplayFaultStore, GatedStore } from './_stomp-broker-harness';
 
 describe('STOMPBroker resource caps', () => {
@@ -216,7 +216,7 @@ describe('STOMPBroker store-read phase (receipt-after-persist)', () => {
         expect(session.sent.findIndex((f) => f.command === 'RECEIPT')).toBeGreaterThan(
             session.sent.findIndex((f) => f.command === 'MESSAGE')
         );
-        // Replayed messages are ack-tracked like live deliveries (D9).
+        // Replayed messages are ack-tracked like live deliveries.
         expect(broker.unackedMessages).toBe(0); // auto ack mode — no tracking
     });
 

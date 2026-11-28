@@ -4,20 +4,12 @@
 import type { STOMPBody } from './stomp-frame';
 
 /** A stored `/queue` message — the durable unit behind the backlog. */
-/**
- * StoredQueueMessage.
- *
- * @example
- * ```ts
- * const value = {} as StoredQueueMessage;
- * ```
- */
 export interface StoredQueueMessage {
     /** Broker-issued id; the dedupe key on replay (at-least-once). */
     readonly messageId: string;
     /** The `/queue/<name>` destination the message belongs to. */
     readonly destination: string;
-    /** The message body — text or byte-exact binary (D8). */
+    /** The message body — text or byte-exact binary. */
     readonly body: STOMPBody;
     /** Extra headers (e.g. `content-type`), copied at append time. */
     readonly headers: Readonly<Record<string, string>>;
@@ -33,14 +25,6 @@ export interface StoredQueueMessage {
 }
 
 /** What a caller asks the store to retain. */
-/**
- * QueueStoreRetention.
- *
- * @example
- * ```ts
- * const value = {} as QueueStoreRetention;
- * ```
- */
 export interface QueueStoreRetention {
     /** Drop messages this old or older (the boundary is inclusive). */
     readonly ttlMs?: number;
@@ -123,14 +107,6 @@ export interface QueueMessageStore {
 }
 
 /** Options for `InMemoryQueueMessageStore`. */
-/**
- * InMemoryQueueStoreOptions.
- *
- * @example
- * ```ts
- * const value = {} as InMemoryQueueStoreOptions;
- * ```
- */
 export interface InMemoryQueueStoreOptions {
     /**
      * Retained messages per destination (oldest dropped past the bound).
@@ -158,14 +134,6 @@ export interface InMemoryQueueStoreOptions {
 }
 
 /** A snapshot of `InMemoryQueueMessageStore` retention (`InMemoryQueueMessageStore.stats`). */
-/**
- * InMemoryQueueStoreStats.
- *
- * @example
- * ```ts
- * const value = {} as InMemoryQueueStoreStats;
- * ```
- */
 export interface InMemoryQueueStoreStats {
     /** Distinct destinations currently retaining at least one message. */
     readonly destinations: number;

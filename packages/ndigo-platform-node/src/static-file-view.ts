@@ -38,7 +38,7 @@ export class StaticFileView {
      * Creates the static file view.
      *
      * @param basePath - The directory to serve files from.
-     * @param options - Static handler options (D-6).
+     * @param options - Static handler options.
      */
     constructor(basePath: string, options: StaticHandlerOptions = {}) {
         this.#handler = new StaticResourceHandler(basePath, options);

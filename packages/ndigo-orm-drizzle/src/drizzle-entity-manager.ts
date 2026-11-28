@@ -93,7 +93,7 @@ export class DrizzleEntityManager {
         let insertSql = `INSERT INTO "${tableName}" (${colNames.join(', ')}) VALUES (${placeholders})`;
 
         // A defined primary key makes the INSERT an upsert: the excluded row's
-        // values overwrite the conflicting row (DAT-F8). Conflicts on other
+        // values overwrite the conflicting row. Conflicts on other
         // unique columns still raise their own error, which is no longer
         // masked by a fallback UPDATE.
         if (pkColumn !== undefined && pkValue !== undefined && pkValue !== null) {
@@ -314,7 +314,7 @@ export class DrizzleEntityManager {
     /**
      * Eagerly loads declared relations for a batch of entities of the same
      * class, issuing one query per relation over all distinct join keys rather
-     * than one query per entity (DAT-F5). Each entity's relation field is
+     * than one query per entity. Each entity's relation field is
      * assigned the loaded value, mirroring {@link fetchRelation} semantics.
      *
      * @param entities - Entities of one class; an empty batch is a no-op.
@@ -533,7 +533,7 @@ export class DrizzleEntityManager {
         }
 
         // Every loaded row is a load: fire @postLoad, matching the in-memory
-        // manager's find/findAll/fetchRelation behavior (DAT-F1).
+        // manager's find/findAll/fetchRelation behavior.
         runEntityHooks(entity, 'postLoad');
 
         return entity as T;
@@ -576,7 +576,7 @@ function relationKey(value: unknown): string {
 /**
  * Collects the distinct, non-null values of `field` across `records`, keyed by
  * {@link relationKey}. Used to batch relation lookups into one `IN (…)` query
- * (DAT-F5) while still matching SQLite's affinity rules in JS.
+ * while still matching SQLite's affinity rules in JS.
  */
 function distinctKeys(records: Array<Record<string, unknown>>, field: string): Map<string, unknown> {
     const keys = new Map<string, unknown>();
@@ -593,7 +593,7 @@ function distinctKeys(records: Array<Record<string, unknown>>, field: string): M
 
 /**
  * Encodes one JS value for binding, mirroring `decodeColumnValue`. `Date`
- * values store as ISO-8601 text (DAT-F4), values of declared `json` columns as
+ * values store as ISO-8601 text, values of declared `json` columns as
  * JSON text, and everything else passes to the driver unchanged (primitives
  * natively; `Uint8Array`/`ArrayBuffer` as blobs). `undefined` binds as `NULL`.
  *
@@ -616,9 +616,9 @@ function encodeColumnValue(type: string | undefined, value: unknown): unknown {
  * stored representations (`0`/`1`, `'0'`/`'1'`, `'0.0'`/`'1.0'`, `'true'`/
  * `'false'`) to booleans, json columns parse their text representation back
  * into the stored value, and date-like columns parse ISO text back into a
- * `Date` (DAT-F4). Other declared types pass through unchanged — SQLite
+ * `Date`. Other declared types pass through unchanged — SQLite
  * already returns ints, reals, and text natively. Type matching is
- * whole-word (DAT-N1), so `point` is not read as `int`.
+ * whole-word, so `point` is not read as `int`.
  *
  * @param type - The declared column type; `undefined` for untyped columns.
  * @param value - The raw cell value.

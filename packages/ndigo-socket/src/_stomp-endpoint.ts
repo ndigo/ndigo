@@ -110,7 +110,7 @@ export class STOMPEndpoint {
         if (frame.command === '') {
             return Promise.resolve(true);
         }
-        // SEC-2: every identifier-valued header is bounded on every
+        // Every identifier-valued header is bounded on every
         // non-ping frame (including CONNECT — `login`/`passcode` are
         // credentials, capped by their own verifier).
         if (!this.#host.limits.assertIdentifiers(session, frame)) {
@@ -168,7 +168,7 @@ export class STOMPEndpoint {
         if (mutual === null) {
             return fail(session, frame, `no supported version in accept-version: ${offered.join(', ')}`);
         }
-        // SEC-7: credentials are verified or refused — never ignored.
+        // Credentials are verified or refused — never ignored.
         const login = frame.headers['login'];
         const passcode = frame.headers['passcode'];
         if (login !== undefined || passcode !== undefined) {

@@ -59,7 +59,7 @@ export function readCapabilityCatalog(catalogDir) {
  * @param {string} catalogDir - absolute path to `assets/capabilities`.
  * @returns {Set<string>} check ids.
  */
-export function readCheckIds(catalogDir) {
+function readCheckIds(catalogDir) {
     const file = join(catalogDir, 'checks.json');
     if (!existsSync(file)) return new Set();
     const parsed = JSON.parse(readFileSync(file, 'utf8'));

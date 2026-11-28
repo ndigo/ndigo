@@ -3,7 +3,7 @@
  * status signal + AsyncReader message stream, plus one end-to-end case over
  * the real `WebSocketClient`. Covers the CONNECT handshake (resolver-driven
  * timeout, RT-1), subscription routing, send/receipt correlation and its
- * drop semantics (COR-12), ERROR surfacing, ack modes, deliberate teardown,
+ * drop semantics, ERROR surfacing, ack modes, deliberate teardown,
  * and the re-CONNECT + re-SUBSCRIBE lifecycle across socket reconnects.
  */
 import { describe, expect, test, vi } from 'vitest';

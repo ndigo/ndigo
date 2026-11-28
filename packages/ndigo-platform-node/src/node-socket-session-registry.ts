@@ -138,7 +138,7 @@ export interface NodeSocketSessionRegistryOptions {
  * filling defaults (mirrors `resolveHTTPRequestLimits`).
  *
  * - `NDIGO_SOCKET_HEARTBEAT_INTERVAL_MS` — ping interval; `0` disables the
- *   heartbeat (D6), default `30000`.
+ *   heartbeat, default `30000`.
  * - `NDIGO_SOCKET_IDLE_TIMEOUT_MS` — silent-session reap threshold,
  *   default `60000`.
  *
@@ -158,7 +158,7 @@ export function resolveSocketRegistryOptions(
     const options: NodeSocketSessionRegistryOptions = {};
     const heartbeat = readIntEnv(env, 'NDIGO_SOCKET_HEARTBEAT_INTERVAL_MS', { allowZero: true });
     if (heartbeat !== undefined) {
-        // `0` explicitly disables the heartbeat (D6).
+        // `0` explicitly disables the heartbeat.
         options.heartbeatIntervalMs = heartbeat === 0 ? null : heartbeat;
     }
     const idle = readIntEnv(env, 'NDIGO_SOCKET_IDLE_TIMEOUT_MS');

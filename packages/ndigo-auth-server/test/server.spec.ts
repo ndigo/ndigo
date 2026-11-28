@@ -161,4 +161,14 @@ describe('AuthServer', () => {
             expect(result).toBeNull();
         });
     });
+
+    describe('instance-scoped adapters', () => {
+        test('register shadows the global adapter without mutating the registry', async () => {
+            AuthRegistry.register(createMockAdapter('jwt', principal('global', 'Global', [])));
+            const server = new AuthServer().register(createMockAdapter('jwt', principal('local', 'Local', ['admin'])));
+
+            await expect(server.validate('jwt', 'token')).resolves.toMatchObject({ id: 'local' });
+            await expect(new AuthServer().validate('jwt', 'token')).resolves.toMatchObject({ id: 'global' });
+        });
+    });
 });

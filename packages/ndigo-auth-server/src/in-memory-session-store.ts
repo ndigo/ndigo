@@ -5,14 +5,6 @@ import { randomToken } from '@ndigo/util';
 import { type SessionRecord, type SessionStore } from '@ndigo/auth-core';
 
 /** Options for the in-memory session store. */
-/**
- * InMemorySessionStoreOptions.
- *
- * @example
- * ```ts
- * const value = {} as InMemorySessionStoreOptions;
- * ```
- */
 export interface InMemorySessionStoreOptions {
     /**
      * Hard cap on concurrently stored sessions (default 512). The
@@ -123,7 +115,7 @@ export class InMemorySessionStore implements SessionStore {
         if (!entry) {
             throw new Error(`Session store: session "${sessionId}" not found`);
         }
-        // COR-13: preserve the remaining TTL (absolute expiry kept) and report
+        // Preserve the remaining TTL (absolute expiry kept) and report
         // the effective expiry back to the caller.
         const ttlMs = Math.max(1, entry.expiresAt - Date.now());
         this.#sessions.delete(sessionId);

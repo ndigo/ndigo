@@ -160,7 +160,7 @@ describe('resolver secret integration', () => {
         env.applySecretDecryptor(registry);
 
         // Raw index lookup: the {cipher:...} marker must be distinguishable
-        // from the resolved value (COR-8) — ciphertext intact, no decryption.
+        // from the resolved value — ciphertext intact, no decryption.
         expect(env.getRawProperty('db.password')).toBe(marker);
         expect(env.getProperty('db.password')).toBe('s3cret-pass');
     });

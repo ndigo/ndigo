@@ -40,8 +40,8 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `configureCookieLanguageResolver` — Registers a cookie-backed language resolver into the given context.
 - `CookieThemeResolver` — Resolves the active theme from a persisted cookie, falling back to the system color-scheme preference and then the configured default.
 - `configureCookieThemeResolver` — Registers a cookie-backed theme resolver into the given context.
-- `Cookie` *(type)* — Cookie.
-- `CookieJar` *(type)* — CookieJar.
+- `Cookie` *(type)* — Parsed cookie structure returned by cookie parsing helpers.
+- `CookieJar` *(type)* — Minimal cookie-jar API exposed by the platform-web package.
 - `CookieAttributes` *(type)* — Additional attributes to append to a cookie (e.g. path, expires, secure).
 - `CookieParseResult` *(type)* — Parsed result returned by the cookie parser.
 - `Cookies` — Default cookie jar bound to the current browser environment.

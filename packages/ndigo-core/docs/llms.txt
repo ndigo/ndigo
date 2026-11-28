@@ -98,6 +98,7 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `EqualsPathMatcher` — Path matcher for literal comparison: `merge` joins two patterns and `match` accepts only an exact string match. The identity matcher for callers that need patt…
 - `URLGlobPathMatcher`
 - `GlobPatternInfo`
+- `matchesPathPatterns` — Applies include/exclude patterns to a value.
 - `AsPathMatcherFilter` — Mixin adding include/exclude pattern filtering to a class that owns a `pathMatcher`: `matches()` accepts a path when it satisfies every include pattern and no…
 - `Parser` *(type)* — Class-based interface for parsing a string into a structured value of type `T`.
 - `Stringifier` *(type)* — Class-based interface for serializing a value of type `T` into a string.

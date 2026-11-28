@@ -199,7 +199,7 @@ export class Heap<T> implements Serializable, Equatable<Heap<T>> {
  * queue.dequeue(); // 1
  * ```
  */
-export class PriorityQueue<T> {
+export class PriorityQueue<T> implements Serializable {
     /**
      * The `Symbol.toStringTag` value for this instance.
      *

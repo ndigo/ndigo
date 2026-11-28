@@ -7,7 +7,7 @@ import { Cookies } from './cookies';
 import { dumpStorage } from './browser-storage-argument-resolver';
 
 /**
- * The explicit browser bindable-source allow-list (D-3): kind validation in
+ * The explicit browser bindable-source allow-list: kind validation in
  * `SOURCES_BY_KIND` is the outer guard; this set keeps a stray `data-*`
  * source (e.g. `data-body` on a browser dispatch) from silently binding
  * nothing.

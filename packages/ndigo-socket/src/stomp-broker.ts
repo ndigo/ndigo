@@ -17,10 +17,10 @@
  * - SEND to a destination publishes to its subscribers, including the
  *   sender when subscribed (room-echo parity). An `onMessage` hook may
  *   intercept (return `false` to suppress the default fan-out).
- * - **Transactions (D7)**: BEGIN/COMMIT/ABORT with per-session buffers;
+ * - **Transactions**: BEGIN/COMMIT/ABORT with per-session buffers;
  *   SEND/ACK/NACK inside a transaction apply at COMMIT, receipts held
  *   until then, ABORT discards.
- * - **Ack tracking + redelivery (D9)**: `client`/`client-individual`
+ * - **Ack tracking + redelivery**: `client`/`client-individual`
  *   modes track delivered-but-unacked messages (`maxUnacked`, plus the
  *   `maxUnackedBytes`/`maxUnackedSessionBytes` byte bounds — oldest-first
  *   eviction). `client` ACKs cumulatively (everything through the named
@@ -33,10 +33,10 @@
  *   subscription(s) (one id can be outstanding under several). A
  *   `subscription` header, when present, must name the sender's own
  *   subscription.
- * - **`/user` destinations (D10)**: principal-scoped subscriptions via
+ * - **`/user` destinations**: principal-scoped subscriptions via
  *   `resolveUser`; `sendToUser` fans out to one user's scope; a client
  *   SEND to `/user/*` reaches only the sender's own scope.
- * - **`/queue` destinations (D11)**: bounded store-and-forward — a new
+ * - **`/queue` destinations**: bounded store-and-forward — a new
  *   subscriber is registered first, buffers live traffic while the backlog
  *   replay is in flight, then replays the backlog, flushes the buffered
  *   frames the replay did not already carry (deduped by `message-id`), and
@@ -73,9 +73,9 @@ import { controlSend, fail, receipt } from './_stomp-replies';
 
 /** STOMP ack modes (STOMP 1.2 §1.3.1). */
 
-/** Default bound on unacked-message tracking per subscription (D9). */
+/** Default bound on unacked-message tracking per subscription. */
 const DEFAULT_MAX_UNACKED = 1000;
-/** Default per-destination `/queue` backlog bound (D11). */
+/** Default per-destination `/queue` backlog bound. */
 const DEFAULT_QUEUE_BACKLOG = 1000;
 /** Default cap on subscriptions per session (client-driven fan-out bound). */
 const DEFAULT_MAX_SUBSCRIPTIONS_PER_SESSION = 1000;
@@ -135,7 +135,7 @@ export interface STOMPBrokerOptions {
      */
     nextMessageId?: () => string;
     /**
-     * Principal resolution for `/user` destinations (D10). Default reads
+     * Principal resolution for `/user` destinations. Default reads
      * `session.attributes.user` (a string); the adapter's `authenticate`
      * hook populates attributes. A session that resolves to
      * `null` cannot bind `/user/*` subscriptions (ERROR + close 1008) and
@@ -143,7 +143,7 @@ export interface STOMPBrokerOptions {
      */
     resolveUser?: (session: SocketSession) => string | null;
     /**
-     * Bound on tracked unacked messages per subscription (D9). FIFO
+     * Bound on tracked unacked messages per subscription. FIFO
      * eviction past the bound (the in-memory bound that keeps NACK
      * honest without a store). Default `1000`; `0` disables tracking
      * (acks become accepted no-ops).
@@ -219,7 +219,7 @@ export interface STOMPBrokerOptions {
      */
     authorize?: (destination: string, action: 'subscribe' | 'send', session: SocketSession) => unknown;
     /**
-     * Bound on the stored backlog per `/queue/<name>` destination (D11).
+     * Bound on the stored backlog per `/queue/<name>` destination.
      * New subscribers replay the backlog. Default `1000`; `0` disables
      * storage (then `/queue` behaves like `/topic`).
      */
@@ -334,7 +334,7 @@ export class STOMPBroker {
     readonly #queueStore: QueueMessageStore | null;
     /** Subscription placement and delivery accounting. */
     readonly #registry: STOMPSubscriptionRegistry;
-    /** Per-session transaction buffers (D7). */
+    /** Per-session transaction buffers. */
     readonly #transactions: STOMPTransactionManager;
     /** Subscription fan-out, delivery tracking, and queue replay. */
     readonly #delivery: STOMPDelivery;
@@ -624,7 +624,7 @@ export class STOMPBroker {
     }
 
     /**
-     * Principal-scoped fan-out (D10): deliver to the `resolveUser`-scoped
+     * Principal-scoped fan-out: deliver to the `resolveUser`-scoped
      * subscriptions of `user` — those bound to `/user/<destination>`
      * (the STOMP convention: subscribe `/user/queue/errors`, then
      * `sendToUser(user, '/queue/errors', …)`). MESSAGE frames carry the

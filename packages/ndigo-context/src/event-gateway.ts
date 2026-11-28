@@ -1,7 +1,8 @@
 /**
  * Event gateway relaying events between contexts.
  */
-import { FrameworkError } from '@ndigo/core';
+import { FrameworkError, IllegalStateError } from '@ndigo/core';
+import type { Destroyable } from '@ndigo/factory';
 import type { EventType } from './event-emitter';
 import type { ApplicationContext } from './context';
 
@@ -311,7 +312,7 @@ export class InvalidRelayError extends FrameworkError {
  * gateway.connect();
  * ```
  */
-export class ContextEventGateway {
+export class ContextEventGateway implements Destroyable {
     /**
      * The `Symbol.toStringTag` value for this instance.
      *
@@ -334,11 +335,19 @@ export class ContextEventGateway {
     #subscriptions: Array<{ eventType: EventType; listener: (...data: unknown[]) => void }>;
     #throwOnInvalid: boolean;
     #validationStrategy: RelayValidationStrategy;
+    #destroyed = false;
+    #relays: ContextEventRelay[] = [];
 
     /** Whether the gateway has been destroyed. */
-    destroyed: boolean;
-    /** The accepted relays. */
-    readonly relays: ContextEventRelay[];
+    get destroyed(): boolean {
+        return this.#destroyed;
+    }
+
+    /** The accepted relays, in registration order. */
+    get relays(): readonly ContextEventRelay[] {
+        return [...this.#relays];
+    }
+
     /** The source context. */
     readonly source: ApplicationContext;
     /** The target context. */
@@ -355,7 +364,7 @@ export class ContextEventGateway {
      * The number of accepted relays.
      */
     get activeRelayCount(): number {
-        return this.relays.length;
+        return this.#relays.length;
     }
 
     /**
@@ -393,8 +402,8 @@ export class ContextEventGateway {
         this.#subscriptions = [];
         this.#throwOnInvalid = options.throwOnInvalid ?? false;
         this.#validationStrategy = options.validationStrategy ?? new PermissiveRelayValidationStrategy();
-        this.destroyed = false;
-        this.relays = [];
+        this.#destroyed = false;
+        this.#relays = [];
         this.source = source;
         this.target = target;
 
@@ -413,6 +422,10 @@ export class ContextEventGateway {
      * @returns This gateway.
      */
     addRelay(from: EventType, to: EventType = from): this {
+        if (this.#destroyed) {
+            throw new IllegalStateError('Cannot add a relay to a destroyed ContextEventGateway');
+        }
+
         const relay = { from, to },
             result = this.#validationStrategy.validate(relay);
 
@@ -427,7 +440,7 @@ export class ContextEventGateway {
             return this;
         }
 
-        this.relays.push(relay);
+        this.#relays.push(relay);
         this.#diagnosticHandler?.onRelayRegistered?.(relay);
 
         if (this.#connected) {
@@ -454,11 +467,11 @@ export class ContextEventGateway {
      * @returns This gateway.
      */
     connect(): this {
-        if (this.#connected || this.destroyed) {
+        if (this.#connected || this.#destroyed) {
             return this;
         }
 
-        for (const relay of this.relays) {
+        for (const relay of this.#relays) {
             const listener = this.#createRelayListener(relay.to);
             this.source.on(relay.from, listener);
             this.#subscriptions.push({ eventType: relay.from, listener });
@@ -472,7 +485,7 @@ export class ContextEventGateway {
      * Disconnects all relay listeners and marks the gateway destroyed.
      */
     destroy(): void {
-        if (this.destroyed) {
+        if (this.#destroyed) {
             return;
         }
 
@@ -482,7 +495,7 @@ export class ContextEventGateway {
 
         this.#subscriptions = [];
         this.#connected = false;
-        this.destroyed = true;
+        this.#destroyed = true;
     }
 
     #createRelayListener(eventType: EventType): (...data: unknown[]) => void {

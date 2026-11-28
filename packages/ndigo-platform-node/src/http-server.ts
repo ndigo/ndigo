@@ -269,7 +269,7 @@ export class HTTPServer implements ManagedLifecycle, ApplicationContextAware {
                 'HTTPServer: socketRegistry is shared with the default adapter only — pass it to your custom adapter instead'
             );
         }
-        // HG-9: strict env parse (`Number('')`/`Number(' 80 ')` traps) — 0 is
+        // Strict env parse (`Number('')`/`Number(' 80 ')` traps) — 0 is
         // still a valid ephemeral-port request, so `allowZero` is set.
         const rawPort = options.port ?? readIntEnv(process.env, 'PORT', { allowZero: true }) ?? 3000;
         if (!Number.isInteger(rawPort) || rawPort < 0 || rawPort > 65_535) {

@@ -2,25 +2,9 @@
  * Transport-neutral live socket fan-out contract.
  */
 /** Cross-node live socket fan-out. No persistence, replay, or queue distribution. */
-/**
- * SocketFanoutScope.
- *
- * @example
- * ```ts
- * type _Alias = SocketFanoutScope;
- * ```
- */
 export type SocketFanoutScope = 'path' | 'room' | 'topic';
 
 /** Already serialized wire payload; topic headers are application headers only. */
-/**
- * SocketFanoutMessage.
- *
- * @example
- * ```ts
- * const value = {} as SocketFanoutMessage;
- * ```
- */
 export interface SocketFanoutMessage {
     /** Destination key (path, room, or topic). */
     key: string;

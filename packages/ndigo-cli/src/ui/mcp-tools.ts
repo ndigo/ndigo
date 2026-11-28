@@ -12,14 +12,6 @@ import { isRemoteSource, loadRegistry, normalizeRegistrySource, validateRegistry
 import type { LoadedRegistry, LocatedRegistryItem } from './registry-types.js';
 
 /** Server-wide registry context. */
-/**
- * RegistryToolContext.
- *
- * @example
- * ```ts
- * const value = {} as RegistryToolContext;
- * ```
- */
 export interface RegistryToolContext {
     /** Application directory used for relative registry paths. */
     readonly dir: string;
@@ -28,14 +20,6 @@ export interface RegistryToolContext {
 }
 
 /** Optional filters for {@link listItems}. */
-/**
- * ItemFilters.
- *
- * @example
- * ```ts
- * const value = {} as ItemFilters;
- * ```
- */
 export interface ItemFilters {
     /** Exact registry type, e.g. `registry:ui`. */
     readonly type?: string;
@@ -51,14 +35,6 @@ interface Loaded {
 }
 
 /** Request for {@link installItems}. */
-/**
- * InstallRequest.
- *
- * @example
- * ```ts
- * const value = {} as InstallRequest;
- * ```
- */
 export interface InstallRequest {
     /** Registry item names to install. */
     readonly items: readonly string[];

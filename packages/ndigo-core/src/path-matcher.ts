@@ -80,6 +80,15 @@ export interface PathMatcherFilter extends Matchable<string> {
      */
     pathMatcher: PathMatcher;
     /**
+     * The configured include patterns. Empty means every path is included
+     * unless an exclude pattern matches.
+     */
+    readonly includePatterns: readonly string[];
+    /**
+     * The configured exclude patterns; a match wins over any include pattern.
+     */
+    readonly excludePatterns: readonly string[];
+    /**
      * Checks if a given path matches the configured include/exclude patterns.
      * @param path - The path to check.
      * @param matcher - An optional `PathMatcher` to use for matching. If not provided, `this.pathMatcher` is used.
@@ -482,6 +491,44 @@ export class GlobPatternInfo {
 
 // ! Not sure I like this name. Should really come up with a better one.
 /**
+ * Applies include/exclude patterns to a value.
+ *
+ * Exclusion wins over inclusion; an empty include list matches every value
+ * that is not excluded. Shared by the path-matching mixin and the HTTP and
+ * service interceptor wrappers so the precedence rule lives in one place.
+ *
+ * @param value - The path or URL to test.
+ * @param includePatterns - Patterns that opt the value in.
+ * @param excludePatterns - Patterns that opt the value out.
+ * @param match - Tests one pattern against the value (pattern first).
+ * @returns `true` when the value is included and not excluded.
+ */
+export function matchesPathPatterns(
+    value: string,
+    includePatterns: readonly string[],
+    excludePatterns: readonly string[],
+    match: (pattern: string, value: string) => boolean
+): boolean {
+    for (const pattern of excludePatterns) {
+        if (match(pattern, value)) {
+            return false;
+        }
+    }
+
+    if (includePatterns.length === 0) {
+        return true;
+    }
+
+    for (const pattern of includePatterns) {
+        if (match(pattern, value)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+/**
  * Mixin adding include/exclude pattern filtering to a class that owns a
  * `pathMatcher`: `matches()` accepts a path when it satisfies every include
  * pattern and no exclude pattern, and rejects an empty include list.
@@ -492,36 +539,34 @@ export const AsPathMatcherFilter = <T extends Constructable>(superclass: T): Con
         #includePatterns: string[] | null = null;
         pathMatcher!: PathMatcher;
 
+        /**
+         * The configured include patterns; an empty list includes everything
+         * that is not excluded.
+         */
+        get includePatterns(): readonly string[] {
+            return this.#includePatterns ?? [];
+        }
+
+        /**
+         * The configured exclude patterns; exclusion wins over inclusion.
+         */
+        get excludePatterns(): readonly string[] {
+            return this.#excludePatterns ?? [];
+        }
+
         matches(path: string, matcher?: PathMatcher): boolean {
             const pathMatcher = matcher || this.pathMatcher;
 
-            if (pathMatcher) {
-                const excludePatterns = this.#excludePatterns ?? [],
-                    includePatterns = this.#includePatterns ?? [];
-                let index: number, length: number;
-
-                if (excludePatterns.length) {
-                    length = excludePatterns.length;
-                    for (index = 0; index < length; index++) {
-                        if (pathMatcher.match(excludePatterns[index], path)) {
-                            return false;
-                        }
-                    }
-                }
-
-                if (!includePatterns.length) {
-                    return true;
-                }
-
-                length = includePatterns.length;
-                for (index = 0; index < length; index++) {
-                    if (pathMatcher.match(includePatterns[index], path)) {
-                        return true;
-                    }
-                }
+            if (!pathMatcher) {
+                return false;
             }
 
-            return false;
+            return matchesPathPatterns(
+                path,
+                this.#includePatterns ?? [],
+                this.#excludePatterns ?? [],
+                (pattern, value) => pathMatcher.match(pattern, value)
+            );
         }
 
         setExcludePatterns(excludePatterns: string[] = []): void {

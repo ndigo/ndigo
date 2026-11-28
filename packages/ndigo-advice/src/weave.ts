@@ -125,7 +125,7 @@ export function weaveInstance<T extends object>(
     rules: MethodInterceptorRegistry | readonly MethodInterceptorRule[],
     entryName: string = entryNameOf(instance)
 ): WeaveResult<T> {
-    // NOTE: the registry stores plain objects because it also keys proxies;
+    // The registry stores plain objects because it also keys proxies;
     // what it holds for a woven instance is that instance or a proxy over it,
     // both of which the caller uses as `T`.
     const existing = WOVEN.get(instance) as T | undefined;
@@ -160,7 +160,7 @@ export function weavePlans<T extends object>(instance: T, plans: readonly Method
         return { instance, strategy: 'none' };
     }
 
-    // NOTE: the registry stores plain objects because it also keys proxies;
+    // The registry stores plain objects because it also keys proxies;
     // what it holds for a woven instance is that instance or a proxy over it,
     // both of which the caller uses as `T`.
     const existing = WOVEN.get(instance) as T | undefined;

@@ -86,7 +86,7 @@ describe('parseMultipart', () => {
         // The spilled temp file survives to the caller (not deleted pre-read), then is removed on cleanup.
         const tempFiles = readdirSync(workDir);
         expect(tempFiles).toHaveLength(1);
-        // HG-8: temp names use @ndigo/util's crypto randomHex(8) — 16 hex chars, never the client filename.
+        // Temp names use @ndigo/util's crypto randomHex(8) — 16 hex chars, never the client filename.
         expect(tempFiles[0]).toMatch(/^ndigo-upload-[0-9a-f]{16}$/);
         await ctx.cleanup();
         expect(readdirSync(workDir)).toHaveLength(0);

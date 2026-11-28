@@ -70,7 +70,7 @@ export interface TransactionManager {
  *
  * Overlapping `run()` calls are rejected (the backing store can only hold one
  * snapshot at a time); a second concurrent call fails loud rather than
- * silently discarding the first run's commits on rollback (DAT-F2).
+ * silently discarding the first run's commits on rollback.
  *
  * @example
  * ```ts

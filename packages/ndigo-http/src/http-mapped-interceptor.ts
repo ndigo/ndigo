@@ -3,7 +3,7 @@
  */
 /// <reference lib="dom" />
 // TypeScript 6.0 declaration generation fix
-import { type PatternMatcher, WildcardExp } from '@ndigo/core';
+import { type PatternMatcher, WildcardExp, matchesPathPatterns } from '@ndigo/core';
 import type { HTTP } from './http-client';
 import type { HTTPInit, HTTPInterceptor } from './http-types';
 import type {
@@ -149,33 +149,13 @@ export class MappedHTTPInterceptor
     matches(url: string, matcher?: WildcardMatcher): boolean {
         const urlMatcher = matcher || this.urlMatcher;
 
-        if (urlMatcher) {
-            const excludePatterns = this.#excludePatterns ?? [],
-                includePatterns = this.#includePatterns ?? [];
-            let index: number, length: number;
-
-            if (excludePatterns.length) {
-                length = excludePatterns.length;
-                for (index = 0; index < length; index++) {
-                    if (urlMatcher.match(excludePatterns[index], url)) {
-                        return false;
-                    }
-                }
-            }
-
-            if (!includePatterns.length) {
-                return true;
-            }
-
-            length = includePatterns.length;
-            for (index = 0; index < length; index++) {
-                if (urlMatcher.match(includePatterns[index], url)) {
-                    return true;
-                }
-            }
+        if (!urlMatcher) {
+            return false;
         }
 
-        return false;
+        return matchesPathPatterns(url, this.#includePatterns ?? [], this.#excludePatterns ?? [], (pattern, value) =>
+            urlMatcher.match(pattern, value)
+        );
     }
 
     /**

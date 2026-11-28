@@ -43,7 +43,7 @@ export class NodeRequestSessionValueMethodArgumentResolver extends AbstractPlatf
      */
     protected resolveName(name: string, _parameter: MethodParameter, route: Route, _mapping: unknown): unknown {
         // `requestSessionValue()` (no name) binds the whole session bag;
-        // named reads are nested-capable (D-2).
+        // named reads are nested-capable.
         const session = getNodeRequest(route)?.session;
         return name === '' ? session : readDottedValue(session, name);
     }

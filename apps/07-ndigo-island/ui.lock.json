@@ -11,7 +11,7 @@
         },
         {
           "target": "styles/ndigo-tokens.css",
-          "sha256": "34745f444b389e2878b9c5a40154d0fd998b19c768a2598951f2d456433c903c"
+          "sha256": "a2faf38d8c5632e6b704cb6be9d17988f398dcfb70c3c3d0b6718a38150af681"
         }
       ],
       "installedAt": "2026-11-15T04:07:38.683Z"
@@ -33,7 +33,7 @@
       "files": [
         {
           "target": "client/ui/nd-input/nd-input.css",
-          "sha256": "cfdf86e127a95b1d60ff0bae19e6423333bbae7bdfca3dc5c547ed2d47ab6a03"
+          "sha256": "b49886938ba1dbab86cb3e2b441de47a212733946b6bc30d3ac7c935d3a1db02"
         }
       ],
       "installedAt": "2026-11-09T21:04:37.766Z"

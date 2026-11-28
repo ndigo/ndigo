@@ -156,5 +156,14 @@
   // also hid genuine sources like apps/10-ndigo-conduit-web/src/lib from the
   // lane. Playwright e2e specs stay excluded — they are not covered by any
   // tsc pass (deliberate: their globals are not in the 'types' array).
-  "exclude": ["**/node_modules/**", "packages/*/lib/**", "apps/*/dist/**", "**/coverage/**", "**/e2e/**"]
+  "exclude": [
+    "**/node_modules/**",
+    "packages/*/lib/**",
+    "apps/*/dist/**",
+    "**/coverage/**",
+    "**/e2e/**",
+    // Generated at test time by `ndigo add`; the static fixture tree imports
+    // modules that only exist in the temp copy.
+    "packages/ndigo-cli/test/fixtures/**"
+  ]
 }

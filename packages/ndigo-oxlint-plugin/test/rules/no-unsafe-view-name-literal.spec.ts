@@ -162,7 +162,7 @@ ruleTester.run('no-unsafe-view-name-literal', noUnsafeViewNameLiteral, {
             filename: FILENAME,
             errors: [{ messageId: 'unsafeViewName' }],
         },
-        // IslandView validates the custom-element grammar, not the path contract (REU-1)
+        // IslandView validates the custom-element grammar, not the path contract
         {
             code: `new IslandView('MyElement')`,
             filename: '/packages/ndigo-app/src/views.ts',

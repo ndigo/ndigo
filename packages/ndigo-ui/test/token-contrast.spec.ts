@@ -89,4 +89,13 @@ describe.each([
             contrast(valueOf('--nd-color-on-accent', scope), valueOf('--nd-color-accent', scope))
         ).toBeGreaterThanOrEqual(4.5);
     });
+
+    it('control borders meet the 3:1 non-text threshold on every surface', () => {
+        for (const background of BACKGROUNDS) {
+            expect(
+                contrast(valueOf('--nd-color-control-border', scope), valueOf(background, scope)),
+                `--nd-color-control-border on ${background}`
+            ).toBeGreaterThanOrEqual(3);
+        }
+    });
 });

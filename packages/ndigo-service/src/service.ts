@@ -1,7 +1,7 @@
 /**
  * Declarative service calls: execution chains, interceptors, and HTTP transport.
  */
-import { IllegalStateError } from '@ndigo/core';
+import { IllegalStateError, URLGlobPathMatcher, matchesPathPatterns } from '@ndigo/core';
 import { AsyncDestroyable } from '@ndigo/factory';
 import {
     HTTP,
@@ -240,17 +240,6 @@ function nextServiceId(): number {
     return ++serviceId;
 }
 
-function globToRegExp(globPattern: string): RegExp {
-    const escapedPattern = globPattern.replace(/[.+?^${}()|[\]\\]/g, '\\$&');
-    const placeholder = '__DOUBLE_STAR__';
-    const regexPattern = escapedPattern
-        .replace(/\*\*/g, placeholder)
-        .replace(/\*/g, '[^/]*')
-        .replace(new RegExp(placeholder, 'g'), '.*');
-
-    return new RegExp(`^${regexPattern}$`);
-}
-
 /**
  * Wraps an interceptor so it only applies to matching request paths.
  *
@@ -278,6 +267,7 @@ export class MappedServiceInterceptor {
     #excludePatterns!: string[];
     #includePatterns!: string[];
     #interceptor: ServiceInterceptor;
+    readonly #pathMatcher = new URLGlobPathMatcher();
 
     /** The wrapped interceptor. */
     get interceptor(): ServiceInterceptor {
@@ -305,16 +295,9 @@ export class MappedServiceInterceptor {
      * @returns `true` when the path should use the wrapped interceptor.
      */
     matches(path: string, matcher?: (path: string, pattern: string) => boolean): boolean {
-        const patternMatcher = matcher || ((value, pattern) => globToRegExp(pattern).test(value));
-        const includePatterns = this.#includePatterns || [];
-        const excludePatterns = this.#excludePatterns || [];
-
-        const isIncluded = includePatterns.length
-            ? includePatterns.some((pattern) => patternMatcher(path, pattern))
-            : true;
-        const isExcluded = excludePatterns.some((pattern) => patternMatcher(path, pattern));
-
-        return isIncluded && !isExcluded;
+        return matchesPathPatterns(path, this.#includePatterns ?? [], this.#excludePatterns ?? [], (pattern, value) =>
+            matcher ? matcher(value, pattern) : this.#pathMatcher.match(pattern, value)
+        );
     }
 
     /**

@@ -49,7 +49,7 @@ export interface SocketSessionRegistry {
      * Payload parity with `SocketSession.send`: strings are sent as text
      * frames; any other value is JSON-encoded. Best-effort fan-out —
      * sessions that close mid-broadcast are skipped and transport write
-     * errors are tolerated (D5).
+     * errors are tolerated.
      * Await transport acceptance when cross-node fan-out is configured;
      * backend failures reject. This does not acknowledge peer delivery.
      *

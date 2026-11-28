@@ -232,9 +232,9 @@ export function likePrincipal(value: unknown): value is Principal {
     return (
         typeof value === 'object' &&
         value !== null &&
-        'id' in value &&
-        'name' in value &&
-        'roles' in value &&
-        'scopes' in value
+        typeof (value as Principal).id === 'string' &&
+        typeof (value as Principal).name === 'string' &&
+        Array.isArray((value as Principal).roles) &&
+        Array.isArray((value as Principal).scopes)
     );
 }

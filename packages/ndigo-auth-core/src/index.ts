@@ -14,6 +14,7 @@ export * from './delegating-password-encoder';
 export * from './scrypt-password-encoder';
 export * from './user-store';
 export * from './session-store';
+export * from './jwt-claims';
 export {
     authenticated,
     authorized,

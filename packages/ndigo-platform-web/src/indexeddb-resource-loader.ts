@@ -61,9 +61,9 @@ export class IndexedDBResourceLoader {
      *
      * A failed open clears the memoized promise so a later call retries —
      * one transient failure must not brick the loader for its lifetime
-     * (PWB-REV-008). A `versionchange` (another tab upgrading) closes this
+     * A `versionchange` (another tab upgrading) closes this
      * connection and clears the memo so the next call reopens; a `blocked`
-     * open is surfaced as an error instead of hanging (PWB-REV-009).
+     * open is surfaced as an error instead of hanging.
      */
     #openDB(): Promise<IDBDatabase> {
         if (this.#dbPromise) {

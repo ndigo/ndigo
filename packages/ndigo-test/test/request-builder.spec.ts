@@ -2,7 +2,7 @@
  * Mock request→route parity (IN-4): `buildRoute` must mirror the live
  * `NodeHTTPServerAdapter`'s HTTP parsing — repeated query parameters become
  * arrays (`?a=1&a=2` → `['1', '2']`) and the map carries no prototype
- * (SEC-8), so `?__proto__=x` stays an ordinary parameter key.
+ *, so `?__proto__=x` stays an ordinary parameter key.
  */
 // @vitest-environment node
 import { describe, test, expect } from 'vitest';

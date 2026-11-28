@@ -29,14 +29,6 @@ export interface HTTPRequestLimits {
 }
 
 /** Resolved, read-only limits with defaults applied. */
-/**
- * ResolvedHTTPRequestLimits.
- *
- * @example
- * ```ts
- * const value = {} as ResolvedHTTPRequestLimits;
- * ```
- */
 export interface ResolvedHTTPRequestLimits {
     /** Maximum request body size in bytes. */
     readonly maxBodyBytes: number;
@@ -88,7 +80,7 @@ export function resolveHTTPRequestLimits(limits?: HTTPRequestLimits): ResolvedHT
                 `HTTPRequestLimits.${key} must be a positive finite number, received ${String(value)}`
             );
         }
-        // NOTE: bridging to Record<string — the source type is wider than this consumer's contract.
+        // The source type is wider than this consumer's contract; the assertion is confined to this boundary.
         (resolved as unknown as Record<string, number>)[key] = value;
     }
     return resolved;
@@ -185,7 +177,7 @@ export function parseBody(contentType: string | undefined, raw: Buffer): BodyPar
 
     if (mime === 'application/x-www-form-urlencoded') {
         const params = new URLSearchParams(raw.toString('utf-8'));
-        // SEC-1: null-prototype record + `Object.hasOwn`, mirroring the
+        // Null-prototype record + `Object.hasOwn`, mirroring the
         // query/upgrade codecs — a field named `__proto__` must land as an
         // ordinary own key, never through the inherited `__proto__` accessor
         // (which would replace the record's prototype with an array).

@@ -90,7 +90,7 @@ class ClientKeyed {
     label!: string;
 }
 
-// DAT-F4: a Date on a declared date-like column must round-trip as a Date —
+// A Date on a declared date-like column must round-trip as a Date —
 // previously any object (including a Date) was JSON-encoded with quotes.
 @entity('date_rows')
 class DateRow {
@@ -108,7 +108,7 @@ class DateRow {
     bytes!: Uint8Array;
 }
 
-// DAT-F3: a non-PK @generatedColumn column is skipped by persist while undefined, so
+// A non-PK @generatedColumn column is skipped by persist while undefined, so
 // its DDL must not carry NOT NULL.
 @entity('generated_nonpk')
 class GeneratedNonPk {
@@ -229,7 +229,7 @@ describe('declared-type round trips (DA-1)', () => {
     });
 });
 
-// DAT-N1: storage types are matched on whole words, so types that merely
+// Storage types are matched on whole words, so types that merely
 // contain 'int' are not mapped to INTEGER.
 describe('word-boundary declared-type matching (DAT-N1)', () => {
     test('unrelated types are not read as int', () => {
@@ -269,7 +269,7 @@ describe('Date and non-json column round trips (DAT-F4)', () => {
     });
 });
 
-// DAT-F3: a non-PK @generatedColumn column is not written by persist while
+// A non-PK @generatedColumn column is not written by persist while
 // undefined, so NOT NULL on that column must be dropped.
 describe('non-PK @generatedColumn columns (DAT-F3)', () => {
     let dataSource: DrizzleDataSource;

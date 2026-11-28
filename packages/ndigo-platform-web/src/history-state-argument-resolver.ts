@@ -38,7 +38,7 @@ export class BrowserHistoryStateValueMethodArgumentResolver extends AbstractPlat
      */
     protected resolveName(name: string, _parameter: MethodParameter, _route: Route, _mapping: unknown): unknown {
         // `historyStateValue()` (no name) binds the whole history.state;
-        // named reads are nested-capable (D-2).
+        // named reads are nested-capable.
         const state = globalThis.history?.state;
         return name === '' ? state : readDottedValue(state, name);
     }

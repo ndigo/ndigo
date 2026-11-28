@@ -151,7 +151,7 @@ describe('InMemoryDataSource snapshot/restore', () => {
     });
 });
 
-// DAT-F7: snapshot/restore clones own enumerable state, so entities with
+// Snapshot/restore clones own enumerable state, so entities with
 // ECMAScript private fields opt into the ENTITY_CLONE hook to copy it.
 class Vault {
     #secret: string;

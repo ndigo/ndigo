@@ -53,7 +53,7 @@ export class RouterInstrumentation extends AbstractBaseInstrumentation {
      */
     enable(): void {
         this._wrap(
-            // NOTE: bridging to HashRouterPatchTarget — the source type is wider than this consumer's contract.
+            // The source type is wider than this consumer's contract; the assertion is confined to this boundary.
             HashRouter.prototype as unknown as HashRouterPatchTarget,
             '_setRoute',
             this._patch({
@@ -82,7 +82,7 @@ export class RouterInstrumentation extends AbstractBaseInstrumentation {
      * Restores the original `_setRoute` implementation.
      */
     disable(): void {
-        // NOTE: bridging to HashRouterPatchTarget — the source type is wider than this consumer's contract.
+        // The source type is wider than this consumer's contract; the assertion is confined to this boundary.
         this._unwrap(HashRouter.prototype as unknown as HashRouterPatchTarget, '_setRoute');
     }
 }

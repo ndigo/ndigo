@@ -90,7 +90,7 @@ const SOURCES_BY_KIND: Record<ParameterMappingKind, ReadonlySet<MethodParameterT
         MethodParameterType.HEADER,
         MethodParameterType.BODY,
         MethodParameterType.ROUTE,
-        // Whole-source binding (D-3): permissive as today — every bindable
+        // Whole-source binding: permissive as today — every bindable
         // source is admitted; the platform resolver only serves the ones it
         // knows, and registration on the other transport is a no-op.
         MethodParameterType.data('query'),
@@ -111,7 +111,7 @@ const SOURCES_BY_KIND: Record<ParameterMappingKind, ReadonlySet<MethodParameterT
         MethodParameterType.MULTIPART_FILE,
         MethodParameterType.REQUEST_PART,
         MethodParameterType.ROUTE,
-        // Whole-source binding (D-3): the form-binding surface — `data-body`
+        // Whole-source binding: the form-binding surface — `data-body`
         // is the `@ModelAttribute` equivalent; `data-cookie` is symmetric.
         MethodParameterType.data('body'),
         MethodParameterType.data('cookie'),

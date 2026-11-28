@@ -46,7 +46,7 @@ export interface SecurityHeadersInterceptorOptions {
  * streams to the same host-origin, so a co-located WebSocket server needs
  * no widening.
  */
-// NOTE (D1): `'self'` covers same-host WebSockets under CSP3. A socket server
+// `'self'` covers same-host WebSockets under CSP3. A socket server
 // on a *different* host opts in by widening `connect-src` explicitly — e.g.
 // `directives: { 'connect-src': ["'self'", 'wss://<ws-host>'] }` via
 // `SecurityHeadersInterceptorOptions.headers.contentSecurityPolicy` — never

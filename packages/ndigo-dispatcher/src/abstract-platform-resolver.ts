@@ -111,7 +111,7 @@ export abstract class AbstractPlatformArgumentResolver extends AbstractNamedValu
     }
 
     /**
-     * Whole-source data-binding pipeline (D-3), shared by the browser and
+     * Whole-source data-binding pipeline, shared by the browser and
      * Node data-binding resolvers.
      *
      * source data → prefix filter → `DataBinder` (flat keys → nested object

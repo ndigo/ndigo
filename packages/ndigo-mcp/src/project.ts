@@ -12,6 +12,7 @@ import {
 } from '@ndigo/dispatcher';
 import { getWhenFeature } from '@ndigo/flags';
 import { z } from 'zod';
+import { like } from '@ndigo/util';
 
 /**
  * A JSON Schema object as carried by MCP `tools/list`.
@@ -140,7 +141,7 @@ function tablesOf(source: MappingSource): readonly MappingTableLike[] {
     if (likeDispatcher(source) && source.handlerMappings !== undefined) {
         // A dispatcher exposes its mapping objects (`getHandler()`); the
         // inspect read model is the optional `getMappingEntries()` member.
-        return source.handlerMappings.filter(isMappingTable);
+        return source.handlerMappings.filter(likeMappingTable);
     }
     // `DispatcherLike` has only optional members, so the false branch cannot
     // exclude it structurally; the remaining explicit member is a table.
@@ -150,11 +151,14 @@ function tablesOf(source: MappingSource): readonly MappingTableLike[] {
 /**
  * Whether a dispatcher mapping object exposes the inspect read model.
  *
+ * Structural check (`like*`): the object is a mapping table when it carries a
+ * callable `getMappingEntries`, not by class identity.
+ *
  * @param value - The candidate mapping object.
  * @returns `true` when `getMappingEntries()` is present.
  */
-function isMappingTable(value: unknown): value is MappingTableLike {
-    return typeof value === 'object' && value !== null && 'getMappingEntries' in value;
+function likeMappingTable(value: unknown): value is MappingTableLike {
+    return like({ getMappingEntries: Function })(value);
 }
 
 function entriesOf(table: MappingTableLike): readonly MappingEntryLike[] {

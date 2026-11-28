@@ -184,7 +184,7 @@ export async function createWebApplication(
         dispatcher.initStrategies(context);
         dispatcher.applicationContext = context;
 
-        // PWB-REV-001: `@ndigo/view-webcomponent` declares custom-element base
+        // `@ndigo/view-webcomponent` declares custom-element base
         // classes that extend `HTMLElement` at module load, so a static import
         // would make the barrel unimportable outside a DOM. The preset only
         // runs in a DOM; the engine loads on first use.

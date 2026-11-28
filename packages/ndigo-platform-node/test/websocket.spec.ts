@@ -955,7 +955,7 @@ describe('socket connection cap (SEC-9)', () => {
     });
 });
 
-// SEC-3: cookie-bound violations (51-cookie / 4 KiB-value limits) must reject
+// Cookie-bound violations (51-cookie / 4 KiB-value limits) must reject
 // the upgrade cleanly — the RangeError must never escape `shouldHandle`.
 describe('WebSocket cookie bound rejection', () => {
     let context: MetadataConfigApplicationContext;

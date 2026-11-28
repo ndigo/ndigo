@@ -136,7 +136,16 @@ export function configuration<T extends Constructable<unknown>>(target: T, conte
  */
 export function property(
     path: string,
-    propertyType?: Constructable<number> | Constructable<boolean> | Constructable<Date> | Constructable<string> | string
+    propertyType?:
+        | Constructable<number>
+        | Constructable<boolean>
+        | Constructable<Date>
+        | Constructable<string>
+        | NumberConstructor
+        | BooleanConstructor
+        | StringConstructor
+        | DateConstructor
+        | string
 ) {
     return function (value: undefined, context: ClassFieldDecoratorContext) {
         if (context.kind !== 'field') {
@@ -163,6 +172,7 @@ export function property(
  * ```ts
  * @configurationProperties('server')
  * class ServerConfig {
+ *     @property('port', Number) @defaultValue('8080') port!: number;
  * }
  * ```
  */
@@ -402,7 +412,7 @@ class ConfigurationParser {
                         this.processPropertySource(configClass, getPropertySourceMetadata(configClass));
                     }
 
-                    // CF-9: bind `@property` fields even without
+                    // Bind `@property` fields even without
                     // `@propertySource` — the environment is always a valid
                     // resolution source; the decorator alone declares intent.
                     this.processProperty(config);
@@ -453,7 +463,7 @@ class ConfigurationParser {
      * Process the given `@propertySource` decorator metadata.
      * Sources from this configuration receive the highest available precedence.
      *
-     * CTX-07: names are namespaced by declaring class + source index. The old
+     * Names are namespaced by declaring class + source index. The old
      * bare `source:${index}` name collided across config classes (and with the
      * environment's own constructor sources), so a later class silently
      * replaced an earlier one. Registry names are unique per class now.
@@ -473,7 +483,7 @@ class ConfigurationParser {
      * Process the given the `entry` decorator decorator metadata.
      */
     processEntry(nameOrToken: string | ContextToken<unknown>, value: () => unknown) {
-        // CF-11: the former if/else arms were identical. Tokens are keyed by
+        // The former if/else arms were identical. Tokens are keyed by
         // `description` (the `Registry` contract), so narrow once and register
         // through the string overload.
         const name = typeof nameOrToken === 'string' ? nameOrToken : nameOrToken.description;

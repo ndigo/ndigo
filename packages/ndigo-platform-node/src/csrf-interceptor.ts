@@ -153,7 +153,7 @@ export class CSRFInterceptor implements RouteHandlerInterceptor {
                 ? (request.body[this.#fieldName] as string | undefined)
                 : undefined);
 
-        // SEC-9: constant-time compare of the bearer secret. A length guard
+        // Constant-time compare of the bearer secret. A length guard
         // runs first so a length-mismatched token is rejected (no throw) —
         // `timingSafeEqual` itself throws on unequal buffer lengths.
         if (

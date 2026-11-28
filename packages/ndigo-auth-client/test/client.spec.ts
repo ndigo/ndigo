@@ -404,4 +404,31 @@ describe('AuthClient', () => {
             expect(second.seen).toEqual(['at-2']);
         });
     });
+
+    describe('instance-scoped adapters', () => {
+        test('register shadows the global adapter for this client only', async () => {
+            AuthRegistry.register(
+                createMockAdapter('jwt', {
+                    principal: createMockPrincipal('global'),
+                    token: 'global',
+                    expiresAt: null,
+                })
+            );
+
+            const local = new AuthClient().register(
+                createMockAdapter('jwt', {
+                    principal: createMockPrincipal('local'),
+                    token: 'local',
+                    expiresAt: null,
+                })
+            );
+
+            await expect(local.authenticate('jwt', {})).resolves.toMatchObject({
+                principal: { id: 'local' },
+            });
+            await expect(new AuthClient().authenticate('jwt', {})).resolves.toMatchObject({
+                principal: { id: 'global' },
+            });
+        });
+    });
 });

@@ -11,36 +11,12 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
 
 /** A raw tool schema: named zod validators, as the MCP SDK expects. */
-/**
- * ToolSchema.
- *
- * @example
- * ```ts
- * type _Alias = ToolSchema;
- * ```
- */
 export type ToolSchema = ZodRawShapeCompat;
 
 /** The validated arguments of a tool with schema `Shape`. */
-/**
- * ToolArguments.
- *
- * @example
- * ```ts
- * type _Alias = ToolArguments;
- * ```
- */
 export type ToolArguments<Shape extends ToolSchema> = ShapeOutput<Shape>;
 
 /** Options for {@link createMCPHost}. */
-/**
- * MCPHostOptions.
- *
- * @example
- * ```ts
- * const value = {} as MCPHostOptions;
- * ```
- */
 export interface MCPHostOptions {
     /** Server name reported to clients. */
     readonly name: string;
@@ -53,14 +29,6 @@ export interface MCPHostOptions {
 }
 
 /** One tool registered on an {@link MCPHost}. */
-/**
- * MCPToolDefinition.
- *
- * @example
- * ```ts
- * const value = {} as MCPToolDefinition;
- * ```
- */
 export interface MCPToolDefinition<Shape extends ToolSchema = ToolSchema> {
     /** Stable tool name (snake_case). */
     readonly name: string;
@@ -79,14 +47,6 @@ export interface MCPToolDefinition<Shape extends ToolSchema = ToolSchema> {
 }
 
 /** A configured MCP server plus registration and stdio helpers. */
-/**
- * MCPHost.
- *
- * @example
- * ```ts
- * const value = {} as MCPHost;
- * ```
- */
 export interface MCPHost {
     /** The underlying server, for tests and advanced wiring. */
     readonly server: McpServer;
@@ -129,7 +89,7 @@ export function createMCPHost(options: MCPHostOptions): MCPHost {
         // while `Shape` is generic (TS erases it to the constraint), so the
         // handler's precise parameter type is asserted at the SDK boundary.
         const handler = (async (args: ToolArguments<Shape>) =>
-            // NOTE: bridging to ToolCallback<Shape> — the source type is wider than this consumer's contract.
+            // The source type is wider than this consumer's contract; the assertion is confined to this boundary.
             runTool(() => tool.run(args))) as unknown as ToolCallback<Shape>;
         server.registerTool<ToolSchema, Shape>(
             tool.name,

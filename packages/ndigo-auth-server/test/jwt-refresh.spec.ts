@@ -68,6 +68,16 @@ describe('JWTAdapter token issuance', () => {
         expect((await claimsOf(issued.accessToken)).ver).toBe(3);
     });
 
+    test('issueTokens preserves caller scopes when the store supplies none', async () => {
+        const { adapter } = buildAdapter();
+        const issued = await adapter.issueTokens({ id: 'alice', scopes: ['orders:read', 'orders:write'] });
+        expect((await claimsOf(issued.accessToken)).scope).toBe('orders:read orders:write');
+        await expect(adapter.validate(issued.accessToken)).resolves.toMatchObject({
+            id: 'alice',
+            scopes: ['orders:read', 'orders:write'],
+        });
+    });
+
     test('issueTokens fails closed on an unknown user when a store is wired', async () => {
         const { adapter } = buildAdapter();
         await expect(adapter.issueTokens({ id: 'ghost' })).rejects.toBeInstanceOf(JWTTokenError);
@@ -109,10 +119,10 @@ describe('JWTAdapter revocation via ver claim', () => {
         await expect(adapter.refresh(refreshToken)).rejects.toBeInstanceOf(JWTTokenError);
     });
 
-    test('external tokens without a ver claim are unaffected by the store', async () => {
+    test('an HMAC token without a ver claim fails closed when a store is wired', async () => {
         const { adapter, userStore } = buildAdapter();
         const futureTime = Math.floor(Date.now() / 1000) + 3600;
-        const external = createJWT({
+        const unversioned = createJWT({
             sub: 'alice',
             name: 'Alice',
             iss: CONFIG.issuer,
@@ -120,7 +130,10 @@ describe('JWTAdapter revocation via ver claim', () => {
             exp: futureTime,
         });
         await userStore.incrementTokenVersion('alice');
-        await expect(adapter.validate(external)).resolves.toMatchObject({ id: 'alice', name: 'Alice' });
+        // This adapter issues its own HMAC tokens, and every one carries
+        // `ver`. A token without it was not versioned here, so revocation
+        // cannot see it — accept it and a disabled account keeps working.
+        await expect(adapter.validate(unversioned)).resolves.toBeNull();
     });
 
     test('a disabled account cannot be issued tokens', async () => {
@@ -243,6 +256,22 @@ describe('JWTAdapter logout', () => {
         const { adapter, userStore } = buildAdapter();
         await expect(adapter.logout('junk')).rejects.toBeInstanceOf(JWTTokenError);
         expect((await userStore.findById('alice'))?.tokenVersion).toBe(3);
+    });
+
+    test('replaying a superseded token cannot revoke the live session', async () => {
+        const { adapter, userStore } = buildAdapter();
+        const old = await adapter.issueTokens({ id: 'alice' });
+        await adapter.logout(old.accessToken);
+        expect((await userStore.findById('alice'))?.tokenVersion).toBe(4);
+
+        // The old token is signed and unexpired, but its version is stale.
+        // An unconditional bump here would let a leaked token kill the
+        // replacement session; the CAS must reject it.
+        await expect(adapter.logout(old.accessToken)).rejects.toBeInstanceOf(JWTTokenError);
+        expect((await userStore.findById('alice'))?.tokenVersion).toBe(4);
+
+        const live = await adapter.issueTokens({ id: 'alice' });
+        await expect(adapter.validate(live.accessToken)).resolves.toMatchObject({ id: 'alice' });
     });
 });
 

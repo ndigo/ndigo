@@ -32,7 +32,7 @@ class StubUserStore implements UserStore {
         }
     }
 
-    /** Test helper: flips the account's `disabled` flag (SE-7). */
+    /** Test helper: flips the account's `disabled` flag. */
     disable(id: string): void {
         const user = this.#byId(id);
         if (user === null) throw new Error(`User "${id}" not found`);
@@ -161,7 +161,7 @@ describe('CredentialsAuthAdapter', () => {
         );
     });
 
-    // SEC-B1: the dummy hash exists only to equalize timing on the
+    // The dummy hash exists only to equalize timing on the
     // unknown/no-hash path. Before the fix the probe below authenticates,
     // because `passwordHash: null` fell through `??` to the dummy constant
     // and `user === null` was false for a real (hash-less) account. An

@@ -19,14 +19,6 @@ export const CATALOG_PROTOCOL_VERSION = '1.0';
 export const CATALOG_ID = 'ndigo-ui';
 
 /** One component definition in the A2UI catalog. */
-/**
- * A2UIComponentDescriptor.
- *
- * @example
- * ```ts
- * const value = {} as A2UIComponentDescriptor;
- * ```
- */
 export interface A2UIComponentDescriptor {
     /** Every A2UI component is a JSON object. */
     readonly type: 'object';
@@ -45,14 +37,6 @@ export interface A2UIComponentDescriptor {
 }
 
 /** The A2UI catalog document. */
-/**
- * A2UICatalog.
- *
- * @example
- * ```ts
- * const value = {} as A2UICatalog;
- * ```
- */
 export interface A2UICatalog {
     /** JSON Schema dialect. */
     readonly $schema: string;

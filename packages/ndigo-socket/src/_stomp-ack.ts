@@ -61,7 +61,7 @@ export class STOMPAckHandler {
      * so a bare id settles nothing and is a receipted no-op — a STOMP
      * client ACKing the MESSAGE's `ack` header must not be closed out.
      *
-     * Allowed inside transactions too (D7): buffered under the same
+     * Allowed inside transactions too: buffered under the same
      * op/byte caps as SEND, applied at COMMIT.
      *
      * @param session - The acking session.
@@ -99,7 +99,7 @@ export class STOMPAckHandler {
         const nack = frame.command === 'NACK';
         const txId = frame.headers['transaction'];
         if (txId !== undefined) {
-            // COR-10: a buffered ack is as much buffered state as a SEND —
+            // A buffered ack is as much buffered state as a SEND —
             // it obeys the same op count and byte budget (its identifiers
             // are retained too, so they count toward the bytes).
             const receiptId = frame.headers['receipt'] ?? null;

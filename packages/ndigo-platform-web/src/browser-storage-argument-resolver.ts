@@ -48,7 +48,7 @@ export function dumpStorage(storage: Storage | null | undefined): Record<string,
  * One parameterized resolver replaces the former per-storage classes: the
  * constructor takes the storage accessor, the `MethodParameterType` to match,
  * and the `Symbol.toStringTag` label, so the session/local registrations stay
- * distinguishable (D-2).
+ * distinguishable.
  *
  * @example
  * ```ts

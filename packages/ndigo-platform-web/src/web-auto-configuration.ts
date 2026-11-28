@@ -16,7 +16,7 @@ import { whenBrowser } from '@ndigo/core';
  *
  * `@ndigo/view-webcomponent` declares custom-element base classes that extend
  * `HTMLElement` at module load, so a static import would make the whole
- * `@ndigo/platform-web` barrel unimportable outside a DOM (PWB-REV-001). The
+ * `@ndigo/platform-web` barrel unimportable outside a DOM. The
  * resolver is only exercised while resolving a view — a browser-only path —
  * so the import is deferred until then. The dynamic specifier is required
  * because the module cannot be evaluated on a non-DOM platform.
@@ -52,14 +52,6 @@ class LazyWebComponentViewResolver implements ViewResolver {
 /**
  * Auto-configuration for browser-based applications.
  * Provisions argument resolvers and converter registries.
- */
-/**
- * WebAutoConfiguration.
- *
- * @example
- * ```ts
- * const instance = new WebAutoConfiguration();
- * ```
  */
 @whenBrowser
 @configuration

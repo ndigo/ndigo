@@ -12,6 +12,7 @@ import { GenericApplicationContext, InMemoryResourceLoader } from '@ndigo/contex
 import { EJSView } from '../src/ejs-view';
 import { EJSIncludeCycleError, EJSTemplateEngine } from '../src/ejs-template-engine';
 import { EJSViewResolver } from '../src/ejs-view-resolver';
+import { FrameworkError } from '@ndigo/core';
 
 interface CapturedRender {
     output: unknown;
@@ -88,14 +89,35 @@ describe('EJSTemplateEngine includes (DSV-EJS-1)', () => {
         expect(html).toBe('<div><span>Ada</span></div>');
     });
 
-    it('resolves an absolute include', async () => {
-        const absolute = join(dir, 'absolute.ejs');
-        writeFileSync(absolute, 'ABS:<%= value %>');
-        const engine = new EJSTemplateEngine();
+    it('resolves an absolute include against options.root', async () => {
+        writeFileSync(join(dir, 'absolute.ejs'), 'ABS:<%= value %>');
+        const engine = new EJSTemplateEngine({ options: { root: dir } });
 
-        const html = await engine.render('<%- await include(absolutePath) %>', { value: 7, absolutePath: absolute });
+        const html = await engine.render('<%- await include(absolutePath) %>', {
+            value: 7,
+            absolutePath: '/absolute.ejs',
+        });
 
         expect(html).toBe('ABS:7');
+    });
+
+    it('rejects an absolute include when no root is configured', async () => {
+        const absolute = join(dir, 'absolute.ejs');
+        writeFileSync(absolute, 'ABS');
+        const engine = new EJSTemplateEngine();
+
+        await expect(
+            engine.render('<%- await include(absolutePath) %>', { absolutePath: absolute })
+        ).rejects.toBeInstanceOf(FrameworkError);
+    });
+
+    it('rejects a relative include that escapes options.root', async () => {
+        writeFileSync(join(dir, 'outside.ejs'), 'OUTSIDE');
+        const engine = new EJSTemplateEngine({ options: { root: join(dir, 'views') } });
+
+        await expect(
+            engine.render('<%- await include("../outside.ejs") %>', {}, join(dir, 'views', 'home.ejs'))
+        ).rejects.toBeInstanceOf(FrameworkError);
     });
 
     // No test pins an un-awaited include. The engine compiles templates in

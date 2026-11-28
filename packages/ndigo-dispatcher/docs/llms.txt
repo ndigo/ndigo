@@ -130,7 +130,7 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `ParameterMap` *(type)* — Parameter map for `parameters` decorator
 - `MethodParameterType` — Method parameter type enum
 - `MethodParameter` — Method parameter metadata
-- `DataBindingSource` *(type)* — The data sources whole-source binding (`dataBinderValue`) can read from, per platform (D-3):
+- `DataBindingSource` *(type)* — The data sources whole-source binding (`dataBinderValue`) can read from, per platform:
 - `queryValue` — Factory function: Create a query parameter extractor
 - `pathVariable` — Factory function: Create a path parameter extractor
 - `matrixValue` — Factory function: Create a matrix parameter extractor
@@ -144,7 +144,7 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `headerValue` — Factory function: Create a request-header parameter extractor.
 - `bodyValue` — Factory function: Create a request-body parameter extractor. Omit the name to bind the entire parsed body object (`bodyValue()`).
 - `fileValue` — Factory function: Create a multipart/form-data file-part extractor. The client field name defaults to the method-argument name; pass an explicit name only when…
-- `requestPart` — Factory function: Create a multipart JSON/text-part extractor (D-6).
+- `requestPart` — Factory function: Create a multipart JSON/text-part extractor.
 - `routeValue` — Binder for the current `Route` object. Explicit replacement for the removed implicit route-injection.
 - `socketSessionValue` — Binder for the `SocketSession` on a socket mapping. Explicit replacement for the removed implicit session injection: the session is only bound where the handle…
 - `pathValue` — Binder for the entire matched path string — `pathValue()` binds the request/socket path (e.g. `/abc/42`) as a value, distinct from `pathVariable` which extract…

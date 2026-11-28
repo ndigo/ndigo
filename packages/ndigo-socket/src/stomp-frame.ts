@@ -30,7 +30,7 @@
 
 import { FrameworkError } from '@ndigo/core';
 
-/** A STOMP body: text (string) or byte-exact binary (D8). */
+/** A STOMP body: text (string) or byte-exact binary. */
 import type { STOMPBody, STOMPFrame, STOMPWireInput } from './stomp-frame-types';
 
 // Re-export moved contracts for backward compat.
@@ -303,7 +303,7 @@ function assertTrailingEols(units: ArrayLike<string | number>, from: number): vo
  * body runs to the first NUL. The NUL may be followed by any number of EOLs
  * (STOMP 1.2 §1.2). A frame holding nothing but EOLs — and, in the byte
  * path, NULs — is a heart-beat ping. Text frames yield string bodies; byte
- * inputs yield `Uint8Array` bodies (D8).
+ * inputs yield `Uint8Array` bodies.
  *
  * @param frame - The wire frame (a WebSocket text or binary message).
  * @returns The parsed frame (`command: ''` for a ping).

@@ -24,6 +24,6 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `OpenAPIDocument` *(type)* — The generated OpenAPI 3.0.3 document.
 - `OpenAPIGeneratorOptions` *(type)* — Options for OpenAPISpecGenerator.generate.
 - `OpenAPISpecGenerator` — Builds OpenAPI documents from the framework's route tables.
-- `OpenAPIFormat` *(type)* — OpenAPIFormat.
-- `WriteOpenAPISpecOptions` *(type)* — WriteOpenAPISpecOptions.
+- `OpenAPIFormat` *(type)* — Output serialization format.
+- `WriteOpenAPISpecOptions` *(type)* — Options for writeOpenAPISpec.
 - `writeOpenAPISpec` — Generates an OpenAPI document from route tables and writes it to disk.

@@ -1,13 +1,13 @@
 /**
  * Task scheduler: drives scheduled task execution.
  */
-import { toError } from '@ndigo/util';
 import { FrameworkError } from '@ndigo/core';
 import type { AsyncDestroyable } from '@ndigo/factory';
-import { delay } from '@ndigo/util';
-import { LOCK_DRIVER, likeLockDriver, type LockDriver, type LockHandle } from '@ndigo/locks';
 import { getLogger } from '@ndigo/log';
 import type { ApplicationContext } from '@ndigo/context';
+import { TaskLockManager } from './_task-scheduler-lock.js';
+import { TaskExecutor } from './_task-scheduler-executor.js';
+import { TaskTimerLoop } from './_task-scheduler-loop.js';
 
 const logger = getLogger('ndigo-scheduler:task-scheduler');
 
@@ -28,8 +28,6 @@ import type { ScheduledTaskDefinition, TaskSchedulerOptions, TaskStats, TaskStat
 
 // Re-export moved contracts for backward compat.
 export * from './task-scheduler-types';
-
-const MAX_TIMER_DELAY_MS = 2_147_483_647;
 
 /**
  * Task scheduler: drives scheduled task execution.
@@ -58,26 +56,11 @@ export class TaskScheduler implements AsyncDestroyable {
     readonly #clock: () => Date;
     readonly #warn: (message: string) => void;
     readonly #tasks = new Map<string, TaskState>();
-    readonly #active = new Set<Promise<void>>();
-    #timer: NodeJS.Timeout | null = null;
-    /**
-     * The delay the armed timer was created with, `null` while unarmed —
-     * used to detect re-arms that raced ahead of run completion
-     * (fixedDelay anchors land in run `finally` blocks).
-     */
-    #timerDelayMs: number | null = null;
-    /**
-     * The started latch — set by {@link TaskScheduler.start} and cleared by
-     * {@link TaskScheduler.stop}. Kept separate from `#timer` because a
-     * started loop with no (or only far-future) tasks has no armed timer:
-     * `#timer === null` must not be mistaken for "not started", or
-     * registering a task after `start()` would never arm the loop.
-     */
-    #started = false;
+    readonly #locks: TaskLockManager;
+    readonly #executor: TaskExecutor;
+    readonly #loop: TaskTimerLoop;
     /** Set once {@link destroy} runs; new registrations are rejected. */
     destroyed = false;
-    /** Constructor-provided lock driver; `undefined` = resolve from context. */
-    readonly #lockDriverOption: LockDriver | null | undefined;
     /** The injected application context (lockDriver entry resolution). */
     #context: ApplicationContext | null = null;
 
@@ -89,7 +72,27 @@ export class TaskScheduler implements AsyncDestroyable {
     constructor(options: TaskSchedulerOptions = {}) {
         this.#clock = options.clock ?? (() => new Date());
         this.#warn = options.warn ?? ((message: string) => logger.warn(message));
-        this.#lockDriverOption = options.lockDriver;
+        const schedulerDestroyed = (): boolean => this.destroyed;
+        this.#locks = new TaskLockManager({
+            get destroyed(): boolean {
+                return schedulerDestroyed();
+            },
+            warn: this.#warn,
+            now: this.#clock,
+            context: (): ApplicationContext | null => this.#context,
+            lockDriverOption: (): typeof options.lockDriver => options.lockDriver,
+            defaultTtlMs: DEFAULT_LOCK_TTL_MS,
+            defaultWaitStepMs: DEFAULT_LOCK_WAIT_STEP_MS,
+        });
+        this.#executor = new TaskExecutor({ clock: this.#clock, warn: this.#warn, locks: this.#locks });
+        this.#loop = new TaskTimerLoop({
+            tasks: this.#tasks,
+            get destroyed(): boolean {
+                return schedulerDestroyed();
+            },
+            now: this.#clock,
+            tickAt: (earliest: Date): Promise<number> => this.tick(earliest),
+        });
     }
 
     /**
@@ -132,7 +135,7 @@ export class TaskScheduler implements AsyncDestroyable {
             lastStartedAt: null,
             lastCompletedAt: null,
         });
-        this.#rearm();
+        this.#loop.rearm();
     }
 
     /**
@@ -148,7 +151,7 @@ export class TaskScheduler implements AsyncDestroyable {
     unregister(name: string): boolean {
         const removed = this.#tasks.delete(name);
         if (removed) {
-            this.#rearm();
+            this.#loop.rearm();
         }
         return removed;
     }
@@ -221,7 +224,7 @@ export class TaskScheduler implements AsyncDestroyable {
             }
             // fixedDelay: end-anchored — set when the run completes (finally).
 
-            started.push(this.#run(state));
+            started.push(this.#executor.run(state));
         }
 
         if (started.length > 0) {
@@ -238,7 +241,7 @@ export class TaskScheduler implements AsyncDestroyable {
      * will arm as soon as a task is registered.
      */
     get isRunning(): boolean {
-        return this.#started;
+        return this.#loop.started;
     }
 
     /**
@@ -250,11 +253,7 @@ export class TaskScheduler implements AsyncDestroyable {
      * registering one later arms the loop.
      */
     start(): void {
-        if (this.#started || this.destroyed) {
-            return;
-        }
-        this.#started = true;
-        this.#scheduleNext();
+        this.#loop.start();
     }
 
     /**
@@ -262,40 +261,13 @@ export class TaskScheduler implements AsyncDestroyable {
      * {@link TaskScheduler.destroy} to drain.
      */
     stop(): void {
-        this.#started = false;
-        if (this.#timer !== null) {
-            clearTimeout(this.#timer);
-            this.#timer = null;
-            this.#timerDelayMs = null;
-        }
+        this.#loop.stop();
     }
-
     /**
-     * Recomputes the timer after a registry change (register/unregister)
-     * while the loop is started: clears any armed timer and re-arms for the
-     * new earliest due task, so a task due sooner than the previous earliest
-     * does not wait behind a stale timer.
-     */
-    #rearm(): void {
-        if (!this.#started || this.destroyed) {
-            return;
-        }
-        if (this.#timer !== null) {
-            clearTimeout(this.#timer);
-            this.#timer = null;
-            this.#timerDelayMs = null;
-        }
-        this.#scheduleNext();
-    }
-
-    /**
-     * Container contract: stops the loop, drains in-flight runs, and
-     * clears the registry. Idempotent; tasks are cleared and the scheduler
-     * rejects further registration.
-     *
-     * The container does not await the drain (context close is synchronous);
-     * in-flight runs finish in the background and the scheduler rejects new
-     * registrations immediately.
+     * Destroys the scheduler: stops the loop, drains in-flight runs, and
+     * clears the registry. The container does not await the drain (context
+     * close is synchronous); in-flight runs finish in the background and
+     * the scheduler rejects new registrations immediately.
      */
     async destroy(): Promise<void> {
         if (this.destroyed) {
@@ -303,268 +275,7 @@ export class TaskScheduler implements AsyncDestroyable {
         }
         this.destroyed = true;
         this.stop();
-        if (this.#active.size > 0) {
-            await Promise.allSettled(this.#active);
-        }
+        await this.#executor.drain();
         this.#tasks.clear();
-    }
-
-    /**
-     * Executes one run with single-flight release, error isolation, and the
-     * optional `maxRunTime` race.
-     *
-     * @param state - The task state to run.
-     * @returns A promise resolving when the run (or its timeout race) settles.
-     */
-    async #run(state: TaskState): Promise<void> {
-        const promise = this.#execute(state);
-        this.#active.add(promise);
-        void promise.finally(() => {
-            this.#active.delete(promise);
-        });
-        return promise;
-    }
-
-    async #execute(state: TaskState): Promise<void> {
-        const { definition } = state;
-        let lease: LockHandle | null = null;
-        try {
-            if (definition.lockKey !== undefined) {
-                lease = await this.#acquireTaskLock(definition);
-                if (lease === null) {
-                    // Contended (or the wait budget expired): this fire is
-                    // skipped. The finally normalizes bookkeeping exactly
-                    // like a completed run, so the task stays schedulable.
-                    return;
-                }
-            }
-            const runPromise = Promise.resolve(definition.run());
-            if (definition.maxRunTimeMs === undefined) {
-                await runPromise;
-            } else {
-                await this.#raceMaxRunTime(state, runPromise, definition.maxRunTimeMs);
-            }
-        } catch (error) {
-            this.#recordFailure(state, error);
-        } finally {
-            await this.#releaseTaskLock(lease);
-            state.inFlight = false;
-            state.lastCompletedAt = this.#clock();
-            const { schedule } = definition;
-            if (schedule.intervalMs !== undefined && schedule.kind === 'fixedDelay') {
-                // End-anchored: the next fire is one interval after completion.
-                state.nextRunAt = new Date(state.lastCompletedAt.getTime() + schedule.intervalMs);
-            }
-        }
-    }
-
-    /**
-     * Acquires a task's distributed lock, honoring the definition's wait
-     * budget. Skips (returns `null`) when the key stays contended beyond
-     * `lockWaitMs` — the default behavior on contention.
-     *
-     * @param definition - The task definition.
-     * @returns The lease, or `null` when the fire is skipped.
-     * @throws When `lockKey` is set but no lock driver is
-     *   configured (fail-loud: running unguarded would defeat the feature).
-     */
-    async #acquireTaskLock(definition: ScheduledTaskDefinition): Promise<LockHandle | null> {
-        const driver = this.#lockDriver();
-        if (driver === null) {
-            throw new FrameworkError(
-                `TaskScheduler: task '${definition.name}' declares lock '${definition.lockKey}' but no LockDriver is ` +
-                    "configured — register a lockDriver entry or pass one to the scheduler's options"
-            );
-        }
-        if (definition.lockKey === undefined) {
-            return null;
-        }
-        const ttlMs = definition.lockTtlMs ?? DEFAULT_LOCK_TTL_MS;
-        const startedAt = this.#clock().getTime();
-        const budgetMs = definition.lockWaitMs ?? 0;
-        const stepMs = Math.max(1, definition.lockWaitStepMs ?? DEFAULT_LOCK_WAIT_STEP_MS);
-        const key = definition.lockKey;
-        for (;;) {
-            // oxlint-disable-next-line no-await-in-loop -- a contended-lock poll is inherently sequential: each probe must observe the previous wait
-            const lease = await driver.acquire(key, { ttlMs });
-            if (lease !== null) {
-                return lease;
-            }
-            if (this.destroyed) {
-                return null;
-            }
-            const elapsed = this.#clock().getTime() - startedAt;
-            if (elapsed >= budgetMs) {
-                this.#warn(`TaskScheduler: task '${definition.name}' skipped — lock '${key}' is held`);
-                return null;
-            }
-            // oxlint-disable-next-line no-await-in-loop -- same poll loop: wait between attempts, never parallel
-            await this.#sleep(Math.min(stepMs, budgetMs - elapsed));
-        }
-    }
-
-    /**
-     * Releases a task's lease in the run `finally` — a throw never leaks
-     * the lease. Failures are warnings: the fence already prevents any
-     * successor damage, and the bookkeeping must proceed.
-     *
-     * @param lease - The acquired lease, or `null` when none was acquired.
-     */
-    async #releaseTaskLock(lease: LockHandle | null): Promise<void> {
-        if (lease === null) {
-            return;
-        }
-        try {
-            await lease.release();
-        } catch {
-            // The driver may already be closed (scheduler shutdown); the
-            // lease expires by TTL regardless — nothing further to do.
-        }
-    }
-
-    /**
-     * Resolves the lock driver: constructor option wins, then the
-     * application context's `lockDriver` entry.
-     *
-     * @returns The driver, or `null` when none is configured.
-     */
-    #lockDriver(): LockDriver | null {
-        if (this.#lockDriverOption !== undefined) {
-            return this.#lockDriverOption;
-        }
-        const context = this.#context;
-        if (context !== null && context.hasValue(LOCK_DRIVER)) {
-            const driver = context.getValue(LOCK_DRIVER);
-            if (!likeLockDriver(driver)) {
-                throw new FrameworkError(`TaskScheduler: the '${LOCK_DRIVER.description}' entry is not a LockDriver`);
-            }
-            return driver;
-        }
-        return null;
-    }
-
-    /**
-     * Waits without busy-looping the CPU.
-     *
-     * @param ms - The delay in milliseconds (positive; no-op on zero).
-     */
-    async #sleep(ms: number): Promise<void> {
-        if (ms <= 0) {
-            return;
-        }
-        await delay(ms);
-    }
-
-    /**
-     * Records a run failure on the task state.
-     *
-     * @param state - The task state to update.
-     * @param error - The failure.
-     */
-    #recordFailure(state: TaskState, error: unknown): void {
-        state.failures += 1;
-        state.lastError = toError(error);
-    }
-
-    /**
-     * Races a run against the `maxRunTime` cap.
-     *
-     * When the cap wins first, the single-flight slot is released and a
-     * warning is emitted; a rejection arriving afterwards can no longer be
-     * observed by the caller (the race has already settled), so it is
-     * recorded here instead of being swallowed.
-     *
-     * The cap's timer is cleared as soon as the race settles, so a run that
-     * finishes first never pins the event loop for the remainder of the cap.
-     *
-     * @param state - The task state.
-     * @param runPromise - The running task.
-     * @param maxRunTimeMs - The cap in milliseconds.
-     */
-    async #raceMaxRunTime(state: TaskState, runPromise: Promise<void>, maxRunTimeMs: number): Promise<void> {
-        let timedOut = false;
-        let capTimer: NodeJS.Timeout | undefined;
-        const timer = new Promise<void>((resolve) => {
-            capTimer = setTimeout(() => resolve(), maxRunTimeMs);
-        });
-
-        try {
-            await Promise.race([
-                runPromise.catch((error) => {
-                    if (timedOut) {
-                        this.#recordFailure(state, error);
-                        return;
-                    }
-                    throw error;
-                }),
-                timer.then(() => {
-                    timedOut = true;
-                }),
-            ]);
-        } finally {
-            // The race settled: an armed cap has no remaining purpose and
-            // would keep the process alive until it fired (clearing an
-            // already-fired timer is a no-op).
-            clearTimeout(capTimer);
-        }
-
-        if (timedOut) {
-            this.#warn(
-                `TaskScheduler: task '${state.definition.name}' exceeded maxRunTime (${maxRunTimeMs}ms) — ` +
-                    'released the single-flight slot; the task continues running in the background'
-            );
-        }
-    }
-
-    /**
-     * Arms the timer for the earliest due task.
-     *
-     * Idempotent while a timer is armed: the loop's liveness depends on
-     * re-arming from the timer callback without waiting for in-flight
-     * runs to settle.
-     */
-    #scheduleNext(): void {
-        if (this.destroyed || !this.#started || this.#timer !== null) {
-            return;
-        }
-        const now = this.#clock();
-        let earliest: Date | null = null;
-        for (const state of this.#tasks.values()) {
-            if (state.nextRunAt !== null && (earliest === null || state.nextRunAt < earliest)) {
-                earliest = state.nextRunAt;
-            }
-        }
-        if (earliest === null) {
-            return;
-        }
-
-        // Node fires delays over 2^31-1 ms (~24.8 days) after ~1ms — without
-        // the cap, farther-out schedules (yearly crons, >24.8d intervals)
-        // would re-arm in a ~1ms busy loop. The capped timer wakes early and
-        // re-arms until the remaining delay fits.
-        const delayMs = Math.min(MAX_TIMER_DELAY_MS, Math.max(0, earliest.getTime() - now.getTime()));
-        this.#timerDelayMs = delayMs;
-        this.#timer = setTimeout(() => {
-            this.#timer = null;
-            this.#timerDelayMs = null;
-            // Tick at the scheduled time without blocking the loop; the run
-            // updates nextRunAt synchronously before the loop re-arms.
-            const pending = this.tick(earliest);
-            this.#scheduleNext();
-            // A 0-delay re-arm means the earliest task was in flight: its
-            // fixedDelay anchor lands in the run's finally only after the
-            // tick settles. Re-arm from the settled state instead of
-            // wasting a zero-delay wake.
-            if (this.#timerDelayMs === 0) {
-                void pending.then(() => {
-                    if (this.#timer !== null) {
-                        clearTimeout(this.#timer);
-                        this.#timer = null;
-                        this.#timerDelayMs = null;
-                        this.#scheduleNext();
-                    }
-                });
-            }
-        }, delayMs);
     }
 }

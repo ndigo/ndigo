@@ -3,13 +3,13 @@
  */
 import '@tsmetadata/polyfill';
 import {
-    columnsMetadataKey,
-    entityMetadataKey,
-    entityNameMetadataKey,
-    generatedColumnMetadataKey,
-    primaryMetadataKey,
-    relationsMetadataKey,
-    entityHooksMetadataKey,
+    COLUMNS_METADATA_KEY,
+    ENTITY_METADATA_KEY,
+    ENTITY_NAME_METADATA_KEY,
+    GENERATED_COLUMN_METADATA_KEY,
+    PRIMARY_METADATA_KEY,
+    RELATIONS_METADATA_KEY,
+    ENTITY_HOOKS_METADATA_KEY,
 } from './_constants';
 import {
     ColumnDefinition,
@@ -35,8 +35,8 @@ import { Constructable } from '@ndigo/core';
  */
 export function entity(tableName?: string) {
     return function <T extends Constructable<unknown>>(target: T, context: ClassDecoratorContext): T {
-        context.metadata[entityMetadataKey] = true;
-        context.metadata[entityNameMetadataKey] = tableName ?? target.name;
+        context.metadata[ENTITY_METADATA_KEY] = true;
+        context.metadata[ENTITY_NAME_METADATA_KEY] = tableName ?? target.name;
         return target;
     };
 }
@@ -55,7 +55,7 @@ export function entity(tableName?: string) {
  */
 export function column(options?: ColumnOptions) {
     return function (_value: undefined, context: ClassFieldDecoratorContext) {
-        const columns = ((context.metadata[columnsMetadataKey] as ColumnDefinition[]) ?? []).slice();
+        const columns = ((context.metadata[COLUMNS_METADATA_KEY] as ColumnDefinition[]) ?? []).slice();
 
         columns.push({
             fieldName: String(context.name),
@@ -65,7 +65,7 @@ export function column(options?: ColumnOptions) {
             schema: options?.schema,
         });
 
-        context.metadata[columnsMetadataKey] = columns;
+        context.metadata[COLUMNS_METADATA_KEY] = columns;
     };
 }
 
@@ -83,7 +83,7 @@ export function column(options?: ColumnOptions) {
 export function primaryColumn() {
     return function (value: undefined, context: ClassFieldDecoratorContext) {
         column()(value, context);
-        context.metadata[primaryMetadataKey] = String(context.name);
+        context.metadata[PRIMARY_METADATA_KEY] = String(context.name);
     };
 }
 
@@ -101,14 +101,14 @@ export function primaryColumn() {
  */
 export function generatedColumn() {
     return function (_value: undefined, context: ClassFieldDecoratorContext) {
-        const generatedColumns = ((context.metadata[generatedColumnMetadataKey] as string[]) ?? []).slice();
+        const generatedColumns = ((context.metadata[GENERATED_COLUMN_METADATA_KEY] as string[]) ?? []).slice();
         const fieldName = String(context.name);
 
         if (!generatedColumns.includes(fieldName)) {
             generatedColumns.push(fieldName);
         }
 
-        context.metadata[generatedColumnMetadataKey] = generatedColumns;
+        context.metadata[GENERATED_COLUMN_METADATA_KEY] = generatedColumns;
     };
 }
 
@@ -132,7 +132,7 @@ export interface RelationOptions {
 /**
  * @internal
  * Shared factory for relation decorators. Records a {@link RelationDefinition}
- * on the class field's `Symbol.metadata` under the `relationsMetadataKey` key.
+ * on the class field's `Symbol.metadata` under the `RELATIONS_METADATA_KEY` key.
  */
 function relationDecorator(
     kind: RelationKind,
@@ -140,7 +140,7 @@ function relationDecorator(
     options: RelationOptions = {}
 ) {
     return function (_value: undefined, context: ClassFieldDecoratorContext): void {
-        const relations = ((context.metadata[relationsMetadataKey] as RelationDefinition[]) ?? []).slice();
+        const relations = ((context.metadata[RELATIONS_METADATA_KEY] as RelationDefinition[]) ?? []).slice();
         relations.push({
             kind,
             fieldName: String(context.name),
@@ -148,7 +148,7 @@ function relationDecorator(
             joinColumn: options.joinColumn,
             inverseJoinColumn: options.inverseJoinColumn,
         });
-        context.metadata[relationsMetadataKey] = relations;
+        context.metadata[RELATIONS_METADATA_KEY] = relations;
     };
 }
 
@@ -235,13 +235,13 @@ export function oneToOne(targetEntity: () => Constructable<object>, options: Rel
 /**
  * @internal
  * Shared factory for entity hook decorators. Records a {@link EntityHookDefinition}
- * on the class method's `Symbol.metadata` under the `entityHooksMetadataKey` key.
+ * on the class method's `Symbol.metadata` under the `ENTITY_HOOKS_METADATA_KEY` key.
  */
 function entityHookDecorator(event: EntityHookEvent) {
     return function (_value: unknown, context: ClassMethodDecoratorContext): void {
-        const hooks = ((context.metadata[entityHooksMetadataKey] as EntityHookDefinition[]) ?? []).slice();
+        const hooks = ((context.metadata[ENTITY_HOOKS_METADATA_KEY] as EntityHookDefinition[]) ?? []).slice();
         hooks.push({ event, methodName: String(context.name) });
-        context.metadata[entityHooksMetadataKey] = hooks;
+        context.metadata[ENTITY_HOOKS_METADATA_KEY] = hooks;
     };
 }
 

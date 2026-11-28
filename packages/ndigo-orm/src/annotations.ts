@@ -5,7 +5,7 @@ import '@tsmetadata/polyfill';
 import { methodAnnotation, type MethodAnnotationKey } from '@ndigo/core';
 import { AdviceOrder, type MethodInterceptor, type MethodInvocation } from '@ndigo/advice';
 import type { TransactionManager } from './transaction-manager';
-import { transactionalMetadataKey } from './_constants';
+import { TRANSACTIONAL_METADATA_KEY } from './_constants';
 
 /**
  * `@transactional` annotation key. A method carrying it runs inside a
@@ -16,7 +16,7 @@ import { transactionalMetadataKey } from './_constants';
  * rules.add({ when: hasAnnotation(transactionalMethod), use: new TransactionalInterceptor() });
  * ```
  */
-export const transactionalMethod: MethodAnnotationKey<true> = methodAnnotation<true>(transactionalMetadataKey);
+export const transactionalMethod: MethodAnnotationKey<true> = methodAnnotation<true>(TRANSACTIONAL_METADATA_KEY);
 
 /**
  * Declares that a method runs inside a transaction.

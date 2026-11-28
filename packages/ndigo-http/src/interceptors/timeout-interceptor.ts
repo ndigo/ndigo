@@ -174,7 +174,7 @@ export class TimeoutInterceptor
     async postError(error: Error, request: Request, http: HTTP, settings?: HTTPInit): Promise<Response | undefined> {
         // The request settled with an error; its timer is no longer needed.
         if (settings !== undefined) {
-            this._clearTimeout(settings);
+            this.#clearTimeout(settings);
         }
 
         const timedOut = request.signal.reason === TIMEOUT_REASON || error === TIMEOUT_REASON;
@@ -198,11 +198,11 @@ export class TimeoutInterceptor
      */
     postComplete(request: Request, response: Response, settings?: HTTPInit): void {
         if (settings !== undefined) {
-            this._clearTimeout(settings);
+            this.#clearTimeout(settings);
         }
     }
 
-    private _clearTimeout(settings: HTTPInit): void {
+    #clearTimeout(settings: HTTPInit): void {
         const entry = this.#timeouts.get(settings);
         if (entry !== undefined) {
             clearTimeout(entry.timeoutId);

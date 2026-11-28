@@ -157,7 +157,7 @@ export class MatrixParamCondition extends AbstractRouteCondition<MatrixParamCond
         defineProperty(this, 'expressions', {
             value:
                 typeof paramOrConditions === 'string'
-                    ? this._parseExpressions([paramOrConditions].concat(params))
+                    ? this.#parseExpressions([paramOrConditions].concat(params))
                     : new Set<MatrixParamExpression>(paramOrConditions),
             configurable: true,
             enumerable: false,
@@ -206,7 +206,7 @@ export class MatrixParamCondition extends AbstractRouteCondition<MatrixParamCond
         if (result !== 0) {
             return result;
         }
-        return this._getValueMatchCount(value.expressions) - this._getValueMatchCount(this.expressions);
+        return this.#getValueMatchCount(value.expressions) - this.#getValueMatchCount(this.expressions);
     }
 
     /**
@@ -215,7 +215,7 @@ export class MatrixParamCondition extends AbstractRouteCondition<MatrixParamCond
      * @param expressions - The expressions to inspect.
      * @returns The number of concrete value matches.
      */
-    private _getValueMatchCount(expressions: Set<MatrixParamExpression>): number {
+    #getValueMatchCount(expressions: Set<MatrixParamExpression>): number {
         let count = 0;
         for (const expression of expressions) {
             if (expression.value !== void 0 && !expression.isNegated) {
@@ -231,7 +231,7 @@ export class MatrixParamCondition extends AbstractRouteCondition<MatrixParamCond
      * @param params - The raw matrix-parameter expressions.
      * @returns The parsed expressions.
      */
-    private _parseExpressions(params: string[]): Set<MatrixParamExpression> {
+    #parseExpressions(params: string[]): Set<MatrixParamExpression> {
         const expressions = new Set<MatrixParamExpression>();
         params.forEach((param) => expressions.add(new MatrixParamExpression(param)));
         return expressions;

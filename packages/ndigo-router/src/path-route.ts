@@ -376,7 +376,7 @@ export class PathRoute implements Route<Record<string, string>>, Serializable, M
         for (let index = 0; index < length; index++) {
             const routeSegment = this[index],
                 patternSegment = patternSegments[index],
-                paramName = this._resolveParamName(patternSegment);
+                paramName = this.#resolveParamName(patternSegment);
 
             if (!paramName) {
                 if (patternSegment !== routeSegment.name) {
@@ -400,7 +400,7 @@ export class PathRoute implements Route<Record<string, string>>, Serializable, M
      * @param patternSegment - The segment from the route pattern.
      * @returns The extracted parameter name, or `null` if the segment is not a parameter.
      */
-    private _resolveParamName(patternSegment: string): string | null {
+    #resolveParamName(patternSegment: string): string | null {
         if (startsWithColon(patternSegment) && patternSegment.length > 1) {
             return patternSegment.slice(1);
         }

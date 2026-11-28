@@ -5,7 +5,7 @@
 import { RouteHandlerMethod, RouteHandlerMethodMappingNamingStrategy } from './route-handler-method';
 import { RouteMappingInfo } from './route-mapping-info-model';
 const { defineProperty } = Reflect;
-const separator = '';
+const SEPARATOR = '';
 
 /**
  * Default naming strategy for route mappings: prefers the mapping's explicit
@@ -50,12 +50,12 @@ export class RouteMappingInfoHandlerMethodMappingNamingStrategy implements Route
             return mapping.name;
         }
 
-        return `${handlerMethod.name}${separator}${handlerMethod.method}`;
+        return `${handlerMethod.name}${SEPARATOR}${handlerMethod.method}`;
     }
 }
 
 defineProperty(RouteMappingInfoHandlerMethodMappingNamingStrategy, 'separator', {
-    value: separator,
+    value: SEPARATOR,
     configurable: true,
     enumerable: false,
     writable: false,

@@ -284,7 +284,7 @@ export class HashRouter extends AbstractRouter {
             routeTx = new RouteTransaction(this.route, routeAccess, source);
         this.#history.put(routeTx);
         if (isPublic) {
-            this._syncHash();
+            this.#syncHash();
         }
         this.callback(this.#route);
     }
@@ -321,7 +321,7 @@ export class HashRouter extends AbstractRouter {
             },
             () => {
                 this.#route = new PathRoute(oldRoute);
-                this._restoreHash(oldRoute, syncHash);
+                this.#restoreHash(oldRoute, syncHash);
             },
             (error, failedRoute) => this.onError(error, failedRoute)
         );
@@ -332,7 +332,7 @@ export class HashRouter extends AbstractRouter {
      * `hashchange` event the browser emits for it is not re-dispatched.
      * Does nothing outside a browser environment.
      */
-    private _syncHash(): void {
+    #syncHash(): void {
         if (typeof location === 'undefined') {
             return;
         }
@@ -354,7 +354,7 @@ export class HashRouter extends AbstractRouter {
      * The rollback write is recorded as an echo so the `hashchange` it emits does not
      * re-dispatch the restored route.
      */
-    private _restoreHash(oldRoute: string, syncHash: boolean): void {
+    #restoreHash(oldRoute: string, syncHash: boolean): void {
         if (!syncHash || typeof location === 'undefined') {
             return;
         }
@@ -375,7 +375,7 @@ export class HashRouter extends AbstractRouter {
      * @param route - The `PathRoute` object for which to resolve interceptors.
      * @returns An array of active `RouterInterceptor` instances.
      */
-    private _resolveInterceptors(route: PathRoute): RouterInterceptor[] {
+    protected _resolveInterceptors(route: PathRoute): RouterInterceptor[] {
         return this.interceptors.filter((interceptor) => {
             if (interceptor instanceof MappedRouterInterceptor) {
                 const matches = interceptor.matchesRoute(route);

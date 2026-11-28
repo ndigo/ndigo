@@ -312,11 +312,11 @@ export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo>
             directPathMatches = mappingRegistry.getMappingsByPath(path);
 
         if (directPathMatches && directPathMatches.length) {
-            this._addMatchingMappings(directPathMatches, matches, route);
+            this.#addMatchingMappings(directPathMatches, matches, route);
         }
 
         if (!matches.length) {
-            this._addMatchingMappings(from(mappingRegistry.mappings.keys()), matches, route);
+            this.#addMatchingMappings(from(mappingRegistry.mappings.keys()), matches, route);
         }
 
         if (matches.length) {
@@ -365,7 +365,7 @@ export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo>
         this.registerMapping(mapping, handler, method);
     }
 
-    private _addMatchingMappings(mappings: T[], matches: Match<T>[], route: Route): void {
+    #addMatchingMappings(mappings: T[], matches: Match<T>[], route: Route): void {
         const length = mappings.length;
         for (let index = 0; index < length; index++) {
             const match: T | null = this._getMatchingMapping(mappings[index], route);

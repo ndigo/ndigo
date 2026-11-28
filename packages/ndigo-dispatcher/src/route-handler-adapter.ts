@@ -281,7 +281,16 @@ export class MetadataHandlerAdapter extends AbstractHandlerMethodAdapter impleme
         return handler instanceof RouteHandlerMethod;
     }
 
-    private _discoverArgumentResolvers(): HandlerMethodArgumentResolver[] {
+    /**
+     * Discovers the argument resolvers registered in the application context.
+     *
+     * Protected so a custom adapter can extend or replace discovery; the
+     * default implementation seeds the context's `ARGUMENT_RESOLVERS`
+     * collection and appends the built-in fallbacks.
+     *
+     * @returns The discovered resolver chain.
+     */
+    protected _discoverArgumentResolvers(): HandlerMethodArgumentResolver[] {
         const { applicationContext } = this;
         const resolvers: HandlerMethodArgumentResolver[] = [];
 

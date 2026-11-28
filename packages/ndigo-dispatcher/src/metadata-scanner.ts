@@ -79,7 +79,7 @@ export class MetadataScanner {
      * @param metadataKey - The metadata key to search for.
      * @returns The matching property names, or `undefined` when no metadata exists.
      */
-    private _primeCache(metadataKey: string): string[] | undefined {
+    #primeCache(metadataKey: string): string[] | undefined {
         const target = this._target;
         const cache = this._cache;
         const symbolMetadata = getSymbolMetadata(target);
@@ -169,7 +169,7 @@ export class MetadataScanner {
             }
             cache.clear();
         }
-        return this._primeCache(metadataKey);
+        return this.#primeCache(metadataKey);
     }
 
     /**

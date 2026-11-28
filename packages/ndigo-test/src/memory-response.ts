@@ -25,7 +25,7 @@ export interface MemoryResponse {
     completed: boolean;
 }
 
-const okStatus = 200;
+const OK_STATUS = 200;
 
 /**
  * The `ServerResponse`-shaped sink the pipeline writes to: the members
@@ -101,7 +101,7 @@ export interface ResponseSink {
  */
 export function createMemoryResponse(): { response: MemoryResponse; sink: ResponseSink } {
     const response: MemoryResponse = {
-        status: okStatus,
+        status: OK_STATUS,
         headers: {},
         body: undefined,
         completed: false,

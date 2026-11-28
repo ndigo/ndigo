@@ -71,6 +71,9 @@ export class HTTPServerInstrumentation extends AbstractBaseInstrumentation {
      * Patches `HTTPServer#start` and `#close` to record server lifecycle spans.
      */
     enable(): void {
+        // `enable()` runs from the OpenTelemetry base constructor, before this
+        // subclass's field initializers, so the helpers stay TS-private rather
+        // than `#private` (a brand check would fail inside `super()`).
         this.patchLifecycle();
         this.patchRequestHandling();
     }

@@ -610,7 +610,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
         super.setParent(parent as Factory);
 
         defineProperty(this, 'root', {
-            value: this._resolveRoot(),
+            value: this.#resolveRoot(),
             configurable: true,
             enumerable: false,
             writable: false,
@@ -790,7 +790,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
         }
     }
 
-    private _resolveRoot(): ApplicationContext {
+    #resolveRoot(): ApplicationContext {
         // eslint-disable-next-line no-this-alias -- cursor walks the parent chain; not a scope-escape alias
         let root: ApplicationContext = this;
 

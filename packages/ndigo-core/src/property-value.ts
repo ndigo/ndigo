@@ -185,7 +185,7 @@ export class MutablePropertyValues
     override put(...items: PropertyValue[]): number {
         const required = this.length + items.length;
         if (required > this._capacity) {
-            this._grow(required);
+            this.#grow(required);
         }
         return super.put(...items);
     }
@@ -196,7 +196,7 @@ export class MutablePropertyValues
      *
      * @param minimum - The smallest capacity that must fit the current contents.
      */
-    private _grow(minimum: number): void {
+    #grow(minimum: number): void {
         const existing: PropertyValue[] = [...this];
         const previousCapacity = this._capacity;
         this.capacity = minimum;

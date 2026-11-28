@@ -253,7 +253,7 @@ export class PatternsRouteCondition extends AbstractRouteCondition<PatternsRoute
     getMatchingPatterns(path: string): string[] {
         const matches: string[] = [];
         this.patterns.forEach((pattern) => {
-            const match = this._getMatchingPattern(pattern, path);
+            const match = this.#getMatchingPattern(pattern, path);
             if (match !== null) {
                 matches.push(match);
             }
@@ -307,7 +307,7 @@ export class PatternsRouteCondition extends AbstractRouteCondition<PatternsRoute
      * @param path - The route path.
      * @returns The matching pattern, or `null`.
      */
-    private _getMatchingPattern(pattern: string, path: string): string | null {
+    #getMatchingPattern(pattern: string, path: string): string | null {
         // Root pattern "/" matches empty internal path ""
         if (pattern === '/' && path === '') {
             return pattern;

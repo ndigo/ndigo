@@ -25,7 +25,7 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `AbstractCachingViewResolver` — AbstractCachingViewResolver.
 - `isSafeViewName` — Returns whether a view name is safe to interpolate into a resolver path.
 - `AbstractPathBasedViewResolver` — AbstractPathBasedViewResolver.
-- `ImportViewResolver` — Convenient base class for ViewResolver implementations. Caches View instances once resolved. Subclasses need to implement the AbstractCachingViewResolver#_load…
+- `ImportViewResolver` — Resolves a view by importing the module at the resolved path.
 - `NameViewResolver` — A simple implementation of ViewResolver that interprets a view name as a value in the current application context.
 - `ViewResolverComposite` — A ViewResolver that delegates to others.
 - `ViewTarget` *(type)* — Destination that receives rendered view output.
@@ -46,17 +46,17 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `CSVViewOptions` *(type)* — Construction options for CSVView.
 - `CSVView` — A view that encodes an array of record objects as a CSV document (`text/csv`), RFC 4180-style: a header row, `\r\n` row endings, and quoting of fields containi…
 - `OctetStreamView` — A view that encodes its model as raw bytes (`application/octet-stream`) for downloads and binary payloads.
-- `MediaTypeFileExtensionResolver` *(type)* — Resolves file extensions for a media type and can enumerate all known extensions.
+- `ContentNegotiationViewResolver`
+- `MediaTypeFileExtensionResolver` *(type)*
 - `ContentNegotiationStrategy` *(type)* — Resolves the media types supported for a request.
 - `likeMediaTypeFileExtensionResolver` — Structural check for a `MediaTypeFileExtensionResolver`: accepts any value exposing both `getAllFileExtensions` and `resolveFileExtensions`, so a custom resolv…
-- `MappingMediaTypeFileExtensionResolver` — Resolves file extensions from a map of extension-to-media-type pairs.
-- `FixedContentNegotiationStrategy` — Returns the same media types for every request.
+- `MappingMediaTypeFileExtensionResolver`
+- `FixedContentNegotiationStrategy`
 - `canServeMediaType` — Whether a candidate media type can serve an accepted media range, honoring type/subtype inclusion and wildcard semantics. Single source of truth for the candid…
 - `firstServableMediaType` — Returns the first candidate media type that can serve one of the accepted ranges, honoring the client's priority order (accepted ranges are already ordered by…
 - `AbstractMappingContentNegotiationStrategy` — Base class for content negotiation strategies that also resolve file extensions.
 - `PathExtensionContentNegotiationStrategy` — Content negotiation strategy that is intended to derive media types from the request path extension.
-- `ContentNegotiationManager` — Aggregates content-negotiation strategies and file-extension resolvers.
-- `ContentNegotiationViewResolver` — Resolves views using content negotiation results.
+- `ContentNegotiationManager`
 - `NotAcceptableError` — NotAcceptableError.
 - `serializeModel` — Serializes a view model into a JSON string safe to embed in an HTML attribute.
 - `parseModel` — Parses a serialized island model back into a JS value.

@@ -46,8 +46,8 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `Backing` *(type)* — Backing store for a parsed file part: in-memory buffer or temp-file handle.
 - `NodeMultipartFile`
 - `NodeMultipartContext`
-- `MultipartLimits` *(type)* — Per-upload bounds. Every field is optional; DEFAULT_MPART_LIMITS fills the rest. `0` is a valid bound; negative or non-finite values throw a `RangeError` (fail…
-- `MultipartParseOptions` *(type)* — Options accepted by parseMultipart.
+- `MultipartLimits` *(type)* — Per-upload bounds. Every field is optional; `DEFAULT_MPART_LIMITS` fills the rest. `0` is a valid bound; negative or non-finite values throw a `RangeError` (fa…
+- `MultipartParseOptions` *(type)* — Options accepted by `parseMultipart`.
 - `parseMultipart` — Parse a `multipart/form-data` request body into fields + file parts.
 - `NodeHeaderValueMethodArgumentResolver` — Node.js request header argument resolver.
 - `NodeBodyValueMethodArgumentResolver` — Node.js request body argument resolver.
@@ -84,7 +84,7 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `FileSystemRouter` — A router implementation for Node.js that resolves routes based on the file system.
 - `HTTPServerAdapter` *(type)* — Adapter interface for platform HTTP servers. The default implementation wraps `node:http.createServer()`.
 - `TLSServerOptions` *(type)* — TLS material for the secure origin listener.
-- `HTTPServerOptions` *(type)* — Options for creating an HTTPServer.
+- `HTTPServerOptions` *(type)* — Options for creating an `HTTPServer`.
 - `HTTPServer` — A managed HTTP server that delegates incoming requests to a NodeDispatcher.
 - `THEME_COOKIE_NAME` — Cookie carrying the user's persisted theme choice.
 - `SocketRequestAuthenticator` *(type)* — Upgrade-time identity provider for socket endpoints.
@@ -120,8 +120,8 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `NOSNIFF_HEADER` — Response header that forbids MIME sniffing.
 - `StaticResolveOptions` *(type)* — Options controlling resolution beyond the plain file (D-6/D-7).
 - `negotiateEncoding` — Parses an `Accept-Encoding` header into the preferred supported encoding.
-- `StaticResourceResolver` — Resolves static files strictly inside a canonical base directory.
 - `statusForKind` — Maps a resolution kind to an HTTP status.
+- `StaticResourceResolver` — Resolves static files strictly inside a canonical base directory.
 - `StaticController`
 - `DEFAULT_MAX_COOKIES` — Default cap on parsed cookie entries per request.
 - `DEFAULT_MAX_COOKIE_VALUE_BYTES` — Default cap on a single cookie value's byte length.

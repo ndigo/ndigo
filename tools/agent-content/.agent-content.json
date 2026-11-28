@@ -57,7 +57,7 @@
     "packages/ndigo-resilience/docs/llms.txt": "4d51a2d293d4df7a05772b782f78d0b64482f0295eb1223b61e110e040ef00bd",
     "packages/ndigo-router/docs/llms.txt": "1bde0cf569d772c74c6f328083eca875baf03cae27b8f7e88739888a801a260f",
     "packages/ndigo-scheduler/docs/llms.txt": "4729d236ee7b8460a5543a8c27482bc3440e6f4e0185fd7c154d7ebbe6c184c2",
-    "packages/ndigo-service/docs/llms.txt": "f2e864e12f96f9c3db42bcdb79406e0f297188973c14bc479972c741a4189def",
+    "packages/ndigo-service/docs/llms.txt": "1abc7cd5e170d8c3d78d1ef80abd496882efb8183e84d3951128a35304a37560",
     "packages/ndigo-signals/docs/llms.txt": "e88d5bfd76a96b35eeb6423ae15907745780b3e9843fefc857d937bced0d7fc0",
     "packages/ndigo-signals/skills/ndigo-reactive/SKILL.md": "5fdbdcf1ceb6cb6ab685fbdcf8976ebd0b0aaae572c7685a10e91afa24033c87",
     "packages/ndigo-socket/docs/llms.txt": "32a7a2dbb958d33bf8209aabe89c2755245b5e1f6aae0b55448dccfabf3480b2",

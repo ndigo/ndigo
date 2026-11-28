@@ -54,7 +54,9 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `declaredConfigurationProperties` — Enumerate the configuration keys a `@configurationProperties` class declares, without resolving any value.
 - `relaxedKeyCandidates` — The candidate environment keys `valueAt` probes for a dotted key under relaxed binding, exact key first, then its camelCase, kebab-case and snake_case spelling…
 - `toLookupKey` — Rewrites a keypath into resolver-safe form: the keypath parser stops at a hyphen (it is not an identifier character), so a hyphenated segment must be expressed…
-- `CONFIG_REFRESH_EVENT` — Event emitted by a ConfigurableEnvironment after `refresh()` recomputes from its current sources. Listeners read fresh state; the event carries no payload.
+- `MockEnvironment`
+- `StandardEnvironment` — Default environment implementation used by application contexts.
+- `CONFIG_REFRESH_EVENT`
 - `Environment` *(type)* — Resolves properties and manages profile activation for an application environment.
 - `EnvironmentAware` *(type)* — Receives the current environment during initialization.
 - `EnvironmentSource` *(type)* — Provides access to the environment associated with a component.
@@ -64,8 +66,6 @@ for usage; the workspace guide index ships with `@ndigo/cli` as
 - `likeEnvironment` — Tests whether a value behaves like an `Environment`.
 - `likeEnvironmentAware` — Returns whether a value can receive an environment.
 - `likeEnvironmentSource` — Returns whether a value exposes an environment.
-- `MockEnvironment` — Environment implementation intended for tests.
-- `StandardEnvironment` — Default environment implementation used by application contexts.
 - `EventListener` *(type)* — A listener callback for an emitted event.
 - `EventHandler` *(type)* — A single listener or a listener list for an event type.
 - `EventHandlers` *(type)* — Mapping from event type to handler(s).
